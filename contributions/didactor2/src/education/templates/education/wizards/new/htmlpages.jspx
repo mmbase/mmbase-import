@@ -8,19 +8,14 @@
   <mm:import  externid="b" from="request" />
   <mm:import externid="wizardjsp" from="request" />
 
-  <di:leaf styleClass="newhtmlpages"
-           icon="new_education"
-           branch="${b}"
-           branchOffset="1"
-           branchPath="${branchPath} ">
-    <mm:link referid="wizardjsp" referids="_node@origin">
-      <mm:param name="wizard">config/htmlpages/htmlpages-origin</mm:param>
-      <mm:param name="objectnumber">new</mm:param>
-      <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
-      <a href="${_}"
-         title="${di:translate('education.new')} ${dummyname}"
-         target="text"><di:translate key="education.new" /> <mm:nodeinfo nodetype="htmlpages" type="guitype" /></a>
-    </mm:link>
-  </di:leaf>
+  <di:icon name="new_education" />
+  <mm:link referid="wizardjsp" referids="_node@origin">
+    <mm:param name="wizard">config/htmlpages/htmlpages-origin</mm:param>
+    <mm:param name="objectnumber">new</mm:param>
+    <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
+    <a href="${_}"
+       title="${di:translate('education.new')} ${dummyname}"
+       target="text"><di:translate key="education.new" /> <mm:nodeinfo nodetype="htmlpages" type="guitype" /></a>
+  </mm:link>
 
 </jsp:root>

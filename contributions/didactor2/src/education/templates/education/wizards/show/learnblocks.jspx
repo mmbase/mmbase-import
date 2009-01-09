@@ -9,41 +9,38 @@
   <mm:import id="parentBranch" externid="branchPath" required="true" />
   <mm:import  externid="b" from="request" required="true" />
   <mm:import id="branchPath">${parentBranch}|</mm:import>
-  <di:leaf styleClass="self2"
-           branch="${b}"
-           branchOffset="1"
-           branchPath="${branchPath}"
-           click="${_node}">
-    <mm:link referid="wizardjsp" referids="_node@objectnumber,_node@origin">
-      <mm:param name="wizard">config/learnblocks/learnblocks</mm:param>
-      <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
-      <a href='${_}' title="${di:translate('education.edit')} ${objecttype}" target="text">
-        <mm:hasfield name="name"><mm:field name="name" /></mm:hasfield>
-        <mm:hasfield name="title"><mm:field name="title" /></mm:hasfield>
-      </a>
-    </mm:link>
+  <mm:link referid="wizardjsp" referids="_node@objectnumber,_node@origin">
+    <mm:param name="wizard">config/learnblocks/learnblocks</mm:param>
+    <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
+    <a href='${_}' title="${di:translate('education.edit')} ${objecttype}" target="text">
+      <mm:hasfield name="name"><mm:field name="name" /></mm:hasfield>
+      <mm:hasfield name="title"><mm:field name="title" /></mm:hasfield>
+    </a>
+  </mm:link>
 
-    <!--
-    <mm:present referid="pdfurl">
+  <!--
+      <mm:present referid="pdfurl">
       <mm:compare referid="objecttype" value="pages">
-        <a href="${pdfurl}&amp;number=${_node}" target='text'><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
+      <a href="${pdfurl}&amp;number=${_node}" target='text'><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
       </mm:compare>
       <mm:compare referid="objecttype" value="learnblocks">
         <a href="${pdfurl}&amp;number=${_node}" target='text'><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
-      </mm:compare>
-    </mm:present>
-    -->
+        </mm:compare>
+        </mm:present>
+  -->
 
-    <mm:field write="false" name="number" id="node_number" />
-    <mm:hasnode number="component.metadata">
-      <a href='metaedit.jsp?${_node}' target='text'><img id='img_${_node}' src='' border='0' title='' alt='sAltText' /></a>
-    </mm:hasnode>
-    <mm:hasnode number="component.versioning">
-      <a href="versioning.jsp?nodeid=${_node}" target="text"><img id="img_${_node}" src="gfx/versions.gif" border="0" /></a>
-    </mm:hasnode>
-  </di:leaf>
+  <mm:field write="false" name="number" id="node_number" />
+  <mm:hasnode number="component.metadata">
+    <a href='metaedit.jsp?${_node}' target='text'><img id='img_${_node}' src='' border='0' title='' alt='sAltText' /></a>
+  </mm:hasnode>
+  <mm:hasnode number="component.versioning">
+    <a href="versioning.jsp?nodeid=${_node}" target="text"><img id="img_${_node}" src="gfx/versions.gif" border="0" /></a>
+  </mm:hasnode>
 
-  <![CDATA[<div id="${_node}" style="display:none;">]]>
-  <mm:onshrink><![CDATA[</div>]]></mm:onshrink>
-  <mm:include page="../newfromtree.jsp"  />
+
+  <ul>
+    <mm:include page="../newfromtree.jsp"  />
+  </ul>
+
+
 </jsp:root>

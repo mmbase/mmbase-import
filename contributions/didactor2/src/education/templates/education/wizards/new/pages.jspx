@@ -7,24 +7,18 @@
   <mm:import externid="branchPath" />
   <mm:import  externid="b" from="request" />
 
-  <di:leaf styleClass="neweducation"
-           icon="new_education"
-           branch="${b}"
-           branchOffset="1"
-           branchPath="${branchPath} ">
-    <mm:nodeinfo id="guitype" nodetype="pages" type="guitype" write="false" />
+  <di:icon name="new_education" />
+  <mm:nodeinfo id="guitype" nodetype="pages" type="guitype" write="false" />
 
 
-    <mm:link referid="wizardjsp" referids="_node@origin">
-      <mm:param name="wizard">config/pages/pages-origin</mm:param>
-      <mm:param name="objectnumber">new</mm:param>
-      <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
-      <a href="${_}"
-         title="${di:translate('education.new')} ${guitype} ${di:translate('education.aanmaken')}"
-         target="text"><di:translate key="education.new" /> ${guitype} <di:translate key="education.aanmaken" />
-      </a>
-    </mm:link>
-  </di:leaf>
-
+  <mm:link referid="wizardjsp" referids="_node@origin">
+    <mm:param name="wizard">config/pages/pages-origin</mm:param>
+    <mm:param name="objectnumber">new</mm:param>
+    <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
+    <a href="${_}"
+       title="${di:translate('education.new')} ${guitype} ${di:translate('education.aanmaken')}"
+       target="text"><di:translate key="education.new" /> ${guitype} <di:translate key="education.aanmaken" />
+    </a>
+  </mm:link>
 
 </jsp:root>
