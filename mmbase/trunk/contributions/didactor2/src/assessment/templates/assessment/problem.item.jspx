@@ -21,7 +21,7 @@
     <mm:import id="currentlesson" from="session" externid="currentlesson_${user}_${education}" />
 
     <mm:present referid="currentlesson">
-
+		<mm:isnotempty referid="currentlesson">
       <mm:relation to="${currentlesson}" role="posrel" notfound="null">
         <c:if test="${empty _node}">
           <mm:cloud>
@@ -44,6 +44,7 @@
           </mm:field>
         </mm:listrelations>
       </mm:listrelationscontainer>
+      </mm:isnotempty>
     </mm:present>
 
     <mm-sr:delete source="${source}" confirm="${confirm}" icondir="${icondir}" />
