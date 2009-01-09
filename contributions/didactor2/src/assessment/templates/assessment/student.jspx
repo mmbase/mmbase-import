@@ -68,7 +68,9 @@
   </ul>
 
       <mm:link page="/education/">
-      	<mm:param name="learnobject">${currentlesson}</mm:param>
+      	<c:if test="${notempty currentlesson}">
+      		<mm:param name="learnobject">${currentlesson}</mm:param>
+      	</c:if>
         <a href="${_}" name="">&amp;lt;&amp;lt; terug naar de les</a>
       </mm:link>
 
@@ -86,7 +88,9 @@
     <p>
       <h4 class="problemFeedback"><di:translate key="assessment.feedback_coach" />:
       <mm:link page="/c/shoutbox/index/">
+      <c:if test="${notempty currentlesson}">
       	<mm:param name="_reference">${currentlesson}</mm:param>
+      </c:if>
       	<mm:param name="self">not</mm:param>
         <a href="${_}" name="">bekijk <di:translate key="assessment.messages"/> voor deze les</a>
       </mm:link>
