@@ -4,7 +4,7 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <mm:cloud rank="basic user">
     <di:has action="rw" editcontext="componenten" > <!-- dutch -->
-      <ul class="tree">
+      <ul class="treeview">
         <mm:listnodes type="components" orderby="name">
           <li>
             <mm:treefile id="file" page="/components/edit.jsp" objectlist="$includePath"

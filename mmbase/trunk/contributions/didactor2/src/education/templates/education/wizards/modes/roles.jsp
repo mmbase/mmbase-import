@@ -12,7 +12,7 @@
         No rights
       </di:has>
       <di:has editcontext="rollen">
-        <ul class="tree">
+        <ul class="treeview">
           <!--
               edit people,rolerel, education
               doesn't work properly, so commented it out for the moment
