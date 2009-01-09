@@ -3,12 +3,20 @@
 <wizard-schema id="empty">
   <title>Portal Pages Nodes</title>
 
+
+  <action type="create">
+    <object type="portalpagescontainers">
+      <relation role="posrel" destinationtype="object" destination="{$origin}" createdir="source"/>
+    </object>
+  </action>
+
   <action type="load">
     <object type="portalpagescontainers"/>
     <relation destinationtype="portalpagesnodes" role="related"/>
   </action>
 
   <form-schema id="step1">
+    <field name="name" />
     <list role="related" destination="portalpagesnodes" minoccurs="0" maxoccurs="*">
       <title>Root Portal Pages Nodes</title>
       <!-- Show the 'item' in a list (the object) -->
@@ -17,7 +25,7 @@
           <prompt>Name</prompt>
           <description>Portal Pages Node Name</description>
         </field>
-        <field wizardname="config/portalpages/portalpagesnodes" ftype="startwizard" />
+        <field inline="true" wizardname="config/portalpages/portalpagesnodes" ftype="startwizard" />
       </item>
       <command name="startwizard" inline="true" wizardname="config/portalpages/portalpagesnodes" objectnumber="new" />
       <command name="search" nodepath="portalpagesnodes" fields="name" age="-1" orderby="number" directions="down" >

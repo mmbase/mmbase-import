@@ -50,7 +50,9 @@
         <di:leaf branchPath=".||">
           <mm:field name="name" />
         </di:leaf>
-        <mm:include page="leaf.jspx" />
+        <mm:include page="leaf.jspx">
+          <mm:param name="branchPath">.|||</mm:param>
+        </mm:include>
       </mm:relatednodes>
     </div>
   </mm:listnodes>
