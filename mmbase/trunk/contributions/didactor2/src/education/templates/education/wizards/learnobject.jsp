@@ -11,7 +11,7 @@
   <mm:content postprocessor="none">
     <mm:cloud method="delegate">
       <mm:node id="sn" number="${startnode}">
-        <div id="tree_for_${_node}" >
+        <li>
 
           <mm:write request="b" value="" />
           <mm:include page="newfromtree.jsp">
@@ -31,15 +31,15 @@
                 maxdepth="6">
               <mm:first inverse="true">
                 <mm:nodeinfo type="type">
-                  TYPE ${_}
                   <mm:treehaspage page="/education/wizards/show/${_}.jspx" objectlist="$includePath">
-                    <mm:treeinclude page="/education/wizards/show/${_}.jspx"
-                                    objectlist="$includePath"
-                                    attributes="status@b"
-                                    referids="branchPath"
-                                    debug="html"
-                                    >
-                    </mm:treeinclude>
+                    <li>
+                      <mm:treeinclude page="/education/wizards/show/${_}.jspx"
+                                      objectlist="$includePath"
+                                      attributes="status@b"
+                                      referids="branchPath"
+                                      debug="html"
+                                      />
+                    </li>
                   </mm:treehaspage>
                   <mm:treehaspage page="/education/wizards/show/${_}.jspx"
                                   objectlist="$includePath"
@@ -57,7 +57,7 @@
               <mm:shrink />
             </mm:tree>
           </mm:treecontainer>
-        </div>
+        </li>
       </mm:node>
     </mm:cloud>
   </mm:content>

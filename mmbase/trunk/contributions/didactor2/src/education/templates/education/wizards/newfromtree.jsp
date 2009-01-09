@@ -15,16 +15,18 @@
     <mm:treehaspage
         page="/education/wizards/new/${_}.jspx"  objectlist="$includePath">
 
-      <mm:treeinclude page="/education/wizards/new/${_}.jspx"
-                      objectlist="$includePath"
-                      debug="html"
-                      referids="$referids,branchPath">
-      </mm:treeinclude>
+      <li>
+        <mm:treeinclude page="/education/wizards/new/${_}.jspx"
+                        objectlist="$includePath"
+                        debug="html"
+                        referids="$referids,branchPath">
+        </mm:treeinclude>
+      </li>
     </mm:treehaspage>
     <mm:treehaspage page="/education/wizards/new/${_}.jspx" objectlist="$includePath" inverse="true">
-      <di:leaf>
+      <li>
         NO /education/wizards/new/${_}.jspx
-      </di:leaf>
+      </li>
     </mm:treehaspage>
   </mm:stringlist>
 
