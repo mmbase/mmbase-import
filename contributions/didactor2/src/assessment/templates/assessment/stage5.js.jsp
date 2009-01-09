@@ -35,7 +35,6 @@ $(window).unload(function() {
 
              }
            });
-
     // Then the test
     document.forms.questionform.command.value = 'done';
 
