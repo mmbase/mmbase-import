@@ -7,20 +7,24 @@
     style="clear: both;"
     >
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="problem" />
-  <mm:cloud>
-    <mm:form id="difficulties">
-      <mm:node number="${problem}">
-        <input type="hidden" name="problem" value="${_node}" />
-        <mm:listrelationscontainer type="learnblocks" role="posrel">
-          <mm:listrelations>
+  <mm:import externid="problem" required="true" />
+  <mm:cloud method="asis">
+
+    <mm:node number="${education}">
+      <mm:nodelistfunction name="lessons">
+        <h4 class="mm_dt_didactor_assessment_troubles"><mm:nodeinfo type="gui" /></h4>
+      </mm:nodelistfunction>
+      <mm:form id="difficulties">
+        <mm:nodelistfunction name="lessons">
+          <mm:relation to="${problem}">
+            <input type="hidden" name="problem" value="${problem}" />
             <mm:field name="pos" id="pos${_node}">
               <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="input" />
               <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="errors" />
             </mm:field>
-          </mm:listrelations>
-        </mm:listrelationscontainer>
-      </mm:node>
-    </mm:form>
+          </mm:relation>
+        </mm:nodelistfunction>
+      </mm:form>
+    </mm:node>
   </mm:cloud>
 </div>
