@@ -24,7 +24,7 @@
 
     <mm:link referids="sub?">
       <mm:param name="stage">stage4-problems</mm:param>
-      <p><a href="${_}">&amp;lt;&amp;lt;terug naar het overzicht</a></p>
+      <p><a href="${_}">&amp;lt;terug naar het overzicht</a></p>
     </mm:link>
 
     <h2>Probleem:</h2>
