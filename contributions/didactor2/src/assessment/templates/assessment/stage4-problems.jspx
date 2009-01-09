@@ -7,45 +7,38 @@
     class="problems">
   <jsp:output omit-xml-declaration="true" />
 
+  <!--
+      Now the problems, divided per type.
+  -->
+
   <h2><di:translate key="assessment.problems" /></h2>
   <div>
     <p>Dit is een overzicht van de problemen die je eerder hebt ingevoerd, en hoeveel last je er per les van had. Werk eventueel per probleem uit hoe je het gaat aanpakken (zie les 2).</p>
   </div>
-  <!--
-      show the learnblocks, sorry for using tables :-( couldn't get it to work otherwise....
-  -->
-  <table cellpadding="2" cellspacing="0" border="0">
-    <mm:node number="${education}">
-      <mm:relatednodescontainer path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',related,components' : ''}" searchdirs="destination">
-        <mm:sortorder field="posrel.pos" />
-        <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
-          <mm:addnode element="components" number="component.assessment" />
-        </c:if>
 
-        <mm:import id="blocknames" escape="text/plain">
-          <mm:relatednodes id="learnBlock"  varStatus="status">
+
+  <table>
+
+    <mm:node number="${education}">
+      <mm:import id="blocknames" escape="text/plain">
+        <!-- cache the block names, because they are repeated for every problem type -->
+
+        <mm:nodelistfunction name="lessons" id="learnBlock">
             <!--
                 If a relation learnBlock -classrel->user exists, then that means that this lesson is marked 'closed' (by this module)
             -->
-            <mm:relation to="${user}" role="classrel" searchdir="source"
-                         notfound="null">
-              <td class="learnblockItemsTitle">
+            <mm:relation to="${user}" role="classrel" searchdir="source" notfound="null">
+              <td class="learnblockItemsTitle ${empty _node ? '' : 'closed'}">
                 <mm:field name="name" node="learnBlock" />
               </td>
             </mm:relation>
-          </mm:relatednodes>
-          <td class="learnblockItemsTitle"><jsp:text> </jsp:text></td>
-        </mm:import>
-      </mm:relatednodescontainer>
+        </mm:nodelistfunction>
+        <td><jsp:text> </jsp:text></td>
 
-
+      </mm:import>
     </mm:node>
 
 
-    <!--
-        Now the problems, divided per type.
-        They can be edited by the user
-    -->
     <mm:listnodes orderby="pos" type="problemtypes">
       <tr>
         <td><h2 class="problemTypes"><di:translate key="assessment.${_node.key}" /></h2></td>
