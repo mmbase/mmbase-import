@@ -27,33 +27,29 @@ public class ImageUploadAction extends AbstractUploadAction {
       String parentchannel = imageUploadForm.getParentchannel();
       FormFile file = imageUploadForm.getFile();
 
+      String exist = "1";
+      String exceed = "yes";
+      int nodeId = 0;
+
       if (parentchannel.equalsIgnoreCase(ALL)) {
          parentchannel = (String) request.getSession().getAttribute(CREATION);
       }
-
-      int nodeId = 0;
-      String exist = "0";
-      String exceed = "no";
-      NodeManager manager = cloud.getNodeManager("images");
-      List<Integer> nodes = null;
-
-      if (file.getFileSize() != 0 && file.getFileName() != null) {
-         if (isImage(file.getFileName())) {
-            int fileSize = file.getFileSize();
-            if (maxFileSizeBiggerThan(fileSize)) {
-               if (isNewFile(file, manager)) {
-                  nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
-                  request.setAttribute("uploadedNodes", nodes.size());
-               } else {
-                  exist = "1";
+      if (isImage(file.getFileName())) {
+         int fileSize = file.getFileSize();
+         if (maxFileSizeBiggerThan(fileSize)) {
+            NodeManager manager = cloud.getNodeManager("images");
+            exceed = "no";
+            if (isNewFile(file, manager)) {
+               exist = "0";
+               List<Integer> nodes = null;
+               nodes = BulkUploadUtil.store(cloud, manager, parentchannel, file);
+               // to archive the upload asset
+               if (nodes != null) {
+                  addRelationsForNodes(nodes, cloud);
+                  nodeId = nodes.get(0);
                }
-            } else {
-               exceed = "yes";
             }
-            nodeId = nodes.get(0);
          }
-         // to archive the upload asset
-         addRelationsForNodes(nodes, cloud);
       }
       return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?uploadAction=select&exist=" + exist
             + "&exceed=" + exceed + "&channelid=" + parentchannel + "&uploadedNodes=" + nodeId, true);

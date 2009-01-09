@@ -1,10 +1,14 @@
 <%@page language="java" contentType="text/html;charset=utf-8"
 %><%@include file="globals.jsp" %><%@page import="com.finalist.util.http.BulkUploadUtil"
+%><%@ page import="com.finalist.cmsc.repository.RepositoryUtil"
+%><%@ page import="com.finalist.cmsc.security.*"
 %><%@page import="java.util.List"
 %> <mm:content type="text/html" encoding="UTF-8" expires="0">
+<mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<cmscedit:head title="attachments.upload.title">
+         <mm:import externid="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" >${sessionScope.creation}</mm:import>
+<cmscedit:head title="asset.upload.title">
   <script src="../repository/search.js" type="text/javascript"></script>
   <script type="text/javascript">
     function upload() {
@@ -16,57 +20,29 @@
         document.getElementById("notbusy").style.visibility="hidden";
     }
 
-
-   function showInfo(objectnumber) {
-      openPopupWindow('attachmentinfo', '900', '500', 'attachmentinfo.jsp?objectnumber='+objectnumber);
-    }
-
-   function unpublish(parentchannel, objectnumber) {
-       var url = "../repository/AttachmentDeleteAction.do";
-       url += "?channelnumber=" + parentchannel;
-       url += "&objectnumber=" + objectnumber;
-       document.location.href = url;
-   }
+   function showInfo(assetType, objectnumber) {
+	      var infoURL;
+	      infoURL = '../resources/';
+	      infoURL += assetType.toLowerCase().substring(0,assetType.length-1);
+	      infoURL += 'info.jsp?objectnumber=';
+	      infoURL += objectnumber;
+	      openPopupWindow(assetType.toLowerCase()+'info', '900', '500', infoURL);
+	}
 
     var blockSelect = false;
   </script>
 </cmscedit:head>
 <body>
-<mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
       <div class="editor" style="height:580px">
           <div class="body">
-              <html:form action="/editors/repository/AttachmentUploadAction.do" enctype="multipart/form-data" method="post">
-                  <input type="hidden" id="parentchannel" name="parentchannel" value="${param.channelid}"/>
-                  <table border="0">
-                  <tr>
-                     <td><fmt:message key="attachments.upload.explanation" /></td>
-                  </tr>
-                  <c:if test="${param.exist=='1'}">
-                     <tr>
-                        <td style="color:red;"><fmt:message key="asset.upload.existed" /></td>
-                     </tr>
-                  </c:if>
-                  <c:if test="${param.exceed=='yes'}">
-                     <tr>
-                        <td style="color:red;"><fmt:message key="asset.upload.exceed" /></td>
-                     </tr>
-                  </c:if>
-                  <c:if test="${param.uploadedNodes=='0' && param.exist == '0'}">
-                     <tr>
-                        <td style="color:red;"><fmt:message key="attachment.upload.notattachment" /></td>
-                     </tr>
-                  </c:if>
-                  <tr>
-                     <td><html:file property="file" /></td>
-                  </tr>
-                  <tr>
-                     <td><html:submit property="uploadButton" onclick="upload();">
-                     <fmt:message key='assets.upload.submit' /></html:submit></td>
-                  </tr>
-                  </table>
-               </html:form>
+<mm:node number="${parentchannel}" jspvar="parentchannelnode">
+               <% UserRole role = RepositoryUtil.getRole(cloud, parentchannelnode, false); %>
+               <% if (role != null && SecurityUtil.isWriter(role)) { %>
+               <%@ include file="../repository/assetupload.jsp" %>
+               <%} %>
+</mm:node>
           </div>
-          <div class="ruler_green"><div><fmt:message key="attachments.upload.results" /></div></div>
+          <div class="ruler_green"><div><fmt:message key="assets.upload.results" /></div></div>
 
           <div class="body">
             <div id="busy">
@@ -82,7 +58,7 @@
    </tr>
    <tbody class="hover">
       <c:set var="useSwapStyle">true</c:set>
-      <mm:listnodescontainer path="attachments" nodes="${param.uploadedNodes}">
+      <mm:listnodescontainer path="assetelement" nodes="${param.uploadedNodes}">
          <mm:listnodes>
 
                <mm:field name="title" escape="js-single-quotes" jspvar="title">
@@ -98,7 +74,7 @@
             <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
                <td >
 <%-- use uploadedNodes and numberOfUploadedNodes in return url --%>
-                  <c:set var="returnUrl">/editors/resources/attachmentupload.jsp?uploadedNodes=${param.uploadedNodes}&uploadAction=${param.uploadAction}</c:set>
+                  <c:set var="returnUrl">/editors/resources/attachmentupload.jsp?uploadedNodes=${param.uploadedNodes}&uploadAction=${param.uploadAction}&insertAsset=insertAsset</c:set>
                   <c:choose>
                      <c:when test="${param.uploadAction == 'select'}">
                         <a href="<mm:url page="SecondaryEditAction.do">
@@ -114,14 +90,19 @@
                            </mm:url>">
                      </c:otherwise>
                   </c:choose>
-                           <img src="../gfx/icons/page_edit.png" title="<fmt:message key="attachments.upload.edit"/>" alt="<fmt:message key="attachments.upload.edit"/>"/>
+                           <img src="../gfx/icons/page_edit.png" title="<fmt:message key="assets.upload.edit"/>" alt="<fmt:message key="assets.upload.edit"/>"/>
                         </a>
-                        <a href="javascript:showInfo(<mm:field name="number" />);" onclick="blockSelect = true;">
-                           <img src="../gfx/icons/info.png" title="<fmt:message key="attachments.upload.info"/>" alt="<fmt:message key="attachments.upload.info"/>"/>
+                        <c:set var="returnUrl">/editors/resources/attachmentupload.jsp?uploadAction=select&insertAsset=insertAsset&parentchannel=${param.parentchannel}</c:set>
+                        <a href="javascript:showInfo('<mm:nodeinfo type="type"/>',<mm:field name="number" />);" onclick="blockSelect = true;">
+                           <img src="../gfx/icons/info.png" title="<fmt:message key="assets.upload.info"/>" alt="<fmt:message key="assets.upload.info"/>"/>
                         </a>
-                        <a href="javascript:unpublish('${param.channelid}','${param.uploadedNodes}');"
-                           title="<fmt:message key="asset.delete" />"><img src="../gfx/icons/delete.png" width="16" height="16"
-                           alt="<fmt:message key="asset.delete" />"/>
+                        <a href="<mm:url page="../repository/AssetDeleteAction.do">
+                           <mm:param name="channelnumber" value="${param.parentchannel}"/>
+                           <mm:param name="objectnumber" value="${param.uploadedNodes}" />
+                           <mm:param name="returnurl" value="${returnUrl}"/>
+                           </mm:url>" onclick="blockSelect = true">
+                              <img src="../gfx/icons/delete.png" width="16" height="16"
+                              alt="<fmt:message key="asset.delete" />"/>
                         </a>
                </td>
                <td onMouseDown="objClick(this);">
@@ -146,7 +127,7 @@
 </c:if>
          </div>
       </div>
-</mm:cloud>
 </body>
 </html:html>
+</mm:cloud>
 </mm:content>

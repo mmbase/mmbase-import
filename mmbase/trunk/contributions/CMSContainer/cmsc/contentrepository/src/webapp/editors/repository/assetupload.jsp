@@ -11,12 +11,13 @@
 
 <html:form action="/editors/repository/AssetUploadAction.do" enctype="multipart/form-data" method="post">
 <input type="hidden" id="assetType" name="assetType" value="attachments"/>
+<input type="hidden" id="insertAsset" name="insertAsset" value="${param.insertAsset}"/>
 <input type="hidden" id="parentchannel" name="parentchannel" value="${parentchannel}"/>
 <table border="0">
    <tr>
       <td><fmt:message key="asset.upload.explanation" /></td>
    </tr>
-         <c:if test="${exist=='1'}">
+         <c:if test="${param.exist=='1'}">
             <tr>
                <td style="color:red;"><fmt:message key="asset.upload.existed" /></td>
             </tr>
