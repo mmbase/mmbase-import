@@ -14,8 +14,8 @@ ul.tabs li {
   float : left;
   height : 21px;
   background: #f2f6ff;
-  margin : 2px 2px 0 2px !important;  /* For all browsers but IE */
-  margin : 4px 2px 0 2px;  /* For IE  */
+  /*margin : 2px 2px 0 2px !important;   For all browsers but IE */
+  /* _margin : 4px 2px 0 2px;  For IE  */
   border : 1px solid #9EA0A1;
 }
 

@@ -21,18 +21,18 @@
 
 
   <!-- Display the problem itself -->
-<div class="problemItem">
-	<mm:field name="name" /> &amp;nbsp;
-</div>  
+<tr class="problemItem">
+<td class="problemName"><mm:field name="name" />&amp;nbsp;</td>
+
   <mm:node id="problem" number="${_node}" /> <!-- give current node an id, and put it in the current cloud -->
 
-	 <div class="learnblockProblemItems">
   <!-- And, per lesson, how much trouble it gave -->
   <mm:node number="${education}">
     <mm:relatednodescontainer
         element="learnblocks"
         searchdirs="destination"
         path="posrel,learnblocks${di:setting('assessment', 'relate_learnblocks') ? ',related,components' : ''}">
+        <mm:size id="blockCount" write="false"/>
       <mm:sortorder field="posrel.pos" />
       <c:if test="${di:setting('assessment', 'relate_learnblocks')}">
         <mm:addnode element="components" number="component.assessment" />
@@ -82,16 +82,16 @@
              this relation, or only _see_ (if 'closed' lesson).
              That is, inidcate how much trouble the problem is now causing.
         -->
-				
-       
-        <mm:listrelationscontainer type="problems" role="posrel">
+				<mm:import id="blockCount" reset="true">${(blockCount+1)}</mm:import> 
+              <mm:listrelationscontainer type="problems" role="posrel">
           <mm:addnode element="problems" number="${problem}" />
           
           <mm:listrelations id="relation">
             <mm:field name="pos" write="false">
               <!-- See MMB-1770 -->
               <fmt:bundle basename="nl.didactor.resources.troubles">
-                <span class="learnblockItems"><fmt:message key="${_}" /></span>
+                <td class="learnblockItems"><fmt:message key="${_}" /></td>
+                <mm:import id="blockCount" reset="true">${(blockCount-1)}</mm:import>
               </fmt:bundle>
             </mm:field>
           </mm:listrelations>
@@ -112,10 +112,9 @@
     <mm:present referid="test">
       <mm:link  referids="test,_node@problem,sub?">
         <mm:param name="stage">stage5-evaluate</mm:param>
-        <span class="learnblockItems"><a href="${_}">uitwerken</a></span>
+        <td colspan="${blockCount}" class="learnblockItems" align="right"><a href="${_}">uitwerken</a></td>
       </mm:link>
     </mm:present>
-   </div>
-
+</tr>
 
 </jsp:root>
