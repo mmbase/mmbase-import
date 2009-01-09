@@ -18,25 +18,19 @@
         <mm:nodelistfunction name="lessons">
           <h4 class="mm_dt_didactor_assessment_troubles"><mm:nodeinfo type="gui" /></h4>
         </mm:nodelistfunction>
-        <mm:form id="difficulties">
+        <form id="difficulties">
           <input type="hidden" name="problem" value="${problem}" />
           <mm:nodelistfunction name="lessons">
             <mm:relation to="${problem}">
               <mm:field name="pos" id="pos${_node}">
                 <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="input" />
                 <mm:present referid="submit">
-                  <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="errors" />
+                  <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="useinput" />
                 </mm:present>
               </mm:field>
             </mm:relation>
           </mm:nodelistfunction>
-          <mm:present referid="submit">
-            <mm:commit />
-          </mm:present>
-          <mm:notpresent referid="submit">
-            <mm:cancel />
-          </mm:notpresent>
-        </mm:form>
+        </form>
       </mm:node>
     </mm:cloud>
   </mm:content>
