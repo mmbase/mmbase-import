@@ -5,19 +5,31 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
   <di:html
-      type="text/html"
+      type="application/xhtml+xml"
       styleClass="editwizards"
       component="education.wizards"
       title_key="education.editwizards"
+      css="/education/wizards/style.css"
       rank="editor" expires="0">
 
-    <!--
-    <script type="text/javascript">
+    <mm:link page="/core/js/jquery-treeview/lib/jquery.cookie.js">
+      <script src="${_}" type="text/javascript"><jsp:text> </jsp:text></script>
+    </mm:link>
 
-      addEventHandler(window, 'load', loadTree);
-      addEventHandler(window, 'unload', storeTree);
+    <mm:link page="/core/js/jquery-treeview/jquery.treeview.pack.js">
+      <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+    </mm:link>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('ul.tree').treeview({
+          collapsed: true,
+          persist: "cookie"
+        }
+        );
+      });
     </script>
-    -->
+
     <div class="rows" id="rows">
 
       <di:include debug="html" page="/education/wizards/javascript.jsp" />
