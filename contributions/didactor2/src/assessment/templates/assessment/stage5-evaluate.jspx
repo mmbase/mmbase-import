@@ -21,7 +21,7 @@
   <mm:node referid="problem">
 
 		<p><a href="#" onclick="history.back(-1);">&amp;lt;&amp;lt;terug naar het overzicht</a></p>
-    
+
     <h2>Probleem:</h2>
     <h4><mm:field name="name" /></h4>
 
@@ -34,12 +34,11 @@
           <h4 class="mm_dt_didactor_assessment_troubles"><mm:nodeinfo type="gui" /></h4>
         </mm:nodelistfunction>
       </mm:node>
-      <mm:include page="/assessment/stage5-editdifficulties.jspx" />
+
 
       <mm:link page="/assessment/stage5.js.jsp">
         <script type="text/javascript" src="${_}" />
       </mm:link>
-
     </div>
 
 
@@ -47,7 +46,6 @@
       <mm:include page="/education/tests/buildtest.jsp"
                   referids="test@learnobject" />
     </div>
-    <p>&amp;nbsp;</p><p></p>
 
     <mm:link page="/assessment/stage5.js.jsp">
       <script type="text/javascript" src="${_}" />
