@@ -21,6 +21,7 @@ public class WorkflowStatusInfo {
    private int allcontentApproved;
    private int allcontentPublished;
    
+   private int contentDraft;
    private int contentFinished;
    private int contentApproved;
    private int contentPublished;
@@ -85,47 +86,47 @@ public class WorkflowStatusInfo {
          int count = node.getIntValue("number");
          if ("content".equals(type)) {
             if (Workflow.STATUS_DRAFT.equals(status)){
-               /*contentDraft = count;*/
+               contentDraft += count;
                setNodetypeDraft(nodetype, count);
             }
             if (Workflow.STATUS_FINISHED.equals(status)){
-               /*contentFinished += count;*/
+               contentFinished += count;
                setNodetypeFinished(nodetype, count);
             }
             if (Workflow.STATUS_APPROVED.equals(status)) {
-               /*if (Workflow.isAcceptedStepEnabled()) {
-                  contentApproved = count;
+               if (Workflow.isAcceptedStepEnabled()) {
+                  contentApproved += count;
                }
                else {
                   contentFinished += count;
-               }*/
+               }
                setNodetypeApproved(nodetype, count);
             }
             if (Workflow.STATUS_PUBLISHED.equals(status)){
-               /*contentPublished = count;*/
+               contentPublished += count;
                setNodetypePublished(nodetype, count);
             }
          }
          if ("asset".equals(type)) {
             if (Workflow.STATUS_DRAFT.equals(status)){
-               /*assetDraft = count;*/
+               assetDraft += count;
                setNodetypeDraft(nodetype, count);
             }
             if (Workflow.STATUS_FINISHED.equals(status)){
-               /*assetFinished += count;*/
+               assetFinished += count;
                setNodetypeFinished(nodetype, count);
             }
             if (Workflow.STATUS_APPROVED.equals(status)) {
-               /*if (Workflow.isAcceptedStepEnabled()) {
-                  assetApproved = count;
+               if (Workflow.isAcceptedStepEnabled()) {
+                  assetApproved += count;
                }
                else {
                   assetFinished += count;
-               }*/
+               }
                setNodetypeApproved(nodetype, count);
             }
             if (Workflow.STATUS_PUBLISHED.equals(status)){
-               /*assetPublished = count;*/
+               assetPublished = count;
                setNodetypePublished(nodetype, count);
             }
          }
@@ -164,14 +165,6 @@ public class WorkflowStatusInfo {
                pagePublished = count;
          }
       }
-      contentDraft = contentArticleDraft + contentBannersDraft + contentLinkDraft + contentFaqitemDraft;
-      contentFinished = contentArticleFinished + contentBannersFinished + contentLinkFinished + contentFaqitemFinished;
-      contentApproved = contentArticleApproved + contentBannersApproved + contentLinkApproved + contentFaqitemApproved;
-      contentPublished = contentArticlePublished + contentBannersPublished + contentLinkPublished + contentFaqitemPublished;
-      assetDraft = assetImagesDraft + assetAttachmentsDraft + assetUrlsDraft;
-      assetFinished = assetImagesFinished + assetAttachmentsFinished + assetUrlsFinished;
-      assetApproved = assetImagesApproved + assetAttachmentsApproved + assetUrlsApproved;
-      assetPublished = assetImagesPublished + assetAttachmentsPublished + assetUrlsPublished;
       allcontentDraft = contentDraft + assetDraft;
       allcontentFinished = contentFinished + assetFinished;
       allcontentApproved = contentApproved + assetApproved;
@@ -691,7 +684,7 @@ public class WorkflowStatusInfo {
    public void setAssetUrlsPublished(int assetUrlsPublished) {
       this.assetUrlsPublished = assetUrlsPublished;
    }
-   private int contentDraft;
+   
    public int getAllcontentDraft() {
       return allcontentDraft;
    }
