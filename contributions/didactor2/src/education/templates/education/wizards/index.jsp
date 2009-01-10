@@ -21,12 +21,13 @@
     </mm:link>
 
     <mm:import externid="mode">educations</mm:import>
+    <mm:import externid="e">${education}</mm:import>
     <script type="text/javascript">
       $(document).ready(function() {
         $('ul.treeview').treeview({
           collapsed: true,
           persist: "cookie",
-          cookieId: "treeview_${mode}",
+          cookieId: "treeview_${e}_${mode}",
           cookieOptions: {expires: 100}
         }
         );
