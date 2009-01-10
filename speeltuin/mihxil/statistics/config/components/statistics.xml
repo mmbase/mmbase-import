@@ -14,8 +14,7 @@
 
 
 
-  <block name="Statistics"
-         classification="mmbase.documentation"
+  <block name="statistics_uncached"
          mimetype="text/html">
     <body>
       <!--
@@ -28,6 +27,17 @@
          <param name="resource">documentation/mmstatistics.xml</param>
          <param name="type">config</param>
          <param name="xslt">xslt/docbook2block.xslt</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="statistics"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <body>
+      <class name="org.mmbase.framework.CachedRenderer">
+        <param name="wraps">statistics_uncached</param>
+        <param name="includeRenderTime">xml-comments</param>
       </class>
     </body>
   </block>
