@@ -20,14 +20,18 @@
       <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
     </mm:link>
 
+    <mm:import externid="mode">educations</mm:import>
     <script type="text/javascript">
       $(document).ready(function() {
         $('ul.treeview').treeview({
           collapsed: true,
-          persist: "cookie"
+          persist: "cookie",
+          cookieId: "treeview_${mode}",
+          cookieOptions: {expires: 100}
         }
         );
       });
+
     </script>
 
     <div class="rows" id="rows">
