@@ -438,13 +438,8 @@
     </body>
   </block>
 
-  <block name="mmbase_news"
-         classification="mmbase.about:100"
+  <block name="mmbase_news_uncached"
          mimetype="text/html">
-    <title xml:lang="nl">Nieuws</title>
-    <title xml:lang="en">News</title>
-    <description xml:lang="en">Shows latest news from www.mmbase.org</description>
-    <description xml:lang="nl">Toont het laatste nieuws van www.mmbase.org</description>
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
         <param name="url">http://www.mmbase.org/rss</param>
@@ -452,6 +447,20 @@
       </class>
     </body>
   </block>
+
+  <block name="mmbase_news"
+         classification="mmbase.about:100">
+    <title xml:lang="nl">Nieuws</title>
+    <title xml:lang="en">News</title>
+    <description xml:lang="en">Shows latest news from www.mmbase.org</description>
+    <description xml:lang="nl">Toont het laatste nieuws van www.mmbase.org</description>
+    <body>
+      <class name="org.mmbase.framework.CachedRenderer">
+        <param name="wraps">mmbase_news_uncached</param>
+      </class>
+    </body>
+  </block>
+
 
   <block name="releasenotes"
          classification="mmbase.about:11"
