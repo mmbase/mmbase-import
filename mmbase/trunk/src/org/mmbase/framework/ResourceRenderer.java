@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResourceRenderer.java,v 1.9 2008-10-15 13:59:11 michiel Exp $
+ * @version $Id: ResourceRenderer.java,v 1.10 2009-01-10 18:32:33 michiel Exp $
  * @since MMBase-1.9
  */
 public class ResourceRenderer extends AbstractRenderer {
@@ -67,9 +67,8 @@ public class ResourceRenderer extends AbstractRenderer {
         }
     }
 
-    @Override
-    public void render(Parameters blockParameters,
-                       Writer w, RenderHints hints) throws FrameworkException {
+    @Override public void render(Parameters blockParameters,
+                                 Writer w, RenderHints hints) throws FrameworkException {
 
 
         String name = getResource();
@@ -105,6 +104,16 @@ public class ResourceRenderer extends AbstractRenderer {
 
     public String toString() {
         return resource;
+    }
+
+    @Override public URI getUri() {
+        try {
+            ResourceLoader loader = ResourceLoader.Type.valueOf(type.toUpperCase()).get();
+            return loader.getResource(getResource()).toURI();
+        } catch (URISyntaxException use) {
+            log.warn(use);
+            return null;
+        }
     }
 
 }
