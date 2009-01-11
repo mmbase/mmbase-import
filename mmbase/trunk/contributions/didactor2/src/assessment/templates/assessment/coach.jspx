@@ -59,7 +59,13 @@
 
               <tr class="toggle_div${class}" id="toggle_div${class}_${_node}">
                 <td class="listItem">
-                  <di:person />
+                <mm:node>
+                <mm:link>
+                	<mm:param name="subsub">coach_student_overview</mm:param>
+                	<mm:param name="student_id">${_node}</mm:param>
+                  <a href="${_}"><mm:field name="firstname"/></a>
+                </mm:link>
+                </mm:node>
                 </td>
                 <mm:relatednodes referid="learnblocks" id="learnblock">
                   <td class="listItem">
