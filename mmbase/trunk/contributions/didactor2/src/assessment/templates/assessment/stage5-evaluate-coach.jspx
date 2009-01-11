@@ -23,7 +23,7 @@
   <mm:node referid="problem">
 	<p>
 	<mm:link page="/homework/">
-		<mm:param name="subsub">coach</mm:param>
+		<mm:param name="sub">assessment_coach</mm:param>
 		<a href="${_}">&amp;lt;&amp;lt; terug naar studentenoverzicht</a>
 	</mm:link>
 	</p>
