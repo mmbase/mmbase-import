@@ -69,7 +69,18 @@
 
       <mm:link page="/education/">
       	<c:if test="${!empty currentlesson}">
-      		<mm:param name="learnobject">${currentlesson}</mm:param>
+      		<mm:node number="${currentlesson}">
+      		<c:set var="learnobject" value="${currentlesson}" />
+      			<!-- TODO: find a nicer/proper way to do this -->
+      			<mm:relatednodes type="xmlcontent" constraints="lower(name) = 'opdrachten'">
+      					<mm:node>
+      						<c:set var="learnobject" value="${_node}" />
+      					</mm:node>
+      			</mm:relatednodes>
+      			
+      		</mm:node>
+      		
+      		<mm:param name="learnobject">${learnobject}</mm:param>
       	</c:if>
         <a href="${_}" name="">&amp;lt;&amp;lt; terug naar de les</a>
       </mm:link>
