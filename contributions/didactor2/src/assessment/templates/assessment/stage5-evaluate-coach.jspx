@@ -1,0 +1,54 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    class="problems stage5">
+  <jsp:output omit-xml-declaration="true" />
+  <!--
+
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+
+  -->
+  <mm:import externid="problem" required="true" />
+  <mm:import externid="test"    required="true" />
+  <mm:import externid="sub" />
+    <mm:import externid="student_id" required="true"/>
+
+  <mm:link page="/content/js/open.jsp">
+    <script type="text/javascript" src="${_}"> </script>
+  </mm:link>
+
+  <mm:node referid="problem">
+	<p>
+	<mm:link page="/homework/">
+		<mm:param name="subsub">coach</mm:param>
+		<a href="${_}">&amp;lt;&amp;lt; terug naar studentenoverzicht</a>
+	</mm:link>
+	</p>
+	<p>
+		<mm:link page="/homework/">
+			<mm:param name="subsub">coach_student_overview</mm:param>
+			<mm:param name="student_id">${student_id}</mm:param>
+			<a href="${_}">&amp;lt; terug naar probleemlijst van <mm:node number="${student_id}"><mm:field id="studentName" name="firstname"/></mm:node></a>
+		</mm:link>
+	</p>
+
+
+    <div id="contentFrame" style="clear: both;">
+      <mm:include page="/education/tests/viewanswers.jsp"
+                  referids="test@learnobject" />
+    </div>
+
+
+    <mm:link page="/assessment/stage5.js.jsp">
+      <script type="text/javascript" src="${_}">
+        <jsp:text> </jsp:text>
+      </script>
+    </mm:link>
+
+  </mm:node>
+
+
+</div>
