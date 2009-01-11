@@ -5,4 +5,5 @@
   <functionset name="components"   resource="components.xml" />
   <functionset name="caches"       resource="caches.xml" />
   <functionset name="transactions" resource="transactions.xml" />
+  <functionset name="csvreader"    resource="csvreader.xml" />
 </functionsets>
