@@ -34,7 +34,7 @@
           <di:include page="/education/prev_next.jsp" />
 
           <!-- hmm: -->
-          <jsp:directive.include file="../includes/component_link.jsp" />
+          <!--<jsp:directive.include file="../includes/component_link.jsp" />-->
 
 
         </mm:node>
