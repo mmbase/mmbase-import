@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.57 2008-06-26 10:21:31 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.58 2009-01-12 12:42:22 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -91,7 +91,7 @@ public class DateHandler extends AbstractTypeHandler {
     /**
      * Returns the field value as specified by the client's post.
      */
-    protected Object getFieldValue(Field field) throws JspTagException {
+    @Override protected Object getFieldValue(Node node, Field field) throws JspTagException {
         Calendar cal = getSpecifiedValue(field, getInstance());
         return cal == null ? null : cal.getTime();
     }
@@ -99,7 +99,7 @@ public class DateHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
         StringBuilder buffer = new StringBuilder();
         boolean required = field.getDataType().isRequired();
@@ -257,9 +257,9 @@ public class DateHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
-        String fieldName = field.getName();
-        Calendar cal = getInstance();
+    @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+        final String fieldName = field.getName();
+        final Calendar cal = getInstance();
         Object oldValue = node.getValue(fieldName);
         if (oldValue != null) {
             oldValue = node.getDateValue(fieldName);
@@ -268,16 +268,22 @@ public class DateHandler extends AbstractTypeHandler {
             cal.clear();
         }
 
-        Calendar newCal = getSpecifiedValue(field, cal);
-        Date newValue = newCal == null ? null : newCal.getTime();
+        final Calendar newCal = getSpecifiedValue(field, cal);
+        final Date newValue = newCal == null ? null : newCal.getTime();
+
+        log.debug("oldValue " + oldValue + " newValue " + newValue);
         if (oldValue == null) {
             if (newValue != null) {
+                log.debug("Setting " + newValue);
                 node.setDateValue(fieldName, newValue);
                 return true;
             }
         } else if (!oldValue.equals(newValue)) {
+            log.debug("Setting " + newValue);
             node.setDateValue(fieldName, newValue);
             return true;
+        } else {
+            log.debug("Not setting");
         }
 
         return false;
@@ -287,15 +293,12 @@ public class DateHandler extends AbstractTypeHandler {
      * @return The given Calendar instance or <code>null</code>
      */
     protected Calendar getSpecifiedValue(final Field field, Calendar cal) throws JspTagException {
-        String fieldName = field.getName();
-        DataType<Object> dt = field.getDataType();
-        if (log.isDebugEnabled()) {
-            log.debug("Using " + dt);
-        }
-        DateTimePattern dateTimePattern = getPattern(dt);
-        Calendar minDate = getInstance();
+        final String fieldName = field.getName();
+        final DataType<Object> dt = field.getDataType();
+        final DateTimePattern dateTimePattern = getPattern(dt);
+        final Calendar minDate = getInstance();
         minDate.setTime(DateTimeDataType.MIN_VALUE);
-        Calendar maxDate = getInstance();
+        final Calendar maxDate = getInstance();
         maxDate.setTime(DateTimeDataType.MAX_VALUE);
 
 
@@ -303,8 +306,9 @@ public class DateHandler extends AbstractTypeHandler {
             cal.clear();
         }
 
-        Locale locale = tag.getLocale();
-        List<String> parsed = dateTimePattern.getList(locale);
+        final Locale locale = tag.getLocale();
+        final List<String> parsed = dateTimePattern.getList(locale);
+
         int maxField = Calendar.ERA;
         for(String pattern : parsed) {
             if (pattern.length() < 1) continue;
@@ -336,10 +340,13 @@ public class DateHandler extends AbstractTypeHandler {
                 throw new TaglibException("Not a valid number (" + e.toString() + ") in field " + fieldName, e);
             }
         }
+        if (log.isDebugEnabled()) {
+            log.debug("Using " + dt + " --> " + cal.getTime());
+        }
 
         return  cal;
     }
-    protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
+    @Override protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
         Calendar cal =  getCalendarValue(node, field);
         return cal == null ? null : cal.getTime();
     }
@@ -377,7 +384,7 @@ public class DateHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    public String whereHtmlInput(Field field) throws JspTagException {
+    @Override public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
         if (operator == null || operator.equals("no")) {
@@ -411,7 +418,7 @@ public class DateHandler extends AbstractTypeHandler {
         }
     }
 
-    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
         if (operator == null || operator.equals("no")) {
@@ -455,7 +462,7 @@ public class DateHandler extends AbstractTypeHandler {
 
     }
 
-    public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
+    @Override public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
         String fieldName = field.getName();
         String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
         if (operator == null || operator.equals("no")) {
