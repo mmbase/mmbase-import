@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.framework;
 
 import org.mmbase.util.functions.*;
+import java.io.Writer;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * parameter 'wraps' which you can point to another block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WrappedRenderer.java,v 1.2 2009-01-12 21:12:10 michiel Exp $
+ * @version $Id: WrappedRenderer.java,v 1.3 2009-01-12 22:12:04 michiel Exp $
  * @since MMBase-1.9.1
  */
 public abstract class WrappedRenderer extends AbstractRenderer {
@@ -32,8 +33,12 @@ public abstract class WrappedRenderer extends AbstractRenderer {
         super(t, parent);
     }
 
-    public void setWraps(String c) {
-        wrapped = getBlock().getComponent().getBlock(c).getRenderer(getType());
+    public void setWrapsBlock(String c) {
+        setWraps(getBlock().getComponent().getBlock(c).getRenderer(getType()));
+    }
+
+    public void setWraps(Renderer r) {
+        wrapped = r;
     }
 
     public Renderer getWraps() {
@@ -44,7 +49,9 @@ public abstract class WrappedRenderer extends AbstractRenderer {
         return wrapped.getParameters();
     }
 
-
+    @Override public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
+        wrapped.render(blockParameters, w, hints);
+    }
 
     @Override public String toString() {
         return "wrapped " + wrapped;
