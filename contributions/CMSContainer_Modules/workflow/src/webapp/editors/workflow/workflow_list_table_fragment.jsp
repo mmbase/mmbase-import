@@ -110,17 +110,14 @@
       </mm:url>
       <a href="${url}">
          <img src="../gfx/icons/edit.png" align="top" alt="<fmt:message key="workflow.editelement"/>"
-              title="<fmt:message key="workflow.editelement"/>"/>
-      </a>
+              title="<fmt:message key="workflow.editelement"/>"/></a>
       <c:if test="${type == 'contentelement' || type == 'assetelement' }">
          <a href="<cmsc:contenturl number="${number}"/>" target="_blank">
             <img src="../gfx/icons/preview.png" alt="<fmt:message key="workflow.preview.title"/>"
-                 title="<fmt:message key="workflow.preview.title"/>"/>
-         </a>
+                 title="<fmt:message key="workflow.preview.title"/>"/></a>
          <a href="javascript:info('${number}')">
             <img src="../gfx/icons/info.png" title="<fmt:message key="workflow.info" />"
-                 alt="<fmt:message key="workflow.info"/>"/>
-         </a>
+                 alt="<fmt:message key="workflow.info"/>"/></a>
          <mm:haspage page="/editors/versioning">
             <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
                <c:param name="nodenumber">${number}</c:param>
@@ -128,8 +125,7 @@
             <a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')">
                <img src="../gfx/icons/versioning.png"
                     title="<fmt:message key="workflow.icon.versioning.title" />"
-                    alt="<fmt:message key="workflow.icon.versioning.title"/>"/>
-            </a>
+                    alt="<fmt:message key="workflow.icon.versioning.title"/>"/></a>
          </mm:haspage>
       </c:if>
 

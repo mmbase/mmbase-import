@@ -55,12 +55,12 @@
 				   <td class="indent" />
 					<td class="indent" />
 					<td class="leftData"></td>
-					<td><fmt:message key="workflow.status.draft" /></td>
-					<td><fmt:message key="workflow.status.finished" /></td>
+					<th><fmt:message key="workflow.status.draft" /></th>
+					<th><fmt:message key="workflow.status.finished" /></th>
 					<c:if test="${acceptedEnabled}">
-						<td><fmt:message key="workflow.status.approved" /></td>
+						<th><fmt:message key="workflow.status.approved" /></th>
 					</c:if>
-					<td><fmt:message key="workflow.status.published" /></td>
+					<th><fmt:message key="workflow.status.published" /></th>
 				</tr>
 			</tbody>
 		</table>
