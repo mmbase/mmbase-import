@@ -76,7 +76,7 @@ public class FlushNameTemplateBean {
         this.nodeNumber = nodenr;
     }
 
-    public String processAndGetTemplate() {
+    public String getTemplate() {
         checkNull(template, "template");
         checkNull(nodeType, "nodeType");
         checkNull(nodeNumber, "nodeNumber");
