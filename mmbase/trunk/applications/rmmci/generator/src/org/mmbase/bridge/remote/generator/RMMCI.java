@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: RMMCI.java,v 1.4 2008-11-27 09:21:13 michiel Exp $
+ * @version $Id: RMMCI.java,v 1.5 2009-01-12 21:31:54 michiel Exp $
  */
 public class RMMCI {
 
@@ -51,6 +51,7 @@ public class RMMCI {
 
 
     public static boolean needsRemote(java.lang.reflect.Type t) {
+        if (t.equals(org.mmbase.util.PublicCloneable.class)) return false;
         return t instanceof Class &&
                ((Class<?>)t).getName().startsWith("org.mmbase") &&
                ((Class<?>)t).isInterface() &&
