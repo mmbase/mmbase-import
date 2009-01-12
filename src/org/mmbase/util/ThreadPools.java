@@ -18,7 +18,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meeuwissen
- * @version $Id: ThreadPools.java,v 1.26 2008-12-15 14:00:08 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.27 2009-01-12 10:34:23 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -44,7 +44,7 @@ public abstract class ThreadPools {
     public static ScheduledFuture scheduleAtFixedRate(Runnable pub, int time1, int time2) {
         return scheduler.scheduleAtFixedRate(pub,
                                              time1,
-                                             time1, TimeUnit.SECONDS);
+                                             time2, TimeUnit.SECONDS);
     }
     /**
      * returns a identifier string for the given task.
