@@ -11,9 +11,7 @@ package org.mmbase.applications.vprowizards.spring.action;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,17 +19,11 @@ import org.apache.commons.collections15.FactoryUtils;
 import org.apache.commons.collections15.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.mmbase.applications.vprowizards.spring.FieldError;
-import org.mmbase.applications.vprowizards.spring.GlobalError;
-import org.mmbase.applications.vprowizards.spring.ResultContainer;
+import org.mmbase.applications.vprowizards.spring.*;
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.applications.vprowizards.spring.util.DateTime;
 import org.mmbase.applications.vprowizards.spring.util.HTMLFilterUtils;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.RelationManager;
-import org.mmbase.bridge.Transaction;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logging;
 import org.springframework.web.multipart.MultipartFile;
 

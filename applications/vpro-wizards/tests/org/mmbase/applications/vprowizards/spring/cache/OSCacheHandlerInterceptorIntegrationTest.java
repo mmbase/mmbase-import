@@ -1,13 +1,5 @@
 package org.mmbase.applications.vprowizards.spring.cache;
 
-import static org.easymock.EasyMock.*;
-
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import junit.framework.TestCase;
-
 import org.mmbase.applications.vprowizards.spring.util.ClassInstanceFactory;
 
 public class OSCacheHandlerInterceptorIntegrationTest extends OSCacheHandlerInterceptorSupport {

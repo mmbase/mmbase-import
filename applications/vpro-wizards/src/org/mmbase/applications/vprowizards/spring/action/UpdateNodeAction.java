@@ -15,9 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NotFoundException;
-import org.mmbase.bridge.Transaction;
+import org.mmbase.bridge.*;
 
 /**
  * This class finds the node that is identified by the field 'nodenr', and updates it with the given field values. 

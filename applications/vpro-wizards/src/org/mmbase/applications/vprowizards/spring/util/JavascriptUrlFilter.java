@@ -14,10 +14,7 @@ package org.mmbase.applications.vprowizards.spring.util;
 
 import java.util.regex.Pattern;
 
-import org.apache.xerces.xni.Augmentations;
-import org.apache.xerces.xni.QName;
-import org.apache.xerces.xni.XMLAttributes;
-import org.apache.xerces.xni.XNIException;
+import org.apache.xerces.xni.*;
 import org.cyberneko.html.filters.DefaultFilter;
 
 /**
