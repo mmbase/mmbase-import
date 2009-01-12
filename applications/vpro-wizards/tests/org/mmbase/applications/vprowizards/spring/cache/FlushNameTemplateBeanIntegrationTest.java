@@ -38,7 +38,7 @@ public class FlushNameTemplateBeanIntegrationTest extends TestCase {
         Cloud cloud = createMock(Cloud.class);
         bean.setCloud(cloud);
         try {
-            bean.processAndGetTemplate();
+            bean.getTemplate();
         } catch (Exception e) {
             fail("illegal state exception should not occur but is: "+e.getMessage());
         }
@@ -47,41 +47,41 @@ public class FlushNameTemplateBeanIntegrationTest extends TestCase {
     public void test_simple_template_with_matching_nodetype_without_nodenumber_has_number_inserted() {
         bean = createConfiguredBean();
         bean.setTemplate("een:[user]");
-        assertEquals("een:[user:100]", bean.processAndGetTemplate());
+        assertEquals("een:[user:100]", bean.getTemplate());
     }
     
     public void test_simple_template_without_matching_nodetype_is_ignored() {
         bean = createConfiguredBean();
         bean.setTemplate("een:[person]");
-        assertEquals("een:[person]", bean.processAndGetTemplate());
+        assertEquals("een:[person]", bean.getTemplate());
     }
 
     public void test_simple_template_if_nodetype_dousnt_match_template_must_be_cleaned_of_nodenrs() {
         bean = createConfiguredBean();
         bean.setTemplate("een:[disco:600]");
-        assertEquals("een:[disco]", bean.processAndGetTemplate());
+        assertEquals("een:[disco]", bean.getTemplate());
     }
     
     public void test_multi_template_nodenr_should_be_inserted_where_nodetype_matches(){
         bean = createConfiguredBean();
         bean.setTemplate("een:[disco], twee:[user]");
-        assertEquals("een:[disco], twee:[user:100]", bean.processAndGetTemplate());
+        assertEquals("een:[disco], twee:[user:100]", bean.getTemplate());
         
         bean = createConfiguredBean();
         bean.setTemplate("een:[user], twee:[user]");
-        assertEquals("een:[user:100], twee:[user:100]", bean.processAndGetTemplate());
+        assertEquals("een:[user:100], twee:[user:100]", bean.getTemplate());
         
         bean = createConfiguredBean();
         bean.setCloud(createMockCloudForQueryTemplates("test", "nogwat", 100, 50));
         bean.setTemplate("een:[user.test.nogwat], twee:[nogwat.user.test]");
-        assertEquals("een:[user.test.nogwat:50], twee:[nogwat.user.test]", bean.processAndGetTemplate());
+        assertEquals("een:[user.test.nogwat:50], twee:[nogwat.user.test]", bean.getTemplate());
         verifyMockObjects();
     }
     
     public void test_multi_template_nodenumbers_should_be_stripped_for_all_subtemplates(){
         bean = createConfiguredBean();
         bean.setTemplate("een:[disco:5], twee:[user:5]");
-        assertEquals("een:[disco], twee:[user:100]", bean.processAndGetTemplate() );
+        assertEquals("een:[disco], twee:[user:100]", bean.getTemplate() );
     }
     
     public void test_malfomed_templates_are_ignored(){
@@ -104,7 +104,7 @@ public class FlushNameTemplateBeanIntegrationTest extends TestCase {
         bean.setCloud(createMockCloudForQueryTemplates("posrel", "thing", 100, 50));
         bean.setNodeType("thing");
         bean.setTemplate("een:[disco.posrel.thing:300]");
-        assertEquals("node type dousn't match.", "een:[disco.posrel.thing]", bean.processAndGetTemplate());
+        assertEquals("node type dousn't match.", "een:[disco.posrel.thing]", bean.getTemplate());
         try {
             verifyMockObjects();
             fail("The nodetype dous not match the template, so the query is not executed.");
@@ -144,7 +144,7 @@ public class FlushNameTemplateBeanIntegrationTest extends TestCase {
     private void testIgnoredPattern(String pattern){
         bean = createConfiguredBean();
         bean.setTemplate(pattern);
-        assertEquals(pattern + " should be ignored",pattern, bean.processAndGetTemplate());
+        assertEquals(pattern + " should be ignored",pattern, bean.getTemplate());
     }
                                                     
     
@@ -153,7 +153,7 @@ public class FlushNameTemplateBeanIntegrationTest extends TestCase {
 
     private void tryForIllegalStateOnProcessAndGet() {
         try {
-            bean.processAndGetTemplate();
+            bean.getTemplate();
             fail("illegal state exception should be thrown");
         } catch (IllegalStateException e) {/* ignore */
         }
