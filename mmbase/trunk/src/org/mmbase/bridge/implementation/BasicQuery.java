@@ -28,7 +28,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.75 2008-11-25 13:22:02 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.76 2009-01-12 13:32:43 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -192,8 +192,7 @@ public class BasicQuery implements Query  {
 
     }
 
-    @Override
-    public Object clone() { // also works for descendants (NodeQuery)
+    @Override public BasicQuery clone() { // also works for descendants (NodeQuery)
         try {
             BasicQuery clone = (BasicQuery) super.clone();
             clone.query = (BasicSearchQuery) query.clone();
