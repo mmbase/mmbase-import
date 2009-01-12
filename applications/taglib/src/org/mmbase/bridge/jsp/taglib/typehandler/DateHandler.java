@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.58 2009-01-12 12:42:22 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.59 2009-01-12 12:57:28 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -341,7 +341,7 @@ public class DateHandler extends AbstractTypeHandler {
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("Using " + dt + " --> " + cal.getTime());
+            log.debug("Using " + dt + " --> " + (cal == null ? "NULL" : "" + cal.getTime()));
         }
 
         return  cal;
