@@ -305,3 +305,9 @@ div.codesample {
 div.codesample pre {
   background-color: #fff;
 }
+
+
+
+div.mm_c.iframe iframe {
+  width: 100%;
+}
