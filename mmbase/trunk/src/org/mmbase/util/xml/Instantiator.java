@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * reflection. This is used by various configuration-read code, which
  * all perform similar tasks of instantiating and configurating
  * certain objects.
- * 
+ *
  * Supported are schemes like
  <pre><![CDATA[
   <class name="class name">
@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: Instantiator.java,v 1.5 2008-08-02 15:15:00 michiel Exp $
+ * @version $Id: Instantiator.java,v 1.6 2009-01-12 21:12:47 michiel Exp $
  */
 public abstract class Instantiator {
 
@@ -48,7 +48,7 @@ public abstract class Instantiator {
 
     /**
      * Instantiates any object using an Dom Element and constructor arguments. Sub-param tags are
-     * used on set-methods on the newly created object. 
+     * used on set-methods on the newly created object.
      * @param classElement a 'class' element with a 'name' attribute,
      *        or any element with a 'class' attribute.
      * @param args Constructor arguments.
@@ -59,7 +59,7 @@ public abstract class Instantiator {
     public static Object getInstance(Element classElement, Object... args)
         throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
         String className = classElement.getAttribute("name");
-        if ("".equals(className)) className = classElement.getAttribute("class"); 
+        if ("".equals(className)) className = classElement.getAttribute("class");
         Class claz = Class.forName(className);
         List<Class> argTypes = new ArrayList<Class>(args.length);
         for (Object arg : args) {
@@ -108,9 +108,10 @@ public abstract class Instantiator {
      *
      * @param value The value as a <code>String</code>
      */
-    public static void setProperty(String name, Class claz, Object o, String value) {
+    public static void setProperty(final String name, final Class claz, final Object o, final String value) {
         String methodName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
         boolean invoked = false;
+        Method setProperty = null;
         for (Method m : claz.getMethods()) {
             try {
                 if (m.getName().equals(methodName) && m.getParameterTypes().length == 1) {
@@ -120,11 +121,27 @@ public abstract class Instantiator {
                     m.invoke(o, Casting.toType(m.getParameterTypes()[0], value));
                     invoked = true;
                 }
+                if (m.getName().equals("setProperty") && m.getParameterTypes().length == 2 && String.class.isAssignableFrom(m.getParameterTypes()[0])) {
+                    setProperty = m;
+                }
             } catch (IllegalAccessException ie) {
                 log.warn(ie);
             } catch (InvocationTargetException ite) {
                 log.warn(ite);
             }
+        }
+        if (! invoked && setProperty != null) {
+            try {
+                invoked = true;
+                setProperty.invoke(o, name, Casting.toType(setProperty.getParameterTypes()[1], value));
+            } catch (IllegalAccessException ie) {
+                log.warn(ie);
+            } catch (InvocationTargetException ite) {
+                log.warn(ite);
+            }
+        }
+        if (! invoked) {
+            log.warn("Could not set property '" + name + "' on " + o);
         }
     }
 
@@ -134,7 +151,8 @@ public abstract class Instantiator {
      * @param element Element in which a child specifying a java object must be searched.
      * @return a new object, or <code>null</code> if no matching child found.
      */
-    public static Object getInstanceWithSubElement(Element element, Object... args) throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
+    public static Object getInstanceWithSubElement(Element element, Object... args)
+        throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         NodeList childs =  element.getChildNodes();
         Object instance = null;
         for (int i = 0; i < childs.getLength(); i++) {
