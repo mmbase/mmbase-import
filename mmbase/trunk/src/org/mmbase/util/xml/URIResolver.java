@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.29 2008-02-12 17:21:22 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.30 2009-01-12 10:35:15 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable, Serializable {
@@ -171,15 +171,13 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
     }
 
     /**
-     * Creates a 'path' string, which is a list of directories. Mainly usefull for debugging, of course.
+     * Creates a 'path' string, which is a list of directories. Mainly useful for debugging, of course.
      *
      * @return A String which could be used as a shell's path.
      */
     public String getPath() {
-        StringBuffer result = new StringBuffer();
-        Iterator<Entry> i = dirs.iterator();
-        while (i.hasNext()) {
-            Entry entry = i.next();
+        StringBuilder result = new StringBuilder();
+        for (Entry entry : dirs) {
             result.append(File.pathSeparatorChar);
             result.append(entry.getDir().toString());
         }
@@ -193,9 +191,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      */
     public List<String> getPrefixPath() {
         List<String> result = new ArrayList<String>();
-        Iterator<Entry> i = dirs.iterator();
-        while (i.hasNext()) {
-            Entry entry = i.next();
+        for (Entry entry : dirs) {
             result.add(entry.getPrefix() + entry.getDir().toString());
         }
         return result;
@@ -238,9 +234,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
 
             URL path = null;
             { // check all known prefixes
-                Iterator<Entry> i = dirs.iterator();
-                while (i.hasNext()) {
-                    Entry entry = i.next();
+                for (Entry entry : dirs) {
                     String pref = entry.getPrefix();
                     if (! "".equals(pref) && href.startsWith(pref)) { //explicitely stated!
                         path = entry.getPath(href.substring(entry.getPrefixLength()));
@@ -261,10 +255,10 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                             break;
                         }
                     } catch (MalformedURLException mfe) {
-                        log.debug(mfe);
+                        log.debug("For " + entry + " " + mfe);
                         // ignore, this might be because of a prefix, which is not yet tried.
                     } catch (java.io.IOException io) {
-                        log.debug(io);
+                        log.debug("For " + entry + " " + io);
                         // ignore, try next one.
                     }
                 }
@@ -481,7 +475,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
             return prefixLength;
         }
         public String toString() {
-            return prefix + ":" + (dir != null ? dir.toString() : classLoader.toString());
+            return prefix + ":" + (dir != null ? (dir.getClass() + " " + dir.toString()) : (classLoader.getClass() + " " + classLoader.toString()));
         }
         public boolean equals(Object o) {
             if (o instanceof File) {
