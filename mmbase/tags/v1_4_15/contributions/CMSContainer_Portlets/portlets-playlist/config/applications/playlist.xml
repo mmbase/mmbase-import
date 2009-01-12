@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="playlist" maintainer="finalist.com" version="1" auto-deploy="true">
+   <requirements>
+      <requires name="basecontentelements" maintainer="finalist.com" version="1" type="application"/>
+      <requires name="contentrepository" maintainer="finalist.com" version="2" type="application" />
+   </requirements>
+   <neededbuilderlist>
+
+      <builder maintainer="finalist.com" version="1">playlist</builder>
+    </neededbuilderlist>
+
+   <neededreldeflist>
+   </neededreldeflist>
+
+   <allowedrelationlist>
+   </allowedrelationlist>
+   
+   <datasourcelist>
+      <datasource builder="portletdefinition" path="playlist/portletdefinition.xml"/>
+      <datasource builder="view" path="playlist/view.xml"/>
+   
+      <datasource builder="editwizards" path="playlist/editwizards.xml" />
+      <datasource builder="properties" path="playlist/properties.xml" />
+      <datasource builder="playlist" path="playlist/playlist.xml" />
+   </datasourcelist>
+   
+   <relationsourcelist>
+   </relationsourcelist>
+   
+   <contextsourcelist>
+   </contextsourcelist>
+</application>

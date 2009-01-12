@@ -1,0 +1,264 @@
+/* main block */
+body {
+	background: #eaeaea url(../gfx/bg_fade.gif) repeat-x;
+}
+
+ul li
+{
+  list-style-image: url( '../gfx/arrow_link2_rd.gif' );
+}
+
+/* readon + back links */
+a.readon, a.back
+{
+  color: #db020a;
+}
+
+#background
+{
+  background-color: #f4f4f4;
+}
+
+/* submenu */
+
+#menu {
+	background: #fff url(../gfx/02_menu_bg.gif) repeat-x 0 0;
+}
+
+#menu li a {
+	padding: 7px 18px 0 18px;
+	color: #fff;
+	height: auto;
+	display: block;
+	float: left;
+}
+
+#menu li a:hover {
+	background: #f10c32 url(../gfx/02_menu_rollover.gif) repeat-x 0 0;
+	text-decoration: none;
+	height: 26px;
+}
+
+#menu li a:active {
+	background: #fff url(../gfx/02_topnav_selected.gif) no-repeat center;
+	height: 32px;
+}
+
+#menu li a:focus {
+	background: #fff url(../gfx/02_topnav_selected.gif) no-repeat center;
+	height: 32px;
+}
+
+#menu li.selected {
+	background: #fff url(../gfx/02_topnav_selected.gif) no-repeat center !important;
+	height: 39px;
+}
+
+/* nav_column1 */
+#navleft a 
+{
+  background-image: url(../gfx/02_navleft_normal.gif);
+}
+
+#navleft a:hover,
+#navleft .sub a:hover
+{
+  background-image: url(../gfx/02_navleft_rollover.gif);
+}
+
+#navleft .selected a,
+#navleft a:active,
+#navleft a:focus,
+#navleft .selected a:hover,
+#navleft .sub.selected a:hover
+{
+  background-image: url(../gfx/02_navleft_selected.gif);
+}
+
+#navleft .sub a 
+{
+  background-image: url(../gfx/02_navleft_sub_normal.gif);
+}
+
+#navleft .sub.selected a,
+#navleft .sub a:active,
+#navleft .sub a:focus
+{
+  background-image: url(../gfx/02_navleft_sub_selected.gif);
+}
+
+/* main */
+
+.content .hilite {
+	font-weight: bold;
+	color: #DB020A;
+}
+
+
+/* search_blok */
+
+.block .searchheaders {
+	font: 11px arial, helvetica;
+	color: #666666;
+	font-weight: bold;
+}
+
+.block .forms {
+	border: 1px solid #eaeaea;
+}
+
+.block .bottom {
+	text-align:center;
+	font: 11px arial, helvetica;
+	color: #fff;
+	font-weight: bold;
+	height: 24px;
+	background: url(../gfx/btn_rd.gif) no-repeat;
+	display: block;
+}
+
+.block .center {
+	width:inherit;
+	height:24px;
+	display: block;
+	text-align:center;
+	padding: 4px;
+}
+
+.block .bottom a {
+	color: #fff;
+}
+
+.block .bottom a:hover {
+	text-decoration: none;
+}
+
+.block .bottom a:active {
+	color: #fff;
+}
+
+.block .result {
+	height: 25px;
+	font: 14px arial;
+	font-weight: bold;
+	padding-top: 4px;
+	background: #fff url(../gfx/result_btn.gif) no-repeat 0 0;
+}
+
+.block .list a {
+	color: #666666;
+}
+
+.block .list a:active {
+	color: #000;
+	font-weight: bold;
+}
+
+.block .searchresults {
+	background: #fff url(../gfx/result_normal.gif) no-repeat 0 0;
+	font-weight: bold;
+	display: block;
+	height: 25px;
+	width: inherit;
+}
+
+.block .searchresults a {
+	background: #fff url(../gfx/result_normal.gif) no-repeat 0 0;
+	height: 25px;
+	width: inherit;
+	display: block;
+	padding-left: 11px;
+}
+
+.block .searchresults a:active {
+	background: #fff url(../gfx/result_selected.gif) no-repeat 0 0;
+	color: #fff;
+	height: 25px;
+	text-decoration: none;
+}
+
+.block .searchresults a:focus {
+	background: #fff url(../gfx/result_selected.gif) no-repeat 0 0;
+	color: #fff;
+	height: 25px;
+	text-decoration: none;
+}
+
+/* article_block */
+
+.article_block {
+	color: #b6b3b0;
+	height: 20px;
+}
+
+.article_block .right a:hover {
+	text-decoration: underline;
+}
+
+.article_block .left {
+	float: left;
+}
+
+.article_block .right {
+	float: right;
+}
+
+/* searchresultblock */
+
+.result_block {
+	width: inherit;
+	background: #ebebeb;
+	height: 26px;
+	float: left;
+}
+
+.result_block .left {
+	background: #ebebeb url(../gfx/round_left.gif) no-repeat 0 0;
+	float: left;
+	height: 26px;
+	width: 15px;
+}
+
+.result_block .right {
+	background: #ebebeb url(../gfx/round_right.gif) no-repeat 0 0;
+	float: right;
+	height: 26px;
+	width: 15px;
+}
+
+.result_block .txtleft {
+	float: left;
+	height: inherit;
+	width: auto;
+	text-align: left;
+	padding-top: 3px;
+	color: #666666;
+}
+
+.result_block .txtresult {
+	color: #000;
+	font-weight: bold;
+}
+
+.result_block .txtright {
+	float: right;
+	height: inherit;
+	width: auto;
+	text-align: right;
+	padding-top: 3px;
+	color: #666666;
+}
+
+.result_block a {
+	color: #666666;
+	text-decoration: none;
+}
+
+.result_block a:hover {
+	text-decoration: underline;
+}
+
+.result_block .forms {
+	border: 1px solid #ebebeb;
+	font:0.9em Arial, Helvetica, sans-serif;
+}

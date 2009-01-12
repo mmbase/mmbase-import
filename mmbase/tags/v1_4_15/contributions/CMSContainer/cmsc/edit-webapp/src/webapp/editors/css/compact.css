@@ -1,0 +1,17 @@
+body, table, div, input
+{
+	font-family: Arial, Verdana, Helvetica;
+	font-size: 11px;
+	color: #000000;
+	background-color: #ffffff;
+}
+
+
+h1 {
+	color: #418001;
+	font-size: 14px;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	margin-right: 3px;
+	font-weight: normal;
+}

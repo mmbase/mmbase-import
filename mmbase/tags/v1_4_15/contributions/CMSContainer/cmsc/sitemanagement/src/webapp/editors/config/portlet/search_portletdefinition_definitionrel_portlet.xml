@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="definitionrel" destination="portlet" minoccurs="1" maxoccurs="1" orderby="field[@name='name']" ordertype="string">
+	<title xml:lang="nl">Portlet</title>
+	<title xml:lang="en">Portlet</title>
+
+	<item>
+		<field ftype="line" name="title" dtrequired="true">
+			<prompt xml:lang="en">Title</prompt>
+			<prompt xml:lang="nl">Titel</prompt>
+		</field>
+      <field ftype="line" name="description" dtrequired="false">
+         <prompt xml:lang="en">Description</prompt>
+         <prompt xml:lang="nl">Omschrijving</prompt>
+      </field>
+      <list include="config/portletparameter/search_portlet_parameterrel_portletparameter.xml"/>
+      <list include="config/view/search_portlet_viewrel_view.xml"/>
+	</item>
+ 
+   <command name="insert" objectnumber="new">
+      <prompt xml:lang="en">New</prompt>
+      <prompt xml:lang="nl">Nieuw</prompt>
+   </command>
+
+	<action type="create">
+		<relation destinationtype="portlet" role="definitionrel">
+         <object type="portlet">
+         </object>
+      </relation>
+	</action>
+
+</list>
