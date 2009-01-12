@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * which means that changes are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.43 2008-11-19 17:59:33 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.44 2009-01-12 15:40:51 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -122,18 +122,35 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         // if this is a transaction within a transaction (theoretically possible)
         // leave the committing to the 'parent' transaction
         if (parentCloud instanceof Transaction) {
+            log.debug("Ignoring commit, because parent is transaction");
             // do nothing
         } else {
             try {
                 assert BasicCloudContext.transactionManager.getTransaction(transactionName).size() == getNodes().size();
 
+
                 //log.info("Commiting " + getNodes());
+
+                if (log.isDebugEnabled()) {
+                    log.debug("Resolving " + getNodes().size() + " nodes");
+                }
+
                 BasicCloudContext.transactionManager.resolve(transactionName);
+
+                if (log.isDebugEnabled()) {
+                    log.debug("Committing " + getNodes().size() + " nodes");
+                }
+
                 BasicCloudContext.transactionManager.commit(userContext, transactionName);
 
-                // This is a hack to call the commitprocessors which are only available in the bridge.
+                if (log.isDebugEnabled()) {
+                    log.debug("Commitprocessing " + getNodes().size() + " nodes");
+                }
+
+                // This is a hack to call the commitprocessors which are only available in the
+                // bridge.
+
                 for (Node n : getNodes()) {
-                    log.info("Commiting " + n);
                     if (n == null) {
                         log.warn("Found null in transaction");
                         continue;
