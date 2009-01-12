@@ -23,7 +23,7 @@
 <body>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 <mm:import externid="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true"/>
-<mm:import externid="direction" jspvar="direction"  from="parameters" required="true"/>
+<mm:import externid="direction" jspvar="direction"  from="parameters"/>
 <mm:import externid="type" jspvar="elementype"  from="parameters" />
 <c:set var="listUrl" value="${elementype == 'asset'?'asset.jsp':'content.jsp'}"/>
 <div class="tabs">
