@@ -44,7 +44,7 @@ import org.mmbase.util.logging.Logging;
          mimetype="text/html">
     <body>
       <class name="org.mmbase.framework.CachedRenderer">
-        <param name="wraps">statistics_uncached</param>
+        <param name="wrapsBlock">statistics_uncached</param>
         <param name="includeRenderTime">xml-comments</param>
       </class>
     </body>
@@ -52,7 +52,7 @@ import org.mmbase.util.logging.Logging;
 ]]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: CachedRenderer.java,v 1.2 2009-01-12 21:12:10 michiel Exp $
+ * @version $Id: CachedRenderer.java,v 1.3 2009-01-12 22:12:04 michiel Exp $
  * @since MMBase-1.9.1
 
  */
