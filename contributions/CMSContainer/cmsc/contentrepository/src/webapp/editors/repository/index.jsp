@@ -57,7 +57,7 @@
 </mm:notpresent>
 <mm:notpresent referid="contenturl">
    <c:if test="${not empty param.title}">
-      <mm:url page="/editors/repository/ContentSearchAction.do?title=${param.title}" id="contenturl" write="false" />
+      <mm:url page="/editors/repository/ContentSearchAction.do?&title=${param.title}&index=yes" id="contenturl" write="false" />
    </c:if>
    <c:if test="${empty param.title}">
       <mm:url page="/editors/repository/SearchInitAction.do?index=yes" id="contenturl" write="false" />

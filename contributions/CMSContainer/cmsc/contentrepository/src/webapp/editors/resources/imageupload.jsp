@@ -48,10 +48,10 @@
                   </c:if>
                   <c:if test="${param.exceed=='yes'}">
                      <tr>
-                        <td style="color:red;"><fmt:message key="asset.upload.exceed" /></td>
+                        <td style="color:red;"><fmt:message key="asset.upload.size.exceed" /></td>
                      </tr>
                   </c:if>
-                  <c:if test="${param.uploadedNodes=='0' && param.exist == '0'}">
+                  <c:if test="${param.uploadedNodes=='0' && param.exist == '0'&&param.exceed == 'no'}">
                      <tr>
                         <td style="color:red;"><fmt:message key="image.upload.notimage" /></td>
                      </tr>
