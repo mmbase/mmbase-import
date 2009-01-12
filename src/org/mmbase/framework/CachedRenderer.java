@@ -25,8 +25,8 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This render cached another renderers. If you need caching for a certain block, then you define
- * another block with this type. Like so:
+ * This render caches other renderers. If you need caching for a certain block, then you define
+ * another block with this class CachedRenderer, and refer the to-be-cached block. Like so:
  <pre><![CDATA[
   <block name="statistics_uncached"
          mimetype="text/html">
@@ -52,7 +52,7 @@ import org.mmbase.util.logging.Logging;
 ]]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: CachedRenderer.java,v 1.1 2009-01-10 18:32:33 michiel Exp $
+ * @version $Id: CachedRenderer.java,v 1.2 2009-01-12 21:12:10 michiel Exp $
  * @since MMBase-1.9.1
 
  */
@@ -143,8 +143,9 @@ public class CachedRenderer extends WrappedRenderer {
                     renderWrappedAndFile(cacheFile, blockParameters, w, hints);
                 } else {
                     renderFile(cacheFile, w);
-            }
+                }
             } else {
+                // user last modified
                 URI uri = getWraps().getUri();
                 if (uri == null) throw new FrameworkException("" + getWraps() + " did not return an URI, and cannot be cached using getLastModified");
                 URLConnection connection =  uri.toURL().openConnection();
@@ -165,11 +166,8 @@ public class CachedRenderer extends WrappedRenderer {
     }
 
 
-    public String toString() {
+    @Override public String toString() {
         return "cached " + wrapped;
     }
 
-    public java.net.URI getUri() {
-        return wrapped.getUri();
-    }
 }

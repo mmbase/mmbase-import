@@ -24,7 +24,9 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A {@link Renderer} implementation based on an external connection.
+ * A {@link Renderer} implementation based on an external connection. It also supports
+ * XSLT-transforming of the obtained result.
+ *
  * An example of a {@link ConnectionRenderer} is the following one:
  *
  * <p>
@@ -45,7 +47,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.9 2008-08-26 07:48:38 michiel Exp $
+ * @version $Id: ConnectionRenderer.java,v 1.10 2009-01-12 21:12:10 michiel Exp $
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {
