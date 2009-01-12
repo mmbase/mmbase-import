@@ -48,7 +48,11 @@ public class ImageUploadAction extends AbstractUploadAction {
                   addRelationsForNodes(nodes, cloud);
                   nodeId = nodes.get(0);
                }
+            } else {
+               exist = "1";
             }
+         } else {
+            exist = "0";
          }
       }
       return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?uploadAction=select&exist=" + exist
