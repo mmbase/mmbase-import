@@ -462,8 +462,6 @@
   </block>
 
 
-
-
   <block name="releasenotes_uncached"
          mimetype="text/html">
     <body>
@@ -501,6 +499,29 @@
     <body jsp="cite.jspx">
       <param name="page" />
       <param name="xml" />
+    </body>
+  </block>
+
+  <block name="basic"
+         classification="mmbase.edit:0"
+         mimetype="text/html">
+    <title xml:lang="nl">Generieke editors</title>
+    <title xml:lang="en">Basic generic editors</title>
+    <body>
+      <class name="org.mmbase.framework.IFrameRenderer">
+        <param name="url">/mmbase/edit/basic/</param>
+      </class>
+    </body>
+  </block>
+  <block name="my"
+         classification="mmbase.edit:1"
+         mimetype="text/html">
+    <title xml:lang="nl">My-editors</title>
+    <title xml:lang="en">My editors</title>
+    <body>
+      <class name="org.mmbase.framework.IFrameRenderer">
+        <param name="url">/mmbase/edit/my_editors/</param>
+      </class>
     </body>
   </block>
 
