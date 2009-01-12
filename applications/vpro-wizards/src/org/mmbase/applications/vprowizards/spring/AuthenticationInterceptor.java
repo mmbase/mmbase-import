@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

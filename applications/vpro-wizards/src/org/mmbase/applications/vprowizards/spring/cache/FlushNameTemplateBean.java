@@ -10,10 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.vprowizards.spring.cache;
 
 import org.apache.commons.lang.StringUtils;
-import org.mmbase.applications.vprowizards.spring.cache.template.MMBaseTemplateQueryRunner;
-import org.mmbase.applications.vprowizards.spring.cache.template.MultiTemplateParser;
-import org.mmbase.applications.vprowizards.spring.cache.template.TemplateParser;
-import org.mmbase.applications.vprowizards.spring.cache.template.TemplateQueryRunner;
+import org.mmbase.applications.vprowizards.spring.cache.template.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

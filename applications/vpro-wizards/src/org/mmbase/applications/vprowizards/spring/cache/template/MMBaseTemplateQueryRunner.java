@@ -1,8 +1,6 @@
 package org.mmbase.applications.vprowizards.spring.cache.template;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.*;
 
 public class MMBaseTemplateQueryRunner implements TemplateQueryRunner {
     private Cloud cloud;

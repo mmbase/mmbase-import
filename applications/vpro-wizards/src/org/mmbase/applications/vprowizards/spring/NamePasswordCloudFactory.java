@@ -15,9 +15,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.LocalContext;
-import org.mmbase.bridge.Transaction;
+import org.mmbase.bridge.*;
 
 public class NamePasswordCloudFactory implements CloudFactory {
 	private String username = null;

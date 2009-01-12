@@ -9,19 +9,13 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring.action;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.applications.vprowizards.spring.cache.CacheFlushHint;
 import org.mmbase.applications.vprowizards.spring.util.PathBuilder;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeIterator;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.Query;
-import org.mmbase.bridge.Transaction;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
