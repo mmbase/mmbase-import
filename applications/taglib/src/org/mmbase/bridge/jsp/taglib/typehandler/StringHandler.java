@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.68 2008-10-22 09:31:12 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.69 2009-01-12 12:48:20 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -46,7 +46,7 @@ public class StringHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    public String htmlInput(Node node, Field field, boolean search)        throws JspTagException {
+    @Override public String htmlInput(Node node, Field field, boolean search)        throws JspTagException {
         eh = getEnumHandler(node, field);
         if (eh != null) {
             return eh.htmlInput(node, field, search);
@@ -119,18 +119,18 @@ public class StringHandler extends AbstractTypeHandler {
     }
 
 
-    protected void setValue(Node node, String fieldName, Object value) {
+    @Override protected void setValue(Node node, String fieldName, Object value) {
         node.setStringValue(fieldName, org.mmbase.util.Casting.toString(value));
     }
 
-    protected Object getValue(Node node, String fieldName) {
+    @Override protected Object getValue(Node node, String fieldName) {
         return node.getStringValue(fieldName);
     }
 
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         String guiType = field.getGUIType();
 
         if (guiType.indexOf('.') > 0) {
@@ -152,7 +152,7 @@ public class StringHandler extends AbstractTypeHandler {
 
         return false;
     }
-    protected Object getFieldValue(Node node, Field field) throws JspTagException {
+    @Override protected Object getFieldValue(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
         String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
 
@@ -170,14 +170,14 @@ public class StringHandler extends AbstractTypeHandler {
         return fieldValue;
     }
 
-    protected boolean interpretEmptyAsNull(Field field) {
+    @Override protected boolean interpretEmptyAsNull(Field field) {
         return ! field.getDataType().isRequired();
     }
 
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    public String whereHtmlInput(Field field) throws JspTagException {
+    @Override public String whereHtmlInput(Field field) throws JspTagException {
         EnumHandler eh = getEnumHandler(null, field);
         if (eh != null) {
             return eh.whereHtmlInput(field);
@@ -190,7 +190,7 @@ public class StringHandler extends AbstractTypeHandler {
         // cannot call getSearvhValue, because sql excaping is done twice then :-(
     }
 
-    protected int getOperator(Field field) {
+    @Override protected int getOperator(Field field) {
         if (field.getType() == Field.TYPE_STRING) {
             return FieldCompareConstraint.LIKE;
         } else {
@@ -199,7 +199,7 @@ public class StringHandler extends AbstractTypeHandler {
     }
 
 
-    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         EnumHandler eh = getEnumHandler(null, field);
         if (eh != null) {
             return eh.whereHtmlInput(field, query);

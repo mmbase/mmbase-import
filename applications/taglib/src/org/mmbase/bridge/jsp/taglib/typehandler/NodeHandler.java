@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.39 2007-09-21 12:53:43 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.40 2009-01-12 12:48:20 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -81,7 +81,7 @@ public class NodeHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
         // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
         if(useLegacy(node, field) &&
@@ -166,7 +166,7 @@ public class NodeHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    public String whereHtmlInput(Field field) throws JspTagException {
+    @Override public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         if(useLegacy(null, field) &&
             tag.getCloudVar().hasNodeManager(field.getGUIType())) {
@@ -178,7 +178,7 @@ public class NodeHandler extends AbstractTypeHandler {
         return super.whereHtmlInput(field);
     }
 
-    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         if(useLegacy(null, field) &&
            tag.getCloudVar().hasNodeManager(field.getGUIType())) {

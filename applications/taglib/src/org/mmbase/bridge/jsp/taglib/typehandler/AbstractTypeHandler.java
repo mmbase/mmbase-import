@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.68 2008-11-19 18:33:54 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.69 2009-01-12 12:48:20 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -172,8 +172,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @param node This parameter could be used if the client does not fully specify the field's value (possible e.g. with Date fields). The existing specification could be used then.
      */
     protected Object getFieldValue(Node node, Field field) throws JspTagException {
-
         Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
+        log.debug("found fv " + found);
         if (interpretEmptyAsNull(field) && "".equals(found)) found = null;
         return found;
     }
@@ -208,7 +208,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             return eh.checkHtmlInput(node, field, errors);
         }
         Object fieldValue = getFieldValue(node, field);
-        DataType<Object> dt = field.getDataType();
+        final DataType<Object> dt = field.getDataType();
         if (fieldValue == null) {
             log.debug("Field value not found in context, using existing value ");
             fieldValue = getFieldValue(node, field, node == null);
@@ -229,7 +229,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                 if (fieldValue == null ? oldValue != null : ! fieldValue.equals(oldValue)) {
                     try {
                         if(log.isDebugEnabled()) {
-                            log.debug("Setting " + fieldName + " to " + fieldValue);
+                            log.debug("Setting " + fieldName + " to " + (fieldValue == null ? "" : fieldValue.getClass().getName()) + " " + fieldValue);
                         }
                         if ("".equals(fieldValue) && interpretEmptyAsNull(field)) {
                             setValue(node, fieldName,  null);

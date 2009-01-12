@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.48 2008-12-30 12:41:12 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.49 2009-01-12 12:48:20 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -114,19 +114,19 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
 
-    protected EnumHandler getEnumHandler(Node node, Field field) throws JspTagException {
+    @Override protected EnumHandler getEnumHandler(Node node, Field field) throws JspTagException {
         return null;
     }
     public boolean isAvailable() {
         return available;
     }
 
-    protected Object cast(Object value, Node node, Field field) {
+    @Override protected Object cast(Object value, Node node, Field field) {
         if ("".equals(value)) return null;
         return field.getDataType().cast(value, node, field);
     }
 
-    protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
+    @Override protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
         Object value = super.getFieldValue(node, field, useDefault);
         // if an enum is required ('not null'), and no default value was specified, then we simply default to the first
         // entry, as HTML rendering would do any way.
@@ -140,7 +140,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
 
-    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         StringBuilder buffer = new StringBuilder();
         String fieldName = field.getName();
         buffer.append("<select class=\"" + getClasses(node, field) + "\" name=\"").append(prefix(fieldName)).append("\" ");
@@ -221,7 +221,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    public String whereHtmlInput(Field field) throws JspTagException {
+    @Override public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
         if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
@@ -232,7 +232,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
 
-    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
         if (tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {

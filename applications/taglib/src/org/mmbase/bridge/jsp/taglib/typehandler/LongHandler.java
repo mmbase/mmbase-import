@@ -20,7 +20,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: LongHandler.java,v 1.13 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: LongHandler.java,v 1.14 2009-01-12 12:48:20 michiel Exp $
  */
 
 public class LongHandler extends AbstractTypeHandler {
@@ -33,7 +33,7 @@ public class LongHandler extends AbstractTypeHandler {
         super(tag);
     }
 
-    protected Object cast(Object value, Node node, Field field) {
+    @Override protected Object cast(Object value, Node node, Field field) {
         if (value == null || "".equals(value)) return "";
         return  super.cast(value, node, field);
     }
