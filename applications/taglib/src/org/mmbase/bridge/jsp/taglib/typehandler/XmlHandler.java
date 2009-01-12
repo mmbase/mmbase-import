@@ -21,7 +21,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.21 2008-02-25 18:14:41 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.22 2009-01-12 12:48:20 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -48,7 +48,7 @@ public class XmlHandler extends StringHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         if(! search) {
             StringBuilder buffer = new StringBuilder();
             // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6

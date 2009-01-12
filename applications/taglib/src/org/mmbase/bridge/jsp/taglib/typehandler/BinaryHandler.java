@@ -33,7 +33,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.14 2008-10-22 09:31:12 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.15 2009-01-12 12:48:20 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
@@ -49,7 +49,7 @@ public class BinaryHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         StringBuilder show = new StringBuilder();
         if (node != null) {
             Function gui = node.getFunction("gui");
@@ -74,7 +74,7 @@ public class BinaryHandler extends AbstractTypeHandler {
     /**
      * Returns the field value as specified by the client's post.
      */
-    protected Object getFieldValue(Node node, Field field) throws JspTagException {
+    @Override protected Object getFieldValue(Node node, Field field) throws JspTagException {
         if (MultiPart.isMultipart(tag.getPageContext())) {
             ContextTag ct = tag.getContextTag();
             FileItem bytes = ct.getFileItem(prefix(field.getName()));
@@ -84,7 +84,7 @@ public class BinaryHandler extends AbstractTypeHandler {
         }
     }
 
-    public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
+    @Override public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
         Object fieldValue = getFieldValue(node, field);
 
         if (fieldValue != null) {
@@ -133,7 +133,7 @@ public class BinaryHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         FileItem bytes = (FileItem) getFieldValue(node, field);
         if (bytes == null){
             throw new BridgeException("getBytes(" + prefix(field.getName()) + ") returned null (node= " +  node.getNumber() +") field=(" + field + ") (Was your form  enctype='multipart/form-data' ?");
@@ -145,7 +145,7 @@ public class BinaryHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    public String whereHtmlInput(Field field) throws JspTagException {
+    @Override public String whereHtmlInput(Field field) throws JspTagException {
         log.error("Don't know what to do with byte[]");
         return super.whereHtmlInput(field);
     }
