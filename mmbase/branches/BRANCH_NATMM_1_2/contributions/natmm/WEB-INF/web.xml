@@ -103,6 +103,14 @@
     <load-on-startup>3</load-on-startup>
   </servlet>
 
+  <servlet>
+    <servlet-name>AxisServlet</servlet-name>
+    <display-name>Apache-Axis Servlet</display-name>
+    <servlet-class>
+        org.apache.axis.transport.http.AxisServlet
+    </servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>action</servlet-name>
     <url-pattern>*.eb</url-pattern>
@@ -122,7 +130,22 @@
     <servlet-name>attachments</servlet-name>
     <url-pattern>/mmbase/attachments/*</url-pattern><!-- if done by servdb, it must be /attachment.db -->
   </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/servlet/AxisServlet</url-pattern>
+  </servlet-mapping>
 
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+
+  <mime-mapping>
+    <extension>wsdl</extension>
+     <mime-type>text/xml</mime-type>
+  </mime-mapping>
+  
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>default.jsp</welcome-file>
