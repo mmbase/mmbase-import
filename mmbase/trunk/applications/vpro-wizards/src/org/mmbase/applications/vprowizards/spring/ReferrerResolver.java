@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 

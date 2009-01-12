@@ -9,16 +9,12 @@ See http://www.MMBase.org/license
 */ 
 package org.mmbase.applications.vprowizards.spring.util;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.xerces.xni.XNIException;
-import org.apache.xerces.xni.parser.XMLDocumentFilter;
-import org.apache.xerces.xni.parser.XMLInputSource;
-import org.apache.xerces.xni.parser.XMLParserConfiguration;
+import org.apache.xerces.xni.parser.*;
 import org.cyberneko.html.HTMLConfiguration;
 import org.cyberneko.html.filters.ElementRemover;
 import org.mmbase.util.logging.Logger;

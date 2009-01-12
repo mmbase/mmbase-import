@@ -1,8 +1,6 @@
 package org.mmbase.applications.vprowizards.spring.cache;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +8,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import junit.framework.TestCase;
+
 import org.mmbase.applications.vprowizards.spring.cache.modifiers.PrefixSuffixModifier;
 import org.mmbase.applications.vprowizards.spring.cache.modifiers.TemplateCleanerModifier;
 import org.mmbase.applications.vprowizards.spring.util.ClassInstanceFactory;
-
-import junit.framework.TestCase;
 
 public class OSCacheHandlerInterceptorSupport extends TestCase {
     
