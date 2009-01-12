@@ -36,7 +36,7 @@
          mimetype="text/html">
     <body>
       <class name="org.mmbase.framework.CachedRenderer">
-        <param name="wraps">statistics_uncached</param>
+        <param name="wrapsBlock">statistics_uncached</param>
         <param name="includeRenderTime">xml-comments</param>
       </class>
     </body>

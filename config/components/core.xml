@@ -456,7 +456,7 @@
     <description xml:lang="nl">Toont het laatste nieuws van www.mmbase.org</description>
     <body>
       <class name="org.mmbase.framework.CachedRenderer">
-        <param name="wraps">mmbase_news_uncached</param>
+        <param name="wrapsBlock">mmbase_news_uncached</param>
       </class>
     </body>
   </block>
@@ -481,7 +481,7 @@
     <description xml:lang="nl">Toont de release notes rechtstreeks uit de bugtracker op www.mmbase.org.</description>
     <body>
       <class name="org.mmbase.framework.CachedRenderer">
-        <param name="wraps">releasenotes_uncached</param>
+        <param name="wrapsBlock">releasenotes_uncached</param>
       </class>
     </body>
   </block>
@@ -521,6 +521,16 @@
     <body>
       <class name="org.mmbase.framework.IFrameRenderer">
         <param name="url">/mmbase/edit/my_editors/</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="glossary"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="docbook">glossary.xml</param>
       </class>
     </body>
   </block>
