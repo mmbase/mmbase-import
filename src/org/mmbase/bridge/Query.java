@@ -19,11 +19,11 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.47 2008-11-25 13:22:16 michiel Exp $
+ * @version $Id: Query.java,v 1.48 2009-01-12 13:32:33 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
-public interface Query extends SearchQuery, Cloneable {
+public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Query> {
 
     /**
      * Returns the Cloud for which this Query was defined.
@@ -364,7 +364,7 @@ public interface Query extends SearchQuery, Cloneable {
      * Create an (unused) clone
      * @return Cloned Query
      */
-    Object clone();
+    Query clone();
 
     /**
      * Clones this object, only without the fields
