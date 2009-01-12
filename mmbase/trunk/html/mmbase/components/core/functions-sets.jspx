@@ -24,12 +24,14 @@
 
     <c:forEach items="${functionsets}" var="entry">
       <li>
-        <p>${entry.key}: <mm:write value="${entry.value.description}" /></p>
+        <p>${entry.key}: <mm:escape escape="p">${entry.value.description}</mm:escape></p>
         <ul>
           <c:forEach items="${entry.value.functions}" var="fun">
             <li>
               <mm:escape>${fun}</mm:escape>
-            <p><mm:write value="${fun.description}" /></p>
+              <p>
+                <mm:escape escape="p">${fun.description}</mm:escape>
+              </p>
             </li>
           </c:forEach>
         </ul>
