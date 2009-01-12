@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.6
- * @version $Id: BooleanHandler.java,v 1.5 2007-09-21 12:53:43 michiel Exp $
+ * @version $Id: BooleanHandler.java,v 1.6 2009-01-12 12:48:20 michiel Exp $
  */
 
 public class BooleanHandler extends AbstractTypeHandler {
@@ -38,7 +38,7 @@ public class BooleanHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         EnumHandler eh = getEnumHandler(node, field);
         if (eh != null) {
             return eh.htmlInput(node, field, search);
@@ -57,7 +57,7 @@ public class BooleanHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         log.debug("using html-input");
         EnumHandler eh = getEnumHandler(node, field);
         if (eh != null) {
@@ -69,7 +69,7 @@ public class BooleanHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    public String whereHtmlInput(Field field) throws JspTagException {
+    @Override public String whereHtmlInput(Field field) throws JspTagException {
         EnumHandler eh = getEnumHandler(null, field);
         if (eh != null) {
             return eh.whereHtmlInput(field);
@@ -77,7 +77,7 @@ public class BooleanHandler extends AbstractTypeHandler {
         return super.whereHtmlInput(field);
     }
 
-    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         EnumHandler eh = getEnumHandler(null, field);
         if (eh != null) {
             return eh.whereHtmlInput(field, query);
@@ -85,7 +85,7 @@ public class BooleanHandler extends AbstractTypeHandler {
         return super.whereHtmlInput(field, query);
     }
 
-    protected Object cast(Object value, Node node, Field field) {
+    @Override protected Object cast(Object value, Node node, Field field) {
         if (value == null || "".equals(value)) return Boolean.FALSE;
         return  super.cast(value, node, field);
     }

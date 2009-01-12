@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.2
- * @version $Id: DurationHandler.java,v 1.10 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: DurationHandler.java,v 1.11 2009-01-12 12:48:20 michiel Exp $
  */
 public class DurationHandler extends AbstractTypeHandler {
 
@@ -44,7 +44,7 @@ public class DurationHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         long currentValue = -1;
         long currentHours = 0;
         long currentMinutes = 0;
@@ -142,7 +142,7 @@ public class DurationHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
 
         String fieldName = field.getName();
         try {
@@ -175,7 +175,7 @@ public class DurationHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    public String whereHtmlInput(Field field) throws JspTagException {
+    @Override public String whereHtmlInput(Field field) throws JspTagException {
      String fieldName = field.getName();
         String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
         if (operator == null || operator.equals("no")) {
@@ -203,7 +203,7 @@ public class DurationHandler extends AbstractTypeHandler {
         }
     }
 
-    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
         if (operator == null || operator.equals("no")) {
@@ -236,7 +236,7 @@ public class DurationHandler extends AbstractTypeHandler {
 
     }
 
-    public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
+    @Override public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
         String fieldName = field.getName();
         String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
         if (operator == null || operator.equals("no")) {

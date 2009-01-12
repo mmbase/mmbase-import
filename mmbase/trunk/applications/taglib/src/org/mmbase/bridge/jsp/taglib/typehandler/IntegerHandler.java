@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.38 2008-08-28 11:37:39 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.39 2009-01-12 12:48:20 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -43,7 +43,7 @@ public class IntegerHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         EnumHandler eh = getEnumHandler(node, field);
         if (eh != null) {
             return eh.htmlInput(node, field, search);
@@ -54,7 +54,7 @@ public class IntegerHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         log.debug("using html-input");
         EnumHandler eh = getEnumHandler(node, field);
         if (eh != null) {
@@ -66,7 +66,7 @@ public class IntegerHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    public String whereHtmlInput(Field field) throws JspTagException {
+    @Override public String whereHtmlInput(Field field) throws JspTagException {
         EnumHandler eh = getEnumHandler(null, field);
         if (eh != null) {
             return eh.whereHtmlInput(field);
@@ -74,7 +74,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         return super.whereHtmlInput(field);
     }
 
-    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         EnumHandler eh = getEnumHandler(null, field);
         if (eh != null) {
             return eh.whereHtmlInput(field, query);
@@ -82,7 +82,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         return super.whereHtmlInput(field, query);
     }
 
-    protected Object cast(Object value, Node node, Field field) {
+    @Override protected Object cast(Object value, Node node, Field field) {
         if (value == null || "".equals(value)) return null;
         return  super.cast(value, node, field);
     }
