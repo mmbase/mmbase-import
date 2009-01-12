@@ -14,25 +14,25 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Reads Comma Separated Values (CSV). Uses utf-8 as the default characterset. 
+ * Reads Comma Separated Values (CSV). Uses utf-8 as the default characterset.
  * The csv should live somewhere in the webroot.
- * The actual csv parsing is done with examplecode from O'Reilly's Java Cookbook 
+ * The actual csv parsing is done with examplecode from O'Reilly's Java Cookbook
  * written by Ian F. Darwin: "\"([^\"]+?)\",?|([^,]+),?|,".
- * 
+ *
  * @author Andr\U00e9 vanToly &lt;andre@toly.nl&gt;
- * @version $Rev$
+ * @version $Id: CSVReader.java,v 1.3 2009-01-12 12:22:31 michiel Exp $
  */
 public class CSVReader {
-    
+
     private static Logger log = Logging.getLoggerInstance(CSVReader.class);
-    
+
     private static String filename;
     private static String delimiter = ",";
     private static String charset = "UTF-8";
     private static Pattern csv_pattern = Pattern.compile("\"([^\"]+?)\",?|([^,]+),?|,");
-    public List<String> lines = new ArrayList<String>();    // list with rows as strings
-    public List<String> header = new ArrayList<String>();
-    public Map<Integer, ArrayList> rows = new HashMap<Integer, ArrayList>();    // contains rows as arrays
+    public List<String> lines              = new ArrayList<String>();    // list with rows as strings
+    public List<String> header             = new ArrayList<String>();
+    public Map<Integer, List<String>> rows = new HashMap<Integer, List<String>>();    // contains rows as arrays
 
     /**
      * Constructor
@@ -43,19 +43,19 @@ public class CSVReader {
        this.charset = charset;
        readCSV(filename, delimiter, charset);
     }
-    
+
     public CSVReader(String filename, String delimiter) {
         this(filename, delimiter, charset);
     }
-    
+
     public CSVReader(String filename) {
         this(filename, delimiter, charset);
-    }    
-    
+    }
+
     public CSVReader() {
        // empty, needed for functionset?
-    }    
-    
+    }
+
     /**
      * Reads the contents of the CSV file. The values are stored in arrays.
      * @param filename  CSV file
@@ -84,8 +84,9 @@ public class CSVReader {
                 header.clear();
                 rows.clear();
                 header = parse( lines.get(0) );    // first could be header
-                for (int i = 0; i < lines.size(); i++) {
-                    rows.put(i, parse( lines.get(i)) );
+                int i = 0;
+                for (String l : lines) {
+                    rows.put(i++, parse(l));
                 }
             }
         } catch(java.nio.charset.IllegalCharsetNameException ice) {
@@ -98,7 +99,7 @@ public class CSVReader {
             log.error("IOException, probably file '" + filename + "' not found: " + ioe);
         }
     }
-    
+
     /**
      * Returns the element at the given row and column.
      * @param row the element row
@@ -106,17 +107,17 @@ public class CSVReader {
      * @return the element as a String.
      */
     public String getElement(int r, int c) {
-        ArrayList<String> row = rows.get(r);
+        List<String> row = rows.get(r);
         String value = row.get(c);
-        
+
         return value;
     }
 
-    public Map getValues(String filename) {
+    public Map<Integer, List<String>> getValues(String filename) {
         return getValues(filename, null, null);
     }
-    
-    public Map getValues(String filename, String delimiter) {
+
+    public Map<Integer, List<String>> getValues(String filename, String delimiter) {
         return getValues(filename, delimiter, null);
     }
 
@@ -124,8 +125,9 @@ public class CSVReader {
      * Map to use in a taglib function. Calls {@link #readCSV} and returns csv-file rows.
      * @param filename  CSV file
      * @return map with an array per row with values
+     * @todo   I don't understand why it does not return List<List<String>> in stead.
      */
-    public Map getValues(String filename, String delimiter, String charset) {
+    public Map<Integer, List<String>> getValues(String filename, String delimiter, String charset) {
         if (delimiter == null || "".equals(delimiter)) delimiter = this.delimiter;
         if (charset == null || "".equals(charset)) charset = this.charset;
         readCSV(filename, delimiter, charset);
@@ -141,14 +143,14 @@ public class CSVReader {
 
     /**
      * Parse one line - a csv row - at the time.
-     * This method's logic is derived from O'Reilly's Java Cookbook written by 
+     * This method's logic is derived from O'Reilly's Java Cookbook written by
      * Ian F. Darwin.
      *
      * @param  line row in a csv file
      * @return List of Strings, minus their double quotes
      */
-    private ArrayList parse(String line) {
-        ArrayList list = new ArrayList();
+    private List<String> parse(String line) {
+        List<String> list = new ArrayList<String>();
         Matcher m = csv_pattern.matcher(line);
         while (m.find()) {
             String match = m.group();
@@ -168,18 +170,18 @@ public class CSVReader {
         }
         return list;
     }
-    
+
     /**
      * Compiles the pattern with a different delimiter
      *
-     * @param  
-     * @return 
+     * @param
+     * @return
      */
     private Pattern compilePattern(String delimiter)  {
         StringBuilder sb = new StringBuilder();
         sb.append("\"([^\"]+?)\"").append(delimiter).append("?|([^").append(delimiter);
         sb.append("]+)").append(delimiter).append("?|").append(delimiter);
-        
+
         try {
             Pattern p = Pattern.compile(sb.toString());
             return p;
@@ -188,7 +190,7 @@ public class CSVReader {
             return null;
         }
     }
-    
+
     /**
      * Description of the CSVReader, reports its configuration f.e.
      *
