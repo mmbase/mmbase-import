@@ -74,7 +74,7 @@
    <div id="left">
       <cmscedit:sideblock title="selector.search.header" titleStyle="width: 241px;" bodyClass="body_table">
          <div class="search_form">
-               <form action="ContentSearchAction.do" name="searchForm" method="post" target="content">
+               <form action="ContentSearchAction.do?index=yes" name="searchForm" method="post" target="content">
             <input type="text" name="title" value="<fmt:message key="selector.search.term" />" onfocus="clearDefaultSearchText('<fmt:message key="selector.search.term" />');"/>
             </form>
          </div>

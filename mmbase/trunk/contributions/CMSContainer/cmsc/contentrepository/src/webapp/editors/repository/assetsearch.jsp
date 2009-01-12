@@ -171,7 +171,7 @@
                                  </mm:fieldinfo>
                                  <% if (showField) { %>
                                     <tr rowspan="5">
-                                       <td height="22">
+                                       <td height="31">
                                           <mm:fieldinfo type="guiname" jspvar="guiname"/>:
                                           <mm:fieldinfo type="name" jspvar="name" write="false">
                                              <% fields.add(assettypes + "." + name); %>
