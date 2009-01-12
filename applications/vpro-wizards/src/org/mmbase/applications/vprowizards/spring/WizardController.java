@@ -43,7 +43,7 @@ public class WizardController implements Controller {
 	private Locale locale;
 	
 	public WizardController(){
-		setLocale(new Locale("nl", "NL"));/*default*/
+		setLocale(new Locale("nl"));/*default*/
 	}
 	
 	
@@ -82,7 +82,7 @@ public class WizardController implements Controller {
 			
 		} else {
 			log.debug("No errors found. Commit transaction ["+transaction.getName()+"] and put the cache flush hints on the request.");
-			boolean result = resultContainer.getTransaction().commit();
+			resultContainer.getTransaction().commit();
 			
 
 			// create the request type cache flush hint
