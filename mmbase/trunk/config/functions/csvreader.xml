@@ -3,11 +3,11 @@
 <functionset>
 <version>1</version>
 <description>Functionset to import csv-files.</description>
-  
+
   <function name="importcsv">
     <description>Imports the file</description>
     <type>class</type>
-    <class>org.mmbase.applications.csvreader.CSVReader</class>
+    <class>org.mmbase.util.CSVReader</class>
     <method>readCSV</method>
     <param name="filename"  type="String" description="The csv file to import" />
 	<param name="delimiter" type="String" description="Something other then a ," />
@@ -37,14 +37,14 @@
 
     </description>
     <type>class</type>
-	  <class>org.mmbase.applications.csvreader.CSVReader</class>
+	  <class>org.mmbase.util.CSVReader</class>
     <method>getValues</method>
 	<param name="filename"  type="String" description="The csv file to import" />
 	<param name="delimiter" type="String" description="Something other then a ," />
 	<param name="charset"   type="String" description="Another characterset then utf-8" />
-    <return type="java.util.Map" /> 
+    <return type="java.util.Map" />
   </function>
-    
+
   <function name="description">
     <description>Show description, like a toString method</description>
     <type>class</type>
@@ -52,5 +52,5 @@
     <method>getDescription</method>
     <return type="String" />
   </function>
-  
+
 </functionset>
