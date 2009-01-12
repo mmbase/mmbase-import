@@ -22,15 +22,14 @@ import org.mmbase.util.logging.Logging;
  * @todo Needs to produce a div, not an url.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.15 2008-08-26 07:48:38 michiel Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.16 2009-01-12 21:11:46 michiel Exp $
  * @since MMBase-1.9
  */
-public class EditwizardRenderer extends AbstractRenderer {
+public class EditwizardRenderer extends IFrameRenderer {
     private static final Logger log = Logging.getLoggerInstance(EditwizardRenderer.class);
 
     protected String list;
-    protected String path;
-
+    protected String wizard;
     public EditwizardRenderer(String t, Block parent) {
         super(t, parent);
     }
@@ -38,31 +37,32 @@ public class EditwizardRenderer extends AbstractRenderer {
     public void setList(String l) {
         list = l;
     }
-    public void setNodepath(String p) {
-        path = p;
-    }
-
-    public Parameter[] getParameters() {
-        return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST, Parameter.LOCALE};
+    public void setWizard(String w) {
+        wizard = w;
     }
 
     /**
      */
-    public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
-        try {
-            HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
-            HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
-            Locale  locale = blockParameters.get(Parameter.LOCALE);
-            w.write(response.encodeUrl(request.getContextPath() +
-                                       "/mmbase/edit/wizard/jsp/list.jsp?wizard=" + list +
-                                       "&amp;nodepath=" + path +
-                                       "&amp;language=" + locale.getLanguage()));
-        } catch (IOException eio) {
-            throw new FrameworkException(eio.getMessage(), eio);
-        }
+    @Override public String getIFrameUrl(Parameters blockParameters)  {
+
+        if (list != null && wizard != null) throw new IllegalStateException();
+
+        Locale  locale = blockParameters.get(Parameter.LOCALE);
+        String templates = JspRenderer.JSP_ROOT + getBlock().getComponent().getName();
+        Map<String, Object> props = new TreeMap<String, Object>(properties);
+
+        props.put("wizard", list != null ? list : wizard);
+        props.put("language", locale.getLanguage());
+        HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
+
+        String url = list != null ?
+            "/mmbase/edit/wizard/jsp/list.jsp" :
+            "/mmbase/edit/wizard/jsp/wizard.jsp";
+
+        return org.mmbase.framework.basic.BasicUrlConverter.getUrl(url, props, request, true);
     }
     public String toString() {
-        return "EW " + list + " &nodepath= " + path;
+        return "EW " + (list != null ? ("list.jsp?wizard=" + list) : ("wizard.jsp?wizard=" + wizard)) + "&" + properties;
     }
 
 
