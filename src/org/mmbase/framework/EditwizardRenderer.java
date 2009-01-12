@@ -17,12 +17,26 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Currently this generates a link to an editwizard list page.
+ * Generates an iframe with a wizard list (if the 'list' property is set) or a wizard wizard (if the
+ * 'wizard' property is set).
  *
- * @todo Needs to produce a div, not an url.
+ * Other wizard/list jsp can also be used. E.g.
+ <pre><![CDATA[
+  <block name="people">
+    <title xml:lang="en">Simple examples</title>
+    <title xml:lang="nl">Eenvoudige voorbeelden</title>
+    <body>
+      <class name="org.mmbase.framework.EditwizardRenderer">
+        <param name="list">samples/people</param>
+        <param name="nodepath">people</param>>
+        <param name="fields">firstname,lastname,owner</param>
+      </class>
+    </body>
+  </block>
+  ]]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.16 2009-01-12 21:11:46 michiel Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.17 2009-01-12 21:25:49 michiel Exp $
  * @since MMBase-1.9
  */
 public class EditwizardRenderer extends IFrameRenderer {
@@ -53,6 +67,7 @@ public class EditwizardRenderer extends IFrameRenderer {
 
         props.put("wizard", list != null ? list : wizard);
         props.put("language", locale.getLanguage());
+        props.put("templates", templates);
         HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
 
         String url = list != null ?

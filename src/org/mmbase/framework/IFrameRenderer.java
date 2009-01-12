@@ -17,12 +17,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Currently this generates a link to an editwizard list page.
- *
- * @todo Needs to produce a div, not an url.
+ * The IFrameRenderer renders a page (in the current web-app) in an iframe. This makes it possible
+ * to effortlessly use any jsp as a block (though not a very nice one, because it is rendered in an
+ * iframe).
+ * It supports generic properties, which are set as parameters on the iframe url.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IFrameRenderer.java,v 1.1 2009-01-12 21:10:52 michiel Exp $
+ * @version $Id: IFrameRenderer.java,v 1.2 2009-01-12 21:25:49 michiel Exp $
  * @since MMBase-1.9.1
  */
 public class IFrameRenderer extends AbstractRenderer {
