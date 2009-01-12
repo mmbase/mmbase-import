@@ -36,7 +36,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.111 2008-12-22 14:51:02 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.112 2009-01-12 13:33:16 michiel Exp $
  * @see ContextTag
  */
 
@@ -819,6 +819,10 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         if (container == null || container == Attribute.NULL) {
             query = (Query) pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
             if (query == null) throw new JspTagException("No query found (" + QueryContainer.KEY + ")");
+            if (query.isUsed()) {
+                query = query.clone();
+                assert ! query.isUsed();
+            }
         } else {
             QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
             query = c.getQuery();
