@@ -73,6 +73,10 @@
         <property name="commandFactory">
             <ref local="basicCommandFactory" />
         </property>
+        <!-- 
+        	You could set a locale here, which we don't. the default is 'nl'.
+        	The locale is used for the localized (error) messages 
+        -->
     </bean>
 	
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
