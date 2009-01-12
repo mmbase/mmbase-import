@@ -1,10 +1,10 @@
-<jsp:root 
+<jsp:root
     version="2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  
+
   <!-- actually just to help some browsers: -->
   <jsp:output doctype-root-element="html"
               doctype-public="-//W3C//DTD XHTML 1.1//EN"
@@ -16,6 +16,7 @@
               type="application/xhtml+xml"
               unacceptable="CRIPPLE"
               postprocessor="none" language="${mmbase_adminpages_language}">
+
 
     <c:if test="${! empty param.logout}">
       <mm:cloud method="logout" />
@@ -43,14 +44,18 @@
               <mm:functioncontainer>
                 <mm:param name="id">mmbase.${category}</mm:param>
                 <mm:function set="components" name="blockClassification">
-		  <c:if test="${fn:length(_[0].blocks) gt 0}">
-		    <c:set var="component" value="${_[0].blocks[0].component.name}" />
-		    <c:set var="block" value="${_[0].blocks[0].name}" />
-		    <mm:component name="$component" block="${block}" render="head" />
-		  </c:if>
-		</mm:function>
+                  <c:if test="${fn:length(_[0].blocks) gt 0}">
+                    <c:set var="component" value="${_[0].blocks[0].component.name}" />
+                    <c:set var="block" value="${_[0].blocks[0].name}" />
+                    <mm:component name="$component" block="${block}" render="head" />
+                  </c:if>
+                </mm:function>
               </mm:functioncontainer>
             </mm:notpresent>
+            <mm:include page="/mmbase/jquery/jquery.jspx" />
+            <mm:link page="/mmbase/admin/admin.js">
+              <script src="${_}" type="text/javascript"><jsp:text> </jsp:text></script>
+            </mm:link>
           </head>
         </mm:formatter>
         <mm:function id="blockObject" set="components" name="block" referids="component,block" write="false" />
