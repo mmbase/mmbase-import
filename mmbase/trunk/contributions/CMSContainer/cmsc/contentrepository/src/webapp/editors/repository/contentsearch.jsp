@@ -102,6 +102,15 @@
                <tr>
                   <td style="width:105px"><fmt:message key="searchform.title" /></td>
                   <td colspan="5"><html:text property="title" style="width:200px"/></td>
+               <mm:compare referid="mode" value= "basic">
+                  <td style="width:105px"><fmt:message key="searchform.contenttype" /></td>
+                  <td>
+                     <html:select property="contenttypes" onchange="selectContenttype('${searchinit}');" >
+                        <html:option value="contentelement">&lt;<fmt:message key="searchform.contenttypes.all" />&gt;</html:option>
+                        <html:optionsCollection name="typesList" value="value" label="label"/>
+                     </html:select>                     
+                  </td>
+               </mm:compare>
                </tr>
              <mm:compare referid="mode" value= "advanced">
                <tr>
@@ -167,7 +176,7 @@
                                  </mm:fieldinfo>
                                  <% if (showField) { %>
                                     <tr rowspan="5">
-                                       <td height="31">
+                                       <td height="32">
                                           <mm:fieldinfo type="guiname" jspvar="guiname"/>:
                                           <mm:fieldinfo type="name" jspvar="name" write="false">
                                              <% fields.add(contenttypes + "." + name); %>
@@ -184,7 +193,7 @@
                               <% for (int i = 0; i < fields.size(); i++) {
                                  String field = (String) fields.get(i); %>
                                  <tr>
-                                    <td>
+                                    <td height="32">
                                        <input type="text" name="<%= field %>" value="<%= (request.getParameter(field) == null)? "" :request.getParameter(field) %>" />
                                     </td>
                                  </tr>
