@@ -528,10 +528,38 @@
   <block name="glossary"
          classification="mmbase.documentation"
          mimetype="text/html">
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/style/css/docbook.css" type="text/css" />]]></param>
+      </class>
+    </head>
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
         <param name="docbook">glossary.xml</param>
+        <param name="includeRenderTime">html</param>
       </class>
+    </body>
+  </block>
+
+  <block name="docbook"
+         mimetype="text/html">
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/style/css/docbook.css" type="text/css" />]]></param>
+      </class>
+    </head>
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="documentation"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <body jsp="documentation/index.jspx">
+      <param name="docbook" />
     </body>
   </block>
 
