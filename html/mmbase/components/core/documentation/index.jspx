@@ -1,0 +1,49 @@
+<mm:content
+    type="application/xml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud rank="basic user">
+    <div
+        class="mm_c c_core b_docbook ${requestScope.className}"
+        id="${requestScope['org.mmbase.componentId']}">
+
+      <p>This is the main page of the MMBase documentation. All
+      documentation should be listed here. It has several sections targeted at
+      different groups of users and developers. More about the documentation
+      structure can be read in the document
+      <mm:link page="docbook">
+        <mm:param name="docbook">documentation.xml</mm:param>
+        <a href="${_}">MMBase documentation</a>
+      </mm:link>
+      </p>
+
+      <h2>Introduction</h2>
+
+      <ul>
+        <li>
+          <mm:link page="docbook">
+            <mm:param name="docbook">glossary.xml</mm:param>
+            <a href="${_}">MMBase Glossary</a>
+          </mm:link>
+        </li>
+        <li>
+          <mm:link page="docbook">
+            <mm:param name="docbook">general/architecture.xml</mm:param>
+            <a href="${_}">MMBase Architectural Overview</a>
+          </mm:link>
+        </li>
+        <li>
+          <mm:link page="docbook">
+            <mm:param name="docbook">general/principles.xml</mm:param>
+            <a href="${_}">Principles</a>
+          </mm:link>
+        </li>
+      </ul>
+    </div>
+  </mm:cloud>
+</mm:content>
