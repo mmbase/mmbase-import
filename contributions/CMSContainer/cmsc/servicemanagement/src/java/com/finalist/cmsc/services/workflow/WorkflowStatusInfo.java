@@ -9,10 +9,15 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.services.workflow;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.Query;
 
 public class WorkflowStatusInfo {
 
@@ -75,6 +80,8 @@ public class WorkflowStatusInfo {
    private int pageFinished;
    private int pageApproved;
    private int pagePublished;
+   
+   
 
 
    public WorkflowStatusInfo(NodeList statusList) {
@@ -173,77 +180,77 @@ public class WorkflowStatusInfo {
 
    
    private void setNodetypeDraft(String nodetype, int count) {
-      if("article".equals(nodetype))
-         contentArticleDraft = count;
-      if("banners".equals(nodetype))
-         contentBannersDraft = count;
-      if("link".equals(nodetype))
-         contentLinkDraft = count;
-      if("faqitem".equals(nodetype))
-         contentFaqitemDraft = count;
-      if("images".equals(nodetype))
-         assetImagesDraft = count;
-      if("attachments".equals(nodetype))
-         assetAttachmentsDraft = count;
-      if("urls".equals(nodetype))
-         assetUrlsDraft = count;
+      if(getChildTypes("article").contains(nodetype))
+         contentArticleDraft += count;
+      if(getChildTypes("banners").contains(nodetype))
+         contentBannersDraft += count;
+      if(getChildTypes("link").contains(nodetype))
+         contentLinkDraft += count;
+      if(getChildTypes("faqitem").contains(nodetype))
+         contentFaqitemDraft += count;
+      if(getChildTypes("images").contains(nodetype))
+         assetImagesDraft += count;
+      if(getChildTypes("attachments").contains(nodetype))
+         assetAttachmentsDraft += count;
+      if(getChildTypes("urls").contains(nodetype))
+         assetUrlsDraft += count;
    }
 
    
    private void setNodetypeFinished(String nodetype, int count) {
-      if("article".equals(nodetype))
+      if(getChildTypes("article").contains(nodetype))
          contentArticleFinished += count;
-      if("banners".equals(nodetype))
+      if(getChildTypes("banners").contains(nodetype))
          contentBannersFinished += count;
-      if("link".equals(nodetype))
+      if(getChildTypes("link").contains(nodetype))
          contentLinkFinished += count;
-      if("faqitem".equals(nodetype))
+      if(getChildTypes("faqitem").contains(nodetype))
          contentFaqitemFinished += count;
-      if("images".equals(nodetype))
+      if(getChildTypes("images").contains(nodetype))
          assetImagesFinished += count;
-      if("attachments".equals(nodetype))
+      if(getChildTypes("attachments").contains(nodetype))
          assetAttachmentsFinished += count;
-      if("urls".equals(nodetype))
+      if(getChildTypes("urls").contains(nodetype))
          assetUrlsFinished += count;
    }
    
    
    private void setNodetypeApproved(String nodetype, int count) {
       if (Workflow.isAcceptedStepEnabled()) {
-         if ("article".equals(nodetype)) contentArticleApproved = count;
-         if ("banners".equals(nodetype)) contentBannersApproved = count;
-         if ("link".equals(nodetype)) contentLinkApproved = count;
-         if ("faqitem".equals(nodetype)) contentFaqitemApproved = count;
-         if ("images".equals(nodetype)) assetImagesApproved = count;
-         if ("attachments".equals(nodetype)) assetAttachmentsApproved = count;
-         if ("urls".equals(nodetype)) assetUrlsApproved = count;
+         if (getChildTypes("article").contains(nodetype)) contentArticleApproved += count;
+         if (getChildTypes("banners").contains(nodetype)) contentBannersApproved += count;
+         if (getChildTypes("link").contains(nodetype)) contentLinkApproved += count;
+         if (getChildTypes("faqitem").contains(nodetype)) contentFaqitemApproved += count;
+         if (getChildTypes("images").contains(nodetype)) assetImagesApproved += count;
+         if (getChildTypes("attachments").contains(nodetype)) assetAttachmentsApproved += count;
+         if (getChildTypes("urls").contains(nodetype)) assetUrlsApproved += count;
       } else {
-         if ("article".equals(nodetype)) contentArticleFinished += count;
-         if ("banners".equals(nodetype)) contentBannersFinished += count;
-         if ("link".equals(nodetype)) contentLinkFinished += count;
-         if ("faqitem".equals(nodetype)) contentFaqitemFinished += count;
-         if ("images".equals(nodetype)) assetImagesFinished += count;
-         if ("attachments".equals(nodetype)) assetAttachmentsFinished += count;
-         if ("urls".equals(nodetype)) assetUrlsFinished += count;
+         if (getChildTypes("article").contains(nodetype)) contentArticleFinished += count;
+         if (getChildTypes("banners").contains(nodetype)) contentBannersFinished += count;
+         if (getChildTypes("link").contains(nodetype)) contentLinkFinished += count;
+         if (getChildTypes("faqitem").contains(nodetype)) contentFaqitemFinished += count;
+         if (getChildTypes("images").contains(nodetype)) assetImagesFinished += count;
+         if (getChildTypes("attachments").contains(nodetype)) assetAttachmentsFinished += count;
+         if (getChildTypes("urls").contains(nodetype)) assetUrlsFinished += count;
       }
    }
 
    
    private void setNodetypePublished(String nodetype, int count) {
-      if("article".equals(nodetype))
-         contentArticlePublished = count;
-      if("banners".equals(nodetype))
-         contentBannersPublished = count;
-      if("link".equals(nodetype))
-         contentLinkFinished = count;
-      if("faqitem".equals(nodetype))
-         contentFaqitemPublished = count;
-      if("images".equals(nodetype))
-         assetImagesPublished = count;
-      if("attachments".equals(nodetype))
-         assetAttachmentsPublished = count;
-      if("urls".equals(nodetype))
-         assetUrlsPublished = count;
+      if(getChildTypes("article").contains(nodetype))
+         contentArticlePublished += count;
+      if(getChildTypes("banners").contains(nodetype))
+         contentBannersPublished += count;
+      if(getChildTypes("link").contains(nodetype))
+         contentLinkFinished += count;
+      if(getChildTypes("faqitem").contains(nodetype))
+         contentFaqitemPublished += count;
+      if(getChildTypes("images").contains(nodetype))
+         assetImagesPublished += count;
+      if(getChildTypes("attachments").contains(nodetype))
+         assetAttachmentsPublished += count;
+      if(getChildTypes("urls").contains(nodetype))
+         assetUrlsPublished += count;
    }
    
    
@@ -724,5 +731,13 @@ public class WorkflowStatusInfo {
       this.allcontentPublished = allcontentPublished;
    }
 
-
+   private static List<String> getChildTypes(String parent) {
+      Query typesQuery = CloudProviderFactory.getCloudProvider().getCloud().getNodeManager(parent).createQuery();
+      NodeList types = typesQuery.getList();
+      List<String> typeNames = new ArrayList<String>(); 
+      for (int i = 0; i < types.size(); i++) {
+         typeNames.add(((Node)types.get(i)).getNodeManager().getName());
+      }
+      return typeNames;
+   }
 }
