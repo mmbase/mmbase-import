@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * It supports generic properties, which are set as parameters on the iframe url.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IFrameRenderer.java,v 1.2 2009-01-12 21:25:49 michiel Exp $
+ * @version $Id: IFrameRenderer.java,v 1.3 2009-01-13 08:24:21 michiel Exp $
  * @since MMBase-1.9.1
  */
 public class IFrameRenderer extends AbstractRenderer {
@@ -55,7 +55,7 @@ public class IFrameRenderer extends AbstractRenderer {
     }
 
     public Parameter[] getParameters() {
-        return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST, Parameter.LOCALE};
+        return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
 
     /**

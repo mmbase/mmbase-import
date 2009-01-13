@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * parameter 'wraps' which you can point to another block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WrappedRenderer.java,v 1.3 2009-01-12 22:12:04 michiel Exp $
+ * @version $Id: WrappedRenderer.java,v 1.4 2009-01-13 08:24:21 michiel Exp $
  * @since MMBase-1.9.1
  */
 public abstract class WrappedRenderer extends AbstractRenderer {
@@ -46,18 +46,18 @@ public abstract class WrappedRenderer extends AbstractRenderer {
     }
 
     @Override public  Parameter[] getParameters() {
-        return wrapped.getParameters();
+        return getWraps().getParameters();
     }
 
     @Override public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
-        wrapped.render(blockParameters, w, hints);
+        getWraps().render(blockParameters, w, hints);
     }
 
     @Override public String toString() {
-        return "wrapped " + wrapped;
+        return "wrapped " + getWraps();
     }
 
-    @Override public java.net.URI getUri() {
-        return wrapped.getUri();
+    @Override public java.net.URI getUri(Parameters blockParameters, RenderHints hints) {
+        return getWraps().getUri(blockParameters, hints);
     }
 }
