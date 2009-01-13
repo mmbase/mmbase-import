@@ -19,7 +19,7 @@
   Could perhaps use nwalsh xslt but that seems a huge overkill. It should be rather simple, we probably use only a small subset of docbook.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: docbook2block.xslt,v 1.2 2008-10-15 14:47:40 michiel Exp $
+  @version: $Id: docbook2block.xslt,v 1.3 2009-01-13 21:30:49 michiel Exp $
   @since:   MMBase-1.9
 -->
 <xsl:stylesheet
@@ -36,16 +36,18 @@
               omit-xml-declaration="yes" /> <!-- xhtml is a form of xml -->
 
   <xsl:template match="article">
-    <div class="mm_c" >
+    <div class="mm_docbook" >
       <h1><xsl:value-of select="articleinfo/title" /></h1>
       <xsl:for-each select="articleinfo/authorgroup/author">
-        <span class="surname">
-          <xsl:value-of select="surname" />
-        </span>
-        <span class="firstname">
-          <xsl:text> </xsl:text>
-          <xsl:value-of select="firstname" />
-        </span>
+        <div class="name">
+          <span class="surname">
+            <xsl:value-of select="surname" />
+          </span>
+          <span class="firstname">
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="firstname" />
+          </span>
+        </div>
       </xsl:for-each>
       <xsl:apply-templates select="section" />
     </div>
@@ -94,10 +96,82 @@
       <xsl:apply-templates select="*" />
     </ul>
   </xsl:template>
+
+  <xsl:template match="orderedlist">
+    <ol>
+      <xsl:apply-templates select="*" />
+    </ol>
+  </xsl:template>
+
   <xsl:template match="listitem">
     <li>
       <xsl:apply-templates select="*" />
     </li>
+  </xsl:template>
+
+  <xsl:template match="glosslist">
+    <dl class="glossary">
+      <xsl:apply-templates select="*" />
+    </dl>
+  </xsl:template>
+
+  <xsl:template match="glosslist">
+    <dl>
+      <xsl:apply-templates select="*" />
+    </dl>
+  </xsl:template>
+
+
+  <xsl:template match="glossentry">
+    <di>
+      <xsl:copy-of select="@*" />
+      <xsl:apply-templates select="*" />
+    </di>
+  </xsl:template>
+
+  <xsl:template match="glossterm">
+    <dt>
+      <xsl:apply-templates select="*|text()" />
+    </dt>
+  </xsl:template>
+
+  <xsl:template match="glossdef">
+    <dd>
+      <xsl:apply-templates select="*|text()" />
+    </dd>
+  </xsl:template>
+
+  <xsl:template match="glossseealso">
+    <p class="seealso">
+      <xsl:text>See also </xsl:text>
+      <xsl:choose>
+        <xsl:when test="@otherterm">
+          <a>
+            <xsl:attribute name="href">#<xsl:value-of select="@otherterm" /></xsl:attribute>
+            <xsl:for-each select="id(@otherterm)">
+              <xsl:value-of select="glossterm" />
+            </xsl:for-each>
+          </a>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="*|text()" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </p>
+  </xsl:template>
+
+  <xsl:template match="ulink">
+    <a>
+      <xsl:attribute name="href"><xsl:value-of select="@url" /></xsl:attribute>
+      <xsl:apply-templates select="*|text()" />
+    </a>
+  </xsl:template>
+
+  <xsl:template match="graphic">
+    <img>
+      <!-- TODO -->
+      <xsl:attribute name="src">"http://cvs.mmbase.org/viewcvs/*checkout*/<xsl:value-of select="@fileref" /></xsl:attribute>
+    </img>
   </xsl:template>
 
 </xsl:stylesheet>
