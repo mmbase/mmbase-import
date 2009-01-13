@@ -45,7 +45,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.149.2.12 2009-01-13 14:43:49 michiel Exp $
+ * @version $Id: Wizard.java,v 1.149.2.13 2009-01-13 15:03:49 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -693,7 +693,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
     }
 
-    private String buildDuration(HttpServletRequest req, String name) {
+    private String buildDuration(ServletRequest req, String name) {
         try {
             int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
             int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
