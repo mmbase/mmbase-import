@@ -5,14 +5,14 @@
 	<title xml:lang="en">Site</title>
 	<title xml:lang="zh">站点</title>
 
-	<field name="stagingfragment" dtmaxlength="40"
+	<field name="stagingfragment" dtmaxlength="255"
 		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$"
 		dtrequired="true" >
 		<prompt xml:lang="en">Staging domain</prompt>
 		<prompt xml:lang="nl">Staging domein</prompt>
 		<prompt xml:lang="zh">Staging域</prompt>
 	</field>
-	<field name="urlfragment" dtmaxlength="40"
+	<field name="urlfragment" dtmaxlength="255"
 		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$"
 		dtrequired="true">
 		<prompt xml:lang="en">Live domain</prompt>
