@@ -33,14 +33,14 @@
    <div class="tabs">
 <c:if test="${param.index eq 'yes'}">
     <!-- active TAB -->
-    <div class="${(contenttypes == 'contentelement' || contenttypes == null)?'tab_active':'tab'}">
+    <div class="tab_active">
         <div class="body">
             <div>
                 <a href="SearchInitAction.do?index=yes"><fmt:message key="content.search.title"/></a>
             </div>
         </div>
     </div>
-    <div class="${contenttypes == 'asset'?'tab_active':'tab'}">
+    <div class="tab">
       <div class="body">
          <div>
             <a href="AssetSearchInitAction.do"><fmt:message key="asset.search.title" /></a>
@@ -50,7 +50,7 @@
 </c:if>
 <c:if test="${empty param.index}">
    <div class="tabs">
-    <div class="${(contenttypes == 'contentelement' || contenttypes == null)?'tab_active':'tab'}">
+    <div class="tab_active">
         <div class="body">
             <div>
                 <a href="SearchInitAction.do"><fmt:message key="content.search.title"/></a>
