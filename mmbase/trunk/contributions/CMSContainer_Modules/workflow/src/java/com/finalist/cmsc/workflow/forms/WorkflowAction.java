@@ -129,7 +129,7 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
          }
          Queries.addConstraint(listQuery, WorkflowManager.getTypeConstraint(listQuery, type));
          if(!StringUtils.isBlank(nodetype)){
-            Queries.addConstraint(listQuery, WorkflowManager.getNodetypeConstraint(listQuery, nodetype));
+            WorkflowManager.addNodetypeConstraint(cloud, listQuery, nodetype);
          }
          NodeQuery wfQuery = createDetailQuery(cloud, orderby, (laststatus == null) ? false : (laststatus.equals("true")));
          addWorkflowListToRequest(request, cloud, wfQuery, listQuery, "results");
