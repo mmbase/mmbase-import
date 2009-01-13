@@ -52,7 +52,7 @@ import org.mmbase.util.logging.Logging;
 ]]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: CachedRenderer.java,v 1.3 2009-01-12 22:12:04 michiel Exp $
+ * @version $Id: CachedRenderer.java,v 1.4 2009-01-13 08:24:21 michiel Exp $
  * @since MMBase-1.9.1
 
  */
@@ -146,7 +146,7 @@ public class CachedRenderer extends WrappedRenderer {
                 }
             } else {
                 // user last modified
-                URI uri = getWraps().getUri();
+                URI uri = getWraps().getUri(blockParameters, hints);
                 if (uri == null) throw new FrameworkException("" + getWraps() + " did not return an URI, and cannot be cached using getLastModified");
                 URLConnection connection =  uri.toURL().openConnection();
                 connection.setConnectTimeout(timeout);

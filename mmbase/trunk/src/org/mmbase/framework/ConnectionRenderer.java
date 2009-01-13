@@ -47,7 +47,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.10 2009-01-12 21:12:10 michiel Exp $
+ * @version $Id: ConnectionRenderer.java,v 1.11 2009-01-13 08:24:21 michiel Exp $
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {
@@ -95,7 +95,7 @@ public class ConnectionRenderer extends AbstractRenderer {
             if (decorate) {
                 decorateIntro(hints, w, null);
             }
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) getUri(blockParameters, hints).toURL().openConnection();
             connection.setConnectTimeout(timeOut);
             connection.setReadTimeout(timeOut);
             int responseCode = connection.getResponseCode();
@@ -154,16 +154,15 @@ public class ConnectionRenderer extends AbstractRenderer {
     }
 
 
-    public String toString() {
-        return url.toString();
+    @Override public String toString() {
+        return getUri(new Parameters(getParameters()), new RenderHints(this, WindowState.NORMAL, null, null)).toString();
     }
 
-    public java.net.URI getUri() {
+    @Override public URI getUri(Parameters blockParameter, RenderHints hints) {
         try {
             return url.toURI();
         } catch (URISyntaxException use) {
-            log.warn(use);
-            return null;
+            throw new RuntimeException(use.getMessage(), use);
         }
     }
 }
