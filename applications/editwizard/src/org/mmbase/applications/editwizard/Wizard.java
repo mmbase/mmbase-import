@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.177 2009-01-07 20:39:58 nklasens Exp $
+ * @version $Id: Wizard.java,v 1.178 2009-01-13 14:24:11 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -617,6 +617,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     } else { // the request encoding was known, so, I think we can suppose that the Parameter value was interpreted correctly.
                         result = req.getParameter(name);
                     }
+                    log.debug("parameter value " + result);
 
                     if (result.equals("date")) {
                         result = buildDate(req, name);
@@ -692,9 +693,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             int year = Integer.parseInt(req.getParameter("internal_" + name + "_year"));
             int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
             int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
+            String secParameter = req.getParameter("internal_" + name + "_seconds");
+            int seconds = secParameter == null ? 0 : Integer.parseInt(secParameter);
 
             Calendar cal = getCalendar();
-            cal.set(year, month - 1, day, hours, minutes, 0);
+            cal.set(year, month - 1, day, hours, minutes, seconds);
             return "" + cal.getTimeInMillis() / 1000;
         } catch (RuntimeException e) { //NumberFormat NullPointer
             log.debug("Failed to parse datetime for " + name + " "
@@ -709,7 +712,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
             int seconds = Integer.parseInt(req.getParameter("internal_" + name + "_seconds"));
 
-            Calendar cal = getCalendar();
+            Calendar cal =  Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             cal.set(1970, 0, 1, hours, minutes, seconds);
             return "" + cal.getTimeInMillis() / 1000;
         } catch (RuntimeException e) { //NumberFormat NullPointer
@@ -2775,7 +2778,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         // 'ftype' values of new date guitypes (such as new datatypes) need to be converted to
         // datetime
         if (!"data".equals(ftype)) {
-            if ("date".equals(dttype) || "time".equals(dttype)) {
+            if ("date".equals(dttype) || "time".equals(dttype) || "duration".equals(dttype)) {
                 ftype = dttype;
                 dttype = "datetime";
             } else if ("datetime".equals(dttype) &&

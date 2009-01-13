@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.191 2008-11-28 16:51:01 michiel Exp $
+    @version $Id: wizard.xsl,v 1.192 2009-01-13 14:25:16 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -977,10 +977,17 @@
   </xsl:template>
 
   <xsl:template name="ftype-datetime-time">
+
+    <xsl:variable name="tz">
+      <xsl:choose>
+        <xsl:when test="@ftype = 'duration'">UTC</xsl:when>
+        <xsl:otherwise><xsl:value-of select="string($timezone)"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <select name="internal_{@fieldname}_hours" super="{@fieldname}">
       <xsl:call-template name="loop-options">
         <xsl:with-param name="value">0</xsl:with-param>
-        <xsl:with-param name="selected" select="date:getHours(string(value), string($timezone))" />
+        <xsl:with-param name="selected" select="date:getHours(string(value), $tz)" />
         <xsl:with-param name="end" select="23" />
       </xsl:call-template>
     </select>
@@ -988,7 +995,7 @@
     <select name="internal_{@fieldname}_minutes" super="{@fieldname}">
       <xsl:call-template name="loop-options">
         <xsl:with-param name="value">0</xsl:with-param>
-        <xsl:with-param name="selected" select="date:getMinutes(string(value), string($timezone))" />
+        <xsl:with-param name="selected" select="date:getMinutes(string(value), $tz)" />
         <xsl:with-param name="end" select="59" />
       </xsl:call-template>
     </select>
@@ -997,12 +1004,13 @@
       <select name="internal_{@fieldname}_seconds" super="{@fieldname}">
         <xsl:call-template name="loop-options">
           <xsl:with-param name="value">0</xsl:with-param>
-          <xsl:with-param name="selected" select="date:getSeconds(string(value), string($timezone))" />
+          <xsl:with-param name="selected" select="date:getSeconds(string(value), $tz)" />
           <xsl:with-param name="end" select="59" />
         </xsl:call-template>
       </select>
     </xsl:if>
   </xsl:template>
+
 
   <xsl:template name="ftype-image">
     <xsl:if test="@maywrite!='false'">
