@@ -13,6 +13,7 @@ package org.mmbase.framework;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.regex.*;
 import java.util.concurrent.*;
 
 
@@ -51,7 +52,7 @@ import org.mmbase.util.logging.Logging;
 ]]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: CachedRenderer.java,v 1.6 2009-01-13 20:59:58 michiel Exp $
+ * @version $Id: CachedRenderer.java,v 1.7 2009-01-13 21:23:52 michiel Exp $
  * @since MMBase-1.9.1
 
  */
@@ -116,14 +117,17 @@ public class CachedRenderer extends WrappedRenderer {
 
     private static final String CACHE_EXTENSION = ".cache";
     private static final String ETAG_EXTENSION = ".etag";
+    private static final Pattern INVALID_IN_FILENAME = Pattern.compile("[\\/\\\\\\s]");
 
     protected File getCacheFile(Parameters blockParameters, RenderHints hints) {
         File dir = new File(MMBase.getMMBase().getDataDir(), directory);
         File componentDir = new File(dir, getBlock().getComponent().getName());
         File blockDir = new File(componentDir, getBlock().getName());
         blockDir.mkdirs();
-        String key = getBlock().getName() + "_" + getKey(blockParameters) + "_" + hints.getWindowState() + "_" + hints.getId() + "_" + hints.getStyleClass() + CACHE_EXTENSION;
-        return new File(blockDir, key);
+        String key = getBlock().getName() + "+" + getKey(blockParameters) + "+" + hints.getWindowState() + "_" + hints.getId() + "_" + hints.getStyleClass() + CACHE_EXTENSION;
+
+        String escaped = INVALID_IN_FILENAME.matcher(key).replaceAll("_");
+        return new File(blockDir, escaped);
 
     }
 

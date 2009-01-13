@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * render the documenation from the xml's in a/the jar.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DocumentationRenderer.java,v 1.1 2009-01-13 08:24:21 michiel Exp $
+ * @version $Id: DocumentationRenderer.java,v 1.2 2009-01-13 21:23:52 michiel Exp $
  * @since MMBase-1.9.1
 
  */
@@ -61,7 +61,7 @@ public class DocumentationRenderer extends CachedRenderer {
                                 String db = blockParameters != null ? blockParameters.getString("docbook") : null;
                                 if (db == null || "".equals(db)) {
                                     db = DocumentationRenderer.this.docbook;
-                                    if (db == null) throw new IllegalArgumentException("docbook parameter not set on parameters, nor as renderer property");
+                                    //if (db == null) throw new IllegalArgumentException("docbook parameter not set on parameters, nor as renderer property");
                                 }
                                 return new URL(repository + module + "/" + db).toURI();
                             } catch (MalformedURLException mfe) {
