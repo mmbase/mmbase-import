@@ -19,8 +19,16 @@ import org.mmbase.util.logging.Logging;
  * The actual csv parsing is done with examplecode from O'Reilly's Java Cookbook
  * written by Ian F. Darwin: "\"([^\"]+?)\",?|([^,]+),?|,".
  *
+ * @todo I don't think it supports multiple line records
+ * @todo The entire CSV is stored in memory twice (in public structures)
+ * @todo The CSV is stored in a Map with List values, it could more logically be stored in a List of List
+ * @todo It would also be possible to parse a CSV without storing it at all, so that you can also
+ * parse really huge ones.
+ * @todo The 'header' member is unused and public.
+ * @todo Test-cases?
+ *
  * @author Andr\U00e9 vanToly &lt;andre@toly.nl&gt;
- * @version $Id: CSVReader.java,v 1.3 2009-01-12 12:22:31 michiel Exp $
+ * @version $Id: CSVReader.java,v 1.4 2009-01-13 10:20:26 michiel Exp $
  */
 public class CSVReader {
 
@@ -61,16 +69,18 @@ public class CSVReader {
      * @param filename  CSV file
      * @param delimiter the komma or something else TODO!
      * @param charset   by default UTF-8
+     * @todo the params are members too, which is a bit confusing for a non-static method.
+     *
      */
     public void readCSV(String filename, String delimiter, String charset) {
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("filename: " + filename + ", delimiter: " + delimiter + ", charset: " + charset);
+        }
         try {
-            java.net.URI fileuri = ResourceLoader.getWebRoot().getResource(filename).toURI();
             Charset cs = Charset.forName(charset);
-            log.info("Trying to parse CSV-file: " + fileuri);
+            log.info("Trying to parse CSV-file: " + filename);
             if (!",".equals(delimiter)) this.csv_pattern = compilePattern(delimiter);
-            InputStream is = new FileInputStream(new File(fileuri));
+            InputStream is = ResourceLoader.getWebRoot().getResourceAsStream(filename);
             InputStreamReader isr = new InputStreamReader(is, cs);
             BufferedReader in = new BufferedReader(isr);
             String line;
@@ -93,8 +103,6 @@ public class CSVReader {
             log.error("Illegal charset name: " + ice);
         } catch(java.nio.charset.UnsupportedCharsetException uce) {
             log.error("Unsupported charset: " + uce);
-        } catch(java.net.URISyntaxException ue) {
-            log.error("Error in file or path syntax: " + ue);
         } catch (IOException ioe) {
             log.error("IOException, probably file '" + filename + "' not found: " + ioe);
         }
