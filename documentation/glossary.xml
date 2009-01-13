@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase Glossary</title>
 
-    <edition>$Id: glossary.xml,v 1.25 2007-08-05 09:18:43 michiel Exp $</edition>
+    <edition>$Id: glossary.xml,v 1.26 2009-01-13 20:28:53 michiel Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -53,7 +53,7 @@
         <glossdef>
           <!-- MM: I doubt if this is the correct use of ordered list.
                I think that it makes more sense to use multible glossdef entries, but:
-               - It is not very clearly defined in the docbook reference 
+               - It is not very clearly defined in the docbook reference
                - It looks ugly when converted to HTML
           -->
 
@@ -110,7 +110,7 @@
           <example>
             <title>Example of a builder with only one field, named
             title.</title>
-            <para><programlisting><![CDATA[<
+            <para><programlisting><![CDATA[
 <?xml version="1.0">
 <builder
     xmlns="http://www.mmbase.org/xmlns/builder"
@@ -1189,7 +1189,7 @@
             Framework (MMCF) a component has gathered meaning as a piece of functionality that can be
             installed using the component framework. A component in the MMCF sence can be a poll, an
             e-card application or even some more hidden functionality like the e-mail application as
-            long it is 'plugable' within the framework. 
+            long it is 'plugable' within the framework.
           </para>
 
           <!--
