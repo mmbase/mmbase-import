@@ -45,7 +45,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.149.2.11 2009-01-07 20:40:06 nklasens Exp $
+ * @version $Id: Wizard.java,v 1.149.2.12 2009-01-13 14:43:49 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -693,13 +693,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
     }
 
-    private String buildDuration(ServletRequest req, String name) {
+    private String buildDuration(HttpServletRequest req, String name) {
         try {
             int hours = Integer.parseInt(req.getParameter("internal_" + name + "_hours"));
             int minutes = Integer.parseInt(req.getParameter("internal_" + name + "_minutes"));
             int seconds = Integer.parseInt(req.getParameter("internal_" + name + "_seconds"));
 
-            Calendar cal = getCalendar();
+            Calendar cal =  Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             cal.set(1970, 0, 1, hours, minutes, seconds);
             return "" + cal.getTimeInMillis() / 1000;
         } catch (RuntimeException e) { //NumberFormat NullPointer
@@ -707,7 +707,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             return "";
         }
     }
-
 
 
     /**
