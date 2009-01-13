@@ -54,7 +54,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.78.2.10 2008-07-27 14:51:54 andre Exp $
+ * @version $Id: Dove.java,v 1.78.2.11 2009-01-13 11:07:33 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -476,7 +476,7 @@ public class Dove extends AbstractDove {
                 int number=java.lang.Math.abs(n.getNumber());
                 data.setAttribute(ELM_NUMBER, "n"+number);
                 out.appendChild(data);
-                getDataNode(null,data,n);
+                getDataNode(null, data, n);
             } finally {
                 n.cancel();  // have to cancel node ! It will only be really made in the putNewNode function
             }
@@ -658,14 +658,18 @@ public class Dove extends AbstractDove {
                     if (lang != null) elm.setAttribute(ELM_LANG, lang);
                     // guitype
                     DataType dataType = fielddef.getDataType();
+                    // The written type will be the first non-anonymous origin (or self).
                     String baseType = dataType.getBaseTypeIdentifier();
-                    String specialization = dataType.getName();
-                    if ("".equals(specialization)) {
-                        DataType origin = dataType.getOrigin();
-                        if (origin != null) {
-                            specialization = origin.getName();
-                        }
+
+                    DataType specializationDataType = dataType;
+                    String specialization = specializationDataType.getName();
+                    while (specialization == null || "".equals(specialization)) {
+                        specializationDataType = specializationDataType.getOrigin();
+                        if (specializationDataType == null) break;
+                        specialization = specializationDataType.getName();
                     }
+                    log.debug("Found " + specialization);
+
                     if (getOptionList(dataType, nm.getCloud(), null, fielddef) != null) {
                         specialization = "enum";
                     } else if (dataType instanceof StringDataType) {
