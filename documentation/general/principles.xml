@@ -2,9 +2,9 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTS DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
 <article>
   <articleinfo>
-    <title>MMBase princinples (demo version)</title>
+    <title>MMBase principles (demo version)</title>
     <date>Tue May 30 19:04:44 CEST 2006</date>
-    <edition>$Id: principles.xml,v 1.1 2006-05-30 21:11:31 daniel Exp $</edition>
+    <edition>$Id: principles.xml,v 1.2 2009-01-13 21:43:51 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>MMBase</firstname><surname>Community</surname>
@@ -29,7 +29,7 @@
     <listitem><para><![CDATA[Themes : Technical
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Argumentation : MMBase is principally indepent of the chosen database. 
+    <listitem><para><![CDATA[Argumentation : MMBase is principally indepent of the chosen database.
 So no code in MMBase should depend on features of a specific database (unless of course the code _is_ the specific database layer).
 
 Therefore this is also a principle for applications built on MMBase, otherwise they are not portable to other MMBase installations.
@@ -48,10 +48,10 @@ You should not need JDBC-connections yourself, but if you do, use ((DatabaseStor
 You should also add an issue to the mmbase bugtracker to report the problem you try to circumvent.
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Allowed Implementation : 
+    <listitem><para><![CDATA[Allowed Implementation :
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Source : 
+    <listitem><para><![CDATA[Source :
 
 ]]></para></listitem>
     </itemizedlist>
@@ -79,9 +79,9 @@ You should also add an issue to the mmbase bugtracker to report the problem you 
 ]]></para></listitem>
     <listitem><para><![CDATA[Consequence : Make no assumptions on the OS.
 
-Make no assumptions on location or writeability of resources. To open resources (like configuration) you should use the MMBase ResourceLoader. 
+Make no assumptions on location or writeability of resources. To open resources (like configuration) you should use the MMBase ResourceLoader.
 
-Do not use java.io.File. 
+Do not use java.io.File.
 
 The webapp may be installed as a 'war' and it's contents not available as File at all.
 
@@ -90,10 +90,10 @@ If a file-system is needed for some reason, the MMBase 'data directory' can be u
 Do not write anything to stdout, use the MMBase logging system. This can be configured to go to stdout if desired.
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Allowed Implementation : 
+    <listitem><para><![CDATA[Allowed Implementation :
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Source : 
+    <listitem><para><![CDATA[Source :
 
 ]]></para></listitem>
     </itemizedlist>
@@ -109,7 +109,7 @@ Do not write anything to stdout, use the MMBase logging system. This can be conf
     <listitem><para><![CDATA[Version : 1.0.3
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Themes : 
+    <listitem><para><![CDATA[Themes :
 
 ]]></para></listitem>
     <listitem><para><![CDATA[Argumentation : When writing java, JSP or XML sources, you must take the MMBase Code Conventions into account.
@@ -130,7 +130,7 @@ XML:
  XML code is indented by 2 spaces. Do not use tabs.
 
 JSP:
- Preferably, JSP is like XML (e.g. JSPX). Java code in JSP should be limited to an absolute minimum. Use taglib (MMBase taglib, JSTL). 
+ Preferably, JSP is like XML (e.g. JSPX). Java code in JSP should be limited to an absolute minimum. Use taglib (MMBase taglib, JSTL).
 
  Complicated functionality could be done in some MVC-framework, or be delegated to functions implemented on MMBase datatypes, fields, builders or function sets.
 
@@ -160,7 +160,7 @@ CSS:
     <listitem><para><![CDATA[Allowed Implementation : Code wich obeys the conventions.
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Source : 
+    <listitem><para><![CDATA[Source :
 
 ]]></para></listitem>
     </itemizedlist>
@@ -220,7 +220,7 @@ By using the bridge, you also automatically use MMBase security. We desire all e
     <listitem><para><![CDATA[Allowed Implementation : Implementations can use the above classes. Normally they should leave instantiating the classes to the bridge - do not instantiate them through their constructors.
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Source : 
+    <listitem><para><![CDATA[Source :
 
 ]]></para></listitem>
     </itemizedlist>
@@ -273,10 +273,10 @@ You should not depend on libraries providing the same functionality.
 Other dependencies can be introduced with reluctance and with good reason (e.g. several jakarta commons libraries, commons-collections, commons-validator etc)
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Allowed Implementation : 
+    <listitem><para><![CDATA[Allowed Implementation :
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Source : 
+    <listitem><para><![CDATA[Source :
 
 ]]></para></listitem>
     </itemizedlist>
@@ -298,10 +298,10 @@ Other dependencies can be introduced with reluctance and with good reason (e.g. 
     <listitem><para><![CDATA[Argumentation : For the users is maintainability of the deployment very important. Backwards compatibility is not a holy grail but the core must be as stable as possible as far as code is concerned
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Explenation : 
+    <listitem><para><![CDATA[Explenation :
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Consequence : Changes in the core should deal with issues of backwards compatibility. This can result to more development time. Furthermore, any changes that are not backwards compatible should be sufficiently documented. 
+    <listitem><para><![CDATA[Consequence : Changes in the core should deal with issues of backwards compatibility. This can result to more development time. Furthermore, any changes that are not backwards compatible should be sufficiently documented.
 The documentation should contain explanations about changes that are not backwards compatible as well as advice on the impact on upgrades.
 This principle also implies that the core must be as lean as possible. In this way it is possible to greatly avoid compatibility issues and the reworks that accompany them.
 
@@ -329,13 +329,13 @@ This principle also implies that the core must be as lean as possible. In this w
     <listitem><para><![CDATA[Themes : Technical Architecture, Components
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Argumentation : 
+    <listitem><para><![CDATA[Argumentation :
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Explenation : 
+    <listitem><para><![CDATA[Explenation :
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Consequence : The deployment of MMBase components and implementations should be configurable in a way that allows the users to deploy only what they need. 
+    <listitem><para><![CDATA[Consequence : The deployment of MMBase components and implementations should be configurable in a way that allows the users to deploy only what they need.
 
 ]]></para></listitem>
     <listitem><para><![CDATA[Allowed Implementation : Each component should adhere to the deployment rules of KARMA and Didactor. It must be possible to integrate components run-time.
@@ -363,13 +363,13 @@ This principle also implies that the core must be as lean as possible. In this w
     <listitem><para><![CDATA[Argumentation : By following this principle, it becomes easier to reuse and expand existing components.
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Explenation : 
+    <listitem><para><![CDATA[Explenation :
 
 ]]></para></listitem>
     <listitem><para><![CDATA[Consequence : Developers and architects of MMBase projects (core/components) should take reusability into account throughout design and development.
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Allowed Implementation : 
+    <listitem><para><![CDATA[Allowed Implementation :
 
 ]]></para></listitem>
     <listitem><para><![CDATA[Source : MMBase Technical Board
@@ -397,10 +397,10 @@ This principle also implies that the core must be as lean as possible. In this w
     <listitem><para><![CDATA[Explenation : Eventual degradation of the system should happen in such a manner that the system continues to operate, but provides a reduced level of service instead of failing completely.
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Consequence : Developers should implement the necessary classes, exceptions etc. in order to guarantee graceful degradation of the system for the part that they are building. Chosen solutions should be thoroughly tested. 
+    <listitem><para><![CDATA[Consequence : Developers should implement the necessary classes, exceptions etc. in order to guarantee graceful degradation of the system for the part that they are building. Chosen solutions should be thoroughly tested.
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Allowed Implementation : 
+    <listitem><para><![CDATA[Allowed Implementation :
 
 ]]></para></listitem>
     <listitem><para><![CDATA[Source : MMBase Technical Board
@@ -422,8 +422,8 @@ This principle also implies that the core must be as lean as possible. In this w
     <listitem><para><![CDATA[Themes : Core, framework, components
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Argumentation : The core of MMBase and the framework must have the same open source license to avoid license incompatibilities. 
-For components that are developed for the MMBase-framework, or MMBase-portals, the MPL 1.0 is strongly advised, however, there might be reasons to use another license. In all cases this should not affect the license used for the core and framework. 
+    <listitem><para><![CDATA[Argumentation : The core of MMBase and the framework must have the same open source license to avoid license incompatibilities.
+For components that are developed for the MMBase-framework, or MMBase-portals, the MPL 1.0 is strongly advised, however, there might be reasons to use another license. In all cases this should not affect the license used for the core and framework.
 
 
 ]]></para></listitem>
@@ -463,7 +463,7 @@ Core, framework, components
     <listitem><para><![CDATA[Explenation : It should be possible to run MMBase implementations on different platforms. The fact that MMBase is written in Java, covers this principle per definition.
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Consequence : To run an MMBase-application, only a Java Virtual Machine (JVM) is necessary. A JVM is not dependent on operating systems. 
+    <listitem><para><![CDATA[Consequence : To run an MMBase-application, only a Java Virtual Machine (JVM) is necessary. A JVM is not dependent on operating systems.
 
 ]]></para></listitem>
     <listitem><para><![CDATA[Allowed Implementation : Java
@@ -494,7 +494,7 @@ Core, framework, components
 
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Explenation : 
+    <listitem><para><![CDATA[Explenation :
 
 ]]></para></listitem>
     <listitem><para><![CDATA[Consequence : The communication between MMBase applications should go through the allowed Web Services protocol
@@ -528,7 +528,7 @@ Core, framework, components
     <listitem><para><![CDATA[Argumentation : Traditionally, development projects are focused on implementing functionality while ignoring issues of performance. This becomes more evident in situations of time pressure and tight deadlines. This can have undesirable side effects when it comes to performance, which should be avoided.
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Explenation : 
+    <listitem><para><![CDATA[Explenation :
 
 ]]></para></listitem>
     <listitem><para><![CDATA[Consequence : Developers and architects of MMBase projects (core/components) should take performance into account throughout developing or testing.
@@ -562,13 +562,13 @@ If performance tests are absolutely not possible, MMBase projects should include
     <listitem><para><![CDATA[Argumentation : By following this principle, it becomes easier to reuse and expand existing components.
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Explenation : 
+    <listitem><para><![CDATA[Explenation :
 
 ]]></para></listitem>
     <listitem><para><![CDATA[Consequence : Developers and architects of MMBase projects (core/components) should take reusability into account throughout design and development.
 
 ]]></para></listitem>
-    <listitem><para><![CDATA[Allowed Implementation : 
+    <listitem><para><![CDATA[Allowed Implementation :
 
 ]]></para></listitem>
     <listitem><para><![CDATA[Source : MMBase Technical Board
