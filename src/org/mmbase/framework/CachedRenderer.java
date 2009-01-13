@@ -12,8 +12,7 @@ package org.mmbase.framework;
 
 import java.io.*;
 import java.net.*;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.*;
 
 
@@ -52,7 +51,7 @@ import org.mmbase.util.logging.Logging;
 ]]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: CachedRenderer.java,v 1.4 2009-01-13 08:24:21 michiel Exp $
+ * @version $Id: CachedRenderer.java,v 1.5 2009-01-13 20:28:07 michiel Exp $
  * @since MMBase-1.9.1
 
  */
@@ -104,12 +103,24 @@ public class CachedRenderer extends WrappedRenderer {
         }
     }
 
+    protected String getKey(Parameters blockParameters) {
+        StringBuilder k = new StringBuilder();
+        for (Map.Entry<String, Object> entry : blockParameters.toEntryList()) {
+            if (entry.getValue() == null) continue;
+            if (! Casting.isStringRepresentable(entry.getValue().getClass())) continue;
+            k.append(entry.getKey()).append("=");
+            k.append(Casting.toString(entry.getValue()));
+        }
+        return k.toString();
+    }
+
     protected File getCacheFile(Parameters blockParameters, RenderHints hints) {
         File dir = new File(MMBase.getMMBase().getDataDir(), directory);
         File componentDir = new File(dir, getBlock().getComponent().getName());
-        componentDir.mkdirs();
-        String key = getBlock().getName() + "_" + blockParameters + "_" + hints.getWindowState() + "_" + hints.getId() + "_" + hints.getStyleClass() + ".cache";
-        return new File(componentDir, key);
+        File blockDir = new File(componentDir, getBlock().getName());
+        blockDir.mkdirs();
+        String key = getBlock().getName() + "_" + getKey(blockParameters) + "_" + hints.getWindowState() + "_" + hints.getId() + "_" + hints.getStyleClass() + ".cache";
+        return new File(blockDir, key);
 
     }
 
