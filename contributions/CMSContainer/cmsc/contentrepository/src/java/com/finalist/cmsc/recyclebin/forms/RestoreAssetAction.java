@@ -62,6 +62,7 @@ public class RestoreAssetAction extends MMBaseFormlessAction {
             Workflow.create(objectNode, null);
          }
       }
+      addToRequest(request, "fresh", "true");
       return mapping.findForward(SUCCESS);
    }
 }
