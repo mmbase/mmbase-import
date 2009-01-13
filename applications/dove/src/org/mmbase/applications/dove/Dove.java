@@ -55,7 +55,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.99 2008-11-17 14:28:12 michiel Exp $
+ * @version $Id: Dove.java,v 1.100 2009-01-13 11:04:13 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -605,11 +605,11 @@ public class Dove extends AbstractDove {
             }
 
             // plural name
-            elm = addContentElement(PLURALNAME,nm.getGUIName(NodeManager.GUI_PLURAL, locale), out);
+            elm = addContentElement(PLURALNAME, nm.getGUIName(NodeManager.GUI_PLURAL, locale), out);
             if (lang != null) elm.setAttribute(ELM_LANG, lang);
 
                 // description
-            elm = addContentElement(DESCRIPTION,nm.getDescription(locale), out);
+            elm = addContentElement(DESCRIPTION, nm.getDescription(locale), out);
             if (lang != null) elm.setAttribute(ELM_LANG, lang);
 
             // parent
@@ -652,14 +652,17 @@ public class Dove extends AbstractDove {
                     if (lang != null) elm.setAttribute(ELM_LANG, lang);
                     // guitype
                     DataType dataType = fielddef.getDataType();
+                    // The written type will be the first non-anonymous origin (or self).
                     String baseType = dataType.getBaseTypeIdentifier();
-                    String specialization = dataType.getName();
-                    if ("".equals(specialization)) {
-                        DataType origin = dataType.getOrigin();
-                        if (origin != null) {
-                            specialization = origin.getName();
-                        }
+
+                    DataType specializationDataType = dataType;
+                    String specialization = specializationDataType.getName();
+                    while (specialization == null || "".equals(specialization)) {
+                        specializationDataType = specializationDataType.getOrigin();
+                        if (specializationDataType == null) break;
+                        specialization = specializationDataType.getName();
                     }
+                    log.debug("Found " + specialization);
                     if (getOptionList(dataType, nm.getCloud(), null, fielddef) != null) {
                         specialization = "enum";
                     } else if (dataType instanceof StringDataType) {
@@ -1327,10 +1330,7 @@ public class Dove extends AbstractDove {
                 if (originalValues != null) {
                     if(!putChangeNode(alias, values, originalValues, aliases, newElement, cloud)) return false;
                 } else {
-                    // give error not a org. node
-                    Element err = addContentElement(ERROR,"Node not defined in original tag, node number : " + alias, out);
-                    err.setAttribute(ELM_TYPE, IS_SERVER);
-                    return false;
+                    throw new RuntimeException("Node not defined in original tag, node number : " + alias);
                 }
             } else {
                 // give error not a org. node
