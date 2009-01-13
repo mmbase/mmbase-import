@@ -116,12 +116,17 @@ public abstract class AbstractUploadAction extends MMBaseAction {
    }
 
    public boolean maxFileSizeBiggerThan(int fileSize) {
-      int maxFileSize = 16 * 1024 * 1024; // Default value of 16MB
+      int maxFileSize = 8 * 1024 * 1024; // Default value of 16MB
       try {
          maxFileSize = Integer.parseInt(PropertiesUtil.getProperty(UPLOADED_FILE_MAX_SIZE)) * 1024 * 1024;
+         // check invalid value of UPLOADED_FILE_MAX_SIZE
+         if (maxFileSize <= 0) {
+         //   PropertiesUtil.setProperty(UPLOADED_FILE_MAX_SIZE, "8");
+            maxFileSize = 8 * 1024 * 1024; // set default value of 16MB
+         }
       } catch (NumberFormatException e) {
          log.warn("System property '" + UPLOADED_FILE_MAX_SIZE + "' is not set. Please add it (units = MB).");
       }
-      return (fileSize < maxFileSize);
+      return (fileSize <= maxFileSize);
    }
 }
