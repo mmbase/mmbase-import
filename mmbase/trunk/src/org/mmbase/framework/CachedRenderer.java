@@ -51,7 +51,7 @@ import org.mmbase.util.logging.Logging;
 ]]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: CachedRenderer.java,v 1.5 2009-01-13 20:28:07 michiel Exp $
+ * @version $Id: CachedRenderer.java,v 1.6 2009-01-13 20:59:58 michiel Exp $
  * @since MMBase-1.9.1
 
  */
@@ -114,14 +114,37 @@ public class CachedRenderer extends WrappedRenderer {
         return k.toString();
     }
 
+    private static final String CACHE_EXTENSION = ".cache";
+    private static final String ETAG_EXTENSION = ".etag";
+
     protected File getCacheFile(Parameters blockParameters, RenderHints hints) {
         File dir = new File(MMBase.getMMBase().getDataDir(), directory);
         File componentDir = new File(dir, getBlock().getComponent().getName());
         File blockDir = new File(componentDir, getBlock().getName());
         blockDir.mkdirs();
-        String key = getBlock().getName() + "_" + getKey(blockParameters) + "_" + hints.getWindowState() + "_" + hints.getId() + "_" + hints.getStyleClass() + ".cache";
+        String key = getBlock().getName() + "_" + getKey(blockParameters) + "_" + hints.getWindowState() + "_" + hints.getId() + "_" + hints.getStyleClass() + CACHE_EXTENSION;
         return new File(blockDir, key);
 
+    }
+
+    protected File getETagFile(File file) {
+        String name = file.getName();
+        File dir = file.getParentFile();
+        String tagName = name.substring(0, name.length() - CACHE_EXTENSION.length());
+        return new File(dir, tagName + ETAG_EXTENSION);
+    }
+
+    protected void writeETag(File f, String etag) throws IOException {
+        Writer fw = new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
+        fw.write(etag);
+        fw.close();
+    }
+
+    protected String readETag(File f) throws IOException {
+        BufferedReader fr = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+        String t = fr.readLine();
+        fr.close();
+        return t;
     }
 
     protected void renderFile(File f , Writer w) throws FrameworkException, IOException {
@@ -156,17 +179,28 @@ public class CachedRenderer extends WrappedRenderer {
                     renderFile(cacheFile, w);
                 }
             } else {
-                // user last modified
+                // use last modified or etag.
                 URI uri = getWraps().getUri(blockParameters, hints);
                 if (uri == null) throw new FrameworkException("" + getWraps() + " did not return an URI, and cannot be cached using getLastModified");
                 URLConnection connection =  uri.toURL().openConnection();
                 connection.setConnectTimeout(timeout);
-                long modified = connection.getLastModified();
-                if (! cacheFile.exists() || (cacheFile.lastModified() < modified)) {
-                    log.service("Rendering " + uri + " because " + cacheFile + " older than " + new Date(modified));
-                    renderWrappedAndFile(cacheFile, blockParameters, w, hints);
+                String etag = connection.getHeaderField("ETag");
+                if (etag != null) {
+                    File etagFile = getETagFile(cacheFile);
+                    if ( ! cacheFile.exists() || ! etagFile.exists() || ! etag.equals(readETag(etagFile))) {
+                        renderWrappedAndFile(cacheFile, blockParameters, w, hints);
+                        writeETag(etagFile, etag);
+                    } else {
+                        renderFile(cacheFile, w);
+                    }
                 } else {
-                    renderFile(cacheFile, w);
+                    long modified = connection.getLastModified();
+                    if (! cacheFile.exists() || (cacheFile.lastModified() < modified)) {
+                        log.service("Rendering " + uri + " because " + cacheFile + " older than " + new Date(modified));
+                        renderWrappedAndFile(cacheFile, blockParameters, w, hints);
+                    } else {
+                        renderFile(cacheFile, w);
+                    }
                 }
             }
         } catch (MalformedURLException mfe) {
