@@ -6,13 +6,18 @@
 <html:html xhtml="true">
 <cmscedit:head title="recyclebin.title">
   <script src="recyclebin.js" type="text/javascript"></script>
+  <c:if test="${not empty fresh && fresh == 'true'}">
+     <script type="text/javascript">     
+       refreshChannels();
+     </script>
+  </c:if>
 </cmscedit:head>
 <mm:import externid="direction" jspvar="direction">up</mm:import>
 <mm:import externid="sortBy" jspvar="sortBy">title</mm:import>
 <c:set var="direction">
    <c:out value="${direction =='up'?'down':'up' }"/>
 </c:set>
-<body onload="refreshChannels();">
+<body>
 <div class="tabs">
     <!-- active TAB -->
    <div class="tab_active">

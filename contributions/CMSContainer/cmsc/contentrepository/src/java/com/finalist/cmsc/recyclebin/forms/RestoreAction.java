@@ -69,6 +69,7 @@ public class RestoreAction extends MMBaseFormlessAction {
          }
 
       }
+      addToRequest(request, "fresh", "true");
       return mapping.findForward(SUCCESS);
    }
 }

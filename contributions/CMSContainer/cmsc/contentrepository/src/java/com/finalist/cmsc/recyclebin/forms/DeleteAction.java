@@ -65,6 +65,7 @@ public class DeleteAction extends MMBaseFormlessAction {
          }
          objectNode.delete(true);
       }
+      addToRequest(request, "fresh", "true");
       if (type.equalsIgnoreCase("content")) {
          return mapping.findForward("content");
       } else {
