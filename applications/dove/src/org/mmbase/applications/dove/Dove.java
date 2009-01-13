@@ -55,7 +55,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.100 2009-01-13 11:04:13 michiel Exp $
+ * @version $Id: Dove.java,v 1.101 2009-01-13 14:24:49 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -662,7 +662,7 @@ public class Dove extends AbstractDove {
                         if (specializationDataType == null) break;
                         specialization = specializationDataType.getName();
                     }
-                    log.debug("Found " + specialization);
+                    log.debug("Found for " + fname + ": " +  specialization);
                     if (getOptionList(dataType, nm.getCloud(), null, fielddef) != null) {
                         specialization = "enum";
                     } else if (dataType instanceof StringDataType) {
@@ -700,6 +700,7 @@ public class Dove extends AbstractDove {
                         }
                     }
                     String guiType = baseType + "/" + specialization;
+                    log.debug("gui found for " + fname + " " + guiType);
                     addContentElement(GUITYPE, guiType, field);
 
                     int maxLength = fielddef.getMaxLength();
