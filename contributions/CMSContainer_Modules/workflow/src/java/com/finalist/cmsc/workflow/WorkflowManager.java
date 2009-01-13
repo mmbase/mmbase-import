@@ -1,11 +1,11 @@
 package com.finalist.cmsc.workflow;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Cloud;
@@ -14,7 +14,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.NotFoundException;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.module.core.MMBase;
@@ -25,6 +24,7 @@ import org.mmbase.storage.search.CompositeConstraint;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.storage.search.FieldValueConstraint;
+import org.mmbase.storage.search.FieldValueInConstraint;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.Logger;
@@ -375,9 +375,6 @@ public abstract class WorkflowManager {
       NodeManager workflow = getManager();
       Node wfItem = workflow.createNode();
       wfItem.setStringValue(TYPE_FIELD, type);
-      if(nodetype!=null && isExtendedNodetype(nodetype)){
-         nodetype=getParentNodetype(cloud, nodetype);
-      }
       wfItem.setStringValue(NODETYPE_FIELD, nodetype);
       changeWorkflow(wfItem, status, remark);
 
@@ -482,10 +479,10 @@ public abstract class WorkflowManager {
    protected void rejectWorkflow(Node wfItem, String remark) {
       if (isStatusPublished(wfItem)) {
          if (Workflow.isAcceptedStepEnabled()) {
-        	 changeWorkflowFailPublished(wfItem, STATUS_APPROVED,remark);
+          changeWorkflowFailPublished(wfItem, STATUS_APPROVED,remark);
          }
          else {
-        	 changeWorkflowFailPublished(wfItem, STATUS_FINISHED,remark);
+          changeWorkflowFailPublished(wfItem, STATUS_FINISHED,remark);
          }
       }
       else {
@@ -666,11 +663,16 @@ public abstract class WorkflowManager {
       return constraint;
    }
 
-   public static Constraint getNodetypeConstraint(NodeQuery query, String nodetype) {
+   public static Query addNodetypeConstraint(Cloud cloud, NodeQuery query, String nodetype) {
+      Query typesQuery = cloud.getNodeManager(nodetype).createQuery();
+      NodeList types = typesQuery.getList();
+      List<String> typeNames = new ArrayList<String>(); 
+      for (int i = 0; i < types.size(); i++) {
+         typeNames.add(((Node)types.get(i)).getNodeManager().getName());
+      }
       Field field = getManager(query.getCloud()).getField(NODETYPE_FIELD);
-      FieldValueConstraint constraint = query.createConstraint(query.getStepField(field), FieldCompareConstraint.EQUAL,
-            nodetype);
-      return constraint;
+      FieldValueInConstraint constraint = query.createConstraint(query.getStepField(field), new TreeSet<String>(typeNames));
+      return query;
    }
    
    public static Query createStatusQuery(Cloud cloud) {
@@ -695,29 +697,6 @@ public abstract class WorkflowManager {
       clone.addAggregatedField(step3, workflowManager.getField(NUMBER_FIELD), AggregatedField.AGGREGATION_TYPE_COUNT);
 
       return clone;
-   }
-   
-   private String getParentNodetype(Cloud cloud, String nodetypeStr) {
-      try {
-         NodeManager parentManager = cloud.getNodeManager(nodetypeStr).getParent();
-         while(isExtendedNodetype(parentManager.getName())){
-            parentManager = parentManager.getParent();
-         }
-         return parentManager.getName();
-      } catch (NotFoundException nfe) {
-         // Ran out of NodeManager parents
-      }
-      return null;
-   }
-
-   private boolean isExtendedNodetype(String nodetypeStr) {
-      List<String> parentNodetypes=new ArrayList<String>();
-      Collections.addAll(parentNodetypes, "article", "banners", "link", "faqitem", "images", "attachments", "urls");
-      if(parentNodetypes.contains(nodetypeStr)){
-         return false;
-      }else {
-         return true;
-      }
    }
 
 
