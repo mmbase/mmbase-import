@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
   ]]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: EditwizardRenderer.java,v 1.17 2009-01-12 21:25:49 michiel Exp $
+ * @version $Id: EditwizardRenderer.java,v 1.18 2009-01-13 08:24:21 michiel Exp $
  * @since MMBase-1.9
  */
 public class EditwizardRenderer extends IFrameRenderer {
@@ -53,6 +53,10 @@ public class EditwizardRenderer extends IFrameRenderer {
     }
     public void setWizard(String w) {
         wizard = w;
+    }
+
+    public Parameter[] getParameters() {
+        return new Parameter[] {new Parameter.Wrapper(super.getParameters()), Parameter.LOCALE};
     }
 
     /**

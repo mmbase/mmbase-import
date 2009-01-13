@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * Abstract renderer implementation which implements getType and getBlock.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRenderer.java,v 1.17 2008-09-04 21:20:01 michiel Exp $
+ * @version $Id: AbstractRenderer.java,v 1.18 2009-01-13 08:24:21 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractRenderer implements Renderer {
@@ -50,6 +50,9 @@ abstract public class AbstractRenderer implements Renderer {
 
     public java.net.URI getUri() {
         return null;
+    }
+    public java.net.URI getUri(Parameters blockParameters, RenderHints hints) {
+        return getUri();
     }
 
     /**
