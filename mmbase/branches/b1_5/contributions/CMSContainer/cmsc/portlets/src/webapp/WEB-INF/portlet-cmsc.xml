@@ -26,6 +26,7 @@
 		</supports>
 		<supported-locale>en</supported-locale>
 		<supported-locale>nl</supported-locale>
+      <supported-locale>zh</supported-locale>
 		<resource-bundle>com.finalist.cmsc.portlets.ContentChannelPortlet</resource-bundle>
 		<portlet-info>
 			<title>ContentChannelPortlet</title>
@@ -56,6 +57,7 @@
 		</supports>
 		<supported-locale>en</supported-locale>
 		<supported-locale>nl</supported-locale>
+      <supported-locale>zh</supported-locale>
 		<resource-bundle>com.finalist.cmsc.portlets.PortletSelectPortlet</resource-bundle>
 		<portlet-info>
 			<title>PortletSelectPorltlet</title>
@@ -87,6 +89,7 @@
 		</supports>
 		<supported-locale>en</supported-locale>
 		<supported-locale>nl</supported-locale>
+      <supported-locale>zh</supported-locale>
 		<resource-bundle>com.finalist.cmsc.portlets.MenuPortlet</resource-bundle>
 		<portlet-info>
 			<title>MenuPortlet</title>
@@ -119,6 +122,7 @@
 		</supports>
 		<supported-locale>en</supported-locale>
 		<supported-locale>nl</supported-locale>
+      <supported-locale>zh</supported-locale>
 		<resource-bundle>com.finalist.cmsc.portlets.ContentPortlet</resource-bundle>
 		<portlet-info>
 			<title>ContentPortlet</title>
@@ -149,6 +153,7 @@
 		</supports>
 		<supported-locale>en</supported-locale>
 		<supported-locale>nl</supported-locale>
+      <supported-locale>zh</supported-locale>
 		<resource-bundle>com.finalist.cmsc.portlets.RelatedContentPortlet</resource-bundle>
 		<portlet-info>
 			<title>RelatedContentPortlet</title>
@@ -179,6 +184,7 @@
 		</supports>
 		<supported-locale>en</supported-locale>
 		<supported-locale>nl</supported-locale>
+      <supported-locale>zh</supported-locale>
 		<resource-bundle>com.finalist.cmsc.portlets.IFramePortlet</resource-bundle>
 		<portlet-info>
 			<title>IFrame Portlet</title>
@@ -210,6 +216,7 @@
 		</supports>
 		<supported-locale>en</supported-locale>
 		<supported-locale>nl</supported-locale>
+      <supported-locale>zh</supported-locale>
 		<resource-bundle>com.finalist.cmsc.portlets.ServerSideIncludePortlet</resource-bundle>
 		<portlet-info>
 			<title>ServerSideInclude Portlet</title>
@@ -241,6 +248,7 @@
 		</supports>
 		<supported-locale>en</supported-locale>
 		<supported-locale>nl</supported-locale>
+      <supported-locale>zh</supported-locale>
 		<resource-bundle>com.finalist.cmsc.portlets.JspPortlet</resource-bundle>
 		<portlet-info>
 			<title>Jsp Portlet</title>
@@ -272,6 +280,7 @@
 		</supports>
 		<supported-locale>en</supported-locale>
 		<supported-locale>nl</supported-locale>
+      <supported-locale>zh</supported-locale>
 		<resource-bundle>com.finalist.cmsc.portlets.XsltPortlet</resource-bundle>
 		<portlet-info>
 			<title>JXslt Portlet</title>
