@@ -68,7 +68,7 @@ See http://www.MMBase.org/license
 	<postGoal name="java:compile">
 		<ant:available property="resource" file="${basedir}/resources"/>
 		<j:if test="${resource}">
-			<ant:native2ascii encoding="utf-8" src="${basedir}/resources" dest="${maven.build.dest}" includes="*"/>
+			<ant:native2ascii encoding="utf-8" src="${basedir}/resources" dest="${maven.build.dest}" includes="**/*.properties"/>
 		</j:if>
 	</postGoal>
 </project>
