@@ -46,7 +46,7 @@
 			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>stagingfragment</name>
-            <type key="false" notnull="true" size="40" state="persistent">STRING</type>
+            <type key="false" notnull="true" size="255" state="persistent">STRING</type>
          </db>
       </field>
 
