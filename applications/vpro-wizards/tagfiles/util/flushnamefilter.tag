@@ -31,12 +31,12 @@
         <%jspContext.setAttribute("cloud", cloud);%>
         <mm:node number="${nodenr}" notfound="skipbody">
             <c:set var="type" ><mm:nodeinfo type="type"/></c:set>
-                <jsp:useBean id="filter" class="nl.vpro.redactie.util.FlushNameTemplateBean"/>
+                <jsp:useBean id="filter" class="org.mmbase.applications.vprowizards.spring.cache.FlushNameTemplateBean"/>
                 <jsp:setProperty name="filter" property="template" value="${flushname}"/>
                 <jsp:setProperty name="filter" property="nodenr" value="${nodenr}"/>
                 <jsp:setProperty name="filter" property="type" value="${type}"/>
                 <jsp:setProperty name="filter" property="cloud" value="${cloud}"/>
-            <c:set var="result"><jsp:getProperty name="filter" property="processedTemplate"/></c:set>
+            <c:set var="result"><jsp:getProperty name="filter" property="template"/></c:set>
         </mm:node>
     </mm:cloud>
 </c:if>
