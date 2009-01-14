@@ -53,6 +53,10 @@ div.goals,div.problems {
   padding-top:5px;;
 }
 
+div.goals {
+	float: left;
+}
+
 div.student div.problems li,div.student div.goals li, div.problemsListCategorize li {
   width:100%;
   display:block;
