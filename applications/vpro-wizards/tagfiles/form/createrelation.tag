@@ -46,7 +46,7 @@
         <input type="hidden" name="actions[createRelation][${relationid}].sourceNodeRef" value="${referSource}" />
     </c:if>
     <c:if test="${not empty source}">
-        <input type="hidden" name="actions[createRelation][${relationid}].sourceNodeNumberr" value="${source}" />
+        <input type="hidden" name="actions[createRelation][${relationid}].sourceNodeNumber" value="${source}" />
     </c:if>
     <c:if test="${not empty referDestination}">
         <input type="hidden" name="actions[createRelation][${relationid}].destinationNodeRef" value="${referDestination}" />
