@@ -1393,3 +1393,9 @@ a.channeldelete {
    font-weight:bold;
    text-decoration:none;
 }
+.checkbox {
+  width:15px;
+  height:15px;
+  border:0px;
+  margin-bottom:4px;
+}

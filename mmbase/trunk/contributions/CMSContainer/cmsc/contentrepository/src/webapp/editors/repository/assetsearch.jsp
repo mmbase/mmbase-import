@@ -375,7 +375,7 @@
                   <th>
                      <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
                      <c:if test="${fn:length(results) >1}">
-                        <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'chk_');" value="on" name="selectall" />
+                        <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'chk_');" class="checkbox" value="on" name="selectall" />
                      </c:if>
                   </th>
                   <th><a href="javascript:orderBy('otype')" class="headerlink" ><fmt:message key="locate.typecolumn" /></a></th>
@@ -412,10 +412,10 @@
          <tr <mm:even inverse="true">class="swap"</mm:even>>
             <td style="white-space: nowrap;">
                   <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster' && fn:length(results) >1}">
-                      <input type="checkbox" value="permanentDelete:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+                      <input type="checkbox" value="permanentDelete:<mm:field name="number" />" class="checkbox" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
                   </c:if>
                   <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster') && fn:length(results) >1}">
-                    <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+                    <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" class="checkbox" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
                   </c:if>
                <%@ include file="searchIconsBar.jspf" %>
             </td>
