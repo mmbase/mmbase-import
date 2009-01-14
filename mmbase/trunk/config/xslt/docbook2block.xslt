@@ -19,7 +19,7 @@
   Could perhaps use nwalsh xslt but that seems a huge overkill. It should be rather simple, we probably use only a small subset of docbook.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: docbook2block.xslt,v 1.3 2009-01-13 21:30:49 michiel Exp $
+  @version: $Id: docbook2block.xslt,v 1.4 2009-01-14 08:51:01 michiel Exp $
   @since:   MMBase-1.9
 -->
 <xsl:stylesheet
@@ -34,6 +34,9 @@
 
   <xsl:output method="xml"
               omit-xml-declaration="yes" /> <!-- xhtml is a form of xml -->
+
+  <xsl:variable name="lowercase">abcdefghijklmnopqrstuvwxyz</xsl:variable>
+  <xsl:variable name="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
   <xsl:template match="article">
     <div class="mm_docbook" >
@@ -81,43 +84,45 @@
 
   <xsl:template match="programlisting">
     <pre id="{@id}">
-      <xsl:apply-templates select="text()|*" />
+      <xsl:apply-templates  />
     </pre>
   </xsl:template>
 
   <xsl:template match="para">
     <p>
-      <xsl:apply-templates select="text()|*" />
+      <xsl:apply-templates  />
     </p>
   </xsl:template>
 
   <xsl:template match="itemizedlist">
     <ul>
-      <xsl:apply-templates select="*" />
+      <xsl:apply-templates />
     </ul>
   </xsl:template>
 
   <xsl:template match="orderedlist">
     <ol>
-      <xsl:apply-templates select="*" />
+      <xsl:apply-templates />
     </ol>
   </xsl:template>
 
   <xsl:template match="listitem">
     <li>
-      <xsl:apply-templates select="*" />
+      <xsl:apply-templates />
     </li>
   </xsl:template>
 
   <xsl:template match="glosslist">
     <dl class="glossary">
-      <xsl:apply-templates select="*" />
+      <xsl:apply-templates />
     </dl>
   </xsl:template>
 
   <xsl:template match="glosslist">
     <dl>
-      <xsl:apply-templates select="*" />
+      <xsl:apply-templates>
+        <xsl:sort select="translate(glossterm, $lowercase, $uppercase)" />
+      </xsl:apply-templates>
     </dl>
   </xsl:template>
 
@@ -131,13 +136,13 @@
 
   <xsl:template match="glossterm">
     <dt>
-      <xsl:apply-templates select="*|text()" />
+      <xsl:apply-templates  />
     </dt>
   </xsl:template>
 
   <xsl:template match="glossdef">
     <dd>
-      <xsl:apply-templates select="*|text()" />
+      <xsl:apply-templates/>
     </dd>
   </xsl:template>
 
@@ -154,7 +159,7 @@
           </a>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:apply-templates select="*|text()" />
+          <xsl:apply-templates  />
         </xsl:otherwise>
       </xsl:choose>
     </p>
@@ -163,7 +168,7 @@
   <xsl:template match="ulink">
     <a>
       <xsl:attribute name="href"><xsl:value-of select="@url" /></xsl:attribute>
-      <xsl:apply-templates select="*|text()" />
+      <xsl:apply-templates />
     </a>
   </xsl:template>
 
