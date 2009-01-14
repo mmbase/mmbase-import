@@ -12,6 +12,7 @@
   <h2>1. <di:translate key="assessment.goals" /></h2>
   <mm:node number="$user">
     <mm:treefile write="false" page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
+      
       <mm-sr:relatednodes type="goals"
                           icondir="${_}"
                           role="posrel" orderby="posrel.pos" />
@@ -32,6 +33,7 @@
       </mm-sr:relatednodes>
     </mm:treefile>
   </mm:node>  
+  <input type="button" class="educationButton" value="opslaan" onclick="window.location.reload()"/>
   
   <!-- categorize problems -->
   <h2>3. <di:translate key="assessment.problems_category" /></h2>
