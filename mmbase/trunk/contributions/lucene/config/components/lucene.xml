@@ -2,10 +2,9 @@
 <component
     name="lucene"
     xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
-
-
 
   <description xml:lang="nl">MMBase lucene</description>
   <description xml:lang="en">MMBase lucene</description>
@@ -33,6 +32,22 @@
     <title xml:lang="nl">Lucene-zoeken</title>
     <body jsp="search.jspx">
       <param name="index" />
+    </body>
+  </block>
+
+
+  <block
+      classification="mmbase.documentation"
+      name="documentation"
+      mimetype="text/html" >
+    <title xml:lang="en">Lucene documentation</title>
+    <title xml:lang="nl">Documentatie voor Lucene</title>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="module">contributions</param>
+        <param name="docbook">lucene/documentation/lucene.xml</param>
+      </class>
     </body>
   </block>
 
