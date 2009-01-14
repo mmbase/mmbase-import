@@ -183,7 +183,7 @@
 						<th></th>
 					</tr>
             </c:if>
-					<tbody class="hover">
+					<tbody id="imgList" class="hover"  href="">
 						<c:set var="useSwapStyle">true</c:set>
 						<mm:listnodes referid="results">
 							<mm:field name="description" escape="js-single-quotes"
@@ -202,7 +202,7 @@
                         <a href="javascript:showInfo(<mm:field name="number" />)">
                               <img src="../gfx/icons/info.png" alt="<fmt:message key="imagesearch.icon.info" />" title="<fmt:message key="imagesearch.icon.info" />" /></a>
 								</td>
-                        <td onMouseDown="objClick(this);">
+                        <td onMouseDown="initParentHref(this.parentNode)">
                            <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
                            <mm:field id="title" write="false" name="title"/>
                            <c:if test="${assettype == 'urls'}">
@@ -213,13 +213,12 @@
                            </c:if>
                            ${title}
                         </td>
-                        <td onMouseDown="objClick(this);">
+                        <td onMouseDown="initParentHref(this.parentNode)">
                            ${title}
                         </td>
-								<td onMouseDown="objClick(this);"><mm:field name="itype" /></td>
-								<td onMouseDown="objClick(this);"><a
-									href="javascript:showInfo(<mm:field name="number" />)"><img
-									src="<mm:image template="s(120x100)"/>" alt="" /></a></td>
+								<td onMouseDown="initParentHref(this.parentNode)"><mm:field name="itype" /></td>
+								<td  onMouseDown="initParentHref(this.parentNode)"><img
+									src="<mm:image template="s(120x100)"/>" alt="" /></td>
 							</tr>
 							<c:set var="useSwapStyle">${!useSwapStyle}</c:set>
 						</mm:listnodes>
@@ -251,7 +250,7 @@
 		</div>
       </c:if>
 </div>
-       <div id="commandbuttonbar" class="buttonscontent">
+       <div id="commandbuttonbar" class="buttonscontent" style="clear:both">
             <div class="page_buttons_seperator">
                <div></div>
             </div>
