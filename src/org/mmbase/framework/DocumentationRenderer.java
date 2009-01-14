@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * render the documenation from the xml's in a/the jar.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DocumentationRenderer.java,v 1.2 2009-01-13 21:23:52 michiel Exp $
+ * @version $Id: DocumentationRenderer.java,v 1.3 2009-01-14 09:10:18 michiel Exp $
  * @since MMBase-1.9.1
 
  */
@@ -43,6 +43,12 @@ public class DocumentationRenderer extends CachedRenderer {
 
     public void setDocbook(String s) {
         docbook = s;
+    }
+    public void setModule(String m) {
+        module = m;
+    }
+    public void setRepository(String r) {
+        repository = r;
     }
     public Parameter[] getParameters() {
         return new Parameter[] {new Parameter<String>("docbook", String.class)};
