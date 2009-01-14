@@ -4,6 +4,7 @@
     defaultblock="welcome"
     version="9"
     xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component
                         http://www.mmbase.org/xmlns/component.xsd">
@@ -116,6 +117,11 @@
          mimetype="text/html">
     <title xml:lang="en">Functions</title>
     <title xml:lang="nl">Functies</title>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/style/css/xmlverbatim.css" type="text/css" />]]></param>
+      </class>
+    </head>
     <body jsp="functions.jspx">
       <param name="type" />
     </body>
@@ -528,11 +534,7 @@
   <block name="glossary"
          classification="mmbase.documentation"
          mimetype="text/html">
-    <head>
-      <class name="org.mmbase.framework.StringRenderer">
-        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/style/css/docbook.css" type="text/css" />]]></param>
-      </class>
-    </head>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
         <param name="docbook">glossary.xml</param>
@@ -543,11 +545,7 @@
 
   <block name="docbook"
          mimetype="text/html">
-    <head>
-      <class name="org.mmbase.framework.StringRenderer">
-        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/style/css/docbook.css" type="text/css" />]]></param>
-      </class>
-    </head>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
         <param name="includeRenderTime">xml-comments</param>
