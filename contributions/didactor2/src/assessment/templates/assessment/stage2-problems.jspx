@@ -10,9 +10,8 @@
   <h2><di:translate key="assessment.problems" /></h2>
 
   <div>
-   
-      <p>Maak een lijst van je zorgen en problemen.</p>
 
+      <p>Maak een lijst van je zorgen en problemen.</p>
   </div>
   
   <mm:node number="${user}">

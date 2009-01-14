@@ -4,12 +4,12 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
-    style="clear: both;"
-    class="closelesson">
+    class="submitItems">
   <jsp:output omit-xml-declaration="true" />
 
   <mm:import id="currentlesson" from="session" externid="currentlesson_${user}_${education}" />
 
+	<input type="button" class="educationButton" value="opslaan" onclick="window.location.reload()"/><jsp:text> | </jsp:text>
 
   <c:if test="${! empty currentlesson}">
     <mm:node referid="currentlesson" id="currentlesson" />
@@ -28,10 +28,12 @@
                 <input type="hidden" name="coachmode" value="false"  />
                 <input type="hidden" name="lesson" value="${currentlesson}"  />
                 <di:translate key="assessment.close_and_send_to_coach" arg0="${currentlesson.name}">
-                  <input type="submit" class="formbutton" value="${_}" />
+                  
+                  <input type="submit" class="educationButton" value="${_}" /><jsp:text> | </jsp:text>
                 </di:translate>
               </form>
             </mm:treefile>
+			
 
 
           </c:when>
@@ -42,4 +44,20 @@
       </mm:function>
     </mm:node>
   </c:if>
+  
+       						  <mm:link page="/education/">
+     						 	<c:if test="${!empty currentlesson}">
+     						 		<mm:node number="${currentlesson}">
+     						 		<c:set var="learnobject" value="${currentlesson}" />
+     						 			<!-- TODO: find a nicer/proper way to do this -->
+     						 			<mm:relatednodes type="xmlcontent" constraints="lower(name) = 'opdrachten'">
+     						 					<mm:node>
+     						 						<c:set var="learnobject" value="${_node}" />
+     						 					</mm:node>
+     						 			</mm:relatednodes>
+     						 		</mm:node>
+     						 		<mm:param name="learnobject">${learnobject}</mm:param>
+     						 	</c:if>
+     						   <input type="button" class="educationButton" value="terug naar de les" onclick="window.location='${_}'" name="" />
+     						 </mm:link>
 </div>

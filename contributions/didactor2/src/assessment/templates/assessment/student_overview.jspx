@@ -7,7 +7,7 @@
   <jsp:output omit-xml-declaration="true" />
 
 
-  <mm:import externid="stage">stage1-goals_problems</mm:import>
+  <mm:import externid="stage">stage2-overview</mm:import>
 
 
   <mm:node number="${education}">
