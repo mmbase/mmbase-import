@@ -47,27 +47,48 @@ div.student ol {
   margin-top:0;
 }
 
-div.student div.problems {
-}
-
 div.goals,div.problems {
-  display:block;
-  clear:left;
+ 
+	padding-left: 5px;
   padding-top:5px;;
 }
 
-div.student div.problems li,div.student div.goals li {
+div.student div.problems li,div.student div.goals li, div.problemsListCategorize li {
   width:100%;
   display:block;
-  float:left;
-  clear:left;
+ 
   list-style-type:none;
-  border:solid 1px white;
+  margin-bottom: 2px;
+  
+}
+
+div.problemsListCategorize {
+	padding-left: 5px;
+}
+div.problemsListCategorize li {
+	height: 40px;
 }
 
 div.student a.create {
-  float:left;
-  clear:left;
+
+}
+
+div.problemsListCategorize select, div.selectTroublesSpacer {
+	float: left;
+	width: 222px;
+	margin-bottom: 5px;
+	
+}
+
+div.selectTroublesSpacer {
+	height: 20px;
+}
+
+div.problemItemCategories {
+	display: block;
+	
+	margin-top: 2px;
+	
 }
 
 div.problems.stage3 .list .mm_check_error {
@@ -83,13 +104,13 @@ div.problems.stage3 h4 {
 }
 
 div.problems.stage3 .list ol li input,div.problems.stage3 .list ol li select {
-  float:left;
-  display:block;
-  margin-right:10px;
+	clear: left;
 }
 
 div.problems .mm_f_name,div.goals .mm_f_name {
-  width:475px;
+	background-color: white;
+  width:440px;
+ 	
 }
 
 div.problems.stage3 .mm_f_name {
@@ -110,6 +131,7 @@ div.problems.stage3 .mm_dt_didactor_assessment_troubles {
 
 .problemName {
   width:220px;
+  padding-left: 5px;
 }
 
 .learnblockItemsTitle {
@@ -128,8 +150,13 @@ h4.learnblockItems {
   font-weight:bold;
 }
 
-h2.problemTypes {
-  margin:0;
+td.problemHeader {
+	width: 50%;
+}
+
+td.problemTypes {
+  font-weight: bold;
+  width: 450px;
 }
 
 .closelesson input.formbutton {

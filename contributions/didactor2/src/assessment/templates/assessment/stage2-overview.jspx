@@ -1,0 +1,80 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    class="">
+  <jsp:output omit-xml-declaration="true" />
+
+
+  <h2>1. Echt belangrijk in mijn leven is</h2>
+  <div class="goals">
+  <mm:node number="$user">
+  	<ol>
+      <mm:relatednodes type="goals" role="posrel" orderby="posrel.pos">
+      	<mm:node>
+      		<li><mm:field name="name" /><jsp:text> </jsp:text></li>
+      	</mm:node>
+      </mm:relatednodes>
+    </ol>
+  </mm:node>
+	</div>
+
+  <!--
+      Now the problems, divided per type.
+  -->
+
+ 
+  <table>
+
+    <mm:node number="${education}">
+      <mm:import id="blocknames" escape="text/plain">
+        <!-- cache the block names, because they are repeated for every problem type -->
+        <mm:nodelistfunction name="lessons" id="learnBlock">
+            <!--
+                If a relation learnBlock -classrel->user exists, then that means that this lesson is marked 'closed' (by this module)
+            -->
+            <mm:relation to="${user}" role="classrel" searchdir="source" notfound="null">
+              <td class="learnblockItemsTitle ${empty _node ? '' : 'closed'}">
+                <mm:field name="name" node="learnBlock" />
+              </td>
+            </mm:relation>
+        </mm:nodelistfunction>
+        <td><jsp:text> </jsp:text></td>
+      </mm:import>
+    </mm:node>
+
+		<tr>
+    	<td class="problemHeader"><h2>2. Mijn zorgen en problemen</h2></td>
+    	<td class="problemHeader" colspan="7"><h2>3. Hoeveel last had ik er van</h2></td>
+    </tr>
+
+    <mm:listnodes orderby="pos" type="problemtypes">
+      <tr class="problemItems">
+        <td class="problemTypes"><di:translate key="assessment.${_node.key}" /></td>
+        <mm:write referid="blocknames" escape="text/plain"/>
+      </tr>
+      <mm:import externid="sub" />
+      <mm:import externid="stage" />
+
+      <mm:relatednodescontainer path="related,problems,posrel,people" element="problems">
+        <mm:addnode element="people" number="${user}" />
+        <mm:sortorder field="posrel.pos" />
+        <mm:size id="size" write="false"/>
+        <c:if test="${size eq 0}">
+          <tr class="problemItem"><td colspan="7">--</td></tr>
+        </c:if>
+        <mm:relatednodes>
+          <mm:include page="/assessment/matrix.div.jspx" referids="sub?,stage?,_node@source" />
+          <tr><td colspan="7"><jsp:text> </jsp:text></td></tr>
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
+      <tr class="problemTypeSpacer"><td colspan="7"><jsp:text> </jsp:text></td></tr>
+    </mm:listnodes>
+
+  </table>
+	
+
+
+</div>
