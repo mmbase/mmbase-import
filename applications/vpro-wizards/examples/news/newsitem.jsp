@@ -19,7 +19,7 @@
     <form:container nodetype="news">
         <form:createrelation source="${param.parentnodenr}" referDestination="new" role="${param.relationrole}"/>
         <form:showfield field="number"/>
-        <form:datefield field="date" fieldname="Publicatie datum"/>
+        <form:datefield field="date" fieldname="Publicatie datum" defaultvalue="now"/>
         <form:textfield field="title"/>
         <form:textfield field="subtitle"/>
         <form:textareafield field="intro"/>
