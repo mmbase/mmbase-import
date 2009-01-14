@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -31,7 +32,7 @@ public class ImageUploadAction extends AbstractUploadAction {
       String exceed = "yes";
       int nodeId = 0;
 
-      if (parentchannel.equalsIgnoreCase(ALL)) {
+      if (parentchannel.equalsIgnoreCase(ALL) || StringUtils.isEmpty(parentchannel)) {
          parentchannel = (String) request.getSession().getAttribute(CREATION);
       }
       if (isImage(file.getFileName())) {
@@ -54,6 +55,9 @@ public class ImageUploadAction extends AbstractUploadAction {
          } else {
             exist = "0";
          }
+      } else {
+         exist = "0";
+         exceed = "no";
       }
       return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?uploadAction=select&exist=" + exist
             + "&exceed=" + exceed + "&channelid=" + parentchannel + "&uploadedNodes=" + nodeId, true);
