@@ -109,7 +109,7 @@
     <tr>
         <th><% if (role != null && SecurityUtil.isWriter(role)) { %>
         <c:if test="${fn:length(elements) >1}">
-        <input type="checkbox"  name="selectall"  onclick="selectAll(this.checked, 'contentForm', 'chk_');" value="on"/>
+        <input type="checkbox"  name="selectall" class="checkbox" onclick="selectAll(this.checked, 'contentForm', 'chk_');" value="on"/>
         </c:if>
         <% } %>
         </th>
@@ -140,7 +140,7 @@
     <td style="white-space: nowrap;">
     <% if (role != null && SecurityUtil.isWriter(role)) { %>
       <c:if test="${fn:length(elements) >1}">
-      <input type="checkbox"  name="chk_<mm:field name="number" />" value="<mm:field name="number" />" onClick="document.forms['contentForm'].elements.selectall.checked=false;"/>
+      <input type="checkbox"  name="chk_<mm:field name="number" />" class="checkbox" value="<mm:field name="number" />" onClick="document.forms['contentForm'].elements.selectall.checked=false;"/>
       </c:if>
     <% } %>
      <a href="javascript:callEditWizard('<mm:field name="number" />');"

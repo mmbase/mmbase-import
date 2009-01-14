@@ -356,11 +356,11 @@
                         <input type="hidden" name="channelnumber" value="<mm:write referid="linktochannel"/>" />
                         <input type="hidden" name="channel" value="<mm:write referid="linktochannel"/>" />
                         <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>  
-                         <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'chk_');" value="on" name="selectall" />
+                         <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'chk_');" class="checkbox" value="on" name="selectall" />
                      </mm:compare>
                      <mm:compare referid="action" value="link" inverse="true">
                      <c:if test="${fn:length(results) >1}">
-                      <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'chk_');" value="on" name="selectall" />
+                      <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'chk_');" class="checkbox" value="on" name="selectall" />
                      </c:if>
                      </mm:compare>
                   </th>
@@ -405,14 +405,14 @@
                <td style="white-space: nowrap;">
                <cmsc:rights nodeNumber="${creationRelNumber}" var="rights"/>
                <mm:compare referid="action" value="link">
-                   <input type="checkbox" value="<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+                   <input type="checkbox" value="<mm:field name="number" />" class="checkbox" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
                </mm:compare>
                <mm:compare referid="action" value="link" inverse="true">
                   <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster' && fn:length(results) >1}">
-                      <input type="checkbox" value="permanentDelete:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+                      <input type="checkbox" value="permanentDelete:<mm:field name="number" />" class="checkbox" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
                   </c:if>
                   <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster') && fn:length(results) >1}">
-                    <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
+                    <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" class="checkbox" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
                   </c:if>
                </mm:compare>    
               
