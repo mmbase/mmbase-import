@@ -52,7 +52,7 @@ import org.mmbase.util.logging.Logging;
 ]]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: CachedRenderer.java,v 1.7 2009-01-13 21:23:52 michiel Exp $
+ * @version $Id: CachedRenderer.java,v 1.8 2009-01-14 09:09:51 michiel Exp $
  * @since MMBase-1.9.1
 
  */
@@ -162,6 +162,9 @@ public class CachedRenderer extends WrappedRenderer {
         }
     }
 
+    /**
+     * Renders the wrapped renderer, and writes the result to both a file, and to the writer.
+     */
     protected void renderWrappedAndFile(File f, Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException, IOException  {
         writeRenderTime(new Date(), w);
         Writer fw = new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
