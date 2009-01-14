@@ -99,7 +99,7 @@
                   </select>
                   <div style="padding-left:100px;display:inline;font-size:12px;">
                      <c:if test="${show eq 'thumbnail'}">
-                        <input type="checkbox" name="showImageOnly" id="chk_showImageOnly" <c:if test="${imageOnly eq 'yes'}">checked="checked"</c:if> onclick="javascript:showImageOnly()"/><fmt:message key="asset.image.show"/>
+                        <input type="checkbox" name="showImageOnly" class="checkbox" id="chk_showImageOnly" <c:if test="${imageOnly eq 'yes'}">checked="checked"</c:if> onclick="javascript:showImageOnly()"/><fmt:message key="asset.image.show"/>
                      </c:if>
                   </div>
                </div>
@@ -133,7 +133,7 @@
                         <tr>
                            <th><% if (role != null && SecurityUtil.isWriter(role)) { %>
                                  <c:if test="${fn:length(elements) >1}">
-                                  <input type="checkbox"  name="selectall"  onclick="selectAll(this.checked, 'assetForm', 'chk_');" value="on"/></c:if> <% } %></th>
+                                  <input type="checkbox"  name="selectall" class="checkbox"  onclick="selectAll(this.checked, 'assetForm', 'chk_');" value="on"/></c:if> <% } %></th>
                            <th><a href="javascript:sortBy('Asset', 'otype','<mm:write referid="parentchannel" />')" class="headerlink">
                                  <fmt:message key="asset.typecolumn"/></a></th>
                            <th><a href="javascript:sortBy('Asset', 'title','<mm:write referid="parentchannel" />')" class="headerlink">
@@ -161,7 +161,7 @@
                            <td style="white-space: nowrap;">
                               <% if (role != null && SecurityUtil.isWriter(role)) { %>
                                  <c:if test="${fn:length(elements) >1}">
-                                    <input type="checkbox"  name="chk_<mm:field name="number" />" value="<mm:field name="number" />" onClick="document.forms['contentForm'].elements.selectall.checked=false;"/>
+                                    <input type="checkbox"  name="chk_<mm:field name="number" />" class="checkbox" value="<mm:field name="number" />" onClick="document.forms['contentForm'].elements.selectall.checked=false;"/>
                                  </c:if>
                               <% } %>
                               <%@ include file="icons.jspf"%>
