@@ -6,15 +6,12 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
   <mm:import externid="startnode" required="true" />
-  <mm:import externid="branchPath" required="true" />
 
   <mm:content postprocessor="none">
     <mm:cloud method="delegate">
       <mm:node id="sn" number="${startnode}">
         <mm:write request="b" value="" />
-        <mm:include page="newfromtree.jsp">
-          <mm:param name="branchPath">${branchPath}</mm:param>
-        </mm:include>
+        <mm:include page="newfromtree.jsp" />
 
 
         <mm:treecontainer
@@ -34,7 +31,6 @@
                     <mm:treeinclude page="/education/wizards/show/${_}.jspx"
                                     objectlist="$includePath"
                                     attributes="status@b"
-                                    referids="branchPath"
                                     debug="html"
                                     />
                   </li>
@@ -46,7 +42,6 @@
                                   objectlist="$includePath"
                                   attributes="status@b"
                                   debug="html"
-                                  referids="branchPath"
                                   >
                   </mm:treeinclude>
                 </mm:treehaspage>
