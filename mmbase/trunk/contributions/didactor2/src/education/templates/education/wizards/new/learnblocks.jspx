@@ -1,36 +1,42 @@
-<jsp:root version="2.0"
-          xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-          xmlns:di="http://www.didactor.nl/ditaglib_1.0">
+<jsp:root
+    version="2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
   <mm:import externid="wizardjsp" from="request" />
-  <mm:import externid="branchPath" />
-  <mm:import  externid="b" from="request" />
 
-  <di:icon name="new_education" />
-  <mm:listrelations role="posrel" type="learnobjects" max="1" orderby="pos" directions="down">
-    <mm:field name="pos" id="maxpos" write="false" />
-  </mm:listrelations>
 
-  <mm:link referid="wizardjsp" referids="_node@origin">
-    <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
-    <mm:param name="objectnumber">new</mm:param>
-    <mm:param name="newpos">${maxpos + 1}</mm:param>
-    <!--
-        <mm:param name="path">${sessionScope.eduname} &gt; ${sessionScope.path}</mm:param>
-    -->
-    <a href="${_}" title="${di:translate('education.new')}  ${dummyname} ${di:translate('education.aanmaken')}"
-       target="text">
-      <mm:property nodemanager="learnblocks" name="name_of_new" write="true">
-        <mm:isempty>
-          <di:translate key="education.new" />
-          <jsp:text> </jsp:text>
-          <mm:nodeinfo escape="lowercase" nodetype="learnblocks" type="guitype" />
-        </mm:isempty>
-      </mm:property>
-      <jsp:text> </jsp:text>
-      <di:translate key="education.aanmaken" />
-    </a>
-  </mm:link>
+
+  <c:if test="${requestScope['org.mmbase.taglib.includeLevel'] - 3 lt di:setting('education', 'max_depth')}">
+
+
+    <di:icon name="new_education" />
+    <mm:listrelations role="posrel" type="learnobjects" max="1" orderby="pos" directions="down">
+      <mm:field name="pos" id="maxpos" write="false" />
+    </mm:listrelations>
+
+    <mm:link referid="wizardjsp" referids="_node@origin">
+      <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
+      <mm:param name="objectnumber">new</mm:param>
+      <mm:param name="newpos">${maxpos + 1}</mm:param>
+      <!--
+          <mm:param name="path">${sessionScope.eduname} &gt; ${sessionScope.path}</mm:param>
+      -->
+      <a href="${_}" title="${di:translate('education.new')}  ${dummyname} ${di:translate('education.aanmaken')}"
+         target="text">
+        <mm:property nodemanager="learnblocks" name="name_of_new" write="true">
+          <mm:isempty>
+            <di:translate key="education.new" />
+            <jsp:text> </jsp:text>
+            <mm:nodeinfo escape="lowercase" nodetype="learnblocks" type="guitype" />
+          </mm:isempty>
+        </mm:property>
+        <jsp:text> </jsp:text>
+        <di:translate key="education.aanmaken" />
+      </a>
+    </mm:link>
+  </c:if>
 
 </jsp:root>
