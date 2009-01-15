@@ -227,7 +227,6 @@
                                     page="/education/wizards/learnobject.jsp"
                                     objectlist="$includePath"
                                     referids="wizardjsp,_node@startnode">
-                                  <mm:param name="branchPath">..${status.last ? '.' : ' '}</mm:param>
                                   <mm:param name="startnode"><mm:field name="number" /></mm:param>
                                 </mm:treeinclude>
                               </ul>
