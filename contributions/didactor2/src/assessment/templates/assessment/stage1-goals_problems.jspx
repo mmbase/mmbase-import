@@ -9,7 +9,7 @@
 
   <mm:import id="currentlesson" from="session" externid="currentlesson_${user}_${education}" />
   <!-- goals -->
-  <h2>1. <di:translate key="assessment.goals" /></h2>
+  <h2>1. Wat is voor jou echt belangrijk in je leven?</h2>
   <mm:node number="$user">
     <mm:treefile write="false" page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
       
@@ -20,7 +20,7 @@
   </mm:node>
   <!-- problems -->
   
-  <h2>2. <di:translate key="assessment.problems" /></h2>
+  <h2>2. Je problemen</h2>
   <mm:node number="${user}">
     <mm:treefile
         write="false"
@@ -36,17 +36,19 @@
   <input type="button" class="educationButton" value="opslaan" onclick="window.location.reload()"/>
   
   <!-- categorize problems -->
-  <h2>3. <di:translate key="assessment.problems_category" /></h2>
+  <h2>3. Soort probleem en hoeveel last heb je er van</h2>
 	<div class="problemsListCategorize">
 	<ol>
   <mm:node number="${user}">
-     <mm:related path="posrel,problems" orderby="posrel.pos">
-      	<mm:node element="problems">
-          <mm:include page="/assessment/problem.item.jspx">
+   <mm:treefile write="false" page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
+     <mm-sr:relatednodes type="problems" 
+     										 role="posrel" 
+     										 orderby="posrel.pos"
+     										 item="/assessment/problem.item.jspx">
           	<mm:param name="source">${_node}</mm:param>
-          </mm:include>
-       	</mm:node>
-       </mm:related>
+   
+       </mm-sr:relatednodes>
+    </mm:treefile>
   </mm:node>
   </ol>
   </div>
