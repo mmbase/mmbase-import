@@ -39,9 +39,13 @@ import org.mmbase.bridge.util.Queries;
           &lt;/mm:listnodes&gt;
         &lt;/div&gt;
       &lt;/mm:cloud&gt;
-  </pre>
+      
+      &lt;mm:nodelistfunction nodemanager="properties" name="list" referids="_node@node"&gt;
+        &lt;mm:field name="key" /&gt;:&lt;mm:field name="value" /&gt;
+      &lt;/mm:nodelistfunction&gt;
+ </pre>
  *
- * @version $Id: Properties.java,v 1.18 2008-06-12 12:06:48 michiel Exp $
+ * @version $Id: Properties.java,v 1.19 2009-01-15 19:48:13 andre Exp $
  */
 public class Properties extends MMObjectBuilder {
 
@@ -63,6 +67,7 @@ public class Properties extends MMObjectBuilder {
     protected final static Parameter<String> KEY   = new Parameter<String>("key", String.class, true);
     protected final static Parameter<Object> VALUE = new Parameter<Object>("value", Object.class);
     protected final static Parameter<Object>  DEFAULT = new Parameter<Object>("default", Object.class);
+    protected final static Parameter[] LIST_PARAMETERS = { NODE, DEFAULT };
     protected final static Parameter[] GET_PARAMETERS = { NODE, KEY, DEFAULT };
     protected final static Parameter[] SET_PARAMETERS = { new Parameter.Wrapper(GET_PARAMETERS), VALUE };
 
@@ -99,8 +104,24 @@ public class Properties extends MMObjectBuilder {
         return getValue(getValueNode(node, key));
 
     }
+    
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected NodeList getPropertyNodes(Node node) {
+        NodeQuery q = node.getCloud().getNodeManager(Properties.this.getTableName()).createQuery();
+        Queries.addConstraint(q, Queries.createConstraint(q, "parent", FieldCompareConstraint.EQUAL, node));
+        return q.getNodeManager().getList(q);
+    }
 
     {
+        addFunction(new AbstractFunction<Object>("list", LIST_PARAMETERS) {
+                public Object getFunctionValue(Parameters parameters) {
+                    Object v = Properties.this.getPropertyNodes(parameters.get(NODE));
+                    if (v == null) return parameters.get(DEFAULT);
+                    return v;
+                }
+            });
         addFunction(new AbstractFunction<Object>("get", GET_PARAMETERS) {
                 public Object getFunctionValue(Parameters parameters) {
                     Object v = Properties.this.getValue(parameters.get(NODE), parameters.get(KEY));
