@@ -7,7 +7,6 @@
   <jsp:directive.attribute name="name"    />
   <jsp:directive.attribute name="number"    />
   <mm:node>
-    <mm:log>KOLERE ${_node}</mm:log>
     <mm:relatednodescontainer role="settingrel" type="components">
       <c:choose>
         <c:when test="${empty name}">
@@ -18,7 +17,6 @@
         </c:otherwise>
       </c:choose>
       <mm:size>
-        <mm:log> ${_}</mm:log>
         <mm:compare value="0" inverse="true">
           <jsp:doBody />
         </mm:compare>
