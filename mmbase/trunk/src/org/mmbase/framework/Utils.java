@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Static utilitiy methods which are related to (combine functionality of)  other classes in the packages.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Utils.java,v 1.6 2009-01-15 18:14:49 michiel Exp $
+ * @version $Id: Utils.java,v 1.7 2009-01-15 19:28:58 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Utils {
@@ -49,6 +49,10 @@ public abstract class Utils {
             log.debug("Parsing " + xml + " of " +  renderer + " of " + renderer.getBlock());
         }
         InputSource source = new InputSource(new StringReader(xml));
+        java.net.URI uri = renderer.getUri();
+        if (uri != null) {
+            source.setSystemId(uri.toString());
+        }
         EntityResolver resolver = new org.mmbase.util.xml.EntityResolver(true, baseClass);
         DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(validation, xsd,
                                                                                          null/* default error handler */, resolver);
