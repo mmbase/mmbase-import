@@ -11,7 +11,7 @@
     <mm:link referid="wizardjsp" referids="_node@objectnumber,_node@origin">
       <mm:param name="wizard">config/learnblocks/learnblocks</mm:param>
       <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
-      <a href='${_}' title="${di:translate('education.edit')} ${objecttype}" target="text">
+      <a href='${_}' title="${di:translate('education.edit')} ${objecttype}">
         <mm:hasfield name="name"><mm:field name="name" /></mm:hasfield>
         <mm:hasfield name="title"><mm:field name="title" /></mm:hasfield>
       </a>
@@ -30,10 +30,10 @@
 
     <mm:field write="false" name="number" id="node_number" />
     <mm:hasnode number="component.metadata">
-      <a href='metaedit.jsp?${_node}' target='text'><img id='img_${_node}' src='' border='0' title='' alt='sAltText' /></a>
+      <a href='metaedit.jsp?${_node}'><img id='img_${_node}' src='' border='0' title='' alt='sAltText' /></a>
     </mm:hasnode>
     <mm:hasnode number="component.versioning">
-      <a href="versioning.jsp?nodeid=${_node}" target="text"><img id="img_${_node}" src="gfx/versions.gif" border="0" /></a>
+      <a href="versioning.jsp?nodeid=${_node}"><img id="img_${_node}" src="gfx/versions.gif" border="0" /></a>
     </mm:hasnode>
   </span>
 
