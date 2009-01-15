@@ -8,7 +8,9 @@
   <mm:import id="kupu_back"><mm:url page="${referrer}" /></mm:import>
 
   <di:icon name="kupu" />
-  <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back">
+  <mm:import id="prefix">backround_${_node}_</mm:import>
+
+  <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back,prefix">
 
     <mm:param name="style"><mm:treefile page="/kupu" absolute="context" objectlist="$includePath" /></mm:param>
     <mm:param name="wizard">config/xmlcontent/xmlcontent</mm:param>
@@ -16,13 +18,17 @@
     <mm:param name="language">${locale.language}</mm:param>
 
     <mm:hasrelationmanager sourcemanager="$_node" destinationmanager="images" role="background">
+
       <mm:relatednodescontainer id="current" type="images" role="background">
         <mm:maxnumber value="1" />
       </mm:relatednodescontainer>
       <mm:listnodescontainer id="repository" type="images" />
+
       <mm:write session="${prefix}current"    referid="current" />
       <mm:write session="${prefix}repository" referid="repository" />
+
       <mm:param name="tools">searchrelate</mm:param>
+      <mm:param name="currentTitle"><di:translate key="richtext.backgroundimage" /></mm:param>
     </mm:hasrelationmanager>
 
     <a href="${_}"
