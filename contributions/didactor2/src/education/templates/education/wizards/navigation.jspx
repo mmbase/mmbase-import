@@ -5,8 +5,5 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     class="navigationbar">
   <jsp:output omit-xml-declaration="true" />
-  <img src="${mm:treelink('/gfx/icon_agenda.gif', includePath)}"
-       title="${di:translate('education.editwizards')}" alt="${di:translate('education.editwizards')}" />
   <mm:treeinclude page="/education/wizards/tree_top_menu.jsp" objectlist="$includePath" />
-
 </div>
