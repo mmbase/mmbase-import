@@ -21,7 +21,7 @@
     <mm:node id="problem" number="${_node}" /> <!-- give current node an id, and put it in the current cloud -->
 
 
-    <c:set var="blockCount" value="0" />
+    <c:set var="blockCount" value="-1" />
 
     <!-- And, per lesson, how much trouble it gave -->
     <mm:node number="${education}">

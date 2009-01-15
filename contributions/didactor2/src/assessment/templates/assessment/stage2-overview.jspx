@@ -38,11 +38,11 @@
             <mm:relation to="${user}" role="classrel" searchdir="source" notfound="null">
             
               <td class="learnblockItemsTitle ${empty _node ? '' : 'closed'}">
-              	<jsp:text>|&amp;nbsp;&amp;nbsp;</jsp:text><mm:field name="name" node="learnBlock" /><mm:last><jsp:text>   |</jsp:text></mm:last>
+              	<jsp:text>|&amp;nbsp;&amp;nbsp;</jsp:text><mm:field name="name" node="learnBlock" /><mm:last><jsp:text> |</jsp:text></mm:last>
               </td>
             </mm:relation>
         </mm:nodelistfunction>
-        <td><jsp:text> </jsp:text></td>
+        <td class="learnblockItemsTitle"><jsp:text> </jsp:text></td>
       </mm:import>
     </mm:node>
 
