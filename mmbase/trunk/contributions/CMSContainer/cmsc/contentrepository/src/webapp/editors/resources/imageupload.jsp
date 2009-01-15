@@ -111,15 +111,12 @@
                            </mm:url>">
                      </c:otherwise>
                   </c:choose>
-                           <img src="../gfx/icons/page_edit.png" title="<fmt:message key="images.upload.edit"/>" alt="<fmt:message key="images.upload.edit"/>"/>
-                        </a>
+                           <img src="../gfx/icons/page_edit.png" title="<fmt:message key="images.upload.edit"/>" alt="<fmt:message key="images.upload.edit"/>"/></a>
                         <a href="javascript:showInfo(<mm:field name="number" />);" onclick="blockSelect = true;">
-                           <img src="../gfx/icons/info.png" title="<fmt:message key="images.upload.info"/>" alt="<fmt:message key="images.upload.info"/>"/>
-                        </a>
+                           <img src="../gfx/icons/info.png" title="<fmt:message key="images.upload.info"/>" alt="<fmt:message key="images.upload.info"/>"/></a>
                         <a href="javascript:unpublish('${sessionScope.creation}','${param.uploadedNodes}');"
                            title="<fmt:message key="asset.delete" />"><img src="../gfx/icons/delete.png" width="16" height="16"
-                           alt="<fmt:message key="asset.delete" />"/>
-                        </a>
+                           alt="<fmt:message key="asset.delete" />"/></a>
                </td>
                <td onMouseDown="objClick(this);">
                   <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
