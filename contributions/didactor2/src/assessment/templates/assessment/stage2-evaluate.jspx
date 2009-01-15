@@ -1,0 +1,61 @@
+<jsp:root version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate">
+  <jsp:output omit-xml-declaration="true" />
+<div class="problems_evaluate">
+<div    class="problems stage5">
+  <!--
+
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+
+  -->
+  <mm:import externid="problem" required="true" />
+  <mm:import externid="test"    required="true" />
+  <mm:import externid="sub" />
+
+  <mm:link page="/content/js/open.jsp">
+    <script type="text/javascript" src="${_}"><!-- --></script>
+  </mm:link>
+
+  <mm:node referid="problem">
+	
+
+
+    <h2>Probleem:</h2>
+    <h4><mm:field name="name" /></h4>
+
+    <div class="problemImpact">
+      <h2>Wijzig eventueel per les hoeveel last je van dit probleem had</h2>
+
+      <mm:include page="/assessment/stage2-editdifficulties.jspx" />
+
+    </div>
+
+    <div id="problemEvaluateTest" class="problem">
+ 
+    
+      <mm:include page="/education/tests/buildtest.jsp"
+                  referids="test@learnobject" />
+    </div>
+		
+    <mm:link page="/assessment/stage5.js.jsp">
+      <script type="text/javascript" src="${_}">
+        <jsp:text> </jsp:text>
+      </script>
+    </mm:link>
+
+  </mm:node>
+</div>
+
+	<div class="submitItems">
+		<input type="button" class="educationButton" value="opslaan" onclick="window.location.reload()"/><jsp:text>&amp;nbsp;|&amp;nbsp;</jsp:text>
+		<mm:link page="/homework/">
+			<mm:param name="sub">assessment_overview</mm:param>
+            <input type="button" class="educationButton" value="terug naar het overzicht" onclick="window.location='${_}'" name="" />
+     </mm:link>
+	</div>
+</div>
+</jsp:root>
