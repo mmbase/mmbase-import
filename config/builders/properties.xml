@@ -28,12 +28,23 @@
   </names>
 
   <descriptions>
-    <description xml:lang="en">Flexible properties to be added to any object</description>
+    <description xml:lang="en">
+      Flexible properties to be added to any object. The implementation depends on the application
+      or template in which a property can be used.
+    </description>
+    <description xml:lang="nl">
+      Flexibele voorkeuren die aan een node kunnen worden toegekend. De implementatie ervan 
+      is afhankelijk van de applicatie of de template waarin een voorkeur kan worden gebruikt.
+    </description>
   </descriptions>
 
   <fieldlist>
 
     <field name="parent">
+      <descriptions>
+        <description xml:lang="en">Node to which the property was added</description>
+        <description xml:lang="nl">Node waaraan de voorkeur is toegekend</description>
+      </descriptions>
       <gui>
         <guiname xml:lang="en">Parent</guiname>
         <guiname xml:lang="nl">Ouder</guiname>
@@ -45,6 +56,10 @@
     </field>
 
     <field name="key">
+      <descriptions>
+        <description xml:lang="en">Key, identifier of a property</description>
+        <description xml:lang="nl">Sleutel, identificatiewaarde waarmee een property kan worden herkend</description>
+      </descriptions>
       <gui>
         <guiname xml:lang="en">Key</guiname>
         <guiname xml:lang="nl">Sleutel</guiname>
@@ -72,6 +87,10 @@
     </field>
 
     <field name="value">
+      <descriptions>
+        <description xml:lang="en">Value of the property</description>
+        <description xml:lang="nl">Waarde van de voorkeur</description>
+      </descriptions>
       <gui>
         <guiname xml:lang="en">Value</guiname>
         <guiname xml:lang="nl">Waarde</guiname>
