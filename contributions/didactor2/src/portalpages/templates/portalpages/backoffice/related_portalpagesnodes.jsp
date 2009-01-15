@@ -37,7 +37,7 @@
         <mm:relatednodes role="posrel"
                          type="simplexmlcontents" varStatus="status">
           <li>
-            <di:icon name="kupu_icon" />
+            <di:icon name="kupu" />
             <di:kupulink
                 node="${_node}"
                 referrer="${referrer}"
@@ -71,7 +71,7 @@
   <mm:relatednodes role="posrel"
                    type="simplexmlcontents" varStatus="status">
     <li>
-      <di:icon name="kupu_icon" />
+      <di:icon name="kupu" />
       <di:kupulink
           referrer="${referrer}"
           wizard="config/portalpages/simplexmlcontents"
