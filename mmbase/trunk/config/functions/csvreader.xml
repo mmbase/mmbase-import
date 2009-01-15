@@ -48,7 +48,7 @@
   <function name="description">
     <description>Show description, like a toString method</description>
     <type>class</type>
-    <class>org.mmbase.applications.csvreader.CSVReader</class>
+    <class>org.mmbase.util.CSVReader</class>
     <method>getDescription</method>
     <return type="String" />
   </function>
