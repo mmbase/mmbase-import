@@ -13,13 +13,13 @@
   <mm:import externid="icondir" />
  	<mm:import id="currentlesson" from="session" externid="currentlesson_${user}_${education}" />
 
-<li>
   <mm:node id="problem">
     
     <mm:field name="name" />
-		<br/>
+		
     
-        <mm:field name="type">
+    <div class="problemItemCategories">
+    <mm:field name="type">
       <mm:fieldinfo type="input" />
       <mm:fieldinfo type="errors" />
     </mm:field>
@@ -33,7 +33,7 @@
             <mm:node number="${problem}"    id="dest" />
             <mm:createrelation id="new" source="ll" destination="dest" role="posrel" commitonclose="true">
               <!-- default value of how much trouble -->
-              <mm:setfield name="pos">-1</mm:setfield>
+              <mm:setfield name="pos">2</mm:setfield>
             </mm:createrelation>
           </mm:cloud>
         </c:if>
@@ -49,10 +49,11 @@
         </mm:listrelations>
       </mm:listrelationscontainer>
       </mm:isnotempty>
-
+    <mm:isempty referid="currentlesson">
+    	<div class="selectTroublesSpacer">&amp;nbsp;</div>
+    </mm:isempty>
     </mm:present>
-	 
+		</div>   
   </mm:node>
-  <br/>
-</li>
+  
 </jsp:root>

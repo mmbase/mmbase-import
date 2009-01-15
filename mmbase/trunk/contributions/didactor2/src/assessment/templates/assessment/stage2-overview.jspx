@@ -26,7 +26,7 @@
   -->
 
  
-  <table>
+  <table cellspacing="0">
 
     <mm:node number="${education}">
       <mm:import id="blocknames" escape="text/plain">
