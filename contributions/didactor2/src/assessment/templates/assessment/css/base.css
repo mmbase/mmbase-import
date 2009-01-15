@@ -169,13 +169,46 @@ td.problemTypes {
   
 }
 
+#problemEvaluateTest div.content.tests {
+	display: block;
+	background-color: transparent;
+	position: static;
+	padding-left: 0px;
+	padding-bottom: 20px;
+	min-height: 100px;
+}
+
+#problemEvaluateTest div.content.tests div.text {
+	
+	width: 600px;
+}
+
+div.student div.problems.stage5 h2 {
+	margin-left: 0;
+}
+
+
+div.submitItems {
+	margin-top: -10px;
+}
+
+div.problems_evaluate div.submitItems {
+	margin-top: -40px;
+}
+
+#problemEvaluateTest div.content.tests textarea.question, #problemEvaluateTest div.content.tests input.question {
+	background-color: white;
+	width: 442px;
+	height: auto;
+}
+
 .closelesson input.formbutton {
-  width: 300px!important;
+ 
 }
 
 .mm_dt_didactor_assessment_troubles {
   float:left;
-  width:100px;
+  width:75px;
   margin-right:10px;
   font-size:1em;
 }
