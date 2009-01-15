@@ -32,6 +32,6 @@ public class ImageDeleteAction extends MMBaseFormlessAction {
       RepositoryUtil.removeCreationRelForAsset(objectNode);
       RepositoryUtil.addAssetToChannel(objectNode, RepositoryUtil.getTrashNode(cloud));
 
-      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?&channelid=" + channelnumber, true);
+      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?&uploadedNodes=0&channelid=" + channelnumber, true);
    }
 }

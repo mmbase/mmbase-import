@@ -239,7 +239,7 @@
       <div class="body">
       <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
       <mm:url page="/editors/resources/ImageInitAction.do?action=search" id="search_image_url" write="false" />
-      <mm:url page="/editors/resources/imageupload.jsp?channelid=${channelid}" id="new_image_url" write="false" />
+      <mm:url page="/editors/resources/imageupload.jsp?uploadedNodes=0&channelid=${channelid}" id="new_image_url" write="false" />
       <mm:url page="/editors/repository/HighFrequencyImg.do?action=often&imageShow=${imageShow}&offset=0&channelid=all" id="often_show_images" write="false"/>
 		<ul class="shortcuts">
 			<li><a href="${often_show_images}"><fmt:message key="imageselect.link.allchannel" /></a></li>
