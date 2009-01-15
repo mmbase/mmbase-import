@@ -136,11 +136,11 @@ div.problems.stage3 .mm_dt_didactor_assessment_troubles {
 }
 
 .learnblockItems, .learnblockItemsTitle {
-  width:65px;
+  width:55px;
 }
 
 .problemName {
-  width:220px;
+  width:200px;
   padding-left: 5px;
 }
 
@@ -161,12 +161,12 @@ h4.learnblockItems {
 }
 
 td.problemHeader {
-	width: 50%;
+	width: 400px;
 }
 
 td.problemTypes {
   font-weight: bold;
-  width: 450px;
+  
 }
 
 .closelesson input.formbutton {
