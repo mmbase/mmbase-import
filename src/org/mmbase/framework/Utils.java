@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Static utilitiy methods which are related to (combine functionality of)  other classes in the packages.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Utils.java,v 1.5 2008-09-04 21:20:02 michiel Exp $
+ * @version $Id: Utils.java,v 1.6 2009-01-15 18:14:49 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Utils {
@@ -43,10 +43,12 @@ public abstract class Utils {
         boolean xsd = false;
         Writer w = new StringWriter();
         fw.render(renderer, blockParameters, frameworkParameters, w, state);
+
+        String xml = w.toString();
         if (log.isDebugEnabled()) {
-            log.debug("Parsing " + w.toString() + " of " +  renderer + " of " + renderer.getBlock());
+            log.debug("Parsing " + xml + " of " +  renderer + " of " + renderer.getBlock());
         }
-        InputSource source = new InputSource(new StringReader(w.toString()));
+        InputSource source = new InputSource(new StringReader(xml));
         EntityResolver resolver = new org.mmbase.util.xml.EntityResolver(true, baseClass);
         DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(validation, xsd,
                                                                                          null/* default error handler */, resolver);
@@ -55,9 +57,9 @@ public abstract class Utils {
             Document doc = dbuilder.parse(source);
             return  doc;
         } catch (IOException ioe) {
-            throw new FrameworkException(ioe);
+            throw new FrameworkException(xml + ": " + ioe.getMessage(), ioe);
         } catch (SAXException se) {
-            throw new FrameworkException(se);
+            throw new FrameworkException(xml + ": " + se.getMessage(), se);
         }
 
     }
