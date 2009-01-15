@@ -48,7 +48,9 @@
         <table class="layout">
           <tr>
             <td id="left_menu">
-              <di:include  page="/education/wizards/code.jsp"  />
+              <div id="mode-${mode}">
+                <di:include debug="html" page="/education/wizards/modes/${mode}.jsp" />
+              </div>
             </td>
             <td class="content">
               <mm:treefile id="ok" page="/education/wizards/ok.jsp"
