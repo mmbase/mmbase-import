@@ -20,17 +20,8 @@
       <!--
           <mm:param name="path">${sessionScope.eduname} &gt; ${sessionScope.path}</mm:param>
       -->
-      <a href="${_}" title="${di:translate('education.new')}  ${dummyname} ${di:translate('education.aanmaken')}"
-         target="text">
-        <mm:property nodemanager="learnblocks" name="name_of_new" write="true">
-          <mm:isempty>
-            <di:translate key="education.new" />
-            <jsp:text> </jsp:text>
-            <mm:nodeinfo escape="lowercase" nodetype="learnblocks" type="guitype" />
-          </mm:isempty>
-        </mm:property>
-        <jsp:text> </jsp:text>
-        <di:translate key="education.aanmaken" />
+      <a href="${_}" title="${di:translate('education.createnewlearnblockdescription')}">
+        <di:translate key="education.createnewlearnblock" />
       </a>
     </mm:link>
   </c:if>
