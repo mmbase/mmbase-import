@@ -18,14 +18,16 @@
     <mm:maxnumber value="1" />
     <mm:listnodes>
       <li>
-        <mm:link referid="listjsp" referids="containernode@origin,referrer">
-          <mm:param name="wizard">config/portalpages/rootportalpagesnodes</mm:param>
-          <mm:param name="nodepath">portalpagesnodes</mm:param>
-          <mm:param name="fields">name</mm:param>
-          <mm:param name="searchfields">name</mm:param>
-          <mm:param name="metadata">yes</mm:param>
-          <a href="${_}" title="portal pagina's" target="text">Portal Pagina's</a> <!-- I18N ? -->
-        </mm:link>
+        <span class="folder">
+          <mm:link referid="listjsp" referids="containernode@origin,referrer">
+            <mm:param name="wizard">config/portalpages/rootportalpagesnodes</mm:param>
+            <mm:param name="nodepath">portalpagesnodes</mm:param>
+            <mm:param name="fields">name</mm:param>
+            <mm:param name="searchfields">name</mm:param>
+            <mm:param name="metadata">yes</mm:param>
+            <a href="${_}" title="portal pagina's" target="text">Portal Pagina's</a> <!-- I18N ? -->
+          </mm:link>
+        </span>
         <mm:include page="leaf.jspx" />
       </li>
     </mm:listnodes>
@@ -39,10 +41,12 @@
           <a href="${_}" target="text">Portal pages for <mm:nodeinfo type="gui" /></a>
         </mm:link>
       </span>
-      <ul>
+      <ul class="filetree">
         <mm:relatednodes role="posrel" type="portalpagescontainers">
           <li>
-            <mm:field name="name" />
+            <span class="folder">
+              <mm:field name="name" />
+            </span>
             <mm:include page="leaf.jspx" />
           </li>
         </mm:relatednodes>

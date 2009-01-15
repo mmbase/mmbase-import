@@ -23,10 +23,12 @@
 
         <mm:relatednodes varStatus="status">
           <li>
-            <mm:link referid="wizardjsp" referids="_node@objectnumber,referrer">
-              <mm:param name="wizard">config/portalpages/portalpagesnodes</mm:param>
-              <a href="${_}" title="edit" target="text"><mm:field name="name"/></a>
-            </mm:link>
+            <span class="folder">
+              <mm:link referid="wizardjsp" referids="_node@objectnumber,referrer">
+                <mm:param name="wizard">config/portalpages/portalpagesnodes</mm:param>
+                <a href="${_}" title="edit" target="text"><mm:field name="name"/></a>
+              </mm:link>
+            </span>
             <ul>
               <di:getsetting setting="new_contents" component="portalpages" vartype="list" id="new_contents" write="false" />
               <mm:stringlist referid="new_contents">
@@ -60,7 +62,6 @@
                     </c:when>
                     <c:otherwise>
                       UNKNONWN ${_}
-
                     </c:otherwise>
                   </c:choose>
                 </li>
