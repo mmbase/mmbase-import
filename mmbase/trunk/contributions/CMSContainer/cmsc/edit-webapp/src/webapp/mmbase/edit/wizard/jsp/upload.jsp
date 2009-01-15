@@ -31,10 +31,20 @@ if (maxsize == null || maxsize.length() == 0) {
 <link rel="stylesheet" type="text/css" href="../../../../editors/css/main.css" />
 <script type="text/javascript">
     function upload() {
+        //validate file type
+        var file = document.getElementById("file");
+        var i=file.value.lastIndexOf(".");
+        var ext=file.value.substring(i);
+        var ext1=ext.toLowerCase();
+        if(ext1!=".gif" && ext1!=".jpg" && ext1!=".jpeg"&&ext1!=".tiff"&&ext1!=".tif"&&ext1!=".bmp"&&ext1!=".svg"&&ext1!=".png")
+        {
+           alert('<fmt:message key="asset.notimage.warning" />');
+                return false;
+        }
+
         var f=document.forms[0];
         f.submit();
         setTimeout('sayWait();',0);
-
     }
 
     function sayWait() {
@@ -70,16 +80,16 @@ if (maxsize == null || maxsize.length() == 0) {
       	</p>
       	<p>
 	         <form action="<mm:url page="processuploads.jsp" />?did=<%=did%>&proceed=true&popupid=<%=popupId%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizard%>&maxsize=<%=maxsize%>" enctype="multipart/form-data" method="POST" >
-	            <input type="file" name="<%=did%>" onchange="upload();"></input><br />
+	            <input type="file" name="<%=did%>" id="file"></input><br />
 	            <input type="button" onclick="upload();" value="<fmt:message key="upload.button.upload" />"></input><br />
 	         </form>
 	      </p>
       </div>
       <!-- einde block -->
       <div class="side_block_end"></div>
-   </div>         
-   
-   
+   </div>
+
+
    <div class="side_block_green" id="busy" style="visibility:hidden;position:absolute;top:0px;width:290px;">
       <!-- bovenste balkje -->
 
@@ -97,8 +107,8 @@ if (maxsize == null || maxsize.length() == 0) {
       </div>
       <!-- einde block -->
       <div class="side_block_end"></div>
-   </div>         
-   
+   </div>
+
 </div>
 </body>
 </html>
