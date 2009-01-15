@@ -148,3 +148,6 @@
 <!ELEMENT blocks EMPTY >
 <!ATTLIST blocks classification CDATA #REQUIRED >
 <!ATTLIST blocks render NMTOKEN #IMPLIED >
+
+
+<!ELEMENT nop EMPTY >
