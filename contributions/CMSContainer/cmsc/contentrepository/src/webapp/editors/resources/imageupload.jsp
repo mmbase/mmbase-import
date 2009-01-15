@@ -72,7 +72,7 @@
             <div id="busy">
                 <fmt:message key="uploading.message.wait"/><br />
             </div>
-<c:if test="${param.exist =='0' && param.uploadedNodes != 0}">
+<c:if test="${param.uploadedNodes != 0}">
 <table>
    <tr class="listheader">
       <th></th>
@@ -116,7 +116,7 @@
                         <a href="javascript:showInfo(<mm:field name="number" />);" onclick="blockSelect = true;">
                            <img src="../gfx/icons/info.png" title="<fmt:message key="images.upload.info"/>" alt="<fmt:message key="images.upload.info"/>"/>
                         </a>
-                        <a href="javascript:unpublish('${param.channelid}','${param.uploadedNodes}');"
+                        <a href="javascript:unpublish('${sessionScope.creation}','${param.uploadedNodes}');"
                            title="<fmt:message key="asset.delete" />"><img src="../gfx/icons/delete.png" width="16" height="16"
                            alt="<fmt:message key="asset.delete" />"/>
                         </a>
