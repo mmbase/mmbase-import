@@ -6,11 +6,8 @@
   <jsp:output omit-xml-declaration="yes" />
   <mm:import from="request" externid="referrer" />
   <mm:import id="kupu_back"><mm:url page="${referrer}" /></mm:import>
-  <mm:import from="request"
-             externid="b" required="true" />
-  <mm:import externid="branchPath" required="true" />
 
-  <di:icon name="kupu_icon" />
+  <di:icon name="kupu" />
   <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back">
 
     <mm:param name="style"><mm:treefile page="/kupu" absolute="context" objectlist="$includePath" /></mm:param>
