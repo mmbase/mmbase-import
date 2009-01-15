@@ -5,15 +5,14 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
 
-  <mm:import externid="b" from="request" />
-  <mm:import externid="branchPath" required="true"  />
-
   <mm:nodeinfo id="objecttype" type="type" write="false" />
+
+  <di:icon name="edit_learnobject" />
 
   <mm:link referid="wizardjsp" referids="_node@objectnumber,_node@origin">
     <mm:param name="wizard">config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" /></mm:param>
     <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
-    <a href='${_}' title="${di:translate('education.edit')} ${objecttype}" target="text">
+    <a href='${_}' title="${di:translate('education.edit')} ${objecttype}">
       <mm:hasfield name="name"><mm:field name="name" /></mm:hasfield>
       <mm:hasfield name="title"><mm:field name="title" /></mm:hasfield>
     </a>
@@ -37,12 +36,12 @@
   <mm:field write="false" name="number" id="node_number" />
   <mm:node number="component.metadata" notfound="skip"> <!-- WTF -->
     <mm:link page="metaedit.jsp" referids="node_number@number">
-      <a href='${_}' target='text'><img id='img_${_}' src='' border='0' title='' alt='' /></a>
+      <a href='${_}'><img id='img_${_}' src='' border='0' title='' alt='' /></a>
     </mm:link>
   </mm:node>
   <mm:node number="component.versioning" notfound="skip"> <!-- WTF -->
     <mm:link page="versioning.jsp" referids="node_number@nodeid">
-      <a href="${_}" target="text"><img src="gfx/versions.gif" border="0" /></a>
+      <a href="${_}"><img src="gfx/versions.gif" border="0" /></a>
     </mm:link>
   </mm:node>
 
