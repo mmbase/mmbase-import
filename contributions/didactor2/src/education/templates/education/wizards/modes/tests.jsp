@@ -96,7 +96,6 @@
 
                     <mm:relatednodes role="posrel" type="questions" orderby="posrel.pos" varStatus="relstatus">
                       <li>
-                        bla bla
                         <mm:nodeinfo type="type" id="type_of_node" write="false">
 
                           <mm:compare value="mcquestions">
