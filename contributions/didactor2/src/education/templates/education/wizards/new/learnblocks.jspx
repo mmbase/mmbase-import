@@ -11,6 +11,7 @@
   <mm:listrelations role="posrel" type="learnobjects" max="1" orderby="pos" directions="down">
     <mm:field name="pos" id="maxpos" write="false" />
   </mm:listrelations>
+
   <mm:link referid="wizardjsp" referids="_node@origin">
     <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
     <mm:param name="objectnumber">new</mm:param>

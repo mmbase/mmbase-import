@@ -53,6 +53,7 @@
 
                   <di:has editcontext="create_education">
                     <li>
+                      <di:icon name="new_education" />
                       <mm:link referid="wizardjsp" referids="user@origin,provider">
                         <mm:param name="wizard">config/education/educations-origin</mm:param>
                         <mm:param name="objectnumber">new</mm:param>
