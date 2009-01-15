@@ -5,12 +5,12 @@
   <jsp:output omit-xml-declaration="yes" />
   <mm:import externid="wizardjsp" from="request" />
 
-  <di:icon name="new_education" />
   <mm:listrelations role="posrel" type="learnobjects" max="1" orderby="pos" directions="down">
     <mm:field name="pos" id="maxpos" write="false" />
   </mm:listrelations>
   <mm:nodeinfo id="guitype" nodetype="tests" type="guitype" write="false" />
   <mm:link referid="wizardjsp" referids="_node@origin">
+    <di:icon name="new_learnobject" />  
     <mm:param name="wizard">config/tests/tests-origin</mm:param>
     <mm:param name="objectnumber">new</mm:param>
     <mm:param name="newpos">${maxpos + 1}</mm:param>
