@@ -6,6 +6,7 @@
         <mm:link page="delete_object.jsp" referids="_node@nr"><a href="${_}" title="delete property"><img src="img/mmbase-delete.png" alt="delete" width="21" height="20" /></a></mm:link>
       </mm:maydelete>
       <mm:maywrite><mm:link page="edit_object.jsp" referids="_node@nr"><a href="${_}" title="edit alias"></mm:link></mm:maywrite><mm:field name="key" /><mm:maywrite></a></mm:maywrite>:<mm:field name="value" />
+      <mm:last inverse="true"><br /></mm:last>
     </mm:nodelistfunction>
     <mm:present referid="change">
       <c:if test="${!empty property_key && !empty property_value}">
