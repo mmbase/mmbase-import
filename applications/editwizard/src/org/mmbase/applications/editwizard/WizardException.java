@@ -14,7 +14,7 @@ package org.mmbase.applications.editwizard;
  *
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: WizardException.java,v 1.3 2003-08-29 09:34:39 pierre Exp $
+ * @version $Id: WizardException.java,v 1.4 2009-01-15 18:10:26 michiel Exp $
  */
 public class WizardException extends java.lang.Exception {
 
@@ -30,7 +30,7 @@ public class WizardException extends java.lang.Exception {
 
     //javadoc is inherited
     public WizardException(Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
     }
 
     //javadoc is inherited
