@@ -57,7 +57,7 @@
 <form enctype="multipart/form-data" method="post" action="<mm:url referids="nr" />">
   <fieldset>
   <div class="firstrow">
-    <strong># <mm:field name="number" /></strong>
+    <strong><mm:link page="edit_object.jsp" referids="nr"><a href="${_}">#  <mm:field name="number" /></a></mm:link></strong>
     <mm:maydelete><a href="<mm:url page="delete_object.jsp" referids="nr" />" title="delete"><img src="img/mmbase-delete.png" alt="delete" width="21" height="20" /></a></mm:maydelete>
     <h2>Edit node of type <mm:nodeinfo type="guinodemanager" />  (<mm:nodeinfo type="type" />)</h2>
   </div>
