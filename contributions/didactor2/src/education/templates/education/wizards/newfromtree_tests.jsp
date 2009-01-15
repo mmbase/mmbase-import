@@ -13,10 +13,8 @@
 
       <mm:stringlist referid="new_questiontypes" id="questiontype">
         <mm:hasnodemanager name="${_}">
-          <di:leaf
-              branchPath=".. "
-              icon="new_education"
-              >
+          <li>
+            <di:icon name="new_education" />
             <mm:link referid="wizardjsp" referids="_node@origin">
               <mm:param name="wizard">config/question/${questiontype}-origin</mm:param>
               <mm:param name="objectnumber">new</mm:param>
@@ -27,7 +25,7 @@
                 ${di:translate(name)}
               </a>
             </mm:link>
-          </di:leaf>
+          </li>
         </mm:hasnodemanager>
       </mm:stringlist>
     </mm:node>
