@@ -7,12 +7,11 @@
 
   <mm:nodeinfo id="objecttype" type="type" write="false" />
 
-  <di:icon name="edit_learnobject" />
-
   <mm:link referid="wizardjsp" referids="_node@objectnumber,_node@origin">
     <mm:param name="wizard">config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" /></mm:param>
     <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
     <a href='${_}' title="${di:translate('education.edit')} ${objecttype}">
+      <di:icon name="edit_learnobject" />
       <mm:hasfield name="name"><mm:field name="name" /></mm:hasfield>
       <mm:hasfield name="title"><mm:field name="title" /></mm:hasfield>
     </a>

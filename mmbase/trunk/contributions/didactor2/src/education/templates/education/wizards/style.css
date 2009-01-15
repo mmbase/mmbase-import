@@ -1,1 +1,5 @@
 @import url(../../core/js/jquery-treeview/jquery.treeview.css);
+
+.treeview a {
+   text-decoration: none;
+}
