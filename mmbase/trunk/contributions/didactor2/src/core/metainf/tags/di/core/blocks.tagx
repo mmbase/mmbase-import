@@ -9,64 +9,68 @@
 
   <jsp:directive.attribute name="classification"    required="true" />
   <jsp:directive.attribute name="styleClass"   />
+  <jsp:directive.attribute name="surrounding_div"   type="java.lang.Boolean" />
   <jsp:directive.attribute name="separator"         fragment="true" />
   <jsp:directive.attribute name="beforefirst"       fragment="true" />
   <jsp:directive.attribute name="afterlast"         fragment="true" />
 
   <mm:hasfunction set="components" name="blockClassification">
-    <div class="mmbase_fw_blocks ${classification} ${styleClass}">
-      <mm:functioncontainer>
-        <mm:param name="id">didactor.${classification}</mm:param>
-        <mm:listfunction set="components" name="blockClassification">
-          <mm:stringlist referid="_.blocks">
+    <c:if test="${empty surrounding_div or surrounding_div}">
+      <jsp:text>&lt;div  class="mmbase_fw_blocks ${classification} ${styleClass}"&gt;</jsp:text>
+    </c:if>
+    <mm:functioncontainer>
+      <mm:param name="id">didactor.${classification}</mm:param>
+      <mm:listfunction set="components" name="blockClassification">
+        <mm:stringlist referid="_.blocks">
 
-            <di:component name="${_.component.name}">
-              <c:choose>
-                <c:when test="${! empty  _component.scopesMap.educations}">
-                  <mm:node number="${_component.number}">
-                    <mm:relation role="settingrel" to="${education}">
-                      <mm:import id="do" />
-                    </mm:relation>
-                  </mm:node>
-                </c:when>
-                <c:otherwise>
-                  <mm:import id="do" />
-                </c:otherwise>
-              </c:choose>
-            </di:component>
-
-
-            <mm:present referid="do">
-              <mm:first>
-                <jsp:invoke fragment="beforefirst" />
-              </mm:first>
-              <jsp:doBody />
-
-              <mm:hassetting component="${_.component.name}" name="didactor_nodeprovider">
-                <mm:setting id="np" component="${_.component.name}" name="didactor_nodeprovider" write="false" />
-                <mm:node number="${requestScope[np]}">
-                  <mm:component name="${_.component.name}" block="${_.name}" />
+          <di:component name="${_.component.name}">
+            <c:choose>
+              <c:when test="${! empty  _component.scopesMap.educations}">
+                <mm:node number="${_component.number}">
+                  <mm:relation role="settingrel" to="${education}">
+                    <mm:import id="do" />
+                  </mm:relation>
                 </mm:node>
-              </mm:hassetting>
-              <mm:hassetting component="${_.component.name}" name="didactor_nodeprovider" inverse="true">
+              </c:when>
+              <c:otherwise>
+                <mm:import id="do" />
+              </c:otherwise>
+            </c:choose>
+          </di:component>
+
+
+          <mm:present referid="do">
+            <mm:first>
+              <jsp:invoke fragment="beforefirst" />
+            </mm:first>
+            <jsp:doBody />
+
+            <mm:hassetting component="${_.component.name}" name="didactor_nodeprovider">
+              <mm:setting id="np" component="${_.component.name}" name="didactor_nodeprovider" write="false" />
+              <mm:node number="${requestScope[np]}">
                 <mm:component name="${_.component.name}" block="${_.name}" />
-              </mm:hassetting>
+              </mm:node>
+            </mm:hassetting>
+            <mm:hassetting component="${_.component.name}" name="didactor_nodeprovider" inverse="true">
+              <mm:component name="${_.component.name}" block="${_.name}" />
+            </mm:hassetting>
 
 
-              <mm:last inverse="true">
-                <jsp:invoke fragment="separator" />
-              </mm:last>
-              <mm:last>
-                <jsp:invoke fragment="afterlast" />
-              </mm:last>
-            </mm:present>
-            <mm:remove referid="do" />
+            <mm:last inverse="true">
+              <jsp:invoke fragment="separator" />
+            </mm:last>
+            <mm:last>
+              <jsp:invoke fragment="afterlast" />
+            </mm:last>
+          </mm:present>
+          <mm:remove referid="do" />
 
-          </mm:stringlist>
+        </mm:stringlist>
 
-        </mm:listfunction>
-      </mm:functioncontainer>
-
-    </div>
+      </mm:listfunction>
+    </mm:functioncontainer>
+    <c:if test="${empty surrounding_div or surrounding_div}">
+      <jsp:text>&lt;/div&gt;</jsp:text>
+    </c:if>
   </mm:hasfunction>
 </jsp:root>
