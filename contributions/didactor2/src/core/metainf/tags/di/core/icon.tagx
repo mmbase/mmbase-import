@@ -6,8 +6,9 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     version="2.0">
   <jsp:directive.attribute name="name"   type="java.lang.String"   />
+  <jsp:directive.attribute name="title"   type="java.lang.String"   />
 
   <mm:link page="/education/wizards/gfx/${name}.gif">
-    <img src="${_}" height="22" border="0" align="middle" />
+    <img src="${_}" height="22" border="0" align="middle" title="${title}" alt="${title}" />
   </mm:link>
 </jsp:root>
