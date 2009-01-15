@@ -51,7 +51,7 @@
                       </mm:link>
                     </c:when>
                     <c:when test="${_ eq 'simplexmlcontents'}">
-                      <di:icon name="kupu_icon" />
+                      <di:icon name="kupu_new" />
                       <di:kupulink
                           referrer="${referrer}"
                           node="new"
