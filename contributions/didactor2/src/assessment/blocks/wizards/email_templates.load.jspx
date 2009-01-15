@@ -6,12 +6,17 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
 
-  <c:if test="${di:setting('assessment', 'send_student_email') eq 'true'}">
-    <jsp:output omit-xml-declaration="no"
-                doctype-public="-//MMBase/DTD editwizard 1.0//EN"
-                doctype-system="http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
-                doctype-root-element="relation"
-                />
-    <relation destination="emails" role="posrel" />
-  </c:if>
+  <c:choose>
+    <c:when test="${di:setting('assessment', 'send_student_email') eq 'true'}">
+      <jsp:output omit-xml-declaration="no"
+                  doctype-public="-//MMBase/DTD editwizard 1.0//EN"
+                  doctype-system="http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+                  doctype-root-element="relation"
+                  />
+      <relation destination="emails" role="posrel" />
+    </c:when>
+    <c:otherwise>
+      <nop />
+    </c:otherwise>
+  </c:choose>
 </mm:content>
