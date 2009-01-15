@@ -1,9 +1,11 @@
-<jsp:root version="2.0"
-          xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-          xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:di="http://www.didactor.nl/ditaglib_1.0">
+<jsp:root
+    version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    >
   <jsp:output omit-xml-declaration="yes" />
   <div
       xmlns="http://www.w3.org/1999/xhtml"
@@ -58,7 +60,7 @@
             <di:include  page="/portalpages/backoffice/add_portalpages.jsp" />
           </mm:hasnode>
 
-          <di:blocks classification="didactor.metadata" />
+          <di:blocks classification="didactor.metadata" surrounding_div="false" />
 
           <mm:hasnode number="component.faq">
             <!-- sucks too much -->
