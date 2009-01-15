@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Static utilitiy methods which are related to (combine functionality of)  other classes in the packages.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Utils.java,v 1.7 2009-01-15 19:28:58 michiel Exp $
+ * @version $Id: Utils.java,v 1.8 2009-01-15 21:21:47 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Utils {
@@ -61,9 +61,9 @@ public abstract class Utils {
             Document doc = dbuilder.parse(source);
             return  doc;
         } catch (IOException ioe) {
-            throw new FrameworkException(xml + ": " + ioe.getMessage(), ioe);
+            throw new FrameworkException(uri + ": " + ioe.getMessage(), ioe);
         } catch (SAXException se) {
-            throw new FrameworkException(xml + ": " + se.getMessage(), se);
+            throw new FrameworkException(uri + ": " + se.getMessage(), se);
         }
 
     }
