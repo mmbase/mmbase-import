@@ -33,8 +33,8 @@
       or template in which a property can be used.
     </description>
     <description xml:lang="nl">
-      Flexibele voorkeuren die aan een node kunnen worden toegekend. De implementatie ervan 
-      is afhankelijk van de applicatie of de template waarin een voorkeur kan worden gebruikt.
+      Flexibele eigenschappen of voorkeuren die aan een node kunnen worden toegekend. De implementatie 
+      ervan is afhankelijk van de applicatie of de template waarin een voorkeur kan worden gebruikt.
     </description>
   </descriptions>
 
@@ -43,7 +43,7 @@
     <field name="parent">
       <descriptions>
         <description xml:lang="en">Node to which the property was added</description>
-        <description xml:lang="nl">Node waaraan de voorkeur is toegekend</description>
+        <description xml:lang="nl">Node waaraan de eigenschap of voorkeur is toegekend</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Parent</guiname>
@@ -58,7 +58,7 @@
     <field name="key">
       <descriptions>
         <description xml:lang="en">Key, identifier of a property</description>
-        <description xml:lang="nl">Sleutel, identificatiewaarde waarmee een property kan worden herkend</description>
+        <description xml:lang="nl">Sleutel, identificatiewaarde waarmee de eigenschap of voorkeur kan worden herkend</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Key</guiname>
@@ -89,7 +89,7 @@
     <field name="value">
       <descriptions>
         <description xml:lang="en">Value of the property</description>
-        <description xml:lang="nl">Waarde van de voorkeur</description>
+        <description xml:lang="nl">Waarde van de eigenschap of voorkeur</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Value</guiname>
