@@ -434,8 +434,8 @@ tr.even:hover { background-color: #d8e8d8; }
 }
 
 #node label strong { display: block; }
-#node .aliasses { padding-left: 12%; }
-#node .aliasses img { vertical-align: middle; }
+#node .aliasses, #node .properties { padding-left: 13%; }
+#node .aliasses img, #node .properties img { vertical-align: middle; }
 
 /* edit node relations */
 #relationssource, #relationsdestination { width: 100%; }
