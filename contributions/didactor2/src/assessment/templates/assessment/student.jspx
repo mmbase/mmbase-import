@@ -47,10 +47,7 @@
 
 
   <di:include page="/assessment/${stage}.jspx" />
-	
+	  	<di:include page="/assessment/closelesson.link.jspx" />
 
-	<p>
-  	<di:include page="/assessment/closelesson.link.jspx" />
-	</p>
 	<p><jsp:text> </jsp:text></p>
 </div>
