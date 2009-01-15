@@ -45,7 +45,7 @@ import org.mmbase.bridge.util.Queries;
       &lt;/mm:nodelistfunction&gt;
  </pre>
  *
- * @version $Id: Properties.java,v 1.19 2009-01-15 19:48:13 andre Exp $
+ * @version $Id: Properties.java,v 1.20 2009-01-15 19:59:18 andre Exp $
  */
 public class Properties extends MMObjectBuilder {
 
@@ -67,7 +67,7 @@ public class Properties extends MMObjectBuilder {
     protected final static Parameter<String> KEY   = new Parameter<String>("key", String.class, true);
     protected final static Parameter<Object> VALUE = new Parameter<Object>("value", Object.class);
     protected final static Parameter<Object>  DEFAULT = new Parameter<Object>("default", Object.class);
-    protected final static Parameter[] LIST_PARAMETERS = { NODE, DEFAULT };
+    protected final static Parameter[] LIST_PARAMETERS = { NODE };
     protected final static Parameter[] GET_PARAMETERS = { NODE, KEY, DEFAULT };
     protected final static Parameter[] SET_PARAMETERS = { new Parameter.Wrapper(GET_PARAMETERS), VALUE };
 
@@ -117,9 +117,7 @@ public class Properties extends MMObjectBuilder {
     {
         addFunction(new AbstractFunction<Object>("list", LIST_PARAMETERS) {
                 public Object getFunctionValue(Parameters parameters) {
-                    Object v = Properties.this.getPropertyNodes(parameters.get(NODE));
-                    if (v == null) return parameters.get(DEFAULT);
-                    return v;
+                    return Properties.this.getPropertyNodes(parameters.get(NODE));
                 }
             });
         addFunction(new AbstractFunction<Object>("get", GET_PARAMETERS) {
