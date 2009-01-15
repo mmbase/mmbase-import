@@ -37,10 +37,37 @@
     </mm:hasnode>
   </span>
 
-
   <ul>
     <mm:include page="../newfromtree.jsp"  />
+    <mm:relatednodescontainer
+        type="learnobjects"
+        role="posrel"
+        searchdirs="destination"
+        >
+      <mm:sortorder field="posrel.pos" direction="up" />
+      <mm:typeconstraint name="questions" inverse="true" />
+      <mm:relatednodes>
+        <li>
+          <mm:nodeinfo type="type">
+            <mm:treehaspage page="/education/wizards/show/${_}.jspx" objectlist="$includePath">
+              <mm:treeinclude page="/education/wizards/show/${_}.jspx"
+                              objectlist="$includePath"
+                              debug="html"
+                              />
+            </mm:treehaspage>
+            <mm:treehaspage page="/education/wizards/show/${_}.jspx"
+                            objectlist="$includePath"
+                            inverse="true">
+              <mm:treeinclude page="/education/wizards/showlearnobject.jsp"
+                              objectlist="$includePath"
+                              debug="html"
+                              >
+              </mm:treeinclude>
+            </mm:treehaspage>
+          </mm:nodeinfo>
+        </li>
+      </mm:relatednodes>
+    </mm:relatednodescontainer>
   </ul>
-
 
 </jsp:root>
