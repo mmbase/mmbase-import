@@ -23,17 +23,6 @@
       <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
       <mm:param name="objectnumber">new</mm:param>
 
-      <mm:hasrelationmanager sourcemanager="xmlcontent" destinationmanager="images" role="background">
-        <mm:relatednodescontainer id="current" type="images" role="background">
-          <mm:maxnumber value="1" />
-        </mm:relatednodescontainer>
-        <mm:listnodescontainer id="repository" type="images" />
-        <mm:write session="${prefix}current"    referid="current" />
-        <mm:write session="${prefix}repository" referid="repository" />
-        <mm:param name="tools">searchrelate</mm:param>
-      </mm:hasrelationmanager>
-
-
       <a href="${_}"
          title="${di:translate(description)}"
          target="text">${di:translate(name)}</a>
