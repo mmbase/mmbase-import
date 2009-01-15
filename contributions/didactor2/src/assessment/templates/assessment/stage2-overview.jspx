@@ -36,8 +36,9 @@
                 If a relation learnBlock -classrel->user exists, then that means that this lesson is marked 'closed' (by this module)
             -->
             <mm:relation to="${user}" role="classrel" searchdir="source" notfound="null">
+            
               <td class="learnblockItemsTitle ${empty _node ? '' : 'closed'}">
-                <mm:field name="name" node="learnBlock" />
+              	<jsp:text>|&amp;nbsp;&amp;nbsp;</jsp:text><mm:field name="name" node="learnBlock" /><mm:last><jsp:text>   |</jsp:text></mm:last>
               </td>
             </mm:relation>
         </mm:nodelistfunction>
