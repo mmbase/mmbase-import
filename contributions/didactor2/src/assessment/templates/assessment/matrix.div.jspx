@@ -94,7 +94,7 @@
     </mm:relatednodes>
     <mm:present referid="test">
       <mm:link  referids="test,_node@problem,sub?">
-        <mm:param name="stage">stage5-evaluate</mm:param>
+        <mm:param name="stage">stage2-evaluate</mm:param>
         <td colspan="${fn:length(learnBlock) - blockCount}" class="learnblockItems" align="right">
           <a href="${_}">uitwerken</a>
         </td>
