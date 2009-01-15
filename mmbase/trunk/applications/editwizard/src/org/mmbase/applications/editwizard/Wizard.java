@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.178 2009-01-13 14:24:11 michiel Exp $
+ * @version $Id: Wizard.java,v 1.179 2009-01-15 18:10:26 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -1304,9 +1304,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     // Remove the refering node.
                     parent.removeChild(referer);
                 } catch (RuntimeException e) {
-                    log.error(Logging.stackTrace(e));
                     throw new WizardException("Error resolving external part '" +
-                                              includeUrl + "'");
+                                              includeUrl + "': " + e.getMessage(), e);
                 }
             }
         }
@@ -1911,7 +1910,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                 theValue = dataNode.getFirstChild().getNodeValue();
             }
         } catch (RuntimeException e) {
-            log.error(Logging.stackTrace(e));
+            log.error(e.getMessage(), e);
         }
 
         // if this is a relation, we want the value of the dnumber field
@@ -2897,8 +2896,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             try {
                 con = databaseConnector.getConstraints(objecttype);
             } catch (Exception e) {
-                log.error(Logging.stackTrace(e));
-
+                log.error(e.getMessage(), e);
                 return null;
             }
 
