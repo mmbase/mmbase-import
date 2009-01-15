@@ -309,7 +309,7 @@ public class RelationsMigrator {
             al.add(sOneString.substring(sOneString.indexOf("<node number=\"") + 14,
                    sOneString.indexOf("\" ")));
             }
-         }
+      }
       fr.close();
 
       return al;
