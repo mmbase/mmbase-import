@@ -66,11 +66,16 @@ div.student div.problems li,div.student div.goals li, div.problemsListCategorize
   
 }
 
+div.problemsListCategorize a.create {
+	display: none;
+}
+
 div.problemsListCategorize {
 	padding-left: 5px;
 }
 div.problemsListCategorize li {
 	height: 40px;
+	font-weight: bold;
 }
 
 div.student a.create {
