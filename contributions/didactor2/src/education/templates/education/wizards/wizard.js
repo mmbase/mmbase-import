@@ -1,8 +1,9 @@
 
 
 function WizardTree() {
-    this.setupTree();
     this.mode = $("body").attr("class").replace(/editwizards/, '').trim();
+    this.education = $("html head meta[name='Didactor-Education']").attr("content");
+    this.setupTree();
 }
 
 WizardTree.prototype.reloadMode = function () {
@@ -20,11 +21,12 @@ WizardTree.prototype.afterReload = function () {
 }
 
 WizardTree.prototype.setupTree = function() {
+    var self = this;
     $(document).ready(function() {
         $('ul.treeview').treeview({
             collapsed: true,
             persist: "cookie",
-            cookieId: "treeview_${e}_${mode}",
+            cookieId: "treeview_" + self.education + "_" + self.mode,
             cookieOptions: {expires: 100}
         }
                                  );
