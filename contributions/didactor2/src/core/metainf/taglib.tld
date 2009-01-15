@@ -392,10 +392,6 @@
     <path>/META-INF/tags/di/core/rotatedtext.tagx</path>
   </tag-file>
   <tag-file>
-    <name>leaf</name>
-    <path>/META-INF/tags/di/core/leaf.tagx</path>
-  </tag-file>
-  <tag-file>
     <name>icon</name>
     <path>/META-INF/tags/di/core/icon.tagx</path>
   </tag-file>
