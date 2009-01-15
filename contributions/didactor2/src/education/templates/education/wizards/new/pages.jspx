@@ -4,8 +4,6 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
   <mm:import externid="wizardjsp" from="request" />
-  <mm:import externid="branchPath" />
-  <mm:import  externid="b" from="request" />
 
   <di:icon name="new_education" />
   <mm:nodeinfo id="guitype" nodetype="pages" type="guitype" write="false" />
@@ -17,7 +15,7 @@
     <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
     <a href="${_}"
        title="${di:translate('education.new')} ${guitype} ${di:translate('education.aanmaken')}"
-       target="text"><di:translate key="education.new" /> ${guitype} <di:translate key="education.aanmaken" />
+       ><di:translate key="education.new" /> ${guitype} <di:translate key="education.aanmaken" />
     </a>
   </mm:link>
 
