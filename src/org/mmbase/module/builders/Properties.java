@@ -39,13 +39,13 @@ import org.mmbase.bridge.util.Queries;
           &lt;/mm:listnodes&gt;
         &lt;/div&gt;
       &lt;/mm:cloud&gt;
-      
+
       &lt;mm:nodelistfunction nodemanager="properties" name="list" referids="_node@node"&gt;
         &lt;mm:field name="key" /&gt;:&lt;mm:field name="value" /&gt;
       &lt;/mm:nodelistfunction&gt;
  </pre>
  *
- * @version $Id: Properties.java,v 1.20 2009-01-15 19:59:18 andre Exp $
+ * @version $Id: Properties.java,v 1.21 2009-01-15 21:22:47 michiel Exp $
  */
 public class Properties extends MMObjectBuilder {
 
@@ -104,7 +104,7 @@ public class Properties extends MMObjectBuilder {
         return getValue(getValueNode(node, key));
 
     }
-    
+
     /**
      * @since MMBase-1.9.1
      */
@@ -115,8 +115,8 @@ public class Properties extends MMObjectBuilder {
     }
 
     {
-        addFunction(new AbstractFunction<Object>("list", LIST_PARAMETERS) {
-                public Object getFunctionValue(Parameters parameters) {
+        addFunction(new AbstractFunction<NodeList>("list", LIST_PARAMETERS) {
+                public NodeList getFunctionValue(Parameters parameters) {
                     return Properties.this.getPropertyNodes(parameters.get(NODE));
                 }
             });
