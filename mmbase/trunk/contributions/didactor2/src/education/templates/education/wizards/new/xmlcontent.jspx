@@ -3,11 +3,9 @@
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
-  <mm:import externid="branchPath" />
-  <mm:import externid="b" from="request" />
+
   <mm:import from="request" externid="referrer" />
   <mm:import id="kupu_back"><mm:url page="${referrer}" /></mm:import>
-
 
   <di:icon name="new_kupu" />
   <mm:hasnodemanager name="xmlcontent">
@@ -25,7 +23,7 @@
 
       <a href="${_}"
          title="${di:translate(description)}"
-         target="text">${di:translate(name)}</a>
+         >${di:translate(name)}</a>
     </mm:link>
   </mm:hasnodemanager>
   <mm:hasnodemanager name="xmlcontent" inverse="true">

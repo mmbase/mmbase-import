@@ -4,11 +4,7 @@
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
-  <mm:import externid="branchPath" />
   <mm:import externid="wizardjsp" from="request" />
-  <mm:import  externid="b" from="request" />
-
-
 
   <mm:nodeinfo id="guitype" nodetype="flashpages" type="guitype" write="false" />
 
@@ -18,7 +14,7 @@
     <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
     <a href="${_}"
        title="${di:translate('education.new')} ${guitype}"
-       target="text"><di:translate key="education.new" /> ${guitype}</a>
+       ><di:translate key="education.new" /> ${guitype}</a>
   </mm:link>
 
 
