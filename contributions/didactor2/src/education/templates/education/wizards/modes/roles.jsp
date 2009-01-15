@@ -12,7 +12,7 @@
         No rights
       </di:has>
       <di:has editcontext="rollen">
-        <ul class="treeview">
+        <ul class="filetree treeview">
           <!--
               edit people,rolerel, education
               doesn't work properly, so commented it out for the moment
@@ -29,8 +29,7 @@
             <di:translate key="education.personstab" />
             <ul>
               <li>
-                <di:icon name="learnblock" />
-                <span>
+                <span class="folder">
                   <mm:link referid="listjsp">
                     <mm:param name="wizard">config/people/people</mm:param>
                     <mm:param name="nodepath">people</mm:param>

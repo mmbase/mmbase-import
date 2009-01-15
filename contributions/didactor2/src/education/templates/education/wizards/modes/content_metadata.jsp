@@ -12,7 +12,7 @@
       <jsp:directive.include file="../mode.include.jsp" />
 
       <di:has editcontext="contentelementen">
-        <ul class="treeview">
+        <nl class="filetree treeview">
           <a title="${di:translate('education.educationmenucontentmetadata')}">
             <di:translate key="education.educationmenucontentmetadata" />
           </a>
@@ -80,7 +80,7 @@
               <mm:treeinclude debug="html" page="/news/backoffice/add_news.jsp" objectlist="" referids="listjsp,wizardjsp" />
               </mm:hasnode>
           -->
-        </ul>
+        </nl>
       </di:has>
     </mm:cloud>
   </div>

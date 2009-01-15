@@ -4,9 +4,13 @@
 
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
+
+  <mm:import externid="mode">educations</mm:import>
+  <mm:import externid="e">${education}</mm:import>
+
   <di:html
       type="application/xhtml+xml"
-      styleClass="editwizards"
+      styleClass="editwizards ${mode}"
       component="education.wizards"
       title_key="education.editwizards"
       css="/education/wizards/style.css"
@@ -20,24 +24,23 @@
       <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
     </mm:link>
 
-    <mm:import externid="mode">educations</mm:import>
-    <mm:import externid="e">${education}</mm:import>
-    <script type="text/javascript">
-      $(document).ready(function() {
-        $('ul.treeview').treeview({
-          collapsed: true,
-          persist: "cookie",
-          cookieId: "treeview_${e}_${mode}",
-          cookieOptions: {expires: 100}
-        }
-        );
-      });
 
-    </script>
+    <mm:treefile
+        write="false"
+        objectlist="${includePath}"
+        page="/education/wizards/wizard.js">
+      <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+    </mm:treefile>
 
     <div class="rows" id="rows">
 
-      <di:include debug="html" page="/education/wizards/javascript.jsp" />
+      <mm:treefile
+          write="false"
+          objectlist="${includePath}"
+          page="/education/wizards/modes/${mode}.jsp"
+          referids="education_topmenu_course?">
+        <a href="${_}" id="mode_url" style="display: none;">Mode url</a>
+      </mm:treefile>
 
       <di:include debug="html" page="/education/wizards/navigation.jspx" />
 

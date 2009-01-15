@@ -25,19 +25,21 @@
               Educations come from here
           -->
           <di:has editcontext="opleidingen"><!-- TODO DUTCH. 'opleidingen' means 'educations' -->
-            <ul class="treeview">
+            <ul class="filetree treeview">
               <li>
-                <mm:link referid="listjsp${forbidtemplate}"
-                         referids="provider">
-                  <mm:param name="wizard">config/education/educations</mm:param>
-                  <mm:param name="nodepath">educations</mm:param>
-                  <mm:param name="searchfields">name</mm:param>
-                  <mm:param name="fields">name</mm:param>
-                  <mm:param name="orderby">name</mm:param>
-                  <a href="${_}" target="text">
-                    <di:translate key="education.educationmenueducations" />
-                  </a>
-                </mm:link>
+                <span class="folder">
+                  <mm:link referid="listjsp"
+                           referids="provider">
+                    <mm:param name="wizard">config/education/educations</mm:param>
+                    <mm:param name="nodepath">educations</mm:param>
+                    <mm:param name="searchfields">name</mm:param>
+                    <mm:param name="fields">name</mm:param>
+                    <mm:param name="orderby">name</mm:param>
+                    <a href="${_}" target="text">
+                      <di:translate key="education.educationmenueducations" />
+                    </a>
+                  </mm:link>
+                </span>
                 <ul>
                   <mm:node number="$user">
                     <mm:hasrank value="administrator">
@@ -67,35 +69,37 @@
                   <mm:node number="${provider}">
                     <mm:relatednodes type="educations">
                       <li class="${_node eq e ? 'active' : 'inactive'}">
-                        <mm:link referid="wizardjsp" referids="_node@objectnumber">
-                          <mm:param name="wizard">config/education/educations</mm:param>
-                          <mm:param name="title"><di:translate key="education.editeducation" /></mm:param>
-                          <a href="${_}" target="text"><mm:field name="name" /></a>
-                        </mm:link>
-                        <mm:field id="eduname" write="false" name="name" />
-                        <mm:write session="eduname" referid="eduname" />
+                        <span class="folder">
+                          <mm:link referid="wizardjsp" referids="_node@objectnumber">
+                            <mm:param name="wizard">config/education/educations</mm:param>
+                            <mm:param name="title"><di:translate key="education.editeducation" /></mm:param>
+                            <a href="${_}"><mm:field name="name" /></a>
+                          </mm:link>
+                          <mm:field id="eduname" write="false" name="name" />
+                          <mm:write session="eduname" referid="eduname" />
 
-                        <!-- WTF -->
-                        <mm:present referid="pdfurl">
-                          <mm:link page="${pdfurl}" referids="_node@number">
-                            <a href="${_}" target="text"><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
-                          </mm:link>
-                        </mm:present>
-                        <mm:hasnode number="component.metadata">
-                          <a href="metaedit.jsp?number=${educationId}" target="text">
-                            <img id="img_${educationId}" src="${imageName}"
-                                 border="0" title="${sAltText}" alt="${sAltText}" /></a>
-                        </mm:hasnode>
-                        <mm:hasnode number="component.drm">
-                          <mm:link referid="wizardjsp" referids="educationId@objectnumber">
-                            <mm:param name="wizard">educationlicense</mm:param>
-                            <a target="text" href="${_}"
-                               title="Bewerk licentie" style="font-size: 1em; text-decoration: none">©</a>
-                          </mm:link>
-                        </mm:hasnode>
-                        <mm:hasnode number="component.versioning">
-                          <a href="versioning.jsp?nodeid=${educationId}" target="text"><img src="gfx/versions.gif" border="0" /></a>
-                        </mm:hasnode>
+                          <!-- WTF -->
+                          <mm:present referid="pdfurl">
+                            <mm:link page="${pdfurl}" referids="_node@number">
+                              <a href="${_}"><img src='gfx/icpdf.gif' border='0' title='(PDF)' alt='(PDF)'/></a>
+                            </mm:link>
+                          </mm:present>
+                          <mm:hasnode number="component.metadata">
+                            <a href="metaedit.jsp?number=${educationId}">
+                              <img id="img_${educationId}" src="${imageName}"
+                                   border="0" title="${sAltText}" alt="${sAltText}" /></a>
+                          </mm:hasnode>
+                          <mm:hasnode number="component.drm">
+                            <mm:link referid="wizardjsp" referids="educationId@objectnumber">
+                              <mm:param name="wizard">educationlicense</mm:param>
+                              <a  href="${_}"
+                                  title="Bewerk licentie" style="font-size: 1em; text-decoration: none">©</a>
+                            </mm:link>
+                          </mm:hasnode>
+                          <mm:hasnode number="component.versioning">
+                            <a href="versioning.jsp?nodeid=${educationId}"><img src="gfx/versions.gif" border="0" /></a>
+                          </mm:hasnode>
+                        </span>
                         <ul>
                           <mm:hasnode number="component.register">
                             <li>
@@ -103,8 +107,9 @@
                               <mm:treefile write="false" page="/register/wizards/register.jsp"
                                            referids="$referids,educationId"
                                            objectlist="$includePath">
-                                <a href="${_}" title="${di:translate('register.registrations')}"
-                                   target="text"><di:translate key="register.registrations" /></a>
+                                <a href="${_}" title="${di:translate('register.registrations')}">
+                                  <di:translate key="register.registrations" />
+                                </a>
                               </mm:treefile>
                             </li>
 
@@ -132,62 +137,64 @@
                             <mm:field name="pos" write="false" id="maxpos" />
                           </mm:listrelations>
                           <!-- create new learnblock item -->
-                            <li>
-                              <di:icon name="new_education" />
-                              <mm:link referid="wizardjsp" referids="_node@origin">
-                                <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
-                                <mm:param name="objectnumber">new</mm:param>
-                                <mm:param name="newpos">${maxpos + 1}</mm:param>
-                                <a href="${_}" title="${di:translate('education.createnewlearnblockdescription')}" target="text">
-                                <di:translate key="education.createnewlearnblock" /></a>
-                              </mm:link>
-                            </li>
+                          <li>
+                            <di:icon name="new_education" />
+                            <mm:link referid="wizardjsp" referids="_node@origin">
+                              <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
+                              <mm:param name="objectnumber">new</mm:param>
+                              <mm:param name="newpos">${maxpos + 1}</mm:param>
+                              <a href="${_}" title="${di:translate('education.createnewlearnblockdescription')}">
+                                <di:translate key="education.createnewlearnblock" />
+                              </a>
+                            </mm:link>
+                          </li>
 
 
-                            <!-- All learnblocks for current education -->
-                            <mm:relatednodes role="posrel" orderby="posrel.pos"
-                                             directions="up"
-                                             varStatus="status"
-                                             searchdir="destination" type="learnobjects">
+                          <!-- All learnblocks for current education -->
+                          <mm:relatednodes role="posrel" orderby="posrel.pos"
+                                           directions="up"
+                                           varStatus="status"
+                                           searchdir="destination" type="learnobjects">
 
-                              <mm:index id="learnblockcounter" write="false" />
-                              <jsp:directive.include file="../whichimage.jsp" />
+                            <mm:index id="learnblockcounter" write="false" />
+                            <jsp:directive.include file="../whichimage.jsp" />
 
-                              <mm:nodeinfo type="type" id="this_node_type" write="false" />
-                              <mm:import id="mark_error" reset="true"></mm:import>
-                              <mm:compare referid="this_node_type" value="tests">
-                                <mm:field name="questionamount" id="questionamount">
-                                  <mm:isgreaterthan value="0">
-                                    <mm:countrelations type="questions">
-                                      <mm:islessthan value="$questionamount">
-                                        <!-- TODO DUTCH -->
-                                        <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er gesteld moeten worden.</mm:import>
-                                      </mm:islessthan>
-                                    </mm:countrelations>
+                            <mm:nodeinfo type="type" id="this_node_type" write="false" />
+                            <mm:import id="mark_error" reset="true"></mm:import>
+                            <mm:compare referid="this_node_type" value="tests">
+                              <mm:field name="questionamount" id="questionamount">
+                                <mm:isgreaterthan value="0">
+                                  <mm:countrelations type="questions">
+                                    <mm:islessthan value="$questionamount">
+                                      <!-- TODO DUTCH -->
+                                      <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er gesteld moeten worden.</mm:import>
+                                    </mm:islessthan>
+                                  </mm:countrelations>
+                                </mm:isgreaterthan>
+
+                                <mm:field name="requiredscore" id="requiredscore">
+                                  <mm:countrelations type="questions">
+                                    <mm:islessthan value="$requiredscore">
+                                      <!-- TODO DUTCH -->
+                                      <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er goed beantwoord moeten worden.</mm:import>
+                                    </mm:islessthan>
+                                  </mm:countrelations>
+                                  <mm:isgreaterthan referid="questionamount" value="0">
+                                    <mm:islessthan referid="questionamount" value="$requiredscore">
+                                      <!-- TODO DUTCH -->
+                                      <mm:import id="mark_error" reset="true">Er worden minder vragen gesteld dan er goed beantwoord moeten worden.</mm:import>
+                                    </mm:islessthan>
                                   </mm:isgreaterthan>
-
-                                  <mm:field name="requiredscore" id="requiredscore">
-                                    <mm:countrelations type="questions">
-                                      <mm:islessthan value="$requiredscore">
-                                        <!-- TODO DUTCH -->
-                                        <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er goed beantwoord moeten worden.</mm:import>
-                                      </mm:islessthan>
-                                    </mm:countrelations>
-                                    <mm:isgreaterthan referid="questionamount" value="0">
-                                      <mm:islessthan referid="questionamount" value="$requiredscore">
-                                        <!-- TODO DUTCH -->
-                                        <mm:import id="mark_error" reset="true">Er worden minder vragen gesteld dan er goed beantwoord moeten worden.</mm:import>
-                                      </mm:islessthan>
-                                    </mm:isgreaterthan>
-                                  </mm:field>
                                 </mm:field>
-                              </mm:compare>
+                              </mm:field>
+                            </mm:compare>
 
-                              <li>
+                            <li>
+                              <span class="folder">
                                 <mm:import id="guitype" ><mm:nodeinfo type="guitype" escape="lowercase" /></mm:import>
                                 <mm:link referid="wizardjsp" referids="_node@objectnumber">
                                   <mm:param name="wizard">config/<mm:nodeinfo type="type"/>/<mm:nodeinfo type="type" /></mm:param>
-                                  <a href="${_}" title="${di:translate('education.editexisting')} ${guitype}" target="text">
+                                  <a href="${_}" title="${di:translate('education.editexisting')} ${guitype}">
                                     <mm:field name="name" />
                                   </a>
                                 </mm:link>
@@ -212,18 +219,19 @@
                                     <a href="${_}" target="text"><img src="gfx/versions.gif" border="0" /></a>
                                   </mm:link>
                                 </mm:hasnode>
-                                <ul>
-                                  <mm:treeinclude
-                                      debug="html"
-                                      page="/education/wizards/learnobject.jsp"
-                                      objectlist="$includePath"
-                                      referids="wizardjsp,_node@startnode">
-                                    <mm:param name="branchPath">..${status.last ? '.' : ' '}</mm:param>
-                                    <mm:param name="startnode"><mm:field name="number" /></mm:param>
-                                  </mm:treeinclude>
-                                </ul>
-                              </li>
-                            </mm:relatednodes>
+                              </span>
+                              <ul>
+                                <mm:treeinclude
+                                    debug="html"
+                                    page="/education/wizards/learnobject.jsp"
+                                    objectlist="$includePath"
+                                    referids="wizardjsp,_node@startnode">
+                                  <mm:param name="branchPath">..${status.last ? '.' : ' '}</mm:param>
+                                  <mm:param name="startnode"><mm:field name="number" /></mm:param>
+                                </mm:treeinclude>
+                              </ul>
+                            </li>
+                          </mm:relatednodes>
                         </ul>
                       </li>
                     </mm:relatednodes>
