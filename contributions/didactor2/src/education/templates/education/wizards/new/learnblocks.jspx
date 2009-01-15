@@ -14,8 +14,8 @@
   <mm:link referid="wizardjsp" referids="_node@origin">
     <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
     <mm:param name="objectnumber">new</mm:param>
+    <mm:param name="newpos">${maxpos + 1}</mm:param>
     <!--
-        <mm:param name="newpos">${maxpos + 1}</mm:param>
         <mm:param name="path">${sessionScope.eduname} &gt; ${sessionScope.path}</mm:param>
     -->
     <a href="${_}" title="${di:translate('education.new')}  ${dummyname} ${di:translate('education.aanmaken')}"
