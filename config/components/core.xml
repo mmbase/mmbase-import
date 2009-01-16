@@ -538,7 +538,7 @@
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
         <param name="docbook">glossary.xml</param>
-        <param name="includeRenderTime">html</param>
+        <param name="includeRenderTime">xml-comments</param>
       </class>
     </body>
   </block>
