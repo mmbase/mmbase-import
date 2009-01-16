@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.31 2008-10-29 20:05:21 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.32 2009-01-16 22:35:44 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter extends DirectoryUrlConverter {
@@ -111,7 +111,7 @@ public class MyNewsUrlConverter extends DirectoryUrlConverter {
     /**
      * Translates the result of {@link #getNiceUrl} back to an actual JSP which can render the block
      */
-    @Override public Url getFilteredInternalDirectoryUrl(List<String>  path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
+    @Override public Url getFilteredInternalDirectoryUrl(List<String>  path, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
         StringBuilder result = new StringBuilder("/mmbase/framework/render.jspx?component=mynews");
         if (path.size() == 0) {
             result.append("&block=magazine");
