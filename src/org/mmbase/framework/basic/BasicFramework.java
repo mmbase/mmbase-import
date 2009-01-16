@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.43 2009-01-05 18:53:23 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.44 2009-01-16 22:21:13 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -67,7 +67,7 @@ public class BasicFramework extends Framework {
 
 
     public String getUrl(String path,
-                         Map<String, Object> parameters,
+                         Map<String, ?> parameters,
                          Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         Url link =  urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
         log.debug("got " + link + " from " + urlConverter);
@@ -80,7 +80,7 @@ public class BasicFramework extends Framework {
     }
 
 
-    public String getProcessUrl(String path, Map<String, Object> parameters,
+    public String getProcessUrl(String path, Map<String, ?> parameters,
                                Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         State state = State.getState(request);
@@ -95,7 +95,7 @@ public class BasicFramework extends Framework {
         }
     }
 
-    public String getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
+    public String getInternalUrl(String page, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
         if (log.isDebugEnabled()) {
             log.debug("calling urlConverter " + urlConverter);
         }

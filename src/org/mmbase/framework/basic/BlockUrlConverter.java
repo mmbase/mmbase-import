@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * URLConverters would probably like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BlockUrlConverter.java,v 1.16 2009-01-05 18:36:02 michiel Exp $
+ * @version $Id: BlockUrlConverter.java,v 1.17 2009-01-16 22:21:13 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -161,7 +161,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
      *
      */
     protected final Url getUrl(String path,
-                               Map<String, Object> parameters,
+                               Map<String, ?> parameters,
                                Parameters frameworkParameters, boolean escapeAmps, boolean action) throws FrameworkException {
         Block block = getBlock(path, frameworkParameters);
         if (block != null) {
@@ -209,13 +209,13 @@ public abstract class BlockUrlConverter implements UrlConverter {
 
 
     public Url getUrl(String path,
-                         Map<String, Object> parameters,
+                         Map<String, ?> parameters,
                          Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
     }
 
     public Url getProcessUrl(String path,
-                             Map<String, Object> parameters,
+                             Map<String, ?> parameters,
                              Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         return getUrl(path, parameters, frameworkParameters, escapeAmps, true);
     }
@@ -233,13 +233,13 @@ public abstract class BlockUrlConverter implements UrlConverter {
      * @param
      */
     protected abstract Url getNiceUrl(Block block,
-                                         Parameters blockParameters,
-                                         Parameters frameworkParameters,
-                                         boolean action) throws FrameworkException;
+                                      Parameters blockParameters,
+                                      Parameters frameworkParameters,
+                                      boolean action) throws FrameworkException;
 
 
 
-    public  final Url getInternalUrl(String path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
+    public  final Url getInternalUrl(String path, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
         if (isFilteredMode(frameworkParameters)) {
             return getFilteredInternalUrl(path, params, frameworkParameters);
         } else {
@@ -252,7 +252,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
      * <code>null</code>. IOW it is certain that the current URL is 'nice' according to this URL
      * Converter.
     */
-    protected  abstract Url getFilteredInternalUrl(String path, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException;
+    protected  abstract Url getFilteredInternalUrl(String path, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException;
 
 
 }

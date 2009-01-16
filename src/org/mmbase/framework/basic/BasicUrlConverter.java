@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.23 2008-10-29 19:42:42 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.24 2009-01-16 22:21:13 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -46,7 +46,7 @@ public final class BasicUrlConverter implements UrlConverter {
      * in (X)HTML.
      * @return An URL relative to the root of this web application (i.e. without a context path),
      */
-    public static String getUrl(String page, Map<String, Object> params, HttpServletRequest req, boolean escapeamp) {
+    public static String getUrl(String page, Map<String, ?> params, HttpServletRequest req, boolean escapeamp) {
         if (log.isDebugEnabled()) {
             if (log.isTraceEnabled()) {
                 log.trace("(static) constructing " + page + params + " because ", new Exception());
@@ -152,7 +152,7 @@ public final class BasicUrlConverter implements UrlConverter {
 
 
     protected String getUrl(String path,
-                            Map<String, Object> parameters,
+                            Map<String, ?> parameters,
                             Parameters frameworkParameters, boolean escapeAmps, boolean action) {
         HttpServletRequest request = getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         State state = State.getState(request);
@@ -160,7 +160,7 @@ public final class BasicUrlConverter implements UrlConverter {
         if (log.isDebugEnabled()) {
             log.debug("path '" + path + "' p:" + parameters + " fwp:" + frameworkParameters + " " + state + " rp:" + request.getParameterMap());
         }
-        for (Map.Entry<String, Object> e : parameters.entrySet()) {
+        for (Map.Entry<String, ?> e : parameters.entrySet()) {
             map.put(e.getKey(), e.getValue());
         }
         if (state.isRendering()) {
@@ -209,17 +209,17 @@ public final class BasicUrlConverter implements UrlConverter {
 
 
     public Url getUrl(String path,
-                            Map<String, Object> parameters,
+                            Map<String, ?> parameters,
                             Parameters frameworkParameters, boolean escapeAmps) {
         return new BasicUrl(this, getUrl(path, parameters, frameworkParameters, escapeAmps, false));
     }
     public Url getProcessUrl(String path,
-                            Map<String, Object> parameters,
+                            Map<String, ?> parameters,
                             Parameters frameworkParameters, boolean escapeAmps) {
         return new BasicUrl(this, getUrl(path, parameters, frameworkParameters, escapeAmps, true));
     }
 
-    public Url getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
+    public Url getInternalUrl(String page, Map<String, ?> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         return new BasicUrl(this, BasicUrlConverter.getUrl(page, params, request, false));
     }
