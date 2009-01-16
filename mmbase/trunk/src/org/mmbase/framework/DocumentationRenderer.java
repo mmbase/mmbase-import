@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * render the documenation from the xml's in a/the jar.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DocumentationRenderer.java,v 1.3 2009-01-14 09:10:18 michiel Exp $
+ * @version $Id: DocumentationRenderer.java,v 1.4 2009-01-16 21:17:58 michiel Exp $
  * @since MMBase-1.9.1
 
  */
@@ -78,6 +78,7 @@ public class DocumentationRenderer extends CachedRenderer {
                         }
                     };
                 connection.setXslt("xslt/docbook2block.xslt");
+                connection.setDecorate(true);
                 wrapped = connection;
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
