@@ -10,14 +10,7 @@
     <mm:cloud rank="editor">
 
       <mm:import externid="e" jspvar="chosen_education" vartype="string">${education}</mm:import>
-      <style type="text/css">
-        .education_top_menu {
-        font-weight: bold;
-        }
-        .education_top_menu.selected {
-        background:#888586;
-        }
-      </style>
+
 
       <mm:import externid="mode">educations</mm:import>
 
@@ -125,6 +118,8 @@
         </di:has>
       </mm:hasnode>
 
+      <di:blocks classification="editor.menuitem" surrounding_div="false" />
+
       <di:getsetting setting="new_learnobjects" component="core" vartype="list" id="new_learnobjects" write="false" />
       <c:if test="${mm:contains(new_learnobjects, 'tests')}">
         <di:has editcontext="toetsen">
@@ -140,14 +135,17 @@
 
 
       <di:has editcontext="opleidingen">
-        <span class="education_top_menu ${mode eq 'educations' ? 'selected' : ''}">
-          <mm:link page="." referids="e?">
-            <mm:param name="mode">educations</mm:param>
-            <a href="${_}">
-              <di:translate key="education.educationmenueducations" />
-            </a>
-          </mm:link>
-          <c:if test="${fn:length(educations) ge 2}">
+        <mm:link page="." referids="e?">
+          <mm:param name="mode">educations</mm:param>
+          <a 
+              class="education_top_menu ${mode eq 'educations' ? 'selected' : ''}"
+              href="${_}">
+            <di:translate key="education.educationmenueducations" />
+          </a>
+        </mm:link>
+        <!-- I think this is made superflouus by a more general education-selector in the application bar.
+
+            <c:if test="${fn:length(educations) ge 2}">
             <script>
               function chooseEducation(eid) {
               if (eid != 0) {
@@ -157,7 +155,7 @@
             </script>
             <select name="course" id="course"
                     onchange="chooseEducation(this.value);">
-              <option value="0">--------</option>
+              <option value="0">-</option>
               <mm:listnodes referid="educations">
                 <c:choose>
                   <c:when test="${_node eq e}">
@@ -170,7 +168,7 @@
               </mm:listnodes>
             </select>
           </c:if>
-        </span>
+          -->
       </di:has>
     </mm:cloud>
   </mm:content>
