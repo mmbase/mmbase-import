@@ -3,6 +3,7 @@
     name="statistics"
     version="0.2"
     xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
 
@@ -27,6 +28,7 @@
          <param name="resource">documentation/mmstatistics.xml</param>
          <param name="type">config</param>
          <param name="xslt">xslt/docbook2block.xslt</param>
+         <param name="decorate">true</param>
       </class>
     </body>
   </block>
@@ -34,6 +36,7 @@
   <block name="statistics"
          classification="mmbase.documentation"
          mimetype="text/html">
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.CachedRenderer">
         <param name="wrapsBlock">statistics_uncached</param>
