@@ -19,23 +19,24 @@
   Could perhaps use nwalsh xslt but that seems a huge overkill. It should be rather simple, we probably use only a small subset of docbook.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: docbook2block.xslt,v 1.5 2009-01-16 08:24:06 michiel Exp $
+  @version: $Id: docbook2block.xslt,v 1.6 2009-01-16 22:21:59 michiel Exp $
   @since:   MMBase-1.9
 -->
 <xsl:stylesheet
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
-    xmlns:taglib="org.mmbase.bridge.jsp.taglib.functions.Functions"
+    xmlns:fw="org.mmbase.framework.Functions"
     xmlns:o="http://www.mmbase.org/xmlns/objects"
     xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
     xmlns="http://www.w3.org/1999/xhtml"
-    exclude-result-prefixes="node mmxf o taglib"
+    exclude-result-prefixes="node mmxf o fw"
     version="1.0" >
 
   <xsl:output method="xml"
               omit-xml-declaration="yes" /> <!-- xhtml is a form of xml -->
 
   <xsl:param name="request" />
+  <xsl:param name="formatter_requestcontext" />
 
   <xsl:variable name="lowercase">abcdefghijklmnopqrstuvwxyz</xsl:variable>
   <xsl:variable name="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
@@ -177,9 +178,13 @@
         <xsl:value-of select="$url" />
       </xsl:when>
       <!-- relative -->
-      <!-- TODO -->
+      <!-- only in xpath 2
       <xsl:when test="ends-with($url, '.html')">
-        <xsl:value-of select="$request" /><xsl:value-of select="substring($url, 0, string-length($url) - 4)" /><xsl:text>.xml</xsl:text>
+      -->
+      <xsl:when test="substring($url, string-length($url) - 4) = '.html')">
+        <xsl:variable name="docbook">docbook=<xsl:value-of select="substring($url, 0, string-length($url) - 4)" />.xml</xsl:variable>
+        <xsl:value-of select="$formatter_requestcontext" />
+        <xsl:value-of select="fw:url($request, 'docbook', $docbook, '')" />
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$request" /><xsl:text>bla bla bla: </xsl:text><xsl:value-of select="$url" />
