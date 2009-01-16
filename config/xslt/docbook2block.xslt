@@ -19,7 +19,7 @@
   Could perhaps use nwalsh xslt but that seems a huge overkill. It should be rather simple, we probably use only a small subset of docbook.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: docbook2block.xslt,v 1.6 2009-01-16 22:21:59 michiel Exp $
+  @version: $Id: docbook2block.xslt,v 1.7 2009-01-16 22:44:43 michiel Exp $
   @since:   MMBase-1.9
 -->
 <xsl:stylesheet
@@ -181,7 +181,7 @@
       <!-- only in xpath 2
       <xsl:when test="ends-with($url, '.html')">
       -->
-      <xsl:when test="substring($url, string-length($url) - 4) = '.html')">
+      <xsl:when test="substring($url, string-length($url) - 4) = '.html'">
         <xsl:variable name="docbook">docbook=<xsl:value-of select="substring($url, 0, string-length($url) - 4)" />.xml</xsl:variable>
         <xsl:value-of select="$formatter_requestcontext" />
         <xsl:value-of select="fw:url($request, 'docbook', $docbook, '')" />
