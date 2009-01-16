@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Andr&eacute; van Toly
- * @version $Id: Framework.java,v 1.63 2008-11-21 10:19:20 michiel Exp $
+ * @version $Id: Framework.java,v 1.64 2009-01-16 22:21:13 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -280,12 +280,12 @@ public abstract class Framework {
      * @throws FrameworkException thrown when something goes wrong in the Framework
      */
     public abstract String getUrl(String path,
-                                  Map<String, Object> parameters,
+                                  Map<String, ?> parameters,
                                   Parameters frameworkParameters,
                                   boolean escapeAmps) throws FrameworkException;
 
     public abstract String getProcessUrl(String path,
-                                         Map<String, Object> parameters,
+                                         Map<String, ?> parameters,
                                          Parameters frameworkParameters,
                                          boolean escapeAmps) throws FrameworkException;
 
@@ -306,7 +306,7 @@ public abstract class Framework {
      * @throws FrameworkException thrown when something goes wrong in the Framework
      */
     public abstract String getInternalUrl(String path,
-                                          Map<String, Object> params,
+                                          Map<String, ?> params,
                                           Parameters frameworkParameters) throws FrameworkException;
 
 
