@@ -531,13 +531,13 @@
     </body>
   </block>
 
-  <block name="glossary"
+  <block name="documentation"
          classification="mmbase.documentation"
          mimetype="text/html">
     <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
-        <param name="docbook">glossary.xml</param>
+        <param name="docbook">index.xml</param>
         <param name="includeRenderTime">xml-comments</param>
       </class>
     </body>
@@ -550,14 +550,6 @@
       <class name="org.mmbase.framework.DocumentationRenderer">
         <param name="includeRenderTime">xml-comments</param>
       </class>
-    </body>
-  </block>
-
-  <block name="documentation"
-         classification="mmbase.documentation"
-         mimetype="text/html">
-    <body jsp="documentation/index.jspx">
-      <param name="docbook" />
     </body>
   </block>
 
