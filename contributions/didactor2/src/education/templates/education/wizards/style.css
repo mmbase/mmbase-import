@@ -1,5 +1,12 @@
 @import url(../../core/js/jquery-treeview/jquery.treeview.css);
 
+.education_top_menu {
+  font-weight: bold;
+}
+.education_top_menu.selected {
+  background: #888586;
+}
+
 .treeview a {
    text-decoration: none;
 }
