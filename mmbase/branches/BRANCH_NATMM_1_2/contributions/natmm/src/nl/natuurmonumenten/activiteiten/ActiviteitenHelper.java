@@ -8,20 +8,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.log4j.Logger;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 
 public class ActiviteitenHelper {
+    private static Logger logger = Logger.getLogger(ActiviteitenHelper.class);
+    
     public static Map findEvents(Cloud cloud, Date start, Date eind, String[] eventTypeIds, String provincieId, String natuurgebiedenId) {
         // Deze code komt uit searchresults.jsp, omdat ik er geen touw aan vast kan knopen heb ik geprobeerd deze letterlijk over te zetten vanuit de jsp code
         // ik heb geen poging gedaan om het refactoren, *************** (gecensureerd)
         
         long lDateSearchFrom = start.getTime()/1000;
         long lDateSearchTill = eind.getTime()/1000;
-        System.out.println("lDateSearchFrom: " + lDateSearchFrom);
-        System.out.println("lDateSearchTill: " + lDateSearchTill);
+        logger.debug("lDateSearchFrom: " + lDateSearchFrom);
+        logger.debug("lDateSearchTill: " + lDateSearchTill);
         
         // geen idee, maar ze rekken de tijd nog wat op
         Calendar cal = Calendar.getInstance();
@@ -34,7 +37,7 @@ public class ActiviteitenHelper {
         StringBuffer defaultParentEvents = new StringBuffer();
         if (lDateSearchTill <= lDateSearchTillDefault) {
             HashSet defaultEvents = nl.leocms.evenementen.Evenement.getEvents(cloud,lDateSearchFromDefault,lDateSearchTillDefault);
-            System.out.println("defaultEvents: " + defaultEvents);
+            logger.debug("defaultEvents: " + defaultEvents);
             boolean first = true;
             for (Iterator iter = defaultEvents.iterator(); iter.hasNext();) {
                 String eventnumber = (String) iter.next();
@@ -46,7 +49,7 @@ public class ActiviteitenHelper {
                 defaultParentEvents.append(eventnumber);
             }
         }
-        System.out.println("defaultParentEvents: " + defaultParentEvents);
+        logger.debug("defaultParentEvents: " + defaultParentEvents);
 
         StringBuffer eventTypeConstraint = new StringBuffer();
         if (eventTypeIds != null) {
@@ -64,13 +67,13 @@ public class ActiviteitenHelper {
             }
             eventTypeConstraint.append(")");
         }
-        System.out.println("eventTypeConstraint: " + eventTypeConstraint);
+        logger.debug("eventTypeConstraint: " + eventTypeConstraint);
         
         String provincieConstraint = null;
         if (provincieId != null) {
             provincieConstraint = "lokatie like '%," + provincieId + ",%'";
         }
-        System.out.println("provincieConstraint: " + provincieConstraint);
+        logger.debug("provincieConstraint: " + provincieConstraint);
         Set parentEvents = new HashSet();
         NodeList list = cloud.getList(defaultParentEvents.toString(), "evenement,related,evenement_type", "evenement.number", provincieConstraint, null, null, null, true);
         for (NodeIterator iter = list.nodeIterator(); iter.hasNext();) {
@@ -92,7 +95,7 @@ public class ActiviteitenHelper {
                 }
             }
 
-            System.out.println("natuurgebiedenId: " + natuurgebiedenId);
+            logger.debug("natuurgebiedenId: " + natuurgebiedenId);
             if (natuurgebiedenId != null) {
                 parentBelongsToNatuurgebied = false;
                 NodeList list2 = cloud.getList(natuurgebiedenId, "natuurgebieden,related,evenement", "evenement.number", "evenement.number='" + parentNumber +"'", null, null, null, true);
@@ -100,7 +103,7 @@ public class ActiviteitenHelper {
                     parentBelongsToNatuurgebied = true;
                 }
             }
-            System.out.println("parentBelongsToNatuurgebied: " + parentBelongsToNatuurgebied);
+            logger.debug("parentBelongsToNatuurgebied: " + parentBelongsToNatuurgebied);
 
             if (parentBelongsToActivityType && parentBelongsToNatuurgebied) {
                 if (parentNumber != null && parentNumber.trim().length() > 0) {
@@ -108,7 +111,7 @@ public class ActiviteitenHelper {
                 }
             }
         }
-        System.out.println("parentEvents: " + parentEvents);
+        logger.debug("parentEvents: " + parentEvents);
         StringBuffer sb = new StringBuffer();
         boolean first = true;
         for (Iterator iter = parentEvents.iterator(); iter.hasNext();) {
@@ -120,46 +123,46 @@ public class ActiviteitenHelper {
             sb.append(iter.next());
         }
         String parentEventsString = sb.toString();
-        System.out.println("parentEvents: " + parentEventsString);
+        logger.debug("parentEvents: " + parentEventsString);
         String childConstraints = nl.leocms.evenementen.Evenement.getEventsConstraint(lDateSearchFrom,lDateSearchTill);
-        System.out.println("childConstraints voor: <" + childConstraints  + ">");
+        logger.debug("childConstraints voor: <" + childConstraints  + ">");
         if (!parentEvents.equals("")) {
             childConstraints = "";
         }
-        System.out.println("childConstraints na: <" + childConstraints + ">");
+        logger.debug("childConstraints na: <" + childConstraints + ">");
 
         Map events = new TreeMap();
         if (!parentEvents.isEmpty()) {
             NodeList childList = cloud.getList(parentEventsString, "evenement1,partrel,evenement", "evenement.number,evenement.begindatum", childConstraints, null, null, "destination", true);
             for (NodeIterator iter = childList.nodeIterator(); iter.hasNext();) {
                 Node event = iter.nextNode();
-                System.out.println("found in first loop: " + event.getStringValue("evenement.number") + "[" + event.getLongValue("evenement.begindatum") + "]");
+                logger.debug("found in first loop: " + event.getStringValue("evenement.number") + "[" + event.getLongValue("evenement.begindatum") + "]");
                 // ik heb geen idee wat dit doet
                 if(!events.containsValue(event.getStringValue("evenement.number")) ) {
                     long eventBeginDate = event.getLongValue("evenement.begindatum");
                     while(events.containsKey(new Long(eventBeginDate))) {
                        eventBeginDate++;
                     }
-                    System.out.println("putting event: " + (new Long(eventBeginDate)) + ":" + event.getStringValue("evenement.number"));
+                    logger.debug("putting event: " + (new Long(eventBeginDate)) + ":" + event.getStringValue("evenement.number"));
                     events.put(new Long(eventBeginDate),event.getStringValue("evenement.number"));
                  }
             }
             NodeList anotherChildList = cloud.getList(parentEventsString, "evenement", "evenement.number,evenement.begindatum", childConstraints, null, null, "destination", true);
             for (NodeIterator iter = anotherChildList.nodeIterator(); iter.hasNext();) {
                 Node event = iter.nextNode();
-                System.out.println("found in second loop: " + event.getStringValue("evenement.number") + "[" + event.getLongValue("evenement.begindatum") + "]");
+                logger.debug("found in second loop: " + event.getStringValue("evenement.number") + "[" + event.getLongValue("evenement.begindatum") + "]");
                 // ik heb nog steeds geen idee wat dit doet
                 if(!events.containsValue(event.getStringValue("evenement.number")) ) {
                     long eventBeginDate = event.getLongValue("evenement.begindatum");
                     while(events.containsKey(new Long(eventBeginDate))) {
                        eventBeginDate++;
                     }
-                    System.out.println("putting event: " + (new Long(eventBeginDate)) + ":" + event.getStringValue("evenement.number"));
+                    logger.debug("putting event: " + (new Long(eventBeginDate)) + ":" + event.getStringValue("evenement.number"));
                     events.put(new Long(eventBeginDate),event.getStringValue("evenement.number"));
                  }
             }
         }
-        System.out.println("events: " + events);
+        logger.debug("events: " + events);
         return events;
     }
 

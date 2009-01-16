@@ -43,7 +43,7 @@ public class ActiviteitenService implements IActiviteitenService {
      * @see nl.natuurmonumenten.activiteiten.ActiviteitenServiceInterf#getProvincies()
      */
     public Provincie[] getProvincies() {
-        System.out.println("getProvincies");
+        logger.debug("getProvincies");
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
         NodeManager manager = cloud.getNodeManager("provincies");
         NodeList list = manager.getList(null, null, null);
@@ -61,9 +61,9 @@ public class ActiviteitenService implements IActiviteitenService {
      * @see nl.natuurmonumenten.activiteiten.ActiviteitenServiceInterf#getEvents(java.util.Date, java.util.Date, java.lang.String[], java.lang.String, java.lang.String)
      */
     public Event[] getEvents(Date start, Date eind, String[] eventTypeIds, String provincieId, String natuurgebiedenId) {
-        System.out.println("getEvents() - eventTypeIds: " + eventTypeIds);
+        logger.debug("getEvents() - eventTypeIds: " + eventTypeIds);
         if (eventTypeIds != null) {
-            System.out.println("eventTypeIds: " + Arrays.asList(eventTypeIds));
+            logger.debug("eventTypeIds: " + Arrays.asList(eventTypeIds));
         }
         if (start == null || eind == null) {
             throw new IllegalArgumentException("Start en/of einddatum ontbreekt");
@@ -74,15 +74,15 @@ public class ActiviteitenService implements IActiviteitenService {
         for (Iterator iter = eventNodes.entrySet().iterator(); iter.hasNext();) {
             Map.Entry entry = (Map.Entry) iter.next();
             String eventNumber = (String) entry.getValue();
-            System.out.println("getting node for: " + eventNumber);
+            logger.debug("getting node for: " + eventNumber);
             Node event = cloud.getNode(eventNumber);
             beans.add(beanFactory.createEvent(event));
         }
-        System.out.println("beans: " + beans);
-        System.out.println("beans.size(): " + beans.size());
+        logger.debug("beans: " + beans);
+        logger.debug("beans.size(): " + beans.size());
         
         Event[] events = (Event[]) beans.toArray(new Event[beans.size()]);
-        System.out.println("events: " + Arrays.asList(events));
+        logger.debug("events: " + Arrays.asList(events));
         return events;
     }
 
@@ -90,7 +90,7 @@ public class ActiviteitenService implements IActiviteitenService {
      * @see nl.natuurmonumenten.activiteiten.ActiviteitenServiceInterf#getEventTypes()
      */
     public EventType[] getEventTypes() {
-        System.out.println("getEventTypes");
+        logger.debug("getEventTypes");
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
         NodeManager manager = cloud.getNodeManager("evenement_type");
         // alleen types die op internet getoond worden
@@ -107,7 +107,7 @@ public class ActiviteitenService implements IActiviteitenService {
      * @see nl.natuurmonumenten.activiteiten.ActiviteitenServiceInterf#getMediaTypes()
      */
     public MediaType[] getMediaTypes() {
-        System.out.println("getMediaTypes");
+        logger.debug("getMediaTypes");
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
         NodeManager manager = cloud.getNodeManager("media");
         NodeList list = manager.getList(null, null, null);
@@ -123,7 +123,7 @@ public class ActiviteitenService implements IActiviteitenService {
      * @see nl.natuurmonumenten.activiteiten.ActiviteitenServiceInterf#getDeelnemersCategorieen()
      */
     public DeelnemersCategorie[] getDeelnemersCategorieen() {
-        System.out.println("getDeelnemersCategorieen");
+        logger.debug("getDeelnemersCategorieen");
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
         NodeManager manager = cloud.getNodeManager("deelnemers_categorie");
         NodeList list = manager.getList("naam is not null", null, null);
@@ -139,7 +139,7 @@ public class ActiviteitenService implements IActiviteitenService {
      * @see nl.natuurmonumenten.activiteiten.ActiviteitenServiceInterf#getNatuurgebieden()
      */
     public Natuurgebied[] getNatuurgebieden() {
-        System.out.println("getNatuurgebieden");
+        logger.debug("getNatuurgebieden");
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
         NodeManager manager = cloud.getNodeManager("natuurgebieden");
         NodeList list = manager.getList("naam is not null", null, null);
@@ -152,18 +152,18 @@ public class ActiviteitenService implements IActiviteitenService {
     }
 
     public EventDetails getEventDetails(String id) {
-        System.out.println("getEventDetails");
+        logger.debug("getEventDetails");
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
         Node node = cloud.getNode(id);
         if (!"evenement".equals(node.getNodeManager().getName())) {
-            System.out.println("Geen evenement: " + id);
+            logger.debug("Geen evenement: " + id);
             return null;
         }
         return beanFactory.createEventDetails(node);
     }
 
     public Vertrekpunt[] getVertrekpunten() {
-        System.out.println("getNatuurgebieden");
+        logger.debug("getNatuurgebieden");
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
         NodeManager manager = cloud.getNodeManager("vertrekpunten");
         NodeList list = manager.getList(null, null, null);
