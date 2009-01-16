@@ -13,10 +13,6 @@ import java.util.*;
 import java.net.*;
 import java.io.*;
 
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.Source;
-import javax.xml.transform.Result;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.*;
 
@@ -47,7 +43,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.11 2009-01-13 08:24:21 michiel Exp $
+ * @version $Id: ConnectionRenderer.java,v 1.12 2009-01-16 08:24:47 michiel Exp $
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {
@@ -77,14 +73,12 @@ public class ConnectionRenderer extends AbstractRenderer {
         decorate = d;
     }
 
-    @Override
-    public  Parameter[] getParameters() {
+    @Override public  Parameter[] getParameters() {
         return new Parameter[] {};
     }
 
 
-    @Override
-    public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
+    @Override public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
 
 
         if (w == null) throw new NullPointerException();
@@ -95,7 +89,8 @@ public class ConnectionRenderer extends AbstractRenderer {
             if (decorate) {
                 decorateIntro(hints, w, null);
             }
-            HttpURLConnection connection = (HttpURLConnection) getUri(blockParameters, hints).toURL().openConnection();
+            URL url = getUri(blockParameters, hints).toURL();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(timeOut);
             connection.setReadTimeout(timeOut);
             int responseCode = connection.getResponseCode();
@@ -112,12 +107,8 @@ public class ConnectionRenderer extends AbstractRenderer {
                         w.write(buf, 0, c);
                     }
                 } else {
-                    /// convert using the xsl and spit out that.
-                    Source xml = new StreamSource(inputStream);
                     URL x = ResourceLoader.getConfigurationRoot().getResource(xsl);
-
-                    Result res = new StreamResult(w);
-                    XSLTransformer.transform(xml, x, res, new HashMap<String, Object>());
+                    Utils.xslTransform(blockParameters, url, inputStream, w, x);
                 }
 
 
