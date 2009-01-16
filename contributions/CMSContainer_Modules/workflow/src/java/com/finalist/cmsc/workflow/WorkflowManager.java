@@ -16,6 +16,7 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.RelationManager;
+import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
@@ -670,8 +671,12 @@ public abstract class WorkflowManager {
       for (int i = 0; i < types.size(); i++) {
          typeNames.add(((Node)types.get(i)).getNodeManager().getName());
       }
+      if(typeNames.isEmpty()){
+         typeNames.add(nodetype);
+      }
       Field field = getManager(query.getCloud()).getField(NODETYPE_FIELD);
       FieldValueInConstraint constraint = query.createConstraint(query.getStepField(field), new TreeSet<String>(typeNames));
+      SearchUtil.addConstraint(query, constraint);
       return query;
    }
    
