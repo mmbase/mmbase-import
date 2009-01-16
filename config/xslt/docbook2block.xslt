@@ -19,7 +19,7 @@
   Could perhaps use nwalsh xslt but that seems a huge overkill. It should be rather simple, we probably use only a small subset of docbook.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: docbook2block.xslt,v 1.4 2009-01-14 08:51:01 michiel Exp $
+  @version: $Id: docbook2block.xslt,v 1.5 2009-01-16 08:24:06 michiel Exp $
   @since:   MMBase-1.9
 -->
 <xsl:stylesheet
@@ -34,6 +34,8 @@
 
   <xsl:output method="xml"
               omit-xml-declaration="yes" /> <!-- xhtml is a form of xml -->
+
+  <xsl:param name="request" />
 
   <xsl:variable name="lowercase">abcdefghijklmnopqrstuvwxyz</xsl:variable>
   <xsl:variable name="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
@@ -165,17 +167,44 @@
     </p>
   </xsl:template>
 
+  <xsl:template name="url">
+    <xsl:param name="url" />
+    <xsl:choose>
+      <xsl:when test="starts-with($url, 'http:')">
+        <xsl:value-of select="$url" />
+      </xsl:when>
+      <xsl:when test="starts-with($url, 'https:')">
+        <xsl:value-of select="$url" />
+      </xsl:when>
+      <!-- relative -->
+      <!-- TODO -->
+      <xsl:when test="ends-with($url, '.html')">
+        <xsl:value-of select="$request" /><xsl:value-of select="substring($url, 0, string-length($url) - 4)" /><xsl:text>.xml</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$request" /><xsl:text>bla bla bla: </xsl:text><xsl:value-of select="$url" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <xsl:template match="ulink">
     <a>
-      <xsl:attribute name="href"><xsl:value-of select="@url" /></xsl:attribute>
+      <xsl:attribute name="href">
+        <xsl:call-template name="url">
+          <xsl:with-param name="url"><xsl:value-of select="@url" /></xsl:with-param>
+        </xsl:call-template>
+      </xsl:attribute>
       <xsl:apply-templates />
     </a>
   </xsl:template>
 
   <xsl:template match="graphic">
     <img>
-      <!-- TODO -->
-      <xsl:attribute name="src">"http://cvs.mmbase.org/viewcvs/*checkout*/<xsl:value-of select="@fileref" /></xsl:attribute>
+      <xsl:attribute name="src">
+        <xsl:call-template name="url">
+          <xsl:with-param name="url"><xsl:value-of select="@fileref" /></xsl:with-param>
+        </xsl:call-template>
+      </xsl:attribute>
     </img>
   </xsl:template>
 
