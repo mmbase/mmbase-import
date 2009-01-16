@@ -19,6 +19,9 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.Source;
 import javax.xml.transform.Result;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
@@ -28,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * Static utilitiy methods which are related to (combine functionality of)  other classes in the packages.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Utils.java,v 1.10 2009-01-16 21:17:42 michiel Exp $
+ * @version $Id: Utils.java,v 1.11 2009-01-16 22:20:33 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Utils {
@@ -78,35 +81,25 @@ public abstract class Utils {
      */
     public static void xslTransform(Parameters blockParameters, URL in, InputStream inputStream, Writer w, URL xsl) throws javax.xml.transform.TransformerException {
         /// convert using the xsl and spit out that.
-        Source xml = new StreamSource(inputStream);
+        Source xml = new StreamSource(inputStream, in.toString());
         Result res = new StreamResult(w);
 
         Map<String, Object> params = new HashMap<String, Object>();
-        for (Map.Entry<String, Object> entry : blockParameters.toMap()) {
+        for (Map.Entry<String, Object> entry : blockParameters.toMap().entrySet()) {
             if (entry.getValue() != null) {
-                params.put(entry.getKey(), enry.getValue());
+                params.put(entry.getKey(), entry.getValue());
             }
         }
 
-        /*
-          String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath();
-          params.put("formatter_requestcontext",  context);
-          //params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
-          // use node function
-          LocaleTag localeTag = findParentTag(LocaleTag.class, null, false);
-          Locale locale;
-          if (localeTag != null) {
-          locale = localeTag.getLocale();
-          if (locale == null) {
-          locale = Locale.getDefault(); // should perhaps somehow find the MMBase default language setting.
-          }
-          } else {
-          locale = Locale.getDefault(); // should perhaps somehow find the MMBase default language setting.
-          }
-          params.put("formatter_language", locale.getLanguage());
-          params.put("formatter_counter", counter.toString());
-        */
-
+        HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
+        if (request != null) {
+            params.put("formatter_requestcontext",  request.getContextPath());
+            Locale locale = (Locale) request.getAttribute("javax.servlet.jsp.jstl.fmt.locale.request");
+            if (locale != null) {
+                params.put("formatter_language", locale.getLanguage());
+            }
+            params.put("request", request);
+        }
         XSLTransformer.transform(xml, xsl, res, params);
     }
 
