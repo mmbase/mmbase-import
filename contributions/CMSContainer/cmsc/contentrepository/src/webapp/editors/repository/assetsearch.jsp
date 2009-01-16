@@ -102,8 +102,7 @@
             <table>
                <tr>
                   <td style="width:105px"><fmt:message key="searchform.title" /></td>
-                  <td colspan="5"><html:text property="title" style="width:200px"/></td>
-               <mm:compare referid="mode" value= "basic">
+                  <td style="width:300px"><html:text property="title" style="width:200px"/></td>
                   <td style="width:105px"><fmt:message key="searchform.assettype" /></td>
                   <td>
                     <c:if test="${not empty strict}">
@@ -116,23 +115,8 @@
                      </html:select>
                      </c:if>
                   </td>
-               </mm:compare>
                </tr>
              <mm:compare referid="mode" value= "advanced">
-               <tr>
-                  <td style="width:105px"><fmt:message key="searchform.assettype" /></td>
-                  <td>
-                    <c:if test="${not empty strict}">
-					${strict}
-					</c:if>
-					<c:if test="${empty strict}">
-                     <html:select property="assettypes" onchange="selectAssettype('${searchinit}');" >
-                        <html:option value="assetelement">&lt;<fmt:message key="searchform.assettypes.all" />&gt;</html:option>
-                        <html:optionsCollection name="typesList" value="value" label="label"/>
-                     </html:select>
-                     </c:if>
-                  </td>
-               </tr>
                   <tr>
                      <td></td>
                      <td><b><fmt:message key="searchform.dates" /></b></td>
@@ -329,12 +313,12 @@
    <div style="padding-left:11px">
       <select name="assesMode" onchange="javascript:changeMode(${param.offset})">
          <c:if test="${empty searchShow || searchShow eq 'list'}">
-            <option id="a_list" selected="selected">list</option>
-            <option id = "a_thumbnail" >thumbnail</option>
+            <option id="a_list" selected="selected"><fmt:message key="asset.image.list"/></option>
+            <option id = "a_thumbnail" ><fmt:message key="asset.image.thumbnail"/></option>
          </c:if>
          <c:if test="${searchShow eq 'thumbnail'}">
-            <option id="a_list">list</option>
-            <option id = "a_thumbnail" selected="selected" >thumbnail</option>
+            <option id="a_list"><fmt:message key="asset.image.list"/></option>
+            <option id = "a_thumbnail" selected="selected" ><fmt:message key="asset.image.thumbnail"/></option>
          </c:if>
       </select>
    </div>
