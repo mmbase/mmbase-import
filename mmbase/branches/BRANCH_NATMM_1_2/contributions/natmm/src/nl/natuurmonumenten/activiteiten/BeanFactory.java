@@ -4,18 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import nl.leocms.util.DoubleDateNode;
-import nl.leocms.util.RelationUtil;
-
+import org.apache.log4j.Logger;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.Relation;
-import org.mmbase.bridge.RelationList;
 
 class BeanFactory {
+    
+    private static Logger logger = Logger.getLogger(BeanFactory.class);
 
     public Provincie createProvincie(Node node) {
         Provincie bean = new Provincie();
@@ -195,7 +193,7 @@ class BeanFactory {
         List list = new ArrayList();
         for (NodeIterator iter = nodeList.nodeIterator(); iter.hasNext();) {
             Node node = iter.nextNode();
-            System.out.println("Kosten node: " + node.getNumber());
+            logger.debug("Kosten node: " + node.getNumber());
             Kosten kosten = new Kosten();
             kosten.setDeelnemersCategorieId(node.getStringValue("number"));
 
@@ -207,7 +205,7 @@ class BeanFactory {
             NodeList relations = manager.getList(constraint, null, null);
             if (relations != null && relations.size() > 0) {
                 Node relation = relations.getNode(0);
-                System.out.println("posrel.pos: " + relation.getStringValue("pos"));
+                logger.debug("posrel.pos: " + relation.getStringValue("pos"));
                 kosten.setKostenInCenten(relation.getIntValue("pos"));
             } else {
                 kosten.setKostenInCenten(-1);
