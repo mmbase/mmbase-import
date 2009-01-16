@@ -5,16 +5,13 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  <jsp:output omit-xml-declaration="no"
-              doctype-public="-//MMBase/DTD editwizard 1.0//EN"
-              doctype-system="http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
-              doctype-root-element="form-schema"
-              />
   <c:choose>
     <c:when test="${di:setting('education', 'learnblocks_paragraphs')}">
+      <![CDATA[<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd" >]]>
       <form-schema extends="config/learnblocks/paragraphs.xml" />
     </c:when>
     <c:otherwise>
+      <![CDATA[<!DOCTYPE nop PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd" >]]>
       <nop />
     </c:otherwise>
   </c:choose>

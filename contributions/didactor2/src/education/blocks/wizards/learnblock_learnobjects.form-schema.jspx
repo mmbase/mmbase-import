@@ -1,1 +1,10 @@
-<form-schema extends="config/learnblocks/learnobjects.xml" />
+<jsp:root
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:output omit-xml-declaration="no"
+              doctype-public="-//MMBase/DTD editwizard 1.0//EN"
+            doctype-system="http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+            doctype-root-element="form-schema" />
+  <form-schema extends="config/learnblocks/learnobjects.xml" />
+</jsp:root>
+
