@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorUrlConverter.java,v 1.13 2008-10-30 15:30:21 michiel Exp $
+ * @version $Id: DidactorUrlConverter.java,v 1.14 2009-01-16 23:22:14 michiel Exp $
  */
 public class DidactorUrlConverter extends DirectoryUrlConverter {
     private static final Logger log = Logging.getLoggerInstance(DidactorUrlConverter.class);
@@ -52,7 +52,7 @@ public class DidactorUrlConverter extends DirectoryUrlConverter {
     }
 
 
-    @Override protected Url getFilteredInternalDirectoryUrl(List<String> path, Map<String, Object> blockParameters, Parameters frameworkParameters) throws FrameworkException {
+    @Override protected Url getFilteredInternalDirectoryUrl(List<String> path, Map<String, ?> blockParameters, Parameters frameworkParameters) throws FrameworkException {
         StringBuilder result = new StringBuilder("/shared/render.jspx");
         // article mode
         if (path.size() == 0) {
