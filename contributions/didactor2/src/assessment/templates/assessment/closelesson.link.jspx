@@ -8,50 +8,55 @@
   <jsp:output omit-xml-declaration="true" />
 
   <mm:import id="currentlesson" from="session" externid="currentlesson_${user}_${education}" />
-              <form name="closelessonform" action="${_}"   method="post">
-	<input type="button" class="educationButton" value="opslaan" onclick="window.location.reload()"/><jsp:text>&amp;nbsp;|&amp;nbsp;</jsp:text>
-  <c:if test="${! empty currentlesson}">
+	  <c:if test="${! empty currentlesson}">
     <mm:node referid="currentlesson" id="currentlesson" />
     <mm:node number="$user">
       <mm:function name="canCloseLesson"
-                   referids="currentlesson@lesson">
+                   referids="currentlesson@lesson" write="false">
         <c:choose>
           <c:when test="${_}">
             <mm:treefile page="/assessment/closelesson.jsp"
                          objectlist="$includePath"
                          write="false"
                          >
-
-                <input type="hidden" name="coachmode" value="false"  />
-                <input type="hidden" name="lesson" value="${currentlesson}"  />
-                <di:translate key="assessment.close_and_send_to_coach" arg0="${currentlesson.name}">
-                  <input type="submit" class="educationButton" value="${_}" /><jsp:text> | </jsp:text>
-								</di:translate>
+							<c:set var="formAction" value="${_}" />
             </mm:treefile>
           </c:when>
           <c:otherwise>
-            <p><di:translate key="assessment.waitforfeedback" /></p>
+            <mm:import id="feedback"><di:translate key="assessment.waitforfeedback" /></mm:import>
           </c:otherwise>
         </c:choose>
       </mm:function>
     </mm:node>
   </c:if>
   
-       						  <mm:link page="/education/">
-     						 	<c:if test="${!empty currentlesson}">
-     						 		<mm:node number="${currentlesson}">
-     						 		<c:set var="learnobject" value="${currentlesson}" />
-     						 			<!-- TODO: find a nicer/proper way to do this -->
-     						 			<mm:relatednodes type="xmlcontent" constraints="lower(name) = 'opdrachten'">
-     						 					<mm:node>
-     						 						<c:set var="learnobject" value="${_node}" />
-     						 					</mm:node>
-     						 			</mm:relatednodes>
-     						 		</mm:node>
-     						 		<mm:param name="learnobject">${learnobject}</mm:param>
-     						 	</c:if>
-     						   <input type="button" class="educationButton" value="terug naar de les" onclick="window.location='${_}'" name="" />
-     						 </mm:link>
+  <form name="closelessonform" action="${formAction}"   method="post">
+   	<input type="button" class="educationButton" value="opslaan" onclick="window.location.reload()"/><jsp:text>&amp;nbsp;|&amp;nbsp;</jsp:text>
+		<input type="hidden" name="coachmode" value="false"  />
+    <input type="hidden" name="lesson" value="${currentlesson}"  />
+    <c:if test="${empty feedback and ! empty currentlesson}">
+    	<di:translate key="assessment.close_and_send_to_coach" arg0="${currentlesson.name}">
+      	<input type="submit" class="educationButton" value="${_}" /><jsp:text> | </jsp:text>
+			</di:translate>				 
+		</c:if>
+		<c:if test="${!empty feedback}">
+			${feedback}<jsp:text> | </jsp:text>
+		</c:if>
+				<mm:link page="/education/">
+ 			 	<c:if test="${!empty currentlesson}">
+ 			 		<mm:node number="${currentlesson}">
+ 			 		<c:set var="learnobject" value="${currentlesson}" />
+ 			 			<!-- TODO: find a nicer/proper way to do this -->
+ 			 			<mm:relatednodes type="xmlcontent" constraints="lower(name) = 'opdrachten'">
+ 			 					<mm:node>
+ 			 						<c:set var="learnobject" value="${_node}" />
+ 			 					</mm:node>
+ 			 			</mm:relatednodes>
+ 			 		</mm:node>
+ 			 		<mm:param name="learnobject">${learnobject}</mm:param>
+ 			 	</c:if>
+ 			   <input type="button" class="educationButton" value="terug naar de les" onclick="window.location='${_}'" name="" />
+ 			 </mm:link>
                    
-              </form>
+  </form>            
 </div>

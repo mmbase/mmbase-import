@@ -6,8 +6,8 @@
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     >
   <jsp:output omit-xml-declaration="true" />
-
-
+	<mm:import id="currentlesson" from="session" externid="currentlesson_${user}_${education}" />
+		
   <h2>1. Echt belangrijk in mijn leven is</h2>
   <div class="goals">
   <mm:node number="$user">
@@ -45,13 +45,59 @@
         <td class="learnblockItemsTitle"><jsp:text> </jsp:text></td>
       </mm:import>
     </mm:node>
-
+	</table>
+	
+	  <div class="mmxf">
+  	<div id="" class="float left note">
+  	
+  		<p><jsp:text><br/></jsp:text></p>
+  	 	<c:forEach items="stage1-goals,stage2-problems,stage3-problems,stage4-problems" var="s">
+        	<mm:context>
+        	<c:set var="settingname" value="opens_${s}" />
+        		<c:if test="${! empty di:setting('assessment', settingname)}">
+        			<mm:node number="${di:setting('assessment', settingname)}">
+            		<mm:function id="stage_required" name="sequence" write="false" />
+          		</mm:node>
+       				<c:if test="${currentlesson eq di:setting('assessment', settingname)}">
+           			<mm:node number="vu_homework_assessment_${settingname}">
+           				<mm:field name="body" escape="none" />
+           			</mm:node>
+           		</c:if>	
+       			</c:if>
+      	</mm:context>
+    	</c:forEach>		 
+		</div>
+	</div>
+	<table cellspacing="0">
 		<tr>
-    	<td class="problemHeader"><h2>2. Mijn zorgen en problemen</h2></td>
+    	<td class="problemHeader"><h2>2. Mijn zorgen en problemen</h2>
+    	
+    	</td>
     	<td class="problemHeader" colspan="7"><h2>3. Hoeveel last had ik er van</h2></td>
     </tr>
 
     <mm:listnodes orderby="pos" type="problemtypes">
+    	<!-- stage2 show edit for solvable problems -->
+    	<!-- stage3 show edit for solvable & unimportant problems  -->
+    	<!-- stage4 show edit for all problemtypes -->
+    	<c:set var="evaluate" value="false" />
+    	<c:if test="${_node.key eq 'problemtype_solvable'}">
+    		<c:set var="stage_required" value="opens_stage2-problems" />
+    	</c:if> 
+    	<c:if test="${_node.key eq 'problemtype_unimportant'}">
+    		<c:set var="stage_required" value="opens_stage3-problems" />
+    	</c:if> 
+    	<c:if test="${_node.key eq 'problemtype_notsolvable'}">
+    		<c:set var="stage_required" value="opens_stage4-problems" />
+    	</c:if> 
+    	
+    	<c:if test="${currentlesson ge di:setting('assessment', stage_required)}">
+    		<c:set var="evaluate" value="true" />
+    	</c:if>
+    	<c:if test="${empty currentlesson}">
+    		<c:set var="evaluate" value="true" />
+    	</c:if>
+    	
       <tr class="problemItems">
         <td class="problemTypes"><di:translate key="assessment.${_node.key}" /></td>
         <mm:write referid="blocknames" escape="text/plain"/>
@@ -67,7 +113,9 @@
           <tr class="problemItem"><td colspan="7">--</td></tr>
         </c:if>
         <mm:relatednodes>
-          <mm:include page="/assessment/matrix.div.jspx" referids="sub?,stage?,_node@source" />
+            <mm:include page="/assessment/matrix.div.jspx" referids="sub?,stage?,_node@source">
+          	<mm:param name="evaluate">${evaluate}</mm:param>
+          </mm:include>
           <tr><td colspan="7"><jsp:text> </jsp:text></td></tr>
         </mm:relatednodes>
       </mm:relatednodescontainer>
