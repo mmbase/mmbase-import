@@ -23,7 +23,7 @@ import org.mmbase.util.functions.*;
  * chained one after another.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.14 2008-11-03 13:09:36 andre Exp $
+ * @version $Id: UrlConverter.java,v 1.15 2009-01-16 22:21:13 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -60,7 +60,7 @@ public interface UrlConverter extends Serializable {
      * @throws FrameworkException thrown when something goes wrong in the Framework
      */
     Url getUrl(String path,
-                  Map<String, Object> parameters,
+                  Map<String, ?> parameters,
                   Parameters frameworkParameters,
                   boolean escapeAmps) throws FrameworkException;
 
@@ -68,7 +68,7 @@ public interface UrlConverter extends Serializable {
      * @return An URL relative to the root of this web application (i.e. without a context  path). Never <code>null</code>
      */
     Url getProcessUrl(String path,
-                         Map<String, Object> parameters,
+                         Map<String, ?> parameters,
                          Parameters frameworkParameters,
                          boolean escapeAmps) throws FrameworkException;
 
@@ -86,7 +86,7 @@ public interface UrlConverter extends Serializable {
      * @throws FrameworkException thrown when something goes wrong in the Framework
      */
     Url getInternalUrl(String path,
-                       Map<String, Object> params,
+                       Map<String, ?> params,
                        Parameters frameworkParameters) throws FrameworkException;
 
 

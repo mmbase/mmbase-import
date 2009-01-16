@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.22 2008-10-29 19:59:36 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.23 2009-01-16 22:21:13 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter extends DirectoryUrlConverter {
@@ -89,7 +89,7 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
     }
 
 
-    @Override protected Url getFilteredInternalDirectoryUrl(List<String> path, Map<String, Object> blockParameters, Parameters frameworkParameters) {
+    @Override protected Url getFilteredInternalDirectoryUrl(List<String> path, Map<String, ?> blockParameters, Parameters frameworkParameters) {
         if (path.size() == 0) {
             // nothing indicated after /mmbase/, don't know what to do, leaving unfiltered
             return Url.NOT;
