@@ -9,6 +9,6 @@
 <div class="inputBlock">
     <div class="fieldName">${fieldname}</div>
     <div class="fieldValue">
-        <input onkeydown="disableRelated();" type="text" size="80" name="actions[${modifier}${action}][${actionnr}].fields[${field}]" value="${fieldvalue}" id="field_${nodetype}_${field}"/>
+        <input onkeydown="disableRelated();" type="text" size="80" name="actions[${modifier}${action}][${actionnr}].fields[${field}]" value="${_value}" id="field_${nodetype}_${field}"/>
     </div>
 </div>
