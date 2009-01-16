@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Static utilitiy methods which are related to (combine functionality of)  other classes in the packages.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Utils.java,v 1.9 2009-01-16 08:24:47 michiel Exp $
+ * @version $Id: Utils.java,v 1.10 2009-01-16 21:17:42 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Utils {
@@ -80,7 +80,13 @@ public abstract class Utils {
         /// convert using the xsl and spit out that.
         Source xml = new StreamSource(inputStream);
         Result res = new StreamResult(w);
-        Map<String, Object> params = new HashMap<String, Object>(blockParameters.toMap());
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        for (Map.Entry<String, Object> entry : blockParameters.toMap()) {
+            if (entry.getValue() != null) {
+                params.put(entry.getKey(), enry.getValue());
+            }
+        }
 
         /*
           String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath();
