@@ -1,13 +1,13 @@
 /* CSS Document */
 #left {
-width:26%;
+width:27%;
 }
 div.side_block {
-width:320px;
+width:335px;
 }
 #content {
-left:330px;
-width:74%;
+left:345px;
+width:73%;
 }
 table.centerData td {
    text-align: center;
