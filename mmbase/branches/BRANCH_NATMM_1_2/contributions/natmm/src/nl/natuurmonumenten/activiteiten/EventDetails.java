@@ -24,6 +24,7 @@ public class EventDetails implements Serializable {
     private Kosten[] kosten;
     private String[] vertrekpuntId;
     private String[] extraInfo;
+    private String typeAanmeldMogelijkheid;
     private boolean geannuleerd;
     public String getId() {
         return id;
@@ -120,6 +121,12 @@ public class EventDetails implements Serializable {
     }
     public String[] getExtraInfo() {
         return extraInfo;
+    }
+    public void setTypeAanmeldMogelijkheid(String typeAanmeldMogelijkheid) {
+        this.typeAanmeldMogelijkheid = typeAanmeldMogelijkheid;
+    }
+    public String getTypeAanmeldMogelijkheid() {
+        return typeAanmeldMogelijkheid;
     }
     public boolean isGeannuleerd() {
         return geannuleerd;

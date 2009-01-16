@@ -178,4 +178,8 @@ public class ActiviteitenHelper {
         }
         return image;
     }
+    
+    public static int getAantalBeschikbarePlaatsen(Node parentEvent, Node childEvent) {
+        return parentEvent.getIntValue("max_aantal_deelnemers") - childEvent.getIntValue("cur_aantal_deelnemers");
+    }
 }

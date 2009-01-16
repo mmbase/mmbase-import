@@ -36,7 +36,7 @@
     <documentation>Deze webservice stelt de eventen van de Centrale Activiteiten Database (CAD) van Natuurmonumenten Nederland ter beschikking.</documentation>
     <parameter name="className" value="nl.natuurmonumenten.activiteiten.ActiviteitenService" />
     <!--  Geef hier de methoden die als webservice beschikbaar moeten worden gesteld (of * voor allen) -->
-    <parameter name="allowedMethods" value="getVersion getProvincies getEventTypes getMediaTypes getDeelnemersCategorieen getNatuurgebieden getEvents getVertrekpunten" />
+    <parameter name="allowedMethods" value="getVersion getProvincies getEventTypes getMediaTypes getDeelnemersCategorieen getNatuurgebieden getEvents getEventDetails getVertrekpunten" />
     <beanMapping qname="myNS:Provincie" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.Provincie"/>
     <beanMapping qname="myNS:EventType" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.EventType"/>
     <beanMapping qname="myNS:MediaType" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.MediaType"/>
@@ -48,7 +48,7 @@
     <beanMapping qname="myNS:Vertrekpunt" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.Vertrekpunt"/>
     <beanMapping qname="myNS:Kosten" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.Kosten"/>
     <!--  Extra documentatie die wordt opgenomen in de gegenereerde WSDL -->
-     <!-- 
+    <!-- 
      <operation name="getProvincies">
         <documentation>Ongesorteerde lijst met provincies, of een lege lijst als er geen gegevens zijn.</documentation>
     </operation>
