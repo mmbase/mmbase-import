@@ -7,7 +7,7 @@
 
     <date>2008-11-19</date>
 
-    <edition>$Id: index.xml,v 1.71 2008-11-19 08:18:28 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.72 2009-01-16 23:02:27 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -260,7 +260,7 @@
         url="applications/rmmci/backenddevelopers/rmmci/index.html">Remote
         MMBase Cloud Interface</ulink></para>
       </listitem>
-      
+
       <listitem>
         <para><ulink url="backenddevelopers/dbsq.html">SearchQuery
         introduction</ulink></para>
@@ -334,10 +334,6 @@
         Crontab</ulink></para>
       </listitem>
 
-      <listitem>
-        <para><ulink url="applications/email/email.html">Email
-        application</ulink></para>
-      </listitem>
 
       <listitem>
         <para><ulink
