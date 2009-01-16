@@ -101,7 +101,7 @@
             <table>
                <tr>
                   <td style="width:105px"><fmt:message key="searchform.title" /></td>
-                  <td colspan="5"><html:text property="title" style="width:200px"/></td>
+                  <td style="width:300px"><html:text property="title" style="width:200px"/></td>
                <mm:compare referid="mode" value= "basic">
                   <td style="width:105px"><fmt:message key="searchform.contenttype" /></td>
                   <td>
@@ -115,7 +115,7 @@
              <mm:compare referid="mode" value= "advanced">
                <tr>
                   <td><fmt:message key="searchform.keywords" /></td>
-                  <td  colspan="3"><html:text property="keywords" style="width:200px"/></td>
+                  <td style="width:300px"><html:text property="keywords" style="width:200px"/></td>
                   <td style="width:105px"><fmt:message key="searchform.contenttype" /></td>
                   <td>
                      <html:select property="contenttypes" onchange="selectContenttype('${searchinit}');" >
