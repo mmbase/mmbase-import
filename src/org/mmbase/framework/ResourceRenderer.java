@@ -13,10 +13,6 @@ import java.util.*;
 import java.net.*;
 import java.io.*;
 import javax.servlet.http.*;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.Source;
-import javax.xml.transform.Result;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.*;
 
@@ -29,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResourceRenderer.java,v 1.10 2009-01-10 18:32:33 michiel Exp $
+ * @version $Id: ResourceRenderer.java,v 1.11 2009-01-16 08:24:47 michiel Exp $
  * @since MMBase-1.9
  */
 public class ResourceRenderer extends AbstractRenderer {
@@ -85,11 +81,8 @@ public class ResourceRenderer extends AbstractRenderer {
                 }
             } else {
                 /// convert using the xsl and spit out that.
-                Source xml = new StreamSource(is);
                 URL x = ResourceLoader.getConfigurationRoot().getResource(xsl);
-
-                Result res = new StreamResult(w);
-                XSLTransformer.transform(xml, x, res, new HashMap<String, Object>());
+                Utils.xslTransform(blockParameters, loader.getResource(name), is, w, x);
             }
         } catch (IOException ioe) {
             throw new FrameworkException(ioe);
