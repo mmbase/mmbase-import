@@ -11,9 +11,14 @@ package org.mmbase.framework;
 
 import java.io.*;
 import java.util.*;
+import java.net.URL;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import javax.xml.parsers.*;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
+import javax.xml.transform.Result;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
@@ -23,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Static utilitiy methods which are related to (combine functionality of)  other classes in the packages.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Utils.java,v 1.8 2009-01-15 21:21:47 michiel Exp $
+ * @version $Id: Utils.java,v 1.9 2009-01-16 08:24:47 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Utils {
@@ -66,6 +71,37 @@ public abstract class Utils {
             throw new FrameworkException(uri + ": " + se.getMessage(), se);
         }
 
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public static void xslTransform(Parameters blockParameters, URL in, InputStream inputStream, Writer w, URL xsl) throws javax.xml.transform.TransformerException {
+        /// convert using the xsl and spit out that.
+        Source xml = new StreamSource(inputStream);
+        Result res = new StreamResult(w);
+        Map<String, Object> params = new HashMap<String, Object>(blockParameters.toMap());
+
+        /*
+          String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath();
+          params.put("formatter_requestcontext",  context);
+          //params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
+          // use node function
+          LocaleTag localeTag = findParentTag(LocaleTag.class, null, false);
+          Locale locale;
+          if (localeTag != null) {
+          locale = localeTag.getLocale();
+          if (locale == null) {
+          locale = Locale.getDefault(); // should perhaps somehow find the MMBase default language setting.
+          }
+          } else {
+          locale = Locale.getDefault(); // should perhaps somehow find the MMBase default language setting.
+          }
+          params.put("formatter_language", locale.getLanguage());
+          params.put("formatter_counter", counter.toString());
+        */
+
+        XSLTransformer.transform(xml, xsl, res, params);
     }
 
 }
