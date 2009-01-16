@@ -11,7 +11,7 @@
             <fmt:message key="workflow.type"/>
          </a>
       </th>
-      <th style="width: 300px;" nowrap="true">
+      <th style="width: 170px;" nowrap="true">
          <a href="#" <%=onClickandStyle(pageContext, "title")%>>
             <fmt:message key="workflow.title"/>
          </a>
