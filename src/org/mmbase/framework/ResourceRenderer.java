@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResourceRenderer.java,v 1.11 2009-01-16 08:24:47 michiel Exp $
+ * @version $Id: ResourceRenderer.java,v 1.12 2009-01-16 15:21:54 michiel Exp $
  * @since MMBase-1.9
  */
 public class ResourceRenderer extends AbstractRenderer {
@@ -35,6 +35,7 @@ public class ResourceRenderer extends AbstractRenderer {
     protected String resource;
     protected String type = "web";
     protected String xsl = null;
+    protected boolean decorate = false;
 
 
     public ResourceRenderer(String t, Block parent) {
@@ -54,6 +55,10 @@ public class ResourceRenderer extends AbstractRenderer {
         xsl = x;
     }
 
+    public void setDecorate(boolean d) {
+        decorate = d;
+    }
+
 
     private String getResource() {
         if (type.equals("web")) {
@@ -67,6 +72,13 @@ public class ResourceRenderer extends AbstractRenderer {
                                  Writer w, RenderHints hints) throws FrameworkException {
 
 
+        if (decorate) {
+            try {
+                decorateIntro(hints, w, null);
+            } catch (IOException ioe) {
+                throw new FrameworkException(ioe);
+            }
+        }
         String name = getResource();
         ResourceLoader loader = ResourceLoader.Type.valueOf(type.toUpperCase()).get();
         try {
@@ -91,6 +103,14 @@ public class ResourceRenderer extends AbstractRenderer {
         } catch (RuntimeException e) {
             log.debug(e.getMessage(), e);
             throw e;
+        } finally {
+            if (decorate) {
+                try {
+                    decorateOutro(hints, w);
+                } catch (IOException ioe) {
+                    throw new FrameworkException(ioe);
+                }
+            }
         }
     }
 
