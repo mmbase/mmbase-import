@@ -78,7 +78,7 @@
     <!--
          And redirect back to where we came from.
     -->
-    <mm:redirect page="/assessment" referids="$referids">
+    <mm:redirect page="/homework/" referids="$referids">
       <mm:param name="step">lessonclosed</mm:param>
       <mm:param name="coachmode">false</mm:param>
     </mm:redirect>
