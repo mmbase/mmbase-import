@@ -7,7 +7,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <c:choose>
     <c:when test="${di:setting('assessment', 'send_student_email') eq 'true'}">
-      <![CDATA[<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd" ]]>
+      <![CDATA[<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd" >]]>
       <list destination="emails"
             role="posrel" minoccurs="0" maxoccurs="*">
         <title xml:lang="nl">Mail te versturen na afsluiting van de les</title>
@@ -38,7 +38,7 @@
       </list>
     </c:when>
     <c:otherwise>
-      <![CDATA[<!DOCTYPE nop PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd" ]]>
+      <![CDATA[<!DOCTYPE nop PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd" >]]>
       <nop />
     </c:otherwise>
   </c:choose>

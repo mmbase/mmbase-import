@@ -8,11 +8,11 @@
 
   <c:choose>
     <c:when test="${di:setting('assessment', 'send_student_email') eq 'true'}">
-      <![CDATA[<!DOCTYPE relation PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd" ]]>
+      <![CDATA[<!DOCTYPE relation PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd" >]]>
       <relation destination="emails" role="posrel" />
     </c:when>
     <c:otherwise>
-      <![CDATA[<!DOCTYPE nop PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd" ]]>
+      <![CDATA[<!DOCTYPE nop PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd" >]]>
       <nop />
     </c:otherwise>
   </c:choose>
