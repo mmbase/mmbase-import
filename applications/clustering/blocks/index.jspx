@@ -1,28 +1,30 @@
-<mm:cloud rank="administrator"
-          xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-          >
+<mm:cloud
+    rank="administrator"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
   <jsp:output omit-xml-declaration="true" />
-  
-<div
-  class="mm_c mm_c_core mm_c_b_email ${requestScope.componentClassName}"
-  id="${requestScope.componentId}">
-  
-  <mm:import externid="active" />
-  <mm:import id="format">yyyy-MM-dd HH:mm:ss</mm:import>
-    
-  <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
-  <table summary="clustering messages" border="0" cellspacing="0" cellpadding="3">
-    <caption>
-      ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
-    </caption>
-    
-    <tr>
-      <th>Active</th>
-      <td>
-        <mm:present referid="active">
-          <mm:compare referid="active" value="true">
-            <mm:voidfunction module="clustering" name="start" />
+
+  <div
+      class="mm_c c_clustering b_index ${requestScope.componentClassName}"
+      id="${requestScope.componentId}">
+
+    <mm:import externid="active" />
+    <mm:import id="format">yyyy-MM-dd HH:mm:ss</mm:import>
+
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+    <table summary="clustering messages" border="0" cellspacing="0" cellpadding="3">
+      <caption>
+        ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
+      </caption>
+
+      <tr>
+        <th>Active</th>
+        <td>
+          <mm:present referid="active">
+            <mm:compare referid="active" value="true">
+              <mm:voidfunction module="clustering" name="start" />
           </mm:compare>
           <mm:compare referid="active" value="false">
             <mm:voidfunction module="clustering" name="shutdown" />
@@ -58,13 +60,13 @@
     <tr>
       <th>Receive Cost</th>
       <td>
-        total: ${receive.cost}  ms (${receive.cost / receive.count} ms / message)<br />
-        parsing:  ${receive.parseCost} ms (${receive.parseCost / receive.count} ms / message)
+        total: ${receive.cost}  ms (<fmt:formatNumber value="${receive.cost / receive.count}" pattern="#.#" /> ms / message)<br />
+        parsing:  ${receive.parseCost} ms (<fmt:formatNumber value="${receive.parseCost / receive.count}" pattern="#.#"  /> ms / message)
       </td>
     </tr>
     <tr>
       <th>Number of received bytes</th>
-      <td>${receive.bytes} byte (${receive.bytes / receive.count} bytes / message)</td>
+      <td>${receive.bytes} byte (<fmt:formatNumber value="${receive.bytes / receive.count}" pattern="#" /> bytes / message)</td>
     </tr>
     <mm:function id="sent" module="clustering" name="send" write="false" />
     <tr>
@@ -74,20 +76,20 @@
     <tr>
       <th>Send Cost</th>
       <td>
-        total: ${sent.cost} ms (${sent.cost / sent.count} ms / message)<br />
-        parsing:  ${sent.parseCost} ms (${sent.parseCost / sent.count} ms / message)
+        total: ${sent.cost} ms (<fmt:formatNumber value="${sent.cost / sent.count}" pattern="#.#" /> ms / message)<br />
+        parsing:  ${sent.parseCost} ms (<fmt:formatNumber value="${sent.parseCost / sent.count}" pattern="#.#" /> ms / message)
       </td>
     </tr>
     <tr>
       <th>Number of sent bytes</th>
-      <td>${sent.bytes} byte (${sent.bytes / sent.count} byte / message)</td>
+      <td>${sent.bytes} byte (<fmt:formatNumber value="${sent.bytes / sent.count}" pattern="#" /> byte / message)</td>
     </tr>
     <tr>
       <th>Reload page</th>
       <td><mm:link><a href="${_}" class="navigate"><img src="${mm:link('/mmbase/style/images/reload.png')}" alt="reload"  /></a></mm:link></td>
     </tr>
-  
-    
+
+
   </table>
 </div>
 </mm:cloud>
