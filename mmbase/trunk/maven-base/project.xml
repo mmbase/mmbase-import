@@ -289,7 +289,7 @@ See http://www.MMBase.org/license
     <dependency>
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
-      <version>1.8.0.7</version> <!-- btw, newest version 1.8.0.8, but not yet in maven repositories.. sigh -->
+      <version>1.8.0.10</version> <!-- btw, newest version 1.8.0.10, uploaded this to mmbase.org but not yet in maven repositories.. sigh -->
       <properties>
         <war.bundle>${war.bundle}</war.bundle>
       </properties>
