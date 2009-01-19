@@ -7,10 +7,11 @@
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     >
   <jsp:output omit-xml-declaration="true" />
-  <table cellpadding="0" cellspacing="0">
   <mm:content
       postprocessor="none"
       type="text/xml" expires="0">
+    <form id="difficulties">
+  	<table cellpadding="0" cellspacing="0">
     <mm:import externid="problem" required="true" />
     <mm:import externid="submit" />
     <mm:cloud method="asis">
@@ -21,7 +22,7 @@
         </mm:nodelistfunction>
         </tr>
         <tr>
-        <form id="difficulties">
+    
           <input type="hidden" name="problem" value="${problem}" />
           <mm:nodelistfunction name="lessons">
             <mm:relation to="${problem}">
@@ -32,13 +33,15 @@
                   <mm:fieldinfo field="pos${_node}" datatype="didactor_assessment_troubles" type="useinput" />
                 </mm:present>
               </mm:field>
+              <jsp:text> </jsp:text>
               </td>
             </mm:relation>
           </mm:nodelistfunction>
-        </form>
+
         </tr>
       </mm:node>
     </mm:cloud>
+    </table>
+  </form>
   </mm:content>
-  </table>
 </div>
