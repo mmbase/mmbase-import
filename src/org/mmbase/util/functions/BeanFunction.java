@@ -27,21 +27,23 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.8.2.7 2007-09-07 15:51:53 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.8.2.8 2009-01-19 13:46:09 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
  */
 public class BeanFunction extends AbstractFunction {
 
+    private static int producerSeq = 0;
     /**
      * @since MMBase-1.8.5
      */
     public static abstract class Producer {
         public abstract Object getInstance();
         public String toString() {
-            return getClass().getName();
+            return getClass().getName() + "." + (producerSeq++);
         }
+
     }
     private static final Logger log = Logging.getLoggerInstance(BeanFunction.class);
     /**
