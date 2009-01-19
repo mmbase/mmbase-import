@@ -49,4 +49,9 @@ public class MockActiviteitenService implements IActiviteitenService {
         // TODO Auto-generated method stub
         return null;
     }
+
+    public String subscribeEvent(Subscription subscription) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

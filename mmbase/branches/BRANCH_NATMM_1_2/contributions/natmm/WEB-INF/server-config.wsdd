@@ -36,7 +36,7 @@
     <documentation>Deze webservice stelt de eventen van de Centrale Activiteiten Database (CAD) van Natuurmonumenten Nederland ter beschikking.</documentation>
     <parameter name="className" value="nl.natuurmonumenten.activiteiten.ActiviteitenService" />
     <!--  Geef hier de methoden die als webservice beschikbaar moeten worden gesteld (of * voor allen) -->
-    <parameter name="allowedMethods" value="getVersion getProvincies getEventTypes getMediaTypes getDeelnemersCategorieen getNatuurgebieden getEvents getEventDetails getVertrekpunten" />
+    <parameter name="allowedMethods" value="getVersion getProvincies getEventTypes getMediaTypes getDeelnemersCategorieen getNatuurgebieden getEvents getEventDetails getVertrekpunten subscribeEvent" />
     <beanMapping qname="myNS:Provincie" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.Provincie"/>
     <beanMapping qname="myNS:EventType" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.EventType"/>
     <beanMapping qname="myNS:MediaType" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.MediaType"/>
@@ -47,29 +47,8 @@
     <beanMapping qname="myNS:EventDetails" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.EventDetails"/>
     <beanMapping qname="myNS:Vertrekpunt" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.Vertrekpunt"/>
     <beanMapping qname="myNS:Kosten" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.Kosten"/>
-    <!--  Extra documentatie die wordt opgenomen in de gegenereerde WSDL -->
-    <!-- 
-     <operation name="getProvincies">
-        <documentation>Ongesorteerde lijst met provincies, of een lege lijst als er geen gegevens zijn.</documentation>
-    </operation>
-    <operation name="getEventTypes">
-        <documentation>Ongesorteerde lijst met event types, of een lege lijst als er geen gegevens zijn.</documentation>
-    </operation>
-    <operation name="getMediaTypes">
-        <documentation>Ongesorteerde lijst met media types, of een lege lijst als er geen gegevens zijn.</documentation>
-    </operation>
-    <operation name="getDeelnemersCategorieen">
-        <documentation>Ongesorteerde lijst met deelnemers categorieën, of een lege lijst als er geen gegevens zijn.</documentation>
-    </operation>
-    <operation name="getNatuurgebieden">
-        <documentation>Ongesorteerde lijst met natuur gebieden, of een lege lijst als er geen gegevens zijn.</documentation>
-    </operation>
-    <operation name="getEvents">
-        <documentation>Ongesorteerde lijst met events, of een lege lijst als er geen gegevens zijn. Alleen toekomstige events worden geretouneerd. 
-        Er wordt een event geretouneerd voor ieder moment (dag/starttijd) dat het event plaats vindt.
-        </documentation>
-    </operation>
-     -->
+    <beanMapping qname="myNS:Subscription" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.Subscription"/>
+    <beanMapping qname="myNS:Aanmelding" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.Aanmelding"/>
   </service>
   <transport name="http">
     <requestFlow>

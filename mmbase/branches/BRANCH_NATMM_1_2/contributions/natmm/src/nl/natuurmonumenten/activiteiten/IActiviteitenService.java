@@ -27,4 +27,6 @@ public interface IActiviteitenService {
     public abstract EventDetails getEventDetails(String id);
 
     public abstract Vertrekpunt[] getVertrekpunten();
+    
+    public abstract String subscribeEvent(Subscription subscription);
 }

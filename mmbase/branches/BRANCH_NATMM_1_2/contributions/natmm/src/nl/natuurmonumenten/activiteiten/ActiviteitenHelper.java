@@ -8,11 +8,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import nl.leocms.evenementen.Evenement;
+import nl.leocms.evenementen.forms.SubscribeAction;
+
 import org.apache.log4j.Logger;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.RelationList;
 
 public class ActiviteitenHelper {
     private static Logger logger = Logger.getLogger(ActiviteitenHelper.class);
@@ -182,4 +187,79 @@ public class ActiviteitenHelper {
     public static int getAantalBeschikbarePlaatsen(Node parentEvent, Node childEvent) {
         return parentEvent.getIntValue("max_aantal_deelnemers") - childEvent.getIntValue("cur_aantal_deelnemers");
     }
+    
+    public static Node createParticipant(Cloud cloud, Node thisEvent, Node thisSubscription, String thisCategory, int thisNumber, Subscription subscription) {
+
+        Node thisParticipant = null;
+        thisParticipant = cloud.getNodeManager("deelnemers").createNode();
+
+        thisParticipant.setStringValue("initials", subscription.getVoorletter());
+        thisParticipant.setStringValue("firstname", subscription.getVoornaam());
+        thisParticipant.setStringValue("suffix", subscription.getTussenvoegsel());
+        thisParticipant.setStringValue("lastname", subscription.getAchternaam());
+        thisParticipant.setStringValue("email", subscription.getEmail());
+        thisParticipant.setStringValue("privatephone", subscription.getTelefoon());
+        thisParticipant.setStringValue("straatnaam", subscription.getStraat());
+        thisParticipant.setStringValue("huisnummer", subscription.getHuisnummer());
+        thisParticipant.setStringValue("plaatsnaam", subscription.getPlaats());
+        thisParticipant.setStringValue("land", subscription.getLand());
+        thisParticipant.setStringValue("postcode", subscription.getPostcode());
+        thisParticipant.setStringValue("lidnummer", subscription.getLidnummer());
+        thisParticipant.commit();
+
+        Relation thisRel = null;
+        if(thisRel==null) {
+           thisRel = thisSubscription.createRelation(thisParticipant,cloud.getRelationManager("posrel"));
+        }
+
+        // set the price for this participant
+        int costs = 9999;
+        String sParent = Evenement.findParentNumber(thisEvent.getStringValue("number"));
+        if(!Evenement.isGroupBooking(cloud,thisParticipant.getStringValue("number"))) {
+           // this is a regular excursion
+           NodeList dcl = cloud.getList( sParent
+                                         ,"evenement,posrel,deelnemers_categorie"
+                                         ,"posrel.pos"
+                                         ,"deelnemers_categorie.number='"+ thisCategory+ "'",null,null,null,false);
+           if(dcl.size()>0) {
+              costs = dcl.getNode(0).getIntValue("posrel.pos");
+              logger.debug("costs1: " + costs);
+              // if these are members of a group_excursion, but not the main group excursion participant: set costs to zero
+              if(Evenement.isGroupExcursion(cloud,sParent)
+                 && (costs==SubscribeAction.GROUP_EXCURSION_COSTS || costs==SubscribeAction.DEFAULT_COSTS )) {
+                       costs = 0;
+              }
+              logger.debug("costs2: " + costs);
+           }
+           costs = costs * thisNumber;
+           logger.debug("costs3: " + costs);
+        } else {
+           // this is the subscription for group excursion
+           costs =  Evenement.getGroupExcursionCosts(cloud, sParent, thisSubscription.getStringValue("number"));
+           logger.debug("costs4: " + costs);
+        }
+        logger.debug("costs5: " + costs);
+        thisRel.setIntValue("pos",costs);
+        thisRel.commit();
+
+        // *** update deelnemers,related,deelnemers_categorie
+        if(!Evenement.isGroupBooking(cloud,thisParticipant.getStringValue("number"))) {
+
+           thisParticipant.setStringValue("bron", String.valueOf(thisNumber));
+           thisParticipant.commit();
+           RelationList relations = thisParticipant.getRelations("related","deelnemers_categorie");
+           for(int r=0; r<relations.size(); r++) { relations.getRelation(r).delete(true); }
+           if(!thisCategory.equals("-1")) {
+
+             Node thisCategoryNode = cloud.getNode(thisCategory);
+             thisParticipant.createRelation(thisCategoryNode,cloud.getRelationManager("related")).commit();
+
+           }
+        }
+
+        thisEvent.commit(); // *** save to update cur_aantal_deelnemers
+
+        return thisParticipant;
+     }
+
 }
