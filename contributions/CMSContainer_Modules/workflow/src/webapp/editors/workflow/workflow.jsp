@@ -113,74 +113,29 @@
 		<div id="tree-content-cont" <c:if test="${treeStatus.content eq 0}">style="display:none"</c:if>>
 		<table class="centerData">
 			<tbody>
-				<tr>
-					<td class="indent" />
-					<td class="indent"><img src="../utils/ajaxtree/images/I.png" /></td>
-					<td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
-					<td class="leftData"><fmt:message
-						key="workflow.status.content.article" /></td>
-					<td><a
-						href="ContentWorkflowAction.do?workflowNodetype=article&status=draft">${statusInfo.contentArticleDraft}</a></td>
-					<td><a
-						href="ContentWorkflowAction.do?workflowNodetype=article&status=finished">${statusInfo.contentArticleFinished}</a></td>
-					<c:if test="${acceptedEnabled}">
+				<c:forEach var="contentType" items="${statusInfo.contentChildTypes}" varStatus="itemStatus">
+					<tr>
+						<td class="indent"/>
+						<td class="indent"><img src="../utils/ajaxtree/images/I.png" /></td>
+                  <c:if test="${not itemStatus.last}">
+                  <td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
+                  </c:if>
+                  <c:if test="${itemStatus.last}">
+                  <td class="indent"><img src="../utils/ajaxtree/images/L.png" /></td>
+                  </c:if>
+						<td class="leftData">${contentType.label}</td>
 						<td><a
-							href="ContentWorkflowAction.do?workflowNodetype=article&status=approved">${statusInfo.contentArticleApproved}</a></td>
-					</c:if>
-					<td><a
-						href="ContentWorkflowAction.do?workflowNodetype=article&status=published">${statusInfo.contentArticlePublished}</a></td>
-				</tr>
-				<tr>
-					<td class="indent" />
-					<td class="indent"><img src="../utils/ajaxtree/images/I.png" /></td>
-					<td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
-					<td class="leftData"><fmt:message
-						key="workflow.status.content.banners" /></td>
-					<td><a
-						href="ContentWorkflowAction.do?workflowNodetype=banners&status=draft">${statusInfo.contentBannersDraft}</a></td>
-					<td><a
-						href="ContentWorkflowAction.do?workflowNodetype=banners&status=finished">${statusInfo.contentBannersFinished}</a></td>
-					<c:if test="${acceptedEnabled}">
+							href="ContentWorkflowAction.do?workflowNodetype=${contentType.value}&status=draft">${statusInfo.contentChildrenDraft[contentType.value]}</a></td>
 						<td><a
-							href="ContentWorkflowAction.do?workflowNodetype=banners&status=approved">${statusInfo.contentBannersApproved}</a></td>
-					</c:if>
-					<td><a
-						href="ContentWorkflowAction.do?workflowNodetype=banners&status=published">${statusInfo.contentBannersPublished}</a></td>
-				</tr>
-				<tr>
-					<td class="indent" />
-					<td class="indent"><img src="../utils/ajaxtree/images/I.png" /></td>
-					<td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
-					<td class="leftData"><fmt:message
-						key="workflow.status.content.link" /></td>
-					<td><a
-						href="ContentWorkflowAction.do?workflowNodetype=link&status=draft">${statusInfo.contentLinkDraft}</a></td>
-					<td><a
-						href="ContentWorkflowAction.do?workflowNodetype=link&status=finished">${statusInfo.contentLinkFinished}</a></td>
-					<c:if test="${acceptedEnabled}">
+							href="ContentWorkflowAction.do?workflowNodetype=${contentType.value}&status=finished">${statusInfo.contentChildrenFinished[contentType.value]}</a></td>
+						<c:if test="${acceptedEnabled}">
+							<td><a
+								href="ContentWorkflowAction.do?workflowNodetype=${contentType.value}&status=approved">${statusInfo.contentChildrenApproved[contentType.value]}</a></td>
+						</c:if>
 						<td><a
-							href="ContentWorkflowAction.do?workflowNodetype=link&status=approved">${statusInfo.contentLinkApproved}</a></td>
-					</c:if>
-					<td><a
-						href="ContentWorkflowAction.do?workflowNodetype=link&status=published">${statusInfo.contentLinkPublished}</a></td>
-				</tr>
-				<tr>
-					<td class="indent" />
-					<td class="indent"><img src="../utils/ajaxtree/images/I.png" /></td>
-					<td class="indent"><img src="../utils/ajaxtree/images/L.png" /></td>
-					<td class="leftData"><fmt:message
-						key="workflow.status.content.faqitem" /></td>
-					<td><a
-						href="ContentWorkflowAction.do?workflowNodetype=faqitem&status=draft">${statusInfo.contentFaqitemDraft}</a></td>
-					<td><a
-						href="ContentWorkflowAction.do?workflowNodetype=faqitem&status=finished">${statusInfo.contentFaqitemFinished}</a></td>
-					<c:if test="${acceptedEnabled}">
-						<td><a
-							href="ContentWorkflowAction.do?workflowNodetype=faqitem&status=approved">${statusInfo.contentFaqitemApproved}</a></td>
-					</c:if>
-					<td><a
-						href="ContentWorkflowAction.do?workflowNodetype=faqitem&status=published">${statusInfo.contentFaqitemPublished}</a></td>
-				</tr>
+							href="ContentWorkflowAction.do?workflowNodetype=${contentType.value}&status=published">${statusInfo.contentChildrenPublished[contentType.value]}</a></td>
+					</tr>
+				</c:forEach>
 			</tbody>
 		</table>
 		</div>
@@ -208,57 +163,29 @@
 		<div id="tree-asset-cont" <c:if test="${treeStatus.asset eq 0}">style="display:none"</c:if> >
 		<table class="centerData">
 			<tbody>
-				<tr>
-					<td class="indent" />
-					<td class="indent" />
-					<td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
-					<td class="leftData"><fmt:message
-						key="workflow.status.asset.images" /></td>
-					<td><a
-						href="AssetWorkflowAction.do?workflowNodetype=images&status=draft">${statusInfo.assetImagesDraft}</a></td>
-					<td><a
-						href="AssetWorkflowAction.do?workflowNodetype=images&status=finished">${statusInfo.assetImagesFinished}</a></td>
-					<c:if test="${acceptedEnabled}">
-						<td><a
-							href="AssetWorkflowAction.do?workflowNodetype=images&status=approved">${statusInfo.assetImagesApproved}</a></td>
-					</c:if>
-					<td><a
-						href="AssetWorkflowAction.do?workflowNodetype=images&status=published">${statusInfo.assetImagesPublished}</a></td>
-				</tr>
-				<tr>
-					<td class="indent" />
-					<td class="indent" />
-					<td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
-					<td class="leftData"><fmt:message
-						key="workflow.status.asset.attachments" /></td>
-					<td><a
-						href="AssetWorkflowAction.do?workflowNodetype=attachments&status=draft">${statusInfo.assetAttachmentsDraft}</a></td>
-					<td><a
-						href="AssetWorkflowAction.do?workflowNodetype=attachments&status=finished">${statusInfo.assetAttachmentsFinished}</a></td>
-					<c:if test="${acceptedEnabled}">
-						<td><a
-							href="AssetWorkflowAction.do?workflowNodetype=attachments&status=approved">${statusInfo.assetAttachmentsApproved}</a></td>
-					</c:if>
-					<td><a
-						href="AssetWorkflowAction.do?workflowNodetype=attachments&status=published">${statusInfo.assetAttachmentsPublished}</a></td>
-				</tr>
-				<tr>
-					<td class="indent" />
-					<td class="indent" />
-					<td class="indent"><img src="../utils/ajaxtree/images/L.png" /></td>
-					<td class="leftData"><fmt:message
-						key="workflow.status.asset.urls" /></td>
-					<td><a
-						href="AssetWorkflowAction.do?workflowNodetype=urls&status=draft">${statusInfo.assetUrlsDraft}</a></td>
-					<td><a
-						href="AssetWorkflowAction.do?workflowNodetype=urls&status=finished">${statusInfo.assetUrlsFinished}</a></td>
-					<c:if test="${acceptedEnabled}">
-						<td><a
-							href="AssetWorkflowAction.do?workflowNodetype=urls&status=approved">${statusInfo.assetUrlsApproved}</a></td>
-					</c:if>
-					<td><a
-						href="AssetWorkflowAction.do?workflowNodetype=urls&status=published">${statusInfo.assetUrlsPublished}</a></td>
-				</tr>
+            <c:forEach var="assetType" items="${statusInfo.assetChildTypes}" varStatus="itemStatus">
+               <tr>
+                  <td class="indent"/>
+                  <td class="indent" />
+                  <c:if test="${not itemStatus.last}">
+                  <td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
+                  </c:if>
+                  <c:if test="${itemStatus.last}">
+                  <td class="indent"><img src="../utils/ajaxtree/images/L.png" /></td>
+                  </c:if>
+                  <td class="leftData">${assetType.label}</td>
+                  <td><a
+                     href="ContentWorkflowAction.do?workflowNodetype=${assetType.value}&status=draft">${statusInfo.assetChildrenDraft[assetType.value]}</a></td>
+                  <td><a
+                     href="ContentWorkflowAction.do?workflowNodetype=${assetType.value}&status=finished">${statusInfo.assetChildrenFinished[assetType.value]}</a></td>
+                  <c:if test="${acceptedEnabled}">
+                     <td><a
+                        href="ContentWorkflowAction.do?workflowNodetype=${assetType.value}&status=approved">${statusInfo.assetChildrenApproved[assetType.value]}</a></td>
+                  </c:if>
+                  <td><a
+                     href="ContentWorkflowAction.do?workflowNodetype=${assetType.value}&status=published">${statusInfo.assetChildrenPublished[assetType.value]}</a></td>
+               </tr>
+            </c:forEach>
 			</tbody>
 		</table>
 		</div>
@@ -388,47 +315,14 @@
 		</c:if>
 
 		<div class="ruler_green">
-		<div> <c:if test="${workflowType == 'allcontent' }">
-         <fmt:message key="workflow.title.allcontent" />
-      </c:if><c:if test="${workflowType == 'content' }">
-         <c:choose>
-				<c:when test="${workflowNodetype == 'article' }">
-					<fmt:message key="workflow.title.content.article" />
-				</c:when>
-				<c:when test="${workflowNodetype == 'banners' }">
-					<fmt:message key="workflow.title.content.banners" />
-				</c:when>
-				<c:when test="${workflowNodetype == 'link' }">
-					<fmt:message key="workflow.title.content.link" />
-				</c:when>
-				<c:when test="${workflowNodetype == 'faqitem' }">
-					<fmt:message key="workflow.title.content.faqitem" />
-				</c:when>
-				<c:otherwise>
-					<fmt:message key="workflow.title.content" />
-				</c:otherwise>
-			</c:choose>
-
-		</c:if> <c:if test="${workflowType == 'asset' }">
-			<c:choose>
-				<c:when test="${workflowNodetype == 'images' }">
-					<fmt:message key="workflow.title.asset.images" />
-				</c:when>
-				<c:when test="${workflowNodetype == 'attachments' }">
-					<fmt:message key="workflow.title.asset.attachments" />
-				</c:when>
-				<c:when test="${workflowNodetype == 'urls' }">
-					<fmt:message key="workflow.title.asset.urls" />
-				</c:when>
-				<c:otherwise>
-					<fmt:message key="workflow.title.asset" />
-				</c:otherwise>
-			</c:choose>
-		</c:if> <c:if test="${workflowType == 'link' }">
-			<fmt:message key="workflow.title.link" />
-		</c:if> <c:if test="${workflowType == 'page' }">
-			<fmt:message key="workflow.title.page" />
-		</c:if></div>
+			<div> 
+		       <c:if test="${not empty workflowType and empty workflowNodetype}">
+		         <fmt:message key="workflow.title.${workflowType}" />
+		      </c:if>
+		      <c:if test="${not empty workflowType and not empty workflowNodetype and not empty workflowNodetypeGUI}">
+		         ${workflowNodetypeGUI}
+		      </c:if>
+	      </div>
 		</div>
 
 		<div class="body" style="display: none;" id="workflow-wait"><fmt:message
