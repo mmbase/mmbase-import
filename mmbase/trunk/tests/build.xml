@@ -353,7 +353,7 @@ Build-compiler: ${build.compiler}
     <delete file="${tests.build.dir}/manifest.mf" />
   </target>
 
-  <target name="run.vprowizards" depends="init,jar" description="VPRO MMBase wizards tests">
+  <target name="run.vpro.wizards" depends="init,jar" description="VPRO MMBase wizards tests">
     <antcall target="clean.database" inheritRefs="true" />
     <java classname="${ui.class}" fork="true" classpathref="run.classpath.vpro-wizards">
       <arg value="org.mmbase.applications.vprowizards.AllTests" />
