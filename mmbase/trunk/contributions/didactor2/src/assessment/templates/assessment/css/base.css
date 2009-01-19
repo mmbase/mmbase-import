@@ -56,7 +56,7 @@ div.goals,div.problems {
   
 }
 
-div.goals {
+div.goals, div.problems {
 	float: left;
 }
 
@@ -110,6 +110,7 @@ div.editDifficulties {
 div.problems.stage3 .list .mm_check_error {
   display:none;
 }
+
 
 div.problems.stage3 h4 {
   float:left;
@@ -196,6 +197,8 @@ div.student div.problems.stage5 h2 {
 
 div.submitItems {
 	margin-top: -10px;
+	float: left;
+	vertical-align: top;
 }
 
 div.problems_evaluate div.submitItems {
