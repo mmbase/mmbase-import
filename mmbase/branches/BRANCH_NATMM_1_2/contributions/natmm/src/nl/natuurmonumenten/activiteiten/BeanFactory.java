@@ -11,6 +11,10 @@ import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 
+/**
+ * Factory om value objects van mmbase nodes voor de activiteiten webservice te maken
+ * 
+ */
 class BeanFactory {
     
     private static Logger logger = Logger.getLogger(BeanFactory.class);
@@ -114,12 +118,9 @@ class BeanFactory {
         if (imageNode != null) {
             bean.setFoto(createFoto(imageNode));
         }
-        // evenent_type zit alleen bij details
-        // TODO provincie id , ook bij details ??
         Node parentEvent = cloud.getNode(parentNumber);
         boolean volgeboekt = nl.leocms.evenementen.Evenement.isFullyBooked(parentEvent, node);
         boolean aanmeldingGesloten = nl.leocms.evenementen.Evenement.subscriptionClosed(parentEvent, node);
-        boolean canceled = node.getBooleanValue("iscanceled");
         bean.setVolgeboekt(volgeboekt);
         bean.setAanmeldingGesloten(aanmeldingGesloten);
         return bean;

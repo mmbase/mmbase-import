@@ -20,8 +20,6 @@ import org.mmbase.bridge.RelationList;
 /**
  * WebService voor de Centrale Activiteiten Database (CAD)
  * 
- * @author rob
- *
  */
 public class ActiviteitenService implements IActiviteitenService {
     // private static Logger logger =
@@ -199,6 +197,7 @@ public class ActiviteitenService implements IActiviteitenService {
     }
 
     public String subscribeEvent(Subscription subscription) {
+        // code komt uit SubscribeAction
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
         Node eventNode = cloud.getNode(subscription.getEvenementId());
         if (eventNode == null) {

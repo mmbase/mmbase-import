@@ -188,6 +188,8 @@ public class ActiviteitenHelper {
         return parentEvent.getIntValue("max_aantal_deelnemers") - childEvent.getIntValue("cur_aantal_deelnemers");
     }
     
+    /* Overgenomen uit SubscribeForm. Aangepast aan de webservice omgeving, o.a. het versturen van emails verwijderd.
+     */  
     public static Node createParticipant(Cloud cloud, Node thisEvent, Node thisSubscription, String thisCategory, int thisNumber, Subscription subscription) {
 
         Node thisParticipant = null;
