@@ -9,41 +9,7 @@
 
   <mm:import externid="stage">stage1-goals_problems</mm:import>
 
-
-  <mm:node number="${education}">
-    <mm:nodelistfunction id="learnBlock" name="lessons">
-      <mm:listrelationscontainer type="learnblocks" role="posrel">
-        <mm:listrelations>
-          <mm:relation  from="${learnBlock}" to="${user}" role="classrel">
-            <mm:remove referid="lastclosedlesson" />
-            <mm:node node="learnBlock" id="lastclosedlesson" />
-          </mm:relation>
-        </mm:listrelations>
-      </mm:listrelationscontainer>
-      <mm:relation to="${user}" notfound="null">
-        <c:if test="${empty currentlesson}">
-          <c:if test="${empty _node}">
-            <mm:node node="learnBlock" id="currentlesson">
-              <mm:function id="reached" name="sequence" write="false" />
-            </mm:node>
-          </c:if>
-        </c:if>
-      </mm:relation>
-
-      <mm:last>
-        <c:if test="${empty currentlesson}">
-          <mm:node node="learnBlock">
-            <mm:function id="reached" name="sequence" write="false" />
-          </mm:node>
-        </c:if>
-      </mm:last>
-
-    </mm:nodelistfunction>
-  </mm:node>
-
-  <mm:write session="lastlesson_${user}_${education}"    value="${lastclosedlesson}" />
-  <mm:write session="currentlesson_${user}_${education}" value="${currentlesson}" />
-
+	<di:include page="/homework/currentlesson.jspx" />
 
 
   <di:include page="/assessment/${stage}.jspx" />
