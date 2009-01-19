@@ -35,16 +35,18 @@ function Init() {
       var param = window.dialogArguments;
       var target_select = document.getElementById("f_target");
       var use_target = true;
+
       if (param) {
             if ( typeof param["f_usetarget"] != "undefined" ) {
                   use_target = param["f_usetarget"];
             }
-           if ( typeof param["f_href"] != "undefined" ) {
+            if ( typeof param["f_href"] != "undefined" ) {
                   document.getElementById("f_href").value = param["f_href"];
-                  document.getElementById("f_linkName").value = param["f_linkName"];
+                  document.getElementById("f_name").value = param["f_name"];
                   document.getElementById("f_title").value = param["f_title"];
                   document.getElementById("f_destination").value = param["f_destination"];
                   comboSelectValue(target_select, param["f_target"]);
+				  
                   if (target_select.value != param.f_target) {
                         var opt = document.createElement("option");
                         opt.value = param.f_target;
@@ -94,13 +96,13 @@ function onOK() {
                   return false;
             }
       }
-      var tmpLinkName = document.getElementById("f_linkName");
+      var tmpLinkName = document.getElementById("f_name");
       if(!tmpLinkName.value){
             // set the defult linkname the same as href's value
             tmpLinkName.value = elhref.value;
       }
       // pass data back to the calling window
-      var fields = ["f_href", "f_linkName","f_title", "f_target", "f_destination" ];//f_linkName is added by Rain.Tang
+      var fields = ["f_href", "f_name","f_title", "f_target", "f_destination" ];//f_name is added by Rain.Tang
       var param = new Object();
       for (var i in fields) {
             var id = fields[i];
@@ -239,7 +241,7 @@ function openPopupWindow(url, windowName, width, height) {
   <!--Add by Rain.Tang ( -->
   <tr>
     <td class="label">Name of link:</td>
-    <td><input type="text" id="f_linkName" style="width: 100%" /></td>
+    <td><input type="text" id="f_name" style="width: 100%" /></td>
   </tr>
   <!-- ) -->
   <tr>
