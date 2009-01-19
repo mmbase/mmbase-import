@@ -36,7 +36,14 @@
     <input type="hidden" name="lesson" value="${currentlesson}"  />
     <c:if test="${empty feedback and ! empty currentlesson}">
     	<di:translate key="assessment.close_and_send_to_coach" arg0="${currentlesson.name}">
-      	<input type="submit" class="educationButton" value="${_}" /><jsp:text> | </jsp:text>
+    		<mm:import externid="justclosed">false</mm:import>
+    		<c:if test="${justclosed}">
+    			<input type="button" class="educationButton" value="je les is verstuurd" /><jsp:text> | </jsp:text>
+    		</c:if>
+      	<c:if test="${!justclosed}">
+      		<input type="submit" class="educationButton" value="${_}" /><jsp:text> | </jsp:text>
+      	</c:if>
+      	
 			</di:translate>				 
 		</c:if>
 		<c:if test="${!empty feedback}">

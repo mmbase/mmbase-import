@@ -81,6 +81,7 @@
     <mm:redirect page="/homework/" referids="$referids">
       <mm:param name="step">lessonclosed</mm:param>
       <mm:param name="coachmode">false</mm:param>
+      <mm:param name="justclosed">true</mm:param>
     </mm:redirect>
 
   </mm:cloud>
