@@ -1,7 +1,11 @@
 <%
-String type = request.getParameter("workflow.type");
+String type = request.getParameter("workflowType");
 if (type == null || "".equals(type)) {
-	type = (String) session.getAttribute("workflow.type");
+	type = (String) session.getAttribute("workflowType");
+}
+String nodetype = request.getParameter("workflowNodetype");
+if (nodetype == null || "".equals(nodetype)) {
+   nodetype = (String) session.getAttribute("workflowNodetype");
 }
 String status = request.getParameter("workflow.status");
 if (status == null || "".equals(status)) {
@@ -25,7 +29,10 @@ if ("page".equals(type)) {
     redirectTo = "PageWorkflowAction.do";
 }
 if (status != null && !"".equals(status)) {
-    redirectTo += "?status=" + status;
+   redirectTo += "?status=" + status;
+}
+if (nodetype != null && !"".equals(nodetype)) {
+    redirectTo += "&nodetype=" + nodetype;
 }
 
 
