@@ -114,10 +114,13 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
       String type = getWorkflowType();
       addToRequest(request, "workflowType", type);
       String nodetype = null;
+      String nodetypeGUI = null;
       String nodetypeStr = request.getParameter("workflowNodetype");
       if (StringUtils.isNotEmpty(nodetypeStr)) {
          nodetype = nodetypeStr;
+         nodetypeGUI = cloud.getNodeManager(nodetype).getGUIName();
          addToRequest(request, "workflowNodetype", nodetype);
+         addToRequest(request, "workflowNodetypeGUI", nodetypeGUI);
       }
 
       if(!RepositoryWorkflow.TYPE_ALLCONTENT.equals(type)){
@@ -139,9 +142,13 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
 
       request.setAttribute("acceptedEnabled", Workflow.isAcceptedStepEnabled());
       HttpSession session = request.getSession();
-      session.setAttribute("workflow.type", type);
+      session.setAttribute("workflowType", type);
       if(StringUtils.isNotEmpty(nodetype)){
-         session.setAttribute("workflow.nodetype", nodetype);
+         session.setAttribute("workflowNodetype", nodetype);
+         session.setAttribute("workflowNodetypeGUI", nodetypeGUI);
+      }else{
+         session.removeAttribute("workflowNodetype");
+         session.removeAttribute("workflowNodetypeGUI");
       }
       session.setAttribute("workflow.status", status);
       Map<String, Integer> treeStatus = (Map<String, Integer>)session.getAttribute("workflowTreeStatus");
