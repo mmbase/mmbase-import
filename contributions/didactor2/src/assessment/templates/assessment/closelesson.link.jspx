@@ -43,9 +43,11 @@
 			${feedback}<jsp:text> | </jsp:text>
 		</c:if>
 				<mm:link page="/education/">
+				<c:set var="target" value="lessen" />
  			 	<c:if test="${!empty currentlesson}">
  			 		<mm:node number="${currentlesson}">
  			 		<c:set var="learnobject" value="${currentlesson}" />
+ 			 		<c:set var="target" value="opdrachten" />
  			 			<!-- TODO: find a nicer/proper way to do this -->
  			 			<mm:relatednodes type="xmlcontent" constraints="lower(name) = 'opdrachten'">
  			 					<mm:node>
@@ -55,7 +57,7 @@
  			 		</mm:node>
  			 		<mm:param name="learnobject">${learnobject}</mm:param>
  			 	</c:if>
- 			   <input type="button" class="educationButton" value="terug naar de les" onclick="window.location='${_}'" name="" />
+ 			   <input type="button" class="educationButton" value="terug naar de ${target}" onclick="window.location='${_}'" name="" />
  			 </mm:link>
                    
   </form>            
