@@ -15,6 +15,8 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 public class AssetDeleteAction extends MMBaseFormlessAction {
@@ -31,6 +33,11 @@ public class AssetDeleteAction extends MMBaseFormlessAction {
       RepositoryUtil.removeAssetFromChannel(objectNode, channelNode);
       RepositoryUtil.removeCreationRelForAsset(objectNode);
       RepositoryUtil.addAssetToChannel(objectNode, RepositoryUtil.getTrashNode(cloud));
+      
+      // unpublish and remove from workflow
+      Publish.remove(objectNode);
+      Workflow.remove(objectNode);
+      Publish.unpublish(objectNode);
 
       String returnurl = request.getParameter("returnurl");
 
