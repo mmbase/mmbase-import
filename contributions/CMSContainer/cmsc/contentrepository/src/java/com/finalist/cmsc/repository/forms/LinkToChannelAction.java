@@ -9,22 +9,25 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.repository.forms;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.util.LabelValueBean;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
 
 import com.finalist.cmsc.repository.AssetElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
-import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.Workflow;
-
-import java.util.*;
+import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 public class LinkToChannelAction extends MMBaseFormlessAction {
 
