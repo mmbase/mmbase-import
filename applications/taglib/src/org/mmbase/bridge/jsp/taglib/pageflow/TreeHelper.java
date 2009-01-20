@@ -32,7 +32,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.23 2008-03-20 10:23:04 michiel Exp $
+ * @version $Id: TreeHelper.java,v 1.24 2009-01-20 15:17:16 michiel Exp $
  * @todo   MM: This class is not actually related to Taglib. I propose to move it to  org.mmbase.util, or org.mmbase.bridge.util
  */
 
@@ -92,7 +92,11 @@ public class TreeHelper {
      * @param maySmartpath Boolean indicating whether or not getLeafFile may call a 'getSmartpath' on the given objects
      * @param prefix The path that was already established by previous calls to getLeafFile, deeper in the recursion tree.
      */
-    protected String getLeafFile(String prefix, String objectlist, String includePage, boolean maySmartpath, HttpSession session) throws JspTagException, IOException {
+    protected String getLeafFile(String prefix, String objectlist, final String includePage, boolean maySmartpath, HttpSession session) throws JspTagException, IOException {
+
+        if (log.isDebugEnabled()) {
+            log.debug("prefix: " + prefix + " objectlist: " + objectlist + " includePage " + includePage);
+        }
         if (objectlist.length() == 0) {
             String nudePage = includePage;
             if (nudePage.indexOf('?') != -1) {
@@ -135,9 +139,7 @@ public class TreeHelper {
         // but a intermediate path. In that case we concatenate this intermediate
         // path with the path we already have (prefix) and continue with the recursive
         // loop
-        try {
-            cloud.getNode(firstObject);
-        } catch (org.mmbase.bridge.NotFoundException e) {
+        if (! cloud.hasNode(firstObject)) {
             log.debug("'" + firstObject + "' is not an object; seeing it as a path)");
             return getLeafFile (concatpath(prefix, firstObject), otherObjects, includePage, maySmartpath, session);
         }
@@ -309,6 +311,7 @@ public class TreeHelper {
             params.set("version", version);
         }
         params.set("nodeNumber", objectNumber);
+        params.setIfDefined(Parameter.NODE, n);
         params.set("loader",   ResourceLoader.getWebRoot());
         params.set("backwardsCompatible",  backwardsCompatible);
 
