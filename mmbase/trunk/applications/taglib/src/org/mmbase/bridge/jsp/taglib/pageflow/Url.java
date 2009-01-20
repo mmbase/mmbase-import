@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.52 2009-01-12 14:08:55 michiel Exp $;
+ * @version $Id: Url.java,v 1.53 2009-01-20 15:17:44 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -43,7 +43,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     private static  final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
 
     private final ContextReferrerTag tag;
-    private final String page;
+    private final CharSequence page;
     //private final Component component;
     protected final Map<String, Object> params;
     protected final Map<String, Object> frameworkParams;
@@ -60,7 +60,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     private boolean legacy = false;
 
     public Url(UrlTag t,
-               String p,
+               CharSequence p,
                Map<String, Object> framework,
                Map<String, Object> pars,
                boolean intern) throws JspTagException {
@@ -90,7 +90,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     }
 
 
-    public Url(ContextReferrerTag t, String p, String a) throws JspTagException {
+    public Url(ContextReferrerTag t, CharSequence p, String a) throws JspTagException {
         tag = t;
         abs = a;
         encodeUrl = true;
@@ -142,7 +142,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         if (log.isDebugEnabled()) {
             log.debug("legacy url " + page + m);
         }
-        String res = BasicUrlConverter.getUrl(page, m, (HttpServletRequest)tag.getPageContext().getRequest(), escapeamp).toString();
+        String res = BasicUrlConverter.getUrl(page.toString(), m, (HttpServletRequest)tag.getPageContext().getRequest(), escapeamp).toString();
         pageLog.service("getting legacy: " + page + " -> " + res);
         return res;
       }
@@ -182,21 +182,21 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             } else {
                 log.debug("Creating internal url link to page: " + page);
             }
-            result = framework.getInternalUrl(page, params, frameworkParameters);
+            result = framework.getInternalUrl(page.toString(), params, frameworkParameters);
             if (result == null) {
-                result = framework.getUrl(page, params, frameworkParameters, false);
+                result = framework.getUrl(page.toString(), params, frameworkParameters, false);
                 log.debug("No url gotten from framework, falled back to " + result);
             } else  {
                 log.debug("url gotten from framework " + result);
             }
         } else {
             if (process) {
-                result = framework.getProcessUrl(page, params, frameworkParameters, escapeamp);
+                result = framework.getProcessUrl(page.toString(), params, frameworkParameters, escapeamp);
                 if (log.isDebugEnabled()) {
                     log.debug("Created normal process url link to page: " + page + " " + params + " fw: " + frameworkParameters + " -> " + result);
                 }
             } else {
-                result = framework.getUrl(page, params, frameworkParameters, escapeamp);
+                result = framework.getUrl(page.toString(), params, frameworkParameters, escapeamp);
                 if (log.isDebugEnabled()) {
                     log.debug("Created normal url link to page: " + page + " " + params + " fw: " + frameworkParameters + " -> " + result);
                 }
