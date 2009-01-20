@@ -265,7 +265,7 @@ public class WorkflowServiceMMBaseImpl extends WorkflowService {
       Query statusQuery = WorkflowManager.createStatusQuery(cloud);
       NodeList statusList = cloud.getList(statusQuery);
 
-      return new WorkflowStatusInfo(statusList);
+      return new WorkflowStatusInfo(cloud,statusList);
    }
 
 }
