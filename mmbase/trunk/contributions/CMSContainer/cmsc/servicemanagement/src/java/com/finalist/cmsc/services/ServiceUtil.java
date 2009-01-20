@@ -6,8 +6,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.apache.struts.util.LabelValueBean;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeManager;
@@ -20,15 +18,14 @@ import org.mmbase.bridge.NotFoundException;
  */
 public class ServiceUtil {
    
-   private static Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 
-   public static List<LabelValueBean> getDirectChildTypes(String parent) {
+   public static List<LabelValueBean> getDirectChildTypes(Cloud cloud,String parent) {
       List<NodeManager> resultManager = new ArrayList<NodeManager>();
       NodeManagerList nml = cloud.getNodeManagers();
       Iterator<NodeManager> v = nml.iterator();
       while (v.hasNext()) {
          NodeManager child = v.next();
-         if (isDirectChildType(child.getName(), parent)) {
+         if (isDirectChildType(cloud,child.getName(), parent)) {
             resultManager.add(child);
          }
       }
@@ -47,13 +44,13 @@ public class ServiceUtil {
       return result;
    }
    
-   public static List<String> getAllChildTypes(String parent) {
+   public static List<String> getAllChildTypes(Cloud cloud,String parent) {
       List<String> result = new ArrayList<String>();
       NodeManagerList nml = cloud.getNodeManagers();
       Iterator<NodeManager> v = nml.iterator();
       while (v.hasNext()) {
          String child = v.next().getName();
-         if (isChildType(child, parent)) {
+         if (isChildType(cloud,child, parent)) {
             result.add(child);
          }
       }
@@ -61,7 +58,7 @@ public class ServiceUtil {
       return result;
    }
 
-   private static boolean isDirectChildType(String child, String parent) {
+   private static boolean isDirectChildType(Cloud cloud,String child, String parent) {
       if (parent.equals(child)) {
          // parent manager is not a parent type
          return false;
@@ -79,7 +76,7 @@ public class ServiceUtil {
       return false;
    }
    
-   private static boolean isChildType(String child, String parent) {
+   private static boolean isChildType(Cloud cloud,String child, String parent) {
       if (parent.equals(child)) {
          // parent manager is not a parent type
          return false;

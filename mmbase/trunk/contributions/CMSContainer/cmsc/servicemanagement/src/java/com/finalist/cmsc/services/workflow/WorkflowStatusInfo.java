@@ -7,16 +7,15 @@
  */
 package com.finalist.cmsc.services.workflow;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.struts.util.LabelValueBean;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
 
 import com.finalist.cmsc.services.ServiceUtil;
 
@@ -25,8 +24,8 @@ public class WorkflowStatusInfo {
    private static String CONTENTELEMENT = "contentelement";
    private static String ASSETELEMENT = "assetelement";
    
-   private List<LabelValueBean> contentChildTypes = ServiceUtil.getDirectChildTypes(CONTENTELEMENT);
-   private List<LabelValueBean> assetChildTypes = ServiceUtil.getDirectChildTypes(ASSETELEMENT);
+   private List<LabelValueBean> contentChildTypes ;
+   private List<LabelValueBean> assetChildTypes ;
 
    private int allcontentDraft;
    private int allcontentFinished;
@@ -68,7 +67,10 @@ public class WorkflowStatusInfo {
    private int pageApproved;
    private int pagePublished;
 
-   public WorkflowStatusInfo(NodeList statusList) {
+   public WorkflowStatusInfo(Cloud cloud,NodeList statusList) {
+      
+      contentChildTypes = ServiceUtil.getDirectChildTypes(cloud,CONTENTELEMENT);
+      assetChildTypes = ServiceUtil.getDirectChildTypes(cloud,ASSETELEMENT);
       // initialization
       for (LabelValueBean childType : contentChildTypes) {
          contentChildrenDraft.put(childType.getValue(), 0);
@@ -92,47 +94,47 @@ public class WorkflowStatusInfo {
          if ("content".equals(type)) {
             if (Workflow.STATUS_DRAFT.equals(status)) {
                contentDraft += count;
-               setNodetypeStatus(contentChildTypes, contentChildrenDraft, nodetype, count);
+               setNodetypeStatus(cloud,contentChildTypes, contentChildrenDraft, nodetype, count);
             }
             if (Workflow.STATUS_FINISHED.equals(status)) {
                contentFinished += count;
-               setNodetypeStatus(contentChildTypes, contentChildrenFinished, nodetype, count);
+               setNodetypeStatus(cloud,contentChildTypes, contentChildrenFinished, nodetype, count);
             }
             if (Workflow.STATUS_APPROVED.equals(status)) {
                if (Workflow.isAcceptedStepEnabled()) {
                   contentApproved += count;
-                  setNodetypeStatus(contentChildTypes, contentChildrenApproved, nodetype, count);
+                  setNodetypeStatus(cloud,contentChildTypes, contentChildrenApproved, nodetype, count);
                } else {
                   contentFinished += count;
-                  setNodetypeStatus(contentChildTypes, contentChildrenFinished, nodetype, count);
+                  setNodetypeStatus(cloud,contentChildTypes, contentChildrenFinished, nodetype, count);
                }
             }
             if (Workflow.STATUS_PUBLISHED.equals(status)) {
                contentPublished += count;
-               setNodetypeStatus(contentChildTypes, contentChildrenPublished, nodetype, count);
+               setNodetypeStatus(cloud,contentChildTypes, contentChildrenPublished, nodetype, count);
             }
          }
          if ("asset".equals(type)) {
             if (Workflow.STATUS_DRAFT.equals(status)) {
                assetDraft += count;
-               setNodetypeStatus(assetChildTypes, assetChildrenDraft, nodetype, count);
+               setNodetypeStatus(cloud,assetChildTypes, assetChildrenDraft, nodetype, count);
             }
             if (Workflow.STATUS_FINISHED.equals(status)) {
                assetFinished += count;
-               setNodetypeStatus(assetChildTypes, assetChildrenFinished, nodetype, count);
+               setNodetypeStatus(cloud,assetChildTypes, assetChildrenFinished, nodetype, count);
             }
             if (Workflow.STATUS_APPROVED.equals(status)) {
                if (Workflow.isAcceptedStepEnabled()) {
                   assetApproved += count;
-                  setNodetypeStatus(assetChildTypes, assetChildrenApproved, nodetype, count);
+                  setNodetypeStatus(cloud,assetChildTypes, assetChildrenApproved, nodetype, count);
                } else {
                   assetFinished += count;
-                  setNodetypeStatus(assetChildTypes, assetChildrenFinished, nodetype, count);
+                  setNodetypeStatus(cloud,assetChildTypes, assetChildrenFinished, nodetype, count);
                }
             }
             if (Workflow.STATUS_PUBLISHED.equals(status)) {
                assetPublished = count;
-               setNodetypeStatus(assetChildTypes, assetChildrenPublished, nodetype, count);
+               setNodetypeStatus(cloud,assetChildTypes, assetChildrenPublished, nodetype, count);
             }
          }
          if ("link".equals(type)) {
@@ -168,11 +170,11 @@ public class WorkflowStatusInfo {
       allcontentPublished = contentPublished + assetPublished;
    }
 
-   private void setNodetypeStatus(List<LabelValueBean> childTypes, Map<String, Integer> childrenStatus, String nodetype,
+   private void setNodetypeStatus(Cloud cloud,List<LabelValueBean> childTypes, Map<String, Integer> childrenStatus, String nodetype,
          int count) {
       for (LabelValueBean childType : childTypes) {
          String childTypeName = childType.getValue();
-         if (nodetype.equals(childTypeName)||ServiceUtil.getAllChildTypes(childTypeName).contains(nodetype)) {
+         if (nodetype.equals(childTypeName)||ServiceUtil.getAllChildTypes(cloud,childTypeName).contains(nodetype)) {
             int temp = 0;
             if (childrenStatus.containsKey(childType)) {
                temp = childrenStatus.get(childType);
