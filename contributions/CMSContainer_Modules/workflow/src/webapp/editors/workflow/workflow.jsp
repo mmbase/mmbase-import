@@ -175,15 +175,15 @@
                   </c:if>
                   <td class="leftData">${assetType.label}</td>
                   <td><a
-                     href="ContentWorkflowAction.do?workflowNodetype=${assetType.value}&status=draft">${statusInfo.assetChildrenDraft[assetType.value]}</a></td>
+                     href="AssetWorkflowAction.do?workflowNodetype=${assetType.value}&status=draft">${statusInfo.assetChildrenDraft[assetType.value]}</a></td>
                   <td><a
-                     href="ContentWorkflowAction.do?workflowNodetype=${assetType.value}&status=finished">${statusInfo.assetChildrenFinished[assetType.value]}</a></td>
+                     href="AssetWorkflowAction.do?workflowNodetype=${assetType.value}&status=finished">${statusInfo.assetChildrenFinished[assetType.value]}</a></td>
                   <c:if test="${acceptedEnabled}">
                      <td><a
-                        href="ContentWorkflowAction.do?workflowNodetype=${assetType.value}&status=approved">${statusInfo.assetChildrenApproved[assetType.value]}</a></td>
+                        href="AssetWorkflowAction.do?workflowNodetype=${assetType.value}&status=approved">${statusInfo.assetChildrenApproved[assetType.value]}</a></td>
                   </c:if>
                   <td><a
-                     href="ContentWorkflowAction.do?workflowNodetype=${assetType.value}&status=published">${statusInfo.assetChildrenPublished[assetType.value]}</a></td>
+                     href="AssetWorkflowAction.do?workflowNodetype=${assetType.value}&status=published">${statusInfo.assetChildrenPublished[assetType.value]}</a></td>
                </tr>
             </c:forEach>
 			</tbody>
