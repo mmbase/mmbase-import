@@ -165,6 +165,7 @@ public abstract class BasicURLTag extends TagSupport {
       }
       else {
          link = page;
+         //Throw error in from CMSC 1.6: illegal argument exception, should use this with full path
       }
 
       return link;
@@ -174,7 +175,9 @@ public abstract class BasicURLTag extends TagSupport {
       String host = null;
       if (ServerUtil.useServerName()) {
          NavigationItem item = SiteManagement.convertToNavigationItem(page);
-         host = SiteManagement.getSite(item);
+         if (item != null) {
+            host = SiteManagement.getSite(item);
+         }
       }
       return host;
    }
