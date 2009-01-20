@@ -104,3 +104,12 @@ Exceptions/errors/other problems and what to do:
 *
 *
 *
+
+
+Name: The <cmsc:renderURL> uses stricter page parameter input, for resolving of page location
+Goal: better JSP code
+Type:  check your own views for the wrong usage of <cmsc:renderURL with the page parameter and incomplete input 
+Exceptions/errors/other problems and what to do:
+* Wrong: <cmsc:renderURL page="${SearchResultPage}" --- where parameter is 'search' instead of full path: google.com/search
+* Good:  use the page="" with the full page path, e.g. the input of <cmsc:location> to retrieve the full page path.
+*
