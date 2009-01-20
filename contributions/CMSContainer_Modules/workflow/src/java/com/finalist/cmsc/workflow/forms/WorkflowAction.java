@@ -1,11 +1,9 @@
 /*
-
- This software is OSI Certified Open Source Software.
- OSI Certified is a certification mark of the Open Source Initiative.
-
- The license (Mozilla version 1.0) can be read at the MMBase site.
- See http://www.MMBase.org/license
-
+ * 
+ * This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source
+ * Initiative.
+ * 
+ * The license (Mozilla version 1.0) can be read at the MMBase site. See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.workflow.forms;
 
@@ -56,7 +54,6 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
 
    private static final Object REMARK_UNCHANGED = "[unchanged-item]";
 
-
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
       String actionValueStr = request.getParameter("actionvalue");
 
@@ -98,8 +95,7 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
       String laststatus = request.getParameter("laststatus");
       if (StringUtils.isEmpty(laststatus) || laststatus == null) {
          request.setAttribute("laststatus", true);
-      }
-      else {
+      } else {
          request.setAttribute("laststatus", laststatus.equals("true") ? false : true);
       }
 
@@ -116,6 +112,9 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
       String nodetype = null;
       String nodetypeGUI = null;
       String nodetypeStr = request.getParameter("workflowNodetype");
+      if (StringUtils.isEmpty(nodetypeStr)) {
+         nodetypeStr = (String) request.getSession().getAttribute("workflowNodetype");
+      }
       if (StringUtils.isNotEmpty(nodetypeStr)) {
          nodetype = nodetypeStr;
          nodetypeGUI = cloud.getNodeManager(nodetype).getGUIName();
@@ -123,35 +122,37 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
          addToRequest(request, "workflowNodetypeGUI", nodetypeGUI);
       }
 
-      if(!RepositoryWorkflow.TYPE_ALLCONTENT.equals(type)){
+      if (!RepositoryWorkflow.TYPE_ALLCONTENT.equals(type)) {
          NodeQuery listQuery = WorkflowManager.createListQuery(cloud);
          Queries.addConstraint(listQuery, WorkflowManager.getStatusConstraint(listQuery, status));
          if (!Workflow.isAcceptedStepEnabled() && Workflow.STATUS_FINISHED.equals(status)) {
-            SearchUtil.addConstraint(listQuery, WorkflowManager.getStatusConstraint(listQuery, Workflow.STATUS_APPROVED),
-                  CompositeConstraint.LOGICAL_OR);
+            SearchUtil.addConstraint(listQuery, WorkflowManager
+                  .getStatusConstraint(listQuery, Workflow.STATUS_APPROVED), CompositeConstraint.LOGICAL_OR);
          }
          Queries.addConstraint(listQuery, WorkflowManager.getTypeConstraint(listQuery, type));
-         if(!StringUtils.isBlank(nodetype)){
+         if (!StringUtils.isBlank(nodetype)) {
             WorkflowManager.addNodetypeConstraint(cloud, listQuery, nodetype);
          }
-         NodeQuery wfQuery = createDetailQuery(cloud, orderby, (laststatus == null) ? false : (laststatus.equals("true")));
+         NodeQuery wfQuery = createDetailQuery(cloud, orderby, (laststatus == null) ? false : (laststatus
+               .equals("true")));
          addWorkflowListToRequest(request, cloud, wfQuery, listQuery, "results");
-      }else{
+      } else {
          addAllcontentListToRequest(request, cloud, status, laststatus);
       }
 
       request.setAttribute("acceptedEnabled", Workflow.isAcceptedStepEnabled());
       HttpSession session = request.getSession();
       session.setAttribute("workflowType", type);
-      if(StringUtils.isNotEmpty(nodetype)){
+      if (StringUtils.isNotEmpty(nodetype)) {
          session.setAttribute("workflowNodetype", nodetype);
          session.setAttribute("workflowNodetypeGUI", nodetypeGUI);
-      }else{
-         session.removeAttribute("workflowNodetype");
-         session.removeAttribute("workflowNodetypeGUI");
       }
+      // else{
+      // session.removeAttribute("workflowNodetype");
+      // session.removeAttribute("workflowNodetypeGUI");
+      // }
       session.setAttribute("workflow.status", status);
-      Map<String, Integer> treeStatus = (Map<String, Integer>)session.getAttribute("workflowTreeStatus");
+      Map<String, Integer> treeStatus = (Map<String, Integer>) session.getAttribute("workflowTreeStatus");
       if (treeStatus == null) {
          treeStatus = new HashMap<String, Integer>();
          treeStatus.put("allcontent", 1);
@@ -162,14 +163,12 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
       return mapping.findForward(SUCCESS);
    }
 
-
-   protected abstract void addAllcontentListToRequest(HttpServletRequest request, Cloud cloud, String status, String laststatus);
+   protected abstract void addAllcontentListToRequest(HttpServletRequest request, Cloud cloud, String status,
+         String laststatus);
 
    protected abstract String getWorkflowType();
 
-
    protected abstract NodeQuery createDetailQuery(Cloud cloud, String orderby, boolean AorD);
-
 
    protected List<Node> performWorkflowAction(String action, List<Node> nodes, String remark) {
       List<Node> errors = new ArrayList<Node>();
@@ -210,19 +209,16 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
             try {
                if (publishNumbers.contains(publishNode.getNumber())) {
                   Workflow.publish(publishNode, publishNumbers);
-               }
-               else {
+               } else {
                   Workflow.accept(publishNode, "");
                }
-            }
-            catch (WorkflowException wfe) {
+            } catch (WorkflowException wfe) {
                errors.addAll(wfe.getErrors());
             }
          }
       }
       return errors;
    }
-
 
    private void addWorkflowListToRequest(HttpServletRequest request, Cloud cloud, NodeQuery detailQuery,
          NodeQuery listQuery, String attributeName) {
@@ -233,7 +229,6 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
          request.setAttribute(attributeName, dataList);
       }
    }
-
 
    protected NodeQuery createDetailsWithNumbersQuery(NodeQuery wfQuery, NodeList workflowNumbers) {
       NodeQuery detailQuery = (NodeQuery) wfQuery.clone();
@@ -249,21 +244,17 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
       return detailQuery;
    }
 
-
    protected void addOrderBy(NodeManager manager, NodeQuery query, String fieldname, boolean aord) {
       Step step = query.getStep(manager.getName());
       StepField sf = query.createStepField(step, manager.getField(fieldname));
       if (aord) {
          /*
-          * System.out.println("WorkflowAction : orderby-- " + fieldname + "
-          * descending");
+          * System.out.println("WorkflowAction : orderby-- " + fieldname + " descending");
           */
          query.addSortOrder(sf, SortOrder.ORDER_DESCENDING);
-      }
-      else {
+      } else {
          /*
-          * System.out.println("WorkflowAction : orderby-- " + fieldname + "
-          * ascending");
+          * System.out.println("WorkflowAction : orderby-- " + fieldname + " ascending");
           */
          query.addSortOrder(sf, SortOrder.ORDER_ASCENDING);
       }
