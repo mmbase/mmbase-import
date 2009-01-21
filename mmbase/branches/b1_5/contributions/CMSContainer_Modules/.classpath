@@ -163,7 +163,7 @@
 			<attribute name="javadoc_location" value="http://junit.sourceforge.net/javadoc"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-core-0.42.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-core-0.42.jar" sourcepath="/MAVEN_REPO"/>
 	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-server-0.42.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.samba.jcifs/jars/jcifs-1.2.9.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/acegisecurity/jars/acegi-security-1.0.6.jar"/>
