@@ -1,6 +1,6 @@
 <edit:ui-table items="${personForShow}" var="person" size="${totalCount}"
                requestURI="/editors/community/SearchConditionalUser.do" bulkbox="true">
-   <edit:ui-tcolumn title="">
+   <edit:ui-tcolumn title=""  width="62px">
       <input type="checkbox" name="chk_" value="${person.authId}"/>&nbsp;
       <c:if test="${not hiddenOperation}">
       <a href="${pageContext.request.contextPath }/editors/community/userAddInitAction.do?authid=${person.authId}&&group=${groupName},${option}">
