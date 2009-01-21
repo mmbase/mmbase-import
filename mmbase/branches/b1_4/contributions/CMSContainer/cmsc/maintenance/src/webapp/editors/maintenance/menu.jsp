@@ -33,8 +33,11 @@
            <c:url var="cleanNVPUrl" value="/editors/maintenance/clean-non-visible-portlets.jsp"/>
            <a href="${cleanNVPUrl}" target="rightpane"><fmt:message key="maintenance.cleannonvisportlets"/></a>
         </li>
+        <li class="advancedpublish">
+           <c:url var="cleanICaches" value="/editors/maintenance/clean-duplicate-icaches.jsp"/>
+           <a href="${cleanICaches}" target="rightpane"><fmt:message key="maintenance.icaches.cleanduplicates"/></a>
+        </li>
 
-		<%--  <cmsc:hasfeature name="rmmci">  --%>
 			<mm:haspage page="/editors/publish-remote">
                <li class="advancedpublish">
                   <c:url var="compareUrl" value="/editors/maintenance/compare-models.jsp"/>
@@ -67,16 +70,13 @@
 	                  <c:url var="unlinkUrl" value="/editors/maintenance/staging/unlink-remotenodes.jsp"/>
 	                  <a href="${unlinkUrl}" target="rightpane"><fmt:message key="maintenance.publish.unlink-remotenodes" /></a>
 	               </li>
-
-
                <% } %>
             </mm:haspage>
-		<%--  </cmsc:hasfeature> --%>
 		<cmsc:hasfeature name="workflowitem">
-           <li class="workflow">
-              <a href="staging/workflow-remove.jsp" target="rightpane"><fmt:message key="maintenance.workflow" /></a>
-           </li>
-        </cmsc:hasfeature>
+        <li class="workflow">
+           <a href="staging/workflow-remove.jsp" target="rightpane"><fmt:message key="maintenance.workflow" /></a>
+        </li>
+      </cmsc:hasfeature>
 <%--  
         <cmsc:hasfeature name="luceusmodule">
 			<li class="luceus">
@@ -91,7 +91,12 @@
            </li>
         </mm:haspage>
 --%>
-       </ul>
+       <li><br/></li>
+       <li class="advancedpublish">
+         <c:url var="logoutUrl" value="../logout.jsp"/>
+         <a href="${logoutUrl}" target="rightpane"><fmt:message key="maintenance.logout" /></a>
+      </li>
+    </ul>
 </mm:cloud>
          </div>
          	<div class="side_block_end"></div>
