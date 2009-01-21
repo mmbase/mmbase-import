@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <extend>${basedir}/../maven-base/project.xml</extend>
+  <artifactId>cmsc-modules-community</artifactId>
+  <name>Community module</name>
+  <shortDescription>Remember users and roles.</shortDescription>
+  <description>Remember users and roles.</description>
+  
+  <dependencies>
+  
+<!-- Hibernate dependencies -->
+    <dependency>
+      <groupId>asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>1.5.3</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>2.7.6</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>2.1.3</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>1.6.1</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>ejb3-persistence</artifactId>
+      <version>3.0</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>hibernate</artifactId>
+      <version>3.2.5.GA</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>3.3.1.GA</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>hibernate-annotations</artifactId>
+      <version>3.3.0.GA</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>hibernate-commons-annotations</artifactId>
+      <version>3.0.0.GA</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>javax.transaction</groupId>
+      <artifactId>jta</artifactId>
+      <version>1.0.1B</version>
+      <type>jar</type>
+      <properties>
+      <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+
+<!-- Spring dependencies -->
+    <dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring</artifactId>
+      <version>2.5.1</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>2.5.1</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring-webmvc-struts</artifactId>
+      <version>2.5.1</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+    
+<!-- Ageci Security -->
+    <dependency>
+      <groupId>acegisecurity</groupId>
+      <artifactId>acegi-security</artifactId>
+      <version>1.0.6</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+  </dependencies>
+</project>
+

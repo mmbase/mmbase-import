@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="playlist">
+	<title xml:lang="nl">Playlist</title>
+	<title xml:lang="en">Playlist</title>
+	<title xml:lang="zh">播放列表</title>
+
+   <action include="config/playlist/create_playlist.xml"/>
+   <action include="config/playlist/delete_playlist.xml"/>
+   <action include="config/playlist/load_playlist.xml"/>
+
+   <lists>
+      <optionlist include="config/option_lists/boolean.xml" />
+   </lists>
+
+   <steps>
+      <step form-schema="edit_playlist"/>
+      <step form-schema="edit_contentfields"/>
+      <step form-schema="edit_contentinfo"/>
+   </steps>
+   <form-schema id="edit_playlist" extends="config/playlist/edit_playlist.xml"/>
+   <form-schema id="edit_contentfields" extends="config/contentelement/edit_contentfields.xml"/>
+   <form-schema id="edit_contentinfo" extends="config/contentelement/edit_contentinfo.xml"/>
+</wizard-schema>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_portletdefinition">
+	<title xml:lang="nl">Portlet Definitie</title>
+	<title xml:lang="en">Portlet Definition</title>
+
+	<field name="title" dtmaxlength="1024" ftype="line">
+		<prompt xml:lang="en">Title</prompt>
+		<prompt xml:lang="nl">Titel</prompt>
+	</field>
+	<field name="description" dtmaxlength="1024" ftype="text" rows="3">
+		<prompt xml:lang="en">Description</prompt>
+		<prompt xml:lang="nl">Omschrijving</prompt>
+	</field>
+	<field name="definition" dtmaxlength="255" ftype="line">
+		<prompt xml:lang="en">Definition</prompt>
+		<prompt xml:lang="nl">Definitie</prompt>
+	</field>
+	<field name="type" ftype="enum">
+		<prompt xml:lang="en">Type</prompt>
+		<prompt xml:lang="nl">Type</prompt>
+		<optionlist select="defintiontype" />
+	</field>
+	<list include="config/typedef/search_portletdefinition_allowrel_typedef.xml" />
+	<list include="config/view/search_portletdefinition_allowrel_view.xml" />
+	<list include="config/mmbaseranks/search_portletdefinition_requiresrel_mmbaseranks.xml" />
+</form-schema>

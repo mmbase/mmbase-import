@@ -1,0 +1,13 @@
+
+Name: Fix valid field in urls builder
+Goal: Fix valid field in urls builder
+Type:  sql-script
+--- Start script ---
+ALTER TABLE mm_urls MODIFY valid tinyint(1) NOT NULL default '1';
+
+ALTER TABLE live_urls MODIFY valid tinyint(1) NOT NULL default '1';
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
