@@ -15,12 +15,14 @@
     <singular xml:lang="nl">Afbeelding</singular>
     <singular xml:lang="eo">Bildo</singular>
     <singular xml:lang="it">Immagine</singular>
+	<singular xml:lang="zh">图片</singular>
 
     <plural xml:lang="en">Images</plural>
     <plural xml:lang="fr">Images</plural>
     <plural xml:lang="nl">Afbeeldingen</plural>
     <plural xml:lang="eo">Bildoj</plural>
     <plural xml:lang="it">Immagini</plural>
+	<plural xml:lang="zh">图片</plural>
   </names>
 
 
@@ -30,6 +32,7 @@
     <description xml:lang="nl">Afbeeldingen</description>
     <description xml:lang="eo">Bildoj</description>
     <description xml:lang="it">Immagini</description>
+	<description xml:lang="zh">图片</description>
   </descriptions>
 
 
@@ -86,6 +89,7 @@
       <descriptions>
         <description xml:lang="en">The image itself (binary data)</description>
         <description xml:lang="nl">De afbeelding zelf (binaire data)</description>
+		<description xml:lang="zh">图片本身（二进制数据）</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Image</guiname>
@@ -93,6 +97,7 @@
         <guiname xml:lang="nl">Plaatje</guiname>
         <guiname xml:lang="eo">Bildo</guiname>
         <guiname xml:lang="it">Immagine</guiname>
+		<guiname xml:lang="zh">图片</guiname>
       </gui>
       <editor>
         <positions>
@@ -112,6 +117,7 @@
       <descriptions>
         <description xml:lang="en">Mimetype of the image</description>
         <description xml:lang="nl">Mimetype van de afbeelding</description>
+		<description xml:lang="zh">图片的MIME类型</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">ImageType</guiname>
@@ -119,6 +125,7 @@
         <guiname xml:lang="nl">PlaatjesType</guiname>
         <guiname xml:lang="eo">Bildotipo</guiname>
         <guiname xml:lang="it">ImmagineTipo</guiname>
+		<guiname xml:lang="zh">图片类型</guiname>
       </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
@@ -131,6 +138,7 @@
       <descriptions>
         <description xml:lang="en">Filesize of the image</description>
         <description xml:lang="nl">Filegrootte van het plaatje</description>
+		<description xml:lang="zh">图片的文件大小</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Size</guiname>
@@ -138,6 +146,7 @@
           <guiname xml:lang="fr">Taille</guiname>
           <guiname xml:lang="eo">Grando</guiname>
           <guiname xml:lang="it">Dimensione</guiname>
+		  <guiname xml:lang="zh">大小</guiname>
         </gui>
         <editor>
           <positions>
@@ -154,11 +163,13 @@
       <descriptions>
         <description xml:lang="en">Width of the image in pixels</description>
         <description xml:lang="nl">Breedte van het plaatje in pixels</description>
+		<description xml:lang="zh">图片宽度，以像素为单位</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Width</guiname>
         <guiname xml:lang="nl">Breedte</guiname>
         <guiname xml:lang="eo">Larĝo</guiname>
+		<guiname xml:lang="zh">宽度</guiname>
       </gui>
       <db>
         <name>width</name>
@@ -169,11 +180,13 @@
       <descriptions>
         <description xml:lang="en">Height of the image in pixels</description>
         <description xml:lang="nl">Hoogte van het plaatje in pixels</description>
+		<description xml:lang="zh">图片高度，以像素为单位</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Height</guiname>
         <guiname xml:lang="nl">Hoogte</guiname>
         <guiname xml:lang="eo">Alto</guiname>
+		<guiname xml:lang="zh">高度</guiname>
       </gui>
       <db>
         <name>height</name>
@@ -184,11 +197,13 @@
       <descriptions>
         <description xml:lang="en">Original filename of attachment if it was an uploaded file</description>
         <description xml:lang="nl">Oorspronkelijke bestandsnaam als de bijlage een ge-upload bestand betreft</description>
+		<description xml:lang="zh">上传附件的原始文件名</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Filename</guiname>
         <guiname xml:lang="nl">Bestandsnaam</guiname>
         <guiname xml:lang="eo">Dosiernomo</guiname>
+		<guiname xml:lang="zh">文件名</guiname>
       </gui>
       <datatype base="filename" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
@@ -201,10 +216,12 @@
 
         <description xml:lang="en">Alt text</description>
         <description xml:lang="nl">Alternatieve text</description>
+		<description xml:lang="zh">替代文字</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Alt text</guiname>
         <guiname xml:lang="nl">Alternatieve text</guiname>
+		<guiname xml:lang="zh">替代文字</guiname>
       </gui>
       <editor>
         <positions>
@@ -222,10 +239,12 @@
 
         <description xml:lang="en">Caption</description>
         <description xml:lang="nl">Bijschift</description>
+		<description xml:lang="zh">标题</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Caption</guiname>
         <guiname xml:lang="nl">Bijschift</guiname>
+		<guiname xml:lang="zh">标题</guiname>
       </gui>
       <editor>
         <positions>
@@ -246,10 +265,12 @@
       <descriptions>
         <description xml:lang="en">Checksum of byte array, which allows for uniqueness checking</description>
         <description xml:lang="nl">Checksum van de bytes, hiermee kan men controleren of een plaatje al bestaat</description>
+		<description xml:lang="zh">字节数组校验码，可唯一检查</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Checksum</guiname>
         <guiname xml:lang="nl">Checksum</guiname>
+		<guiname xml:lang="zh">校验码</guiname>
       </gui>
       <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>

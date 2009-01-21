@@ -116,12 +116,12 @@
    <div style="padding-left:11px">
       <select name="assesMode" onchange="javascript:changeMode(${param.offset})">
          <c:if test="${empty searchShow || searchShow eq 'list'}">
-            <option id="a_list" selected="selected">list</option>
-            <option id = "a_thumbnail" >thumbnail</option>
+            <option id="a_list" selected="selected"><fmt:message key="asset.image.list"/></option>
+            <option id = "a_thumbnail" ><fmt:message key="asset.image.thumbnail"/></option>
          </c:if>
          <c:if test="${searchShow eq 'thumbnail'}">
-            <option id="a_list">list</option>
-            <option id = "a_thumbnail" selected="selected" >thumbnail</option>
+            <option id="a_list"><fmt:message key="asset.image.list"/></option>
+            <option id = "a_thumbnail" selected="selected" ><fmt:message key="asset.image.thumbnail"/></option>
          </c:if>
       </select>
    </div>
