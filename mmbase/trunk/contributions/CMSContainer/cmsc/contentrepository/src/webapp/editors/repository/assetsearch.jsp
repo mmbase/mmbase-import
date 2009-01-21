@@ -304,9 +304,7 @@
             </table>
          </html:form>
       </div>
-   </div>
 
-   <div class="editor" style="height:500px">
    <div class="ruler_green"><div><fmt:message key="searchform.results" /></div></div>
 
    <div class="body">
