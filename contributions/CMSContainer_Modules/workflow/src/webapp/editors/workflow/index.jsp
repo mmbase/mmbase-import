@@ -29,12 +29,11 @@ if ("page".equals(type)) {
     redirectTo = "PageWorkflowAction.do";
 }
 if (status != null && !"".equals(status)) {
-   redirectTo += "?status=" + status;
+   redirectTo += "?fromIndex=yes&status=" + status;
 }
 if (nodetype != null && !"".equals(nodetype)) {
     redirectTo += "&nodetype=" + nodetype;
 }
-
 
 String offset = request.getParameter("offset");
 if (offset != null && !"".equals(offset)) {
@@ -42,7 +41,7 @@ if (offset != null && !"".equals(offset)) {
 	    redirectTo += "&offset=" ;
 	}
 	else {
-	    redirectTo += "?offset=" ;
+	    redirectTo += "?fromIndex=yes&offset=" ;
 	}
 	redirectTo += offset;
 }
@@ -52,7 +51,7 @@ if (orderby != null && !"".equals(orderby)) {
 	    redirectTo += "&orderby=" ;
 	}
 	else {
-	    redirectTo += "?orderby=" ;
+	    redirectTo += "?fromIndex=yes&orderby=" ;
 	}
 	redirectTo += orderby;
 }
