@@ -11,14 +11,17 @@
   <names>
     <singular xml:lang="en">URL</singular>
     <singular xml:lang="nl">URL</singular>
+	<singular xml:lang="zh">URL</singular>
 
     <plural xml:lang="en">URLs</plural>
     <plural xml:lang="nl">URL's</plural>
+	<plural xml:lang="zh">URLs</plural>
   </names>
   
   <descriptions>
     <description xml:lang="en">URLs to external sites</description>
     <description xml:lang="nl">URL's naar externe sites</description>
+	<description xml:lang="zh">外部网站网址</description>
   </descriptions>
   
   <properties>
@@ -30,10 +33,12 @@
       <descriptions>
         <description xml:lang="en">The name of the site or page this url links to</description>
         <description xml:lang="nl">De naam van de pagina of website waar deze link naar wijst</description>
+		<description xml:lang="zh">url所指向网站或网页的名字</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Name</guiname>
         <guiname xml:lang="nl">Naam</guiname>
+		<guiname xml:lang="zh">名字</guiname>
       </gui>
       <editor>
         <positions>
@@ -51,10 +56,12 @@
       <descriptions>
         <description xml:lang="en">The link or site internet address</description>
         <description xml:lang="nl">Het internet adres van de link of website</description>
+		<description xml:lang="zh">链接或网站的互联网地址</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Url</guiname>
         <guiname xml:lang="nl">Url</guiname>
+		<guiname xml:lang="zh">Url</guiname>
       </gui>
       <editor>
         <positions>
@@ -71,10 +78,12 @@
       <descriptions>
         <description xml:lang="en">Validated link</description>
         <description xml:lang="nl">Gecontroleerde link</description>
+		<description xml:lang="zh">已验证链接</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Valid</guiname>
         <guiname xml:lang="nl">Geldig</guiname>
+		<guiname xml:lang="zh">有效</guiname>
       </gui>
        <editor>
           <positions>
