@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties exportsource="mmbase://127.0.0.1/newsletter" timestamp="20050301000000">
+
+   <node number="414" owner="admin">
+      <key>newsletter.workflow.allow.skip.freezing</key>
+      <value>false</value>
+   </node>
+   
+   <node number="415" owner="admin">
+      <key>newsletter.workflow.allow.skip.approving</key>
+      <value>false</value>
+   </node>
+</properties>

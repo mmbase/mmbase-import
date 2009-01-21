@@ -1,0 +1,11 @@
+Name: Staging fragment of site-builder is too small (only 40 chars).
+Goal: enlarge it
+Type:  sql-script
+--- Start script ---
+ALTER TABLE mm_site MODIFY column stagingfragment varchar(255);
+ALTER TABLE live_site MODIFY column stagingfragment varchar(255);
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*

@@ -1,0 +1,17 @@
+<table border="0">
+         <edit:ui-table items="${results}" var="result" size="${totalCount}" requestURI="/editors/community/searchConditionalGroupAction.do">
+         <c:url var="userActionUrl" value="/editors/community/SearchConditionalUser.do">
+               <c:param name="groupName" value="${result.groupName}"/>
+               <c:param name="method" value="listGroupMembers"/>
+         </c:url>
+         <edit:ui-tcolumn title="">&nbsp;
+               <a href="${userActionUrl}"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" width="16" height="16" title="<fmt:message key="community.search.edit"/>"></a>
+               <a href="./deleteGroupAction.do?groupid=${result.groupName}"><img src="<cmsc:staticurl page='/editors/gfx/icons/delete.png'/>" width="16" height="16" title="<fmt:message key="community.search.delete"/>"></a>
+         </edit:ui-tcolumn>
+         <edit:ui-tcolumn titlekey="community.search.groupname" sort="asn.name">
+               <a href="${userActionUrl}">${result.groupName}</a>
+          </edit:ui-tcolumn>
+          <edit:ui-tcolumn titlekey="community.search.users" >
+               ${result.users }
+          </edit:ui-tcolumn>
+</edit:ui-table>

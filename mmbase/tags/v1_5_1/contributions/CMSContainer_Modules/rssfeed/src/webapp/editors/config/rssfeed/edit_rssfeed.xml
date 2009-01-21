@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_rssfeed">
+   <title xml:lang="nl">RSS Feed</title>
+   <title xml:lang="en">RSS Feed</title>
+   <title xml:lang="zh">RSS 种子</title>
+
+   <field name="title" dtrequired="true">
+      <prompt xml:lang="en">Title</prompt>
+      <prompt xml:lang="nl">Titel</prompt>
+      <prompt xml:lang="zh">标题</prompt>
+   </field>
+   <field name="urlfragment" dtmaxlength="40"
+      dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
+      <prompt xml:lang="en">URL-fragment</prompt>
+      <prompt xml:lang="nl">URL-fragment</prompt>
+      <prompt xml:lang="zh">URL-片段</prompt>
+   </field>
+   <field name="maximum" dtrequired="true">
+      <prompt xml:lang="en">Maximum (amount)</prompt>
+      <prompt xml:lang="nl">Maximum (aantal)</prompt>
+      <prompt xml:lang="zh">最大数量</prompt>
+   </field>
+   <field name="max_age_in_days" dtrequired="true">
+      <prompt xml:lang="en">Max age (in days)</prompt>
+      <prompt xml:lang="nl">Max leeftijd (in dagen)</prompt>
+      <prompt xml:lang="zh">最长时间(天)</prompt>
+   </field>
+   <field name="language" ftype="enum" dtrequired="true">
+      <prompt xml:lang="en">Language</prompt>
+      <prompt xml:lang="nl">Taal</prompt>
+      <prompt xml:lang="zh">语言</prompt>
+      <optionlist select="languages"/>
+   </field>
+   <field name="description" ftype="text" rows="3">
+      <prompt xml:lang="en">Description</prompt>
+      <prompt xml:lang="nl">Omschrijving</prompt>
+      <prompt xml:lang="zh">描述</prompt>
+   </field>
+   <field name="copyright" dtmaxlength="2048" ftype="text" rows="3">
+      <prompt xml:lang="en">Copyright text</prompt>
+      <prompt xml:lang="nl">Copyright tekst</prompt>
+      <prompt xml:lang="zh">版权</prompt>
+   </field>
+   <field name="email_managing_editor" dtmaxlength="100"  dtrequired="true" dtpattern="(\w+)@(\w+\.)(\w+)(\.\w+)*">
+      <prompt xml:lang="en">Email editor</prompt>
+      <prompt xml:lang="nl">Email redacteur</prompt>
+      <prompt xml:lang="zh">Email编辑</prompt>
+   </field>
+   <field name="email_webmaster" dtmaxlength="100"  dtrequired="true" dtpattern="(\w+)@(\w+\.)(\w+)(\.\w+)*">
+      <prompt xml:lang="en">Email webmaster</prompt>
+      <prompt xml:lang="nl">Email webmaster</prompt>
+      <prompt xml:lang="zh">Email管理员</prompt>
+   </field>
+   <field name="inmenu" ftype="enum">
+      <prompt xml:lang="en">In menu</prompt>
+      <prompt xml:lang="nl">In menu</prompt>
+      <prompt xml:lang="zh">在菜单中</prompt>
+      <optionlist select="boolean" />
+   </field>
+   <field name="secure" ftype="enum">
+      <prompt xml:lang="en">Secure</prompt>
+      <prompt xml:lang="nl">Beveiligd</prompt>
+      <prompt xml:lang="zh">安全</prompt>
+      <optionlist select="boolean" />
+   </field>
+   <list include="config/contentchannel/search_rssfeed_related_contentchannel.xml" />
+    <list include="config/typedef/search_site_allowrel_typedef.xml" />
+</form-schema>
