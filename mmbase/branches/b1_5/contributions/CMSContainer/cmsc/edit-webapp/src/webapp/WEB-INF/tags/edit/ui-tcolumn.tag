@@ -29,7 +29,12 @@
             </c:when>
          </c:choose>
       </c:set>
-      <th ${not empty width ? width : ''}>
+      <c:if test="${empty width}">
+         <th>
+      </c:if>
+      <c:if test="${not empty width}">
+         <th width='${width}'>
+      </c:if>
          <c:choose>
             <c:when test="${not empty sort}">
                <a href="<%=request.getContextPath()%>${requestScope.sortlink}page=${page}&sortby=${sort}&dir=${dir}">
