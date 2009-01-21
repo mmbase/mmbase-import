@@ -3,10 +3,10 @@
 <form-schema id="edit_jumpers">
 	<title>jumper</title>
 	<subtitle>Create a new jumper or change an existing one</subtitle>
-	<field name="name" dtminlength="1" dtmaxlength="100">
+	<field name="name" dtminlength="1" dtmaxlength="64">
 	      <prompt>Jumper (alleen letters en cijfers, bv. korenburgerveen)</prompt>
 	</field>
-	<field name="url" dtminlength="1" dtmaxlength="100">
+	<field name="url" dtminlength="1" dtmaxlength="255">
 			<prompt>Link (bv. /index.jsp?w=196&amp;p=163)</prompt>
 	</field>
 </form-schema>
