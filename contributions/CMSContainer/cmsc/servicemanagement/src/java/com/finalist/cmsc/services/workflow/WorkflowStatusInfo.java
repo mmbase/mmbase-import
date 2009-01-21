@@ -176,8 +176,8 @@ public class WorkflowStatusInfo {
          String childTypeName = childType.getValue();
          if (nodetype.equals(childTypeName)||ServiceUtil.getAllChildTypes(cloud,childTypeName).contains(nodetype)) {
             int temp = 0;
-            if (childrenStatus.containsKey(childType)) {
-               temp = childrenStatus.get(childType);
+            if (childrenStatus.containsKey(childTypeName)) {
+               temp = childrenStatus.get(childTypeName);
             }
             childrenStatus.put(childTypeName, temp + count);
             break;
