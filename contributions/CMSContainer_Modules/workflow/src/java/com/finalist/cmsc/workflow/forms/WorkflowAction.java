@@ -112,7 +112,11 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
       String nodetype = null;
       String nodetypeGUI = null;
       String nodetypeStr = request.getParameter("workflowNodetype");
-      if (StringUtils.isEmpty(nodetypeStr)) {
+      String fromIndex = request.getParameter("fromIndex");
+      if (fromIndex == null) {
+         fromIndex = "no";
+      }
+      if (StringUtils.isEmpty(nodetypeStr) && fromIndex.equalsIgnoreCase("yes")) {
          nodetypeStr = (String) request.getSession().getAttribute("workflowNodetype");
       }
       if (StringUtils.isNotEmpty(nodetypeStr)) {
@@ -146,11 +150,10 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
       if (StringUtils.isNotEmpty(nodetype)) {
          session.setAttribute("workflowNodetype", nodetype);
          session.setAttribute("workflowNodetypeGUI", nodetypeGUI);
+      } else {
+         session.removeAttribute("workflowNodetype");
+         session.removeAttribute("workflowNodetypeGUI");
       }
-      // else{
-      // session.removeAttribute("workflowNodetype");
-      // session.removeAttribute("workflowNodetypeGUI");
-      // }
       session.setAttribute("workflow.status", status);
       Map<String, Integer> treeStatus = (Map<String, Integer>) session.getAttribute("workflowTreeStatus");
       if (treeStatus == null) {
