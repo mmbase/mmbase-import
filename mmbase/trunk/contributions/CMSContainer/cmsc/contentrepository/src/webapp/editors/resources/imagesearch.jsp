@@ -125,12 +125,12 @@
    `  </div>
 		<select name="imageMode" id="imageMode" onchange="javascript:setShowMode()">
 			<c:if test="${imageShow eq 'list'}">
-				<option id="a_list" selected="selected">list</option>
-				<option id="a_thumbnail">thumbnail</option>
+				<option id="a_list" selected="selected"><fmt:message key="asset.image.list"/></option>
+				<option id="a_thumbnail"><fmt:message key="asset.image.thumbnail"/></option>
 			</c:if>
 			<c:if test="${imageShow eq 'thumbnail'}">
-				<option id="a_list">list</option>
-				<option id="a_thumbnail" selected="selected">thumbnail</option>
+				<option id="a_list"><fmt:message key="asset.image.list"/></option>
+				<option id="a_thumbnail" selected="selected"><fmt:message key="asset.image.thumbnail"/></option>
 			</c:if>
 		</select>
       <div class="body" style="max-height:400px;overflow-y:auto; overflow-x:hidden"> 
