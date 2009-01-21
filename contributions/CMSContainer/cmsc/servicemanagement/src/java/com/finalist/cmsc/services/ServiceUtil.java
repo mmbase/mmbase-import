@@ -12,20 +12,25 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeManagerList;
 import org.mmbase.bridge.NotFoundException;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
+
 /**
  * @author Marco
  * 
  */
 public class ServiceUtil {
    
-
+   private static final String PROPERTY_HIDDEN_TYPES = "system.contenttypes.hide";
+   
    public static List<LabelValueBean> getDirectChildTypes(Cloud cloud,String parent) {
       List<NodeManager> resultManager = new ArrayList<NodeManager>();
       NodeManagerList nml = cloud.getNodeManagers();
       Iterator<NodeManager> v = nml.iterator();
+      List<String> hiddenTypes = getHiddenTypes();
       while (v.hasNext()) {
          NodeManager child = v.next();
-         if (isDirectChildType(cloud,child.getName(), parent)) {
+         String name = child.getName();
+         if (!hiddenTypes.contains(name) && isDirectChildType(cloud,name, parent)) {
             resultManager.add(child);
          }
       }
@@ -93,4 +98,18 @@ public class ServiceUtil {
       }
       return false;
    }
+   private static List<String> getHiddenTypes() {
+      String property = PropertiesUtil.getProperty(PROPERTY_HIDDEN_TYPES);
+      if (property == null) {
+         return new ArrayList<String>();
+      }
+
+      ArrayList<String> list = new ArrayList<String>();
+      String[] values = property.split(",");
+      for (String value : values) {
+         list.add(value);
+      }
+      return list;
+   }
+
 }
