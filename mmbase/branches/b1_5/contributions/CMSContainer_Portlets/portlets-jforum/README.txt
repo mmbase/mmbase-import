@@ -341,7 +341,7 @@ Step 2: Add below elements to web.xml
    </servlet-mapping>
 
 
-   Step 3  : Configure DataSouce
+Step 3: Configure DataSouce
 
    Add DataSouce in the context xml file,e.g.: the name should be "jdbc/jforum",create database "jforum"
 
@@ -358,4 +358,7 @@ Step 2: Add below elements to web.xml
 		url="jdbc:mysql://localhost:3306/jforum" />
 
 
-
+Step 4: If you like to use Single Sign On (SSO)
+   - Enable the portlet-login in the portlet
+   - configure it into a view at a page
+   
