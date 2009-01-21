@@ -74,6 +74,11 @@ public class ServiceUtil {
          if (parent.equals(actualParent)) {
             return true;
          }
+       //  NodeManager nmTemp = childManager.getParent();
+       //  while (!parent.equals(nmTemp.getName())) {
+       //     nmTemp = nmTemp.getParent();
+        // }
+       //  return true;
       }
       catch (NotFoundException nfe) {
          // Ran out of NodeManager parents
