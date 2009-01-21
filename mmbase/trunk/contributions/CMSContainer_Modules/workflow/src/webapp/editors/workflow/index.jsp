@@ -56,6 +56,7 @@ if (orderby != null && !"".equals(orderby)) {
 	}
 	redirectTo += orderby;
 }
+redirectTo += "?fromIndex=yes";
 redirectTo = response.encodeRedirectURL(redirectTo);
 response.sendRedirect(redirectTo);
 %>
