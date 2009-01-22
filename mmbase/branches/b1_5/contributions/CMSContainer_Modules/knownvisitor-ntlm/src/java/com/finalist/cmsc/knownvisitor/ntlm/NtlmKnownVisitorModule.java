@@ -27,6 +27,7 @@ public class NtlmKnownVisitorModule extends KnownVisitorModule {
    public static final String PROPERTY_LOGONNAME = "knownvisitor-ntlm.logonname";
    public static final String PROPERTY_LOGONPASSWORD = "knownvisitor-ntlm.logonpassword";
    public static final String PROPERTY_SEARCHDN = "knownvisitor-ntlm.searchDN";
+   public static final String PROPERTY_DOMAIN = "knownvisitor-ntlm.domain";
 
 
    public NtlmKnownVisitorModule() {

@@ -118,7 +118,14 @@ public class NtlmVisitorFilter implements Filter {
             index = user.indexOf('\\');
             if (index == -1)
                index = user.indexOf('/');
-            String domain = user.substring(0, index);
+            
+            String domain;
+            if (index == -1) {
+                domain = PropertiesUtil.getProperty(NtlmKnownVisitorModule.PROPERTY_DOMAIN);
+            } else {
+                domain = user.substring(0, index);
+            }
+
             user = (index != -1) ? user.substring(index + 1) : user;
             ntlm = new NtlmPasswordAuthentication(domain, user, password);
             dc = UniAddress.getByName(getDomainController(), true);
