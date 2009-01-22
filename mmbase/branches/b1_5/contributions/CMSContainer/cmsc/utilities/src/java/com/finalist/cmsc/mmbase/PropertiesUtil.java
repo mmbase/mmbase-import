@@ -1,7 +1,6 @@
 package com.finalist.cmsc.mmbase;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
@@ -71,6 +70,48 @@ public class PropertiesUtil {
       }
       return getProp(key, cloud);
    }
+   
+   /**
+    * Returns the list of values of the field <CODE>field</CODE> of the node whose id
+    * equals <CODE>key</CODE>.
+    * 
+    * @param key
+    *           The node-id of the properties node to be retrieved.
+    * @return The list of values of the properties node.
+    */
+   public static List<String> getPropertyAsList(String key) {
+      return getPropertyAsList(key, CloudProviderFactory.getCloudProvider().getCloud());
+   }
+   
+   /**
+    * Returns the list of values of the field <CODE>field</CODE> of the node whose id
+    * equals <CODE>key</CODE>.
+    * 
+    * @param key
+    *           The node-id of the properties node to be retrieved.
+    * @param cloud
+    *           cloud to read property from.
+    * @return The list of values of the properties node.
+    */
+   public static List<String> getPropertyAsList(String key, Cloud cloud) {
+      if (DEFAULT.equals(environment)) {
+         setEnvironment(cloud);
+         log.debug("Environment " + environment);
+      }
+      String prop = getProp(key, cloud);
+      return convertToList(prop);
+   }
+
+   private static List<String> convertToList(String prop) {
+      List<String> list = new ArrayList<String>();
+      StringTokenizer tokenizer = new StringTokenizer(prop, ", \t\n\r\f");
+      while (tokenizer.hasMoreTokens()) {
+         String str = tokenizer.nextToken();
+         list.add(str);
+      }
+      return list;
+   }
+
 
 
    private static void setEnvironment(Cloud cloud) {

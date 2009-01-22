@@ -1,24 +1,18 @@
 package com.finalist.cmsc.knownvisitor.ntlm;
 
-import jcifs.http.NtlmSsp;
-import jcifs.smb.NtlmPasswordAuthentication;
-import jcifs.smb.SmbSession;
-import jcifs.smb.SmbAuthException;
-import jcifs.UniAddress;
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+
 import jcifs.Config;
+import jcifs.UniAddress;
+import jcifs.http.NtlmSsp;
+import jcifs.smb.*;
 import jcifs.util.Base64;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.FilterChain;
-import javax.servlet.Filter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -35,7 +29,7 @@ public class NtlmVisitorFilter implements Filter {
    private static final Logger log = Logging.getLoggerInstance(NtlmVisitorFilter.class);
 
 
-   public void init(FilterConfig filterConfig) throws ServletException {
+   public void init(FilterConfig filterConfig) {
 
       /*
        * Set jcifs properties we know we want; soTimeout and cachePolicy to
@@ -47,6 +41,7 @@ public class NtlmVisitorFilter implements Filter {
 
 
    public void destroy() {
+      // nothing
    }
 
 
@@ -60,10 +55,24 @@ public class NtlmVisitorFilter implements Filter {
       final HttpServletRequest req = (HttpServletRequest) request;
       final HttpServletResponse resp = (HttpServletResponse) response;
 
-      if (isEnabled() && !negotiate(req, resp, false)) {
-         return;
-      }
+      if (isEnabled()) {
+         List<String> exceptions = getIpExceptions();
+         if (!exceptions.isEmpty()) {
+            String clientIp = req.getHeader("X-Forwarded-For");
+            if (StringUtils.isBlank(clientIp)) {
+               // not behind a proxy or mod_proxy
+               clientIp = request.getRemoteAddr();
+            }
+            if (exceptions.contains(clientIp)) {
+               chain.doFilter(req, resp);
+               return;
+            }
+         }
 
+         if (!negotiate(req, resp, false)) {
+            return;
+         }
+      }
       chain.doFilter(req, resp);
    }
 
@@ -90,7 +99,7 @@ public class NtlmVisitorFilter implements Filter {
       String msg;
       NtlmPasswordAuthentication ntlm = null;
       msg = req.getHeader("Authorization");
-      boolean offerBasic = req.isSecure();
+      boolean offerBasic = offerBasic(req);
 
       log.debug("Message: " + msg);
       if (msg != null && (msg.startsWith("NTLM ") || (offerBasic && msg.startsWith("Basic ")))) {
@@ -118,7 +127,14 @@ public class NtlmVisitorFilter implements Filter {
             index = user.indexOf('\\');
             if (index == -1)
                index = user.indexOf('/');
-            String domain = user.substring(0, index);
+            
+            String domain;
+            if (index == -1) {
+                domain = PropertiesUtil.getProperty(NtlmKnownVisitorModule.PROPERTY_DOMAIN);
+            } else {
+                domain = user.substring(0, index);
+            }
+
             user = (index != -1) ? user.substring(index + 1) : user;
             ntlm = new NtlmPasswordAuthentication(domain, user, password);
             dc = UniAddress.getByName(getDomainController(), true);
@@ -136,7 +152,7 @@ public class NtlmVisitorFilter implements Filter {
                log.service("NtlmHttpFilter: " + ntlm.getName() + ": 0x"
                      + jcifs.util.Hexdump.toHexString(sae.getNtStatus(), 8) + ": " + sae);
             }
-            if (sae.getNtStatus() == SmbAuthException.NT_STATUS_ACCESS_VIOLATION) {
+            if (sae.getNtStatus() == NtStatus.NT_STATUS_ACCESS_VIOLATION) {
                /*
                 * Server challenge no longer valid for externally supplied
                 * password hashes.
@@ -173,13 +189,35 @@ public class NtlmVisitorFilter implements Filter {
    }
 
 
+   private boolean offerBasic(HttpServletRequest req) {
+      boolean offerBasic = req.isSecure();
+      if (!offerBasic) {
+         String basic = PropertiesUtil.getProperty(NtlmKnownVisitorModule.PROPERTY_BASIC_AUTH);
+         if (StringUtils.isBlank(basic) || "secure".equalsIgnoreCase(basic)) {
+            return false;
+         }
+         else {
+            // basic authentication is not forced to be on secured urls and the current request is not secured
+            // This does not mean that the url arrived at the webserver was not secured. The webserver could
+            // proxy the request without using the secured flag.
+            return true;
+         }
+      }
+      return offerBasic;
+   }
+
+
    private boolean isEnabled() {
-      return PropertiesUtil.getProperty(NtlmKnownVisitorModule.PROPERTY_ENABLED).equals("true");
+      return Boolean.parseBoolean(PropertiesUtil.getProperty(NtlmKnownVisitorModule.PROPERTY_ENABLED));
    }
 
 
    private String getDomainController() {
       return PropertiesUtil.getProperty(NtlmKnownVisitorModule.PROPERTY_DOMAIN_CONTROLLER);
+   }
+
+   private List<String> getIpExceptions() {
+       return PropertiesUtil.getPropertyAsList(NtlmKnownVisitorModule.PROPERTY_IPEXCEPTIONS);
    }
 
 }

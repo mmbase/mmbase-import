@@ -19,18 +19,24 @@ public class NtlmKnownVisitorModule extends KnownVisitorModule {
 
    private static final String SESSION_ATTRIBUTE = "NtlmVisitor";
 
-   public static final String PROPERTY_DOMAIN_CONTROLLER = "knownvisitor-ntlm.domaincontroller";
    public static final String PROPERTY_ENABLED = "knownvisitor-ntlm.enabled";
+   public static final String PROPERTY_DOMAIN_CONTROLLER = "knownvisitor-ntlm.domaincontroller";
+   public static final String PROPERTY_DOMAIN = "knownvisitor-ntlm.domain";
+   public static final String PROPERTY_IPEXCEPTIONS = "knownvisitor-ntlm.ipexceptions";
+   public static final String PROPERTY_BASIC_AUTH = "knownvisitor-ntlm.basic-authentication";
+
    public static final String PROPERTY_FIELD_EMAIL = "knownvisitor-ntlm.field.email";
    public static final String PROPERTY_FIELD_REALNAME = "knownvisitor-ntlm.field.realname";
    public static final String PROPERTY_FIELD_USERNAME = "knownvisitor-ntlm.field.username";
    public static final String PROPERTY_LOGONNAME = "knownvisitor-ntlm.logonname";
    public static final String PROPERTY_LOGONPASSWORD = "knownvisitor-ntlm.logonpassword";
    public static final String PROPERTY_SEARCHDN = "knownvisitor-ntlm.searchDN";
-   public static final String PROPERTY_DOMAIN = "knownvisitor-ntlm.domain";
+
+   
 
 
    public NtlmKnownVisitorModule() {
+      // nothing
    }
 
 
@@ -69,9 +75,9 @@ public class NtlmKnownVisitorModule extends KnownVisitorModule {
       // Make a directory context by connecting with the above details.
       try {
          ctx = new InitialDirContext(env);
-         NamingEnumeration answer = ctx.search("ldap://" + server + "/" + searchDN, query, null);
+         NamingEnumeration<SearchResult> answer = ctx.search("ldap://" + server + "/" + searchDN, query, null);
          if (answer.hasMoreElements()) {
-            SearchResult result = (SearchResult) answer.next();
+            SearchResult result = answer.next();
             Attribute values = result.getAttributes().get(getProperty(PROPERTY_FIELD_REALNAME));
             if (values.size() > 0) {
                visitor.setDisplayName((String) values.get(0));
