@@ -259,16 +259,7 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
             useLifecycleBool, archive, offset, elementsPerPage, year, month, day, maxDays);
       return totalItems;
    }
-
-
-   protected List<ContentElement> getContentElements(RenderRequest req, List<String> contenttypes, String channel,
-         int offset, String orderby, String direction, String archive, int elementsPerPage, int year, int month,
-         int day, boolean useLifecycleBool) {
-      List<ContentElement> elements = ContentRepository.getContentElements(channel, contenttypes, orderby, direction,
-            useLifecycleBool, archive, offset, elementsPerPage, year, month, day);
-      return elements;
-   }
-
+   
    protected List<ContentElement> getContentElements(RenderRequest req, List<String> contenttypes, String channel,
          int offset, String orderby, String direction, String archive, int elementsPerPage, int year, int month,
          int day, boolean useLifecycleBool, int maxDays) {
@@ -276,6 +267,7 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
             useLifecycleBool, archive, offset, elementsPerPage, year, month, day,maxDays);
       return elements;
    }
+   
    public int getOffset(int currentPage, int pageSize) {
       return ((currentPage - 1) * pageSize) + 1;
    }
