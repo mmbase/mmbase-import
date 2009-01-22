@@ -21,10 +21,10 @@ public class SecureContentChannelPortlet extends ContentChannelPortlet {
 	}
 
 	@Override
-	protected List<ContentElement> getContentElements(RenderRequest req, List<String> contenttypes, String channel, int offset, String orderby, String direction, String archive, int elementsPerPage, int year, int month, int day, boolean useLifecycleBool) {
+	protected List<ContentElement> getContentElements(RenderRequest req, List<String> contenttypes, String channel, int offset, String orderby, String direction, String archive, int elementsPerPage, int year, int month, int day, boolean useLifecycleBool, int maxDays) {
 		// TODO Auto-generated method stub
 		if(isUserLoggedIn()) {
-			return super.getContentElements(req, contenttypes, channel, offset, orderby, direction, archive, elementsPerPage, year, month, day,	useLifecycleBool);
+			return super.getContentElements(req, contenttypes, channel, offset, orderby, direction, archive, elementsPerPage, year, month, day,	useLifecycleBool, maxDays);
 		}
 		else {
 		   Cloud cloud = getCloudForAnonymousUpdate();
