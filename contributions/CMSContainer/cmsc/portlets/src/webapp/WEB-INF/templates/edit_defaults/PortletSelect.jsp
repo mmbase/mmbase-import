@@ -1,11 +1,10 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
+<%@include file="/WEB-INF/templates/edit_defaults/sections/globals.jsp"%>
 
 <div class="portlet-config-canvas">
 <c:if test="${not empty definitions}">
 	<h3><fmt:message key="edit_defaults.createportlet" /></h3>
-	<form name="<portlet:namespace />create_form" method="post" target="_parent"
-		action="<cmsc:actionURL><cmsc:param name="action" value="create"/></cmsc:actionURL>">
-	
+	<form name="<portlet:namespace />create_form" method="post" target="_parent" action="<cmsc:actionURL><cmsc:param name="action" value="create"/></cmsc:actionURL>">	
 	<table class="editcontent">
 		<tr>
 			<td>
@@ -95,7 +94,8 @@
 		<tr>
 			<td colspan="2">
 				<a href="javascript:document.forms['<portlet:namespace />select_form'].submit()" class="button">
-					<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.select" /></a>
+					<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.select" />
+				</a>
 			</td>
 		</tr>
 	</table>
