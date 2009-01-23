@@ -113,3 +113,15 @@ Exceptions/errors/other problems and what to do:
 * Wrong: <cmsc:renderURL page="${SearchResultPage}" --- where parameter is 'search' instead of full path: google.com/search
 * Good:  use the page="" with the full page path, e.g. the input of <cmsc:location> to retrieve the full page path.
 *
+
+Name: Flash movies/apps do not work with Flash 10.
+Goal: fix it in JSPs 
+Type:  user action
+--- Start script ---
+This is fixed by two requirements:
+- use CMSC 1.4.15/1.5.1 or better
+- Add "disposition="inline"" to the <mm:attachment> tag where flash files are loaded in the views.
+--- End script ---
+*
+*
+*
