@@ -237,14 +237,14 @@
 		<div class="tabs" id="${status}">
 		<div class="<%=tabClass(pageContext,"draft")%>">
 		<div class="body">
-		<div><a href="#" onclick="selectTab('draft');"><fmt:message
+		<div><a href="#" onclick="selectTab('draft','${workflowNodetype}');"><fmt:message
 			key="workflow.tab.draft" /></a></div>
 		</div>
 		</div>
 
 		<div class="<%=tabClass(pageContext,"finished")%>">
 		<div class="body">
-		<div><a href="#" onclick="selectTab('finished');"><fmt:message
+		<div><a href="#" onclick="selectTab('finished','${workflowNodetype}');"><fmt:message
 			key="workflow.tab.finished" /></a></div>
 		</div>
 		</div>
@@ -252,14 +252,14 @@
 		<c:if test="${acceptedEnabled}">
 			<div class="<%=tabClass(pageContext,"approved")%>">
 			<div class="body">
-			<div><a href="#" onclick="selectTab('approved');"><fmt:message
+			<div><a href="#" onclick="selectTab('approved','${workflowNodetype}');"><fmt:message
 				key="workflow.tab.approved" /></a></div>
 			</div>
 			</div>
 		</c:if>
 		<div class="<%=tabClass(pageContext,"published")%>">
 		<div class="body">
-		<div><a href="#" onclick="selectTab('published');"><fmt:message
+		<div><a href="#" onclick="selectTab('published','${workflowNodetype}');"><fmt:message
 			key="workflow.tab.published" /></a></div>
 		</div>
 		</div>
@@ -330,12 +330,14 @@
 		<div class="body" id="workflow-canvas"><c:set var="orderby"
 			value="${param.orderby}" />
 		<form action='?' method="post" onsubmit="return submitValid(false);">
-		<input type="hidden" name="orderby" value="${orderby}" /> <input
-			type="hidden" name="status" value="${status}" /> <input type="hidden"
-			name="laststatus" /> <c:set var="lastvalue"
-			value='<%=request.getAttribute("laststatus")%>' /> <c:set
-			var="resultsPerPage" value="50" /> <c:set var="offset"
-			value="${param.offset}" /> <c:set var="listSize">${fn:length(nodeList)}</c:set>
+         <input type="hidden" name="orderby" value="${orderby}" /> 
+         <input type="hidden" name="status" value="${status}" />
+         <input type="hidden" name="laststatus" />
+         <input type="hidden" name="workflowNodetype" value="${workflowNodetype}"/>
+      <c:set var="lastvalue" value='<%=request.getAttribute("laststatus")%>' />
+      <c:set var="resultsPerPage" value="50" />
+      <c:set var="offset" value="${param.offset}" />
+      <c:set var="listSize">${fn:length(nodeList)}</c:set>
 
 		<c:if test="${fn:length(results) > 0}">
 			<%@ include file="../pages.jsp"%>
