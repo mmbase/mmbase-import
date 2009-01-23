@@ -29,9 +29,12 @@
     <mm:url id="reload" write="false" page="/mmbase/style/images/reload.png" />
   </mm:context>
   <mm:import id="durationformat">H'h' m'min' ss's'</mm:import>
+
+  <mm:function name="readOnly" module="lucene" id="readOnly" write="false" />
   <table summary="Lucene indices">
     <col />
     <col />
+    <col class="numeric" />
     <col class="numeric" />
     <col />
     <col class="errors" />
@@ -39,16 +42,20 @@
     <col />
     <col />
     <tr>
-      <th>name</th>
-      <th>description</th>
-      <th># of entries in index</th>
-      <th>last full index (duration)</th>
-      <th>recent errors</th>
-      <th>results</th>
-      <th>search</th>
-      <th>full index</th>
+      <th rowspan="${readOnly ? '1' : '2'}">name</th>
+      <th rowspan="${readOnly ? '1' : '2'}">description</th>
+      <th colspan="2" rowspan="1"># of entries in index</th>
+      <th rowspan="${readOnly ? '1' : '2'}">last full index (duration)</th>
+      <th rowspan="${readOnly ? '1' : '2'}">recent errors</th>
+      <th rowspan="${readOnly ? '1' : '2'}">results</th>
+      <th rowspan="${readOnly ? '1' : '2'}">search</th>
+      <th rowspan="${readOnly ? '1' : '2'}">full index</th>
     </tr>
     <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
+      <tr>
+        <th>in use</th>
+        <th>full index copy</th>
+      </tr>
       <mm:import externid="clear" />
       <mm:present referid="clear">
         <mm:function module="lucene" referids="clear@index" name="clearDirectory" />
@@ -89,13 +96,17 @@
                    href="${_}">X</a>
                 <jsp:text>)</jsp:text>
               </mm:link>
+            </mm:booleanfunction>
+          </td>
+          <td class="numeric">
+            <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
               <mm:functioncontainer>
                 <mm:function referids="index" module="lucene" name="fullIndexing">
                   <c:choose>
                     <c:when test="${_ eq -1}">
                       <mm:param name="copy" value="true" />
                       <mm:function referids="index" module="lucene" name="searchsize">
-                        /${_}
+                        ${_}
                       </mm:function>
                       <mm:link>
                         <mm:param name="clearcopy">${index}</mm:param>
@@ -103,7 +114,7 @@
                       </mm:link>
                     </c:when>
                     <c:otherwise>
-                      /${_} (busy)
+                      ${_} (busy)
                     </c:otherwise>
                   </c:choose>
                 </mm:function>
@@ -167,7 +178,7 @@
       </c:if>
     </mm:listfunction>
     <tr>
-      <td colspan="3"><jsp:text> </jsp:text></td>
+      <td colspan="4"><jsp:text> </jsp:text></td>
       <td>
         <c:if test="${! empty total}">
           <jsp:text>total:  </jsp:text>
