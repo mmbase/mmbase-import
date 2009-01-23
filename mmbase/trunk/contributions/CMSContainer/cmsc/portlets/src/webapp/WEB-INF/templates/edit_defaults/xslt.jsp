@@ -5,6 +5,10 @@
 	<h3><fmt:message key="edit_defaults.title" /></h3>	
 	<form method="post" name="<portlet:namespace />form" action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>" target="_parent">	
 		<table class="editcontent">
+			
+			<%-- Portletdefinition display --%>
+			<c:import url="sections/definitiondisplay.jsp" />
+			
 			<tr>
 				<td colspan="2"><fmt:message key="edit_defaults.source" />:</td>
 				<td><cmsc:text var="source" /></td>
