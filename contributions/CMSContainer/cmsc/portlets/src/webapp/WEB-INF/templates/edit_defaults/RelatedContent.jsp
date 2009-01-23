@@ -6,6 +6,9 @@
 	<form name="<portlet:namespace />form" method="post" target="_parent" action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">	
 		<table class="editcontent">
 		
+			<%-- Portletdefinition display --%>
+			<c:import url="sections/definitiondisplay.jsp" />
+		
 			<%-- View selector --%>
 			<c:import url="sections/viewselector.jsp" />
 			

@@ -5,16 +5,10 @@
 	<h3><fmt:message key="edit_defaults.title" /></h3>	
 	<form name="<portlet:namespace />form" method="post" action="<cmsc:actionURL />" target="_parent">	
 		<table class="editcontent">
-			<tr>
-				<td><fmt:message key="edit_defaults.define"/></td>
-				<mm:cloud>
-					<mm:node number="${requestScope['com.finalist.cmsc.beans.om.definitionId']}" notfound="skip">
-						<td>
-							<input type="text" name="portletname" value="<mm:field name='title'/>" disabled="disabled"/>
-						</td>
-					</mm:node>
-				</mm:cloud>
-			</tr>
+		
+			<%-- Portletdefinition display --%>
+			<c:import url="sections/definitiondisplay.jsp" />
+
 			<tr>
 				<td><fmt:message key="edit_defaults.source" />:</td>
 				<td><cmsc:text var="source" /></td>
