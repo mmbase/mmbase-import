@@ -8,10 +8,6 @@
 		
 			<%-- Save button --%>
 			<c:import url="sections/savebutton.jsp" />
-			
-			<tr>
-				<td colspan="3"><h3><fmt:message key="edit_defaults.portletset"/></h3></td>
-			</tr>
 		
 			<%-- Portletdefinition display --%>
 			<c:import url="sections/definitiondisplay.jsp" />
