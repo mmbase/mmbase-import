@@ -2,7 +2,6 @@
 <%@include file="/WEB-INF/templates/edit_defaults/sections/globals.jsp"%>
 
 <div class="portlet-config-canvas">
-	<h3><fmt:message key="edit_defaults.title" /></h3>
 	<form name="<portlet:namespace />form" method="post" target="_parent" action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
 		<table class="editcontent">
 		
@@ -14,7 +13,10 @@
 		
 			<%-- View selector --%>
 			<c:import url="sections/viewselector.jsp" />
-			
+
+			<tr>
+				<td colspan="3"><h4><fmt:message key="edit_defaults.contentset"/></h4></td>
+			</tr>			
 			<tr>
 				<td><fmt:message key="edit_defaults.channel" />:</td>
 				<td align="right">

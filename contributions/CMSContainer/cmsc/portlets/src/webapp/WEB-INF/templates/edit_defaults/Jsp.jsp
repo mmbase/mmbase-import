@@ -2,8 +2,6 @@
 <%@include file="/WEB-INF/templates/edit_defaults/sections/globals.jsp"%>
 
 <div class="portlet-config-canvas">
-	<h3><fmt:message key="edit_defaults.title" /></h3>
-	
 	<form method="POST" name="<portlet:namespace />form" action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>" target="_parent">
 		<table class="editcontent">
 		
