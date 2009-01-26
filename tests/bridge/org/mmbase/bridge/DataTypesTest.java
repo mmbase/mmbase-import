@@ -145,12 +145,12 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {"1", "100", new Integer(10), new Integer(-1), "-1" , null},
                               new Object[] { "asjdlkf"}},
                 new Object[] {"node",
-                              new Object[] {node1, node2, "" + node1.getNumber(), new Integer(node1.getNumber()), new Integer(node2.getNumber()),  new Integer(-1), null},
-                              new Object[] {"", "asjdlkf", new Integer(-2), new Integer(-100)}}
+                              new Object[] {node1, node2, "" + node1.getNumber(), new Integer(node1.getNumber()), new Integer(node2.getNumber()),  new Integer(-1), null, ""},
+                              new Object[] {"asjdlkf", new Integer(-2), new Integer(-100)}}
                 ,
                 new Object[] {"typedef",
-                              new Object[] {node1, new Integer(node1.getNumber()),  null},
-                              new Object[] {"", "asjdlkf", node3, new Integer(node3.getNumber()), new Integer(-2), new Integer(-100)}}
+                              new Object[] {node1, new Integer(node1.getNumber()),  null, ""},
+                              new Object[] {"asjdlkf", node3, new Integer(node3.getNumber()), new Integer(-2), new Integer(-100)}}
                 ,
                 new Object[] {"nonode_typedef",
                               new Object[] {"object", "typedef", "datatypes"},
@@ -360,14 +360,17 @@ public class DataTypesTest extends BridgeTest {
                     if (field.getDataType().isRequired() ||
                         (
                          validValues[j] != null &&
-                         (! (validValues[j].equals("") && field.getDataType() instanceof NumberDataType)) && // "" for numbers may be interpreted as null
+                         (! (validValues[j].equals("") && (
+                                                           field.getDataType() instanceof NumberDataType
+                                                           || field.getDataType() instanceof NodeDataType)
+                             )) && // "" for numbers and nodes may be interpreted as null
                          ! (field.getDataType() instanceof NodeDataType && validValues[j].equals(new Integer(-1))) // -1 casts to null for node-fields.
                          )
                          ) {
-                        assertFalse("field " + field.getName() + " was null, after we set " + validValues[j] + " in it", newNode.isNull(field.getName()));
+                        assertFalse("field " + field.getName() + " was null, after we set '" + validValues[j] + "' in it", newNode.isNull(field.getName()));
                     } else {
 
-                        assertTrue("field " + field.getName() + " was not null, after we set " + validValues[j] + " in it", newNode.isNull(field.getName()));
+                        assertTrue("field " + field.getName() + " was not null, after we set '" + validValues[j] + "' in it", newNode.isNull(field.getName()));
                     }
                     if (! field.getDataType().isRequired()) {
                         // so, it must be possible to set field back to null.
