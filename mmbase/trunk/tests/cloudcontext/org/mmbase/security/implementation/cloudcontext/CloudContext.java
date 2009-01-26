@@ -173,8 +173,8 @@ public class CloudContext extends BridgeTest {
         Cloud adminCloud = getCloud();
         Node contextNode = SearchUtil.findNode(adminCloud, "mmbasecontexts", "name", "security");
         Parameters params = contextNode.createParameters("grant");
-        params.set("grouporuser", "" + userNode.getNumber());
-        params.set("operation", "" + Operation.CREATE.toString());
+        params.set("grouporuser", userNode);
+        params.set("operation", Operation.CREATE);
         params.set("user", adminCloud.getUser());
 
         assertTrue(contextNode.getFunctionValue("grant", params).toBoolean());
@@ -198,8 +198,8 @@ public class CloudContext extends BridgeTest {
         Cloud adminCloud = getCloud();
         Node contextNode = SearchUtil.findNode(adminCloud, "mmbasecontexts", "name", "security");
         Parameters params = contextNode.createParameters("revoke");
-        params.set("grouporuser", "" + userNode.getNumber());
-        params.set("operation", "" + Operation.CREATE.toString());
+        params.set("grouporuser", userNode);
+        params.set("operation", Operation.CREATE);
         params.set("user", adminCloud.getUser());
 
         assertTrue(contextNode.getFunctionValue("revoke", params).toBoolean());
@@ -226,8 +226,8 @@ public class CloudContext extends BridgeTest {
         Node contextNode = SearchUtil.findNode(adminCloud, "mmbasecontexts", "name", "security");
         Node groupNode   = SearchUtil.findNode(adminCloud, "mmbasegroups",   "name", "users");
         Parameters params = contextNode.createParameters("grant");
-        params.set("grouporuser", "" + groupNode.getNumber());
-        params.set("operation", "" + Operation.CREATE.toString());
+        params.set("grouporuser", groupNode);
+        params.set("operation", Operation.CREATE);
         params.set("user", adminCloud.getUser());
 
         assertTrue(contextNode.getFunctionValue("grant", params).toBoolean());
@@ -248,8 +248,8 @@ public class CloudContext extends BridgeTest {
         Node contextNode = SearchUtil.findNode(adminCloud, "mmbasecontexts", "name", "security");
         Node groupNode   = SearchUtil.findNode(adminCloud, "mmbasegroups",   "name", "users");
         Parameters params = contextNode.createParameters("revoke");
-        params.set("grouporuser", "" + groupNode.getNumber());
-        params.set("operation", "" + Operation.CREATE.toString());
+        params.set("grouporuser", groupNode);
+        params.set("operation", Operation.CREATE);
         params.set("user", adminCloud.getUser());
 
         assertTrue(contextNode.getFunctionValue("revoke", params).toBoolean());
