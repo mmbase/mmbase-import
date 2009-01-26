@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: DecimalDataType.java,v 1.4 2008-12-01 20:27:17 michiel Exp $
+ * @version $Id: DecimalDataType.java,v 1.5 2009-01-26 16:28:31 michiel Exp $
  * @since MMBase-1.9.1
  */
 public class DecimalDataType extends NumberDataType<BigDecimal> implements LengthDataType<BigDecimal> {
@@ -167,6 +167,9 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
 
 
     public class PrecisionRestriction extends AbstractRestriction<Long> {
+
+        private static final long serialVersionUID = 1L;
+
         PrecisionRestriction(PrecisionRestriction source) {
             super(source);
         }
