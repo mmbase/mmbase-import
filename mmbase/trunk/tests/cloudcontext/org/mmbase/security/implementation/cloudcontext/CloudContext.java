@@ -34,7 +34,7 @@ public class CloudContext extends BridgeTest {
         }
     }
 
-    protected void waitForCache() {
+    protected void waitForCache() throws InterruptedException {
         Caches.waitForCacheInvalidation();
     }
 
