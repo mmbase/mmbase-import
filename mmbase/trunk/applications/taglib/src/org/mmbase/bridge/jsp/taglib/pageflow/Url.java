@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.55 2009-01-26 12:48:14 michiel Exp $;
+ * @version $Id: Url.java,v 1.56 2009-01-26 13:33:43 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -43,7 +43,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     private static  final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
 
     private final ContextReferrerTag tag;
-    private final CharSequence page;
+    private CharSequence page;
     //private final Component component;
     protected final Map<String, Object> params;
     protected final Map<String, Object> frameworkParams;
@@ -346,6 +346,12 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     }
     public int compareTo(Object o) {
         return toString().compareTo(Casting.toString(o));
+    }
+
+    void doEndTag() {
+        // The page CharSequence may be some thing dependent on member of the UrlTag extension
+        // This convert it to a String, which is certainly not dynamic any more.
+        page = page.toString();
     }
     /**
      * Add a key/value pair to a map, but does not replace the already exsiting mapping.
