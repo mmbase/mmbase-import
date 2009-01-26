@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.54 2009-01-26 12:40:44 michiel Exp $;
+ * @version $Id: Url.java,v 1.55 2009-01-26 12:48:14 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -179,15 +179,19 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         if (internal) {
             if (log.isTraceEnabled()) {
                 log.trace("Creating internal url link to page: " + page + frameworkParameters, new Exception());
-            } else {
+            } else if (log.isDebugEnabled()) {
                 log.debug("Creating internal url link to page: " + page + frameworkParameters);
             }
             result = framework.getInternalUrl(page.toString(), params, frameworkParameters);
             if (result == null) {
                 result = framework.getUrl(page.toString(), params, frameworkParameters, false);
-                log.warn("No internal url gotten from framework, falled back to " + result);
+
+                // I think this happens a lot for mm:includes. Actually I think the issue is that
+                // getInternalUrl for framework/urlconverter's is not implementated at all.
+
+                log.debug("No internal url gotten from framework for, falled back to " + result);
             } else  {
-                log.debug("url gotten from framework " + result);
+                log.debug("Internal url gotten from framework " + result);
             }
         } else {
             if (process) {
