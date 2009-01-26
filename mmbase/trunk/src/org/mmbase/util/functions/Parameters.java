@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.46 2008-10-27 18:36:38 michiel Exp $
+ * @version $Id: Parameters.java,v 1.47 2009-01-26 16:34:18 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -567,8 +567,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                         return patternBacking != null ?
                             new org.mmbase.util.ChainedIterator<Map.Entry<String, Object>>(backing.entrySet().iterator(), patternBacking.iterator())
                             :
-                            backing.entrySet().iterator()
-                            ;
+                            backing.entrySet().iterator();
                     }
                     public int size() {
                         return Parameters.this.size();
