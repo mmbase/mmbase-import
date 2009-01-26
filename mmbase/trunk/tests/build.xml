@@ -93,7 +93,7 @@
 
 
   <target name="vpro-wizards">
-    <mkdir dir="__temp"/>
+    <mkdir dir="__temp"/> <!-- wtf ? -->
     <antcall target="install.module">
       <param name="dest" value="__temp" />
       <param name="name" value="vpro-wizards" />
@@ -135,6 +135,7 @@
           <include name="junit*.jar"/>
           <include name="mmbase-${version}.jar"/>
           <include name="mmbase-cloudcontext-${version}.jar"/>
+          <include name="mmbase-resources-${version}.jar"/>
           <include name="hsqldb-*.jar"/>
         </fileset>
       </classpath>
@@ -290,6 +291,14 @@
         <exclude name="build*"/>
         <exclude name="core"/>
       </fileset>
+      <!--
+      <fileset dir="${tests.source.dir}/transactions" >
+        <include name="**/*.xml"/>
+        <exclude name="**/*.java"/>
+        <exclude name="build/**"/>
+        <exclude name="build*"/>
+      </fileset>
+      -->
     </copy>
 
     <echo level="debug" message="compiling" />
@@ -311,6 +320,9 @@
       <src path="${tests.source.dir}/vpro-wizards" />
       <src path="${tests.source.dir}/richtext" />
       <src path="${tests.source.dir}/cloudcontext" />
+      <!--
+      <src path="${tests.source.dir}/transactions" />
+      -->
       <include name="**/*.java"/>
     </javac>
     <property name="compiled" value="yes" />
