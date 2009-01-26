@@ -22,7 +22,7 @@ GOTO end
 
 :nothing
 echo Enter 2 parameters: 
-echo - 1) = internet or intranet, %2 
+echo - 1) internet or intranet, %2 
 echo - 2) acceptatie, finalist or local
 
 
