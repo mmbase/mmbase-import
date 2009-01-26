@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.125 2009-01-20 15:17:44 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.126 2009-01-26 12:41:04 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler, FrameworkParamHandler {
@@ -208,19 +208,21 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
                 }
             }
         } else {
-            url = new Url(this, new CharSequence() {
-                    public char charAt(int index) { return toString().charAt(index); }
-                    public int length() { return toString().length(); }
-                    public CharSequence subSequence(int start, int end) { return toString().subSequence(start, end); };
-                    public String toString() {
-                        try {
-                            return UrlTag.this.getPage(getPage());
-                        } catch (JspTagException je) {
-                            log.warn(je.getMessage(), je);
-                            return je.getMessage();
-                        }
-                    }
-                }, frameworkParameters, parameters, internal);
+            url = new Url(this,
+                          // A lazy wrapper around getPage.
+                          new CharSequence() {
+                              public char charAt(int index) { return toString().charAt(index); }
+                              public int length() { return toString().length(); }
+                              public CharSequence subSequence(int start, int end) { return toString().subSequence(start, end); };
+                              public String toString() {
+                                  try {
+                                      return UrlTag.this.getPage(getPage());
+                                  } catch (JspTagException je) {
+                                      log.warn(je.getMessage(), je);
+                                      return je.getMessage();
+                                  }
+                              }
+                          }, frameworkParameters, parameters, internal);
             if (process.getBoolean(this, false)) {
                 url.setProcess();
             }
