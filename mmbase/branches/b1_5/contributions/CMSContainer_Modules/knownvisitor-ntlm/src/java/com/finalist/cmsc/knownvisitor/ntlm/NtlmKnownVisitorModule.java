@@ -5,19 +5,19 @@ import java.util.Hashtable;
 import javax.naming.*;
 import javax.naming.directory.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import jcifs.smb.NtlmPasswordAuthentication;
-
 import com.finalist.cmsc.knownvisitor.KnownVisitorModule;
+import com.finalist.cmsc.knownvisitor.Visitor;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 
 public class NtlmKnownVisitorModule extends KnownVisitorModule {
    static Log log = LogFactory.getLog(NtlmKnownVisitorModule.class);
 
-   private static final String SESSION_ATTRIBUTE = "NtlmVisitor";
+   public static final String SESSION_ATTRIBUTE = "knownVisitor";
 
    public static final String PROPERTY_ENABLED = "knownvisitor-ntlm.enabled";
    public static final String PROPERTY_DOMAIN_CONTROLLER = "knownvisitor-ntlm.domaincontroller";
@@ -41,26 +41,24 @@ public class NtlmKnownVisitorModule extends KnownVisitorModule {
 
 
    @Override
-   public NtlmVisitor getVisitor(HttpServletRequest request) {
-      return (NtlmVisitor) request.getSession().getAttribute(NtlmKnownVisitorModule.SESSION_ATTRIBUTE);
+   public Visitor getVisitor(HttpServletRequest request) {
+      HttpSession ssn = request.getSession(false);
+      return (ssn != null ? (Visitor) ssn.getAttribute(NtlmKnownVisitorModule.SESSION_ATTRIBUTE) : null);
    }
 
+   public void setVisitor(HttpServletRequest request, Visitor visitor) {
+      request.getSession().setAttribute(SESSION_ATTRIBUTE, visitor);
+   }
+   
 
    @Override
    public void init() {
       KnownVisitorModule.setInstance(this);
    }
 
-
-   public void justLoggedIn(HttpServletRequest request, NtlmPasswordAuthentication ntlm) {
-      NtlmVisitor visitor = new NtlmVisitor();
-      visitor.setIdentifier(ntlm.getUsername());
-      readLdapInfo(visitor);
-      request.getSession().setAttribute(NtlmKnownVisitorModule.SESSION_ATTRIBUTE, visitor);
-   }
-
-
-   public void readLdapInfo(NtlmVisitor visitor) {
+   public void readLdapInfo(Visitor v) {
+      NtlmVisitor visitor = (NtlmVisitor) v;
+      
       DirContext ctx;
       String query = "(" + getProperty(PROPERTY_FIELD_USERNAME) + "=" + visitor.getIdentifier() + ")";
       String searchDN = getProperty(PROPERTY_SEARCHDN);

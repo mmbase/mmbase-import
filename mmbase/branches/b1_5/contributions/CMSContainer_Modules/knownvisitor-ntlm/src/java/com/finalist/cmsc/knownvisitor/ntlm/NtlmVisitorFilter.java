@@ -56,7 +56,7 @@ public class NtlmVisitorFilter implements Filter {
       final HttpServletRequest req = (HttpServletRequest) request;
       final HttpServletResponse resp = (HttpServletResponse) response;
 
-      if (isEnabled()) {
+      if (isEnabled() && !alreadyLoggedIn(req)) {
          List<String> exceptions = getIpExceptions();
          if (!exceptions.isEmpty()) {
             String clientIp = req.getHeader("X-Forwarded-For");
@@ -69,7 +69,6 @@ public class NtlmVisitorFilter implements Filter {
                return;
             }
          }
-
          if (!negotiate(req, resp, false)) {
             return;
          }
@@ -78,6 +77,16 @@ public class NtlmVisitorFilter implements Filter {
       chain.doFilter(req, resp);
    }
 
+   protected boolean alreadyLoggedIn(HttpServletRequest req) {
+      return KnownVisitorModule.getInstance().getVisitor(req) != null;
+   }
+
+   public void justLoggedIn(HttpServletRequest request, NtlmPasswordAuthentication ntlm) {
+      NtlmVisitor visitor = new NtlmVisitor();
+      visitor.setIdentifier(ntlm.getUsername());
+      ((NtlmKnownVisitorModule) KnownVisitorModule.getInstance()).readLdapInfo(visitor);
+      ((NtlmKnownVisitorModule) KnownVisitorModule.getInstance()).setVisitor(request, visitor);
+   }
 
    /**
     * Negotiate password hashes with MSIE clients using NTLM SSP
@@ -168,7 +177,7 @@ public class NtlmVisitorFilter implements Filter {
             return true;
          }
          req.getSession().setAttribute("NtlmHttpAuth", ntlm);
-         ((NtlmKnownVisitorModule) KnownVisitorModule.getInstance()).justLoggedIn(req, ntlm);
+         justLoggedIn(req, ntlm);
       }
       else {
          if (!skipAuthentication) {
