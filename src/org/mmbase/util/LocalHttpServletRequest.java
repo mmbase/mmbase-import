@@ -24,17 +24,17 @@ import java.io.*;
  * For example
  <pre>
      ServletContext sx = MMBaseContext.getServletContext();
-     LocalHttpServletRequest req = new LocalHttpServletRequest(sx, "", "/test.jspx");
-        StringBuilderWriter w = new StringBuilderWriter(new StringBuilder());
-        LocalHttpServletResponse res = new LocalHttpServletResponse(w);
-        RequestDispatcher rd = sx.getRequestDispatcher("/test.jspx");
-        rd.include(req, res);
-        res.flushBuffer();
-        log.info("Got " + w.getBuffer());
+     HttpServletRequest req = new LocalHttpServletRequest(sx, "", "/test.jspx");
+     StringBuilderWriter w = new StringBuilderWriter(new StringBuilder());
+     HttpServletResponse res = new LocalHttpServletResponse(w);
+     RequestDispatcher rd = sx.getRequestDispatcher(req.getServletPath());
+     rd.include(req, res);
+     res.flushBuffer();
+     log.info("Got " + w.getBuffer());
  </pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalHttpServletRequest.java,v 1.1 2009-01-27 18:06:18 michiel Exp $
+ * @version $Id: LocalHttpServletRequest.java,v 1.2 2009-01-27 18:16:55 michiel Exp $
  * @since MMBase-1.9.1
  */
 public class LocalHttpServletRequest extends LocalServletRequest implements HttpServletRequest {
@@ -42,9 +42,15 @@ public class LocalHttpServletRequest extends LocalServletRequest implements Http
     //private static final Map<String, HttpSession> session = new HashMap<String, HttpSession>(); TODO
     private static int sessionId = 0;
 
-    private Map<String, String> headers = new HashMap<String, String>();
-    private String path;
+    private final Map<String, String> headers = new HashMap<String, String>(); // TODO headers cannot be presented in a map.
 
+    private final String path;
+
+    /**
+     * @param s The servlet context. Try {@link MMBaseContext.getServletContext()}
+     * @param r The body of the request. Normally an empty string
+     * @param path The ServletPath the do the request on
+     */
     public LocalHttpServletRequest(ServletContext s, String r, String path) {
         super(s, r);
         this.path = path;
@@ -114,6 +120,7 @@ public class LocalHttpServletRequest extends LocalServletRequest implements Http
         return getSession(true);
     }
     public HttpSession  getSession(boolean create) {
+        // TODO check for existing sessions
         if (create)  {
             return new HttpSession() {
                 private final Map<String, Object> attributes = new HashMap<String, Object>();
