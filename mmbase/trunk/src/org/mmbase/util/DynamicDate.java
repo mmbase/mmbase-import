@@ -151,63 +151,63 @@ public class DynamicDate extends Date {
             return false;
         }
     }
-    public int  getDate() {
+    @Deprecated public int  getDate() {
         return evalDate().getDate();
     }
-    public int  getDay() {
+    @Deprecated public int  getDay() {
         return evalDate().getDay();
     }
-    public int getHours() {
+    @Deprecated public int getHours() {
         return evalDate().getHours();
     }
-    public int getMinutes() {
+    @Deprecated public int getMinutes() {
         return evalDate().getMinutes();
     }
-    public int  getMonth() {
+    @Deprecated public int  getMonth() {
         return evalDate().getMonth();
     }
 
-    public int  getSeconds() {
+    @Deprecated public int  getSeconds() {
         return evalDate().getSeconds();
     }
     public long  getTime() {
         return evalDate().getTime();
     }
-    public int  getTimezoneOffset() {
+    @Deprecated public int  getTimezoneOffset() {
         return evalDate().getTimezoneOffset();
     }
-    public int  getYear() {
+    @Deprecated public int  getYear() {
         return evalDate().getYear();
     }
     public  int  hashCode() {
         return date.hashCode();
     }
-    public void  setDate(int date) {
+    @Deprecated public void  setDate(int date) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    public void  setHours(int hours) {
+    @Deprecated public void  setHours(int hours) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    public void  setMinutes(int minutes) {
+    @Deprecated public void  setMinutes(int minutes) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    public void  setMonth(int month) {
+    @Deprecated public void  setMonth(int month) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
 
-    public void  setSeconds(int seconds) {
+    @Deprecated public void  setSeconds(int seconds) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    public  void  setTime(long time) {
+    @Deprecated public  void  setTime(long time) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    public void  setYear(int year) {
+    @Deprecated public void  setYear(int year) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    public String  toGMTString() {
+    @Deprecated public String  toGMTString() {
         return evalDate().toGMTString();
     }
-    public String  toLocaleString() {
+    @Deprecated public String  toLocaleString() {
         return evalDate().toLocaleString();
     }
 
