@@ -168,6 +168,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/storage/search/*"/>                   <!-- those interfaces are  part of bridge -->
         <include name="org/mmbase/datatypes/**" />                      <!-- datatype classes are bridge -->
         <include name="org/mmbase/security/UserContext.class"/>         <!-- security classes are bridge -->
+        <include name="org/mmbase/security/BasicUser.class"/>           <!-- security classes are bridge -->
         <include name="org/mmbase/security/AuthenticationData*.class"/> <!-- security classes are bridge -->
         <include name="org/mmbase/security/Rank.class"/>                <!-- security classes are bridge -->
         <include name="org/mmbase/security/SecurityException.class"/>   <!-- security classes are bridge -->
@@ -200,7 +201,7 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/util/XMLEntityResolver*.class"/>          <!-- -->
         <include name="org/mmbase/util/XMLErrorHandler.class"/>             <!-- -->
         <include name="org/mmbase/util/DynamicDate.class"/>                <!-- used by Casting -->
-        <include name="org/mmbase/util/DateFormats*.class"/>              
+        <include name="org/mmbase/util/DateFormats*.class"/>
         <include name="org/mmbase/util/dateparser/**"/>                    <!-- used by Casting -->
         <include name="org/mmbase/util/HashCodeUtil*"/>                    <!-- used by SortedBundle, but is generic tool-->
         <include name="org/mmbase/util/PublicCloneable*"/>                    <!-- used by SortedBundle, but is generic tool-->
