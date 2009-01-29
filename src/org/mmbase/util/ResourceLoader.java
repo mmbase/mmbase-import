@@ -98,7 +98,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.39.2.15 2008-12-08 12:59:12 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.39.2.16 2009-01-29 13:13:51 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -335,8 +335,11 @@ public class ResourceLoader extends ClassLoader {
                 //this deserves a warning message since the setting is masked
                 log.warn("mmbase.config system property is masked by mmbase.config servlet context parameter");
             }
-
-            configRoot.roots.add(configRoot.new ApplicationContextFileURLStreamHandler());
+            try {
+                configRoot.roots.add(configRoot.new ApplicationContextFileURLStreamHandler());
+            } catch (Throwable t) {
+                // Never mind, we may be in RMMCI (ClassNotFoundException)
+            }
 
             if (configPath != null) {
                 if (servletContext != null) {
