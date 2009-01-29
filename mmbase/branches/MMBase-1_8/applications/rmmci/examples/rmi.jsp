@@ -33,7 +33,7 @@
 <%
 String remotereset = request.getParameter("remotereset");
 if (remotereset != null) {
-	rmmci.resetBind(rmmci.getHost(), rmmci.getPort(), remotereset);
+	rmmci.resetBind(rmmci.getHost(), rmmci.getPort(), remotereset, rmmci.getStubPort(rmmci.getPort()));
 %>
       Reset Done!
 <% } %>
