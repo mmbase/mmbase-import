@@ -47,7 +47,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.15 2009-01-29 21:47:36 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.16 2009-01-29 21:52:13 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends CloudContextAuthentication {
@@ -145,7 +145,7 @@ public class ASelectAuthentication extends CloudContextAuthentication {
      */
     private String getNodeTextValue(Node n) {
         NodeList nl = n.getChildNodes();
-        StringBuffer res = new StringBuffer();
+        StringBuilder res = new StringBuilder();
         for (int i = 0; i < nl.getLength(); i++) {
             Node textnode = nl.item(i);
             if (textnode.getNodeType() == Node.TEXT_NODE) {
