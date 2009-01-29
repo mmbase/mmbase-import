@@ -80,6 +80,7 @@ See http://www.MMBase.org/license
 
             <include name="org/mmbase/datatypes/**"/>                    <!-- datatype classes are bridge -->
             <include name="org/mmbase/security/UserContext.class"/>       <!-- security classes are bridge -->
+            <include name="org/mmbase/security/BasicUser.class"/>       <!-- security classes are bridge -->
             <include name="org/mmbase/security/AuthenticationData*.class"/> <!-- security classes are bridge -->
             <include name="org/mmbase/security/Rank.class"/>              <!-- security classes are bridge -->
             <include name="org/mmbase/security/SecurityException.class"/> <!-- security classes are bridge -->
