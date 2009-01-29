@@ -15,6 +15,7 @@ import org.mmbase.security.SecurityException;
 import org.mmbase.bridge.CloudContext;
 
 import org.mmbase.security.implementation.cloudcontext.builders.*;
+import org.mmbase.security.implementation.cloudcontext.CloudContextAuthentication;
 
 import java.io.*;
 import java.net.*;
@@ -46,10 +47,10 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.14 2007-08-06 07:49:07 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.15 2009-01-29 21:47:36 michiel Exp $
  * @since  MMBase-1.7
  */
-public class ASelectAuthentication extends Authentication {
+public class ASelectAuthentication extends CloudContextAuthentication {
 
     private static final Logger log = Logging.getLoggerInstance(ASelectAuthentication.class);
 
@@ -390,7 +391,7 @@ public class ASelectAuthentication extends Authentication {
             String userName = (String) li.getMap().get(PARAMETER_USERNAME.getName());
             String rank     = (String) li.getMap().get(PARAMETER_RANK.getName());
             if (useCloudContext) {
-                
+
                 Rank r;
                 if (rank != null) {
                     r = Rank.getRank(rank);

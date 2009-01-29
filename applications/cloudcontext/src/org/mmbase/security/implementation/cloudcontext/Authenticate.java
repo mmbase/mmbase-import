@@ -31,9 +31,9 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.32 2009-01-06 17:08:15 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.33 2009-01-29 21:51:25 michiel Exp $
  */
-public class Authenticate extends Authentication {
+public class Authenticate extends CloudContextAuthentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
 
 
@@ -59,19 +59,6 @@ public class Authenticate extends Authentication {
         } catch (IOException ioe) {
             log.error(ioe);
         }
-    }
-    /**
-     * @since MMBase-1.9.1
-     */
-    public final static Authenticate getInstance() {
-        return (Authenticate) MMBase.getMMBase().getMMBaseCop().getAuthentication();
-    }
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    public  UserProvider getUserProvider() {
-        return Users.getBuilder().getProvider();
     }
 
 
