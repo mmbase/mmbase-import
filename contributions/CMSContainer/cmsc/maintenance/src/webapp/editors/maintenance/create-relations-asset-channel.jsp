@@ -14,8 +14,8 @@
 <mm:cloud jspvar="cloud" loginpage="../editors/login.jsp" rank="administrator">
 <mm:log jspvar="log">
 Note:<ul>
-<li>if 'Relate to root channel' is choosed,the asset elements will be related to the channel node which you fill in the input text.if it's empty ,the root node will be used.</li>
-<li>if 'Self-determination' is choosed,The asset elements will be related to the channel node which relates to a article and the article relates to the asset</li>
+<li>If 'Relate to root channel' is chosen, the asset elements will be related to the channel node which is filled in the input text. If it's empty, the root of the repository will be used.</li>
+<li>If 'Self-determination' is chosen, the asset elements will be related to the channel node which relates to an article and the article relates to the asset.</li>
 
 </ul>
 <br/><br/>
@@ -62,4 +62,4 @@ Note:<ul>
 
 </mm:log>
 </mm:cloud>
-   </body>
+</body>
