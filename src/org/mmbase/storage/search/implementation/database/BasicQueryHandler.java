@@ -10,16 +10,15 @@ package org.mmbase.storage.search.implementation.database;
 
 import java.sql.*;
 import java.util.*;
-import javax.sql.DataSource;
 
 import org.mmbase.cache.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
-import org.mmbase.module.database.MultiConnection;
 import org.mmbase.storage.implementation.database.DatabaseStorageManager;
 import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
+import org.mmbase.storage.implementation.database.ResultSetReader;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.implementation.ModifiableQuery;
@@ -34,7 +33,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.64 2008-11-25 13:19:07 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.65 2009-01-30 20:06:46 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -48,7 +47,6 @@ public class BasicQueryHandler implements SearchQueryHandler {
     /** Sql handler used to generate SQL statements. */
     private final SqlHandler sqlHandler;
 
-    /** MMBase instance. */
     private final MMBase mmbase;
 
     /**
@@ -64,108 +62,60 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
 
     // javadoc is inherited
-    public List<MMObjectNode> getNodes(SearchQuery query, MMObjectBuilder builder) throws SearchQueryException {
+    public List<MMObjectNode> getNodes(final SearchQuery query, final MMObjectBuilder builder) throws SearchQueryException {
 
-        List<MMObjectNode> results;
-        Connection con = null;
-        PreparedStatement stmt = null;
-        String sqlString = null;
+        final List<MMObjectNode> results = new ArrayList<MMObjectNode>();
+        // Flag, set if offset must be supported by skipping results.
+        final boolean mustSkipResults =
+            (query.getOffset() != SearchQuery.DEFAULT_OFFSET) &&
+            (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_NONE);
 
+
+        // Flag, set if sql handler supports maxnumber.
+        final boolean sqlHandlerSupportsMaxNumber = sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query) != SearchQueryHandler.SUPPORT_NONE;
+
+        // report about offset and max support (for debug purposes)
+        if (log.isDebugEnabled()) {
+            log.debug("Database offset support = " + (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) != SearchQueryHandler.SUPPORT_NONE));
+            log.debug("mustSkipResults = " + mustSkipResults);
+            log.debug("Database max support = " + sqlHandlerSupportsMaxNumber);
+        }
+
+        String sqlString = createSqlString(query, mustSkipResults, sqlHandlerSupportsMaxNumber);
+        if (log.isDebugEnabled()) {
+            log.debug("sql: " + sqlString);
+        }
+
+        final DatabaseStorageManager manager = ((DatabaseStorageManagerFactory) mmbase.getStorageManagerFactory()).getStorageManager();
         try {
-            // Flag, set if offset must be supported by skipping results.
-            boolean mustSkipResults =
-                (query.getOffset() != SearchQuery.DEFAULT_OFFSET) &&
-                (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_NONE);
+            manager.executeQuery(sqlString, new ResultSetReader() {
+                    public void read(ResultSet rs) throws SQLException {
+                        if (mustSkipResults) {
+                            log.debug("skipping results, to provide weak support for offset");
+                            for (int i = 0; i < query.getOffset(); i++) {
+                                rs.next();
+                            }
+                        }
 
+                        // Now store results as cluster-/real nodes.
+                        StepField[] fields = query.getFields().toArray(STEP_FIELD_ARRAY);
+                        int maxNumber = query.getMaxNumber();
 
-            // Flag, set if sql handler supports maxnumber.
-            boolean sqlHandlerSupportsMaxNumber = sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query) != SearchQueryHandler.SUPPORT_NONE;
-
-            // report about offset and max support (for debug purposes)
-            if (log.isDebugEnabled()) {
-                log.debug("Database offset support = " + (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) != SearchQueryHandler.SUPPORT_NONE));
-                log.debug("mustSkipResults = " + mustSkipResults);
-                log.debug("Database max support = " + sqlHandlerSupportsMaxNumber);
-            }
-
-            sqlString = createSqlString(query, mustSkipResults, sqlHandlerSupportsMaxNumber);
-
-            if (log.isDebugEnabled()) {
-                log.debug("sql: " + sqlString);
-            }
-
-            // Execute the SQL... ARGH !!! Has to move!
-            // get connection...
-            DataSource dataSource = ((DatabaseStorageManagerFactory) mmbase.getStorageManagerFactory()).getDataSource();
-            con = dataSource.getConnection();
-            ResultSet rs = null;
-            try {
-                stmt = con.prepareStatement(sqlString);
-                rs = stmt.executeQuery();
-                if (mustSkipResults) {
-                    log.debug("skipping results, to provide weak support for offset");
-                    for (int i = 0; i < query.getOffset(); i++) {
-                        rs.next();
+                        // now, we dispatch the reading of the result set to the right function wich instantiates Nodes of the right type.
+                        if (builder instanceof ClusterBuilder) {
+                            readNodes(results, manager, (ClusterBuilder) builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber, query.getSteps().size());
+                        } else if (builder instanceof ResultBuilder) {
+                            readNodes(results, manager, (ResultBuilder) builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber);
+                        } else {
+                            readNodes(results, manager, builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber);
+                        }
                     }
-                }
-
-                // Now store results as cluster-/real nodes.
-                StepField[] fields = query.getFields().toArray(STEP_FIELD_ARRAY);
-                int maxNumber = query.getMaxNumber();
-
-                // now, we dispatch the reading of the result set to the right function wich instantiates Nodes of the right type.
-                if (builder instanceof ClusterBuilder) {
-                    results = readNodes((ClusterBuilder) builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber, query.getSteps().size());
-                } else if (builder instanceof ResultBuilder) {
-                    results = readNodes((ResultBuilder) builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber);
-                } else {
-                    results = readNodes(builder, fields, rs, sqlHandlerSupportsMaxNumber, maxNumber);
-                }
-            } finally {
-                if (rs != null) {
-                    rs.close();
-                }
-            }
+                });
         } catch (SQLException e) {
-            // Something went wrong, log exception
-            // and rethrow as SearchQueryException.
-            if (log.isDebugEnabled()) {
-                log.debug("Query failed:" + query + "\n" + e + Logging.stackTrace(e));
-            }
-            if (con instanceof MultiConnection) {
-                log.debug("Calling check after exception");
-                try {
-                    ((MultiConnection) con).checkAfterException();
-                } catch (SQLException sqe) {
-                    log.debug(sqe);
-                }
-            } else {
-                log.debug("Not a multiconnection");
-            }
             throw new SearchQueryException("Query '" + (sqlString == null ? "" + query.toString() : sqlString)  + "' failed: " + e.getClass().getName() + ": " + e.getMessage(), e);
-        } finally {
-            closeConnection(con, stmt);
         }
 
         return results;
-    }
-
-    /**
-     * Safely close a database connection and/or a database statement.
-     * @param con The connection to close. Can be <code>null</code>.
-     * @param stmt The statement to close, prior to closing the connection. Can be <code>null</code>.
-     */
-    protected void closeConnection(Connection con, Statement stmt) {
-        try {
-            if (stmt != null) {
-                stmt.close();
-            }
-        } catch (Exception g) {}
-        try {
-            if (con != null) {
-                con.close();
-            }
-        } catch (Exception g) {}
     }
 
     /**
@@ -244,10 +194,10 @@ public class BasicQueryHandler implements SearchQueryHandler {
     /**
      * Read the result list and creates a List of ClusterNodes.
      */
-    private List<MMObjectNode> readNodes(ClusterBuilder builder, StepField[] fields, ResultSet rs,
-            boolean sqlHandlerSupportsMaxNumber, int maxNumber, int numberOfSteps) {
-        List<MMObjectNode> results = new ArrayList<MMObjectNode>();
-        DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
+    private List<MMObjectNode> readNodes(List<MMObjectNode> results,
+                                         DatabaseStorageManager storageManager,
+                                         ClusterBuilder builder, StepField[] fields, ResultSet rs,
+                                         boolean sqlHandlerSupportsMaxNumber, int maxNumber, int numberOfSteps) {
 
         // Truncate results to provide weak support for maxnumber.
         try {
@@ -294,10 +244,10 @@ public class BasicQueryHandler implements SearchQueryHandler {
     /**
      * Read the result list and creates a List of ResultNodes
      */
-    private List<MMObjectNode> readNodes(ResultBuilder builder, StepField[] fields, ResultSet rs,
+    private List<MMObjectNode> readNodes(List<MMObjectNode> results,
+                                         DatabaseStorageManager storageManager,
+                                         ResultBuilder builder, StepField[] fields, ResultSet rs,
             boolean sqlHandlerSupportsMaxNumber, int maxNumber) {
-        List<MMObjectNode> results = new ArrayList<MMObjectNode>();
-        DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
         // Truncate results to provide weak support for maxnumber.
         try {
@@ -334,12 +284,12 @@ public class BasicQueryHandler implements SearchQueryHandler {
     /**
      * Read the result list and creates a List of normal MMObjectNodes.
      */
-    private List<MMObjectNode> readNodes(MMObjectBuilder builder, StepField[] fields, ResultSet rs,
+    private List<MMObjectNode> readNodes(List<MMObjectNode> results,
+                                         DatabaseStorageManager storageManager,
+                                         MMObjectBuilder builder, StepField[] fields, ResultSet rs,
             boolean sqlHandlerSupportsMaxNumber, int maxNumber) {
-        List<MMObjectNode> results= new ArrayList<MMObjectNode>();
-        DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
-        boolean storesAsFile = builder.getMMBase().getStorageManagerFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
+        boolean storesAsFile = storageManager.getFactory().hasOption(org.mmbase.storage.implementation.database.Attributes.STORES_BINARY_AS_FILE);
         // determine indices of queried fields
         Map<CoreField, Integer> fieldIndices = new HashMap<CoreField, Integer>();
         Step nodeStep = fields[0].getStep();
