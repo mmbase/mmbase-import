@@ -7,7 +7,7 @@
 
     <date>2006-06-24</date>
 
-    <edition>$Id: configuration.xml,v 1.32 2008-09-23 07:27:56 michiel Exp $</edition>
+    <edition>$Id: configuration.xml,v 1.33 2009-01-30 20:54:23 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -779,7 +779,7 @@
         little like name-spaces. This means that "A.B.C" is in the "A.B"
         category, and "A.B" is in the category "A".</para>
 
-        <para>In MMBase it was chosen that categories fall together with Java
+        <para>In MMBase it was chosen that most categories fall together with Java
         class / package names. So if you want to set logging level for
         everything related with the security implementation you have to set
         the category "org.mmbase.security". All MMBase classes/packages can be
@@ -875,6 +875,42 @@
         functionality available (specialized appenders (for example which are
         rotated), layouts etc).</para>
       </section>
+    </section>
+    <section id="special_loggers">
+      <title>Special loggers</title>
+      <para>
+        The following special loggers (not directly corresponding with a java class) are recognized.
+        <variablelist>
+          <varlistentry>
+            <term>STDERR</term>
+            <listitem>
+              <para>If this is set to a lower level then FATAL, then all System.stder is redirected to this logger</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>org.mmbase.QUERIES</term>
+            <listitem>
+              <para>All fired queries are logged to this logger (and a few 'sub loggers' like org.mmbase.QUERIES.SELECT)</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>org.mmbase.PAGE</term>
+            <listitem>
+              <para>If you use mmbase taglib, the start end end of page, as detected by this taglib ar elogged to this logger.
+              Also, if you use the mm:log tag, then this will be logged to this logger.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>org.mmbase.SERVLETS</term>
+            <listitem>
+              <para>If you use mmbase taglib, the start end end of page, as detected by this taglib ar elogged to this logger.
+              Also, if you use the mm:log tag, then this will be logged to this logger.
+              </para>
+            </listitem>
+          </varlistentry>
+      </variablelist>
+    </para>
     </section>
   </section>
 
