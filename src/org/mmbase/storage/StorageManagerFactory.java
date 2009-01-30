@@ -38,9 +38,17 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.36 2008-08-19 21:29:43 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.37 2009-01-30 22:02:14 michiel Exp $
  */
 public abstract class StorageManagerFactory<SM extends StorageManager> {
+
+    /**
+     * Transaction of the current thread, or <code>null</code> if it is not currently in a
+     * transaction.
+     * @since MMBase-1.9.1
+     */
+    private final ThreadLocal<SM> transaction = new ThreadLocal<SM>();
+
 
     private static final Object NULL = new Object();
     private static final Logger log = Logging.getLoggerInstance(StorageManagerFactory.class);
@@ -152,6 +160,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         return newInstance(MMBase.getMMBase());
     }
 
+
     /**
      * Initialize the StorageManagerFactory.
      * This method should be called after instantiation of the factory class.
@@ -159,20 +168,39 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param mmbase the MMBase instance to which this factory belongs
      * @throws StorageError when something went wrong during configuration of the factory, or when the storage cannot be accessed
      */
-    protected final void init(MMBase mmbase) throws StorageError {
+    protected final void init(MMBase mmbase) throws StorageError  {
         log.service("initializing Storage Manager factory " + this.getClass().getName());
         this.mmbase = mmbase;
         attributes    = new ConcurrentHashMap<String, Object>();
         typeMappings  = new CopyOnWriteArrayList<TypeMapping>();
         storeBinaryAsFileObjects = Collections.synchronizedList(new ArrayList<String>());
         changeManager = new ChangeManager();
-        try {
-            log.debug("loading Storage Manager factory " + this.getClass().getName());
-            load();
-        } catch (StorageException se) {
-            // pass exceptions as a StorageError to signal a serious (unrecoverable) error condition
-            log.fatal(se.getMessage() + Logging.stackTrace(se));
-            throw new StorageError(se);
+
+        int loadTries = 0;
+
+
+        while(true) {
+            try {
+                log.debug("loading Storage Manager factory " + this.getClass().getName());
+                loadTries++;
+                load();
+                break;
+            } catch (StorageException se) {
+                // pass exceptions as a StorageError to signal a serious (unrecoverable) error  condition
+                if (loadTries == 1) {
+                    log.fatal(se.getMessage(), se);
+                } else if (loadTries < 3) {
+                    log.fatal(se.getMessage());
+                } else {
+                    log.fatal(se.getClass().getName());
+                }
+                try {
+                    Thread.sleep(10000);
+                    log.info("Retrying (" + loadTries + ")");
+                } catch (InterruptedException ie) {
+                    throw se;
+                }
+            }
         }
     }
 
@@ -305,14 +333,11 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         }
     }
 
+
     /**
-     * Obtains a StorageManager from the factory.
-     * The instance represents a temporary connection to the datasource -
-     * do not store the result of this call as a static or long-term member of a class.
-     * @return a StorageManager instance
-     * @throws StorageException when the storagemanager cannot be created
+     * @since MMBase-1.9.1
      */
-    public SM getStorageManager() throws StorageException {
+    protected SM createStorageManager() throws StorageException {
         try {
             SM storageManager = storageManagerClass.newInstance();
             storageManager.init(this);
@@ -322,6 +347,24 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         } catch(IllegalAccessException iae) {
             throw new StorageException(iae);
         }
+    }
+
+    /**
+     * Obtains a StorageManager from the factory.
+     * The instance represents a temporary connection to the datasource -
+     * do not store the result of this call as a static or long-term member of a class.
+     * @return a StorageManager instance
+     * @throws StorageException when the storagemanager cannot be created
+     */
+    public SM getStorageManager() throws StorageException {
+        SM sm  = transaction.get();
+        if (sm != null) {
+            return sm;
+        } else {
+            return createStorageManager();
+        }
+
+
     }
 
     // javadoc inherited
@@ -671,6 +714,41 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
     }
 
 
+    /**
+     * Puts the current thread in a database transaction
+     * @throws IllegalStateException if the current thread already in transaction
+     * @since MMBase-1.9.1
+     */
+    public void beginTransaction() throws StorageException {
+        if (transaction.get() != null) throw new IllegalStateException("Transaction already started");
+        SM sm = createStorageManager();
+        sm.beginTransaction();
+        transaction.set(sm);
+    }
+
+    /**
+     * Commits the current thread's database transaction
+     * @throws IllegalStateException if the current thread not in a transaction
+     * @since MMBase-1.9.1
+     */
+    public void commit() throws StorageException {
+        SM sm = transaction.get();
+        if (sm == null) throw new IllegalStateException("No transaction started to commit");
+        transaction.set(null);
+        sm.commit();
+    }
+
+    /**
+     * Rolls back the current thread's database transaction
+     * @throws IllegalStateException if the current thread not in a transaction
+     * @since MMBase-1.9.1
+     */
+    public boolean rollback() throws StorageException {
+        SM sm = transaction.get();
+        if (sm == null) throw new IllegalStateException("No transaction started to rollback");
+        transaction.set(null);
+        return sm.rollback();
+    }
 
 
 }
