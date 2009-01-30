@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+
+  <!--
+      Queries are logged with the logger with name 'org.mmbase.QUERIES'.
+      the level of logging is determinged by the following duration thresholds (in ms).
+
+      If a query took shorter than 'debug' it will be logged on level 'trace'.
+      If a query took longer than that, it will be logged on 'debug', unless it took even
+      longer thatn 'service', in which case it will be logged on 'service', and so on.
+  -->
+  <properties>
+    <property name="debug">1</property>
+    <property name="service">5</property>
+    <property name="info">500</property>
+    <property name="warn">2000</property>
+    <property name="error">5000</property>
+    <property name="fatal">1000000</property>
+
+  </properties>
+</util>
