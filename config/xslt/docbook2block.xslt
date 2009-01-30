@@ -19,7 +19,7 @@
   Could perhaps use nwalsh xslt but that seems a huge overkill. It should be rather simple, we probably use only a small subset of docbook.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: docbook2block.xslt,v 1.7 2009-01-16 22:44:43 michiel Exp $
+  @version: $Id: docbook2block.xslt,v 1.8 2009-01-30 21:30:22 michiel Exp $
   @since:   MMBase-1.9
 -->
 <xsl:stylesheet
@@ -107,6 +107,28 @@
     <ol>
       <xsl:apply-templates />
     </ol>
+  </xsl:template>
+
+  <xsl:template match="variablelist">
+    <dl class="variable">
+      <xsl:apply-templates />
+    </dl>
+  </xsl:template>
+
+  <xsl:template match="varlistentry">
+    <xsl:apply-templates select="*" />
+  </xsl:template>
+
+  <xsl:template match="term">
+    <dt>
+      <xsl:apply-templates  />
+    </dt>
+  </xsl:template>
+  <xsl:template match="varlistentry/listitem">
+    <dd>
+      <xsl:copy-of select="@*" />
+      <xsl:apply-templates select="*" />
+    </dd>
   </xsl:template>
 
   <xsl:template match="listitem">
