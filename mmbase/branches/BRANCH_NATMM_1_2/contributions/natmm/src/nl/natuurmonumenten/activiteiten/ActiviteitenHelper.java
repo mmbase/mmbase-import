@@ -58,10 +58,14 @@ public class ActiviteitenHelper {
 
         StringBuffer eventTypeConstraint = new StringBuffer();
         if (eventTypeIds != null) {
-            eventTypeConstraint.append("(");
             boolean first = true;
             for (int i = 0; i < eventTypeIds.length; i++) {
+                // sommige soap clients geven een array met 1 leeg element ipv een lege array of null
+                if (isEmpty(eventTypeIds[i])) {
+                    continue;
+                }
                 if (first) {
+                    eventTypeConstraint.append("(");
                     first = false;
                 } else {
                     eventTypeConstraint.append(" OR ");
@@ -70,12 +74,14 @@ public class ActiviteitenHelper {
                 eventTypeConstraint.append(eventTypeIds[i]);
                 eventTypeConstraint.append("'");
             }
-            eventTypeConstraint.append(")");
+            if (!first) {
+                eventTypeConstraint.append(")");
+            }
         }
         logger.debug("eventTypeConstraint: " + eventTypeConstraint);
         
         String provincieConstraint = null;
-        if (provincieId != null) {
+        if (!isEmpty(provincieId)) {
             provincieConstraint = "lokatie like '%," + provincieId + ",%'";
         }
         logger.debug("provincieConstraint: " + provincieConstraint);
@@ -101,7 +107,7 @@ public class ActiviteitenHelper {
             }
 
             logger.debug("natuurgebiedenId: " + natuurgebiedenId);
-            if (natuurgebiedenId != null) {
+            if (!isEmpty(natuurgebiedenId)) {
                 parentBelongsToNatuurgebied = false;
                 NodeList list2 = cloud.getList(natuurgebiedenId, "natuurgebieden,related,evenement", "evenement.number", "evenement.number='" + parentNumber +"'", null, null, null, true);
                 if (!list2.isEmpty()) {
@@ -263,5 +269,10 @@ public class ActiviteitenHelper {
 
         return thisParticipant;
      }
+    
+    private static boolean isEmpty(String str) {
+        return str == null || str.trim().length() == 0;
+    }
+
 
 }
