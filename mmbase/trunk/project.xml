@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -10,32 +10,6 @@ See http://www.MMBase.org/license
   <extend>${basedir}/maven-base/project.xml</extend>
   <artifactId>mmbase</artifactId>
   <build>
-    <sourceModifications>
-      <sourceModification>
-        <className>com.informix.jdbc.IfxCblob</className>
-        <excludes>
-          <exclude>org/mmbase/module/database/support/MMInformix42Node.java</exclude>
-        </excludes>
-      </sourceModification>
-      <sourceModification>
-        <className>oracle.sql.BLOB</className>
-        <excludes>
-          <exclude>org/mmbase/module/database/support/MMOracle.java</exclude>
-        </excludes>
-      </sourceModification>
-      <sourceModification>
-        <className>javax.mail.Message</className>
-        <excludes>
-          <exclude>org/mmbase/module/JMSendMail.java</exclude>
-        </excludes>
-      </sourceModification>
-      <sourceModification>
-        <className>javax.media.jai.JAI</className>
-        <excludes>
-          <exclude>org/mmbase/module/builders/ConvertJAI.java</exclude>
-        </excludes>
-      </sourceModification>
-    </sourceModifications>
     <!-- J A R  R E S O U R C E S -->
     <!-- Resources that are packaged up inside the JAR file -->
     <resources>
@@ -60,7 +34,7 @@ See http://www.MMBase.org/license
         <directory>${basedir}/META-INF</directory>
         <targetPath>META-INF</targetPath>
         <excludes>
-          <exclude>"**/CVS"</exclude>
+          <exclude>**/CVS</exclude>
         </excludes>
         <filtering>false</filtering>
       </resource>
@@ -68,7 +42,8 @@ See http://www.MMBase.org/license
         <directory>${basedir}/config</directory>
         <targetPath>org/mmbase/config</targetPath>
         <excludes>
-          <exclude>"**/CVS"</exclude>
+          <exclude>**/CVS</exclude>
+          <exclude>modules/jdbc.xml</exclude>
         </excludes>
         <filtering>false</filtering>
       </resource>
