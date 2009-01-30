@@ -7,7 +7,7 @@
 
     <date>2006-06-24</date>
 
-    <edition>$Id: configuration.xml,v 1.33 2009-01-30 20:54:23 michiel Exp $</edition>
+    <edition>$Id: configuration.xml,v 1.34 2009-01-30 21:33:13 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -896,7 +896,7 @@
           <varlistentry>
             <term>org.mmbase.PAGE</term>
             <listitem>
-              <para>If you use mmbase taglib, the start end end of page, as detected by this taglib ar elogged to this logger.
+              <para>If you use mmbase taglib, the start end end of page, as detected by this taglib are logged to this logger.
               Also, if you use the mm:log tag, then this will be logged to this logger.
               </para>
             </listitem>
@@ -904,9 +904,7 @@
           <varlistentry>
             <term>org.mmbase.SERVLETS</term>
             <listitem>
-              <para>If you use mmbase taglib, the start end end of page, as detected by this taglib ar elogged to this logger.
-              Also, if you use the mm:log tag, then this will be logged to this logger.
-              </para>
+              <para>MMBase Servlets log on this loggers how many instances are running.</para>
             </listitem>
           </varlistentry>
       </variablelist>
