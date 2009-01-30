@@ -13,6 +13,8 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
+import org.mmbase.module.database.MultiConnection;
+
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.datatypes.*;
@@ -33,7 +35,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.206 2009-01-04 18:46:14 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.207 2009-01-30 20:07:33 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -43,7 +45,8 @@ public class DatabaseStorageManager implements StorageManager {
     // contains a list of buffered keys
     protected static final List<Integer> sequenceKeys = new LinkedList<Integer>();
 
-    private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManager.class);
+    private static final Logger log     = Logging.getLoggerInstance(DatabaseStorageManager.class);
+
 
     private static final Blob BLOB_SHORTED = new InputStreamBlob(null, -1);
 
@@ -125,19 +128,22 @@ public class DatabaseStorageManager implements StorageManager {
      */
     public DatabaseStorageManager() {}
 
-    protected long getLogStartTime() {
+    protected final long getLogStartTime() {
         return System.currentTimeMillis();
     }
 
-    // for debug purposes
+
     protected final void logQuery(String query, long startTime) {
+        long duration = System.currentTimeMillis() - startTime;
+
         if (log.isDebugEnabled()) {
-            long now = System.currentTimeMillis();
-            log.debug("Time:" + (now - startTime) + " Query :" + query);
+            // This can probably by dropped, we log much nicer on org.mmbase.QUERIES now.
+            log.debug("Time:" + duration + " Query :" + query);
             if (log.isTraceEnabled()) {
                 log.trace(Logging.stackTrace());
             }
         }
+        getFactory().logQuery(query, duration);
     }
 
     // javadoc is inherited
@@ -167,6 +173,13 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
 
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public DatabaseStorageManagerFactory getFactory() {
+        return factory;
     }
 
 
@@ -331,7 +344,7 @@ public class DatabaseStorageManager implements StorageManager {
                         s = activeConnection.createStatement();
                         s.executeUpdate(query);
                         s.close();
-                    logQuery(query, startTime);
+                        logQuery(query, startTime);
                     }
                     scheme = factory.getScheme(Schemes.READ_SEQUENCE, Schemes.READ_SEQUENCE_DEFAULT);
                     query = scheme.format(this, factory.getStorageIdentifier("number"), bufferSize);
@@ -3227,6 +3240,53 @@ public class DatabaseStorageManager implements StorageManager {
             break;
         }
         return result.wasNull();
+    }
+
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    private void checkActiveConnection(Throwable e) {
+        try {
+            Connection con = getActiveConnection();
+
+            if (con instanceof MultiConnection) {
+
+                log.debug("Calling check after exception");
+                try {
+                    ((MultiConnection) con).checkAfterException();
+                } catch (SQLException sqe) {
+                    log.debug(sqe);
+                }
+            } else {
+                log.debug("Not a multiconnection");
+            }
+        } catch (SQLException sqe) {
+            log.warn(sqe);
+        }
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public void executeQuery(String sql, ResultSetReader reader) throws SQLException {
+        long startTime = getLogStartTime();
+        String message = null;
+        try {
+            Connection con = getActiveConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            reader.read(rs);
+
+        } catch (SQLException e) {
+            checkActiveConnection(e);
+            message = e.getClass().getName(); // The Message can be ridicously long and contains
+                                              // several stacktraces (at least for mysql).
+            throw e;
+        } finally {
+            releaseActiveConnection();
+            logQuery(sql + (message == null ? "" : " (" + message + ")"), startTime);
+        }
     }
 
 }

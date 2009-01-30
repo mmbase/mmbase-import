@@ -26,6 +26,7 @@ import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.StorageReader;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.xml.UtilReader;
 import org.xml.sax.InputSource;
 
 /**
@@ -41,7 +42,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.54 2008-08-01 22:15:08 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.55 2009-01-30 20:07:33 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -100,6 +101,23 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
      * Used by #getBinaryFileBasePath
      */
     private File basePath = BASE_PATH_UNSET;
+
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    private int debugDuration   = 50;
+    private int serviceDuration = 100;
+    private int infoDuration    = 500;
+    private int warnDuration    = 2000;
+    private int errorDuration  = 5000;
+    private int fatalDuration  = 1000000;
+
+    final UtilReader.PropertiesMap<String> utilProperties =  new UtilReader("querylogging.xml",
+                                                                            new Runnable() {public void run() {readDurations(); }}).getProperties();
+    private void readDurations() {
+        debugDuration   = Integer.parseInt(utilProperties.getProperty("debug",   "" + debugDuration));
+    }
 
     public double getVersion() {
         return 0.1;
@@ -173,6 +191,9 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
 
     }
 
+
+
+
     /**
      * Opens and reads the storage configuration document.
      * Obtain a datasource to the storage, and load configuration attributes.
@@ -189,6 +210,9 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
 
         dataSource = createDataSource(null);
         // temporary source only used once, for the meta data.
+
+
+
 
         String sqlKeywords;
 
@@ -433,6 +457,62 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     protected SearchQueryHandler instantiateQueryHandler(Object data) {
         return new BasicQueryHandler((SqlHandler)data);
     }
+
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    private String getLogSqlMessage(String sql, long queries,  long time) {
+        StringBuilder mes = new StringBuilder();
+        mes.append('#');
+        mes.append(queries);
+        mes.append("  ");
+        if (time < 10) mes.append(' ');
+        if (time < 100) mes.append(' ');
+        if (time < 1000) mes.append(' ');
+        mes.append(time);
+        mes.append(" ms: ").append(sql);
+        return mes.toString();
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    private Logger getLogger(String sql) {
+        return Logging.getLoggerInstance("org.mmbase.QUERIES." + sql.split(" ", 2)[0].toUpperCase());
+    }
+
+    private long count = 0;
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected void logQuery(String query, long duration) {
+        count++;
+        Logger qlog = getLogger(query);
+        if (duration < debugDuration) {
+            if (qlog.isTraceEnabled()) {
+                qlog.trace(getLogSqlMessage(query, count, duration));
+            }
+        } else if (duration < serviceDuration) {
+            if (qlog.isDebugEnabled()) {
+                qlog.debug(getLogSqlMessage(query, count, duration));
+            }
+        } else if (duration < infoDuration) {
+            if (qlog.isServiceEnabled()) {
+                qlog.service(getLogSqlMessage(query, count, duration));
+            }
+        } else if (duration < warnDuration) {
+            qlog.info(getLogSqlMessage(query, count, duration));
+        } else if (duration < errorDuration) {
+            qlog.warn(getLogSqlMessage(query, count, duration));
+        } else if (duration < fatalDuration) {
+            qlog.error(getLogSqlMessage(query, count, duration));
+        } else {
+            qlog.fatal(getLogSqlMessage(query, count, duration));
+        }
+    }
+
 
 
     public static void main(String[] args) {
