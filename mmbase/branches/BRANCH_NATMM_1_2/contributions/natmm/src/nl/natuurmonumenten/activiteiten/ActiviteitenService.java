@@ -15,6 +15,7 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NotFoundException;
 import org.mmbase.bridge.RelationList;
 
 /**
@@ -175,7 +176,14 @@ public class ActiviteitenService implements IActiviteitenService {
     public EventDetails getEventDetails(String id) {
         logger.debug("getEventDetails");
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-        Node node = cloud.getNode(id);
+        Node node;
+        try {
+            node = cloud.getNode(id);
+        } catch (NotFoundException ex) {
+            logger.debug("Node niet gevonden: " + id);
+            return null;
+        }
+        // alleen evenementen mogen worden opgevraagd
         if (!"evenement".equals(node.getNodeManager().getName())) {
             logger.debug("Geen evenement: " + id);
             return null;
@@ -199,9 +207,14 @@ public class ActiviteitenService implements IActiviteitenService {
     public String subscribeEvent(Subscription subscription) {
         // code komt uit SubscribeAction
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-        Node eventNode = cloud.getNode(subscription.getEvenementId());
+        Node eventNode;
+        try {
+            eventNode = cloud.getNode(subscription.getEvenementId());
+        } catch (NotFoundException ex) {
+            throw new IllegalArgumentException("Evenement id bestaat niet: " + subscription.getEvenementId(), ex);
+        }
         if (eventNode == null) {
-            throw new IllegalArgumentException("Evenement id does not exist: " + subscription.getEvenementId());
+            throw new IllegalArgumentException("Evenement id bestaat niet: " + subscription.getEvenementId());
         }
         NodeManager manager = cloud.getNodeManager("inschrijvingen");
         Node subscriptionNode = manager.createNode();
