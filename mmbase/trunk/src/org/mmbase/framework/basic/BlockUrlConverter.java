@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * URLConverters would probably like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BlockUrlConverter.java,v 1.17 2009-01-16 22:21:13 michiel Exp $
+ * @version $Id: BlockUrlConverter.java,v 1.18 2009-01-31 07:46:27 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -228,9 +228,10 @@ public abstract class BlockUrlConverter implements UrlConverter {
      * withough any checking, produce the URL.
      *
      * @param block Block for which the produce the url for
-     * @param blockParameter Parameters to use for this block. The implementation may set parameters
+     * @param blockParameters Parameters to use for this block. The implementation may set parameters
      * to <code>null</code> which were represented in the returning String.
-     * @param
+     * @param frameworkParameters
+     * @param action
      */
     protected abstract Url getNiceUrl(Block block,
                                       Parameters blockParameters,
