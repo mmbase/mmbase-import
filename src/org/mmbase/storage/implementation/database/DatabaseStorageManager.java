@@ -35,7 +35,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.207 2009-01-30 20:07:33 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.208 2009-01-31 07:48:36 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1083,7 +1083,6 @@ public class DatabaseStorageManager implements StorageManager {
      * @param node updated node
      * @param fields updated fields
      * @throws SQLException if database connections failures occurs
-     * @return The result of {@link PreparedStatement#executeUpdate}. That would normally be
      *
      * @since MMBase-1.7.1
      */

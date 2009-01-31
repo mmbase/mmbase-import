@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.80 2008-12-01 22:41:06 michiel Exp $
+ * @version $Id: Node.java,v 1.81 2009-01-31 07:41:24 michiel Exp $
  */
 public interface Node extends Comparable<Node> {
 
@@ -286,7 +286,7 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
      */
     public Object getValue(String fieldName);
@@ -296,7 +296,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName name of the field
      * @return object value
      * @since MMBase-1.7
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
      */
     public Object getObjectValue(String fieldName);
@@ -308,7 +308,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName name of field
      * @return value without processing
      * @since MMBase-1.8
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
      */
     public Object getValueWithoutProcess(String fieldName);
@@ -325,7 +325,7 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
 
      */
@@ -355,7 +355,7 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
 
      * @see Cloud#getList(String, String, String, String, String, String, String, boolean)
@@ -374,7 +374,7 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
 
      */
@@ -405,7 +405,7 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
 
      */
@@ -422,7 +422,7 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
 
      */
@@ -436,7 +436,7 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
 
      */
@@ -449,7 +449,7 @@ public interface Node extends Comparable<Node> {
      * stored in memory.
      * @param fieldName  the name of the field
      * @return value of field as a input stream
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
      * @since MMBase-1.8
      */
@@ -464,7 +464,7 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
      */
     public String getStringValue(String fieldName);
@@ -473,7 +473,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
      * @since MMBase-1.8
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
      */
     public Date getDateValue(String fieldName);
@@ -482,7 +482,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
      * @since MMBase-1.9.1
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
      */
     public java.math.BigDecimal getDecimalValue(String fieldName);
@@ -490,7 +490,7 @@ public interface Node extends Comparable<Node> {
     /**
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throw IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
+     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
      * field does not exist.
      * not yet working
      * @since MMBase-1.8

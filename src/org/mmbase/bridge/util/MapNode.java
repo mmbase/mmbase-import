@@ -16,12 +16,12 @@ import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 
 /**
- * A bridge Node based on a {@java.util.Map}. It can come in handy sometimes to be able to present any {@link
+ * A bridge Node based on a {@link java.util.Map}. It can come in handy sometimes to be able to present any {@link
  * java.util.Map} as an MMBase Node. E.g. because then it can be accessed in MMBase taglib using
  * mm:field tags. Don't confuse this with {@link NodeMap}.
 
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.12 2008-09-04 06:54:27 michiel Exp $
+ * @version $Id: MapNode.java,v 1.13 2009-01-31 07:43:12 michiel Exp $
  * @since   MMBase-1.8
  */
 

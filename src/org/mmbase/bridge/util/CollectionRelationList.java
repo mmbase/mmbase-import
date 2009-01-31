@@ -16,10 +16,10 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * A list of {@link org.mmbase.Relation}s, based on a Collection of Nodes
+ * A list of {@link org.mmbase.bridge.Relation}s, based on a Collection of Nodes
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionRelationList.java,v 1.7 2008-09-04 06:54:27 michiel Exp $
+ * @version $Id: CollectionRelationList.java,v 1.8 2009-01-31 07:42:19 michiel Exp $
  * @since MMBase-1.8
  */
 public class CollectionRelationList extends AbstractCollectionNodeList<Relation> implements RelationList {

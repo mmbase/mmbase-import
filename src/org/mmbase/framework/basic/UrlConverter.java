@@ -23,7 +23,7 @@ import org.mmbase.util.functions.*;
  * chained one after another.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.15 2009-01-16 22:21:13 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.16 2009-01-31 07:46:27 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -56,7 +56,7 @@ public interface UrlConverter extends Serializable {
      *                   You should escape &amp; when a URL is exposed (i.e. in HTML), but not if the url is
      *                   for some reason called directly.
      * @return An URL relative to the root of this web application (i.e. without a context
-     * path). {@link Url.NOT} if not determinable.
+     * path). {@link Url#NOT} if not determinable.
      * @throws FrameworkException thrown when something goes wrong in the Framework
      */
     Url getUrl(String path,
@@ -81,7 +81,7 @@ public interface UrlConverter extends Serializable {
      * @param params Extra parameters for that path
      * @param frameworkParameters The parameters that are required by the framework, such as the
      *                            'request' and 'cloud' objects
-     * @return A valid internal URL, or {@link Url.NOT} if nothing framework specific could be
+     * @return A valid internal URL, or {@link Url#NOT} if nothing framework specific could be
      *         determined (this would make it possible to 'chain' frameworks).
      * @throws FrameworkException thrown when something goes wrong in the Framework
      */
