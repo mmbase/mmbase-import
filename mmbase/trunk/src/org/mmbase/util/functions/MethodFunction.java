@@ -26,14 +26,14 @@ import org.mmbase.util.logging.Logging;
  </pre>
 And be implemented like so:
 <pre>
-  public static boolean canCloseLesson(@Required @Name("node") Node user,
-                                         @Required @Name("lesson") Node lesson) {
+  public static boolean canCloseLesson(&#064;Required &#064;Name("node") Node user,
+                                       &#064;Required &#064;Name("lesson") Node lesson) {
    ...
  }
 </pre>
 
  * @author Michiel Meeuwissen
- * @version $Id: MethodFunction.java,v 1.12 2008-12-04 15:23:50 michiel Exp $
+ * @version $Id: MethodFunction.java,v 1.13 2009-01-31 07:54:53 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
