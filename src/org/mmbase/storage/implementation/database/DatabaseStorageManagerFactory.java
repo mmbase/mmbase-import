@@ -42,7 +42,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.55 2009-01-30 20:07:33 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.56 2009-01-31 09:28:52 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -106,17 +106,29 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     /**
      * @since MMBase-1.9.1
      */
-    private int debugDuration   = 50;
-    private int serviceDuration = 100;
-    private int infoDuration    = 500;
-    private int warnDuration    = 2000;
-    private int errorDuration  = 5000;
-    private int fatalDuration  = 1000000;
+    static long MS = 1000000; // 1 ms in ns
+    private long debugDuration   = 50 * MS;
+    private long serviceDuration = 100 * MS;
+    private long infoDuration    = 500 * MS;
+    private long warnDuration    = 2000 * MS;
+    private long errorDuration  = 5000 * MS;
+    private long fatalDuration  = 1000000 * MS;
+    private String durationFormat = "#.#";
 
     final UtilReader.PropertiesMap<String> utilProperties =  new UtilReader("querylogging.xml",
                                                                             new Runnable() {public void run() {readDurations(); }}).getProperties();
     private void readDurations() {
-        debugDuration   = Integer.parseInt(utilProperties.getProperty("debug",   "" + debugDuration));
+        debugDuration     = new Float(Float.parseFloat(utilProperties.getProperty("debug",   "" + debugDuration)) * MS).longValue();
+        serviceDuration   = new Float(Float.parseFloat(utilProperties.getProperty("service",   "" + debugDuration)) * MS).longValue();
+        infoDuration      = new Float(Float.parseFloat(utilProperties.getProperty("info",   "" + debugDuration)) * MS).longValue();
+        warnDuration      = new Float(Float.parseFloat(utilProperties.getProperty("warn",   "" + debugDuration)) * MS).longValue();
+        errorDuration     = new Float(Float.parseFloat(utilProperties.getProperty("error",   "" + debugDuration)) * MS).longValue();
+        fatalDuration     = new Float(Float.parseFloat(utilProperties.getProperty("fatal",   "" + debugDuration)) * MS).longValue();
+
+        durationFormat     = utilProperties.getProperty("durationFormat", durationFormat);
+    }
+    {
+        readDurations();
     }
 
     public double getVersion() {
@@ -466,11 +478,15 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         StringBuilder mes = new StringBuilder();
         mes.append('#');
         mes.append(queries);
-        mes.append("  ");
-        if (time < 10) mes.append(' ');
-        if (time < 100) mes.append(' ');
-        if (time < 1000) mes.append(' ');
-        mes.append(time);
+        mes.append(" ");
+        float t = ((float) time) / MS;
+        //DecimalFormat format = new DecimalFormat(durationFormat, DecimalFormatSymbols.getInstance(java.util.Locale.US)); // java 1.6
+        DecimalFormat format = new DecimalFormat(durationFormat, new DecimalFormatSymbols(java.util.Locale.US));
+        String f = format.format(t);
+        for (int i = f.length() ; i < durationFormat.length() + 3; i++) {
+            mes.append(' ');
+        }
+        mes.append(f);
         mes.append(" ms: ").append(sql);
         return mes.toString();
     }
