@@ -35,7 +35,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.208 2009-01-31 07:48:36 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.209 2009-01-31 09:28:52 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -129,16 +129,16 @@ public class DatabaseStorageManager implements StorageManager {
     public DatabaseStorageManager() {}
 
     protected final long getLogStartTime() {
-        return System.currentTimeMillis();
+        return System.nanoTime();
     }
 
 
     protected final void logQuery(String query, long startTime) {
-        long duration = System.currentTimeMillis() - startTime;
+        long duration = System.nanoTime() - startTime;
 
         if (log.isDebugEnabled()) {
             // This can probably by dropped, we log much nicer on org.mmbase.QUERIES now.
-            log.debug("Time:" + duration + " Query :" + query);
+            log.debug("Time:" + duration / 1000000 + " Query :" + query);
             if (log.isTraceEnabled()) {
                 log.trace(Logging.stackTrace());
             }
@@ -1922,7 +1922,7 @@ public class DatabaseStorageManager implements StorageManager {
                 MMBase mmbase = factory.getMMBase();
                 String query = scheme.format(this, mmbase, mmbase.getTypeDef().getField("number"), numberValue);
                 Statement s = activeConnection.createStatement();
-                long startTime = System.currentTimeMillis();
+                long startTime = getLogStartTime();
                 try {
                     ResultSet result = s.executeQuery(query);
                     if (result != null) {
