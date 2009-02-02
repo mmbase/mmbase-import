@@ -13,17 +13,17 @@
 ><meta name="author" content="MMatch - MMBase consultancy and implementation / www.mmatch.nl">
 <meta http-equiv="imagetoolbar" content="no">
 <script language="JavaScript" src="scripts/launchcenter.js"></script>
-<script type="text/javascript" language="javaScript" src="scripts/skyscraper_cookie.js"></script>
+<%--<script type="text/javascript" language="javaScript" src="scripts/skyscraper_cookie.js"></script> --%>
 </head>
-<body onLoad="loadSkyscraper()" background="media/bg_top.gif">
+<body <%--onLoad="loadSkyscraper()"--%> background="media/bg_top.gif"> 
 
+<%--
    <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
    <tr>
       <td style="width:50%"></td>
       <td style="width:744px;">
 
          <div id="bigdiv" style="position:relative;">
-         
          <div id="skyscraper" style="visibility: hidden; position:absolute; left:-1000px; top:-600px; width:2000; height:2000; color:#000000; z-index:101;">
             <div style="position: absolute; left: 1220px; top:722px; z-index:102; display: block;">
                <img src="flash/cross.gif" onclick="closeSkyscraper();"/>
@@ -42,7 +42,7 @@
       </td>
    </tr>
    </table>
-
+--%>
 <a name="top"></a>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" valign="top">
 <tr height="1px"><td colspan="2" valign="top">
