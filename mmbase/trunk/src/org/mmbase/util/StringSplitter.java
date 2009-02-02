@@ -17,7 +17,7 @@ import java.util.*;
  * @author Pierre van Rooden
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: StringSplitter.java,v 1.11 2008-12-01 09:16:12 michiel Exp $
+ * @version $Id: StringSplitter.java,v 1.12 2009-02-02 13:20:25 michiel Exp $
  */
 public class StringSplitter {
 
@@ -82,14 +82,65 @@ public class StringSplitter {
      * @since MMBase-1.9
      */
     static public Map<String, String> map(String string) {
-        Map<String, String> map = new HashMap<String, String>();
-        List<String> keyValues = split(string);
-        for (String kv : keyValues) {
-            if ("".equals(kv)) continue;
-            int is = kv.indexOf('=');
-            map.put(kv.substring(0, is), kv.substring(is + 1));
+        return map(string, ",");
+    }
+    /**
+     * Splits a String into a map.
+     * @param delimiter Delimiter to split entries. If this is a newline, then the string will be
+     * read like properties
+     * @since MMBase-1.9.1
+     */
+    static public Map<String, String> map(String string, String delimiter) {
+        if (delimiter.equals("\n")) {
+            final Properties props = new Properties();
+            try {
+                props.load(new java.io.ByteArrayInputStream(string.getBytes("ISO-8859-1")));
+            } catch (java.io.UnsupportedEncodingException uee) {
+                // ISO-8859-1 _IS_ supported
+                new RuntimeException(uee);
+            } catch (java.io.IOException ioe) {
+                new RuntimeException(ioe);
+            }
+            // java sucks a bit, because for some reason (I can't imagine which one) Properties is
+            // not a Map<String, String>. There we can't simply return the props,
+            // but must perform the following horribleness.
+            //
+            // In java 1.6 there is 'solution', which probably will hardly help. (http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6253413)
+            return  new AbstractMap<String, String>() {
+                public Set<Map.Entry<String, String>> entrySet() {
+                    return new AbstractSet<Map.Entry<String, String>>() {
+                        public int size() {
+                            return props.size();
+                        }
+                        public Iterator<Map.Entry<String, String>> iterator() {
+                            return new Iterator<Map.Entry<String, String>>() {
+                                private final Iterator<Map.Entry<Object, Object>> i = props.entrySet().iterator();
+                                public boolean hasNext() {
+                                    return i.hasNext();
+                                }
+                                public Map.Entry<String, String> next()  {
+                                    Map.Entry<Object, Object> entry = i.next();
+                                    return new org.mmbase.util.Entry<String, String>((String) entry.getKey(), (String) entry.getValue());
+                                }
+                                public void remove() {
+                                    i.remove();
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+
+        } else {
+            Map<String, String> map = new HashMap<String, String>();
+            List<String> keyValues = split(string, delimiter);
+            for (String kv : keyValues) {
+                if ("".equals(kv)) continue;
+                int is = kv.indexOf('=');
+                map.put(kv.substring(0, is), kv.substring(is + 1));
+            }
+            return map;
         }
-        return map;
     }
 
 }
