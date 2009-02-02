@@ -11,7 +11,7 @@
 <td colspan="2" class="transperant" valign="top">
 <div class="<%= infopageClass %>" id="infopage">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
-<tr><td><%@include file="includes/back_print.jsp" %>
+<tr><td style="padding:10px;padding-top:18px;"><%@include file="includes/back_print.jsp" %>
 <mm:list nodes="<%= paginaID %>" path="pagina,contentrel,artikel" orderby="contentrel.pos" directions="UP" searchdir="destination">
    <mm:field name="pagina.omschrijving">
       <mm:isnotempty>
