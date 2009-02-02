@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: RunnableCronJob.java,v 1.4 2009-02-02 13:22:08 michiel Exp $
+ * @version $Id: RunnableCronJob.java,v 1.5 2009-02-02 13:27:46 michiel Exp $
  */
 
 public class RunnableCronJob extends AbstractCronJob {
@@ -36,7 +36,10 @@ public class RunnableCronJob extends AbstractCronJob {
     }
 
     @Override protected void init() {
-        Map<String, String> config = org.mmbase.util.StringSplitter.map(cronEntry.getConfiguration(), "\n");
+        String delimiter =
+            cronEntry instanceof org.mmbase.applications.crontab.builders.NodeCronEntry
+            ? "\n" : ",";
+        Map<String, String> config = org.mmbase.util.StringSplitter.map(cronEntry.getConfiguration(), delimiter);
         for (Map.Entry<String, String> entry : config.entrySet()) {
             try {
                 org.mmbase.util.xml.Instantiator.setProperty(entry.getKey(), runnable.getClass(), runnable, entry.getValue());
