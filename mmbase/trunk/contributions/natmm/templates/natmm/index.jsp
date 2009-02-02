@@ -11,8 +11,9 @@
 <%@include file="includes/top4_head.jsp" %>
 <%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
 
+<%--
 <div id="bigdiv" style="position:relative;">
-
+  
 <div id="skyscraper" style="visibility: hidden; position:absolute; left:-625px; top:-850px; width:2000; height:2000; color:#000000; z-index:101;">
    <div style="position: absolute; left: 1220px; top:722px; z-index:102; display: block;">
       <img src="flash/cross.gif" onclick="closeSkyscraper();"/>
@@ -28,6 +29,7 @@
       <embed src="flash/080923_hart_v1.swf?clickTag=http://www.natuurmonumenten.nl&clickTarget=_blank" menu="false" quality="high" scale="noscale" wmode="transparent" bgcolor="#ffffff" width="2000" height="2000" name="overlayerbanner_pop_600x600" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
    </object>
 </div>
+--%>
 
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
@@ -62,9 +64,7 @@
       <img src="media/trans.gif" height="1px" width="165px;" /></td>
 </tr>
 </table>
-
-</div>
-
+<%-- </div> --%>
 <%@include file="includes/footer.jsp" %>
 </cache:cache>
 </mm:cloud>
