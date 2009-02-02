@@ -25,6 +25,10 @@ public class LocalHttpServletResponse extends LocalServletResponse implements Ht
         super(w);
     }
 
+    public LocalHttpServletResponse(OutputStream output) {
+        super(output);
+    }
+
     public void  addCookie(Cookie cookie) {
         // TODO
     }
