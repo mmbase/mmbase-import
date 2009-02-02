@@ -39,6 +39,9 @@
        } else if(6<posrel_pos) { 
           if (width > 400) width = 400;
           imageTemplate = "+s(400)(>)"; 
+       } else { //Catch for positions 1 and 2
+          imageTemplate = "+s(210)(>)";
+          if (width > 210) width = 210;
        }
        
        if(right){ 
