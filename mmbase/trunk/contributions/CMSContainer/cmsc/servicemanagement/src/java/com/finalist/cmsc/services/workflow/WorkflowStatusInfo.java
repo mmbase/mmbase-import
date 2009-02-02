@@ -69,8 +69,8 @@ public class WorkflowStatusInfo {
 
    public WorkflowStatusInfo(Cloud cloud,NodeList statusList) {
       
-      contentChildTypes = ServiceUtil.getDirectChildTypes(cloud,CONTENTELEMENT);
-      assetChildTypes = ServiceUtil.getDirectChildTypes(cloud,ASSETELEMENT);
+      contentChildTypes = ServiceUtil.getAllChildTypesNew(cloud,CONTENTELEMENT);
+      assetChildTypes = ServiceUtil.getAllChildTypesNew(cloud,ASSETELEMENT);
       // initialization
       for (LabelValueBean childType : contentChildTypes) {
          contentChildrenDraft.put(childType.getValue(), 0);

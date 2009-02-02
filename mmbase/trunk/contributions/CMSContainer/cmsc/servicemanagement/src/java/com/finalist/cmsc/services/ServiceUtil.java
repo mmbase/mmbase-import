@@ -63,6 +63,25 @@ public class ServiceUtil {
       return result;
    }
 
+   public static List<LabelValueBean> getAllChildTypesNew(Cloud cloud,String parent) {
+      List<LabelValueBean> result = new ArrayList<LabelValueBean>();
+      List<NodeManager> resultManager = new ArrayList<NodeManager>();
+      NodeManagerList nml = cloud.getNodeManagers();
+      Iterator<NodeManager> v = nml.iterator();
+      while (v.hasNext()) {
+         NodeManager child = v.next();
+         if (isChildType(cloud, child.getName(), parent)) {
+            resultManager.add(child);
+         }
+      }
+      for (NodeManager manager : resultManager) {
+         String name = manager.getName();
+         LabelValueBean bean = new LabelValueBean(manager.getGUIName(), name);
+         result.add(bean);
+      }
+      return result;
+   }
+
    private static boolean isDirectChildType(Cloud cloud,String child, String parent) {
       if (parent.equals(child)) {
          // parent manager is not a parent type

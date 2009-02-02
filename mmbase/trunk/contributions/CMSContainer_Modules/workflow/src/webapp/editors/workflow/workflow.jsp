@@ -91,22 +91,26 @@
 		<div id="tree-content">
 		<table class="centerData">
 			<tbody>
-				<tr>
-					<td class="indent" />
-					<td class="indent"><img id="tree-content-plus"
-						onclick="treeHandler.toggle(this);"
-						<c:if test="${treeStatus.content eq 1}">src="../utils/ajaxtree/images/Tminus.png"</c:if>
-			         <c:if test="${treeStatus.content eq 0}">src="../utils/ajaxtree/images/Tplus.png"</c:if> /></td>
-					<td class="leftData"><fmt:message
-						key="workflow.status.content" /></td>
-					<td class="indent" />
-					<td><a href="ContentWorkflowAction.do?status=draft">${statusInfo.contentDraft}</a></td>
-					<td><a href="ContentWorkflowAction.do?status=finished">${statusInfo.contentFinished}</a></td>
-					<c:if test="${acceptedEnabled}">
-						<td><a href="ContentWorkflowAction.do?status=approved">${statusInfo.contentApproved}</a></td>
-					</c:if>
-					<td><a href="ContentWorkflowAction.do?status=published">${statusInfo.contentPublished}</a></td>
-				</tr>
+<%--            <c:if test="${ statusInfo.contentDraft != 0 || statusInfo.contentFinished != 0 || statusInfo.contentApproved != 0 || statusInfo.contentPublished != 0}">
+--%>
+					<tr>
+						<td class="indent" />
+						<td class="indent"><img id="tree-content-plus"
+							onclick="treeHandler.toggle(this);"
+							<c:if test="${treeStatus.content eq 1}">src="../utils/ajaxtree/images/Tminus.png"</c:if>
+				         <c:if test="${treeStatus.content eq 0}">src="../utils/ajaxtree/images/Tplus.png"</c:if> /></td>
+						<td class="leftData"><fmt:message
+							key="workflow.status.content" /></td>
+						<td class="indent" />
+						<td><a href="ContentWorkflowAction.do?status=draft">${statusInfo.contentDraft}</a></td>
+						<td><a href="ContentWorkflowAction.do?status=finished">${statusInfo.contentFinished}</a></td>
+						<c:if test="${acceptedEnabled}">
+							<td><a href="ContentWorkflowAction.do?status=approved">${statusInfo.contentApproved}</a></td>
+						</c:if>
+						<td><a href="ContentWorkflowAction.do?status=published">${statusInfo.contentPublished}</a></td>
+					</tr>
+<%--              </c:if>
+--%>
 			</tbody>
 		</table>
 		</div>
@@ -114,27 +118,30 @@
 		<table class="centerData">
 			<tbody>
 				<c:forEach var="contentType" items="${statusInfo.contentChildTypes}" varStatus="itemStatus">
-					<tr>
-						<td class="indent"/>
-						<td class="indent"><img src="../utils/ajaxtree/images/I.png" /></td>
-                  <c:if test="${not itemStatus.last}">
-                  <td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
-                  </c:if>
-                  <c:if test="${itemStatus.last}">
-                  <td class="indent"><img src="../utils/ajaxtree/images/L.png" /></td>
-                  </c:if>
-						<td class="leftData">${contentType.label}</td>
-						<td><a
-							href="ContentWorkflowAction.do?workflowNodetype=${contentType.value}&status=draft">${statusInfo.contentChildrenDraft[contentType.value]}</a></td>
-						<td><a
-							href="ContentWorkflowAction.do?workflowNodetype=${contentType.value}&status=finished">${statusInfo.contentChildrenFinished[contentType.value]}</a></td>
-						<c:if test="${acceptedEnabled}">
+               <c:if test="${ statusInfo.contentChildrenDraft[contentType.value] != 0 || statusInfo.contentChildrenFinished[contentType.value] != 0
+                             || statusInfo.contentChildrenApproved[contentType.value]!=0 || statusInfo.contentChildrenPublished[contentType.value] != 0}">
+						<tr>
+							<td class="indent"/>
+							<td class="indent"><img src="../utils/ajaxtree/images/I.png" /></td>
+	                  <c:if test="${not itemStatus.last}">
+	                  <td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
+	                  </c:if>
+	                  <c:if test="${itemStatus.last}">
+	                  <td class="indent"><img src="../utils/ajaxtree/images/L.png" /></td>
+	                  </c:if>
+							<td class="leftData">${contentType.label}</td>
 							<td><a
-								href="ContentWorkflowAction.do?workflowNodetype=${contentType.value}&status=approved">${statusInfo.contentChildrenApproved[contentType.value]}</a></td>
-						</c:if>
-						<td><a
-							href="ContentWorkflowAction.do?workflowNodetype=${contentType.value}&status=published">${statusInfo.contentChildrenPublished[contentType.value]}</a></td>
-					</tr>
+								href="ContentWorkflowAction.do?workflowNodetype=${contentType.value}&status=draft">${statusInfo.contentChildrenDraft[contentType.value]}</a></td>
+							<td><a
+								href="ContentWorkflowAction.do?workflowNodetype=${contentType.value}&status=finished">${statusInfo.contentChildrenFinished[contentType.value]}</a></td>
+							<c:if test="${acceptedEnabled}">
+								<td><a
+									href="ContentWorkflowAction.do?workflowNodetype=${contentType.value}&status=approved">${statusInfo.contentChildrenApproved[contentType.value]}</a></td>
+							</c:if>
+							<td><a
+								href="ContentWorkflowAction.do?workflowNodetype=${contentType.value}&status=published">${statusInfo.contentChildrenPublished[contentType.value]}</a></td>
+						</tr>
+               </c:if>
 				</c:forEach>
 			</tbody>
 		</table>
@@ -142,21 +149,25 @@
 		<div id="tree-asset">
 		<table class="centerData">
 			<tbody>
-				<tr>
-					<td class="indent" />
-					<td class="indent"><img id="tree-asset-plus"
-						onclick="treeHandler.toggle(this);"
-						<c:if test="${treeStatus.asset eq 1}">src="../utils/ajaxtree/images/Lminus.png"</c:if>
-			         <c:if test="${treeStatus.asset eq 0}">src="../utils/ajaxtree/images/Lplus.png"</c:if> /></td>
-					<td class="leftData"><fmt:message key="workflow.status.asset" /></td>
-					<td class="indent" />
-					<td><a href="AssetWorkflowAction.do?status=draft">${statusInfo.assetDraft}</a></td>
-					<td><a href="AssetWorkflowAction.do?status=finished">${statusInfo.assetFinished}</a></td>
-					<c:if test="${acceptedEnabled}">
-						<td><a href="AssetWorkflowAction.do?status=approved">${statusInfo.assetApproved}</a></td>
-					</c:if>
-					<td><a href="AssetWorkflowAction.do?status=published">${statusInfo.assetPublished}</a></td>
-				</tr>
+<%--              <c:if test="${ statusInfo.assetDraft != 0 || statusInfo.assetFinished != 0 || statusInfo.assetApproved != 0 || statusInfo.assetPublished != 0}">
+--%>
+					<tr>
+						<td class="indent" />
+						<td class="indent"><img id="tree-asset-plus"
+							onclick="treeHandler.toggle(this);"
+							<c:if test="${treeStatus.asset eq 1}">src="../utils/ajaxtree/images/Lminus.png"</c:if>
+				         <c:if test="${treeStatus.asset eq 0}">src="../utils/ajaxtree/images/Lplus.png"</c:if> /></td>
+						<td class="leftData"><fmt:message key="workflow.status.asset" /></td>
+						<td class="indent" />
+						<td><a href="AssetWorkflowAction.do?status=draft">${statusInfo.assetDraft}</a></td>
+						<td><a href="AssetWorkflowAction.do?status=finished">${statusInfo.assetFinished}</a></td>
+						<c:if test="${acceptedEnabled}">
+							<td><a href="AssetWorkflowAction.do?status=approved">${statusInfo.assetApproved}</a></td>
+						</c:if>
+						<td><a href="AssetWorkflowAction.do?status=published">${statusInfo.assetPublished}</a></td>
+					</tr>
+<%--              </c:if>
+--%>
 			</tbody>
 		</table>
 		</div>
@@ -164,27 +175,30 @@
 		<table class="centerData">
 			<tbody>
             <c:forEach var="assetType" items="${statusInfo.assetChildTypes}" varStatus="itemStatus">
-               <tr>
-                  <td class="indent"/>
-                  <td class="indent" />
-                  <c:if test="${not itemStatus.last}">
-                  <td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
-                  </c:if>
-                  <c:if test="${itemStatus.last}">
-                  <td class="indent"><img src="../utils/ajaxtree/images/L.png" /></td>
-                  </c:if>
-                  <td class="leftData">${assetType.label}</td>
-                  <td><a
-                     href="AssetWorkflowAction.do?workflowNodetype=${assetType.value}&status=draft">${statusInfo.assetChildrenDraft[assetType.value]}</a></td>
-                  <td><a
-                     href="AssetWorkflowAction.do?workflowNodetype=${assetType.value}&status=finished">${statusInfo.assetChildrenFinished[assetType.value]}</a></td>
-                  <c:if test="${acceptedEnabled}">
-                     <td><a
-                        href="AssetWorkflowAction.do?workflowNodetype=${assetType.value}&status=approved">${statusInfo.assetChildrenApproved[assetType.value]}</a></td>
-                  </c:if>
-                  <td><a
-                     href="AssetWorkflowAction.do?workflowNodetype=${assetType.value}&status=published">${statusInfo.assetChildrenPublished[assetType.value]}</a></td>
-               </tr>
+               <c:if test="${ statusInfo.assetChildrenDraft[assetType.value] != 0 || statusInfo.assetChildrenFinished[assetType.value] != 0
+	                          || statusInfo.assetChildrenApproved[assetType.value]!=0 || statusInfo.assetChildrenPublished[assetType.value] != 0}">
+	               <tr>
+	                  <td class="indent"/>
+	                  <td class="indent" />
+	                  <c:if test="${not itemStatus.last}">
+	                  <td class="indent"><img src="../utils/ajaxtree/images/T.png" /></td>
+	                  </c:if>
+	                  <c:if test="${itemStatus.last}">
+	                  <td class="indent"><img src="../utils/ajaxtree/images/L.png" /></td>
+	                  </c:if>
+	                  <td class="leftData">${assetType.label}</td>
+	                  <td><a
+	                     href="AssetWorkflowAction.do?workflowNodetype=${assetType.value}&status=draft">${statusInfo.assetChildrenDraft[assetType.value]}</a></td>
+	                  <td><a
+	                     href="AssetWorkflowAction.do?workflowNodetype=${assetType.value}&status=finished">${statusInfo.assetChildrenFinished[assetType.value]}</a></td>
+	                  <c:if test="${acceptedEnabled}">
+	                     <td><a
+	                        href="AssetWorkflowAction.do?workflowNodetype=${assetType.value}&status=approved">${statusInfo.assetChildrenApproved[assetType.value]}</a></td>
+	                  </c:if>
+	                  <td><a
+	                     href="AssetWorkflowAction.do?workflowNodetype=${assetType.value}&status=published">${statusInfo.assetChildrenPublished[assetType.value]}</a></td>
+	               </tr>
+               </c:if>
             </c:forEach>
 			</tbody>
 		</table>
@@ -193,36 +207,44 @@
 		<div id="tree-page">
 		<table class="centerData">
 			<tbody>
-				<tr>
-					<td class="leftData"><fmt:message key="workflow.status.page" /></td>
-					<td class="indent" />
-					<td class="indent" />
-					<td class="indent" />
-					<td><a href="PageWorkflowAction.do?status=draft">${statusInfo.pageDraft}</a></td>
-					<td><a href="PageWorkflowAction.do?status=finished">${statusInfo.pageFinished}</a></td>
-					<c:if test="${acceptedEnabled}">
-						<td><a href="PageWorkflowAction.do?status=approved">${statusInfo.pageApproved}</a></td>
-					</c:if>
-					<td><a href="PageWorkflowAction.do?status=published">${statusInfo.pagePublished}</a></td>
-				</tr>
+<%--            <c:if test="${statusInfo.pageDraft != 0 || statusInfo.pageFinished != 0 || statusInfo.pageApproved != 0 || statusInfo.pagePublished != 0}">
+--%>
+					<tr>
+						<td class="leftData"><fmt:message key="workflow.status.page" /></td>
+						<td class="indent" />
+						<td class="indent" />
+						<td class="indent" />
+						<td><a href="PageWorkflowAction.do?status=draft">${statusInfo.pageDraft}</a></td>
+						<td><a href="PageWorkflowAction.do?status=finished">${statusInfo.pageFinished}</a></td>
+						<c:if test="${acceptedEnabled}">
+							<td><a href="PageWorkflowAction.do?status=approved">${statusInfo.pageApproved}</a></td>
+						</c:if>
+						<td><a href="PageWorkflowAction.do?status=published">${statusInfo.pagePublished}</a></td>
+					</tr>
+<%--            </c:if>
+--%>
 			</tbody>
 		</table>
 		</div>
 		<div id="tree-link">
 		<table class="centerData">
 			<tbody>
-				<tr>
-					<td class="leftData"><fmt:message key="workflow.status.link" /></td>
-					<td class="indent" />
-					<td class="indent" />
-					<td class="indent" />
-					<td></td>
-					<td><a href="LinkWorkflowAction.do?status=finished">${statusInfo.linkFinished}</a></td>
-					<c:if test="${acceptedEnabled}">
-						<td><a href="LinkWorkflowAction.do?status=approved">${statusInfo.linkApproved}</a></td>
-					</c:if>
-					<td><a href="LinkWorkflowAction.do?status=published">${statusInfo.linkPublished}</a></td>
-				</tr>
+<%--            <c:if test="${ statusInfo.linkFinished != 0 || statusInfo.linkApproved != 0 || statusInfo.linkPublished != 0}">
+--%>
+					<tr>
+						<td class="leftData"><fmt:message key="workflow.status.link" /></td>
+						<td class="indent" />
+						<td class="indent" />
+						<td class="indent" />
+						<td></td>
+						<td><a href="LinkWorkflowAction.do?status=finished">${statusInfo.linkFinished}</a></td>
+						<c:if test="${acceptedEnabled}">
+							<td><a href="LinkWorkflowAction.do?status=approved">${statusInfo.linkApproved}</a></td>
+						</c:if>
+						<td><a href="LinkWorkflowAction.do?status=published">${statusInfo.linkPublished}</a></td>
+					</tr>
+<%--            </c:if>
+--%>
 			</tbody>
 		</table>
 		</div>
