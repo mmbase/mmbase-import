@@ -54,12 +54,6 @@
 <tbody class="hover">
 <mm:list referid="results" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
 
-<tr <mm:even inverse="true">class="swap"</mm:even>>
-   <td>
-      <mm:field name="workflowitem.number" id="workflowNumber" write="false"/>
-      <input type="checkbox" name="check_${workflowNumber}" value="on"/>
-   </td>
-
    <c:if test="${workflowType == 'allcontent' }">
       <mm:field name="workflowitem.type" id="itemType" write="false"/>
       <c:if test="${itemType == 'content' }"><c:set var="type" value="contentelement"/></c:if>
@@ -87,6 +81,17 @@
       <c:set var="field" value="title"/>
       <c:set var="returnAction" value="PageWorkflowAction.do"/>
    </c:if>
+   <mm:field name="${type}.number" jspvar="number" write="false"/>
+   <mm:node number="${number}">
+      <c:set var="nodeType"><mm:node number="${number}"><mm:nodeinfo type="guitype"/></mm:node></c:set>
+   </mm:node>
+
+<c:if test="${(not empty workflowNodetypeGUI && nodeType eq workflowNodetypeGUI)||(empty workflowNodetypeGUI)}">
+<tr <mm:even inverse="true">class="swap"</mm:even>>
+   <td>
+      <mm:field name="workflowitem.number" id="workflowNumber" write="false"/>
+      <input type="checkbox" name="check_${workflowNumber}" value="on"/>
+   </td>
    <td align="left">
       <mm:node number="${workflowNumber}">
          <mm:field name="stacktrace" id="stacktrace" write="false"/>
@@ -128,7 +133,6 @@
                     alt="<fmt:message key="workflow.icon.versioning.title"/>"/></a>
          </mm:haspage>
       </c:if>
-
    </td>
    <td style="white-space: nowrap;">
       <mm:node number="${number}"> <mm:nodeinfo type="guitype"/> </mm:node>
@@ -170,6 +174,7 @@
       <mm:field name="workflowitem.remark" escape="none"/>
    </td>
 </tr>
+</c:if>
 </mm:list>
 </tbody>
 </table>
