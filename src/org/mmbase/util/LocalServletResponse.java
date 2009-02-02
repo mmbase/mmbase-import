@@ -17,17 +17,25 @@ import java.io.*;
 /**
  * @see LocalHttpServletRequest
  * @author Michiel Meeuwissen
- * @version $Id: LocalServletResponse.java,v 1.1 2009-01-27 18:06:18 michiel Exp $
+ * @version $Id: LocalServletResponse.java,v 1.2 2009-02-02 15:27:00 michiel Exp $
  * @since MMBase-1.9.1
  */
 public class LocalServletResponse implements ServletResponse {
 
 
     private final Writer writer;
-    private ByteArrayOutputStream output = new ByteArrayOutputStream();
+    private final OutputStream output;
+    private PrintWriter pwriter;
+
 
     public LocalServletResponse(Writer w) {
         writer = w;
+        output = new ByteArrayOutputStream();
+    }
+
+    public LocalServletResponse(OutputStream output) {
+        this.output = output;
+        writer = null;
     }
 
     private String characterEncoding = "UTF-8";
@@ -35,10 +43,21 @@ public class LocalServletResponse implements ServletResponse {
     private Locale locale = Locale.US;
 
     public void flushBuffer() {
-        try {
-            writer.write(new String(output.toByteArray(), characterEncoding));
-        } catch (Exception e) {
-            // shouldn't happen
+        if (writer != null) {
+            try {
+                writer.write(new String(((ByteArrayOutputStream) output).toByteArray(), characterEncoding));
+                ((ByteArrayOutputStream) output).reset();
+            } catch (Exception e) {
+                // shouldn't happen
+            }
+        } else {
+            if (pwriter != null) {
+                pwriter.flush();
+            }
+            try {
+                output.flush();
+            } catch (IOException ioe) {
+            }
         }
     }
     public int  getBufferSize() {
@@ -60,14 +79,19 @@ public class LocalServletResponse implements ServletResponse {
             }
             @Override public void flush() throws IOException {
                 super.flush();
-                writer.write(new String(output.toByteArray(), characterEncoding));
-                output.reset();
-
+                flushBuffer();
             }
         };
     }
     public PrintWriter  getWriter() {
-        return new PrintWriter(writer);
+        if (pwriter == null) {
+            if (writer != null) {
+                pwriter = new PrintWriter(writer);
+            } else {
+                pwriter = new PrintWriter(output, true);
+            }
+        }
+        return pwriter;
     }
     public boolean  isCommitted() {
         return false;
