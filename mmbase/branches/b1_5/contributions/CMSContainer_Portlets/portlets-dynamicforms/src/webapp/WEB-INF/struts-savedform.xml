@@ -13,13 +13,13 @@
 	<action-mappings>
 		<action path="/editors/savedform/ShowSavedForm" type="com.finalist.savedform.ShowSavedFormAction"
 			scope="request" unknown="false" validate="false">
-			<forward name="success" path="/WEB-INF/templates/view/savedform/list.jsp" redirect="false" />
+			<forward name="success" path="/editors/resources/responseform-list.jsp" redirect="false" />
 		</action>		
 		 <action path="/editors/savedform/DeleteSavedAnswer" type="com.finalist.savedform.DeleteSavedAnswerAction"
-            name="DeleteSecondaryContentForm" scope="request" input="/WEB-INF/templates/view/savedform/list.jsp" unknown="false" validate="false">
+            name="DeleteSecondaryContentForm" scope="request" input="/editors/resources/responseform-list.jsp" unknown="false" validate="false">
         </action>
          <action path="/editors/savedform/DeleteSavedForm" type="com.finalist.savedform.DeleteSavedFormAction"
-            name="DeleteSecondaryContentForm" scope="request" input="/WEB-INF/templates/view/savedform/list.jsp" unknown="false" validate="false">
+            name="DeleteSecondaryContentForm" scope="request" input="/editors/resources/responseform-list.jsp" unknown="false" validate="false">
         </action>
         <action path="/editors/savedform/DownloadSavedForm" type="com.finalist.savedform.DownloadSavedFormAction"
             unknown="false" validate="false">            
