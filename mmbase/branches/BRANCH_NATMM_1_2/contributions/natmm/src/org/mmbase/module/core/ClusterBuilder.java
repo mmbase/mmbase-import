@@ -41,7 +41,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.1 2008-02-15 14:07:22 nklasens Exp $
+ * @version $Id: ClusterBuilder.java,v 1.1.8.1 2009-02-02 10:10:25 jkoster Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -802,7 +802,7 @@ public class ClusterBuilder extends VirtualBuilder {
         int opos;
 
         if (orders == null)
-            return result.toString();
+            return result;
         // Convert direction table
         for (int pos= 0; pos < direction.size(); pos++) {
             val= (String)direction.elementAt(pos);

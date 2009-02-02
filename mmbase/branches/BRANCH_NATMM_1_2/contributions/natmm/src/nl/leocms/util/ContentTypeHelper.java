@@ -26,8 +26,6 @@ import org.mmbase.bridge.NotFoundException;
 
 import com.finalist.mmbase.util.CloudFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.StringTokenizer;
 
 /**
@@ -80,7 +78,7 @@ public class ContentTypeHelper {
       StringTokenizer st = new StringTokenizer(type, ",");
       boolean isContentType = false;
       while (st.hasMoreTokens()) {
-         String contentType = (String) st.nextToken();
+         String contentType = st.nextToken();
          NodeManager nm = CloudFactory.getCloud().getNodeManager(contentType);
          isContentType = isContentType(nm);
          if (!isContentType) {
