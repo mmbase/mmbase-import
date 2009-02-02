@@ -485,7 +485,7 @@
               <!-- on change the current value is copied back to the option's default, because of that, the user's search is stored between different types of search-actions -->
             </td>
             <td>
-			  <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';getAssets('{@nodepath}')" class="button">
+           <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';getAssets('{@nodepath}')" class="button">
                 <xsl:for-each select="@*">
                   <xsl:copy/>
                 </xsl:for-each>
@@ -501,7 +501,7 @@
                   </xsl:otherwise>
                 </xsl:choose>
                 <xsl:call-template name="prompt_search"/>
-			  </a>
+           </a>
             </td>
           </tr>
         </table>
@@ -839,7 +839,7 @@
                         <xsl:attribute name="dtrequired">true</xsl:attribute>
                      </xsl:if>
                   </input>
-                  <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
+                  <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}&amp;filetype={'image'}" onclick="return doStartUpload(this);">
                      <xsl:call-template name="prompt_image_upload"/>
                   </a>
                   <br/>
@@ -890,7 +890,7 @@
                   </xsl:if>
                </span>
                <br/>
-               <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
+               <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}&amp;filetype={'image'}" onclick="return doStartUpload(this);">
                   <xsl:call-template name="prompt_image_replace"/>
                </a>
             </div>

@@ -30,16 +30,18 @@ if (maxsize == null || maxsize.length() == 0) {
 <title><fmt:message key="upload.title" /></title>
 <link rel="stylesheet" type="text/css" href="../../../../editors/css/main.css" />
 <script type="text/javascript">
-    function upload() {
+    function upload( filetype ) {
         //validate file type
         var file = document.getElementById("file");
         var i=file.value.lastIndexOf(".");
         var ext=file.value.substring(i);
         var ext1=ext.toLowerCase();
-        if(ext1!=".gif" && ext1!=".jpg" && ext1!=".jpeg"&&ext1!=".tiff"&&ext1!=".tif"&&ext1!=".bmp"&&ext1!=".svg"&&ext1!=".png")
-        {
-           alert('<fmt:message key="asset.notimage.warning" />');
+        if(filetype == "image"){//CMSC-1254
+         if(ext1!=".gif" && ext1!=".jpg" && ext1!=".jpeg"&&ext1!=".tiff"&&ext1!=".tif"&&ext1!=".bmp"&&ext1!=".svg"&&ext1!=".png")
+         {
+            alert('<fmt:message key="asset.notimage.warning" />');
                 return false;
+         }
         }
 
         var f=document.forms[0];
@@ -76,14 +78,14 @@ if (maxsize == null || maxsize.length() == 0) {
       </div>
       <div class="body">
          <p>
-      		<fmt:message key="upload.intro" />
-      	</p>
-      	<p>
-	         <form action="<mm:url page="processuploads.jsp" />?did=<%=did%>&proceed=true&popupid=<%=popupId%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizard%>&maxsize=<%=maxsize%>" enctype="multipart/form-data" method="POST" >
-	            <input type="file" name="<%=did%>" id="file"></input><br />
-	            <input type="button" onclick="upload();" value="<fmt:message key="upload.button.upload" />"></input><br />
-	         </form>
-	      </p>
+            <fmt:message key="upload.intro" />
+         </p>
+         <p>
+            <form action="<mm:url page="processuploads.jsp" />?did=<%=did%>&proceed=true&popupid=<%=popupId%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizard%>&maxsize=<%=maxsize%>" enctype="multipart/form-data" method="POST" >
+               <input type="file" name="<%=did%>" id="file"></input><br />
+               <input type="button" onclick="upload('${param.filetype}');" value="<fmt:message key="upload.button.upload" />"></input><br />
+            </form>
+         </p>
       </div>
       <!-- einde block -->
       <div class="side_block_end"></div>
@@ -99,10 +101,10 @@ if (maxsize == null || maxsize.length() == 0) {
       </div>
       <div class="body">
          <p>
-         	<fmt:message key="upload.uploading">
-         		<fmt:param><a href="#" onclick="closeIt(); return false;"></fmt:param>
-         		<fmt:param></a></fmt:param>
-         	</fmt:message>
+            <fmt:message key="upload.uploading">
+               <fmt:param><a href="#" onclick="closeIt(); return false;"></fmt:param>
+               <fmt:param></a></fmt:param>
+            </fmt:message>
          </p>
       </div>
       <!-- einde block -->
