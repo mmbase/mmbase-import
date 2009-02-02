@@ -1,10 +1,7 @@
-<%@include file="/WEB-INF/templates/portletglobals.jsp" %> 
-<%@ taglib uri="http://jakarta.apache.org/struts/tags-bean" prefix="bean" %>
-<%@ taglib uri="http://jakarta.apache.org/struts/tags-logic" prefix="logic" %>
-<%@ taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html" %>
-<fmt:setBundle basename="savedformmodule" scope="request" />
+<%@include file="globals.jsp" 
+%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
 <mm:content type="text/html" encoding="UTF-8" expires="0">
-<%--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">--%>
+<fmt:setBundle basename="savedformmodule" scope="request" />
 <html:html xhtml="true">
 <head>
    <title><fmt:message key="savedform.title.content" /></title>
