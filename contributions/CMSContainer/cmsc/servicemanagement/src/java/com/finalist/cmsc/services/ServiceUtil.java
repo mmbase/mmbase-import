@@ -53,9 +53,10 @@ public class ServiceUtil {
       List<String> result = new ArrayList<String>();
       NodeManagerList nml = cloud.getNodeManagers();
       Iterator<NodeManager> v = nml.iterator();
+      List<String> hiddenTypes = getHiddenTypes();
       while (v.hasNext()) {
          String child = v.next().getName();
-         if (isChildType(cloud,child, parent)) {
+         if (!hiddenTypes.contains(child) && isChildType(cloud,child, parent)) {
             result.add(child);
          }
       }
