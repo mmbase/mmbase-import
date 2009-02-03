@@ -12,7 +12,7 @@
   <h2>1. Wat is voor jou echt belangrijk in je leven?</h2>
   <div class="mmxf">
   	<div id="" class="float left note">
-		 <mm:node number="vu_homework_assessment_note_imporantthings" notfound="skipbody">
+		 <mm:node number="vu_homework_assessment_note_importantthings" notfound="skipbody">
 		 		<mm:field name="body" escape="none" />
 		 </mm:node>
 		</div>
