@@ -64,9 +64,9 @@
 
           <mm:hasnode number="component.faq">
             <!-- sucks too much -->
-            <!--
+            
             <di:include  page="/faq/backoffice/add_faq.jsp" />
-            -->
+            
           </mm:hasnode>
 
           <!--
