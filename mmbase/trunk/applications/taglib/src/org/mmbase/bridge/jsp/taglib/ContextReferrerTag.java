@@ -36,7 +36,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.112 2009-01-12 13:33:16 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.113 2009-02-03 13:11:14 michiel Exp $
  * @see ContextTag
  */
 
@@ -486,7 +486,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
             }
             tag = tag.getParent();
         }
-        throw new JspTagException("Cloud not find parent Tag of LoopTag or QueryContainer type");
+        if (exception) {
+            throw new JspTagException("Cloud not find parent Tag of LoopTag or QueryContainer type");
+        } else {
+            return null;
+        }
     }
 
     /**
