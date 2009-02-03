@@ -101,7 +101,7 @@
             <table>
                <tr>
                   <td style="width:105px"><fmt:message key="searchform.title" /></td>
-                  <td style="width:300px"><html:text property="title" style="width:200px"/></td>
+                  <td style="width:300px"><html:text property="title" style="width:200px" value="${title}"/></td>
                <mm:compare referid="mode" value= "basic">
                   <td style="width:105px"><fmt:message key="searchform.contenttype" /></td>
                   <td>

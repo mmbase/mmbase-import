@@ -73,6 +73,7 @@ public class AssetSearchAction extends PagerAction {
       if (StringUtils.isNotEmpty(strict)) {
          request.setAttribute(STRICT, strict);
       }
+      request.getSession().setAttribute("title", searchForm.getTitle());
       if (StringUtils.isEmpty(searchShow)) {
          searchShow = (String)request.getSession().getAttribute("searchShow");
          if(StringUtils.isEmpty(searchShow)){
