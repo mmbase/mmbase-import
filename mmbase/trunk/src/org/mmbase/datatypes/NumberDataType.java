@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.34 2008-12-22 17:02:53 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.35 2009-02-03 10:05:42 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType<E extends Number & Comparable<E>> extends ComparableDataType<E> {
@@ -54,7 +54,7 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
                  log.debug("Not correct, falling back to toDouble");
                  if (! StringDataType.DOUBLE_PATTERN.matcher(s).matches()) {
                      log.debug("Not a valid double");
-                     throw new CastException("Not a number: " + s);
+                     throw new CastException("Not a number: '" + s + "'");
                  } else {
                      log.debug("Casting to double " + s);
                      return Casting.toDecimal(s);
@@ -79,16 +79,18 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
     /**
      * @since MMBase-1.9
      */
-    @Override
-    protected Object castToValidate(Object value, Node node, Field field) throws CastException {
+    @Override protected Object castToValidate(Object value, Node node, Field field) throws CastException {
         if (value == null) return null;
         Object preCast = preCast(value, node, field); // resolves enumerations
         return castString(preCast, getCloud(getCloud(node, field)));
     }
 
-    @Override
-    protected E cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
-        Number preCast = castString(preCast(value, cloud, node, field), cloud);
+    @Override protected E cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
+        Object preValue = preCast(value, cloud, node, field);
+        if (log.isDebugEnabled()) {
+            log.debug("Precast " + value + " to " + preValue);
+        }
+        Number preCast = castString(preValue, cloud);
         if (preCast == null) return null;
         E cast = Casting.toType(getTypeAsClass(), cloud, preCast);
         return cast;
