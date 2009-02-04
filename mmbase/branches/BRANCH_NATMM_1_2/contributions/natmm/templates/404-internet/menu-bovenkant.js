@@ -52,10 +52,10 @@ with(style2=new mm_style()){
          orientation="horizontal";
          aI("text=&nbsp;&nbsp;HOME&nbsp;&nbsp;;;url=/natmm-internet/home.htm;separatorsize=1")
                   aI("text=&nbsp;&nbsp;STEUN ONS&nbsp;&nbsp;;showmenu=r516;url=/natmm-internet/steun_ons/steun_ons.htm;separatorsize=1")
-                  aI("text=&nbsp;&nbsp;NATUURGEBIEDEN&nbsp;&nbsp;;showmenu=r513;url=/natmm-internet/natuurgebieden/344_afwisselende_natuurgebieden.htm;separatorsize=1")
+                  aI("text=&nbsp;&nbsp;NATUURGEBIEDEN&nbsp;&nbsp;;showmenu=r513;url=/natmm-internet/natuurgebieden/345_afwisselende_natuurgebieden.htm;separatorsize=1")
                   aI("text=&nbsp;&nbsp;DE NATUUR IN&nbsp;&nbsp;;showmenu=r525;url=/natmm-internet/de_natuur_in/agenda.htm;separatorsize=1")
                   aI("text=&nbsp;&nbsp;NIEUWS&nbsp;&nbsp;;showmenu=r495;url=/natmm-internet/nieuws/actualiteit.htm;separatorsize=1")
-                  aI("text=&nbsp;&nbsp;VERENIGING&nbsp;&nbsp;;showmenu=r510;url=/natmm-internet/vereniging/natuurmonumenten.htm;separatorsize=1")
+                  aI("text=&nbsp;&nbsp;NATUURMONUMENTEN&nbsp;&nbsp;;showmenu=r510;url=/natmm-internet/natuurmonumenten/natuurmonumenten.htm;separatorsize=1")
                   aI("text=&nbsp;&nbsp;WINKEL&nbsp;&nbsp;;showmenu=r1718283;url=/natmm-internet/winkel/welkom_in_de_winkel.htm;separatorsize=1")
                   aI("text=&nbsp;&nbsp;VRAGEN?&nbsp;&nbsp;;showmenu=r519;url=/natmm-internet/vragen_/veel_gestelde_vragen.htm;separatorsize=1")
                   aI("text=&nbsp;&nbsp;FUN&nbsp;&nbsp;;showmenu=r504;url=/natmm-internet/fun/e-cards.htm;separatorsize=1")
@@ -67,20 +67,21 @@ with(style2=new mm_style()){
          style=style2;
          alignment="center";
          aI("text=Steun ons;;url=/natmm-internet/steun_ons/steun_ons.htm;separatorsize=1")
-                  aI("text=Acties en voordeel voor leden;;url=/natmm-internet/steun_ons/acties_en_voordeel_voor_leden.htm;separatorsize=1")
-                  aI("text=Bedrijven;;url=/natmm-internet/steun_ons/bedrijven.htm;separatorsize=1")
                   aI("text=Lid worden;;url=/natmm-internet/steun_ons/lid_worden.htm;separatorsize=1")
+                  aI("text=Doneren;;url=/natmm-internet/steun_ons/doneren.htm;separatorsize=1")
                   aI("text=Lid werft lid;;url=/natmm-internet/steun_ons/lid_werft_lid.htm;separatorsize=1")
                   aI("text=Cadeaulidmaatschap;;url=/natmm-internet/steun_ons/cadeaulidmaatschap.htm;separatorsize=1")
                   aI("text=Schenken en nalaten;;url=/natmm-internet/steun_ons/schenken_en_nalaten.htm;separatorsize=1")
-                  aI("text=Postcode Loterij;;url=/natmm-internet/steun_ons/postcode_loterij.htm;separatorsize=1")
+                  aI("text=Bedrijven;;url=/natmm-internet/steun_ons/bedrijven.htm;separatorsize=1")
+                  aI("text=Acties en voordeel voor leden;;url=/natmm-internet/steun_ons/acties_en_voordeel_voor_leden.htm;separatorsize=1")
                   aI("text=Sponsors;;url=/natmm-internet/steun_ons/sponsors.htm;separatorsize=1")
+                  aI("text=Postcode Loterij;;url=/natmm-internet/steun_ons/postcode_loterij.htm;separatorsize=1")
    }
          with(milonic=new menuname("r513")){
          itemwidth=150;
          style=style2;
          alignment="center";
-         aI("text=344 afwisselende natuurgebieden;;url=/natmm-internet/natuurgebieden/344_afwisselende_natuurgebieden.htm;separatorsize=1")
+         aI("text=345 afwisselende natuurgebieden;;url=/natmm-internet/natuurgebieden/345_afwisselende_natuurgebieden.htm;separatorsize=1")
                   aI("text=Drenthe;;url=/natmm-internet/natuurgebieden/drenthe.htm;separatorsize=1")
                   aI("text=Flevoland;;url=/natmm-internet/natuurgebieden/flevoland.htm;separatorsize=1")
                   aI("text=Friesland;;url=/natmm-internet/natuurgebieden/friesland.htm;separatorsize=1")
@@ -101,8 +102,10 @@ with(style2=new mm_style()){
          aI("text=Agenda;;url=/natmm-internet/de_natuur_in/agenda.htm;separatorsize=1")
                   aI("text=Routes;;url=/natmm-internet/de_natuur_in/routes.htm;separatorsize=1")
                   aI("text=Bezoekerscentra;showmenu=r501;url=/natmm-internet/de_natuur_in/bezoekerscentra/bezoekerscentra_.htm;separatorsize=1")
-                  aI("text=Wildzoekers;;url=/natmm-internet/de_natuur_in/wildzoekers.htm;separatorsize=1")
+                  aI("text=WILDzoekers;;url=/natmm-internet/de_natuur_in/wildzoekers.htm;separatorsize=1")
+                  aI("text=Kinderfeestjes;;url=/natmm-internet/de_natuur_in/kinderfeestjes.htm;separatorsize=1")
                   aI("text=Tips;showmenu=r903334;url=/natmm-internet/de_natuur_in/tips/teken.htm;separatorsize=1")
+                  aI("text=Vergunningen;showmenu=r4110429;url=/natmm-internet/de_natuur_in/vergunningen/vergunningen.htm;separatorsize=1")
    }
          with(milonic=new menuname("r501")){
          itemwidth=150;
@@ -110,17 +113,26 @@ with(style2=new mm_style()){
          alignment="center";
          aI("text=Bezoekerscentra:;;url=/natmm-internet/de_natuur_in/bezoekerscentra/bezoekerscentra_.htm;separatorsize=1")
                   aI("text=Brunssummerheide;;url=/natmm-internet/de_natuur_in/bezoekerscentra/brunssummerheide.htm;separatorsize=1")
-                  aI("text=De Wieden;;url=/natmm-internet/de_natuur_in/bezoekerscentra/de_wieden.htm;separatorsize=1")
                   aI("text=Dwingelderveld;;url=/natmm-internet/de_natuur_in/bezoekerscentra/dwingelderveld.htm;separatorsize=1")
+                  aI("text='s-Graveland;;url=/natmm-internet/de_natuur_in/bezoekerscentra/s-graveland.htm;separatorsize=1")
+                  aI("text=Nieuwkoopse Plassen;;url=/natmm-internet/de_natuur_in/bezoekerscentra/nieuwkoopse_plassen.htm;separatorsize=1")
                   aI("text=Oisterwijk;;url=/natmm-internet/de_natuur_in/bezoekerscentra/oisterwijk.htm;separatorsize=1")
                   aI("text=Veluwezoom;;url=/natmm-internet/de_natuur_in/bezoekerscentra/veluwezoom.htm;separatorsize=1")
-                  aI("text='s-Graveland;;url=/natmm-internet/de_natuur_in/bezoekerscentra/s-graveland.htm;separatorsize=1")
+                  aI("text=De Wieden;;url=/natmm-internet/de_natuur_in/bezoekerscentra/de_wieden.htm;separatorsize=1")
    }
          with(milonic=new menuname("r903334")){
          itemwidth=150;
          style=style2;
          alignment="center";
          aI("text=Teken;;url=/natmm-internet/de_natuur_in/tips/teken.htm;separatorsize=1")
+   }
+         with(milonic=new menuname("r4110429")){
+         itemwidth=150;
+         style=style2;
+         alignment="center";
+         aI("text=Vergunningen;;url=/natmm-internet/de_natuur_in/vergunningen/vergunningen.htm;separatorsize=1")
+                  aI("text=MTB-vergunning;;url=/natmm-internet/de_natuur_in/vergunningen/mtb-vergunning.htm;separatorsize=1")
+                  aI("text=Ruitervergunning;;url=/natmm-internet/de_natuur_in/vergunningen/ruitervergunning.htm;separatorsize=1")
    }
          with(milonic=new menuname("r495")){
          itemwidth=150;
@@ -132,48 +144,52 @@ with(style2=new mm_style()){
                   aI("text=Natuurbrief;;url=/natmm-internet/nieuws/natuurbrief.htm;separatorsize=1")
                   aI("text=Natuurbehoud;;url=/natmm-internet/nieuws/natuurbehoud.htm;separatorsize=1")
                   aI("text=Van Nature;;url=/natmm-internet/nieuws/van_nature.htm;separatorsize=1")
+                  aI("text=WILDzoekers Expres;;url=/natmm-internet/nieuws/wildzoekers_expres.htm;separatorsize=1")
    }
          with(milonic=new menuname("r510")){
          itemwidth=150;
          style=style2;
          alignment="center";
-         aI("text=Natuurmonumenten;;url=/natmm-internet/vereniging/natuurmonumenten.htm;separatorsize=1")
-                  aI("text=Organisatie;;url=/natmm-internet/vereniging/organisatie.htm;separatorsize=1")
-                  aI("text=Sponsors;;url=/natmm-internet/vereniging/sponsors.htm;separatorsize=1")
-                  aI("text=Jaarverslag;;url=/natmm-internet/vereniging/jaarverslag.htm;separatorsize=1")
-                  aI("text=Contact;;url=/natmm-internet/vereniging/contact.htm;separatorsize=1")
-                  aI("text=Districtscommissies;showmenu=r87900;url=/natmm-internet/vereniging/districtscommissies/districtscommissies.htm;separatorsize=1")
+         aI("text=Natuurmonumenten;;url=/natmm-internet/natuurmonumenten/natuurmonumenten.htm;separatorsize=1")
+                  aI("text=Organisatie;;url=/natmm-internet/natuurmonumenten/organisatie.htm;separatorsize=1")
+                  aI("text=Districtscommissies;showmenu=r87900;url=/natmm-internet/natuurmonumenten/districtscommissies/districtscommissies.htm;separatorsize=1")
+                  aI("text=Jaarverslag 2007;;url=/natmm-internet/natuurmonumenten/jaarverslag_2007.htm;separatorsize=1")
+                  aI("text=Sponsors;;url=/natmm-internet/natuurmonumenten/sponsors.htm;separatorsize=1")
+                  aI("text=Contact;;url=/natmm-internet/natuurmonumenten/contact.htm;separatorsize=1")
    }
          with(milonic=new menuname("r87900")){
          itemwidth=150;
          style=style2;
          alignment="center";
-         aI("text=Districtscommissies;;url=/natmm-internet/vereniging/districtscommissies/districtscommissies.htm;separatorsize=1")
-                  aI("text=Flevoland;;url=/natmm-internet/vereniging/districtscommissies/flevoland.htm;separatorsize=1")
-                  aI("text=Zeeland;;url=/natmm-internet/vereniging/districtscommissies/zeeland.htm;separatorsize=1")
-                  aI("text=Zuid-Holland;;url=/natmm-internet/vereniging/districtscommissies/zuid-holland.htm;separatorsize=1")
-                  aI("text=Drenthe;;url=/natmm-internet/vereniging/districtscommissies/drenthe.htm;separatorsize=1")
-                  aI("text=Friesland;;url=/natmm-internet/vereniging/districtscommissies/friesland.htm;separatorsize=1")
-                  aI("text=Gelderland;;url=/natmm-internet/vereniging/districtscommissies/gelderland.htm;separatorsize=1")
-                  aI("text=Groningen;;url=/natmm-internet/vereniging/districtscommissies/groningen.htm;separatorsize=1")
-                  aI("text=Limburg;;url=/natmm-internet/vereniging/districtscommissies/limburg.htm;separatorsize=1")
-                  aI("text=Noord-Brabant;;url=/natmm-internet/vereniging/districtscommissies/noord-brabant.htm;separatorsize=1")
-                  aI("text=Noord-Holland;;url=/natmm-internet/vereniging/districtscommissies/noord-holland.htm;separatorsize=1")
-                  aI("text=Overijssel;;url=/natmm-internet/vereniging/districtscommissies/overijssel.htm;separatorsize=1")
-                  aI("text=Utrecht;;url=/natmm-internet/vereniging/districtscommissies/utrecht.htm;separatorsize=1")
-                  aI("text=Amsterdam;;url=/natmm-internet/vereniging/districtscommissies/amsterdam.htm;separatorsize=1")
+         aI("text=Districtscommissies;;url=/natmm-internet/natuurmonumenten/districtscommissies/districtscommissies.htm;separatorsize=1")
+                  aI("text=Amsterdam;;url=/natmm-internet/natuurmonumenten/districtscommissies/amsterdam.htm;separatorsize=1")
+                  aI("text=Drenthe;;url=/natmm-internet/natuurmonumenten/districtscommissies/drenthe.htm;separatorsize=1")
+                  aI("text=Flevoland;;url=/natmm-internet/natuurmonumenten/districtscommissies/flevoland.htm;separatorsize=1")
+                  aI("text=Friesland;;url=/natmm-internet/natuurmonumenten/districtscommissies/friesland.htm;separatorsize=1")
+                  aI("text=Gelderland;;url=/natmm-internet/natuurmonumenten/districtscommissies/gelderland.htm;separatorsize=1")
+                  aI("text=Groningen;;url=/natmm-internet/natuurmonumenten/districtscommissies/groningen.htm;separatorsize=1")
+                  aI("text=Limburg;;url=/natmm-internet/natuurmonumenten/districtscommissies/limburg.htm;separatorsize=1")
+                  aI("text=Noord-Brabant;;url=/natmm-internet/natuurmonumenten/districtscommissies/noord-brabant.htm;separatorsize=1")
+                  aI("text=Noord-Holland;;url=/natmm-internet/natuurmonumenten/districtscommissies/noord-holland.htm;separatorsize=1")
+                  aI("text=Overijssel;;url=/natmm-internet/natuurmonumenten/districtscommissies/overijssel.htm;separatorsize=1")
+                  aI("text=Utrecht;;url=/natmm-internet/natuurmonumenten/districtscommissies/utrecht.htm;separatorsize=1")
+                  aI("text=Zeeland;;url=/natmm-internet/natuurmonumenten/districtscommissies/zeeland.htm;separatorsize=1")
+                  aI("text=Zuid-Holland;;url=/natmm-internet/natuurmonumenten/districtscommissies/zuid-holland.htm;separatorsize=1")
    }
          with(milonic=new menuname("r1718283")){
          itemwidth=150;
          style=style2;
          alignment="center";
          aI("text=Welkom in de Winkel;;url=/natmm-internet/winkel/welkom_in_de_winkel.htm;separatorsize=1")
+                  aI("text=Sale;;url=/natmm-internet/winkel/sale.htm;separatorsize=1")
                   aI("text=Jeugdproducten;;url=/natmm-internet/winkel/jeugdproducten.htm;separatorsize=1")
                   aI("text=Boeken;;url=/natmm-internet/winkel/boeken.htm;separatorsize=1")
                   aI("text=Agenda en kalender;;url=/natmm-internet/winkel/agenda_en_kalender.htm;separatorsize=1")
                   aI("text=Natuurgidsen- en waaiers;;url=/natmm-internet/winkel/natuurgidsen-_en_waaiers.htm;separatorsize=1")
                   aI("text=Wandelen en fietsen;;url=/natmm-internet/winkel/wandelen_en_fietsen.htm;separatorsize=1")
-                  aI("text=Verzamelbanden Natuurbehoud;;url=/natmm-internet/winkel/verzamelbanden_natuurbehoud.htm;separatorsize=1")
+                  aI("text=DVD;;url=/natmm-internet/winkel/dvd.htm;separatorsize=1")
+                  aI("text=Wenskaarten;;url=/natmm-internet/winkel/wenskaarten.htm;separatorsize=1")
+                  aI("text=Diversen;;url=/natmm-internet/winkel/diversen.htm;separatorsize=1")
                   aI("text=Verkoopadressen en Bezoekerscentra;;url=/natmm-internet/winkel/verkoopadressen_en_bezoekerscentra.htm;separatorsize=1")
                   aI("text=Contact;;url=/natmm-internet/winkel/contact.htm;separatorsize=1")
                   aI("text=Leveringsvoorwaarden;;url=/natmm-internet/winkel/leveringsvoorwaarden.htm;separatorsize=1")
@@ -195,13 +211,21 @@ with(style2=new mm_style()){
          alignment="center";
          aI("text=E-cards;;url=/natmm-internet/fun/e-cards.htm;separatorsize=1")
                   aI("text=Wallpaper;;url=/natmm-internet/fun/wallpaper.htm;separatorsize=1")
+                  aI("text=MP3-routes;showmenu=r4054413;url=/natmm-internet/fun/mp3-routes/mp3-routes.htm;separatorsize=1")
                   aI("text=WILDzoekers;;url=/natmm-internet/fun/wildzoekers.htm;separatorsize=1")
-                  aI("text=Podwalk;;url=/natmm-internet/fun/podwalk.htm;separatorsize=1")
+                  aI("text=Foto van de maand;;url=/natmm-internet/fun/foto_van_de_maand.htm;separatorsize=1")
+                  aI("text=Kikkermasker;;url=/natmm-internet/fun/kikkermasker.htm;separatorsize=1")
                   aI("text=Natuurrap Goldy;;url=/natmm-internet/fun/natuurrap_goldy.htm;separatorsize=1")
-                  aI("text=Second Life;;url=/natmm-internet/fun/second_life.htm;separatorsize=1")
                   aI("text=Goede Doelen Kaartje;;url=/natmm-internet/fun/goede_doelen_kaartje.htm;separatorsize=1")
-                  aI("text=Weblog met cam;;url=/natmm-internet/fun/weblog_met_cam.htm;separatorsize=1")
-                  aI("text=Webcam Jurn;;url=/natmm-internet/fun/webcam_jurn.htm;separatorsize=1")
+   }
+         with(milonic=new menuname("r4054413")){
+         itemwidth=150;
+         style=style2;
+         alignment="center";
+         aI("text=MP3-routes;;url=/natmm-internet/fun/mp3-routes/mp3-routes.htm;separatorsize=1")
+                  aI("text=Oisterwijk;;url=/natmm-internet/fun/mp3-routes/oisterwijk.htm;separatorsize=1")
+                  aI("text=Botshol;;url=/natmm-internet/fun/mp3-routes/botshol.htm;separatorsize=1")
+                  aI("text='s-Gravelandse Buitenplaatsen;;url=/natmm-internet/fun/mp3-routes/s-gravelandse_buitenplaatsen.htm;separatorsize=1")
    }
          with(milonic=new menuname("r507")){
          itemwidth=150;
@@ -209,7 +233,6 @@ with(style2=new mm_style()){
          alignment="center";
          aI("text=Natuur- en milieu;;url=/natmm-internet/links/natuur-_en_milieu.htm;separatorsize=1")
                   aI("text=Subsidiegevers;;url=/natmm-internet/links/subsidiegevers.htm;separatorsize=1")
-                  aI("text=Sponsors;;url=/natmm-internet/links/sponsors.htm;separatorsize=1")
                   aI("text=Startpagina's;;url=/natmm-internet/links/startpaginas.htm;separatorsize=1")
                   aI("text=Wandel- en fietsroutes;;url=/natmm-internet/links/wandel-_en_fietsroutes.htm;separatorsize=1")
                   aI("text=Overige relaties;;url=/natmm-internet/links/overige_relaties.htm;separatorsize=1")
@@ -220,6 +243,5 @@ with(style2=new mm_style()){
          alignment="center";
          aI("text=Vacatures;;url=/natmm-internet/werken_bij.../vacatures.htm;separatorsize=1")
                   aI("text=Vrijwilligers gevraagd!;;url=/natmm-internet/werken_bij.../vrijwilligers_gevraagd_.htm;separatorsize=1")
-                  aI("text=Vrijwilligers;;url=/natmm-internet/werken_bij.../vrijwilligers.htm;separatorsize=1")
    }
 drawMenus();
