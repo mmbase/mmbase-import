@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: Instantiator.java,v 1.6 2009-01-12 21:12:47 michiel Exp $
+ * @version $Id: Instantiator.java,v 1.6.2.1 2009-02-04 15:25:24 michiel Exp $
  */
 public abstract class Instantiator {
 
@@ -56,18 +56,16 @@ public abstract class Instantiator {
      * @throws ClassNotFoundException If the specified class does not exist.
      * @return A newly created object. Never <code>null</code>.
      */
-    public static Object getInstance(Element classElement, Object... args)
+    public static Object getInstance(Element classElement)
         throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
         String className = classElement.getAttribute("name");
         if ("".equals(className)) className = classElement.getAttribute("class");
         Class claz = Class.forName(className);
-        List<Class> argTypes = new ArrayList<Class>(args.length);
-        for (Object arg : args) {
-            argTypes.add(arg.getClass());
-        }
-        Class[] argTypesArray = argTypes.toArray(new Class[] {});
+        Class[] argTypesArray = new Class[0];
         Constructor constructor = null;
-        for (Constructor c : claz.getConstructors()) {
+        Constructor[] constructors = claz.getConstructors();
+        for (int j = 0; j < constructors.length; j++) {
+            Constructor c = constructors[j];
             Class[] parameterTypes = c.getParameterTypes();
             if (parameterTypes.length != argTypesArray.length) continue;
             for (int i = 0; i < parameterTypes.length; i++) {
@@ -76,10 +74,10 @@ public abstract class Instantiator {
             constructor = c;
             break;
         }
-        if (constructor == null) throw new NoSuchMethodError("No constructors found for " + args);
+        if (constructor == null) throw new NoSuchMethodError("No constructors found");
         log.debug("Found constructor " + constructor);
 
-        Object o = constructor.newInstance(args);
+        Object o = constructor.newInstance(new Object[0]);
 
         NodeList params = classElement.getChildNodes();
         for (int i = 0 ; i < params.getLength(); i++) {
@@ -112,13 +110,15 @@ public abstract class Instantiator {
         String methodName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
         boolean invoked = false;
         Method setProperty = null;
-        for (Method m : claz.getMethods()) {
+        Method[] methods = claz.getMethods();
+        for (int i = 0; i < methods.length; i++) {
+            Method m = methods[i];
             try {
                 if (m.getName().equals(methodName) && m.getParameterTypes().length == 1) {
                     if (invoked) {
                         log.warn("Found multiple matches for setter " + name + " on " + claz);
                     }
-                    m.invoke(o, Casting.toType(m.getParameterTypes()[0], value));
+                    m.invoke(o, new Object[] {Casting.toType(m.getParameterTypes()[0], value)});
                     invoked = true;
                 }
                 if (m.getName().equals("setProperty") && m.getParameterTypes().length == 2 && String.class.isAssignableFrom(m.getParameterTypes()[0])) {
@@ -133,7 +133,7 @@ public abstract class Instantiator {
         if (! invoked && setProperty != null) {
             try {
                 invoked = true;
-                setProperty.invoke(o, name, Casting.toType(setProperty.getParameterTypes()[1], value));
+                setProperty.invoke(o, new Object[] {name, Casting.toType(setProperty.getParameterTypes()[1], value)});
             } catch (IllegalAccessException ie) {
                 log.warn(ie);
             } catch (InvocationTargetException ite) {
@@ -151,14 +151,14 @@ public abstract class Instantiator {
      * @param element Element in which a child specifying a java object must be searched.
      * @return a new object, or <code>null</code> if no matching child found.
      */
-    public static Object getInstanceWithSubElement(Element element, Object... args)
+    public static Object getInstanceWithSubElement(Element element)
         throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         NodeList childs =  element.getChildNodes();
         Object instance = null;
         for (int i = 0; i < childs.getLength(); i++) {
             Node node = childs.item(i);
             if (node instanceof Element && node.getNodeName().equals("class")) {
-                instance =  getInstance((Element) node, args);
+                instance =  getInstance((Element) node);
                 break;
             }
         }
