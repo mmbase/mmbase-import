@@ -30,6 +30,7 @@ import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portlets.ContentPortlet;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.util.EmailSender;
 
 public class ResponseFormPortlet extends ContentPortlet {
 
@@ -258,7 +259,7 @@ public class ResponseFormPortlet extends ContentPortlet {
             && isEmailAddress(userEmailAddress)
             && isEmailAddress(userEmailSenderAddress)) {
          try {
-            EmailSender.getInstance().sendEmail(userEmailSenderAddress, userEmailSenderName, userEmailAddress,
+            EmailSender.sendEmail(userEmailSenderAddress, userEmailSenderName, userEmailAddress,
                   userEmailSubject, userEmailText.toString());
             sent = true;
          }
@@ -324,7 +325,7 @@ public class ResponseFormPortlet extends ContentPortlet {
       }
 
       try {
-         EmailSender.getInstance().sendEmail(senderEmailAddress, senderName, emailList, emailSubject, emailText.toString(),
+         EmailSender.sendEmail(senderEmailAddress, senderName, emailList, emailSubject, emailText.toString(),
                attachment, userEmailAddress);
          sent = true;
       }

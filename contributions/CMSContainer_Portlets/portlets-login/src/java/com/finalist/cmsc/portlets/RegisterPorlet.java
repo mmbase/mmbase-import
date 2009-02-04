@@ -16,7 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.finalist.cmsc.login.EmailUtils;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.Person;
@@ -24,6 +23,7 @@ import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.cmsc.util.EmailSender;
 
 public class RegisterPorlet extends AbstractLoginPortlet {
 
@@ -98,7 +98,7 @@ public class RegisterPorlet extends AbstractLoginPortlet {
                if (StringUtils.isNotBlank(emailFrom) && !isEmailAddress(emailFrom)) {
                   throw new AddressException("Email address '" + emailFrom + "' is not available or working!");
                }
-                  EmailUtils.sendEmail(emailFrom, nameFrom, email, emailSubject, emailText,
+                  EmailSender.sendEmail(emailFrom, nameFrom, email, emailSubject, emailText,
                         email, "text/plain;charset=utf-8");
             } 
             catch (AddressException e) {
