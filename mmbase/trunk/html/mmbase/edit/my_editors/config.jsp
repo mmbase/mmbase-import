@@ -89,8 +89,12 @@
 <ul>
   <li>the maximum age of the items that will be found: <b><mm:write referid="max_days" /></b> days;</li>
   <li>maximum number of items in each list: <b><mm:write referid="max_items" /></b>;</li>
-  <li>if you want all the node types to be shown or only the ones you are allowed to edit: <b><mm:write referid="type_list" /></b>; and</li>
-  <li>where you want the searchbox to be displayed: <strong><mm:write referid="search_box" /></strong> the searchresults.</li>
+  <%-- li>if you want all the node types to be shown or only the ones you are allowed to edit: <b><mm:write referid="type_list" /></b>; and</li --%>
+  <li>where you want the searchbox to be displayed: <strong><mm:write referid="search_box" /></strong> the searchresults; or</li>
+  <li>
+    the position of the content column vs. the sidebar, or vise versa: 
+    <strong><mm:write referid="columns_pos" /></strong> 
+  </li>
 </ul>
 
 <p>Your preferences are saved in several cookies starting with 'my_editors'. You'll find them in your browsers cookie jar.</p>
@@ -107,13 +111,13 @@
   <input type="text" name="max_items" value="<mm:write referid="max_items" />" size="9" maxlength="9" />
   or other lists.
 </div>
-<div class="row">
+<%-- div class="row">
   <label><strong>Show me</strong></label>
   <select name="type_list">
     <option label="all the node types" value="all"<mm:compare referid="type_list" value="all"> selected="selected"</mm:compare>>all the node types</option>
     <option label="only the editable node types" value="editable"<mm:compare referid="type_list" value="editable"> selected="selected"</mm:compare>>only the editable node types</option>
   </select>
-</div>
+</div --%>
 <div class="row">
   <label><strong>Show the searchbox</strong></label>
   <select name="search_box">
