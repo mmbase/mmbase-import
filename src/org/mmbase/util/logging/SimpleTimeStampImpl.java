@@ -11,6 +11,8 @@ package org.mmbase.util.logging;
 
 import java.io.PrintStream;
 import java.util.StringTokenizer;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -18,7 +20,7 @@ import java.text.SimpleDateFormat;
  * Like SimpleImpl, but also adds timestamps.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: SimpleTimeStampImpl.java,v 1.3 2005-10-02 16:42:15 michiel Exp $
+ * @version $Id: SimpleTimeStampImpl.java,v 1.4 2009-02-04 12:31:51 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -28,14 +30,20 @@ public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
     private static PrintStream ps = System.out;
 
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS ");
+    private static Map<String, SimpleTimeStampImpl> loggers  = new ConcurrentHashMap<String, SimpleTimeStampImpl>();
 
 
     private SimpleTimeStampImpl() {
-        // a Singleton class.
     }
 
     public static  SimpleTimeStampImpl getLoggerInstance(String name) {
-        return root;
+        SimpleTimeStampImpl impl = loggers.get(name);
+        if (impl == null) {
+            impl = new SimpleTimeStampImpl();
+            impl.level = root.level;
+            loggers.put(name, impl);
+        }
+        return impl;
     }
 
     /**

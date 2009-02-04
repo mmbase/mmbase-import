@@ -59,7 +59,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.48 2008-10-18 10:25:06 michiel Exp $
+ * @version $Id: Logging.java,v 1.49 2009-02-04 12:31:51 michiel Exp $
  */
 
 
@@ -164,7 +164,7 @@ public class Logging {
             return;
         }
 
-        String classToUse    = SimpleImpl.class.getName(); // default
+        String classToUse    = SimpleTimeStampImpl.class.getName(); // default
         String configuration = "stderr,info";              // default
 
         Map<String, String> overrides = getInitParameters();
