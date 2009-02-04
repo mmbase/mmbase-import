@@ -256,6 +256,7 @@ public class XmlUtil {
     }
 
     public static Element createElement(Document doc, String elementName, String namespaceURI) {
+       if (elementName != null) {
         Element child;
         if (namespaceURI != null) {
             child = doc.createElementNS(namespaceURI, elementName);
@@ -264,10 +265,14 @@ public class XmlUtil {
             child = doc.createElement(elementName);
         }
         return child;
+       }
+       return null;
     }
 
     public static void createAttribute(Element element, String name, String value) {
-        element.setAttribute(name, value);
+       if (value != null) {
+          element.setAttribute(name, value);
+       }
     }
 
     public static void createText(Element root, String text) {

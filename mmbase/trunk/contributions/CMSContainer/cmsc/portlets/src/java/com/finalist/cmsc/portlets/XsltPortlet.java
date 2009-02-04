@@ -18,13 +18,10 @@ import java.util.*;
 import javax.portlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang.StringUtils;
-
-import org.apache.commons.lang.StringUtils;
-import org.xml.sax.SAXException;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.navigation.ServerUtil;
@@ -112,81 +109,114 @@ public class XsltPortlet extends CmscPortlet {
    @Override
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
       PortletPreferences preferences = request.getPreferences();
-      String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
-      String page = preferences.getValue(PAGE, null);
-      String window = preferences.getValue(WINDOW, null);
-      String xsl = getTemplate("view", template, "xsl");
       String xmlSource = preferences.getValue(SOURCE_ATTR_PARAM, null);
+      Object xml = null;
+      if (StringUtils.isNotEmpty(xmlSource)) {
+         xml = new URL(xmlSource);
+      }
+      
+      try {
+         renderXml(request, response, xml);
+      }
+      catch (MalformedURLException e) {
+         getLogger().error("Xslt portlet URL error: " + e.getMessage());
+         String errmsg = "error.url.malformed";
+         response.getWriter().print(createErrorMessage(request, errmsg, xmlSource));
+      }
+      catch (UnknownHostException uhe) {
+         getLogger().error("Xslt portlet connection error: " + uhe.getMessage());
+         String errmsg = "error.url.unknownhost";
+         response.getWriter().print(createErrorMessage(request, errmsg, xmlSource));
+      }
+      catch (ConnectException ce) {
+         getLogger().error("Xslt portlet connection error: " + ce.getMessage());
+         String errmsg = "error.url.connect";
+         response.getWriter().print(createErrorMessage(request, errmsg, xmlSource));
+      }
+   }
 
+
+   protected void renderXml(RenderRequest request, RenderResponse response, Object xml) throws IOException {
       // set required content type and write content
+
+      PortletPreferences preferences = request.getPreferences();
+      String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
+      String xsl = getTemplate("view", template, "xsl");
       response.setContentType("text/html");
-      if (StringUtils.isNotEmpty(xsl) && StringUtils.isNotEmpty(xmlSource)) {
+      if (StringUtils.isNotEmpty(xsl) && xml != null) {
          try {
             HashMap<String, Object> xslParams = getXsltParams(preferences);
             
-            /** get renderUrl */
-            PortletURL renderUrl = null;
-            if (page != null && window != null) {
-               String link = "";
-               NavigationItem item = SiteManagement.convertToNavigationItem(page);
-               if (item != null) {
-                  link = SiteManagement.getPath(item, !ServerUtil.useServerName());
-               } else {
-                  link = page;
-               }
-               String host = null;
-               if (ServerUtil.useServerName()) {
-                  host = SiteManagement.getSite(item);
-               }
-
-               renderUrl = new PortletURLImpl(host, link, window, (HttpServletRequest) request, (HttpServletResponse) response, false);
-            } else {
-               renderUrl = response.createRenderURL();
-            }
-            xslParams.put("RENDERURL", renderUrl);
+            addRenderUrl(request, response, xslParams);
+            addActionUrl(response, xslParams);
+            xslParams.put("NAMESPACE", response.getNamespace());
             
             StringBuffer content = new StringBuffer(4096);
-
-            String html = transformXml(xsl, xmlSource, xslParams);
+  
+            String html = transformXml(xsl, xml, xslParams);
             if (html != null) {
                content.append(html);
             }
             response.getWriter().print(content.toString());
          }
          catch (TransformerException e) {
-            getLogger().error("Xslt portlet transformer error: " + e.getMessage());
-         }
-         catch (ParserConfigurationException e) {
-            getLogger().error("Xslt portlet parser error: " + e.getMessage());
-         }
-         catch (SAXException e) {
-            getLogger().error("Xslt portlet sax error: " + e.getMessage());
-         }
-         catch (MalformedURLException e) {
-            getLogger().error("Xslt portlet URL error: " + e.getMessage());
-            String errmsg = "error.url.malformed";
-            response.getWriter().print(createErrorMessage(request, errmsg, xmlSource));
-         }
-         catch (UnknownHostException uhe) {
-            getLogger().error("Xslt portlet connection error: " + uhe.getMessage());
-            String errmsg = "error.url.unknownhost";
-            response.getWriter().print(createErrorMessage(request, errmsg, xmlSource));
-         }
-         catch (ConnectException ce) {
-            getLogger().error("Xslt portlet connection error: " + ce.getMessage());
-            String errmsg = "error.url.connect";
-            response.getWriter().print(createErrorMessage(request, errmsg, xmlSource));
+            getLogger().error("Xslt portlet transformer error: " + e.getMessage(), e);
          }
       }
    }
 
 
-   protected String transformXml(String xsl, String xml, HashMap<String, Object> xslParams)
-         throws TransformerException, ParserConfigurationException, SAXException, IOException, MalformedURLException {
+   private void addActionUrl(RenderResponse response, HashMap<String, Object> xslParams) {
+      PortletURL actionUrl = response.createActionURL();
+      xslParams.put("ACTIONURL", actionUrl);
+   }
+
+
+   private void addRenderUrl(RenderRequest request, RenderResponse response, HashMap<String, Object> xslParams) {
+      /** get renderUrl */
+      PortletURL renderUrl = null;
+
+      PortletPreferences preferences = request.getPreferences();
+      String page = preferences.getValue(PAGE, null);
+      String window = preferences.getValue(WINDOW, null);
+
+      if (page != null && window != null) {
+         String link = "";
+         NavigationItem item = SiteManagement.convertToNavigationItem(page);
+         if (item != null) {
+            link = SiteManagement.getPath(item, !ServerUtil.useServerName());
+         } else {
+            link = page;
+         }
+         String host = null;
+         if (ServerUtil.useServerName()) {
+            host = SiteManagement.getSite(item);
+         }
+  
+         renderUrl = new PortletURLImpl(host, link, window, (HttpServletRequest) request, (HttpServletResponse) response, false);
+      } else {
+         renderUrl = response.createRenderURL();
+      }
+      xslParams.put("RENDERURL", renderUrl);
+   }
+
+
+   protected String transformXml(String xsl, Object xml, HashMap<String, Object> xslParams)
+         throws TransformerException, IOException, MalformedURLException {
 
       InputStream xslSrc = getPortletContext().getResourceAsStream(xsl);
-      URL xmlURL = new URL(xml);
-      XsltUtil xsltUtil = new XsltUtil(xmlURL, xslSrc, null);
+      XsltUtil xsltUtil = new XsltUtil(xml, xslSrc, null);
+      URIResolver uriResolver = new URIResolver() {
+         public Source resolve(String href, String base) {
+            String includedXsl = XsltPortlet.this.getTemplate("view", href, "xsl");
+            
+            InputStream includedXslSrc = XsltPortlet.this.getPortletContext().getResourceAsStream(includedXsl);
+            return new StreamSource(includedXslSrc);
+         }
+      };
+         
+      xsltUtil.setURIResolver(uriResolver);
+      
       return xsltUtil.transformToString(xslParams);
    }
 
