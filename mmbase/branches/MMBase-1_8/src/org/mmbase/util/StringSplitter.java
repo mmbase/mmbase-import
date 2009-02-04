@@ -9,15 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Utility class for splitting delimited values.
  *
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: StringSplitter.java,v 1.7 2006-06-26 18:15:22 johannes Exp $
+ * @version $Id: StringSplitter.java,v 1.7.2.1 2009-02-04 15:25:24 michiel Exp $
  */
 public class StringSplitter {
 
@@ -78,6 +77,74 @@ public class StringSplitter {
         }
         return result;
     }
-    
+
+    /**
+     * @since MMBase-1.9
+     */
+    static public Map map(String string) {
+        return map(string, ",");
+    }
+    /**
+     * Splits a String into a map.
+     * @param delimiter Delimiter to split entries. If this is a newline, then the string will be
+     * read like properties
+     * @since MMBase-1.9.1
+     */
+    static public Map map(String string, String delimiter) {
+        if (delimiter.equals("\n")) {
+            final Properties props = new Properties();
+            try {
+                props.load(new java.io.ByteArrayInputStream(string.getBytes("ISO-8859-1")));
+            } catch (java.io.UnsupportedEncodingException uee) {
+                // ISO-8859-1 _IS_ supported
+                new RuntimeException(uee);
+            } catch (java.io.IOException ioe) {
+                new RuntimeException(ioe);
+            }
+            // java sucks a bit, because for some reason (I can't imagine which one) Properties is
+            // not a Map<String, String>. There we can't simply return the props,
+            // but must perform the following horribleness.
+            //
+            // In java 1.6 there is 'solution', which probably will hardly help. (http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6253413)
+            return  new AbstractMap() {
+                public Set entrySet() {
+                    return new AbstractSet() {
+                        public int size() {
+                            return props.size();
+                        }
+                        public Iterator iterator() {
+                            return new Iterator() {
+                                private final Iterator i = props.entrySet().iterator();
+                                public boolean hasNext() {
+                                    return i.hasNext();
+                                }
+                                public Object next()  {
+                                    Map.Entry entry = (Map.Entry) i.next();
+                                    return new org.mmbase.util.Entry((String) entry.getKey(), (String) entry.getValue());
+                                }
+                                public void remove() {
+                                    i.remove();
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+
+        } else {
+            Map  map = new HashMap();
+            List keyValues = split(string, delimiter);
+            Iterator i = keyValues.iterator();
+            while(i.hasNext()) {
+                String kv = (String) i.next();
+                if ("".equals(kv)) continue;
+                int is = kv.indexOf('=');
+                map.put(kv.substring(0, is), kv.substring(is + 1));
+            }
+            return map;
+        }
+    }
+
+
 
 }
