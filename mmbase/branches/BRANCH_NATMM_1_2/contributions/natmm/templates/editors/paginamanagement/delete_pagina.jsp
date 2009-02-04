@@ -9,7 +9,7 @@
 <style>
 input { width: 100px;}
 </style>
-<script language="JavaScript1.1">
+<script type="text/javascript">
       function refreshParentFrameAndClose() {
          opener.top.bottompane.location = "frames.jsp";
          window.close();

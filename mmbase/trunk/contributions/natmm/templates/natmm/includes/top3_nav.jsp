@@ -1,11 +1,11 @@
 <!-- <%= new java.util.Date() %> -->
 <script type="text/javascript" src="scripts/milonic_src.js"></script>
 <param copyright="JavaScript Menu by Milonic" value="http://www.milonic.com/"></param>
-<script	type="text/javascript">
+<script type="text/javascript">
 if(ns4)_d.write("<scr"+"ipt language=JavaScript src=scripts/mmenuns4.js><\/scr"+"ipt>");		
   else _d.write("<scr"+"ipt language=JavaScript src=scripts/mmenudom.js><\/scr"+"ipt>"); 
 </script>
-<SCRIPT language=JavaScript type=text/javascript>
+<script type="text/javascript">
 
 horizontalMenuDelay = true; 
 
@@ -143,4 +143,4 @@ while(depth>-1&&depth<10) {
 %>
 
 drawMenus();
-</SCRIPT>
+</script>

@@ -74,8 +74,7 @@ if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT) {
 	</td>
 	<td style="width:48%;background-color:#000098;vertical-align:bottom;">
 	<%--
-      <script language="JavaScript1.1" src="scripts/styleswitcher.js">
-      </script>
+      <script type="text/javascript" src="scripts/styleswitcher.js"></script>
       <input type="button" value="0" onclick="setActiveStyleSheet('default')">
       <input type="button" value="+" onclick="setActiveStyleSheet('groot')">
       <input type="button" value="++" onclick="setActiveStyleSheet('groter')">
