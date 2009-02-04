@@ -47,7 +47,7 @@
 					<search>4</search>
             </positions>
          </editor>
-			<datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>question</name>
             <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
