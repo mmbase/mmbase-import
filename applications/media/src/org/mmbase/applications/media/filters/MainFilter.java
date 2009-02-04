@@ -16,9 +16,12 @@ import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.*;
 
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 import java.util.*;
 import java.io.File;
+import java.io.Reader;
+import java.io.IOException;
 
 /**
  * This is the main class for the filter process. It maintains list of
@@ -48,11 +51,18 @@ public class MainFilter {
     public static final String ID_ATT            = "id";
     public static final String CONFIG_FILE       = "media" + File.separator + "filters.xml";
         
-    private FileWatcher configWatcher = new FileWatcher(true) {
-        public void onChange(File file) {
-            readConfiguration(file);
+    private ResourceWatcher configWatcher = new ResourceWatcher() {
+        public void onChange(String res) {
+                    try {
+		            Reader reader = getResourceLoader().getReader(res);
+		            readConfiguration(reader);
+                    } catch (IOException ie) {
+                        log.warn("Can't load "+CONFIG_FILE);
+                        log.warn("Message "+ie.getMessage());
+                    }
         }
     };
+
     
     private List filters = new ArrayList();
 
@@ -60,13 +70,8 @@ public class MainFilter {
      * Construct the MainFilter
      */
     private MainFilter() {
-        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), CONFIG_FILE);
-        if (! configFile.exists()) {
-            log.error("Configuration file for mediasourcefilter " + configFile + " does not exist");
-            return;
-        }
-        readConfiguration(configFile);
-        configWatcher.add(configFile);
+        configWatcher.add(CONFIG_FILE);
+        configWatcher.onChange();
         configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
         configWatcher.start();
     }
@@ -83,13 +88,13 @@ public class MainFilter {
     /**
      * read the MainFilter configuration
      */
-    private synchronized void readConfiguration(File configFile) {
+    private synchronized void readConfiguration(Reader configreader) {
         if (log.isServiceEnabled()) {
-            log.service("Reading " + configFile);
+            log.service("Reading " + CONFIG_FILE);
         }
         filters.clear();
 
-        DocumentReader reader = new XMLBasicReader(configFile.toString(), getClass());
+        DocumentReader reader = new XMLBasicReader(new InputSource(configreader), getClass());
         Element filterConfigs = reader.getElementByPath(MAIN_TAG + "." + FILTERCONFIGS_TAG);
 
         ChainSorter chainComp = new ChainSorter();
