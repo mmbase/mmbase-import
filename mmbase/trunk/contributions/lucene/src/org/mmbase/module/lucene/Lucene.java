@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.125 2008-12-15 14:08:11 michiel Exp $
+ * @version $Id: Lucene.java,v 1.126 2009-02-04 16:22:54 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -1301,7 +1301,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             assert klass != null;
             assign(new Assignment() {
                     public void run() {
-                        log.service("Update index for " + number);
+                        log.debug("Update index for " + number);
                         status = BUSY_INDEX;
                         for (Indexer indexer : indexerMap.values()) {
                             int updated = indexer.updateIndex(number, klass);
