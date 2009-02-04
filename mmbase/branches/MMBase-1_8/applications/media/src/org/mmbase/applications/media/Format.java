@@ -10,12 +10,15 @@
 package org.mmbase.applications.media;
 
 import java.io.File;
+import java.io.Reader;
+import java.io.IOException;
 import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.MMBaseContext;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 
 // import org.mmbase.util.ConstantsBundle;
@@ -24,7 +27,7 @@ import org.w3c.dom.Element;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.19.2.2 2007-10-02 13:36:04 michiel Exp $
+ * @version $Id: Format.java,v 1.19.2.3 2009-02-04 13:53:43 rico Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -34,7 +37,7 @@ public final class Format {   // final class!!
     public final static String RESOURCE = "org.mmbase.applications.media.resources.formats";
     public static final String PUBLIC_ID_MIMEMAPPING_1_0 = "-//MMBase//DTD mimemapping config 1.0//EN";
     public static final String DTD_MIMEMAPPING_1_0       = "mimemapping_1_0.dtd";
-
+    public static final String CONFIG_FILE= "media" + File.separator + "mimemapping.xml";
 
     // in case you want i18ed format strings.
 
@@ -43,25 +46,29 @@ public final class Format {   // final class!!
 
         XMLEntityResolver.registerPublicID(PUBLIC_ID_MIMEMAPPING_1_0, DTD_MIMEMAPPING_1_0, Format.class);
 
-        File mimeMappingFile = new File(MMBaseContext.getConfigPath() + File.separator + "media" + File.separator + "mimemapping.xml");
-        readMimeMapping(mimeMappingFile);
-        FileWatcher watcher = new FileWatcher() {
-                public void onChange(File file) {
-                    readMimeMapping(file);
-                }
-            };
-        watcher.add(mimeMappingFile);
-        watcher.start();
+		ResourceWatcher configWatcher = new ResourceWatcher() {
+		        public void onChange(String res) {
+                    try {
+		            Reader reader = getResourceLoader().getReader(res);
+		            readMimeMapping(reader);
+                    } catch (IOException ie) {
+                        log.warn("Can't load "+CONFIG_FILE);
+                        log.warn("Message "+ie.getMessage());
+                    }
+		        }
+		};
 
+        configWatcher.add(CONFIG_FILE);
+        configWatcher.onChange();
+        configWatcher.start();
     }
 
-    static void readMimeMapping(File mimeMappingFile) {
+    static void readMimeMapping(Reader mimeMappingFile) {
         mimeMapping = new HashMap();
 
 
-        if (mimeMappingFile.canRead()) {
-            log.service("Reading " + mimeMappingFile);
-            XMLBasicReader reader = new XMLBasicReader(mimeMappingFile.toString(), Format.class);
+            log.service("Reading " + CONFIG_FILE);
+            XMLBasicReader reader = new XMLBasicReader(new InputSource(mimeMappingFile), Format.class);
 
             for(Iterator e = reader.getChildElements("mimemapping", "map"); e.hasNext();) {
                 Element map = (Element)e.next();
@@ -72,9 +79,6 @@ public final class Format {   // final class!!
                 mimeMapping.put(format + "/" + codec,mime);
                 log.debug("Adding mime mapping " + format + "/" + codec + " -> " + mime);
             }
-        } else {
-            log.service("The file " + mimeMappingFile + " can not be read");
-        }
     }
 
     private static List formats = new ArrayList(); // to make possible to get the Format object by int.
