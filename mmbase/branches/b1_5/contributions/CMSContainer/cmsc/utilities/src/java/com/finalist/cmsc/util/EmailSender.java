@@ -1,19 +1,17 @@
-package com.finalist.portlets.responseform;
+package com.finalist.cmsc.util;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.*;
 
 import org.apache.commons.lang.StringUtils;
+import org.mmbase.applications.email.SendMail;
+import org.mmbase.module.core.MMBase;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 
@@ -24,48 +22,57 @@ import com.finalist.cmsc.mmbase.PropertiesUtil;
  */
 public final class EmailSender {
 
-   private static EmailSender instance = null;
-
-   private Properties props = new Properties();
-   private String mailHost = null;
-
-
    /**
     * Constructor. Creates a new instance.
     */
-   private EmailSender(String mailHostValue) {
-      mailHost = mailHostValue;
-      props.put("mail.smtp.host", mailHost);
+   private EmailSender() {
+      // nothing
+   }
+
+   /**
+    * Send email
+    * @param emailFrom The email address of the sender 
+    * @param nameFrom The name of the sender 
+    * @param emailTo The email address of the receiver 
+    * @param subject The subject of the email 
+    * @param body The body of the email
+    * @throws MessagingException message send faiked
+    * @throws UnsupportedEncodingException The Character Encoding is not supported
+    */
+   public static void sendEmail(String emailFrom, String nameFrom, String emailTo, String subject, String body)
+         throws UnsupportedEncodingException, MessagingException {
+      sendEmail(emailFrom, nameFrom, emailTo, subject, body, null);
    }
 
 
    /**
-    * Singleton access method
-    *
-    * @return an instance of the EmailSender
+    * Send email
+    * @param emailFrom The email address of the sender 
+    * @param nameFrom The name of the sender 
+    * @param emailTo The email address of the receiver 
+    * @param subject The subject of the email 
+    * @param body The body of the email
+    * @param replyTo Address as reply-to header in the message
+    * @throws MessagingException message send faiked
+    * @throws UnsupportedEncodingException The Character Encoding is not supported
     */
-   public static synchronized EmailSender getInstance() {
-      String tempMailHost = PropertiesUtil.getProperty("mail.smtp.host");
-      if (instance == null) {
-         instance = new EmailSender(tempMailHost);
-      }
-      else {
-         if ((tempMailHost != null) && (!tempMailHost.equals(instance.mailHost))) {
-            instance = new EmailSender(tempMailHost);
-         }
-      }
-
-      return instance;
+   public static void sendEmail(String emailFrom, String nameFrom, String emailTo, String subject,
+         String body, String replyTo) throws MessagingException, UnsupportedEncodingException {
+      List<String> toAddresses = new ArrayList<String>();
+      toAddresses.add(emailTo);
+      sendEmail(emailFrom, nameFrom, toAddresses , subject, body, null, replyTo);
    }
-
-
+   
 	/**
+    * Send email
     * @param emailFrom The email address of the sender 
     * @param nameFrom The name of the sender 
     * @param toAddresses The list of email addresses of the receivers 
     * @param subject The subject of the email 
     * @param body The body of the email @param fileName The name of the attachment
     * @param attachment Binary part to add to the email message
+    * @throws MessagingException message send faiked
+    * @throws UnsupportedEncodingException The Character Encoding is not supported
     */
    public void sendEmail(String emailFrom, String nameFrom, List<String> toAddresses, String subject, String body,
          DataSource attachment) throws UnsupportedEncodingException, MessagingException {
@@ -74,6 +81,7 @@ public final class EmailSender {
 
 
    /**
+    * Send email
     * @param emailFrom The email address of the sender 
     * @param nameFrom The name of the sender 
     * @param toAddresses The list of email addresses of the receivers 
@@ -81,17 +89,21 @@ public final class EmailSender {
     * @param body The body of the email @param fileName The name of the attachment
     * @param attachment Binary part to add to the message
     * @param replyTo Address as reply-to header in the message
+    * @throws MessagingException message send faiked
+    * @throws UnsupportedEncodingException The Character Encoding is not supported
     */
-   public void sendEmail(String emailFrom, String nameFrom, List<String> toAddresses,
+   public static void sendEmail(String emailFrom, String nameFrom, List<String> toAddresses,
          String subject, String body, DataSource attachment, String replyTo)
-         throws MessagingException, UnsupportedEncodingException, AddressException {
+         throws MessagingException, UnsupportedEncodingException {
       if (StringUtils.isBlank(emailFrom)) {
          emailFrom = PropertiesUtil.getProperty("mail.system.email");
       }
       if (StringUtils.isBlank(nameFrom)) {
          nameFrom = PropertiesUtil.getProperty("mail.system.name");
       }
-      Session session = Session.getInstance(props, null);
+      
+      Session session = getMailSession();
+      
       // Define message
       MimeMessage message = new MimeMessage(session);
       message.setFrom(new InternetAddress(emailFrom, nameFrom));
@@ -106,12 +118,20 @@ public final class EmailSender {
       }
 
       message.setSubject(subject);
-      Multipart multipart = createMultiPart(body, attachment);
-      message.setContent(multipart);
+      
+      if (attachment != null) { 
+         Multipart multipart = createMultiPart(body, attachment);
+         message.setContent(multipart);
+      }
+      else {
+         message.setText(body);
+      }
+
       Transport.send(message);
    }
 
-   private Multipart createMultiPart(String body, DataSource dataSource) throws MessagingException {
+
+   private static Multipart createMultiPart(String body, DataSource dataSource) throws MessagingException {
       // create the message part
       MimeBodyPart messageBodyPart = new MimeBodyPart();
       messageBodyPart.setText(body);
@@ -129,30 +149,9 @@ public final class EmailSender {
       return multipart;
    }
 
-
-   /**
-    * @param emailFrom The email address of the sender 
-    * @param nameFrom The name of the sender 
-    * @param emailTo The email address of the receiver 
-    * @param subject The subject of the email 
-    * @param body The body of the email
-    */
-   public void sendEmail(String emailFrom, String nameFrom, String emailTo, String subject, String body)
-         throws UnsupportedEncodingException, MessagingException {
-      sendEmail(emailFrom, nameFrom, emailTo, subject, body, null);
-   }
-
-
-   /**
-    * @param emailFrom The email address of the sender 
-    * @param nameFrom The name of the sender 
-    * @param emailTo The email address of the receiver 
-    * @param subject The subject of the email 
-    * @param body The body of the email
-    * @param replyTo Address as reply-to header in the message
-    */
-   public void sendEmail(String emailFrom, String nameFrom, String emailTo, String subject,
-         String body, String replyTo) throws MessagingException, UnsupportedEncodingException,
+   public static void  sendEmail(String emailFrom, String nameFrom, String emailTo,
+         String subject, String body, String replyTo,String contentType)
+         throws MessagingException, UnsupportedEncodingException,
          AddressException {
       if (StringUtils.isBlank(emailFrom)) {
          emailFrom = PropertiesUtil.getProperty("mail.system.email");
@@ -160,16 +159,24 @@ public final class EmailSender {
       if (StringUtils.isBlank(nameFrom)) {
          nameFrom = PropertiesUtil.getProperty("mail.system.name");
       }
-      Session session = Session.getInstance(props, null);
+      Session session = getMailSession();
       MimeMessage message = new MimeMessage(session);
       message.setFrom(new InternetAddress(emailFrom, nameFrom));
-      message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailTo));
+      message.addRecipient(Message.RecipientType.TO, new InternetAddress(
+            emailTo));
       if (StringUtils.isNotBlank(replyTo)) {
          message.setReplyTo(InternetAddress.parse(replyTo));
       }
+      message.setHeader("Content-Transfer-Encoding", "quoted-printable");
       message.setSubject(subject);
-      message.setText(body);
+      message.setContent(body,contentType );
       Transport.send(message);
+   }
+   
+   @SuppressWarnings("static-access")
+   private static Session getMailSession() {
+      Session session = ((SendMail) MMBase.getModule("sendmail")).getSession();
+      return session;
    }
 
 }

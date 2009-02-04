@@ -25,7 +25,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.finalist.cmsc.login.EmailUtils;
 import com.finalist.cmsc.login.PasswordGenerator;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.Community;
@@ -34,6 +33,7 @@ import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.cmsc.util.EmailSender;
 
 /**
  * Login portlet
@@ -121,7 +121,7 @@ public class LoginPortlet extends AbstractLoginPortlet {
                  if (StringUtils.isNotBlank(emailFrom) && !isEmailAddress(emailFrom)) {
                     throw new AddressException("Email address "+emailFrom+"is not availalbe");
                  }
-                 EmailUtils.sendEmail(emailFrom, nameFrom, email, emailSubject, emailText,
+                 EmailSender.sendEmail(emailFrom, nameFrom, email, emailSubject, emailText,
                              email, "text/plain;charset=utf-8");
                  sendMessage = "view.account.success";
               } 
