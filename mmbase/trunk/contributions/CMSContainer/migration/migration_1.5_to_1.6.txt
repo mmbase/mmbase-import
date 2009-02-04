@@ -43,16 +43,13 @@ Name: Add title and description column to urls / images
 Goal: Asset improvements
 Type:  sql-script
 --- Start script ---
-ALTER TABLE mm_urls ADD column title text NULL;
+ALTER TABLE mm_urls CHANGE column name title text NULL;
 ALTER TABLE mm_urls MODIFY description text NULL;
 ALTER TABLE mm_images MODIFY title text NULL;
 
 ALTER TABLE live_images MODIFY title text NULL;
-ALTER TABLE live_urls ADD column title text NULL;
+ALTER TABLE live_urls CHANGE column name title text NULL;
 ALTER TABLE live_urls MODIFY description text NULL;
-
-update mm_urls set title=name;
-update live_urls set title=name;
 --- End script ---
 Exceptions/errors/other problems and what to do:
 *
