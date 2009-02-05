@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.22 2008-12-08 10:55:10 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.23 2009-02-05 09:39:58 michiel Exp $
  */
 
 public class CronEntry implements java.io.Serializable {
@@ -206,6 +206,9 @@ public class CronEntry implements java.io.Serializable {
         return isAlive(0);
     }
 
+    /**
+     * @since MMBase-1.8.7
+     */
     public boolean isActive() {
         String machineName = MMBaseContext.getMachineName();
         return servers.matcher(machineName).matches();
