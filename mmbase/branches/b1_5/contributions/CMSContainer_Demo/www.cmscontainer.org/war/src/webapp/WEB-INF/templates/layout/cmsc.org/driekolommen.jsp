@@ -2,13 +2,10 @@
 %><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
 %><%@taglib uri="http://finalist.com/cmsc" prefix="cmsc" 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%>
-<%@ taglib tagdir="/WEB-INF/tags/" prefix="cmscf" %>
-
-<mm:content type="text/html" encoding="UTF-8">
+%><%@ taglib tagdir="/WEB-INF/tags/" prefix="cmscf" 
+%><mm:content type="text/html" encoding="UTF-8">
 <cmsc:location var="cur" sitevar="site" />
 <cmsc:screen>
-
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
@@ -28,7 +25,7 @@
 	<script src="<cmsc:staticurl page='/js/start.js' />" type="text/javascript"></script>
 	<script src="<cmsc:staticurl page='/js/nav.js' />" type="text/javascript"></script>
 
-	<cmsc:google-analytics account="UA-1766626-1" />
+	<cmsc:google-analytics />
 	
 	<cmscf:editresources />
 </head>
