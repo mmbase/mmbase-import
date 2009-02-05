@@ -88,14 +88,14 @@
 	<Environment name="server/useServerName" value="false" type="java.lang.String" />
 	<!--  Contains value 'true' or 'false' to indicate whether or not this is the production system -->
 	<Environment name="server/production" value="false" type="java.lang.String" />	
-
+<!-- 
 	<Environment name="com/luceus/repository-name" value="cmsc-live" type="java.lang.String" />
 	<Environment name="com/luceus/index-attachments" value="true" type="java.lang.String" />
 	<Environment name="com/luceus/index-images" value="false" type="java.lang.String" />
 	<Environment name="com/luceus/index-urls" value="false" type="java.lang.String" />
 	<Environment name="com/luceus/secondary-with-primary" value="true" type="java.lang.String" />
 	<Environment name="com/luceus/secondary-as-primary" value="true" type="java.lang.String" />
-<!-- 
+
 	<Environment name="com/luceus/update-processes" value="2" type="java.lang.String" />
 	<Environment name="com/luceus/update-start" value="0" type="java.lang.String" />
 	<Environment name="com/luceus/update-interval" value="120" type="java.lang.String" />
