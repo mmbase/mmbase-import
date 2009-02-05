@@ -19,13 +19,20 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: UriParser.java,v 1.4 2009-02-05 08:44:47 andre Exp $
+ * @version $Id: UriParser.java,v 1.5 2009-02-05 08:51:42 andre Exp $
  */
 public class UriParser {
 
     private static final Logger log = Logging.getLoggerInstance(UriParser.class);
     final static char SEPARATOR = java.io.File.separator.charAt(0); // '\' for windows '/' for other oses.
     
+    /**
+     * Converts an absolute path into a relative path, being a path relative to basePath.
+     * Uses the fileseparator of the current filesystem.
+     *
+     * @param basePath      The base path.
+     * @param path          The path to convert against basePath.
+     */
     static public String makeRelative(final String basePath, final String path) {
         return makeRelative(basePath, path, SEPARATOR);
     }
@@ -33,8 +40,9 @@ public class UriParser {
     /**
      * Converts an absolute path into a relative path, being a path relative to basePath.
      *
-     * @param basePath  The base path.
-     * @param path      The path to convert against basePath.
+     * @param basePath      The base path.
+     * @param path          The path to convert against basePath.
+     * @param separatorChar Path separator ('\' for windows '/' for others)
      */
     static public String makeRelative(final String basePath, final String path, final char separatorChar) {
         if (log.isDebugEnabled()) {
