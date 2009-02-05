@@ -41,7 +41,7 @@
                 <legend>${nodemanager} relation</legend>
                 <input name="id"   type="hidden" value="${relation}" />
                 
-                <mm:fieldlist type="edit" fields="owner" id="fields${relation}" varStatus="status">
+                <mm:fieldlist type="edit" id="fields${relation}" varStatus="status">
                   <mm:maywrite><mm:import reset="true" id="formtype">input</mm:import></mm:maywrite>
                   <mm:maywrite inverse="true"><mm:import id="formtype">guivalue</mm:import></mm:maywrite>
                   <div class="relationrow ${status.current.name} state_${status.current.state}">
