@@ -293,7 +293,7 @@ public final class WordHtmlCleaner {
     * tabs before and behind the dots of the lists.
     */
    private static String fixBadLists(String text) {
-      text = text.replaceAll("[งท]", "");
+      text = text.replaceAll("[งท]", ""); //UTF-8: &#192;
 
       int pos = -1;
       while ((pos = text.indexOf("<!--[if !supportLists", pos + 1)) != -1) {
