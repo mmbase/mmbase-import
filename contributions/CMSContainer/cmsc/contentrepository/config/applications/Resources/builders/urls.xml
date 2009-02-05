@@ -6,7 +6,6 @@
                         http://www.mmbase.org/xmlns/builder.xsd"                        
     name="urls" maintainer="www.mmbase.org" version="1" extends="assetelement">
   <status>active</status>
-  <class>org.mmbase.module.builders.Urls</class>
   <searchage>14</searchage>
   <names>
     <singular xml:lang="en">URL</singular>
