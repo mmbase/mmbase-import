@@ -266,6 +266,9 @@ public class WizardController {
                            RepositoryUtil.addCreationChannel(node, channelnr);
                         } 
                      }
+                     if(ContentElementUtil.getAuthor(node) == null){
+                        node.commit();
+                     }
                    //  NodeManager ownerManager = cloud.getNodeManager(USER);
                     // int owners = node.countRelatedNodes(ownerManager, OWNERREL, DESTINATION);
                     // if (owners < 1) {  
