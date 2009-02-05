@@ -1,58 +1,14 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
+<%@include file="/WEB-INF/templates/edit_defaults/sections/globals.jsp"%>
+
 <div class="portlet-config-canvas">
-<script type="text/javascript">
-
-function selectChannel(channel, path) {
-   document.forms['<portlet:namespace />form'].contentchannel.value = channel;
-   document.forms['<portlet:namespace />form'].contentchannelpath.value = path;
-}
-
-function selectPage(page, path, positions) {
-   document.forms['<portlet:namespace />form'].page.value = page;
-   document.forms['<portlet:namespace />form'].pagepath.value = path;
-
-   var selectWindow = document.forms['<portlet:namespace />form'].window;
-   for (var i = selectWindow.options.length -1 ; i >=0 ; i--) {
-      selectWindow.options[i] = null;
-   }
-   for (var i = 0 ; i < positions.length ; i++) {
-      var position = positions[i];
-      selectWindow.options[selectWindow.options.length] = new Option(position, position);
-   }
-}
-
-function erase(field) {
-   document.forms['<portlet:namespace />form'][field].value = '';
-}
-
-function eraseList(field) {
-   document.forms['<portlet:namespace />form'][field].selectedIndex = -1;
-}
-
-var repositoryUrl = "<cmsc:staticurl page='/editors/repository/index.jsp'/>";
-function openRepositoryWithChannel() {
-   contentchannel = document.forms['<portlet:namespace />form'].contentchannel.value;
-   if(contentchannel == undefined || contentchannel == '') {
-      alert('<fmt:message key="edit_defaults.preview.noChannel"/>');
-   }
-   else {
-      if(confirm('<fmt:message key="edit_defaults.preview.loseChanges"/>')) {
-         window.top.bottompane.location = repositoryUrl + '?channel=' + contentchannel;
-      }
-   }
-}
-</script>
-
-<form name="<portlet:namespace />form" method="post" target="_parent"
-   action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
+   <form name="<portlet:namespace />form" method="post" target="_parent"
+      action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
 
 <table class="editcontent">
-   <tr>
-      <td colspan="3">
-         <a href="javascript:document.forms['<portlet:namespace />form'].submit()" class="button">
-            <img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.save" /></a>
-      </td>
-   </tr>
+   <%-- Save button --%>
+   <c:import url="sections/savebutton.jsp" />
+         
    <tr>
       <td colspan="3">
          <h3><fmt:message key="edit_defaults.title" /></h3>
