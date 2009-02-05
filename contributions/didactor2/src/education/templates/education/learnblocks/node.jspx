@@ -9,7 +9,7 @@
   <jsp:output omit-xml-declaration="yes" />
   <mm:import externid="parent" />
   <div class="learnblock" id="${parent}${empty parent ? '' : '_'}learnblock_${_node}">
-    <a name="learnblock_${_node}"><jsp:text> </jsp:text></a>
+    
 
     <mm:nodeinfo type="type">
       &lt;!-- type ${_} --&gt;
