@@ -189,10 +189,7 @@
          <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
          <db>
             <name>approved_by</name>
-            <type key="false" notnull="false" size="255"
-               state="persistent">
-               STRING
-            </type>
+      		<type key="false" notnull="false" size="255" state="persistent">STRING</type>
          </db>
       </field>
       <field>
