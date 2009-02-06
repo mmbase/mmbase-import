@@ -17,10 +17,10 @@
  * - mmsrUnrelate          (use   $("div.mm_related").bind("mmsrUnrelate", function (e, tr, relater) ) )
  * - mmsrPaged             (use   $("div.mm_related").bind("mmsrPaged", function (e, status, relater) ) )
  * - mmsrRelaterReady      (use   $("div.mm_related").bind("mmsrRelaterReady", function (e, relater) ) )
- * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater) ) )
+ * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater, relatedNumbers, unrelatedNumbers) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.60 2008-11-29 20:26:37 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.61 2009-02-06 12:31:23 andre Exp $
  */
 
 
@@ -157,7 +157,7 @@ MMBaseRelater.prototype.needsCommit = function() {
 MMBaseRelater.prototype.commit = function(ev) {
     var relatedNumbers   = this.getNumbers(this.related);
     var unrelatedNumbers = this.getNumbers(this.unrelated);
-
+    
     if (relatedNumbers != "" || unrelatedNumbers != "") {
         var a = ev.target;
         $(a).addClass("submitting");
@@ -196,7 +196,7 @@ MMBaseRelater.prototype.commit = function(ev) {
                         self.related = {};
                         self.unrelated = {};
                         if (self.canEditrelations) self.bindSaverelation(this.div);
-                        $(self.div).trigger("mmsrCommitted", [a, status, self]);
+                        $(self.div).trigger("mmsrCommitted", [a, status, self, relatedNumbers, unrelatedNumbers]);
                         return true;
                     } else {
                         $(a).addClass("failed");
@@ -226,16 +226,15 @@ MMBaseRelater.prototype.getNewRelationTr = function(nodenr) {
     var params = {id: queryid, node: nodenr, fields: this.repository.searcher.fields};
     var result;
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
-            complete: function(res, status){
-                if ( status == "success" || status == "notmodified" ) {
-                    result = res.responseText;
-                } else {
-                    var tr = $("<tr />");
-                    tr.append('<td colspan="3" class="failed">Error: ' + res.status + ' - ' + res.statusText + '</td>');
-                    result = tr;
-                }
-            }
-           });
+        error: function(res, status) {
+            var tr = $("<tr />");
+            tr.append('<td colspan="3" class="failed">Error: ' + res.status + ' - ' + res.statusText + '</td>');
+            result = tr;
+        },
+        complete: function(res, status) {
+            result = res.responseText;
+        }
+    });
     
     return result;
 }
@@ -677,13 +676,13 @@ MMBaseSearcher.prototype.dec = function() {
 
 MMBaseSearcher.prototype.create = function () {
     var rep = this.getResultDiv();
+    $(rep).removeClass("implicit");
     var url = "${mm:link('/mmbase/searchrelate/create.jspx')}";
     var params = {
         queryid: this.getQueryId(),
         id: this.getId(),
         context: this.context
     };
-
 
     var self = this;
     $.ajax({url: url, type: "GET", data: params,
@@ -698,15 +697,22 @@ MMBaseSearcher.prototype.create = function () {
                         self.validator.prefetchNodeManager(nodeManager);
                         self.validator.addValidation(rep);
                     }
+                    $(rep).find('input[type="submit"]').attr("disabled", "disabled");
+                    self.validator.validateHook = function(valid) {
+                        if (valid) $(rep).find('input[type="submit"]').removeAttr("disabled");
+                        else $(rep).find('input[type="submit"]').attr("disabled", "disabled");
+                    }
                     var options = {
                         url: "${mm:link('/mmbase/searchrelate/create.jspx')}",
                         target:     null,
                         success:    function(subres, substatus) {
                             self.logger.debug(substatus + ": " + subres);
-                            var newNode = $(subres).find("span.newnode")[0].firstChild.nodeValue;
-                            self.logger.debug(newNode);
-                            var tr = self.getTr(newNode);
-                            self.search(newNode, 0);
+                            var newNodeSpan = $(subres).find("span.newnode");
+                            if (newNodeSpan.length > 0) {
+                                var newNode = newNodeSpan[0].firstChild.nodeValue;
+                                var tr = self.getTr(newNode);
+                                self.search(newNode, 0);
+                            }
                         }
                     };
                     $(rep).find("form.mm_form").ajaxForm(options);
