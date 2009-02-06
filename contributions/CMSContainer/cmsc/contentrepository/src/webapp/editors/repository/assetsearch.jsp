@@ -57,25 +57,26 @@
 <mm:import id="assetsearchinit"><c:url value='/editors/repository/AssetSearchInitAction.do'/></mm:import>
 
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
+<div style="position: absolute;padding-right:10px">
 <c:if test="${empty strict}">
    <div class="tabs">
     <!-- active TAB -->
- <div class="tab">
-      <div class="body">
-         <div>
-            <a href="SearchInitAction.do?index=yes"><fmt:message key="content.search.title" /></a>
+      <div class="tab">
+         <div class="body">
+            <div>
+               <a href="SearchInitAction.do?index=yes"><fmt:message key="content.search.title" /></a>
+            </div>
          </div>
       </div>
+       <div class="tab_active">
+           <div class="body">
+               <div>
+                   <a href="AssetSearchInitAction.do"><fmt:message key="asset.search.title"/></a>
+               </div>
+           </div>
+       </div>
    </div>
-    <div class="tab_active">
-        <div class="body">
-            <div>
-                <a href="AssetSearchInitAction.do"><fmt:message key="asset.search.title"/></a>
-            </div>
-        </div>
-    </div>
 </c:if>
-</div>
    <div class="editor">
    <br />
       <div class="body">
@@ -305,7 +306,7 @@
          </html:form>
       </div>
 
-   <div class="ruler_green"><div><fmt:message key="searchform.results" /></div></div>
+   <div class="ruler_green" style="width:1000px;"><div><fmt:message key="searchform.results" /></div></div>
 
    <div class="body">
    <div style="padding-left:11px">
@@ -526,6 +527,7 @@
    <%@include file="searchpages.jsp" %>
 </c:if>
 </div>
+   </div>
    </div>
 </mm:cloud>
 

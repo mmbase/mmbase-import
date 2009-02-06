@@ -30,6 +30,7 @@
 <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
 <c:set var="returnurl" value="${fn:replace(returnurl,'&amp;','&')}"/>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
+<div style="position: absolute;padding-right:10px">
    <div class="tabs">
 <c:if test="${param.index eq 'yes'}">
     <!-- active TAB -->
@@ -312,7 +313,7 @@
          </html:form>
       </div>
 
-   <div class="ruler_green"><div><fmt:message key="searchform.results" /></div></div>
+   <div class="ruler_green" style="width:1000px;"><div><fmt:message key="searchform.results" /></div></div>
    <div class="body">
 
 <!-- we check to see if we have workflow, this is done by looking if the editors for the workflow are on the HD -->
@@ -539,6 +540,7 @@
          <%@include file="searchpages.jsp" %>
       </mm:last>
    </mm:list>
+   </div>
    </div>
    </div>
 </mm:cloud>
