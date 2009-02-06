@@ -30,7 +30,7 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction {
       PagingUtils.initStatusHolder(request);
       PagingStatusHolder holder = PagingUtils.getStatusHolder();
       int totalCount = 0;
-      List < Authority > authorities = new ArrayList < Authority > ();
+      List <Authority> authorities = new ArrayList <Authority> ();
 
       if (StringUtils.isNotBlank(searchform.getGroup())) {
          // have conditions searching
@@ -55,7 +55,7 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction {
          totalCount = getAuthorityService().countAllAuthorities();
       }
       if (authorities != null) {
-         request.setAttribute("groupForShow", convertAuthrityTOVO(authorities));
+         request.setAttribute("groupForShow", convertAuthorityTOVO(authorities));
       }
       request.setAttribute("totalCount", totalCount);
       removeFromSession(request, searchform);
@@ -63,20 +63,20 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction {
 
    }
 
-   private List < GroupForShowVO > convertAuthrityTOVO(List < Authority > authorities) {
-      List < GroupForShowVO > groupForShow = new ArrayList < GroupForShowVO > ();
+   private List <GroupForShowVO> convertAuthorityTOVO(List <Authority> authorities) {
+      List <GroupForShowVO> groupForShow = new ArrayList <GroupForShowVO> ();
       for (Authority authority : authorities) {
          if (authority != null) {
             GroupForShowVO group = new GroupForShowVO();
             group.setGroupName(authority.getName());
             group.setGroupId(authority.getId().toString());
-            StringBuffer userNames = new StringBuffer();
-            Set < Authentication > authentications = authority.getAuthentications();
+            StringBuilder userNames = new StringBuilder();
+            Set <Authentication> authentications = authority.getAuthentications();
             if (!authentications.isEmpty()) {
                for (Authentication au : authentications) {
                   Person person = getPersonService().getPersonByAuthenticationId(au.getId());
                   if (person != null) {
-                     userNames.append(person.getFirstName() + " " + person.getLastName() + ", ");
+                     userNames.append(person.getFullName() + ", ");
                   }
                }
                group.setUsers(userNames.substring(0, userNames.length() - 2));

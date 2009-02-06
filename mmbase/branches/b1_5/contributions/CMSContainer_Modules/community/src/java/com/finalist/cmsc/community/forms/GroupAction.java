@@ -27,14 +27,14 @@ public class GroupAction extends AbstractCommunityAction {
 
       if (!isCancelled(request)) {
          GroupForm groupForm = (GroupForm) actionForm;
-         List < LabelValueBean > membersList = new ArrayList < LabelValueBean > ();
-         List < LabelValueBean > usersList = new ArrayList < LabelValueBean > ();
+         List <LabelValueBean> membersList = new ArrayList <LabelValueBean> ();
+         List <LabelValueBean> usersList = new ArrayList <LabelValueBean> ();
 
          String id = groupForm.getName();
 
          // get all users
          AuthenticationService as = getAuthenticationService();
-         List < Authentication > users = as.findAuthentications();
+         List <Authentication> users = as.findAuthentications();
 
          AuthorityService aus = getAuthorityService();
 
