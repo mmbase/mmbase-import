@@ -67,7 +67,7 @@
          <edit:ui-table items="${results}" var="preference" size="${totalCount}"
                         requestURI="/editors/community/PreferenceAction.do">
          <edit:ui-tcolumn title="">
-         <mm:hasrank minvalue="administrator">
+         <mm:hasrank minvalue="siteadmin">
             <a href="javascript:deleteInfo('${preference.id}','${page}',${fn:length(results)})">
                <img src="../gfx/icons/delete.png" title="<fmt:message key="community.preference.delete" />"/></a>
          </mm:hasrank>
@@ -85,7 +85,7 @@
          <input type="text" name="value" id="value_${preference.id}" value="${preference.value}"/>
          </edit:ui-tcolumn>
          <edit:ui-tcolumn titlekey="community.preference.action.upper">
-         <mm:hasrank minvalue="administrator">
+         <mm:hasrank minvalue="siteadmin">
             <a href="javascript:update('${preference.id}')"><fmt:message key="view.submit"/></a>
          </mm:hasrank>
          </edit:ui-tcolumn>

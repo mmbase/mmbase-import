@@ -33,7 +33,7 @@
     </div>
 
 <mm:cloud jspvar="cloud" loginpage="../../login.jsp">
-	<mm:hasrank minvalue="administrator">
+	<mm:hasrank minvalue="siteadmin">
 
 		<div class="editor">
 	      <div class="ruler_green"><div><fmt:message key="download.ruler.new" /></div></div>

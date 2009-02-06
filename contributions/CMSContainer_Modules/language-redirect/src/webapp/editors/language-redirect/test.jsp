@@ -36,7 +36,7 @@
 <mm:cloud jspvar="cloud" loginpage="login.jsp">
 
 	<mm:haspage page="/editors/admin/">
-		<mm:hasrank minvalue="administrator">
+		<mm:hasrank minvalue="siteadmin">
 		
 	   <cmsc:list-pages var="sites"/>
 	   <c:forEach var="site" items="${sites}">
