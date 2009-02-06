@@ -16,16 +16,30 @@ public class NewsletterSubscriptionHibernateService extends HibernateService imp
 
    @Transactional
    public List<Object[]> getSubscribersRelatedInfo(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging) {
-      PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
 
-      StringBuffer strb = new StringBuffer(
-               "select person.firstName, person.lastName, person.email ,person.authenticationId, authentication1.userId"
-                        + " from people person, authentication authentication1 " + "where person.authenticationId = authentication1.id");
+      Query query = executeSubscribersSearch(authenticationIds, fullName, userName, email, paging, false);
+
+      //Execute query
+      return query.list();
+   }
+
+   @Transactional
+   private Query executeSubscribersSearch(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging,
+          boolean onlyCount) {
+      PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
+      StringBuilder strb = new StringBuilder();
+      if (onlyCount) {
+         strb.append("select count(*)");
+      }
+      else { 
+         strb.append("select person.firstName, person.infix, person.lastName, person.email, person.authenticationId, authentication1.userId");
+      }
+      strb.append(" from people person, authentication authentication1 " + "where person.authenticationId = authentication1.id");
       if (StringUtils.isNotBlank(fullName)) {
          String[] names = fullName.split(" ");
          if (names.length >= 2) {
             strb.append(" and (person.firstName like '%" + names[0] + "%' or person.firstName like '%" + fullName + "%')"
-                     + " and (person.lastName like '%" + names[1] + "%' or person.lastName like '%" + fullName + "%')");
+                  + " and (person.lastName like '%" + names[1] + "%' or person.lastName like '%" + fullName + "%')");
          } else if (names.length == 1) {
             strb.append(" and (person.firstName like '%" + names[0] + "%')");
          }
@@ -63,7 +77,13 @@ public class NewsletterSubscriptionHibernateService extends HibernateService imp
          query.setFirstResult(pagingHolder.getOffset());
          query.setMaxResults(pagingHolder.getPageSize());
       }
-
-      return query.list();
+      return query;
    }
+   
+   @Transactional
+   public int getSubscribersRelatedInfoCount(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging) {
+      Query query = executeSubscribersSearch(authenticationIds, fullName, userName, email, paging, true);
+      return (Integer)(query.uniqueResult());
+   }
+   
 }

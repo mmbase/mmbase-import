@@ -298,7 +298,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 
    public List<Person> getAllSubscribers(String name, String email) {
       List<Node> subscriptions = subscriptionCAO.getAllSubscriptions();
-      Set<Integer> authenticationIds = new HashSet();
+      Set<Integer> authenticationIds = new HashSet<Integer>();
       for (Node subscription : subscriptions) {
          int authId = subscription.getIntValue("subscriber");
             authenticationIds.add(authId);
