@@ -357,7 +357,7 @@ public class RichTextBuilder extends MMObjectBuilder {
                else {
                   if (link.hasAttribute(RichText.HREF_ATTR)) {
                      String href = link.getAttribute(RichText.HREF_ATTR);
-                     String name = link.getAttribute("title");
+                     String name = link.getAttribute("name");
                      String owner = mmObj.getStringValue("owner");
                      MMObjectNode urlNode = createUrl(owner, href, name);
 
