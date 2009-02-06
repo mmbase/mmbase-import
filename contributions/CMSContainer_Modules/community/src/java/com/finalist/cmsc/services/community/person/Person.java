@@ -12,6 +12,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Date;
 
 /**
@@ -129,6 +132,11 @@ public class Person {
    }
 
    public String getFullName() {
+      //Return infix too, when user has filled in an infix.
+      if (StringUtils.isNotEmpty(this.getInfix())) {
+         return this.getFirstName() + " " + this.getInfix() + " " + this.getLastName();
+      }
+      
       return this.getFirstName() + " " + this.getLastName();
    }
 
