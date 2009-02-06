@@ -2,6 +2,7 @@
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../../login.jsp"/>
+<mm:hasrank minvalue="siteadmin">
 <mm:content type="text/html" encoding="UTF-8" expires="0">
    <cmscedit:head title="community.title">
       <script type="text/javascript" src="<cmsc:staticurl page='/js/prototype.js'/>"></script>
@@ -68,4 +69,5 @@
    </div>
    </body>
 </mm:content>
+</mm:hasrank>
 </html>

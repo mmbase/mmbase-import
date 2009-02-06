@@ -10,7 +10,8 @@
 	</style>
 </cmscedit:head>
 <body style="overflow: auto">
-<mm:cloud jspvar="cloud" loginpage="../login.jsp" rank='administrator'>
+<mm:cloud jspvar="cloud" loginpage="../login.jsp" rank="basic user">
+<mm:hasrank minvalue="siteadmin">
 <cmscedit:contentblock title="view.group.title" titleClass="content_block_pink">
 	<html:form action="/editors/community/groupAction" 
 		 onsubmit="return selectboxesOnSubmit('users', 'members');">
@@ -64,7 +65,8 @@
          <html:cancel style="width:90"><fmt:message key="view.group.cancel"/></html:cancel>
 		</div>
 	</html:form>
-	</cmscedit:contentblock>	
+	</cmscedit:contentblock>
+   </mm:hasrank>	
 </mm:cloud>
 </body>
 </html:html>

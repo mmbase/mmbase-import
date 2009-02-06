@@ -7,7 +7,8 @@
 <cmscedit:head title="view.title"/>
 <body style="overflow: auto">
 <cmscedit:contentblock title="view.title" titleClass="content_block_pink">
-<mm:cloud loginpage="../login.jsp" rank='administrator'>
+<mm:cloud loginpage="../login.jsp" rank="basic user">
+<mm:hasrank minvalue="siteadmin">
 	<mm:cloudinfo type="user" id="cloudusername" write="false" />
    <html:form action="/editors/community/userAddAction?group=${groupName},${option}">
 		<div id="user">
@@ -75,6 +76,7 @@
 			<html:cancel style="width:90"><fmt:message key="view.cancel"/></html:cancel>
 		</div>
 	</html:form>
+</mm:hasrank>
 </mm:cloud>
 </cmscedit:contentblock>	
 </body>
