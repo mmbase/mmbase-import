@@ -210,7 +210,7 @@ HTMLArea.prototype._insertInlineLink = function(link) {
 	if (link){
          	outparam = {
                	f_href   : HTMLArea.is_ie ? editor.stripBaseURL(link.href) : link.getAttribute("href"),
-                  f_destination : HTMLArea.is_ie ? link.destination : link.getAttribute("destination"),
+                  f_destination : link.destination ,
                	f_name   : link.name?link.name: sel_value,
                	f_title  :link.title?link.title:'',
                	f_target : link.target,
