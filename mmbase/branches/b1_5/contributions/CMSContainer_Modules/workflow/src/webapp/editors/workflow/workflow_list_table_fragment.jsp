@@ -80,7 +80,7 @@
          <mm:field name="stacktrace" id="stacktrace" write="false"/>
       </mm:node>
       <mm:haspage page="/editors/modules/">
-         <mm:hasrank minvalue="administrator">
+         <mm:hasrank minvalue="siteadmin">
             <c:if test="${status != 'published' and not empty stacktrace}">
                <div class="tip" style="left:5px;width:20px;padding: 1px 1px 1px 1px; margin: 0px;">
                   <span id="tip_info">${stacktrace}</span>
