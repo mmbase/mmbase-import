@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
@@ -174,12 +175,16 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
             email, true);
       for (Object[] result : qResults) {
          
-         String tmpFullName = result[0].toString() + " " + result[1].toString();
-         String tmpEmail = result[2].toString();
-         int tmpAuthenticationId = Integer.parseInt(result[3].toString());
+         String tmpFullName = result[0].toString(); //Firstname
+         if(StringUtils.isNotEmpty(result[1].toString())) { //If infix is not empty, add it
+            tmpFullName += " " + result[1].toString();
+         }
+         tmpFullName += " " + result[2].toString(); //Add Lastname
+         String tmpEmail = result[3].toString();
+         int tmpAuthenticationId = Integer.parseInt(result[4].toString());
          String tmpNewsletters = subscriptionService.getNewsletterNameList(tmpAuthenticationId);
          String tmpTerms = subscriptionService.getTermsNameList(tmpAuthenticationId);
-         String tmpUserName = result[4].toString();
+         String tmpUserName = result[5].toString();
          addToMap(results, tmpFullName, tmpUserName, tmpEmail, tmpNewsletters, tmpTerms, tmpAuthenticationId);
       }
       return results;
@@ -207,8 +212,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
       
       authenticationIds = subscriptionService.getAuthenticationIdsByTerms(newsletterId, terms);
       if (authenticationIds.size() > 0) {
-         resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email,
-               false).size();
+         resultCount = subscriptionHService.getSubscribersRelatedInfoCount(authenticationIds, fullName, userName, email, false);
       }
       return resultCount;
    }

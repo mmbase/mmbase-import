@@ -18,8 +18,7 @@ public class NewsletterNavigationRenderer extends PageNavigationRenderer {
    public String getContentType() {
       if (null != threadLocal.get()) {
          return threadLocal.get();
-      }
-      else {
+      } else {
          return "text/html";
       }
    }

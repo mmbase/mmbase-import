@@ -171,7 +171,11 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
       List<Object[]> qResults = subscriptionHService
             .getSubscribersRelatedInfo(authenticationIds, name, "", email, true);
       for (Object[] result : qResults) {
-         String tmpFullName = result[0].toString() + " " + result[1].toString();
+         String tmpFullName = result[0].toString(); //Firstname
+         if(StringUtils.isNotEmpty(result[1].toString())) { //If infix is not empty, add it
+            tmpFullName += " " + result[1].toString();
+         }
+         tmpFullName += " " + result[2].toString(); //Add Lastname
          String tmpEmail = result[2].toString();
          int tmpAuthenticationId = Integer.parseInt(result[3].toString());
          String tmpUserName = result[4].toString();
@@ -205,7 +209,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
       Set<Long> authenticationIds = new HashSet<Long>();
       authenticationIds = subscriptionServices.getAuthenticationIdsByNewsletter(newsletterId);
       if (authenticationIds.size() > 0) {
-         resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, name, "", email, false).size();
+         resultCount = subscriptionHService.getSubscribersRelatedInfoCount(authenticationIds, name, "", email, false);
       }
       return resultCount;
    }
@@ -247,13 +251,16 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
 
       Set<Long> authenticationIds = new HashSet<Long>();
       authenticationIds = subscriptionServices.getAuthenticationIds();
-      List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullname, "", email,
-            true);
+      List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullname, "", email, true);
       for (Object[] result : qResults) {
-         String tmpFullName = result[0].toString() + " " + result[1].toString();
-         String tmpEmail = result[2].toString();
-         int tmpAuthenticationId = Integer.parseInt(result[3].toString());
-         String tmpUserName = result[4].toString();
+         String tmpFullName = result[0].toString(); //Firstname
+         if(StringUtils.isNotEmpty(result[1].toString())) { //If infix is not empty, add it
+            tmpFullName += " " + result[1].toString();
+         }
+         tmpFullName += " " + result[2].toString(); //Add Lastname
+         String tmpEmail = result[3].toString();
+         int tmpAuthenticationId = Integer.parseInt(result[4].toString());
+         String tmpUserName = result[5].toString();
          addToSubscriptionMap(results, tmpFullName, tmpUserName, tmpEmail, tmpAuthenticationId);
       }
       return results;
@@ -264,8 +271,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
       Set<Long> authenticationIds = new HashSet<Long>();
       authenticationIds = subscriptionServices.getAuthenticationIds();
       if (authenticationIds.size() > 0) {
-         resultCount = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullname, "", email, false)
-               .size();
+         resultCount = subscriptionHService.getSubscribersRelatedInfoCount(authenticationIds, fullname, "", email, false);
       }
       return resultCount;
    }
