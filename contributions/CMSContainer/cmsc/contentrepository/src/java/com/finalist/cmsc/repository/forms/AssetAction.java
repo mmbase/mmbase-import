@@ -116,14 +116,6 @@ public class AssetAction extends MMBaseAction {
          if (!created.isEmpty()) {
             assetCount = created.size();
          }
-         String ewnodelastedited = getParameter(request, "ewnodelastedited");
-         if (ewnodelastedited != null) {
-            Node node = cloud.getNode(ewnodelastedited);
-            if (node.getNodeManager().getName().equalsIgnoreCase("urls")) {
-               node.setValue("title", node.getStringValue("name"));
-               node.commit();
-            }
-         }
          addToRequest(request, "direction", direction);
          addToRequest(request, "orderby", orderby);
          addToRequest(request, "elements", assets);

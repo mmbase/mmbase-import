@@ -74,16 +74,8 @@
       <%@include file="../repository/searchpages.jsp"%>
       <form action="SecondaryContentMassDeleteAction.do?object_type=urls" method="post" name="urlform">
          <table border="0" width="100%" class="listcontent">
-            <tr>
-               <c:if test="${fn:length(results) >1}">
-                  <th><input type="submit" onclick="confirmDelete();return false;" value="<fmt:message key="secondaryedit.mass.delete"/>"/></th>
-               </c:if>
-            </tr>
             <tr class="listheader">
                <th>
-                  <c:if test="${fn:length(results) >1}">
-                     <input type="checkbox"  name="selectall"  onclick="selectAll(this.checked, 'urlform', 'chk_');" value="on"/>
-                  </c:if>
                </th>
                <th nowrap="true"><a href="javascript:orderBy('name')" class="headerlink"><fmt:message
                   key="urlsearch.namecolumn" /></a></th>
@@ -94,12 +86,9 @@
                <c:set var="useSwapStyle">true</c:set>
                <mm:listnodes referid="results">
                   <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
-                        name="name" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
+                        name="title" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
                   <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
                      <td style="white-space:nowrap;">
-                        <c:if test="${fn:length(results) >1}">
-                           <input type="checkbox"  name="chk_<mm:field name="number" />" value="<mm:field name="number" />" onClick="document.forms['urlform'].elements.selectall.checked=false;"/>
-                        </c:if>
                            <c:if test="${action != 'select'}">
                         <a href="<mm:url page="../WizardInitAction.do">
                                                      <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
@@ -119,7 +108,7 @@
                        </c:if>
 
                      </td>
-                     <mm:field name="name" jspvar="name" write="false"/>
+                     <mm:field name="title" jspvar="name" write="false"/>
                      <td onMouseDown="objClick(this);">${fn:substring(name, 0, 40)}<c:if test="${fn:length(name) > 40}">...</c:if></td>
                      <mm:field name="url" jspvar="url" write="false"/>
                      <td onMouseDown="objClick(this);">${fn:substring(url, 0, 40)}<c:if test="${fn:length(url) > 40}">...</c:if></td>
@@ -144,11 +133,6 @@
                   <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
                </mm:listnodes>
             </tbody>
-            <tr>
-               <c:if test="${fn:length(results) >1}">
-                  <th><input type="submit" onclick="confirmDelete();return false;" value="<fmt:message key="secondaryedit.mass.delete"/>"/></th>
-               </c:if>
-            </tr>
          </table>
       </form>
    </c:if>

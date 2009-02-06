@@ -30,29 +30,6 @@
 
     <field>
       <descriptions>
-        <description xml:lang="en">The name of the site or page this url links to</description>
-        <description xml:lang="nl">De naam van de pagina of website waar deze link naar wijst</description>
-		<description xml:lang="zh">url所指向网站或网页的名字</description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="en">Name</guiname>
-        <guiname xml:lang="nl">Naam</guiname>
-		<guiname xml:lang="zh">名字</guiname>
-      </gui>
-      <editor>
-        <positions>
-          <list>2</list>
-        </positions>
-      </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>name</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
-    </field>
-
-    <field>
-      <descriptions>
         <description xml:lang="en">The link or site internet address</description>
         <description xml:lang="nl">Het internet adres van de link of website</description>
 		<description xml:lang="zh">链接或网站的互联网地址</description>

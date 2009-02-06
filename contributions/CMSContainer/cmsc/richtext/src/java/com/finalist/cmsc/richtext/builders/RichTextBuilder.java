@@ -689,10 +689,10 @@ public class RichTextBuilder extends MMObjectBuilder {
    protected MMObjectNode createUrl(String owner, String href, String name) {
       MMObjectNode urlNode = mmb.getMMObject("urls").getNewNode(owner);
       if (StringUtils.isNotEmpty(name)) {
-         urlNode.setValue("name", name);
+         urlNode.setValue("title", name);
       }
       else {
-         urlNode.setValue("name", href);
+         urlNode.setValue("title", href);
       }
       urlNode.setValue("url", href);
       urlNode.insert(owner);
