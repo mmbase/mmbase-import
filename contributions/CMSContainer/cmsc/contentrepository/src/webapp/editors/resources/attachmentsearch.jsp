@@ -201,7 +201,7 @@
 </c:if>
 <c:if test="${assettype == 'urls'}">
          <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
-                        name="name" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
+                        name="title" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
 </c:if>
          <tr <mm:even inverse="true">class="swap"</mm:even> href="<mm:write referid="url"/>">
             <td style="white-space: nowrap;">
@@ -213,9 +213,6 @@
             <td style="white-space: nowrap;" onMouseDown="objClick(this);">
                <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
                <mm:field id="title" write="false" name="title"/>
-               <c:if test="${assettype == 'urls'}">
-                  <c:set var="title" ><mm:field name="name"/></c:set>
-               </c:if>
                <c:if test="${fn:length(title) > 50}">
                   <c:set var="title">${fn:substring(title,0,49)}...</c:set>
                </c:if>
@@ -291,7 +288,7 @@
 </c:if>
 <c:if test="${assettype == 'urls'}">
          <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
-                        name="name" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
+                        name="title" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
 </c:if>
          <div class="thumbnail_show" onMouseOut="javascript:hideEditItems(<mm:field name='number'/>)" onMouseOver="showEditItems(<mm:field name='number'/>)">
             <div class="thumbnail_operation">
@@ -324,10 +321,7 @@
                <div class="thumnail_info">
                   <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
                               <mm:field id="title" write="false" name="title"/>
-                              <c:if test="${assettype == 'urls'}">
-                                 <c:set var="title" ><mm:field name="name"/></c:set>
-                              </c:if>
-                              <c:if test="${fn:length(title) > 15}">
+                               <c:if test="${fn:length(title) > 15}">
                                  <c:set var="title">${fn:substring(title,0,14)}...</c:set>
                               </c:if>${title}
                               <c:if test="${ assettype == 'images'}">

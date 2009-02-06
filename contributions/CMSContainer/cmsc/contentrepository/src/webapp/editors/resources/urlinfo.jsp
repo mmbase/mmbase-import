@@ -32,7 +32,7 @@
          <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
             <mm:node number="${param.objectnumber}">
                  <div style="float:left; padding:5px;">
-                       <fmt:message key="urlinfo.name" />: <b><mm:field name="name"/></b><br/>
+                       <fmt:message key="urlinfo.name" />: <b><mm:field name="title"/></b><br/>
                        <fmt:message key="urlinfo.description" />: <mm:field name="description"/><br/>
                        <fmt:message key="urlinfo.url" />: <mm:field name="url"/><br/>
                         <fmt:message key="urlform.valid" />: 

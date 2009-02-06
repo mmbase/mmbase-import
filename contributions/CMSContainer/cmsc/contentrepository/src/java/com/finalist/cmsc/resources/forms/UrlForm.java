@@ -10,7 +10,7 @@ public class UrlForm extends SearchForm {
 
 
    public UrlForm() {
-      super("urls", "name");
+      super("urls", "title");
    }
 
 

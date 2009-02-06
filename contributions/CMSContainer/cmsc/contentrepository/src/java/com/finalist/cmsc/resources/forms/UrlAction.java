@@ -5,7 +5,7 @@ import org.mmbase.bridge.NodeQuery;
 
 public class UrlAction extends SearchAction {
 
-   public static final String NAME_FIELD = "name";
+   public static final String NAME_FIELD = "title";
    public static final String DESCRIPTION_FIELD = "description";
    public static final String URL_FIELD = "url";
    public static final String VALID_FIELD = "valid";
