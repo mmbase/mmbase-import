@@ -22,20 +22,21 @@
             <fmt:param><mm:nodeinfo nodetype="${query.nodeManager.name}" type="guinodemanager" /></fmt:param>
           </fmt:message>
           <fmt:message key="create" var="createmessage" />
-          <table  class="create ${query.nodeManager.name}" summary="${summary}">
+          <table class="create ${query.nodeManager.name}" summary="${summary}">
+            <caption>${summary}</caption>
             <tfoot>
               <tr class="buttons">
                 <td colspan="2">
                   <input type="submit" value="${createmessage}" />
-                  <input type="hidden"  name="s" value="submitted" />
+                  <input type="hidden" name="s" value="submitted" />
                   <input type="hidden" name="queryid" value="${queryid}" />
-                  <input type="hidden" name="id"       value="${id}" />
+                  <input type="hidden" name="id"      value="${id}" />
                   <input type="hidden" name="context" value="${context}" />
                   <input type="hidden" name="nodemanager" id="nodemanager" value="${query.nodeManager.name}" />
                 </td>
               </tr>
             </tfoot>
-            <mm:createnode id="newnode" type="${query.nodeManager.name}">
+            <mm:createnode id="newnode" type="${query.nodeManager.name}" commitonclose="false">
               <c:if test="${! empty context}">
                 <mm:log>Setting context to ${context}</mm:log>
                 <mm:setcontext>${context}</mm:setcontext>
