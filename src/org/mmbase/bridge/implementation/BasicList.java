@@ -19,9 +19,9 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicList.java,v 1.37 2008-12-30 11:12:52 michiel Exp $
+ * @version $Id: BasicList.java,v 1.38 2009-02-06 15:56:34 michiel Exp $
  */
-public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> implements BridgeList<E>, java.io.Serializable  {
+public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> implements BridgeList<E>, java.io.Serializable, RandomAccess  {
 
     private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
@@ -33,7 +33,7 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
     /**
      * @since MMBase-1.9.1
      */
-    private final List<Object> backing;
+    private final ArrayList<Object> backing;
 
     BasicList() {
         super();
