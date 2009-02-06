@@ -26,7 +26,6 @@ img
    left: 295px;
    margin-right: 2px;
    margin-bottom: 2px;
-   width:76%;
 }
 
 #left
@@ -786,9 +785,7 @@ div.editor
    
    background-color: #ffffff;
    
-   float: left;
    clear: both;
-   width: 100%;
    height: auto;
 }
 
