@@ -28,6 +28,7 @@
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">Onderwerp</guiname>
@@ -200,7 +201,7 @@
          <gui>
             <guiname xml:lang="nl">statische html</guiname>
             <guiname xml:lang="en">static html</guiname>
-            <guiname xml:lang="zh">static html</guiname>
+            <guiname xml:lang="zh">静态html</guiname>
          </gui>
          <editor>
             <positions>
