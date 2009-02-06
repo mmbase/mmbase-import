@@ -1,5 +1,6 @@
 package com.finalist.newsletter.services.impl;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 
@@ -83,7 +84,7 @@ public class NewsletterSubscriptionHibernateService extends HibernateService imp
    @Transactional
    public int getSubscribersRelatedInfoCount(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging) {
       Query query = executeSubscribersSearch(authenticationIds, fullName, userName, email, paging, true);
-      return (Integer)(query.uniqueResult());
+      return ((BigInteger)(query.uniqueResult())).intValue();
    }
    
 }
