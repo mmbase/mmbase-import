@@ -32,8 +32,6 @@ public class CreateRelationsForSecondaryContent {
    private static final String CONTENTCHANNEL = "contentchannel";
 
    private Cloud cloud;
-   private Integer parentNumber;
-   private String type ;
    public PageContext ctx ;
    /** MMbase logging system */
    private static final Logger log = Logging.getLoggerInstance(CreateRelationsForSecondaryContent.class.getName());
@@ -42,12 +40,10 @@ public class CreateRelationsForSecondaryContent {
       this.cloud = cloud;
       ctx =  pageContext;
    }
-
-   public String execute(Integer parentNumber,String type) throws Exception {
+   
+   public String execute(Integer parentNumber,String type, String selfselectLogic) throws Exception {
       //Creating relations between assets and content channel
       //Only process assets that don't have creationrels!
-      this.parentNumber = parentNumber;
-      this.type = type;
 
       NodeManager assetManager = cloud.getNodeManager("assetelement");
       NodeManager ownerManager = cloud.getNodeManager("user");
@@ -74,20 +70,44 @@ public class CreateRelationsForSecondaryContent {
          if (!RepositoryUtil.hasCreationChannel(asset)) {
             counter++;
             Relation relation = null;
-            //if type is not null . create relations acording to the realations
+            // If type is not null, it means someone has picked selfselect. We will now try to determine
+            // a suitable channel for the asset.
             if(StringUtils.isNotBlank(type)) {
                
-               Node channel = getRelatedChannel(asset);
-               if(channel == null) {
-                  relation = RelationUtil.createRelation(asset, root, CREATIONREL);
-               }
-               else {
-                  relation = RelationUtil.createRelation(asset, channel, CREATIONREL);
+               if(selfselectLogic != null && selfselectLogic.equals("rootWhenUndetermined")) {
+                  // narrow selfselect. Picks a channel from a related content element, if and only if the asset has 1 related content element
+                  // If an asset has more then one related content element, the asset will be put in the root channel.
+                  
+                  int numRelatedContent = asset.countRelatedNodes(CONTENTELEMENT);
+                  if(numRelatedContent > 1) {
+                     relation = RelationUtil.createRelation(asset, root, CREATIONREL);
+                  } else {
+                     Node channel = getRelatedChannel(asset);
+                     if(channel == null) {
+                        relation = RelationUtil.createRelation(asset, root, CREATIONREL);
+                     }
+                     else {
+                        relation = RelationUtil.createRelation(asset, channel, CREATIONREL);
+                     }
+                  }
+                  
+               } else {
+                  // selfselectLogic is firstElem
+                  // Standard way of selfselect. picks first non recyclebin channel.
+                  
+                  Node channel = getRelatedChannel(asset);
+                  if(channel == null) {
+                     relation = RelationUtil.createRelation(asset, root, CREATIONREL);
+                  }
+                  else {
+                     relation = RelationUtil.createRelation(asset, channel, CREATIONREL);
+                  }
                }
             }
             else {
                relation = RelationUtil.createRelation(asset, root, CREATIONREL);
             }
+            
             if(Publish.isPublishable(relation)) {
                Publish.publish(relation); // This method checks if it need to publish
             }                        // otherwise, it doesn't harm anyone
