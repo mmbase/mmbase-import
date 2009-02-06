@@ -34,13 +34,13 @@ import org.mmbase.util.logging.*;
      <param name="parameter name">parameter value</param>
       ...
   </anyname>
-  ]]>
+  ]]></pre>
  * Param subtags are matched with 'setters' on the created object.
  *
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: Instantiator.java,v 1.6 2009-01-12 21:12:47 michiel Exp $
+ * @version $Id: Instantiator.java,v 1.7 2009-02-06 23:53:12 michiel Exp $
  */
 public abstract class Instantiator {
 
