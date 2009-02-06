@@ -33,7 +33,7 @@
          </c:when>
          <c:when test="${nodeType eq 'urls'}">
              <c:set var="object_type" value="urls" scope="request"/>
-             <fmt:message key="secondarydelete.field.name" />: <b><mm:field name="name"/></b><br/>
+             <fmt:message key="secondarydelete.field.name" />: <b><mm:field name="title"/></b><br/>
             <fmt:message key="secondarydelete.field.url" />: <b><mm:field name="url"/></b>
          </c:when>
        </c:choose>

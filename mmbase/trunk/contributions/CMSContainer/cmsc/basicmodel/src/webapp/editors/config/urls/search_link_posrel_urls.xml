@@ -6,7 +6,7 @@
 	<title xml:lang="zh">Url</title>
 
 	<item>
-		<field name="name">
+		<field name="title">
 			<prompt xml:lang="en">Name</prompt>
 			<prompt xml:lang="nl">Naam</prompt>
 			<prompt xml:lang="zh">名称</prompt>
@@ -23,7 +23,7 @@
 		</field>
 	</item>
 
-	<command name="assetsselector" nodepath="urls" age="-1" fields="name,url,description">
+	<command name="assetsselector" nodepath="urls" age="-1" fields="title,url,description">
 		<prompt xml:lang="en">Search url</prompt>
 		<prompt xml:lang="nl">Zoek url</prompt>
 		<prompt xml:lang="zh">查找Url</prompt>
@@ -31,13 +31,13 @@
 			<name xml:lang="en">Name / Description</name>
 			<name xml:lang="nl">Naam / Omschrijving</name>
 			<name xml:lang="zh">名称 / 描述</name>
-			<search-fields>[name]|[description]</search-fields>
+			<search-fields>[title]|[description]</search-fields>
 		</search-filter>
 		<search-filter>
 			<name xml:lang="en">Name contains</name>
 			<name xml:lang="nl">Naam bevat</name>
 			<name xml:lang="zh">名称包含</name>
-			<search-fields>[name]</search-fields>
+			<search-fields>[title]</search-fields>
 		</search-filter>
 		<search-filter>
 			<name xml:lang="en">Url contains</name>

@@ -154,9 +154,6 @@
                         <div class="imgInfo">
                            <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
                               <mm:field id="title" write="false" name="title"/>
-                              <c:if test="${assettype == 'urls'}">
-                                 <c:set var="title" ><mm:field name="name"/></c:set>
-                              </c:if>
                               <c:if test="${fn:length(title) > 15}">
                                  <c:set var="title">${fn:substring(title,0,14)}...</c:set>
                               </c:if>${title}
@@ -205,9 +202,6 @@
                         <td onMouseDown="initParentHref(this.parentNode)">
                            <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
                            <mm:field id="title" write="false" name="title"/>
-                           <c:if test="${assettype == 'urls'}">
-                              <c:set var="title" ><mm:field name="name"/></c:set>
-                           </c:if>
                            <c:if test="${fn:length(title) > 50}">
                               <c:set var="title">${fn:substring(title,0,49)}...</c:set>
                            </c:if>
