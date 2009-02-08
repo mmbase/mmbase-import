@@ -24,23 +24,23 @@ import org.mmbase.util.logging.*;
  * certain objects.
  *
  * Supported are schemes like
- <pre><![CDATA[
-  <class name="class name">
-     <param name="parameter name">parameter value</param>
+ <pre>
+  &lt;class name="class name"&gt;
+     &lt;param name="parameter name"&gt;parameter value&lt;/param&gt;
       ...
-  </class>
+  &lt;/class&gt;
   and
-  <anyelement class="class name">
-     <param name="parameter name">parameter value</param>
+  &lt;anyelement class="class name"&gt;
+     &lt;param name="parameter name"&gt;parameter value&lt;/param&gt;
       ...
-  </anyname>
-  ]]></pre>
+  &lt;/anyname&gt;
+  </pre>
  * Param subtags are matched with 'setters' on the created object.
  *
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: Instantiator.java,v 1.7 2009-02-06 23:53:12 michiel Exp $
+ * @version $Id: Instantiator.java,v 1.8 2009-02-08 10:01:30 michiel Exp $
  */
 public abstract class Instantiator {
 
