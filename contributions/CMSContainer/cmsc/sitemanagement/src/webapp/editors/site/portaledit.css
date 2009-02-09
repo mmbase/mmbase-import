@@ -94,10 +94,9 @@ html>.portlet-config-canvas
 }
 
 .portlet-header-canvas {
-  position: absolute;
+   position: absolute;
    text-align: left;
-   width:auto;
-   height:200px;
+   width: auto;
 }
 
 .portlet-info {
