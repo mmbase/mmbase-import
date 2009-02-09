@@ -71,7 +71,9 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
                int number = Integer.parseInt(name.substring(lastUScore + 1));
                if (cloud.hasNode(number)) {
                   Node n = cloud.getNode(number);
-                  nodes.add(n);
+                  if(n != null) {
+                     nodes.add(n);
+                  }
                }
             }
          }
