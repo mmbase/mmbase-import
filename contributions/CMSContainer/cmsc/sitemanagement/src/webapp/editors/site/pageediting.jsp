@@ -62,7 +62,7 @@
 			width:384px;
 			height:71px;
 			position:absolute;
-			left:780px;
+			right: 0;
 			top:35px;
 			z-index:1000;
 		}
@@ -94,7 +94,7 @@
       <table style="width:100%; height:100%;" cellpadding="0" cellspacing="0" border="0">
          <tr style="height:37px;">
             <td style="width:60%;">
-               <div class="tabs" style="width:100%;">
+               <div class="tabs">
                   <div ${'edit' eq sessionScope.pageMode ? 'class="tab_active"' : 'class="tab"'} >
                      <div class="body">
                         <div>
@@ -117,7 +117,7 @@
 
             </td>
                <td style="width:40%; height:36px;vertical-align:middle; text-align:right; background:url(<cmsc:staticurl page='/editors/gfx/edit_shadow.gif'/>) repeat-x center;">
-                  <input type="checkbox" name="treevisable" id="treevisable" value="<fmt:message key='toolbar.showtree'/>" checked onClick="return switchChannelPanel(this);">
+                  <input type="checkbox" name="treevisable" id="treevisable" value="<fmt:message key='toolbar.showtree'/>" checked="checked" onClick="return switchChannelPanel(this);">
                      <fmt:message key="toolbar.showtree" />
                   </input>
                   <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">

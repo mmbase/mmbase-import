@@ -22,19 +22,15 @@ img
 
 #content
 {
-   position: absolute;
-   left: 295px;
-   margin-right: 2px;
-   margin-bottom: 2px;
+   margin: 0 2px 2px 295px;
+   min-width: 912px;
 }
 
 #left
 {
    position: absolute;
    left: 7px;
-   float: none;
-   clear: none;
-   width:24%;
+   width: 290px;
 }
 
 #footer
@@ -64,17 +60,14 @@ div.side_block,
 div.side_block_gray,
 div.side_block_green
 {
-   display: block;
    background-color: #d1dbe1;
    background-image: url('../gfx/background_side_block_right.gif');
    background-repeat: repeat-y;
    background-position: right top;
-   color: #ffffff;
-   width: 285px;
+   color: #fff;
    border-style: none none none solid;
    border-width: 1px;
-   border-color: #ffffff;   
-   clear: both;
+   border-color: #fff;
    /*height: auto;*/
    margin-bottom: 2px;
 }
@@ -91,12 +84,8 @@ div.side_block_green a
 /* bovenkant voor block */
 div.side_block div.header
 {
-   display: block;
    background-image: url('../gfx/background_side_block.gif');
    height: 36px;
-   float: left;
-   clear: both;
-   width:100%;
 }
 
 /* grijs block aan zijkant bovenkant */
@@ -320,11 +309,7 @@ ul.shortcuts li.community         {   background-image: url('../gfx/icons/rights
 
 div.side_block div.body
 {
-   height: auto; 
-   float: none; 
-   clear:both; 
    padding: 10px;
-   /*display:inline;*/
 }
 div.side_block_gray div.body,
 div.side_block_green div.body{
@@ -432,19 +417,15 @@ div.content_block_purple div.content_block_end
 /* contentblocks PINK */
 div.content_block_pink
 {
-   display: block;
    background-color: #d1dbe1;
    background-image: url('../gfx/bg_cb_right_pink.gif');
    background-repeat: repeat-y;
    background-position: right top;
    color: #ffffff;
-   width: auto;
    border-style: none none none solid;
    /*border-style: solid;*/
    border-width: 1px;
-   border-color: #ffffff;   
-   float: none;
-   height: auto;
+   border-color: #ffffff;
    margin-bottom: 2px;      
 }
 
@@ -482,10 +463,6 @@ div.content_block_pink div.header
 {
    background-image: url('../gfx/bg_cb_pink.gif');
    height: 36px;
-   width: auto;
-   float: left;
-   clear: both;
-   width:100%;
 }
 
 /* titel in header */

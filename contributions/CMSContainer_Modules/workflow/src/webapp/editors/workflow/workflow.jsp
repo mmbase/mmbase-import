@@ -336,7 +336,7 @@
 			</div>
 		</c:if>
 
-		<div class="ruler_green" style="width:913px;">
+		<div class="ruler_green">
 			<div> 
 		       <c:if test="${not empty workflowType and empty workflowNodetype}">
 		         <fmt:message key="workflow.title.${workflowType}" />
