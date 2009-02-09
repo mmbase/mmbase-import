@@ -68,6 +68,14 @@
          <artifactId>cmsc-portlets-dynamicforms</artifactId>
          <version>${cmscportlets.version}</version>
          <type>mmbase-module</type>
+      </dependency>
+      <dependency>
+         <groupId>poi</groupId>
+         <artifactId>poi</artifactId>
+         <version>2.5.1</version>
+         <properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
       </dependency>   
       <dependency>
          <groupId>finalist</groupId>
