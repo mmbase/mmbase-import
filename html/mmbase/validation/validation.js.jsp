@@ -9,7 +9,7 @@
  *                              then call validator.setup(el).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.57 2009-01-07 18:30:06 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.58 2009-02-09 11:42:13 michiel Exp $
  */
 
 
@@ -18,17 +18,20 @@ function MMBaseValidator(root) {
 
     this.logEnabled   = false;
     this.traceEnabled = false;
+
+
+    this.dataTypeCache   = new Object();
     this.invalidElements = 0;
     //this.changedElements  = 0;
     this.elements        = [];
     this.validateHook;
     this.root = root;
     this.setup();
-    this.lang          = "client";
+    this.lang          = null;
     this.sessionName   = null;
     this.id = MMBaseValidator.validators.push(this);
     if (MMBaseValidator.validators.length == 1) {
-         setTimeout(MMBaseValidator.watcher, 500);
+	setTimeout(MMBaseValidator.watcher, 500);
     }
     this.activeElement = null;
     this.checkAfter    = 600;
@@ -36,23 +39,19 @@ function MMBaseValidator(root) {
 
 }
 
-
-MMBaseValidator.dataTypeCache            = new Object();
-MMBaseValidator.prefetchedNodemanagers   = new Object();
-
 MMBaseValidator.validators = [];
 
 
 MMBaseValidator.watcher = function() {
     for (var i = 0; i < MMBaseValidator.validators.length; i++) {
-         var validator = MMBaseValidator.validators[i];
-         var el = validator.activeElement;
-         var now = new Date().getTime();
+	var validator = MMBaseValidator.validators[i];
+	var el = validator.activeElement;
+	var now = new Date().getTime();
         if (el != null) {
             if (! el.serverValidated) {
-                  if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
+		if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
                     MMBaseValidator.validators[i].validateElement(MMBaseValidator.validators[i].activeElement, true);
-                  }
+		}
             }
         }
     }
@@ -64,14 +63,14 @@ MMBaseValidator.watcher = function() {
 
 MMBaseValidator.prototype.setup = function(el) {
     if (el != null) {
-         this.root = el;
-         if (this.root == window) this.root = this.root.document;
+	this.root = el;
+	if (this.root == window) this.root = this.root.document;
     }
     if (this.root != null) {
-         var self = this;
-         $(document).ready(function(event) {
-             self.onLoad(event);
-         });
+	var self = this;
+	$(document).ready(function(event) {
+	    self.onLoad(event);
+	});
     }
 }
 
@@ -93,7 +92,9 @@ MMBaseValidator.prototype.log = function (msg) {
             errorTextArea.value = "LOG: " + msg + "\n" + errorTextArea.value;
         } else {
             // firebug console
-            console.log(msg);
+	    if (typeof(console) != "undefined") {
+		console.log(msg);
+	    }
         }
     }
 }
@@ -105,7 +106,9 @@ MMBaseValidator.prototype.trace = function (msg) {
             errorTextArea.value = "TRACE: " + msg + "\n" + errorTextArea.value;
         } else {
             // firebug console
-            console.log(msg);
+	    if (typeof(console) != "undefined") {
+		console.log(msg);
+	    }
         }
     }
 }
@@ -132,14 +135,14 @@ MMBaseValidator.prototype.enforce = function(el, enf) {
 
 MMBaseValidator.prototype.isChanged = function(el) {
     if (el != null) {
-         return this.getValue(el) != el.originalValue;
+	return this.getValue(el) != el.originalValue;
     } else {
-         var els = this.elements;
-         for (var  i = 0; i < els.length; i++) {
+	var els = this.elements;
+	for (var  i = 0; i < els.length; i++) {
             var entry = els[i];
-             if (this.isChanged(entry)) return true;
-         }
-         return false;
+	    if (this.isChanged(entry)) return true;
+	}
+	return false;
     }
 }
 
@@ -155,17 +158,17 @@ MMBaseValidator.prototype.find = function(el, path, r) {
 
     var tag = el.firstChild;
     while (tag != null) {
-         if (tag.nodeType == 1) {
-             var name = tag.nodeName.replace(/^.*:/,'');
-             if (name == tagName) {
-                  if (path.length == 0) {
-                      r.push(tag);
-                  } else {
-                      this.find(tag, path, r);
-                  }
-             }
-         }
-         tag = tag.nextSibling;
+	if (tag.nodeType == 1) {
+	    var name = tag.nodeName.replace(/^.*:/,'');
+	    if (name == tagName) {
+		if (path.length == 0) {
+		    r.push(tag);
+		} else {
+		    this.find(tag, path, r);
+		}
+	    }
+	}
+	tag = tag.nextSibling;
     }
     return r;
 }
@@ -177,8 +180,8 @@ MMBaseValidator.prototype.find = function(el, path, r) {
 MMBaseValidator.prototype.isRequired = function(el) {
     if (el.mm_isrequired != null) return el.mm_isrequired;
     var re = this.find(this.getDataTypeXml(el), 'datatype required')[0];
-    el.mm_isrequired = "true" == "" + re.getAttribute("value");
-    el.mm_isrequired_enforce = re.getAttribute("enforce");
+    el.mm_isrequired = re != null && ("true" == "" + re.getAttribute("value"));
+    el.mm_isrequired_enforce = re != null && re.getAttribute("enforce");
     return el.mm_isrequired;
 }
 
@@ -273,6 +276,7 @@ MMBaseValidator.prototype.hasJavaClass = function(el, javaClass) {
     var pattern = new RegExp(javaClass);
     var xml = this.getDataTypeXml(el);
     var javaClassElement = this.find(xml, 'datatype class')[0];
+    if (! javaClassElement) return false;
     var name = javaClassElement.getAttribute("name");
     if (pattern.test(name)) {
         return true;
@@ -324,34 +328,15 @@ MMBaseValidator.prototype.isBinary = function(el) {
     return el.isbinary;
 }
 
+MMBaseValidator.prototype.isXml = function(el) {
+    if (el.mm_isxml != null) return el.mm_isxml;
+    el.mm_isxml= this.hasJavaClass(el, "org\.mmbase\.datatypes\.XmlDataType");
+    return el.mm_isxml;
+}
+
 MMBaseValidator.prototype.INTEGER = /^[+-]?\d+$/;
 
-MMBaseValidator.prototype.getDecimalSeparator = function () {
-    if (this.DECIMAL == null) {
-         var url = '<mm:url page="/mmbase/validation/numberInfo.jspx" />';
-         var params = {lang: this.lang };
-         var result;
-         $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
-                  complete: function(res, status){
-                      if (status == "success") {
-                           result = res.responseXML;
-                      } else {
-                           result = $("<numberInfo />");
-                      }
-                  }
-                });
-         var decimal = this.find(result, 'numberInfo decimalSeparator')[0].childNodes[0].nodeValue;
-         this.DECIMAL = decimal  == "." ? "\\." : "[\\.\\" + decimal + "]";
-    }
-    return this.DECIMAL;
-}
-MMBaseValidator.prototype.floatRegExp = function() {
-    if (this.FLOAT == null) {
-         this.FLOAT = new RegExp("^[+-]?(\\d+|\\d+" + this.getDecimalSeparator() + "\\d*|\\d*" + this.getDecimalSeparator() + "\\d+)(e[+-]?\\d+|)$");
-    }
-    return this.FLOAT;
-
-}
+MMBaseValidator.prototype.FLOAT   = /^[+-]?(\d+|\d+\.\d*|\d*\.\d+)(e[+-]?\d+|)$/i;
 
 MMBaseValidator.prototype.typeValid = function(el) {
     if (el.value == "") return true;
@@ -360,7 +345,7 @@ MMBaseValidator.prototype.typeValid = function(el) {
         if (! this.INTEGER.test(el.value)) return false;
     }
     if (this.isFloat(el)) {
-        if (! this.floatRegExp().test(el.value)) return false;
+        if (! this.FLOAT.test(el.value)) return false;
     }
     return true;
 
@@ -465,24 +450,26 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
     if (el.mm_key == null) {
         el.mm_key = key.string();
     }
-    var dataType = MMBaseValidator.dataTypeCache[el.mm_key];
+    var dataType = this.dataTypeCache[el.mm_key];
     if (dataType == null) {
-        var url = '<mm:url page="/mmbase/validation/datatype.jspx" />';
-        var params = this.getDataTypeArguments(key);
-        var self = this;
-        $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
-                complete: function(res, status){
-                    if (status == "success") {
-                        dataType = res.responseXML;
-                        MMBaseValidator.dataTypeCache[el.mm_key] = dataType;
-                    }
-                }
-               });
-        this.log("Found " + dataType);
+
+	    var url = '<mm:url page="/mmbase/validation/datatype.jspx" />';
+	    var params = this.getDataTypeArguments(key);
+	    var self = this;
+	    $.ajax({async: false, url: url, type: "GET",
+                dataType: "xml", data: params,
+		        complete: function(res, status){
+		            if (status == "success") {
+			            dataType = res.responseXML;
+			            self.dataTypeCache[el.mm_key] = dataType;
+		            }
+		        }
+	           });
+	    this.log("Found " + dataType);
 
 
     } else {
-        this.trace("Found in cache " + dataType);
+	    this.trace("Found in cache " + dataType);
     }
     return dataType;
 }
@@ -536,36 +523,28 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
  * be done for every field.
  *
  */
-MMBaseValidator.prototype.prefetchNodeManager = function(n) {
+MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
 
-    var nodemanagers = n.split(",");
-    for (var i in nodemanagers) {
-        var nodemanager = nodemanagers[i];
-        if (! MMBaseValidator.prefetchedNodemanagers[nodemanager]) {
-            var url = '<mm:url page="/mmbase/validation/datatypes.jspx" />';
-            var params = {nodemanager: nodemanager };
-            var self = this;
-            MMBaseValidator.prefetchedNodemanagers[nodemanager] = true;
+    var url = '<mm:url page="/mmbase/validation/datatypes.jspx" />';
+    var params = {nodemanager: nodemanager };
+    var self = this;
+    $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+	    complete: function(res, status){
+		if (status == "success") {
+		    var dataTypes = res.responseXML;
 
-            $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
-                    complete: function(res, status){
-                        if (status == "success") {
-                            var dataTypes = res.responseXML;
+		    var fields = dataTypes.documentElement.childNodes;
+		    for (var i = 0; i < fields.length; i++) {
+			var key = new Key();
+			key.nodeManager = nodemanager;
+			key.field = fields[i].getAttribute("name");
+			self.dataTypeCache[key.string()] = fields[i];
+		    }
+		    //console.log("" + res);
+		}
+	    }
+	   });
 
-                            var fields = dataTypes.documentElement.childNodes;
-                            for (var i = 0; i < fields.length; i++) {
-                                var key = new Key();
-                                key.nodeManager = nodemanager;
-                                key.field = fields[i].getAttribute("name");
-                                MMBaseValidator.dataTypeCache[key.string()] = fields[i];
-                            }
-                            //console.log("" + res);
-                        }
-                    }
-                   });
-
-        }
-    }
 }
 
 
@@ -695,31 +674,31 @@ MMBaseValidator.prototype.serverValidation = function(el) {
         var key = this.getDataTypeKey(el);
         var value = this.getDateValue(el);
         var validationUrl = '<mm:url page="/mmbase/validation/valid.jspx" />';
-        this.getDataTypeArguments(key) +
+            this.getDataTypeArguments(key) +
             (this.lang != null ? "&lang=" + this.lang : "") +
-             (this.sessionName != null ? "&sessionname=" + this.sessionName : "") +
+	    (this.sessionName != null ? "&sessionname=" + this.sessionName : "") +
             "&value=" + value +
             (key.node != null && key.node > 0 ? ("&node=" + key.node) : "") +
             "&changed=" + this.isChanged(el);
-         var params = this.getDataTypeArguments(key);
-         if (this.lang != null) params.lang = this.lang;
-         if (this.sessionName != null) params.sessionname = this.sessionName;
-         params.value = value;
-         if (key.node != null && key.node > 0) params.node = key.node;
-         params.changed = this.isChanged(el);
-         var result;
-         $.ajax({async: false, url: validationUrl, type: "GET", dataType: "xml", data: params,
-                 complete: function(res, status){
-                      if (status == "success") {
-                          el.serverValidated = true;
-                          result = res.responseXML;
-                          //console.log("" + res);
-                      } else {
-                          result = $("<result valid='false' />");
-                      }
-                 }
-                });
-         return result;
+	var params = this.getDataTypeArguments(key);
+	if (this.lang != null) params.lang = this.lang;
+	if (this.sessionName != null) params.sessionname = this.sessionName;
+	params.value = value;
+	if (key.node != null && key.node > 0) params.node = key.node;
+	params.changed = this.isChanged(el);
+	var result;
+	$.ajax({async: false, url: validationUrl, type: "GET", dataType: "xml", data: params,
+	    complete: function(res, status){
+		if (status == "success") {
+		    el.serverValidated = true;
+		    result = res.responseXML;
+		    //console.log("" + res);
+		} else {
+		    result = $("<result valid='false' />");
+		}
+	    }
+	   });
+	return result;
     } catch (ex) {
         this.log(ex);
         throw ex;
@@ -774,21 +753,21 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
         valid = this.validResult(serverXml);
         if (element.id) {
             var errorDiv = document.getElementById("mm_check_" + element.id.substring(3));
-             if (errorDiv != null) {
-                  errorDiv.className = valid ? "mm_check_noerror" : "mm_check_error";
-                  if (errorDiv) {
+	    if (errorDiv != null) {
+		errorDiv.className = valid ? "mm_check_noerror" : "mm_check_error";
+		if (errorDiv) {
                     $(errorDiv).empty();
                     var errors = serverXml.documentElement.childNodes;
                     this.log("errors for " + element.id + " " +  serverXml + " " + errors.length);
 
 
                     for (var  i = 0; i < errors.length; i++) {
-                           var span = document.createElement("span");
-                           span.innerHTML = errors[i].childNodes[0].nodeValue; // IE does not support textContent
-                           errorDiv.appendChild(span);
+			var span = document.createElement("span");
+			span.innerHTML = errors[i].childNodes[0].nodeValue; // IE does not support textContent
+			errorDiv.appendChild(span);
                     }
-                  }
-             }
+		}
+	    }
         }
     } else {
         element.serverValidated = false;
@@ -806,7 +785,6 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
     if (this.validateHook) {
         this.validateHook(valid, element);
     }
-    $(this).trigger("mmValidate", [valid, element]);
 }
 
 /**
@@ -827,18 +805,18 @@ MMBaseValidator.prototype.removeValidation = function(el) {
     }
     var self = this;
     var els = $(el).find(".mm_validate *").each(function() {
-         var entry = this;
-         if ($.inArray(entry, self.elements)) {
-             if (! entry.prevValid) self.invalidElements--;
-             $(entry).unbind();
-             var newElements = [];
-             $(self.elements).each(function() {
-                  if (this != entry) {
-                      newElements.push(this);
-                  }
-             });
-             self.elements = newElements;
-         }
+	var entry = this;
+	if ($.inArray(entry, self.elements)) {
+	    if (! entry.prevValid) self.invalidElements--;
+	    $(entry).unbind();
+	    var newElements = [];
+	    $(self.elements).each(function() {
+		if (this != entry) {
+		    newElements.push(this);
+		}
+	    });
+	    self.elements = newElements;
+	}
     });
 
 }
@@ -859,7 +837,7 @@ MMBaseValidator.prototype.addValidation = function(el) {
         if (entry.type == "textarea") {
             entry.value = entry.value.replace(/^\s+|\s+$/g, "");
         }
-         var self = this;
+	var self = this;
         // switch stolen from editwizards, not all cases are actually supported already here.
         switch(entry.type) {
         case "text":
@@ -881,6 +859,7 @@ MMBaseValidator.prototype.addValidation = function(el) {
         case "select-multiple":
         default:
             this.log("Adding eventhandler to " + entry);
+            this.log(entry);
             $(entry).bind("change", function(ev) { self.validate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
         }
@@ -896,14 +875,12 @@ MMBaseValidator.prototype.addValidation = function(el) {
         if (this.validateHook) {
             this.validateHook(valid, entry);
         }
-        $(this).trigger("mmValidate", [valid, entry]);
 
     }
     if (els.length == 0) {
         if (this.validateHook) {
             this.validateHook(this.invalidElements == 0);
         }
-        $(this).trigger("mmValidate", [this.invalidElements == 0]);
     }
     el = null;
 }
