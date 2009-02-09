@@ -47,10 +47,7 @@
     </mm:node>
 	</table>
 	
-	  <div class="mmxf">
-  	<div id="" class="float left note">
-  	
-  		<p><jsp:text><br/></jsp:text></p>
+
   	 	<c:forEach items="stage1-goals,stage2-problems,stage3-problems,stage4-problems" var="s">
         	<mm:context>
         	<c:set var="settingname" value="opens_${s}" />
@@ -58,16 +55,20 @@
         			<mm:node number="${di:setting('assessment', settingname)}">
             		<mm:function id="stage_required" name="sequence" write="false" />
           		</mm:node>
-       				<c:if test="${currentlesson eq di:setting('assessment', settingname)}">
+       				<c:if test="${(currentlesson ge di:setting('assessment', settingname)) || (empty currentlesson)}">
            			<mm:node number="vu_homework_assessment_${settingname}">
-           				<mm:field name="body" escape="none" />
+           				<div class="mmxf">
+           					<div id="" class="float left note">
+ 	 									<p><jsp:text><br/></jsp:text></p>
+           					<mm:field name="body" escape="none" />
+           					</div>
+									</div>
            			</mm:node>
            		</c:if>	
        			</c:if>
       	</mm:context>
     	</c:forEach>		 
-		</div>
-	</div>
+
 	<table cellspacing="0">
 		<tr>
     	<td class="problemHeader"><h2>2. Mijn zorgen en problemen</h2>
