@@ -23,7 +23,6 @@ img
 #content
 {
    margin: 0 2px 2px 295px;
-   min-width: 912px;
 }
 
 #left
@@ -679,9 +678,6 @@ div.tabs
    background-image: url('../gfx/edit_shadow.gif');
    background-repeat: repeat-x;
    height: 35px;
-   float: left;
-   width: 100%;
-   clear: both;
 }
 
 /* actieve tab */
@@ -758,12 +754,11 @@ div.editor
 {
    background-image: url('../gfx/edit_shadow_2.gif');
    background-repeat: repeat-y;
-   background-position: top right;   
-   
+   background-position: top right;
    background-color: #ffffff;
-   
    clear: both;
    height: auto;
+   min-width: 912px;
 }
 
 /*div.editor input[type="button"],
