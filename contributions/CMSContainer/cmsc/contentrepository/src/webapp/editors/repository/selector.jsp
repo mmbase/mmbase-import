@@ -56,6 +56,7 @@
    </script>
 
    <style type="text/css">
+      body { overflow: hidden; }
       .tooltip {
          position: absolute;
          display: none;
@@ -68,7 +69,7 @@
       }
    </style>
 </cmscedit:head>
-<body style="overflow: auto" onload="loadFunction();">
+<body onload="loadFunction();">
    <mm:cloud jspvar="cloud" loginpage="../login.jsp">
 
    <div id="left">

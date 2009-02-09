@@ -8,7 +8,7 @@
 </cmscedit:head>   
 <body>
 <mm:cloud loginpage="../login.jsp" rank="administrator" jspvar="cloud">
-<div style="float: left">
+<div style="float: left; width: 285px;">
 <cmscedit:sideblock title="userlist.groups" titleClass="side_block_gray">
 		<ul class="shortcuts">
             <li class="usergroupnew">
@@ -47,9 +47,9 @@
 	</cmscedit:sideblock>
 </div>
 
-<div style="float: left;padding-left: 5px">
+<div style="float: left;padding-left: 5px; width: 285px;">
 <cmscedit:sideblock title="userlist.users" 
-	titleClass="side_block_green" titleStyle="float: left">
+	titleClass="side_block_green">
 		<ul class="shortcuts">
             <li class="usernew">
 				<a href="UserInitAction.do"><fmt:message key="userlist.newuser" /></a>

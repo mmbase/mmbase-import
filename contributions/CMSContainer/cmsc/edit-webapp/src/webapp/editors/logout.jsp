@@ -5,12 +5,9 @@
 <cmscedit:head title="logout.title">
    <style type="text/css">
       body {
-         margin: 100px;
+         margin: 100px auto 0 auto;
          text-align: center;
-      }
-      div.side_block, div.side_block table {
-         position: relative;
-         margin: 0px auto;
+         width: 285px;
       }
    </style>
 </cmscedit:head>
