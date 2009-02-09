@@ -16,11 +16,6 @@
             <fmt:message key="workflow.title"/>
          </a>
       </th>
-      <th style="width: 140px;">
-         <a href="#" <%=onClickandStyle(pageContext, "publishdate")%>>
-            <fmt:message key="workflow.publishdate"/>
-         </a>
-      </th>
       <th style="width: 145px;">
          <a href="#" <%=onClickandStyle(pageContext, "lastmodifier")%>>
             <fmt:message key="workflow.lastmodifier"/>
@@ -33,11 +28,6 @@
             </a>
          </th>
       </c:if>
-      <th style="width: 68px;">
-         <a href="#" <%=onClickandStyle(pageContext, "number")%>>
-            <fmt:message key="workflow.number"/>
-         </a>
-      </th>
       <c:if test="${workflowType == 'content' || workflowType == 'asset' || workflowType == 'allcontent'}">
          <th style="width: 140px;">
             <a href="#" <%=onClickandStyle(pageContext, "contentchannel")%>>
@@ -144,11 +134,6 @@
       </c:if>
       ${value}
    </td>
-   <td>
-      <c:if test="${type ne 'contentchannel'}">
-         <mm:field name="${type}.publishdate"><cmsc:dateformat displaytime="true"/></mm:field>
-      </c:if>
-   </td>
    <td style="white-space: nowrap;">
       <mm:field name="workflowitem.lastmodifier"/>
    </td>
@@ -157,9 +142,6 @@
          <mm:field name="${type}.lastmodifieddate"><cmsc:dateformat displaytime="true"/></mm:field>
       </td>
    </c:if>
-   <td style="white-space: nowrap;">
-      ${number}
-   </td>
    <c:if test="${workflowType == 'content' || workflowType == 'asset' || workflowType == 'allcontent'}">
       <td style="white-space: nowrap;">
          <mm:field name="contentchannel.name"/>
