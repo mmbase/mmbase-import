@@ -57,7 +57,6 @@
 <mm:import id="assetsearchinit"><c:url value='/editors/repository/AssetSearchInitAction.do'/></mm:import>
 
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
-<div style="position: absolute;padding-right:10px">
 <c:if test="${empty strict}">
    <div class="tabs">
     <!-- active TAB -->
@@ -306,7 +305,7 @@
          </html:form>
       </div>
 
-   <div class="ruler_green" style="width:1000px;"><div><fmt:message key="searchform.results" /></div></div>
+   <div class="ruler_green"><div><fmt:message key="searchform.results" /></div></div>
 
    <div class="body">
    <div style="padding-left:11px">
@@ -527,7 +526,6 @@
    <%@include file="searchpages.jsp" %>
 </c:if>
 </div>
-   </div>
    </div>
 </mm:cloud>
 

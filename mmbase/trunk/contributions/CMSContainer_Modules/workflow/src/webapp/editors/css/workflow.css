@@ -1,12 +1,8 @@
-/* CSS Document */
 #left {
-width:28%;
-}
-div.side_block {
-width:350px;
+   width:350px;
 }
 #content {
-left:360px;
+   margin-left: 360px;
 }
 table.centerData td {
    text-align: center;
