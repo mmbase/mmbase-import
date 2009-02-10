@@ -10,9 +10,13 @@
 package com.finalist.cmsc.workflow.forms;
 
 
+import java.util.Comparator;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
@@ -96,7 +100,7 @@ public class AllcontentWorkflowAction extends WorkflowAction {
 
 
    @Override
-   protected void addAllcontentListToRequest(HttpServletRequest request, Cloud cloud, String status, String laststatus) {
+   protected void addAllcontentListToRequest(HttpServletRequest request, Cloud cloud,String orderby, String status, String laststatus) {
       NodeList dataList = cloud.createNodeList();
       NodeList contentList = getWorkflowList(cloud, "content", status, laststatus);
       NodeList assetList = getWorkflowList(cloud, "asset", status, laststatus);
@@ -104,9 +108,77 @@ public class AllcontentWorkflowAction extends WorkflowAction {
          dataList.addAll(contentList);
       }
       if (assetList!=null&&!assetList.isEmpty()) {
-         dataList.addAll(assetList);
+         dataList.addAll(assetList);//dataList.sort(comparator)
       }
+      if(dataList!=null && !dataList.isEmpty()){
+      if ("contenttype".equals(orderby)) {
+         orderby = "title";
+      }
+      dataList.sort(new ContentComparator(orderby,laststatus));
+      }
+
       request.setAttribute("results", dataList);
    }
+   class ContentComparator implements Comparator<Node> {
+      
+      private String field;
+      private String destination ;
+      public ContentComparator(String field,String destination) {
+         this.field = field;
+         this.destination = destination;
+      }
 
+      public int compare(Node o1, Node o2) {
+         Object f1, f2;
+         int result = 0;
+         String field1_prefix = "",field2_prefix = "";
+         if ("type".equals(field) || "remark".equals(field)) {
+            field1_prefix = "workflowitem.";
+            field2_prefix = "workflowitem.";
+         }
+         else if ("title".equals(field) || "publishdate".equals(field) || "lastmodifieddate".equals(field) || "lastmodifier".equals(field) || "number".equals(field)) {
+            if ("content".equals(o1.getStringValue("workflowitem.type")))
+       
+               field1_prefix = ContentElementUtil.CONTENTELEMENT+".";
+            else {
+               field1_prefix = AssetElementUtil.ASSETELEMENT+".";
+            }
+            if ("content".equals(o2.getStringValue("workflowitem.type")))
+               field2_prefix = ContentElementUtil.CONTENTELEMENT+".";
+            else {
+               field2_prefix = AssetElementUtil.ASSETELEMENT+".";
+            }
+         }
+         else if ("contentchannel".equals(field)) {
+            field1_prefix = RepositoryUtil.CONTENTCHANNEL + ".";
+            field2_prefix = RepositoryUtil.CONTENTCHANNEL + ".";
+            field = "name";
+         }
+
+         f1 = o1.getObjectValue(field1_prefix+field);
+         f2 = o2.getObjectValue(field2_prefix+field);
+
+         if (f1 == null || f2 == null) {
+            return result;
+         }
+
+         if (f1 instanceof Comparable) {
+            try {
+                result=((Comparable)f1).compareTo(f2);
+            } catch (ClassCastException e) {
+
+            }
+        } 
+         else if (!f1.equals(f2)) {
+            if (f1 instanceof Boolean) {
+                result=((Boolean)f1).booleanValue() ? 1 : -1;
+            }
+        }
+         if (destination != null && "false".equalsIgnoreCase(destination)) {
+            result = -result;
+         }
+        return result; 
+      }
+      
+   }
 }

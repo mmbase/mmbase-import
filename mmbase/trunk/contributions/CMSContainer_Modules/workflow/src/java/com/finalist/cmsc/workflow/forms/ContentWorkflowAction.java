@@ -68,7 +68,7 @@ public class ContentWorkflowAction extends WorkflowAction {
 
 
    @Override
-   protected void addAllcontentListToRequest(HttpServletRequest request, Cloud cloud, String status, String laststatus) {
+   protected void addAllcontentListToRequest(HttpServletRequest request, Cloud cloud,String orderby, String status, String laststatus) {
    }
 
 }

@@ -143,7 +143,7 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
                .equals("true")));
          addWorkflowListToRequest(request, cloud, wfQuery, listQuery, "results");
       } else {
-         addAllcontentListToRequest(request, cloud, status, laststatus);
+         addAllcontentListToRequest(request, cloud, orderby,status, laststatus);
       }
 
       request.setAttribute("acceptedEnabled", Workflow.isAcceptedStepEnabled());
@@ -168,7 +168,7 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
       return mapping.findForward(SUCCESS);
    }
 
-   protected abstract void addAllcontentListToRequest(HttpServletRequest request, Cloud cloud, String status,
+   protected abstract void addAllcontentListToRequest(HttpServletRequest request, Cloud cloud,String orderby, String status,
          String laststatus);
 
    protected abstract String getWorkflowType();
