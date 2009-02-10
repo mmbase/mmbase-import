@@ -40,12 +40,12 @@
       <c:if test="${param.type == 'root'}">
       <mm:write referid="number" jspvar="number" vartype="Integer">
          <% if(number < 1) {
-            new CreateRelationsForSecondaryContent(cloud,pageContext).execute(number,null);
+            new CreateRelationsForSecondaryContent(cloud,pageContext).execute(number,null, null);
             out.println("Total Asset count : "+pageContext.getAttribute("totalCount")+"  added creationrel count : "+pageContext.getAttribute("addedRelationCount"));
          }
          else {
             if(RepositoryUtil.isChannel(String.valueOf(number))) {
-            new CreateRelationsForSecondaryContent(cloud,pageContext).execute(number,null);
+            new CreateRelationsForSecondaryContent(cloud,pageContext).execute(number,null, null);
             out.println("Total Asset count : "+pageContext.getAttribute("totalCount")+"  added creationrel count : "+pageContext.getAttribute("addedRelationCount"));
          }
          else {
@@ -61,13 +61,8 @@
 
          <mm:write referid="number" jspvar="number" vartype="Integer">
          <%
-            if( !RepositoryUtil.isChannel(String.valueOf(number))) {
-                     new CreateRelationsForSecondaryContent(cloud,pageContext).execute(number,"selfselect","firstElem");
-                     out.println("Total Asset count : "+pageContext.getAttribute("totalCount")+"  added creationrel count : "+pageContext.getAttribute("addedRelationCount"));
-            }
-            else {
-                  out.println("The number should be a channel number!");
-               }
+            new CreateRelationsForSecondaryContent(cloud,pageContext).execute(number,"selfselect","firstElem");
+            out.println("Total Asset count : "+pageContext.getAttribute("totalCount")+"  added creationrel count : "+pageContext.getAttribute("addedRelationCount"));
          %>
          </mm:write>
       </c:if>
@@ -75,8 +70,10 @@
       <%-- rootWhenUndetermined --%>
       <c:if test="${param.selfselectLogic=='rootWhenUndetermined'}">
          <mm:write referid="number" jspvar="number" vartype="Integer">
-         <%
-            if (!RepositoryUtil.isChannel(String.valueOf(number))) {
+         <% if(number < 1) {
+               new CreateRelationsForSecondaryContent(cloud,pageContext).execute(number,"selfselect","rootWhenUndetermined");
+               out.println("Total Asset count : "+pageContext.getAttribute("totalCount")+"  added creationrel count : "+pageContext.getAttribute("addedRelationCount"));
+            } else if (RepositoryUtil.isChannel(String.valueOf(number))) {
                new CreateRelationsForSecondaryContent(cloud,pageContext).execute(number,"selfselect","rootWhenUndetermined");
                out.println("Total Asset count : "+pageContext.getAttribute("totalCount")+"  added creationrel count : "+pageContext.getAttribute("addedRelationCount"));
             }

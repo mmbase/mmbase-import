@@ -67,7 +67,7 @@ public class CreateRelationsForSecondaryContent {
       
       for (int i = 0; i < assets.size(); i++) {
          Node asset = assets.getNode(i);
-         if (!RepositoryUtil.hasCreationChannel(asset)) {
+         if (assets != null && !RepositoryUtil.hasCreationChannel(asset)) {
             counter++;
             Relation relation = null;
             // If type is not null, it means someone has picked selfselect. We will now try to determine
