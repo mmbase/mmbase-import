@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.28 2009-01-19 13:45:35 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.29 2009-02-10 15:33:19 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -123,8 +123,8 @@ public class BeanFunction extends AbstractFunction<Object> {
         Class c = constructorArgument.getClass();
         while (c != null) {
             try {
-                Constructor con = claz.getConstructor(new Class[] {c});
-                return con.newInstance(new Object[] {constructorArgument});
+                Constructor con = claz.getConstructor(c);
+                return con.newInstance(constructorArgument);
             } catch (NoSuchMethodException e) {
                 c = c.getSuperclass();
             }
@@ -132,8 +132,8 @@ public class BeanFunction extends AbstractFunction<Object> {
         Class[] interfaces = constructorArgument.getClass().getInterfaces();
         for (Class element : interfaces) {
             try {
-                Constructor con = claz.getConstructor(new Class[] {element});
-                return con.newInstance(new Object[] {constructorArgument});
+                Constructor con = claz.getConstructor(element);
+                return con.newInstance(constructorArgument);
             } catch (NoSuchMethodException e) {
             }
 
