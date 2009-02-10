@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="portlets-banner/target/classes" path="portlets-banner/src/java"/>
-	<classpathentry kind="src" path="portlets-jforum/src/java"/>
+	<classpathentry kind="src" output="portlets-tagcloud/target/classes" path="portlets-tagcloud/src/java"/>
+	<classpathentry kind="src" output="portlets-randomcontent/target/classes" path="portlets-randomcontent/src/java"/>
+	<classpathentry kind="src" output="portlets-jforum/target/classes" path="portlets-jforum/src/java"/>
 	<classpathentry kind="src" output="portlets-secure/target/classes" path="portlets-secure/src/java"/>
 	<classpathentry kind="src" output="portlets-dynamicforms/target/classes" path="portlets-dynamicforms/src/java"/>
 	<classpathentry kind="src" output="portlets-ecard/target/classes" path="portlets-ecard/src/java"/>
@@ -15,8 +17,8 @@
 	<classpathentry kind="src" output="portlets-poll/target/classes" path="portlets-poll/src/java"/>
 	<classpathentry kind="src" output="portlets-print/target/classes" path="portlets-print/src/java"/>
 	<classpathentry kind="src" output="portlets-search/target/classes" path="portlets-search/src/java"/>
-	<classpathentry kind="src" path="portlets-newsletter/src/java"/>
-	<classpathentry kind="src" path="portlets-preferences/src/java"/>
+	<classpathentry kind="src" output="portlets-newsletter/target/classes" path="portlets-newsletter/src/java"/>
+	<classpathentry kind="src" output="portlets-preferences/target/classes" path="portlets-preferences/src/java"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer_Modules-1_5"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer-1_5"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar">
@@ -179,7 +181,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jboss/jars/jboss-cache-1.2.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jgroups/jars/jgroups-all-2.2.9.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/c3p0/jars/c3p0-0.9.1.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/freemarker/jars/freemarker-2.3.8.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/freemarker/jars/freemarker-2.3.13.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/quartz/jars/quartz-1.5.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-3.2.5.GA.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jforum/jars/jforum-2.1.8.jar"/>
