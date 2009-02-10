@@ -628,7 +628,7 @@ div.ruler_gray div {
    font-size: 14px;
    letter-spacing: 2px;
    
-   width: auto;         
+   width: auto;    
    
    background-color: #ffffff;
    background-position: right top;
@@ -770,7 +770,7 @@ div.editor input[type="submit"]
    font-weight: bold;
    text-decoration: underline;
    cursor: pointer;
-   display: inline-block;
+   display: inline;
 }
 
 div.editor div.body
