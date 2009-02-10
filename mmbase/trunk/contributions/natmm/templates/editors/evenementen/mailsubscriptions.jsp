@@ -21,7 +21,7 @@ if(!toAddress.equals("-1")) {
          <% if(users_email.indexOf("@")>-1) { fromAddress = users_email; } %>
       </mm:field>
    </mm:listnodes>
-   <mm:createnode id="thismail" type="email" id="mail">
+   <mm:createnode type="email" id="mail">
 		<mm:setfield name="from"><%= fromAddress %></mm:setfield>
 		<mm:setfield name="subject"><%= subject %></mm:setfield>
 		<mm:setfield name="body">
