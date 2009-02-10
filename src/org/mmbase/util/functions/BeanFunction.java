@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.29 2009-02-10 15:33:19 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.30 2009-02-10 15:42:21 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -262,14 +262,14 @@ public class BeanFunction extends AbstractFunction<Object> {
      * Instantiates the bean, calls all setters using the parameters, and executes the method associated with this function.
      */
     public Object getFunctionValue(Parameters parameters) {
-        try {
-            Object b = getProducer().getInstance();
-            int count = 0;
-            Iterator<?> i = parameters.iterator();
-            Iterator<Method> j = setMethods.iterator();
-            while(i.hasNext() && j.hasNext()) {
-                Object value  = i.next();
-                Method setter = j.next();
+        Object b = getProducer().getInstance();
+        int count = 0;
+        Iterator<?> i = parameters.iterator();
+        Iterator<Method> j = setMethods.iterator();
+        while(i.hasNext() && j.hasNext()) {
+            Object value  = i.next();
+            Method setter = j.next();
+            try {
                 if (value == null) {
                     if (setter.getParameterTypes()[0].isPrimitive()) {
                         log.debug("Tried to sed null in in primitive setter method");
@@ -283,8 +283,12 @@ public class BeanFunction extends AbstractFunction<Object> {
                     setter.invoke(b, value);
                 }
                 count++;
-
+            } catch (Exception e) {
+                throw new RuntimeException("" + setter + " value: " + value + " " + e.getMessage(), e);
             }
+
+        }
+        try {
             Object ret =  method.invoke(b);
             return ret;
         } catch (Exception e) {
