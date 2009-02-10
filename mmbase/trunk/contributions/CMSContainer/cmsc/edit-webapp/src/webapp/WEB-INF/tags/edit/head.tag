@@ -16,6 +16,9 @@
    body { behavior: url(<cmsc:staticurl page='/editors/css/hover.htc)'/>;}
 </style>
 <![endif]-->
+<!--[if IE 7]>
+<link href="<cmsc:staticurl page='/editors/css/fix_ie.css'/>" type="text/css" rel="stylesheet" />
+<![endif]-->
 <script src="<cmsc:staticurl page='/editors/utils/rowhover.js'/>" type="text/javascript"></script>
 <script src="<cmsc:staticurl page='/js/window.js'/>" type="text/javascript"></script>
 <script src="<cmsc:staticurl page='/js/transparent_png.js'/>" type="text/javascript"></script>
