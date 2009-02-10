@@ -611,15 +611,11 @@ div.ruler_red,
 div.ruler_green,
 div.ruler_blue,
 div.ruler_gray {
-   background-color: #ffffff;   
-
-   height: 18px;   
-   
-   text-transform: uppercase;
+   background-color: #fff;   
    background-position: left top;
    background-repeat: no-repeat;   
-   
-   margin-right: 3px;
+   height: 18px;
+   text-transform: uppercase;
 }
 div.ruler_green div,
 div.ruler_red div,
@@ -755,10 +751,10 @@ div.editor
    background-image: url('../gfx/edit_shadow_2.gif');
    background-repeat: repeat-y;
    background-position: top right;
-   background-color: #ffffff;
-   clear: both;
-   height: auto;
-   min-width: 912px;
+   background-color: #fff;
+   display: table;
+   padding-right: 3px;
+   width: 100%;
 }
 
 /*div.editor input[type="button"],
@@ -779,8 +775,14 @@ div.editor input[type="submit"]
 
 div.editor div.body
 {
-   background-color: #ffffff;
-   margin-right: 3px;
+   background-color: #fff;
+   display: table;
+   width: 100%;
+}
+
+div.editor th a
+{
+   display: block;
 }
 
 div.editor div.body p,
@@ -795,10 +797,10 @@ div.editor div.body table
 {
    color: #313728;
    font-size: 12px;
-   border-width: 0px;
+   border-width: 0;
    border-style: none;
    border-collapse: collapse;
-   width: 99%;
+   width: 100%;
 }
 
 div.editor div.body table.compact
