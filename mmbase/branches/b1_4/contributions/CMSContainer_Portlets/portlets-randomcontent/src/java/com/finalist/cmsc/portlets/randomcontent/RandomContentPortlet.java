@@ -15,8 +15,6 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.finalist.cmsc.beans.om.ContentElement;
@@ -40,7 +38,7 @@ public class RandomContentPortlet extends AbstractContentPortlet {
     */
    protected void addContent(RenderRequest req, String channel) {
       String elementId = req.getParameter(ELEMENT_ID);
-      if (!StringUtil.isEmpty(elementId)) {
+      if (StringUtils.isNotEmpty(elementId)) {
          // Detail view
          setMetaData(req, elementId);
       } else {
