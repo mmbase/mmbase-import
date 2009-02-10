@@ -1,6 +1,7 @@
-<%@page language="java" contentType="text/html;charset=UTF-8"%>
-<%@include file="globals.jsp" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@page language="java" contentType="text/html;charset=UTF-8"
+%><%@include file="globals.jsp" 
+%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
 <cmscedit:head title="logout.title">
    <style type="text/css">
@@ -19,7 +20,7 @@
     </cmscedit:sideblock>
 </body>
 </html:html>
-
+</mm:content>
 <mm:cloud method="logout">
 </mm:cloud>
 <% request.getSession().invalidate(); %>
