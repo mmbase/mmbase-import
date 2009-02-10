@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Utility to clone mmbase bridge nodes.
  * @since MMBase-1.9.0
- * @version $Id: CloneUtil.java,v 1.3 2009-02-10 13:52:24 michiel Exp $
+ * @version $Id: CloneUtil.java,v 1.4 2009-02-10 14:08:52 michiel Exp $
  */
 public class CloneUtil {
 
@@ -146,7 +146,7 @@ public class CloneUtil {
      * @param sourceRelation source relation
      * @return cloned relation
      */
-    public static Node cloneRelation(Node sourceRelation) {
+    public static Relation cloneRelation(Node sourceRelation) {
         Node sourceNode = sourceRelation.getNodeValue("snumber");
         Node destinationNode = sourceRelation.getNodeValue("dnumber");
 
@@ -165,8 +165,7 @@ public class CloneUtil {
         if (sourceRelation instanceof Relation) {
             Relation localRel = (Relation) sourceRelation;
             relationManager = localRel.getRelationManager();
-        }
-        else {
+        } else {
             Node relationTypeNode = sourceRelation.getNodeValue("rnumber");
             String relName = relationTypeNode.getStringValue("sname");
             relationManager = sourceRelation.getCloud().getRelationManager(sourceNode.getNodeManager().getName(),
