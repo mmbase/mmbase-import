@@ -1,4 +1,4 @@
-XML2PDF
+﻿XML2PDF
 -------
 Generate PDF's directly from MMBase and save them in an attachment node.
 
@@ -14,11 +14,9 @@ together with the results of your build. This application needs the following ja
   fop.jar
   xmlgraphics-commons-1.3.jar
 
-You can then create a PDF with the following taglib commands. 
-The 'test.html' page specified with
-the xml parameter needs to be properly formatted xhtml file. Images in it need to have complete url's,
-f.e. http://localhost:8080/image.jpg
-
+You can then create a PDF with the following tag library commands. 
+The 'test.html' page specified with the xml parameter needs to be a properly formatted xhtml file. 
+Images in it need to have complete url's, f.e. http://localhost:8080/image.jpg.
 
   <mm:functioncontainer>
     <mm:param name="title">My first PDF from MMBase</mm:param>
@@ -32,8 +30,7 @@ f.e. http://localhost:8080/image.jpg
     <mm:setfield name="filename">my_registration.pdf</mm:setfield>
   </mm:node>
 
-
-You can even email the PDF somewhere into cyberspace:
+You can then email the PDF somewhere into cyberspace:
 
   <%-- create email --%>
   <mm:createnode type="email" id="the_email">
@@ -50,7 +47,7 @@ You can even email the PDF somewhere into cyberspace:
   </mm:setfield>
   </mm:createnode>
   
-  <%-- mail the it but keep it in mmbase --%>
+  <%-- mail it but keep it for reference in mmbase --%>
   <mm:node referid="the_email">
     <mm:functioncontainer>
       <mm:param name="type" value="oneshotkeep" />
