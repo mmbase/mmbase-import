@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-parent</artifactId>
+    <version>1.9</version>
+  </parent>
+
+
+  <artifactId>example-webapp</artifactId>
+  <packaging>war</packaging>
+  <name>MMBase Example webapp</name>
+  <version>${mmbase.version}</version>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webSourceDirectory>${basedir}/../html/</webSourceDirectory>
+          <webXml>${basedir}/../html/WEB-INF/web.xml</webXml>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${mmbase.version}</version>
+    </dependency>
+  </dependencies>
+</project>

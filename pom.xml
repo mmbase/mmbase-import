@@ -1,6 +1,14 @@
 <?xml version="1.0"?>
 <project>
 
+  <!--
+      This pom is responsible for building the mmbase jar, and perhaps the maven site.
+
+      The example war can be build with example-webapp/pom.xml
+
+
+  -->
+
   <modelVersion>4.0.0</modelVersion>
   <!-- reference to the root POM -->
 
@@ -27,9 +35,12 @@
 
   <url>http://www.mmbase.org</url>
 
+  <!--
+      XML RPC probably not switched on  our jira?
   <issueManagement>
-    <url>http://www.mmbase.org/bug</url>
+    <url>http://www.mmbase.org/jira</url>
   </issueManagement>
+  -->
 
   <ciManagement>
     <notifiers>
@@ -213,8 +224,8 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:mmbase-core</connection>
-    <developerConnection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:mmbase-core</developerConnection>
+    <connection>scm:cvs:pserver:guest:guest@cvs.mmbase.org:/var/cvs:mmbase-core</connection>
+    <developerConnection>scm:cvs:ext:cvs.mmbase.org:/var/cvs:mmbase-core</developerConnection>
     <url>http://cvs.mmbase.org/viewcvs/</url>
   </scm>
   <organization>
@@ -395,11 +406,18 @@
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.0</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.8</version>
+      <version>1.2.13</version>
     </dependency>
     <dependency>
       <groupId>commons-fileupload</groupId>
@@ -410,31 +428,12 @@
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jsp-api</artifactId>
-      <version>2.0</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
       <version>1.1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>standard</artifactId>
-      <version>1.1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>1.8.0.7</version>
     </dependency>
   </dependencies>
   <reporting>
@@ -451,7 +450,7 @@
       <plugin>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <configLocation>${basedir}/checkstyle-mmbase.xml</configLocation>
+          <configLocation>${basedir}/maven-base/checkstyle-mmbase.xml</configLocation>
           <headerLocation>${basedir}/LICENSE.txt</headerLocation>
         </configuration>
       </plugin>
