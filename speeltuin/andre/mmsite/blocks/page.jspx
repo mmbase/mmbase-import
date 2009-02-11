@@ -12,10 +12,28 @@
     <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
 	<p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
     
-    <mm:node number="n">
-      <h4><mm:field name="title" escape="inline" /></h4>
-      <mm:field name="description" escape="paragraph" />
-    </mm:node>
+    <mm:listnodescontainer type="pages">
+      <ol>
+      <mm:listnodes>
+        <li>
+          <strong><mm:field name="title" /></strong><br />
+          path: <mm:field name="path"><a href="${mm:link(_)}">${_}</a></mm:field><br />
+          template: 
+          <mm:field name="template">
+            <mm:node number="$_"><mm:field name="url" /></mm:node>
+          </mm:field><br />
+          component: <mm:link page="page" referids="_node@n"><a href="${_}">${_}</a></mm:link>
+        </li>
+      </mm:listnodes>
+      </ol>
+    </mm:listnodescontainer>
+
+    <mm:present referid="n">
+      <mm:node number="$n">
+        <h4><mm:field name="title" escape="inline" /></h4>
+        <mm:field name="description" escape="paragraph" />
+      </mm:node>
+    </mm:present>
     
   </div>
 </mm:cloud>
