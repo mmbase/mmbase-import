@@ -790,9 +790,13 @@
       <div id="calendar-expression"></div>   	
   </xsl:template>
   
-  <xsl:template name="ftype-imagedata">
+   <xsl:template name="ftype-imagedata">
       <span class="readonly">
          <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0"/>
+         <br/>
+         <a href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}" target="_new">
+            <xsl:call-template name="prompt_image_full" />
+         </a>
       </span>
    </xsl:template>
 
