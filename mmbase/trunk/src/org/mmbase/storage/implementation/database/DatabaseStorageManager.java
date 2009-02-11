@@ -35,7 +35,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.209 2009-01-31 09:28:52 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.210 2009-02-11 20:41:56 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2626,17 +2626,19 @@ public class DatabaseStorageManager implements StorageManager {
                             }
                         }
                         // compare size
-                        int size = (Integer)colInfo.get("COLUMN_SIZE");
-                        int cursize = field.getMaxLength();
+                        int databaseSize = ((Integer)colInfo.get("COLUMN_SIZE")).intValue();
+                        int builderFieldSize = field.getMaxLength();
                         // ignore the size difference for large fields (generally blobs or memo texts)
                         // since most databases do not return accurate sizes for these fields
-                        if (cursize != -1 && size > 0 && size != cursize && cursize <= 255) {
-                            if (size < cursize) {
+                        boolean isBuilderFieldSizeDefined = builderFieldSize != -1;
+                        if (isBuilderFieldSizeDefined  && databaseSize > 0 && databaseSize <= 4096
+                              && databaseSize != builderFieldSize) {
+                            if (databaseSize < builderFieldSize) {
                                 // only correct if storage is more restrictive
-                                field.setMaxLength(size);
-                                log.warn("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : size defined as " + cursize + ", but in storage " + size + " (value corrected for this session)");
+                                field.setMaxLength(databaseSize);
+                                log.warn("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : size defined as " + builderFieldSize + ", but in storage " + databaseSize + " (value corrected for this session)");
                             } else {
-                                log.debug("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : size defined as " + cursize + ", but in storage " + size);
+                                log.debug("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : size defined as " + builderFieldSize + ", but in storage " + databaseSize);
                             }
                         }
                         columns.remove(id);
