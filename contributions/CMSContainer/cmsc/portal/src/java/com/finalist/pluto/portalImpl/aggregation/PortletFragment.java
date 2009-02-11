@@ -86,7 +86,11 @@ public class PortletFragment extends AbstractFragment {
       PortletEntityImpl portletEntity = new PortletEntityImpl();
       portletEntity.setId(getId());
       portletEntity.setDefinitionId(definition.getDefinition());
-
+      PortletDefinition portletDefinition = portletEntity.getPortletDefinition();
+      if (portletDefinition == null) {
+         throw new IllegalArgumentException("Missing definition " + definition.getDefinition() + " in portlet.xml");
+      }
+      
       // for now set CMSC portlet params in the preferences of the portlet
       // entiy
       log.debug("Create - portlet: " + portlet.getId());
@@ -125,9 +129,8 @@ public class PortletFragment extends AbstractFragment {
          ps.add(PortalConstants.CMSC_OM_VIEW_ID, view.getId());
          ps.add(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, view.getResource());
       }
-
-
-      String expiractionFromDefinition = portletEntity.getPortletDefinition().getExpirationCache();
+      
+      String expiractionFromDefinition = portletDefinition.getExpirationCache();
       /* Portlet spec 1.0 PLT.18.1 Expiration Cache
        * For a portlet that has not defined expiration cache in the deployment descriptor,
        * if the expiration cache property is set it must be ignored by the portlet-container.
@@ -140,7 +143,7 @@ public class PortletFragment extends AbstractFragment {
             expirationCache = Integer.valueOf(expiractionFromDefinition);
          }
          catch(NumberFormatException nfe) {
-            log.error("Cache expiration in xml is not a number for " + portletEntity.getPortletDefinition().getName());
+            log.error("Cache expiration in xml is not a number for " + portletDefinition.getName());
          }
 
          if (definition.getExpirationcache() > -1) {
@@ -177,9 +180,11 @@ public class PortletFragment extends AbstractFragment {
       }
       catch (PortletException e) {
          log.fatal("process portlet raised an exception", e);
+         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
       }
       catch (PortletContainerException e) {
          log.fatal("portlet container raised an exception", e);
+         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
       }
       cleanRequest(request);
    }
