@@ -80,6 +80,7 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
             .getUserId(), authentication.getPassword(), person.getFirstName(),
             person.getInfix(), person.getLastName(), confirmUrl);
    }
+   
    protected Cloud getCloudForAnonymousUpdate(boolean isRemote) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       if (isRemote) {
@@ -87,8 +88,6 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
       }
       return cloud;
    }
-   
-
 
    protected String getConfirmationLink(Cloud cloud,String pageId) {
       String link = null;
@@ -124,6 +123,7 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
       }
       return link;
    }
+   
    protected String getConfirmationTemplate() {
       InputStream is = Thread.currentThread().getContextClassLoader()
             .getResourceAsStream(DEFAULT_EMAIL_CONFIRM_TEMPLATE_DIR);
@@ -141,8 +141,10 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
       } catch (IOException e) {
          log.error("error happen when reading email template", e);
       }
+      
       return sb.toString();
    }
+   
    protected boolean isEmailAddress(String emailAddress) {
       if (emailAddress == null) {
          return false;

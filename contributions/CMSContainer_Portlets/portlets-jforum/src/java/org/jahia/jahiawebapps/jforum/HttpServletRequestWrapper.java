@@ -1,7 +1,6 @@
 package org.jahia.jahiawebapps.jforum;
 
 import javax.servlet.http.*;
-import javax.servlet.http.*;
 import java.util.*;
 
 import net.jforum.util.preferences.SystemGlobals;
