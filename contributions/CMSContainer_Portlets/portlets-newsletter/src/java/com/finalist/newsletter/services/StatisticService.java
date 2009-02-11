@@ -22,9 +22,9 @@ public interface StatisticService {
    public StatisticResult statisticSummeryPeriod(String start, String end)
             throws ServiceException;
 
-   public StatisticResult StatisticSummaryByNewsletter(int newsletterId);
+   public StatisticResult statisticSummaryByNewsletter(int newsletterId);
 
-   public List<StatisticResult> StatisticDetailByNewsletterPeriod(
+   public List<StatisticResult> statisticDetailByNewsletterPeriod(
             int newsletterId, String start, String end) throws ServiceException;
 
    public void logPubliction(int newsletterId, HANDLE handle);

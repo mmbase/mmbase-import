@@ -31,12 +31,12 @@ public class NewsletterBounceUtil {
       NodeList bounceNodes = query.getList();
       bounces = convertNodeListToList(bounceNodes);
       if (null != order && !bounceManager.hasField(order)) {
-         bounces = nesletterSort(bounces, offset, pageSize, direction, order);
+         bounces = newsletterSort(bounces, offset, pageSize, direction, order);
       }
       return bounces;
    }
 
-   private static List<NewsletterBounce> nesletterSort(List<NewsletterBounce> bounces, int offset, int pageSize,
+   private static List<NewsletterBounce> newsletterSort(List<NewsletterBounce> bounces, int offset, int pageSize,
          String direction, String order) {
       ComparisonUtil comparator = new ComparisonUtil();
       comparator.setFields_user(new String[] { order });
