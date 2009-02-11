@@ -13,4 +13,9 @@
   <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
+
+  <properties>
+    <mmbaseComponentId>cloudcontext</mmbaseComponentId>
+  </properties>
+
 </project>

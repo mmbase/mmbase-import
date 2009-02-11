@@ -25,11 +25,17 @@
         <version>2.1-alpha-2</version> <!-- need support for failonmissingweb.xml-->
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
-          <webSources>
+          <archiveClasses>true</archiveClasses>
+          <webResources>
             <resource>
+              <targetPath>mmbase/security</targetPath>
               <directory>${basedir}/templates</directory>
             </resource>
-          </webSources>
+            <resource>
+              <targetPath>mmbase/components/${mmbaseComponentId}</targetPath>
+              <directory>${basedir}/blocks</directory>
+            </resource>
+          </webResources>
         </configuration>
       </plugin>
     </plugins>
