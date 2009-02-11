@@ -6,17 +6,17 @@
 	<title xml:lang="zh">Url</title>
 
 	<item>
-		<field name="title">
+		<field name="title" ftype="data">
 			<prompt xml:lang="en">Name</prompt>
 			<prompt xml:lang="nl">Naam</prompt>
 			<prompt xml:lang="zh">名称</prompt>
 		</field>
-		<field name="url" dtpattern="\://|javascript\:|mailto\:">
+		<field name="url" dtpattern="\://|javascript\:|mailto\:" ftype="data">
 			<prompt xml:lang="en">Url</prompt>
 			<prompt xml:lang="nl">Url</prompt>
 			<prompt xml:lang="zh">Url</prompt>
 		</field>
-		<field dtrequired="false" ftype="text" name="description" rows="3">
+		<field name="description" dtrequired="false" ftype="data" rows="3">
 			<prompt xml:lang="en">Description</prompt>
 			<prompt xml:lang="nl">Omschrijving</prompt>
 			<prompt xml:lang="zh">描述</prompt>
@@ -53,7 +53,7 @@
 		</search-filter>
 	</command>
 	
-	<command name="insert" objectnumber="new">
+   <command name="startwizard" inline="true" wizardname="config/urls/urls" objectnumber="new">
 		<prompt xml:lang="en">New</prompt>
 		<prompt xml:lang="nl">Nieuw</prompt>
 		<prompt xml:lang="zh">新建</prompt>
@@ -62,7 +62,6 @@
 	<action type="create">
 		<relation destinationtype="urls" role="posrel">
 			<field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/object[@type='urls']/../field[@name='pos'])+{$pos}}</field>
-			<object type="urls" />
 		</relation>
 	</action>
 </list>
