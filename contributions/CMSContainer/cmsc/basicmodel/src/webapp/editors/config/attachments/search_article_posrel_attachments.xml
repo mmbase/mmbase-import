@@ -8,12 +8,12 @@
 	<title xml:lang="zh">附件</title>
 
 	<item>
-		<field name="title" dtrequired="true">
+		<field name="title" ftype="data" dtrequired="true">
 			<prompt xml:lang="en">Title</prompt>
 			<prompt xml:lang="nl">Titel</prompt>
 			<prompt xml:lang="zh">标题</prompt>
 		</field>
-		<field name="description" ftype="text" rows="3">
+		<field name="description" ftype="data" rows="3">
 			<prompt xml:lang="en">Description</prompt>
 			<prompt xml:lang="nl">Omschrijving</prompt>
 			<prompt xml:lang="zh">描述</prompt>
@@ -66,7 +66,7 @@
 		</search-filter>
 	</command>
 	
-	<command name="insert" objectnumber="new">
+   <command name="startwizard" inline="true" wizardname="config/attachments/attachments" objectnumber="new">
 		<prompt xml:lang="en">New</prompt>
 		<prompt xml:lang="nl">Nieuw</prompt>
 		<prompt xml:lang="zh">新建</prompt>
@@ -75,7 +75,6 @@
 	<action type="create">
 		<relation destinationtype="attachments" role="posrel">
 			<field name="pos">{sum(//relation[@role='posrel' and @firstitem='true']/object[@type='attachments']/../field[@name='pos'])-{$pos}}</field>
-			<object type="attachments"></object>
 		</relation>
 	</action>
 </list>
