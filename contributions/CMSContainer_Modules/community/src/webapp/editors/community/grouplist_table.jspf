@@ -12,6 +12,11 @@
                <a href="${userActionUrl}">${result.groupName}</a>
           </edit:ui-tcolumn>
           <edit:ui-tcolumn titlekey="community.search.users" >
-               ${result.users }
+               <c:if test="${result.userAmount <= 10}">
+			        ${result.users}
+			   </c:if>
+			   <c:if test="${result.userAmount > 10}">
+                    <fmt:message key="community.preference.result.users"><fmt:param>${result.users}</fmt:param><fmt:param>${result.userAmount - 10}</fmt:param></fmt:message>
+			   </c:if>
           </edit:ui-tcolumn>
 </edit:ui-table>
