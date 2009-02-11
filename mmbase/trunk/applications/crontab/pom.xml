@@ -11,5 +11,6 @@
   <artifactId>mmbase-crontab</artifactId>
   <name>MMBase Crontab</name>
   <version>${mmbase.version}</version>
+  <packaging>war</packaging>
 
 </project>
