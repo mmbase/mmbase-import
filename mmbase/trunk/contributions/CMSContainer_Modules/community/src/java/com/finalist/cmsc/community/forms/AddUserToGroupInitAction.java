@@ -73,7 +73,12 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction {
             StringBuilder userNames = new StringBuilder();
             Set <Authentication> authentications = authority.getAuthentications();
             if (!authentications.isEmpty()) {
-               for (Authentication au : authentications) {
+               group.setUserAmount(authentications.size());
+               
+               Iterator<Authentication> iterator = authentications.iterator();
+               int loopTimes = (authentications.size() > 10)? 10 : authentications.size();
+               for (int i = 0 ; i < loopTimes; i++) {
+                  Authentication au = iterator.next();
                   Person person = getPersonService().getPersonByAuthenticationId(au.getId());
                   if (person != null) {
                      userNames.append(person.getFullName() + ", ");
@@ -81,6 +86,7 @@ public class AddUserToGroupInitAction extends AbstractCommunityAction {
                }
                group.setUsers(userNames.substring(0, userNames.length() - 2));
             } else {
+               group.setUserAmount(0);
                group.setUsers("");
             }
             groupForShow.add(group);

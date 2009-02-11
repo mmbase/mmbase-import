@@ -7,6 +7,11 @@
 		${group.groupName}
 	</edit:ui-tcolumn>
 	<edit:ui-tcolumn titlekey="community.search.users">
-      ${group.users}
+		<c:if test="${group.userAmount <= 10}">
+			${group.users}
+		</c:if>
+		<c:if test="${group.userAmount > 10}">
+			<fmt:message key="community.preference.result.users"><fmt:param>${group.users}</fmt:param><fmt:param>${group.userAmount - 10}</fmt:param></fmt:message>
+		</c:if>
    </edit:ui-tcolumn>
 </edit:ui-table>
