@@ -19,6 +19,23 @@
   <build>
     <defaultGoal>install</defaultGoal>
 
+    <resources>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${basedir}/target/generated-resources/xml/xslt/</directory>
+        <includes>
+          <include>**/*.tld</include>
+        </includes>
+      </resource>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${basedir}/META-INF</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </resource>
+    </resources>
+
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>

@@ -18,15 +18,6 @@
   <properties><mmbaseComponentId>taglib</mmbaseComponentId></properties>
 
   <build>
-    <resources>
-      <resource>
-        <targetPath>META-INF</targetPath>
-        <directory>${basedir}/target/generated-resources/xml/xslt/</directory>
-        <includes>
-          <include>**/mmbase-taglib.tld</include>
-        </includes>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -43,12 +34,24 @@
             <transformationSet>
               <dir>${basedir}/src/org/mmbase/bridge/jsp/taglib</dir>
               <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
-              <includes>
-                <include>*.xml</include>
-              </includes>
+              <parameters>
+                <parameter><name>version</name><value>2.0</value></parameter>
+                <parameter><name>uri</name><value>http://www.mmbase.org/mmbase-taglib-2.0</value></parameter>
+              </parameters>
+              <includes><include>*.xml</include></includes>
               <fileMappers>
-                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-                  <targetExtension>.tld</targetExtension>
+                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                  <targetName>mmbase-taglib-2.tld</targetName>
+                </fileMapper>
+              </fileMappers>
+            </transformationSet>
+            <transformationSet>
+              <dir>${basedir}/src/org/mmbase/bridge/jsp/taglib</dir>
+              <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
+              <includes><include>*.xml</include></includes>
+              <fileMappers>
+                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                  <targetName>mmbase-taglib.tld</targetName>
                 </fileMapper>
               </fileMappers>
             </transformationSet>
