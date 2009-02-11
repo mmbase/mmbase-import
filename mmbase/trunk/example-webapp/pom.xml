@@ -41,6 +41,18 @@
       <version>${mmbase.version}</version>
       <type>war</type>
     </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-resources</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-mynews</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
   </dependencies>
 
   <repositories>
