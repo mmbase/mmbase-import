@@ -57,11 +57,17 @@
           <webResources>
             <resource>
               <targetPath>mmbase/${mmbaseComponentId}</targetPath>
-              <directory>${basedir}/templates</directory>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>templates/**</include>
+              </includes>
             </resource>
             <resource>
               <targetPath>mmbase/components/${mmbaseComponentId}</targetPath>
-              <directory>${basedir}/blocks</directory>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>blocks/**</include>
+              </includes>
             </resource>
           </webResources>
         </configuration>
@@ -79,7 +85,7 @@
         </configuration>
         <executions>
           <execution>
-            <phase>deploy</phase>
+            <phase>deploy${phaseDisable}</phase>
             <goals><goal>deploy-file</goal></goals>
             <configuration>
               <packaging>jar</packaging>
@@ -116,12 +122,34 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.mmbase</groupId>
+      <groupId>org.mmbase.jars</groupId>
       <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
+
+
+  <!--
+      The following trick ensures that the 'deploy/install' of the jar o
+      doesn't owrk.
+
+     The idea was to enable the 'install-file/deploy-file' trick only if the packaging is not pom (so _this_ file)
+  <profiles>
+    <profile>
+      <id>installparent</id>
+      <activation>
+        <property>
+          <name>packaging</name>
+          <value>pom</value>
+        </property>
+      </activation>
+      <properties>
+        <phaseDisable>disabled</phaseDisable>
+      </properties>
+    </profile>
+  </profiles>
+  -->
 
   <repositories>
     <repository>
