@@ -2,14 +2,9 @@
 <!DOCTYPE module PUBLIC
     "-//Puppy Crawl//DTD Check Configuration 1.0//EN"
     "http://www.puppycrawl.com/dtds/configuration_1_0.dtd">
-<!--
- checkstyle configuration for mmapps
--->
+
 
 <module name="Checker">
-
-  <!-- enforce package documentation -->
-  <!--OFF <module name="PackageHtml"/> -->
 
 
   <module name="Translation"/>
@@ -17,16 +12,18 @@
 
   <module name="TreeWalker">
 
-    <property name="tabWidth" value="3"/>
+    <property name="tabWidth" value="4"/>
+    <property name="charset"  value="UTF-8"/>
 
     <!-- Javadoc comments -->
     <module name="JavadocType">
       <property name="authorFormat" value="\S+"/>
-      <property name="versionFormat" value="\$Revision: 1.1 $|\$Id: checkstyle-mmbase.xml,v 1.1 2005/07/29 07:46:00 nklasens Exp $"/>
+      <property name="versionFormat" value="\$Id:.*\$"/>
     </module>
     <module name="JavadocMethod">
-      <property name="scope" value="protected"/>
+      <property name="scope" value="private"/>
       <property name="allowUndeclaredRTE" value="true"/>
+      <property name="allowMissingJavadoc" value="true" />
     </module>
     <module name="JavadocVariable">
       <property name="scope" value="protected"/>
