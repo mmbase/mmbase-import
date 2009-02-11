@@ -318,8 +318,14 @@
       <xsl:when test="@ftype=&apos;image&apos;">
         <xsl:call-template name="ftype-image"/>
       </xsl:when>
+      <xsl:when test="@ftype=&apos;imagedata&apos;">
+        <xsl:call-template name="ftype-imagedata"/>
+      </xsl:when>
       <xsl:when test="@ftype=&apos;file&apos;">
         <xsl:call-template name="ftype-file"/>
+      </xsl:when>
+      <xsl:when test="@ftype=&apos;filedata&apos;">
+        <xsl:call-template name="ftype-filedata"/>
       </xsl:when>
       <xsl:when test="@ftype=&apos;radio&apos;">
          <xsl:call-template name="ftype-radio"/>
@@ -783,4 +789,17 @@
       <a href="#" id="calendarSelect" class="button" onclick="javascript:window.open ('calendar.jsp?id={@fieldname}&amp;type='+document.getElementById('calendar-type').value, 'calendar', 'height=400, width=500, top='+eval((window.screen.availHeight - 400)/2)+', left='+eval((window.screen.availWidth - 500)/2)+',toolbar=no, menubar=no, scrollbars=no, location=no, status=no')"><xsl:value-of select="$prompt_newsletter_select" />  </a> <a class="button"  id="calendarDelete"  href="#" onclick="javascript:document.getElementById('calendar-expression').innerHTML='';document.getElementById('{@fieldname}').value=''"><xsl:value-of select="$prompt_newsletter_delete" /></a></nobr>
       <div id="calendar-expression"></div>   	
   </xsl:template>
+  
+  <xsl:template name="ftype-imagedata">
+      <span class="readonly">
+         <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0"/>
+      </span>
+   </xsl:template>
+
+   <xsl:template name="ftype-filedata">
+      <a href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
+         <xsl:call-template name="prompt_do_download"/>
+      </a>
+   </xsl:template>
+  
 </xsl:stylesheet>
