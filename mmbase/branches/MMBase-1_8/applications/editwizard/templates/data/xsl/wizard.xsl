@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.160.2.21 2009-01-13 14:27:38 michiel Exp $
+    @version $Id: wizard.xsl,v 1.160.2.22 2009-02-11 20:44:12 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -125,7 +125,7 @@
                 '<xsl:value-of select="$day_thu"/>','<xsl:value-of select="$day_fri"/>',
                 '<xsl:value-of select="$day_sat"/>');
     </script>
-    <script language="javascript" src="{$javascriptdir}datepicker.js">
+    <script type="text/javascript" src="{$javascriptdir}datepicker.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
   </xsl:template>
@@ -619,6 +619,12 @@
       <xsl:when test="@ftype='file'">
         <xsl:call-template name="ftype-file"/>
       </xsl:when>
+      <xsl:when test="@ftype=&apos;imagedata&apos;">
+        <xsl:call-template name="ftype-imagedata"/>
+      </xsl:when>
+      <xsl:when test="@ftype=&apos;filedata&apos;">
+        <xsl:call-template name="ftype-filedata"/>
+      </xsl:when>
       <xsl:when test="@ftype='radio'">
          <xsl:call-template name="ftype-radio"/>
       </xsl:when>
@@ -1094,6 +1100,22 @@
         </a>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="ftype-imagedata">
+    <span class="readonly">
+      <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0"/>
+      <br/>
+      <a href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}" target="_new">
+        <xsl:call-template name="prompt_image_full" />
+      </a>
+    </span>
+  </xsl:template>
+
+  <xsl:template name="ftype-filedata">
+    <a href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
+      <xsl:call-template name="prompt_do_download"/>
+    </a>
   </xsl:template>
 
   <xsl:template name="ftype-realposition">
