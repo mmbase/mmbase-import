@@ -376,7 +376,7 @@ public abstract class WorkflowManager {
 
       mmNode.setValue(STATUS_FIELD, status);
       if (StringUtils.isNotEmpty(stacktrace)) {
-         wfItem.setValue(STACKTRACE_FIELD, stacktrace);
+         mmNode.setValue(STACKTRACE_FIELD, stacktrace);
       }
       wfBuilder.commit(mmNode);
    }
