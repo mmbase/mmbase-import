@@ -1,0 +1,21 @@
+<mm:cloud
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          >
+  <jsp:output omit-xml-declaration="true" />
+  <div
+      class="mm_c c_mmexamples b_index ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
+    
+    <mm:import externid="n" />
+    
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+	<p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+    
+    <mm:node number="n">
+      <h4><mm:field name="title" escape="inline" /></h4>
+      <mm:field name="description" escape="paragraph" />
+    </mm:node>
+    
+  </div>
+</mm:cloud>
