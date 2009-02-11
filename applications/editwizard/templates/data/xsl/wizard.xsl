@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.192 2009-01-13 14:25:16 michiel Exp $
+    @version $Id: wizard.xsl,v 1.193 2009-02-11 20:44:05 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -661,6 +661,12 @@
       <xsl:when test="@ftype='file'">
         <xsl:call-template name="ftype-file"/>
       </xsl:when>
+      <xsl:when test="@ftype=&apos;imagedata&apos;">
+        <xsl:call-template name="ftype-imagedata"/>
+      </xsl:when>
+      <xsl:when test="@ftype=&apos;filedata&apos;">
+        <xsl:call-template name="ftype-filedata"/>
+      </xsl:when>
       <xsl:when test="@ftype='radio'">
          <xsl:call-template name="ftype-radio"/>
       </xsl:when>
@@ -1210,6 +1216,22 @@
         </a>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="ftype-imagedata">
+    <span class="readonly">
+      <img src="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0"/>
+      <br/>
+      <a href="{node:saxonFunction($cloud, string(@number), concat('servletpath', $cloudkey,')'))}" target="_new">
+        <xsl:call-template name="prompt_image_full" />
+      </a>
+    </span>
+  </xsl:template>
+
+  <xsl:template name="ftype-filedata">
+    <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
+      <xsl:call-template name="prompt_do_upload"/>
+    </a>
   </xsl:template>
 
   <xsl:template name="ftype-realposition">
