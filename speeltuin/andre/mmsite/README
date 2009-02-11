@@ -1,4 +1,5 @@
 ﻿Paste this in 'config/framework.xml' to activate the UrlConverter for this application.
+See Maven's project xml for more information. 
 
   <urlconverter class="org.mmbase.mmsite.SiteUrlConverter">
     <description xml:lang="en">
