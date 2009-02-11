@@ -320,8 +320,14 @@
       <xsl:when test="@ftype=&apos;image&apos;">
         <xsl:call-template name="ftype-image"/>
       </xsl:when>
+      <xsl:when test="@ftype=&apos;imagedata&apos;">
+        <xsl:call-template name="ftype-imagedata"/>
+      </xsl:when>
       <xsl:when test="@ftype=&apos;file&apos;">
         <xsl:call-template name="ftype-file"/>
+      </xsl:when>
+      <xsl:when test="@ftype=&apos;filedata&apos;">
+        <xsl:call-template name="ftype-filedata"/>
       </xsl:when>
       <xsl:when test="@ftype=&apos;radio&apos;">
          <xsl:call-template name="ftype-radio"/>
@@ -382,7 +388,7 @@
     </tr>
     
               
-      <xsl:if test="@status=&apos;invalid&apos;">
+    <xsl:if test="@status=&apos;invalid&apos;">
     <tr>
       <td colspan="2">
         <div class="messagebox_red">
@@ -915,6 +921,12 @@
       </span>
    </xsl:if>
    </xsl:template>
+   
+   <xsl:template name="ftype-imagedata">
+      <span class="readonly">
+         <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0"/>
+      </span>
+   </xsl:template>
 
    <xsl:template name="ftype-file">
    <xsl:choose>
@@ -981,6 +993,12 @@
       </a>
    </xsl:otherwise>
    </xsl:choose>
+   </xsl:template>
+   
+   <xsl:template name="ftype-filedata">
+      <a href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
+         <xsl:call-template name="prompt_do_download"/>
+      </a>
    </xsl:template>
    
   <!--CMSC-1049 Time display in article creation author: Rain.Tang-->
