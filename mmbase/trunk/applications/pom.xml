@@ -21,6 +21,7 @@
     <module>crontab</module>
     <module>email</module>
     <module>cloudcontext</module>
+    <module>richtext</module>
     <module>mynews</module>
   </modules>
 
