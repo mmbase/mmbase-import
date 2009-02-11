@@ -59,8 +59,8 @@ public class XsltPortlet extends CmscPortlet {
       }
       else if (action.equals("edit")) {
          if (portletId != null) {
+            saveParameters(request, portletId);
             // get the values submitted with the form
-            setPortletParameter(portletId, SOURCE_ATTR_PARAM, request.getParameter(SOURCE_ATTR_PARAM));
             setPortletView(portletId, request.getParameter(VIEW));
             setPortletNodeParameter(portletId, PAGE, request.getParameter(PAGE));
             setPortletParameter(portletId, WINDOW, request.getParameter(WINDOW));
@@ -76,6 +76,10 @@ public class XsltPortlet extends CmscPortlet {
       }
    }
 
+   @Override
+   protected void saveParameters(ActionRequest request, String portletId) {
+      setPortletParameter(portletId, SOURCE_ATTR_PARAM, request.getParameter(SOURCE_ATTR_PARAM));
+   }
 
    @Override
    protected void doEditDefaults(RenderRequest req, RenderResponse res) throws IOException, PortletException {
@@ -147,6 +151,11 @@ public class XsltPortlet extends CmscPortlet {
          try {
             HashMap<String, Object> xslParams = getXsltParams(preferences);
             
+            String contextPath = request.getContextPath();
+            if (!contextPath.endsWith("/")) {
+               contextPath += "/";
+            }
+            xslParams.put("URLCONTEXT", contextPath);
             addRenderUrl(request, response, xslParams);
             addActionUrl(response, xslParams);
             xslParams.put("NAMESPACE", response.getNamespace());

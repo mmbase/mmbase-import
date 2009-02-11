@@ -37,7 +37,6 @@ import org.apache.pluto.core.InternalPortletRequest;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.beans.om.Portlet;
 import com.finalist.cmsc.beans.om.PortletParameter;
 import com.finalist.cmsc.beans.om.View;
 import com.finalist.cmsc.portalImpl.PortalConstants;
@@ -169,16 +168,19 @@ public class CmscPortlet extends GenericPortlet {
       }
    }
 
+   @SuppressWarnings("unused")
    public void processPrint(ActionRequest req, ActionResponse res) throws PortletException,
          IOException {
       // convenience method
    }
 
+   @SuppressWarnings("unused")
    public void processPreview(ActionRequest req, ActionResponse res) throws PortletException,
          IOException {
       // convenience method
    }
-
+   
+   @SuppressWarnings("unused") 
    public void processHelp(ActionRequest req, ActionResponse res) throws PortletException,
          IOException {
       // convenience method
@@ -213,25 +215,30 @@ public class CmscPortlet extends GenericPortlet {
       response.setPortletMode(PortletMode.VIEW);
    }
 
+   @SuppressWarnings("unused")
    protected void saveParameters(ActionRequest request, String portletId) {
       // convenience method
    }
 
+   @SuppressWarnings("unused")
    public void processEdit(ActionRequest req, ActionResponse res) throws PortletException,
          IOException {
       // convenience method
    }
 
+   @SuppressWarnings("unused") 
    public void processConfig(ActionRequest req, ActionResponse res) throws PortletException,
          IOException {
       // convenience method
    }
 
+   @SuppressWarnings("unused") 
    public void processAbout(ActionRequest req, ActionResponse res) throws PortletException,
          IOException {
       // convenience method
    }
 
+   @SuppressWarnings("unused") 
    public void processView(ActionRequest req, ActionResponse res) throws PortletException,
          IOException {
       // convenience method
@@ -358,57 +365,12 @@ public class CmscPortlet extends GenericPortlet {
     * @param template
     */
    protected void setResourceBundle(RenderRequest req, String template) {
-      String baseName = null;
-      if (StringUtils.isNotEmpty(template)) {
-         int extnsionIndex = template.lastIndexOf(".");
-         if (extnsionIndex > -1) {
-            baseName = template.substring(0, extnsionIndex);
-         }
-         else {
-            baseName = template;
-         }
-      }
+      String baseName = getResourceBaseName(template);
 
       List<Locale> locales = getLocales(req);
       int count = 0;
       for (Locale locale : locales) {
-         ResourceBundle bundle = null;
-         CombinedResourceBundle cbundle = null;
-
-         while (StringUtils.isNotEmpty(baseName)) {
-            try {
-               ResourceBundle otherbundle = ResourceBundle.getBundle(baseName, locale);
-               if (cbundle == null) {
-                  cbundle = new CombinedResourceBundle(otherbundle);
-               }
-               else {
-                  cbundle.addBundles(otherbundle);
-               }
-            }
-            catch (java.util.MissingResourceException mre) {
-               log.debug("Resource bundel not found for basename " + baseName);
-            }
-            int lastIndex = baseName.lastIndexOf("/");
-            if (lastIndex > -1) {
-               baseName = baseName.substring(0, lastIndex);
-            }
-            else {
-               baseName = null;
-            }
-         }
-         ResourceBundle portletbundle = getResourceBundle(locale);
-         if (portletbundle == null) {
-            bundle = cbundle;
-         }
-         else {
-            if (cbundle == null) {
-               bundle = portletbundle;
-            }
-            else {
-               cbundle.addBundles(portletbundle);
-               bundle = cbundle;
-            }
-         }
+         ResourceBundle bundle = getResourceBundle(locale, baseName);
 
          // this is JSTL specific, but the problem is that a RenderRequest is
          // not a ServletRequest
@@ -424,6 +386,61 @@ public class CmscPortlet extends GenericPortlet {
             count++;
          }
       }
+   }
+
+   protected String getResourceBaseName(String template) {
+      String baseName = null;
+      if (StringUtils.isNotEmpty(template)) {
+         int extensionIndex = template.lastIndexOf(".");
+         if (extensionIndex > -1) {
+            baseName = template.substring(0, extensionIndex);
+         }
+         else {
+            baseName = template;
+         }
+      }
+      return baseName;
+   }
+
+   protected ResourceBundle getResourceBundle(Locale locale, String baseName) {
+      ResourceBundle bundle = null;
+      CombinedResourceBundle cbundle = null;
+
+      while (StringUtils.isNotEmpty(baseName)) {
+         try {
+            ResourceBundle otherbundle = ResourceBundle.getBundle(baseName, locale);
+            if (cbundle == null) {
+               cbundle = new CombinedResourceBundle(otherbundle);
+            }
+            else {
+               cbundle.addBundles(otherbundle);
+            }
+         }
+         catch (java.util.MissingResourceException mre) {
+            log.debug("Resource bundel not found for basename " + baseName);
+         }
+         int lastIndex = baseName.lastIndexOf("/");
+         if (lastIndex > -1) {
+            baseName = baseName.substring(0, lastIndex);
+         }
+         else {
+            baseName = null;
+         }
+      }
+      ResourceBundle portletbundle = getResourceBundle(locale);
+      if (portletbundle == null) {
+         bundle = cbundle;
+      }
+      else {
+         if (cbundle == null) {
+            bundle = portletbundle;
+         }
+         else {
+            cbundle.addBundles(portletbundle);
+            bundle = cbundle;
+         }
+      }
+      return bundle;
    }
 
    @Override
