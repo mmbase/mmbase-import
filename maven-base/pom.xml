@@ -5,7 +5,7 @@ OSI Certified is a certification mark of the Open Source Initiative
 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-Version $Id: pom.xml,v 1.3 2009-02-11 09:43:01 michiel Exp $
+Version $Id: pom.xml,v 1.4 2009-02-11 09:49:59 michiel Exp $
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
@@ -14,12 +14,20 @@ Version $Id: pom.xml,v 1.3 2009-02-11 09:43:01 michiel Exp $
   <packaging>pom</packaging>
   <name>MMBase</name>
   <version>1.9</version>
-  <description>MMBase 1.9</description>
+  <description>Base pom for mmbase builds</description>
+
   <url>http://www.mmbase.org</url>
+
+  <!-- don't know yet where this if ro
+
   <modules>
     <module>..</module>
   </modules>
+  -->
 
+  <build>
+    <defaultGoal>install</defaultGoal>
+  </build>
 
  <properties>
    <mmbase.version>1.9-SNAPSHOT</mmbase.version>
