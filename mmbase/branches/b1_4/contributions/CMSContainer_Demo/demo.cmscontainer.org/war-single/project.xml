@@ -11,8 +11,8 @@
 			<version>${application.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
-		
-		<dependency>
+
+   		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-modules-tasks</artifactId>
 			<version>${cmscmodules.version}</version>

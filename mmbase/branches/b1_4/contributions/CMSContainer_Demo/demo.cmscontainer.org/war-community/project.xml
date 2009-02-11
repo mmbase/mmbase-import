@@ -30,8 +30,6 @@
             <version>${cmscmodules.version}</version>
             <type>mmbase-module</type>
         </dependency>
-        
-        
         <dependency>
             <groupId>finalist</groupId>
             <artifactId>cmsc-modules-community</artifactId>
@@ -170,7 +168,7 @@
             </properties>
         </dependency>
 
-<!-- Ageci Security dependencies (for Community Module) -->
+<!-- Acegi Security dependencies (for Community Module) -->
         <dependency>
             <groupId>acegisecurity</groupId>
             <artifactId>acegi-security</artifactId>

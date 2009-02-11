@@ -25,22 +25,10 @@
          <type>mmbase-module</type>
       </dependency>
       <dependency>
-         <groupId>finalist</groupId>
-         <artifactId>cmsc-modules-egemmail</artifactId>
-         <version>${cmscmodules.version}</version>
-         <type>mmbase-module</type>
-      </dependency>
-	  <dependency>
-         <groupId>finalist</groupId>
-         <artifactId>cmsc-modules-staticdownload</artifactId>
-         <version>${cmscmodules.version}</version>
-         <type>mmbase-module</type>
-      </dependency>
-        <dependency>
-            <groupId>finalist</groupId>
-            <artifactId>cmsc-modules-linkvalidator</artifactId>
-            <version>${cmscmodules.version}</version>
-            <type>mmbase-module</type>
+          <groupId>finalist</groupId>
+          <artifactId>cmsc-modules-linkvalidator</artifactId>
+          <version>${cmscmodules.version}</version>
+          <type>mmbase-module</type>
         </dependency>
         <dependency>
             <groupId>finalist</groupId>
