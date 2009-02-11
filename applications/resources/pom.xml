@@ -14,6 +14,10 @@
   <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
+  <properties>
+    <mmbaseComponentId>resources</mmbaseComponentId>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>javax.media</groupId>
