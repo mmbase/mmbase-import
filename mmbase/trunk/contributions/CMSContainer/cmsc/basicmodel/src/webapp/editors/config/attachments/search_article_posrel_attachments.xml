@@ -35,7 +35,7 @@
 			<prompt xml:lang="zh">大小</prompt>
 		</field>
 	 -->
-	   <field name="handle" ftype="file" dtmaxsize="16000000">
+	   <field name="handle" ftype="filedata" dtmaxsize="16000000">
 			<prompt xml:lang="en">Attachment</prompt>
 			<prompt xml:lang="nl">Bijlage</prompt>
 			<prompt xml:lang="zh">附件</prompt>
