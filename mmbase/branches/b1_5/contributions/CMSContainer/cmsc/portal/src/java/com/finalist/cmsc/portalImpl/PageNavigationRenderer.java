@@ -51,14 +51,24 @@ public class PageNavigationRenderer implements NavigationItemRenderer {
                  screen = getScreen((Page) item, sc);
              }
              
-             screen.processAction(request, response, id);
+             if (screen != null) {
+                screen.processAction(request, response, id);
+             }
+             else {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+             }
              return; // we issued an redirect, so return directly
           }
           else {
              // portlet render phase
              try {
                  ScreenFragment screen = getScreen((Page) item, sc);
-                 screen.service(request, response);
+                 if (screen != null) {
+                    screen.service(request, response);
+                 }
+                 else {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                 }
              }
              catch (ServletException e) {
                 throw new RenderException("ServletException while rendering", e);
