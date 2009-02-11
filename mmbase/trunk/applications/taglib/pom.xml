@@ -78,11 +78,10 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.mmbase</groupId>
+      <groupId>org.mmbase.jars</groupId>
       <artifactId>mmbase-resources</artifactId>
       <version>${mmbase.version}</version>
       <scope>provided</scope>
-      <type>war</type>
     </dependency>
 
     <dependency>
