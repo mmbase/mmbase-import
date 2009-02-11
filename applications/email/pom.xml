@@ -13,6 +13,10 @@
   <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
+  <properties>
+    <mmbaseComponentId>email</mmbaseComponentId>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>javax.mail</groupId>
