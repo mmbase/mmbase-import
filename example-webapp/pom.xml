@@ -18,8 +18,12 @@
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
-          <webSourceDirectory>${basedir}/../html/</webSourceDirectory>
           <webXml>${basedir}/../html/WEB-INF/web.xml</webXml>
+          <webResources>
+            <resource>
+              <directory>${basedir}/../html/</directory>
+            </resource>
+          </webResources>
         </configuration>
       </plugin>
     </plugins>
