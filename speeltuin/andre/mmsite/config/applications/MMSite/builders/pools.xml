@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder extends="object" maintainer="mmbase.org" name="pools" version="0">
+
+<status>active</status>
+
+<classfile>Dummy</classfile>
+
+<searchage>1000</searchage>
+
+<names>
+	<!-- singles per language as defined by ISO 639 -->
+	<singular xml:lang="fr">Regroupement</singular>
+	<singular xml:lang="nl">Poel</singular>
+	<singular xml:lang="en">Pool</singular>
+	<singular xml:lang="us">Pool</singular>
+	<!-- multiple per language as defined by ISO 639 -->
+	<plural xml:lang="fr">Regroupements</plural>
+	<plural xml:lang="nl">Poels</plural>
+	<plural xml:lang="en">Pools</plural>
+	<plural xml:lang="us">Pools</plural>
+</names>
+
+<!-- <descriptions>
+	small description of the builder for human reading
+-->
+<descriptions>
+<!-- descriptions per language as defined by ISO 639  -->
+	<description xml:lang="fr">Regroupements, répients pour des objets</description>
+	<description xml:lang="nl">Poels, container voor objects</description>
+	<description xml:lang="en">Pools, containers for objects</description>
+	<description xml:lang="us">Pools, containers for objects</description>
+</descriptions>
+
+<!-- <properties>
+you can define properties to be used by the classfile (if used) it uses
+a key/value system. Its a optional tag.
+-->
+<properties>
+</properties>
+
+<!-- <fieldlist>
+	 defines the different fields in this object, be carefull the order is important
+	once defined keep them in the same order.
+	If you use number and owner (the 2 default fields, please check the docs for this)
+-->
+<fieldlist>
+	<!-- POS 3 : <field> 'name'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="fr">Nom</guiname>
+			<guiname xml:lang="nl">Naam</guiname>
+			<guiname xml:lang="en">Name</guiname>
+			<guiname xml:lang="us">Name</guiname>
+			<guitype>string</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>1</input>
+				<!-- position in list area of the editor -->
+				<list>1</list>
+				<!-- position in search area of the editor -->
+				<search>1</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>name</name>
+			<!-- MMBase datatype and demands on it -->
+			<type key="false" notnull="false" size="255" state="persistent">STRING</type>
+		</db>
+	</field>
+
+	<!-- POS 4 : <field> 'description'  -->
+	<field>
+		<!-- gui related -->
+		<gui>
+			<guiname xml:lang="fr">Description</guiname>
+			<guiname xml:lang="nl">Omschrijving</guiname>
+			<guiname xml:lang="en">Description</guiname>
+			<guiname xml:lang="us">Description</guiname>
+			<guitype>field</guitype>
+		</gui>
+		<!-- editor related  -->
+		<editor>
+			<positions>
+				<!-- position in the input area of the editor -->
+				<input>2</input>
+				<!-- position in list area of the editor -->
+				<list>2</list>
+				<!-- position in search area of the editor -->
+				<search>2</search>
+			</positions>
+		</editor>
+		<!-- database related  -->
+		<db>
+			<!-- name of the field in the database -->
+			<name>description</name>
+			<!-- MMBase datatype and demands on it -->
+			<type key="false" notnull="false" size="2048" state="persistent">STRING</type>
+		</db>
+	</field>
+
+</fieldlist>
+
+</builder>
