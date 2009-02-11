@@ -16,7 +16,9 @@
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
     <version>1.9</version>
+    <!--
     <relativePath>maven-base/pom.xml</relativePath>
+    -->
   </parent>
 
 
@@ -35,211 +37,9 @@
 
   <url>http://www.mmbase.org</url>
 
-  <!--
-      XML RPC probably not switched on  our jira?
-  <issueManagement>
-    <url>http://www.mmbase.org/jira</url>
-  </issueManagement>
-  -->
-
-  <ciManagement>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>developers@mmbase.org</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
-
   <inceptionYear>2000</inceptionYear>
 
-  <mailingLists>
-    <mailingList>
-      <name>MMBase User List</name>
-      <subscribe>http://lists.mmbase.org/mailman/listinfo/users</subscribe>
-      <unsubscribe>http://lists.mmbase.org/mailman/listinfo/users</unsubscribe>
-      <archive>http://lists.mmbase.org/arc/users/threads.html</archive>
-    </mailingList>
-    <mailingList>
-      <name>MMBase Developer List</name>
-      <subscribe>http://lists.mmbase.org/mailman/listinfo/developers</subscribe>
-      <unsubscribe>http://lists.mmbase.org/mailman/listinfo/developers</unsubscribe>
-      <archive>http://lists.mmbase.org/arc/developers/threads.html</archive>
-    </mailingList>
-    <mailingList>
-      <name>MMBase Commiter List</name>
-      <subscribe>http://lists.mmbase.org/mailman/listinfo/committers</subscribe>
-      <unsubscribe>http://lists.mmbase.org/mailman/listinfo/committers</unsubscribe>
-      <archive>http://lists.mmbase.org/arc/committers/threads.html</archive>
-    </mailingList>
-    <mailingList>
-      <name>MMBase CVS List</name>
-      <subscribe>http://lists.mmbase.org/mailman/listinfo/cvs</subscribe>
-      <unsubscribe>http://lists.mmbase.org/mailman/listinfo/cvs</unsubscribe>
-      <archive>http://lists.mmbase.org/arc/cvs/index.html</archive>
-    </mailingList>
-  </mailingLists>
-  <developers>
-    <developer>
-      <id>0</id>
-      <name>Andre van Toly</name>
-      <email>andre@toly.nl</email>
-      <roles>
-        <role>Webmaster</role>
-      </roles>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>1</id>
-      <name>Daniel Ockeloen</name>
-      <email>daniel@submarine.nl</email>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>2</id>
-      <name>Eduard Witteveen</name>
-      <email>eywitteveen@gmail.com</email>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>ernst</id>
-      <name>Ernst Bunders</name>
-      <email>ernst@dynasol.nl</email>
-      <url>http://www.dynasol.nl</url>
-      <organization>Dynasol</organization>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>4</id>
-      <name>Gerard van Enk</name>
-      <email>gvenk@xs4all.nl</email>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>5</id>
-      <name>Jaco de Groot</name>
-      <email>jaco@dynasol.nl</email>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>johannes</id>
-      <name>Johannes Verelst</name>
-      <email>jverelst@gmail.com</email>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>keesj</id>
-      <name>Kees Jongenburger</name>
-      <email>keesj@dds.nl</email>
-      <organization>Exmachina</organization>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>7</id>
-      <name>Marcel Maatkamp</name>
-      <email>M.Maatkamp@vpro.nl</email>
-      <organization>Vpro</organization>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>8</id>
-      <name>Mark Huijser</name>
-      <email>mark.huijser@eo.nl</email>
-      <organization>EO</organization>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>michiel</id>
-      <name>Michiel Meeuwissen</name>
-      <email>Michiel.Meeuwissen@dynasol.nl</email>
-      <url>http://www.dynasol.nl</url>
-      <organization>Dynasol</organization>
-      <roles>
-        <role>Release Manager</role>
-      </roles>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>nklasens</id>
-      <name>Nico Klasens</name>
-      <email>mmbase@klasens.net</email>
-      <url>http://www.finalist.com</url>
-      <organization>Finalist IT Group</organization>
-      <roles>
-        <role>CVS monitor</role>
-        <role>Patch manager</role>
-      </roles>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>pierre</id>
-      <name>Pierre van Rooden</name>
-      <email>Pierre.van.Rooden@omroep.nl</email>
-      <organization>Publieke Omroep</organization>
-      <roles>
-        <role>Vote manager</role>
-      </roles>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>11</id>
-      <name>Rico Jansen</name>
-      <email>R.Jansen@vpro.nl</email>
-      <organization>Vpro</organization>
-      <roles>
-        <role>Hosting</role>
-      </roles>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>12</id>
-      <name>Rob van Maris</name>
-      <email>robvanmaris@xs4all.nl</email>
-      <roles>
-        <role>Project coordination</role>
-        <role>Meeting coordination</role>
-      </roles>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <id>13</id>
-      <name>Rob Vermeulen</name>
-      <email>r.vermeulen@vpro.nl</email>
-      <organization>Vpro</organization>
-      <timezone>1</timezone>
-    </developer>
-    <developer>
-      <name>Sander de Boer</name>
-      <id>sdboer</id>
-      <email></email>
-      <organization>EO</organization>
-      <timezone>1</timezone>
-    </developer>
-  </developers>
-  <licenses>
-    <license>
-      <name>Mozilla Public License 1.0 (MPL)</name>
-      <url>http://www.mmbase.org/license</url>
-    </license>
-  </licenses>
-  <scm>
-    <connection>scm:cvs:pserver:guest:guest@cvs.mmbase.org:/var/cvs:mmbase-core</connection>
-    <developerConnection>scm:cvs:ext:cvs.mmbase.org:/var/cvs:mmbase-core</developerConnection>
-    <url>http://cvs.mmbase.org/viewcvs/</url>
-  </scm>
-  <organization>
-    <name>MMBase.org</name>
-    <url>http://www.mmbase.org</url>
-  </organization>
-
-
   <build>
-    <defaultGoal>install</defaultGoal>
-    <sourceDirectory>${basedir}/src</sourceDirectory>
-    <finalName>mmbase</finalName>
-    <outputDirectory>${basedir}/target/classes</outputDirectory>
-    <directory>${basedir}/target</directory>
     <resources>
       <resource>
         <directory>${basedir}/src</directory>
@@ -249,6 +49,7 @@
           <include>**/*.xsd</include>
           <include>**/*.properties</include>
         </includes>
+        <filtering>false</filtering>
       </resource>
       <resource>
         <directory>${basedir}/html/WEB-INF/classes</directory>
@@ -269,151 +70,21 @@
       </resource>
     </resources>
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>javacc-maven-plugin</artifactId>
-        <version>2.5</version>
-        <executions>
-          <execution>
-            <id>javacc</id>
-            <goals>
-              <goal>javacc</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <sourceDirectory>${basedir}/src</sourceDirectory>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <links>http://java.sun.com/j2se/1.5.0/docs/api/</links>
-          <source>1.5</source>
-          <tags>
-            <tag>
-              <head>To Do:</head>
-              <name>todo</name>
-              <placement>a</placement>
-            </tag>
-            <tag>
-              <head>Classifies the class as an APPLICATION class, belonging to the application with name application-name</head>
-              <name>application</name>
-            </tag>
-            <tag>
-              <head>Section contains hard-coded values, which should be made configurable.</head>
-              <name>bad-constant</name>
-            </tag>
-            <tag>
-              <head>Section contains literals (numeric or string constants), where constants (public final static identifiers) should be used.</head>
-              <name>bad-literal</name>
-            </tag>
-            <tag>
-              <head>The class needs to be adapted to the MMBase Coding Standards.</head>
-              <name>code-conventions</name>
-            </tag>
-            <tag>
-              <head>Classifies the class as a CORE class</head>
-              <name>core</name>
-            </tag>
-            <tag>
-              <head>Section is deprecated and will be removed from the code. If this is a Class, the entire Class will be removed.</head>
-              <name>deprecated-now</name>
-            </tag>
-            <tag>
-              <head>Section uses deprecated (java) code, which will be fixed</head>
-              <name>deprecation-used</name>
-            </tag>
-            <tag>
-              <head>Section contains code which is depedent on a class, where it is undesirable. The code will be adapated to be more generic or moved to a more appropriate class.</head>
-              <name>dependency</name>
-            </tag>
-            <tag>
-              <head>Section contains code which will be moved to an higher (possibly abstract) class, identified with &lt;classname></head>
-              <name>duplicate</name>
-            </tag>
-            <tag>
-              <head>Section needs Javadoc..</head>
-              <name>javadoc</name>
-            </tag>
-            <tag>
-              <head>Section needs to be altered to use internationalization, using english ('en') as a default.</head>
-              <name>language</name>
-            </tag>
-            <tag>
-              <head>The code for this class falls under a different (and conflicting) license, such as GPL. The code needs to be replaced or moved out of the core.</head>
-              <name>license</name>
-            </tag>
-            <tag>
-              <head>Class will be moved to package &lt;packagename&amp;lg;</head>
-              <name>move</name>
-            </tag>
-            <tag>
-              <head>Section need be improved for performance reasons.</head>
-              <name>performance</name>
-            </tag>
-            <tag>
-              <head>Class wil be renamed to &lt;classname></head>
-              <name>rename</name>
-            </tag>
-            <tag>
-              <head>This Class needs the indicated version of the MMBase core.</head>
-              <name>requires</name>
-            </tag>
-            <tag>
-              <head>Section scope will be narrowed to &lt;scope> (i.e. private, package, protected)</head>
-              <name>scope</name>
-            </tag>
-            <tag>
-              <head>Section uses (direct) SQL queries, which will be removed/fixed</head>
-              <name>sql</name>
-            </tag>
-            <tag>
-              <head>Section contains VPRO-specific code, which will be removed/fixed</head>
-              <name>vpro</name>
-            </tag>
-          </tags>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>-Dmmbase.config=${basedir}/src/tests/config</argLine>
-          <skip>false</skip>
-          <testFailureIgnore>true</testFailureIgnore>
-          <excludes>
-            <exclude>**/Abstract*Test.java</exclude>
-          </excludes>
-          <includes>
-            <include>**/*Tests.java</include>
-            <include>**/*Test.java</include>
-            <include>**/*Suite.java</include>
-          </includes>
-        </configuration>
-      </plugin>
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-jar-plugin</artifactId>
+       <configuration>
+         <archive>
+           <manifest>
+             <addClasspath>true</addClasspath>
+             <mainClass>org.mmbase.Version</mainClass>
+           </manifest>
+         </archive>
+       </configuration>
+     </plugin>
     </plugins>
   </build>
   <dependencies>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.4</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jsp-api</artifactId>
-      <version>2.0</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
@@ -463,16 +134,11 @@
       </plugin>
     </plugins>
   </reporting>
-  <distributionManagement>
+
+  <repositories>
     <repository>
-      <id>default</id>
-      <name>Default Repository</name>
-      <url>http://www.mmbase.org/download///home/maven/site/mmapps/jars/</url>
+      <id>mmbase</id>
+      <url>http://www.mmbase.org/maven2</url>
     </repository>
-    <site>
-      <id>default</id>
-      <name>Default Site</name>
-      <url>scp://http://www.mmbase.org/home/maven/site/mmbase</url>
-    </site>
-  </distributionManagement>
+  </repositories>
 </project>
