@@ -93,8 +93,11 @@
               <artifactId>${project.artifactId}</artifactId>
               <groupId>${project.groupId}.jars</groupId>
               <version>${project.version}</version>
-              <repositoryId>mmbase</repositoryId>
+              <repositoryId>mmbase-snapshots</repositoryId>
+              <!--
               <url>${project.distributionManagement.repository.url}</url>
+              -->
+              <url>${project.distributionManagement.snapshotRepository.url}</url>
             </configuration>
           </execution>
         </executions>
@@ -155,6 +158,10 @@
     <repository>
       <id>mmbase</id>
       <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <url>http://www.mmbase.org/snapshots</url>
     </repository>
   </repositories>
 
