@@ -85,11 +85,11 @@
                                        <thead>
                                           <tr>
                                              <th style="width: 56px;"></th>
-                                             <th style="width: 68px;"><a href="?sortBy=otype&direction=${direction}" class="headerlink"><fmt:message key="locate.typecolumn" /></a></th>
-                                             <th><a href="?sortBy=title&direction=${direction}" class="headerlink"><fmt:message key="locate.titlecolumn" /></a></th>
-                                             <th style="width: 50px;"><a href="?sortBy=creator&direction=${direction}" class="headerlink"><fmt:message key="locate.authorcolumn" /></a></th>
-                                             <th style="width: 120px;"><a href="?sortBy=lastmodifieddate&direction=${direction}" class="headerlink"><fmt:message key="locate.lastmodifiedcolumn" /></a></th>
-                                             <th style="width: 60px;"><a href="?sortBy=number&direction=${direction}" class="headerlink"><fmt:message key="locate.numbercolumn" /></a></th>
+                                             <th style="width: 68px;"><a href="assettrash.jsp?sortBy=otype&direction=${direction}" class="headerlink"><fmt:message key="locate.typecolumn" /></a></th>
+                                             <th><a href="assettrash.jsp?sortBy=title&direction=${direction}" class="headerlink"><fmt:message key="locate.titlecolumn" /></a></th>
+                                             <th style="width: 50px;"><a href="assettrash.jsp?sortBy=creator&direction=${direction}" class="headerlink"><fmt:message key="locate.authorcolumn" /></a></th>
+                                             <th style="width: 120px;"><a href="assettrash.jsp?sortBy=lastmodifieddate&direction=${direction}" class="headerlink"><fmt:message key="locate.lastmodifiedcolumn" /></a></th>
+                                             <th style="width: 60px;"><a href="assettrash.jsp?sortBy=number&direction=${direction}" class="headerlink"><fmt:message key="locate.numbercolumn" /></a></th>
                                           </tr>
                                        </thead>
                                        <tbody class="hover">
