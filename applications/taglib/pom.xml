@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-application-parent</artifactId>
+    <version>1.9</version>
+    <relativePath>../app-base/pom.xml</relativePath>
+  </parent>
+
+  <artifactId>mmbase-taglib</artifactId>
+  <name>MMBase Taglib</name>
+  <version>${mmbase.version}</version>
+
+  <build>
+    <resources>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${basedir}/target/generated-resources/xml/xslt/</directory>
+        <includes>
+          <include>**/mmbase-taglib.tld</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>xml-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <transformationSets>
+            <transformationSet>
+              <dir>${basedir}/src/org/mmbase/bridge/jsp/taglib</dir>
+              <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
+              <includes>
+                <include>*.xml</include>
+              </includes>
+              <fileMappers>
+                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                  <targetExtension>.tld</targetExtension>
+                </fileMapper>
+              </fileMappers>
+            </transformationSet>
+            <!--
+            <transformationSet>
+              <dir>${basedir}/src/org/mmbase/bridge/jsp/taglib</dir>
+              <stylesheet>${basedir}/../share/xslt/xml2html.xslt</stylesheet>
+              <includes>
+                <include>*.xml</include>
+              </includes>
+              <fileMappers>
+                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                  <targetExtension>.html</targetExtension>
+                </fileMapper>
+              </fileMappers>
+            </transformationSet>
+            -->
+          </transformationSets>
+
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-resources</artifactId>
+      <version>${mmbase.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet.jsp</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.1</version>
+    </dependency>
+
+  </dependencies>
+</project>
