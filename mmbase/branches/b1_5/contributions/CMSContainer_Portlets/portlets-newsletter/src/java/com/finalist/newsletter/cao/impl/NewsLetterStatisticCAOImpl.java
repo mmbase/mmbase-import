@@ -260,9 +260,9 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
       query.setNodeStep(parameterStep);
       Queries.addSortOrders(query, "logdate", "DOWN");
       query.setMaxNumber(3);
-      SearchUtil.addEqualConstraint(query, logNodeManager.getField("newsletter"), new Integer(newsletterId));
+      SearchUtil.addEqualConstraint(query, logNodeManager.getField("newsletter"), Integer.valueOf(newsletterId));
 
-      SearchUtil.addEqualConstraint(query, logNodeManager.getField("userid"), new Integer(userId));
+      SearchUtil.addEqualConstraint(query, logNodeManager.getField("userid"), Integer.valueOf(userId));
       NodeList logs = query.getList();
       if (logs.size() < 2) {
          isLog = true;
@@ -283,7 +283,7 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
    }
 
    public Node getLogNode(int userId, int newsletterId) {
-      log.info("-------------------logPubliction   -in process...getLogNode....:   ");
+      log.info("-------------------logPublication   -in process...getLogNode....: ");
       NodeManager logNodeManager = cloud.getNodeManager("newsletterdailylog");
       Node logNode = null;
       NodeQuery query = cloud.createNodeQuery();
@@ -291,10 +291,10 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
       query.setNodeStep(parameterStep);
       Queries.addSortOrders(query, "logdate", "DOWN");
       query.setMaxNumber(1);
-      SearchUtil.addEqualConstraint(query, logNodeManager.getField("newsletter"), new Integer(newsletterId));
-      SearchUtil.addEqualConstraint(query, logNodeManager.getField("userid"), new Integer(userId));
+      SearchUtil.addEqualConstraint(query, logNodeManager.getField("newsletter"), Integer.valueOf(newsletterId));
+      SearchUtil.addEqualConstraint(query, logNodeManager.getField("userid"), Integer.valueOf(userId));
       FieldValueConstraint liConstraint = query.createConstraint((query.getStepField(logNodeManager
-            .getField("bounches"))), FieldCompareConstraint.GREATER, new Integer(0));
+            .getField("bounches"))), FieldCompareConstraint.GREATER, Integer.valueOf(0));
       SearchUtil.addConstraint(query, liConstraint);
       NodeList logs = query.getList();
       if (logs != null && logs.size() > 0) {

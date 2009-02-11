@@ -31,7 +31,7 @@ public enum SMTPSTATUS {
     */
    FINISHED(6);
 
-   public static Map<String, Map<String, Action>> statusMap = new HashMap<String, Map<String, Action>>();
+   public static final Map<String, Map<String, Action>> statusMap = new HashMap<String, Map<String, Action>>();
 
    private int index;
 

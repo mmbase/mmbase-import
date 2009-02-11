@@ -36,14 +36,14 @@ public class StatisticServiceImpl implements StatisticService {
    }
 
    public List<StatisticResult> statisticAllByPeriod(String start, String end)
-         throws ServiceException {
+            throws ServiceException {
 
       Date startDate;
       Date endDate;
       startDate = DateUtil.parser(start);
       endDate = DateUtil.parser(end);
       List<StatisticResult> list = statisticCAO.getAllRecordsByPeriod(
-            startDate, endDate);
+               startDate, endDate);
       return list;
    }
 
@@ -54,13 +54,13 @@ public class StatisticServiceImpl implements StatisticService {
    }
 
    public StatisticResult statisticByNewsletterPeriod(int newsletterId,
-         String start, String end) throws ServiceException {
+                                                      String start, String end) throws ServiceException {
 
       Date startDate;
       Date endDate;
       startDate = DateUtil.parser(start);
       endDate = DateUtil.parser(end);
-      List<StatisticResult> list = statisticCAO.getRecordsByNewsletterAndPeriod(startDate, endDate,newsletterId);
+      List<StatisticResult> list = statisticCAO.getRecordsByNewsletterAndPeriod(startDate, endDate, newsletterId);
       StatisticResult result = new StatisticResult();
       for (StatisticResult r : list) {
          result.setPost(result.getPost() + r.getPost());
@@ -89,14 +89,14 @@ public class StatisticServiceImpl implements StatisticService {
    }
 
    public StatisticResult statisticSummeryPeriod(String start, String end)
-         throws ServiceException {
+            throws ServiceException {
 
       Date startDate;
       Date endDate;
       startDate = DateUtil.parser(start);
       endDate = DateUtil.parser(end);
       List<StatisticResult> list = statisticCAO.getAllRecordsByPeriod(
-            startDate, endDate);
+               startDate, endDate);
       StatisticResult result = new StatisticResult();
       for (StatisticResult r : list) {
          result.setPost(result.getPost() + r.getPost());
@@ -109,18 +109,16 @@ public class StatisticServiceImpl implements StatisticService {
       return result;
    }
 
-   public List<StatisticResult> StatisticDetailByNewsletterPeriod(
-         int newsletterId, String start, String end) throws ServiceException {
+   public List<StatisticResult> statisticDetailByNewsletterPeriod(
+            int newsletterId, String start, String end) throws ServiceException {
 
-      Date startDate;
-      Date endDate;
-      startDate = DateUtil.parser(start);
-      endDate = DateUtil.parser(end);
-      List<StatisticResult> list = statisticCAO.getRecordsByNewsletterAndPeriod(startDate, endDate,newsletterId);
+      Date startDate = DateUtil.parser(start);
+      Date endDate = DateUtil.parser(end);
+      List<StatisticResult> list = statisticCAO.getRecordsByNewsletterAndPeriod(startDate, endDate, newsletterId);
       return list;
    }
 
-   public StatisticResult StatisticSummaryByNewsletter(int newsletterId) {
+   public StatisticResult statisticSummaryByNewsletter(int newsletterId) {
       List<StatisticResult> list = statisticCAO.getRecordsByNewsletter(newsletterId);
       StatisticResult result = new StatisticResult();
       for (StatisticResult r : list) {
@@ -140,12 +138,13 @@ public class StatisticServiceImpl implements StatisticService {
    }
 
    public List<StatisticResult> getLogs() {
-      
+
       return statisticCAO.getLogs();
    }
 
    public int pushSumedLogs(List<StatisticResult> listRecorder) {
-      
+
       return statisticCAO.insertSumedLogs(listRecorder);
    }
+   
 }

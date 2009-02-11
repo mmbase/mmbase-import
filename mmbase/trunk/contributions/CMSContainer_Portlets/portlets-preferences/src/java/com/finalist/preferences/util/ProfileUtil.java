@@ -137,7 +137,7 @@ public class ProfileUtil {
    public static Long getCurrentUserId() {
       Person person = getCurrentUser();
       if (null == person) {
-         return new Long(-1);
+         return Long.valueOf(-1);
       }
 
       return person.getAuthenticationId();

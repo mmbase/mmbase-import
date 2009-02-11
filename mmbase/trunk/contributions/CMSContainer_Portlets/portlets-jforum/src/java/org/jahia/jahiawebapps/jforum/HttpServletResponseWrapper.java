@@ -1,19 +1,12 @@
 package org.jahia.jahiawebapps.jforum;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletResponse;
+
 import javax.servlet.ServletOutputStream;
-import java.util.StringTokenizer;
-import java.util.Enumeration;
-
-import org.jahia.portlet.util.StringUtil;
-
-import java.net.URL;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.HashMap;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.jahia.portlet.util.StringUtil;
 
 /**
  * HttpServletResponseWrapper that emulates a "jforum-servlet" response from
