@@ -62,6 +62,13 @@
                            <fmt:message key="imageinfo.number" />: <mm:field name="number"/>
                         </li>
                      </mm:relatednodes>
+                     <mm:relatednodes type="page">
+                        <li>
+                           <mm:field name="path"/><br/>
+                           <fmt:message key="imageinfo.otype" />: <mm:nodeinfo type="guitype"/><br/>
+                           <fmt:message key="imageinfo.number" />: <mm:field name="number"/>
+                        </li>
+                     </mm:relatednodes>
                        </ul>
                </div>
                <div style="clear:both; float:left">
