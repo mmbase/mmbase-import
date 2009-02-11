@@ -66,6 +66,51 @@
           </webResources>
         </configuration>
       </plugin>
+
+
+      <!-- We want to deploy/install the generated jar too -->
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <uniqueVersion>false</uniqueVersion>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>deploy</phase>
+            <goals><goal>deploy-file</goal></goals>
+            <configuration>
+              <packaging>jar</packaging>
+              <file>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/lib/${project.artifactId}-${project.version}.jar</file>
+              <artifactId>${project.artifactId}</artifactId>
+              <groupId>${project.groupId}.jars</groupId>
+              <version>${project.version}</version>
+              <repositoryId>mmbase</repositoryId>
+              <url>${project.distributionManagement.repository.url}</url>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals><goal>install-file</goal></goals>
+            <configuration>
+              <packaging>jar</packaging>
+              <file>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/lib/${project.artifactId}-${project.version}.jar</file>
+              <artifactId>${project.artifactId}</artifactId>
+              <groupId>${project.groupId}.jars</groupId>
+              <version>${project.version}</version>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
