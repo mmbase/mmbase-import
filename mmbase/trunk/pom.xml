@@ -1,20 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
+<?xml version="1.0"?>
+<project>
+
   <modelVersion>4.0.0</modelVersion>
   <!-- reference to the root POM -->
+
   <parent>
     <groupId>org.mmbase</groupId>
-    <artifactId>mmbase</artifactId>
+    <artifactId>mmbase-parent</artifactId>
     <version>1.9</version>
     <relativePath>maven-base/pom.xml</relativePath>
   </parent>
-  <artifactId>mmbase-module</artifactId>
-  <packaging>jar</packaging> <!--was: mmbase-module -->
+
+
+  <artifactId>mmbase</artifactId>
+  <packaging>jar</packaging>
   <name>MMBase</name>
-  <description>MMBase is a Web Content Management System with strong multi media features. MMBase has a large installed base in The Netherlands, and is used by major Dutch broadcasters, publishers, educational institutes, national and local governments. MMBase is written in Java, it is Open Source Software (MPL) and all standards used are as 'open' as possible. The system can be used with all major operating systems, webservers and databases.</description>
+  <version>${mmbase.version}</version>
+
+  <description>
+    MMBase is a Web Content Management System with strong multi media features. MMBase has a large
+    installed base in The Netherlands, and is used by major Dutch broadcasters, publishers,
+    educational institutes, national and local governments. MMBase is written in Java, it is Open
+    Source Software (MPL) and all standards used are as 'open' as possible. The system can be used
+    with all major operating systems, webservers and databases.
+  </description>
+
   <url>http://www.mmbase.org</url>
+
   <issueManagement>
     <url>http://www.mmbase.org/bug</url>
   </issueManagement>
+
   <ciManagement>
     <notifiers>
       <notifier>
@@ -24,7 +40,9 @@
       </notifier>
     </notifiers>
   </ciManagement>
+
   <inceptionYear>2000</inceptionYear>
+
   <mailingLists>
     <mailingList>
       <name>MMBase User List</name>
@@ -203,6 +221,8 @@
     <name>MMBase.org</name>
     <url>http://www.mmbase.org</url>
   </organization>
+
+
   <build>
     <defaultGoal>install</defaultGoal>
     <sourceDirectory>${basedir}/src</sourceDirectory>
@@ -238,56 +258,6 @@
       </resource>
     </resources>
     <plugins>
-      <!-- plugin>
-        <groupId>mmapps</groupId>
-        <artifactId>maven-mmbase-module-plugin</artifactId>
-        <version>1.2</version>
-      </plugin -->
-      <!--
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>javacc-maven-plugin</artifactId>
-        <version>2.4</version>
-        <executions>
-          <execution>
-            <id>javacc</id>
-            <goals>
-              <goal>javacc</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${basedir}/target/classes</outputDirectory>
-              <sourceDirectory>${basedir}/src/org/mmbase/util</sourceDirectory>
-              <includes>
-                <include>DateParser.jj</include>
-              </includes>
-              <excludes>
-                <include>**/*.java</include>
-              </excludes>
-              <lookAhead>2</lookAhead>
-              <isStatic>false</isStatic>
-            </configuration>
-          </execution>
-          <execution>
-            <id>javacc</id>
-            <goals>
-              <goal>javacc</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${basedir}/target/classes</outputDirectory>
-              <sourceDirectory>${basedir}/src/org/mmbase/util/transformers</sourceDirectory>
-              <includes>
-                <include>ListParser.jj</include>
-              </includes>
-              <excludes>
-                <include>**/*.java</include>
-              </excludes>
-              <lookAhead>2</lookAhead>
-              <isStatic>false</isStatic>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -295,6 +265,23 @@
           <target>1.5</target>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javacc-maven-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+          <execution>
+            <id>javacc</id>
+            <goals>
+              <goal>javacc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDirectory>${basedir}/src</sourceDirectory>
+        </configuration>
+      </plugin>
+
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
@@ -418,6 +405,11 @@
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
       <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
