@@ -12,6 +12,7 @@
 
   <name>MMBase Resources</name>
   <version>${mmbase.version}</version>
+  <packaging>war</packaging>
 
   <dependencies>
     <dependency>
