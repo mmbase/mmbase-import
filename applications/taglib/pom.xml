@@ -82,6 +82,7 @@
       <artifactId>mmbase-resources</artifactId>
       <version>${mmbase.version}</version>
       <scope>provided</scope>
+      <type>war</type>
     </dependency>
 
     <dependency>
