@@ -7,7 +7,6 @@
     <version>1.9</version>
   </parent>
 
-
   <artifactId>example-webapp</artifactId>
   <packaging>war</packaging>
   <name>MMBase Example webapp</name>
@@ -32,5 +31,18 @@
       <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-taglib</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+  </repositories>
 </project>

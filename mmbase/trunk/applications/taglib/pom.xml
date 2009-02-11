@@ -12,6 +12,10 @@
   <artifactId>mmbase-taglib</artifactId>
   <name>MMBase Taglib</name>
   <version>${mmbase.version}</version>
+  <packaging>war</packaging>
+
+  <!-- I would like to have some trick to generate this from the articfact id -->
+  <properties><mmbaseComponentId>taglib</mmbaseComponentId></properties>
 
   <build>
     <resources>
