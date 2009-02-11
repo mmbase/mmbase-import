@@ -85,7 +85,7 @@
         </configuration>
         <executions>
           <execution>
-            <phase>deploy${phaseDisable}</phase>
+            <phase>deploy</phase>
             <goals><goal>deploy-file</goal></goals>
             <configuration>
               <packaging>jar</packaging>
