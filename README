@@ -14,3 +14,46 @@ If e.g. mmbase.org is unreachable, add 'maven.offline=true' to maven-base/build.
 Sadly it is impossible to find out how to configure a timeout setting for that.
 
 The equivalent for 'ant clean' is 'maven all:clean' to clean all applications, and 'maven clean' to only clean the present one.
+
+
+
+HOWTO MAVEN2
+--------------------------------------------------------------------------------
+
+How to compile everything:
+
+1. Build and install the mmbase.jar in the local repository:
+
+mvn clean ; mvn
+
+compare with: ant clean; ant jar
+
+2. Build and install all mmbase 'applications' in the local repository
+
+(cd applications; mvn clean ; mvn)
+
+compare with: (cd application; ant clean; ant jars_
+
+3. Build a simple war form the justly created artifacts.
+
+(cd example-webapp; mvn clean ; mvn)
+
+coompare with: ant bindist
+
+
+
+But normally you can just type 'mvn' in the directory of interest. It will use artifacts of
+mmbase.org/maven2 if you didn't build them.
+
+
+
+- If you have access to mmbase.org, you can also do
+  mvn deploy
+  (use a ~/.m2/settings.xml containing this:
+  <servers>
+    <server>
+      <id>mmbase</id>
+       <username>mmweb</username>
+     </server>
+   </servers>
+
