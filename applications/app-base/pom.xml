@@ -21,6 +21,17 @@
 
     <resources>
       <resource>
+        <directory>${basedir}/src</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.dtd</include>
+          <include>**/*.xsd</include>
+          <include>**/*.properties</include>
+          <include>INDEX</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
         <targetPath>META-INF</targetPath>
         <directory>${basedir}/target/generated-resources/xml/xslt/</directory>
         <includes>
