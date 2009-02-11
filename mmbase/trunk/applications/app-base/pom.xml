@@ -28,7 +28,7 @@
           <archiveClasses>true</archiveClasses>
           <webResources>
             <resource>
-              <targetPath>mmbase/security</targetPath>
+              <targetPath>mmbase/${mmbaseComponentId}</targetPath>
               <directory>${basedir}/templates</directory>
             </resource>
             <resource>
