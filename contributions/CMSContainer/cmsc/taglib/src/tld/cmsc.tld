@@ -1512,13 +1512,58 @@
         </attribute>
     </tag>
     <tag>
-        <description>Tag to generate Google Analytics code. Meant to put in the head of a page.</description>
+        <description>Tag to generate Google Analytics code. 
+        Meant to put in the body of a page, please note that if you want to use events, 
+        there has to be a normal tag first. 
+        Search order of the google analytics account used:
+		 * 1) The "account"-parameter passed to the tag (only when available, live and production)
+		 * 2) The "googleAnalytics/account" setting in the context XML (only when available, this is the prefered manner)
+		 * 3) The "googleanalytics.account" system property, from the system properties (only when available, live and production)
+        </description>
         <name>google-analytics</name>
         <tag-class>com.finalist.cmsc.taglib.stats.GoogleAnalyticsTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <description>The google account name.</description>
             <name>account</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The type, one of the following: 
+            	"basic" (default: initialize google analytics and count the page), 
+            	"event" (event code: the category and action are now required, first needs a basic)</description>
+            <name>type</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The category used by the "event" type, then required, otherwise ignored.</description>
+            <name>category</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The action used by the "event" type, then required when no nodenumber, otherwise ignored.</description>
+            <name>action</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Will build a nice action used by the "event" type, then required when no action, otherwise ignored.</description>
+            <name>nodeNumber</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The label used by the "event" type, optional.</description>
+            <name>label</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The value used by the "event" type, "label" is required when using this parameter.</description>
+            <name>value</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
