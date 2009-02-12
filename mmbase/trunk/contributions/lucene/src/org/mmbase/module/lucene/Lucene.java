@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.126 2009-02-04 16:22:54 michiel Exp $
+ * @version $Id: Lucene.java,v 1.127 2009-02-12 12:01:29 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -1120,15 +1120,18 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             switch(event.getType()) {
             case Event.TYPE_NEW:
                 //scheduler.newIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
-                if (!startNodes.contains("" + event.getRelationDestinationNumber()))
+                if (!startNodes.contains("" + event.getRelationDestinationNumber())) {
                     scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
+                }
                 break;
             case Event.TYPE_CHANGE:
             case Event.TYPE_DELETE:
-                if (!startNodes.contains("" + event.getRelationSourceNumber()))
+                if (!startNodes.contains("" + event.getRelationSourceNumber())) {
                     scheduler.updateIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
-                if (!startNodes.contains("" + event.getRelationDestinationNumber()))
+                }
+                if (!startNodes.contains("" + event.getRelationDestinationNumber())) {
                     scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
+                }
                 break;
             }
         }
