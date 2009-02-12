@@ -22,6 +22,8 @@
     <module>email</module>
     <module>cloudcontext</module>
     <module>richtext</module>
+    <module>dove</module>
+    <module>editwizard</module>
     <module>mynews</module>
   </modules>
 
