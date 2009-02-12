@@ -20,8 +20,8 @@
     </cmscedit:sideblock>
 </body>
 </html:html>
-</mm:content>
 <mm:cloud method="logout">
 </mm:cloud>
 <% request.getSession().invalidate(); %>
 <% request.getSession().setAttribute("logout", true);%>
+</mm:content>
