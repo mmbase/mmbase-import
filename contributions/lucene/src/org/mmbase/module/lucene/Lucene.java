@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.128 2009-02-12 12:34:11 michiel Exp $
+ * @version $Id: Lucene.java,v 1.129 2009-02-12 13:51:13 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -1104,7 +1104,12 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 }
                 break;
             case Event.TYPE_CHANGE:
-                scheduler.updateIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                if (event.getChangedFields().size() > 0) {
+                    // I don't know why the event was issued in the first place, but don't make it
+                    // worse.
+
+                    scheduler.updateIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                }
                 break;
             case Event.TYPE_DELETE:
                 scheduler.deleteIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
@@ -1225,6 +1230,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
         public abstract class Assignment implements Runnable, Delayed {
 
+
+            private final Throwable cause = new Throwable(); // store a stack trace
             private final int id = assignmentIds++;
 
             private final long endTime = System.currentTimeMillis() + Lucene.this.waitTime;
@@ -1252,6 +1259,10 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 return new Date(endTime - Lucene.this.waitTime);
             }
             abstract String idString();
+
+            public Throwable getCause() {
+                return cause;
+            }
         }
         void assign(Assignment a) {
             if (assigned(a)) {
@@ -1314,7 +1325,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                             current = indexer;
                             int updated = indexer.updateIndex(number, klass);
                             if (updated > 0) {
-                                log.service(indexer.getName() + ": Updated " + updated + " index entr" + (updated > 1 ? "ies" : "y"));
+                                if (log.isDebugEnabled()) {
+                                    log.debug(indexer.getName() + ": Updated " + updated + " index entr" + (updated > 1 ? "ies" : "y"), getCause());
+                                } else if (log.isServiceEnabled()) {
+                                    log.service(indexer.getName() + ": Updated " + updated + " index entr" + (updated > 1 ? "ies" : "y"));
+                                }
                             }
                             current = null;
                         }
