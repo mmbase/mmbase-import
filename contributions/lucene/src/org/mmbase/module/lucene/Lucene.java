@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.129 2009-02-12 13:51:13 michiel Exp $
+ * @version $Id: Lucene.java,v 1.130 2009-02-12 13:52:09 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -1105,10 +1105,10 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 break;
             case Event.TYPE_CHANGE:
                 if (event.getChangedFields().size() > 0) {
+                    scheduler.updateIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                } else {
                     // I don't know why the event was issued in the first place, but don't make it
                     // worse.
-
-                    scheduler.updateIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
                 }
                 break;
             case Event.TYPE_DELETE:
