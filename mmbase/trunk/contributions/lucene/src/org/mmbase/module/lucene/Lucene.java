@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.127 2009-02-12 12:01:29 michiel Exp $
+ * @version $Id: Lucene.java,v 1.128 2009-02-12 12:34:11 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -1280,21 +1280,24 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         void newIndex(final String number, final Class klass) {
             assert klass != null;
             assign(new Assignment() {
+                    Indexer current;
                     public void run() {
                         log.service("New index for " + number);
                         status = BUSY_INDEX;
                         for (Indexer indexer : indexerMap.values()) {
+                            current = indexer;
                             int updated = indexer.newIndex(number, klass);
                             if (updated > 0) {
                                 log.service(indexer.getName() + ": " + updated + " new index entr" + (updated > 1 ? "ies" : "y"));
                             }
                         }
+                        current = null;
                     }
                     public String idString() {
                         return klass.getName() + number;
                     }
                     public String toString() {
-                        return "NEW for " + number + " " + klass;
+                        return "NEW for " + number + " " + klass + (current != null ? " (" + current.getName() + ")" : "");
                     }
 
                 });
@@ -1303,21 +1306,24 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         void updateIndex(final String number, final Class klass) {
             assert klass != null;
             assign(new Assignment() {
+                    Indexer current;
                     public void run() {
                         log.debug("Update index for " + number);
                         status = BUSY_INDEX;
                         for (Indexer indexer : indexerMap.values()) {
+                            current = indexer;
                             int updated = indexer.updateIndex(number, klass);
                             if (updated > 0) {
                                 log.service(indexer.getName() + ": Updated " + updated + " index entr" + (updated > 1 ? "ies" : "y"));
                             }
+                            current = null;
                         }
                     }
                     public String idString() {
                         return klass.getName() + number;
                     }
                     public String toString() {
-                        return "UPDATE for " + number + " " + klass;
+                        return "UPDATE for " + number + " " + klass + (current != null ? " (" + current.getName() + ")" : "");
                     }
 
                 });
@@ -1326,18 +1332,21 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         void deleteIndex(final String number, final Class klass) {
             assert klass != null;
             assign(new Assignment() {
+                    Indexer current;
                     public void run() {
                         log.debug("delete index for " + number); // already logged in indexer.deleteIndex
                         status = BUSY_INDEX;
                         for (Indexer indexer : indexerMap.values()) {
+                            current = indexer;
                             indexer.deleteIndex(number, klass);
                         }
+                        current = null;
                     }
                     public String idString() {
                         return klass.getName() + number;
                     }
                     public String toString() {
-                        return "DELETE for " + number + " " + klass;
+                        return "DELETE for " + number + " " + klass + (current != null ? " (" + current.getName() + ")" : "");
                     }
                 });
         }
