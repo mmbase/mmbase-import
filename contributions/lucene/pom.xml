@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-application-parent</artifactId>
+    <version>1.9</version>
+  </parent>
+
+  <properties>
+    <mmbaseComponentId>lucene</mmbaseComponentId>
+  </properties>
+
+
+  <artifactId>mmbase-lucene</artifactId>
+  <name>MMBase Lucene</name>
+  <version>${mmbase.version}</version>
+  <packaging>war</packaging>
+
+
+
+  <dependencies>
+    <dependency>
+      <groupId>lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>lucene</groupId>
+      <artifactId>lucene-queries</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
+      <version>0.7.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-contrib</artifactId>
+      <version>3.1-FINAL</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>3.1-FINAL</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-scratchpad</artifactId>
+      <version>3.1-FINAL</version>
+    </dependency>
+    <dependency>
+      <groupId>org.textmining</groupId>
+      <artifactId>tm-extractors</artifactId>
+      <version>0.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mmbase.jars</groupId>
+      <artifactId>mmbase-crontab</artifactId>
+      <version>${mmbase.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mmbase.jars</groupId>
+      <artifactId>mmbase-taglib</artifactId>
+      <version>${mmbase.version}</version>
+     </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+  </repositories>
+
+</project>
