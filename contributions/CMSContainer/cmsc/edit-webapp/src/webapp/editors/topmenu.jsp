@@ -1,7 +1,8 @@
-<%@page language="java" contentType="text/html;charset=UTF-8"%>
-<%@include file="globals.jsp" %>
+<%@page language="java" contentType="text/html;charset=UTF-8"
+%><%@include file="globals.jsp" 
+%><mm:content type="text/html" encoding="UTF-8" expires="0">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <mm:import externid="bottomurl" from="parameters"/>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
 <cmscedit:head title="topmenu.title">
    <link href="<cmsc:staticurl page='/editors/css/topmenu.css'/>" type="text/css" rel="stylesheet" />
@@ -12,7 +13,8 @@
 
          <div id="header">
 	         <div class="title_image">
-	            <img src="gfx/logo_editors.png" alt="Editors logo"/>
+               <c:set var="logotext"><fmt:message key="logo.title" /> <cmsc:version type="cmsc"/></c:set>
+               <img src="gfx/logo_editors.png" alt='${logotext}' title='${logotext}'/>
             </div>
             <div class="title">
                <fmt:message key="editors.title" />
