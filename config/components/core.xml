@@ -519,11 +519,14 @@
       </class>
     </body>
   </block>
-  <block name="my"
+  
+  <block name="my_editors"
          classification="mmbase.edit:1"
          mimetype="text/html">
-    <title xml:lang="nl">My-editors</title>
-    <title xml:lang="en">My editors</title>
+    <title xml:lang="nl">my_editors</title>
+    <title xml:lang="en">my_editors</title>
+    <description xml:lang="en">Alternative generic editors</description>
+    <description xml:lang="nl">Alternatieve generieke editors</description>
     <body>
       <class name="org.mmbase.framework.IFrameRenderer">
         <param name="url">/mmbase/edit/my_editors/</param>
