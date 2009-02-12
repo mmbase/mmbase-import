@@ -31,7 +31,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.mmbase</groupId>
+      <groupId>org.mmbase.jars</groupId>
       <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
     </dependency>
