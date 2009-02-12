@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.37 2008-08-20 10:52:09 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.38 2009-02-12 12:05:44 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -136,16 +136,13 @@ public class MMBaseEntry implements IndexEntry {
                        value = transformer.transform(value);
                    }
                 }
-                if (log.isDebugEnabled()) {
-                    log.debug("" + fieldName + ": " +  value + " -> " + Arrays.asList(value.split(fieldDefinition.split, "".equals(fieldDefinition.split) ? 1 : 0)));
-                }
                 for (String v : value.split(fieldDefinition.split, "".equals(fieldDefinition.split) ? 1 : 0)) {
                     // Trick with using the 'limit' argument of the split function makes sure that
                     // split="" is equivalent to no splitting at all.
 
                     if (fieldDefinition.keyWord) {
                         if (log.isTraceEnabled()) {
-                            log.trace("add " + fieldName + " text, keyword" + v);
+                            log.trace("add " + fieldName + " text, keyword " + v);
                         }
                         Field field = new Field(fieldName, v, Field.Store.YES, Field.Index.UN_TOKENIZED);
                         field.setBoost(fieldDefinition.boost);
