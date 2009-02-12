@@ -48,6 +48,7 @@
           <include>**/*.dtd</include>
           <include>**/*.xsd</include>
           <include>**/*.properties</include>
+          <include>INDEX</include>
         </includes>
         <filtering>false</filtering>
       </resource>
@@ -73,6 +74,7 @@
      <plugin>
        <groupId>org.apache.maven.plugins</groupId>
        <artifactId>maven-jar-plugin</artifactId>
+       <!--
        <configuration>
          <archive>
            <manifest>
@@ -81,6 +83,7 @@
            </manifest>
          </archive>
        </configuration>
+       -->
      </plugin>
     </plugins>
   </build>
@@ -98,7 +101,7 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
+      <version>1.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
