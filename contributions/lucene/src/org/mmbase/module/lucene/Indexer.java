@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.62 2008-09-29 11:15:22 pierre Exp $
+ * @version $Id: Indexer.java,v 1.63 2009-02-12 12:34:11 michiel Exp $
  **/
 public class Indexer {
 
@@ -42,7 +42,7 @@ public class Indexer {
 
     /**
      *  An empty index definition that can be used to obtain nodes from the cloud.
-     */   
+     */
     protected static final MMBaseIndexDefinition nodeLoader = new MMBaseIndexDefinition();
 
     /**
@@ -246,6 +246,7 @@ public class Indexer {
     public int deleteIndex(String number, Class<? extends IndexDefinition> klass) {
         int deleted = 0;
         int updated = 0;
+        OUTER:
         for (IndexDefinition indexDefinition : queries) {
             if (klass.isAssignableFrom(indexDefinition.getClass())) {
                 IndexReader reader = null;
@@ -266,6 +267,10 @@ public class Indexer {
                         } else {
                             mains.add(main);
                         }
+                        if (Thread.currentThread().isInterrupted()) {
+                            log.service("Interrupted");
+                            break OUTER;
+                        }
                     }
                 } catch (Exception e) {
                     addError(e.getMessage());
@@ -282,6 +287,9 @@ public class Indexer {
                     log.service(getName() + ": Deleted " + d + " for '" + number + "', updated '" + u + "'");
                 }
 
+            }
+            if (Thread.currentThread().isInterrupted()) {
+                log.service("Interrupted");
             }
         }
         return deleted;
@@ -300,6 +308,10 @@ public class Indexer {
                 }
                 updated += index(j, writer, indexDefinition.getId());
                 j.close();
+                if (Thread.currentThread().isInterrupted()) {
+                    log.service("Interrupted");
+                    break;
+                }
             }
         } catch (FileNotFoundException fnfe) {
             log.debug(fnfe);
@@ -352,6 +364,10 @@ public class Indexer {
                         } else {
                             log.debug("Retained #" + i + " from " + indexId + " (!= " + indexDefinition.getId());
                         }
+                        if (Thread.currentThread().isInterrupted()) {
+                            log.service("Interrupted");
+                            break;
+                        }
                     }
                     docs.close();
                 } catch (FileNotFoundException fnfe) {
@@ -373,6 +389,10 @@ public class Indexer {
                         updated += update(indexDefinition, mains);
                     }
                 }
+            }
+            if (Thread.currentThread().isInterrupted()) {
+                log.service("Interrupted");
+                break;
             }
         }
         if (updated > 0) {
@@ -402,6 +422,10 @@ public class Indexer {
                     mains.add(number);
                     updated += update(indexDefinition, mains);
                 }
+            }
+            if (Thread.currentThread().isInterrupted()) {
+                log.service("Interrupted");
+                break;
             }
         }
         if (updated > 0) {
