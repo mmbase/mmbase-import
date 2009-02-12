@@ -67,7 +67,7 @@ public class CreateRelationsForSecondaryContent {
       
       for (int i = 0; i < assets.size(); i++) {
          Node asset = assets.getNode(i);
-         if (assets != null && !RepositoryUtil.hasCreationChannel(asset)) {
+         if (asset != null && !RepositoryUtil.hasCreationChannel(asset)) {
             counter++;
             Relation relation = null;
             // If type is not null, it means someone has picked selfselect. We will now try to determine
@@ -114,7 +114,9 @@ public class CreateRelationsForSecondaryContent {
          }
          //Add a version for a asset element.
          try {
-            Versioning.addVersion(asset);
+            if(asset != null) {
+               Versioning.addVersion(asset);
+            }
          } 
          catch (VersioningException e) {
            log.error("Add version error for node"+asset.getNumber(),e);
