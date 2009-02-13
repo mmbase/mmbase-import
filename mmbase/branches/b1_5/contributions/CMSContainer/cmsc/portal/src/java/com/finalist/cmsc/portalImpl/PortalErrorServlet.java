@@ -23,9 +23,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.finalist.cmsc.beans.om.Site;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.util.HttpUtil;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.util.version.VersionUtil;
 

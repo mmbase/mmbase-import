@@ -31,10 +31,10 @@ import org.apache.pluto.om.servlet.ServletDefinitionCtrl;
 import org.apache.pluto.om.window.*;
 
 import com.finalist.cmsc.beans.om.*;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portalImpl.headerresource.HeaderResource;
 import com.finalist.cmsc.util.HttpUtil;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.pluto.portalImpl.om.common.impl.PreferenceSetImpl;
 import com.finalist.pluto.portalImpl.om.entity.impl.PortletEntityImpl;

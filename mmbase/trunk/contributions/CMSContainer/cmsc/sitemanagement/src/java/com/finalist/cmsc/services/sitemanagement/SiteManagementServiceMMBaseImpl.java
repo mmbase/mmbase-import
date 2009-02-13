@@ -27,9 +27,9 @@ import org.mmbase.security.Rank;
 import org.mmbase.security.UserContext;
 
 import com.finalist.cmsc.beans.om.*;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.Properties;
 import com.finalist.cmsc.services.security.LoginSession;
+import com.finalist.cmsc.util.ServerUtil;
 
 /**
  * MMBase specific PortalLayoutService implementation, in this case MMBase

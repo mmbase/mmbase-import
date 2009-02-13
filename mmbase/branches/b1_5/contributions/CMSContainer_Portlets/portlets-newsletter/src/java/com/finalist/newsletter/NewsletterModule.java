@@ -4,7 +4,7 @@ import org.mmbase.core.event.EventListener;
 import org.mmbase.module.Module;
 import org.mmbase.module.core.MMBase;
 
-import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.util.ServerUtil;
 
 public class NewsletterModule extends Module {
 

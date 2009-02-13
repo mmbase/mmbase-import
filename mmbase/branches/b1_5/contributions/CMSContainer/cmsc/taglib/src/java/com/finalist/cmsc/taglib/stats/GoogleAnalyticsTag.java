@@ -11,9 +11,7 @@ package com.finalist.cmsc.taglib.stats;
 
 import java.io.IOException;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.naming.*;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
@@ -27,8 +25,8 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.util.ServerUtil;
 
 public class GoogleAnalyticsTag extends SimpleTagSupport {
    /** MMbase logging system */

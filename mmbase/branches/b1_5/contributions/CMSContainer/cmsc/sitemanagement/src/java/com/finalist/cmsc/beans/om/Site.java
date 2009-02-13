@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.beans.om;
 
-import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.util.ServerUtil;
 
 /**
  * @author Wouter Heijke

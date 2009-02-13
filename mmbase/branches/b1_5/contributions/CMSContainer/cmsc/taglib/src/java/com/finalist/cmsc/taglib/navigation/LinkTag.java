@@ -21,11 +21,11 @@ import javax.servlet.jsp.tagext.JspFragment;
 import org.apache.commons.lang.StringUtils;
 
 import com.finalist.cmsc.beans.om.*;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.search.PageInfo;
 import com.finalist.cmsc.services.search.Search;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.taglib.CmscTag;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.pluto.portalImpl.core.PortalURL;
 
 /**

@@ -19,10 +19,10 @@ import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.beans.om.ContentElement;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.contentrepository.ContentRepository;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.util.ServerUtil;
 
 /**
  * Portlet to edit content elements

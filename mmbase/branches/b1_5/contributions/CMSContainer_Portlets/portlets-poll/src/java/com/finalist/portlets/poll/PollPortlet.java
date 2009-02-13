@@ -16,9 +16,9 @@ import javax.portlet.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portlets.ContentPortlet;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
 public class PollPortlet extends ContentPortlet {
