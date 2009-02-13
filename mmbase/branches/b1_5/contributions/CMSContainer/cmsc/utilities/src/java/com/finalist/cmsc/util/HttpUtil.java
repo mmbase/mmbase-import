@@ -280,8 +280,54 @@ public class HttpUtil {
      * @return content of resource
      */
     public static String getURLContent(URL url) {
-       StringBuffer sb = new StringBuffer();
+       Writer sb = new StringWriter();
+       getURLContent(url, sb);
+       return sb.toString();
+    }
+    
+    /**
+     * get Remote Content
+     *  
+     * @param urlPath - url to resource
+     * @param out - writer for the content
+     */
+    public static void getURLContent(String urlPath, Writer out) {
+       try {
+          getURLContent(new URL(urlPath), out);
+       }
+       catch (MalformedURLException e) {
+          log.warn("MalformedURL: " + e.getMessage());
+       }
+    }
+    
+    /**
+     * get Remote Content
+     *  
+     * @param url - url to resource
+     * @param out - writer for the content
+     */
+    public static void getURLContent(URL url, Writer out) {
+       try {
+          HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+          conn.setConnectTimeout(5000); // five second connect timeout
+          conn.setReadTimeout(5000); // five second read timeout 
+          int responseCode = conn.getResponseCode();
+          if (responseCode == HttpURLConnection.HTTP_OK) {
+             getStreamContent(conn.getInputStream(), out);
+          }
+       }
+       catch (IOException e) {
+          log.error("Exception " + e.toString(), e);
+       }
+    }
 
+    /**
+     * get Remote Content
+     *  
+     * @param urlStream - stream of url
+     * @param out - writer for the content
+     */
+   private static void getStreamContent(InputStream urlStream, Writer out) {
        // find the newline character(s) on the current system
        String newline = null;
        try {
@@ -292,20 +338,16 @@ public class HttpUtil {
        }
        BufferedReader in = null;
        try {
-          InputStreamReader input =
-             new InputStreamReader(url.openStream());
+          InputStreamReader input = new InputStreamReader(urlStream);
           in = new BufferedReader(input);
-          
           String line;
           while ((line = in.readLine()) != null) {
-             sb.append(line);
-             sb.append(newline);
+             out.append(line);
+             out.append(newline);
           }
-          return sb.toString();
        }
        catch (IOException e) {
           log.error("Exception " + e.toString(), e);
-          return "";
        }
        finally {
           try {
@@ -314,7 +356,7 @@ public class HttpUtil {
               log.debug("Exception " + e.toString(), e);
           }
        }
-    }
+   }
     
     /**
      * Post a string to an URL and get the reply as a string. 
@@ -325,7 +367,6 @@ public class HttpUtil {
      * @return copntent of resource
      */
     public static String getURLContentPost(URL url, String body) {
-       BufferedReader rdr = null;
        try {
           // URL must use the http protocol!
           HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -339,6 +380,10 @@ public class HttpUtil {
           conn.setRequestProperty("Content-length", Integer.toString(body.length()));
           // No caching
           conn.setUseCaches(false);
+          
+          conn.setConnectTimeout(5000); // five second connect timeout
+          conn.setReadTimeout(5000); // five second read timeout 
+
           
           // Post data to url
           OutputStreamWriter printout = null;
@@ -356,41 +401,20 @@ public class HttpUtil {
               }
           }
           
-          StringBuffer sb = new StringBuffer();
-
-          // find the newline character(s) on the current system
-          String newline = null;
-          try {
-             newline = System.getProperty("line.separator");
+          StringWriter out = new StringWriter();
+          int responseCode = conn.getResponseCode();
+          if (responseCode == HttpURLConnection.HTTP_OK) {
+             // get the input stream for reading the reply
+             // IMPORTANT! Your body will not get transmitted if you get the
+             // InputStream before completely writing out your output first!
+             InputStream rawInStream = conn.getInputStream();
+             getStreamContent(rawInStream, out);
           }
-          catch (Exception e) {
-             newline = "\n";
-          }
-          
-          // get the input stream for reading the reply
-          // IMPORTANT! Your body will not get transmitted if you get the
-          // InputStream before completely writing out your output first!
-          InputStream rawInStream = conn.getInputStream();
-
-          // get response
-          rdr = new BufferedReader(new InputStreamReader(rawInStream));
-          String line;
-          while ((line = rdr.readLine()) != null) {
-             sb.append(line);
-             sb.append(newline);
-          }
-          return sb.toString();
+          return out.toString();
        }
        catch (Exception e) {
           log.error("Exception " + e.toString(), e);
           return "";
-       }
-       finally {
-          try {
-             rdr.close();
-          } catch (IOException e) {
-              log.debug("Exception " + e.toString(), e);
-          }
        }
     }
 
@@ -452,6 +476,7 @@ public class HttpUtil {
         msg += IDENT + "requesturl: " + request.getRequestURL() + ENDL;
         msg += IDENT + "querystring: " + request.getQueryString() + ENDL;
         msg += IDENT + "method: " + request.getMethod() + ENDL;
+        msg += IDENT + "client: " + request.getRemoteAddr()  + ENDL;
         msg += IDENT + "user: " + request.getRemoteUser()  + ENDL;
 
         // request headers
