@@ -11,6 +11,20 @@
 
 <table class="editcontent">
    <tr>
+      <td colspan="2"><h4><fmt:message key="edit_defaults.register.group" /></h4></td>
+   </tr>
+   <tr>
+      <td ><fmt:message key="edit_defaults.register.defaultgroup" />:</td>
+      <td>
+         <cmsc:select var="groupName">
+            <cmsc:option value="nogroup" message="edit_defaults.register.nogroup" />
+            <c:forEach items="${allGroupNames}" var="group">
+            <cmsc:option value="${group}">${group}</cmsc:option>
+            </c:forEach>
+         </cmsc:select>
+      </td>
+   </tr>
+   <tr>
       <td colspan="2"><h4><fmt:message key="edit_defaults.register.subject" /></h4></td>
    </tr>
    <tr>
