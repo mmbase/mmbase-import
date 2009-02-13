@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portlet exportsource="cmsc file dumper" timestamp="20070324161134">
+	<node number="591" owner="default">
+		<title>LeftMenuPortlet</title>
+		<description>LeftMenuPortlet</description>
+	</node>
+	<node number="595" owner="default">
+		<title>SubMenuPortlet</title>
+		<description>SubMenuPortlet</description>
+	</node>
+	<node number="593" owner="default">
+		<title>BreadcrumbPortlet</title>
+		<description>BreadcrumbPortlet</description>
+	</node>
+	<node number="87190" owner="default">
+		<title>Sitemap</title>
+	</node>
+</portlet>
