@@ -14,8 +14,8 @@ import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.util.ServerUtil;
 
 public class ReactionAction extends SearchAction {
 

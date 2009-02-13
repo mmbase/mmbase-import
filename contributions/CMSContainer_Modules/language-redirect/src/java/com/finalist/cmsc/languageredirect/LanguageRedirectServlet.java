@@ -20,8 +20,8 @@ import org.apache.commons.logging.LogFactory;
 import org.mmbase.servlet.BridgeServlet;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.pluto.portalImpl.core.PortalURL;
 
 public class LanguageRedirectServlet extends BridgeServlet {
