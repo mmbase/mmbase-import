@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layoutrel exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
+   <node number="332" owner="default" snumber="281" dnumber="257" rtype="layoutrel" dir="bidirectional">
+   </node>
+</layoutrel>
