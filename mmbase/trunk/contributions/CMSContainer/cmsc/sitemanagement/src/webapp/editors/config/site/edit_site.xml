@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <form-schema id="edit_site">
 	<title xml:lang="nl">Site</title>
@@ -19,7 +19,7 @@
 		<prompt xml:lang="nl">Live domein</prompt>
 		<prompt xml:lang="zh">Live域</prompt>
 	</field>
-	<field name="title" dtmaxlength="40" dtrequired="true">
+	<field name="title" dtmaxlength="255" dtrequired="true">
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
 		<prompt xml:lang="zh">标题</prompt>
