@@ -4,8 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.applications.crontab.AbstractCronJob;
 
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 
 public class PublicationSentCronJob extends AbstractCronJob {
