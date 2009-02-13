@@ -19,7 +19,7 @@ import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.portlets.tagcloud.Tag;
 
 public class TagCloudUtil {

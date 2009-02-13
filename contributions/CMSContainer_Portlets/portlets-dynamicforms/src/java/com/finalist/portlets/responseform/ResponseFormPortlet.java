@@ -27,10 +27,10 @@ import org.mmbase.bridge.util.SearchUtil;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.mmbase.RelationUtil;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portlets.ContentPortlet;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.util.EmailSender;
+import com.finalist.cmsc.util.ServerUtil;
 
 public class ResponseFormPortlet extends ContentPortlet {
 

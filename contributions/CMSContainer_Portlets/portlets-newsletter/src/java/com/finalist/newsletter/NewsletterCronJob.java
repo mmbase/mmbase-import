@@ -22,9 +22,9 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.newsletter.publisher.bounce.BounceChecker;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;

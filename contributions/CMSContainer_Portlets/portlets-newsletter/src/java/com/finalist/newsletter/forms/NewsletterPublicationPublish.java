@@ -22,11 +22,11 @@ import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.navigation.NavigationUtil;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.newsletter.domain.EditionStatus;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.StatisticResult.HANDLE;
