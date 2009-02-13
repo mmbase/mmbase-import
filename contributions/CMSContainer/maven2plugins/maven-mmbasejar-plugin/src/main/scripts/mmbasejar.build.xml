@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CopyMmbaseResources" >
+	
+	<target name="unpackjar" description="unpack the jar">
+		<unjar src="${projectTarget}/${projectArtifactId}-${projectVersion}/WEB-INF/lib/mmbase-${mmbaseVersion}.jar" dest="${projectTarget}/${projectArtifactId}-${projectVersion}/WEB-INF/classes">
+			<patternset>
+				<include name="org/mmbase/config/applications/**/builders/**" />
+			</patternset>
+		</unjar>
+	</target>
+	<target name="copymmbase" depends="unpackjar" description="copy the mmbase">
+		<copy todir="${projectTarget}/${projectArtifactId}-${projectVersion}/WEB-INF/classes/org/mmbase/config/builders/applications">
+			<fileset dir="${projectTarget}/${projectArtifactId}-${projectVersion}/WEB-INF/classes/org/mmbase/config/applications/Resources/builders"/>
+		</copy>
+	</target>
+	<target name="copyapplications" depends="copymmbase" description="copy the applications">
+		<copy todir="${projectTarget}/${projectArtifactId}-${projectVersion}/WEB-INF/config/builders/applications" flatten="true" includeEmptyDirs="false">
+			<fileset dir="${projectTarget}/${projectArtifactId}-${projectVersion}/WEB-INF/config/applications">
+				<patternset>
+					<include name="**/builders/**" />
+				</patternset>
+			</fileset>			
+		</copy>
+	</target>
+
+	<!--target name="hello">
+		<echo>Hello, ${name}, You're building project: ${projectName}</echo>
+		<copy todir="${projectName}/test">
+			<fileset dir="${projectName}/classes"/>
+		</copy>
+	</target-->
+</project>
