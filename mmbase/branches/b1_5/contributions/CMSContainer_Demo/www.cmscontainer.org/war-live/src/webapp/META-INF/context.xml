@@ -88,6 +88,8 @@
 	<Environment name="server/useServerName" value="false" type="java.lang.String" />
 	<!--  Contains value 'true' or 'false' to indicate whether or not this is the production system -->
 	<Environment name="server/production" value="false" type="java.lang.String" />	
+	<!--  Contains value 'true' or 'false' to indicate whether or not the application is in readonly mode -->
+	<Environment name="server/readonly" value="false" type="java.lang.String" />	
 <!-- 
 	<Environment name="com/luceus/repository-name" value="cmsc-live" type="java.lang.String" />
 	<Environment name="com/luceus/index-attachments" value="true" type="java.lang.String" />
