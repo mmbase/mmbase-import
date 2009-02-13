@@ -1,7 +1,10 @@
 package com.finalist.cmsc.portlets;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -23,6 +26,7 @@ import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.cmsc.services.community.security.AuthorityService;
 import com.finalist.cmsc.util.EmailSender;
 
 public class RegisterPorlet extends AbstractLoginPortlet {
@@ -33,9 +37,32 @@ public class RegisterPorlet extends AbstractLoginPortlet {
    private static final String ACEGI_SECURITY_FORM_LASTNAME_KEY = "lastName";
    private static final String ACEGI_SECURITY_FORM_PASSWORD_KEY = "passwordText";
    private static final String ACEGI_SECURITY_FORM_PASSWORDCONF_KEY = "passwordConfirmation";
+   private static final String GROUPNAME = "groupName";
+   private static final String ALLGROUPNAMES = "allGroupNames";
+   private static final String NoGROUP = "nogroup";
 
    private static final Log log = LogFactory.getLog(RegisterPorlet.class);
+   
+   @Override
+   protected void doEditDefaults(RenderRequest req, RenderResponse res) throws IOException,
+   PortletException {
+      PortletPreferences preferences = req.getPreferences();
+      setAttribute(req, GROUPNAME, preferences.getValue(GROUPNAME,""));
+      setAttribute(req, ALLGROUPNAMES, getAllGroupNames());
+      
+      super.doEditDefaults(req, res);
+   }
+   
+   @Override
+   public void processEditDefaults(ActionRequest request,
+         ActionResponse response) throws PortletException, IOException {
+      PortletPreferences preferences = request.getPreferences();
+      String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
+      setPortletParameter(portletId, GROUPNAME, request.getParameter(GROUPNAME));
 
+      super.processEditDefaults(request, response);
+   }
+   
    @Override
    public void processView(ActionRequest request, ActionResponse response)
          throws PortletException, IOException {
@@ -86,6 +113,12 @@ public class RegisterPorlet extends AbstractLoginPortlet {
                   RegisterStatus.UNCONFIRMED.getName(), new Date());
             person.setEmail(email);
             personHibernateService.updatePerson(person);
+            
+            String groupName = preferences.getValue(GROUPNAME, null);
+            if(null != groupName && !NoGROUP.equals(groupName)){
+               authenticationService.addAuthorityToUserByAuthenticationId(authId.toString(), groupName);
+            }
+            
              String emailSubject = preferences
                   .getValue(EMAIL_SUBJECT,
                         "Your account details associated with the given email address.\n");
@@ -144,5 +177,9 @@ public class RegisterPorlet extends AbstractLoginPortlet {
       doInclude("view", template, request, response);
    }
 
-  
+  private Set<String> getAllGroupNames() {
+     AuthorityService authorityService = (AuthorityService) ApplicationContextFactory
+     .getBean("authorityService");
+     return new TreeSet<String>(authorityService.getAuthorityNames());
+}
 }
