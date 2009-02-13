@@ -22,7 +22,7 @@ See http://www.MMBase.org/license
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.1</version>
+            <version>1.1.1</version>
             <type>jar</type>
             <properties>
                 <jar.manifest.classpath>true</jar.manifest.classpath>
@@ -58,7 +58,7 @@ See http://www.MMBase.org/license
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.11</version>
+            <version>1.2.15</version>
             <type>jar</type>
             <properties>
                 <jar.manifest.classpath>true</jar.manifest.classpath>

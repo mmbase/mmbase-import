@@ -332,7 +332,7 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.8</version>
+			<version>1.2.15</version>
 			<type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -431,7 +431,7 @@
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
-			<version>1.7.0</version>
+			<version>1.8.0</version>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>
@@ -439,7 +439,7 @@
 		<dependency>
 			<groupId>commons-chain</groupId>
 			<artifactId>commons-chain</artifactId>
-			<version>1.1</version>
+			<version>1.2</version>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>
@@ -455,7 +455,7 @@
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-			<version>3.1</version>
+			<version>3.2.1</version>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>
@@ -496,7 +496,7 @@
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-			<version>1.0.4</version>
+			<version>1.1.1</version>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>
