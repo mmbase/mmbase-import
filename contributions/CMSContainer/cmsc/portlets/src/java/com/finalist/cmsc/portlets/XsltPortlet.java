@@ -24,9 +24,9 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.lang.StringUtils;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.cmsc.util.XsltUtil;
 import com.finalist.pluto.PortletURLImpl;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;

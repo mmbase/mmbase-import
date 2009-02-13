@@ -16,10 +16,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.MMBaseAction;
+import com.finalist.cmsc.util.ServerUtil;
 
 /**
  * Provides an RSS feed of a channel in the repository. The request parameter

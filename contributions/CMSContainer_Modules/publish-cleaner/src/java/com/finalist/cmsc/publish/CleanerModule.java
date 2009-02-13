@@ -16,6 +16,7 @@ import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.repository.AssetElementUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
+import com.finalist.cmsc.util.ServerUtil;
 
 /**
  * Cleans (deletes) nodes in mmbase when they are expired
@@ -47,6 +48,11 @@ public class CleanerModule extends Module implements Runnable {
     */
    public void init() {
       mmb = MMBase.getMMBase();
+      
+      if (ServerUtil.isReadonly()) {
+         return;
+      }
+
       // Initialize the module.
       String intervalStr = getInitParameter("interval");
       if (intervalStr == null) {

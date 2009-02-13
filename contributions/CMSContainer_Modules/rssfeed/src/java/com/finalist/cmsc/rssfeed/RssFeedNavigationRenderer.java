@@ -20,13 +20,11 @@ import org.w3c.dom.Element;
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.mmbase.ResourcesUtil;
 import com.finalist.cmsc.navigation.NavigationItemRenderer;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.rssfeed.beans.om.RssFeed;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
-import com.finalist.cmsc.util.HttpUtil;
-import com.finalist.cmsc.util.XmlUtil;
+import com.finalist.cmsc.util.*;
 
 public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 

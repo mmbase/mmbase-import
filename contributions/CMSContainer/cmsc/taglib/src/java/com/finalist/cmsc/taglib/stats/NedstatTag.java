@@ -20,11 +20,11 @@ import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.taglib.CmscTag;
 import com.finalist.cmsc.util.EncodingUtil;
+import com.finalist.cmsc.util.ServerUtil;
 
 /**
  * Tag that parses a netstat string with the current location.

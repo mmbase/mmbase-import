@@ -16,6 +16,8 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.util.ServerUtil;
+
 public class LinkValidatorCronJob extends AbstractCronJob implements CronJob {
 
     private static final String URL_MANAGER = "urls";
@@ -28,6 +30,9 @@ public class LinkValidatorCronJob extends AbstractCronJob implements CronJob {
 
    @Override
    public void run() {
+      if (ServerUtil.isReadonly()) {
+         return;
+      }
       checkExternalLinks();
    }
 

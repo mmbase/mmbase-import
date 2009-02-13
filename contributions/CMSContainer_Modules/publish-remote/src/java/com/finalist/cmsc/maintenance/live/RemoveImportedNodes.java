@@ -18,8 +18,8 @@ import org.mmbase.remotepublishing.CloudInfo;
 import org.mmbase.remotepublishing.PublishManager;
 
 import com.finalist.cmsc.mmbase.TypeUtil;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.sql.SqlAction;
+import com.finalist.cmsc.util.ServerUtil;
 
 /**
  * Removes suspected imported nodes which are not in the remotenodes table
