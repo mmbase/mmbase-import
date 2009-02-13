@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list role="posrel" destination="urls" minoccurs="0" maxoccurs="1" orderby="field[@name='pos']" ordertype="number">
-	<title xml:lang="nl">Url</title>
-	<title xml:lang="en">Url</title>
-	<title xml:lang="zh">Url</title>
+	<title xml:lang="nl">URL</title>
+	<title xml:lang="en">URL</title>
+	<title xml:lang="zh">URL</title>
 
 	<item>
 		<field name="title" ftype="data">
@@ -12,9 +12,9 @@
 			<prompt xml:lang="zh">名称</prompt>
 		</field>
 		<field name="url" dtpattern="\://|javascript\:|mailto\:" ftype="data">
-			<prompt xml:lang="en">Url</prompt>
-			<prompt xml:lang="nl">Url</prompt>
-			<prompt xml:lang="zh">Url</prompt>
+			<prompt xml:lang="en">URL</prompt>
+			<prompt xml:lang="nl">URL</prompt>
+			<prompt xml:lang="zh">URL</prompt>
 		</field>
 		<field name="description" dtrequired="false" ftype="data" rows="3">
 			<prompt xml:lang="en">Description</prompt>
@@ -24,9 +24,9 @@
 	</item>
 
 	<command name="assetsselector" nodepath="urls" age="-1" fields="title,url,description">
-		<prompt xml:lang="en">Search url</prompt>
-		<prompt xml:lang="nl">Zoek url</prompt>
-		<prompt xml:lang="zh">查找Url</prompt>
+		<prompt xml:lang="en">Search URL</prompt>
+		<prompt xml:lang="nl">Zoek URL</prompt>
+		<prompt xml:lang="zh">查找URL</prompt>
 		<search-filter>
 			<name xml:lang="en">Name / Description</name>
 			<name xml:lang="nl">Naam / Omschrijving</name>
@@ -40,9 +40,9 @@
 			<search-fields>[title]</search-fields>
 		</search-filter>
 		<search-filter>
-			<name xml:lang="en">Url contains</name>
-			<name xml:lang="nl">Url bevat</name>
-			<name xml:lang="zh">名Url包含</name>
+			<name xml:lang="en">URL contains</name>
+			<name xml:lang="nl">URL bevat</name>
+			<name xml:lang="zh">名URL包含</name>
 			<search-fields>[url]</search-fields>
 		</search-filter>
 		<search-filter>

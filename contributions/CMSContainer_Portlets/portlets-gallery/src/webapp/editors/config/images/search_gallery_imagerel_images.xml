@@ -6,17 +6,17 @@
    <title xml:lang="zh">图片</title>
    
    <item displaytype="image">
-      <field name="title" dtrequired="true">
+	    <field name="title" ftype="data" dtrequired="true">
          <prompt xml:lang="en">Title</prompt>
          <prompt xml:lang="nl">Titel</prompt>
          <prompt xml:lang="zh">标题</prompt>
       </field>
-      <field name="description" ftype="text" rows="4">
+	    <field name="description" ftype="data" rows="4">
          <prompt xml:lang="en">Description</prompt>
          <prompt xml:lang="nl">Omschrijving</prompt>
          <prompt xml:lang="zh">描述</prompt>
       </field>
-      <field name="handle" ftype="image">
+	    <field name="handle" ftype="imagedata">
          <prompt xml:lang="en">Image</prompt>
          <prompt xml:lang="nl">Afbeelding</prompt>
          <prompt xml:lang="zh">图片</prompt>
@@ -47,7 +47,7 @@
       </search-filter>
    </command>
    
-   <command name="insert" objectnumber="new">
+   <command name="startwizard" inline="true" wizardname="config/images/images" objectnumber="new">
       <prompt xml:lang="en">New</prompt>
       <prompt xml:lang="nl">Nieuw</prompt>
       <prompt xml:lang="zh">新建</prompt>
@@ -56,7 +56,6 @@
    <action type="create">
       <relation role="imagerel">
          <field name="order">{sum(//relation[@role=&apos;imagerel&apos; and @lastitem=&apos;true&apos;]/object[@type='images']/../field[@name=&apos;order&apos;])+{$pos}}</field>
-         <object type="images" />
       </relation>
    </action>
 </list>
