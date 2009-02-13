@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.util.ServerUtil;
 
 public class InternalDispatchNavigationRequest extends HttpServletRequestWrapper {
 

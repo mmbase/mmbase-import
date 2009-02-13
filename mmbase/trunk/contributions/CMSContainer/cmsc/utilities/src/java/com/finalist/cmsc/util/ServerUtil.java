@@ -2,7 +2,7 @@
  * Created on Nov 14, 2003 by edwin
  *
  */
-package com.finalist.cmsc.navigation;
+package com.finalist.cmsc.util;
 
 import javax.naming.*;
 
@@ -23,6 +23,7 @@ public final class ServerUtil {
    private static boolean single;
    private static boolean useSvrName = false;
    private static boolean production = false;
+   private static boolean readonly = false;
 
    private static boolean loaded;
 
@@ -59,6 +60,11 @@ public final class ServerUtil {
    }
 
 
+   public static boolean isReadonly() {
+      getSetting();
+      return readonly;
+   }
+
    private static void getSetting() {
       if (!loaded) {
          live = false;
@@ -76,6 +82,11 @@ public final class ServerUtil {
             String productionStr = (String) env.lookup("server/production");
             if (productionStr != null && productionStr.length() > 0) {
                production = Boolean.valueOf(productionStr);
+            }
+            
+            String readonlyStr = (String) env.lookup("server/readonly");
+            if (readonlyStr != null && readonlyStr.length() > 0) {
+               readonly = Boolean.valueOf(readonlyStr);
             }
          }
          catch (NamingException ne) {

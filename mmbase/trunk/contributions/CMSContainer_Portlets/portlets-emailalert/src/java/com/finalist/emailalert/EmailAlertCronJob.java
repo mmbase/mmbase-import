@@ -13,9 +13,9 @@ import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.EmailUtil;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.search.PageInfo;
 import com.finalist.cmsc.services.search.Search;
+import com.finalist.cmsc.util.ServerUtil;
 
 public class EmailAlertCronJob extends AbstractCronJob implements CronJob {
 

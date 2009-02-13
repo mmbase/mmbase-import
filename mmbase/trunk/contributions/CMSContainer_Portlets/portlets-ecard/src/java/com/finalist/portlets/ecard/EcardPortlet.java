@@ -20,10 +20,10 @@ import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.mmbase.*;
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.ContentChannelPortlet;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.pluto.portalImpl.core.PortalURL;
 
 public class EcardPortlet extends ContentChannelPortlet {

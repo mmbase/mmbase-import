@@ -13,8 +13,8 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.util.SearchUtil;
 
-import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.util.ServerUtil;
 
 /**
  * term util class.
