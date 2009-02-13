@@ -9,15 +9,15 @@
    <script type="text/javascript">
    function setShowMode() {
 	   var showMode = document.getElementsByTagName("option");
-	   var imageShow;
+	   var assetShow;
        for(i = 0; i < showMode.length; i++){
           if(showMode[i].selected & showMode[i].id=="a_list"){
-              imageShow="list";
+              assetShow="list";
           }else if(showMode[i].selected & showMode[i].id=="a_thumbnail"){
-        	  imageShow="thumbnail";
+        	  assetShow="thumbnail";
           }
        }
-      document.forms[0].imageShow.value = imageShow;
+      document.forms[0].assetShow.value = assetShow;
       document.forms[0].submit();
 	}
 	function showInfo(objectnumber) {
@@ -68,9 +68,9 @@
 		var imageMode = document.getElementsByTagName("option");
 	       for(i = 0; i < imageMode.length; i++){
 	          if(imageMode[i].selected & imageMode[i].id=="a_list"){
-	              document.location.href = '../../repository/HighFrequencyImg.do?action=often&offset=0&channelid='+channelid+'&imageShow=list';
+	              document.location.href = '../../repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assetShow=list&assettypes=images';
 	          }else if(imageMode[i].selected & imageMode[i].id=="a_thumbnail"){
-	              document.location.href = '../../repository/HighFrequencyImg.do?action=often&offset=0&channelid='+channelid+'&imageShow=thumbnail';
+	              document.location.href = '../../repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assetShow=thumbnail&assettypes=images';
 	          }
 	       }
 	}
@@ -80,7 +80,7 @@
 <body>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
 <mm:import externid="action">search</mm:import><%-- either often or search --%>
-<mm:import externid="imageShow">list</mm:import><%-- either list or thumbnail --%>
+<mm:import externid="assetShow">list</mm:import><%-- either list or thumbnail --%>
    <div class="editor" style="height:555px">
       <c:choose>
          <c:when test="${action eq 'search'}">
@@ -88,7 +88,7 @@
             <mm:import id="channelMsg"><fmt:message key="images.results" /></mm:import>
          </c:when>
          <c:otherwise>
-            <mm:import id="formAction">/editors/repository/HighFrequencyImg</mm:import>
+            <mm:import id="formAction">/editors/repository/HighFrequencyAsset</mm:import>
             <c:if test="${param.channelid eq 'all'}">
                 <mm:import id="channelMsg"><fmt:message key="images.channel.title"><fmt:param>ALL CHANNELS</fmt:param></fmt:message></mm:import>
             </c:if>
@@ -107,9 +107,10 @@
       <div class="body" <c:if test="${action == 'often'}">style="display:none"</c:if> >
          <html:form action="${formAction}" method="post">
             <html:hidden property="action" value="${action}"/>
-            <html:hidden property="imageShow" value="${imageShow}"/>
+            <html:hidden property="assetShow" value="${assetShow}"/>
             <html:hidden property="offset"/>
             <c:if test="${action eq 'often'}">
+            <html:hidden property="assettypes" value="images"/>
             <html:hidden property="channelid" value="${channelid}"/>
             </c:if>
             <html:hidden property="order"/>
@@ -124,11 +125,11 @@
          <div><c:out value="${channelMsg}" /></div>
    `  </div>
 		<select name="imageMode" id="imageMode" onchange="javascript:setShowMode()">
-			<c:if test="${imageShow eq 'list'}">
+			<c:if test="${assetShow eq 'list'}">
 				<option id="a_list" selected="selected"><fmt:message key="asset.image.list"/></option>
 				<option id="a_thumbnail"><fmt:message key="asset.image.thumbnail"/></option>
 			</c:if>
-			<c:if test="${imageShow eq 'thumbnail'}">
+			<c:if test="${assetShow eq 'thumbnail'}">
 				<option id="a_list"><fmt:message key="asset.image.list"/></option>
 				<option id="a_thumbnail" selected="selected"><fmt:message key="asset.image.thumbnail"/></option>
 			</c:if>
@@ -140,7 +141,7 @@
          <c:if test="${resultCount > 0}">
             <%@include file="../repository/searchpages.jsp" %>
 
-            <c:if test="${imageShow eq 'thumbnail'}">
+            <c:if test="${assetShow eq 'thumbnail'}">
             <div id="imgList" class="hover" style="width:100%" href="">
                   <mm:listnodes referid="results">
                      <mm:field name="description" escape="js-single-quotes" jspvar="description">
@@ -164,7 +165,7 @@
             </div>
             </c:if>
 
-			<c:if test="${imageShow eq 'list'}">
+			<c:if test="${assetShow eq 'list'}">
 				<table>
             <c:if test="${action == 'search'}">
 					<tr class="listheader">
@@ -234,7 +235,7 @@
       <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
       <mm:url page="/editors/resources/ImageInitAction.do?action=search" id="search_image_url" write="false" />
       <mm:url page="/editors/resources/imageupload.jsp?uploadedNodes=0&channelid=${channelid}" id="new_image_url" write="false" />
-      <mm:url page="/editors/repository/HighFrequencyImg.do?action=often&imageShow=${imageShow}&offset=0&channelid=all" id="often_show_images" write="false"/>
+      <mm:url page="/editors/repository/HighFrequencyAsset.do?action=often&assetShow=${assetShow}&offset=0&channelid=all&assettypes=images" id="often_show_images" write="false"/>
 		<ul class="shortcuts">
 			<li><a href="${often_show_images}"><fmt:message key="imageselect.link.allchannel" /></a></li>
 			<li><a onclick="openPopupWindow('selectchannel', 340, 400);" target="selectchannel" href="${select_channel_url}"><fmt:message key="imageselect.link.channel" /></a></li>

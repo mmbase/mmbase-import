@@ -34,8 +34,9 @@ import com.finalist.cmsc.util.NodeComparator;
  * 
  * @author Eva Guo
  * @author Marco Fang
+ * @author Billy Xie
  */
-public class HighFrequencyImgAction extends PagerAction {
+public class HighFrequencyAssetAction extends PagerAction {
 
    private static final String REPOSITORY_SEARCH_RESULTS_PER_PAGE = "repository.search.results.per.page";
    private static final String CHANNELID = "channelid";
@@ -45,34 +46,42 @@ public class HighFrequencyImgAction extends PagerAction {
    private static final String CONTENTCHANNEL = "contentchannel";
    private static final String CREATIONREL = "creationrel";
    private static final String CURRENTCHANNEL = "current";
+   private static final String ATTACHMENTS = "attachments";
    private static final String IMAGES = "images";
    private static final String ALL = "all";
    private static final String CREATION = "creation";
    private static final String CONTENTELEMENT = "contentelement";
    private static final String SOURCE = "source";
    private static final String DESTINATION = "destination";
+   private static final String POSREL = "posrel";
    private static final String IMAGEREL = "imagerel";
    private static final String NUMBER = "number";
    private static final String TITLE = "title";
    private static final String COUNTALIAS = "countalias";
-   private static final String IMAGESHOW = "imageShow";
+   private static final String ASSETSHOW = "assetShow";
 
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
 
-      HighFrequencyImgForm highFrequencyImgForm = (HighFrequencyImgForm) form;
+      HighFrequencyAssetForm highFrequencyAssetForm = (HighFrequencyAssetForm) form;
       
-      String channelid = highFrequencyImgForm.getChannelid();
+      String channelid = highFrequencyAssetForm.getChannelid();
       boolean existChannelConstraint = StringUtils.isNotEmpty(channelid) && !ALL.equals(channelid);
-      String imageShow = highFrequencyImgForm.getImageShow();
+      String imageShow = highFrequencyAssetForm.getAssetShow();
       if(StringUtils.isEmpty(imageShow)){
          imageShow="thumbnail";
       }
       
       Query query = cloud.createAggregatedQuery();
       List<Node> result = new ArrayList<Node>();
-      Step imageStep;
-      NodeManager imgManager = cloud.getNodeManager(IMAGES);
+      Step assetStep;
+      String assettypes = highFrequencyAssetForm.getAssettypes();
+      NodeManager assetManager = null;
+      if(assettypes.equals(ATTACHMENTS)){
+         assetManager = cloud.getNodeManager(ATTACHMENTS);
+      } else if(assettypes.equals(IMAGES)){
+         assetManager = cloud.getNodeManager(IMAGES);
+      }      
       NodeManager channelManager = cloud.getNodeManager(CONTENTCHANNEL);
       
       // search in one contentchannel
@@ -82,65 +91,71 @@ public class HighFrequencyImgAction extends PagerAction {
             channelid = (String) request.getSession().getAttribute(CREATION);
          }
          query.addStep(channelManager);
-         RelationStep creationrelStep = query.addRelationStep(imgManager, CREATIONREL, SOURCE);
-         imageStep = creationrelStep.getNext();
+         RelationStep creationrelStep = query.addRelationStep(assetManager, CREATIONREL, SOURCE);
+         assetStep = creationrelStep.getNext();
          Queries.addConstraints(query, channelManager.getName() + ".number=" + channelid);
       } else {// search all contentchannels
-         imageStep = query.addStep(imgManager);
+         assetStep = query.addStep(assetManager);
       }
       
       NodeManager contentManager = cloud.getNodeManager(CONTENTELEMENT);
-      RelationStep imagerelStep = query.addRelationStep(contentManager, IMAGEREL, SOURCE);
-      Step contentStep = imagerelStep.getNext();
-      query.addAggregatedField(imageStep, imgManager.getField(NUMBER), AggregatedField.AGGREGATION_TYPE_GROUP_BY);
-      query.addAggregatedField(imageStep, imgManager.getField(TITLE), AggregatedField.AGGREGATION_TYPE_GROUP_BY);
+      RelationStep assetrelStep= null;
+      if(assettypes.equals(ATTACHMENTS)){
+         assetrelStep = query.addRelationStep(contentManager, POSREL, SOURCE);
+      } else if(assettypes.equals(IMAGES)){
+         assetrelStep = query.addRelationStep(contentManager, IMAGEREL, SOURCE);
+      }
+      
+      Step contentStep = assetrelStep.getNext();
+      query.addAggregatedField(assetStep, assetManager.getField(NUMBER), AggregatedField.AGGREGATION_TYPE_GROUP_BY);
+      query.addAggregatedField(assetStep, assetManager.getField(TITLE), AggregatedField.AGGREGATION_TYPE_GROUP_BY);
       BasicAggregatedField countField = (BasicAggregatedField) query.addAggregatedField(contentStep, contentManager
             .getField(NUMBER), AggregatedField.AGGREGATION_TYPE_COUNT);
       countField.setAlias(COUNTALIAS);
 
-      NodeList usedImgCountResult = query.getList();
+      NodeList usedAssetCountResult = query.getList();
 
-      if(usedImgCountResult!=null&&!usedImgCountResult.isEmpty()){
+      if(usedAssetCountResult!=null&&!usedAssetCountResult.isEmpty()){
          Vector<String> fields = new Vector();
          fields.addAll(Arrays.asList(COUNTALIAS, TITLE));
          Vector<String> sortDirs = new Vector();
          sortDirs.addAll(Arrays.asList(NodeComparator.DOWN, NodeComparator.UP));
          NodeComparator comparator = new NodeComparator(fields, sortDirs);
-         Collections.sort(usedImgCountResult, comparator);
+         Collections.sort(usedAssetCountResult, comparator);
       }
       
       NodeQuery nodeQuery = cloud.createNodeQuery();
-      imageStep = nodeQuery.addStep(imgManager);
+      assetStep = nodeQuery.addStep(assetManager);
       //search in one contentchannel
       if(existChannelConstraint){
          nodeQuery.addRelationStep(channelManager,CREATIONREL,DESTINATION);
          Queries.addConstraints(nodeQuery, channelManager.getName() + ".number=" + channelid);
       }
-      nodeQuery.setNodeStep(imageStep);
+      nodeQuery.setNodeStep(assetStep);
       
-      NodeList unusedImgResult = nodeQuery.getList();
+      NodeList unusedAssetResult = nodeQuery.getList();
       
-      for (int i = 0; i < usedImgCountResult.size(); i++) {
-         int imgNumber = usedImgCountResult.getNode(i).getIntValue(NUMBER);
-         for (int j = 0; j < unusedImgResult.size(); j++) {
-            Node imgNode = unusedImgResult.getNode(j);
-            if (imgNumber == imgNode.getIntValue(NUMBER)) {
-               result.add(imgNode);
-               unusedImgResult.remove(imgNode);
+      for (int i = 0; i < usedAssetCountResult.size(); i++) {
+         int imgNumber = usedAssetCountResult.getNode(i).getIntValue(NUMBER);
+         for (int j = 0; j < unusedAssetResult.size(); j++) {
+            Node assetNode = unusedAssetResult.getNode(j);
+            if (imgNumber == assetNode.getIntValue(NUMBER)) {
+               result.add(assetNode);
+               unusedAssetResult.remove(assetNode);
                break;
             }
          }
       }
       
-      if(unusedImgResult!=null&&!unusedImgResult.isEmpty()){
+      if(unusedAssetResult!=null&&!unusedAssetResult.isEmpty()){
          Vector<String> titleField = new Vector();
          titleField.add(TITLE);
          NodeComparator titleComparator = new NodeComparator(titleField);
-         Collections.sort(unusedImgResult, titleComparator);
+         Collections.sort(unusedAssetResult, titleComparator);
       }
       
-      if(unusedImgResult!=null&&!unusedImgResult.isEmpty()){
-      result.addAll(unusedImgResult);
+      if(unusedAssetResult!=null&&!unusedAssetResult.isEmpty()){
+      result.addAll(unusedAssetResult);
       }
       
       int resultCount = result.size();
@@ -157,8 +172,8 @@ public class HighFrequencyImgAction extends PagerAction {
       // Set the offset (used for paging).
       List<Node> resultAfterPaging = result;
       int offset = 0;
-      if (highFrequencyImgForm.getOffset() != null && highFrequencyImgForm.getOffset().matches("\\d+")) {
-         offset = Integer.parseInt(highFrequencyImgForm.getOffset());
+      if (highFrequencyAssetForm.getOffset() != null && highFrequencyAssetForm.getOffset().matches("\\d+")) {
+         offset = Integer.parseInt(highFrequencyAssetForm.getOffset());
       }
       if (offset * maxnum + maxnum < result.size()) {
          resultAfterPaging = result.subList(offset * maxnum, offset * maxnum + maxnum);
@@ -166,7 +181,7 @@ public class HighFrequencyImgAction extends PagerAction {
          resultAfterPaging = result.subList(offset * maxnum, result.size());
       }
       request.setAttribute(CHANNELID, channelid);
-      request.setAttribute(IMAGESHOW, imageShow);
+      request.setAttribute(ASSETSHOW, imageShow);
       request.setAttribute(OFFSET, offset);
       request.setAttribute(RESULTCOUNT, resultCount);
       request.setAttribute(RESULTS, resultAfterPaging);
