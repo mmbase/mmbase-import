@@ -211,6 +211,14 @@ h2.top
 	background-color: #fff9f9;
 }
 
+#content .msg pre
+{
+	padding: 0.7em;
+	border: 1px #030 solid;
+	background-color: #efffef;
+	text-align: left;
+}
+
 #content dl { line-height: 1.4em; }
 #content dl dt { font-weight: bold; }
 #content dl dd { margin-left: 1em; }
@@ -302,6 +310,7 @@ div.codesample {
   margin-bottom: 1ex;
   margin-left: 1ex;
 }
+
 div.codesample pre {
   background-color: #fff;
 }
