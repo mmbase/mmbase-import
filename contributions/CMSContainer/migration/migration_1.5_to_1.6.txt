@@ -111,6 +111,8 @@ Exceptions/errors/other problems and what to do:
 * Good:  use the page="" with the full page path, e.g. the input of <cmsc:location> to retrieve the full page path.
 *
 
+
+
 Name: Flash movies/apps do not work with Flash 10.
 Goal: fix it in JSPs 
 Type:  user action
@@ -118,6 +120,34 @@ Type:  user action
 This is fixed by two requirements:
 - use CMSC 1.4.15/1.5.1 or better
 - Add "disposition="inline"" to the <mm:attachment> tag where flash files are loaded in the views.
+--- End script ---
+*
+*
+*
+
+
+Name: Check your overridden edit_default templates
+Goal: Fix JSP's
+Type:  user action
+
+--- Start script ---
+Check all of the edit_default templates your project overrides. From version 1.6 up, the edit_default templates have been refactored to reduce code duplication. All commonly used parts of an edit_default template have been put into includable JSP's. See the default edit_default templates in the CMSc /cmsc/portlets/src/webapps/WEB-INF/templates/edit_defaults directory for an example.
+Please do not edit the includable parts, because this might cuase problems in other portlets that use them. 
+--- End script ---
+*
+*
+*
+
+
+
+
+
+Name: Check references to ServerUtil - Has been moved
+Goal: 
+Type:  user action
+
+--- Start script ---
+Change all references to ServerUtil, which was located in com.finalist.cmsc.navigation. It has been moved to com.finalist.cmsc.util.
 --- End script ---
 *
 *
