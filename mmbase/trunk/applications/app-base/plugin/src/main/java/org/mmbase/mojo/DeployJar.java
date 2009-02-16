@@ -93,22 +93,7 @@ public class DeployJar extends AbstractMojo {
      */
     private Map repositoryLayouts;
 
-    /**
-     * URL where the artifact will be deployed. <br/>
-     * ie ( file://C:\m2-repo or scp://host.com/path/to/repo )
-     *
-     * @parameter expression="${url}"
-     */
-     private String url;
 
-
-
-    /**
-      * Whether to deploy snapshots with a unique version or not.
-      *
-      * @parameter expression="${uniqueVersion}" default-value="true"
-      */
-     private boolean uniqueVersion;
 
 
 
@@ -144,17 +129,16 @@ public class DeployJar extends AbstractMojo {
                 tempFile.deleteOnExit();
 
                 Model model = new Model();
-                model.setModelVersion( "4.0.0" );
-                model.setGroupId( groupId );
-                model.setArtifactId( artifactId );
-                model.setVersion( version );
-                model.setPackaging( packaging );
-                model.setDescription( "POM was created from mmbase:install-jar" );
-                fw = new FileWriter( tempFile );
-                tempFile.deleteOnExit();
-                new MavenXpp3Writer().write( fw, model );
-                metadata = new ProjectArtifactMetadata( artifact, tempFile );
-                artifact.addMetadata( metadata );
+                model.setModelVersion("4.0.0");
+                model.setGroupId( groupId);
+                model.setArtifactId( artifactId);
+                model.setVersion(version);
+                model.setPackaging(packaging);
+                model.setDescription("POM was created from mmbase:deploy-jar" );
+                fw = new FileWriter(tempFile);
+                new MavenXpp3Writer().write( fw, model);
+                metadata = new ProjectArtifactMetadata( artifact, tempFile);
+                artifact.addMetadata(metadata);
             } catch (IOException e ) {
                 throw new MojoExecutionException( "Error writing temporary pom file: " + e.getMessage(), e );
             } finally {
@@ -170,15 +154,20 @@ public class DeployJar extends AbstractMojo {
             ArtifactRepositoryLayout layout = ( ArtifactRepositoryLayout ) repositoryLayouts.get( repositoryLayout );
 
 
-            if (url == null) {
-                url = project.getDistributionManagement().getSnapshotRepository().getUrl();
-            }
-            if (repositoryId == null) {
-                repositoryId = "mmbase-snapshots";
-            }
+            String url = version.endsWith("SNAPSHOT") ?
+                project.getDistributionManagement().getSnapshotRepository().getUrl() :
+                project.getDistributionManagement().getRepository().getUrl();
+
+            String repositoryId = version.endsWith("SNAPSHOT") ?
+                project.getDistributionManagement().getSnapshotRepository().getId() :
+                project.getDistributionManagement().getRepository().getId();
+
+            boolean uniqueVersion = version.endsWith("SNAPSHOT") ?
+                project.getDistributionManagement().getSnapshotRepository().isUniqueVersion() :
+                project.getDistributionManagement().getRepository().isUniqueVersion();
+
             ArtifactRepository deploymentRepository =
                 repositoryFactory.createDeploymentArtifactRepository(repositoryId, url, layout, uniqueVersion);
-
 
             try {
                 deployer.deploy( file, artifact, deploymentRepository, localRepository);
