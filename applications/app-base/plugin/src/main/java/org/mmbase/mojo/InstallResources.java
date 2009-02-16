@@ -21,7 +21,6 @@ import java.util.*;
 public class InstallResources extends AbstractMojo {
 
 
-
     /**
      * @parameter default-value="${project}"
      * @required
@@ -46,15 +45,68 @@ public class InstallResources extends AbstractMojo {
             }
         };
 
+    private FilenameFilter xml = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return  name.endsWith(".xml");
+            }
+        };
+    private FilenameFilter dirs = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return  filter.accept(dir, name) && new File(dir, name).isDirectory();
+            }
+        };
+
+    protected void createIndex(File dir, File dest) throws IOException {
+        if (dir.isDirectory()) {
+            File index = new File(dir, "INDEX");
+            if (! index.exists()) {
+                File destIndex = new File(dest, "INDEX");
+                dest.mkdirs();
+                getLog().info("Generating " + destIndex);
+                BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(destIndex), "UTF-8"));
+                String files[] = dir.list(xml);
+                for(int i = 0; i < files.length; i++) {
+                    File file = new File(dir, files[i]);
+                    w.write(files[i]);
+                    w.newLine();
+                }
+                String subdirs[] = dir.list(dirs);
+                for(int i = 0; i < subdirs.length; i++) {
+                    w.write(subdirs[i]);
+                    w.newLine();
+                    createIndex(new File(dir, subdirs[i]), new File(dest, subdirs[i]));
+                }
+                w.close();
+
+            }
+        }
+    }
+
     /**
      * @see org.apache.maven.plugin.Mojo#execute()
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (project.getPackaging().equals("war")) {
+        String packaging  = project.getPackaging();
+        if (packaging.equals("war") || packaging.equals("jar")) {
+            try {
+                File configDir = new File(project.getBasedir(), "config");
+
+                File dest      = new File(project.getBuild().getDirectory(),
+                                          "generated-resources" + File.separator + "org" + File.separator + "mmbase" + File.separator + "config");
+                if (configDir.isDirectory()) {
+                    createIndex(new File(configDir, "modules"), new File(dest, "modules"));
+                    createIndex(new File(configDir, "components"), new File(dest, "components"));
+                    createIndex(new File(configDir, "builders"), new File(dest, "builders"));
+                }
+            } catch(IOException ioe) {
+                throw new MojoExecutionException(ioe.getMessage(), ioe);
+            }
+        }
+        if (packaging.equals("war")) {
             try {
                 File webapp = new File(project.getBuild().getDirectory(), project.getBuild().getFinalName());
                 File templates = new File(project.getBasedir(), "templates");
-                if (templates.exists()) {
+                if (templates.isDirectory()) {
                     String templatesTarget = (String) project.getProperties().get("templatesTarget");
                     if(templatesTarget == null) {
                         templatesTarget = "mmbase/" + project.getArtifactId().substring("mmbase-".length());
@@ -66,7 +118,7 @@ public class InstallResources extends AbstractMojo {
                     getLog().info("Copied " + result[0]+ " file. " + result[1] + " files were not modified");
                 }
                 File blocks = new File(project.getBasedir(), "blocks");
-                if (blocks.exists()) {
+                if (blocks.isDirectory()) {
                     String blocksTarget = (String) project.getProperties().get("blocksTarget");
                     if (blocksTarget == null) {
                         blocksTarget = "mmbase" + File.separator + "blocks" + File.separator + project.getArtifactId().substring("mmbase-".length());

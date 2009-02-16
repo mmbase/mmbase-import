@@ -18,7 +18,6 @@
 
   <build>
     <defaultGoal>install</defaultGoal>
-
     <resources>
       <resource>
         <directory>${basedir}/src</directory>
@@ -45,6 +44,19 @@
           <include>**</include>
         </includes>
       </resource>
+      <resource>
+        <targetPath>org/mmbase/config</targetPath>
+        <directory>config</directory>
+        <excludes>
+          <exclude>"**/CVS"</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>${basedir}/target/generated-resources</directory>
+        <includes>
+          <include>org/**</include>
+        </includes>
+      </resource>
     </resources>
 
     <plugins>
@@ -64,7 +76,7 @@
           </execution>
           <execution>
             <id>resources</id>
-            <phase>process-resources</phase>
+            <phase>generate-resources</phase>
             <goals><goal>install-resources</goal></goals>
           </execution>
         </executions>
