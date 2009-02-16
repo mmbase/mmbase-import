@@ -81,7 +81,7 @@ public class InstallJar extends AbstractMojo {
             String groupId    = project.getGroupId() + ".jars";
 
 
-            Artifact artifact = artifactFactory.createArtifactWithClassifier( groupId, artifactId, version, packaging, null);
+            Artifact artifact = artifactFactory.createArtifactWithClassifier(groupId, artifactId, version, packaging, null);
 
 
             ArtifactMetadata metadata = null;
@@ -92,17 +92,16 @@ public class InstallJar extends AbstractMojo {
                 tempFile.deleteOnExit();
 
                 Model model = new Model();
-                model.setModelVersion( "4.0.0" );
-                model.setGroupId( groupId );
-                model.setArtifactId( artifactId );
-                model.setVersion( version );
-                model.setPackaging( packaging );
-                model.setDescription( "POM was created from mmbase:install-jar" );
-                fw = new FileWriter( tempFile );
-                tempFile.deleteOnExit();
-                new MavenXpp3Writer().write( fw, model );
-                metadata = new ProjectArtifactMetadata( artifact, tempFile );
-                artifact.addMetadata( metadata );
+                model.setModelVersion( "4.0.0");
+                model.setGroupId( groupId);
+                model.setArtifactId( artifactId);
+                model.setVersion(version);
+                model.setPackaging(packaging);
+                model.setDescription("POM was created from mmbase:install-jar");
+                fw = new FileWriter(tempFile);
+                new MavenXpp3Writer().write(fw, model);
+                metadata = new ProjectArtifactMetadata( artifact, tempFile);
+                artifact.addMetadata(metadata);
             } catch (IOException e ) {
                 throw new MojoExecutionException( "Error writing temporary pom file: " + e.getMessage(), e );
             } finally {

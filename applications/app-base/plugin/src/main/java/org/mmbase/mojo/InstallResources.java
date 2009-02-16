@@ -115,7 +115,7 @@ public class InstallResources extends AbstractMojo {
                     File target = new File(webapp, templatesTarget);
                     getLog().info("Copying " + templates + " to " + target);
                     int[] result = copyDirectory(templates, target, true);
-                    getLog().info("Copied " + result[0]+ " file. " + result[1] + " files were not modified");
+                    getLog().info("Copied " + result[0] + " files. " + result[1] + " files were not modified");
                 }
                 File blocks = new File(project.getBasedir(), "blocks");
                 if (blocks.isDirectory()) {
@@ -127,7 +127,7 @@ public class InstallResources extends AbstractMojo {
                     File target = new File(webapp, blocksTarget);
                     getLog().info("Copying " + blocks + " to " + target);
                     int[] result = copyDirectory(blocks, target, true);
-                    getLog().info("Copied " + result[0]+ " file. " + result[1] + " files were not modified");
+                    getLog().info("Copied " + result[0]+ " files. " + result[1] + " files were not modified");
                 }
             } catch (IOException ioe) {
                 throw new MojoExecutionException(ioe.getMessage(), ioe);
