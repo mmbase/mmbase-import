@@ -7,10 +7,6 @@
     <version>1.9</version>
   </parent>
 
-  <properties>
-    <mmbaseComponentId>lucene</mmbaseComponentId>
-  </properties>
-
 
   <artifactId>mmbase-lucene</artifactId>
   <name>MMBase Lucene</name>
