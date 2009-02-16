@@ -14,9 +14,4 @@
   <version>${mmbase.version}</version>
   <packaging>jar</packaging>
 
-  <properties>
-    <mmbaseComponentId>dove</mmbaseComponentId>
-  </properties>
-
-
 </project>
