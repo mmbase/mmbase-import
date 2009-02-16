@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+
+	<!-- ========== Data Sources Definitions =================================== -->
+	<!-- ========== Form Bean Definitions =================================== -->
+
+	<!-- ========== Global Exceptions Definitions =================================== -->
+	<!-- ========== Global Forward Definitions =================================== -->
+	<!-- ========== Action Mapping Definitions =================================== -->
+	<action-mappings>
+		<action path="/editors/savedform/ShowSavedForm" type="com.finalist.savedform.ShowSavedFormAction"
+			scope="request" unknown="false" validate="false">
+			<forward name="success" path="/editors/resources/responseform-list.jsp" redirect="false" />
+		</action>		
+		 <action path="/editors/savedform/DeleteSavedAnswer" type="com.finalist.savedform.DeleteSavedAnswerAction"
+            name="DeleteSecondaryContentForm" scope="request" input="/editors/resources/responseform-list.jsp" unknown="false" validate="false">
+        </action>
+         <action path="/editors/savedform/DeleteSavedForm" type="com.finalist.savedform.DeleteSavedFormAction"
+            name="DeleteSecondaryContentForm" scope="request" input="/editors/resources/responseform-list.jsp" unknown="false" validate="false">
+        </action>
+        <action path="/editors/savedform/DownloadSavedForm" type="com.finalist.savedform.DownloadSavedFormAction"
+            unknown="false" validate="false">            
+        </action>
+	</action-mappings>
+	
+	<message-resources parameter="savedformmodule" key="SAVEDFORM" />	
+	
+</struts-config>

@@ -1,0 +1,1 @@
+Change customer's profile and module preferences, used for community user or in combination with Newsletter module.

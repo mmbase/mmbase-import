@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder xmlns="http://www.mmbase.org/xmlns/builder"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"
+   extends="contentelement" maintainer="finalist.com" name="emailalert" version="1">
+
+   <status>active</status>
+   <searchage>70</searchage>
+   <names>
+      <singular xml:lang="nl">Wijzigings alert</singular>
+      <singular xml:lang="en">Email alert</singular>
+      <singular xml:lang="zh">Email提醒</singular>
+      <plural xml:lang="nl">Wijzigings alerts</plural>
+      <plural xml:lang="en">Email alerts</plural>
+      <plural xml:lang="zh">Email提醒</plural>
+   </names>
+   <descriptions>
+      <description xml:lang="nl"></description>
+      <description xml:lang="en"></description>
+      <description xml:lang="zh"></description>
+   </descriptions>
+   <properties>
+   </properties>
+   <fieldlist>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Introductie</guiname>
+            <guiname xml:lang="en">Intro</guiname>            
+            <guiname xml:lang="zh">简介</guiname>   
+         </gui>
+         <editor>
+            <positions>
+               <input>6</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>intro</name>
+            <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>       
+        <descriptions>            
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>       
+         <gui>
+            <guiname xml:lang="nl">Alert email onderwerp</guiname>
+            <guiname xml:lang="en">Alert email subject</guiname>
+            <guiname xml:lang="zh">邮件主题警告</guiname>
+         </gui>       
+         <editor>
+            <positions>              
+               <input>9</input>             
+               <list>-1</list>              
+               <search>-1</search>
+            </positions>
+         </editor>         
+         <db>            
+            <name>alertemailsubject</name>            
+            <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>       
+         <descriptions>           
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>        
+         <gui>
+            <guiname xml:lang="nl">Alert email tekst</guiname>
+            <guiname xml:lang="en">Alert email body</guiname>
+            <guiname xml:lang="zh">邮件主体警告</guiname>
+         </gui>         
+         <editor>
+            <positions>              
+               <input>10</input>              
+               <list>-1</list>              
+               <search>-1</search>
+            </positions>
+         </editor>        
+         <db>           
+            <name>alertemailbody</name>            
+            <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>       
+        <descriptions>            
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>       
+         <gui>
+            <guiname xml:lang="nl">Bevestigings email onderwerp</guiname>
+            <guiname xml:lang="en">Confirmation email subject</guiname>
+            <guiname xml:lang="zh">邮件主题确认</guiname>
+         </gui>       
+         <editor>
+            <positions>              
+               <input>9</input>             
+               <list>-1</list>              
+               <search>-1</search>
+            </positions>
+         </editor>         
+         <db>            
+            <name>confirmationemailsubject</name>            
+            <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+         </db>
+      </field>
+      <field>       
+         <descriptions>           
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>        
+         <gui>
+            <guiname xml:lang="nl">Bevestigings email tekst</guiname>
+            <guiname xml:lang="en">Confirmation email body</guiname>
+            <guiname xml:lang="zh">邮件主体确认</guiname>
+         </gui>         
+         <editor>
+            <positions>              
+               <input>10</input>              
+               <list>-1</list>              
+               <search>-1</search>
+            </positions>
+         </editor>        
+         <db>           
+            <name>confirmationemailbody</name>            
+            <type key="false" notnull="false" size="1024" state="persistent">STRING</type>
+         </db>
+      </field>  
+      <field>    
+         <descriptions>            
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>        
+         <gui>
+            <guiname xml:lang="nl">Afzender naam</guiname>
+            <guiname xml:lang="en">Sender name</guiname>
+            <guiname xml:lang="zh">发送人</guiname>
+         </gui>       
+         <editor>
+            <positions>              
+               <input>8</input>              
+               <list>-1</list>              
+               <search>-1</search>
+            </positions>
+         </editor>       
+         <db>          
+            <name xml:lang="nl">sendername</name>           
+            <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+         </db>
+      </field> 
+      <field>    
+         <descriptions>            
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>        
+         <gui>
+            <guiname xml:lang="nl">Afzender email</guiname>
+            <guiname xml:lang="en">Sender email</guiname>
+            <guiname xml:lang="zh">发送邮件</guiname>
+         </gui>       
+         <editor>
+            <positions>              
+               <input>8</input>              
+               <list>-1</list>              
+               <search>-1</search>
+            </positions>
+         </editor>       
+         <db>          
+            <name xml:lang="nl">senderemailaddress</name>           
+            <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+         </db>
+      </field>    
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Bevestigings bericht</guiname>
+            <guiname xml:lang="en">Confirmation message</guiname>            
+            <guiname xml:lang="zh">确认信息</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>6</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>confirmation</name>
+            <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+         </db>
+      </field>      
+   </fieldlist>
+</builder>

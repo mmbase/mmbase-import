@@ -1,0 +1,67 @@
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd" version="1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
+   
+   <portlet>
+      <description>LoginPortlet</description>
+      <portlet-name>loginportlet</portlet-name>
+      <display-name>LoginPortlet</display-name>
+      <portlet-class>com.finalist.cmsc.portlets.LoginPortlet</portlet-class>
+        <init-param>
+            <name>template.edit_defaults</name>
+            <value>login/login.jsp</value>
+        </init-param>
+        <init-param>
+            <name>template.view</name>
+            <value>login/login.jsp</value>
+        </init-param>
+      <supports>
+         <mime-type>text/html</mime-type>
+         <portlet-mode>VIEW</portlet-mode>
+         <portlet-mode>HELP</portlet-mode>
+         <portlet-mode>EDIT_DEFAULTS</portlet-mode>
+         <portlet-mode>DELETE</portlet-mode>
+      </supports>
+      <supported-locale>en</supported-locale>
+      <supported-locale>nl</supported-locale>
+      <resource-bundle>com.finalist.cmsc.portlets.LoginPortlet</resource-bundle>
+      <portlet-info>
+         <title>LoginPortlet</title>
+         <short-title>LoginPortlet</short-title>
+         <keywords>login</keywords>
+      </portlet-info>
+   </portlet>
+   <portlet>
+      <description>Register Porlet</description>
+      <portlet-name>RegisterPorlet</portlet-name>
+      <display-name>RegisterPorlet</display-name>
+      <portlet-class>com.finalist.cmsc.portlets.RegisterPorlet</portlet-class>
+        <init-param>
+            <name>template.edit_defaults</name>
+            <value>login/register.jsp</value>
+        </init-param>
+        <init-param>
+            <name>template.view</name>
+            <value>login/register.jsp</value>
+        </init-param>
+        <init-param>
+            <name>confirmation.email.subject</name>
+            <value>Confirmation from CMSC</value>
+        </init-param>
+      <supports>
+         <mime-type>text/html</mime-type>
+         <portlet-mode>VIEW</portlet-mode>
+         <portlet-mode>HELP</portlet-mode>
+         <portlet-mode>EDIT_DEFAULTS</portlet-mode>
+         <portlet-mode>DELETE</portlet-mode>
+      </supports>
+      <supported-locale>en</supported-locale>
+      <supported-locale>nl</supported-locale>
+      <resource-bundle>com.finalist.cmsc.portlets.LoginPortlet</resource-bundle>
+      <portlet-info>
+         <title>Register Porlet</title>
+         <short-title>Register Porlet</short-title>
+         <keywords>Register</keywords>
+      </portlet-info>
+   </portlet>
+</portlet-app>

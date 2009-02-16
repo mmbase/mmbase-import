@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_faqcategory">
+	<title xml:lang="nl">Categorie</title>
+	<title xml:lang="en">Category</title>
+	<title xml:lang="zh">目录</title>
+
+	<field name="name" dtmaxlength="40">
+		<prompt xml:lang="en">Name</prompt>
+		<prompt xml:lang="nl">Naam</prompt>
+		<prompt xml:lang="zh">名称</prompt>
+	</field>
+</form-schema>

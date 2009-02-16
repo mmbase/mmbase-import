@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer_Modules-1_5"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer_Portlets-1_5"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer-1_5"/>
+
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

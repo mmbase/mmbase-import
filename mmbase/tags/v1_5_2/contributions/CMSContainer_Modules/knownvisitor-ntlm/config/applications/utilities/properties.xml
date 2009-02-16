@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties exportsource="mmbase://127.0.0.1/utilities" timestamp="20050101000000">
+	<node number="984300" owner="admin">
+		<key>knownvisitor-ntlm.logonpassword</key>
+		<value></value>
+		<module>knownvisitor-ntlm</module>
+	</node>
+	<node number="984301" owner="admin">
+		<key>knownvisitor-ntlm.logonname</key>
+		<value></value>
+		<module>knownvisitor-ntlm</module>
+	</node>
+	<node number="984302" owner="admin">
+		<key>knownvisitor-ntlm.domaincontroller</key>
+		<value></value>
+		<module>knownvisitor-ntlm</module>
+	</node>
+	<node number="984303" owner="admin">
+		<key>knownvisitor-ntlm.field.realname</key>
+		<value>cn</value>
+		<module>knownvisitor-ntlm</module>
+	</node>
+	<node number="984303" owner="admin">
+		<key>knownvisitor-ntlm.field.email</key>
+		<value>mail</value>
+		<module>knownvisitor-ntlm</module>
+	</node>
+	<node number="984303" owner="admin">
+		<key>knownvisitor-ntlm.field.username</key>
+		<value>sAMAccountName</value>
+		<module>knownvisitor-ntlm</module>
+	</node>
+	<node number="984304" owner="admin">
+		<key>knownvisitor-ntlm.searchDN</key>
+		<value></value>
+		<module>knownvisitor-ntlm</module>
+	</node>
+	<node number="984305" owner="admin">
+		<key>knownvisitor-ntlm.enabled</key>
+		<value>false</value>
+		<module>knownvisitor-ntlm</module>
+	</node>
+
+</properties>
