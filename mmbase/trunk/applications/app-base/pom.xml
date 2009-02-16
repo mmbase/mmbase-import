@@ -77,24 +77,8 @@
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
           <archiveClasses>true</archiveClasses>
-          <webResources>
-            <resource>
-              <targetPath>mmbase/${mmbaseComponentId}</targetPath>
-              <directory>${basedir}</directory>
-              <includes>
-                <include>templates/**</include>
-              </includes>
-            </resource>
-            <resource>
-              <targetPath>mmbase/components/${mmbaseComponentId}</targetPath>
-              <directory>${basedir}</directory>
-              <includes>
-                <include>blocks/**</include>
-              </includes>
-            </resource>
-          </webResources>
         </configuration>
-        </plugin>
+      </plugin>
     </plugins>
 
   </build>
