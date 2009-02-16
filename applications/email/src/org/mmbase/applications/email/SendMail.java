@@ -32,7 +32,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.56 2008-11-27 12:26:37 michiel Exp $
+ * @version $Id: SendMail.java,v 1.57 2009-02-16 16:06:17 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -241,6 +241,8 @@ public class SendMail extends AbstractSendMail {
 
 
     /**
+     * @return Always <code>true</code> Could in principle return <code>false</false> on
+     * failure. But that would normally result an exception.
      */
     public boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart) throws MessagingException {
         if (log.isServiceEnabled()) {
@@ -270,7 +272,7 @@ public class SendMail extends AbstractSendMail {
             }
         } else {
             log.service("Not sending mail to " + to + " because it does not match " + onlyToPattern);
-            return false;
+            return true;
         }
     }
 
