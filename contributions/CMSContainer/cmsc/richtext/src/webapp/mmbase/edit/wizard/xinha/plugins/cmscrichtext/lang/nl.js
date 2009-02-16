@@ -42,32 +42,34 @@
   "Top frame (_top)": "Bovenste frame (_top)",
   "Other": "Ander",
   "Target:": "Bestemming:",
-  "Title (tooltip):": "Titel (tooltip):",
+  "Tooltip:": "Tooltip:",
   "URL:": "URL:",
   "You must enter the URL where this link points to": "Geef de URL in waar de link naar verwijst",
   "Url is missing protocol (eg http://)": "URL mist protocol (bijv.: http://)",
   "You must select an item": "U dient een element te selecteren",
+  "Title:": "Titel:",
 
   "Attachment" : "Bijlage",
   "Search for an attachment" : "Zoek naar een bijlage",
-  "Url" : "Url",
-  "Search for an url" : "Zoek naar een Url",
+  "Url" : "URL",
+  "Search for an url" : "Zoek naar een URL",
   "Element" : "Contenttype",
   "Search for an element" : "Zoek naar een ander contenttype",
   "Page" : "Pagina",
   "Search for a page" : "Zoek naar een pagina",
-  "New Url" : "Nieuwe Url",
-  "Enter new url" : "Nieuwe Url",
+  "New Url" : "Nieuwe URL",
+  "Enter new url" : "Nieuwe URL",
 
   // Insert Image
   "Insert Image": "Afbeelding invoegen",
   "Image URL:": "URL van afbeelding:",
-  "Enter the image URL here": "Voer hier de url van de afbeelding in.",
+  "Enter the image URL here": "Voer hier de URL van de afbeelding in.",
   "Preview": "Voorbeeld",
   "Preview the image in a new window": "Voorbeeld in een niuew venster weergeven",
   "Alternate text:": "Beschrijving:",
   "For browsers that don't support images": "Voor browsers die afbeeldingen niet ondersteunen",
   "Positioning of this image": "Positie van deze afbeelding",
   "Image Preview:": "Voorbeeld van afbeelding:",
-  "You must enter the URL": "De url is verplicht"
+  "You must enter the URL": "De URL is verplicht"
+	  
 };

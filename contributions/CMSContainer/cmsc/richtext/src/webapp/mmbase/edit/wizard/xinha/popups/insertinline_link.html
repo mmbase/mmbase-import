@@ -85,7 +85,7 @@ function onOK() {
       }
       else{
             if (!elhref.value.match(re)) {
-                  var message = i18n("Url is missing protocol (eg http://)");
+                  var message = i18n("URL is missing protocol (eg http://)");
                   alert(message);
                   elhref.focus();
                   return false;
@@ -263,8 +263,8 @@ function openPopupWindow(url, windowName, width, height) {
       <button name=asset onClick="return onAsset();" title="Search for an asset">Asset</button>
       <button name="element" onClick="return onElement();" title="Search for an element">Element</button>
       <button name="page" onClick="return onPage();" title="Search for a page">Page</button>
-      <button name="urlelement" onClick="return onUrl();" title="Search for an url">Url</button>
-      <button name="newurlelement" onClick="return onNewUrl();" title="Enter new url" style="width: 90px;">New Url</button>
+      <button name="urlelement" onClick="return onUrl();" title="Search for an URL">URL</button>
+      <button name="newurlelement" onClick="return onNewUrl();" title="Enter new URL" style="width: 90px;">New URL</button>
 <div id="buttons">
   <button type="button" name="ok" onClick="return onOK();">OK</button>
   <button type="button" name="cancel" onClick="return onCancel();">Cancel</button>
