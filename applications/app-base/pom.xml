@@ -112,6 +112,7 @@
       <artifactId>app-plugin</artifactId>
       <version>1</version>
       <type>maven-plugin</type>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
