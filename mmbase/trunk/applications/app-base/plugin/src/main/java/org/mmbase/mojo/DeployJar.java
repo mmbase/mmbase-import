@@ -29,7 +29,6 @@ import java.lang.reflect.*;
  * @phase package
  * @goal deploy-jar
  * @requiresProject
- * @aggregator
  */
 public class DeployJar extends AbstractMojo {
 

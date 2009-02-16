@@ -26,10 +26,9 @@ import java.lang.reflect.*;
  * makes me quit tired, but well. This class therefore much more complicated than what would be sane
  * for the small thing that it tries to do.
  *
- * @phase package
+ * @phase install
  * @goal install-jar
  * @requiresProject
- * @aggregator
  */
 public class InstallJar extends AbstractMojo {
 
