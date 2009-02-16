@@ -14,7 +14,7 @@
   <packaging>war</packaging>
 
   <properties>
-    <mmbaseComponentId>editwizard</mmbaseComponentId>
+    <templatesTarget>mmbase/edit/wizard</templatesTarget>
   </properties>
 
   <dependencies>
