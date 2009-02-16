@@ -113,26 +113,6 @@
   </dependencies>
 
 
-  <!--
-      The following trick ensures that the 'deploy/install' of the jar o
-      doesn't owrk.
-
-     The idea was to enable the 'install-file/deploy-file' trick only if the packaging is not pom (so _this_ file)
-  <profiles>
-    <profile>
-      <id>installparent</id>
-      <activation>
-        <property>
-          <name>packaging</name>
-          <value>pom</value>
-        </property>
-      </activation>
-      <properties>
-        <phaseDisable>disabled</phaseDisable>
-      </properties>
-    </profile>
-  </profiles>
-  -->
 
   <repositories>
     <repository>
