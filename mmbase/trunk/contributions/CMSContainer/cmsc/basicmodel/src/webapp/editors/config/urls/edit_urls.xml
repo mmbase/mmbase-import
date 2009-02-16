@@ -6,9 +6,9 @@
 	<title xml:lang="zh">Url</title>
 
 	<field name="title">
-		<prompt xml:lang="en">Name</prompt>
-		<prompt xml:lang="nl">Naam</prompt>
-		<prompt xml:lang="zh">名称</prompt>
+      <prompt xml:lang="en">Title</prompt>
+      <prompt xml:lang="nl">Titel</prompt>
+      <prompt xml:lang="zh">标题</prompt>
 	</field>
 	<field name="url" dtpattern="\://|javascript\:|mailto\:">
 		<prompt xml:lang="en">Url</prompt>
