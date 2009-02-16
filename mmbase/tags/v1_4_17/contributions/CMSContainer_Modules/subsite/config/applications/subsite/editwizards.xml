@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editwizards exportsource="mmbase://127.0.0.1/subsite" timestamp="20071210000000">
+
+	<node number="36067" owner="admin">
+		<name>Sub Site</name>
+		<description>Sub Site</description>
+		<wizard>config/subsite/subsite</wizard>
+		<nodepath>subsite</nodepath>
+		<fields>title</fields>
+	</node>
+   <node number="36068" owner="admin">
+      <name>Personal Page</name>
+      <description>Personal Page</description>
+      <wizard>config/personalpage/personalpage</wizard>
+      <nodepath>personalpage</nodepath>
+      <fields>title</fields>
+   </node>
+</editwizards>

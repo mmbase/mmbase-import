@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_task">
+	<title>Taak</title>
+
+	<field name="title" dtmaxlength="1024" ftype="line" dtrequired="true">
+		<prompt xml:lang="en">Title</prompt>
+		<prompt xml:lang="nl">Titel</prompt>
+	</field>
+
+	<field name="deadline">
+		<prompt xml:lang="en">Deadline</prompt>
+		<prompt xml:lang="nl">Deadline</prompt>
+	</field>
+
+   <field name="status" ftype="enum" dtrequired="true">
+      <prompt xml:lang="en">Status</prompt>
+      <prompt xml:lang="nl">Status</prompt>
+      <optionlist select="taskstatus" />
+   </field>
+
+	<field name="description" dtmaxlength="64000" ftype="text" rows="5">
+		<prompt xml:lang="en">Description</prompt>
+		<prompt xml:lang="nl">Omschrijving</prompt>
+	</field>
+
+	<list include="config/contentelement/search_task_taskrel_contentelement.xml" minoccurs="1" />
+	<list include="config/user/search_task_assignedrel_user.xml" minoccurs="1" />
+</form-schema>
