@@ -17,8 +17,4 @@
     The MMBase cloudcontext security module allows you to administrate your users in the database, and set very fine-grained security ranks on them.
   </description>
 
-  <properties>
-    <mmbaseComponentId>cloudcontext</mmbaseComponentId>
-  </properties>
-
 </project>
