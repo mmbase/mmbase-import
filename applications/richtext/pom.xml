@@ -14,11 +14,6 @@
   <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
-  <properties>
-    <mmbaseComponentId>richtext</mmbaseComponentId>
-  </properties>
-
-
   <dependencies>
     <dependency>
       <groupId>org.oscom</groupId>

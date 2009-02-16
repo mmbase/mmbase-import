@@ -13,8 +13,5 @@
   <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
-  <properties>
-    <mmbaseComponentId>crontab</mmbaseComponentId>
-  </properties>
 
 </project>

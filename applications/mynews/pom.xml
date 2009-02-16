@@ -14,10 +14,5 @@
   <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
-  <properties>
-    <mmbaseComponentId>mynews</mmbaseComponentId>
-  </properties>
-
-
 
 </project>

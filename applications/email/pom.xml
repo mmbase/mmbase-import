@@ -13,9 +13,6 @@
   <version>${mmbase.version}</version>
   <packaging>war</packaging>
 
-  <properties>
-    <mmbaseComponentId>email</mmbaseComponentId>
-  </properties>
 
   <dependencies>
     <dependency>
