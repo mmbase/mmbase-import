@@ -49,6 +49,24 @@
 
     <plugins>
       <plugin>
+        <groupId>org.mmbase</groupId>
+        <artifactId>app-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>install</id>
+            <phase>install</phase>
+            <goals><goal>install-jar</goal></goals>
+          </execution>
+          <execution>
+            <id>deploy</id>
+            <phase>deploy</phase>
+            <goals><goal>deploy-jar</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+
+      <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <version>2.1-alpha-2</version> <!-- need support for failonmissingweb.xml-->
         <configuration>
@@ -71,73 +89,10 @@
             </resource>
           </webResources>
         </configuration>
-      </plugin>
-
+        </plugin>
     </plugins>
+
   </build>
-  <profiles>
-    <profile>
-      <id>install-jars</id>
-      <activation>
-        <!--
-            I can't come up with anything better then this.
-            So it won't work directly after a clean.
-            But what can we do. mvn2 sucks a bit too.
-        -->
-        <file>
-          <exists>target/war</exists>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-
-
-          <!-- We want to deploy/install the generated jar too -->
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-deploy-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>deploy</phase>
-                <goals><goal>deploy-file</goal></goals>
-                <configuration>
-                  <packaging>jar</packaging>
-                  <file>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/lib/${project.artifactId}-${project.version}.jar</file>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <groupId>${project.groupId}.jars</groupId>
-                  <version>${project.version}</version>
-                  <repositoryId>mmbase-snapshots</repositoryId>
-                  <!--
-                      <url>${project.distributionManagement.repository.url}</url>
-                  -->
-                  <url>${project.distributionManagement.snapshotRepository.url}</url>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-install-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>install</phase>
-                <goals><goal>install-file</goal></goals>
-                <configuration>
-                  <packaging>jar</packaging>
-                  <file>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/lib/${project.artifactId}-${project.version}.jar</file>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <groupId>${project.groupId}.jars</groupId>
-              <version>${project.version}</version>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
   <dependencies>
     <dependency>
@@ -145,6 +100,13 @@
       <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>app-plugin</artifactId>
+      <version>1</version>
+      <type>maven-plugin</type>
     </dependency>
   </dependencies>
 
