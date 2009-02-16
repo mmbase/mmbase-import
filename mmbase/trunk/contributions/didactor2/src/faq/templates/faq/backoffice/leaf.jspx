@@ -1,0 +1,37 @@
+<jsp:root
+    version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    >
+
+  <mm:import externid="branchPath">.||</mm:import>
+  <mm:node id="container">
+    <ul>
+      <li>
+        <di:icon name="new_education" />
+        <mm:link referid="wizardjsp" referids="_node@origin,referrer">
+          <mm:param name="wizard">config/faq/newfaqitems</mm:param>
+          <mm:param name="objectnumber">new</mm:param>
+          <a href="${_}" title="nieuwe object" target="text">nieuw object</a> <!-- WTF WTF -->
+        </mm:link>
+      </li>
+      <mm:relatednodescontainer type="faqitems" searchdirs="destination" >
+        <mm:sortorder field="number" direction="up" />
+
+        <mm:relatednodes varStatus="status">
+          <li>
+            <span class="folder">
+              <mm:link referid="wizardjsp" referids="_node@objectnumber,referrer">
+                <mm:param name="wizard">config/faq/faqitems</mm:param>
+                <a href="${_}" title="edit" target="text"><mm:field name="name"/></a>
+              </mm:link>
+            </span>
+         </li>
+        </mm:relatednodes>
+      </mm:relatednodescontainer>
+    </ul>
+  </mm:node>
+</jsp:root>
