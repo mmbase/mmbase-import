@@ -5,13 +5,13 @@
 	<title xml:lang="en">Site</title>
 
 	<field name="stagingfragment" dtmaxlength="255"
-		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$"
+		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,253}[a-zA-Z0-9]$"
 		dtrequired="true">
 		<prompt xml:lang="en">Staging domain</prompt>
 		<prompt xml:lang="nl">Staging domein</prompt>
 	</field>
 	<field name="urlfragment" dtmaxlength="255"
-		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$"
+		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,253}[a-zA-Z0-9]$"
 		dtrequired="true">
 		<prompt xml:lang="en">Live domain</prompt>
 		<prompt xml:lang="nl">Live domein</prompt>

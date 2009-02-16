@@ -8,8 +8,8 @@
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
 	</field>
-   <field name="urlfragment" dtmaxlength="40"
-      dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
+   <field name="urlfragment" dtmaxlength="255"
+      dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,253}[a-zA-Z0-9]$">
       <prompt xml:lang="en">URL-fragment</prompt>
       <prompt xml:lang="nl">URL-fragment</prompt>
    </field>
