@@ -21,8 +21,8 @@
       document.forms[0].submit();
 	}
 	function showInfo(objectnumber) {
-		openPopupWindow('imageinfo', '900', '500',
-				'../resources/imageinfo.jsp?objectnumber=' + objectnumber);
+		openPopupWindow('attachmentinfo', '900', '500',
+				'../resources/attachmentinfo.jsp?objectnumber=' + objectnumber);
 	}
 	
 	function initParentHref(elem) {
@@ -117,14 +117,14 @@
             <html:hidden property="direction"/>
             <c:if test="${action eq 'search'}">
             <mm:import id="contenttypes" jspvar="contenttypes">attachments</mm:import>
-               <%@include file="imageform.jsp" %>
+               <%@include file="attachmentform.jsp" %>
             </c:if>
          </html:form>
       </div>
       <div class="ruler_green">
          <div><c:out value="${channelMsg}" /></div>
    `  </div>
-		<select name="imageMode" id="imageMode" onchange="javascript:setShowMode()">
+		<select name="attachmentMode" id="attachmentMode" onchange="javascript:setShowMode()">
 			<c:if test="${assetShow eq 'list'}">
 				<option id="a_list" selected="selected"><fmt:message key="asset.attachment.list"/></option>
 				<option id="a_thumbnail"><fmt:message key="asset.attachment.thumbnail"/></option>
@@ -255,7 +255,7 @@
       <c:if test="${action == 'often'}">
       <div class="body">
       <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
-      <mm:url page="/editors/resources/ImageInitAction.do?action=search" id="search_attachment_url" write="false" />
+      <mm:url page="/editors/resources/AttachmentInitAction.do?action=search" id="search_attachment_url" write="false" />
       <mm:url page="/editors/resources/attachmentupload.jsp?uploadedNodes=0&channelid=${channelid}" id="new_attachment_url" write="false" />
       <mm:url page="/editors/repository/HighFrequencyAsset.do?action=often&assetShow=${assetShow}&offset=0&channelid=all&assettypes=attachments" id="often_show_attachments" write="false"/>
 		<ul class="shortcuts">
