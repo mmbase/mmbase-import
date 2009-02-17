@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.69 2009-01-12 12:48:20 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.70 2009-02-17 11:14:30 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -169,12 +169,14 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * Returns the field value as specified by the client's post. This is only <code>null</code> if
      * the client didn't post a thing. It can be empty if the client means <code>null</code>
      * (depending on the value of {@link #interpretEmptyAsNull}).
-     * @param node This parameter could be used if the client does not fully specify the field's value (possible e.g. with Date fields). The existing specification could be used then.
+     * @param node This parameter could be used if the client does not fully specify the field's
+     * value (possible e.g. with Date fields). The existing specification could be used then.
+     * @return <code>null</code> if the client did not post, something else if it did. If the client
+     * meant to set <code>null</code>, this method shoudl return the empty string.
      */
     protected Object getFieldValue(Node node, Field field) throws JspTagException {
         Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
         log.debug("found fv " + found);
-        if (interpretEmptyAsNull(field) && "".equals(found)) found = null;
         return found;
     }
 
@@ -284,7 +286,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @since MMBase-1.8.6
      */
     protected Object getValue(Node node, String fieldName) {
-        return node.getValue(fieldName);
+        Object v = node.getValue(fieldName);
+        return v;
     }
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
@@ -292,6 +295,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
         Object fieldValue = getFieldValue(node, field, false);
+        if (interpretEmptyAsNull(field) && "".equals(fieldValue)) fieldValue = null;
         Object oldValue = node.getValue(fieldName);
         if (fieldValue == null ? oldValue == null : fieldValue.equals(oldValue)) {
             return false;
