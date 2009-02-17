@@ -18,10 +18,13 @@
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
-          <webXml>${basedir}/../html/WEB-INF/web.xml</webXml>
           <webResources>
             <resource>
               <directory>${basedir}/../html/</directory>
+              <includes>
+                <include>index.jsp</include>
+                <include>mmexamples/**</include>
+              </includes>
             </resource>
           </webResources>
         </configuration>
@@ -32,8 +35,9 @@
   <dependencies>
     <dependency>
       <groupId>org.mmbase</groupId>
-      <artifactId>mmbase</artifactId>
+      <artifactId>base-webapp</artifactId>
       <version>${mmbase.version}</version>
+      <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.mmbase</groupId>
