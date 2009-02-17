@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-parent</artifactId>
+    <version>1.9</version>
+  </parent>
+
+  <artifactId>base-webapp</artifactId>
+  <packaging>war</packaging>
+  <name>MMBase base webapp</name>
+  <version>${mmbase.version}</version>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webXml>${basedir}/../html/WEB-INF/web.xml</webXml>
+          <webResources>
+            <resource>
+              <directory>${basedir}/../html/</directory>
+              <excludes>
+                <exclude>index.jsp</exclude>
+                <exclude>mmexamples/**</exclude>
+              </excludes>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${mmbase.version}</version>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+  </repositories>
+</project>
