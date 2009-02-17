@@ -256,13 +256,13 @@
       <div class="body">
       <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
       <mm:url page="/editors/resources/ImageInitAction.do?action=search" id="search_attachment_url" write="false" />
-      <mm:url page="/editors/resources/imageupload.jsp?uploadedNodes=0&channelid=${channelid}" id="new_attachment_url" write="false" />
+      <mm:url page="/editors/resources/attachmentupload.jsp?uploadedNodes=0&channelid=${channelid}" id="new_attachment_url" write="false" />
       <mm:url page="/editors/repository/HighFrequencyAsset.do?action=often&assetShow=${assetShow}&offset=0&channelid=all&assettypes=attachments" id="often_show_attachments" write="false"/>
 		<ul class="shortcuts">
 			<li><a href="${often_show_attachments}"><fmt:message key="attachmentselect.link.allchannel" /></a></li>
 			<li><a onclick="openPopupWindow('selectchannel', 340, 400);" target="selectchannel" href="${select_channel_url}"><fmt:message key="attachmentselect.link.channel" /></a></li>
 			<li><a href="${search_attachment_url}"><fmt:message key="attachmentselect.link.search" /></a></li>
-			<li><a href="${new_attachment_url}"><fmt:message key="imageselect.link.new" /></a></li>
+			<li><a href="${new_attachment_url}"><fmt:message key="attachmentselect.link.new" /></a></li>
 		</ul>
 		</div>
       </c:if>
