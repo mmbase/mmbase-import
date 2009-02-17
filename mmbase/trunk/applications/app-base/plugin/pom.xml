@@ -33,5 +33,16 @@
     </snapshotRepository>
   </distributionManagement>
 
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
+
 
 </project>
