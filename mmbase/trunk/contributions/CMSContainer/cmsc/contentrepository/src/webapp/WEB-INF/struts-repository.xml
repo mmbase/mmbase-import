@@ -12,6 +12,7 @@
       <form-bean name="SearchForm" type="com.finalist.cmsc.repository.forms.SearchForm" />
       <form-bean name="AssetSearchForm" type="com.finalist.cmsc.repository.forms.AssetSearchForm" />
       <form-bean name="ImageForm" type="com.finalist.cmsc.resources.forms.ImageForm" />
+      <form-bean name="AttachmentForm" type="com.finalist.cmsc.resources.forms.AttachmentForm" />
       <form-bean name="UrlForm" type="com.finalist.cmsc.resources.forms.UrlForm" />
       <form-bean name="DeleteSecondaryContentForm" type="com.finalist.cmsc.resources.forms.DeleteSecondaryContentForm" />
       <form-bean name="SecondaryEditForm" type="com.finalist.cmsc.resources.forms.SecondaryEditForm" />
@@ -146,6 +147,14 @@
       </action>
       <action path="/editors/resources/ImageAction" type="com.finalist.cmsc.resources.forms.ImageAction"
          name="ImageForm" scope="request" input="/editors/resources/imagesearch.jsp" unknown="false" validate="true">
+      </action>
+      <action path="/editors/resources/AttachmentInitAction" type="com.finalist.cmsc.resources.forms.AttachmentInitAction"
+         name="AttachmentForm" scope="request" unknown="false" validate="false">
+         <forward name="searchoptions" path="/editors/resources/attachmentsearch.jsp" redirect="false" />
+         <forward name="dosearch" path="/editors/resources/AttachmentAction.do" redirect="false" />
+      </action>
+      <action path="/editors/resources/AttachmentAction" type="com.finalist.cmsc.resources.forms.AttachmentAction"
+         name="AttachmentForm" scope="request" input="/editors/resources/attachmentsearch.jsp" unknown="false" validate="true">
       </action>
 
       <action path="/editors/resources/UrlInitAction" type="com.finalist.cmsc.resources.forms.UrlInitAction"
