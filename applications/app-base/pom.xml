@@ -59,6 +59,16 @@
       </resource>
     </resources>
 
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.mmbase</groupId>
+          <artifactId>app-plugin</artifactId>
+          <version>1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>org.mmbase</groupId>
@@ -103,25 +113,30 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.mmbase</groupId>
-      <artifactId>app-plugin</artifactId>
-      <version>1</version>
-      <type>maven-plugin</type>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
+
+
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>mmbase</id>
+      <name>MMBase Plugin Repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </pluginRepository>
+  </pluginRepositories>
 
 
   <repositories>
     <repository>
       <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
       <url>http://www.mmbase.org/maven2</url>
-    </repository>
-    <repository>
-      <id>mmbase-snapshots</id>
-      <url>http://www.mmbase.org/snapshots</url>
     </repository>
   </repositories>
 
