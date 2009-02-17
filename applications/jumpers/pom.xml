@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project>
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
@@ -8,10 +9,10 @@
     <relativePath>../app-base/pom.xml</relativePath>
   </parent>
 
-  <groupId>org.mmbase</groupId>
-  <artifactId>mmbase-dove</artifactId>
-  <name>MMBase Dove</name>
+  <artifactId>mmbase-jumpers</artifactId>
+  <name>MMBase Jumpers</name>
   <version>${mmbase.version}</version>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
+
 
 </project>

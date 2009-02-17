@@ -25,6 +25,7 @@
     <module>dove</module>
     <module>editwizard</module>
     <module>mynews</module>
+    <module>jumpers</module>
   </modules>
 
   <build>
