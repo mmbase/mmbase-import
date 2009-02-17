@@ -5,7 +5,7 @@ OSI Certified is a certification mark of the Open Source Initiative
 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-Version $Id: pom.xml,v 1.6 2009-02-11 21:16:01 michiel Exp $
+Version $Id: pom.xml,v 1.7 2009-02-17 19:56:00 michiel Exp $
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
@@ -374,14 +374,24 @@ Version $Id: pom.xml,v 1.6 2009-02-11 21:16:01 michiel Exp $
 
   <repositories>
     <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+    <repository>
       <id>jboss</id>
       <name>JBoss maven 2 repository</name>
       <url>http://repository.jboss.com/maven2</url>
     </repository>
   </repositories>
 
- <properties>
-   <mmbase.version>1.9-SNAPSHOT</mmbase.version>
- </properties>
+  <properties>
+    <mmbase.version>1.9-SNAPSHOT</mmbase.version>
+  </properties>
 
 </project>
