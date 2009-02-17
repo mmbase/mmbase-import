@@ -31,7 +31,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.mmbase.jars</groupId>
+      <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
     </dependency>
@@ -50,6 +50,12 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-mynews</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-editwizard</artifactId>
       <version>${mmbase.version}</version>
       <type>war</type>
     </dependency>
