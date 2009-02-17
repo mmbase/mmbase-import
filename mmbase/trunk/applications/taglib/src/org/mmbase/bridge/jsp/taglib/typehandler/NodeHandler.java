@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.40 2009-01-12 12:48:20 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.41 2009-02-17 11:07:37 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -48,10 +48,8 @@ public class NodeHandler extends AbstractTypeHandler {
         super(tag);
     }
 
-    protected class IgnoreCaseComparator implements Comparator {
-        public int  compare(Object o1, Object o2) {
-            String s1 = (String)o1;
-            String s2 = (String)o2;
+    protected class IgnoreCaseComparator implements Comparator<String> {
+        public int  compare(String s1, String s2) {
             return s1.toUpperCase().compareTo(s2.toUpperCase());
         }
     }
@@ -110,7 +108,7 @@ public class NodeHandler extends AbstractTypeHandler {
 
             NodeIterator nodes = tag.getCloudVar().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
 
-            SortedMap sortedGUIs = new TreeMap(new IgnoreCaseComparator());
+            SortedMap<String, String> sortedGUIs = new TreeMap<String, String>(new IgnoreCaseComparator());
 
             // If this is the 'builder' field of the reldef builder, we need to filter
             // as we are only interested in insrel-derived builders.
@@ -126,10 +124,7 @@ public class NodeHandler extends AbstractTypeHandler {
                   sortedGUIs.put(n.getFunctionValue("gui", args).toString(), "" + n.getNumber());
                 }
             }
-            Iterator i = sortedGUIs.entrySet().iterator();
-            while(i.hasNext()) {
-                Map.Entry gui = (Map.Entry) i.next();
-
+            for (Map.Entry<String, String> gui : sortedGUIs.entrySet()) {
                 // we have a match on the number!
                 buffer.append("  <option ");
                 if(gui.getValue().equals(value)) {
