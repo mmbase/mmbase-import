@@ -43,12 +43,14 @@ public class HighFrequencyAssetAction extends PagerAction {
    private static final String RESULTCOUNT = "resultCount";
    private static final String RESULTS = "results";
    private static final String IMAGESEARCH = "imagesearch";
-   private static final String ATTACHMENTSEARCH = "attachmentsearch";   
+   private static final String ATTACHMENTSEARCH = "attachmentsearch";
+   private static final String URLSEARCH = "urlsearch";
    private static final String CONTENTCHANNEL = "contentchannel";
    private static final String CREATIONREL = "creationrel";
    private static final String CURRENTCHANNEL = "current";
    private static final String ATTACHMENTS = "attachments";
    private static final String IMAGES = "images";
+   private static final String URLS = "urls";
    private static final String ALL = "all";
    private static final String CREATION = "creation";
    private static final String CONTENTELEMENT = "contentelement";
@@ -82,7 +84,9 @@ public class HighFrequencyAssetAction extends PagerAction {
          assetManager = cloud.getNodeManager(ATTACHMENTS);
       } else if(assettypes.equals(IMAGES)){
          assetManager = cloud.getNodeManager(IMAGES);
-      }      
+      } else if(assettypes.equals(URLS)){
+         assetManager = cloud.getNodeManager(URLS);
+      }
       NodeManager channelManager = cloud.getNodeManager(CONTENTCHANNEL);
       
       // search in one contentchannel
@@ -101,7 +105,7 @@ public class HighFrequencyAssetAction extends PagerAction {
       
       NodeManager contentManager = cloud.getNodeManager(CONTENTELEMENT);
       RelationStep assetrelStep= null;
-      if(assettypes.equals(ATTACHMENTS)){
+      if(assettypes.equals(ATTACHMENTS)||assettypes.equals(URLS)){
          assetrelStep = query.addRelationStep(contentManager, POSREL, SOURCE);
       } else if(assettypes.equals(IMAGES)){
          assetrelStep = query.addRelationStep(contentManager, IMAGEREL, SOURCE);
@@ -192,6 +196,8 @@ public class HighFrequencyAssetAction extends PagerAction {
          targetForward =  ATTACHMENTSEARCH;
       } else if(assettypes.equals(IMAGES)){
          targetForward =  IMAGESEARCH;
+      } else if(assettypes.equals(URLS)){
+         targetForward =  URLSEARCH;
       }
       return mapping.findForward(targetForward);
    }

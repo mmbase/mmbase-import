@@ -270,6 +270,8 @@
          unknown="false" validate="false" name="HighFrequencyAssetForm">
          <forward name="imagesearch" path="/editors/resources/imagesearch.jsp"/>
          <forward name="attachmentsearch" path="/editors/resources/attachmentsearch.jsp"/>
+         <forward name="urlsearch" path="/editors/resources/urlsearch.jsp"/>
+         
       </action>
       <action path="/editors/repository/AssetSearchInitAction" type="com.finalist.cmsc.repository.forms.AssetSearchInitAction"
          name="AssetSearchForm" scope="request" unknown="false" validate="false">
