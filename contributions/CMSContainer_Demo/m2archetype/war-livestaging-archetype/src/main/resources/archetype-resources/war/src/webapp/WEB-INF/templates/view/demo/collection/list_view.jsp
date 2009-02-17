@@ -24,7 +24,7 @@
    			    <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos" searchdir="destination">
               <mm:field name="url" id="url" write="false" />
               <li>
-             	  <a href="<mm:url referid='url'/>" title="<mm:field name='name'/>" target="_blank"><mm:field name="name" /></a>
+             	  <a href="<mm:url referid='url'/>" title="<mm:field name='title'/>" target="_blank"><mm:field name="title" /></a>
               </li>
             </mm:relatednodes>
             
