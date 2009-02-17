@@ -1,345 +1,293 @@
 <%@page language="java" contentType="text/html;charset=utf-8"
-%><%@include file="globals.jsp"
-%><%@page import="com.finalist.cmsc.repository.AssetElementUtil,
-                 com.finalist.cmsc.repository.RepositoryUtil,
-                 java.util.ArrayList"
-%><%@ page import="com.finalist.cmsc.security.UserRole"
-%><%@ page import="com.finalist.cmsc.security.SecurityUtil"
+%><%@include file="globals.jsp" 
+%><%@page import="java.util.Iterator,com.finalist.cmsc.mmbase.PropertiesUtil"
 %><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
+<cmscedit:head title="attachments.title">
+   <script src="../repository/search.js" type="text/javascript"></script>
+   <script type="text/javascript">
+   function setShowMode() {
+	   var showMode = document.getElementsByTagName("option");
+	   var assetShow;
+       for(i = 0; i < showMode.length; i++){
+          if(showMode[i].selected & showMode[i].id=="a_list"){
+              assetShow="list";
+          }else if(showMode[i].selected & showMode[i].id=="a_thumbnail"){
+        	  assetShow="thumbnail";
+          }
+       }
+      document.forms[0].assetShow.value = assetShow;
+      document.forms[0].submit();
+	}
+	function showInfo(objectnumber) {
+		openPopupWindow('imageinfo', '900', '500',
+				'../resources/imageinfo.jsp?objectnumber=' + objectnumber);
+	}
+	
+	function initParentHref(elem) {
+		if(elem.id=='selected'){
+			elem.parentNode.setAttribute('href', '');
+			elem.id ='';
+			return;
+		}
+		elem.parentNode.setAttribute('href', elem.getAttribute('href'));
+		var oldSelected = document.getElementById('selected');
+		if(oldSelected){
+			oldSelected.id="";
+		}
+		elem.id ='selected';
+	}
 
-<mm:import externid="action">search</mm:import><%-- either: search, link, of select --%>
-<mm:import externid="mode" id="mode">basic</mm:import>
-<mm:import externid="returnurl"/>
-<mm:import externid="parentchannel" jspvar="parentchannel"/>
-<mm:import externid="assettypes" jspvar="assettypes"><%= AssetElementUtil.ASSETELEMENT %></mm:import>
-<mm:import externid="results" jspvar="nodeList" vartype="List" />
-<mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
-<mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
+   function doSelectIt() {
+      var href = document.getElementById('attachList').getAttribute('href')+"";
+      if (href.length<10) {
+          alert("You must select one attachment");
+          return;
+      }
+      if (href.indexOf('javascript:') == 0) {
+       eval(href.substring('javascript:'.length, href.length));
+       return false;
+      }
+      document.location=href;
+   }
+   
+   function doCancleIt(){
+      window.top.close();
+   }
+   
+	function selectElement(element, title, src, width, height, description) {
+		if (window.top.opener != undefined) {
+			window.top.opener.selectElement(element, title, src, width, height,
+					description);
+			window.top.close();
+		}
+	}
 
-<cmscedit:head title="search.title">
-      <link rel="stylesheet" href="<cmsc:staticurl page='../css/thumbnail.css'/>" type="text/css">
-      <script src="../repository/asset.js" language="JavaScript" type="text/javascript"></script>
-      <script src="search.js" type="text/javascript"></script>
-            <script type="text/javascript">
-               function showEditItems(id){
-                  document.getElementById('asset-info-'+id).style.display = 'block';
-                  document.getElementById('asset-info-'+id).style.zIndex = 2001;
-               }
-               function hideEditItems(id){
-                  document.getElementById('asset-info-'+id).style.display = 'none';
-                  document.getElementById('asset-info-'+id).style.zIndex = 2000;
-               }
-               function changeMode(offset){
-                   if(offset==null){offset=0;}
-                   var assetsMode = document.getElementsByTagName("option");3
-                   for(i = 0; i < assetsMode.length; i++){
-                      if(assetsMode[i].selected & assetsMode[i].id=="a_list"){
-                          document.forms[0].searchShow.value = 'list';
-                          document.forms[0].submit();
-                          //document.location.href = 'AssetSearchAction.do?type=asset&direction=down&searchShow=list&offset='+offset;
-                      }else if(assetsMode[i].selected & assetsMode[i].id=="a_thumbnail"){
-                          document.forms[0].searchShow.value = 'thumbnail';
-                          document.forms[0].submit();
-                         //document.location.href = 'AssetSearchAction.do?type=asset&direction=down&searchShow=thumbnail&offset='+offset;
-                      }
-                   }
-                }
-               function selectElement(element, title, src) {
-                   if(window.top.opener != undefined) {
-                      window.top.opener.selectElement(element, title, src);
-                      window.top.close();
-                   }
-                }
-            </script>
-    <c:if test="${not empty requestScope.refreshChannels}">
-        <script>
-        refreshFrame('channels');
-        </script>
-    </c:if>
-</cmscedit:head>
+	function selectChannel(channelid, path) {
+		var attachmentMode = document.getElementsByTagName("option");
+	       for(i = 0; i < attachmentMode.length; i++){
+	          if(attachmentMode[i].selected & attachmentMode[i].id=="a_list"){
+	              document.location.href = '../../repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assetShow=list&assettypes=attachments';
+	          }else if(attachmentMode[i].selected & attachmentMode[i].id=="a_thumbnail"){
+	              document.location.href = '../../repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assetShow=thumbnail&assettypes=attachments';
+	          }
+	       }
+	}
+</script>
+   <link rel="stylesheet" type="text/css" href="../css/attachmentsearch.css" />
+	</cmscedit:head>
 <body>
-<mm:import id="assetsearchinit"><c:url value='/editors/repository/AssetSearchInitAction.do'/></mm:import>
-
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
-<c:if test="${empty strict}">
-   <div class="tabs">
-    <!-- active TAB -->
- <div class="tab_active">
-      <div class="body">
-         <div>
-            <a href="#"><fmt:message key="asset.search.title" /></a>
-         </div>
-      </div>
-</div>
-</c:if>
-</div>
-   <div class="editor">
-   <br />
-      <div class="body">
-         <html:form action="/editors/repository/InsertAssetSearchAction?insertAsset=insertAsset" method="post">
-            <html:hidden property="action" value="${action}"/>
-            <html:hidden property="mode"/>
-            <html:hidden property="search" value="true"/>
-            <html:hidden property="offset"/>
-            <html:hidden property="order"/>
-            <html:hidden property="searchShow" value="${searchShow}"/>
-            <html:hidden property="insertAsset" value="${insertAsset}"/>
-            <html:hidden property="direction"/>
-            <input type="hidden" name="deleteAssetRequest"/>
-            <c:if test="${not empty strict}">
-               <input type="hidden" name="assettypes" value="${strict}"/>
-               <input type="hidden" name="strict" value="${strict}"/>
+<mm:import externid="action">search</mm:import><%-- either often or search --%>
+<mm:import externid="assetShow">list</mm:import><%-- either list or thumbnail --%>
+   <div class="editor" style="height:555px">
+      <c:choose>
+         <c:when test="${action eq 'search'}">
+            <mm:import id="formAction">/editors/resources/AttachmentAction</mm:import>
+            <mm:import id="channelMsg"><fmt:message key="attachments.results" /></mm:import>
+         </c:when>
+         <c:otherwise>
+            <mm:import id="formAction">/editors/repository/HighFrequencyAsset</mm:import>
+            <c:if test="${param.channelid eq 'all'}">
+                <mm:import id="channelMsg"><fmt:message key="attachments.channel.title"><fmt:param>ALL CHANNELS</fmt:param></fmt:message></mm:import>
             </c:if>
-            <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
-            <table>
-               <tr>
-                  <td style="width:105px"><fmt:message key="searchform.title" /></td>
-                  <td colspan="5"><html:text property="title" style="width:200px"/></td>
-               </tr>
-               <tr>
-                     <td></td>
-                     <td>
-                        <input type="submit" class="button" name="submitButton" onclick="setOffset(0);" value="<fmt:message key="searchform.submit" />"/>
-                     </td>
-               </tr>
-            </table>
+            <c:if test="${param.channelid ne 'all'}">
+               <mm:node number="${channelid}">
+                  <mm:field name="path" id="path" write="false" />
+                  <mm:import id="channelMsg">
+                     <fmt:message key="attachments.channel.title">
+                        <fmt:param value="${path}" />
+                     </fmt:message>
+                  </mm:import>
+               </mm:node>
+            </c:if>
+         </c:otherwise>
+      </c:choose>
+      <div class="body" <c:if test="${action == 'often'}">style="display:none"</c:if> >
+         <html:form action="${formAction}" method="post">
+            <html:hidden property="action" value="${action}"/>
+            <html:hidden property="assetShow" value="${assetShow}"/>
+            <html:hidden property="offset"/>
+            <c:if test="${action eq 'often'}">
+            <html:hidden property="assettypes" value="attachments"/>
+            <html:hidden property="channelid" value="${channelid}"/>
+            </c:if>
+            <html:hidden property="order"/>
+            <html:hidden property="direction"/>
+            <c:if test="${action eq 'search'}">
+            <mm:import id="contenttypes" jspvar="contenttypes">attachments</mm:import>
+               <%@include file="imageform.jsp" %>
+            </c:if>
          </html:form>
       </div>
-   </div>
+      <div class="ruler_green">
+         <div><c:out value="${channelMsg}" /></div>
+   `  </div>
+		<select name="imageMode" id="imageMode" onchange="javascript:setShowMode()">
+			<c:if test="${assetShow eq 'list'}">
+				<option id="a_list" selected="selected"><fmt:message key="asset.attachment.list"/></option>
+				<option id="a_thumbnail"><fmt:message key="asset.attachment.thumbnail"/></option>
+			</c:if>
+			<c:if test="${assetShow eq 'thumbnail'}">
+				<option id="a_list"><fmt:message key="asset.attachment.list"/></option>
+				<option id="a_thumbnail" selected="selected"><fmt:message key="asset.attachment.thumbnail"/></option>
+			</c:if>
+		</select>
+      <div class="body" style="max-height:400px;overflow-y:auto; overflow-x:hidden"> 
+         <mm:import externid="results" jspvar="nodeList" vartype="List"/>
+         <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
+         <mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
+         <c:if test="${resultCount > 0}">
+            <%@include file="../repository/searchpages.jsp" %>
 
-   <div class="editor" style="height:500px">
-   <div class="ruler_green"><div><fmt:message key="searchform.results" /></div></div>
-
-   <div class="body">
-   <div style="padding-left:11px">
-      <select name="assesMode" onchange="javascript:changeMode(${param.offset})">
-         <c:if test="${empty searchShow || searchShow eq 'list'}">
-            <option id="a_list" selected="selected"><fmt:message key="asset.image.list"/></option>
-            <option id = "a_thumbnail" ><fmt:message key="asset.image.thumbnail"/></option>
-         </c:if>
-         <c:if test="${searchShow eq 'thumbnail'}">
-            <option id="a_list"><fmt:message key="asset.image.list"/></option>
-            <option id = "a_thumbnail" selected="selected" ><fmt:message key="asset.image.thumbnail"/></option>
-         </c:if>
-      </select>
-   </div>
-
-<!-- we check to see if we have workflow, this is done by looking if the editors for the workflow are on the HD -->
-<c:set var="hasWorkflow" value="false"/>
-<mm:haspage page="/editors/workflow">
-   <c:set var="hasWorkflow" value="true"/>
-</mm:haspage>
-
-   <%-- Now print if no results --%>
-   <mm:isempty referid="results">
-      <fmt:message key="searchform.searchpages.nonefound" />
-   </mm:isempty>
-
-   <%-- Now print the results --%>
-   <mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
-      <mm:field id="trashnumber" name="number" write="false"/>
-   </mm:node>
-
-<c:if test="${searchShow eq 'list'}">
-   <mm:list referid="results">
-      <mm:first>
-         <%@include file="../repository/searchpages.jsp" %>
-         <form action="" name="linkForm" method="post">
-            <table>
-            <thead>
-               <tr>
-                  <th>
-                     <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
-                  </th>
-                  <th><a href="javascript:orderBy('otype')" class="headerlink" ><fmt:message key="locate.typecolumn" /></a></th>
-                  <th><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="locate.titlecolumn" /></a></th>
-                  <th><fmt:message key="locate.creationchannelcolumn" /></th>
-                  <th><a href="javascript:orderBy('creator')" class="headerlink" ><fmt:message key="locate.authorcolumn" /></th>
-                  <th><a href="javascript:orderBy('lastmodifieddate')" class="headerlink" ><fmt:message key="locate.lastmodifiedcolumn" /></th>
-                  <th><a href="javascript:orderBy('number')" class="headerlink" ><fmt:message key="locate.numbercolumn" /></th>
-               </tr>
-            </thead>
-
-            <tbody class="hover">
-      </mm:first>
-
-   <mm:field name="${assettypes}.number" id="number" write="false">
-      <mm:node number="${number}">
-         <c:set var="useSwapStyle">true</c:set>
-         <mm:relatednodes role="creationrel" type="contentchannel">
-            <c:set var="creationRelNumber"><mm:field name="number" id="creationnumber"/></c:set>
-            <mm:compare referid="trashnumber" referid2="creationnumber">
-                <c:set var="channelName"><fmt:message key="search.trash" /></c:set>
-                <c:set var="channelIcon" value="/editors/gfx/icons/trashbin.png"/>
-                <c:set var="channelIconMessage"><fmt:message key="search.trash" /></c:set>
-                <c:set var="channelUrl" value="../recyclebin/assettrash.jsp"/>
-            </mm:compare>
-            <mm:field name="number" jspvar="channelNumber" write="false"/>
-            <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
-            <mm:compare referid="trashnumber" referid2="creationnumber" inverse="true">
-                <mm:field name="name" jspvar="channelName" write="false"/>
-                <c:set var="channelIcon" value="/editors/gfx/icons/type/contentchannel_${rights}.png"/>
-                <c:set var="channelIconMessage"><fmt:bundle basename="cmsc-security"><fmt:message key="role.${rights}" /></fmt:bundle></c:set>
-                <c:set var="channelUrl" value="Asset.do?type=asset&parentchannel=${channelNumber}&direction=down"/>
-            </mm:compare>
-         </mm:relatednodes>
-<c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
-<c:if test="${assettype == 'attachments'}">
-         <mm:import id="url">
-            javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>',
-                                       '<mm:attachment escape="js-single-quotes"/>');
-         </mm:import>
-</c:if>
-<c:if test="${assettype == 'images'}">
-            <mm:field name="description" escape="js-single-quotes" jspvar="description">
-               <mm:field name="title" escape="js-single-quotes" jspvar="title">
-            <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<%=title%>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
-               </mm:field>
-            </mm:field>
-</c:if>
-<c:if test="${assettype == 'urls'}">
-         <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
-                        name="title" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
-</c:if>
-         <tr <mm:even inverse="true">class="swap"</mm:even> href="<mm:write referid="url"/>">
-            <td style="white-space: nowrap;">
-               <%@ include file="../repository/searchIconsBar.jspf" %>
-            </td>
-            <td style="white-space: nowrap;" onMouseDown="objClick(this);">
-               <mm:nodeinfo type="guitype"/>
-            </td>
-            <td style="white-space: nowrap;" onMouseDown="objClick(this);">
-               <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
-               <mm:field id="title" write="false" name="title"/>
-               <c:if test="${fn:length(title) > 50}">
-                  <c:set var="title">${fn:substring(title,0,49)}...</c:set>
-               </c:if>
-               ${title}
-            </td>
-            <td style="white-space: nowrap;" onMouseDown="objClick(this);">
-                <img src="<cmsc:staticurl page="${channelIcon}"/>" align="top" alt="${channelIconMessage}" />
-                  <mm:compare referid="action" value="search">
-                     <a href="${channelUrl}">${channelName}</a>
-                  </mm:compare>
-                  <mm:compare referid="action" value="search" inverse="true">
-                     ${channelName}
-                  </mm:compare>
-            </td>
-            <td style="white-space: nowrap;" onMouseDown="objClick(this);"><mm:field name="creator" /></td>
-            <td style="white-space: nowrap;" onMouseDown="objClick(this);"><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
-            <td  style="white-space: nowrap;" onMouseDown="objClick(this);"><mm:field name="number"/></td>
-            <c:if test="${hasWorkflow}">
-               <td width="10" onMouseDown="objClick(this);">
-                  <c:set var="status" value="waiting"/>
-                  <mm:relatednodes type="workflowitem" constraints="type='asset'">
-                     <c:set var="status"><mm:field name="status"/></c:set>
-                  </mm:relatednodes>
-                  <c:if test="${status == 'waiting'}">
-                     <mm:listnodes type="remotenodes" constraints="sourcenumber=${number}">
-                        <c:set var="status" value="onlive"/>
-                     </mm:listnodes>
-                  </c:if>
-                     <img src="../gfx/icons/status_${status}.png"
-                        alt="<fmt:message key="asset.status" />: <fmt:message key="asset.status.${status}" />"
-                        title="<fmt:message key="asset.status" />: <fmt:message key="asset.status.${status}" />"/>
-               </td>
-            </c:if>
-         </tr>
-      </mm:node>
-   </mm:field>
-   <mm:last>
-   </tbody>
-   </table>
-   </form>
-         <%@include file="../repository/searchpages.jsp" %>
-   </mm:last>
-   </mm:list>
-</c:if>
-
-<c:if test="${searchShow eq 'thumbnail'}">
-   <mm:list referid="results">
-      <mm:first>
-         <%@include file="../repository/searchpages.jsp" %>
-      </mm:first>
-
-   <mm:field name="${assettypes}.number" id="number" write="false">
-      <mm:node number="${number}">
-
-         <mm:relatednodes role="creationrel" type="contentchannel">
-            <c:set var="creationRelNumber"><mm:field name="number" id="creationnumber"/></c:set>
-            <mm:field name="number" jspvar="channelNumber" write="false"/>
-            <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
-         </mm:relatednodes>
-<c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
-<c:if test="${assettype == 'attachments'}">
-         <mm:import id="url">
-            javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>',
-                                       '<mm:attachment escape="js-single-quotes"/>');
-         </mm:import>
-</c:if>
-<c:if test="${assettype == 'images'}">
-            <mm:field name="description" escape="js-single-quotes" jspvar="description">
-               <mm:field name="title" escape="js-single-quotes" jspvar="title">
-            <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<%=title%>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
-               </mm:field>
-            </mm:field>
-</c:if>
-<c:if test="${assettype == 'urls'}">
-         <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
-                        name="title" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
-</c:if>
-         <div class="thumbnail_show" onMouseOut="javascript:hideEditItems(<mm:field name='number'/>)" onMouseOver="showEditItems(<mm:field name='number'/>)">
-            <div class="thumbnail_operation">
-               <div class="asset-info" id="asset-info-<mm:field name='number'/>" style="display: none; position: relative; border: 1px solid #eaedff" >
-               <%@ include file="../repository/searchIconsBar.jspf" %>
-               </div>
-            </div>
-            <div class="thumbnail_body" >
-               <div class="thumbnail_img" onMouseOver="this.style.background = 'yellow';" onMouseOut="this.style.background = 'white';">
-                   <a href="<mm:write referid="url"/>">
-                     <c:set var="typedef" ><mm:nodeinfo type="type"/></c:set>
-                     <c:if test="${typedef eq 'images'}">
-                        <img src="<mm:image template="s(120x100)"/>" alt=""/>
-                     </c:if> 
-                     <c:if test="${typedef eq 'attachments'}">
-                        <c:set var="filename"><mm:field name="filename"/></c:set>
-                        <c:set var="subfix">${fn:substringAfter(filename, '.')}</c:set>
-                        <mm:haspage page="../gfx/${subfix}${'.gif'}" inverse="false">
-                           <img src="../gfx/${subfix}${'.gif'}" alt=""/>
-                        </mm:haspage> 
-                        <mm:haspage page="../gfx/${subfix}${'.gif'}" inverse="true">
-                           <img src="../gfx/otherAttach.gif" alt=""/>
-                        </mm:haspage>
-                     </c:if>
-                     <c:if test="${typedef eq 'urls'}">
-                        <img src="../gfx/url.gif" alt=""/>
-                     </c:if>
-                  </a>
-               </div>
-               <div class="thumnail_info">
-                  <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
+            <c:if test="${assetShow eq 'thumbnail'}">
+            <div id="attachList" class="hover" style="width:100%" href="">
+                  <mm:listnodes referid="results">
+                     <mm:field name="description" escape="js-single-quotes" jspvar="description">
+                        <%
+                           description = ((String) description).replaceAll("[\\n\\r\\t]+", " ");
+                        %>
+                        <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:image />','120','100', '<%=description%>');</mm:import>
+                     </mm:field>
+                     <div class="grid" href="<mm:write referid="url"/>" onclick="initParentHref(this)" title="double click to show the info">
+                        <div class="thumbnail" ondblclick="showInfo('<mm:field name="number"/>')">
+	                         <c:set var="typedef" ><mm:nodeinfo type="type"/></c:set>
+	                         <c:if test="${typedef eq 'attachments'}">
+	                            <c:set var="filename"><mm:field name="filename"/></c:set>
+	                            <c:set var="subfix">${fn:substringAfter(filename, '.')}</c:set>
+	                            <mm:haspage page="../gfx/${subfix}${'.gif'}" inverse="false">
+	                               <img src="../gfx/${subfix}${'.gif'}" alt=""/>
+	                            </mm:haspage> 
+	                            <mm:haspage page="../gfx/${subfix}${'.gif'}" inverse="true">
+	                               <img src="../gfx/otherAttach.gif" alt=""/>
+	                            </mm:haspage>
+	                         </c:if>
+						</div>
+                        <div class="imgInfo">
+                           <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
                               <mm:field id="title" write="false" name="title"/>
-                               <c:if test="${fn:length(title) > 15}">
+                              <c:if test="${fn:length(title) > 15}">
                                  <c:set var="title">${fn:substring(title,0,14)}...</c:set>
                               </c:if>${title}
-                              <c:if test="${ assettype == 'images'}">
-                              <br/><mm:field name="itype" />
-                              </c:if>
-               </div>
+                              <br/>
+                        </div>
+                     </div>
+                  </mm:listnodes>
             </div>
-            </div>
-      </mm:node>
-   </mm:field>
-   </mm:list>
-   <div style="clear:both;"></div>
-         <%@include file="../repository/searchpages.jsp" %>
-</c:if>
-</div>
-   </div>
-</mm:cloud>
+            </c:if>
 
-   </body>
+			<c:if test="${assetShow eq 'list'}">
+				<table>
+            <c:if test="${action == 'search'}">
+					<tr class="listheader">
+						<th width="55"></th>
+						<th nowrap="true"><a href="javascript:orderBy('title')"
+							class="headerlink"><fmt:message key="attachmentsearch.titlecolumn" /></a></th>
+						<th nowrap="true"><a href="javascript:orderBy('filename')"
+							class="headerlink"><fmt:message
+							key="attachmentsearch.filenamecolumn" /></a></th>
+						<th nowrap="true"><a href="javascript:orderBy('mimetype')"
+							class="headerlink"><fmt:message
+							key="attachmentsearch.mimetypecolumn" /></a></th>
+						<th></th>
+					</tr>
+            </c:if>
+					<tbody id="attachList" class="hover"  href="">
+						<c:set var="useSwapStyle">true</c:set>
+						<mm:listnodes referid="results">
+							<mm:field name="description" escape="js-single-quotes"
+								jspvar="description">
+								<%
+								   description = ((String) description).replaceAll("[\\n\\r\\t]+", " ");
+								%>
+								<mm:import id="url">javascript:selectElement('<mm:field
+										name="number" />', '<mm:field name="title"
+										escape="js-single-quotes" />','<mm:image />','120','100', '<%=description%>');</mm:import>
+							</mm:field>
+							<tr <c:if test="${useSwapStyle}">class="swap"</c:if>
+								href="<mm:write referid="url"/>">
+								<td style="white-space: nowrap;">
+                        <a href="javascript:showInfo(<mm:field name="number" />)">
+                              <img src="../gfx/icons/info.png" alt="<fmt:message key="attachmentsearch.icon.info" />" title="<fmt:message key="attachmentsearch.icon.info" />" /></a>
+								</td>
+                        <td onMouseDown="initParentHref(this.parentNode)">
+                           <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
+                           <mm:field id="title" write="false" name="title"/>
+                           <c:if test="${fn:length(title) > 50}">
+                              <c:set var="title">${fn:substring(title,0,49)}...</c:set>
+                           </c:if>
+                           ${title}
+                        </td>
+                        <td onMouseDown="initParentHref(this.parentNode)">
+                           ${title}
+                        </td>
+								<td onMouseDown="initParentHref(this.parentNode)"></td>
+								<td  onMouseDown="initParentHref(this.parentNode)">
+									 <c:set var="typedef" ><mm:nodeinfo type="type"/></c:set>
+									 <c:if test="${typedef eq 'attachments'}">
+										<c:set var="filename"><mm:field name="filename"/></c:set>
+										<c:set var="subfix">${fn:substringAfter(filename, '.')}</c:set>
+										<mm:haspage page="../gfx/${subfix}${'.gif'}" inverse="false">
+										   <img src="../gfx/${subfix}${'.gif'}" alt=""/>
+										</mm:haspage> 
+										<mm:haspage page="../gfx/${subfix}${'.gif'}" inverse="true">
+										   <img src="../gfx/otherAttach.gif" alt=""/>
+										</mm:haspage>
+									 </c:if>
+								</td>
+							</tr>
+							<c:set var="useSwapStyle">${!useSwapStyle}</c:set>
+						</mm:listnodes>
+					</tbody>
+				</table>
+			</c:if>
+
+		</c:if>
+	      <c:if test="${resultCount == 0 && (param.action == 'often' || param.title != null)}">
+	         <fmt:message key="attachmentsearch.noresult" />
+	      </c:if>
+         <div style="clear:both" ></div>
+	      <c:if test="${resultCount > 0}">
+	         <%@include file="../repository/searchpages.jsp" %>
+	      </c:if>
+      </div>
+      <c:if test="${action == 'often'}">
+      <div class="body">
+      <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
+      <mm:url page="/editors/resources/ImageInitAction.do?action=search" id="search_attachment_url" write="false" />
+      <mm:url page="/editors/resources/imageupload.jsp?uploadedNodes=0&channelid=${channelid}" id="new_attachment_url" write="false" />
+      <mm:url page="/editors/repository/HighFrequencyAsset.do?action=often&assetShow=${assetShow}&offset=0&channelid=all&assettypes=attachments" id="often_show_attachments" write="false"/>
+		<ul class="shortcuts">
+			<li><a href="${often_show_attachments}"><fmt:message key="attachmentselect.link.allchannel" /></a></li>
+			<li><a onclick="openPopupWindow('selectchannel', 340, 400);" target="selectchannel" href="${select_channel_url}"><fmt:message key="attachmentselect.link.channel" /></a></li>
+			<li><a href="${search_attachment_url}"><fmt:message key="attachmentselect.link.search" /></a></li>
+			<li><a href="${new_attachment_url}"><fmt:message key="imageselect.link.new" /></a></li>
+		</ul>
+		</div>
+      </c:if>
+</div>
+       <div id="commandbuttonbar" class="buttonscontent" style="clear:both">
+            <div class="page_buttons_seperator">
+               <div></div>
+            </div>
+            <div class="page_buttons">
+                <div class="button">
+                    <div class="button_body">
+                        <a class="bottombutton" title="Select the attachment." href="javascript:doSelectIt();"><fmt:message key="attachmentselect.ok" /></a>
+                    </div>
+                </div>
+               
+                <div class="button">
+                    <div class="button_body">
+                        <a class="bottombutton" href="javascript:doCancleIt();" title="Cancel this task, attachment will NOT be selected."><fmt:message key="attachmentselect.cancel" /></a>
+                    </div>
+                </div>
+                <div class="begin">
+                </div>
+            </div>
+        </div>
+</mm:cloud>
+</body>
 </html:html>
 </mm:content>

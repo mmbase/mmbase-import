@@ -42,7 +42,8 @@ public class HighFrequencyAssetAction extends PagerAction {
    private static final String CHANNELID = "channelid";
    private static final String RESULTCOUNT = "resultCount";
    private static final String RESULTS = "results";
-   private static final String SUCCESS = "success";
+   private static final String IMAGESEARCH = "imagesearch";
+   private static final String ATTACHMENTSEARCH = "attachmentsearch";   
    private static final String CONTENTCHANNEL = "contentchannel";
    private static final String CREATIONREL = "creationrel";
    private static final String CURRENTCHANNEL = "current";
@@ -185,7 +186,14 @@ public class HighFrequencyAssetAction extends PagerAction {
       request.setAttribute(OFFSET, offset);
       request.setAttribute(RESULTCOUNT, resultCount);
       request.setAttribute(RESULTS, resultAfterPaging);
-      return mapping.findForward(SUCCESS);
+      
+      String targetForward = null;
+      if(assettypes.equals(ATTACHMENTS)){
+         targetForward =  ATTACHMENTSEARCH;
+      } else if(assettypes.equals(IMAGES)){
+         targetForward =  IMAGESEARCH;
+      }
+      return mapping.findForward(targetForward);
    }
 
 }
