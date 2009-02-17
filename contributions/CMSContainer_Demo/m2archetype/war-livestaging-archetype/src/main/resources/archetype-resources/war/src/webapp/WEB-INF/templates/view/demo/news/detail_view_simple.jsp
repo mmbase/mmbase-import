@@ -93,7 +93,7 @@
               href="<mm:field name="url" escape="text/html/attribute" />" 
               title="<mm:field name="description" escape="text/html/attribute" />"
               target="_blank"
-            ><mm:field name="name" escape="text/xml" /></a>
+            ><mm:field name="title" escape="text/xml" /></a>
           </li>
           
         <mm:last></ul></mm:last>          
