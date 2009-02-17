@@ -33,6 +33,12 @@ if [ 1 == 1 ] ; then
     echo ====================================================================== |  tee -a ${builddir}/messages.log
     echo creating RECENTCHANGES |  tee -a ${builddir}/messages.log
     ${CVS} log -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
+
+    echo ==================================MAVEN 2 EXPERIMENTAL============== |  tee -a ${builddir}/messages.log
+    cd ${BUILD_HOME}/nightly-build/cvs/mmbase
+    mvn clean source:jar deploy | tee -a ${builddir}/messages.log
+    (cd applications; mvn clean source:jar deploy) | tee -a ${builddir}/messages.log
+    (cd example-webapp; mvn clean deploy) | tee -a ${builddir}/messages.log
 fi
 
 if [ 1 == 1 ] ; then
