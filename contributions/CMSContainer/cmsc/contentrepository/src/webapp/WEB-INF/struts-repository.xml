@@ -161,7 +161,7 @@
          name="DeleteSecondaryContentForm" scope="request" input="/editors/resources/imagesearch.jsp" unknown="false" validate="false">
          <forward name="delete" path="/editors/resources/delete.jsp" redirect="false" />
          <forward name="images" path="/editors/resources/imagesearch.jsp" redirect="false" />
-         <forward name="attachments" path="/editors/resources/attachmentsearch.jsp" redirect="false" />
+         <forward name="attachments" path="/editors/resources/attachmentsearchold.jsp" redirect="false" />
          <forward name="urls" path="/editors/resources/urlsearch.jsp" redirect="false" />
          <forward name="imagesupload" path="/editors/resources/imageupload.jsp?uploadAction=" redirect="false" />
          <forward name="attachmentsupload" path="/editors/resources/attachmentupload.jsp?uploadAction=search" redirect="false" />
@@ -174,7 +174,7 @@
 
       <action path="/editors/resources/SecondaryContentMassDeleteAction" type="com.finalist.cmsc.resources.forms.SecondaryContentMassDeleteAction">
          <forward name="images" path="/editors/resources/imagesearch.jsp" redirect="false" />
-         <forward name="attachments" path="/editors/resources/attachmentsearch.jsp" redirect="false" />
+         <forward name="attachments" path="/editors/resources/attachmentsearchold.jsp" redirect="false" />
          <forward name="urls" path="/editors/resources/urlsearch.jsp" redirect="false" />
       </action>
 
@@ -221,7 +221,7 @@
          name="AssetSearchForm" scope="request" input="/editors/repository/assetsearch.jsp" unknown="false" validate="true">
       </action>
       <action path="/editors/repository/InsertAssetSearchAction" type="com.finalist.cmsc.repository.forms.InsertAssetSearchAction"
-         name="AssetSearchForm" scope="request" input="/editors/resources/attachmentsearch.jsp" unknown="false" validate="true">
+         name="AssetSearchForm" scope="request" input="/editors/resources/attachmentsearchold.jsp" unknown="false" validate="true">
       </action>
       <action path="/editors/repository/AssetUploadAction" type="com.finalist.cmsc.repository.forms.AssetUploadAction" 
          name="AssetUploadForm" unknown="false" validate="true">
@@ -259,13 +259,14 @@
       </action>
       <action path="/editors/repository/HighFrequencyAsset" type="com.finalist.cmsc.repository.forms.HighFrequencyAssetAction"
          unknown="false" validate="false" name="HighFrequencyAssetForm">
-         <forward name="success" path="/editors/resources/imagesearch.jsp"/>
+         <forward name="imagesearch" path="/editors/resources/imagesearch.jsp"/>
+         <forward name="attachmentsearch" path="/editors/resources/attachmentsearch.jsp"/>
       </action>
       <action path="/editors/repository/AssetSearchInitAction" type="com.finalist.cmsc.repository.forms.AssetSearchInitAction"
          name="AssetSearchForm" scope="request" unknown="false" validate="false">
          <forward name="searchoptions" path="/editors/repository/assetsearch.jsp" redirect="false" />
          <forward name="dosearch" path="/editors/repository/AssetSearchAction.do" redirect="false" />
-         <forward name="insertAsset" path="/editors/resources/attachmentsearch.jsp" redirect="false" />
+         <forward name="insertAsset" path="/editors/resources/attachmentsearchold.jsp" redirect="false" />
       </action>
    </action-mappings>
 
