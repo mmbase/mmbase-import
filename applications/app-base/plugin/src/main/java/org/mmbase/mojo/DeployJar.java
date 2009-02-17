@@ -115,7 +115,7 @@ public class DeployJar extends AbstractMojo {
             String dir = project.getBuild().getDirectory();
             String artifactId = project.getArtifactId();
             String version    = project.getVersion();
-            String groupId    = project.getGroupId() + ".jars";
+            String groupId    = project.getGroupId();
 
 
             Artifact artifact = artifactFactory.createArtifactWithClassifier( groupId, artifactId, version, packaging, null);
