@@ -2,15 +2,11 @@ package org.mmbase.mojo;
 
 import org.apache.maven.plugin.*;
 import org.apache.maven.project.*;
-import org.apache.maven.model.*;
 import org.apache.maven.artifact.deployer.ArtifactDeployer;
 import org.apache.maven.artifact.deployer.ArtifactDeploymentException;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.metadata.ArtifactMetadata;
-import org.apache.maven.project.artifact.ProjectArtifactMetadata;
  import org.apache.maven.artifact.repository.ArtifactRepositoryFactory;
-import org.apache.maven.artifact.repository.DefaultArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepository;
  import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
 
@@ -22,13 +18,13 @@ import java.util.*;
 import java.lang.reflect.*;
 
 /**
- * Would have likes to extends from FileInstallMojo. But that is imposible. Many private members. It
- * makes me quit tired, but well. This class therefore much more complicated than what would be sane
- * for the small thing that it tries to do.
+ * This goal is associated with the deploy phase of a 'war' package, to deploy the jar as well.
  *
  * @phase package
  * @goal deploy-jar
  * @requiresProject
+ * @author Michiel Meeuwissen
+ * @version $Id: DeployJar.java,v 1.5 2009-02-17 19:44:13 michiel Exp $
  */
 public class DeployJar extends AbstractMojo {
 
@@ -118,39 +114,8 @@ public class DeployJar extends AbstractMojo {
             String groupId    = project.getGroupId();
 
 
-            Artifact artifact = artifactFactory.createArtifactWithClassifier( groupId, artifactId, version, packaging, null);
-
-
-            ArtifactMetadata metadata = null;
-            Artifact pomArtifact = null;
-            FileWriter fw = null;
-            try {
-                File tempFile = File.createTempFile( "mvninstall", ".pom" );
-                tempFile.deleteOnExit();
-
-                Model model = new Model();
-                model.setModelVersion("4.0.0");
-                model.setGroupId( groupId);
-                model.setArtifactId( artifactId);
-                model.setVersion(version);
-                model.setPackaging(packaging);
-                model.setDescription("POM was created from mmbase:deploy-jar" );
-                fw = new FileWriter(tempFile);
-                new MavenXpp3Writer().write( fw, model);
-                metadata = new ProjectArtifactMetadata( artifact, tempFile);
-                artifact.addMetadata(metadata);
-            } catch (IOException e ) {
-                throw new MojoExecutionException( "Error writing temporary pom file: " + e.getMessage(), e );
-            } finally {
-                try {
-                    fw.close();
-                } catch (IOException ioe) {
-                }
-            }
-
+            Artifact artifact = artifactFactory.createArtifactWithClassifier(groupId, artifactId, version, packaging, null);
             File file =  new File (dir + "/" + artifactId + "-" + version + "/WEB-INF/lib/" + artifactId + "-" + version + ".jar");
-
-
             ArtifactRepositoryLayout layout = ( ArtifactRepositoryLayout ) repositoryLayouts.get( repositoryLayout );
 
 
