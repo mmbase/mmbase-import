@@ -5,7 +5,7 @@
       <td><html:text style="width: 200px" property="name"/></td>
    </tr>
    <tr>
-      <td><fmt:message key="urlform.description" /></td>
+      <td><fmt:message key="imageform.description" /></td>
       <td><html:text style="width: 200px" property="description"/></td>
    </tr>
    <tr>
@@ -24,6 +24,7 @@
    </tr>
    <tr>
       <td></td>
-      <td><input type="submit" name="submitButton" onclick="setOffset(0);" value="<fmt:message key="urlform.submit" />"/></td>
+      <td><input type="submit" name="submitButton" onclick="setOffset(0);" 
+               value="<fmt:message key="urlform.submit" />"/></td>
    </tr>
 </table>
