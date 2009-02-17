@@ -40,7 +40,7 @@
 	}
 
    function doSelectIt() {
-      var href = document.getElementById('attachList').getAttribute('href')+"";
+      var href = document.getElementById('assetList').getAttribute('href')+"";
       if (href.length<10) {
           alert("You must select one attachment");
           return;
@@ -75,7 +75,7 @@
 	       }
 	}
 </script>
-   <link rel="stylesheet" type="text/css" href="../css/attachmentsearch.css" />
+   <link rel="stylesheet" type="text/css" href="../css/assetsearch.css" />
 	</cmscedit:head>
 <body>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
@@ -142,7 +142,7 @@
             <%@include file="../repository/searchpages.jsp" %>
 
             <c:if test="${assetShow eq 'thumbnail'}">
-            <div id="attachList" class="hover" style="width:100%" href="">
+            <div id="assetList" class="hover" style="width:100%" href="">
                   <mm:listnodes referid="results">
                      <mm:field name="description" escape="js-single-quotes" jspvar="description">
                         <%
@@ -164,7 +164,7 @@
 	                            </mm:haspage>
 	                         </c:if>
 						</div>
-                        <div class="imgInfo">
+                        <div class="assetInfo">
                            <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
                               <mm:field id="title" write="false" name="title"/>
                               <c:if test="${fn:length(title) > 15}">
@@ -193,7 +193,7 @@
 						<th></th>
 					</tr>
             </c:if>
-					<tbody id="attachList" class="hover"  href="">
+					<tbody id="assetList" class="hover"  href="">
 						<c:set var="useSwapStyle">true</c:set>
 						<mm:listnodes referid="results">
 							<mm:field name="description" escape="js-single-quotes"

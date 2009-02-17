@@ -11,19 +11,19 @@ div.editor div.body ul.shortcuts li a {
 	padding-right: 15px;
 }
 
-div.editor div.body #imgList div.grid {
+div.editor div.body #assetList div.grid {
 	width: 130px;
 	height: 135px;
 	float: left;
 	text-align: center
 }
 
-div.editor div.body #imgList div.grid:hover,div.editor div.body #imgList #selected
+div.editor div.body #assetList div.grid:hover,div.editor div.body #assetList #selected
 	{
 	background-color: #f1f400;
 }
 
-div.editor div.body #imgList div.grid div.thumbnail {
+div.editor div.body #assetList div.grid div.thumbnail {
 	width: 100%;
 	height: 80%;
 	text-align: center;
@@ -31,7 +31,7 @@ div.editor div.body #imgList div.grid div.thumbnail {
 	padding: 0;
 }
 
-div.editor div.body #imgList div.grid div.imgInfo {
+div.editor div.body #assetList div.grid div.assetInfo {
 	width: 100%;
 	height: 20%;
 	text-align: center;
