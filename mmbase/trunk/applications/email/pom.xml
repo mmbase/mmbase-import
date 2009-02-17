@@ -22,7 +22,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.mmbase.jars</groupId>
+      <groupId>org.mmbase</groupId>
       <artifactId>mmbase-crontab</artifactId>
       <version>${mmbase.version}</version>
       <scope>provided</scope>

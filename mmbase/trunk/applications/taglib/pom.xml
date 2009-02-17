@@ -75,7 +75,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.mmbase.jars</groupId>
+      <groupId>org.mmbase</groupId>
       <artifactId>mmbase-resources</artifactId>
       <version>${mmbase.version}</version>
       <scope>provided</scope>

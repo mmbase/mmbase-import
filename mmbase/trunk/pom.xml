@@ -21,7 +21,7 @@
     -->
   </parent>
 
-  <groupId>org.mmbase.jars</groupId>
+  <groupId>org.mmbase</groupId>
   <artifactId>mmbase</artifactId>
   <packaging>jar</packaging>
   <name>MMBase</name>

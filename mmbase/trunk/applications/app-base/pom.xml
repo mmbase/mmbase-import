@@ -97,7 +97,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.mmbase.jars</groupId>
+      <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
       <scope>provided</scope>
