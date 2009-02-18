@@ -165,7 +165,6 @@
 	                         </c:if>
 						</div>
                         <div class="assetInfo">
-                           <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
                               <mm:field id="title" write="false" name="title"/>
                               <c:if test="${fn:length(title) > 15}">
                                  <c:set var="title">${fn:substring(title,0,14)}...</c:set>
@@ -212,7 +211,6 @@
                               <img src="../gfx/icons/info.png" alt="<fmt:message key="attachmentsearch.icon.info" />" title="<fmt:message key="attachmentsearch.icon.info" />" /></a>
 								</td>
                         <td onMouseDown="initParentHref(this.parentNode)">
-                           <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
                            <mm:field id="title" write="false" name="title"/>
                            <c:if test="${fn:length(title) > 50}">
                               <c:set var="title">${fn:substring(title,0,49)}...</c:set>
@@ -220,7 +218,7 @@
                            ${title}
                         </td>
                         <td onMouseDown="initParentHref(this.parentNode)">
-                           ${title}
+                           ${filename}
                         </td>
 								<td onMouseDown="initParentHref(this.parentNode)"></td>
 								<td  onMouseDown="initParentHref(this.parentNode)">
