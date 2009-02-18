@@ -8,11 +8,11 @@
   <class>org.mmbase.module.builders.Urls</class>
   <searchage>14</searchage>
   <names>
-    <singular xml:lang="en">URL</singular>
-    <singular xml:lang="nl">URL</singular>
+    <singular xml:lang="en">Url</singular>
+    <singular xml:lang="nl">Url</singular>
 
-    <plural xml:lang="en">URL</plural>
-    <plural xml:lang="nl">URL</plural>
+    <plural xml:lang="en">Urls</plural>
+    <plural xml:lang="nl">Urls</plural>
     <plural xml:lang="bg">Връзки</plural>
     <plural xml:lang="ro">Legături</plural>
   </names>
