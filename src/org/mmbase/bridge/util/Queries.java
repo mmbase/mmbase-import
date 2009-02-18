@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.77.2.13 2008-09-16 11:19:26 michiel Exp $
+ * @version $Id: Queries.java,v 1.77.2.14 2009-02-18 09:58:19 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -475,9 +475,8 @@ abstract public class Queries {
                     // XML's are treated as String in the query-handler so, let's anticipate that here...
                     // a bit of a hack, perhaps we need something like a 'searchCast' or so.
                     value = Casting.toString(value);
-                } else {
+                } else if (datePart == -1) {
                     value = field.getDataType().cast(value, null, field);
-
                 }
             }
             Object compareValue = getCompareValue(fieldType, operator, value, datePart, cloud);
