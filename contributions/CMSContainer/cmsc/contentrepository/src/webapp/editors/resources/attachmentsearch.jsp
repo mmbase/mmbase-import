@@ -218,7 +218,7 @@
                            ${title}
                         </td>
                         <td onMouseDown="initParentHref(this.parentNode)">
-                           ${filename}
+                           <mm:field name="filename"/>
                         </td>
 								<td onMouseDown="initParentHref(this.parentNode)"></td>
 								<td  onMouseDown="initParentHref(this.parentNode)">
