@@ -62,6 +62,7 @@ public class HighFrequencyAssetAction extends PagerAction {
    private static final String TITLE = "title";
    private static final String COUNTALIAS = "countalias";
    private static final String ASSETSHOW = "assetShow";
+   private static final String STRICT = "strict";   
 
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
@@ -190,6 +191,7 @@ public class HighFrequencyAssetAction extends PagerAction {
       request.setAttribute(OFFSET, offset);
       request.setAttribute(RESULTCOUNT, resultCount);
       request.setAttribute(RESULTS, resultAfterPaging);
+      request.setAttribute(STRICT, highFrequencyAssetForm.getStrict());
       
       String targetForward = null;
       if(assettypes.equals(ATTACHMENTS)){

@@ -105,7 +105,13 @@
                               alt="<fmt:message key="asset.delete" />"/>
                         </a>
                </td>
-               <td onMouseDown="objClick(this);">
+	            <c:if test="${strict == 'attachments'}">
+					<mm:import id="url">javascript:top.opener.selectContent('<mm:field name="number" />', '', ''); top.close();</mm:import>
+                </c:if>
+                <c:if test="${strict == ''}">
+                	<mm:import id="url">javascript:objClick(this);</mm:import>
+                </c:if>
+               <td onMouseDown="${url}">
                   <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
                   <mm:field id="title" write="false" name="title"/>
                   <c:if test="${fn:length(title) > 50}">
@@ -113,8 +119,8 @@
                   </c:if>
                   ${title}
                </td>
-               <td onMouseDown="objClick(this);">${title}</td>
-               <td onMouseDown="objClick(this);"></td>
+               <td onMouseDown="${url}">${title}</td>
+               <td onMouseDown="${url}"></td>
             </tr>
             <c:set var="useSwapStyle">${!useSwapStyle}</c:set>
          </mm:listnodes>
