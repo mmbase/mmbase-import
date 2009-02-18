@@ -68,9 +68,9 @@
 		var attachmentMode = document.getElementsByTagName("option");
 	       for(i = 0; i < attachmentMode.length; i++){
 	          if(attachmentMode[i].selected & attachmentMode[i].id=="a_list"){
-	              document.location.href = '../../repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assetShow=list&assettypes=attachments';
+	              document.location.href = '../../repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assetShow=list&assettypes=attachments&strict=${strict}';
 	          }else if(attachmentMode[i].selected & attachmentMode[i].id=="a_thumbnail"){
-	              document.location.href = '../../repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assetShow=thumbnail&assettypes=attachments';
+	              document.location.href = '../../repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assetShow=thumbnail&assettypes=attachments&strict=${strict}';
 	          }
 	       }
 	}
@@ -148,7 +148,12 @@
                         <%
                            description = ((String) description).replaceAll("[\\n\\r\\t]+", " ");
                         %>
-                        <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:image />','120','100', '<%=description%>');</mm:import>
+                        <c:if test="${strict == 'attachments'}">
+							<mm:import id="url">javascript:top.opener.selectContent('<mm:field name="number" />', '', ''); top.close();</mm:import>
+                        </c:if>
+                        <c:if test="${ empty strict}">
+                        	<mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:image />','120','100', '<%=description%>');</mm:import>
+                        </c:if>
                      </mm:field>
                      <div class="grid" href="<mm:write referid="url"/>" onclick="initParentHref(this)" title="double click to show the info">
                         <div class="thumbnail" ondblclick="showInfo('<mm:field name="number"/>')">
@@ -200,9 +205,12 @@
 								<%
 								   description = ((String) description).replaceAll("[\\n\\r\\t]+", " ");
 								%>
-								<mm:import id="url">javascript:selectElement('<mm:field
-										name="number" />', '<mm:field name="title"
-										escape="js-single-quotes" />','<mm:image />','120','100', '<%=description%>');</mm:import>
+		                        <c:if test="${strict == 'attachments'}">
+									<mm:import id="url">javascript:top.opener.selectContent('<mm:field name="number" />', '', ''); top.close();</mm:import>
+		                        </c:if>
+		                        <c:if test="${ empty strict}">
+		                        	<mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:image />','120','100', '<%=description%>');</mm:import>
+		                        </c:if>
 							</mm:field>
 							<tr <c:if test="${useSwapStyle}">class="swap"</c:if>
 								href="<mm:write referid="url"/>">
@@ -253,9 +261,9 @@
       <c:if test="${action == 'often'}">
       <div class="body">
       <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
-      <mm:url page="/editors/resources/AttachmentInitAction.do?action=search" id="search_attachment_url" write="false" />
-      <mm:url page="/editors/resources/attachmentupload.jsp?uploadedNodes=0&channelid=${channelid}" id="new_attachment_url" write="false" />
-      <mm:url page="/editors/repository/HighFrequencyAsset.do?action=often&assetShow=${assetShow}&offset=0&channelid=all&assettypes=attachments" id="often_show_attachments" write="false"/>
+      <mm:url page="/editors/resources/AttachmentInitAction.do?action=search&strict=${strict}" id="search_attachment_url" write="false" />
+      <mm:url page="/editors/resources/attachmentupload.jsp?uploadedNodes=0&channelid=${channelid}&strict=${strict}" id="new_attachment_url" write="false" />
+      <mm:url page="/editors/repository/HighFrequencyAsset.do?action=often&assetShow=${assetShow}&offset=0&channelid=all&assettypes=attachments&strict=${strict}" id="often_show_attachments" write="false"/>
 		<ul class="shortcuts">
 			<li><a href="${often_show_attachments}"><fmt:message key="attachmentselect.link.allchannel" /></a></li>
 			<li><a onclick="openPopupWindow('selectchannel', 340, 400);" target="selectchannel" href="${select_channel_url}"><fmt:message key="attachmentselect.link.channel" /></a></li>

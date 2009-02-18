@@ -8,6 +8,7 @@ public class HighFrequencyAssetForm extends PagerForm {
    private String channelid;
    private String assetShow;
    private String assettypes;
+   private String strict;
    
    public String getAssettypes() {
       return assettypes;
@@ -28,10 +29,17 @@ public class HighFrequencyAssetForm extends PagerForm {
    public String getAssetShow() {
       return assetShow;
    }
-
    
    public void setAssetShow(String assetShow) {
       this.assetShow = assetShow;
+   }
+
+   public String getStrict() {
+      return strict;
+   }
+
+   public void setStrict(String strict) {
+      this.strict = strict;
    }
 
 }
