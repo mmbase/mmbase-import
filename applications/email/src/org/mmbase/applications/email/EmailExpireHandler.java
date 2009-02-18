@@ -79,7 +79,7 @@ public class EmailExpireHandler implements Runnable {
                 }
             }
         } catch (Exception e) {
-            log.error("run(): ERROR: Exception in emailqueueprobe thread!");
+            log.error("run(): ERROR: Exception in emailexpireprobe thread!");
             log.error(Logging.stackTrace(e));
             return;
         }
