@@ -40,7 +40,7 @@
 	}
 
    function doSelectIt() {
-      var href = document.getElementById('imgList').getAttribute('href')+"";
+      var href = document.getElementById('assetList').getAttribute('href')+"";
       if (href.length<10) {
           alert("You must select one image");
           return;
@@ -75,12 +75,23 @@
 	       }
 	}
 </script>
-   <link rel="stylesheet" type="text/css" href="../css/imagesearch.css" />
+   <link rel="stylesheet" type="text/css" href="../css/assetsearch.css" />
 	</cmscedit:head>
 <body>
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
 <mm:import externid="action">search</mm:import><%-- either often or search --%>
 <mm:import externid="assetShow">list</mm:import><%-- either list or thumbnail --%>
+
+   <c:if test="${action eq 'search'}">
+      <div class="tabs"><!-- actieve TAB -->
+      <div class="tab_active">
+      <div class="body">
+      <div><a><fmt:message key="images.title" /></a></div>
+      </div>
+      </div>
+      </div>
+   </c:if>
+
    <div class="editor" style="height:555px">
       <c:choose>
          <c:when test="${action eq 'search'}">
@@ -142,7 +153,7 @@
             <%@include file="../repository/searchpages.jsp" %>
 
             <c:if test="${assetShow eq 'thumbnail'}">
-            <div id="imgList" class="hover" style="width:100%" href="">
+            <div id="assetList" class="hover" style="width:100%" href="">
                   <mm:listnodes referid="results">
                      <mm:field name="description" escape="js-single-quotes" jspvar="description">
                         <%
@@ -152,8 +163,7 @@
                      </mm:field>
                      <div class="grid" href="<mm:write referid="url"/>" onclick="initParentHref(this)" title="double click to show the info">
                         <div class="thumbnail" ondblclick="showInfo('<mm:field name="number"/>')"><mm:image mode="img" template="s(120x100)"/></div>
-                        <div class="imgInfo">
-                           <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
+                        <div class="assetInfo">
                               <mm:field id="title" write="false" name="title"/>
                               <c:if test="${fn:length(title) > 15}">
                                  <c:set var="title">${fn:substring(title,0,14)}...</c:set>
@@ -181,7 +191,7 @@
 						<th></th>
 					</tr>
             </c:if>
-					<tbody id="imgList" class="hover"  href="">
+					<tbody id="assetList" class="hover"  href="">
 						<c:set var="useSwapStyle">true</c:set>
 						<mm:listnodes referid="results">
 							<mm:field name="description" escape="js-single-quotes"
@@ -201,7 +211,6 @@
                               <img src="../gfx/icons/info.png" alt="<fmt:message key="imagesearch.icon.info" />" title="<fmt:message key="imagesearch.icon.info" />" /></a>
 								</td>
                         <td onMouseDown="initParentHref(this.parentNode)">
-                           <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
                            <mm:field id="title" write="false" name="title"/>
                            <c:if test="${fn:length(title) > 50}">
                               <c:set var="title">${fn:substring(title,0,49)}...</c:set>
@@ -209,7 +218,7 @@
                            ${title}
                         </td>
                         <td onMouseDown="initParentHref(this.parentNode)">
-                           ${title}
+                           ${filename}
                         </td>
 								<td onMouseDown="initParentHref(this.parentNode)"><mm:field name="itype" /></td>
 								<td  onMouseDown="initParentHref(this.parentNode)"><img
