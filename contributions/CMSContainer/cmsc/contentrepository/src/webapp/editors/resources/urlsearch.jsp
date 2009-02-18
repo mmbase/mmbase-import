@@ -127,7 +127,7 @@
             <html:hidden property="direction"/>
             <c:if test="${action eq 'search'}">
             <mm:import id="contenttypes" jspvar="contenttypes">urls</mm:import>
-               <%@include file="imageform.jsp" %>
+               <%@include file="urlform.jsp" %>
             </c:if>
          </html:form>
       </div>
@@ -255,7 +255,7 @@
 <c:if test="${action == 'often'}">
 <div class="body">
 <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
-<mm:url page="/editors/repository/UrlInitAction.do?action=search" id="search_url_url" write="false" />
+<mm:url page="/editors/resources/UrlInitAction.do?action=search" id="search_url_url" write="false" />
 <mm:import jspvar="returnurl" id="returnurl">/editors/repository/UrlAction.do?action=select</mm:import>
 <mm:url page="/editors/WizardInitAction.do?assettype=urls&action=create&creation=${channelid}&returnurl=${returnurl}" id="new_url_url" write="false" />
 <mm:url page="/editors/repository/HighFrequencyAsset.do?action=often&assetShow=${assetShow}&offset=0&channelid=all&assettypes=urls" id="often_show_urls" write="false"/>
