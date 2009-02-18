@@ -249,6 +249,10 @@
          unknown="false" validate="true">
          <forward name="success" path="/editors/resources/attachmentupload.jsp" redirect="true" />
       </action>
+      <action path="/editors/repository/UrlDeleteAction" type="com.finalist.cmsc.repository.forms.AttachmentDeleteAction"
+         unknown="false" validate="true">
+         <forward name="success" path="/editors/resources/urlcreate.jsp" redirect="true" />
+      </action>
       <action path="/editors/repository/AssetMassDeleteAction" type="com.finalist.cmsc.repository.forms.AssetMassDeleteAction" 
          unknown="false" validate="false">
          <forward name="success" path="/editors/repository/Asset.do" redirect="true" />
