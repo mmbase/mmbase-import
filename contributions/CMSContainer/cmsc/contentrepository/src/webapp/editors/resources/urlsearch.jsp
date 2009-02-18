@@ -81,7 +81,7 @@
 <mm:import externid="action">search</mm:import><%-- either often or search --%>
 <mm:import externid="assetShow">list</mm:import><%-- either list or thumbnail --%>
 
-   <c:when test="${action eq 'search'}">
+   <c:if test="${action eq 'search'}">
       <div class="tabs"><!-- actieve TAB -->
       <div class="tab_active">
       <div class="body">
@@ -89,7 +89,7 @@
       </div>
       </div>
       </div>
-   </c:when>
+   </c:if>
 
    <div class="editor" style="height:555px">
       <c:choose>
@@ -159,17 +159,33 @@
                         <%
                            description = ((String) description).replaceAll("[\\n\\r\\t]+", " ");
                         %>
-                        <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
+                        <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
+                        name="title" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
                      </mm:field>
                      <div class="grid" href="<mm:write referid="url"/>" onclick="initParentHref(this)" title="double click to show the info">
-                        <div class="thumbnail" ondblclick="showInfo('<mm:field name="number"/>')"><img src="../gfx/url.gif" alt=""/></div>
-                        <div class="urlInfo">
-                           <c:set var="assettype" ><mm:nodeinfo type="type"/></c:set>
-                              <mm:field id="title" write="false" name="title"/>
-                              <c:if test="${fn:length(title) > 15}">
-                                 <c:set var="title">${fn:substring(title,0,14)}...</c:set>
-                              </c:if>${title}
-                              <br/><mm:field name="itype" />
+                        <div class="thumbnail" ondblclick="showInfo('<mm:field name="number"/>')">
+                           <c:set var="thumbnail_alt"><mm:field name="url" /></c:set>
+                           <img src="../gfx/url.gif" title="${thumbnail_alt}" alt="${thumbnail_alt}" width="120" height="100"/>
+                        </div>
+                        <div class="assetInfo">
+                              <mm:field name="title" jspvar="name" write="false"/>
+                              ${fn:substring(name, 0, 40)}<c:if test="${fn:length(name) > 40}">...</c:if>
+                              <br/>
+                              <mm:field name="valid" write="false" jspvar="isValidUrl"/>
+                              <c:choose>
+                                   <c:when test="${empty isValidUrl}">
+                                       <fmt:message key="urlsearch.validurl.unknown" />
+                                   </c:when>
+                                   <c:when test="${isValidUrl eq false}">
+                                       <fmt:message key="urlsearch.validurl.invalid" />
+                                   </c:when>
+                                   <c:when test="${isValidUrl eq true}">
+                                       <fmt:message key="urlsearch.validurl.valid" />
+                                   </c:when>
+                                   <c:otherwise>
+                                       <fmt:message key="urlsearch.validurl.unknown" />
+                                   </c:otherwise>
+                               </c:choose>
                         </div>
                      </div>
                   </mm:listnodes>
@@ -226,8 +242,9 @@
                </mm:listnodes>
             </tbody>
          </table>
-      </form>
    </c:if>
+</c:if>
+
 <c:if test="${resultCount == 0 && param.name != null}">
 <fmt:message key="urlsearch.noresult" />
 </c:if>
