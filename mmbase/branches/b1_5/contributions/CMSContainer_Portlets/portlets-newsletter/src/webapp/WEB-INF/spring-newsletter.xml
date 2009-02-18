@@ -13,7 +13,6 @@
             http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
             http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-
    <!-- Cloud provider -->
    <bean name="cloudProviderBean" class="com.finalist.newsletter.cao.CloudProviderBean"/>
    <bean id="cloud" factory-bean="cloudProviderBean" factory-method="getCloud" lazy-init="true"/>
@@ -22,7 +21,6 @@
    <bean name="subscriptionCAO" class="com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl" lazy-init="true">
       <property name="cloud" ref="cloud"/>
    </bean>
-
 
    <bean name="publicationCAO" class="com.finalist.newsletter.cao.impl.NewsletterPublicationCAOImpl"
          lazy-init="true">
