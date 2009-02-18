@@ -141,7 +141,7 @@ public class EmailBuilder extends MMObjectBuilder {
             String val = node.getStringValue("mailstatus");
             log.debug("val: " + val); // 0, 1, 2, 3
             ResourceBundle bundle;
-            bundle = ResourceBundle.getBundle(EMAILTYPE_RESOURCE, locale, getClass().getClassLoader() );
+            bundle = ResourceBundle.getBundle(EMAILSTATUS_RESOURCE, locale, getClass().getClassLoader() );
             try {
                 return bundle.getString(val);
             } catch (MissingResourceException e) {
