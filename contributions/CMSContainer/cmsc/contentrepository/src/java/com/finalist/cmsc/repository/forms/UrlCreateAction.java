@@ -24,19 +24,20 @@ public class UrlCreateAction extends MMBaseAction {
          HttpServletResponse response, Cloud cloud) throws Exception {
 
       UrlCreateForm urlCreateForm = (UrlCreateForm) form;
-      String name = urlCreateForm.getName();
+      String title = urlCreateForm.getTitle();
       String description = urlCreateForm.getDescription();
       String url = urlCreateForm.getUrl();
       String parentchannel = urlCreateForm.getParentchannel();
-      
+      String strict = urlCreateForm.getStrict();
       int nodeId = 0;
+      
 
       if (parentchannel.equalsIgnoreCase(ALL) || StringUtils.isEmpty(parentchannel)) {
          parentchannel = (String) request.getSession().getAttribute(CREATION);
       }
 
       NodeManager manager = cloud.getNodeManager("urls");
-      Node node = createUrl(manager, name, description, url);
+      Node node = createUrl(manager, title, description, url);
       
       if(node!=null){
          nodeId = node.getNumber();
@@ -44,12 +45,12 @@ public class UrlCreateAction extends MMBaseAction {
 
       RelationUtil.createRelation(node, manager.getCloud().getNode(parentchannel), "creationrel");
       
-      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?uploadAction=select&channelid=" + parentchannel + "&createdNode=" + nodeId, true);
+      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?uploadAction=select&strict=" + strict + "&channelid=" + parentchannel + "&createdNode=" + nodeId, true);
    }
    
-   protected Node createUrl(NodeManager manager, String name, String description, String url) {
+   protected Node createUrl(NodeManager manager, String title, String description, String url) {
       Node node = manager.createNode();
-      node.setValue("title", name);
+      node.setValue("title", title);
       node.setValue("description", description);
       node.setValue("url", url);
       node.commit();

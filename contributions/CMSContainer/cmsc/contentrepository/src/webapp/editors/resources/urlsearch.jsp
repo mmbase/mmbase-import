@@ -168,8 +168,8 @@
                            <img src="../gfx/url.gif" title="${thumbnail_alt}" alt="${thumbnail_alt}" width="120" height="100"/>
                         </div>
                         <div class="assetInfo">
-                              <mm:field name="title" jspvar="name" write="false"/>
-                              ${fn:substring(name, 0, 40)}<c:if test="${fn:length(name) > 40}">...</c:if>
+                              <mm:field name="title" jspvar="title" write="false"/>
+                              ${fn:substring(title, 0, 40)}<c:if test="${fn:length(title) > 40}">...</c:if>
                               <br/>
                               <mm:field name="valid" write="false" jspvar="isValidUrl"/>
                               <c:choose>
@@ -197,8 +197,8 @@
                <c:if test="${action == 'search'}">
                   <tr class="listheader">
                      <th width="55"></th>
-                     <th nowrap="true"><a href="javascript:orderBy('name')" class="headerlink"><fmt:message
-                        key="urlsearch.namecolumn" /></a></th>
+                     <th nowrap="true"><a href="javascript:orderBy('title')" class="headerlink"><fmt:message
+                        key="urlsearch.titlecolumn" /></a></th>
                      <th nowrap="true"><a href="javascript:orderBy('url')"
                         class="headerlink"><fmt:message key="urlsearch.urlcolumn" /></a></th>
                      <th nowrap="true"><a href="javascript:orderBy('valid')"
@@ -220,8 +220,8 @@
                          <a href="javascript:showInfo(<mm:field name="number" />)">
                                <img src="../gfx/icons/info.png" title="<fmt:message key="urlsearch.icon.info" />" /></a>
                      </td>
-                     <mm:field name="title" jspvar="name" write="false"/>
-                     <td onMouseDown="initParentHref(this.parentNode)">${fn:substring(name, 0, 40)}<c:if test="${fn:length(name) > 40}">...</c:if></td>
+                     <mm:field name="title" jspvar="title" write="false"/>
+                     <td onMouseDown="initParentHref(this.parentNode)">${fn:substring(title, 0, 40)}<c:if test="${fn:length(title) > 40}">...</c:if></td>
                      <mm:field name="url" jspvar="url" write="false"/>
                      <td onMouseDown="initParentHref(this.parentNode);">${fn:substring(url, 0, 40)}<c:if test="${fn:length(url) > 40}">...</c:if></td>
                      <mm:field name="valid" write="false" jspvar="isValidUrl"/>
@@ -260,8 +260,7 @@
 <div class="body">
 <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
 <mm:url page="/editors/resources/UrlInitAction.do?action=search&strict=${strict}" id="search_url_url" write="false" />
-<mm:import jspvar="returnurl" id="returnurl">/editors/repository/UrlAction.do?action=select</mm:import>
-<mm:url page="/editors/WizardInitAction.do?assettype=urls&action=create&creation=${channelid}&returnurl=${returnurl}" id="new_url_url" write="false" />
+<mm:url page="/editors/resources/urlcreate.jsp?createdNode=0&channelid=${channelid}&strict=${strict}" id="new_url_url" write="false" />
 <mm:url page="/editors/repository/HighFrequencyAsset.do?action=often&assetShow=${assetShow}&offset=0&channelid=all&assettypes=urls&strict=${strict}" id="often_show_urls" write="false"/>
 <ul class="shortcuts">
    <li><a href="${often_show_urls}"><fmt:message key="urlselect.link.allchannel" /></a></li>

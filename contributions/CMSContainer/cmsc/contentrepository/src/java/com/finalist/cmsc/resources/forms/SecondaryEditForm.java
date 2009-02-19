@@ -11,6 +11,7 @@ public class SecondaryEditForm extends ActionForm {
 
    private int number;
    private String title;
+   private String url;
    private String description;
    private String returnUrl;
 
@@ -54,6 +55,16 @@ public class SecondaryEditForm extends ActionForm {
 
    public void setTitle(String title) {
       this.title = title;
+   }
+
+
+   public String getUrl() {
+      return url;
+   }
+
+
+   public void setUrl(String url) {
+      this.url = url;
    }
 
 
