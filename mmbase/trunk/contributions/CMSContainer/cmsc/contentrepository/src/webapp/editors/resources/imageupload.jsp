@@ -25,6 +25,7 @@
        var url = "../repository/ImageDeleteAction.do";
        url += "?channelnumber=" + parentchannel;
        url += "&objectnumber=" + objectnumber;
+       url += "&strict=${param.strict}";
        document.location.href = url;
    }
 
@@ -102,7 +103,7 @@
             <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
                <td >
 <%-- use uploadedNodes and numberOfUploadedNodes in return url --%>
-                  <c:set var="returnUrl">/editors/resources/imageupload.jsp?uploadedNodes=${param.uploadedNodes}&uploadAction=${param.uploadAction}&strict={param.strict}</c:set>
+                  <c:set var="returnUrl">/editors/resources/imageupload.jsp?uploadedNodes=${param.uploadedNodes}&uploadAction=${param.uploadAction}&strict=${param.strict}</c:set>
                   <c:choose>
                      <c:when test="${param.uploadAction == 'select'}">
                         <a href="<mm:url page="SecondaryEditAction.do">
