@@ -81,6 +81,16 @@
 <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
 <mm:import externid="action">search</mm:import><%-- either often or search --%>
 <mm:import externid="assetShow">list</mm:import><%-- either list or thumbnail --%>
+   <c:if test="${action eq 'search'}">
+      <div class="tabs"><!-- actieve TAB -->
+      <div class="tab_active">
+      <div class="body">
+      <div><a><fmt:message key="attachments.title" /></a></div>
+      </div>
+      </div>
+      </div>
+   </c:if>
+   
    <div class="editor" style="height:555px">
       <c:choose>
          <c:when test="${action eq 'search'}">
