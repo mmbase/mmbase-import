@@ -172,6 +172,13 @@
             <war.bundle>${war.bundle}</war.bundle>
          </properties>
       </dependency>
+	<!-- workflow -->
+	  <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-servicemanagement</artifactId>
+         <version>${cmsc.version}</version>
+         <type>jar</type>
+      </dependency>
    </dependencies>
 </project>
 
