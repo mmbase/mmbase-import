@@ -13,9 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-
-import org.apache.struts.action.*;
-import org.mmbase.bridge.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Step;
@@ -30,6 +35,7 @@ public abstract class SearchAction extends PagerAction {
    public static final String NUMBER_FIELD = "number";
 
    private static final String GETURL = "geturl";
+   private static final String STRICT = "strict";
 
    private static final String OBJECTID = "objectid";
    private static final String CONTENTTYPES = "contenttypes";
@@ -128,6 +134,7 @@ public abstract class SearchAction extends PagerAction {
          show="list";
       }
       request.setAttribute(GETURL, queryStringComposer.getQueryString()+"&show="+show);
+      request.setAttribute(STRICT, searchForm.getStrict());
 
       return super.execute(mapping, form, request, response, cloud);
    }
