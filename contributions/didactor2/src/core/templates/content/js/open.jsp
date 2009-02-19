@@ -180,8 +180,6 @@ function requestContent(href, number) {
                             alert(ex);
                         }
                         usedFrames[href] = array;
-                        $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
-                        $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
                         if ($.browser.msie) {
                             if ($.browser.version.substr(0, 3) <= 6.0) {
                                 // alert("IE 6 is a horrible browser which cannot do this correctly at once
@@ -190,9 +188,15 @@ function requestContent(href, number) {
                                         for (var i=0; i < array.length; i++) {
                                             contentEl.appendChild(array[i]);
                                         }
+                                        $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
+                                        $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
                                     }, 500);
                             }
+                        } else {
+                            $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
+                            $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
                         }
+
                     }
                 }
            });
