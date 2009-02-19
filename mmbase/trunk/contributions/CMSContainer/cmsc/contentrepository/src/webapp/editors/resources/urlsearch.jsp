@@ -67,9 +67,9 @@
 		var urlMode = document.getElementsByTagName("option");
 	       for(i = 0; i < urlMode.length; i++){
 	          if(urlMode[i].selected & urlMode[i].id=="a_list"){
-	              document.location.href = '../../repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assetShow=list&assettypes=urls';
+	              document.location.href = '../../repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assetShow=list&assettypes=urls&strict=${strict}';
 	          }else if(urlMode[i].selected & urlMode[i].id=="a_thumbnail"){
-	              document.location.href = '../../repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assetShow=thumbnail&assettypes=urls';
+	              document.location.href = '../../repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assetShow=thumbnail&assettypes=urls&strict=${strict}';
 	          }
 	       }
 	}
@@ -118,6 +118,7 @@
          <html:form action="${formAction}" method="post">
             <html:hidden property="action" value="${action}"/>
             <html:hidden property="assetShow" value="${assetShow}"/>
+            <html:hidden property="strict" value="${strict}"/>
             <html:hidden property="offset"/>
             <c:if test="${action eq 'often'}">
             <html:hidden property="assettypes" value="urls"/>
@@ -155,13 +156,12 @@
             <c:if test="${assetShow eq 'thumbnail'}">
             <div id="assetList" class="hover" style="width:100%" href="">
                   <mm:listnodes referid="results">
-                     <mm:field name="description" escape="js-single-quotes" jspvar="description">
-                        <%
-                           description = ((String) description).replaceAll("[\\n\\r\\t]+", " ");
-                        %>
-                        <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
-                        name="title" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
-                     </mm:field>
+                     <c:if test="${strict == 'urls'}">
+                       <mm:import id="url">javascript:top.opener.selectContent('<mm:field name="number" />', '', ''); top.close();</mm:import>
+                     </c:if>
+                     <c:if test="${ empty strict}">
+                       <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field name="title" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
+                     </c:if>
                      <div class="grid" href="<mm:write referid="url"/>" onclick="initParentHref(this)" title="double click to show the info">
                         <div class="thumbnail" ondblclick="showInfo('<mm:field name="number"/>')">
                            <c:set var="thumbnail_alt"><mm:field name="url" /></c:set>
@@ -209,8 +209,12 @@
                <tbody id="assetList" class="hover"  href="">
                <c:set var="useSwapStyle">true</c:set>
                <mm:listnodes referid="results">
-                  <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field
-                        name="title" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
+               <c:if test="${strict == 'urls'}">
+                  <mm:import id="url">javascript:top.opener.selectContent('<mm:field name="number" />', '', ''); top.close();</mm:import>
+               </c:if>
+               <c:if test="${ empty strict}">
+                  <mm:import id="url">javascript:selectElement('<mm:field name="number" />', '<mm:field name="title" escape="js-single-quotes"/>','<mm:field name="url" />');</mm:import>
+               </c:if>
                   <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
                      <td style="white-space:nowrap;">
                          <a href="javascript:showInfo(<mm:field name="number" />)">
@@ -255,10 +259,10 @@
 <c:if test="${action == 'often'}">
 <div class="body">
 <mm:url page="/editors/repository/select/SelectorChannel.do" id="select_channel_url" write="false" />
-<mm:url page="/editors/resources/UrlInitAction.do?action=search" id="search_url_url" write="false" />
+<mm:url page="/editors/resources/UrlInitAction.do?action=search&strict=${strict}" id="search_url_url" write="false" />
 <mm:import jspvar="returnurl" id="returnurl">/editors/repository/UrlAction.do?action=select</mm:import>
 <mm:url page="/editors/WizardInitAction.do?assettype=urls&action=create&creation=${channelid}&returnurl=${returnurl}" id="new_url_url" write="false" />
-<mm:url page="/editors/repository/HighFrequencyAsset.do?action=often&assetShow=${assetShow}&offset=0&channelid=all&assettypes=urls" id="often_show_urls" write="false"/>
+<mm:url page="/editors/repository/HighFrequencyAsset.do?action=often&assetShow=${assetShow}&offset=0&channelid=all&assettypes=urls&strict=${strict}" id="often_show_urls" write="false"/>
 <ul class="shortcuts">
    <li><a href="${often_show_urls}"><fmt:message key="urlselect.link.allchannel" /></a></li>
    <li><a onclick="openPopupWindow('selectchannel', 340, 400);" target="selectchannel" href="${select_channel_url}"><fmt:message key="urlselect.link.channel" /></a></li>
