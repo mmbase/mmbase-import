@@ -1,0 +1,116 @@
+<objects xmlns="http://www.mmbase.org/xmlns/objects" cloud="mmbase">
+  <object id="440" otype="417" type="categories">
+     <unfilledField name="number"/>
+     <unfilledField name="otype"/>
+     <unfilledField name="owner"/>
+     <unfilledField name="title"/>
+     <unfilledField name="subtitle"/>
+     <unfilledField name="intro"/>
+     <field format="xml" name="body">
+        <mmxf xmlns="http://www.mmbase.org/xmlns/mmxf" version="1.1">
+           <p>This category wil
+              <a id="_1158584597">
+                 <a id="_1158584598"/>
+              </a>contain a related tree of 'segments'
+           </p>
+        </mmxf>
+     </field>
+     <unfilledField name="begin"/>
+     <unfilledField name="end"/>
+     <unfilledField name="lastmodifiedby"/>
+     <unfilledField name="lastmodified"/>
+     <unfilledField name="creator"/>
+     <unfilledField name="created"/>
+     <relation object="510" related="351" role="idrel" type="source"/>
+     <relation object="509" related="463" role="idrel" type="source"/>
+     <relation object="507" related="463" role="idrel" type="source"/>
+     <relation object="505" related="463" role="idrel" type="source"/>
+     <relation object="503" related="463" role="idrel" type="source"/>
+  </object>
+  <object id="351" otype="247" type="images">
+     <field format="object" name="number">351</field>
+     <field format="object" name="otype">247</field>
+     <field format="string" name="owner">system</field>
+     <field format="string" name="title">Test transparency image</field>
+     <field format="string" name="description">Test transparency image</field>
+     <unfilledField name="handle"/>
+     <field format="string" name="itype">png</field>
+     <field format="numeric" name="filesize">63 kbyte</field>
+     <field format="numeric" name="width">800</field>
+     <field format="numeric" name="height">600</field>
+     <field format="string" name="filename">transparent.png</field>
+     <relation object="510" related="440" role="idrel" type="destination"/>
+  </object>
+  <object id="510" otype="389" type="idrel">
+     <field format="object" name="number">510</field>
+     <field format="object" name="otype">389</field>
+     <field format="string" name="owner">default</field>
+     <field format="object" name="snumber">440</field>
+     <field format="object" name="dnumber">351</field>
+     <field format="object" name="rnumber">391</field>
+     <field format="numeric" name="dir">2</field>
+     <field format="string" name="id">_1158584598</field>
+     <field format="string" name="destinationid"/>
+     <field format="string" name="class">image-inline</field>
+  </object>
+  <object id="463" otype="216" type="urls">
+     <field format="object" name="number">463</field>
+     <field format="object" name="otype">216</field>
+     <field format="string" name="owner">system</field>
+     <field format="string" name="name">MMBase Site</field>
+     <field format="string" name="url">http://www.mmbase.org</field>
+     <field format="string" name="description">The MMBase web-site.</field>
+     <relation object="509" related="440" role="idrel" type="destination"/>
+     <relation object="507" related="440" role="idrel" type="destination"/>
+     <relation object="505" related="440" role="idrel" type="destination"/>
+     <relation object="503" related="440" role="idrel" type="destination"/>
+  </object>
+  <object id="509" otype="389" type="idrel">
+     <field format="object" name="number">509</field>
+     <field format="object" name="otype">389</field>
+     <field format="string" name="owner">default</field>
+     <field format="object" name="snumber">440</field>
+     <field format="object" name="dnumber">463</field>
+     <field format="object" name="rnumber">391</field>
+     <field format="numeric" name="dir">2</field>
+     <field format="string" name="id">_1158584597</field>
+     <field format="string" name="destinationid"/>
+     <field format="string" name="class"/>
+  </object>
+  <object id="507" otype="389" type="idrel">
+     <field format="object" name="number">507</field>
+     <field format="object" name="otype">389</field>
+     <field format="string" name="owner">default</field>
+     <field format="object" name="snumber">440</field>
+     <field format="object" name="dnumber">463</field>
+     <field format="object" name="rnumber">391</field>
+     <field format="numeric" name="dir">2</field>
+     <field format="string" name="id">_1158583850</field>
+     <field format="string" name="destinationid"/>
+     <field format="string" name="class">generated</field>
+  </object>
+  <object id="505" otype="389" type="idrel">
+     <field format="object" name="number">505</field>
+     <field format="object" name="otype">389</field>
+     <field format="string" name="owner">default</field>
+     <field format="object" name="snumber">440</field>
+     <field format="object" name="dnumber">463</field>
+     <field format="object" name="rnumber">391</field>
+     <field format="numeric" name="dir">2</field>
+     <field format="string" name="id">_1158581544</field>
+     <field format="string" name="destinationid"/>
+     <field format="string" name="class">generated</field>
+  </object>
+  <object id="503" otype="389" type="idrel">
+     <field format="object" name="number">503</field>
+     <field format="object" name="otype">389</field>
+     <field format="string" name="owner">default</field>
+     <field format="object" name="snumber">440</field>
+     <field format="object" name="dnumber">463</field>
+     <field format="object" name="rnumber">391</field>
+     <field format="numeric" name="dir">2</field>
+     <field format="string" name="id">_1158581542</field>
+     <field format="string" name="destinationid"/>
+     <field format="string" name="class">generated</field>
+  </object>
+</objects>

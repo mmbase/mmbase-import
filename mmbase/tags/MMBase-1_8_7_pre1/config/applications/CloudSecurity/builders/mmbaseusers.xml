@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="mmbaseusers" maintainer="www.mmbase.org" version="1" extends="object">
+	<class>org.mmbase.security.implementation.cloud.UserBuilder</class>
+	<searchage>1000</searchage>
+  
+	<names>
+		<singular xml:lang="en">MMBase user</singular>
+		<singular xml:lang="nl">MMBase gebruiker</singular>
+		<singular xml:lang="eo">MMBase-uzanto</singular>
+		<plural xml:lang="en">MMBase users</plural>
+		<plural xml:lang="nl">MMBase gebruikers</plural>
+		<plural xml:lang="eo">MMBase-uzantoj</plural>
+	</names>
+
+	<descriptions>
+		<description xml:lang="en">MMBase users, builder which contains all users from the system. Passwords will be encrypted with the encoding mentioned in properties</description>
+		<description xml:lang="nl">MMBase gebruikers. In deze builder kunnen alle gebruikers van het systeem worden opgeslagen. Wachtwoorden worden gecodeert.</description>
+		<description xml:lang="eo">MMBase-uzantoj. En ĉi tiu kontruanto la uzantoj de la sistemo povas stokiĝi. Pasvortoj estas ĉifrataj.</description>
+	</descriptions>
+
+  <fieldlist>
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">User login name</description>
+        <description xml:lang="nl">Login naam voor de gebruiker</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">UserName</guiname>
+        <guiname xml:lang="nl">Gebruiker</guiname>
+				<guiname xml:lang="eo">Uzulo</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<list>1</list>
+				</positions>
+			</editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>username</name>
+				<type state="persistent" size="32" notnull="true" key="true">STRING</type>
+			</db>
+		</field>
+				 <field>
+				<descriptions>
+					<description xml:lang="en">User password</description>
+					<description xml:lang="nl">Gebruikers wachtwoord</description>
+				</descriptions>
+			<gui>
+				<guiname xml:lang="en">Password</guiname>
+				<guiname xml:lang="nl">Wachtwoord</guiname>
+				<guiname xml:lang="eo">Pasvorto</guiname>
+				<guitype>string</guitype>
+			</gui>
+			<editor>
+				<positions>
+					<search>-1</search>
+				</positions>
+			</editor>
+      <datatype base="md5password" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>password</name>
+				<type state="persistent" size="32" notnull="true" key="false">STRING</type>
+			</db>
+		</field>
+    <field>
+      <gui>
+        <guiname xml:lang="nl">Bevestig wachtwoord</guiname>
+        <guiname xml:lang="eo">Konfirmu pasvorton</guiname>
+        <guiname xml:lang="en">Confirm Password</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>-1</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <datatype base="confirmpassword" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>confirmpassword</name>
+        <type notnull="false" size="32" state="virtual">STRING</type>
+      </db>
+    </field>
+	</fieldlist>
+</builder>

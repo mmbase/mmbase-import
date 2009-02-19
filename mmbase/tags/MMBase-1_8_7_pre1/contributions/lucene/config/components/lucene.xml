@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="lucene"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+
+
+  <description xml:lang="nl">MMBase lucene</description>
+  <description xml:lang="en">MMBase lucene</description>
+
+  <block
+      classification="mmbase.admin"
+      name="admin"
+      mimetype="text/html" >
+    <title xml:lang="en">Lucene indexing</title>
+    <title xml:lang="nl">Lucene-indexering</title>
+    <body jsp="index.jspx">
+      <param name="fullindex" />
+      <param name="interrupt" />
+      <param name="clear" />
+      <param name="clearcopy" />
+      <param name="reload" />
+      <param name="logout" />
+    </body>
+  </block>
+
+  <block
+      name="search"
+      mimetype="text/html" >
+    <title xml:lang="en">Lucene search</title>
+    <title xml:lang="nl">Lucene-zoeken</title>
+    <body jsp="search.jspx">
+      <param name="index" />
+    </body>
+  </block>
+
+</component>

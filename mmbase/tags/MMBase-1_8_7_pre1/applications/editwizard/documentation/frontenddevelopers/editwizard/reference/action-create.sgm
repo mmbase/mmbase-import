@@ -1,0 +1,146 @@
+<!-- Include file for the editwizard reference docbook: 
+     'action type="create"' tag
+-->
+<section id="action-create">
+	<title>action type="create"</title>
+	<formalpara>
+		<title>Syntax</title>
+		<para><programlisting><![CDATA[<action type="create" />]]></programlisting></para>
+	</formalpara>
+	<formalpara>
+		<title>Usage</title>
+		<para>This tag defines how to create a new object or relation/object. As a top-level tag it defines how to create and initialize a new main object. In a list, it specifies how to create a relation to a newly instantiated (empty) object in that list. Not specifying a create action means the action is not available (i.e. you cannot create a main object in a wizard or a new related object in a list)
+		</para>
+	</formalpara>
+	<para>You define the data to be created by including a (nested) objectstructure in the body of the action tag.</para>
+	<para>Under a top-level tag, you specify an <link linkend="object">object</link> tag, with the type attribute set to the type of object that needs to be created.
+	
+	<programlisting format="linespecific"><![CDATA[
+<action type="create" >
+	<object type="news" />
+</action>
+]]></programlisting>
+	
+	This action creates an (empty, and unrelated) news object.</para>
+	<para>
+	You can make a more complex creation action by specifying fields that you want to initialize (aside from any initialization that is done by MMBase itself), or relations that you want to have made (such as linking to a specific archive):
+	<programlisting format="linespecific"><![CDATA[
+<action type="create" >
+	<object type="news" >
+		<field name="title">My Title</field>
+		<relation role="related" destination="my_news_archive" />
+	</object>
+</action>
+]]></programlisting>
+	This will initialize the 'title' field of the news object, and relate it to an object (i.e. a pool object) with the alias 'my_news_archive'. There are a limited number of 'variables' that you can use when initializing the action. More info on this can be found in the <link linkend="relation">relation</link> and <link linkend="field">field</link> tag references.
+	</para>
+	<para>As a list-level tag, the action is similar to <link linkend="action-add">action type="add"</link>, but it is used for the <link linkend="command-insert">command type="insert"</link> tag.</para>
+	<para>You specify a <link linkend="relation">relation</link> tag, with the role and destinationtype attributes set to the type and role of the relation to create. You can also specifying relation fields that you want to initialize. You also need to add an 'object' tag (with initialized fields or even additional relations to create), which prompts the wizard to create the object:
+	<programlisting format="linespecific"><![CDATA[
+<action type="create" >
+	<relation role="author" />
+		<object type="people" >
+			<field name="lastname">Supply lastname here</field>
+		</object>
+	</relation>
+</action>
+]]></programlisting>
+	This will create a new 'people' object with an initialized 'lastname' field, and create a relation to this object. 
+	There are a limited number of 'variables' that you can use when initializing the action. More info on this can be found in the <link linkend="field">field</link> tag reference.
+	</para>
+	<para>You use this action to define how to create a relation for a list <link linkend="command-insert">insert command</link>.  If you have a <link linkend="command-search">search</link> or a <link linkend="command-wizard">wizard</link> command tag, you should use an <link linkend="action-add">action type="add"</link> tag instead.</para>
+	<note><para>You can use both the add and create actions in a list, allowing you to supply both a search and a insert command.</para></note>
+	<formalpara>
+		<title>Required Attributes</title>
+		<para><variablelist>
+			<varlistentry>
+				<term>type</term>
+				<listitem>
+					<para>The type of action, in this case, "create".</para>
+				</listitem>
+			</varlistentry>
+		</variablelist></para>
+	</formalpara>
+	<formalpara>
+		<title>Optional Attributes</title>
+		<para>None</para>
+	</formalpara>
+	<formalpara>
+		<title>Required Child Nodes</title>
+		<para><variablelist>
+			<varlistentry>
+				<term><link linkend="object">&lt;object /&gt;</link> (top-level tag)</term>
+				<listitem>
+					<para>Specifies the type of object to create. It may also include additional field and relation tags for initialization of the object or auto-linking to other objects.</para>
+				</listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><link linkend="relation">&lt;relation /&gt;</link> (list-level tag)</term>
+				<listitem>
+					<para>Specifies the type of relation to create in a list. It may also include additional field and object tags for initialization of the object or creation of new objects to relate to.</para>
+				</listitem>
+			</varlistentry>
+		</variablelist></para>
+	</formalpara>
+	<formalpara>
+		<title>Optional Child Nodes</title>
+		<para>None</para>
+	</formalpara>
+	<formalpara>
+		<title>Possible Parents</title>
+		<para><variablelist>
+			<varlistentry>
+				<term><link linkend="wizard-schema">&lt;wizard-schema&gt;</link> (top-level tag)</term>
+				<listitem>
+					<para>The wizard schema root.</para>
+				</listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><link linkend="list">&lt;list&gt;</link> (list-level tag)</term>
+				<listitem>
+					<para>A list of related objects in a form.</para>
+				</listitem>
+			</varlistentry>
+		</variablelist></para>
+	</formalpara>
+	<formalpara>
+		<title>Example</title>
+		<para><programlisting format="linespecific"><![CDATA[
+<wizard-schema id="my_wizard">
+	<title>Wizard-Title</title>
+
+	...
+	
+	<action type="create" >
+	  <object type="news" >
+		  <field name="title">My Title</field>
+			<relation role="related" destination="my_news_archive" />
+		</object>
+  </action>
+ 
+	<form-schema id="step1">
+		<field name="title">
+			<prompt>Title</prompt>
+		</field>
+	
+		<list role="author" destinationtype="people" >
+		
+			...
+			
+			<command type="insert" />
+			
+			<action type="create" >
+				<relation role="author" destinationtype="people" >
+				  <object>
+					  <field name="lastname">Insert name here</field>
+					</object>
+				</relation>
+			</action>
+		</list>
+	</form-schema>
+	
+</wizard-schema>
+]]></programlisting></para>
+	</formalpara>
+</section>
+

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="MediaEditor" maintainer="mediaproject.mmbase.org" version="1" auto-deploy="false">
+
+
+  <!-- adds pooling, publishtimes, intro's and security to Media app (features used by media-editor) -->
+
+  <requirements>
+    <requires name="Media" maintainer="mediaproject.mmbase.org" version="1" />
+    <requires name="MediaExampleData" maintainer="mediaproject.mmbase.org" version="1" />
+    <requires name="Security" maintainer="mmbase://security.mmbase.org/" version="1" /><!-- cloud context security -->
+  </requirements>
+
+  <neededbuilderlist>
+    <builder maintainer="mmbase.org" version="1">insrel</builder>
+    <builder maintainer="mmbase.org" version="1">pools</builder>
+
+    <builder maintainer="mmbase.org" version="1">publishtimes</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">dirs</builder>
+
+
+  </neededbuilderlist>
+
+  <neededreldeflist>
+    <reldef source="related" target="related"   direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+    <reldef source="base"    target="base"      direction="bidirectional" guisourcename="Base"    guitargetname="Base" builder="insrel" />
+    <reldef source="parent"  target="child"     direction="bidirectional" guisourcename="Parent"  guitargetname="Child" builder="insrel" />
+    <reldef source="previous" target="previous" direction="bidirectional" guisourcename="Next"  guitargetname="Previous" builder="insrel" /><!-- relation is a little strange, but this is because of editwizard limitation -->
+    <reldef source="posrel"  target="posrel"    direction="bidirectional" guisourcename="Posrel"  guitargetname="Posrel" builder="posrel" />
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <!-- a subfragment can be e.g. nog valid by linking to a 'publishtimes' object -->
+    <relation from="mediafragments"  to="publishtimes"    type="related" />
+
+    <!-- for introduction -->
+    <relation from="mediafragments"  to="mediafragments"  type="previous" /> 
+
+    <!-- grouping / categorizing -->
+    <relation from="pools"           to="pools"           type="parent"  />  
+    <relation from="pools"           to="mediafragments"  type="related" />
+    <relation from="pools"           to="mediafragments"  type="base"    />
+   
+  </allowedrelationlist>
+
+  <datasourcelist>
+    <datasource builder="pools"      path="MediaEditor/pools.xml" />
+  </datasourcelist>
+
+  <relationsourcelist>
+    <relationsource builder="insrel" path="MediaEditor/insrel.xml" />
+  </relationsourcelist>
+  
+  <contextsourcelist>
+    <contextsource path="MediaEditor/backup.xml" type="depth" goal="backup"/>
+  </contextsourcelist>
+
+  <description>
+     Examples for media-project, needed for the media-editors.
+  </description>
+
+  <install-notice>
+     The needed relations for the media functionality are created. And some examples are inserted.
+  </install-notice>
+</application>
