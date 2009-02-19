@@ -4,10 +4,10 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
   <jsp:directive.include file="/mmbase/jquery/jquery.jspx" />
   <mm:context>
-    <mm:import id="__javascript" from="request" externid="org.mmbase.validation" />
-    <mm:notpresent referid="__javascript">
+    <mm:import id="javascript" from="request" externid="org.mmbase.validation" />
+    <mm:notpresent referid="javascript">
       <mm:link page="/mmbase/validation/validation.js.jsp">
-        <script src="${_}" type="text/javascript"><!-- help IE --></script>
+        <script src="${_}"><!-- Help IE --></script>
       </mm:link>
       <mm:write request="org.mmbase.validation" value="yes" />
     </mm:notpresent>

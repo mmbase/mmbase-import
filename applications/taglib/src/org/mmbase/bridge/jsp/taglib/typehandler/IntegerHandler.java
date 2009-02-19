@@ -16,6 +16,8 @@ import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.bridge.jsp.taglib.ParamHandler;
+
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
@@ -25,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.39 2009-01-12 12:48:20 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.36 2006-07-05 15:20:45 pierre Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -43,7 +45,7 @@ public class IntegerHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         EnumHandler eh = getEnumHandler(node, field);
         if (eh != null) {
             return eh.htmlInput(node, field, search);
@@ -54,7 +56,7 @@ public class IntegerHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         log.debug("using html-input");
         EnumHandler eh = getEnumHandler(node, field);
         if (eh != null) {
@@ -66,7 +68,7 @@ public class IntegerHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    @Override public String whereHtmlInput(Field field) throws JspTagException {
+    public String whereHtmlInput(Field field) throws JspTagException {
         EnumHandler eh = getEnumHandler(null, field);
         if (eh != null) {
             return eh.whereHtmlInput(field);
@@ -74,7 +76,7 @@ public class IntegerHandler extends AbstractTypeHandler {
         return super.whereHtmlInput(field);
     }
 
-    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         EnumHandler eh = getEnumHandler(null, field);
         if (eh != null) {
             return eh.whereHtmlInput(field, query);
@@ -82,8 +84,8 @@ public class IntegerHandler extends AbstractTypeHandler {
         return super.whereHtmlInput(field, query);
     }
 
-    @Override protected Object cast(Object value, Node node, Field field) {
-        if (value == null || "".equals(value)) return null;
+    protected Object cast(Object value, Node node, Field field) {
+        if (value == null || "".equals(value)) return "";
         return  super.cast(value, node, field);
     }
 

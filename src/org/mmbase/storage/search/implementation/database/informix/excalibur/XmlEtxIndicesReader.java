@@ -17,7 +17,7 @@ import org.xml.sax.*;
 /**
  *
  * @author Rob van Maris
- * @version $Id: XmlEtxIndicesReader.java,v 1.5 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: XmlEtxIndicesReader.java,v 1.3 2005-10-05 12:26:11 michiel Exp $
  * @since MMBase-1.7
  */
 public class XmlEtxIndicesReader extends DocumentReader {
@@ -32,8 +32,8 @@ public class XmlEtxIndicesReader extends DocumentReader {
      *
      * @return <code>sbspace<code> elements.
      */
-    public Iterator<Element> getSbspaceElements() {
-        return getChildElements("etxindices", "sbspace").iterator();
+    public Iterator getSbspaceElements() {
+        return getChildElements("etxindices", "sbspace");
     }
 
     /**
@@ -52,8 +52,8 @@ public class XmlEtxIndicesReader extends DocumentReader {
      * @param sbspace The <code>sbspace</element>
      * @return <code>etxindex</code> elements.
      */
-    public Iterator<Element> getEtxindexElements(Element sbspace) {
-        return getChildElements(sbspace, "etxindex").iterator();
+    public Iterator getEtxindexElements(Element sbspace) {
+        return getChildElements(sbspace, "etxindex");
     }
 
     /**

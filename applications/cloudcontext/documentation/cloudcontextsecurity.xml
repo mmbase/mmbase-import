@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Cloud Context Security</title>
     <date>2003-09-12</date>
-    <edition>$Id: cloudcontextsecurity.xml,v 1.6 2008-12-15 15:22:50 michiel Exp $</edition>
+    <edition>$Id: cloudcontextsecurity.xml,v 1.5 2004-02-25 09:11:36 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -32,7 +32,7 @@
     <para>
       MMBase has a pluggable security system. This means the object level security can be
       implemented on several ways. This document describes the 'cloud context' implementation for
-      MMBase security.
+      MMBase security.      
     </para>
     <para>
       The default security implementation for several MMBase releases was the normal 'context'
@@ -47,7 +47,7 @@
       edited.
     </para>
   </section>
-  <section id="object_model">
+  <section id="object model">
     <title>Object model</title>
     <para>
       Because of the nature of this security implementation, the object model of your MMBase
@@ -108,7 +108,7 @@
       <title>Naming</title>
       <para>
         The builders are for legacy reasons called 'mmbase-users', 'mmbase-groups', 'mmbase-contexts',
-        'mmbase-ranks'. But because these things are essentially related to
+        'mmbase-ranks'. But because these things are essentially related to 
         security (rather then to 'mmbase' which is a bit of a non-statement in this context..) the
         gui names of these builders will start with 'security' rather then with
         'mmbase'. So in generic editors you will see them listed under 's' rather then under 'm'.
@@ -139,11 +139,11 @@
       editors (I use this to integrate them in the editors for a certain site),
       and you can configure extra links for users (e.g. make a link to a 'people'
       editwizard to relate people objects to accounts). There is an index.jsp
-      available to use them stand-alone.
+      available to use them stand-alone. 
     </para>
     <para>
       When defining a new 'context' object with the security editors, it might be convenient to
-      allow read rights on it to most or all users. To facilitate this, this editors looks for a group with
+      allow read rights on it to most or all users. To facilitate this, this editors looks for a group with 
       alias 'mayreadallgroup' when creating a context object, and if it exists the read operation is
       automaticly link to it immediately.
     </para>
@@ -234,58 +234,14 @@
             </para>
           </listitem>
         </varlistentry>
-      </variablelist>
+      </variablelist>        
     </para>
-    <section id="otherbuilders">
-      <title>Using different builders</title>
-      <para>
-        Cloud context security provides the builder mmbaseuser, mmbasegroups, and mmbasecontexts to
-        store authentication and authorization information in. In some cases, e.g. when trying to
-        deploy cloud context security on an environment which used to have a different security
-        implementation, it may be desired to use other builders to store users and context in.
-      </para>
-      <section id="other_users">
-        <title>Using another builder to store users in</title>
-        <para>If you want to store the user in a different builder, then you have to do the
-        following</para>
-        <orderedlist>
-          <listitem>
-            <para>Choose your builder</para>
-          </listitem>
-          <listitem>
-            <para>You can define a 'security_editor_fields' property in this builder, to defined
-            which fields must be edited in the the security editors.</para>
-          </listitem>
-          <listitem>
-            <para>Extend
-            <classname>org.mmbase.security.implementation.cloudcontext.Authenticate</classname> and
-            override the method getUserProvider. Implement your own <classname>Provider</classname>, it can e.g. be the
-            class of your own users builder, and implement in your
-            <classname>Authenticate</classname> how it should be obtained. The method
-            <function>getUserBuilder</function> should return the builder (<constant>this</constant>
-            in case the <classname>Provider</classname> <emphasis>is</emphasis> the builder).
-            </para>
-          </listitem>
-          <listitem>
-            <para>Make sure the relations &lt;your builder&gt; to mmbaseranks with role 'rank',
-            from mmbasegroups to &lt;your builder&gt; with role 'contains' and mmbasecontext to
-            &lt;your builder &gt; with role 'grants' are possible.
-            </para>
-          </listitem>
-        </orderedlist>
-      </section>
-      <section id="other_context">
-        <title>Using another builder to store possible contexts</title>
-        <para>
-        </para>
-      </section>
-    </section>
   </section>
   <section id="conversion">
     <title>Conversion from `XML' context security</title>
     <para>
       A conversion tool which read the XML file from the old style context security is
-      available.
+      available. 
     </para>
     <para>
       This tool reads all users, groups and contexts from this file and matches them with

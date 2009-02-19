@@ -14,7 +14,6 @@ import java.util.*;
 import java.util.regex.Pattern;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.LocalizedString;
 import org.mmbase.util.logging.*;
 
 /**
@@ -23,10 +22,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.48 2008-10-21 17:24:41 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.35.2.4 2007-09-20 13:23:06 michiel Exp $
  * @since MMBase-1.8
  */
-public class StringDataType extends ComparableDataType<String> implements LengthDataType<String> {
+public class StringDataType extends ComparableDataType implements LengthDataType {
     private static final Logger log = Logging.getLoggerInstance(StringDataType.class);
 
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
@@ -34,7 +33,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
     protected PatternRestriction patternRestriction = new PatternRestriction(Pattern.compile("(?s)\\A.*\\z"));
     private boolean isPassword = false;
     protected AbstractLengthDataType.MinRestriction minLengthRestriction = new AbstractLengthDataType.MinRestriction(this, 0);
-    protected AbstractLengthDataType.MaxRestriction maxLengthRestriction = new AbstractLengthDataType.MaxRestriction(this, Integer.MAX_VALUE);
+    protected AbstractLengthDataType.MaxRestriction maxLengthRestriction = new AbstractLengthDataType.MaxRestriction(this, Long.MAX_VALUE);
 
     /**
      * Constructor for string data type.
@@ -44,7 +43,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
         super(name, String.class);
     }
 
-    protected void inheritProperties(BasicDataType<String> origin) {
+    protected void inheritProperties(BasicDataType origin) {
         super.inheritProperties(origin);
         if (origin instanceof StringDataType) {
             StringDataType dataType = (StringDataType)origin;
@@ -159,7 +158,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction<Long> getMinLengthRestriction() {
+    public DataType.Restriction getMinLengthRestriction() {
         return minLengthRestriction;
     }
 
@@ -167,7 +166,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
      * {@inheritDoc}
      */
     public void setMinLength(long value) {
-        getMinLengthRestriction().setValue(Long.valueOf(value));
+        getMinLengthRestriction().setValue(new Long(value));
     }
 
     /**
@@ -180,14 +179,14 @@ public class StringDataType extends ComparableDataType<String> implements Length
     /**
      * {@inheritDoc}
      */
-    public DataType.Restriction<Long> getMaxLengthRestriction() {
+    public DataType.Restriction getMaxLengthRestriction() {
         return maxLengthRestriction;
     }
     /**
      * {@inheritDoc}
      */
     public void setMaxLength(long value) {
-        getMaxLengthRestriction().setValue(Long.valueOf(value));
+        getMaxLengthRestriction().setValue(new Long(value));
     }
 
 
@@ -230,34 +229,29 @@ public class StringDataType extends ComparableDataType<String> implements Length
         isPassword = pw;
     }
 
-    @Override public void toXml(org.w3c.dom.Element parent) {
+    public void toXml(org.w3c.dom.Element parent) {
         super.toXml(parent);
-        addRestriction(parent, "minLength",  "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength", minLengthRestriction);
-        addRestriction(parent, "maxLength",  "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength", maxLengthRestriction);
-        addRestriction(parent, "pattern",  "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength,length,pattern", patternRestriction);
+        addRestriction(parent, "minLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength", minLengthRestriction);
+        addRestriction(parent, "maxLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength", maxLengthRestriction);
+        addRestriction(parent, "pattern",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength,length,pattern", patternRestriction);
     }
 
-    @Override public int getEnforceStrength() {
-        int enforceStrength = Math.max(super.getEnforceStrength(), minLengthRestriction.getEnforceStrength());
-        enforceStrength =  Math.max(enforceStrength, maxLengthRestriction.getEnforceStrength());
-        return Math.max(enforceStrength, patternRestriction.getEnforceStrength());
-    }
-
-    @Override protected Collection<LocalizedString> validateCastValueOrNull(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
+    protected Collection validateCastValueOrNull(Collection errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValueOrNull(errors, castValue, value,  node, field);
         errors = minLengthRestriction.validate(errors, castValue, node, field);
         return errors;
 
     }
-    @Override protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
+
+    protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value,  node, field);
         errors = patternRestriction.validate(errors, castValue, node, field);
         errors = maxLengthRestriction.validate(errors, castValue, node, field);
         return errors;
     }
 
-    protected StringBuilder toStringBuilder() {
-        StringBuilder buf = super.toStringBuilder();
+    protected StringBuffer toStringBuffer() {
+        StringBuffer buf = super.toStringBuffer();
         Pattern p = getPattern();
         if (p != null && ! (p.pattern().equals(".*"))) {
             buf.append(" pattern:").append(p.pattern());
@@ -268,7 +262,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
         return buf;
     }
 
-    protected class PatternRestriction extends AbstractRestriction<Pattern> {
+    protected class PatternRestriction extends AbstractRestriction {
         PatternRestriction(PatternRestriction source) {
             super(source);
         }
@@ -276,11 +270,11 @@ public class StringDataType extends ComparableDataType<String> implements Length
             super("pattern", v);
         }
         Pattern getPattern() {
-            return value;
+            return (Pattern) value;
         }
         protected boolean simpleValid(Object v, Node node, Field field) {
             String s = Casting.toString(v);
-            boolean res =  value == null ? true : value.matcher(s).matches();
+            boolean res =  value == null ? true : getPattern().matcher(s).matches();
             //log.info("VALIDATING " + v + " with " + getPattern() + " -> " + res);
             return res;
         }

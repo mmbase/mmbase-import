@@ -9,7 +9,7 @@ package org.mmbase.applications.crontab.builders;
 
 import  org.mmbase.applications.crontab.CronEntry;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Node;
 import java.util.*;
 
 import org.mmbase.util.logging.*;
@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeCronEntry.java,v 1.6 2008-12-09 13:38:10 michiel Exp $
+ * @version $Id: NodeCronEntry.java,v 1.3 2008-07-29 10:01:21 michiel Exp $
  * @since MMBase-1.8.6
  */
 
@@ -44,39 +44,8 @@ public class NodeCronEntry extends CronEntry {
         return org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null).getNode(getId());
     }
 
-    @Override public String getServers() {
-        NodeIterator servers = getNode().getRelatedNodes("mmservers").nodeIterator();
-        if (! servers.hasNext()) return "";
-        StringBuilder bul = new StringBuilder();
-        while (servers.hasNext()) {
-            Node server = servers.nextNode();
-            if (bul.length() > 0) bul.append(" ");
-            bul.append(server.getStringValue("name"));
-        }
-        return bul.toString();
 
-    }
-
-    @Override public boolean isActive() {
-        NodeIterator servers = getNode().getRelatedNodes("mmservers").nodeIterator();
-        if (! servers.hasNext()) return true;
-
-        String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
-        while (servers.hasNext()) {
-            Node server = servers.nextNode();
-            String name = server.getStringValue("name");
-            if (name != null && name.equalsIgnoreCase(machineName)) {
-                log.debug("Active [" + this + "] for server [" + name + "]");
-                return true;
-            } else {
-                log.debug("Ignoring related server [" + name + "], does not equal servername [" + machineName + "]");
-            }
-        }
-        log.debug("NOT active  cron entry [" + this + "], not related to server [" + machineName + "]");
-        return false;
-    }
-
-    @Override protected void setCronTime(String ct) {
+    protected void setCronTime(String ct) {
         String prev = cronTime;
         super.setCronTime(ct);
         if (prev == null) {
@@ -87,14 +56,14 @@ public class NodeCronEntry extends CronEntry {
     }
 
 
-    @Override public void setConfiguration(String conf) {
+    public void setConfiguration(String conf) {
         super.setConfiguration(conf);
         Node n = getNode();
         n.setStringValue("config", conf);
         n.commit();
     }
 
-    @Override protected void setLastRun(Date d) {
+    protected void setLastRun(Date d) {
         super.setLastRun(d);
         Node node = getNode();
         if (node.getNodeManager().hasField("lastrun")) {
@@ -106,7 +75,7 @@ public class NodeCronEntry extends CronEntry {
         }
     }
 
-    @Override protected void incCount() {
+    protected void incCount() {
         super.incCount();
         Node node = getNode();
         if (node.getNodeManager().hasField("count")) {
@@ -116,7 +85,7 @@ public class NodeCronEntry extends CronEntry {
         }
     }
 
-    @Override protected void setLastCost(int i) {
+    protected void setLastCost(int i) {
         super.setLastCost(i);
         Node node = getNode();
         if (node.getNodeManager().hasField("lastcost")) {
@@ -129,7 +98,7 @@ public class NodeCronEntry extends CronEntry {
     }
 
 
-    @Override public String toString() {
+    public String toString() {
         return "NODE: " + super.toString();
     }
 

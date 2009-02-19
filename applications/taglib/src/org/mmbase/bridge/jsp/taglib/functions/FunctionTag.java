@@ -20,12 +20,11 @@ import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: FunctionTag.java,v 1.6 2008-08-14 13:58:49 michiel Exp $
+ * @version $Id: FunctionTag.java,v 1.5 2005-03-14 19:02:35 michiel Exp $
  */
 public class FunctionTag extends AbstractFunctionTag implements Writer, FunctionContainerReferrer {
 
     public int doStartTag() throws JspTagException {
-        initTag();
         Object value = getFunctionValue();
         helper.setValue(value);
         return EVAL_BODY_BUFFERED;

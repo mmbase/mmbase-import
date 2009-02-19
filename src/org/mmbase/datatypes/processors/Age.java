@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
+import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
@@ -36,13 +37,14 @@ public class Age {
         }
 
         public Object process(Node node, Field field, Object value) {
-            log.debug("setting age to " + value);
-            try {
-                // educated guess for the birth date:
-                Date date = DynamicDate.eval(DynamicDate.getInstance("today - 6 month - " + value + " year"));
-                node.setValueWithoutProcess(birthdateField, date);
-            } catch (org.mmbase.util.dateparser.ParseException pe) {
-                log.warn(pe);
+            if (! node.isChanged(birthdateField)) {
+                log.debug("setting age to " + value);
+                try {
+                    // educated guess for the birth date:
+                    Date date = DynamicDate.getInstance("today - 6 month - " + value + " year");
+                    node.setDateValue(birthdateField, date);
+                } catch (org.mmbase.util.dateparser.ParseException pe) {
+                }
             }
             return value;
         }
@@ -58,11 +60,12 @@ public class Age {
         }
 
         public Object process(Node node, Field field, Object value) {
+            if (value == null) return null;
             Date birthDate = node.getDateValue(birthdateField);
             Date now = new Date();
             int age = (int) Math.floor((double) (now.getTime() - birthDate.getTime()) / (1000 * 3600 * 24 * 365.25));
-            log.debug("getting age for " + birthDate + " --> " + age);
-            return Casting.toType(value.getClass(), age);
+            log.debug("getting age for " + node + " --> " + age);
+            return Casting.toType(value.getClass(), new Integer(age));
         }
     }
 

@@ -1,5 +1,5 @@
-<?xml version="1.0"?>
-<!--
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -7,48 +7,72 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 -->
 <project>
-  <extend>${basedir}/maven-base/project.xml</extend>
-  <artifactId>mmbase</artifactId>
-  <build>
-    <!-- J A R  R E S O U R C E S -->
-    <!-- Resources that are packaged up inside the JAR file -->
-    <resources>
-      <resource>
-        <directory>${basedir}/src</directory>
-        <includes>
-          <include>**/*.xml</include>
-          <include>**/*.dtd</include>
-          <include>**/*.xsd</include>
-          <include>**/*.properties</include>
-        </includes>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
-        <directory>${basedir}/html/WEB-INF/classes</directory>
-        <includes>
-          <include>**/*.properties</include>
-        </includes>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
-        <directory>${basedir}/META-INF</directory>
-        <targetPath>META-INF</targetPath>
-        <excludes>
-          <exclude>**/CVS</exclude>
-        </excludes>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
-        <directory>${basedir}/config</directory>
-        <targetPath>org/mmbase/config</targetPath>
-        <excludes>
-          <exclude>**/CVS</exclude>
-          <exclude>modules/jdbc.xml</exclude>
-        </excludes>
-        <filtering>false</filtering>
-      </resource>
+    <extend>${basedir}/maven-base/project.xml</extend>
+    <artifactId>mmbase</artifactId>
+    <build>
+        <sourceModifications>
+            <sourceModification>
+                <className>com.informix.jdbc.IfxCblob</className>
+                <excludes>
+                    <exclude>org/mmbase/module/database/support/MMInformix42Node.java</exclude>
+                </excludes>
+            </sourceModification>
+            <sourceModification>
+                <className>oracle.sql.BLOB</className>
+                <excludes>
+                    <exclude>org/mmbase/module/database/support/MMOracle.java</exclude>
+                </excludes>
+            </sourceModification>
+            <sourceModification>
+                <className>javax.mail.Message</className>
+                <excludes>
+                    <exclude>org/mmbase/module/JMSendMail.java</exclude>
+                </excludes>
+            </sourceModification>
+            <sourceModification>
+                <className>javax.media.jai.JAI</className>
+                <excludes>
+                    <exclude>org/mmbase/module/builders/ConvertJAI.java</exclude>
+                </excludes>
+            </sourceModification>
+        </sourceModifications>
+        <!-- J A R  R E S O U R C E S -->
+        <!-- Resources that are packaged up inside the JAR file -->
+        <resources>
+            <resource>
+                <directory>${basedir}/src</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.dtd</include>
+                    <include>**/*.xsd</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+<!-- This does not work the same way as the ant build does.
+	We have to change more in the build to get it working
+-->
+            <resource>
+                <targetPath>org/mmbase/config</targetPath>
+                <directory>config</directory>
+                <excludes>
+                    <exclude>"**/CVS"</exclude>
+                    <exclude>applications/CloudSecurity/**</exclude>
+                    <exclude>applications/Codings/**</exclude>
+                    <exclude>applications/MyCompany/**</exclude>
+                    <exclude>applications/MyNews/**</exclude>
+                    <exclude>applications/MyYahoo/**</exclude>
+                    <exclude>applications/RichText/**</exclude>
+                    <exclude>applications/CloudSecurity.xml</exclude>
+                    <exclude>applications/Codings.xml</exclude>
+                    <exclude>applications/MyCompany.xml</exclude>
+                    <exclude>applications/MyNews.xml</exclude>
+                    <exclude>applications/MyYahoo.xml</exclude>
+                    <exclude>applications/RichText.xml</exclude>
+                </excludes>
+            </resource>
 
-    </resources>
-  </build>
+        </resources>
+    </build>
 </project>
 

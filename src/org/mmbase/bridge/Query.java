@@ -19,11 +19,11 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.48 2009-01-12 13:32:33 michiel Exp $
+ * @version $Id: Query.java,v 1.40.2.2 2008-06-28 11:57:10 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
-public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Query> {
+public interface Query extends SearchQuery, Cloneable {
 
     /**
      * Returns the Cloud for which this Query was defined.
@@ -262,9 +262,7 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
      * @param v value
      * @return the new Constraint.
      */
-    FieldValueInConstraint createConstraint(StepField f, SortedSet<? extends Object> v);
-
-    FieldValueInQueryConstraint createConstraint(StepField f, Query q);
+    FieldValueInConstraint createConstraint(StepField f, SortedSet v);
 
     /**
      * Changes the given constraint's 'case sensitivity' (if applicable). Default it is true.
@@ -301,12 +299,10 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
      */
     void setConstraint(Constraint c);
 
-
     /**
      * Adds an order on a certain field.
      * @param f field
      * @param direction {@link SortOrder#ORDER_ASCENDING} or {@link SortOrder#ORDER_DESCENDING}
-     * @param caseSensitive case sensitivity
      * @param part part to sort on for a date value
      * @return new SortOrder
      * @see org.mmbase.storage.search.implementation.BasicSearchQuery#addSortOrder
@@ -316,10 +312,6 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
 
     /**
      * Defaulting version of {@link #addSortOrder(StepField, int, boolean, int)} (no date parts)
-     * @param f field
-     * @param direction {@link SortOrder#ORDER_ASCENDING} or {@link SortOrder#ORDER_DESCENDING}
-     * @param caseSensitive case sensitivity
-     * @return new SortOrder
      * @since MMBase-1.8
      */
     SortOrder addSortOrder(StepField f, int direction, boolean caseSensitive);
@@ -327,9 +319,6 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
     /**
      * Defaulting version of {@link #addSortOrder(StepField, int, boolean, int)} (sorting case
      * insensitively, and no date parts).
-     * @param f field
-     * @param direction  {@link SortOrder#ORDER_ASCENDING} or {@link SortOrder#ORDER_DESCENDING}
-     * @return new SortOrder
      */
     SortOrder addSortOrder(StepField f, int direction);
 
@@ -341,8 +330,6 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
     void addNode(Step s, Node node);
 
     /**
-     * @param s query step
-     * @param number node number
      * @since MMBase-1.8
      */
     void addNode(Step s, int number);
@@ -364,7 +351,7 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
      * Create an (unused) clone
      * @return Cloned Query
      */
-    Query clone();
+    Object clone();
 
     /**
      * Clones this object, only without the fields
@@ -382,7 +369,6 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
 
     /**
      * Executes the query and returns the resulting node list.
-     * @return resulting node list
      * @since MMBase-1.8
      */
     NodeList getList();
@@ -390,15 +376,10 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
     /**
      * Shows the query in a human-readable SQL form. This is probably not the query which will
      * actually be sent to the database. This method is provided because 'toString' on a Query object
-     * is pretty complete, but pretty undigestable for mere mortals too. Implementions can also
-     * implement getSql(), which would make this available in e.g. EL too.
+     * is pretty complete, but pretty undigestable for mere mortals too.
      *
-     * @return human-readable SQL
      * @since MMBase-1.8
      */
     String toSql();
-
-
-    public void removeImplicitFields();
 
 }

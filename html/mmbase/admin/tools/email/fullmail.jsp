@@ -14,7 +14,7 @@
 
 <table summary="applications">
 
-<mm:node number='<%=request.getParameter("msg")%>' id="msg">
+<mm:node number="<%=request.getParameter("msg")%>" id="msg">
 <tr>
   <th class="header" colspan="4">Dynamic &amp; Timed Email System - Queue Monitor - v1.0</th>
 </tr>

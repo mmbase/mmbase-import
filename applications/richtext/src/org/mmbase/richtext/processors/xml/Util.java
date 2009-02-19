@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
 /**
  * Utility functions, used by various classes in the package.
  * @author Michiel Meeuwissen
- * @version $Id: Util.java,v 1.4 2008-09-25 10:17:28 michiel Exp $
+ * @version $Id: Util.java,v 1.3 2008-04-01 14:52:41 michiel Exp $
  */
 
 public abstract class Util {
@@ -95,17 +95,13 @@ public abstract class Util {
         }
     }
 
-    public static SortedSet<String> getCssClasses(String cl, Set<String> allowed) {
-        SortedSet<String> classes = new TreeSet<String>();
+    /**
+     */
+    public static String getCssClass(String cl) {
+        List<String> classes = new ArrayList();
         for (String c : cl.split("\\s+")) {
-            if (allowed == null || allowed.contains(c)) {
-                classes.add(c);
-            }
+            if (! classes.contains(c)) classes.add(c);
         }
-        return classes;
-    }
-
-    public static String getCssClass(Set<String> classes) {
         StringBuilder c = new StringBuilder();
         Iterator<String> i = classes.iterator();
         while (i.hasNext()) {
@@ -115,15 +111,6 @@ public abstract class Util {
             }
         }
         return c.toString();
-    }
-
-    /**
-     */
-    public static String getCssClass(String cl, Set<String> allowed) {
-        return getCssClass(getCssClasses(cl, allowed));
-    }
-    public static String getCssClass(String cl) {
-        return getCssClass(cl, null);
     }
 
     private final static Pattern WHITESPACE = Pattern.compile("\\s");

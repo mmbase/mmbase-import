@@ -6,7 +6,7 @@
 
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2rich.xslt,v 1.11 2008-10-28 10:01:01 michiel Exp $
+  @version: $Id: 2rich.xslt,v 1.10 2008-06-10 14:08:30 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -86,8 +86,7 @@
 
     <xsl:choose>
       <xsl:when test="count($relatednodes) &gt; 0 or $org.mmbase.richtext.wiki.show_broken = 'true'" >
-        <xsl:text>[</xsl:text>
-        <xsl:apply-templates select="." mode="undecorateids" />
+        <xsl:text>[</xsl:text><xsl:apply-templates select="." mode="undecorateids" />
         <xsl:if test="count(*|text()) &gt; 1 or string-length($class_name) &gt; 0 or (count(*|text()) = 1 and count(text()) &gt; 0)">
           <xsl:text>:</xsl:text>
           <xsl:apply-templates />

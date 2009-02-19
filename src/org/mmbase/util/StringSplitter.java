@@ -16,8 +16,7 @@ import java.util.*;
  *
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @author Michiel Meeuwissen
- * @version $Id: StringSplitter.java,v 1.12 2009-02-02 13:20:25 michiel Exp $
+ * @version $Id: StringSplitter.java,v 1.7.2.1 2009-02-04 15:25:24 michiel Exp $
  */
 public class StringSplitter {
 
@@ -28,11 +27,12 @@ public class StringSplitter {
      * @param delimiter
      * @return a (modifiable) List containing the elements
      */
-    static public List<String> split(String string, String delimiter) {
-        List<String> result = new ArrayList<String>();
+    static public List split(String string, String delimiter) {
+        List result = new ArrayList();
         if (string == null) return result;
-        for (String v : string.split(delimiter)) {
-            result.add(v.trim());
+        String[] values = string.split(delimiter);
+        for (int i = 0; i < values.length; i++) {
+            result.add(values[i].trim());
         }
         return result;
     }
@@ -44,7 +44,7 @@ public class StringSplitter {
      * @param string the string to split
      * @return a List containing the elements
      */
-    static public List<String> split(String string) {
+    static public List split(String string) {
         return split(string, ",");
     }
 
@@ -53,10 +53,10 @@ public class StringSplitter {
      * a(b,c,d),e,f(g) will be split up in a(b,c,d) and e and f(g).
      * @since MMBase-1.8
      */
-    static public List<String> splitFunctions(CharSequence attribute) {
+    static public List splitFunctions(CharSequence attribute) {
         int commaPos =  0;
         int nested   =  0;
-        List<String>  result = new ArrayList<String>();
+        List  result = new ArrayList();
         int i;
         int length   =  attribute.length();
         for(i = 0; i < length; i++) {
@@ -81,7 +81,7 @@ public class StringSplitter {
     /**
      * @since MMBase-1.9
      */
-    static public Map<String, String> map(String string) {
+    static public Map map(String string) {
         return map(string, ",");
     }
     /**
@@ -90,7 +90,7 @@ public class StringSplitter {
      * read like properties
      * @since MMBase-1.9.1
      */
-    static public Map<String, String> map(String string, String delimiter) {
+    static public Map map(String string, String delimiter) {
         if (delimiter.equals("\n")) {
             final Properties props = new Properties();
             try {
@@ -106,21 +106,21 @@ public class StringSplitter {
             // but must perform the following horribleness.
             //
             // In java 1.6 there is 'solution', which probably will hardly help. (http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6253413)
-            return  new AbstractMap<String, String>() {
-                public Set<Map.Entry<String, String>> entrySet() {
-                    return new AbstractSet<Map.Entry<String, String>>() {
+            return  new AbstractMap() {
+                public Set entrySet() {
+                    return new AbstractSet() {
                         public int size() {
                             return props.size();
                         }
-                        public Iterator<Map.Entry<String, String>> iterator() {
-                            return new Iterator<Map.Entry<String, String>>() {
-                                private final Iterator<Map.Entry<Object, Object>> i = props.entrySet().iterator();
+                        public Iterator iterator() {
+                            return new Iterator() {
+                                private final Iterator i = props.entrySet().iterator();
                                 public boolean hasNext() {
                                     return i.hasNext();
                                 }
-                                public Map.Entry<String, String> next()  {
-                                    Map.Entry<Object, Object> entry = i.next();
-                                    return new org.mmbase.util.Entry<String, String>((String) entry.getKey(), (String) entry.getValue());
+                                public Object next()  {
+                                    Map.Entry entry = (Map.Entry) i.next();
+                                    return new org.mmbase.util.Entry((String) entry.getKey(), (String) entry.getValue());
                                 }
                                 public void remove() {
                                     i.remove();
@@ -132,9 +132,11 @@ public class StringSplitter {
             };
 
         } else {
-            Map<String, String> map = new HashMap<String, String>();
-            List<String> keyValues = split(string, delimiter);
-            for (String kv : keyValues) {
+            Map  map = new HashMap();
+            List keyValues = split(string, delimiter);
+            Iterator i = keyValues.iterator();
+            while(i.hasNext()) {
+                String kv = (String) i.next();
                 if ("".equals(kv)) continue;
                 int is = kv.indexOf('=');
                 map.put(kv.substring(0, is), kv.substring(is + 1));
@@ -142,5 +144,7 @@ public class StringSplitter {
             return map;
         }
     }
+
+
 
 }

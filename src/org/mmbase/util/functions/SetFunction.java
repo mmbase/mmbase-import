@@ -20,37 +20,108 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.22 2008-08-04 09:45:23 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.13.2.6 2008-08-04 09:44:58 michiel Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
-public class SetFunction extends AbstractFunction<Object> {
+public class SetFunction extends AbstractFunction {
     private static final Logger log = Logging.getLoggerInstance(SetFunction.class);
 
-    public static enum Type {
-        /**
-         * If type is 'class' the method must be static, or if it is not static, there will be instantiated <em>one</em> object.
-         */
-        CLASS,
-        /**
-         * If type is 'instance' the method must not be static, and on every call to getFunctionValue, a new object is instantiated.
-         */
-        INSTANCE,
-        /**
-         * If type is 'singleton', then the static method 'getInstance' will be called to get the one instance, unless the method is static.
-         */
-        SINGLETON
-    }
-
-    private final Method functionMethod;
-    private final Object functionInstance ;
-    private final Type type;
-    private final int defLength;
+    /**
+     * If type is 'class' the method must be static, or if it is not static, there will ie instantiated <em>one</em> object.
+     */
+    static final int TYPE_CLASS = 1;
 
     /**
-     * Simple utility method to convert primitive classes to their 'sophisticated' counterparts.
-     *
+     * If type is 'class' the method must not be static, and on every call to getFunctionValue, a new object is instantiated.
+     */
+    static final int TYPE_INSTANCE = 2;
+
+    private Method functionMethod   = null;
+    private Object functionInstance = null;
+    private int type = TYPE_CLASS;
+    private final int defLength;
+
+    public SetFunction(String name, Parameter[] def, ReturnType returnType, String className, String methodName) {
+        super(name, def, returnType);
+        defLength = def.length;
+        Class functionClass;
+        try {
+            functionClass = Class.forName(className);
+        } catch(Exception e) {
+            throw new RuntimeException("Can't create an application function class : " + className + " " + e.getMessage(), e);
+        }
+        initialize(functionClass, methodName);
+    }
+    public SetFunction(String name, Parameter[] def, String className, String methodName) {
+        this(name, def, null, className, methodName);
+    }
+    /**
      * @since MMBase-1.8.5
+     */
+    public SetFunction(String name, Parameter[] def, Class clazz) {
+        super(name, def, null);
+        defLength = def.length;
+        initialize(clazz, name);
+    }
+
+    /**
+     */
+    public Object getFunctionValue(Parameters parameters) {
+        parameters.checkRequiredParameters();
+        if (log.isDebugEnabled()) {
+            log.debug("Calling " + functionMethod + " with " + parameters);
+        }
+        try {
+            if (defLength < parameters.size()) {
+                // when wrapping this fucntion, it can happen that the number of parameters increases.
+                return functionMethod.invoke(getInstance(), parameters.subList(0, defLength).toArray());
+            } else {
+                return functionMethod.invoke(getInstance(), parameters.toArray());
+            }
+        } catch (IllegalAccessException iae) {
+            log.error("Function call failed (method not available) : " + name +", method: " + functionMethod +
+                       ", instance: " + getInstance() +", parameters: " + parameters);
+            return null;
+        } catch (InvocationTargetException ite) {
+            Throwable te = ite.getTargetException();
+            if (te instanceof RuntimeException) {
+                throw (RuntimeException) te;
+            } else {
+                throw new RuntimeException(te); // throw the actual exception that occurred
+            }
+        } catch (IllegalArgumentException iae) {
+            String mes =
+                "Function call failed (method not available) : " + name +", method: " + functionMethod +
+                ", instance: " + getInstance() +", parameters: " + parameters;
+            throw new RuntimeException(mes, iae);
+
+        }
+    }
+
+    public void setType(String t) {
+        if (t.equalsIgnoreCase("instance")) {
+            type = TYPE_INSTANCE;
+        } else {
+            type = TYPE_CLASS;
+        }
+    }
+
+
+    protected Object getInstance() {
+        if (functionInstance != null || type == TYPE_CLASS) return functionInstance;
+        try {
+            return functionMethod.getDeclaringClass().newInstance();
+        } catch(Exception e) {
+            throw new RuntimeException("Can't create an function instance : " + functionMethod.getDeclaringClass().getName(), e);
+        }
+    }
+
+
+    /**
+     * Simple utility method to convert primitive classes to there 'sophisticated' counterparts.
+     *
+     * @since MMBase-1.8
      */
     protected static Class sophisticate(Class primitive) {
 
@@ -79,99 +150,42 @@ public class SetFunction extends AbstractFunction<Object> {
         return primitive;
     }
 
+    private void checkReturnType() {
+        if (returnType == null) {
+            returnType = new ReturnType(functionMethod.getReturnType(), functionMethod.getReturnType().getClass().getName());
+        }
+        Class returni = sophisticate(functionMethod.getReturnType());
+	Class returnx = sophisticate(returnType.getDataType().getTypeAsClass());
+        if (! returnx.isAssignableFrom(returni)) {
+            log.warn("Return value of method " + functionMethod + " (" + returni + ") does not match method return type as specified in XML: (" + returnx + ")");
+        } else {
+            log.debug("Return value of method " + functionMethod + " (" + returni + ") does match return type as specified in XML: (" + returnx + ")");
+        }
+    }
 
-    SetFunction(String name, Parameter[] def, ReturnType<Object> returnType, Class functionClass, String methodName, Type type) {
-        super(name, def, returnType);
-        this.type = type;
+    /**
+     * Initializes the function by creating an instance of the function class, and
+     * locating the method to call.
+     */
+    private void initialize(Class functionClass, String methodName) {
 
         try {
             functionMethod = functionClass.getMethod(methodName, createParameters().toClassArray());
         } catch(NoSuchMethodException e) {
             throw new RuntimeException("Function method not found : " + functionClass + "." + methodName + "(" +  Arrays.asList(getParameterDefinition()) +")", e);
         }
-
         if (Modifier.isStatic(functionMethod.getModifiers())) {
             functionInstance = null;
         } else {
-            switch (type) {
-            case CLASS:
+            if (type != TYPE_INSTANCE) {
                 try {
-                    functionInstance = functionMethod.getDeclaringClass().newInstance();
-                } catch(Exception e) {
-                     throw new RuntimeException("Can't create an function instance : " + functionMethod.getDeclaringClass().getName(), e);
-                }
-                break;
-            case SINGLETON:
-                try {
-                    Method singleton = functionClass.getMethod("getInstance");
-                    functionInstance = singleton.invoke(null);
+                    functionInstance =  functionMethod.getDeclaringClass().newInstance();
                 } catch(Exception e) {
                     throw new RuntimeException("Can't create an function instance : " + functionMethod.getDeclaringClass().getName(), e);
                 }
-                break;
-            case INSTANCE:
-                functionInstance = null;
-                // one will be made on every calle
-                break;
-            default:
-                functionInstance = null;
-            }
-
-        }
-        if (returnType == null) {
-            setReturnType(new ReturnType<Object>(functionMethod.getReturnType(), functionMethod.getReturnType().getClass().getName()));
-            returnType = getReturnType();
-        }
-
-	Class methodReturnType = sophisticate(functionMethod.getReturnType());
-	Class xmlReturnType    = sophisticate(returnType.getDataType().getTypeAsClass());
-
-        if (! xmlReturnType.isAssignableFrom(methodReturnType)) {
-            log.warn("Return value of function " + functionClass + "." + methodName + "(" + methodReturnType + ") does not match method return type as specified in XML: (" + xmlReturnType + ")");
-        }
-        defLength = def.length;
-    }
-
-    /**
-     * @since MMBase-1.8.5
-     */
-    public SetFunction(String name, Parameter[] def, Class clazz) {
-        this(name, def, null, clazz, name, Type.CLASS);
-    }
-
-    /**
-     */
-    public Object getFunctionValue(Parameters parameters) {
-        parameters.checkRequiredParameters();
-        try {
-            if (defLength < parameters.size()) {
-                // when wrapping this fucntion, it can happen that the number of parameters increases.
-                return functionMethod.invoke(getInstance(), parameters.subList(0, defLength).toArray());
-            } else {
-                return functionMethod.invoke(getInstance(), parameters.toArray());
-            }
-        } catch (IllegalAccessException iae) {
-            log.error("Function call failed (method not available) : " + name +", method: " + functionMethod +
-                       ", instance: " + getInstance() +", parameters: " + parameters);
-            return null;
-        } catch (InvocationTargetException ite) {
-            Throwable te = ite.getTargetException();
-            if (te instanceof RuntimeException) {
-                throw (RuntimeException) te;
-            } else {
-                throw new RuntimeException(te); // throw the actual exception that occurred
             }
         }
+        checkReturnType();
+
     }
-
-
-    protected Object getInstance() {
-        if (functionInstance != null || type == Type.CLASS) return functionInstance;
-        try {
-            return functionMethod.getDeclaringClass().newInstance();
-        } catch(Exception e) {
-            throw new RuntimeException("Can't create an function instance : " + functionMethod.getDeclaringClass().getName(), e);
-        }
-    }
-
 }

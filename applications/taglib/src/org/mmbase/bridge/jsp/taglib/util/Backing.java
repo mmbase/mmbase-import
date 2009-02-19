@@ -12,6 +12,10 @@ package org.mmbase.bridge.jsp.taglib.util;
 
 import javax.servlet.jsp.PageContext;
 import java.util.*;
+import org.mmbase.util.Casting;
+import org.mmbase.util.transformers.CharTransformer;
+import org.mmbase.bridge.jsp.taglib.ContextTag;
+import org.mmbase.bridge.jsp.taglib.ContentTag;
 
 
 /**
@@ -19,23 +23,23 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: Backing.java,v 1.10 2008-12-29 11:19:17 michiel Exp $
+ * @version $Id: Backing.java,v 1.5.2.1 2006-11-21 20:39:56 michiel Exp $
  */
 
-public interface Backing extends Map<String, Object> {
+public interface Backing extends Map {
     /**
      * Get the original value as stored in this Map, so without every wrapping which may have been
      * done.
      */
-    public Object getOriginal(String key);
+    public Object getOriginal(Object key);
     /**
      * Whether this map contains the given key, but by its own, so not because of possible
      * reflection of another structure (like the page context).
      */
-    public boolean containsOwnKey(String key);
+    public boolean containsOwnKey(Object key);
 
     /**
-     *
+     * 
      */
     public void setJspVar(PageContext pc, String jspvar, int type, Object value);
 
@@ -50,20 +54,8 @@ public interface Backing extends Map<String, Object> {
      */
     public void pullPageContext(PageContext pc);
 
-
     /**
      * @since MMBase-1.8.3
      */
     public PageContext getPageContext();
-
-    /**
-     * @since MMBase-1.9
-     */
-    public Map<String, Object> getOriginalMap();
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    public boolean isELIgnored();
 }
-

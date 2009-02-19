@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: CountRelationsTag.java,v 1.28 2008-08-14 11:24:15 michiel Exp $
+ * @version $Id: CountRelationsTag.java,v 1.25.2.1 2006-12-07 13:20:49 michiel Exp $ 
  */
 
 public class CountRelationsTag extends NodeReferrerTag implements Writer {
@@ -46,23 +46,23 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
         role = getAttribute(r);
     }
 
-    public int doStartTag() throws JspException {
-        super.doStartTag();
+    public int doStartTag() throws JspTagException {
+        
         if (getReferid() != null) {
             helper.setValue(getContextProvider().getContextContainer().getObject(getReferid()));
         } else {
             log.debug("Search the node.");
             Node node = getNode();
             Cloud cloud = node.getCloud();
-            NodeManager other =
-                type == Attribute.NULL ?
-                cloud.getNodeManager("object") :
+            NodeManager other = 
+                type == Attribute.NULL ? 
+                cloud.getNodeManager("object") : 
                 cloud.getNodeManager(type.getString(this));
             String direction = (String) searchDir.getValue(this);
             if (direction == null) direction = "BOTH";
             String r = (String) role.getValue(this);
             if ("".equals(r)) r = null;
-            helper.setValue(node.countRelatedNodes(other, r, direction));
+            helper.setValue(new Integer(node.countRelatedNodes(other, r, direction)));
         }
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());

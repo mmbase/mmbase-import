@@ -1,4 +1,0 @@
-<tr>
-	<th>Download</th>
-	<td><a href="http://www.mmbase.org/download/releases/mmbase-1.7.0-media.zip"><img src="images/arrow-right.gif"></a></td>
-</tr>

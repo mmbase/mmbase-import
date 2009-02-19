@@ -23,30 +23,16 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.33 2008-09-18 09:48:29 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.21.2.1 2007-06-05 13:05:35 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
  * @since MMBase-1.8
  */
 
-public abstract class NodeFunction<R> extends AbstractFunction<R> {
+public abstract class NodeFunction extends AbstractFunction {
 
     private static final Logger log = Logging.getLoggerInstance(NodeFunction.class);
-
-    /**
-     * @return The currently set ReturnType, or <code>null</code> if not set already.
-     */
-    public ReturnType<R> getReturnType() {
-        if (returnType == null && autoReturnType) {
-            try {
-                returnType = (ReturnType<R>) ReturnType.getReturnType(getClass().getDeclaredMethod("getFunctionValue", Node.class, Parameters.class).getReturnType());
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        }
-        return returnType;
-    }
 
     /**
      * Utility function, for easy call of function on node by one string.
@@ -56,7 +42,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
             log.warn("Tried to execute node-function on null!");
             return null;
         }
-        List<String> args = new ArrayList<String>();
+        List args = new ArrayList();
         String functionName = getFunctionNameAndFillArgs(function, args);
         if (log.isDebugEnabled()) {
             log.debug("Executing " + functionName + " " + args + " on " + node.getNumber());
@@ -65,42 +51,41 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
         return node.getFunctionValue(functionName, args);
     }
 
-    public static String getFunctionNameAndFillArgs(String function, java.util.List<String> args) {
+    public static String getFunctionNameAndFillArgs(String function, java.util.List args) {
         String functionName = function;
         int pos1 = function.indexOf('(');
         if (pos1 != -1) {
             int pos2 = function.lastIndexOf(')');
             if (pos2 != -1) {
                 functionName = function.substring(0, pos1);
-                java.util.List<String> args2 = org.mmbase.util.StringSplitter.splitFunctions(function.subSequence(pos1 + 1, pos2));
+                java.util.List args2 = org.mmbase.util.StringSplitter.splitFunctions(function.subSequence(pos1 + 1, pos2));
                 args.addAll(args2);
             }
         }
         return functionName;
     }
 
-    public NodeFunction(String name, Parameter<?>[] def, ReturnType<R> returnType) {
+    public NodeFunction(String name, Parameter[] def, ReturnType returnType) {
         super(name, getNodeParameterDef(def), returnType);
     }
-    /**
-     * @since MMBase-1.9
-     */
-    public NodeFunction(String name, Parameter... def) {
-        super(name, getNodeParameterDef(def));
-    }
 
-    protected static Parameter[] getNodeParameterDef(Parameter... def) {
-        List<Parameter> defList = new ArrayList(Arrays.asList(def));
-        if (! defList.contains(Parameter.NODE)) defList.add(Parameter.NODE);
-        if (! defList.contains(Parameter.CLOUD)) defList.add(Parameter.CLOUD);
-        if (! defList.contains(Parameter.CORENODE)) defList.add(Parameter.CORENODE);
-        return defList.toArray(Parameter.emptyArray());
+    protected static Parameter[] getNodeParameterDef(Parameter[] def) {
+        List defList = Arrays.asList(def);
+        if (defList.contains(Parameter.NODE) && defList.contains(Parameter.CLOUD)) {
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.CORENODE};
+        } else if (defList.contains(Parameter.NODE)) {
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.CLOUD, Parameter.CORENODE};
+        } else if (defList.contains(Parameter.CLOUD)) {
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, Parameter.CORENODE};
+        } else {
+            return new Parameter[] { new Parameter.Wrapper(def), Parameter.NODE, Parameter.CLOUD, Parameter.CORENODE};
+        }
     }
 
     /**
      * Returns a new instance of NodeInstanceFunction, which represents an actual Function.
      */
-    final public Function<R> newInstance(MMObjectNode node) {
+    final public Function newInstance(MMObjectNode node) {
         return new NodeInstanceFunction(node);
     }
 
@@ -112,11 +97,11 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
      *
      * XXX: made final because it does not work well if you don't implement a bridge version
      */
-    protected final R getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
+    protected final Object getFunctionValue(final MMObjectNode coreNode, final Parameters parameters) {
         if (coreNode == null) throw new RuntimeException("No node argument given for " + this + "(" + parameters + ")!");
-        Node node = parameters.get(Parameter.NODE);
+        Node node = (Node) parameters.get(Parameter.NODE);
         if (node == null) {
-            Cloud cloud   = parameters.get(Parameter.CLOUD);
+            Cloud cloud   = (Cloud)  parameters.get(Parameter.CLOUD);
             if (cloud == null) {
                 // lets try this
                 try {
@@ -144,8 +129,10 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
                         // This happens when calling gui() in transaction.
                         // Perhaps we need something like a public new BasicNode(MMobjectNode, Cloud). Abusing VirtualNode for similar purpose now.
                         org.mmbase.module.core.VirtualNode virtual = new org.mmbase.module.core.VirtualNode(coreNode.getBuilder());
-                        for (Map.Entry<String, Object> entry : coreNode.getValues().entrySet()) {
-                            virtual.storeValue(entry.getKey(), entry.getValue());
+                        Iterator i = coreNode.getValues().entrySet().iterator();
+                        while (i.hasNext()) {
+                            Map.Entry entry = (Map.Entry) i.next();
+                            virtual.storeValue((String) entry.getKey(), entry.getValue());
                         }
                         node = new org.mmbase.bridge.implementation.VirtualNode(virtual, cloud);
                     }
@@ -178,13 +165,13 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
 
     /**
      */
-    protected abstract R getFunctionValue(Node node, Parameters parameters);
+    protected abstract Object getFunctionValue(Node node, Parameters parameters);
 
     protected Node getNode(Parameters parameters) {
         if (! parameters.containsParameter(Parameter.NODE)) {
             throw new IllegalArgumentException("The function " + toString() + " requires a node argument");
         }
-        Node node = parameters.get(Parameter.NODE);
+        Node node = (Node) parameters.get(Parameter.NODE);
         if (node == null) {
             throw new IllegalArgumentException("The '" + Parameter.NODE + "' argument of  " + getClass() + " " + toString() + " must not be null ");
         }
@@ -195,34 +182,35 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
      * To implement a NodeFunction, you must override {@link #getFunctionValue(Node, Parameters)}.
      * This one can be overriden if the same function must <em>also</em> be a builder function.
      */
-    public  R getFunctionValue(Parameters parameters) {
+    public Object getFunctionValue(Parameters parameters) {
         return  getFunctionValue(getNode(parameters), parameters);
     }
+
 
     /**
      * Tries to convert a certain Function object into a NodeFunction object.
      * @return <code>function</code> if that was already a NodeFunction, <code>null</code> if it
      * could not be wrapped (No {@link Parameter#NODE} parameter), or a new NodeFunction object
      * wrapping <code>function</code>
-     *
+     * 
      * @since MMBase-1.8.5
      */
-    public static <S> NodeFunction<S> wrap(Function<S> function) {
+    public static NodeFunction wrap(Function function) {
         if (function instanceof NodeFunction) {
-            return (NodeFunction<S>) function;
+            return (NodeFunction) function;
         } else {
             // if it contains a 'node' parameter, it can be wrapped into a node-function,
             // and be available on nodes of this builder.
             Parameters test = function.createParameters();
             if (test.containsParameter(Parameter.NODE)) {
-                final Function<S> f = function;
-                return new NodeFunction<S>(function.getName(), function.getParameterDefinition(), function.getReturnType()) {
-                        protected S getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
+                final Function f = function;
+                return new NodeFunction(function.getName(), function.getParameterDefinition(), function.getReturnType()) {
+                        protected Object getFunctionValue(org.mmbase.bridge.Node node, Parameters parameters) {
                             if (parameters == null) parameters = createParameters();
                             parameters.set(Parameter.NODE, node);
                             return f.getFunctionValue(parameters);
                         }
-                        public  S getFunctionValue(Parameters parameters) {
+                        public  Object getFunctionValue(Parameters parameters) {
                             return f.getFunctionValue(parameters);
                         }
                     };
@@ -231,12 +219,11 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
             }
         }
     }
-
     /**
      * This represents the function on one specific Node. This is instantiated when new Istance
      * if called on a NodeFunction.
      */
-    private class NodeInstanceFunction extends WrappedFunction<R> {
+    private class NodeInstanceFunction extends WrappedFunction {
 
         protected MMObjectNode node;
 
@@ -245,7 +232,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
             this.node = node;
         }
         //javadoc inherited
-        public final R getFunctionValue(Parameters parameters) {
+        public final Object getFunctionValue(Parameters parameters) {
             parameters.set(Parameter.CORENODE, node);
             return NodeFunction.this.getFunctionValue(node, parameters);
 

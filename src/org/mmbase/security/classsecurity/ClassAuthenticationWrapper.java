@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
  * can be linked to classes in this XML configuration file.
  *
  * @author   Michiel Meeuwissen
- * @version $Id: ClassAuthenticationWrapper.java,v 1.8 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: ClassAuthenticationWrapper.java,v 1.7 2005-01-30 16:46:39 nico Exp $
  * @since    MMBase-1.8
  */
 public class ClassAuthenticationWrapper extends Authentication {
@@ -64,16 +64,16 @@ public class ClassAuthenticationWrapper extends Authentication {
             InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
             Document document = DocumentReader.getDocumentBuilder(
                true, // validate aggresively, because no further error-handling will be done
-               new org.mmbase.util.xml.ErrorHandler(false, 0), // don't log, throw exception if not valid, otherwise big chance on NPE and so on
-               new org.mmbase.util.xml.EntityResolver(true, getClass()) // validate
+               new XMLErrorHandler(false, 0), // don't log, throw exception if not valid, otherwise big chance on NPE and so on
+               new XMLEntityResolver(true, getClass()) // validate
                ).parse(in);
-
-
+            
+            
             Node authentication = document.getElementsByTagName("authentication").item(0);
-
+            
             String wrappedClass = authentication.getAttributes().getNamedItem("class").getNodeValue();
             String wrappedUrl   = authentication.getAttributes().getNamedItem("url").getNodeValue();
-
+            
             wrappedAuthentication = getAuthenticationInstance(wrappedClass);
             wrappedAuthentication.load(manager, configWatcher, wrappedUrl);
             ClassAuthentication.stopWatching();
@@ -99,7 +99,7 @@ public class ClassAuthenticationWrapper extends Authentication {
             if (loginInfo == null) loginInfo = new HashMap();
             loginInfo.putAll(l.map);
             return wrappedAuthentication.login(l.application, loginInfo, parameters);
-        }
+        } 
         return null;
     }
 
@@ -112,8 +112,8 @@ public class ClassAuthenticationWrapper extends Authentication {
         try {
             return wrappedAuthentication.login(application, loginInfo, parameters);
         } catch (UnknownAuthenticationMethodException uam) { // no luck
-            return login(loginInfo, parameters);
-        } catch (SecurityException se) { // perhaps not recognized
+            return login(loginInfo, parameters); 
+        } catch (SecurityException se) { // perhaps not recognized 
             log.warn("Authentication did not succeed " +  se.getMessage() + " trying self");
             return login(loginInfo, parameters);
         }

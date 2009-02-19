@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.41 2009-02-17 11:07:37 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.37.2.1 2007-10-22 14:10:01 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -48,8 +48,10 @@ public class NodeHandler extends AbstractTypeHandler {
         super(tag);
     }
 
-    protected class IgnoreCaseComparator implements Comparator<String> {
-        public int  compare(String s1, String s2) {
+    protected class IgnoreCaseComparator implements Comparator {
+        public int  compare(Object o1, Object o2) {
+            String s1 = (String)o1;
+            String s2 = (String)o2;
             return s1.toUpperCase().compareTo(s2.toUpperCase());
         }
     }
@@ -79,13 +81,13 @@ public class NodeHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
         // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
         if(useLegacy(node, field) &&
            // backwards compatibility. super should deal correctly with enumerations, also for node-fields
            tag.getCloudVar().hasNodeManager(field.getGUIType())) {
-            StringBuilder buffer = new StringBuilder();
+            StringBuffer buffer = new StringBuffer();
             // yippee! the gui was the same a an builder!
             buffer.append("<select class=\"" + getClasses(node, field) + "\" name=\"").append( prefix(field.getName()) ).append("\" ");
             buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");
@@ -108,7 +110,7 @@ public class NodeHandler extends AbstractTypeHandler {
 
             NodeIterator nodes = tag.getCloudVar().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
 
-            SortedMap<String, String> sortedGUIs = new TreeMap<String, String>(new IgnoreCaseComparator());
+            SortedMap sortedGUIs = new TreeMap(new IgnoreCaseComparator());
 
             // If this is the 'builder' field of the reldef builder, we need to filter
             // as we are only interested in insrel-derived builders.
@@ -124,7 +126,10 @@ public class NodeHandler extends AbstractTypeHandler {
                   sortedGUIs.put(n.getFunctionValue("gui", args).toString(), "" + n.getNumber());
                 }
             }
-            for (Map.Entry<String, String> gui : sortedGUIs.entrySet()) {
+            Iterator i = sortedGUIs.entrySet().iterator();
+            while(i.hasNext()) {
+                Map.Entry gui = (Map.Entry) i.next();
+
                 // we have a match on the number!
                 buffer.append("  <option ");
                 if(gui.getValue().equals(value)) {
@@ -161,7 +166,7 @@ public class NodeHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    @Override public String whereHtmlInput(Field field) throws JspTagException {
+    public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         if(useLegacy(null, field) &&
             tag.getCloudVar().hasNodeManager(field.getGUIType())) {
@@ -173,7 +178,7 @@ public class NodeHandler extends AbstractTypeHandler {
         return super.whereHtmlInput(field);
     }
 
-    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         if(useLegacy(null, field) &&
            tag.getCloudVar().hasNodeManager(field.getGUIType())) {

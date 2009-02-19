@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The step alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStep.java,v 1.13 2008-07-17 12:55:23 michiel Exp $
+ * @version $Id: BasicStep.java,v 1.8 2005-10-30 19:08:56 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
@@ -31,7 +31,7 @@ public class BasicStep implements Step {
      * Nodenumber set for nodes to be included (ordered
      * using integer comparison).
      */
-    protected SortedSet<Integer> nodes = null;
+    protected SortedSet nodes = new TreeSet();
     /**
      * Constructor.
      *
@@ -69,12 +69,11 @@ public class BasicStep implements Step {
      * @return This <code>BasicStep</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public Step addNode(int nodeNumber) {
+    public BasicStep addNode(int nodeNumber) {
         if (nodeNumber < 0) {
             throw new IllegalArgumentException("Invalid nodeNumber value: " + nodeNumber);
         }
-        if (nodes == null) nodes =  new TreeSet<Integer>();
-        nodes.add(nodeNumber);
+        nodes.add(new Integer(nodeNumber));
         return this;
     }
 
@@ -98,8 +97,8 @@ public class BasicStep implements Step {
     }
 
     // javadoc is inherited
-    public SortedSet<Integer> getNodes() {
-        return nodes == null ? null : Collections.unmodifiableSortedSet(nodes);
+    public SortedSet getNodes() {
+        return Collections.unmodifiableSortedSet(nodes);
     }
 
     // javadoc is inherited
@@ -111,7 +110,7 @@ public class BasicStep implements Step {
             Step step = (Step) obj;
             return getTableName().equals(step.getTableName())
                 && (alias == null ? step.getAlias() == null : alias.equals(step.getAlias()))
-                && (nodes == null ? step.getNodes() == null : nodes.equals(step.getNodes()));
+                && nodes.equals(step.getNodes());
         } else {
             return false;
         }
@@ -120,12 +119,13 @@ public class BasicStep implements Step {
     // javadoc is inherited
     public int hashCode() {
         return 41 * builder.getTableName().hashCode()
-            + (alias == null? 0: 43 * alias.hashCode()) + 47 * (nodes == null ? 1 : nodes.hashCode());
+        + (alias == null? 0: 43 * alias.hashCode()) + 47 * nodes.hashCode();
     }
 
     // javadoc is inherited
     public String toString() {
-        StringBuilder sb = new StringBuilder("Step(tablename:").append(getTableName()).
+        StringBuffer sb = new StringBuffer("Step(tablename:").
+        append(getTableName()).
         append(", alias:").append(alias).
         append(", nodes:").append(nodes).
         append(")");

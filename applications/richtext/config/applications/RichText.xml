@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="RichText" maintainer="mmbase.org" version="2" auto-deploy="false">
+<application name="RichText" maintainer="mmbase.org" version="1" auto-deploy="false">
 
   <requirements>
     <requires name="RichTextBasics" maintainer="mmbase.org" version="1" />
@@ -21,7 +21,6 @@
     <relation from="content"    to="urls"        type="idrel" /><!-- inline urls -->
     <relation from="content"    to="images"      type="idrel" /><!-- inline images -->
     <relation from="content"    to="attachments" type="idrel" /><!-- inline images -->
-    <relation from="content"    to="flashobjects" type="idrel" /><!-- inline images -->
     <relation from="content"    to="segments"   type="idrel" /> <!-- cross-references-->
     <relation from="content"    to="blocks"    type="idrel" /> <!-- notes-->
 

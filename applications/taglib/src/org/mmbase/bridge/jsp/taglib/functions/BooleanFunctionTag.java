@@ -22,7 +22,7 @@ import org.mmbase.util.Casting;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: BooleanFunctionTag.java,v 1.5 2008-08-14 13:58:49 michiel Exp $
+ * @version $Id: BooleanFunctionTag.java,v 1.4 2005-01-30 16:46:38 nico Exp $
  */
 public class BooleanFunctionTag extends AbstractFunctionTag implements Condition, FunctionContainerReferrer {
 
@@ -37,7 +37,6 @@ public class BooleanFunctionTag extends AbstractFunctionTag implements Condition
     }
 
     public int doStartTag() throws JspTagException {
-        initTag();
         Object value = getFunctionValue();
         boolean booleanValue = Casting.toBoolean(value);
         return (booleanValue != getInverse()) ? EVAL_BODY_BUFFERED : SKIP_BODY;

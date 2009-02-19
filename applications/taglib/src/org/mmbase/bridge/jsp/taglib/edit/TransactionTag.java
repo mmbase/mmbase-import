@@ -30,15 +30,15 @@ import org.mmbase.util.logging.Logging;
  * Creates a new Transaction.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTag.java,v 1.28 2007-11-14 14:29:12 michiel Exp $
+ * @version $Id: TransactionTag.java,v 1.23.2.5 2008-04-22 07:47:59 michiel Exp $
  */
 
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
 
     private static final Logger log = Logging.getLoggerInstance(TransactionTag.class);
+
     public static final String KEY = "org.mmbase.transaction";
     public static final int SCOPE = PageContext.REQUEST_SCOPE;
-
 
     protected Transaction transaction;
     protected Attribute commit = Attribute.NULL;
@@ -47,6 +47,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
 
     protected Object prevCloud;
     protected Object prevTransaction;
+
 
     public void setCommitonclose(String c) throws JspTagException {
         commit = getAttribute(c);
@@ -106,7 +107,10 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
             if (name == null) {
                 throw new JspTagException("Did not find transaction in context, and no name for transaction supplied");
             }
-            transaction = super.getCloudVar().getTransaction(n);
+            Cloud cloud = super.getCloudVar();
+            transaction = cloud.getTransaction(n);
+            log.info("Used " + cloud + " to get " + transaction);
+
             if (getId() != null && ! foundThis) { // put it in context
                 log.debug("putting transaction in context");
                 getContextProvider().getContextContainer().register(getId(), transaction);
@@ -116,7 +120,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         prevTransaction = pageContext.getAttribute(TransactionTag.KEY, TransactionTag.SCOPE);
         if (prevCloud != null) {
             log.debug("Found previous cloud " + prevCloud);
-       }
+        }
         pageContext.setAttribute(CloudTag.KEY, transaction, CloudTag. SCOPE);
         pageContext.setAttribute(TransactionTag.KEY, transaction, TransactionTag. SCOPE);
 
@@ -137,21 +141,19 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
                 getContextProvider().getContextContainer().unRegister(getId());
             }
         }
+        transaction = null;
         pageContext.setAttribute(CloudTag.KEY, prevCloud, CloudTag.SCOPE);
         pageContext.setAttribute(TransactionTag.KEY, prevTransaction, TransactionTag.SCOPE);
-        transaction = null;
         prevCloud = null;
         prevTransaction = null;
         return super.doEndTag();
     }
     public int doAfterBody() throws JspTagException {
-        if (EVAL_BODY == EVAL_BODY_BUFFERED) {
-            if (bodyContent != null) {
-                try {
-                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
-                } catch (IOException ioe){
-                    throw new JspTagException(ioe.toString());
-                }
+        if (bodyContent != null) {
+            try {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            } catch (IOException ioe){
+                throw new JspTagException(ioe.toString());
             }
         }
         return SKIP_BODY;

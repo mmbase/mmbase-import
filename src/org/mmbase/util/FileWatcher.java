@@ -14,12 +14,12 @@ import java.io.File;
 import java.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.UtilReader;
-import java.util.concurrent.*;
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Original javadoc.
 
- *  This will schedule a job after it has been started.
+ *  This will run as a thread after it has been started.
  *  It will check every interval if one of it's files has been changed.
  *  When one of them has been changed, the onChange method will be called, with the file that
  *  was changed. After that the thread will stop.
@@ -63,11 +63,15 @@ import java.util.concurrent.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.54 2008-08-13 21:52:05 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.38 2006-04-19 21:10:58 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
 
+    private static FileWatcherRunner fileWatchers = new FileWatcherRunner();
+    static {
+        fileWatchers.start();
+    }
 
     /**
      *	The default delay between every file modification check, set to 60
@@ -81,29 +85,8 @@ public abstract class FileWatcher {
     static public long THREAD_DELAY = 10000;
 
 
-    static ScheduledFuture future;
-    static FileWatcherRunner fileWatchers = new FileWatcherRunner();
-    static {
 
-        ScheduledExecutorService scheduler;
-        try {
-            // to avoid depdencoy of rmmci on all threadpools
-            scheduler = (ScheduledExecutorService) Class.forName("org.mmbase.util.ThreadPools").getField("scheduler").get(null);
-        } catch (Exception cnfe) {
-            log.service(cnfe);
-            scheduler =  new ScheduledThreadPoolExecutor(1);
-        }
-        future = scheduler.scheduleAtFixedRate(fileWatchers, THREAD_DELAY, THREAD_DELAY, TimeUnit.MILLISECONDS);
-        try {
-            Class.forName("org.mmbase.util.ThreadPools").getMethod("identify", Future.class, String.class).invoke(null, future, "File Watcher");
-        } catch (Exception cnfe) {
-            // never mind
-        }
-    }
-
-
-
-    private static Map<String,String> props;
+    private static Map props;
 
 
     /**
@@ -112,7 +95,7 @@ public abstract class FileWatcher {
     static private Runnable watcher = new Runnable() {
             public void run() {
                 try {
-                    String delay = props.get("delay");
+                    String delay =  (String) props.get("delay");
                     if (delay != null) {
                         THREAD_DELAY = Integer.parseInt(delay);
                         log.service("Set thread delay time to " + THREAD_DELAY);
@@ -132,10 +115,9 @@ public abstract class FileWatcher {
     /**
      * @since MMBase-1.8
      */
-    public static void shutdown() {
-        future.cancel(true);
-        fileWatchers.cancel();
-        fileWatchers = null;
+    public static void shutdown() {        
+        fileWatchers.run = false;
+        fileWatchers.interrupt();
         log.service("Shut down file watcher thread");
     }
 
@@ -145,12 +127,12 @@ public abstract class FileWatcher {
      */
     private long delay = DEFAULT_DELAY;
 
-    private Set<FileEntry> files = new LinkedHashSet<FileEntry>();
-    private Set<File> fileSet = new FileSet(); // (automaticly) wraps 'files'.
-    private Set<File> removeFiles = new HashSet<File>();
+    private Set files = new LinkedHashSet();
+    private Set fileSet = new FileSet(); // (automaticly) wraps 'files'.
+    private Set removeFiles = new HashSet();
     private boolean stop = false;
     private boolean continueAfterChange = false;
-    private long lastCheck = System.currentTimeMillis();
+    private long lastCheck = 0;
 
     protected FileWatcher() {
         this(true);
@@ -172,13 +154,11 @@ public abstract class FileWatcher {
 
     /**
      * Set the delay to observe between each check of the file changes.
-     * @param delay The delay in milliseconds
      */
     public void setDelay(long delay) {
         this.delay = delay;
         if (delay < THREAD_DELAY) {
-            log.info("Delay of " + this + "  (" + delay + " ms) is smaller than the delay of the watching thread. Will not watch more often then once per " + THREAD_DELAY + " ms. Set to " + THREAD_DELAY);
-            this.delay = THREAD_DELAY;
+            log.service("Delay of " + this + "  (" + delay + " ms) is smaller than the delay of the watching thread. Will not watch more often then once per " + THREAD_DELAY + " ms.");
         }
     }
 
@@ -221,7 +201,7 @@ public abstract class FileWatcher {
      *
      * @since MMBase-1.8.
      */
-    public Set<File> getFiles() {
+    public Set getFiles() {
         return fileSet;
     }
 
@@ -258,7 +238,9 @@ public abstract class FileWatcher {
      */
     private boolean changed() {
         synchronized (this) {
-            for (FileEntry fe : files) {
+            Iterator i = files.iterator();
+            while (i.hasNext()) {
+                FileEntry fe = (FileEntry)i.next();
                 if (fe.changed()) {
                     log.debug("the file :" + fe.getFile().getAbsolutePath() + " has changed.");
                     try {
@@ -281,10 +263,15 @@ public abstract class FileWatcher {
     private void removeFiles() {
         synchronized (this) {
             // remove files if necessary
-            for (File f : removeFiles) {
+            Iterator ri = removeFiles.iterator();
+            while (ri.hasNext()) {
+                File f = (File)ri.next();
                 FileEntry found = null;
+
                 // search the file
-                for (FileEntry fe : files) {
+                Iterator i = files.iterator();
+                while (i.hasNext()) {
+                    FileEntry fe = (FileEntry)i.next();
                     if (fe.getFile().equals(f)) {
                         if (log.isDebugEnabled()) {
                             log.debug("removing file[" + fe.getFile().getName() + "]");
@@ -365,13 +352,22 @@ public abstract class FileWatcher {
      * The one thread to handle all FileWatchers. In earlier implementation every FileWatcher had
      * it's own thread, but that is avoided now.
      */
-    private static class FileWatcherRunner implements Runnable {
+    private static class FileWatcherRunner extends Thread {
 
-        /*
+
+        boolean run = true;
+        /**
          * Set of file-watchers, which are currently active.
          */
-        private Set<FileWatcher> watchers = new CopyOnWriteArraySet<FileWatcher>();
+        private Set watchers = new CopyOnWriteArraySet();
+        private Set watchersToAdd = new HashSet();
 
+        FileWatcherRunner() {
+            super("MMBase FileWatcher thread");
+            log.service("Starting the file-watcher thread");
+            setPriority(MIN_PRIORITY);
+            setDaemon(true);
+        }
 
         void add(FileWatcher f) {
             watchers.add(f);
@@ -382,38 +378,46 @@ public abstract class FileWatcher {
          *  It will never stop, this thread is a daemon.
          */
         public void run() {
-            try {
-                long now = System.currentTimeMillis();
-                List<FileWatcher> removed = new ArrayList<FileWatcher>(); // copyonwritearraylist's iterator  does not support remove
-                for (FileWatcher f : watchers) {
-                    long staleness = (now - f.lastCheck);
-                    if (staleness >= f.delay) {
-                        if (log.isTraceEnabled()) {
-                            log.trace("Filewatcher with " + f.delay  + " ms <= " + staleness  + " ms is expired. Currently it's watching: " + f.getClass().getName() + " " + f.toString());
-                        }
-                        // System.out.print(".");
-                        f.removeFiles();
-                        //changed returns true if we can stop watching
-                        if (f.changed() || f.mustStop()) {
+            // todo: how to stop this thread except through interrupting it?
+            List removed = new ArrayList();
+            while (run) {
+                try {
+                    long now = System.currentTimeMillis();
+                    Iterator i = watchers.iterator();
+                    while (i.hasNext()) {
+                        FileWatcher f = (FileWatcher)i.next();
+                        if (now - f.lastCheck > f.delay) {
                             if (log.isDebugEnabled()) {
-                                log.debug("Removing filewatcher " + f + " " + f.mustStop());
+                                log.trace("Filewatcher will sleep for : " + f.delay / 1000 + " s. " + "Currently watching: " + f.getClass().getName() + " " + f.toString());
                             }
-                            removed.add(f);
+                            // System.out.print(".");
+                            f.removeFiles();
+                            //changed returns true if we can stop watching
+                            if (f.changed() || f.mustStop()) {
+                                if (log.isDebugEnabled()) {
+                                    log.debug("Removing filewatcher " + f + " " + f.mustStop());
+                                }
+                                removed.add(f);
+                            }
+                            f.lastCheck = now;
                         }
-                        f.lastCheck = now;
                     }
-                }
-                if (removed.size() > 0) {
                     watchers.removeAll(removed);
+                    removed.clear();
+                    if (log.isTraceEnabled()) {
+                        log.trace("Sleeping " + THREAD_DELAY + " ms");
+                    }
+                    Thread.sleep(THREAD_DELAY);
+                } catch (InterruptedException e) {
+                    Thread ct = Thread.currentThread();
+                    log.debug((ct != null ? ct.getName() : "MMBase")+ " was interrupted.");
+                    break; // likely interrupted due to MMBase going down - break out of loop
+                } catch (Throwable ex) {
+                    // unexpected exception?? This run method should never interrupt, so we catch everything.
+                    log.error("Exception: " + ex.getClass().getName() + ": " + ex.getMessage() + Logging.stackTrace(ex));
                 }
-            } catch (Throwable ex) {
-                // unexpected exception?? This run method should never interrupt, so we catch everything.
-                log.error("Exception: " + ex.getClass().getName() + ": " + ex.getMessage() + Logging.stackTrace(ex));
+                // when we found a change, we exit..
             }
-        }
-
-        public void cancel() {
-            watchers.clear();
         }
     }
 
@@ -439,54 +443,29 @@ public abstract class FileWatcher {
         // static final Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
         private long lastModified = -1;
         private boolean exists = false;
-        private final File file;
+        private File file;
 
         public FileEntry(File file) {
             if (file == null) {
-                throw new IllegalArgumentException();
+                String msg = "file was null";
+                // log.error(msg);
+                throw new RuntimeException(msg);
             }
             exists = file.exists();
-            lastModified = getLastModified(file);
+            if (!exists) {
+                // file does not exist. A change will be triggered
+                // once the file comes into existence
+                log.debug("file :" + file.getAbsolutePath() + " did not exist (yet)");
+                lastModified = -1;
+            } else {
+                lastModified = file.lastModified();
+            }
             this.file = file;
         }
 
         /**
-         * Returns the last modification time of a file, or -1 if the file does not exists, or the
-         * last modification time of the last modified file in it, if it is a directory.
-         * @since MMBase-1.9
-         */
-        protected long getLastModified(File f) {
-            long lm;
-            if (! f.exists()) {
-                // file does not exist. A change will be triggered
-                // once the file comes into existence
-                if (log.isDebugEnabled()) {
-                    log.debug("file :" + f.getAbsolutePath() + " did not exist (yet)");
-                }
-                lm = -1;
-            } else {
-                lm = f.lastModified();
-                if (f.isDirectory() && f.canRead()) {
-                    // in that case, we take the last modified file in it, and return that.
-                    // TODO, we may need a flag to also enable _not_ doing this, or at least not recursively
-                    for (File child : f.listFiles()) {
-                        try {
-                            long childLastModified = getLastModified(child);
-                            if (childLastModified > lm) {
-                                lm = childLastModified;
-                            }
-                        } catch (SecurityException se) {
-                            // never mind
-                        }
-                    }
-                }
-            }
-            return lm;
-        }
-
-        /**
-         * Returns true if the file was modified, added, or removed. If the change is handled, then
-         * call {@link #updated}.
+         * Signal a change.
+         * Returns true if the file was modified, added, or removed.
          * @return <code>true</code> if the file was changed
          */
         public boolean changed() {
@@ -495,7 +474,7 @@ public abstract class FileWatcher {
                     log.info("File " + file.getAbsolutePath() + " added");
                     return true;
                 } else {
-                    boolean result = lastModified < getLastModified(file);
+                    boolean result = lastModified < file.lastModified();
                     if (result) {
                         log.info("File " + file.getAbsolutePath() + " changed");
                     }
@@ -510,13 +489,12 @@ public abstract class FileWatcher {
         }
 
         /**
-         * Call this if changes were treated. It resets the state, and after that {@link #changed}
-         * will return <code>false</code> again.
+         * Call if changes were treated.
          */
         public void updated() {
             exists = file.exists();
             if (exists) {
-                lastModified = getLastModified(file);
+                lastModified = file.lastModified();
             } else {
                 lastModified = -1;
             }
@@ -550,16 +528,16 @@ public abstract class FileWatcher {
      * This FileSet makes the 'files' object of the FileWatcher look like a Set of File rather then Set of FileEntry's.
      * @since MMBase-1.8
      */
-    private class FileSet extends AbstractSet<File> {
+    private class FileSet extends AbstractSet {
         public int size() {
             return FileWatcher.this.files.size();
         }
-        public  Iterator<File> iterator() {
+        public  Iterator iterator() {
             return new FileIterator();
         }
-        public boolean add(File o) {
+        public boolean add(Object o) {
             int s = size();
-            FileWatcher.this.add(o);
+            FileWatcher.this.add((File) o);
             return s != size();
         }
     }
@@ -567,8 +545,8 @@ public abstract class FileWatcher {
      * The iterator belonging to FileSet.
      * @since MMBase-1.8
      */
-    private class FileIterator implements Iterator<File> {
-        Iterator<FileEntry> it;
+    private class FileIterator implements Iterator {
+        Iterator it;
         File lastFile;
         FileIterator() {
             it = FileWatcher.this.files.iterator();
@@ -576,8 +554,8 @@ public abstract class FileWatcher {
         public boolean hasNext() {
             return it.hasNext();
         }
-        public File next() {
-            FileEntry f = it.next();
+        public Object next() {
+            FileEntry f = (FileEntry) it.next();
             lastFile = f.getFile();
             return  lastFile;
         }

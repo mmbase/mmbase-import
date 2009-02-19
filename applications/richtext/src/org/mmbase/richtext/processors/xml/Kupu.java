@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
 /**
  * This implements 'Kupu' Mode of {@link MmxfSetString}.
  * @author Michiel Meeuwissen
- * @version $Id: Kupu.java,v 1.8 2008-11-24 16:52:37 michiel Exp $
+ * @version $Id: Kupu.java,v 1.2 2008-03-25 18:00:14 michiel Exp $
  */
 
 class Kupu {
@@ -85,11 +85,9 @@ class Kupu {
     private static Pattern ignore        = Pattern.compile("link|#comment");
     private static Pattern hElement      = Pattern.compile("h([1-9])");
     private static Pattern crossElement  = Pattern.compile("a|img|div");
-    private static Set<String> divClasses    = new HashSet<String>(Arrays.asList(new String[] {"float", "note", "left", "right", "intermezzo", "caption", "quote"}));
-    private static Set<String> imageClasses  = new HashSet<String>(Arrays.asList(new String[] {"image-inline", "image-left", "image-right", "big"}));
-    private static Set<String> flashClasses  = new HashSet<String>(Arrays.asList(new String[] {"image-inline", "image-left", "image-right"}));
+    private static Pattern divClasses    = Pattern.compile(".*\\bfloat (?:note left|note right|intermezzo|caption left|caption right|quote left|quote right)");
 
-    private static Pattern allowedAttributes = Pattern.compile("id|href|src|class|type|height|width");
+    private static Pattern allowedAttributes = Pattern.compile("id|href|src|class|type");
 
     private static void copyAllowedAttributes(Element source, Element destination) {
         NamedNodeMap attributes = source.getAttributes();
@@ -163,13 +161,13 @@ class Kupu {
                 Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "a");
                 copyAllowedAttributes((Element) node, imp);
                 if (name.equals("div")) {
-                    Set<String> cssClasses = Util.getCssClasses(imp.getAttribute("class"), divClasses);
-                    if (! cssClasses.contains("float")) {
+                    String cssClass = Util.getCssClass("div " + imp.getAttribute("class"));
+                    if (! divClasses.matcher(cssClass).matches()) {
                         // this is no div of ours (copy/pasting?), ignore it.
                         parse((Element) node, destination, links, new ParseState(state.level, MODE_INLINE));
                         continue;
                     } else {
-                        imp.setAttribute("class", "div " + Util.getCssClass(cssClasses));
+                        imp.setAttribute("class", Util.getCssClass("div " + imp.getAttribute("class")));
                     }
                 }
                 if (state.mode == MODE_SECTION) {
@@ -382,7 +380,7 @@ class Kupu {
             image = image.getNodeValue("id");
             log.debug("This is an icache for " + image.getNumber());
         }
-        String klass = Util.getCssClass(a.getAttribute("class"), imageClasses);;
+        String klass = a.getAttribute("class");
         String id = a.getAttribute("id");
         usedImages.add(new Entry(id, image));
         NodeList linkedImage = Util.get(cloud, relatedImages, "idrel.id", a.getAttribute("id"));
@@ -403,75 +401,6 @@ class Kupu {
             newIdRel.setStringValue("class", klass);
             newIdRel.commit();
                         }
-        a.removeAttribute("src");
-        a.removeAttribute("height");
-        a.removeAttribute("width");
-        a.removeAttribute("class");
-        a.removeAttribute("alt");
-        return true;
-    }
-
-    private boolean handleFlash(String href, Element a, List<Map.Entry<String, Node>> usedFlash,
-                                NodeList relatedFlash, Node editedNode) {
-        Cloud cloud = editedNode.getCloud();
-        HttpServletRequest request = (HttpServletRequest) cloud.getProperty("request");
-        NodeManager flashobjects = cloud.getNodeManager("flashobjects");
-        String flashIntro = request.getContextPath() + "/mmbase/kupu/mmbase/icons/flash.png?o=";
-        if (! href.startsWith(flashIntro)) {
-            log.debug("href " + href + " does not start with " + flashIntro + "hence this is not a flash object");
-            return false;
-        }
-        log.debug("Found flash " + href);
-        String nodeNumber = href.substring(flashIntro.length());
-        Node flash = cloud.getNode(nodeNumber);
-        String klass = Util.getCssClass(a.getAttribute("class"), flashClasses);;
-        String id = a.getAttribute("id");
-        boolean updated = false;
-        {
-            String heightAttr = a.getAttribute("height");
-            if (! "".equals(heightAttr)) {
-                int height = Integer.parseInt(heightAttr);
-                flash.setValue("height", height);
-                updated = true;
-            } else {
-                log.warn("No height found on " + XMLWriter.write(a, false));
-            }
-        }
-        {
-            String widthAttr = a.getAttribute("width");
-            if (! "".equals(widthAttr)) {
-                int width = Integer.parseInt(widthAttr);
-                flash.setValue("width", width);
-                updated = true;
-            } else {
-                log.warn("No width found on " + XMLWriter.write(a, false));
-            }
-        }
-        if (updated) {
-            flash.commit();
-        }
-
-
-        usedFlash.add(new Entry(id, flash));
-        NodeList linkedFlash = Util.get(cloud, relatedFlash, "idrel.id", a.getAttribute("id"));
-        if (! linkedFlash.isEmpty()) {
-            // ok, already related!
-            log.service("" + flash + " image already correctly related, nothing needs to be done");
-            Node idrel = linkedFlash.getNode(0).getNodeValue("idrel");
-            if (!idrel.getStringValue("class").equals(klass)) {
-                idrel.setStringValue("class", klass);
-                idrel.commit();
-            }
-
-        } else {
-            log.service(" to" + flash + ", creating new relation");
-            RelationManager rm = cloud.getRelationManager(editedNode.getNodeManager(), flashobjects, "idrel");
-            Relation newIdRel = rm.createRelation(editedNode, flash);
-            newIdRel.setStringValue("id", id);
-            newIdRel.setStringValue("class", klass);
-            newIdRel.commit();
-        }
-
         a.removeAttribute("src");
         a.removeAttribute("height");
         a.removeAttribute("width");
@@ -588,7 +517,7 @@ class Kupu {
         // fill _its_ body, still in kupu-mode
         block.setStringValue("body", XMLWriter.write(blockDocument, false));
         block.commit();
-        String klass = Util.getCssClass(a.getAttribute("class"), divClasses);;
+        String klass = a.getAttribute("class");
         String id = a.getAttribute("id");
         usedBlocks.add(new Entry(id, block));
         NodeList linkedBlock = Util.get(cloud, relatedBlocks, "idrel.id", id);
@@ -649,8 +578,7 @@ class Kupu {
             log.warn("Node node given, cannot handle cross-links!!");
         } else {
             Cloud cloud = editedNode.getCloud();
-            NodeManager images       = cloud.getNodeManager("images");
-            NodeManager flashobjects = cloud.getNodeManager("flashobjects");
+            NodeManager images      = cloud.getNodeManager("images");
             NodeManager attachments = cloud.getNodeManager("attachments");
             NodeManager urls        = cloud.getNodeManager("urls");
             NodeManager blocks      = cloud.getNodeManager("blocks");
@@ -660,19 +588,16 @@ class Kupu {
 
 
             NodeList relatedImages        = Util.getRelatedNodes(editedNode, images);
-            List<Map.Entry<String, Node>> usedImages = new ArrayList<Map.Entry<String, Node>>();
-
-            NodeList relatedFlash        = Util.getRelatedNodes(editedNode, flashobjects);
-            List<Map.Entry<String, Node>> usedFlash = new ArrayList<Map.Entry<String, Node>>();
+            List<Map.Entry<String, Node>> usedImages = new ArrayList();
 
             NodeList relatedAttachments   = Util.getRelatedNodes(editedNode, attachments);
-            List<Map.Entry<String, Node>> usedAttachments = new ArrayList<Map.Entry<String, Node>>();
+            List<Map.Entry<String, Node>> usedAttachments = new ArrayList();
 
             NodeList relatedBlocks        = Util.getRelatedNodes(editedNode, blocks);
-            List<Map.Entry<String, Node>> usedBlocks = new ArrayList<Map.Entry<String, Node>>();
+            List<Map.Entry<String, Node>> usedBlocks = new ArrayList();
 
             NodeList relatedUrls          = Util.getRelatedNodes(editedNode, urls);
-            List<Map.Entry<String, Node>> usedUrls = new ArrayList<Map.Entry<String, Node>>();
+            List<Map.Entry<String, Node>> usedUrls = new ArrayList();
 
             NodeList relatedTexts;
             List<Map.Entry<String, Node>> usedTexts;
@@ -702,8 +627,6 @@ class Kupu {
                     String href = getHref(a, cloud);
                     Matcher mmbaseMatcher =  mmbaseUrl.matcher(href);
                     if (handleImage(href, a, usedImages, relatedImages, editedNode)) { // found an image!
-                        continue;
-                    } else if (handleFlash(href, a, usedFlash, relatedFlash, editedNode)) { // found an image!
                         continue;
                     } else if (handleAttachment(mmbaseMatcher, a, usedAttachments, relatedAttachments, editedNode)) {
                         continue;

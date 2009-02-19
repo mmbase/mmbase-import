@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.47 2008-10-09 14:21:43 michiel Exp $
+ * @version  $Id: settings.jsp,v 1.45 2006-05-08 18:02:49 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -33,7 +33,6 @@ session.setMaxInactiveInterval(1 * 60 * 60); // 1 hour;
 // It is possible to specify an alternatvie 'sessionkey'
 // The sessionkey is used as a key for the session.
 sessionKey = request.getParameter("sessionkey");
-request.setAttribute(Wizard.RESPONSE_KEY, response);
 if (sessionKey == null) sessionKey = "editwizard";
 
 
@@ -166,7 +165,7 @@ if (request.getParameter("remove") != null) {
 
     if (ewconfig.subObjects.empty()) { // it _is_ empty? Then we are ready.
         log.debug("last object cleared, redirecting");
-        if (! refer.startsWith("http:") && ! refer.startsWith("https:")) {
+        if (! refer.startsWith("http:")) {
             refer = response.encodeRedirectURL(request.getContextPath() + refer);
         }
         log.debug("Redirecting to " + refer);

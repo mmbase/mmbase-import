@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<insrel exportsource="mmbase://127.0.0.1/clouds/install" timestamp="20020925183417">
-	<node number="89" owner="admin" snumber="79" dnumber="88" rtype="related" dir="bidirectional">
-	</node>
-
-	<node number="93" owner="admin" snumber="79" dnumber="92" rtype="related" dir="bidirectional">
-	</node>
-
-</insrel>

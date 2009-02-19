@@ -19,22 +19,22 @@ import org.mmbase.util.logging.Logging;
  * ClassLogin, authentication based on 'class', using &lt;security&gt;/classauthentication.xml or ClassAuthenticationWrapper.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ClassLogin.java,v 1.10 2008-11-03 18:42:49 michiel Exp $
+ * @version $Id: ClassLogin.java,v 1.5 2005-12-29 20:43:16 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class ClassLogin extends ContextLoginModule {
     private static final Logger log = Logging.getLoggerInstance(ClassLogin.class);
 
-    public ContextUserContext login(Map<String, ?> userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
+    public ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
 
-        org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class", userLoginInfo);
+        org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
         if (li == null) {
             throw new SecurityException("Class authentication failed  '" + userLoginInfo + "' (class not authorized)");
         }
         // get username
-        final String userName = li.getMap().get("username");
-        final String reqRank  = li.getMap().get("rank");
+        String userName = (String) li.getMap().get("username");
+        String reqRank  = (String) li.getMap().get("rank");
         if(userName == null && reqRank == null) throw new org.mmbase.security.SecurityException("expected the property 'username' and/or 'rank' with login");
 
         if ("anonymous".equals(reqRank) && userName == null) {
@@ -43,17 +43,17 @@ public class ClassLogin extends ContextLoginModule {
 
         org.w3c.dom.Element node = getAccount(userName, null, reqRank);
         if(node == null) {
-            log.warn("No user with name '" + userName + "' and rank '" + reqRank + "' " + userLoginInfo + " " + li.getMap());
+            log.info("No user with name '" + userName + "' and rank '" + reqRank + "'");
             return null;
         }
-        String un = node.getAttribute("name");
+        userName = node.getAttribute("name");
 
-        Rank rank= getRank(un, null);
+        Rank rank= getRank(userName, null);
         if(rank == null) {
-            log.warn( "expected a rank for user with name '" + un + "', canceling a valid login due to the fact that the rank attribute was not set");
+            log.warn( "expected a rank for user with name '" + userName + "', canceling a valid login due to the fact that the rank attribute was not set");
             return null;
 
         }
-        return getValidUserContext(un, rank);
+        return getValidUserContext(userName, rank);
     }
 }

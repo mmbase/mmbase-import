@@ -22,7 +22,8 @@ import java.io.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: EncodingDetectingOutputStreamWriter.java,v 1.4 2008-08-27 17:07:34 michiel Exp $
+ * @version $Id: EncodingDetectingOutputStreamWriter.java,v 1.2 2005-01-30 16:46:35 nico Exp $
+ * @todo  Is it named correctly?
  */
 public class EncodingDetectingOutputStreamWriter extends Writer {
 
@@ -30,7 +31,7 @@ public class EncodingDetectingOutputStreamWriter extends Writer {
 
     // Either wrapped or buffer is null, and the other one is currenlty in use.
     private Writer wrapped = null;
-    private StringBuilder buffer = new StringBuilder(100);
+    private StringBuffer buffer = new StringBuffer(100);
 
     EncodingDetectingOutputStreamWriter(OutputStream os) {
         outputStream = os;

@@ -16,25 +16,9 @@ import java.util.*;
  * set-methods throw exceptions. There is no public constructor, but a public static {@link #getInstance}.
  *
  * Sadly, the Date object of Sun is implemented using private static methods which use private
- * fields of the Date object, so not everything could be overridden perfectly. So, if e.g. a dynamic
- * date could be an argument of an 'after' or 'before' method, it is better to wrap it with {@link
+ * fields, of the Date object so not everything could be overridden perfectly. So, if e.g. a dynamic
+ * date could be an argument of a 'after' or 'before' method, it is better to wrap it with {@link
  * DynamicDate#eval} first.
- *
- * Basicly the following dynamic dates are possible:
- * <ul>
- * <li>&lt;an integer number&gt;: seconds since january 1 1970</li>
- * <li>&lt;integer&gt;-&lt;integer&gt;: year-daynumber</li>
- * <li>&lt;integer&gt;-W&lt;integer&gt;: year-weeknumber</li>
- * <li>&lt;integer&gt;-&lt;integer&gt;-&lt;integer&gt;
- * [&lt;integer&gt;:&lt;:integer&gt;:&lt;:float&gt;: year-month-day [hour:minute:seconds]</li>
- * <li>today, yesterday, tomonth, etc. : many strings are recognized</li>
- * </ul>
- * The then found (absolute) date/time can then be offsetted with aditions like "- 1 minute", "+ 5
- * week". I.e. one of the binary operators '-' or '+' an integer and a time unit (in the
- * singular). This process can be repeated so things like 'now + 5 minute + 3 second' will be
- * correctly parsed.
- *
- * {@link #getDemo} returns a list of several strings which can be parsed.
  *
  * @author  Michiel Meeuwissen
  * @since MMBase-1.8
@@ -65,13 +49,7 @@ public class DynamicDate extends Date {
         }
 
     }
-
     /**
-     * This call {@link #getInstance}, then {@link #eval} and catches the parse-exception (in which
-     * case it will return -1).
-     * This boils down to that this is a utility method to get a new Date object by String in just
-     * one call.
-     *
      * @since MMBase-1.8.7
      */
     public static Date eval(final String format) {
@@ -108,9 +86,7 @@ public class DynamicDate extends Date {
     }
 
     /**
-     * This produces a normal Date object, and is called everytime when that is needed. Users can
-     * call it too, if they want to fixate that Date. You can also use {@link #eval(Date)}, which
-     * will work on a normal Date object too.
+     * This produces a normal Date object, and is called everytime when that is needed. Users can call it too, if they want to fixated
      */
     protected  Date evalDate() {
         DateParser parser = new DateParser(new java.io.StringReader(date));
@@ -151,63 +127,63 @@ public class DynamicDate extends Date {
             return false;
         }
     }
-    @Deprecated public int  getDate() {
+    public int  getDate() {
         return evalDate().getDate();
     }
-    @Deprecated public int  getDay() {
+    public int  getDay() {
         return evalDate().getDay();
     }
-    @Deprecated public int getHours() {
+    public int getHours() {
         return evalDate().getHours();
     }
-    @Deprecated public int getMinutes() {
+    public int getMinutes() {
         return evalDate().getMinutes();
     }
-    @Deprecated public int  getMonth() {
+    public int  getMonth() {
         return evalDate().getMonth();
     }
 
-    @Deprecated public int  getSeconds() {
+    public int  getSeconds() {
         return evalDate().getSeconds();
     }
     public long  getTime() {
         return evalDate().getTime();
     }
-    @Deprecated public int  getTimezoneOffset() {
+    public int  getTimezoneOffset() {
         return evalDate().getTimezoneOffset();
     }
-    @Deprecated public int  getYear() {
+    public int  getYear() {
         return evalDate().getYear();
     }
     public  int  hashCode() {
         return date.hashCode();
     }
-    @Deprecated public void  setDate(int date) {
+    public void  setDate(int date) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    @Deprecated public void  setHours(int hours) {
+    public void  setHours(int hours) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    @Deprecated public void  setMinutes(int minutes) {
+    public void  setMinutes(int minutes) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    @Deprecated public void  setMonth(int month) {
+    public void  setMonth(int month) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
 
-    @Deprecated public void  setSeconds(int seconds) {
+    public void  setSeconds(int seconds) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    @Deprecated public  void  setTime(long time) {
+    public  void  setTime(long time) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    @Deprecated public void  setYear(int year) {
+    public void  setYear(int year) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    @Deprecated public String  toGMTString() {
+    public String  toGMTString() {
         return evalDate().toGMTString();
     }
-    @Deprecated public String  toLocaleString() {
+    public String  toLocaleString() {
         return evalDate().toLocaleString();
     }
 
@@ -215,10 +191,6 @@ public class DynamicDate extends Date {
         return date + ": " + evalDate().toString();
     }
 
-    /**
-     * Returns an arrays of example Strings that can be parsed by DynamicDate. Most features are
-     * tested here.
-     */
     public static String[] getDemo() {
         return new String[] {
             "0", "10000", "-10000", "+1000", // just numbers a bit after 1970, a bit before
@@ -235,8 +207,7 @@ public class DynamicDate extends Date {
             "now this second", "now this minute", "now this hour", "now this day", "today previous monday", "now this month", "now this year", "now this century", "now this era",
             "now - 15 year this century", "now - 20 year this century_pedantic", "today + 2 century", "toera - 1 minute",
             "this july", "previous july", "next july", "this sunday", "previous sunday", "next sunday",
-            "2009-W01-01", "2009-W53-7", "2006-123",
-            "2005-01-01 this monday"
+            "2009-W01-01", "2009-W53-7", "2006-123"
         };
     }
 
@@ -248,14 +219,14 @@ public class DynamicDate extends Date {
         java.text.DateFormat formatter = new java.text.SimpleDateFormat("GGGG yyyy-MM-dd HH:mm:ss.SSS zzz E");
         if (argv.length == 0) {
             String[] demo = getDemo();
-            for (String element : demo) {
+            for (int i = 0; i < demo.length; i++) {
                 try {
-                    Date d1 = getInstance(element);
+                    Date d1 = getInstance(demo[i]);
                     System.out.print(formatter.format(d1) + "\t");
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-                System.out.println(element);
+                System.out.println(demo[i]);
 
             }
             System.out.println("This was demo, you can also call with an argument, to try it yourself");

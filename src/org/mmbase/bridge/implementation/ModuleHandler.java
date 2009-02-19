@@ -16,9 +16,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.module.ProcessorModule;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.util.LocalizedString;
+import org.mmbase.module.core.*;
+import org.mmbase.module.ProcessorInterface;
 import org.mmbase.util.PageInfo;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
@@ -30,10 +29,11 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.42 2009-01-07 20:59:38 michiel Exp $
+ * @version $Id: ModuleHandler.java,v 1.31.2.1 2007-08-02 10:05:25 michiel Exp $
  */
-public class ModuleHandler implements Module, InvocationHandler {
+public class ModuleHandler implements Module, Comparable, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
+
 
     // link to cloud context
     private CloudContext cloudContext = null;
@@ -45,13 +45,15 @@ public class ModuleHandler implements Module, InvocationHandler {
     }
 
     public synchronized static Module getModule(org.mmbase.module.Module mod, CloudContext cloudcontext) {
+        // turned off because it causes errors on compiling with JDK1.2
+        
         Class[] objClasses = mod.getClass().getInterfaces();
         // check for allowable interface class
         // Package bridge = Package.getPackage("org.mmbase.bridge");
         Class otherintf = null;
-        for (Class element : objClasses) {
-            if (element.getName().startsWith("org.mmbase.bridge")) {
-                otherintf=element;
+        for (int i=0; i<objClasses.length; i++) {
+            if (objClasses[i].getName().startsWith("org.mmbase.bridge")) {
+                otherintf=objClasses[i];
             }
         }
         Class[] useintf;
@@ -101,55 +103,11 @@ public class ModuleHandler implements Module, InvocationHandler {
     }
 
     public Map getProperties() {
-        return new HashMap<String, String>(mmbaseModule.getInitParameters());
+        return new HashMap(mmbaseModule.getInitParameters());
     }
 
     public String getDescription() {
-        return mmbaseModule.getDescription();
-    }
-
-    public String getDescription(Locale locale) {
-        return mmbaseModule.getDescription(locale);
-    }
-
-    public LocalizedString getLocalizedDescription() {
-        return mmbaseModule.getLocalizedDescription();
-    }
-
-    protected void setLocalizedDescription(LocalizedString description) {
-        throw new SecurityException("Operation not allowed");
-    }
-
-    public void setDescription(String desc, Locale locale) {
-        throw new SecurityException("Operation not allowed");
-    }
-
-    public void setDescription(String desc) {
-        throw new SecurityException("Operation not allowed");
-    }
-
-    public String getGUIName(Locale locale) {
-        return mmbaseModule.getGUIName(locale);
-    }
-
-    public String getGUIName() {
-        return mmbaseModule.getGUIName();
-    }
-
-    public void setGUIName(String g, Locale locale) {
-        throw new SecurityException("Operation not allowed");
-    }
-
-    public void setGUIName(String g) {
-        throw new SecurityException("Operation not allowed");
-    }
-
-    public LocalizedString getLocalizedGUIName() {
-        return mmbaseModule.getLocalizedGUIName();
-    }
-
-    protected void setLocalizedGUIName(LocalizedString value) {
-        throw new SecurityException("Operation not allowed");
+        return mmbaseModule.getModuleInfo();
     }
 
     public String getInfo(String command) {
@@ -157,8 +115,8 @@ public class ModuleHandler implements Module, InvocationHandler {
     }
 
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){
-        if (mmbaseModule instanceof ProcessorModule) {
-            return ((ProcessorModule)mmbaseModule).replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(null)), command);
+        if (mmbaseModule instanceof ProcessorInterface) {
+            return ((ProcessorInterface)mmbaseModule).replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(null)), command);
         } else {
             throw new BridgeException("getInfo() is not supported by this module.");
         }
@@ -168,51 +126,44 @@ public class ModuleHandler implements Module, InvocationHandler {
         process(command, parameter, null, null,null);
     }
 
-    public void process(String command, Object parameter, Map<String, Object> auxparameters) {
-        process(command, parameter, auxparameters, null, null);
+    public void process(String command, Object parameter, Map auxparameters) {
+        process(command, parameter, auxparameters, null,null);
     }
 
-    public void process(String command, Object parameter, Map<String, Object> auxparameters, ServletRequest req,  ServletResponse resp){
-        if (mmbaseModule instanceof ProcessorModule) {
-            Hashtable<String, Object> cmds = new Hashtable<String, Object>();
-            if (parameter == null) { parameter = "-1"; }
-            cmds.put(command,parameter);
-            Hashtable<String, Object> hashtable;
-            boolean put = false;
-            if (auxparameters == null) {
-                hashtable = new Hashtable<String, Object>();
-            } else if (auxparameters instanceof  Hashtable) {
-                hashtable = (Hashtable) auxparameters;
-            } else {
-                put = true;
-                hashtable = new Hashtable(auxparameters);
-            }
-            ((ProcessorModule)mmbaseModule).process(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(auxparameters)), cmds, hashtable);
-            if (put) {
-                auxparameters.putAll(hashtable);
-            }
-
+    public void process(String command, Object parameter, Map auxparameters, ServletRequest req,  ServletResponse resp){
+        if (mmbaseModule instanceof ProcessorInterface) {
+                Hashtable cmds = new Hashtable();
+                if (parameter == null) { parameter = "-1"; }
+                cmds.put(command,parameter);
+                // weird change. should be fixed soon in Module.process
+                Hashtable partab = null;
+                if (auxparameters != null) {
+                    partab = new Hashtable(auxparameters);
+                } else {
+                    partab = new Hashtable();
+                }
+                ((ProcessorInterface)mmbaseModule).process(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud(auxparameters)),cmds,partab);
+                if (auxparameters != null) auxparameters.putAll(partab);
         } else {
             throw new BridgeException("process() is not supported by this module.");
         }
     }
 
-    public NodeList getList(String command, Map<String, ?> parameters){
+    public NodeList getList(String command, Map parameters){
         return getList(command, parameters,null,null);
     }
 
-    public NodeList getList(String command, Map<String, ?> parameters, ServletRequest req, ServletResponse resp){
-        if (mmbaseModule instanceof ProcessorModule) {
+    public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
+        if (mmbaseModule instanceof ProcessorInterface) {
             Cloud cloud = getCloud(parameters);
             log.info("Found " + cloud + " " + (cloud != null ? "" + cloud.getUser() : ""));
             try {
-                List<org.mmbase.module.core.MMObjectNode> v
-                    = ((ProcessorModule)mmbaseModule).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, cloud), command, parameters);
+                List v = ((ProcessorInterface)mmbaseModule).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, cloud), command, parameters);
                 log.info("Got list " + v);
                 if (v.size() == 0) {
                     return cloud.createNodeList();
                 } else {
-                    MMObjectNode node = v.get(0);
+                    MMObjectNode node = (MMObjectNode) v.get(0);
                     if (node instanceof org.mmbase.module.core.VirtualNode) {
                         VirtualNodeManager tempNodeManager = new VirtualNodeManager((org.mmbase.module.core.VirtualNode) node, cloud);
                         return new BasicNodeList(v, tempNodeManager);
@@ -235,18 +186,15 @@ public class ModuleHandler implements Module, InvocationHandler {
      * A module is 'larger' than another module if its name is larger (alphabetically, case sensitive)
      * than that of the other module. If names are the same, the modules are compared on cloud context.
      *
-     * @see Comparable#compareTo(Object)
-     *
-     * @param m the Module to compare it with
-     * @return  a negative integer, zero, or a positive integer as this object
-     *      is less than, equal to, or greater than the specified object.
+     * @param o the object to compare it with
      */
-    public int compareTo(Module m) {
+    public int compareTo(Object o) {
+        Module m= (Module)o;
         int res=getName().compareTo(m.getName());
         if (res!=0) {
             return res;
         } else {
-            int h1 = m.getCloudContext().hashCode();
+            int h1=((Cloud)o).getCloudContext().hashCode();
             int h2=cloudContext.hashCode();
             if (h1>h2) {
                 return -1;
@@ -262,14 +210,13 @@ public class ModuleHandler implements Module, InvocationHandler {
      * Compares two modules, and returns true if they are equal.
      * @param o the object to compare it with
      */
-    @Override
     public boolean equals(Object o) {
         return (o instanceof Module) &&
                getName().equals(((Module)o).getName()) &&
                cloudContext.equals(((Module)o).getCloudContext());
     };
 
-    public Collection<Function<?>> getFunctions() {
+    public Collection getFunctions() {
         return  mmbaseModule.getFunctions();
     }
 
@@ -285,7 +232,7 @@ public class ModuleHandler implements Module, InvocationHandler {
         return getFunction(functionName).createParameters();
     }
 
-    public FieldValue getFunctionValue(String functionName, List<?> parameters) {
+    public FieldValue getFunctionValue(String functionName, List parameters) {
         return (FieldValue)getFunction(functionName).getFunctionValueWithList(parameters);
     }
 

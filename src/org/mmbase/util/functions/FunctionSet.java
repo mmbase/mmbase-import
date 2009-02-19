@@ -9,18 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
+import java.util.*;
+
 /**
  * The implementation of one set ('namespace') of functions. This is actually just a named FunctionProvider.
  *
  * @see    FunctionSets
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: FunctionSet.java,v 1.10 2009-01-06 15:16:49 michiel Exp $
+ * @version $Id: FunctionSet.java,v 1.8 2005-12-10 11:47:41 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionSet extends FunctionProvider {
 
-    private final String name;
+    private String name;
     private String description;
 
     public FunctionSet(String name, String description) {

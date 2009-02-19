@@ -15,46 +15,50 @@ import java.util.Map;
  * {@link java.util.Map.Entry}, and can be used as a utility for Map implementations. 
  *
  * @since MMBase-1.8
- * @version $Id: Entry.java,v 1.9 2008-08-27 17:07:34 michiel Exp $
+ * @version $Id: Entry.java,v 1.5 2006-04-18 13:08:24 michiel Exp $
  * @author Michiel Meeuwissen
  */
-public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable<Entry<K, V>>, java.io.Serializable {
+public final class Entry implements Map.Entry, PublicCloneable, java.io.Serializable {
 
-    private final K key; 
-    private V value;
+    private Object key; // cannot be final because of cloneable/serializable, but logically, it could.
+    private Object value;
 
-     /**
+    protected Entry() {
+        // serializable
+    }
+
+    /**
      * @param k The key of this Map.Entry
      * @param v The value of this Map.Entry
      */
-    public Entry(K k, V v) {
+    public Entry(Object k, Object v) {
         key = k ;
         value = v;
     }
-    public Entry(Map.Entry<K, V> e) {
+    public Entry(Map.Entry e) {
         key = e.getKey();
         value = e.getValue();
     }
 
     // see Map.Entry
-    public K getKey() {
+    public Object getKey() {
         return key;
     }
 
     // see Map.Entry
-    public V getValue() {
+    public Object getValue() {
         return value;
     }
 
     // see Map.Entry
-    public V setValue(V v) {
-        V r = value;
+    public Object setValue(Object v) {
+        Object r = value;
         value = v;
         return r;
     }
 
-    public Entry<K, V> clone() {
-        return new Entry<K, V>(key, value); // can do this, because this class is final
+    public Object clone() {
+        return new Entry(key, value); // can do this, because this class is final
     }
 
     public int hashCode() {
@@ -62,7 +66,7 @@ public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable<Entry
     }
     public boolean equals(Object o) {
         if (o instanceof Map.Entry) {
-            Map.Entry<K, V> entry = (Map.Entry<K, V>) o;
+            Map.Entry entry = (Map.Entry) o;
             return
                 (key == null ? entry.getKey() == null : key.equals(entry.getKey())) &&
                 (value == null ? entry.getValue() == null : value.equals(entry.getValue()));

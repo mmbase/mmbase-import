@@ -16,13 +16,13 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueInConstraint.java,v 1.16 2008-11-25 13:18:35 michiel Exp $
+ * @version $Id: BasicFieldValueInConstraint.java,v 1.13 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint {
 
     /** The values. */
-    private final SortedSet<Object> values = new TreeSet<Object>();
+    private SortedSet values = new TreeSet();
 
     /**
      * Constructor.
@@ -48,7 +48,7 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
     }
 
     // javadoc is inherited
-    public SortedSet<Object> getValues() {
+    public SortedSet getValues() {
         return Collections.unmodifiableSortedSet(values);
     }
 
@@ -79,7 +79,8 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
 
     // javadoc is inherited
     public String toString() {
-        StringBuilder sb = new StringBuilder("FieldValueInConstraint(inverse:").append(isInverse()).
+        StringBuffer sb = new StringBuffer("FieldValueInConstraint(inverse:").
+        append(isInverse()).
         append(", field:").append(getFieldName()).
         append(", casesensitive:").append(isCaseSensitive()).
         append(", values:").append(getValues()).

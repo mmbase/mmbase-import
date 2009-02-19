@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * hsql functionality.
 
  * @author Michiel Meeuwissen
- * @version $Id: HSqlSqlHandler.java,v 1.11 2007-06-12 10:59:41 michiel Exp $
+ * @version $Id: HSqlSqlHandler.java,v 1.9 2005-10-07 18:50:27 michiel Exp $
  * @since MMBase-1.7
  */
 public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -33,7 +33,6 @@ public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    @Override
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
@@ -54,8 +53,7 @@ public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     /**
      * @javadoc
      */
-    @Override
-    protected void appendDateField(StringBuilder sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
+    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
         case FieldValueDateConstraint.CENTURY:
@@ -87,7 +85,6 @@ public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    @Override
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
         // XXX should table and field aliases be tested for uniqueness?
 
@@ -100,7 +97,7 @@ public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         }
 
         // SELECT
-        StringBuilder sbQuery = new StringBuilder("SELECT ");
+        StringBuffer sbQuery = new StringBuffer("SELECT ");
 
 
 

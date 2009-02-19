@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <!--
     The MMBaseRoot module is used to configure the basic properties of mmbase.
@@ -123,18 +123,6 @@
   -->
   <!-- property name="database">mysql</property -->
 
-
-  <!--
-      For some taks, an actual directory for storing data filed is required. Such a directory
-      can be configured here.
-
-      It can and will be used as a (base for a) default value for the 'blobs disk' directory,
-      for oscache's 'cache.path', for lucene indexes, etc.
-      @since MMBase-1.8.5
-
-  -->
-  <property name="datadir">WEB-INF/data</property>
-
   <!--
   name="clustering" the MMBaseChangeInterface which communicates with
   other MMBase instance which use the same storage
@@ -203,11 +191,11 @@
 
 
   <!--
-  MMBase in 'development mode' is more strict. Most noticably this has an influence on
-  whether you can request the value of non-existing fields without an exception.
+      MMBase in 'development mode' is more strict. Most noticably this has an influence on
+      whether you can request the value of non-existing fields without an exception.
 
-  Will fall back to 'false' if the property is missing altogether. The behaviour is more like
-  in MMBase < 1.8 then.
+      Wikll fall back to 'false' if the property is missing altogether. The behaviour is more like
+      in MMBase < 1.8 then.
   -->
   <property name="development">true</property>
 
@@ -218,15 +206,6 @@
 
   -->
   <!-- property name="xmlbuilderwriterdir">/home/guest/schooltv/tmpbul/</property -->
-
-
-  <!--
-      If you are sure that your builder XML correspond with your tables, you can set this property to false
-      and reduce start up time.
-      The property can also be consulted (MMBase#runStartupChecks) by other code, which would perform similar functionality.
-  -->
-  <property name="runStartupChecks">true</property>
-
 
 
   </properties>

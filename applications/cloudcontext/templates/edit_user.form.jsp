@@ -1,5 +1,3 @@
-
-<%org.mmbase.security.implementation.cloudcontext.Caches.waitForCacheInvalidation(); %>
 <form action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_user.jsp</mm:param></mm:url>" method="post">
 <table>
   <mm:fieldlist type="edit" fields="owner">

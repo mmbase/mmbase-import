@@ -54,15 +54,6 @@
     <td width="50%"><pre><mm:include cite="true" page="codesamples/jstl.fmt.jsp" escape="text/xml" /></pre></td>
     <td width="50%"><%@include file="codesamples/jstl.fmt.jsp" %></td>
   </tr>
-  <tr><th colspan="2">
-  <p>
-    MMBase lists also have the JSTL 'varStatus' attribute
-  </p>
-  </th></tr>
-  <tr valign="top">
-    <td width="50%"><pre><mm:include cite="true" page="codesamples/jstl.varstatus.jsp" escape="text/xml" /></pre></td>
-    <td width="50%"><%@include file="codesamples/jstl.varstatus.jsp" %></td>
-  </tr>
 
 
 </table>

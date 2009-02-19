@@ -14,13 +14,13 @@ import java.util.*;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.mmbase.core.event.*;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.storage.search.SearchQuery;
 
-import java.util.concurrent.CopyOnWriteArrayList;
+import org.mmbase.core.event.*;
+import org.mmbase.storage.search.SearchQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class will manage a collection of <code>ReleaseStrategy</code>
@@ -28,23 +28,20 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.27 2008-03-21 12:19:53 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.18.2.2 2008-03-19 16:13:35 michiel Exp $
  */
-public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<ReleaseStrategy> {
-
+public class ChainedReleaseStrategy extends ReleaseStrategy {
     private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
 
-    private final List<ReleaseStrategy> releaseStrategies = new CopyOnWriteArrayList<ReleaseStrategy>();
+    private final List releaseStrategies = new CopyOnWriteArrayList();
 
     //this map is used to store the 'enabled' status of wrapped strategies when this one is being disabled
     //so the old settings can be returned when it is enabled again
-    private final Map<String, Boolean> childStrategyMemory = new HashMap<String, Boolean>();
+    private final Map childStrategyMemory = new HashMap();
 
-    public ChainedReleaseStrategy(ReleaseStrategy... rs) {
-        for (ReleaseStrategy r : rs) {
-            addReleaseStrategy(r);
-        }
+    public ChainedReleaseStrategy() {
     }
+
 
 
     /**
@@ -72,10 +69,10 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
                             log.error("release strategy instance is null.");
                         }
 
-                    } catch (CacheConfigurationException cce) {
+                    } catch (CacheConfigurationException e1) {
                         // here we throw a runtime exception, because there is
                         // no way we can deal with this error.
-                        throw new RuntimeException("Cache configuration error: " + cce.getMessage(), cce);
+                        throw new RuntimeException("Cache configuration error: " + e1.toString(), e1);
                     }
                 }
             }
@@ -87,21 +84,34 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
      * @since 1.8.6
      */
     private static ReleaseStrategy getStrategyInstance(String strategyClassName) throws CacheConfigurationException {
+        log.debug("getStrategyInstance()");
+        Class strategyClass;
+        ReleaseStrategy strategy = null;
         try {
-            Class strategyClass = Class.forName(strategyClassName);
-            ReleaseStrategy strategy = (ReleaseStrategy) strategyClass.newInstance();
+            strategyClass = Class.forName(strategyClassName);
+            strategy = (ReleaseStrategy) strategyClass.newInstance();
             log.debug("created strategy instance: "+strategyClassName);
-            return strategy;
+
         } catch (ClassCastException e){
-            throw new CacheConfigurationException("'" + strategyClassName + "' can not be cast to strategy.", e);
+            log.debug(strategyClassName + " can not be cast to strategy");
+            throw new CacheConfigurationException(strategyClassName + " can not be cast to strategy");
         } catch (ClassNotFoundException e) {
-            throw new CacheConfigurationException("Class '" + strategyClassName + "' was not found", e);
+            log.debug("exception getStrategyInstance()");
+            throw new CacheConfigurationException("Class "+strategyClassName +
+                    "was not found");
         } catch (InstantiationException e) {
-            throw new CacheConfigurationException("A new instance of '" + strategyClassName + "' could not be created: " + e.getMessage(), e);
+            log.debug("exception getStrategyInstance()");
+            throw new CacheConfigurationException("A new instance of " + strategyClassName +
+                    "could not be created: " + e.toString());
         } catch (IllegalAccessException e) {
-            throw new CacheConfigurationException("A new instance of '" + strategyClassName + "' could not be accessed: " + e.getMessage(), e);
+            log.debug("exception getStrategyInstance()");
+            throw new CacheConfigurationException("A new instance of " + strategyClassName +
+                    "could not be created: " + e.toString());
         }
+        log.debug("exit getStrategyInstance()");
+        return strategy;
     }
+
 
 
     /**
@@ -118,16 +128,16 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
             //if the strategy is enabled and we have recorded settings, we must put them back
 
 
-            for(Iterator<ReleaseStrategy> i = iterator(); i.hasNext();){
-                ReleaseStrategy strategy = i.next();
+            for(Iterator i = iterator(); i.hasNext();){
+                ReleaseStrategy strategy = (ReleaseStrategy)i.next();
 
                 //if it must be switched on, we must use the memeory if present
                 if(newStatus == true){
-                    Boolean memory = childStrategyMemory.get(strategy.getName());
+                    Boolean memory = (Boolean) childStrategyMemory.get(strategy.getName());
                     strategy.setEnabled( memory == null ? true :  memory.booleanValue());
                 } else {
                     //if it must switch of, we must record the status
-                    childStrategyMemory.put(strategy.getName(), strategy.isEnabled());
+                    childStrategyMemory.put(strategy.getName(), new Boolean(strategy.isEnabled()));
                     strategy.setEnabled(false);
                     strategy.clear();
                 }
@@ -154,8 +164,8 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
      * removes all strategies
      */
     public void removeAllStrategies(){
-        for (Iterator<ReleaseStrategy> i = iterator(); i.hasNext(); ){
-            removeStrategy(i.next());
+        for (Iterator i = iterator(); i.hasNext(); ){
+            removeStrategy((ReleaseStrategy)i.next());
         }
     }
 
@@ -165,7 +175,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
      * @see org.mmbase.cache.ReleaseStrategy#getName()
      */
     public String getName() {
-        return "Chained Release Strategy";
+        return "Multi Release Strategy";
     }
 
     /*
@@ -178,15 +188,8 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
             + "combine. it is used as the base strategy for QueryResultCache subclasses.";
     }
 
-    public Iterator<ReleaseStrategy> iterator() {
+    public Iterator iterator() {
         return releaseStrategies.iterator();
-    }
-
-    /**
-     * @since MMBase-1.9
-     */
-    public List<ReleaseStrategy> getList() {
-        return Collections.unmodifiableList(releaseStrategies);
     }
 
     /*
@@ -195,23 +198,23 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent,
      *      org.mmbase.storage.search.SearchQuery, java.util.List)
      */
-    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
+    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         // first do the 'basic' strategy that is allways there. (see constructor)
-        Iterator<ReleaseStrategy> i = releaseStrategies.iterator();
+        Iterator i = releaseStrategies.iterator();
         // while the outcome of getResult is true (the cache should be flushed), we have to keep trying.
         while (i.hasNext()) {
-            ReleaseStrategy strategy = i.next();
+            ReleaseStrategy strategy = (ReleaseStrategy) i.next();
             StrategyResult result = strategy.evaluate(event, query, cachedResult);
             if (! result.shouldRelease()) return false;
         }
         return true;
     }
-    protected final boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
+    protected final boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
         // first do the 'basic' strategy that is allways there. (see constructor)
-        Iterator<ReleaseStrategy> i = releaseStrategies.iterator();
+        Iterator i = releaseStrategies.iterator();
         // while the outcome of getResult is true (the cache should be flushed), we have to keep trying.
         while (i.hasNext()) {
-            ReleaseStrategy strategy = i.next();
+            ReleaseStrategy strategy = (ReleaseStrategy) i.next();
             StrategyResult result = strategy.evaluate(event, query, cachedResult);
             if (! result.shouldRelease()) return false;
         }
@@ -220,8 +223,8 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
 
     public void clear(){
         super.clear();
-        for(Iterator<ReleaseStrategy> i = iterator(); i.hasNext();){
-            ReleaseStrategy rs = i.next();
+        for(Iterator i = iterator(); i.hasNext();){
+            ReleaseStrategy rs = (ReleaseStrategy) i.next();
             rs.clear();
         }
     }

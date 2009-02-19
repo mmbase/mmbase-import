@@ -13,7 +13,6 @@ package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.bridge.*;
-import org.mmbase.util.ResourceLoader;
 import java.util.*;
 import org.mmbase.applications.crontab.*;
 import javax.mail.*;
@@ -23,7 +22,7 @@ import javax.mail.search.*;
  * A mail fetcher that does not smtp-listen but periodically pops from a server. Implemented as a cronjob
  *
  *
- * @version $Id: PopFetcher.java,v 1.6 2008-12-30 11:06:12 michiel Exp $
+ * @version $Id: PopFetcher.java,v 1.5 2008-07-30 05:03:07 michiel Exp $
  */
 public class PopFetcher extends MailFetcher implements CronJob {
     private static final Logger log = Logging.getLoggerInstance(PopFetcher.class);
@@ -54,7 +53,6 @@ public class PopFetcher extends MailFetcher implements CronJob {
      * (based on received date)
      */
     public  void run() {
-        Properties props = System.getProperties();
         try {
             Cloud cloud = CloudMailHandler.getCloud();
             Node lastRun = null;
@@ -90,6 +88,11 @@ public class PopFetcher extends MailFetcher implements CronJob {
                     }
                 };
 
+            // Get a Properties object
+            Properties props = System.getProperties();
+
+            // Get a Session object
+            Session session = Session.getInstance(props, null);
 
             String[] configuration = entry.getConfiguration().split(",");
             String protocol = configuration[0];
@@ -97,18 +100,9 @@ public class PopFetcher extends MailFetcher implements CronJob {
             String userName = configuration[2];
             String password = configuration[3];
             int port = -1;
-            if (configuration.length > 4 && configuration[4].length() > 0) {
+            if (configuration.length > 4) {
                 port = Integer.parseInt(configuration[4]);
             }
-            // Get a Properties object
-
-            if (configuration.length > 5) {
-                props = new Properties();
-                props.load(ResourceLoader.getConfigurationRoot().getResourceAsStream(configuration[5]));
-            }
-            // Get a Session object
-            Session session = Session.getInstance(props, null);
-
 
             Store store = session.getStore(protocol);
             log.service("Connecting to " + userName + "@" + host + (port == -1 ? "" : ":" + port) + " using " + protocol + ". Using cloud of " + cloud.getUser() + " (" + cloud.getUser().getRank() + "). Previous mail:" + lastDate);
@@ -158,10 +152,10 @@ public class PopFetcher extends MailFetcher implements CronJob {
                 lastRun.commit();
                 log.service("Handled " + total + " email messages. Set last run in " + lastRun.getNumber() + " to " + new Date(lastRun.getLongValue("start") * 1000));
             } else {
-                log.debug("No newer emails found");
+                log.service("No newer emails found");
             }
         } catch (Exception e) {
-            log.error(e.getMessage() + "props: " + props, e);
+            log.error(e.getMessage(), e);
         }
     }
 

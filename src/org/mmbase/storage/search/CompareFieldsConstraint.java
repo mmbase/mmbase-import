@@ -10,29 +10,29 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search;
 
 /**
- * A constraint that compares the value of two stepfields.
+ * A constraint that compares the value of two stepfields. 
  *
  * @author Rob van Maris
- * @version $Id: CompareFieldsConstraint.java,v 1.3 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id: CompareFieldsConstraint.java,v 1.2 2003-03-10 11:50:43 pierre Exp $
  * @since MMBase-1.7
  */
 public interface CompareFieldsConstraint extends FieldCompareConstraint {
     /**
-     * Gets the second associated field.
+     * Gets the second associated field. 
      */
     StepField getField2();
 
     /**
-     * Returns a string representation of this CompareFieldsConstraint.
-     * The string representation has the form
-     * "CompareFieldsConstraint(inverse:&lt:inverse&gt;, field:&lt;field&gt;,
+     * Returns a string representation of this CompareFieldsConstraint. 
+     * The string representation has the form 
+     * "CompareFieldsConstraint(inverse:&lt:inverse&gt;, field:&lt;field&gt;, 
      *  casesensitive:&lt;casesensitive&gt;, operator:&lt;operator&gt;,
      *  field2:&lt;field2&gt;)"
-     * where
+     * where 
      * <ul>
      * <li><em>&lt;inverse&gt;</em>is the value returned by
      *      {@link #isInverse isInverse()}
-     * <li><em>&lt;field&gt;</em> is the field alias returned by
+     * <li><em>&lt;field&gt;</em> is the field alias returned by 
      *     <code>FieldConstraint#getField().getAlias()</code>
      * <li><em>&lt;casesensitive&gt;</em> is the value returned by
      *     {@link FieldConstraint#isCaseSensitive isCaseSensitive()}
@@ -46,5 +46,7 @@ public interface CompareFieldsConstraint extends FieldCompareConstraint {
      */
     public String toString();
 
-
+    /** @link dependency 
+     * @supplierRole field2*/
+    /*#StepField lnkStepField1;*/
 }

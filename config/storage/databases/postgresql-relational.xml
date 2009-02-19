@@ -21,7 +21,7 @@
 
     <!-- Foreignkeys don't work well under postgresql -->
     <scheme name="create-foreign-key-scheme" />
-
+	
     <!-- Postgresql sequences (work differently) -->
     <scheme name="create-sequence-scheme" />
     <scheme name="init-sequence-scheme" >CREATE SEQUENCE {0}_autoincrement INCREMENT {3} START {2}</scheme>
@@ -43,8 +43,6 @@
     <type-mapping name="XML" type="TEXT" />
     <type-mapping name="DATETIME" type="TIMESTAMP" />
     <type-mapping name="BOOLEAN" type="BOOLEAN" />
-    <type-mapping name="DECIMAL"       type="NUMERIC({0}, {1})" />
-
     <type-mapping name="LIST[FLOAT]"   type="FLOAT[]" />
     <type-mapping name="LIST[DOUBLE]"  type="DOUBLE PRECISION[]" />
     <type-mapping name="LIST[LONG]"    type="BIGINT[]" />

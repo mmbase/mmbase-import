@@ -1,4 +1,4 @@
-<%@page session="false" import="org.mmbase.module.core.MMBase,org.mmbase.cache.Cache,org.mmbase.cache.CacheManager,org.mmbase.framework.FrameworkFilter"
+<%@page session="false" import="org.mmbase.module.core.MMBase,org.mmbase.cache.Cache"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><mm:content type="text/plain" postprocessor="reducespace" expires="10">
 
@@ -18,10 +18,8 @@
      <% Runtime runtime = Runtime.getRuntime(); %>
      <mm:import externid="gc" />
 		<mm:present referid="gc">
-      <mm:cloud rank="administrator">
-        <%  runtime.gc();%>
-      </mm:cloud>
-    </mm:present>
+		  <%  runtime.gc();%>
+        </mm:present>
 		  <%
         long freeMemory = runtime.freeMemory();
         long maxMemory  = runtime.totalMemory();
@@ -31,55 +29,12 @@
   </mm:compare>
   <mm:compare value="cache">
     <mm:import externid="cachetype" jspvar="type" vartype="string">Nodes</mm:import>
-    <% Cache cache = CacheManager.getCache(type);
+    <% Cache cache = Cache.getCache(type);
        if (cache != null) {
     %>
 <%= cache.getHits() %>
 <%= cache.getHits() + cache.getMisses() %>
-    <% }  else { %>
-0
-0
     <% } %>
-  </mm:compare>
-  <mm:compare value="cachefill">
-    <mm:import externid="cachetype" jspvar="type" vartype="string">Nodes</mm:import>
-    <% Cache cache = CacheManager.getCache(type);
-       if (cache != null) {
-    %>
-<%= cache.getSize() %>
-<%= cache.getMaxSize() %>
-    <% } else { %>
-0
-0
-    <% } %>
-  </mm:compare>
-  <mm:compare value="requests">
-    <mm:import externid="type" jspvar="type" vartype="string" />
-    <%
-    long chained = FrameworkFilter.getChainedRequests();
-    long included = FrameworkFilter.getIncludedRequests();
-    long forwarded = FrameworkFilter.getForwardedRequests();
-    long errors = FrameworkFilter.getErrorRequests();
-    long total = chained + included + forwarded + errors;
-    long value;
-    if (type == null || type.equals("completed")) {
-      value = chained + included + forwarded;
-    } else if (type.equals("chained")) {
-       value = chained;
-    } else if (type.equals("forwarded")) {
-       value = forwarded;
-    } else if (type.equals("included")) {
-       value = included;
-    } else if (type.equals("filtered")) {
-       value = forwarded + included;
-    } else if (type.equals("errors")) {
-       value = errors;
-    } else {
-      throw new IllegalArgumentException("No requests type " + type);
-    }
-    %>
-<%=value%>
-<%=total%>
   </mm:compare>
   <mm:compare value="mrtgconfig">
 <mm:import id="this"><%=request.getRequestURL()%></mm:import>
@@ -104,62 +59,26 @@ PageTop[<mm:write referid="thisserver" />_memory]: <h1><mm:write referid="thisse
 
 
 <%
-for (String t : new String[] {"chained", "filtered", "errors" }) {
-  String id = "requests_" + t;
-%>
-#
-# <mm:write referid="thisserver" /> REQUESTS <%=t%>
-#
-Target[<mm:write referid="thisserver" />_<%=id%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=requests&type=<%=t%>"`
-Title[<mm:write referid="thisserver" />_<%=id%>]: <mm:write referid="thisserver" /> <%=t%> requests
-MaxBytes[<mm:write referid="thisserver" />_<%=id%>]: 100000000
-Options[<mm:write referid="thisserver" />_<%=id%>]:  integer, nopercent
-kilo[<mm:write referid="thisserver" />_<%=id%>]: 1000
-Ylegend[<mm:write referid="thisserver" />_<%=id%>]: requests / s
-LegendO[<mm:write referid="thisserver" />_<%=id%>]: <%=t%> requests
-LegendI[<mm:write referid="thisserver" />_<%=id%>]: total requests :
-ShortLegend[<mm:write referid="thisserver" />_<%=id%>]: requests / s
-PageTop[<mm:write referid="thisserver" />_<%=id%>]: <h1><mm:write referid="thisserver" /> <%=t%> requests information</h1>
 
-<%
-}
-
-
-org.mmbase.util.transformers.CharTransformer identifier = new org.mmbase.util.transformers.Identifier();
-java.util.Iterator i  = CacheManager.getCaches().iterator();
+java.util.Iterator i  = Cache.getCaches().iterator();
 while (i.hasNext()) {
    String cacheName = (String) i.next();
-   Cache  cache     = CacheManager.getCache(cacheName);
-   String id = identifier.transform(cache.getName());
+   Cache  cache     = Cache.getCache(cacheName);
+
      %>
 #
 # <mm:write referid="thisserver" /> <%=cache.getName() %>: <%=cache.getDescription() %>
 #
-Target[<mm:write referid="thisserver" />_<%=id%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=cache&cachetype=<%=java.net.URLEncoder.encode(cache.getName(), "UTF-8")%>"`
-Title[<mm:write referid="thisserver" />_<%=id%>]: <mm:write referid="thisserver" /> <%=cache.getName()%>
-MaxBytes[<mm:write referid="thisserver" />_<%=id%>]: 100000000
-Options[<mm:write referid="thisserver" />_<%=id%>]:  integer, nopercent
-kilo[<mm:write referid="thisserver" />_<%=id%>]: 1000
-Ylegend[<mm:write referid="thisserver" />_<%=id%>]: requests / s
-LegendO[<mm:write referid="thisserver" />_<%=id%>]: hits :
-LegendI[<mm:write referid="thisserver" />_<%=id%>]: requests :
-ShortLegend[<mm:write referid="thisserver" />_<%=id%>]: requests / s
-PageTop[<mm:write referid="thisserver" />_<%=id%>]: <h1><mm:write referid="thisserver" /> <%=cache.getName()%> information</h1>
-
-<% id = id + "_fill"; %>
-#
-# <mm:write referid="thisserver" /> <%=cache.getName() %>: <%=cache.getDescription() %>
-#
-Target[<mm:write referid="thisserver" />_<%=id%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=cachefill&cachetype=<%=java.net.URLEncoder.encode(cache.getName(), "UTF-8")%>"`
-Title[<mm:write referid="thisserver" />_<%=id%>]: <mm:write referid="thisserver" /> <%=cache.getName()%>
-MaxBytes[<mm:write referid="thisserver" />_<%=id%>]: 100000000
-Options[<mm:write referid="thisserver" />_<%=id%>]:  integer, gauge, nopercent
-kilo[<mm:write referid="thisserver" />_<%=id%>]: 1000
-Ylegend[<mm:write referid="thisserver" />_<%=id%>]: cache useage
-LegendO[<mm:write referid="thisserver" />_<%=id%>]: max size :
-LegendI[<mm:write referid="thisserver" />_<%=id%>]: size :
-ShortLegend[<mm:write referid="thisserver" />_<%=id%>]: # of entries
-PageTop[<mm:write referid="thisserver" />_<%=id%>]: <h1><mm:write referid="thisserver" /> <%=cache.getName()%> information</h1>
+Target[<mm:write referid="thisserver" />_<%=cache.getName()%>]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=cache&cachetype=<%=cache.getName()%>"`
+Title[<mm:write referid="thisserver" />_<%=cache.getName()%>]: <mm:write referid="thisserver" /> <%=cache.getName()%>
+MaxBytes[<mm:write referid="thisserver" />_<%=cache.getName()%>]: 100000000
+Options[<mm:write referid="thisserver" />_<%=cache.getName()%>]:  integer, nopercent
+kilo[<mm:write referid="thisserver" />_<%=cache.getName()%>]: 1000
+Ylegend[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests / s
+LegendO[<mm:write referid="thisserver" />_<%=cache.getName()%>]: hits :
+LegendI[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests :
+ShortLegend[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests / s
+PageTop[<mm:write referid="thisserver" />_<%=cache.getName()%>]: <h1><mm:write referid="thisserver" /> <%=cache.getName()%> information</h1>
 
  <% } %>
 

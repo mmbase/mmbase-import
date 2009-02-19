@@ -33,6 +33,7 @@
         <%=otherManager.getGUIName()%>
         (<%= role %>: <%=guirole%>)
         <span class="nmname"><%=otherManager.getName()%></span>
+
     </td>
     <th colspan="3"><%=m.getString("relations.relations")%></th>
     <th colspan="3"><%=m.getString("relations.related")%>
@@ -85,18 +86,13 @@
   <td class="navigate">
     <mm:maydelete>
       <%-- delete the relation node, not sure about the node_type argument! --%>
-      <mm:countrelations>
-        <mm:isgreaterthan value="0">(${_} ${_ eq 1 ? 'relation' : 'relations'})</mm:isgreaterthan>
-        <a href='<mm:url page="commit_node.jsp">
-          <mm:param name="node_number"><mm:field name="number" /></mm:param>
-          <mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param>
-          <mm:param name="deleterelations">true</mm:param>
-          </mm:url>'
-          onclick="${_ eq 0 ? '' : 'return confirm(\'Are you sure?\');'}"
-          >
-          <span class="delete"><!-- needed for IE --></span><span class="alt">x</span>
-        </a>
-      </mm:countrelations>
+      <a href='<mm:url page="commit_node.jsp">
+        <mm:param name="node_number"><mm:field name="number" /></mm:param>
+        <mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param>
+        <mm:param name="delete">true</mm:param>
+        </mm:url>' >
+        <span class="delete"><!-- needed for IE --></span><span class="alt">x</span>
+      </a>
     </mm:maydelete>
     <mm:maywrite>
       <%-- edit the relation --%>

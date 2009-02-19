@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.16 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: DateTimePattern.java,v 1.13.2.1 2007-09-20 13:23:06 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
@@ -65,10 +65,11 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
         return pattern;
     }
 
+
     private static final char DONTAPPEND = (char) -1;
-    private static List<String> parse(String p) {
-        List<String> parsed = new ArrayList<String>();
-        StringBuilder buf = new StringBuilder();
+    private static List parse(String p) {
+        List parsed = new ArrayList();
+        StringBuffer buf = new StringBuffer();
         boolean inString = false;
         boolean inQuote = false;
 
@@ -141,7 +142,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
      *
      *
      */
-    public List<String> getList(Locale locale) {
+    public List getList(Locale locale) {
         String p = pattern.get(locale);
         return parse(p);
     }
@@ -338,7 +339,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
         }
         /**
          * The associated constant in {@link java.util.Calendar}, e.g. {@link
-         * java.util.Calendar#DAY_OF_MONTH}  or {@link java.util.Calendar#SECOND}
+         * java.util.Calendar.DAY_OF_MONTH}  or {@link java.util.Calendar#SECOND}
          */
         public final int getField() {
             return field;
@@ -380,7 +381,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
          * months, and weekdays).
          */
         public String toString(int value, Locale locale, int length) {
-            StringBuilder buf = new StringBuilder("" + value);
+            StringBuffer buf = new StringBuffer("" + value);
             while(buf.length() < length) {
                 buf.insert(0, "0");
             }

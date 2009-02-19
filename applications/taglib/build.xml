@@ -5,22 +5,15 @@
   <property name="project.comment"   value="The MMBase Taglib implementation" />
 
   <property name="source-taglib.xml"    value="org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
-
-  <property name="project.jars.includes" value="resources/build/mmbase-resources.jar" />
+  <property name="java.source.version" value="1.4" />
 
   <import file="../buildbase-include.xml" />
-
-
-  <target name="resources">
-    <echo message="${applications.dir}/resources" />
-    <ant dir="${applications.dir}/resources" inheritAll="false" />
-  </target>
 
   <property name="taglib2.jar"       value="${project.jar.dir}/mmbase-taglib-2.jar" />
 
   <target name="jar"           depends="jar1,jar2" />
   <target name="package"       depends="jar,taglib.doc,buildbase.package" />
-  <target name="install"       depends="install.dependencies,jar,install.documentation,install.taglib2.tld">
+  <target name="install"                 depends="install.dependencies,jar,install.documentation,install.taglib2.tld">
     <copy file="${taglib2.jar}"          todir="${release.lib.dir}" />
     <!-- web-app 2.3 compatibility
     <copy file="${project.jar}"          todir="${release.lib.dir}" />
@@ -30,9 +23,8 @@
   <target name="install.documentation" depends="documentation,buildbase.install.documentation" />
 
 
-
   <target name="jar1" description="Create mmbase-taglib.jar"
-          depends="resources,copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config"
+          depends="taglib.tld,jar.check,project.manifest,jar.config"
           >
 
     <antcall target="compile" />
@@ -67,13 +59,21 @@
   </target>
 
   <target name="jar2" description="Create mmbase-taglib-2.jar"
-          depends="resources,copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config"
+          depends="copy.metainf.dir,taglib.tld,jar.check,project.manifest,jar.config"
           >
 
     <antcall target="compile" />
 
+    <mkdir dir="${project.metainf.dir}" /><!-- make sure this exists -->
+    <echo message="METAINF ${project.metainf.dir}" />
+
+    <!--
+    <copy todir="${project.metainf.dir}/tags" includeEmptyDirs="false" >
+      <fileset dir="tags">
+      </fileset>
+    </copy>
+    -->
     <mkdir dir="${project.build.dir}/classes/org/mmbase/taglib" /><!-- hate ant -->
-    <echo message="creating jar" />
 
     <echo message="creating taglib-2 jar" />
     <jar jarfile="${taglib2.jar}"
@@ -98,23 +98,37 @@
   <target name="taglib.tld" description="Makes the MMBase taglib tld"
           depends="compile,taglib.tld.check" unless="taglib.tld.uptodate">
     <mkdir dir="${project.metainf.dir}" />
-    <java classname="org.mmbase.util.XSLTransformer"
+    <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile.classpath"
           fork="yes"
           failonerror="yes">
-      <arg value="${share.dir}/xslt/xml2tld.xslt" />
-      <arg value="${project.source.dir}/src/${source-taglib.xml}"/>
+      <arg value="-Q"/>
+      <arg value="-DIAG"/>
+      <arg value="-IN"/>
+      <arg value="file:///${project.source.dir}/src/${source-taglib.xml}"/>
+      <arg value="-OUT"/>
       <arg value="${project.metainf.dir}/taglib.tld"/>
+      <arg value="-XSL"/>
+      <arg value="${share.dir}/xslt/xml2tld.xslt" />
     </java>
-    <java classname="org.mmbase.util.XSLTransformer"
+    <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile.classpath"
           fork="yes"
           failonerror="yes">
-      <arg value="${share.dir}/xslt/xml2tld.xslt" />
-      <arg value="${project.source.dir}/src/${source-taglib.xml}"/>
+      <arg value="-Q"/>
+      <arg value="-DIAG"/>
+      <arg value="-IN"/>
+      <arg value="file:///${project.source.dir}/src/${source-taglib.xml}"/>
+      <arg value="-PARAM"/>
+      <arg value="uri"/>
+      <arg value="http://www.mmbase.org/mmbase-taglib-2.0" />
+      <arg value="-PARAM"/>
+      <arg value="version"/>
+      <arg value="2.0" />
+      <arg value="-OUT"/>
       <arg value="${project.metainf.dir}/taglib-2.0.tld"/>
-      <arg value="uri=http://www.mmbase.org/mmbase-taglib-2.0" />
-      <arg value="version=2.0" />
+      <arg value="-XSL"/>
+      <arg value="${share.dir}/xslt/xml2tld.xslt" />
     </java>
   </target>
 
@@ -127,18 +141,28 @@
 
 
   <target name="taglib.doc" description="Make the MMBase taglib taglib documentation"
-          depends="init,init.compile,taglib.doc.check" unless="taglib.doc.uptodate" if="do.documentation">
+          depends="init,compile,taglib.doc.check" unless="taglib.doc.uptodate" if="do.documentation">
     <mkdir dir="${project.build.dir}/documentation/frontenddevelopers/taglib/reference"/>
-    <java classname="org.mmbase.util.XSLTransformer"
+    <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile.classpath"
           fork="yes"
-          failonerror="no">
-      <arg value="${share.dir}/xslt/xml2html.xslt" />
-      <arg value="${project.source.dir}/src/${source-taglib.xml}" />
+          failonerror="yes">
+      <arg value="-DIAG"/>
+      <arg value="-IN"/>
+      <arg value="file:///${project.source.dir}/src/${source-taglib.xml}" />
+      <arg value="-PARAM"/>
+      <arg value="basedir"/>
+      <arg value="${project.build.dir}/documentation/frontenddevelopers/taglib"/>
+      <arg value="-PARAM"/>
+      <arg value="files"/>
+      <arg value="reference" />
+      <arg value="-PARAM"/>
+      <arg value="exampledir"/>
+      <arg value="${project.examples.dir}/" />
+      <arg value="-OUT"/>
       <arg value="${project.build.dir}/documentation/frontenddevelopers/taglib/reference.html" />
-      <arg value="basedir=${project.build.dir}/documentation/frontenddevelopers/taglib" />
-      <arg value="filesreference" />
-      <arg value="exampledir=${project.examples.dir}/" />
+      <arg value="-XSL"/>
+      <arg value="${share.dir}/xslt/xml2html.xslt" />
     </java>
   </target>
 

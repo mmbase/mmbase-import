@@ -13,11 +13,8 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
-import org.mmbase.module.database.MultiConnection;
-
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.datatypes.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
@@ -35,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.210 2009-02-11 20:41:56 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.12 2008-07-08 11:07:33 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -43,37 +40,34 @@ public class DatabaseStorageManager implements StorageManager {
     public static final int OBJ2TYPE_MAX_SIZE = 20000;
 
     // contains a list of buffered keys
-    protected static final List<Integer> sequenceKeys = new LinkedList<Integer>();
+    protected static final List sequenceKeys = new LinkedList();
 
-    private static final Logger log     = Logging.getLoggerInstance(DatabaseStorageManager.class);
-
+    private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManager.class);
 
     private static final Blob BLOB_SHORTED = new InputStreamBlob(null, -1);
 
     private static final CharTransformer UNICODE_ESCAPER = new org.mmbase.util.transformers.UnicodeEscaper();
 
     // maximum size of the key buffer
-    private static Integer bufferSize = null;
+    protected static Integer bufferSize = null;
 
     /**
      * This sets contains all existing tables which could by associated with MMBase builders. This
      * is because they are queried all at once, but requested for existance only one at a time.
      * @since MMBase-1.7.4
      */
-    private static Set<String> tableNameCache = null;
+    protected static Set tableNameCache = null;
 
     /**
      * This sets contains all verified tables.
      * @since MMBase-1.8.1
      */
-    private static Set<String> verifiedTablesCache = new HashSet<String>();
+    protected static Set verifiedTablesCache = new HashSet();
 
     /**
      * Whether the warning about blob on legacy location was given.
      */
     private static boolean legacyWarned = false;
-
-    private static boolean verifyTablesWarned = false;
 
     /**
      * Whether the warning about blobs located on disk was given.
@@ -84,10 +78,10 @@ public class DatabaseStorageManager implements StorageManager {
      * The cache that contains the last X types of all requested objects
      * @since 1.7
      */
-    protected static Cache<Integer, Integer> typeCache;
+    protected static Cache typeCache;
 
     static {
-        typeCache = new Cache<Integer, Integer>(OBJ2TYPE_MAX_SIZE) {
+        typeCache = new Cache(OBJ2TYPE_MAX_SIZE) {
             public String getName()        { return "TypeCache"; }
             public String getDescription() { return "Cache for node types";}
         };
@@ -121,29 +115,26 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Pool of changed nodes in a transaction
      */
-    protected final Map<MMObjectNode, String> changes = new HashMap<MMObjectNode, String>();
+    protected Map changes;
 
     /**
      * Constructor
      */
     public DatabaseStorageManager() {}
 
-    protected final long getLogStartTime() {
-        return System.nanoTime();
+    protected long getLogStartTime() {
+        return System.currentTimeMillis();
     }
 
-
+    // for debug purposes
     protected final void logQuery(String query, long startTime) {
-        long duration = System.nanoTime() - startTime;
-
         if (log.isDebugEnabled()) {
-            // This can probably by dropped, we log much nicer on org.mmbase.QUERIES now.
-            log.debug("Time:" + duration / 1000000 + " Query :" + query);
+            long now = System.currentTimeMillis();
+            log.debug("Time:" + (now - startTime) + " Query :" + query);
             if (log.isTraceEnabled()) {
                 log.trace(Logging.stackTrace());
             }
         }
-        getFactory().logQuery(query, duration);
     }
 
     // javadoc is inherited
@@ -159,7 +150,7 @@ public class DatabaseStorageManager implements StorageManager {
         }
         // determine generated key buffer size
         if (bufferSize == null) {
-            bufferSize = 1;
+            bufferSize = new Integer(1);
             Object bufferSizeAttribute = factory.getAttribute(Attributes.SEQUENCE_BUFFER_SIZE);
             if (bufferSizeAttribute != null) {
                 try {
@@ -173,30 +164,6 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
 
-    }
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    public DatabaseStorageManagerFactory getFactory() {
-        return factory;
-    }
-
-
-    /**
-     * @since MMBase-1.8.7
-     */
-    protected boolean verifyTables() {
-        boolean verifyTables = factory.getMMBase().runStartupChecks();
-        if (!verifyTablesWarned) {
-            if (! verifyTables) {
-                log.warn("Not verifying tables. No implicit synchronization of datatypes to matching db types is done. No warnings about that are logged.");
-            } else {
-                log.service("Verifying tables. Implicit synchronization of datatypes to matching db types will be  done. Warnings about that are logged.");
-            }
-            verifyTablesWarned = true;
-        }
-        return  verifyTables;
     }
 
     /**
@@ -260,7 +227,7 @@ public class DatabaseStorageManager implements StorageManager {
                 }
             }
             inTransaction = true;
-            changes.clear();
+            changes = new HashMap();
         }
 
     }
@@ -331,7 +298,7 @@ public class DatabaseStorageManager implements StorageManager {
             log.debug("Acquired lock");
             // if sequenceKeys conatins (buffered) keys, return this
             if (sequenceKeys.size() > 0) {
-                return sequenceKeys.remove(0);
+                return ((Integer)sequenceKeys.remove(0)).intValue();
             } else {
                 String query = "";
                 try {
@@ -339,7 +306,7 @@ public class DatabaseStorageManager implements StorageManager {
                     Statement s;
                     Scheme scheme = factory.getScheme(Schemes.UPDATE_SEQUENCE, Schemes.UPDATE_SEQUENCE_DEFAULT);
                     if (scheme != null) {
-                        query = scheme.format(this, factory.getStorageIdentifier("number"), bufferSize);
+                        query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), bufferSize });
                         long startTime = getLogStartTime();
                         s = activeConnection.createStatement();
                         s.executeUpdate(query);
@@ -347,7 +314,7 @@ public class DatabaseStorageManager implements StorageManager {
                         logQuery(query, startTime);
                     }
                     scheme = factory.getScheme(Schemes.READ_SEQUENCE, Schemes.READ_SEQUENCE_DEFAULT);
-                    query = scheme.format(this, factory.getStorageIdentifier("number"), bufferSize);
+                    query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), bufferSize });
                     s = activeConnection.createStatement();
                     try {
                         long startTime = getLogStartTime();
@@ -358,7 +325,7 @@ public class DatabaseStorageManager implements StorageManager {
                                 int keynr = result.getInt(1);
                                 // add remaining keys to sequenceKeys
                                 for (int i = 1; i < bufferSize.intValue(); i++) {
-                                    sequenceKeys.add(keynr + i);
+                                    sequenceKeys.add(new Integer(keynr+i));
                                 }
                                 return keynr;
                             } else {
@@ -389,7 +356,7 @@ public class DatabaseStorageManager implements StorageManager {
         try {
             MMObjectBuilder builder = node.getBuilder();
             Scheme scheme = factory.getScheme(Schemes.GET_TEXT_DATA, Schemes.GET_TEXT_DATA_DEFAULT);
-            String query = scheme.format(this, builder, field, builder.getField("number"), node);
+            String query = scheme.format(new Object[] { this, builder, field, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
             ResultSet result = s.executeQuery(query);
@@ -415,23 +382,6 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * Sometimes (legacy) string were stored in binary fields. They must be dealt with seperately.
-     *
-     * @since MMBase-1.9
-     */
-    protected boolean isBinaryColumnType(int st) {
-        switch(st) {
-        case Types.CLOB:
-        case Types.BLOB:
-        case Types.LONGVARBINARY:
-        case Types.VARBINARY:
-            return true;
-        default:
-            return false;
-        }
-    }
-
-    /**
      * Retrieve a text for a specified object field.
      * The default method uses {@link ResultSet#getString(int)} to obtain text.
      * Override this method if you want to optimize retrieving large texts,
@@ -445,8 +395,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected Object getStringValue(ResultSet result, int index, CoreField field, boolean mayShorten) throws StorageException, SQLException {
         String untrimmedResult = null;
-        // would be equals to field.getStorageType()
-        if (isBinaryColumnType(result.getMetaData().getColumnType(index)) || factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
+        if (field != null && (field.getStorageType() == Types.CLOB || field.getStorageType() == Types.BLOB || factory.hasOption(Attributes.FORCE_ENCODE_TEXT))) {
             InputStream inStream = result.getBinaryStream(index);
             if (result.wasNull()) {
                 return null;
@@ -469,9 +418,6 @@ public class DatabaseStorageManager implements StorageManager {
                     encoding = "CP1252";
                 }
                 untrimmedResult = new String(bytes.toByteArray(), encoding);
-                if (log.isDebugEnabled()) {
-                    log.debug("Got " + untrimmedResult + " " + new String(untrimmedResult.getBytes("ISO-8859-1"), "UTF-8") + " with " + encoding);
-                }
             } catch (IOException ie) {
                 throw new StorageException(ie);
             }
@@ -584,10 +530,11 @@ public class DatabaseStorageManager implements StorageManager {
      * Override this method if you want to be able to change the placeholder strategy.
      * @param field the (MMBase) fieldtype
      * @return <code>true</code> if the field should be shortened
+     * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
      */
     protected boolean shorten(CoreField field) {
-        return field != null && field.getType() == Field.TYPE_BINARY;
+        return field.getType() == Field.TYPE_BINARY;
     }
 
     /**
@@ -600,14 +547,11 @@ public class DatabaseStorageManager implements StorageManager {
         try {
             MMObjectBuilder builder = node.getBuilder();
             Scheme scheme = factory.getScheme(Schemes.GET_BINARY_DATA, Schemes.GET_BINARY_DATA_DEFAULT);
-            String query = scheme.format(this, builder, field, builder.getField("number"), node);
+            String query = scheme.format(new Object[] { this, builder, field, builder.getField("number"), node });
             getActiveConnection();
-
-            PreparedStatement s = null;
-            ResultSet result = null;
+            Statement s = activeConnection.createStatement();
+            ResultSet result = s.executeQuery(query);
             try {
-                s = activeConnection.prepareStatement(query);
-                result = s.executeQuery();
                 if ((result != null) && result.next()) {
                     Blob blob = getBlobValue(result, 1, field, mayShorten);
                     if (blob != null) {
@@ -617,15 +561,10 @@ public class DatabaseStorageManager implements StorageManager {
                 } else {
                     if (result != null) result.close();
                     s.close();
-                    throw new StorageException("Node with number " + node.getNumber() + " of type " + builder + " not found with query '" + query + "'");
+                    throw new StorageException("Node with number " + node.getNumber() + " of type " + builder + " not found.");
                 }
             } finally {
-                if (result != null) {
-                    result.close();
-                }
-                if (s != null) {
-                    s.close();
-                }
+                result.close();
             }
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -634,9 +573,7 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    /**
-     * @see org.mmbase.storage.StorageManager#getBinaryValue(org.mmbase.module.core.MMObjectNode, org.mmbase.core.CoreField)
-     */
+    // javadoc is inherited
     public byte[] getBinaryValue(MMObjectNode node, CoreField field) throws StorageException {
         try {
             Blob b = getBlobValue(node, field);
@@ -649,11 +586,7 @@ public class DatabaseStorageManager implements StorageManager {
             throw new StorageException(sqe);
         }
     }
-
-
-    /**
-     * @see org.mmbase.storage.StorageManager#getInputStreamValue(org.mmbase.module.core.MMObjectNode, org.mmbase.core.CoreField)
-     */
+    // javadoc is inherited
     public InputStream getInputStreamValue(MMObjectNode node, CoreField field) throws StorageException {
         try {
             return getBlobValue(node, field).getBinaryStream();
@@ -737,8 +670,8 @@ public class DatabaseStorageManager implements StorageManager {
      * @return The File where to store or read the binary data
      */
     protected File getBinaryFile(MMObjectNode node, String fieldName) {
-        File basePath = factory.getBinaryFileBasePath();
-        StringBuilder pathBuffer = new StringBuilder();
+        String basePath = factory.getBinaryFileBasePath();
+        StringBuffer pathBuffer = new StringBuffer();
         int number = node.getNumber() / 1000;
         while (number > 0) {
             int num = number % 100;
@@ -766,15 +699,8 @@ public class DatabaseStorageManager implements StorageManager {
         else {
             builderName = node.getBuilder().getFullTableName();
         }
-        String canon;
-        try {
-            canon = basePath.getCanonicalPath();
-        } catch (Exception e) {
-            log.warn(e);
-            canon = basePath.toString();
-        }
 
-        pathBuffer.insert(0, canon + File.separator + factory.getDatabaseName() + File.separator + builderName);
+        pathBuffer.insert(0, basePath + factory.getDatabaseName() + File.separator + builderName);
         return new File(pathBuffer.toString(), "" + node.getNumber() + '.' + fieldName);
     }
 
@@ -784,7 +710,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     private File getLegacyBinaryFile(MMObjectNode node, String fieldName) {
         // the same basePath, so you so need to set that up right.
-        File basePath = factory.getBinaryFileBasePath();
+        String basePath = factory.getBinaryFileBasePath();
 
         File f = new File(basePath, node.getBuilder().getTableName() + File.separator + node.getNumber() + '.' + fieldName);
         if (f.exists()) { // 1.6 storage or 'support' blobdatadir
@@ -795,7 +721,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
 
-        f = new File(basePath, factory.getCatalog() + File.separator + node.getBuilder().getFullTableName() + File.separator + node.getNumber() + '.' + fieldName);
+        f = new File(basePath + File.separator + factory.getCatalog() + File.separator + node.getBuilder().getFullTableName() + File.separator + node.getNumber() + '.' + fieldName);
         if (f.exists()) { // 1.7.0.rc1 blob data dir
             if (!f.canRead()) {
                 log.warn("Found '" + f + "' but it cannot be read");
@@ -828,7 +754,6 @@ public class DatabaseStorageManager implements StorageManager {
      * @todo how to do this in a transaction???
      * @param node the node the binary data belongs to
      * @param field the binary field
-     * @throws StorageException when an error occured while a binary is written to file
      */
     protected void storeBinaryAsFile(MMObjectNode node, CoreField field) throws StorageException {
         try {
@@ -845,16 +770,28 @@ public class DatabaseStorageManager implements StorageManager {
                     return;
                 }
             }
-            long size = 0L;
-            //log.warn("Storing " + field + " for " + node.getNumber());
+            long size = 0;
             InputStream in = node.getInputStreamValue(fieldName);
-            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(binaryFile));
+
+            log.service("Storing " + field + " for " + node.getNumber() + " in " + binaryFile);
+            OutputStream out = new BufferedOutputStream(new FileOutputStream(binaryFile));
+            int c = in.read();
+            while (c > -1) {
+                out.write(c);
+                c = in.read();
+                size ++;
+            }
+
+            //log.warn("Storing " + field + " for " + node.getNumber());
+            /*
+x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(binaryFile));
             byte[] buf = new byte[1024];
             int b = 0;
             while ((b = in.read(buf)) != -1) {
                 size += b;
                 out.write(buf, 0, b);
             }
+            */
             out.close();
             in.close();
             // unload the input-stream, it is of no use any more.
@@ -865,13 +802,9 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-
     /**
      * Checks whether file is readable and existing. Warns if not.
      * If non-existing it checks older locations.
-     * @param binaryFile file location of binary
-     * @param node the binary is a field value of this node
-     * @param field field of the node
      * @return the file to be used, or <code>null</code> if no existing readable file could be found, also no 'legacy' one.
      */
     protected File checkFile(File binaryFile, MMObjectNode node, CoreField field) {
@@ -914,12 +847,11 @@ public class DatabaseStorageManager implements StorageManager {
      * @todo how to do this in a transaction???
      * @param node the node the binary data belongs to
      * @param field the binary field
-     * @param mayShorten shorten the value when it might be large
      * @return the byte array containing the binary data, <code>null</code> if no binary data was stored
-     * @throws StorageException if an error occurred during reading
      */
     protected Blob getBlobFromFile(MMObjectNode node, CoreField field, boolean mayShorten) throws StorageException {
         String fieldName = field.getName();
+
         File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
         if (binaryFile == null) {
             return null;
@@ -935,10 +867,7 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-
-    /**
-     * @see org.mmbase.storage.StorageManager#create(org.mmbase.module.core.MMObjectNode)
-     */
+    // javadoc is inherited
     public int create(MMObjectNode node) throws StorageException {
         // assign a new number if the node has not yet been assigned one
         int nodeNumber = node.getNumber();
@@ -968,9 +897,10 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void create(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         // get a builders fields
-        List<CoreField> createFields = new ArrayList<CoreField>();
-        List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-        for (CoreField field : builderFields) {
+        List createFields = new ArrayList();
+        List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
+        for (Iterator f = builderFields.iterator(); f.hasNext();) {
+            CoreField field = (CoreField)f.next();
             if (field.inStorage()) {
                 createFields.add(field);
             }
@@ -979,13 +909,14 @@ public class DatabaseStorageManager implements StorageManager {
         create(node, createFields, tablename);
     }
 
-    protected void create(MMObjectNode node, List<CoreField> createFields, String tablename) {
+    protected void create(MMObjectNode node, List createFields, String tablename) {
         // Create a String that represents the fields and values to be used in the insert.
-        StringBuilder fieldNames = null;
-        StringBuilder fieldValues = null;
+        StringBuffer fieldNames = null;
+        StringBuffer fieldValues = null;
 
-        List<CoreField> fields = new ArrayList<CoreField>();
-        for (CoreField field : createFields) {
+        List fields = new ArrayList();
+        for (Iterator f = createFields.iterator(); f.hasNext();) {
+            CoreField field = (CoreField)f.next();
             // skip bytevalues that are written to file
             if (checkStoreFieldAsFile(field.getParent()) && (field.getType() == Field.TYPE_BINARY)) {
                 storeBinaryAsFile(node, field);
@@ -995,8 +926,8 @@ public class DatabaseStorageManager implements StorageManager {
                 fields.add(field);
                 String fieldName = (String)factory.getStorageIdentifier(field);
                 if (fieldNames == null) {
-                    fieldNames = new StringBuilder(fieldName);
-                    fieldValues = new StringBuilder("?");
+                    fieldNames = new StringBuffer(fieldName);
+                    fieldValues = new StringBuffer("?");
                 } else {
                     fieldNames.append(',').append(fieldName);
                     fieldValues.append(",?");
@@ -1009,11 +940,11 @@ public class DatabaseStorageManager implements StorageManager {
         if (fields.size() > 0) {
             Scheme scheme = factory.getScheme(Schemes.INSERT_NODE, Schemes.INSERT_NODE_DEFAULT);
             try {
-                String query = scheme.format(this, tablename, fieldNames.toString(), fieldValues.toString());
+                String query = scheme.format(new Object[] { this, tablename, fieldNames.toString(), fieldValues.toString()});
                 getActiveConnection();
                 executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
-                throw new StorageException(se.getMessage() + " during creation of " + UNICODE_ESCAPER.transform(node.toString()), se);
+                throw new StorageException(se.getMessage() + " during creation of " + UNICODE_ESCAPER.transform(node.toString()) + " " + fieldNames + " " + fieldValues, se);
             } finally {
                 releaseActiveConnection();
             }
@@ -1021,12 +952,12 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     protected void unloadShortedFields(MMObjectNode node, MMObjectBuilder builder) {
-        for (CoreField field : builder.getFields()) {
+        for (Iterator f = builder.getFields().iterator(); f.hasNext();) {
+            CoreField field = (CoreField)f.next();
             if (field.inStorage() && shorten(field)) {
                 String fieldName = field.getName();
                 if (! node.isNull(fieldName)) {
                     node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED);
-                    log.debug("Unloaded " + fieldName + " from node " + node.getNumber());
                 }
             }
         }
@@ -1035,16 +966,17 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Executes an update query for given node and fields. It will close the connections which are no
      * good, which it determines by trying "SELECT 1 FROM <OBJECT TABLE>" after failure. If that happens, the connection
-     * is explicitly closed (in case the driver has not done that), which will render is unusable
+     * is explicitely closed (in case the driver has not done that), which will render is unusable
      * and at least GenericDataSource will automaticly try to get new ones.
      *
      * @throws SQLException If something wrong with the query, or the database is down or could not be contacted.
      * @since MMBase-1.7.1
      */
-    protected void executeUpdateCheckConnection(String query, MMObjectNode node,  List<CoreField> fields) throws SQLException {
+    protected void executeUpdateCheckConnection(String query, MMObjectNode node,  List fields) throws SQLException {
         try {
             executeUpdate(query, node, fields);
         } catch (SQLException sqe) {
+            log.error("Failed to update", sqe);
             while (true) {
                 Statement s = null;
                 ResultSet rs = null;
@@ -1071,6 +1003,7 @@ public class DatabaseStorageManager implements StorageManager {
                  }
                 break;
             }
+            log.info("Second try update with new connection");
             executeUpdate(query, node, fields);
         }
     }
@@ -1079,17 +1012,13 @@ public class DatabaseStorageManager implements StorageManager {
      * Executes an update query for given node and fields.  This is wrapped in a function because it
      * is repeatedly called in {@link #executeUpdateCheckConnection} which in turn is called from
      * several spots in this class.
-     * @param query update query
-     * @param node updated node
-     * @param fields updated fields
-     * @throws SQLException if database connections failures occurs
      *
      * @since MMBase-1.7.1
      */
-    protected void executeUpdate(String query, MMObjectNode node, List<CoreField> fields) throws SQLException {
+    protected void executeUpdate(String query, MMObjectNode node, List fields) throws SQLException {
         PreparedStatement ps = activeConnection.prepareStatement(query);
         for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
-            CoreField field = fields.get(fieldNumber);
+            CoreField field = (CoreField) fields.get(fieldNumber);
             try {
                 setValue(ps, fieldNumber + 1, node, field);
             } catch (Exception e) {
@@ -1109,9 +1038,10 @@ public class DatabaseStorageManager implements StorageManager {
     public void change(MMObjectNode node) throws StorageException {
         // resolve aliases, if any.
         MMObjectBuilder builder = node.getBuilder();
-        for (CoreField field: builder.getFields()) {
-            if (field.getName().equals(MMObjectBuilder.FIELD_NUMBER))      continue;
-            if (field.getName().equals(MMObjectBuilder.FIELD_OBJECT_TYPE)) continue;
+        for (Iterator i = builder.getFields().iterator(); i.hasNext(); ) {
+            CoreField field = (CoreField) i.next();
+            if (field.getName().equals(builder.FIELD_NUMBER))      continue;
+            if (field.getName().equals(builder.FIELD_OBJECT_TYPE)) continue;
             if (field.getType() == Field.TYPE_NODE) {
                 Object value = node.getValue(field.getName());
                 if (value instanceof String) {
@@ -1127,15 +1057,8 @@ public class DatabaseStorageManager implements StorageManager {
         unloadShortedFields(node, builder);
         // the node instance can be wrapped by other objects (org.mmbase.bridge.implementation.BasicNode) or otherwise still in use.
         // this make sure that the values are realistic reflections of the database:
-        // This can change after a commit e.g. if the database enforces a maximum length for certain
-        // fields.
-        try {
-            refresh(node);
-        } catch( org.mmbase.storage.StorageNotFoundException se) {
-            log.debug("Changed node " + node + " probably does not exists any more, but since we had to change it, we'll have to recrate it.");
-            log.service("Recreating node " + node.getNumber());
-            create(node, builder);
-        }
+        // This can change after a commit e.g. if the database enforces a maximum length for certain fields.
+        refresh(node);
     }
 
     /**
@@ -1148,11 +1071,12 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if an error occurred during change
      */
     protected void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
-        List<CoreField> changeFields = new ArrayList<CoreField>();
+        List changeFields = new ArrayList();
         // obtain the node's changed fields
-        Collection<String> fieldNames = node.getChanged();
+        Collection fieldNames = node.getChanged();
         synchronized(fieldNames) { // make sure the set is not changed during this loop
-            for (String key : fieldNames) {
+            for (Iterator f = fieldNames.iterator(); f.hasNext();) {
+                String key = (String)f.next();
                 CoreField field = builder.getField(key);
                 if ((field != null) && field.inStorage()) {
                     changeFields.add(field);
@@ -1163,15 +1087,12 @@ public class DatabaseStorageManager implements StorageManager {
         change(node, builder, tablename, changeFields);
     }
 
-
-    /**
-     * Commits changes in node to table.
-     */
-    protected void change(MMObjectNode node, MMObjectBuilder builder, String tableName, Collection<CoreField> changeFields) {
+    protected void change(MMObjectNode node, MMObjectBuilder builder, String tableName, Collection changeFields) {
         // Create a String that represents the fields to be used in the commit
-        StringBuilder setFields = null;
-        List<CoreField> fields = new ArrayList<CoreField>();
-        for (CoreField field : changeFields) {
+        StringBuffer setFields = null;
+        List fields = new ArrayList();
+        for (Iterator iter = changeFields.iterator(); iter.hasNext();) {
+            CoreField field = (CoreField) iter.next();
             // changing number is not allowed
             if ("number".equals(field.getName()) || "otype".equals(field.getName())) {
                 throw new StorageException("trying to change the '" + field.getName() + "' field of " + node + ". Changed fields " + node.getChanged());
@@ -1185,19 +1106,19 @@ public class DatabaseStorageManager implements StorageManager {
                 // store the fieldname and the value parameter
                 String fieldName = (String)factory.getStorageIdentifier(field);
                 if (setFields == null) {
-                    setFields = new StringBuilder(fieldName + "=?");
+                    setFields = new StringBuffer(fieldName + "=?");
                 } else {
                     setFields.append(',').append(fieldName).append("=?");
                 }
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("change field values " + node);
+            log.debug("change field values " + node + "(" + changeFields +"): " + fields);
         }
         if (fields.size() > 0) {
             Scheme scheme = factory.getScheme(Schemes.UPDATE_NODE, Schemes.UPDATE_NODE_DEFAULT);
             try {
-                String query = scheme.format(this, tableName , setFields.toString(), builder.getField("number"), node);
+                String query = scheme.format(new Object[] { this, tableName , setFields.toString(), builder.getField("number"), node });
                 getActiveConnection();
                 executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
@@ -1262,10 +1183,6 @@ public class DatabaseStorageManager implements StorageManager {
             setListValue(statement, index, value, field, node);
             break;
         }
-        case Field.TYPE_DECIMAL : {
-            setDecimalValue(statement, index, value, field, node);
-            break;
-        }
         default :    // unknown field type - error
             throw new StorageException("unknown fieldtype");
         }
@@ -1328,25 +1245,25 @@ public class DatabaseStorageManager implements StorageManager {
             case Field.TYPE_INTEGER : {
                 int storeValue = Casting.toInt(value);
                 statement.setInt(index, storeValue);
-                node.storeValue(field.getName(), storeValue);
+                node.storeValue(field.getName(), new Integer(storeValue));
                 break;
             }
             case Field.TYPE_FLOAT : {
                 float storeValue = Casting.toFloat(value);
                 statement.setFloat(index, storeValue);
-                node.storeValue(field.getName(), storeValue);
+                node.storeValue(field.getName(), new Float(storeValue));
                 break;
             }
             case Field.TYPE_DOUBLE : {
                 double storeValue = Casting.toDouble(value);
                 statement.setDouble(index, storeValue);
-                node.storeValue(field.getName(), storeValue);
+                node.storeValue(field.getName(), new Double(storeValue));
                 break;
             }
             case Field.TYPE_LONG : {
                 long storeValue = Casting.toLong(value);
                 statement.setLong(index, storeValue);
-                node.storeValue(field.getName(), storeValue);
+                node.storeValue(field.getName(), new Long(storeValue));
                 break;
             }
             default:
@@ -1448,17 +1365,6 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * @since MMBase-1.9.1
-     */
-    protected void setDecimalValue(PreparedStatement statement, int index, Object value, CoreField field, MMObjectNode node) throws StorageException, SQLException {
-        if (!setNullValue(statement, index, value, field, java.sql.Types.DECIMAL)) {
-            java.math.BigDecimal decimal = Casting.toDecimal(value);
-            statement.setBigDecimal(index, decimal);
-            node.storeValue(field.getName(), decimal);
-        }
-    }
-
-    /**
      * Store a List value of a field in a prepared statement.
      * The method uses the Casting class to convert to the appropriate value.
      * Null values are stored as NULL if possible, otherwise they are stored as an empty list.
@@ -1475,7 +1381,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setListValue(PreparedStatement statement, int index, Object value, CoreField field, MMObjectNode node) throws StorageException, SQLException {
         if (!setNullValue(statement, index, value, field, java.sql.Types.ARRAY)) {
-            List<?> list = Casting.toList(value);
+            List list = Casting.toList(value);
             statement.setObject(index, list);
             node.storeValue(field.getName(), list);
         }
@@ -1603,13 +1509,6 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * This default implementation calls {@link #setStringValue}.
      * Override this method if you want to override this behavior.
-     * @param statement prepared update statement
-     * @param index index in statement to set the value in
-     * @param objectValue value to set
-     * @param field update of this node field
-     * @param node updated node
-     * @throws StorageException error occured in storage layer
-     * @throws SQLException if database connections failures occurs
      * @since MMBase-1.7.1
      */
     protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
@@ -1626,10 +1525,7 @@ public class DatabaseStorageManager implements StorageManager {
         setStringValue(statement, index, objectValue, field, node);
     }
 
-
-    /**
-     * @see org.mmbase.storage.StorageManager#delete(org.mmbase.module.core.MMObjectNode)
-     */
+    // javadoc is inherited
     public void delete(MMObjectNode node) throws StorageException {
         // determine parent
         if (node.hasRelations()) {
@@ -1648,9 +1544,10 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if an error occurred during delete
      */
     protected void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
-        List<CoreField>  blobFileField = new ArrayList<CoreField>();
-        List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-        for (CoreField field : builderFields) {
+        List blobFileField = new ArrayList();
+        List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
+        for (Iterator f = builderFields.iterator(); f.hasNext();) {
+            CoreField field = (CoreField)f.next();
             if (field.inStorage()) {
                 if (checkStoreFieldAsFile(builder) && (field.getType() == Field.TYPE_BINARY)) {
                     blobFileField.add(field);
@@ -1661,26 +1558,19 @@ public class DatabaseStorageManager implements StorageManager {
         delete(node, builder, blobFileField, tablename);
     }
 
-    protected void delete(MMObjectNode node, MMObjectBuilder builder, List<CoreField> blobFileField, String tablename) {
+    protected void delete(MMObjectNode node, MMObjectBuilder builder, List blobFileField, String tablename) {
         try {
             Scheme scheme = factory.getScheme(Schemes.DELETE_NODE, Schemes.DELETE_NODE_DEFAULT);
-            String query = scheme.format(this, tablename, builder.getField("number"), node);
+            String query = scheme.format(new Object[] { this, tablename, builder.getField("number"), node });
             getActiveConnection();
+            Statement s = activeConnection.createStatement();
             long startTime = getLogStartTime();
-            PreparedStatement s = null;
-            try {
-                s = activeConnection.prepareStatement(query);
-                s.executeUpdate();
-            }
-            finally {
-                if (s != null) {
-                    s.close();
-                }
-            }
+            s.executeUpdate(query);
+            s.close();
             logQuery(query, startTime);
-
             // delete blob files too
-            for (CoreField field : blobFileField) {
+            for (Iterator f = blobFileField.iterator(); f.hasNext();) {
+                CoreField field = (CoreField)f.next();
                 String fieldName = field.getName();
                 File binaryFile = getBinaryFile(node, fieldName);
                 File checkedFile = checkFile(binaryFile, node, field);
@@ -1703,10 +1593,7 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-
-    /**
-     * @see org.mmbase.storage.StorageManager#getNode(org.mmbase.module.core.MMObjectBuilder, int)
-     */
+    // javadoc is inherited
     public MMObjectNode getNode(final MMObjectBuilder builder, final int number) throws StorageException {
         if (builder == null) throw new IllegalArgumentException("Builder cannot be null when requesting node " + number);
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
@@ -1716,9 +1603,10 @@ public class DatabaseStorageManager implements StorageManager {
 
             getActiveConnection();
             // get a builders fields
-            List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-            StringBuilder fieldNames = null;
-            for (CoreField field : builderFields) {
+            List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
+            StringBuffer fieldNames = null;
+            for (Iterator f = builderFields.iterator(); f.hasNext();) {
+                CoreField field = (CoreField)f.next();
                 if (field.inStorage()) {
                     if (checkStoreFieldAsFile(builder) && (field.getType() == Field.TYPE_BINARY)) {
                         continue;
@@ -1729,13 +1617,13 @@ public class DatabaseStorageManager implements StorageManager {
                     // store the fieldname and the value parameter
                     String fieldName = (String)factory.getStorageIdentifier(field);
                     if (fieldNames == null) {
-                        fieldNames = new StringBuilder(fieldName);
+                        fieldNames = new StringBuffer(fieldName);
                     } else {
                         fieldNames.append(',').append(fieldName);
                     }
                 }
             }
-            String query = scheme.format(this, builder, fieldNames.toString(), builder.getField("number"), number);
+            String query = scheme.format(new Object[] { this, builder, fieldNames.toString(), builder.getField("number"), new Integer(number)});
             Statement s = activeConnection.createStatement();
             ResultSet result = null;
             try {
@@ -1747,13 +1635,11 @@ public class DatabaseStorageManager implements StorageManager {
             }
             return node;
         } catch (SQLException se) {
-            throw new StorageException(se.getClass().getName() + ": " + se.getMessage(),  se);
+            throw new StorageException(se);
         } finally {
             releaseActiveConnection();
         }
     }
-
-
 
 
     /**
@@ -1761,7 +1647,6 @@ public class DatabaseStorageManager implements StorageManager {
      * Use this after a create or change action, so the data in memory is consistent with
      * any data stored in the database.
      * @param node the node to refresh
-     * @throws StorageException error occured in storage layer
      */
     protected void refresh(MMObjectNode node) throws StorageException {
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
@@ -1769,9 +1654,10 @@ public class DatabaseStorageManager implements StorageManager {
             getActiveConnection();
             MMObjectBuilder builder = node.getBuilder();
             // get a builders fields
-            List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-            StringBuilder fieldNames = null;
-            for (CoreField field : builderFields) {
+            List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
+            StringBuffer fieldNames = null;
+            for (Iterator f = builderFields.iterator(); f.hasNext();) {
+                CoreField field = (CoreField)f.next();
                 if (field.inStorage()) {
                     if (checkStoreFieldAsFile(field.getParent()) && (field.getType() == Field.TYPE_BINARY)) {
                         continue;
@@ -1779,13 +1665,13 @@ public class DatabaseStorageManager implements StorageManager {
                     // store the fieldname and the value parameter
                     String fieldName = (String)factory.getStorageIdentifier(field);
                     if (fieldNames == null) {
-                        fieldNames = new StringBuilder(fieldName);
+                        fieldNames = new StringBuffer(fieldName);
                     } else {
                         fieldNames.append(',').append(fieldName);
                     }
                 }
             }
-            String query = scheme.format(this, builder, fieldNames.toString(), builder.getField("number"), node.getNumber());
+            String query = scheme.format(new Object[] { this, builder, fieldNames.toString(), builder.getField("number"), new Integer(node.getNumber())});
             Statement s = activeConnection.createStatement();
             ResultSet result = null;
             try {
@@ -1795,7 +1681,6 @@ public class DatabaseStorageManager implements StorageManager {
                 if (result != null) result.close();
                 s.close();
             }
-            log.debug("Refreshed -> " + node);
         } catch (SQLException se) {
             throw new StorageException(se);
         } finally {
@@ -1821,7 +1706,8 @@ public class DatabaseStorageManager implements StorageManager {
                 // we might get inconsistencies if we 'remap' fieldnames that need not be mapped.
                 // this also guarantees the number field is set first, which we  may need when retrieving blobs
                 // from disk
-                for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
+                for (Iterator i = builder.getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext();) {
+                    CoreField field = (CoreField)i.next();
                     if (field.inStorage()) {
                         Object value;
                         if (field.getType() == Field.TYPE_BINARY && checkStoreFieldAsFile(builder)) {
@@ -1894,7 +1780,7 @@ public class DatabaseStorageManager implements StorageManager {
                 if (o instanceof Integer) {
                     return o;
                 } else if (o instanceof Number) {
-                    return Integer.valueOf(((Number)o).intValue());
+                    return new Integer(((Number)o).intValue());
                 } else {
                     return o;
                 }
@@ -1906,13 +1792,10 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-
-    /**
-     * @see org.mmbase.storage.StorageManager#getNodeType(int)
-     */
+    // javadoc is inherited
     public int getNodeType(int number) throws StorageException {
-        Integer numberValue = number;
-        Integer otypeValue =  typeCache.get(numberValue);
+        Integer numberValue = new Integer(number);
+        Integer otypeValue = (Integer)typeCache.get(numberValue);
         if (otypeValue != null) {
             return otypeValue.intValue();
         } else {
@@ -1920,16 +1803,16 @@ public class DatabaseStorageManager implements StorageManager {
             try {
                 getActiveConnection();
                 MMBase mmbase = factory.getMMBase();
-                String query = scheme.format(this, mmbase, mmbase.getTypeDef().getField("number"), numberValue);
+                String query = scheme.format(new Object[] { this, mmbase, mmbase.getTypeDef().getField("number"), numberValue });
                 Statement s = activeConnection.createStatement();
-                long startTime = getLogStartTime();
+                long startTime = System.currentTimeMillis();
                 try {
                     ResultSet result = s.executeQuery(query);
                     if (result != null) {
                         try {
                             if (result.next()) {
                                 int retval = result.getInt(1);
-                                typeCache.put(numberValue, retval);
+                                typeCache.put(numberValue, new Integer(retval));
                                 return retval;
                             } else {
                                 return -1;
@@ -1956,7 +1839,6 @@ public class DatabaseStorageManager implements StorageManager {
      * Returns whether tables inherit fields form parent tables.
      * this determines whether fields that are inherited in mmbase builders
      * are redefined in the database tables.
-     * @return tables inherit fields form parent tables
      */
     protected boolean tablesInheritFields() {
         return true;
@@ -1965,8 +1847,6 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Determines whether the storage should make a field definition in a builder table for a
      * specified field.
-     * @param field
-     * @return storage should make a field definition
      */
     protected boolean isPartOfBuilderDefinition(CoreField field) {
         // persistent field?
@@ -1981,40 +1861,34 @@ public class DatabaseStorageManager implements StorageManager {
         return isPart;
     }
 
-
-
-
-    /**
-     * @see org.mmbase.storage.StorageManager#create(org.mmbase.module.core.MMObjectBuilder)
-     */
+    // javadoc is inherited
     public void create(MMObjectBuilder builder) throws StorageException {
         log.debug("Creating a table for " + builder);
         // use the builder to get the fields and create a
         // valid create SQL string
         // for backward compatibility, fields are to be created in the order defined
-        List<CoreField> fields = builder.getFields(NodeManager.ORDER_CREATE);
-        if (log.isDebugEnabled()) {
-            log.debug("found fields " + fields);
-        }
+        List fields = builder.getFields(NodeManager.ORDER_CREATE);
+        log.debug("found fields " + fields);
 
-        List<CoreField> tableFields = new ArrayList<CoreField>();
-        for (CoreField field : fields) {
+        List tableFields = new ArrayList();
+        for (Iterator f = fields.iterator(); f.hasNext();) {
+            CoreField field = (CoreField)f.next();
             if (isPartOfBuilderDefinition(field)) {
                 tableFields.add(field);
             }
         }
         String tableName = (String) factory.getStorageIdentifier(builder);
         createTable(builder, tableFields, tableName);
-        if (verifyTables() && !isVerified(builder)) {
+        if (!isVerified(builder)) {
             verify(builder);
         }
     }
 
-    protected void createTable(MMObjectBuilder builder, List<CoreField> tableFields, String tableName) {
-        StringBuilder createFields = new StringBuilder();
-        StringBuilder createIndices = new StringBuilder();
-        StringBuilder createFieldsAndIndices = new StringBuilder();
-        StringBuilder createConstraints = new StringBuilder();
+    protected void createTable(MMObjectBuilder builder, List tableFields, String tableName) {
+        StringBuffer createFields = new StringBuffer();
+        StringBuffer createIndices = new StringBuffer();
+        StringBuffer createFieldsAndIndices = new StringBuffer();
+        StringBuffer createConstraints = new StringBuffer();
         // obtain the parentBuilder
         MMObjectBuilder parentBuilder = builder.getParentBuilder();
         Scheme rowtypeScheme;
@@ -2031,8 +1905,9 @@ public class DatabaseStorageManager implements StorageManager {
             tableScheme = factory.getScheme(Schemes.CREATE_TABLE, Schemes.CREATE_TABLE_DEFAULT);
         }
 
-        for (CoreField field : tableFields) {
+        for (Iterator f = tableFields.iterator(); f.hasNext();) {
             try {
+                CoreField field = (CoreField)f.next();
                 // convert a fielddef to a field SQL createdefinition
                 String fieldDef = getFieldDefinition(field);
                 if (createFields.length() > 0) {
@@ -2071,50 +1946,37 @@ public class DatabaseStorageManager implements StorageManager {
             // create a rowtype, if a scheme has been given
             // Note that creating a rowtype is optional
             if (rowtypeScheme != null) {
-                query = rowtypeScheme.format(this, tableName, createFields.toString(), parentBuilder);
+                query = rowtypeScheme.format(new Object[] { this, tableName, createFields.toString(), parentBuilder });
                 // remove parenthesis with empty field definitions -
                 // unfortunately Schems don't take this into account
                 if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
                     query = query.replaceAll("\\(\\s*\\)", "");
                 }
+                Statement s = activeConnection.createStatement();
                 long startTime = getLogStartTime();
-                PreparedStatement s = null;
-                try {
-                    s = activeConnection.prepareStatement(query);
-                    s.executeUpdate();
-                }
-                finally {
-                    if (s != null) {
-                        s.close();
-                    }
-                }
+                s.executeUpdate(query);
+                s.close();
                 logQuery(query, startTime);
             }
             // create the table
-            query = tableScheme.format(this, tableName, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), createConstraints.toString(), parentBuilder, factory.getDatabaseName());
+            query = tableScheme.format(new Object[] { this, tableName, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), createConstraints.toString(), parentBuilder, factory.getDatabaseName() });
             // remove parenthesis with empty field definitions -
             // unfortunately Schemes don't take this into account
             if (factory.hasOption(Attributes.REMOVE_EMPTY_DEFINITIONS)) {
                 query = query.replaceAll("\\(\\s*\\)", "");
             }
 
-            PreparedStatement s = null;
+            Statement s = activeConnection.createStatement();
             long startTime = getLogStartTime();
-            try {
-                s = activeConnection.prepareStatement(query);
-                s.executeUpdate();
-            }
-            finally {
-                if (s != null) {
-                    s.close();
-                }
-            }
+            s.executeUpdate(query);
+            s.close();
             logQuery(query, startTime);
 
-            addToTableNameCache(tableName);
+            tableNameCache.add(tableName.toUpperCase());
 
             // create indices and unique constraints
-            for (Index index : builder.getStorageConnector().getIndices().values()) {
+            for (Iterator i = builder.getStorageConnector().getIndices().values().iterator(); i.hasNext();) {
+                Index index = (Index)i.next();
                 create(index);
             }
 
@@ -2125,21 +1987,19 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    protected void addToTableNameCache(String name) {
-        tableNameCache.add(name.toUpperCase());
-    }
-
-
     /**
      * @since MMBase-1.8.5
      */
     private long getMaxMaxSize(String name) {
         long maxMax = -1;
-        for (TypeMapping tm : factory.getTypeMappings()) {
+        Iterator typeMappings = factory.getTypeMappings().iterator();
+        while (typeMappings.hasNext()) {
+            TypeMapping tm = (TypeMapping) typeMappings.next();
             if (name.equals(tm.name) && tm.maxSize > maxMax) maxMax = tm.maxSize;
         }
         return maxMax;
     }
+
 
     /**
      * Creates a field type definition, of the format '[fieldtype] NULL' or
@@ -2155,41 +2015,28 @@ public class DatabaseStorageManager implements StorageManager {
         String typeName = Fields.getTypeDescription(field.getType());
         long size = field.getMaxLength();
         TypeMapping mapping = new TypeMapping();
-        DataType dt = field.getDataType();
         mapping.name = typeName;
         mapping.setFixedSize(size);
         // search type mapping
-        List<TypeMapping> typeMappings = factory.getTypeMappings();
+        List typeMappings = factory.getTypeMappings();
         int found = typeMappings.indexOf(mapping);
         if (found == -1) {
             long maxMax = getMaxMaxSize(typeName);
             if (size > maxMax) {
                 mapping.setFixedSize(maxMax);
                 found = typeMappings.indexOf(mapping);
-                log.warn("Type for field " + field.getName() + ": in " + field.getParent().getTableName() + " " + typeName + " (" + size + ") undefined. Setting size to " + maxMax);
+                log.warn("Type for field " + field.getName() + ": " + typeName + " (" + size + ") undefined. Setting size to " + maxMax);
                 size = maxMax;
             }
         }
         if (found > -1) {
-            String fieldDef;
-            TypeMapping tm = typeMappings.get(found);
-            if (dt instanceof LengthDataType) {
-                fieldDef = tm.getType(size);
-            } else if (dt instanceof DecimalDataType) {
-                DecimalDataType dec = (DecimalDataType) dt;
-                fieldDef = tm.getType(dec.getPrecisionRestriction().getValue(), dec.getScaleRestriction().getValue());
-            } else {
-                fieldDef = tm.getType(size); // size does make much sense, but added for
-                                             // compatibility, e.g. if datatype is boolean, but
-                                             // storage type string.x
-            }
+            String fieldDef = ((TypeMapping)typeMappings.get(found)).getType(size);
             if (field.isNotNull()) {
                 fieldDef += " NOT NULL";
             }
-            log.debug("For field " + fieldDef);
             return fieldDef;
         } else {
-            throw new StorageException("Type for field " + field.getName() + ": " + typeName + " (" + mapping + ") undefined." + typeMappings);
+            throw new StorageException("Type for field " + field.getName() + ": " + typeName + " (" + size + ") undefined.");
         }
     }
 
@@ -2216,21 +2063,21 @@ public class DatabaseStorageManager implements StorageManager {
         if (field.getName().equals("number")) {
             scheme = factory.getScheme(Schemes.CREATE_PRIMARY_KEY, Schemes.CREATE_PRIMARY_KEY_DEFAULT);
             if (scheme != null) {
-                definitions = scheme.format(this, field.getParent(), field, factory.getMMBase());
+                definitions = scheme.format(new Object[] { this, field.getParent(), field, factory.getMMBase() });
             }
         } else {
             // the field is unique: create a unique key for it
             if (field.isUnique()) {
                 scheme = factory.getScheme(Schemes.CREATE_UNIQUE_KEY, Schemes.CREATE_UNIQUE_KEY_DEFAULT);
                 if (scheme != null) {
-                    definitions = scheme.format(this, field.getParent(), field, field);
+                    definitions = scheme.format(new Object[] { this, field.getParent(), field, field });
                 }
             }
             if (field.getType() == Field.TYPE_NODE) {
                 scheme = factory.getScheme(Schemes.CREATE_FOREIGN_KEY, Schemes.CREATE_FOREIGN_KEY_DEFAULT);
                 if (scheme != null) {
                     Object keyname = factory.getStorageIdentifier("" + field.getParent().getTableName() + "_" + field.getName() + "_FOREIGN");
-                    String definition = scheme.format(this, field.getParent(), field, factory.getMMBase(), factory.getStorageIdentifier("number"), keyname);
+                    String definition = scheme.format(new Object[] { this, field.getParent(), field, factory.getMMBase(), factory.getStorageIdentifier("number"), keyname});
                     if (definitions != null) {
                         definitions += ", " + definition;
                     } else {
@@ -2263,7 +2110,7 @@ public class DatabaseStorageManager implements StorageManager {
         try {
             getActiveConnection();
             Scheme scheme = factory.getScheme(Schemes.DROP_TABLE, Schemes.DROP_TABLE_DEFAULT);
-            String query = scheme.format(this, builder);
+            String query = scheme.format(new Object[] { this, builder });
             Statement s = activeConnection.createStatement();
             long startTime = getLogStartTime();
             s.executeUpdate(query);
@@ -2271,7 +2118,7 @@ public class DatabaseStorageManager implements StorageManager {
             logQuery(query, startTime);
             scheme = factory.getScheme(Schemes.DROP_ROW_TYPE);
             if (scheme != null) {
-                query = scheme.format(this, builder);
+                query = scheme.format(new Object[] { this, builder });
                 s = activeConnection.createStatement();
                 long startTime2 = getLogStartTime();
                 s.executeUpdate(query);
@@ -2311,18 +2158,18 @@ public class DatabaseStorageManager implements StorageManager {
                 TypeMapping mapping = new TypeMapping();
                 mapping.name = typeName;
                 // search type mapping
-                List<TypeMapping> typeMappings = factory.getTypeMappings();
+                List typeMappings = factory.getTypeMappings();
                 int found = typeMappings.indexOf(mapping);
                 if (found == -1) {
                     throw new StorageException("Type " + typeName + " undefined.");
                 }
                 String fieldName = (String)factory.getStorageIdentifier("number");
-                String fieldDef = fieldName + " " + typeMappings.get(found).type + " NOT NULL, PRIMARY KEY(" + fieldName + ")";
+                String fieldDef = fieldName + " " + ((TypeMapping)typeMappings.get(found)).type + " NOT NULL, PRIMARY KEY(" + fieldName + ")";
                 String query;
                 Statement s;
                 Scheme scheme = factory.getScheme(Schemes.CREATE_SEQUENCE, Schemes.CREATE_SEQUENCE_DEFAULT);
                 if (scheme != null) {
-                    query = scheme.format(this, fieldDef, factory.getDatabaseName());
+                    query = scheme.format(new Object[] { this, fieldDef, factory.getDatabaseName()});
                     long startTime = getLogStartTime();
                     s = activeConnection.createStatement();
                     s.executeUpdate(query);
@@ -2331,7 +2178,7 @@ public class DatabaseStorageManager implements StorageManager {
                 }
                 scheme = factory.getScheme(Schemes.INIT_SEQUENCE, Schemes.INIT_SEQUENCE_DEFAULT);
                 if (scheme != null) {
-                    query = scheme.format(this, factory.getStorageIdentifier("number"), 1, bufferSize);
+                    query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), new Integer(1), bufferSize });
                     long startTime = getLogStartTime();
                     s = activeConnection.createStatement();
                     s.executeUpdate(query);
@@ -2350,7 +2197,7 @@ public class DatabaseStorageManager implements StorageManager {
     public boolean exists(MMObjectBuilder builder) throws StorageException {
         boolean result = exists((String)factory.getStorageIdentifier(builder));
         if (result) {
-            if (verifyTables() && !isVerified(builder)) {
+            if (!isVerified(builder)) {
                 verify(builder);
             }
         }
@@ -2367,7 +2214,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected synchronized boolean exists(String tableName) throws StorageException {
         if(tableNameCache == null) {
             try {
-                tableNameCache = new HashSet<String>();
+                tableNameCache = new HashSet();
                 getActiveConnection();
                 DatabaseMetaData metaData = activeConnection.getMetaData();
                 String prefixTablename = factory.getMMBase().getBaseName();
@@ -2408,7 +2255,7 @@ public class DatabaseStorageManager implements StorageManager {
         try {
             getActiveConnection();
             Scheme scheme = factory.getScheme(Schemes.GET_TABLE_SIZE, Schemes.GET_TABLE_SIZE_DEFAULT);
-            String query = scheme.format(this, builder);
+            String query = scheme.format(new Object[] { this, builder });
             Statement s = activeConnection.createStatement();
             ResultSet res = s.executeQuery(query);
             int retval;
@@ -2468,7 +2315,7 @@ public class DatabaseStorageManager implements StorageManager {
             if (mmbaseType == Field.TYPE_FLOAT || mmbaseType == Field.TYPE_DOUBLE) {
                 return mmbaseType;
             } else {
-                return Field.TYPE_DECIMAL;
+                return Field.TYPE_DOUBLE;
             }
         case Types.BINARY :
         case Types.LONGVARBINARY :
@@ -2560,15 +2407,15 @@ public class DatabaseStorageManager implements StorageManager {
                     log.debug("VERIFY: determining super tables failed, skipping inheritance consistency tests for " + tableName);
                 }
             }
-            Map<String, Map<String, Object>> columns = new HashMap<String, Map<String, Object>>();
+            Map columns = new HashMap();
             ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
             try {
                 // get column information
                 while (columnsSet.next()) {
-                    Map<String, Object> colInfo = new HashMap<String, Object>();
-                    colInfo.put("DATA_TYPE", columnsSet.getInt("DATA_TYPE"));
+                    Map colInfo = new HashMap();
+                    colInfo.put("DATA_TYPE", new Integer(columnsSet.getInt("DATA_TYPE")));
                     colInfo.put("TYPE_NAME", columnsSet.getString("TYPE_NAME"));
-                    colInfo.put("COLUMN_SIZE", columnsSet.getInt("COLUMN_SIZE"));
+                    colInfo.put("COLUMN_SIZE", new Integer(columnsSet.getInt("COLUMN_SIZE")));
                     colInfo.put("NULLABLE", Boolean.valueOf(columnsSet.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
                     columns.put(columnsSet.getString("COLUMN_NAME"), colInfo);
                 }
@@ -2577,17 +2424,15 @@ public class DatabaseStorageManager implements StorageManager {
             }
             // iterate through fields and check all fields present
             int pos = 0;
-            List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-            for (CoreField field : builderFields) {
+            List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
+            for (Iterator i = builderFields.iterator(); i.hasNext();) {
+                CoreField field = (CoreField)i.next();
                 if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !checkStoreFieldAsFile(field.getParent()))) {
                     field.rewrite();
                     pos++;
-                    Object id = field.getStorageIdentifier(); // why the fuck is this an Object and not a String
-                    Map<String, Object> colInfo = columns.get(id);
-                    if (colInfo == null) {
-                        colInfo = columns.get(("" + id).toLowerCase());
-                    }
-                    if (colInfo == null) {
+                    Object id = field.getStorageIdentifier();
+                    Map colInfo = (Map)columns.get(id);
+                    if ((colInfo == null)) {
 
                         log.error("VERIFY: Field '" + field.getName() + "' " +
                                   (id.equals(field.getName()) ? "" : "(mapped to field '" + id + "') ") +
@@ -2599,7 +2444,7 @@ public class DatabaseStorageManager implements StorageManager {
                     } else {
                         // compare type
                         int curtype = field.getType();
-                        int storageType = (Integer) colInfo.get("DATA_TYPE");
+                        int storageType = ((Integer)colInfo.get("DATA_TYPE")).intValue();
                         field.setStorageType(storageType);
                         int type = getJDBCtoField(storageType, curtype);
                         if (type != curtype) {
@@ -2615,7 +2460,7 @@ public class DatabaseStorageManager implements StorageManager {
                                 field.setType(type);
                             }
                         }
-                        boolean nullable = (Boolean)colInfo.get("NULLABLE");
+                        boolean nullable = ((Boolean)colInfo.get("NULLABLE")).booleanValue();
                         if (nullable == field.isNotNull()) {
                             // only correct if storage is more restrictive
                             if (! nullable) {
@@ -2626,19 +2471,17 @@ public class DatabaseStorageManager implements StorageManager {
                             }
                         }
                         // compare size
-                        int databaseSize = ((Integer)colInfo.get("COLUMN_SIZE")).intValue();
-                        int builderFieldSize = field.getMaxLength();
+                        int size = ((Integer)colInfo.get("COLUMN_SIZE")).intValue();
+                        int cursize = field.getMaxLength();
                         // ignore the size difference for large fields (generally blobs or memo texts)
                         // since most databases do not return accurate sizes for these fields
-                        boolean isBuilderFieldSizeDefined = builderFieldSize != -1;
-                        if (isBuilderFieldSizeDefined  && databaseSize > 0 && databaseSize <= 4096
-                              && databaseSize != builderFieldSize) {
-                            if (databaseSize < builderFieldSize) {
+                        if (cursize != -1 && size > 0 && size != cursize && cursize <= 255) {
+                            if (size < cursize) {
                                 // only correct if storage is more restrictive
-                                field.setMaxLength(databaseSize);
-                                log.warn("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : size defined as " + builderFieldSize + ", but in storage " + databaseSize + " (value corrected for this session)");
+                                field.setMaxLength(size);
+                                log.warn("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : size defined as " + cursize + ", but in storage " + size + " (value corrected for this session)");
                             } else {
-                                log.debug("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : size defined as " + builderFieldSize + ", but in storage " + databaseSize);
+                                log.debug("VERIFY: Field '" + field.getName() + "' of builder '" + builder.getTableName() + "' mismatch : size defined as " + cursize + ", but in storage " + size);
                             }
                         }
                         columns.remove(id);
@@ -2649,11 +2492,13 @@ public class DatabaseStorageManager implements StorageManager {
                 }
             }
             // if any are left, these fields were removed!
-            for (String column : columns.keySet()) {
+            for (Iterator i = columns.keySet().iterator(); i.hasNext();) {
+                String column = (String)i.next();
                 log.warn("VERIFY: Column '" + column + "' for builder '" + builder.getTableName() + "' in Storage but not defined!");
             }
         } catch (Exception e) {
-            log.error("Error during check of table (Assume table is correct.):" + e.getMessage(), e);
+            log.error("Error during check of table (Assume table is correct.):" + e.getMessage());
+            log.error(Logging.stackTrace(e));
         } finally {
             releaseActiveConnection();
         }
@@ -2707,8 +2552,8 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException when a database error occurs
      */
     protected void deleteIndices(CoreField field) throws StorageException {
-        for (Object element : field.getParent().getStorageConnector().getIndices().values()) {
-            Index index = (Index)element;
+        for (Iterator i = field.getParent().getStorageConnector().getIndices().values().iterator(); i.hasNext();) {
+            Index index = (Index)i.next();
             if (index.contains(field)) {
                 delete(index);
             }
@@ -2735,7 +2580,7 @@ public class DatabaseStorageManager implements StorageManager {
             String query = null;
             try {
                 Statement s = activeConnection.createStatement();
-                query = deleteIndexScheme.format(this, index.getParent(), index);
+                query = deleteIndexScheme.format(new Object[] { this, index.getParent(), index });
                 long startTime = getLogStartTime();
                 try {
                     s.executeUpdate(query);
@@ -2758,8 +2603,9 @@ public class DatabaseStorageManager implements StorageManager {
     protected String getFieldList(Index index) {
         String result = null;
         if (index.size() == 1 || factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
-            StringBuilder indexFields = new StringBuilder();
-            for (Field field : index) {
+            StringBuffer indexFields = new StringBuffer();
+            for (Iterator f = index.iterator(); f.hasNext();) {
+                CoreField field = (CoreField)f.next();
                 if (indexFields.length() > 0) {
                     indexFields.append(", ");
                 }
@@ -2779,8 +2625,8 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException when a database error occurs
      */
     protected void createIndices(CoreField field) throws StorageException {
-        for (Object element : field.getParent().getStorageConnector().getIndices().values()) {
-            Index index = (Index)element;
+        for (Iterator i = field.getParent().getStorageConnector().getIndices().values().iterator(); i.hasNext();) {
+            Index index = (Index)i.next();
             if (index.contains(field)) {
                 create(index);
             }
@@ -2817,7 +2663,7 @@ public class DatabaseStorageManager implements StorageManager {
                 String query = null;
                 try {
                     Statement s = activeConnection.createStatement();
-                    query = createIndexScheme.format(this, tablename, fieldlist, index);
+                    query = createIndexScheme.format(new Object[] { this, tablename, fieldlist, index });
                     long startTime = getLogStartTime();
                     try {
                         s.executeUpdate(query);
@@ -2832,10 +2678,7 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-
-    /**
-     * @see org.mmbase.storage.StorageManager#create(org.mmbase.core.CoreField)
-     */
+    // javadoc is inherited
     public void create(CoreField field) throws StorageException {
         if (field == null) throw new IllegalArgumentException("No field given");
         if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
@@ -2854,7 +2697,7 @@ public class DatabaseStorageManager implements StorageManager {
                     getActiveConnection();
                     // add field
                     String fieldTypeDef = getFieldTypeDefinition(field);
-                    String query = scheme.format(this, field.getParent(), field, fieldTypeDef);
+                    String query = scheme.format(new Object[] { this, field.getParent(), field, fieldTypeDef });
                     Statement s = activeConnection.createStatement();
                     long startTime = getLogStartTime();
                     s.executeUpdate(query);
@@ -2865,7 +2708,7 @@ public class DatabaseStorageManager implements StorageManager {
                     if (constraintDef != null) {
                         scheme = factory.getScheme(Schemes.CREATE_CONSTRAINT, Schemes.CREATE_CONSTRAINT_DEFAULT);
                         if (scheme != null) {
-                            query = scheme.format(this, field.getParent(), constraintDef);
+                            query = scheme.format(new Object[] { this, field.getParent(), constraintDef });
                             s = activeConnection.createStatement();
                             s.executeUpdate(query);
                             s.close();
@@ -2883,10 +2726,7 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-
-    /**
-     * @see org.mmbase.storage.StorageManager#change(org.mmbase.core.CoreField)
-     */
+    // javadoc is inherited
     public void change(CoreField field) throws StorageException {
         if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
             throw new StorageException("Data definiton statements (change field) are not supported.");
@@ -2903,7 +2743,7 @@ public class DatabaseStorageManager implements StorageManager {
                     getActiveConnection();
                     deleteIndices(field);
                     String fieldTypeDef = getFieldTypeDefinition(field);
-                    String query = scheme.format(this, field.getParent(), field, fieldTypeDef);
+                    String query = scheme.format(new Object[] { this, field.getParent(), field, fieldTypeDef });
                     Statement s = activeConnection.createStatement();
                     long startTime = getLogStartTime();
                     s.executeUpdate(query);
@@ -2914,7 +2754,7 @@ public class DatabaseStorageManager implements StorageManager {
                     if (constraintDef != null) {
                         scheme = factory.getScheme(Schemes.CREATE_CONSTRAINT, Schemes.CREATE_CONSTRAINT_DEFAULT);
                         if (scheme != null) {
-                            query = scheme.format(this, field.getParent(), constraintDef);
+                            query = scheme.format(new Object[] { this, field.getParent(), constraintDef });
                             s = activeConnection.createStatement();
                             long startTime2 = getLogStartTime();
                             s.executeUpdate(query);
@@ -2932,10 +2772,7 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-
-    /**
-     * @see org.mmbase.storage.StorageManager#delete(org.mmbase.core.CoreField)
-     */
+    // javadoc is inherited
     public void delete(CoreField field) throws StorageException {
         if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
             throw new StorageException("Data definiton statements (delete field) are not supported.");
@@ -2951,7 +2788,7 @@ public class DatabaseStorageManager implements StorageManager {
                 try {
                     getActiveConnection();
                     deleteIndices(field);
-                    String query = scheme.format(this, field.getParent(), field);
+                    String query = scheme.format(new Object[] { this, field.getParent(), field });
                     Statement s = activeConnection.createStatement();
                     long startTime = getLogStartTime();
                     s.executeUpdate(query);
@@ -2970,18 +2807,21 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Convert legacy file
      * @return Number of converted fields. Or -1 if not storing binaries as files
-     * @throws org.mmbase.storage.search.SearchQueryException
-     * @throws SQLException if opening the connection failed
      */
     public int convertLegacyBinaryFiles() throws org.mmbase.storage.search.SearchQueryException, SQLException {
         if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
-            synchronized(factory) { // there is only on factory. This makes sure that there is only one conversion running
+            synchronized(factory) { // there is only on factory. This makes sure that there is only  one conversion running
                 int result = 0;
                 int fromDatabase = 0;
-                for (MMObjectBuilder builder : factory.getMMBase().getBuilders()) {;
+                Iterator builders = factory.getMMBase().getBuilders().iterator();
+                while (builders.hasNext()) {
+                    MMObjectBuilder builder = (MMObjectBuilder)builders.next();
+                    log.info("Converting " + builder.getTableName() + " to " + factory.getBinaryFileBasePath());
                     // remove clusternodes from the convert
                     if (!builder.getSingularName().equals("clusternodes")) {
-                        for (CoreField field : builder.getFields()) {
+                        Iterator fields = builder.getFields().iterator();
+                        while (fields.hasNext()) {
+                            CoreField field = (CoreField)fields.next();
                             String fieldName = field.getName();
                             if (field.getType() == Field.TYPE_BINARY) { // check all binaries
                                 // check whether it might be in a column
@@ -3006,40 +2846,64 @@ public class DatabaseStorageManager implements StorageManager {
                                 } finally {
                                     releaseActiveConnection();
                                 }
-                                List<MMObjectNode> nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
-                                log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
-                                for (MMObjectNode node : nodes) {
-                                    File storeFile = getBinaryFile(node, fieldName);
-                                    if (!storeFile.exists()) { // not found!
-                                        File legacyFile = getLegacyBinaryFile(node, fieldName);
-                                        if (legacyFile != null) {
-                                            storeFile.getParentFile().mkdirs();
-                                            if (legacyFile.renameTo(storeFile)) {
-                                                log.service("Renamed " + legacyFile + " to " + storeFile);
-                                                result++;
-                                            } else {
-                                                log.warn("Could not rename " + legacyFile + " to " + storeFile);
-                                            }
-                                        } else {
-                                            if (foundColumn) {
+                                //List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
+                                //log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
+                                //org.mmbase.bridge.NodeQuery nq = cloud.getNodeManager(builder.getTableName()).createQuery();
 
-                                                Blob b = getBlobFromDatabase(node, field, false);
-                                                int length = (int) b.length();
-                                                if (length > 0) {
-                                                  byte[] bytes = b.getBytes(1L, length);
-                                                  node.setValue(fieldName, bytes);
-                                                  storeBinaryAsFile(node, field);
-
-                                                  node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
-                                                  // node.commit(); no need, because we only changed blob (so no database updates are done)
-                                                  result++;
-                                                  log.service("( " + result + ") Found " + length + " bytes for " + node.getNumber() + " in database while configured to be on disk. Stored to " + storeFile);
+                                try {
+                                    getActiveConnection();
+                                    String tableName = (String)factory.getStorageIdentifier(builder);
+                                    Statement s = activeConnection.createStatement();
+                                    ResultSet numbers = s.executeQuery("select number from " + tableName);
+                                    while (numbers.next()) {
+                                        int number = numbers.getInt("number");
+                                        log.debug("Processing " + tableName + " " + number);
+                                        MMObjectNode node = builder.getNode(number);
+                                        if (node == null) {
+                                           log.warn("Database inconsistency for node with number: " + number);
+                                           continue;
+                                        }
+                                        File storeFile = getBinaryFile(node, fieldName);
+                                        if (!storeFile.exists()) { // not found!
+                                            File legacyFile = getLegacyBinaryFile(node, fieldName);
+                                            if (legacyFile != null) {
+                                                storeFile.getParentFile().mkdirs();
+                                                if (legacyFile.renameTo(storeFile)) {
+                                                    log.service("Renamed " + legacyFile + " to " + storeFile);
+                                                    result++;
+                                                } else {
+                                                    log.warn("Could not rename " + legacyFile + " to " + storeFile);
                                                 }
-                                                fromDatabase++;
+                                            } else {
+                                                if (foundColumn) {
+                                                    //Blob b = numbers.getBlob(fieldName);
+                                                    Blob b = getBlobFromDatabase(node, field, false);
+                                                    byte[] bytes = new byte[0];
+                                                    if (b == null) {
+                                                        log.debug("Blob was NULL");
+                                                    } else {
+                                                        log.debug("Getting bytes 0 - " + b.length());
+                                                        if (b.length() > 0) {
+                                                            bytes = b.getBytes(1L, (int) b.length());
+                                                        }
+                                                    }
+                                                    node.setValue(fieldName, bytes);
+                                                    storeBinaryAsFile(node, field);
+
+                                                    node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
+                                                    // node.commit(); no need, because we only changed blob (so no database updates are done)
+                                                    result++;
+                                                    fromDatabase++;
+                                                    log.service("( " + result + ") Found bytes in database while configured to be on disk. Stored to " + storeFile);
+                                                }
                                             }
                                         }
                                     }
-                                } // nodes
+                                } catch (Exception e) {
+                                    log.error("Exception while importing [" + builder + "]: " + e.getMessage(), e);
+                                } finally {
+                                    releaseActiveConnection();
+                                }
                             } // if type = byte
                         } // fields
                     }
@@ -3059,6 +2923,9 @@ public class DatabaseStorageManager implements StorageManager {
             return -1;
         }
     }
+
+
+
 
     protected static class InputStreamBlob implements Blob {
         private InputStream inputStream;
@@ -3151,7 +3018,6 @@ public class DatabaseStorageManager implements StorageManager {
         public void truncate(long len) {
             throw new UnsupportedOperationException("");
         }
-
         public void free() {
             bytes = null;
             if (inputStream != null) {
@@ -3165,7 +3031,6 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-
     /**
      * @see org.mmbase.storage.StorageManager#isNull(org.mmbase.module.core.MMObjectNode, org.mmbase.core.CoreField)
      */
@@ -3175,7 +3040,7 @@ public class DatabaseStorageManager implements StorageManager {
             dbtype = field.getType();
         }
 
-        if (dbtype == Field.TYPE_BINARY && checkStoreFieldAsFile(field.getParent())) {
+        if (dbtype == Field.TYPE_BINARY && factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
             String fieldName = field.getName();
             File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
             return binaryFile == null;
@@ -3223,7 +3088,7 @@ public class DatabaseStorageManager implements StorageManager {
                 result.getBlob(index);
             }
             else {
-                result.getBinaryStream(index);
+                result.getBinaryStream(index);                
             }
             break;
         case Field.TYPE_DATETIME :
@@ -3242,52 +3107,4 @@ public class DatabaseStorageManager implements StorageManager {
         }
         return result.wasNull();
     }
-
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    private void checkActiveConnection(Throwable e) {
-        try {
-            Connection con = getActiveConnection();
-
-            if (con instanceof MultiConnection) {
-
-                log.debug("Calling check after exception");
-                try {
-                    ((MultiConnection) con).checkAfterException();
-                } catch (SQLException sqe) {
-                    log.debug(sqe);
-                }
-            } else {
-                log.debug("Not a multiconnection");
-            }
-        } catch (SQLException sqe) {
-            log.warn(sqe);
-        }
-    }
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    public void executeQuery(String sql, ResultSetReader reader) throws SQLException {
-        long startTime = getLogStartTime();
-        String message = null;
-        try {
-            Connection con = getActiveConnection();
-            PreparedStatement stmt = con.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
-            reader.read(rs);
-
-        } catch (SQLException e) {
-            checkActiveConnection(e);
-            message = e.getClass().getName(); // The Message can be ridicously long and contains
-                                              // several stacktraces (at least for mysql).
-            throw e;
-        } finally {
-            releaseActiveConnection();
-            logQuery(sql + (message == null ? "" : " (" + message + ")"), startTime);
-        }
-    }
-
 }

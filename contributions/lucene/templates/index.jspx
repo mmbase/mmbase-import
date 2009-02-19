@@ -4,6 +4,7 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:fn="http://java.sun.com/jsp/jstl/functions"
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.page buffer="2000kb" />
   <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <jsp:directive.include file="head.jspx" />
   <mm:content type="application/xhtml+xml"

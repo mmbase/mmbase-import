@@ -1,6 +1,6 @@
 <%-- config --%>
 <mm:import id="max"         from="cookie" externid="my_editors_maxitems">25</mm:import>
-<mm:import id="list"        from="cookie" externid="my_editors_typelist">all</mm:import>
+<mm:import id="list"        from="cookie" externid="my_editors_typelist">editable</mm:import>
 <mm:import id="searchbox"   from="cookie" externid="my_editors_searchbox">top</mm:import>
 <mm:import id="columns"     from="cookie" externid="my_editors_columns">contentright</mm:import>
 <mm:import id="maxdays"     from="cookie" externid="my_editors_maxdays">99</mm:import>
@@ -14,9 +14,5 @@
   <link href="<mm:url absolute="server" page="img/favicon.ico" />" rel="shortcut icon" type="image/x-icon" />
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>my_editors - <mm:write referid="pagetitle" /></title>
-  <mm:haspage page="/mmbase/jquery/jquery.jspx">
-    <mm:include page="/mmbase/jquery/jquery.jspx" />
-    <mm:link page="scripts/my_editors.js" absolute="server"><script src="${_}" type="text/javascript"><!-- help msie --></script></mm:link>
-  </mm:haspage>
-  <mm:link absolute="server" page="scripts/tables.js"><script src="${_}" type="text/javascript"><!-- for MSIE --></script></mm:link>
-  <mm:link absolute="server" page="scripts/showdiv.js"><script src="${_}" type="text/javascript"><!-- for MSIE --></script></mm:link>
+  <script src="<mm:url absolute="server" page="scripts/tables.js" />" type="text/javascript"><!-- for MSIE --></script>
+  <script src="<mm:url absolute="server" page="scripts/showdiv.js" />" type="text/javascript"><!-- for MSIE --></script>

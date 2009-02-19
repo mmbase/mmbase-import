@@ -21,9 +21,9 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.21 2009-01-07 20:59:38 michiel Exp $
+ * @version $Id: Module.java,v 1.16 2005-07-28 16:53:45 michiel Exp $
  */
-public interface Module extends Descriptor, Comparable<Module> {
+public interface Module {
 
     /**
      * Retrieves the CloudContext to which this module belongs
@@ -36,6 +36,12 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @return name of the module
      */
     public String getName();
+
+    /**
+     * Retrieve the description of the module.
+     * @return description of the module
+     */
+    public String getDescription();
 
     /**
      * Retrieve a property of the module.
@@ -67,7 +73,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      *      commands make use of this parameter.
      * @param auxparameters additional parameters for this command.
      */
-    public void process(String command, Object parameter, Map<String, Object> auxparameters);
+    public void process(String command, Object parameter, Map auxparameters);
 
     /**
      * Runs the command with the given parameter(s).
@@ -78,7 +84,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      */
-    public void process(String command, Object parameter, Map<String, Object> auxparameters, ServletRequest req,  ServletResponse resp);
+    public void process(String command, Object parameter, Map auxparameters, ServletRequest req,  ServletResponse resp);
 
     /**
      * Retrieve info from a module based on a command string.
@@ -106,7 +112,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @param parameters a hashtable containing the named parameters of the list.
      * @return info from a module (as a list of virtual nodes)
      */
-    public NodeList getList(String command, Map<String, ?> parameters);
+    public NodeList getList(String command, Map parameters);
 
     /**
      * Retrieve info from a module based on a command string
@@ -118,7 +124,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      * @return info from a module (as a list of virtual nodes)
      */
-    public NodeList getList(String command, Map<String, ?> parameters, ServletRequest req, ServletResponse resp);
+    public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
 
     /**
      * Returns all the Function objects of this Module.
@@ -126,12 +132,12 @@ public interface Module extends Descriptor, Comparable<Module> {
      * @since MMBase-1.8
      * @return a Collection of {@link org.mmbase.util.functions.Function} objects.
      */
-    public Collection<Function<?>> getFunctions();
+    public Collection getFunctions();
 
     /**
-     * Returns a Function object.
+     * Returns a Fuction object.
      * The object returned is a {@link org.mmbase.util.functions.Function} object.
-     * You need to explicitly cast the result to this object, since not all bridge
+     * You need to explixitly cast the result to this object, since not all bridge
      * implementations (i.e. the RMMCI) support this class.
      *
      * @since MMBase-1.8
@@ -144,7 +150,7 @@ public interface Module extends Descriptor, Comparable<Module> {
     /**
      * Creates a parameter list for a function.
      * The list can be filled with parameter values by either using the List set(int, Object) method, to
-     * set values for parameters by position, or by using the set(String, Object) method to
+     * set values for parameters by psoition, or by using the set(String, Object) method to
      * set parameters by name.<br />
      * This object can then be passed to the getFunctionValue method.
      * Note that adding extra parameters (with the add(Object) method) won't work and may cause exceptions.
@@ -160,10 +166,10 @@ public interface Module extends Descriptor, Comparable<Module> {
      *
      * @since MMBase-1.8
      * @param functionName name of the function
-     * @param parameters list with parameters for the function
+     * @param parameters list with parameters for the fucntion
      * @return the result value of executing the function
      * @throws NotFoundException if the function does not exist
      */
-    public FieldValue getFunctionValue(String functionName, List<?> parameters);
+    public FieldValue getFunctionValue(String functionName, List parameters);
 
 }

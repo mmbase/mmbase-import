@@ -17,7 +17,7 @@ import java.util.*;
  * This corresponds to a table name and alias in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: Step.java,v 1.6 2008-07-17 12:55:23 michiel Exp $
+ * @version $Id: Step.java,v 1.2 2003-03-10 11:50:51 pierre Exp $
  * @since MMBase-1.7
  */
 public interface Step {
@@ -37,49 +37,40 @@ public interface Step {
 
     /**
      * Gets nodenumbers for nodes that must be included in this step.
-     * A <code>null</code> value indicates that no such constraint is applied.
+     * A null value indicates that no such constraint is applied.
      * <p>
      * This corresponds to a "number IN (....)" constraint in SQL SELECT syntax.
      * <p>
      * Note that this can also be achieved by using a FieldValueInConstraint on the "number" field.
      */
-    SortedSet<Integer> getNodes();
+    SortedSet getNodes();
 
     /**
-     * Adds node to nodes.
-     *
-     * @param nodeNumber The nodenumber of the node.
-     * @return This <code>BasicStep</code> instance.
-     * @throws IllegalArgumentException when an invalid argument is supplied.
-     */
-    public Step addNode(int nodeNumber);
-
-    /**
-     * Compares this step to the specified object. The result is
-     * <code>true</code> if and only if the argument is a non-null
-     * Step, but not RelationStep, object associated with the same tablename,
+     * Compares this step to the specified object. The result is 
+     * <code>true</code> if and only if the argument is a non-null 
+     * Step, but not RelationStep, object associated with the same tablename, 
      * using the same alias and including the same nodes.
-     *
+     * 
      * @param obj The object to compare with.
-     * @return <code>true</code> if the objects are equal,
+     * @return <code>true</code> if the objects are equal, 
      * <code>false</code> otherwise.
      * @see RelationStep#equals
      */
     public boolean equals(Object obj);
-
+    
     // javadoc is inherited
     public int hashCode();
-
+    
     /**
-     * Returns a string representation of this Step.
-     * The string representation has the form
+     * Returns a string representation of this Step. 
+     * The string representation has the form 
      * "Step(tablename:&lt;tablename&gt;, alias:&lt;alias&gt;, nodes:&lt;nodes&gt;)"
-     * where
+     * where 
      * <ul>
-     * <li><em>&lt;tablename&gt;</em> is the tablename returnedby
+     * <li><em>&lt;tablename&gt;</em> is the tablename returnedby 
      *     {@link #getTableName getTableName()}
      * <li><em>&lt;alias&gt;</em> is the alias returned by {@link #getAlias getAlias()}
-     * <li><em>&lt;nodes&gt;</em> is the string representation of the ordered list
+     * <li><em>&lt;nodes&gt;</em> is the string representation of the ordered list 
      * of nodenumbers returned by {@link #getNodes getNodes()}
      * </ul>
      *
@@ -87,5 +78,7 @@ public interface Step {
      */
     public String toString();
 
-
+    /** @link dependency 
+     * @clientRole **/
+    /*#SearchQuery lnkSearchQuery;*/
 }

@@ -18,7 +18,7 @@ import javax.mail.*;
 /**
  * A MailHandler handles <em>one</em> mail. So you must create a new one for every received message
  * (You can use {@link Factory}).
- * @version $Id: MailHandler.java,v 1.14 2008-12-30 11:06:12 michiel Exp $
+ * @version $Id: MailHandler.java,v 1.13 2008-07-31 13:22:36 michiel Exp $
  */
 public interface  MailHandler {
 
@@ -64,21 +64,17 @@ public interface  MailHandler {
         private static final Logger log = Logging.getLoggerInstance(Factory.class);
 
         static UtilReader.PropertiesMap  mailHandlers =
-            new UtilReader("mailhandlers.xml").getMaps();
+            new UtilReader("mailhandlers.xml").getProperties();
 
         public static MailHandler getInstance() {
             List<MailHandler> mh = new ArrayList<MailHandler>();
             List<Map.Entry<String, String>> classes = (List<Map.Entry<String, String>>) mailHandlers.get("classes");
-            if (classes == null) {
-                log.warn("No mail handlers found in " + mailHandlers);
-            } else {
-                for (Map.Entry<String, String> c : classes) {
-                    String cn = c.getKey();
-                    try {
-                        mh.add((MailHandler) Class.forName(cn).newInstance());
-                    } catch (Exception e) {
-                        log.error(e.getMessage(), e);
-                    }
+            for (Map.Entry<String, String> c : classes) {
+                String cn = c.getKey();
+                try {
+                    mh.add((MailHandler) Class.forName(cn).newInstance());
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
                 }
             }
             MailHandler instance;

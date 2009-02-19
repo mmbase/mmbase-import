@@ -14,7 +14,6 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.functions.*;
@@ -31,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.81 2008-12-09 15:30:58 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.73.2.2 2007-07-24 10:00:25 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -50,23 +49,40 @@ public class ImageTag extends FieldTag {
     private static Boolean makeRelative = null;
     private static Boolean urlConvert   = null;
 
-    private Attribute template    = Attribute.NULL;
-    private Attribute mode        = Attribute.NULL;
-    private Attribute width       = Attribute.NULL;
-    private Attribute height      = Attribute.NULL;
-    private Attribute crop        = Attribute.NULL;
-    private Attribute style       = Attribute.NULL;
-    private Attribute styleClass  = Attribute.NULL;
-    private Attribute align       = Attribute.NULL;
-    private Attribute border      = Attribute.NULL;
-    private Attribute hspace      = Attribute.NULL;
-    private Attribute vspace      = Attribute.NULL;
+    /** Holds value of property template. */
+    private Attribute template = Attribute.NULL;
 
+    /** Holds value of property mode. */
+    private Attribute mode = Attribute.NULL;
+
+    /** Holds value of property width. */
+    private Attribute width = Attribute.NULL;
+
+    /** Holds value of property height. */
+    private Attribute height = Attribute.NULL;
+
+    /** Holds value of property crop. */
+    private Attribute crop = Attribute.NULL;
+
+    /** Holds value of property style. */
+    private Attribute style = Attribute.NULL;
+
+    /** Holds value of property clazz. */
+    private Attribute styleClass = Attribute.NULL;
+
+    /** Holds value of property align. */
+    private Attribute align = Attribute.NULL;
+
+    /** Holds value of property border. */
+    private Attribute border = Attribute.NULL;
+
+    /** Holds value of property hspace. */
+    private Attribute hspace = Attribute.NULL;
+
+    /** Holds value of property vspace. */
+    private Attribute vspace = Attribute.NULL;
 
     private Attribute altAttribute = Attribute.NULL;
-
-    private Attribute absolute     = Attribute.NULL;
-    private Attribute disposition  = Attribute.NULL;
 
 
     private Object prevDimension;
@@ -124,27 +140,14 @@ public class ImageTag extends FieldTag {
     public void setWidth(String width) throws JspTagException {
         this.width = getAttribute(width);
     }
+
     public void setAlt(String a) throws JspTagException {
         altAttribute = getAttribute(a);
     }
 
-    /**
-     * @since MMBase-1.9.1
-     */
-    public void setAbsolute(String a) throws JspTagException {
-        absolute = getAttribute(a, true);
-    }
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    public void setDisposition(String d) throws JspTagException {
-        disposition = getAttribute(d, true);
-    }
-
     private int getMode() throws JspTagException {
         String m = mode.getString(this).toLowerCase();
-        if (m.length() == 0 || m.equals("url")) {
+        if (m.equals("") || m.equals("url")) {
             return MODE_URL;
         } else if (m.equals("attributes")) {
             return MODE_HTML_ATTRIBUTES;
@@ -158,7 +161,7 @@ public class ImageTag extends FieldTag {
 
     private String getCrop() throws JspTagException {
         String m = crop.getString(this).toLowerCase();
-        if (m.length() == 0) {
+        if (m.equals("")) {
             return null;
         } else if (m.equals("middle")) {
             return CROP_MIDDLE;
@@ -196,8 +199,7 @@ public class ImageTag extends FieldTag {
         return urlConvert.booleanValue();
     }
 
-    public int doStartTag() throws JspException {
-        initTag();
+    public int doStartTag() throws JspTagException {
         Node originalNode = getNode();
         if (!originalNode.getNodeManager().hasField("handle")) {
             throw new JspTagException(
@@ -225,8 +227,6 @@ public class ImageTag extends FieldTag {
         }
 
         String servletPath = getServletPath(node, servletArgument);
-
-
         String outputValue = getOutputValue(getMode(), originalNode, servletPath, dim);
 
         if (outputValue != null) {
@@ -263,53 +263,27 @@ public class ImageTag extends FieldTag {
         return servletArgument;
     }
 
-    protected String getServletPath(Node node, String servletArgument) throws JspTagException {
+    public String getServletPath(Node node, String servletArgument) throws JspTagException {
         Function servletPathFunction = getServletFunction(node);
         Parameters args = getServletArguments(servletArgument, servletPathFunction);
         fillStandardParameters(args);
-        String url = servletPathFunction.getFunctionValue(args).toString();
-        if (absolute != Attribute.NULL) {
-            String a = absolute.getString(this);
-            HttpServletRequest req = (HttpServletRequest) getPageContext().getRequest();
-            if ("true".equals(a)) {
-                StringBuilder show = new StringBuilder();
-                String scheme = req.getScheme();
-                show.append(scheme).append("://");
-                show.append(req.getServerName());
-                int port = req.getServerPort();
-                show.append((port == 80 && "http".equals(scheme)) ||
-                            (port == 443 && "https".equals(scheme))
-                            ? "" : ":" + port);
-                show.append(url);
-                url = show.toString();
-            } else if ("context".equals(a)) {
-                url = url.substring(req.getContextPath().length(), url.length());
-            } else if ("server".equals(a)) {
-                // Ok, that's it already.
-            } else {
-                throw new TaglibException("Invalid value for absolute attribute '" + a + "'");
-            }
-        }
-        return url;
+        return servletPathFunction.getFunctionValue( args).toString();
     }
 
-    protected Function getServletFunction(Node node) {
+    public Function getServletFunction(Node node) {
         Function servletPathFunction = node.getFunction("servletpath");
         return servletPathFunction;
     }
 
-    protected Parameters getServletArguments(String servletArgument, Function servletPathFunction) throws JspTagException {
+    public Parameters getServletArguments(String servletArgument, Function servletPathFunction) {
         HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         Parameters args = servletPathFunction.createParameters();
         args.set("context",  makeRelative() ? UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") : req.getContextPath())
             .set("argument", servletArgument);
-        if (disposition != Attribute.NULL) {
-            args.set("disposition", disposition.getString(this));
-        }
         return args;
     }
 
-    protected String getOutputValue(int mode, Node node, String servletPath, Dimension dim) throws JspTagException {
+    public String getOutputValue(int mode, Node node, String servletPath, Dimension dim) throws JspTagException {
         String outputValue = null;
         switch(mode) {
         case MODE_URL:
@@ -338,15 +312,15 @@ public class ImageTag extends FieldTag {
         return outputValue;
     }
 
-    protected String getSrcAttribute(String url) throws JspTagException {
+    public String getSrcAttribute(String url) throws JspTagException {
         return " src=\"" + url + "\"";
     }
 
-    protected String getBaseAttributes(String url, Dimension dim) throws JspTagException {
+    public String getBaseAttributes(String url, Dimension dim) throws JspTagException {
         return getSrcAttribute(url) + " height=\"" + dim.getHeight() + "\" width=\"" + dim.getWidth() + "\"";
     }
 
-    protected String getAltAttribute(Node node) throws JspTagException {
+    public String getAltAttribute(Node node) throws JspTagException {
         String alt = null;
         if (altAttribute != Attribute.NULL) {
             alt = altAttribute.getString(this);
@@ -369,7 +343,7 @@ public class ImageTag extends FieldTag {
     }
 
     protected String getOtherAttributes() throws JspTagException {
-        StringBuilder attributes = new StringBuilder();
+        StringBuffer attributes = new StringBuffer();
         attributes.append((styleClass != Attribute.NULL) ? (" class=\"" + styleClass.getString(this) + "\"") : "");
         attributes.append((style != Attribute.NULL) ? (" style=\"" + style.getString(this) + "\"") : "");
         attributes.append((align != Attribute.NULL) ? (" align=\"" + align.getString(this) + "\"") : "");
@@ -379,7 +353,7 @@ public class ImageTag extends FieldTag {
         return attributes.toString();
     }
 
-    protected Dimension getDimension(Node node, String template) {
+    public Dimension getDimension(Node node, String template) {
         return new LazyDimension(node, template);
     }
 
@@ -392,7 +366,7 @@ public class ImageTag extends FieldTag {
      * @param cropTemplate - crop the image. values are 'begin', 'middle' and 'end'.
      * @return template for image
      */
-    protected String getTemplate(Node node, String t, int widthTemplate, int heightTemplate, String cropTemplate) {
+    public String getTemplate(Node node, String t, int widthTemplate, int heightTemplate, String cropTemplate) {
         if (t == null || t.length() == 0) {
             if ((widthTemplate <= 0) && (heightTemplate <= 0)) {
                 t = "";
@@ -422,7 +396,7 @@ public class ImageTag extends FieldTag {
      * @param height - template height
      * @return the crop template
      */
-    protected String getCropTemplate(Node node, int width, int height, String cropTemplate) {
+    public String getCropTemplate(Node node, int width, int height, String cropTemplate) {
         Dimension imageDimension = getDimension(node, null);
         int imageWidth = imageDimension.getWidth();
         int imageHeight = imageDimension.getHeight();
@@ -430,7 +404,7 @@ public class ImageTag extends FieldTag {
         int newHeight = height > 0 ? height : imageHeight;
 
         // define orientation of images
-        StringBuilder template = new StringBuilder();
+        StringBuffer template = new StringBuffer();
         float horizontalMultiplier = (float) newWidth / (float) imageWidth;
         float verticalMultiplier = (float) newHeight / (float) imageHeight;
         int tempWidth = (int) (imageWidth * verticalMultiplier);
@@ -485,7 +459,7 @@ public class ImageTag extends FieldTag {
      * @param height - template height
      * @return the resize template
      */
-    protected String getResizeTemplate(Node node, int width, int height) {
+    public String getResizeTemplate(Node node, int width, int height) {
         Dimension imageDimension = getDimension(node, null);
         int imageWidth = imageDimension.getWidth();
         int imageHeight = imageDimension.getHeight();
@@ -493,7 +467,7 @@ public class ImageTag extends FieldTag {
         int newHeight = height > 0 ? height : imageHeight;
 
         // define orientation of images
-        StringBuilder template = new StringBuilder();
+        StringBuffer template = new StringBuffer();
         float horizontalMultiplier = (float) newWidth / (float) imageWidth;
         float verticalMultiplier = (float) newHeight / (float) imageHeight;
 
@@ -506,9 +480,7 @@ public class ImageTag extends FieldTag {
             template.append("+s(x").append(newHeight).append(")");
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug(template.toString());
-        }
+        log.debug(template.toString());
         return template.toString();
     }
 

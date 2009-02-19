@@ -11,7 +11,6 @@ package org.mmbase.applications.editwizard;
 
 import java.util.*;
 import java.net.*;
-import java.io.*;
 import org.mmbase.util.xml.URIResolver;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.http.HttpServletRequest;
@@ -31,10 +30,10 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.74 2008-11-15 12:46:30 michiel Exp $
+ * @version $Id: Config.java,v 1.63.2.2 2007-05-04 12:12:00 nklasens Exp $
  */
 
-public class Config implements java.io.Serializable {
+public class Config {
 
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
@@ -55,7 +54,7 @@ public class Config implements java.io.Serializable {
     public static String wizardStyleSheet = "xsl/wizard.xsl";
     public static String listStyleSheet = "xsl/list.xsl";
     public static String searchlistStyleSheet = "xsl/searchlist.xsl";
-    public static long maxUploadSize = DEFAULT_MAX_UPLOAD_SIZE;
+    public static int maxUploadSize = DEFAULT_MAX_UPLOAD_SIZE;
 
     /**
      * @since MMBase-1.8.1
@@ -89,7 +88,7 @@ public class Config implements java.io.Serializable {
         tmp = (String) configuration.get("maxUploadSize");
         if (tmp != null && !tmp.equals("")) {
             try {
-                maxUploadSize = Long.parseLong(tmp);
+                maxUploadSize = Integer.parseInt(tmp);
             } catch (Exception e) {}
             log.service("Editwizard default max upload size "    + maxUploadSize);
         }
@@ -98,8 +97,8 @@ public class Config implements java.io.Serializable {
 
     public String sessionKey = null;
     public URIResolver uriResolver = null;
-    public long maxupload = Config.maxUploadSize;
-    public Stack<SubConfig> subObjects = new Stack<SubConfig>(); // stores the Lists and Wizards.
+    public int maxupload = Config.maxUploadSize;
+    public Stack subObjects = new Stack(); // stores the Lists and Wizards.
     public String sessionId;   // necessary if client doesn't accept cookies to store sessionid (this is appended to urls)
     public String backPage;
     public String templates;
@@ -112,20 +111,18 @@ public class Config implements java.io.Serializable {
      *
      * @since MMBase-1.7
      */
-    protected Map<String, Object> attributes;
-
+    protected Map attributes;
 
 
     //   public String context; (contained in attributes now)
 
     static public class SubConfig implements java.io.Serializable {
-        private static final long serialVersionUID = 1L;
         public boolean debug = false;
         public String wizard;
         public String page;
-        public HashMap<String, Stack<SubConfig>> popups = new HashMap<String, Stack<SubConfig>>(); // all popups now in use below this (key -> Config)
+        public HashMap popups = new HashMap(); // all popups now in use below this (key -> Config)
 
-        public HashMap<String, Object> attributes = new HashMap<String, Object>();
+        public HashMap attributes = new HashMap();
 
         /**
          * Basic configuration. The configuration object passed is updated with information retrieved
@@ -145,7 +142,11 @@ public class Config implements java.io.Serializable {
         public void configure(Config.Configurator configurator) throws WizardException  {
             wizard = configurator.getParam("wizard", wizard);
             if (wizard != null && wizard.startsWith("/")) {
-                wizard = configurator.getResource(wizard).toString();
+                try {
+                    wizard = configurator.getResource(wizard).toString();
+                } catch(MalformedURLException mfue) {
+                    throw new WizardException(mfue);
+                }
             }
             configurator.fillAttributes(attributes);
 
@@ -167,15 +168,14 @@ public class Config implements java.io.Serializable {
         /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
-        public Map<String, Object> getAttributes() {
-            Map<String, Object> attributeMap = new HashMap<String, Object>(attributes);
+        public Map getAttributes() {
+            Map attributeMap = new HashMap(attributes);
             return attributeMap;
         }
 
     }
 
     static public class WizardConfig extends SubConfig {
-        private static final long serialVersionUID = 1L;
         public Wizard wiz;
         public String objectNumber;
         public String parentFid;
@@ -213,16 +213,9 @@ public class Config implements java.io.Serializable {
             return attributeMap;
         }
         */
-        private void writeObject(ObjectOutputStream out) throws IOException {
-            out.defaultWriteObject();
-        }
-        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-            in.defaultReadObject();
-        }
     }
 
     static public class ListConfig extends SubConfig {
-        private static final long serialVersionUID = 2L;
 
         // constants for 'search' parameter. Order of value matters (force must be bigger then yes)
         public static final int SEARCH_NO   = 0;
@@ -234,7 +227,7 @@ public class Config implements java.io.Serializable {
 
 
         public String title;
-        public transient URL    template;
+        public URL    template;
         public String fields;
         public String startNodes;
         public String nodePath;
@@ -258,7 +251,7 @@ public class Config implements java.io.Serializable {
 
         public boolean multilevel = false;
         public String mainObjectName = null;
-        public List<String> fieldList = null;
+        public List fieldList = null;
 
         protected Cloud cloud;
 
@@ -313,8 +306,8 @@ public class Config implements java.io.Serializable {
         public void configure(Config.Configurator configurator) throws WizardException {
             super.configure(configurator);
             title        = configurator.getParam("title", title);
-            pagelength   = configurator.getParam("pagelength", Integer.valueOf(pagelength));
-            maxpagecount = configurator.getParam("maxpagecount", Integer.valueOf(maxpagecount));
+            pagelength   = configurator.getParam("pagelength", new Integer(pagelength)).intValue();
+            maxpagecount = configurator.getParam("maxpagecount", new Integer(maxpagecount)).intValue();
             startNodes   = configurator.getParam("startnodes", startNodes);
 
             // Get nodepath parameter. if a (new) parameter was passed,
@@ -346,10 +339,10 @@ public class Config implements java.io.Serializable {
 
             }
 
-            age = configurator.getParam("age", Integer.valueOf(age));
+            age = configurator.getParam("age", new Integer(age)).intValue();
             if (age >= 99999) age=-1;
 
-            start           = configurator.getParam("start", Integer.valueOf(start));
+            start           = configurator.getParam("start", new Integer(start)).intValue();
             searchType      = configurator.getParam("searchtype", searchType);
             searchFields    = configurator.getParam("searchfields", searchFields);
             searchValue     = configurator.getParam("searchvalue", searchValue);
@@ -380,7 +373,7 @@ public class Config implements java.io.Serializable {
             if (searchFields == null) {
                 constraints = baseConstraints;
             } else {
-                StringBuilder constraintsBuffer;
+                StringBuffer constraintsBuffer;
                 // search type: default
                 String sType = searchType;
                 // get the actual field to search on.
@@ -393,7 +386,7 @@ public class Config implements java.io.Serializable {
                 } else if (sFields.equals("number") || sFields.endsWith(".number")) {
                     sType = "equals";
                 }
-                String where = Encode.encode("ESCAPE_SINGLE_QUOTE", searchValue);
+                String where = Encode.encode("ESCAPE_SINGLE_QUOTE",searchValue);
                 constraintsBuffer = null;
                 if (sType.equals("like")) {
                     if (! "".equals(where)) {
@@ -404,23 +397,21 @@ public class Config implements java.io.Serializable {
                         where = " = '" + where + "'";
                     }
                 } else {
-                    if (! "".equals(where)) {
-                        if (! org.mmbase.datatypes.StringDataType.DOUBLE_PATTERN.matcher(where).matches()) {
-                            where = "0";
-                        }
-                        if (sType.equals("greaterthan")) {
-                            where = " > " + where;
-                        } else if (sType.equals("lessthan")) {
-                            where = " < " + where;
-                        } else if (sType.equals("notgreaterthan")) {
-                            where = " <= " + where;
-                        } else if (sType.equals("notlessthan")) {
-                            where = " >= " + where;
-                        } else if (sType.equals("notequals")) {
-                            where = " != " + where;
-                        } else { // equals
-                            where = " = " + where;
-                        }
+                    if (where.equals("")) {
+                        where = "0";
+                    }
+                    if (sType.equals("greaterthan")) {
+                        where = " > " + where;
+                    } else if (sType.equals("lessthan")) {
+                        where = " < " + where;
+                    } else if (sType.equals("notgreaterthan")) {
+                        where = " <= " + where;
+                    } else if (sType.equals("notlessthan")) {
+                        where = " >= " + where;
+                    } else if (sType.equals("notequals")) {
+                        where = " != " + where;
+                    } else { // equals
+                        where = " = " + where;
                     }
                 }
                 if (! "".equals(where)) {
@@ -430,7 +421,7 @@ public class Config implements java.io.Serializable {
                         if (constraintsBuffer != null) {
                             constraintsBuffer.append(" OR ");
                         } else {
-                            constraintsBuffer = new StringBuilder();
+                            constraintsBuffer = new StringBuffer();
                         }
                         if (sType.equals("like")) {
                             constraintsBuffer.append("lower([").append(tok).append("])").append(where);
@@ -494,7 +485,7 @@ public class Config implements java.io.Serializable {
                 // so we can make up a nice default for fields.
                 if (fields == null) {
                     if (cloud != null) {
-                        StringBuilder fieldsBuffer = new StringBuilder();
+                        StringBuffer fieldsBuffer = new StringBuffer();
                         FieldIterator i = cloud.getNodeManager(removeDigits(mainObjectName)).getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
                         while (i.hasNext()) {
                             Field field = i.nextField();
@@ -520,7 +511,7 @@ public class Config implements java.io.Serializable {
                     throw new WizardException("The parameter 'fields' should be passed with a comma-separated list of fieldnames.");
                 }
 
-                fieldList = new ArrayList<String>();
+                fieldList = new ArrayList();
                 while (stok.hasMoreTokens()) {
                     String token = stok.nextToken();
                     fieldList.add(token);
@@ -543,7 +534,7 @@ public class Config implements java.io.Serializable {
 
                 if (search >= SEARCH_YES && searchFields == null) {
                     if (cloud != null) {
-                        StringBuilder searchFieldsBuffer = new StringBuilder();
+                        StringBuffer searchFieldsBuffer = new StringBuffer();
                         FieldIterator i = cloud.getNodeManager(removeDigits(mainObjectName)).
                             getFields(org.mmbase.bridge.NodeManager.ORDER_LIST).fieldIterator();
                         while (i.hasNext()) {
@@ -578,41 +569,31 @@ public class Config implements java.io.Serializable {
                 parsed = true;
             }
 
-
-        }
-        private void writeObject(ObjectOutputStream out) throws IOException {
-            out.defaultWriteObject();
-            out.writeUTF(template.toString());
-        }
-        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-            in.defaultReadObject();
-            String u = in.readUTF();
-            template = ResourceLoader.getWebRoot().getResource(u);
         }
 
         /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
-        public Map<String, Object> getAttributes() {
-            Map<String, Object> attributeMap = super.getAttributes();
+        public Map getAttributes() {
+            Map attributeMap = super.getAttributes();
             // mandatory attributes
             attributeMap.put("nodepath", nodePath);
-            attributeMap.put("fields",   fields);
+            attributeMap.put("fields", fields);
             // optional attributes
-            if (title           != null) attributeMap.put("title",       title);
-            attributeMap.put("age", age + "");
-            if (multilevel             ) attributeMap.put("objecttype",  mainObjectName);
-            if (startNodes      != null) attributeMap.put("startnodes",  startNodes);
-            if (orderBy         != null) attributeMap.put("orderby",     orderBy);
-            if (directions      != null) attributeMap.put("directions",  directions);
-            attributeMap.put("distinct", distinct + "");
-            if (searchDir       != null) attributeMap.put("searchdir",   searchDir);
-            if (baseConstraints != null) attributeMap.put("constraints", baseConstraints);
+            if (title != null) attributeMap.put("title", title);
+            attributeMap.put("age", age+"");
+            if (multilevel) attributeMap.put("objecttype",mainObjectName);
+            if (startNodes!=null) attributeMap.put("startnodes", startNodes);
+            if (orderBy!=null) attributeMap.put("orderby", orderBy);
+            if (directions!=null) attributeMap.put("directions", directions);
+            attributeMap.put("distinct", distinct+"");
+            if (searchDir!=null) attributeMap.put("searchdir", searchDir);
+            if (baseConstraints!=null) attributeMap.put("constraints", baseConstraints);
             // search attributes
-            if (searchType      != null) attributeMap.put("searchtype",  searchType);
-            if (searchFields    != null) attributeMap.put("searchfields",    searchFields);
-            if (realSearchField != null) attributeMap.put("realsearchfield", realSearchField);
-            if (searchValue     != null) attributeMap.put("searchvalue",     searchValue);
+            if (searchType!=null) attributeMap.put("searchtype", searchType);
+            if (searchFields!=null) attributeMap.put("searchfields", searchFields);
+            if (realSearchField!=null) attributeMap.put("realsearchfield", realSearchField);
+            if (searchValue!=null) attributeMap.put("searchvalue", searchValue);
 
             return attributeMap;
         }
@@ -624,6 +605,7 @@ public class Config implements java.io.Serializable {
      * and what are the defaults and so on.
      */
     public static class Configurator {
+        private static final Logger log = Logging.getLoggerInstance(Config.class);
 
         protected PageContext page;
         protected HttpServletRequest request;
@@ -656,7 +638,7 @@ public class Config implements java.io.Serializable {
             }
             */
             if (config.attributes == null) {
-                config.attributes = new HashMap<String, Object>();
+                config.attributes = new HashMap();
                 fillAttributes(config.attributes);
             }
             // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
@@ -694,7 +676,7 @@ public class Config implements java.io.Serializable {
 
 
 
-                if (protocolPos >= 0 ) { // given absolutely
+                if (protocolPos >=0 ) { // given absolutely
                     String path = new URL(config.backPage).getPath();
                     ref = new URL(getResource(path.substring(request.getContextPath().length())), ".");
                     // TODO: What if it happened to be not from the same server?
@@ -764,15 +746,19 @@ public class Config implements java.io.Serializable {
                 }
 
                 extraDirs.add("ew:", basedir);
-                URL rootDir = new URL(getResource(request.getServletPath()), "/"); // the directory of this jsp (list, wizard)
-                extraDirs.add("root:" , rootDir);
                 config.uriResolver = new URIResolver(jspFileDir, extraDirs);
                 config.maxupload = getParam("maxsize", config.maxupload);
             }
         }
 
-        public URL getResource(String path) {
+        /*
+        public String getRealPath(String path) {
+            return page.getServletContext().getRealPath(path);
+        }
+        */
+        public URL getResource(String path) throws MalformedURLException {
             return ResourceLoader.getWebRoot().getResource(path);
+            /// page.getServletContext().getResource(path)  (not using ResourceLoader)
         }
 
 
@@ -798,18 +784,13 @@ public class Config implements java.io.Serializable {
         protected int  getParam(String paramName, int def) {
             String i = getParam(paramName);
             if (i == null || i.equals("")) return def;
-            return Integer.parseInt(i);
-        }
-        protected long  getParam(String paramName, long def) {
-            String i = getParam(paramName);
-            if (i == null || i.equals("")) return def;
-            return Long.parseLong(i);
+            return new Integer(i).intValue();
         }
 
         protected Integer getParam(String paramName, Integer def) {
             String i = getParam(paramName);
             if (i == null || i.equals("")) return def;
-            return Integer.parseInt(i);
+            return new Integer(i);
         }
 
         protected boolean getParam(String paramName, boolean def) {
@@ -829,12 +810,12 @@ public class Config implements java.io.Serializable {
          * first call are added.  No arrays supported, only single values.
          * @since MMBase-1.7
          */
-        protected void fillAttributes(Map<String, Object> map) {
+        protected void fillAttributes(Map map) {
             map.putAll(config.attributes);  // start with setting in global config
 
-            Enumeration<String> e = request.getParameterNames();
+            Enumeration e = request.getParameterNames();
             while (e.hasMoreElements()) {
-                String param = e.nextElement();
+                String param = (String) e.nextElement();
                 map.put(param, request.getParameter(param));
             }
 
@@ -846,7 +827,7 @@ public class Config implements java.io.Serializable {
             if(config.subObjects.size() == 0) {
                 return config.backPage;
             } else {
-                return (config.subObjects.peek()).page;
+                return ((SubConfig) config.subObjects.peek()).page;
             }
         }
 
@@ -872,7 +853,7 @@ public class Config implements java.io.Serializable {
             if (wizard.wizard == null) {
                 throw new WizardException("Wizardname may not be null, configurated by class with name: " + this.getClass().getName());
             }
-            wizard.wiz = new Wizard(request, config.uriResolver, wizard, cloud);
+            wizard.wiz = new Wizard(request.getContextPath(), config.uriResolver, wizard, cloud);
             wizard.wiz.setSessionId(config.sessionId);
             wizard.wiz.setSessionKey(config.sessionKey);
             wizard.wiz.setReferrer(config.backPage);

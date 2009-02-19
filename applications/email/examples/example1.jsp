@@ -12,8 +12,7 @@
   <!-- send the email node  (default type is oneshot) -->
   <mm:node referid="mail1">
     <mm:function name="mail" />
-    <p>Mail ${mail1} was sent with status <mm:field name="mailstatus"><mm:fieldinfo type="guivalue" /></mm:field></p>
-
   </mm:node>
+  <p>Mail ${mail1} was sent</p>
 
 </mm:cloud>

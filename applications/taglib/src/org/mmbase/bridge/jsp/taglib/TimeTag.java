@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.58 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.57 2006-08-22 11:21:42 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -73,7 +73,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
     }
 
     protected static int getPrecisionConstant(String p) throws JspTagException {
-        if (p.length() == 0) {
+        if (p.equals("")) {
             return PRECISION_UNSET;
         } else if (p.equals("seconds")) {
             return PRECISION_SECONDS;
@@ -245,7 +245,7 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
 
         TimeZone tz = getTimeZone();
         String iformat = inputFormat.getString(this);
-        if (iformat.length() == 0) {
+        if (iformat.equals("")) {
             if (date == null) {
                 try {
                     String tzTime = useTime.startsWith("TZ") ? useTime : ("TZ" + tz.getID() + " " + useTime);

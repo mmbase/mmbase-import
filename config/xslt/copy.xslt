@@ -1,4 +1,4 @@
-<xsl:stylesheet
+<xsl:stylesheet 
     xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" version = "1.0" >
 
 
@@ -6,6 +6,7 @@
     version="1.0"
     encoding="utf-8"
     omit-xml-declaration="yes"
+    standalone="yes"
     indent="yes"
     />
 
@@ -13,5 +14,5 @@
   <xsl:copy-of select="." />
 </xsl:template>
 
-
+  
 </xsl:stylesheet>

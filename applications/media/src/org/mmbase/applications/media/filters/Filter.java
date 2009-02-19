@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
  */
 
 package org.mmbase.applications.media.filters;
-import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.List;
  */
 public interface Filter {
     
-    public List<URLComposer> filter(List<URLComposer> urlcomposers);
+    public List filter(List urlcomposers);
     public void configure(DocumentReader reader, Element e);
 }
 

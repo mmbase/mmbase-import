@@ -8,8 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.security;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * A UserContext object is the result of an authentication, on which authorization can be
@@ -23,20 +21,15 @@ import org.mmbase.util.logging.Logging;
  * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.9 2008-11-12 13:42:10 michiel Exp $
+ * @version $Id: BasicUser.java,v 1.2.2.2 2008-06-23 14:48:26 michiel Exp $
  */
-public class BasicUser implements UserContext, Comparable<Object> {
-    private static final Logger log = Logging.getLoggerInstance(BasicUser.class);
+public class BasicUser implements UserContext {
 
-    protected final String authenticationType;
-    private final String identifier;
+    protected String authenticationType;
+
 
     public BasicUser(String authenticationType) {
-        this(authenticationType, "anonymous");
-    }
-    public BasicUser(String authenticationType, String identifier) {
         this.authenticationType = authenticationType;
-        this.identifier = identifier;
     }
 
     /**
@@ -46,7 +39,7 @@ public class BasicUser implements UserContext, Comparable<Object> {
      * @return A unique identifier for this user.
      */
     public String getIdentifier() {
-        return identifier;
+        return "anonymous";
     }
 
     /**
@@ -81,12 +74,7 @@ public class BasicUser implements UserContext, Comparable<Object> {
     }
 
     public boolean isValid() {
-        try {
-            return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().isValid(this);
-        } catch (Exception e) {
-            log.warn(e);
-            return false;
-        }
+        return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().isValid(this);
     }
 
     public String getAuthenticationType() {
@@ -98,8 +86,8 @@ public class BasicUser implements UserContext, Comparable<Object> {
             BasicUser ou = (BasicUser) o;
             return
                 (authenticationType == null ? ou.authenticationType == null : authenticationType.equals(ou.authenticationType)) &&
-                (getIdentifier() == null ? ou.getIdentifier() == null : getIdentifier().equals(ou.getIdentifier())) &&
-                (getRank() == null ? ou.getRank() == null : getRank().equals(ou.getRank()));
+                getIdentifier() == null ? ou.getIdentifier() == null : getIdentifier().equals(ou.getIdentifier()) &&
+                getRank() == null ? ou.getRank() == null : getRank().equals(ou.getRank());
         } else {
             return false;
         }
@@ -109,17 +97,6 @@ public class BasicUser implements UserContext, Comparable<Object> {
         int result = 0;
         result = org.mmbase.util.HashCodeUtil.hashCode(result, authenticationType);
         return result;
-    }
-
-    public int compareTo(Object o) {
-        if (o instanceof UserContext) {
-            UserContext uc = (UserContext) o;
-            int result = getRank().compareTo(uc.getRank());
-            if (result != 0) return result;
-            return getIdentifier().compareTo(uc.getIdentifier());
-        } else {
-            return getIdentifier().compareTo(org.mmbase.util.Casting.toString(o));
-        }
     }
 
 }

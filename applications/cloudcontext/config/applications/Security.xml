@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="Security" maintainer="mmbase://security.mmbase.org/" version="2" auto-deploy="true">
+<application name="Security" maintainer="mmbase://security.mmbase.org/" version="1" auto-deploy="true">
 	<neededbuilderlist>
     <!-- builder maintainer="mmbase://security.mmbase.org/" version="1">containsrel</builder-->
     <builder maintainer="mmbase://security.mmbase.org/" version="1">insrel</builder>
@@ -8,7 +8,6 @@
     <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbasegroups</builder>
     <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbasecontexts</builder>
     <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbaseranks</builder>
-    <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbaseactions</builder>
     <builder maintainer="mmbase://security.mmbase.org/" version="1">rightsrel</builder>
     <builder maintainer="mmbase.org" version="0">typedef</builder>
   </neededbuilderlist>
@@ -28,9 +27,6 @@
     <relation from="mmbasecontexts" to="mmbaseusers"    type="grants" />
     <relation from="mmbasecontexts" to="mmbasecontexts" type="allowed" />
     <relation from="mmbaseusers"    to="mmbaseranks"    type="rank" />
-
-    <relation from="mmbaseactions"  to="mmbasegroups"   type="grants" />
-    <relation from="mmbaseactions"  to="mmbaseusers"    type="grants" />
   </allowedrelationlist>
 
   <datasourcelist>
@@ -38,7 +34,6 @@
     <datasource builder="mmbasecontexts" path="Security/mmbasecontexts.xml" />
     <datasource builder="mmbasegroups"   path="Security/mmbasegroups.xml" />
     <datasource builder="mmbaseusers"    path="Security/mmbaseusers.xml" />
-    <datasource builder="mmbaseactions"   path="Security/mmbaseactions.xml" />
   </datasourcelist>
 
   <relationsourcelist>

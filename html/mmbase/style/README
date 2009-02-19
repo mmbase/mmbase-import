@@ -36,4 +36,4 @@ mm_cloud:             Cloud-tag produces some output on failure to login, and us
 
 
 
-$Id: README,v 1.3 2006-04-29 19:42:41 michiel Exp $
+$Id: README,v 1.3.2.2 2007-05-25 10:29:17 michiel Exp $

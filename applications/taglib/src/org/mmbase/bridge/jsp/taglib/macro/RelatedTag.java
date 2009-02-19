@@ -26,7 +26,7 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
  * @author Michiel Meeuwissen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: RelatedTag.java,v 1.34 2008-06-20 13:22:53 michiel Exp $
+ * @version $Id: RelatedTag.java,v 1.31 2006-07-21 09:24:37 michiel Exp $
  */
 public class RelatedTag extends ListTag {
     // private static final Logger log = Logging.getLoggerInstance(RelatedTag.class);
@@ -49,7 +49,7 @@ public class RelatedTag extends ListTag {
     }
 
     protected String getSearchNodes() throws JspTagException {
-        return (nodes == Attribute.NULL || nodes.getString(this).length() == 0) ? "" + getNode().getNumber() : nodes.getString(this);
+        return (nodes == Attribute.NULL || nodes.getString(this).equals("")) ? "" + getNode().getNumber() : nodes.getString(this);
     }
 
     /**
@@ -61,7 +61,7 @@ public class RelatedTag extends ListTag {
     }
 
     protected QueryContainer getListContainer() throws JspTagException {
-        return findParentTag(RelatedContainerTag.class, (String) container.getValue(this), false);
+        return (QueryContainer) findParentTag(RelatedContainerTag.class, (String) container.getValue(this), false);
     }
 
 }

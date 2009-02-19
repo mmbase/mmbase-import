@@ -38,11 +38,11 @@
 
     <!-- some alternatives, which you may want to use -->
     <!-- This one creates an ASCII file for every table. This may be a very handy setting for debugging. -->
-    <!--
+    <!--    
     <scheme name="create-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{7}_{1}.txt;encoding=UTF-8"</scheme>
     <scheme name="create-object-table-scheme">CREATE TEXT TABLE {1} ({2} {3} {5}); SET TABLE {1} SOURCE "{7}_{1}.txt;encoding=UTF-8"</scheme>
     -->
-    <!-- This one is better if the tables get so big that you don't want them in memory entirely
+    <!-- This one is better if the tables get so big that you don't want them in memory entirely     
     -->
     <!--
 		<scheme name="create-table-scheme">CREATE CACHED TABLE {1} ({2} {3} {5})</scheme>
@@ -58,12 +58,11 @@
     <type-mapping name="FLOAT" type="FLOAT" />
     <type-mapping name="INTEGER" type="INTEGER" />
     <type-mapping name="NODE" type="INTEGER" />
-    <type-mapping name="STRING" type="VARCHAR({0,number,########})" />
-    <type-mapping name="XML"    type="VARCHAR({0,number,########})" />
-    <type-mapping name="BINARY"  type="BINARY" />
+    <type-mapping name="STRING" min-size="1" max-size="16777216" type="VARCHAR({0,number,########})" />
+    <type-mapping name="XML" min-size="1" max-size="16777216" type="VARCHAR({0,number,########})" />
+    <type-mapping name="BINARY" min-size="1" max-size="16777216" type="BINARY" />
     <type-mapping name="DATETIME" type="DATETIME" />
     <type-mapping name="BOOLEAN"  type="BIT" />
-    <type-mapping name="DECIMAL"  type="DECIMAL" />
 
     <type-mapping name="LIST[FLOAT]"   type="OTHER" />
     <type-mapping name="LIST[DOUBLE]"  type="OTHER" />

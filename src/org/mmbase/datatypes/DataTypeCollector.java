@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.16 2008-08-28 11:42:44 michiel Exp $
+ * @version $Id: DataTypeCollector.java,v 1.11 2006-04-04 22:54:16 michiel Exp $
  */
 
 public final class DataTypeCollector {
@@ -33,15 +33,15 @@ public final class DataTypeCollector {
     private static final Logger log = Logging.getLoggerInstance(DataTypeCollector.class);
 
     // Map of datatypes local to this collector
-    private Map<String,BasicDataType<?>> dataTypes = new HashMap<String,BasicDataType<?>>(); // String -> BasicDataType
-    private Map<String,Set<DataType<?>>> specializations = new HashMap<String,Set<DataType<?>>>(); // String -> Set
-    private Set<DataType<?>> roots = new HashSet<DataType<?>>(); // All datatypes which did't inherit from another datatype (this should normally be (a subset of) the 'database types' of mmbase)
+    private Map dataTypes       = new HashMap(); // String -> BasicDataType
+    private Map specializations = new HashMap(); // String -> Set
+    private Set roots           = new HashSet(); // All datatypes which did't inherit from another datatype (this should normally be (a subset of) the 'database types' of mmbase)
 
     // the object to finish datatypes with
     private Object signature = null;
 
     // dependent collectors
-    private List<DataTypeCollector> collectors = new ArrayList<DataTypeCollector>();
+    private List collectors = new ArrayList();
 
     // the DataTypeCollector used to store datatypes accessible throughout the application
     private static DataTypeCollector systemDataTypeCollector;
@@ -61,6 +61,7 @@ public final class DataTypeCollector {
     }
 
     /**
+     *  Constructor.
      * @param signature the object used to finish a data type for this collector.
      */
     public DataTypeCollector(Object signature) {
@@ -86,7 +87,7 @@ public final class DataTypeCollector {
      * Set local datatypes of the collector
      * @param dataTypes a <code>Map</code> containing the datatypes
      */
-    public void setDataTypes(Map<String,BasicDataType<?>> dataTypes) {
+    public void setDataTypes(Map dataTypes) {
         this.dataTypes = dataTypes;
         if (log.isDebugEnabled()) log.debug("DataTypes for collector with signature " + signature + ":" +dataTypes);
     }
@@ -94,7 +95,7 @@ public final class DataTypeCollector {
     /**
      * Set local datatypes of the collector
      */
-    public Map<String, BasicDataType<?>> getDataTypes() {
+    public Map getDataTypes() {
         return dataTypes;
     }
 
@@ -104,7 +105,7 @@ public final class DataTypeCollector {
      * @return  a {@link DataType} with the given name, as defined for this collector, or <code>null</code>
      *      if no datatype is defined.
      */
-    public BasicDataType<?> getDataType(String name) {
+    public BasicDataType getDataType(String name) {
         return getDataType(name, false);
     }
 
@@ -116,20 +117,20 @@ public final class DataTypeCollector {
      * @return if applicable, the old (original) datatype with the same id as the dattype that was being added, <code>null</code>
      *    if it is not applicable.
      */
-    public BasicDataType<?> addDataType(BasicDataType<?> dataType) {
+    public BasicDataType addDataType(BasicDataType dataType) {
         String name = dataType.getName();
         if (name == null || "".equals(name)) {
             // not a proper id, so do not add
             return null;
         } else {
-            BasicDataType<?> origin = dataType.getOrigin();
+            DataType origin = dataType.getOrigin();
             if (origin != null) {
                 if (origin.equals(getDataType(origin.getName()))) { // origin is also in this collector
-                    Set<DataType<?>> spec = specializations.get(origin.getName());
+                    Set spec = (Set) specializations.get(origin.getName());
                     // TODO, not sure that this stuff with specializations goes ok when using 'parent' collectors.
                     // Does not matter very much, because you problably want to use this functionlaity mainly on the System Collector
                     if (spec == null) {
-                        spec = new HashSet<DataType<?>>();
+                        spec = new HashSet();
                         specializations.put(origin.getName(), spec);
                     }
                     spec.add(dataType);
@@ -139,7 +140,7 @@ public final class DataTypeCollector {
             } else {
                 roots.add(dataType);
             }
-            BasicDataType<?> old = dataTypes.put(name, dataType);
+            BasicDataType old = (BasicDataType) dataTypes.put(name, dataType);
             if (old != null && old != dataType) {
                 log.warn("Replaced " + name + " " + old  + " with " + dataType);
             }
@@ -150,40 +151,35 @@ public final class DataTypeCollector {
     /**
      * Returns a set of all DataTypes in this collector which are directly inherited from the one with given name
      */
-    public Collection<DataType<?>> getSpecializations(String name) {
+    public Collection getSpecializations(String name) {
         // TODO: see in addDataType
-        Set<DataType<?>> set = specializations.get(name);
-        if (set == null) {
-            return Collections.emptySet();
-        }
-        else {
-            return Collections.unmodifiableSet(set);
-        }
+        Set set = (Set) specializations.get(name);
+        return set == null ? Collections.EMPTY_SET : Collections.unmodifiableSet(set);
     }
 
     /**
      * Recursively calls {@link #getSpecializations(String)} so that you can easily iterate also all indirectly specializaed versions of a certain DataType in this collector
      */
-    public Iterator<DataType<?>> getAllSpecializations(String name) {
-        final Iterator<DataType<?>> i = getSpecializations(name).iterator();
-        return new Iterator<DataType<?>>() {
-            DataType<?> next = i.hasNext() ? i.next() : null;
-            Iterator<DataType<?>> subIterator = null;
+    public Iterator getAllSpecializations(String name) {
+        final Iterator i = getSpecializations(name).iterator();
+        return new Iterator() {
+            DataType next = i.hasNext() ? (DataType) i.next() : null;
+            Iterator subIterator = null;
             public boolean hasNext() {
                 return next != null || subIterator != null;
             }
-            public DataType<?> next() {
+            public Object next() {
                 if (subIterator != null) {
-                    DataType<?> n = subIterator.next();
+                    Object n = subIterator.next();
                     if (! subIterator.hasNext()) subIterator = null;
                     return n;
                 }
                 if (next != null) {
                     subIterator = getAllSpecializations(next.getName());
                     if (! subIterator.hasNext()) subIterator = null;
-                    DataType<?> n = next;
+                    Object n = next;
                     if (i.hasNext()) {
-                        next = i.next();
+                        next = (DataType) i.next();
                     } else {
                         next = null;
                     }
@@ -196,11 +192,10 @@ public final class DataTypeCollector {
             }
         };
     }
-
     /**
      * Returns all DataTypes in this Collector which did not have an origina DataType (in this Collector).
      */
-    public Set<DataType<?>> getRoots() {
+    public Set getRoots() {
         // TODO: see in addDataType
         return Collections.unmodifiableSet(roots);
     }
@@ -215,11 +210,11 @@ public final class DataTypeCollector {
      * @return  a {@link DataType} with the given name, as defined for this collector, or <code>null</code>
      *      if no datatype is defined.
      */
-    public BasicDataType<?> getDataType(String name, boolean recursive) {
-        BasicDataType<?> dataType = dataTypes.get(name);
+    public BasicDataType getDataType(String name, boolean recursive) {
+        BasicDataType dataType = (BasicDataType) dataTypes.get(name);
         if (this != systemDataTypeCollector && dataType == null && recursive) {
-            for (Iterator<DataTypeCollector> i = collectors.iterator(); dataType == null && i.hasNext();) {
-                DataTypeCollector collector = i.next();
+            for (Iterator i = collectors.iterator(); dataType == null && i.hasNext();) {
+                DataTypeCollector collector = (DataTypeCollector) i.next();
                 dataType = collector.getDataType(name, true);
             }
             if (dataType == null) {
@@ -240,14 +235,14 @@ public final class DataTypeCollector {
      * @return  a {@link DataType} with the given name, as defined for this collector, or <code>null</code>
      *      if no datatype is defined and no base datatype was passed.
      */
-    public BasicDataType<?> getDataTypeInstance(String name, DataType<?> baseDataType) {
-        BasicDataType<?> dataType = getDataType(name, true);
+    public BasicDataType getDataTypeInstance(String name, BasicDataType baseDataType) {
+        BasicDataType dataType = getDataType(name, true);
         if (dataType == null && baseDataType == null) {
             return null;
         } else if (dataType == null) {
-            return (BasicDataType<?>) baseDataType.clone(name);
+            return (BasicDataType)baseDataType.clone(name);
         } else {
-            return (BasicDataType<?>)dataType.clone();
+            return (BasicDataType)dataType.clone();
         }
     }
 
@@ -261,23 +256,23 @@ public final class DataTypeCollector {
     /**
      * Returns whether the dataType is part of the current collection.
      */
-    public boolean contains(DataType<?> dataType) {
+    public boolean contains(DataType dataType) {
         return dataTypes.containsValue(dataType);
     }
 
     /**
-     * Unlock a dataType so it can be changed or altered.
+     * Unlock a dataType so it can be changed or latered.
      * This will likely fail if the datatype is not part of this collector.
      */
-    public void rewrite(DataType<?> dataType) {
+    public void rewrite(DataType dataType) {
         dataType.rewrite(signature);
     }
 
     /**
-     * Lock a dataType so it can be changed or altered.
+     * Lock a dataType so it can be changed or latered.
      * This will likely fail if the datatype is not part of this collector.
      */
-    public void finish(DataType<?> dataType) {
+    public void finish(DataType dataType) {
         dataType.finish(signature);
     }
 

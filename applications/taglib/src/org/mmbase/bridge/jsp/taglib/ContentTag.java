@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.68 2008-11-04 22:33:58 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.57.2.5 2007-09-25 12:36:58 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -57,19 +57,19 @@ public class ContentTag extends LocaleTag  {
             public String  getEncoding(){ return "ISO-8859-1"; }
         };
 
-    private static final Map<String, String> defaultEscapers       = new HashMap<String, String>(); // contenttype id -> chartransformer id
-    private static final Map<String, String> defaultPostProcessors = new HashMap<String, String>(); // contenttype id -> chartransformer id
-    private static final Map<String, String> defaultEncodings      = new HashMap<String, String>(); // contenttype id -> charset to be used in content-type header (defaults to UTF-8)
+    private static final Map defaultEscapers       = new HashMap(); // contenttype id -> chartransformer id
+    private static final Map defaultPostProcessors = new HashMap(); // contenttype id -> chartransformer id
+    private static final Map defaultEncodings      = new HashMap(); // contenttype id -> charset to be used in content-type header (defaults to UTF-8)
 
-    private static final Map<String, String> contentTypes          = new HashMap<String, String>(); // contenttype id  -> contenttype
+    private static final Map contentTypes          = new HashMap(); // contenttype id  -> contenttype
 
-    private static final Map<String, CharTransformer> charTransformers        = new HashMap<String, CharTransformer>(); // chartransformer id -> chartransformer instance.
-    private static final Map<String, ParameterizedTransformerFactory> parameterizedCharTransformerFactories  = new HashMap<String, ParameterizedTransformerFactory>(); // chartransformer id -> chartransformer factories.
+    private static final Map charTransformers        = new HashMap(); // chartransformer id -> chartransformer instance.
+    private static final Map parameterizedCharTransformerFactories  = new HashMap(); // chartransformer id -> chartransformer factories.
 
     static {
         try {
             log = Logging.getLoggerInstance(ContentTag.class);
-            org.mmbase.util.xml.EntityResolver.registerPublicID("-//MMBase//DTD taglibcontent 1.0//EN", "taglibcontent_1_0.dtd", ContentTag.class);
+            org.mmbase.util.XMLEntityResolver.registerPublicID("-//MMBase//DTD taglibcontent 1.0//EN", "taglibcontent_1_0.dtd", ContentTag.class);
             ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib")) {
                     public void onChange(String resource) {
                         defaultEscapers.clear();
@@ -91,8 +91,10 @@ public class ContentTag extends LocaleTag  {
 
 
     private static CharTransformer readCharTransformer(DocumentReader reader, Element parentElement, String id) {
-        List<CharTransformer> result = new ArrayList<CharTransformer>();
-        for (Element element: reader.getChildElements(parentElement, "class")) {
+        List result = new ArrayList();
+        Iterator e = reader.getChildElements(parentElement, "class");
+        while (e.hasNext()) {
+            Element element = (Element) e.next();
             String claz = reader.getElementValue(element);
 
             String config = element.getAttribute("config");
@@ -105,7 +107,7 @@ public class ContentTag extends LocaleTag  {
         if (result.size() == 0) {
             return COPY;
         } else if (result.size() == 1) {
-            return result.get(0);
+            return (CharTransformer) result.get(0);
         } else {
             ChainedCharTransformer cct = new ChainedCharTransformer();
             cct.addAll(result);
@@ -114,33 +116,39 @@ public class ContentTag extends LocaleTag  {
     }
 
     private static ParameterizedTransformerFactory readTransformerFactory(final DocumentReader reader, final Element parentElement, final String id) {
-        final String claz = reader.getElementValue(reader.getChildElements(parentElement, "class").get(0));
+        Iterator e = reader.getChildElements(parentElement, "class");
+        Element element = (Element) e.next();
+        final String claz = reader.getElementValue(element);
+
+        e = reader.getChildElements(parentElement, "param");
         final Map configuredParams = new HashMap();
-        for (Element param: reader.getChildElements(parentElement, "param")) {
+        while (e.hasNext()) {
+            Element param = (Element) e.next();
             String name = param.getAttribute("name");
             String value = param.getAttribute("value");
-            if (value.length() != 0) {
-                 configuredParams.put(name, value);
+            if (! value.equals("")) {
+                configuredParams.put(name, value);
             }
         }
         if (configuredParams.size() == 0) {
             return Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
         } else {
             return new ParameterizedTransformerFactory() {
-                ParameterizedTransformerFactory wrapped = Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
-                public Transformer createTransformer(Parameters parameters) {
-                    return wrapped.createTransformer(parameters);
-                }
-                public Parameters createParameters() {
-                    Parameters params = wrapped.createParameters();
-                    params.setAutoCasting(true);
-                    params.setAll(configuredParams);
-                    return params;
-                }
-            };
+                    ParameterizedTransformerFactory wrapped = Transformers.getTransformerFactory(claz, " parameterizedescaper " + id);
+
+                    public Transformer createTransformer(Parameters parameters) {
+                        return wrapped.createTransformer(parameters);
+                    }
+                    public Parameters createParameters() {
+                        Parameters params = wrapped.createParameters();
+                        params.setAutoCasting(true);
+                        params.setAll(configuredParams);
+                        return params;
+                    }
+
+                };
         }
     }
-
     /**
      * Initialize the write-escapers for MMBase taglib.
      */
@@ -170,13 +178,13 @@ public class ContentTag extends LocaleTag  {
             }
         }
         {
-            List<String> l = new ArrayList<String>(charTransformers.keySet());
+            List l = new ArrayList(charTransformers.keySet());
             Collections.sort(l);
             log.service("Found escapers: " + l);
-            l = new ArrayList<String>(parameterizedCharTransformerFactories.keySet());
+            l = new ArrayList(parameterizedCharTransformerFactories.keySet());
             Collections.sort(l);
             log.service("Found parameterized escapers: " + l);
-            l = new ArrayList<String>(contentTypes.keySet());
+            l = new ArrayList(contentTypes.keySet());
             Collections.sort(l);
             log.service("Recognized content-types: " + l);
         }
@@ -188,10 +196,11 @@ public class ContentTag extends LocaleTag  {
         DocumentReader reader  = new DocumentReader(escapersSource, ContentTag.class);
         Element root = reader.getElementByPath("taglibcontent");
 
-        for (Element element: reader.getChildElements(root, "escaper")) {
+        for (Iterator iter = reader.getChildElements(root, "escaper"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             CharTransformer ct = readCharTransformer(reader, element, id);
-            CharTransformer prev = charTransformers.put(id, ct);
+            CharTransformer prev = (CharTransformer) charTransformers.put(id, ct);
             if (prev != null) {
                 log.warn("Replaced an escaper '" + id + "' : " + ct + "(was " + prev + ")");
             } else {
@@ -201,10 +210,11 @@ public class ContentTag extends LocaleTag  {
         }
 
         log.debug("Reading content tag parameterizedescaperss");
-        for (Element element: reader.getChildElements(root, "parameterizedescaper")) {
+        for (Iterator iter = reader.getChildElements(root, "parameterizedescaper"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             ParameterizedTransformerFactory fact = readTransformerFactory(reader, element, id);
-            ParameterizedTransformerFactory prev = parameterizedCharTransformerFactories.put(id, fact);
+            ParameterizedTransformerFactory prev = (ParameterizedTransformerFactory) parameterizedCharTransformerFactories.put(id, fact);
             if (prev != null) {
                 log.warn("Replaced an parameterized escaper '" + id + "' : " + fact + " (was " + prev + ")");
             } else {
@@ -226,12 +236,13 @@ public class ContentTag extends LocaleTag  {
         }
 
 
-        Set<String> postProcessors = new HashSet<String>();
+        Set postProcessors = new HashSet();
         log.debug("Reading content tag post-processors");
-        for (Element element: reader.getChildElements(root, "postprocessor")) {
+        for (Iterator iter = reader.getChildElements(root, "postprocessor"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String id   = element.getAttribute("id");
             CharTransformer ct = readCharTransformer(reader, element, id);
-            CharTransformer prev = charTransformers.put(id, ct);
+            CharTransformer prev = (CharTransformer) charTransformers.put(id, ct);
             if (prev != null) {
                 log.warn("Replaced an postprocessor '" + id + "' : " + ct + " (was " + prev + ")");
             } else {
@@ -243,15 +254,16 @@ public class ContentTag extends LocaleTag  {
             log.service("Found post-processors: " + postProcessors);
         }
 
-        for (Element element: reader.getChildElements(root, "content")) {
+        for (Iterator iter = reader.getChildElements(root, "content"); iter.hasNext();) {
+            Element element = (Element) iter.next();
             String type           = element.getAttribute("type");
             String id             = element.getAttribute("id");
-            if (id.length() == 0) {
+            if (id.equals("")) {
                 id = type;
             }
             contentTypes.put(id, type);
             String defaultEscaper = element.getAttribute("defaultescaper");
-            if (defaultEscaper.length() != 0) {
+            if (! defaultEscaper.equals("")) {
                 if (charTransformers.containsKey(defaultEscaper)) {
                     defaultEscapers.put(id, defaultEscaper);
                 } else {
@@ -259,7 +271,7 @@ public class ContentTag extends LocaleTag  {
                 }
             }
             String defaultPostprocessor = element.getAttribute("defaultpostprocessor");
-            if (defaultPostprocessor.length() != 0) {
+            if (! defaultPostprocessor.equals("")) {
                 if (charTransformers.containsKey(defaultPostprocessor)) {
                     defaultPostProcessors.put(id, defaultPostprocessor);
                 } else {
@@ -316,7 +328,7 @@ public class ContentTag extends LocaleTag  {
             return "text/html"; // implicit
         } else {
             String ct = type.getString(this);
-            String c = contentTypes.get(ct);
+            String c = (String) contentTypes.get(ct);
             if (c != null) return c;
             return ct;
         }
@@ -328,6 +340,7 @@ public class ContentTag extends LocaleTag  {
     public void setUnacceptable(String u) throws JspTagException {
         unacceptable = getAttribute(u);
     }
+
 
     /*
     protected int getVersion() {
@@ -341,11 +354,11 @@ public class ContentTag extends LocaleTag  {
      * @throws JspTagException can occur if taglibcontent.xml is misconfigured
      */
     protected CharTransformer getPostProcessor() throws JspTagException {
-        if (postprocessor.getString(this).length() != 0) {
+        if (! postprocessor.getString(this).equals("")) {
             return getCharTransformer(postprocessor.getString(this), this);
         } else {
             if (type != Attribute.NULL) {
-                String defaultPostProcessor = defaultPostProcessors.get(type.getString(this));
+                String defaultPostProcessor = (String) defaultPostProcessors.get(type.getString(this));
                 if (defaultPostProcessor != null) {
                     return getCharTransformer(defaultPostProcessor, this);
                 }
@@ -357,7 +370,7 @@ public class ContentTag extends LocaleTag  {
 
     public String getEncoding() throws JspTagException {
         if (encoding == Attribute.NULL) {
-            String defaultEncoding = defaultEncodings.get(getType());
+            String defaultEncoding = (String) defaultEncodings.get(getType());
             if (defaultEncoding == null) {
                 return "UTF-8"; // implicit
             } else {
@@ -373,7 +386,7 @@ public class ContentTag extends LocaleTag  {
      * them.
      */
     protected static CharTransformer getSimpleCharTransformer(String id, ContextReferrerTag tag) throws JspTagException {
-        CharTransformer c = charTransformers.get(id);
+        CharTransformer c = (CharTransformer) charTransformers.get(id);
         if (c == null && tag != null) c = (CharTransformer) tag.getContextProvider().getContextContainer().get(id);
         if (c == null) {
             int paramsPos = id.indexOf('(');
@@ -444,7 +457,7 @@ public class ContentTag extends LocaleTag  {
      * Returns transformer factory with given id or throws exception if there is none
      */
     public static ParameterizedTransformerFactory getTransformerFactory(String id) throws JspTagException {
-        ParameterizedTransformerFactory fact = parameterizedCharTransformerFactories.get(id);
+        ParameterizedTransformerFactory fact = (ParameterizedTransformerFactory) parameterizedCharTransformerFactories.get(id);
         if (fact == null) throw new JspTagException("The chartransformerfactory " + id + " is unknown");
         return fact;
     }
@@ -462,10 +475,10 @@ public class ContentTag extends LocaleTag  {
     protected void setWriteEscaper() throws JspTagException {
         prevEscaper = getWriteEscaper();
         CharTransformer esc;
-        if (escaper.getString(this).length() != 0) {
+        if (! escaper.getString(this).equals("")) {
             esc =  getCharTransformer(escaper.getString(this), this);
         }  else {
-            String defaultEscaper = defaultEscapers.get(getType());
+            String defaultEscaper = (String) defaultEscapers.get(getType());
             if (defaultEscaper != null) {
                 esc = getCharTransformer(defaultEscaper, this);
             } else {
@@ -499,7 +512,7 @@ public class ContentTag extends LocaleTag  {
         String type = getType();
 
         addedCacheHeaders = false;
-        if (type.length() != 0) {
+        if (! type.equals("")) {
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
@@ -508,7 +521,7 @@ public class ContentTag extends LocaleTag  {
                 addVary("Accept");
                 String acceptHeader = request.getHeader("Accept");
                 log.debug("a: " + acceptHeader);
-                boolean acceptable = acceptHeader == null ? true : acceptHeader.indexOf(type) != -1;
+                boolean acceptable = acceptHeader.indexOf(type) != -1;
                 if (! acceptable) {
                     if (a.startsWith("CRIPPLE")) {
                         log.debug("browser doesn't accept " + type + " crippling now");
@@ -540,7 +553,7 @@ public class ContentTag extends LocaleTag  {
             }
             String enc  = getEncoding();
             log.debug("Found encoding " + enc);
-            if (enc.length() == 0) {
+            if (enc.equals("")) {
                 response.setContentType(type); // sadly, tomcat does not allow for not setting the charset, it will simply do it always
             } else {
                 response.setContentType(type + ";charset=" + enc);
@@ -561,9 +574,8 @@ public class ContentTag extends LocaleTag  {
                 }
             }
         }
-        CharTransformer post = getPostProcessor();
-        if (post == null || post.equals(COPY)) {
-            log.debug("no postprocessor " + (EVAL_BODY == EVAL_BODY_INCLUDE));
+        if (getPostProcessor() == null) {
+            log.debug("no postprocessor");
             return EVAL_BODY;
         } else {
             return EVAL_BODY_BUFFERED;
@@ -608,9 +620,11 @@ public class ContentTag extends LocaleTag  {
                 response.setDateHeader ("Expires", System.currentTimeMillis() + (expire * 1000));
                 response.setHeader("Cache-Control", "public");
                 if (varyHeaders != null) {
-                    StringBuilder buf = new StringBuilder();
-                    for (String h : varyHeaders) {
+                    StringBuffer buf = new StringBuffer();
+                    Iterator i = varyHeaders.iterator();
+                    while (i.hasNext()) {
                         if (buf.length() > 0) buf.append(',');
+                        String h = (String) i.next();
                         buf.append(h);
                     }
                     response.setHeader("Vary", buf.toString());

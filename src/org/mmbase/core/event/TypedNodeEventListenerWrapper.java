@@ -1,4 +1,5 @@
 /*
+ * Created on 9-sep-2005
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative. The
  * license (Mozilla version 1.0) can be read at the MMBase site. See
@@ -6,6 +7,7 @@
  */
 package org.mmbase.core.event;
 
+import java.util.Properties;
 import org.mmbase.module.core.*;
 import org.mmbase.util.HashCodeUtil;
 
@@ -16,7 +18,6 @@ import org.mmbase.util.HashCodeUtil;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: TypedNodeEventListenerWrapper.java,v 1.15 2007-07-26 11:45:54 michiel Exp $
  */
 public class TypedNodeEventListenerWrapper implements NodeEventListener {
 

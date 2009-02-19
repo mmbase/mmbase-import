@@ -16,7 +16,6 @@ import java.util.*;
 
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.bridge.jsp.taglib.util.*;
-import org.mmbase.bridge.jsp.taglib.pageflow.Url;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.99 2008-04-11 15:19:52 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.88.2.7 2007-11-19 15:16:41 michiel Exp $
  */
 
 public class WriterHelper {
@@ -130,7 +129,7 @@ public class WriterHelper {
      * 'underscore' stack, containing the values for '_'.
      * @since MMBase_1.8
      */
-    private   LinkedList<StackEntry> _Stack;
+    private   Stack _Stack;
     private class StackEntry {
         public final Object value;
         public final CharTransformer escaper;
@@ -148,13 +147,6 @@ public class WriterHelper {
 
     public WriterHelper(ContextReferrerTag tag) {
         thisTag = tag;
-    }
-
-    /**
-     * Reset to initial values
-     */
-    public void initTag() {
-        hasBody = false;
     }
 
     /**
@@ -289,7 +281,7 @@ public class WriterHelper {
             if (e == null) {
                 return (CharTransformer) thisTag.getPageContext().findAttribute(ContentTag.ESCAPER_KEY);
             } else {
-                return ContentTag.getCharTransformer(e, thisTag);
+                return ContentTag.getCharTransformer((String) e, thisTag);
             }
         } else {
             return null;
@@ -307,7 +299,7 @@ public class WriterHelper {
             // Take one element of list if vartype defined not to be a list.
             // this is usefull when using mm:includes and passing a var which also can be on the request
             if (v instanceof Collection) {
-                Collection<?> l = (Collection<?>) v;
+                Collection l = (Collection) v;
                 if (l.size() > 0) {
                     // v = l.get(l.size() - 1); // last element
                     v = l.iterator().next();               // first element, allows for 'overriding'.
@@ -322,9 +314,9 @@ public class WriterHelper {
             case TYPE_LIST:
                 if (! (v instanceof List)) {
                     if ("".equals(v)) {
-                        v = new ArrayList<Object>();
+                        v = new ArrayList();
                     } else {
-                        v = Casting.toList(v, listDelimiter.getString(thisTag));
+                        v = Casting.toList(v, getListdelimiter());
                     }
                 }
                 break;
@@ -332,31 +324,31 @@ public class WriterHelper {
                 if (v == null) {
                     // if a vector is requested, but the value is not present,
                     // make a vector of size 0.
-                    v = new Vector<Object>();
+                    v = new Vector();
                 } else if (! (v instanceof Vector)) {
                     // if a vector is requested, but the value is not a vector,
                     if (! (v instanceof Collection)) {
                         // not even a Collection!
                         // make a vector of size 1.
-                        Vector<Object> vector = new Vector<Object>();
+                        Vector vector = new Vector();
                         vector.add(v);
                         v = vector;
                     } else {
-                        v = new Vector<Object>((Collection<?>)v);
+                        v = new Vector((Collection)v);
                     }
                 }
                 break;
             case TYPE_SET:
                 if (v == null) {
-                    v = new HashSet<Object>();
+                    v = new HashSet();
                 } else if (! (v instanceof Set)) {
                     if (! (v instanceof Collection)) {
                         // not even a Collection!
-                        Set<Object> set = new HashSet<Object>();
+                        Set set = new HashSet();
                         set.add(v);
                         v = set;
                     } else {
-                        v = new HashSet<Object>((Collection<?>)v);
+                        v = new HashSet((Collection)v);
                     }
                 }
                 break;
@@ -369,17 +361,17 @@ public class WriterHelper {
                     break;
             case TYPE_DOUBLE:
                 if (! (v instanceof Double)) {
-                    v = Casting.toDouble(v);
+                    v = new Double(Casting.toDouble(v));
                 }
                 break;
             case TYPE_LONG:
                 if (! (v instanceof Long)) {
-                    v = Casting.toLong(v);
+                    v = new Long(Casting.toLong(v));
                 }
                 break;
             case TYPE_FLOAT:
                 if (! (v instanceof Float)) {
-                    v = Casting.toFloat(v);
+                    v = new Float(Casting.toFloat(v));
                 }
                 break;
             case TYPE_DECIMAL:
@@ -388,13 +380,6 @@ public class WriterHelper {
                 }
                 break;
             case TYPE_STRING:
-                if (v instanceof Url) {
-                    try {
-                    v = ((Url)v).get(false);
-                    } catch (Exception e) {
-                        log.warn(e);
-                    }
-                }
                 if (! (v instanceof String)) {
                     v = Casting.toString(v);
                 }
@@ -442,27 +427,28 @@ public class WriterHelper {
 
         PageContext pageContext = thisTag.getPageContext();
 
-        _Stack = (LinkedList<StackEntry>) pageContext.getAttribute(STACK_ATTRIBUTE);
+        _Stack = (Stack) pageContext.getAttribute(STACK_ATTRIBUTE);
         if (_Stack == null) {
-            _Stack = new LinkedList<StackEntry>();
+            _Stack = new Stack();
             pushed = false;
             pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
         }
 
         setJspvar();
-        if (pushed && _Stack.size() > 0) {
+        if (pushed) {
             if (log.isDebugEnabled()) {
                 log.debug("Value was already pushed by this tag");
             }
-            _Stack.set(0, new StackEntry(value, getEscaper()));
+            _Stack.set(_Stack.size() - 1, new StackEntry(value, getEscaper()));
         } else {
-            _Stack.addFirst(new StackEntry(value, getEscaper()));
+            _Stack.push(new StackEntry(value, getEscaper()));
             pushed = true;
         }
         pageContext.setAttribute("_", Casting.wrap(value, getEscaper()));
         if (log.isDebugEnabled()) {
-            log.debug("pushed  on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
+            log.debug("pushed " + value + " on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
             log.debug("Escaper: " + getEscaper());
+            log.debug("_:" + pageContext.getAttribute("_"));
         }
     }
 
@@ -485,7 +471,7 @@ public class WriterHelper {
 
         // If this tag explicitely specified an escaper, and also a jspvar attribute, then use it too for the jspvar value itself:
         String e = getEscape();
-        CharTransformer ct = e == null ? null : ContentTag.getCharTransformer(e, thisTag);
+        CharTransformer ct = e == null ? null : ContentTag.getCharTransformer((String) e, thisTag);
         Object jspValue = ct != null ? Casting.wrap(value, ct) : value;
         thisTag.getContextProvider().getContextContainer().setJspVar(thisTag.getPageContext(), jspvar, vartype, jspValue);
     }
@@ -494,7 +480,7 @@ public class WriterHelper {
     public void setVartype(String t) throws JspTagException {
         vartype = stringToType(t);
         if (vartype == TYPE_UNKNOWN) {
-            //throw new JspTagException("Type " + t + " is not known");
+            //            throw new JspTagException("Type " + t + " is not known");
         }
     }
 
@@ -504,6 +490,13 @@ public class WriterHelper {
      */
     final public void setListdelimiter(Attribute l) {
         listDelimiter = l;
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    public String getListdelimiter() throws JspTagException {
+        return listDelimiter.getString(thisTag);
     }
 
     public int getVartype() {
@@ -541,9 +534,6 @@ public class WriterHelper {
      * they say that the tag had a body.
      */
     public void haveBody() {
-        if (log.isDebugEnabled()) {
-            log.debug("has body because ", new Exception());
-        }
         hasBody = true;
     }
 
@@ -564,14 +554,14 @@ public class WriterHelper {
      */
     private void pop_Stack() throws JspTagException {
         if (_Stack != null) {
-            StackEntry pop = _Stack.poll();
+            StackEntry pop = (StackEntry) _Stack.pop();
             if (log.isDebugEnabled()) {
                 log.debug("Removed " + pop +  "( " + (pop == null ? "NULL" : pop.getClass().getName()) + ")  from _stack for " + thisTag.getClass().getName() + " now: " + _Stack);
             }
-            if (_Stack.size() == 0) {
+            if (_Stack.empty()) {
                 thisTag.getPageContext().removeAttribute("_");
             } else {
-                StackEntry peek = _Stack.peek();
+                StackEntry peek = (StackEntry) _Stack.peek();
                 thisTag.getPageContext().setAttribute("_", Casting.wrap(peek.value, peek.escaper));
             }
             _Stack = null;

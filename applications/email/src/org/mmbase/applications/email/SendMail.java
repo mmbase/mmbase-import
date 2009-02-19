@@ -32,7 +32,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.57 2009-02-16 16:06:17 michiel Exp $
+ * @version $Id: SendMail.java,v 1.50 2008-08-13 08:19:53 pierre Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -44,11 +44,7 @@ public class SendMail extends AbstractSendMail {
     public static long emailSent = 0;
     public static long emailFailed = 0;
 
-    private static final Pattern MATCH_ALL = Pattern.compile(".*");
-
-    private Pattern onlyToPattern = MATCH_ALL;
-
-    private String typeField = "mailtype";
+    private Pattern onlyToPattern = Pattern.compile(".*");
 
     public SendMail() {
         this(null);
@@ -119,7 +115,7 @@ public class SendMail extends AbstractSendMail {
             NodeList mailboxes = person.getRelatedNodes("mailboxes");
             for (int j = 0; j < mailboxes.size(); j++) {
                 Node mailbox = mailboxes.getNode(j);
-                if (mailbox.getIntValue(typeField) == EmailBuilder.TYPE_STATIC) {
+                if (mailbox.getIntValue("type") == 0) {
                     log.debug("Found mailbox, adding mail now");
                     Node emailNode = emailManager.createNode();
                     emailNode.setValue("to", n.getValue("to"));
@@ -129,14 +125,12 @@ public class SendMail extends AbstractSendMail {
                         emailNode.setValue("bcc", n.getValue("bcc"));
                     }
                     emailNode.setValue("subject", n.getValue("subject"));
-                    if (emailNode.getNodeManager().hasField("date")) {
-                        emailNode.setValue("date", n.getValue("date"));
-                    }
+                    emailNode.setValue("date", n.getValue("date"));
                     emailNode.setValue("body", n.getValue("body"));
                     if (emailNode.getNodeManager().hasField("mimetype")) {
                         emailNode.setValue("mimetype", n.getValue("mimetype"));
                     }
-                    emailNode.setIntValue(typeField, EmailBuilder.TYPE_RECEIVED);
+                    emailNode.setIntValue("type", 2);
                     emailNode.commit();
                     log.debug("Appending " + emailNode + " to " + mailbox.getNumber());
                     mailbox.createRelation(emailNode, relatedManager).commit();
@@ -154,9 +148,7 @@ public class SendMail extends AbstractSendMail {
                         newAttachment.setValue("filename", oldAttachment.getValue("filename"));
                         newAttachment.setValue("size", oldAttachment.getValue("size"));
                         newAttachment.setValue("handle", oldAttachment.getValue("handle"));
-                        if (newAttachment.getNodeManager().hasField("date")) {
-                            newAttachment.setValue("date", oldAttachment.getValue("date"));
-                        }
+                        newAttachment.setValue("date", oldAttachment.getValue("date"));
                         newAttachment.setValue("showtitle", oldAttachment.getValue("showtitle"));
                         newAttachment.commit();
                         emailNode.createRelation(newAttachment, relatedManager).commit();
@@ -205,7 +197,7 @@ public class SendMail extends AbstractSendMail {
                     if (emailManager.hasField("mimetype")) {
                         error.setValue("mimetype", "text/plain");
                     }
-                    error.setIntValue(typeField, EmailBuilder.TYPE_ONESHOT);
+                    error.setIntValue("type", 1);
                     error.commit();
                     log.debug("Ready sending error mail about " + failedUsers);
                 } catch (Exception e) {
@@ -216,35 +208,10 @@ public class SendMail extends AbstractSendMail {
         log.debug("Finished processing local mails");
     }
 
-    private static final InternetAddress[] EMPTY = new InternetAddress[] {};
-    /**
-     * Like InternetAddress#parse but leaves out the addresses not matching 'onlyTo'.
-     */
-    protected InternetAddress[] parseOnly(String to) throws MessagingException {
-        if (to != null && ! "".equals(to)) {
-            List<InternetAddress> res = new ArrayList<InternetAddress>();
-            InternetAddress[] parsed = InternetAddress.parse(to);
-            for( InternetAddress a : parsed) {
-                if (onlyToPattern.matcher(a.getAddress()).matches()) {
-                    res.add(a);
-                } else {
-                    log.service("Skipping " + a + " because it does not match " + onlyToPattern);
-                }
-
-            }
-            return res.toArray(EMPTY);
-        } else {
-            return EMPTY;
-        }
-
-    }
-
 
     /**
-     * @return Always <code>true</code> Could in principle return <code>false</false> on
-     * failure. But that would normally result an exception.
      */
-    public boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart) throws MessagingException {
+    public boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart) throws javax.mail.MessagingException {
         if (log.isServiceEnabled()) {
             log.service("Sending (multipart) mail from " + from + " to " + to);
             if (log.isDebugEnabled()) {
@@ -252,11 +219,10 @@ public class SendMail extends AbstractSendMail {
             }
 
         }
-        InternetAddress[] onlyTo = parseOnly(to);
-        if (onlyTo.length > 0)  {
+        if (onlyToPattern.matcher(to).matches())  {
 
             try {
-                MimeMessage msg = constructMessage(from, onlyTo, headers);
+                MimeMessage msg = constructMessage(from, to, headers);
                 if (mmpart == null) throw new NullPointerException();
                 msg.setContent(mmpart);
 
@@ -272,7 +238,7 @@ public class SendMail extends AbstractSendMail {
             }
         } else {
             log.service("Not sending mail to " + to + " because it does not match " + onlyToPattern);
-            return true;
+            return false;
         }
     }
 
@@ -316,12 +282,6 @@ public class SendMail extends AbstractSendMail {
             }
         }
 
-        {
-            String i = getInitParameter("emailbuilder.typefield");
-            if (i != null && ! "".equals(i)) {
-                typeField = i;
-            }
-        }
         //java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
 
         session = null;
@@ -394,13 +354,8 @@ public class SendMail extends AbstractSendMail {
                 }
 
                 session = Session.getInstance(prop, new SimpleAuthenticator(userName, password));
-                Map<Object, Object> mailProps = new HashMap<Object, Object>();
-                for (Map.Entry<Object, Object> e : prop.entrySet()) {
-                    if (e.getKey().toString().startsWith("mail")) {
-                        mailProps.put(e.getKey(), e.getValue());
-                    }
-                }
-                log.info("Module SendMail started SMTP: " + buf + "(" + mailProps + ")");
+
+                log.info("Module SendMail started SMTP: " + buf + "(" + prop + ")");
             } else {
                 log.fatal("Could not create Mail session");
             }
@@ -414,24 +369,24 @@ public class SendMail extends AbstractSendMail {
     /**
      * Utility method to do the generic job of creating a MimeMessage object and setting its recipients and 'from'.
      */
-    protected final MimeMessage constructMessage(String from, InternetAddress[] to, Map<String, String> headers) throws MessagingException {
+    protected MimeMessage constructMessage(String from, String to, Map<String, String> headers) throws MessagingException {
         // construct a message
         MimeMessage msg = new MimeMessage(session);
         if (from != null && !from.equals("")) {
             msg.addFrom(InternetAddress.parse(from));
         }
 
-        msg.addRecipients(Message.RecipientType.TO, to);
+        msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
         String cc = headers.get("CC");
         if (cc != null) {
-            log.debug("Adding cc " + cc);
-            msg.addRecipients(Message.RecipientType.CC, parseOnly(cc));
+            log.info("Adding cc " + cc);
+            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
         }
         String bcc = headers.get("BCC");
         if (bcc != null) {
-            log.debug("Adding bcc " + bcc);
-            msg.addRecipients(Message.RecipientType.BCC, parseOnly(bcc));
+            log.info("Adding bcc " + cc);
+            msg.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc));
         }
 
         String replyTo = headers.get("Reply-To");
@@ -459,33 +414,28 @@ public class SendMail extends AbstractSendMail {
     /**
      * Send mail with headers, withouth using any explicit nodes.
      */
-    public boolean sendMail(String from, String to, String data, Map<String, String> headers)  {
+    public boolean sendMail(String from, String to, String data, Map<String, String> headers) {
         if (log.isServiceEnabled()) {
             log.service("Sending mail to " + to + " Headers " + headers + " " + session);
         }
-        try {
-
-            InternetAddress[] onlyTo = parseOnly(to);
-            if (onlyTo.length > 0) {
-                MimeMessage msg = constructMessage(from, onlyTo, headers);
+        if (onlyToPattern.matcher(to).matches()) {
+            try {
+                MimeMessage msg = constructMessage(from, to, headers);
                 msg.setText(data, mailEncoding);
                 Transport.send(msg);
                 log.debug("SendMail done.");
                 return true;
-            } else {
-                log.service("not sending mail to " + to + " because it does not match " + onlyToPattern);
-                return true;
+            } catch (MessagingException e) {
+                log.error("SendMail failure: " + e.getClass() + " " + e.getMessage() + " from: " + from + " to: " + to + " " + (e.getCause() != null ? e.getCause() : ""));
+                if (log.isDebugEnabled()) {
+                    log.debug("because: ", new Exception());
+                }
             }
-        } catch (MessagingException e) {
-            log.error("SendMail failure: " + e.getClass() + " " + e.getMessage() + " from: " + from + " to: " + to + " " + (e.getCause() != null ? e.getCause() : ""));
-            if (log.isDebugEnabled()) {
-                log.debug("because: ", new Exception());
-            }
+        } else {
+            log.service("not sending mail to " + to + " because it does not match " + onlyToPattern);
         }
         return false;
     }
-
-
 
 
     /**
@@ -533,7 +483,14 @@ public class SendMail extends AbstractSendMail {
             }
             msg.setHeader("X-mmbase-node", n.getNodeManager().getName() + "/" + n.getNumber());
             try {
-                msg.addRecipients(Message.RecipientType.TO, parseOnly(to));
+                InternetAddress[] toRecipients = InternetAddress.parse(to);
+                for (InternetAddress toRecipient : toRecipients) {
+                    if (onlyToPattern.matcher(toRecipient.getAddress()).matches()) {
+                        msg.addRecipient(Message.RecipientType.TO, toRecipient);
+                    } else {
+                        log.service("Not sending to " + toRecipient + " because it does not match " + onlyToPattern);
+                    }
+                }
             } catch (javax.mail.internet.AddressException ae) {
                 log.warn(ae);
                 errors.append("\nTo: " + to + ": " + ae.getMessage());
@@ -541,7 +498,14 @@ public class SendMail extends AbstractSendMail {
 
             if (cc != null) {
                 try {
-                    msg.addRecipients(Message.RecipientType.CC, parseOnly(cc));
+                    InternetAddress[] ccRecipients = InternetAddress.parse(cc);
+                    for (InternetAddress ccRecipient : ccRecipients) {
+                        if (onlyToPattern.matcher(ccRecipient.getAddress()).matches()) {
+                            msg.addRecipient(Message.RecipientType.CC, ccRecipient);
+                        } else {
+                            log.service("Not cc-sending to " + ccRecipient + " because it does not match " + onlyToPattern);
+                        }
+                    }
                 } catch (javax.mail.internet.AddressException ae) {
                     log.warn(ae);
                     errors.append("\nCc: " + cc  + " " + ae.getMessage());
@@ -550,7 +514,14 @@ public class SendMail extends AbstractSendMail {
 
             if (bcc != null) {
                 try {
-                    msg.addRecipients(Message.RecipientType.BCC, parseOnly(bcc));
+                    InternetAddress[] bccRecipients = InternetAddress.parse(bcc);
+                    for (InternetAddress bccRecipient : bccRecipients) {
+                        if (onlyToPattern.matcher(bccRecipient.getAddress()).matches()) {
+                            msg.addRecipients(Message.RecipientType.BCC, bccRecipients);
+                        } else {
+                            log.service("Not cc-sending to " + bccRecipient + " because it does not match " + onlyToPattern);
+                        }
+                    }
                 } catch (javax.mail.internet.AddressException ae) {
                     log.warn(ae);
                     errors.append("\nBcc: " + bcc + " " + ae.getMessage());
@@ -691,7 +662,7 @@ public class SendMail extends AbstractSendMail {
                 errorNode.setStringValue("to", n.getStringValue("from"));
                 errorNode.setStringValue("from", n.getStringValue("from"));
                 errorNode.setStringValue("subject", "****");
-                errorNode.setIntValue(typeField, EmailBuilder.TYPE_ONESHOT);
+                errorNode.setIntValue("type", 1);
                 errorNode.setStringValue("body", errors.toString());
                 errorNode.commit();
                 log.service("Sent node " + errorNode.getNumber());
@@ -817,10 +788,6 @@ public class SendMail extends AbstractSendMail {
 
     public Session getSession() {
         return session;
-    }
-
-    public String getTypeField() {
-        return typeField;
     }
 
     {

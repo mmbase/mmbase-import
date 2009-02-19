@@ -14,7 +14,6 @@ import java.util.*;
 import org.mmbase.security.implementation.cloudcontext.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.core.event.*;
-
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.util.HashCodeUtil;
@@ -28,13 +27,16 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.26 2008-12-08 17:02:46 michiel Exp $
+ * @version $Id: User.java,v 1.22.2.3 2008-07-22 12:03:37 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
-public class User extends BasicUser implements WeakNodeEventListener  {
+public class User extends BasicUser implements WeakNodeEventListener {
     private static final Logger log = Logging.getLoggerInstance(User.class);
 
     private static final long serialVersionUID = 1L;
+    private static long counter = 0;
+
+    private final long count = ++counter;
 
     protected MMObjectNode node;
     protected long key;
@@ -48,7 +50,9 @@ public class User extends BasicUser implements WeakNodeEventListener  {
         node = n;
         key = l;
         EventManager.getInstance().addEventListener(this);
+        log.debug("Instantiated " + this);
     }
+
 
     // javadoc inherited
     public String getIdentifier()  {
@@ -69,7 +73,7 @@ public class User extends BasicUser implements WeakNodeEventListener  {
         if (node == null) {
             return Rank.ANONYMOUS;
         } else {
-            return Authenticate.getInstance().getUserProvider().getRank(node);
+            return Users.getBuilder().getRank(node);
         }
     }
 
@@ -78,10 +82,13 @@ public class User extends BasicUser implements WeakNodeEventListener  {
         if (node == null) {
             return "system";
         } else {
-            return Authenticate.getInstance().getUserProvider().getDefaultContext(node);
+            return Users.getBuilder().getDefaultContext(node);
         }
     }
 
+    public String toString() {
+        return count + ":" + super.toString();
+    }
     /**
      * @javadoc
      */
@@ -93,11 +100,11 @@ public class User extends BasicUser implements WeakNodeEventListener  {
      * @javadoc
      */
     public boolean isValidNode() {
-        return (node == null) ||  Authenticate.getInstance().getUserProvider().isValid(node);
+        return (node == null) ||  Users.getBuilder().isValid(node);
     }
 
 
-    public SortedSet<Integer> getGroups() {
+    public SortedSet getGroups() {
         return Groups.getBuilder().getGroups(node.getNumber());
     }
 
@@ -111,14 +118,14 @@ public class User extends BasicUser implements WeakNodeEventListener  {
         return node;
     }
 
+
     public void notify(NodeEvent ne) {
         if ((node != null) && (node.getNumber() == ne.getNodeNumber())) {
             if (ne.getType() == Event.TYPE_DELETE) {
                 log.service("Node was invalidated!");
                 node = null; // invalidate
             } else if (ne.getType() == Event.TYPE_CHANGE) {
-                MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
-                node = users.getNode(ne.getNodeNumber());
+                node = Users.getBuilder().getNode(ne.getNodeNumber());
             }
         }
     }
@@ -133,8 +140,7 @@ public class User extends BasicUser implements WeakNodeEventListener  {
             org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
                     public void run() {
                         org.mmbase.bridge.LocalContext.getCloudContext().assertUp();
-                        MMObjectBuilder users = Authenticate.getInstance().getUserProvider().getUserBuilder();
-                        node = users.getNode(number);
+                        node = Users.getBuilder().getNode(number);
                     }
                 });
         }

@@ -18,7 +18,7 @@ import org.w3c.dom.*;
 
 
 /**
- * This class handles all communication with mmbase. It uses the MMBase-Dove code to do the transactions and get the information
+ * This class handles all communition with mmbase. It uses the MMBase-Dove code to do the transactions and get the information
  * needed for rendering the wizard screens.
  * The WizardDatabaseConnector can connect to MMBase and get data, relations, constraints, lists. It can also
  * store changes, create new objects and relations.
@@ -31,13 +31,12 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.60 2008-12-30 12:48:03 nklasens Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.46.2.3 2008-03-03 10:27:28 michiel Exp $
  *
  */
-public class WizardDatabaseConnector implements java.io.Serializable {
+public class WizardDatabaseConnector {
 
-    private static final long serialVersionUID = 1L;
-
+    // logging
     private static final Logger log = Logging.getLoggerInstance(WizardDatabaseConnector.class);
 
     int didcounter=1;
@@ -46,8 +45,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
     /**
      * Constructor: Creates the connector. Call #init also.
      */
-    public WizardDatabaseConnector() {
-       // nothing to do
+    public WizardDatabaseConnector(){
     }
 
     /**
@@ -56,7 +54,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param       cloud   The cloud from which the userinfo should be set.
      */
     public void setUserInfo(Cloud cloud) {
-        userCloud = cloud;
+        userCloud=cloud;
     }
 
     /**
@@ -64,17 +62,16 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      *
      * @param       data    The data document which should be tagged.
      */
-    public void tagDataNodesWithoutDataID(Document data) {
-        NodeList nodes = Utils.selectNodeList(data.getDocumentElement(), ".|.//*[not(@did)]");
-        didcounter = Utils.tagNodeList(nodes, "did", "d", didcounter);
+    public void tagDataNodes(Document data) {
+        didcounter = 1;
+        tagDataNode(data.getDocumentElement());
     }
 
     /**
      * This method tags datanodes starting from the current node.
      * A internal counter is used to make sure identifiers are still unique.
-     * @param node current node
      */
-    private void tagDataNode(Node node) {
+    public void tagDataNode(Node node) {
         NodeList nodes = Utils.selectNodeList(node, ".|.//*");
         didcounter = Utils.tagNodeList(nodes, "did", "d", didcounter);
         // if value is a datetime or boolean value,it should be parsed and converted to an integer,
@@ -89,13 +86,13 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * This method loads relations from MMBase and stores the result in the given object node.
      *
      * @param  object          The objectNode where the results should be appended to.
-     * @param  objectNumber    The objectnumber of the parentobject from where the relations should originate.
-     * @param  loadAction      The node with loadaction data. Has inforation about what relations should be loaded and what fields should be retrieved.
+     * @param  objectnumber    The objectnumber of the parentobject from where the relations should originate.
+     * @param  loadaction      The node with loadaction data. Has inforation about what relations should be loaded and what fields should be retrieved.
      * @return  The new relations (in the data object), or <code>null</code> if none.
      * @throws WizardException if loading the relations fails
      */
 
-    Collection<Node> loadRelations(Node object, String objectNumber, Node loadAction) throws WizardException {
+    Collection loadRelations(Node object, String objectNumber, Node loadAction) throws WizardException {
         // loads relations using the loadaction rules
         NodeList allRelations = Utils.selectNodeList(loadAction, ".//relation");
 
@@ -117,7 +114,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         if (relations.getLength() > 0) {
             return getRelations(object, objectNumber, relations);
         } else {
-            return new ArrayList<Node>();
+            return new ArrayList();
         }
 
     }
@@ -152,7 +149,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         if (loadAction != null) {
             loadRelations(object, objectNumber, loadAction);
         }
-        tagDataNodesWithoutDataID(data);
+        tagDataNodes(data);
         return data;
     }
 
@@ -207,7 +204,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @return The resulting node with the objectdata.
      * @throws WizardException if loading the object fails
      */
-    private Node getData(Node targetNode, String objectnumber) throws WizardException {
+    public Node getData(Node targetNode, String objectnumber) throws WizardException {
         return getData(targetNode, objectnumber, null);
     }
 
@@ -220,7 +217,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @throws WizardException if the object could not be retrieved
      * @return The resulting node with the objectdata.
      */
-    private Node getData(Node targetNode, String objectnumber, NodeList restrictions) throws WizardException {
+    public Node getData(Node targetNode, String objectnumber, NodeList restrictions) throws WizardException {
         // fires getData command and places result in targetNode
         Node objectNode = getDataNode(targetNode.getOwnerDocument(), objectnumber, restrictions);
         // place object in targetNode
@@ -264,7 +261,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param  objectnumber    The objectnumber of the parent object from where the relations originate.
      * @throws WizardException if the relations could not be obtained
      */
-    private void getRelations(Node targetNode, String objectnumber) throws WizardException {
+    public void getRelations(Node targetNode, String objectnumber) throws WizardException {
         getRelations(targetNode, objectnumber, null);
     }
 
@@ -274,10 +271,9 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param  targetNode      The targetnode where the results should be appended.
      * @param  objectNumber    The objectnumber of the parent object from where the relations originate.
      * @param  queryRelations  A list of 'relation' DOM-nodes, defining the relations which must be fetched.
-     * @return Collection of relation nodes
      * @throws WizardException if the relations could not be obtained
      */
-    private Collection<Node> getRelations(Node targetNode, String objectNumber, NodeList queryRelations) throws WizardException {
+    public Collection getRelations(Node targetNode, String objectNumber, NodeList queryRelations) throws WizardException {
 
         // fires getRelations command and places results inside targetNode
         ConnectorCommandGetRelations cmd = new ConnectorCommandGetRelations(objectNumber, queryRelations);
@@ -303,7 +299,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @return The resulting object node.
      * @throws WizardException   if the node could not be created
      */
-    private Node getNew(Node targetNode, String objecttype) throws WizardException {
+    public Node getNew(Node targetNode, String objecttype) throws WizardException {
         // fires getNew command and places result in targetNode
         ConnectorCommandGetNew cmd = new ConnectorCommandGetNew(objecttype);
         fireCommand(cmd);
@@ -326,15 +322,14 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      *
      * @param targetNode              The place where the results should be appended.
      * @param role                    The name of the role the new relation should have.
-     * @param sourceObjectNumber      the number of the source object
-     * @param sourceType              the type of the source object
+     * @param sourceObjectNumber      the number of the sourceobject
+     * @param sourceType              the type of the sourceobject
      * @param destinationObjectNumber the number of the destination object
      * @param destinationType         the type of the destination object
-     * @param createDir               The direction of the new relation
      * @return The resulting relation node.
      * @throws WizardException   if the relation could not be created
      */
-    private Node getNewRelation(Node targetNode, String role,
+    public Node getNewRelation(Node targetNode, String role,
                               String sourceObjectNumber, String sourceType,
                               String destinationObjectNumber, String destinationType, String createDir) throws WizardException {
         // fires getNewRelation command and places result in targetNode
@@ -363,17 +358,16 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param params The parameters to use when creating the objects and relations.
      * @param createorder ordernr under which this object is added (i.e. when added to a list)
      *                     The first ordernr in a list is 1
-     * @throws WizardException   if the object fields could not be filled
      */
     private void fillObjectFields(Document data, Node targetParentNode, Node objectDef,
-                                  Node objectNode, Map<String, Object> params, int createorder)  throws WizardException {
+                                  Node objectNode, Map params, int createorder)  throws WizardException {
         // fill-in (or place) defined fields and their values.
         NodeList fields = Utils.selectNodeList(objectDef, "field");
-        for (int i = 0; i<fields.getLength(); i++) {
+        for (int i=0; i<fields.getLength(); i++) {
             Node field = fields.item(i);
             String fieldname = Utils.getAttribute(field, "name");
             // does this field already exist?
-            Node datafield = Utils.selectSingleNode(objectNode, "field[@name='" + fieldname + "']");
+            Node datafield = Utils.selectSingleNode(objectNode, "field[@name='"+fieldname+"']");
             if (datafield == null) {
                 // None-existing field (getNew/getNewRelationa always return all fields)
                 String type = Utils.getAttribute(objectDef, "type");
@@ -383,12 +377,9 @@ public class WizardDatabaseConnector implements java.io.Serializable {
 
             // if you add a list of items, the order of the list may be of import.
             // the variable $pos is used to make that distinction
-            params.put("pos", createorder+"");
+            params.put("pos",createorder+"");
             Node parent = data.getDocumentElement();
-            if (log.isDebugEnabled()) {
-                log.debug("parent=" + parent.toString());
-            }
-
+            if (log.isDebugEnabled()) log.debug("parent=" + parent.toString());
             value = Utils.transformAttribute(parent, value, false, params);
             params.remove("pos");
             if (value == null) {
@@ -408,15 +399,14 @@ public class WizardDatabaseConnector implements java.io.Serializable {
 
     /**
      * This method can create a object (or a tree of objects and relations)
-     * @param data data of current wizard
+     *
      * @param targetParentNode The place where the results should be appended.
      * @param objectDef The objectdefinition.
      * @param params The params to use when creating the objects and relations.
-     * @param loadedData
      * @return The resulting object(tree) node.
      * @throws WizardException if the object cannot be created
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map<String, Object> params, Document loadedData) throws WizardException {
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, Document loadedData) throws WizardException {
         return createObject(data, targetParentNode, objectDef, params, 1, loadedData);
     }
 
@@ -444,19 +434,16 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * *) if dnumber is supplied, no new object is created (shouldn't be included in the relation node either),
      *  but the relation will be created and directly linked to an object with number "dnumber".
      *
-     * @param data data of current wizard
      * @param targetParentNode The place where the results should be appended.
      * @param objectDef The objectdefinition.
      * @param params The params to use when creating the objects and relations.
      * @param createorder ordernr under which this object is added (i.e. when added to a list)
      *                     The first ordernr in a list is 1
-     * @param loadedData
      * @return The resulting object(tree) node.
      * @throws WizardException if the object cannot be created
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map<String, Object> params, int createorder, Document loadedData) throws WizardException {
-
-        String context = (String) params.get("context");
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, int createorder, Document loadedData) throws WizardException {
+        String context = (String)params.get("context");
 
         if (objectDef == null) throw new WizardException("No 'objectDef' given"); // otherwise NPE in getAttribute
 
@@ -466,7 +453,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
 
         if (nodeName.equals("action")) {
             NodeList objectdefs = Utils.selectNodeList(objectDef, "object|relation");
-            Node firstobject = null; // The implementation suggests that this is the _last_ object.
+            Node firstobject = null;
             for (int i = 0; i < objectdefs.getLength(); i++) {
                 firstobject = createObject(data, targetParentNode, objectdefs.item(i), params, loadedData);
             }
@@ -486,18 +473,14 @@ public class WizardDatabaseConnector implements java.io.Serializable {
             relations = Utils.selectNodeList(objectDef, ".");
         } else if (nodeName.equals("object")) {
             String objectType = Utils.getAttribute(objectDef, "type");
-            if (objectType.equals("")) {
-                throw new WizardException("No 'type' attribute used in " + Utils.stringFormatted(objectDef));
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Create object of type " + objectType);
-            }
+            if (objectType.equals("")) throw new WizardException("No 'type' attribute used in " + Utils.stringFormatted(objectDef));
+            if (log.isDebugEnabled()) log.debug("Create object of type " + objectType);
             // create a new object of the given type
             objectNode = getNew(targetParentNode, objectType);
-            if (context != null && !context.equals("")) {
+            if (context!=null && !context.equals("")) {
                 Utils.setAttribute(objectNode, "context", context);
             }
-            fillObjectFields(data, targetParentNode, objectDef, objectNode, params, createorder);
+            fillObjectFields(data,targetParentNode, objectDef, objectNode, params, createorder);
             relations = Utils.selectNodeList(objectDef, "relation");
         } else {
            throw new WizardException("Can only create with 'action' 'object' or 'relation' nodes");
@@ -507,7 +490,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         // Let's see if we need to create new relations (maybe even with new objects inside...
         Node lastCreatedRelation = null;
 
-        for (int i = 0; i < relations.getLength(); i++) {
+        for (int i=0; i < relations.getLength(); i++) {
             Node relation = relations.item(i);
             // create the relation now we can get all needed params
             String role = Utils.getAttribute(relation, "role", "related");
@@ -526,6 +509,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
             }
             String dtype = "";
 
+            String createDir = Utils.getAttribute(relation, Dove.ELM_CREATEDIR, "either");
             Node inside_object = null;
             Node inside_objectdef = Utils.selectSingleNode(relation, "object");
             if (dnumber != null) {
@@ -534,14 +518,16 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                 // we can do this here as it is a single retrieval
                 try {
                     inside_object = getDataNode(targetParentNode.getOwnerDocument(), dnumber, null);
-                    // but annotate that this one is loaded from mmbase. Not a new one
-                    loadedData.getDocumentElement().appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
-
-                    // grab the type
-                    dtype = Utils.getAttribute(inside_object, "type", "");
                 } catch (Exception e) {
-                    throw new WizardException("Could not load object (" + dnumber + "). Message: " + e.getMessage(), e);
+                    throw new WizardException("Could not load object (" + dnumber + "). Message: " + Logging.stackTrace(e));
                 }
+
+                // but annotate that this one is loaded from mmbase. Not a new one
+                Utils.setAttribute(inside_object, "already-exists", "true");
+                loadedData.getDocumentElement().appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
+
+                // grab the type
+                dtype = Utils.getAttribute(inside_object, "type", "");
             } else {
                 // type should be determined from the destinationtype
                 dtype = Utils.getAttribute(relation, "destinationtype", "");
@@ -553,39 +539,29 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                 }
             }
 
-            String createDir = Utils.getAttribute(relation, Dove.ELM_CREATEDIR, "either");
-            Node relationNode = getNewRelation(objectNode, role, snumber, stype, dnumber, dtype,createDir);
-            if (context != null && ! context.equals("")) {
+
+            Node relationNode = getNewRelation(objectNode, role, snumber, stype, dnumber, dtype, createDir);
+            if (context != null && !context.equals("")) {
                 Utils.setAttribute(relationNode, "context", context);
             }
-            fillObjectFields(data,targetParentNode,relation,relationNode,params,createorder);
+            fillObjectFields(data, targetParentNode, relation, relationNode, params, createorder);
 
             tagDataNode(relationNode);
             lastCreatedRelation = relationNode;
 
-            if (inside_object == null) {
+            if (inside_object==null) {
                 // no dnumber given! create the object
-                if (inside_objectdef == null) {
+                if (inside_objectdef==null) {
                     // no destination is given AND no object to-be-created-new is placed.
                     // so, no destination should be added...
-                    inside_object = data.createElement("object");
+                    inside_object=data.createElement("object");
                     ((Element)inside_object).setAttribute("number","");
-                    ((Element)inside_object).setAttribute("type", Utils.getAttribute(relation, "destinationtype", ""));
-                    ((Element)inside_object).setAttribute("searchtype", Utils.getAttribute(relation, "destinationtype", ""));
-                    ((Element)inside_object).setAttribute("disposable", "true");
+                    ((Element)inside_object).setAttribute("type",Utils.getAttribute(relation, "destinationtype", ""));
+                    ((Element)inside_object).setAttribute("disposable","true");
                 } else {
                     inside_object = createObject(data,relationNode, inside_objectdef, params, loadedData);
                     dnumber = Utils.getAttribute(inside_object, "number");
-                    ((Element)relationNode).setAttribute("destination", dnumber);
-                    if (inside_object instanceof Element) {
-                       String destinationType = Utils.getAttribute(relation, "destinationtype", "");
-                       ((Element)inside_object).setAttribute(Dove.ELM_SEARCHTYPE, destinationType);
-                    }
-                }
-            } else {
-               if (inside_object instanceof Element) {
-                  String destinationType = Utils.getAttribute(relation, "destinationtype", "");
-                  ((Element)inside_object).setAttribute(Dove.ELM_SEARCHTYPE, destinationType);
+                    ((Element)relationNode).setAttribute("destination",dnumber);
                 }
             }
             relationNode.appendChild(inside_object);
@@ -602,15 +578,13 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * class, and retuirns the result as an Element.
      * @param cmd the command Element to execute
      * @param binaries a HashMap containing files (binaries) uploaded in the wizard
-     * @return response
-     * @throws WizardException   if the command failed to execute
      */
-    private Element sendCommand(Element cmd, Map<String, byte[]> binaries) throws WizardException {
+    private Element sendCommand(Element cmd, Map binaries) throws WizardException {
         Dove    dove    = new Dove(Utils.emptyDocument());
         Element results = dove.executeRequest(cmd, userCloud, binaries);
         NodeList errors = Utils.selectNodeList(results, ".//error");
         if (errors.getLength() > 0){
-            StringBuilder errorMessage = new StringBuilder("Errors received from MMBase Dove servlet: ");
+            StringBuffer errorMessage = new StringBuffer("Errors received from MMBase Dove servlet: ");
             for (int i = 0; i < errors.getLength(); i++){
                 errorMessage.append(Utils.getText(errors.item(i))).append("\n");
             }
@@ -621,33 +595,31 @@ public class WizardDatabaseConnector implements java.io.Serializable {
 
     /**
      * This is an internal method which is used to fire a command to connect to mmbase via Dove.
-     * @param command command for connector
-     * @return response
      * @throws WizardException   if the command failed
      */
     private Document fireCommand(ConnectorCommand command) throws WizardException {
-        List<ConnectorCommand> tmp = new ArrayList<ConnectorCommand>();
+        List tmp = new Vector();
         tmp.add(command);
         return fireCommandList(tmp);
     }
 
     /**
      * This is an internal method which is used to fire commands to connect to mmbase via Dove.
-     * @param commands list pf commands for connector
-     * @return response
      * @throws WizardException   if one or more commands failed
      */
-    private Document fireCommandList(List<ConnectorCommand> commands) throws WizardException {
+    private Document fireCommandList(List commands) throws WizardException {
         // send commands away from here... away!
         // first create request xml
         Document req = Utils.parseXML("<request/>");
         Element docel = req.getDocumentElement();
 
-        Iterator<ConnectorCommand> i  = commands.iterator();
+        Iterator i  = commands.iterator();
         while (i.hasNext()) {
-            ConnectorCommand cmd = i.next();
+            ConnectorCommand cmd = (ConnectorCommand) i.next();
             docel.appendChild(req.importNode(cmd.getCommandXML().getDocumentElement().cloneNode(true), true));
         }
+
+        String res="";
 
         Element results=sendCommand(docel,null);
 
@@ -657,11 +629,11 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         // map response back to each command.
         i = commands.iterator();
         while (i.hasNext()) {
-            ConnectorCommand cmd = i.next();
+            ConnectorCommand cmd = (ConnectorCommand) i.next();
 
             // find response for this command
             Node resp = Utils.selectSingleNode(response, "/*/"+cmd.getName() +"[@id]");
-            if (resp != null) {
+            if (resp!=null) {
                 // yes we found a response
                 cmd.setResponse(resp);
             } else {
@@ -680,9 +652,8 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param     loadedData              The data loaded by actions on the wizard
      * @param     binaries                 A hashmap with the uploaded binaries.
      * @return   The element containing the results of the put transaction.
-     * @throws WizardException   if the data could not be stored
      */
-    public Element put(Document originalData, Document loadedData, Document newData, Map<String, byte[]> binaries) throws WizardException {
+    public Element put(Document originalData, Document loadedData, Document newData, Map binaries) throws WizardException {
         Node putcmd = getPutData(originalData, loadedData, newData);
         return sendCommand(putcmd.getOwnerDocument().getDocumentElement(), binaries);
     }
@@ -756,7 +727,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @since MMBase 1.8
      * @param rootNode the node whose field sub nodes should be converted
      */
-    protected static void convertBooleanToInt(Node rootNode) {
+    protected void convertBooleanToInt(Node rootNode) {
         // convert all datetime values
         NodeList nodes = Utils.selectNodeList(rootNode, ".//field[@type='boolean']");
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -780,10 +751,8 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param     originalData    The original data.
      * @param     loadedData      The data loaded by actions
      * @param     newData         The new data.
-     * @return put request for mmbase
-     * @throws WizardException   if the data could not be stored
      */
-    private Node getPutData(Document originalData, Document loadedData, Document newData) throws WizardException {
+    public Node getPutData(Document originalData, Document loadedData, Document newData) throws WizardException {
         Document workDoc = Utils.emptyDocument();
         workDoc.appendChild(workDoc.importNode(newData.getDocumentElement().cloneNode(true), true));
 
@@ -798,7 +767,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         // Remove disposable objects (disposable=true)
         // Remove all relations which have NO destination chosen (destination="-");
         NodeList disposables = Utils.selectNodeList(workRoot, ".//*[@disposable or @destination='-']");
-        for (int i = 0; i < disposables.getLength(); i++) {
+        for (int i=0; i<disposables.getLength(); i++) {
             Node disp = disposables.item(i);
             disp.getParentNode().removeChild(disp);
         }
@@ -826,13 +795,13 @@ public class WizardDatabaseConnector implements java.io.Serializable {
 
         // find all changed or new relations and objects
         NodeList nodes = Utils.selectNodeList(reqnew, ".//relation|.//object[not(@disposable)]");
-        for (int i = 0; i < nodes.getLength(); i++) {
+        for (int i=0; i<nodes.getLength(); i++) {
             Node node = nodes.item(i);
             String nodename = node.getNodeName();
 
             String did = Utils.getAttribute(node, "did", "");
-            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@did='"+did+"']");
-            if (orignode != null) {
+            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@did='"+did+"' and not(@already-exists)]");
+            if (orignode!=null) {
                 // we found the original relation. Check to see if destination has changed.
                 if (nodename.equals("relation")) {
                     String destination = Utils.getAttribute(node,"destination", "");
@@ -842,22 +811,20 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                         Utils.setAttribute(node, "status", "changed");
                         // store original destination also. easier to process later on
                         Utils.setAttribute(node, "olddestination", olddestination);
-                        Utils.setAttribute(orignode, "repository", "update");
                     } else {
                         // it's the same (or at least: the destination is the same)
                         // now check if some inside-fields are changed.
                         boolean valueschanged = checkRelationFieldsChanged(orignode, node);
 
                         if (valueschanged) {
-                            // values in the fields are changed, destination/source are still the same.
+                            // values in the fields are changed, destination/source are still te same.
                             // let's store that knowledge.
                             Utils.setAttribute(node,"status", "fieldschangedonly");
-                            Utils.setAttribute(orignode, "repository", "update");
                         } else {
                             // really nothing changed.
                                 // remove relation from both orig as new
                             node.getParentNode().removeChild(node);
-                            orignode.getParentNode().removeChild(orignode);
+                                orignode.getParentNode().removeChild(orignode);
                         }
                     }
                 }
@@ -866,15 +833,15 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                     // check if it is changed
                     boolean different = isDifferent(node, orignode);
                     if (!different) {
-                        // remove object from both orig as new
+                        // remove both objects
                         node.getParentNode().removeChild(node);
-                        orignode.getParentNode().removeChild(orignode);
+                        Utils.setAttribute(orignode, "repository", "true");
                     } else {
                         // check if fields are different?
-                        NodeList fields = Utils.selectNodeList(node,"field");
-                        for (int j = 0; j < fields.getLength(); j++) {
-                            Node origfield = Utils.selectSingleNode(orignode, "field[@name='" + Utils.getAttribute(fields.item(j), "name")+"']");
-                            if (origfield != null) {
+                        NodeList fields=Utils.selectNodeList(node,"field");
+                        for (int j=0; j<fields.getLength(); j++) {
+                            Node origfield = Utils.selectSingleNode(orignode, "field[@name='"+Utils.getAttribute(fields.item(j), "name")+"']");
+                            if (origfield!=null) {
                                 if (!isDifferent(fields.item(j), origfield)) {
                                     // the same. let's remove this field also
                                     fields.item(j).getParentNode().removeChild(fields.item(j));
@@ -882,41 +849,35 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                                 }
                             }
                         }
-                        Utils.setAttribute(orignode, "repository", "update");
+                        Utils.setAttribute(orignode, "repository", "false");
                     }
                 }
             } else {
                 // this is a new relation or object. Remember that
                 // but, check first if the may-be-new object has a  "already-exists" attribute. If so,
                 // we don't have a new object, no no, this is a later-loaded object which is not added to the
-                // original datanode. 
-                // This "already-exists" check is here to support custom extensions which might still use
-                // this attribute. Earlier versions of this class used this attribute, but it is replaced with
-                // the loadedData Document.
+                // original datanode (should be better in later versions, eg. by using a repository).
                 String already_exists = Utils.getAttribute(node, "already-exists", "false");
                 if (!already_exists.equals("true")) {
-
                     // go ahead. this seems to be a really new one...
                     // this is a new relation or object.
                     Utils.setAttribute(node, "status", "new");
 
-                    // check if fields values have been set
-                    // insert values are not sent - this allows use of virtual fields to edit
-                    // other fields
-                    NodeList fields=Utils.selectNodeList(node,"field");
-                    for (int j = 0; j < fields.getLength(); j++) {
-                        // if a new field is empty, don't enter it, but use the default value
-                        // as set in the builder's setDefault() method
-                        // note that strictly speaking, this may not be correct
-                        // a better way is perhaps to first retrieve a new node and compare the values
-                        if ("".equals(Utils.getText(fields.item(j)))) {
-                            fields.item(j).getParentNode().removeChild(fields.item(j));
-                        }
+
+                // check if fields values have been set
+                // insert values are not sent - this allows use of virtual fields to edit
+                // other fields
+                NodeList fields=Utils.selectNodeList(node,"field");
+                for (int j=0; j<fields.getLength(); j++) {
+                    // if a ne field is empty, don't enter it, but use the default value
+                    // as set in the builder's setDefault() method
+                    // note that strictly speaking, this may not be correct
+                    // a better way is perhaps to first retrieve a new node and compare the values
+                    if ("".equals(Utils.getText(fields.item(j)))) {
+                        fields.item(j).getParentNode().removeChild(fields.item(j));
                     }
-                } else {
-                    // remove it from the list.
-                    node.getParentNode().removeChild(node);
-        	}
+                }
+                }
             }
         }
 
@@ -928,7 +889,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         // 2. change "changed" relations into a delete + a create command.
         //    and, make sure the create command is in the right format.
         NodeList rels = Utils.selectNodeList(req, "//new/relation[@status='changed']");
-        for (int i = 0; i < rels.getLength(); i++) {
+        for (int i=0; i<rels.getLength(); i++) {
             Node rel = rels.item(i);
             Node newrel = rel.cloneNode(true);
 
@@ -957,11 +918,11 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         // servlet.
         //
         rels = Utils.selectNodeList(req, "//new/relation[@status='fieldschangedonly']");
-        for (int i = 0; i < rels.getLength(); i++) {
+        for (int i=0; i<rels.getLength(); i++) {
             Node rel = rels.item(i);
             String number = Utils.getAttribute(rel,"number","");
-            Node origrel = Utils.selectSingleNode(req, "//original/relation[@number='" + number + "']");
-            if (!number.equals("") && origrel != null) {
+            Node origrel = Utils.selectSingleNode(req, "//original/relation[@number='"+number+"']");
+            if (!number.equals("") && origrel!=null) {
                 // we found the original relation also. Now, we can process these nodes.
                 convertRelationIntoObject(origrel);
                 convertRelationIntoObject(rel);
@@ -971,13 +932,20 @@ public class WizardDatabaseConnector implements java.io.Serializable {
     }
 
     private void markDeletedNodes(Document req, Node reqnew, Node reqorig) {
+        // remove all repository nodes
+        NodeList repnodes = Utils.selectNodeList(reqorig, ".//relation[@repository='true']|.//object[@repository='true']");
+        for (int i=0; i<repnodes.getLength(); i++) {
+            Node repnode = repnodes.item(i);
+            repnode.getParentNode().removeChild(repnode);
+        }
+
         // find all deleted relations and objects
-        NodeList orignodes = Utils.selectNodeList(reqorig, ".//relation[not(@repository)]|.//object[not(@repository)]");
-        for (int i = 0; i < orignodes.getLength(); i++) {
+        NodeList orignodes = Utils.selectNodeList(reqorig, ".//relation|.//object");
+        for (int i=0; i<orignodes.getLength(); i++) {
             Node orignode = orignodes.item(i);
             String nodenumber = Utils.getAttribute(orignode, "number", "");
-            Node node = Utils.selectSingleNode(reqnew, ".//*[@number='" + nodenumber + "']");
-            if (node == null) {
+            Node node = Utils.selectSingleNode(reqnew, ".//*[@number='"+nodenumber+"']");
+            if (node==null) {
                 // item is apparently deleted.
                 // place relation node anyway but say that it should be deleted (and make it so more explicit)
                 Node newnode = req.createElement(orignode.getNodeName());
@@ -993,12 +961,11 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      *
      * @param     sourcenode              The sourcenode from which should be flattened.
      * @param     targetParentNode        The targetParentNode where the results should be appended.
-     * @param     xpath                   The xpath query to find the nodes
      * @param     allowedChildrenXpath      This xpath defines what children may be copied in te proces and should NOT be flattened.
      */
-    private void makeFlat(Node sourcenode, Node targetParentNode, String xpath, String allowedChildrenXpath) {
+    public void makeFlat(Node sourcenode, Node targetParentNode, String xpath, String allowedChildrenXpath) {
         NodeList list = Utils.selectNodeList(sourcenode, xpath);
-        for (int i = 0; i < list.getLength(); i++) {
+        for (int i=0; i<list.getLength(); i++) {
             Node item = list.item(i);
             Node newnode = targetParentNode.getOwnerDocument().importNode(item, false);
             targetParentNode.appendChild(newnode);
@@ -1013,7 +980,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param     targetParentNode        The parent on which the results should be appended.
      * @param     allowedChildrenXpath    The xpath describing what children may be copied.
      */
-    private void cloneOneDeep(Node sourcenode, Node targetParentNode, String allowedChildrenXpath) {
+    public void cloneOneDeep(Node sourcenode, Node targetParentNode, String allowedChildrenXpath) {
         NodeList list = Utils.selectNodeList(sourcenode, allowedChildrenXpath);
         Utils.appendNodeList(list, targetParentNode);
     }
@@ -1025,8 +992,9 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param     node2   Compare with thisone.
      * @return   True if they are different, False if they are similar.
      */
-    private boolean isDifferent(Node node1, Node node2) {
+    public boolean isDifferent(Node node1, Node node2) {
         // only checks textnodes and childnumbers
+        boolean res = false;
         if (node1.getChildNodes().getLength() != node2.getChildNodes().getLength()) {
             // ander aantal kindjes!
             return true;
@@ -1044,7 +1012,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         NodeList kids = node1.getChildNodes();
         NodeList kids2 = node2.getChildNodes();
 
-        for (int i = 0; i < kids.getLength(); i++) {
+        for (int i=0; i<kids.getLength(); i++) {
             if (isDifferent(kids.item(i), kids2.item(i))) {
                 return true;
             }
@@ -1059,7 +1027,6 @@ public class WizardDatabaseConnector implements java.io.Serializable {
      * @param       origrel         The original relation
      * @param       rel             The new relation
      * @return     True if the relations are different, false if they are the same.
-     * @throws WizardException   if the check failed.
      */
     private boolean checkRelationFieldsChanged(Node origrel, Node rel) throws WizardException{
         NodeList origflds = Utils.selectNodeList(origrel, "field");
@@ -1086,7 +1053,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         Node obj = rel.getOwnerDocument().createElement("object");
 
         // copy attributes, except...
-        List<String> except = new ArrayList<String>();
+        List except = new Vector();
         except.add("destination");
         except.add("source");
         except.add("role");

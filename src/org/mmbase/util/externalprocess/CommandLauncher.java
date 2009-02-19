@@ -44,7 +44,7 @@ public class CommandLauncher {
      * Counts how many comands are launched
      * Also used for () identification
      */
-    private static int counter = 0;
+    protected static int counter = 0;
 
     /**
      * The process object representing the external process
@@ -115,13 +115,14 @@ public class CommandLauncher {
         try {
             process = ProcessFactory.getFactory().exec(command);
         } catch (IOException e) {
-            throw new ProcessException("An I/O error occured: " + e.getMessage(), e);
+            throw new ProcessException("An I/O error occured: " + e.getMessage());
         } catch (SecurityException e) {
-            throw new ProcessException("A security manager exists and its checkExec method doesn't allow creation of a subprocess.", e);
+            throw new ProcessException(
+                "A security manager exists and its checkExec method " + "doesn't allow creation of a subprocess.");
         } catch (NullPointerException e) {
-            throw new ProcessException("Command is null.", e);
+            throw new ProcessException("Command is null.");
         } catch (IllegalArgumentException e) {
-            throw new ProcessException("Command is empty.", e);
+            throw new ProcessException("Command is empty.");
         }
     }
 
@@ -138,13 +139,14 @@ public class CommandLauncher {
         try {
             process = ProcessFactory.getFactory().exec(commandArgs);
         } catch (IOException e) {
-            throw new ProcessException("An I/O error occured: " + e.getMessage(), e);
+            throw new ProcessException("An I/O error occured: " + e.getMessage());
         } catch (SecurityException e) {
-            throw new ProcessException("A security manager exists and its checkExec method doesn't allow creation of a subprocess.", e);
+            throw new ProcessException(
+                "A security manager exists and its checkExec method " + "doesn't allow creation of a subprocess.");
         } catch (NullPointerException e) {
-            throw new ProcessException("Command is null.", e);
+            throw new ProcessException("Command is null.");
         } catch (IllegalArgumentException e) {
-            throw new ProcessException("Command is empty.", e);
+            throw new ProcessException("Command is empty.");
         }
     }
 
@@ -445,8 +447,8 @@ public class CommandLauncher {
      */
     public void printCommandLine(String[] commandArgs) {
         StringBuffer buf = new StringBuffer();
-        for (String element : commandArgs) {
-            buf.append(element);
+        for (int i = 0; i < commandArgs.length; i++) {
+            buf.append(commandArgs[i]);
             buf.append(' ');
         }
         buf.append(lineSeparator);

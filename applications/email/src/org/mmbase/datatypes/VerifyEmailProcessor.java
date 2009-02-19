@@ -39,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.13 2008-10-28 15:20:55 michiel Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.8 2008-08-12 09:15:18 michiel Exp $
 
  */
 
@@ -79,7 +79,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
     private String emailTextBundle = "org.mmbase.datatypes.resources.verifyemailtemplate";
     private String successProcessor;
     private String url = "/mmbase/email/verify/";
-    private String includeUrl = null; //"/core/mail.jsp";
+    private String includeUrl = "/core/mail.jsp";
 
 
     public void setEmailField(String ef) {
@@ -87,38 +87,16 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
     }
 
     public void setTextBundle(String b) {
-        if ("".equals(b)) b = null;
         emailTextBundle = b;
-        String from = getResourceBundle(Locale.US).getString("from");
-        if (from != null && ! "".equals(from)) {
-            try {
-                InternetAddress ia  = InternetAddress.parse(from)[0];
-                verificationReceivers.add(ia.getAddress());
-            } catch (Exception e) {
-                log.error(e);
-            }
+        ResourceBundle emailTemplate = ResourceBundle.getBundle(emailTextBundle);
+        try {
+            InternetAddress ia  = InternetAddress.parse(emailTemplate.getString("from"))[0];
+            verificationReceivers.add(ia.getAddress());
+        } catch (Exception e) {
+            log.error(e);
         }
-
     }
 
-
-    protected ResourceBundle getResourceBundle(Locale locale) {
-        if (emailTextBundle != null) {
-            return ResourceBundle.getBundle(emailTextBundle, locale);
-        } else {
-            return  new ListResourceBundle() {
-                protected Object[][] getContents() {
-                    return new Object[][] {
-                        {"body", "{2}"},
-                        {"subject", "{0}"},
-                        {"from", ""}
-                    };
-                }
-            };
-        }
-
-
-    }
     public void setSuccessProcessor(String p) {
         successProcessor = p;
     }
@@ -128,7 +106,6 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
 
     public void setIncludeUrl(String u) {
         includeUrl = u;
-        log.service("Will include " + includeUrl);
     }
 
 
@@ -268,7 +245,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                 // Send an email.
                 Locale locale = cloud.getLocale();
 
-                ResourceBundle emailTemplate = getResourceBundle(locale);
+                ResourceBundle emailTemplate = ResourceBundle.getBundle(emailTextBundle, locale);
 
                 Module emailModule   = cloud.getCloudContext().getModule("sendmail");
 
@@ -284,8 +261,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
 
                 HttpServletRequest req = (HttpServletRequest) cloud.getProperty("request");
                 StringBuilder u = new StringBuilder();
-
-
+                StringBuffer include = new StringBuffer();
                 if (req != null) {
                     String scheme = req.getScheme();
                     u.append(scheme).append("://");
@@ -295,33 +271,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                              (port == 443 && "https".equals(scheme))
                              ? "" : ":" + port);
                     u.append(req.getContextPath());
-
-
-                }
-                u.append(url);
-                String sep = url.indexOf("?") > 0 ? "&amp;" : "?";
-                u.append(sep);
-                u.append("signature=" + encryptedKey);
-
-                emailNode.setStringValue(toField, email);
-
-                emailNode.setStringValue(subjectField, MessageFormat.format(emailTemplate.getString("subject"), encryptedKey));
-
-
-                String from = emailTemplate.getString("from");
-                if ("".equals(from)) {
-                    emailNode.setStringValue(fromField, from);
-                }
-
-
-                StringBuilder include = new StringBuilder();
-                if (req != null) {
-                    log.debug("Including " + includeUrl);
-                    CharTransformer escaper = (CharTransformer) req.getAttribute("org.mmbase.bridge.jsp.taglib.escaper");
-                    req.setAttribute("_node", Casting.wrap(emailNode, escaper));
-                    req.setAttribute("fieldNode", Casting.wrap(node, escaper));
-                    req.setAttribute("signature", encryptedKey);
-                    req.setAttribute("url", u.toString());
+                    log.info("Including " + includeUrl);
                     if (includeUrl != null && ! "".equals(includeUrl)) {
                         try {
                             PageContext pageContext = (PageContext) (Class.forName("org.mmbase.bridge.jsp.taglib.ContextReferrerTag").
@@ -340,12 +290,17 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                             requestDispatcher.include(requestWrapper, response);
                             include.append(response.toString());
                         } catch (Exception e) {
-                            log.error(e.getMessage(), e);
+                            log.error(e);
                         }
                     }
 
                 }
-                String bodyTemplate = emailTemplate.getString("body");
+                u.append(url);
+                String sep = url.indexOf("?") > 0 ? "&amp;" : "?";
+                u.append(sep);
+                u.append("signature=" + encryptedKey);
+
+                emailNode.setStringValue(toField, email);
                 String bodyHtml = MessageFormat.format(emailTemplate.getString("body"), encryptedKey, u.toString(), include.toString());
 
                 String body = "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">\n" +
@@ -354,9 +309,13 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                     "<multipart alt=\"plaintext\" type=\"text/html\" encoding=\"UTF-8\">\n" +
                     bodyHtml +
                     "\n</multipart>\n";
+
                 emailNode.setStringValue(bodyField, body);
+                emailNode.setStringValue(subjectField, MessageFormat.format(emailTemplate.getString("subject"), encryptedKey));
 
 
+                String from = emailTemplate.getString("from");
+                emailNode.setStringValue(fromField, from);
 
                 try {
                     emailNode.commit();

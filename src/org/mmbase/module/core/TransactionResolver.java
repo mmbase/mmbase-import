@@ -18,110 +18,39 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.31 2008-12-02 16:32:23 michiel Exp $
+ * @version $Id: TransactionResolver.java,v 1.26 2006-04-21 16:12:30 michiel Exp $
  */
-class TransactionResolver {
+public class TransactionResolver {
     private static final Logger log = Logging.getLoggerInstance(TransactionResolver.class);
     private final MMBase mmbase;
 
-    TransactionResolver(MMBase mmbase) {
+    public TransactionResolver(MMBase mmbase) {
         this.mmbase = mmbase;
     }
 
-
-
-    /**
-     * Given a map where the keys are temporary identifiers, sets the values to actual new node
-     * numbers, unless this was already done.
-     */
-    private void getNewNumbers(Map<String, Integer> numbers) {
-        // Get the numbers
-        for (Map.Entry<String, Integer> numberEntry : numbers.entrySet()) {
-            Integer num = numberEntry.getValue();
-            if (num == null || num.intValue() == -1) {
-                int newNumber = mmbase.getStorageManager().createKey();
-                log.info("" + numberEntry.getKey() + " -> " + newNumber);
-                numberEntry.setValue(newNumber);
-            }
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("TransactionResolver -  numbers: " + numbers);
-        }
-    }
-
-    private void setNewNumbers(Map<MMObjectNode, Collection<String>> nnodes, Map<String, Integer> numbers) {
-        // put numbers in the right place
-        for (Map.Entry<MMObjectNode, Collection<String>> nnodeEntry : nnodes.entrySet()) {
-            MMObjectNode node = nnodeEntry.getKey();
-            Collection<String> changedFields = nnodeEntry.getValue();
-            for (String field : changedFields) {
-                String tmpField = "_" + field;
-                String key = node.getStringValue(tmpField);
-                int number = numbers.get(key);
-                node.setValue(field, number);
-            }
-        }
-    }
-
-    /**
-     * Checks whether all NODE field are indeed filled now, which would mean that this transaction
-     * was indeed sucessfully resolved now.
-     */
-    private void check(final Collection<MMObjectNode> nodes) throws TransactionManagerException {
-
-        // Check now whether resolving was completely successfull
-        for (MMObjectNode node : nodes) {
-            MMObjectBuilder bul = mmbase.getMMObject(node.getName());
-            for (CoreField fd : bul.getFields()) {
-                int dbtype = fd.getType();
-                if ((dbtype == Field.TYPE_INTEGER)||
-                    (dbtype == Field.TYPE_NODE)) {
-
-                    String field = fd.getName();
-                    String tmpField = "_" + field;
-                    if (node.getDBState(tmpField) == Field.STATE_VIRTUAL) {
-                        int number = node.getIntValue(field);
-                        if (number == -1) {
-                            String key = node.getStringValue(tmpField);
-                            if (key != null && key.length() > 0) {
-                                throw new TransactionManagerException("For node " + node + " and field " + field + ". Found value for " + tmpField + ": " + key + ". Should be empty.");
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-    /**
-     * Result a transaction. ie. resolves all 'node' fields to actual number wich will be committed
-     * to the database
-     *
-     * @throws TransactionManagerException if the transactiosn could not be successfully completely resolved.
-    */
-    void resolve(final Collection<MMObjectNode> nodes) throws TransactionManagerException {
-        Map<String, Integer> numbers = new HashMap<String, Integer>(); /* Temp key -> Real node number */
-        Map<MMObjectNode, Collection<String>> nnodes  = new HashMap<MMObjectNode, Collection<String>>(); /* MMObjectNode --> List of changed fields */
-
-
+    public boolean resolve(final Collection nodes) {
+        Map numbers = new HashMap(); /* Temp key -> Real node number */
+        Map nnodes  = new HashMap(); /* MMObjectNode --> List of changed fields */
+        boolean success = true;
 
         // Find all unique keys and store them in a map to remap them later
         // Also store the nodes with which fields uses them.
-        for (MMObjectNode node : nodes) {
+        for (Iterator i = nodes.iterator(); i.hasNext();) {
+            MMObjectNode node = (MMObjectNode) i.next();
             MMObjectBuilder bul = mmbase.getBuilder(node.getName());
             if (log.isDebugEnabled()) {
                 log.debug("TransactionResolver - builder " + node.getName() + " builder " + bul);
             }
-            for (CoreField fd : bul.getFields()) {
+            for (Iterator f = bul.getFields().iterator();f.hasNext();) {
+                CoreField fd = (CoreField)f.next();
                 int dbtype = fd.getType();
                 if (log.isDebugEnabled()) {
                     log.debug("TransactionResolver - type " + dbtype + "," + fd.getName() + "," + fd.getState());
                 }
                 if (dbtype == Field.TYPE_INTEGER || dbtype == Field.TYPE_NODE) {
+                    int state = fd.getState();
                     if (fd.inStorage()) {
-                        // Database field of type integer
+                        // Database field of type integer 
                         String field = fd.getName();
                         String tmpField = "_" + field;
                         if (node.getDBState(tmpField) == Field.STATE_VIRTUAL) {
@@ -134,11 +63,11 @@ class TransactionResolver {
                                         numbers.put(key, null);
                                     }
                                     // keep node + field to change
-                                    Collection<String> changedFields = nnodes.get(node);
+                                    Collection changedFields = (Collection) nnodes.get(node);
                                     if (changedFields != null) {
                                         changedFields.add(field);
                                     } else {
-                                        changedFields = new ArrayList<String>();
+                                        changedFields = new ArrayList();
                                         changedFields.add(field);
                                         nnodes.put(node, changedFields);
                                     }
@@ -146,7 +75,7 @@ class TransactionResolver {
                                     log.debug("TransactionResolver - Can't find key for field " + tmpField + " node " + node + " (warning)");
                                 }
                                 if (field.equals("number")) {
-                                    node.storeValue(MMObjectBuilder.TMP_FIELD_EXISTS, TransactionManager.EXISTS_NO);
+                                    node.setValue(MMObjectBuilder.TMP_FIELD_EXISTS, TransactionManager.EXISTS_NO);
                                 }
                             } else {
                                 // Key is already set
@@ -157,11 +86,11 @@ class TransactionResolver {
                                     // test for remove here
                                     String exists = node.getStringValue(MMObjectBuilder.TMP_FIELD_EXISTS);
                                     if (exists == null || !exists.equals(TransactionManager.EXISTS_NOLONGER)) {
-                                        node.storeValue(MMObjectBuilder.TMP_FIELD_EXISTS, TransactionManager.EXISTS_YES);
+                                        node.setValue(MMObjectBuilder.TMP_FIELD_EXISTS, TransactionManager.EXISTS_YES);
                                     }
                                     String key = node.getStringValue(tmpField);
                                     if (key != null) {
-                                        numbers.put(key, ikey);
+                                        numbers.put(key, new Integer(ikey));
                                     } else if (log.isDebugEnabled()) {
                                         log.debug("TransactionResolver - Can't find key for field " + tmpField + " node " + node);
                                     }
@@ -179,11 +108,58 @@ class TransactionResolver {
             log.debug("TransactionResolver - nnodes " + nnodes);
         }
 
+        // Get the numbers
+        for (Iterator i = numbers.entrySet().iterator(); i.hasNext();) {
+            Map.Entry numberEntry = (Map.Entry)i.next();
+            Object key = numberEntry.getKey();
+            Integer num = (Integer)numberEntry.getValue();
+            if (num == null || num.intValue() == -1) {
+                numbers.put(key, new Integer(mmbase.getStorageManager().createKey()));
+            }
+        }
 
-        getNewNumbers(numbers);
+        if (log.isDebugEnabled()) {
+            log.debug("TransactionResolver -  numbers: " + numbers);
+        }
 
-        setNewNumbers(nnodes, numbers);
 
-        check(nodes);
+        // put numbers in the right place
+        for (Iterator i = nnodes.entrySet().iterator(); i.hasNext();) {
+            Map.Entry nnodeEntry = (Map.Entry)i.next();
+            MMObjectNode node = (MMObjectNode)nnodeEntry.getKey();
+            Collection changedFields = (Collection)nnodeEntry.getValue();
+            for (Iterator j = changedFields.iterator(); j.hasNext();) {
+                String field = (String)j.next();
+                String tmpField = "_" + field;
+                String key = node.getStringValue(tmpField);
+                int number = ((Integer)numbers.get(key)).intValue();
+                node.setValue(field, number);
+            }
+        }
+
+        for (Iterator i = nodes.iterator(); i.hasNext();) {
+            MMObjectNode node = (MMObjectNode)i.next();
+            MMObjectBuilder bul = mmbase.getMMObject(node.getName());
+            for (Iterator j = bul.getFields().iterator();j.hasNext();) {
+                CoreField fd = (CoreField)j.next();
+                int dbtype = fd.getType();
+                if ((dbtype == Field.TYPE_INTEGER)||
+                    (dbtype == Field.TYPE_NODE)) {
+                    
+                    String field = fd.getName();
+                    String tmpField = "_" + field;
+                    if (node.getDBState(tmpField) == Field.STATE_VIRTUAL) {
+                        int number = node.getIntValue(field);
+                        if (number == -1) {
+                            String key = node.getStringValue(tmpField);
+                            if (key != null && key.length() > 0) {
+                                success = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return success;
     }
 }

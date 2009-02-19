@@ -43,7 +43,6 @@
     <type-mapping name="BINARY" min-size="1" max-size="16777216" type="BINARY" />
     <type-mapping name="DATETIME" type="DATETIME" />
     <type-mapping name="BOOLEAN"  type="BIT" />
-    <type-mapping name="DECIMAL"  type="DECIMAL" />
 
     <type-mapping name="LIST[FLOAT]"   type="OTHER" />
     <type-mapping name="LIST[DOUBLE]"  type="OTHER" />

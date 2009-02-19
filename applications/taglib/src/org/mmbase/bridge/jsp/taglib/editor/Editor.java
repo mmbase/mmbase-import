@@ -14,7 +14,8 @@ import java.util.*;
 
 import javax.servlet.jsp.PageContext;
 
-import org.mmbase.bridge.Query;
+import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.16 2008-03-31 14:40:52 michiel Exp $
+ * @version $Id: Editor.java,v 1.12.2.1 2008-03-31 14:40:32 michiel Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -35,9 +36,9 @@ abstract public class Editor {
 
     private static final Logger log = Logging.getLoggerInstance(Editor.class);
 
-    protected final List<Query> queryList  = new ArrayList<Query>();      // query List
-    protected final List<String> nodenrList = new ArrayList<String>();      // nodenr List
-    protected final List<String> fieldList = new ArrayList<String>();       // fieldname List
+    protected final List queryList  = new ArrayList();      // query List
+    protected final List nodenrList = new ArrayList();      // nodenr List
+    protected final List fieldList = new ArrayList();       // fieldname List
 
     protected Parameters parameters = null;
 
@@ -51,14 +52,19 @@ abstract public class Editor {
         }
         return parameters;
     }
-    public final List<Query> getQueryList() {
+    public final List getQueryList() {
         return queryList;
     }
-    public final List<String>  getNodenrList() {
+    public final List  getNodenrList() {
         return nodenrList;
     }
-    public final List<String> getFieldList() {
+    public final List getFieldList() {
         return fieldList;
+    }
+
+
+    protected  Parameter[] getParameterDefinition() {
+        return Parameter.EMPTY;
     }
 
     /**
@@ -78,11 +84,6 @@ abstract public class Editor {
         queryList.add(query);
         nodenrList.add(String.valueOf(nodenr));
         fieldList.add(fieldName);
-    }
-
-
-    protected  Parameter[] getParameterDefinition() {
-        return Parameter.emptyArray();
     }
 
     /**

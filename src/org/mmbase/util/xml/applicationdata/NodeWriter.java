@@ -26,7 +26,7 @@ import org.mmbase.util.Encode;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.5 2007-04-05 14:04:18 pierre Exp $
+ * @version $Id: NodeWriter.java,v 1.3 2006-03-24 13:08:30 nklasens Exp $
  */
 public class NodeWriter {
 
@@ -124,14 +124,7 @@ public class NodeWriter {
             write(">\n");
         } else {
             // For a data node, store the alias if at all possible.
-            String tm = null;
-            for (String alias : mmb.getOAlias().getAliasList(number)) {
-                if (tm == null) {
-                    tm = alias;
-                } else {
-                    tm += "," + alias;
-                }
-            }
+            String tm = mmb.getOAlias().getAlias(number);
             if (tm == null) {
                 write("\t<node number=\"" + number+"\" owner=\"" + owner + "\">\n");
             } else {
@@ -139,9 +132,9 @@ public class NodeWriter {
             }
         }
         MMObjectBuilder bul = node.getBuilder();
-        Iterator<CoreField> nd = bul.getFields().iterator();
+        Iterator nd = bul.getFields().iterator();
         while (nd.hasNext()) {
-            CoreField def = nd.next();
+            CoreField def = (CoreField)nd.next();
             if (def.inStorage()) {
                 String key = def.getName();
                 if (isRelationNode) {

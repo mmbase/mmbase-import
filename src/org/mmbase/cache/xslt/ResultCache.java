@@ -19,16 +19,16 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Caches the results of XSL transformations.
+ * Caches the results of XSL transformations. 
  *
  * @todo Cache entries must be invalidated if XSL template changes (now getSystemId is used as cache
  * entry). See TemplatesCache (which uses a FileWatcher).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ResultCache.java,v 1.12 2007-04-07 17:12:54 nklasens Exp $
+ * @version $Id: ResultCache.java,v 1.9 2005-01-30 16:46:38 nico Exp $
  * @since   MMBase-1.6
  */
-public class ResultCache extends Cache<String, String> {
+public class ResultCache extends Cache {
 
     private static Logger log = Logging.getLoggerInstance(ResultCache.class);
 
@@ -49,7 +49,7 @@ public class ResultCache extends Cache<String, String> {
 
     static {
         cache = new ResultCache(cacheSize);
-        cache.putCache();
+        putCache(cache);
     }
 
     public String getName() {
@@ -71,8 +71,8 @@ public class ResultCache extends Cache<String, String> {
      *
      * @throws RuntimeException
      **/
-
-    public String put(Object key, Templates value) {
+    
+    public Object put(Object key, Object value) {
         throw new RuntimeException("wrong types in cache");
     }
 
@@ -84,7 +84,7 @@ public class ResultCache extends Cache<String, String> {
      */
     private StringBuffer append(StringBuffer buf, Node node) {
         switch(node.getNodeType()) {
-        case Node.ATTRIBUTE_NODE:
+        case Node.ATTRIBUTE_NODE: 
             buf.append(node.getNodeName()).append(node.getNodeValue());
             break;
         case Node.ELEMENT_NODE: {
@@ -105,20 +105,20 @@ public class ResultCache extends Cache<String, String> {
             log.debug("Unknown nodetype " + node.getNodeType());
             break;
         }
-
+        
         return buf;
     }
-    /**
+    /** 
      * Generates the key which is to be used in the Cache Map.
      *
      * @todo Generate this key faster and smaller
      */
-    private String getKey(Source xsl, Map params, Properties props, Document src) {
+    private String getKey(Source xsl, Map params, Properties props, Document src) {        
         StringBuffer key = new StringBuffer(""+(xsl.getSystemId() + "/" + (params != null ? params.toString() : "")  + "/" + (props != null ? props.toString() : "")+ "/"));
-
+        
         return append(key, src.getDocumentElement()).toString();
     }
-
+      
     /**
      * This is an intelligent get, which also does the put if it
      * cannot find the requested result. So, it never returns null.
@@ -133,12 +133,12 @@ public class ResultCache extends Cache<String, String> {
     public String get(Templates temp, Source xsl, Map params, Properties props, Document src) {
         String key = null;
         String result = null;
-        if (isActive()) {
+        if (isActive()) { 
             key = getKey(xsl, params, props, src);
             if (log.isDebugEnabled()) {
                 log.debug("Getting result of XSL transformation: " + key);
             }
-            result = get(key);
+            result = (String) get(key);
         }
         if (result == null) {
             try {
@@ -155,7 +155,7 @@ public class ResultCache extends Cache<String, String> {
                 if (props != null) {
                     transformer.setOutputProperties(props);
                 }
-
+                
                 java.io.StringWriter res = new java.io.StringWriter();
                 transformer.transform(new javax.xml.transform.dom.DOMSource(src),
                                       new javax.xml.transform.stream.StreamResult(res));
@@ -178,9 +178,9 @@ public class ResultCache extends Cache<String, String> {
             }
 
         }
-
+            
         return result;
-
+        
     }
 
 }

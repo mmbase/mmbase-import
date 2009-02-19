@@ -13,12 +13,10 @@ import org.mmbase.datatypes.BasicDataType;
 import org.mmbase.datatypes.DataTypeCollector;
 import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
-
 /**
- * This exception get thrown if parsing of a datatype element (temporary) fails.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DependencyException.java,v 1.2 2008-07-11 19:06:19 michiel Exp $
+ * @version $Id: DependencyException.java,v 1.1.2.3 2008-02-04 10:46:15 michiel Exp $
  * @since MMBase-1.8.6
  **/
 public class DependencyException extends Exception {
@@ -42,13 +40,13 @@ public class DependencyException extends Exception {
         collector = col;
     }
     public String getMessage() {
-        return "Attribute 'base' ('" + element.getAttribute("base") + "') of datatype '" + element.getAttribute("id") + "' is an unknown datatype (in " + element.getOwnerDocument().getDocumentURI() + ").";
+        return "Attribute 'base' ('" + element.getAttribute("base") + "') of datatype '" + element.getAttribute("id") + "' is an unknown datatype (in " + element.getOwnerDocument() + ").";
 
 
     }
 
     public String getId() {
-        return element.getOwnerDocument().getDocumentURI() + "@" +  element.getAttribute("id") + " (@base=" + element.getAttribute("base") + ")";
+        return element.getOwnerDocument() + "@" +  element.getAttribute("id") + " (@base=" + element.getAttribute("base") + ")";
     }
 
     public boolean retry() {
@@ -65,7 +63,6 @@ public class DependencyException extends Exception {
     }
 
     public BasicDataType fallback() {
-        if (collector == null) throw new IllegalStateException("Cannot fall back if no collector set");
         log.warn(getMessage());
         element.setAttribute("base", "");
         try {

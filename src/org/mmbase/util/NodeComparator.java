@@ -15,36 +15,42 @@ import org.mmbase.module.core.*;
 
 /**
  * This class implements the Comparator interface for comparing MMObjectNodes.
- * At forehand you specify in which fields a specified nodes should be compared,
+ * At forhand you specify in which fields a specified nodes should be compared,
  * these fields may not have a null value.
  *
  * @application Tools
  * @author Pierre van Rooden
- * @version $Id: NodeComparator.java,v 1.7 2008-04-25 15:39:25 nklasens Exp $
+ * @version $Id: NodeComparator.java,v 1.6 2004-10-12 11:17:44 pierre Exp $
  */
-public class NodeComparator implements Comparator<MMObjectNode> {
+public class NodeComparator implements Comparator {
 
     public final static String UP = "UP";
     public final static String DOWN = "DOWN";
 
-    private List<String> fields;
-    private List<String> sortDirs;
+    /**
+     * @todo Should be List, not Vector
+     */
+    private Vector fields;
+    /**
+     * @todo Should be List, not Vector
+     */
+    private Vector sortDirs;
 
     /**
      * Simple constructor that uses the default sort order (UP).
      * @param fields the fields on which the message nodes get compared.
      */
-    public NodeComparator(List<String> fields) {
+    public NodeComparator(Vector fields) {
         this.fields = fields;
-        sortDirs = new Vector<String>(fields.size());
+        sortDirs = new Vector(fields.size());
     }
 
     /**
-     * Constructor in which you specify the sort order (UP or DOWN) per field.
+     * Constructor in which you spercify the sort order (UP or DOWN) per field.
      * @param fields the fields on which the message nodes get compared.
      * @param sortDirs the sort directions (UP or DOWN) for each field.
      */
-    public NodeComparator(List<String> fields, List<String> sortDirs) {
+    public NodeComparator(Vector fields, Vector sortDirs) {
         this.fields = fields;
         this.sortDirs = sortDirs;
         for (int i = sortDirs.size(); i < fields.size(); i++) {
@@ -67,15 +73,15 @@ public class NodeComparator implements Comparator<MMObjectNode> {
      * @return 0 if both objects are equal, -1 if object 1 is 'less than'
      *    object 2, and +1 if object 1 is 'greater than' object 2.
      */
-    public int compare(MMObjectNode o1, MMObjectNode o2) {
+    public int compare(Object o1, Object o2) {
         Object f1, f2;
         int result=0;
         int fieldnr = 0;
         String field;
         while ((result == 0) && (fieldnr < fields.size())) {
-            field = fields.get(fieldnr);
-            f1 = o1.getValue(field);
-            f2 = o2.getValue(field);
+            field =(String)fields.elementAt(fieldnr);
+            f1 = ((MMObjectNode)o1).getValue(field);
+            f2 = ((MMObjectNode)o2).getValue(field);
             if (f1 instanceof Comparable) {
                 try {
                     result=((Comparable)f1).compareTo(f2);
@@ -84,7 +90,7 @@ public class NodeComparator implements Comparator<MMObjectNode> {
                     // possibly the in-memory value type differs from the
                     // database value type (this can occur if you use setValue
                     // with a deviating type).
-                    // Solving this could bring this compare to a crawl, so we
+                    // Solving this coukld bring this compare to a crawl, so we
                     // don't. Just edit stuff the right way.
                 }
             } else if (!f1.equals(f2)) {
@@ -96,7 +102,7 @@ public class NodeComparator implements Comparator<MMObjectNode> {
         }
         if ((fieldnr>0) &&
             (fieldnr<=sortDirs.size()) &&
-            sortDirs.get(fieldnr-1).equals(DOWN)) {
+            ((String)sortDirs.elementAt(fieldnr-1)).equals(DOWN)) {
             result=-result;
         }
         return result;
@@ -119,7 +125,6 @@ public class NodeComparator implements Comparator<MMObjectNode> {
 
     /**
      * Returns the comparator's hash code.
-     * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
         return fields.hashCode()^sortDirs.hashCode();

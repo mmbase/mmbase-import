@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
+import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.23 2009-01-02 10:35:19 michiel Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.15.2.2 2007-04-20 12:12:36 pierre Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -48,20 +49,14 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         super();
     }
 
-    @Override protected String toSqlString(String str) {
-        //http://dev.mysql.com/doc/refman/5.0/en/string-syntax.html
-        String res =  super.toSqlString(str
-                                        .replaceAll("\\\\", "\\\\\\\\")
-                                        .replaceAll("\t", "\\\\t")
-                                        .replaceAll("\0", "\\\\0")
-                                        .replaceAll("\b", "\\\\b")
-                                        .replaceAll("\32", "\\\\Z")
-                                        );
+    protected String toSqlString(String str) {
+        String res =  super.toSqlString(str).replaceAll("\\\\", "\\\\\\\\");
         return res;
     }
 
+
     // javadoc is inherited
-    @Override public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
+    public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
         case SearchQueryHandler.FEATURE_MAX_NUMBER:
@@ -71,9 +66,11 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         case SearchQueryHandler.FEATURE_OFFSET:
             result = SearchQueryHandler.SUPPORT_OPTIMAL;
             break;
+            /*
         case SearchQueryHandler.FEATURE_REGEXP:
             result = SearchQueryHandler.SUPPORT_OPTIMAL;
             break;
+            */
         default:
             result = super.getSupportLevel(feature, query);
         }
@@ -81,11 +78,11 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc inherited
-    @Override protected boolean useLower(FieldCompareConstraint constraint) {
+    protected boolean useLower(FieldCompareConstraint constraint) {
         return true; // necessary for the larger strings which are stored in blobs
     }
 
-    @Override protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
+    protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" LIKE BINARY ");
         } else {
@@ -94,7 +91,8 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         return sb;
     }
 
-    @Override protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, boolean caseSensitive) {
+    /*
+    protected StringBuffer appendRegularExpressionOperator(StringBuffer sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" REGEXP BINARY ");
         } else {
@@ -102,12 +100,12 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         }
         return sb;
     }
+    */
 
     /**
      * @javadoc
      */
-    @Override
-    protected void appendDateField(StringBuilder sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
+    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
         case FieldValueDateConstraint.CENTURY:
@@ -137,8 +135,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
             super.appendDateField(sb, step, fieldName, multipleSteps, datePart);
         }
     }
-    @Override
-    protected StringBuilder appendSortOrderField(StringBuilder sb, SortOrder sortOrder, boolean multipleSteps) {
+    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps) {
         if (sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {
             sb.append("BINARY ");
         }
@@ -148,20 +145,21 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    @Override
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
         // XXX should table and field aliases be tested for uniqueness?
 
         // Test for at least 1 step and 1 field.
         if (query.getSteps().isEmpty()) {
-            throw new IllegalStateException("Searchquery has no step (at least 1 step is required).");
+            throw new IllegalStateException(
+            "Searchquery has no step (at leas 1 step is required).");
         }
         if (query.getFields().isEmpty()) {
-            throw new IllegalStateException("Searchquery has no field (at least 1 field is required).");
+            throw new IllegalStateException(
+            "Searchquery has no field (at least 1 field is required).");
         }
 
         // SELECT
-        StringBuilder sbQuery = new StringBuilder("SELECT ");
+        StringBuffer sbQuery = new StringBuffer("SELECT ");
 
         // DISTINCT
         if (query.isDistinct()) {

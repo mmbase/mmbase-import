@@ -9,34 +9,35 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.util;
+import javax.servlet.*;
 import java.util.*;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import java.io.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.BasicFieldList;
-import org.mmbase.util.functions.Function;
+import org.mmbase.util.logging.*;
+import org.mmbase.util.*;
 
 /**
  * Abstract implementation of NodeManager, to minimalize the implementation of a virtual one. Must
  * methods throw UnsupportOperationException (like in {@link
- * org.mmbase.bridge.implementation.VirtualNodeManager}).
+ * org.mmbase.bridge.implementation.VirtualNodeManager}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNodeManager.java,v 1.12 2008-11-06 13:21:36 michiel Exp $
+ * @version $Id: AbstractNodeManager.java,v 1.2.2.1 2007-08-02 10:07:17 michiel Exp $
  * @see org.mmbase.bridge.NodeManager
  * @since MMBase-1.8
  */
 public abstract class AbstractNodeManager extends AbstractNode implements NodeManager {
+    private static final Logger log = Logging.getLoggerInstance(AbstractNodeManager.class);
 
-    protected Map<String, Object> values = new HashMap<String, Object>();
+
+    protected Map values = new HashMap();
     protected final Cloud cloud;
     protected AbstractNodeManager(Cloud c) {
         cloud = c;
     }
 
-    @Override
     protected void setValueWithoutChecks(String fieldName, Object value) {
         values.put(fieldName, value);
     }
@@ -47,7 +48,6 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
         // go ahead
     }
 
-    @Override
     protected void setSize(String fieldName, long size) {
         // never mind
     }
@@ -69,15 +69,15 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
 
 
     public FieldList createFieldList() {
-        return new BasicFieldList(Collections.emptyList(), this);
+        return new BasicFieldList(Collections.EMPTY_LIST, this);
     }
 
     public NodeList createNodeList() {
-        return new CollectionNodeList(BridgeCollections.EMPTY_NODELIST, this);
+        return new CollectionNodeList(Collections.EMPTY_LIST, this);
     }
 
     public RelationList createRelationList() {
-        return new CollectionRelationList(BridgeCollections.EMPTY_RELATIONLIST, this);
+        return new CollectionRelationList(Collections.EMPTY_LIST, this);
     }
 
     public boolean mayCreateNode() {
@@ -97,16 +97,16 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
 
     public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction) { return BridgeCollections.EMPTY_RELATIONMANAGERLIST; }
 
-    public String getInfo(String command) { return getInfo(command, null,null);}
+    public String getInfo(String command) { return getInfo(command, null,null);} 
 
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){ throw new UnsupportedOperationException();}
 
 
-    protected abstract Map<String, Field> getFieldTypes();
+    protected abstract Map getFieldTypes();
 
 
-    public boolean hasField(String fieldName) {
-        Map<String, Field> fieldTypes = getFieldTypes();
+    public  boolean hasField(String fieldName) {
+        Map fieldTypes = getFieldTypes();
         return fieldTypes.isEmpty() || fieldTypes.containsKey(fieldName);
     }
 
@@ -119,7 +119,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     }
 
     public Field getField(String fieldName) throws NotFoundException {
-        Field f = getFieldTypes().get(fieldName);
+        Field f = (Field) getFieldTypes().get(fieldName);
         if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
         return f;
     }
@@ -150,21 +150,21 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     public NodeManager getParent() {
         return null;
     }
-
-
+    
+    
     public String getProperty(String name) {
         return null;
     }
-    public Map<String, String> getProperties() {
-        return Collections.emptyMap();
+    public Map getProperties() {
+        return Collections.EMPTY_MAP;
     }
 
     public NodeManagerList getDescendants() {
         return BridgeCollections.EMPTY_NODEMANAGERLIST;
     }
 
-    public Collection<Function<?>>  getFunctions() {
-        return Collections.emptyList();
+    public Collection  getFunctions() {
+        return Collections.EMPTY_LIST;
     }
 
 }

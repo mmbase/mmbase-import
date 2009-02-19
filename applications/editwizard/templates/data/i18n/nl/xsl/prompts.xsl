@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.29 2008-10-29 13:04:06 michiel Exp $
+  @version $Id: prompts.xsl,v 1.20.2.7 2008-02-14 17:19:33 nklasens Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -50,7 +50,7 @@
 <xsl:variable name="time_at">om</xsl:variable>
 <!-- prompts for a binary field (upload/download) -->
 <xsl:template name="prompt_file_upload">Bestand uploaden</xsl:template>
-<xsl:template name="prompt_uploaded">Geüpload</xsl:template>
+<xsl:template name="prompt_uploaded">geuploaded</xsl:template>
 <xsl:template name="prompt_image_upload" >Upload nieuwe afbeelding</xsl:template>
 <xsl:template name="prompt_image_replace">Vervang afbeelding</xsl:template>
 <xsl:template name="prompt_do_download">Huidig bestand bekijken</xsl:template>
@@ -82,12 +82,12 @@
 <!-- save button prompts and tooltips -->
 <xsl:template name="prompt_save">Opslaan &amp; beëindigen</xsl:template>
 <xsl:template name="prompt_save_only">Opslaan</xsl:template>
-<xsl:variable name="tooltip_save">Bewaar alle wijzigingen en sluit deze taak.</xsl:variable>
+<xsl:variable name="tooltip_save">Bewaar alle wijzigingen.</xsl:variable>
 <xsl:variable name="tooltip_save_only">Bewaar alle wijzigingen, maar ga door met editen.</xsl:variable>
 <xsl:variable name="tooltip_no_save">De wijzigingen kunnen niet worden bewaard, sommige gegevens zijn niet correct ingevoerd.</xsl:variable>
 <!-- cancel button prompts and tooltips -->
 <xsl:template name="prompt_cancel">Annuleren</xsl:template>
-<xsl:variable name="tooltip_cancel">Annuleer deze taak, wijzigingen (sinds de laatste maal 'Opslaan') worden niet bewaard.</xsl:variable>
+<xsl:variable name="tooltip_cancel">Annuleer deze taak, wijzigingen (sinds de laatste 'opslaan')worden niet bewaard.</xsl:variable>
 <xsl:variable name="tooltip_no_cancel">Deze taak kan niet worden afgebroken.</xsl:variable>
 <!-- step (form) button prompts and tooltips -->
 <xsl:template name="prompt_step"><nobr>Stap <xsl:value-of select="position()" /></nobr></xsl:template>
@@ -120,7 +120,6 @@
 <xsl:template name="prompt_search_term" >Termen</xsl:template>
 <xsl:template name="prompt_search" ><img src="{$mediadir}search.gif" border="0" alt="Zoek" /></xsl:template>
 <xsl:variable name="tooltip_search" >Zoek een toe te voegen item</xsl:variable>
-<xsl:variable name="tooltip_search_all">Zoek een toe te voegen item</xsl:variable>
 <xsl:template name="prompt_search_title" >Bevat</xsl:template>
 <xsl:template name="prompt_search_owner" >Eigenaar is</xsl:template>
 <xsl:template name="prompt_search_number" >Nummer is</xsl:template>
@@ -167,7 +166,7 @@
 <xsl:variable name="tooltip_end_search" >Toevoegen</xsl:variable>
 <!-- searchlist error messages for forms validation  -->
 <xsl:variable name="message_pattern" >De waarde {0} volgt niet het vereiste patroon</xsl:variable>
-<xsl:variable name="message_minlength" >Waarde moet minstens {0} karakters lang zijn</xsl:variable>
+<xsl:variable name="message_minlength" >Waarde moet minstens {0} karaktars lang zijn</xsl:variable>
 <xsl:variable name="message_maxlength" >Waarde kan hoogstens {0} karakters lang zijn</xsl:variable>
 <xsl:variable name="message_min" >Waarde moet groter of gelijk zijn aan {0}</xsl:variable>
 <xsl:variable name="message_max" >Waarde moet kleiner of gelijk zijn aan {0}</xsl:variable>

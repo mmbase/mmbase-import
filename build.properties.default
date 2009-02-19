@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.45 2009-01-14 09:22:28 ernst Exp $
+# $Id: build.properties.default,v 1.26.2.6 2008-06-30 09:09:32 ernst Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -26,7 +26,7 @@
 
 # ----- download-path for packages-list and argument for -link of javadoc --
 
-j2se-javadoc.loc=http://java.sun.com/j2se/1.5/docs/api
+j2se-javadoc.loc=http://java.sun.com/j2se/1.4/docs/api
 j2ee-javadoc.loc=http://java.sun.com/j2ee/sdk_1.3/techdocs/api
 jstl-javadoc.loc=http://java.sun.com/products/jsp/jstl/1.1/docs/api
 
@@ -37,49 +37,64 @@ jstl-javadoc.loc=http://java.sun.com/products/jsp/jstl/1.1/docs/api
 # --------------------------------------------------
 
 # ---- Default Sourceforge Mirror ----
-sourceforge.loc=http://www.mirrorservice.org/sites/download.sourceforge.net/pub/sourceforge/
-
+sourceforge.loc=http://heanet.dl.sourceforge.net/sourceforge
 # ---- MMBase.org location ---
 mmbase.loc=http://www.mmbase.org/download/jars
-mmaven.loc=http://www.mmbase.org/maven
 
 
-# ----- Servlet/jsp-api api ----
-servlet.version=2.4
-servlet.file=servletapi-${servlet.version}.jar
-servlet.jar=${download.dir}/${servlet.file}
-servlet.loc=${mmaven.loc}/servletapi/jars/${servlet.file}
-
-jspapi.version=2.0
-jspapi.file=jsp-api-${jspapi.version}.jar
-jspapi.jar=${download.dir}/${jspapi.file}
-jspapi.loc=${mmaven.loc}/jspapi/jars/${jspapi.file}
+# ----- Servlet api ----
+servlet.version=jakarta-servletapi-4
+servlet.file=${servlet.version}.tar.gz
+servlet.dest=${download.dir}/${servlet.file}
+servlet.loc=${mmbase.loc}/jakarta-servletapi/${servlet.file}
+servlet.jar=${expand.dir}/${servlet.version}/lib/servlet.jar
 
 # ----- Hsqldb ----
-hsqldb.version=hsqldb_1_8_0_10
+hsqldb.version=hsqldb_1_8_0_4
 hsqldb.file=${hsqldb.version}.zip
 hsqldb.dest=${download.dir}/${hsqldb.file}
-hsqldb.loc=${sourceforge.loc}/h/hs/hsqldb/${hsqldb.file}
+hsqldb.loc=${sourceforge.loc}/hsqldb/${hsqldb.file}
 hsqldb.dir=${expand.dir}/${hsqldb.version}
 hsqldb.jar=${hsqldb.dir}/hsqldb/lib/hsqldb.jar
 
-# ----- jquery -----
-jquery.version=jquery.ui-1.5b
-jquery.file=${jquery.version}.zip
-jquery.dest=${download.dir}/${jquery.file}
-jquery.loc=http://jqueryjs.googlecode.com/files/jquery.ui-1.5b.zip
-jquery.dir=${expand.dir}/${jquery.version}
-jquery.js=${jquery.dir}/jquery.js
+# ---- Jai, version 1.0.2 ----
+# It's a very old version, but the only one that can be download
+# without expiring urls.
 
+jai-old.version=jai1_0_2-beta
+jai.file=${jai-old.version}-lib-linux-i386.tar.bz2
+jai.dest=${download.dir}/${jai.file}
+jai.dir=${expand.dir}/${jai-old.version}
+
+jai.loc=ftp://ftp.nluug.nl/pub/languages/java/jdk/JAI/1.0.2/i386/${jai.file}
+jai_codec.jar=${jai.dir}/jre/lib/ext/jai_codec.jar
+jai_core.jar=${jai.dir}/jre/lib/ext/jai_core.jar
+mlibwrapper_jai.jar=${jai.dir}/jre/lib/ext/mlibwrapper_jai.jar
+
+# ----- javamail ----
+javamail.version=javamail-1.4
+javamail.fileversion=javamail-1_4
+javamail.file=${javamail.fileversion}.zip
+javamail.dest=${download.dir}/${javamail.file}
+javamail.loc=${mmbase.loc}/javamail/${javamail.file}
+javamail.dir=${expand.dir}/${javamail.version}
+javamail.jar=${javamail.dir}/${javamail.version}/mail.jar
 
 # ----- javaactiovation ----
-javaactivation.version=jaf-1.1
-javaactivation.fileversion=jaf-1_1-fr
+javaactivation.version=jaf-1.0.2
+javaactivation.fileversion=jaf-1_0_2
 javaactivation.file=${javaactivation.fileversion}.zip
 javaactivation.dest=${download.dir}/${javaactivation.file}
 javaactivation.loc=${mmbase.loc}/jaf/${javaactivation.file}
 javaactivation.dir=${expand.dir}/${javaactivation.version}
 javaactivation.jar=${javaactivation.dir}/${javaactivation.version}/activation.jar
+
+# ----- Docbook stylesheets ----------
+docbook-xsl.version=docbook-xsl-1.72.0
+docbook-xsl.file=${docbook-xsl.version}.tar.gz
+docbook-xsl.dest=${download.dir}/${docbook-xsl.file}
+docbook-xsl.loc=http://www.mmbase.org/download/docbook/${docbook-xsl.file}
+docbook-xsl.exp=${expand.dir}/${docbook-xsl.version}
 
 
 # ----- Log4j ----------
@@ -108,19 +123,12 @@ serializer.jar=${expand.dir}/${xalan.fullversion}/serializer.jar
 xerces.jar=${expand.dir}/${xalan.fullversion}/xercesImpl.jar
 xml-apis.jar=${expand.dir}/${xalan.fullversion}/xml-apis.jar
 
-# ----- Jakarta file upload ----------
+# ----- Apache Commons file upload ----------
 fileupload.version=commons-fileupload-1.2
 fileupload.file=${fileupload.version}.tar.gz
 fileupload.dest=${download.dir}/${fileupload.file}
 fileupload.loc=http://www.mmbase.org/download/jars/${fileupload.file}
 fileupload.jar=${expand.dir}/${fileupload.version}/lib/${fileupload.version}.jar
-
-# ----- Commons Logging ----------
-commons-logging.version=commons-logging-1.0.4
-commons-logging.file=${commons-logging.version}.tar.gz
-commons-logging.dest=${download.dir}/${commons-logging.file}
-commons-logging.loc=http://archive.apache.org/dist/commons/logging/binaries/${commons-logging.file}
-commons-logging.jar=${expand.dir}/${commons-logging.version}/commons-logging.jar
 
 # ----- Apache Commons IO ----------
 io.version=commons-io-1.4
@@ -129,7 +137,6 @@ io.dest=${download.dir}/${io.file}
 io.loc=http://www.mmbase.org/download/jars/${io.file}
 io.jar=${expand.dir}/${io.version}/${io.version}.jar
 
-
 # ----- Standard taglib + jstl ------------
 taglibs-standard.version=jakarta-taglibs-standard-1.1.2
 taglibs-standard.file=${taglibs-standard.version}.tar.gz
@@ -137,6 +144,15 @@ taglibs-standard.dest=${download.dir}/${taglibs-standard.file}
 taglibs-standard.loc=http://www.mmbase.org/download/jars/${taglibs-standard.file}
 taglibs-standard-jstl.jar=${expand.dir}/${taglibs-standard.version}/lib/jstl.jar
 taglibs-standard-standard.jar=${expand.dir}/${taglibs-standard.version}/lib/standard.jar
+
+
+# ----- 1.5 backport --
+#http://www.mathcs.emory.edu/dcl/util/backport-util-concurrent/dist/backport-util-concurrent-1.0/
+backport-util-concurrent.version=backport-util-concurrent-2.1
+backport-util-concurrent.file=${backport-util-concurrent.version}.tar.gz
+backport-util-concurrent.dest=${download.dir}/${backport-util-concurrent.file}
+backport-util-concurrent.loc=http://www.mmbase.org/download/${backport-util-concurrent.file}
+backport-util-concurrent.jar=${expand.dir}/${backport-util-concurrent.version}/backport-util-concurrent.jar
 
 
 # ----- Jakarta commons collections ----------
@@ -151,7 +167,7 @@ taglibs-standard-standard.jar=${expand.dir}/${taglibs-standard.version}/lib/stan
 
 # ----- javacc ----
 #https://javacc.dev.java.net/files/documents/17/13959/javacc-4.0beta1.tar.gz
-javacc.version=4.0
+javacc.version=4.0beta1
 javacc.file=javacc-${javacc.version}.tar.gz
 javacc.dest=${download.dir}/${javacc.file}
 javacc.loc=http://www.mmbase.org/download/javacc/${javacc.file}

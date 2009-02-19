@@ -1,5 +1,4 @@
 <mm:content 
-    unacceptable="Please use a better browser"
     type="application/xhtml+xml" language="client" expires="0" postprocessor="none" jspvar="locale"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -19,7 +18,7 @@
          
          TODO: Some way to edit relations? NODE-field editor?
          
-         $Id: multiple.jspx,v 1.2 2007-07-12 08:54:40 michiel Exp $
+         $Id: multiple.jspx,v 1.1 2006-07-15 15:28:30 michiel Exp $
     -->
     <mm:include page="head.jspx" />
     

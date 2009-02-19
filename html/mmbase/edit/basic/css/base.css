@@ -43,6 +43,7 @@ input {
 .mm_check_error {
   background-color: yellow;
 }
+
 .mm_check_error span {
   display: inline;
   border-left: none;
@@ -66,7 +67,6 @@ p.foot2 {
   margin-top: 0px;
   float: right;
 }
-
 
 .nmname {
   display: block;

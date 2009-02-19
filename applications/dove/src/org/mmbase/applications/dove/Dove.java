@@ -11,13 +11,12 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.dove;
 
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.regex.Pattern;
 import org.w3c.dom.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.Node;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
+import org.mmbase.module.builders.*;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.util.Casting;
 import org.mmbase.util.Encode;
@@ -55,7 +54,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.101 2009-01-13 14:24:49 michiel Exp $
+ * @version $Id: Dove.java,v 1.78.2.10 2008-07-27 14:51:54 andre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -70,6 +69,8 @@ public class Dove extends AbstractDove {
     private static final String PROP_CHANGES = "changes";
     private static final String CHANGES_IGNORE = "ignore";
     private static final String CHANGES_WARN   = "warn";
+    private static final String CHANGES_EXCEPTION   = "exception";
+
     /**
      * Constructor
      * @param doc the Document that is constructed. This should only be used to
@@ -92,8 +93,8 @@ public class Dove extends AbstractDove {
     private boolean isDataField(NodeManager nodeManager, Field f) {
         String fname = f.getName();
         return (nodeManager.hasField(fname)) && // skip temporary fields
-            (!"owner".equals(fname)) && // skip owner/otype/number fields!
-            (!"otype".equals(fname)) &&
+            (!"owner".equals(fname)) &&
+            (!"otype".equals(fname)) && // skip owner/otype/number fields!
             (!"number".equals(fname)) &&
             (!"snumber".equals(fname)) &&
             (!"dnumber".equals(fname)) &&
@@ -115,8 +116,10 @@ public class Dove extends AbstractDove {
     }
 
     private boolean isEditableField(NodeManager nodeManager, String fname) {
-        return isDataField(nodeManager, fname) && !nodeManager.getField(fname).isReadOnly();
+        return isDataField(nodeManager, fname) && ! nodeManager.getField(fname).isReadOnly();
     }
+
+
 
     /**
      * @since MMBase-1.8.4
@@ -126,6 +129,7 @@ public class Dove extends AbstractDove {
         DataType dataType = f.getDataType();
         String fname = f.getName();
         if (dataType instanceof BinaryDataType) {
+            log.debug("Adding '" + fname + "'");
             fel = addContentElement(FIELD, "", out);
 
             long byteLength = 0;
@@ -141,34 +145,36 @@ public class Dove extends AbstractDove {
                    dataType instanceof IntegerDataType ||
                    dataType instanceof LongDataType
                                ) {
+            log.debug("Adding '" + fname + "'");
             // have to convert ourselves because bridge will use user-defined formatting
             fel = addContentElement(FIELD, node.isNull(fname) ? null : "" + node.getLongValue(fname), out);
         } else {
+            log.debug("Adding '" + fname + "' ->" + node.getStringValue(fname));
             fel = addContentElement(FIELD, node.isNull(fname) ? null : node.getStringValue(fname), out);
         }
-
         fel.setAttribute(ELM_TYPE, dataType.getBaseTypeIdentifier());
         fel.setAttribute(ELM_NAME, fname);
         fel.setAttribute("nodemanager", nm.getName());
-        Iterator<Map.Entry<?, String>> i = getOptionList(dataType, node.getCloud(), node, f);
+        Iterator i = getOptionList(dataType, node.getCloud(), node, f);
         if (i != null) {
             Element ol = addContentElement("optionlist", "", out);
             ol.setAttribute("name", "_" + node.getNodeManager().getName() + "_" + f.getName());
             while (i.hasNext()) {
-                Map.Entry<?, String> entry = i.next();
+                Map.Entry  entry = (Map.Entry) i.next();
                 Object key = entry.getKey();
                 if (dataType instanceof BooleanDataType) { // These damn wizards use integer for
                                                            // booleans. Don't ask me why. It's stupid.
                     key =  "" + Casting.toInt(key);
                 }
-                Element o = addContentElement("option", Casting.toString(entry.getValue()), ol);
-                o.setAttribute("id", Casting.toString(key));
+                Element o = addContentElement("option", "" + entry.getValue(), ol);
+                o.setAttribute("id", "" + key);
             }
         }
         return fel;
     }
-    private Iterator<Map.Entry<?, String>>  getOptionList(DataType dataType, Cloud cloud, org.mmbase.bridge.Node node, Field f) {
-        Iterator<Map.Entry<?, String>> i = dataType.getEnumerationValues(cloud.getLocale(), cloud, node, f);
+
+    private Iterator  getOptionList(DataType dataType, Cloud cloud, org.mmbase.bridge.Node node, Field f) {
+        Iterator i = dataType.getEnumerationValues(cloud.getLocale(), cloud, node, f);
         if (i != null) return i;
 
         long min = Long.MIN_VALUE;
@@ -188,14 +194,14 @@ public class Dove extends AbstractDove {
         if ((double) max - min < 200.0) {
             final long end = max;
             final long start = min;
-            return new Iterator<Map.Entry<?, String>>() {
+            return new Iterator() {
                 long value = start;
                 public boolean hasNext() {
                     return value <= end;
                 }
-                public Map.Entry<?, String> next() {
+                public Object next() {
                     Long v = new Long(value++);
-                    return new org.mmbase.util.Entry<Long, String>(v, "" + v);
+                    return new org.mmbase.util.Entry(v, v);
                 }
                 public void remove() {
                     throw new UnsupportedOperationException();
@@ -205,7 +211,6 @@ public class Dove extends AbstractDove {
         return null;
 
     }
-
     /**
      * Handles a node storing its content in a DOM element.
      * This method accepts a object to store, as well as a DOM element, which
@@ -238,7 +243,8 @@ public class Dove extends AbstractDove {
         if (field == null) {
             for (FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
                 Field f = i.nextField();
-                if (isDataField(nm, f)) {
+                String fname = f.getName();
+                if (isDataField(nm,f)) {
                     addField(out, nm, f, node);
                 }
             }
@@ -248,7 +254,7 @@ public class Dove extends AbstractDove {
                 if ((fname == null) || (fname.equals(""))) {
                     Element err = addContentElement(ERROR, "name required for field",out);
                     err.setAttribute(ELM_TYPE, IS_PARSER);
-                } else if (isDataField(nm, fname)) {
+                } else if (isDataField(nm,fname)) {
                     Field f = nm.getField(fname);
                     addField(out, nm, f, node);
                 } else {
@@ -305,15 +311,15 @@ public class Dove extends AbstractDove {
      * @param nd the MMBase node that shoudl eb sued to query the relations
      */
     protected void addRelationNodes(Element relation, Element out, org.mmbase.bridge.Node nd) {
-        int thisNumber = nd.getNumber();
-        String role = relation.getAttribute(ELM_ROLE);
-        if ("".equals(role)) role = null;
+        int thisNumber=nd.getNumber();
+        String role=relation.getAttribute(ELM_ROLE);
+        if ("".equals(role)) role=null;
         String destinationType = relation.getAttribute(ELM_DESTINATIONTYPE);
         if (("".equals(destinationType)) || (destinationType==null)) {
             destinationType = relation.getAttribute(ELM_DESTINATION);
         }
-        if ("".equals(destinationType)) destinationType = null;
-        int searchDir = 0;
+        if ("".equals(destinationType)) destinationType=null;
+        int searchDir=0;
         String searchDirs = relation.getAttribute(ELM_SEARCHDIR).toLowerCase();
         if("destination".equals(searchDirs)) {
             searchDir = 1;
@@ -322,20 +328,20 @@ public class Dove extends AbstractDove {
         }
 
         // determines whether to load the object (and possible restrictions)
-        Element objectDef = getFirstElement(relation,OBJECT);
-        for (RelationIterator i = nd.getRelations(role,destinationType).relationIterator(); i.hasNext(); ) {
-            Relation nrel=i.nextRelation();
-            if (searchDir == 1) {
-                if (thisNumber != nrel.getIntValue("snumber")) continue;
+        Element objectDef = getFirstElement(relation, OBJECT);
+        for (RelationIterator i = nd.getRelations(role, destinationType).relationIterator(); i.hasNext(); ) {
+            Relation nrel = i.nextRelation();
+            if (searchDir ==1) {
+                if (thisNumber!=nrel.getIntValue("snumber")) continue;
             }
-            if (searchDir == 2) {
-                if (thisNumber != nrel.getIntValue("dnumber")) continue;
+            if (searchDir==2) {
+                if (thisNumber!=nrel.getIntValue("dnumber")) continue;
             }
             Element data=doc.createElement(RELATION);
             if (role!=null) {
                 data.setAttribute(ELM_ROLE, role);
             } else {
-                data.setAttribute(ELM_ROLE, nrel.getRelationManager().getForwardRole());
+                data.setAttribute(ELM_ROLE,nrel.getRelationManager().getForwardRole());
             }
             data.setAttribute(ELM_SOURCE,      "" + nrel.getIntValue("snumber"));
             data.setAttribute(ELM_DESTINATION, "" + nrel.getIntValue("dnumber"));
@@ -351,9 +357,9 @@ public class Dove extends AbstractDove {
             getDataNode(relation, data, nrel);
             if (objectDef != null) {
                 Element nodeData = doc.createElement(OBJECT);
-                nodeData.setAttribute(ELM_NUMBER, "" + otherNumber);
+                nodeData.setAttribute(ELM_NUMBER, ""+otherNumber);
                 data.appendChild(nodeData);
-                getDataNode(objectDef, nodeData, nd.getCloud().getNode(otherNumber));
+                getDataNode(objectDef, nodeData,nd.getCloud().getNode(otherNumber));
                 nodeData.setAttribute(ELM_SEARCHTYPE, destinationType);
             }
         }
@@ -379,7 +385,7 @@ public class Dove extends AbstractDove {
         NodeManager nm=nd.getNodeManager();
         out.setAttribute(ELM_TYPE,nm.getName());
 
-        Element relation=getFirstElement(in,RELATION);
+        Element relation=getFirstElement(in, RELATION);
         if (relation==null) {
             int thisNumber=nd.getNumber();
             for (RelationIterator i=nd.getRelations().relationIterator(); i.hasNext(); ) {
@@ -387,7 +393,7 @@ public class Dove extends AbstractDove {
                 Element data=doc.createElement(RELATION);
                 data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
                 data.setAttribute(ELM_ROLE, nrel.getRelationManager().getForwardRole());
-                if (thisNumber == nrel.getIntValue("snumber")) {
+                if (thisNumber==nrel.getIntValue("snumber")) {
                     data.setAttribute(ELM_SOURCE, ""+nrel.getIntValue("snumber"));
                     data.setAttribute(ELM_DESTINATION, ""+nrel.getIntValue("dnumber"));
                 } else {
@@ -395,7 +401,7 @@ public class Dove extends AbstractDove {
                     data.setAttribute(ELM_DESTINATION, ""+nrel.getIntValue("snumber"));
                 }
                 out.appendChild(data);
-                getDataNode(null,data,nrel);
+                getDataNode(null, data, nrel);
             }
         } else {
             while (relation!=null) { // select all child tags, should be 'relation'
@@ -403,6 +409,7 @@ public class Dove extends AbstractDove {
                 relation=getNextElement(relation,RELATION);
             }
         }
+
     }
 
     /**
@@ -439,7 +446,7 @@ public class Dove extends AbstractDove {
                 Element err = addContentElement(ERROR,"Unknown subtag in getdata: "+node.getTagName(),out);
                 err.setAttribute(ELM_TYPE, IS_PARSER);
             }
-            node = getNextElement(node);
+            node=getNextElement(node);
         }
     }
 
@@ -461,8 +468,8 @@ public class Dove extends AbstractDove {
             Element err = addContentElement(ERROR,"type required for getnew",out);
             err.setAttribute(ELM_TYPE, IS_PARSER);
         } else {
-            out.setAttribute(ELM_TYPE,nodemanagername);
-            NodeManager nm =cloud.getNodeManager(nodemanagername);
+            out.setAttribute(ELM_TYPE, nodemanagername);
+            NodeManager nm = cloud.getNodeManager(nodemanagername);
             org.mmbase.bridge.Node n = nm.createNode();
             try {
                 Element data=doc.createElement(OBJECT);
@@ -501,36 +508,37 @@ public class Dove extends AbstractDove {
             Element err = addContentElement(ERROR,"role required for getrelations",out);
             err.setAttribute(ELM_TYPE, IS_PARSER);
         } else {
-            out.setAttribute(ELM_ROLE,rolename);
-            out.setAttribute(ELM_DESTINATION, destination);
-            out.setAttribute(ELM_SOURCE, source);
-            // if both types are given, use these as a constraint for the Relationmanager
-            RelationManager nm;
-            if (destinationType.equals("") || sourceType.equals("") ) {
-                nm =cloud.getRelationManager(rolename);
-            } else {
-                nm =cloud.getRelationManager(sourceType,destinationType,rolename);
-            }
-            org.mmbase.bridge.Node n = nm.createNode();
-            try {
-                Element data=doc.createElement(RELATION);
-                int number=java.lang.Math.abs(n.getNumber());
-                data.setAttribute(ELM_NUMBER, "n"+number);
-                if (createDir == RelationStep.DIRECTIONS_SOURCE) {
-                    log.debug("Creating relation in the INVERSE direction");
-                    data.setAttribute(ELM_DESTINATION, source);
-                    data.setAttribute(ELM_SOURCE, destination);
+                out.setAttribute(ELM_ROLE,rolename);
+                out.setAttribute(ELM_DESTINATION, destination);
+                out.setAttribute(ELM_SOURCE, source);
+                // if both types are given, use these as a constraint for the Relationmanager
+                RelationManager nm;
+                if (destinationType.equals("") || sourceType.equals("") ) {
+                    nm = cloud.getRelationManager(rolename);
                 } else {
-                    log.debug("Creating relation in the NORMAL direction");
-                    data.setAttribute(ELM_DESTINATION, destination);
-                    data.setAttribute(ELM_SOURCE, source);
+                    nm = cloud.getRelationManager(sourceType,destinationType,rolename);
                 }
-                data.setAttribute(ELM_ROLE,rolename);
-                out.appendChild(data);
-                getDataNode(null, data, n);
-            } finally  {
-                n.cancel();  // have to cancel node !
-            }
+                org.mmbase.bridge.Node n = nm.createNode();
+                try {
+                    Element data=doc.createElement(RELATION);
+                    int number=java.lang.Math.abs(n.getNumber());
+                    data.setAttribute(ELM_NUMBER, "n" + number);
+                    if (createDir == RelationStep.DIRECTIONS_SOURCE) {
+                        log.debug("Creating relation in the INVERSE direction");
+                        data.setAttribute(ELM_DESTINATION, source);
+                        data.setAttribute(ELM_SOURCE, destination);
+                    } else {
+                        log.debug("Creating relation in the NORMAL direction");
+                        data.setAttribute(ELM_DESTINATION, destination);
+                        data.setAttribute(ELM_SOURCE, source);
+                    }
+                    data.setAttribute(ELM_ROLE,rolename);
+                    out.appendChild(data);
+                    getDataNode(null, data, n);
+                } finally  {
+                    n.cancel();  // have to cancel node !
+                }
+
         }
     }
 
@@ -599,18 +607,16 @@ public class Dove extends AbstractDove {
             }
 
             // singular name
-            Element elm = addContentElement(SINGULARNAME, nm.getGUIName(NodeManager.GUI_SINGULAR, locale), out);
-            if (lang != null) {
-                elm.setAttribute(ELM_LANG, lang);
-            }
+            Element elm=addContentElement(SINGULARNAME,nm.getGUIName(NodeManager.GUI_SINGULAR,locale),out);
+            if (lang!=null) elm.setAttribute(ELM_LANG,lang);
 
             // plural name
-            elm = addContentElement(PLURALNAME, nm.getGUIName(NodeManager.GUI_PLURAL, locale), out);
-            if (lang != null) elm.setAttribute(ELM_LANG, lang);
+            elm=addContentElement(PLURALNAME,nm.getGUIName(NodeManager.GUI_PLURAL,locale),out);
+            if (lang!=null) elm.setAttribute(ELM_LANG,lang);
 
-                // description
-            elm = addContentElement(DESCRIPTION, nm.getDescription(locale), out);
-            if (lang != null) elm.setAttribute(ELM_LANG, lang);
+            // description
+            elm=addContentElement(DESCRIPTION,nm.getDescription(locale),out);
+            if (lang!=null) elm.setAttribute(ELM_LANG,lang);
 
             // parent
             try {
@@ -635,7 +641,7 @@ public class Dove extends AbstractDove {
             }
 
             // fields
-            Element fields = doc.createElement(FIELDS);
+            Element fields=doc.createElement(FIELDS);
             out.appendChild(fields);
             for(FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
                 Field fielddef = i.nextField();
@@ -643,26 +649,23 @@ public class Dove extends AbstractDove {
                 // Filter out the owner/otype/number/CacheCount fields and
                 // the virtual fields.
                 if (isDataField(nm, fielddef)) {
-                    Element field = doc.createElement(FIELD);
-                    field.setAttribute(ELM_NAME, fname);
+                    Element field=doc.createElement(FIELD);
+                    field.setAttribute(ELM_NAME,fname);
                     fields.appendChild(field);
                     // guiname (XXX:language is ignored)
-                    elm = addContentElement(GUINAME, fielddef.getGUIName(locale), field);
-                    elm = addContentElement(DESCRIPTION, fielddef.getDescription(locale), field);
+                    elm = addContentElement(GUINAME, fielddef.getGUIName(locale),field);
+                    elm = addContentElement(DESCRIPTION, fielddef.getDescription(locale),field);
                     if (lang != null) elm.setAttribute(ELM_LANG, lang);
                     // guitype
                     DataType dataType = fielddef.getDataType();
-                    // The written type will be the first non-anonymous origin (or self).
                     String baseType = dataType.getBaseTypeIdentifier();
-
-                    DataType specializationDataType = dataType;
-                    String specialization = specializationDataType.getName();
-                    while (specialization == null || "".equals(specialization)) {
-                        specializationDataType = specializationDataType.getOrigin();
-                        if (specializationDataType == null) break;
-                        specialization = specializationDataType.getName();
+                    String specialization = dataType.getName();
+                    if ("".equals(specialization)) {
+                        DataType origin = dataType.getOrigin();
+                        if (origin != null) {
+                            specialization = origin.getName();
+                        }
                     }
-                    log.debug("Found for " + fname + ": " +  specialization);
                     if (getOptionList(dataType, nm.getCloud(), null, fielddef) != null) {
                         specialization = "enum";
                     } else if (dataType instanceof StringDataType) {
@@ -679,7 +682,6 @@ public class Dove extends AbstractDove {
                     } else if (specialization.equals("newfile")) {
                         specialization = "file";
                     } else {
-
                         // backward compatibility: NODE and XML are passed as int and string
                         // TODO: should change ?
                         if (dataType instanceof NodeDataType) {
@@ -691,20 +693,16 @@ public class Dove extends AbstractDove {
                             if (p.matcher("image/someimageformat").matches() &&
                                 ! p.matcher("application/nonimageformat").matches()) {
                                 specialization = "image";
-                            } else if (p.matcher("application/x-shockwave-flash").matches() ||
-                                       ! p.matcher("application/nonflashformat").matches()) {
-                                specialization = "flash";
                             } else {
                                 specialization = "file";
                             }
                         }
                     }
                     String guiType = baseType + "/" + specialization;
-                    log.debug("gui found for " + fname + " " + guiType);
-                    addContentElement(GUITYPE, guiType, field);
 
+                    addContentElement(GUITYPE, guiType, field);
                     int maxLength = fielddef.getMaxLength();
-                    if (maxLength > 0) {
+                    if (maxLength>0) {
                         addContentElement(MAXLENGTH, "" + maxLength, field);
                     }
 
@@ -720,6 +718,7 @@ public class Dove extends AbstractDove {
             out.appendChild(relations);
             // XXX: getAllowedRelations is not yet supported by the MMCI
             // This code commented out
+
         }
     }
 
@@ -740,8 +739,8 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      */
     public void getList(Element in, Element out, Cloud cloud) {
-        Element query=getFirstElement(in);
-        while (query!=null) { // select all child tags, should be 'query'
+        Element query = getFirstElement(in);
+        while (query != null) { // select all child tags, should be 'query'
             if (query.getTagName().equals(QUERY)) {
                 String xpath = query.getAttribute(ELM_XPATH); // get xpath (nodetype);
                 String where = query.getAttribute(ELM_WHERE); // get constraints;
@@ -758,7 +757,7 @@ public class Dove extends AbstractDove {
                     if (!where.equals("")) {
                         querydata.setAttribute(ELM_WHERE, where);
                     }
-                    if (orderby != null) {
+                    if (orderby!=null) {
                         querydata.setAttribute(ELM_ORDERBY, orderby);
                     }
                     if (directions != null) {
@@ -769,18 +768,17 @@ public class Dove extends AbstractDove {
                     // get node template
                     Element node = getFirstElement(query);
 
-                    if (xpath.indexOf("/*@")!=0) {
+                    if (xpath.indexOf("/*@") != 0) {
                         Element err = addContentElement(ERROR,"invalid xpath",out);
                         err.setAttribute(ELM_TYPE, IS_CLIENT);
                     } else {
                         String nodepath = xpath.substring(3);
-
                         NodeIterator i = null;
 
                         if (nodepath.indexOf("/") == -1) {
                             // If there is no '/' seperator, we only get fields from one nodemanager. This is the fastest
                             // way of getting those.
-                            i = cloud.getNodeManager(nodepath).getList(where,orderby,directions).nodeIterator();
+                            i = cloud.getNodeManager(nodepath).getList(where, orderby, directions).nodeIterator();
                         } else {
                             // If there are '/' seperators, we need to do a multilevel search. Therefore we first need to
                             // get a list of all the fields (as subnodes) to query.
@@ -789,9 +787,8 @@ public class Dove extends AbstractDove {
                             nodepath = nodepath.replace('/', ',');
                             while (field != null) {
                                 String fname = field.getAttribute(ELM_NAME);
-                                if (!fields.equals("")) {
+                                if (!fields.equals(""))
                                     fields += ",";
-                                }
                                 fields += fname;
                                 field = getNextElement(field, FIELD);
                             }
@@ -827,12 +824,12 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @param repository Repository that contains the blobs
      */
-    public void put(Element in, Element out, Cloud cloud, Map<String,byte[]> repository) {
+    public void put(Element in, Element out, Cloud cloud, Map repository) {
         // first collect all new and original nodes
-        Map<String, Map<String, Object>> originalNodes     = new HashMap<String, Map<String, Object>>();
-        Map<String, Map<String, Object>> newNodes = new HashMap<String, Map<String, Object>>();
-        Map<String, Map<String, Object>> originalRelations = new HashMap<String, Map<String, Object>>();
-        Map<String, Map<String, Object>> newRelations      = new HashMap<String, Map<String, Object>>();
+        Map originalNodes     = new HashMap();
+        Map newNodes          = new HashMap();
+        Map originalRelations = new HashMap();
+        Map newRelations      = new HashMap();
 
         // get all the needed info from the xml stream
         Element query = getFirstElement(in);
@@ -846,7 +843,7 @@ public class Dove extends AbstractDove {
                         boolean isRelation = node.getTagName().equals(RELATION);
 
                         // store the values of one node
-                        Map<String, Object> values = new HashMap<String, Object>();
+                        Map values = new HashMap();
                         if (isRelation) {
                             if (isOriginal) {
                                 originalRelations.put(node.getAttribute(ELM_NUMBER), values);
@@ -857,11 +854,11 @@ public class Dove extends AbstractDove {
                             if (isOriginal) {
                                 originalNodes.put(node.getAttribute(ELM_NUMBER), values);
                             } else {
-                                newNodes.put(node.getAttribute(ELM_NUMBER), values);
+                                newNodes.put(node.getAttribute(ELM_NUMBER),values);
                             }
                         }
                         if (! isOriginal) {
-                            values.put("_status", node.getAttribute(ELM_STATUS));
+                            values.put("_status",node.getAttribute(ELM_STATUS));
                         }
 
                         String context = node.getAttribute(ELM_CONTEXT);
@@ -871,10 +868,10 @@ public class Dove extends AbstractDove {
 
                         if (isRelation) {
                             String role = node.getAttribute(ELM_ROLE);
-                            if (role!=null) values.put("_role", role);
+                            if (role!=null) values.put("_role",role);
 
                             String source = node.getAttribute(ELM_SOURCE);
-                            if (source!=null) values.put("_source", source);
+                            if (source!=null) values.put("_source",source);
 
                             String destination = node.getAttribute(ELM_DESTINATION);
                             if (destination!=null) values.put("_destination", destination);
@@ -890,7 +887,7 @@ public class Dove extends AbstractDove {
                                 String encoding = field.getAttribute(ELM_ENCODING);
                                 if (!href.equals("")) {
                                     // binary data.
-                                    byte[] repval = repository.get(href);
+                                    Object repval = repository.get(href);
                                     if (repval != null) {
                                         values.put(fieldname, repval);
                                         // also retrieve and set filename
@@ -921,23 +918,25 @@ public class Dove extends AbstractDove {
         // are there new nodes to handle ?
         if (newNodes.size() > 0 || newRelations.size() > 0) {
             Transaction trans = cloud.createTransaction();
-            Map<Node, Element> addedNodes     = new HashMap<Node, Element> ();
-            Map<Relation, Element> addedRelations = new HashMap<Relation, Element>();
+            Map addedNodes     = new HashMap ();
+            Map addedRelations = new HashMap();
             if (mergeClouds(originalNodes, newNodes, originalRelations, newRelations, addedNodes, addedRelations, out, trans) ) {
                 trans.commit();
                 // retrieve all numbers and reset them to the right value
                 // This is possible, as the nodes themselves contain this info after the
                 // transaction
                 //
-                for (Entry<Node, Element> me : addedNodes.entrySet()) {
-                    org.mmbase.bridge.Node n = me.getKey();
-                    Element oe = me.getValue();
+                for (Iterator i = addedNodes.entrySet().iterator(); i.hasNext(); ) {
+                    Map.Entry me=(Map.Entry)i.next();
+                    org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
+                    Element oe = (Element)me.getValue();
                     oe.setAttribute(ELM_NUMBER, n.getStringValue("number"));
                 }
                 // retrieve all numbers, snumbers, dnumbers and reset them to the right value
-                for (Entry<Relation, Element> me : addedRelations.entrySet()) {
-                    Relation n = me.getKey();
-                    Element re = me.getValue();
+                for (Iterator i = addedRelations.entrySet().iterator(); i.hasNext(); ) {
+                    Map.Entry me=(Map.Entry)i.next();
+                    org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
+                    Element re = (Element)me.getValue();
                     re.setAttribute(ELM_NUMBER, n.getStringValue("number"));
                     re.setAttribute(ELM_SOURCE, "" + n.getIntValue("snumber"));
                     re.setAttribute(ELM_DESTINATION, "" + n.getIntValue("dnumber"));
@@ -957,15 +956,15 @@ public class Dove extends AbstractDove {
      * @param aliases a Map with mappings from XML aliases to node reference values
      * @return the node reference value
      */
-    protected String getNodeReferenceFromValue(String name, Map<String, Object> values, Map<String, Integer> aliases) {
-        String result = null;
-        String value = (String) values.get(name);
-        Object tmp = aliases.get(value);
-        if (tmp == null) {
+    protected String getNodeReferenceFromValue(String name, Map values, Map aliases) {
+        String result=null;
+        String value=(String)values.get(name);
+        Object tmp=aliases.get(value);
+        if (tmp==null) {
             // oke its not a temporary alias, return the original value
-            result = value;
+            result=value;
         } else {
-            result = ""+tmp;
+            result=""+tmp;
         }
         return result;
     }
@@ -981,7 +980,7 @@ public class Dove extends AbstractDove {
      * @param values a Map with new node values
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element objectelement, Map<String,Object> values) {
+    protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element objectelement, Map values) {
         return fillFields(alias, node, objectelement, values, null);
     }
 
@@ -998,14 +997,15 @@ public class Dove extends AbstractDove {
      *        if <code>null</code>, no checking takes place
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element out, Map<String,Object> values, Map<String,Object> originalValues) {
+    protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element out, Map values, Map originalValues) {
         node.getCloud().setProperty(Cloud.PROP_XMLMODE, "flat");
-        for (Entry<String, Object> me : values.entrySet()) {
-            String key = me.getKey();
+        for (Iterator i = values.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry me = (Map.Entry)i.next();
+            String key = (String)me.getKey();
             if (isEditableField(node.getNodeManager(),key)) {
                 Object value = me.getValue();
                 DataType dt = node.getNodeManager().getField(key).getDataType();
-                String changes = properties.getProperties().get(PROP_CHANGES);
+                String changes = (String) properties.getProperties().get(PROP_CHANGES);
                 if ((! CHANGES_IGNORE.equals(changes)) &&
                     (originalValues != null) &&
                     (!(value instanceof byte[])) && (!"binary".equals(dt.getBaseTypeIdentifier())) ) { // XXX: currently, we do not validate on byte fields
@@ -1034,7 +1034,10 @@ public class Dove extends AbstractDove {
                         if (CHANGES_WARN.equals(changes)) {
                             log.warn(message);
                         } else {
-                            throw new RuntimeException(message);
+                            log.debug(message);
+                            Element err = addContentElement(ERROR, message, out);
+                            err.setAttribute(ELM_TYPE, IS_SERVER);
+                            return false;
                         }
                     }
                 }
@@ -1071,7 +1074,7 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putNewNode(String alias, Map<String, Object> values, Map<String, Integer> aliases, Map<Node, Element> addedNodes, Element out, Cloud cloud) {
+    protected boolean putNewNode(String alias, Map values, Map aliases, Map addedNodes, Element out, Cloud cloud) {
         String type = (String) values.get("_otype");
 
         NodeManager nm = cloud.getNodeManager(type);
@@ -1089,13 +1092,14 @@ public class Dove extends AbstractDove {
         if (log.isDebugEnabled()) {
             log.debug("Created new node " + number);
         }
-        aliases.put(alias, Integer.valueOf(number));
-        objectelement.setAttribute(ELM_NUMBER, "" + number);
+        aliases.put(alias,new Integer(number));
+        objectelement.setAttribute(ELM_NUMBER,""+number);
         objectelement.setAttribute(ELM_OLDNUMBER, alias);
         // keep in transaction for later update...
-        addedNodes.put(newnode, objectelement);
+        addedNodes.put(newnode,objectelement);
         // add node to response
         out.appendChild(objectelement);
+
         return true;
     }
 
@@ -1112,8 +1116,8 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putNewRelation(String alias, Map<String,Object> values, Map<String, Integer> aliases, Map<Relation, Element> addedRelations, Element out, Cloud cloud) {
-        String role = (String) values.get("_role");
+    protected boolean putNewRelation(String alias, Map values, Map aliases, Map addedRelations, Element out, Cloud cloud) {
+        String role=(String)values.get("_role");
 
         RelationManager relman=cloud.getRelationManager(role);
         String sourcenumber=getNodeReferenceFromValue("_source",values, aliases);
@@ -1129,17 +1133,17 @@ public class Dove extends AbstractDove {
         fillFields(alias,newnode,relationelement,values);
 
         String context = (String) values.get("_context");
-        if (context!=null) {
+        if (context != null) {
             newnode.setContext(context);
         }
         newnode.commit();
         int number = newnode.getNumber();
         if (log.isServiceEnabled()) log.service("Created new relation " + number);
-        aliases.put(alias, Integer.valueOf(number));
+        aliases.put(alias, new Integer(number));
         // keep in transaction for later update...
         addedRelations.put(newnode,relationelement);
         // add node to response
-        relationelement.setAttribute(ELM_NUMBER, "" + number); // result in transaction ???
+        relationelement.setAttribute(ELM_NUMBER,""+number); // result in transaction ???
         out.appendChild(relationelement);
         return true;
 
@@ -1156,12 +1160,14 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putDeleteNode(String alias, Map<String,Object> originalValues, Element out, Cloud cloud) {
+    protected boolean putDeleteNode(String alias, Map originalValues, Element out, Cloud cloud) {
         // check if this org node is also found in
         // mmbase cloud and if its still the same
         // also check if its the same type
         String type = (String)originalValues.get("_otype");
+
         NodeManager nm = cloud.getNodeManager(type);
+
         org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
         if (mmbaseNode.getNodeManager().getName().equals(nm.getName()) ) {
             mmbaseNode.delete(true);
@@ -1185,9 +1191,11 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putDeleteRelation(String alias, Map<String,Object> originalValues, Element out, Cloud cloud) {
+    protected boolean putDeleteRelation(String alias, Map originalValues, Element out, Cloud cloud) {
         String role = (String)originalValues.get("_role");
+
         RelationManager relman = cloud.getRelationManager(role);
+
         org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
         // check if they are the same type
         if (mmbaseNode.getNodeManager().getName().equals(relman.getName()) ) {
@@ -1257,12 +1265,14 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putChangeNode(String alias, Map<String,Object> values, Map<String,Object> originalValues, Map<String, Integer> aliases, Element out, Cloud cloud) {
+    protected boolean putChangeNode(String alias, Map values, Map originalValues, Map aliases, Element out, Cloud cloud) {
         // now check if this org node is also found in
         // mmbase cloud and if its still the same
         // also check if its the same type
         String type = (String)values.get("_otype");
+
         NodeManager nm = cloud.getNodeManager(type);
+
         org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
         // check if they are the same type
         if (mmbaseNode.getNodeManager().getName().equals(nm.getName()) ) {
@@ -1284,6 +1294,7 @@ public class Dove extends AbstractDove {
             err.setAttribute(ELM_TYPE, IS_SERVER);
             return false;
         }
+
     }
 
     /**
@@ -1301,18 +1312,21 @@ public class Dove extends AbstractDove {
      *           as childs to this element.
      * @param cloud the cloud to work on
      */
-    protected boolean mergeClouds(Map<String, Map<String, Object>> originalNodes, Map<String, Map<String, Object>> newNodes, Map<String, Map<String, Object>> originalRelations, Map<String, Map<String, Object>> newRelations,
-                                  Map<Node, Element> addedNodes, Map<Relation, Element> addedRelations, Element out, Cloud cloud) {
-        Map<String, Integer> aliases = new HashMap<String, Integer>(); // hash from alias names to real names
+    protected boolean mergeClouds(Map originalNodes, Map newNodes, Map originalRelations, Map newRelations,
+                                  Map addedNodes, Map addedRelations, Element out, Cloud cloud) {
+        Map aliases = new HashMap(); // hash from alias names to real names
 
         // create new tag and add it to response
         Element newElement = doc.createElement(NEW);
         out.appendChild(newElement);
 
         // lets enum all the newNodes
-        for (Entry<String, Map<String, Object>> me : newNodes.entrySet()) {
-            String alias = me.getKey();
-            Map<String, Object> values = me.getValue();
+        for (Iterator i = newNodes.entrySet().iterator(); i.hasNext(); ) {
+            // handle the several cases we have when we have
+            // a new node (merge, really new)
+            Map.Entry me = (Map.Entry)i.next();
+            String alias = (String)me.getKey();
+            Map values = (Map)me.getValue();
             String status = (String)values.get("_status");
 
             // is it a new node if so create one and remember its alias
@@ -1321,17 +1335,20 @@ public class Dove extends AbstractDove {
             } else if (status != null && status.equals("delete")) {
                 // to check if they send a original
                 // XXX: no original is not an error ???
-                Map<String, Object> originalValues = originalNodes.get(alias);
+                Map originalValues = (Map) originalNodes.get(alias);
                 if (originalValues!=null) {
                     if (!putDeleteNode(alias, originalValues, newElement, cloud)) return false;;
                 }
             } else if (status == null || status.equals("") || status.equals("change")) {
                 // check if they send a original
-                Map<String, Object> originalValues = originalNodes.get(alias);
+                Map originalValues = (Map )originalNodes.get(alias);
                 if (originalValues != null) {
                     if(!putChangeNode(alias, values, originalValues, aliases, newElement, cloud)) return false;
                 } else {
-                    throw new RuntimeException("Node not defined in original tag, node number : " + alias);
+                    // give error not a org. node
+                    Element err = addContentElement(ERROR,"Node not defined in original tag, node number : " + alias, out);
+                    err.setAttribute(ELM_TYPE, IS_SERVER);
+                    return false;
                 }
             } else {
                 // give error not a org. node
@@ -1342,22 +1359,25 @@ public class Dove extends AbstractDove {
         }
 
         // now handle all the relations
-        for (Entry<String, Map<String, Object>> me : newRelations.entrySet()) {
-            String alias = me.getKey();
-            Map<String,Object> values = me.getValue();
+        for (Iterator i = newRelations.entrySet().iterator(); i.hasNext(); ) {
+            // handle the several cases we have when we have
+            // a new node (merge, really new)
+            Map.Entry me = (Map.Entry)i.next();
+            String alias = (String)me.getKey();
+            Map values = (Map)me.getValue();
             String status = (String)values.get("_status");
 
             // is it a new node if so create one and remember its alias
             if (status != null && status.equals("new")) {
                 if (!putNewRelation(alias, values, aliases, addedRelations, newElement, cloud)) return false;
             } else if (status != null && status.equals("delete")) {
-                Map<String,Object> originalValues = originalRelations.get(alias);
+                Map originalValues = (Map)originalRelations.get(alias);
                 if (originalValues != null) {
                     if(!putDeleteRelation(alias, originalValues, newElement, cloud)) return false;;
                 } // no error ???
             } else if (status == null || status.equals("") || status.equals("change")) {
                 // check if we have an original allready existing relation
-                Map<String,Object> originalValues = originalRelations.get(alias);
+                Map originalValues = (Map) originalRelations.get(alias);
                 if (originalValues != null) {
                     if(!putChangeRelation(alias, values, originalValues, aliases, newElement, cloud)) return false;
                 } else {
@@ -1367,7 +1387,7 @@ public class Dove extends AbstractDove {
                 }
             } else {
                 // give error not a org. node
-                Element err = addContentElement(ERROR, "Invalid status '" + status + "' for node : " + alias, out);
+                Element err = addContentElement(ERROR, "Invalid status " + status + " for (relation) node : " + alias, out);
                 err.setAttribute(ELM_TYPE, IS_SERVER);
                 return false;
             }
@@ -1400,9 +1420,9 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on - if null, a cloud will be created by the Dove class
      * @param repository Repository that contains the blobs
      */
-    public void doRequest(Element in, Element out, Cloud cloud, Map<String, byte[]> repository) {
+    public void doRequest(Element in, Element out, Cloud cloud, Map repository) {
         // set repository for blobs
-        if (repository == null) repository = new HashMap<String, byte[]>();
+        if (repository == null) repository = new HashMap();
 
         Element command = getFirstElement(in);
         if ((cloud == null)) {
@@ -1458,18 +1478,18 @@ public class Dove extends AbstractDove {
         if (command!=null && command.getTagName().equals(SECURITY)) {
             String userName = command.getAttribute(SECURITY_NAME); // retrieve name
 
-            String password = command.getAttribute(SECURITY_PASSWORD); // retrieve password
-            String methodName = command.getAttribute(SECURITY_METHOD ); // retrieve method name
-            if ((methodName == null) || (methodName.equals(""))) methodName = "name/password";
-            String cloudName = command.getAttribute(SECURITY_CLOUD); // retrieve cloud name
-            if ((cloudName == null) || (cloudName.equals(""))) cloudName = "mmbase";
-            Map<String, String> user = new HashMap<String, String>();
-            if ((userName != null) && (! userName.equals(""))) {
-                user.put("username", userName);
-                user.put("password", password);
-            }
-            Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud(cloudName, methodName, user);
-            return cloud;
+                String password = command.getAttribute(SECURITY_PASSWORD); // retrieve password
+                String methodName = command.getAttribute(SECURITY_METHOD ); // retrieve method name
+                if ((methodName == null) || (methodName.equals(""))) methodName="name/password";
+                String cloudName = command.getAttribute(SECURITY_CLOUD); // retrieve cloud name
+                if ((cloudName == null) || (cloudName.equals(""))) cloudName="mmbase";
+                Map user = new HashMap();
+                if ((userName!=null) && (!userName.equals(""))) {
+                    user.put("username", userName);
+                    user.put("password", password);
+                }
+                Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud(cloudName, methodName, user);
+                return cloud;
         } else {
             log.warn("Authentication error  (security info missing)");
             Element err = addContentElement(ERROR, "Authentication error (security info missing).", data);

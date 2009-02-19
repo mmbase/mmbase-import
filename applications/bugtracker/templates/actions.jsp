@@ -3,7 +3,7 @@
 <mm:present referid="action">
 <mm:cloud logon="admin" method="delegate" authenticate="class">
 
-<mm:url id="baseurl" write="false" referids="parameters,$parameters" page='<%=request.getScheme() + "://" + request.getServerName() +  request.getRequestURI() %>'>
+<mm:url id="baseurl" write="false" referids="parameters,$parameters" page="<%=request.getScheme() + "://" + request.getServerName() +  request.getRequestURI() %>">
    <mm:param name="btemplate" value="fullview.jsp" />
 </mm:url>
 

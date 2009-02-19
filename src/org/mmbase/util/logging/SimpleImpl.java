@@ -11,8 +11,6 @@ package org.mmbase.util.logging;
 
 import java.io.PrintStream;
 import java.util.StringTokenizer;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A very simple implementation of Logger. It writes everything to
@@ -23,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * configure string).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: SimpleImpl.java,v 1.13 2009-02-04 12:31:51 michiel Exp $
+ * @version $Id: SimpleImpl.java,v 1.12 2005-10-02 16:42:15 michiel Exp $
  * @since   MMBase-1.4
  */
 
@@ -32,20 +30,12 @@ public class SimpleImpl extends AbstractSimpleImpl implements Logger {
     private static SimpleImpl root = new SimpleImpl();
     private static PrintStream ps = System.out;
 
-    private static Map<String, SimpleImpl> loggers  = new ConcurrentHashMap<String, SimpleImpl>();
-
     private SimpleImpl() {
-
+        // a Singleton class.
     }
 
     public static  SimpleImpl getLoggerInstance(String name) {
-        SimpleImpl impl = loggers.get(name);
-        if (impl == null) {
-            impl = new SimpleImpl();
-            impl.level = root.level;
-            loggers.put(name, impl);
-        }
-        return impl;
+        return root;
     }
 
     /**

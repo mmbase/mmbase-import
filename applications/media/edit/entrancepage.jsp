@@ -5,11 +5,11 @@
 <mm:cloud jspvar="cloud">
 <html>
 <head>
-   <title><mm:write id="title" value='<%=m.getString("title")%>' /></title>
+   <title><mm:write id="title" value="<%=m.getString("title")%>" /></title>
    <!--
 
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.21 2009-01-04 12:58:41 nklasens Exp $ 
+    @version  $Id: entrancepage.jsp,v 1.20 2003-11-12 15:17:29 michiel Exp $ 
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <head>

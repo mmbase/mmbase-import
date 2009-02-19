@@ -33,20 +33,22 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.8
  */
 
-public class GoogleHighlighterFactory  implements ParameterizedTransformerFactory<CharTransformer> {
+public class GoogleHighlighterFactory  implements ParameterizedTransformerFactory {
     private static final Logger log = Logging.getLoggerInstance(GoogleHighlighterFactory.class);
 
-    private static final Parameter<String> FORMAT = new Parameter<String>("format", String.class, "<span class=\"google\">$1</span>");
-    private static final Parameter<String> HOST   = new Parameter<String>("host",   String.class, "google");
-    private static final Parameter[] PARAM = new Parameter[] { FORMAT, HOST, Parameter.REQUEST };
+    private static final Parameter[] PARAM = new Parameter[] {
+        new Parameter("format", String.class, "<span class=\"google\">$1</span>"),
+        new Parameter("host",   String.class, "google"),
+        Parameter.REQUEST,
+    };
 
-    public CharTransformer createTransformer(final Parameters parameters) {
+    public Transformer createTransformer(final Parameters parameters) {
         parameters.checkRequiredParameters();
         if (log.isDebugEnabled()) {
             log.debug("Creating transformer, with " + parameters);
         }
         URL referrer;
-        String referer = (parameters.get(Parameter.REQUEST)).getHeader("Referer");
+        String referer = ((javax.servlet.http.HttpServletRequest) parameters.get(Parameter.REQUEST)).getHeader("Referer");
         if (referer == null) return CopyCharTransformer.INSTANCE;
 
         try {
@@ -56,7 +58,7 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
             return CopyCharTransformer.INSTANCE;
         }
         log.debug("Using referrer " + referrer);
-        if (referrer.getHost().indexOf(parameters.get(HOST)) == -1) { // did not refer
+        if (referrer.getHost().indexOf((String) parameters.get("host")) == -1) { // did not refer
                                                                                  // from google
             log.debug("Wrong host, returning COPY");
             return CopyCharTransformer.INSTANCE;
@@ -70,7 +72,8 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
         String[] query = queryString.split("&");
 
         String s = null;
-        for (String q : query) {
+        for (int i = 0; i < query.length; i++) {
+            String q = query[i];
             if (q.startsWith("q=")) {
                 try {
                     s = java.net.URLDecoder.decode(q.substring(2), "UTF-8");
@@ -89,12 +92,12 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
         log.debug("Using search " + search);
 
         RegexpReplacer trans = new RegexpReplacer() {
-                private Collection<Entry<Pattern,String>> patterns = new ArrayList<Entry<Pattern,String>>();
+                private Collection patterns = new ArrayList();
                 {
                     Pattern p        = Pattern.compile("(" + search.replace('+', '|') + ")");
-                    patterns.add(new Entry<Pattern,String>(p, parameters.get(FORMAT)));
+                    patterns.add(new Entry(p, parameters.get("format")));
                 }
-                public Collection<Entry<Pattern,String>> getPatterns() {
+                public Collection getPatterns() {
                     return patterns;
                 }
             };

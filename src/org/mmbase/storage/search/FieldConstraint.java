@@ -13,12 +13,12 @@ package org.mmbase.storage.search;
  * A constraint on a stepfield.
  *
  * @author Rob van Maris
- * @version $Id: FieldConstraint.java,v 1.3 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id: FieldConstraint.java,v 1.2 2003-03-10 11:50:46 pierre Exp $
  * @since MMBase-1.7
  */
 public interface FieldConstraint extends Constraint {
     /**
-     * Gets the associated stepfield.
+     * Gets the associated stepfield. 
      */
     StepField getField();
 
@@ -27,5 +27,7 @@ public interface FieldConstraint extends Constraint {
      */
     boolean isCaseSensitive();
 
-
+    /** @link dependency 
+     * @clientRole **/
+    /*#StepField lnkStepField;*/
 }

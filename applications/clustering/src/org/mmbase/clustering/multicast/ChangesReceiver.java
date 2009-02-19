@@ -10,11 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.clustering.multicast;
 
 import java.net.*;
-import java.util.concurrent.BlockingQueue;
 
+import org.mmbase.util.Queue;
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 
 /**
  * ChangesReceiver is a thread object that builds a MultiCast Thread
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.17 2008-07-22 15:05:51 michiel Exp $
+ * @version $Id: ChangesReceiver.java,v 1.13.2.1 2008-07-22 15:04:08 michiel Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -33,7 +34,7 @@ public class ChangesReceiver implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages received from other MMBase instances */
-    private final BlockingQueue<byte[]> nodesToSpawn;
+    private final Queue nodesToSpawn;
 
     /** address to send the messages to */
     private final InetAddress ia;
@@ -53,23 +54,21 @@ public class ChangesReceiver implements Runnable {
      * @param mport port of the multicast
      * @param dpsize datapacket receive size
      * @param nodesToSpawn Queue of received messages
-     * @throws UnknownHostException when multicastHost is not found
      */
-    ChangesReceiver(String multicastHost, int mport, int dpsize, BlockingQueue<byte[]> nodesToSpawn)  throws UnknownHostException {
+    ChangesReceiver(String multicastHost, int mport, int dpsize, Queue nodesToSpawn)  throws UnknownHostException {
         this.mport = mport;
         this.dpsize = dpsize;
         this.nodesToSpawn = nodesToSpawn;
         this.ia = InetAddress.getByName(multicastHost);
         this.start();
     }
-
     private  void start() {
         if (kicker == null && ia != null) {
             try {
                 ms = new MulticastSocket(mport);
                 ms.joinGroup(ia);
             } catch(Exception e) {
-                log.error(e.getMessage(), e);
+                log.error(Logging.stackTrace(e));
             }
             if (ms != null) {
                 kicker = MMBaseContext.startThread(this, "MulticastReceiver");
@@ -95,6 +94,7 @@ public class ChangesReceiver implements Runnable {
         }
     }
 
+
     public void run() {
         // create a datapackage to receive all messages
         byte[] buffer = new byte[dpsize];
@@ -113,7 +113,7 @@ public class ChangesReceiver implements Runnable {
                 if (log.isDebugEnabled()) {
                     log.debug("RECEIVED=> " + dp.getLength() + " bytes from " + dp.getAddress());
                 }
-                nodesToSpawn.offer(message);
+                nodesToSpawn.append(message);
             } catch (java.net.SocketException se) {
                 // generally happens on shutdown (ms==null)
                 // if not log it as an error

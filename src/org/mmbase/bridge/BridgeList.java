@@ -17,11 +17,10 @@ import java.util.Comparator;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BridgeList.java,v 1.10 2008-02-16 22:13:53 nklasens Exp $
- * @param <E> Type of elements
+ * @version $Id: BridgeList.java,v 1.4 2004-06-08 08:45:16 michiel Exp $
  * @since  MMBase-1.6
  */
-public interface BridgeList<E> extends List<E> {
+public interface BridgeList extends List {
 
     /**
      * Retrieves a property previously set for this list.
@@ -51,8 +50,5 @@ public interface BridgeList<E> extends List<E> {
      *
      * @param comparator the comparator defining the sort order
      */
-    public void sort(Comparator<? super E> comparator); // ?
-
-    public BridgeList<E> subList(int fromIndex, int toIndex);
-
+    public void sort(Comparator comparator);
 }

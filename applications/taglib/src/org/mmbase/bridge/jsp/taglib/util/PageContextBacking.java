@@ -26,42 +26,39 @@ import org.mmbase.util.logging.Logging;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: PageContextBacking.java,v 1.21 2008-12-29 11:19:17 michiel Exp $
+ * @version $Id: PageContextBacking.java,v 1.11.2.1 2006-11-21 20:39:56 michiel Exp $
  */
 
-public  class PageContextBacking extends AbstractMap<String, Object> implements Backing {
+public  class PageContextBacking extends AbstractMap implements Backing {
 
     private static final Logger log = Logging.getLoggerInstance(PageContextBacking.class);
 
     private static final int SCOPE = PageContext.PAGE_SCOPE;
 
-    private final transient PageContext pageContext;
+    private final PageContext pageContext;
 
     // We also want to store null, pageContext cannot contain those.
-    private final Set<String> nulls = new HashSet<String>();
+    private final Set nulls = new HashSet();
 
-    private final Set<String> jspvars = new HashSet<String>();
+    private final Set jspvars = new HashSet();
 
-    private final Map<String, Object> unwrapped = new HashMap<String, Object>();
+    private final Map unwrapped = new HashMap();
 
     public PageContextBacking(PageContext pc) {
         pageContext = pc;
     }
 
     public void pushPageContext(PageContext pc) {
-        assert pageContext == null || pageContext == pc;
-        if (log.isDebugEnabled()) {
-            log.debug("Pushing " + pageContext + " --> " + pc);
-        }
+
     }
 
     public void pullPageContext(PageContext pc) {
 
     }
-
     public PageContext getPageContext() {
         return pageContext;
     }
+
 
     public void setJspVar(PageContext pc, String jspvar, int vartype, Object value) {
         if (jspvar == null) return;
@@ -79,123 +76,92 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
 
     }
 
-    @Override public Set<Map.Entry<String, Object>> entrySet() {
-        return new AbstractSet<Map.Entry<String, Object>>() {
-            Set<String> names = new HashSet<String>(Collections.list(pageContext.getAttributeNamesInScope(PageContext.PAGE_SCOPE)));
-
-            {
-                names.addAll(Collections.list(pageContext.getAttributeNamesInScope(PageContext.REQUEST_SCOPE)));
-                if (pageContext.getSession() != null) {
-                    names.addAll(Collections.list(pageContext.getAttributeNamesInScope(PageContext.SESSION_SCOPE)));
-                }
-                names.addAll(Collections.list(pageContext.getAttributeNamesInScope(PageContext.APPLICATION_SCOPE)));
-                names.addAll(nulls);
-            }
-
-            ///Collection<String> names = unwrapped.keySet();
-            public Iterator<Map.Entry<String, Object>> iterator() {
-                return new Iterator<Map.Entry<String, Object>>() {
-                    Iterator<String> i = names.iterator();
-                    String name;
-                    public Map.Entry<String, Object> next() {
-                        name = i.next();
-
-                        return new Map.Entry<String, Object>() {
-                            public String  getKey() {
-                                return name;
-                            }
-                            public Object getValue() {
-                                try {
-                                    return pageContext.findAttribute(name);
-                                } catch (java.lang.IllegalStateException ise) {
-                                    // e.g.: session invalid
-                                    log.warn(ise);
-                                    return null;
-                                }
-                            }
-                            public Object setValue(Object value) {
-                                Object was = pageContext.findAttribute(name);
-                                if (value != null) {
-                                    pageContext.setAttribute(name, jspvars.contains(name) ? value : Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
+    public Set entrySet() {
+        return new AbstractSet() {
+                Collection names = unwrapped.keySet();
+                public Iterator iterator() {
+                    return new Iterator() {
+                            Iterator back = names.iterator();
+                            Iterator nul  = null;
+                            String name;
+                            public Object next() {
+                                if (nul == null) {
+                                    name = (String) back.next();
                                 } else {
-                                    pageContext.removeAttribute(name, SCOPE);
-                                    nulls.add(name);
+                                    name = (String) nul.next();
                                 }
-                                return was;
+                                return new Map.Entry() {
+                                        public Object getKey() {
+                                            return name;
+                                        }
+                                        public Object getValue() {
+                                            if (nul == null) {
+                                                return pageContext.findAttribute(name);
+                                            } else {
+                                                return null;
+                                            }
+                                        }
+                                        public Object setValue(Object value) {
+                                            Object was = pageContext.findAttribute(name);
+                                            if (value != null) {
+                                                pageContext.setAttribute(name, jspvars.contains(name) ? value : Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
+                                            } else {
+                                                pageContext.removeAttribute(name, SCOPE);
+                                                nulls.add(name);
+                                            }
+                                            return was;
+                                        }
+                                    };
+                            }
+                            public boolean hasNext() {
+                                if (back.hasNext()) return true;
+                                if (nul == null) nul = nulls.iterator();
+                                return nul.hasNext();
+                            }
+                            public void remove() {
+                                pageContext.removeAttribute(name, SCOPE);
+                                nulls.remove(name);
+                                unwrapped.remove(name);
                             }
                         };
-                    }
-                    public boolean hasNext() {
-                        return i.hasNext();
-                    }
-                    public void remove() {
-                        pageContext.removeAttribute(name, SCOPE);
-                        nulls.remove(name);
-                        unwrapped.remove(name);
-                    }
-                };
-            }
-            public int size() {
-                return names.size();
-            }
-        };
+                }
+                public int size() {
+                    return names.size();
+                }
+            };
     }
 
 
-    @Override public Object put(String key, Object value) {
+    public Object put(Object key, Object value) {
         if (value == null) {
             nulls.add(key);
         } else {
-            String k = key;
+            String k = (String) key;
             Object v = jspvars.contains(key) ? value : Casting.wrap(value, (CharTransformer) pageContext.findAttribute(ContentTag.ESCAPER_KEY));
             pageContext.setAttribute(k, v, SCOPE);
         }
         return unwrapped.put(key, value);
     }
-
-    @Override public Object get(Object key) {
-        if (key instanceof String) {
-            return pageContext.findAttribute((String) key);
-        } else {
-            return false;
-        }
+    public Object get(Object key) {
+        return pageContext.findAttribute((String) key);
     }
-    public Object getOriginal(String key) {
-        if (key == null) return null; // pageContext cannot accept null keys
+    public Object getOriginal(Object key) {
         Object value = unwrapped.get(key);
         if (value != null) return value;
-        if (pageContext.getRequest() == null) throw new IllegalArgumentException("PageContext " + pageContext + " has no request");
-        try {
-            return pageContext.findAttribute((String) key);
-        } catch (Exception e) {
-            throw new RuntimeException(" for " + (key == null ? "NULL" : (key.getClass() + ":" + key)) + "  " + e.getMessage() , e);
-        }
+        return pageContext.findAttribute((String) key);
+    }
+    public boolean containsKey(Object key) {
+        return pageContext.findAttribute((String) key) != null ||  nulls.contains(key);
     }
 
-    @Override public boolean containsKey(Object key) {
-        if (key instanceof String) {
-            return pageContext.findAttribute((String) key) != null ||  nulls.contains(key);
-        } else {
-            return false;
-        }
-    }
-
-    public boolean containsOwnKey(String key) {
+    public boolean containsOwnKey(Object key) {
         return unwrapped.containsKey(key);
-    }
-
-    public Map<String, Object> getOriginalMap() {
-        return unwrapped;
     }
 
     void release() {
         nulls.clear();
         unwrapped.clear();
         jspvars.clear();
-    }
-
-    public boolean isELIgnored() {
-        return false;
     }
 
     public String toString() {

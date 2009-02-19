@@ -18,31 +18,24 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @author Michiel Meeuwissen
- * @version $Id: BasicList.java,v 1.38 2009-02-06 15:56:34 michiel Exp $
+ * @version $Id: BasicList.java,v 1.18 2005-12-29 19:23:54 michiel Exp $
  */
-public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> implements BridgeList<E>, java.io.Serializable, RandomAccess  {
+public class BasicList extends ArrayList implements BridgeList  {
 
     private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
-    private final Map<Object, Object> properties = new HashMap<Object, Object>();
+    private Map properties = new HashMap();
 
-    private boolean converted = false;
-
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    private final ArrayList<Object> backing;
+    // during inititializion of the list, you sometimes want to switch off 
+    // also when everything is certainly converted
+    boolean autoConvert = true;
 
     BasicList() {
-        super();
-        backing = new ArrayList<Object>();
+         super();
     }
 
     protected BasicList(Collection c) {
-        super();
-        backing = new ArrayList<Object>(c);
+         super(c);
     }
 
     public Object getProperty(Object key) {
@@ -50,89 +43,93 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
     }
 
     public void setProperty(Object key, Object value) {
-        properties.put(key, value);
+        properties.put(key,value);
     }
 
-    /**
-     * converts the object in the list to the excpected format
+    /*
+     * converts the object in teh list to the excpected format
      */
-    @SuppressWarnings("unchecked")
-    protected E convert(Object o) {
-        return (E) o;
+    protected Object convert(Object o, int index) {
+        return o;
     }
-    protected final E convert(Object o, int index) {
-        E newO;
-        try {
-            newO = convert(o);
-            if (log.isDebugEnabled()) {
-                log.debug("Converted " + o.getClass() + " to " + newO.getClass() + " in " + getClass());
-            }
-        } catch (Throwable t) {
-            log.warn(t.getMessage(), t);
-            newO = null;
+
+    public boolean contains(Object o ) {
+        // make sure every element is of the right type, ArrayList implementation does _not_ call get.
+        convertAll();
+        return super.contains(o);
+    }
+
+    public boolean remove(Object o) {
+        // make sure every element is of the right type, otherwise 'equals' is very odd..
+        convertAll();
+        return super.remove(o);
+    }
+    public boolean removeAll(Collection c) {
+        // make sure every element is of the right type, otherwise 'equals' is very odd..
+        convertAll();
+        return super.removeAll(c);
+    }
+
+    /*
+     * validates that an object can be converted to the excpected format
+     */
+    protected Object validate(Object o) throws ClassCastException {
+        return o;
+    }
+
+    public Object get(int index) {
+        if (autoConvert) {
+            return convert(super.get(index), index);
+        } else {
+            return super.get(index);
         }
-        if (newO != o) {
-            backing.set(index, newO);
-        }
-        return newO;
-    }
-
-    @Override public  E get(int i) {
-        return convert(backing.get(i), i);
-    }
-
-
-    @Override public int size() {
-        return backing.size();
-    }
-    @Override public E set(int i, E e) {
-        return convert(backing.set(i, e));
-    }
-    @Override public void add(int i, E e) {
-        backing.add(i, e);
-    }
-    @Override public E remove(int i) {
-        return convert(backing.remove(i));
     }
 
     public void sort() {
         Collections.sort(this);
     }
 
-    public void sort(Comparator<? super E> comparator) {
-        Collections.sort(this, comparator);
+    public void sort(Comparator comparator) {
+        Collections.sort(this,comparator);
     }
 
+    public Object set(int index, Object o) {
+        return super.set(index,validate(o));
+    }
+
+    public void add(int index, Object o) {
+        autoConvert = true;
+        super.add(index,validate(o));
+    }
+
+    public boolean add(Object o) {
+        autoConvert = true;
+        return super.add(validate(o));
+    }
 
     /**
      * @since MMBase-1.6.2
      */
     protected void convertAll() {
-        if (! converted) {
-            log.debug("convert all");
-            for (int i = 0; i < size(); i++) {
-                convert(backing.get(i), i);
-            }
-            converted = true;
+        log.debug("convert all");
+        for (int i = 0; i < size(); i++) {
+            convert(super.get(i), i);
         }
+        autoConvert = false;
     }
 
 
-    @Override public Object[] toArray() { // needed when you e.g. want to sort the list.
+    public Object[] toArray() { // needed when you e.g. want to sort the list.
         // make sure every element is of the right type, otherwise sorting can happen on the wrong type.
-        convertAll();
-        return backing.toArray();
+        if (autoConvert) convertAll();
+        return super.toArray();
     }
 
-    public BridgeList<E> subList(int fromIndex, int toIndex)  {
-        return new BasicList<E>(super.subList(fromIndex, toIndex));
-    }
-
-    protected class BasicIterator implements ListIterator<E> {
-        protected ListIterator<E> iterator;
+    protected class BasicIterator implements ListIterator {
+        protected ListIterator iterator;
 
         protected BasicIterator() {
-            this.iterator = BasicList.this.listIterator();
+            this.iterator = listIterator();
         }
 
         public boolean hasNext() {
@@ -156,24 +153,24 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
         }
 
         // These have to be implemented with a check if o is of the right type.
-        public void set(E o) {
+        public void set(Object o) {
             iterator.set(o);
         }
 
-        public void add(E o) {
+        public void add(Object o) {
+            BasicList.this.autoConvert = true;
             iterator.add(o);
         }
 
-        public E next() {
-            E next = iterator.next();
-            int i = nextIndex();
-            return BasicList.this.convert(next, i);
+        // normally also e.g. set(Node n); and add(Node n) will be created in
+        // descendant class, because that is better for performance.
+
+        public Object next() {
+            return iterator.next();
         }
 
-        public E previous() {
-            E previous = iterator.previous();
-            int i = previousIndex();
-            return BasicList.this.convert(previous, i);
+        public Object previous() {
+            return iterator.previous();
         }
 
     }

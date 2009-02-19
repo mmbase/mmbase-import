@@ -19,35 +19,23 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: UriParser.java,v 1.5 2009-02-05 08:51:42 andre Exp $
+ * @version $Id: UriParser.java,v 1.3 2004-09-30 17:19:50 pierre Exp $
  */
 public class UriParser {
 
     private static final Logger log = Logging.getLoggerInstance(UriParser.class);
-    final static char SEPARATOR = java.io.File.separator.charAt(0); // '\' for windows '/' for other oses.
-    
-    /**
-     * Converts an absolute path into a relative path, being a path relative to basePath.
-     * Uses the fileseparator of the current filesystem.
-     *
-     * @param basePath      The base path.
-     * @param path          The path to convert against basePath.
-     */
-    static public String makeRelative(final String basePath, final String path) {
-        return makeRelative(basePath, path, SEPARATOR);
-    }
 
-    /**
-     * Converts an absolute path into a relative path, being a path relative to basePath.
+    final static char separatorChar = java.io.File.separator.charAt(0); // '\' for windows '/' for other oses.
+
+     /**
+     * Converts an absolute path into a relative path.
      *
-     * @param basePath      The base path.
-     * @param path          The path to convert against basePath.
-     * @param separatorChar Path separator ('\' for windows '/' for others)
+     * @param basePath The base path.
+     * @param path The path to convert.
      */
-    static public String makeRelative(final String basePath, final String path, final char separatorChar) {
+    static public String makeRelative(final String basePath, final String path ) {
         if (log.isDebugEnabled()) {
-            log.debug("converting:  " + path);
-            log.debug("relative to: " + basePath);
+            log.debug("converting " + path + " relative to " + basePath);
         }
         // Calculate the common prefix
         final int basePathLen = basePath.length();
@@ -81,15 +69,18 @@ public class UriParser {
             buffer.append( path.substring( pos ) );
         }
 
-        // Prepend a '../' for each element in the base path past the common prefix
+        // Prepend a '../' for each element in the base path past the common
+        // prefix
         buffer.insert( 0, ".." );
         pos = basePath.indexOf( separatorChar, pos + 1 );
         while ( pos != -1 ) {
             buffer.insert( 0, "../" );
             pos = basePath.indexOf( separatorChar, pos + 1 );
         }
-        
-        if (log.isDebugEnabled()) log.debug("is: " + buffer);
+        if (log.isDebugEnabled()) {
+            log.debug("is: " + buffer);
+        }
+
         return buffer.toString();
     }
 }

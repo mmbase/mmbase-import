@@ -20,7 +20,7 @@ package org.mmbase.bridge;
  * back by calling the transaction's cancel method.
  *
  * @author Pierre van Rooden
- * @version $Id: Transaction.java,v 1.7 2008-07-29 09:21:24 michiel Exp $
+ * @version $Id: Transaction.java,v 1.5 2006-06-19 14:16:21 nklasens Exp $
  */
 public interface Transaction extends Cloud {
 
@@ -44,24 +44,15 @@ public interface Transaction extends Cloud {
     public void cancel();
 
     /**
-     * Returns whether the transaction is committed
-     * @return <code>true</code> when committed
      * @since MMBase-1.8
      */
     public boolean isCommitted();
 
     /**
-     * Returns whether the transaction is canceled
-     * @return <code>true</code> when canceled
      * @since MMBase-1.8
      */
     public boolean isCanceled();
-
-
-    /**
-     * @since MMBase-1.9
-     */
-    public NodeList getNodes();
+    
 
     /**
      * Returns the name of the cloud this transaction uses

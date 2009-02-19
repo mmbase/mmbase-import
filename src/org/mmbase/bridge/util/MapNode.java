@@ -11,21 +11,31 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util;
 
 import java.util.*;
+import java.io.InputStream;
 import org.mmbase.bridge.*;
-import org.mmbase.util.*;
+import org.mmbase.bridge.implementation.BasicFunctionValue;
+import org.mmbase.bridge.implementation.BasicField;
+import org.mmbase.core.CoreField;
+import org.mmbase.core.util.Fields;
+import org.mmbase.util.Casting;
+import org.mmbase.util.SizeOf;
+import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
- * A bridge Node based on a {@link java.util.Map}. It can come in handy sometimes to be able to present any {@link
- * java.util.Map} as an MMBase Node. E.g. because then it can be accessed in MMBase taglib using
- * mm:field tags. Don't confuse this with {@link NodeMap}.
+ * A bridge Node based on a Map. It can come in handy sometimes to be able to present any Map as an
+ * MMBase Node. E.g. because then it can be accessed in MMBase taglib using mm:field tags.
 
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.13 2009-01-31 07:43:12 michiel Exp $
+ * @version $Id: MapNode.java,v 1.6 2006-06-20 20:05:32 michiel Exp $
  * @since   MMBase-1.8
  */
 
 public class MapNode extends AbstractNode implements Node {
+
+    private static final Logger log = Logging.getLoggerInstance(MapNode.class);
 
     /**
      * This is normally, but not always, a VirtualBuilder. It is not for some builders which have
@@ -33,16 +43,15 @@ public class MapNode extends AbstractNode implements Node {
      */
     final protected NodeManager nodeManager;
     final protected Map values;
-    final protected Map<String, Long> sizes = new HashMap<String, Long>();
-    final protected Map<String, Object> wrapper;
-    final protected Map<String, Object> originals = new HashMap<String, Object>();
+    final protected Map sizes = new HashMap();
+    final protected Map originalValues = new HashMap();
 
     /**
      * This constructor explicitely specifies the node manager of the Node. This is used for {#getNodeManager} and {#getCloud}.
      */
-    public MapNode(Map<String, ?> v, NodeManager nm) {
+    public MapNode(Map v, NodeManager nm) {
         values = v;
-        wrapper = new LinkMap<String, Object>(values, originals, LinkMap.Changes.CONSERVE);
+        originalValues.putAll(values);
         nodeManager = nm;
     }
     /**
@@ -63,7 +72,25 @@ public class MapNode extends AbstractNode implements Node {
     }
 
     protected static NodeManager createVirtualNodeManager(Cloud cloud, final Map map) {
-        return new MapNodeManager(cloud, map);
+        return new AbstractNodeManager(cloud) {
+            Map fieldTypes = new HashMap();
+            {
+                Iterator i = map.entrySet().iterator();
+                while (i.hasNext()) {
+                    Map.Entry entry = (Map.Entry) i.next();
+                    String fieldName = (String) entry.getKey();
+                    Object value = entry.getValue();
+                    CoreField fd = Fields.createField(fieldName, Fields.classToType(value == null ? Object.class : value.getClass()),
+                                                      Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, null);
+                    Field ft = new BasicField(fd, this);
+                    fieldTypes.put(fieldName, ft);
+                }
+            }
+            protected Map getFieldTypes() {
+                return fieldTypes;
+            }
+
+        };
     }
 
     public Cloud getCloud() {
@@ -74,23 +101,21 @@ public class MapNode extends AbstractNode implements Node {
         return nodeManager;
     }
 
-    @Override
     public int getNumber() {
         return Casting.toInt(values.get("number"));
     }
 
-    @Override
     public boolean isNew() {
         return false;
     }
 
-    @Override
     public boolean isChanged(String fieldName) {
-        return originals.containsKey(fieldName);
+        Object originalValue = originalValues.get(fieldName);
+        Object value            = values.get(fieldName);
+        return originalValue == null ? value == null : originalValue.equals(value);
     }
-    @Override
     public boolean isChanged() {
-        return ! originals.isEmpty();
+        return ! values.equals(originalValues);
     }
 
 
@@ -100,150 +125,124 @@ public class MapNode extends AbstractNode implements Node {
     public Object getValueWithoutProcess(String fieldName) {
         return values.get(fieldName);
     }
-    @Override
     public void setValueWithoutProcess(String fieldName, Object value) {
-        wrapper.put(fieldName, value);
+        values.put(fieldName, value);
     }
-    @Override
     public void setValueWithoutChecks(String fieldName, Object value) {
-        wrapper.put(fieldName, value);
+        values.put(fieldName, value);
     }
 
-    @Override
     public boolean isNull(String fieldName) {
         return values.get(fieldName) == null;
     }
-    @Override
     protected void setSize(String fieldName, long size) {
-        sizes.put(fieldName, size);
+        sizes.put(fieldName, new Long(size));
     }
 
     public long getSize(String fieldName) {
-        Long size = sizes.get(fieldName);
+        Long size = (Long) sizes.get(fieldName);
         if (size != null) {
             return size.longValue();
         } else {
             int s =  SizeOf.getByteSize(values.get(fieldName));
-            sizes.put(fieldName, (long) s);
+            sizes.put(fieldName, new Long(s));
             return s;
         }
     }
 
-    @Override
     public void commit() {
         throw new UnsupportedOperationException("Cannot commit map node");
     }
 
-    @Override
     public void cancel() {
     }
 
 
-    @Override
     public void delete(boolean deleteRelations) {
         throw new UnsupportedOperationException("Cannot delete map node");
     }
 
-    @Override
     public String toString() {
         return "Map Node" + values;
     }
 
-    @Override
     public void deleteRelations(String type) throws NotFoundException {
     }
 
-    @Override
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
         return BridgeCollections.EMPTY_RELATIONLIST;
     }
-    @Override
     public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
         return BridgeCollections.EMPTY_RELATIONLIST;
     }
 
 
-    @Override
     public boolean hasRelations() {
         return false;
     }
 
-    @Override
     public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
         return 0;
 
     }
 
-    @Override
     public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
         return BridgeCollections.EMPTY_NODELIST;
     }
 
-    @Override
     public int countRelatedNodes(String type) {
         return 0;
     }
 
-    @Override
     public StringList getAliases() {
         return BridgeCollections.EMPTY_STRINGLIST;
     }
 
-    @Override
     public void createAlias(String aliasName) {
         throw new UnsupportedOperationException("Map nodes have no aliases");
     }
 
-    @Override
     public void deleteAlias(String aliasName) {
         throw new UnsupportedOperationException("Map nodes have no aliases");
     }
 
-    @Override
     public Relation createRelation(Node destinationNode, RelationManager relationManager) {
         throw new UnsupportedOperationException("Map nodes have no relations");
     }
 
 
-    @Override
     public void setContext(String context) {
         throw new UnsupportedOperationException("Map nodes have no security context");
     }
 
     // javadoc inherited (from Node)
-    @Override
     public String getContext() {
         throw new UnsupportedOperationException("Virtual nodes have no security context");
     }
 
 
     // javadoc inherited (from Node)
-    @Override
     public StringList getPossibleContexts() {
         return BridgeCollections.EMPTY_STRINGLIST;
     }
 
-    @Override
     public boolean mayWrite() {
         return true;
     }
 
-    @Override
     public boolean mayDelete() {
         return false;
     }
 
-    @Override
     public boolean mayChangeContext() {
         return false;
     }
 
-    public Collection<Function<?>>  getFunctions() {
+    public Collection  getFunctions() {
         return  nodeManager.getFunctions();
     }
 
 
-    @Override
     protected Function getNodeFunction(String functionName) {
         return nodeManager.getFunction(functionName);
     }

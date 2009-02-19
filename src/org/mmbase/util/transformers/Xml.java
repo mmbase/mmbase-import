@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.23 2008-07-28 20:26:19 michiel Exp $
+ * @version $Id: Xml.java,v 1.17 2005-12-21 08:05:01 michiel Exp $
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {
@@ -25,13 +25,12 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
     public final static int ESCAPE_ATTRIBUTE = 2;
     public final static int ESCAPE_ATTRIBUTE_DOUBLE = 3;
     public final static int ESCAPE_ATTRIBUTE_SINGLE = 4;
-    //public final static int ESCAPE_ATTRIBUTE_BOTH   = 6;
     public final static int ESCAPE_ATTRIBUTE_HTML = 5;
 
 
 
     public Xml() {
-        super(ESCAPE);
+        super();
     }
     public Xml(int c) {
         super(c);
@@ -43,8 +42,8 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      * Used when registering this class as a possible Transformer
      */
 
-    public Map<String,Config> transformers() {
-        HashMap<String,Config> h = new HashMap<String,Config>();
+    public Map transformers() {
+        HashMap h = new HashMap();
         h.put("escape_xml".toUpperCase(),  new Config(Xml.class, ESCAPE, "Escapes >, < & and \""));
         h.put("escape_html".toUpperCase(), new Config(Xml.class, ESCAPE, "Like ESCAPE_XML now."));
         h.put("escape_wml".toUpperCase(),  new Config(Xml.class, ESCAPE, "Like ESCAPE_XML now."));
@@ -64,11 +63,11 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      */
     public static String XMLAttributeEscape(String att, char quot) {
         if (att == null) return "";
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         char[] data = att.toCharArray();
         char c;
-        for (char element : data) {
-            c = element;
+        for (int i =0 ; i < data.length; i++){
+            c = data[i];
             if (c == quot){
                 if (quot == '"') {
                     sb.append("&quot;");
@@ -90,11 +89,11 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      */
     public static String XMLAttributeEscape(String att) {
         if (att == null) return "";
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         char[] data = att.toCharArray();
         char c;
-        for (char element : data) {
-            c = element;
+        for (int i =0 ; i < data.length; i++){
+            c = data[i];
             if (c == '"') {
                 sb.append("&quot;");
             } else if (c == '\'')  {
@@ -122,39 +121,35 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      **/
     public static String XMLEscape(String xml){
         if (xml == null) return "";
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         XMLEscape(xml, sb);
         return sb.toString();
     }
 
     /**
-     * @since MMBase-1.9
-     */
-    public static void XMLEscape(String xml, StringBuilder sb) {
-        char[] data = xml.toCharArray();
-        char c;
-        for (char element : data) {
-            c = element;
-            if (c =='&'){
-                sb.append("&amp;");
-            } else if (c =='<'){
-                sb.append("&lt;");
-            } else if (c =='>'){
-                sb.append("&gt;");
-            } else if (c =='"'){
-                sb.append("&quot;");
-            } else {
-                sb.append(c);
-            }
-        }
-    }
-    /**
      * @since MMBase-1.8
      */
     public static void XMLEscape(String xml, StringBuffer sb) {
-        StringBuilder s = new StringBuilder();
-        XMLEscape(xml, s);
-        sb.append(s.toString());
+        char[] data = xml.toCharArray();
+        char c;
+        for (int i =0 ; i < data.length; i++){
+            c = data[i];
+            if (c =='&'){
+                sb.append("&amp;");
+            }
+            else if (c =='<'){
+                sb.append("&lt;");
+            }
+            else if (c =='>'){
+                sb.append("&gt;");
+            }
+            else if (c =='"'){
+                sb.append("&quot;");
+            }
+            else {
+                sb.append(c);
+            }
+        }
     }
 
     private static String removeNewlines(String incoming) {
@@ -176,7 +171,7 @@ public class Xml extends ConfigurableStringTransformer implements CharTransforme
      **/
     public static String XMLUnescape(String data){
         if (data == null) return "";
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         int i;
         for (i =0; i < data.length();i++){
             char c = data.charAt(i);

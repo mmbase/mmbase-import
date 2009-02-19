@@ -8,9 +8,7 @@
 -->
 <eventmanager>
 	<brokers>
-
 		<broker class="org.mmbase.core.event.NodeEventBroker"/>
-
 		<broker class="org.mmbase.core.event.WeakNodeEventBroker"/>
 
 		<broker class="org.mmbase.core.event.RelationEventBroker"/>

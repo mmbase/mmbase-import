@@ -21,31 +21,13 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.70 2008-09-12 23:56:12 michiel Exp $
+ * @version $Id: Cloud.java,v 1.58.2.3 2008-03-17 10:03:41 michiel Exp $
  */
 public interface Cloud {
 
-    /**
-     * This property can contain hints on how to deal with XML fields. Things like 'xml', 'plain',
-     * 'wiki'.
-     */
     public static final String PROP_XMLMODE     = "org.mmbase.xml-mode";
 
-
-    /**
-     * The cloud itself may have been stored in a user's 'session', using this the key stored in
-     * this property.
-     */
     public static final String PROP_SESSIONNAME = "org.mmbase.cloud.sessionname";
-
-
-    /**
-     * With the Cloud a ServletRequest can be associated and stored in the 'property.
-     *
-     * @since MMBase-1.9
-     */
-    public static final String PROP_REQUEST     = "request";
-
 
     /**
      * If you set this property on the cloud to true, validation errors will not be fatal, and nodes
@@ -176,15 +158,6 @@ public interface Cloud {
      * @since  MMBase-1.6
      */
     public boolean mayRead(int number);
-
-    /**
-     * Check whether an action is allowed
-     * @param action Action to perform
-     * @param parameters parameters passed into this action
-     * @return <code>true</code> when allowed
-     * @since MMBase-1.9
-     */
-    public boolean may(org.mmbase.security.Action action, org.mmbase.util.functions.Parameters parameters);
 
     /**
      * Determines whether a node with the specified number is accessible for the user - that is,
@@ -605,6 +578,7 @@ public interface Cloud {
      * Retrieves a property previously set for this cloud. If this Cloud has a 'parent' cloud
      * (ie. this Cloud is a {@link Transaction}), then this will also mirror properties in this
      * parent cloud.
+     *
      * @see #setProperty(Object, Object)
      * @param key the key of the property
      * @return the property value
@@ -623,10 +597,9 @@ public interface Cloud {
 
     /**
      * Retrieves all properties previously set for this cloud.
-     * @return all properties
      * @since MMBase-1.8
      */
-    public Map<Object, Object> getProperties();
+    public Map getProperties();
 
     /**
      * Returns all Function objects from a function set.
@@ -639,7 +612,7 @@ public interface Cloud {
      * @return a Set of {@link org.mmbase.util.functions.Function} objects.
      * @throws NotFoundException if the function set does not exist
      */
-    public Collection<Function<?>> getFunctions(String setName);
+    public Collection getFunctions(String setName);
 
     /**
      * Returns a Function object from a function set.
@@ -648,11 +621,10 @@ public interface Cloud {
      *
      * @since MMBase-1.8
      * @param setName name of the function set
-     * @param functionName name of the function
      * @return a {@link org.mmbase.util.functions.Function} object.
      * @throws NotFoundException if the function set or the function do not exist
      */
-    public Function<?> getFunction(String setName, String functionName);
+    public Function getFunction(String setName, String functionName);
 
     /**
      * Returns a new, empty node list for this cloud
@@ -695,14 +667,7 @@ public interface Cloud {
      */
     public StringList getPossibleContexts();
 
+
     //public Cloud getNonTransactionalCloud();
-
-
-    /**
-     * Shutdown MMBase, if you are allowed to do so.
-     * @since MMBase-1.9
-     * @throws SecurityException If you are not allowed.
-     */
-    public void shutdown();
 
 }

@@ -20,7 +20,8 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.63 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: XmlField.java,v 1.46.2.7 2008-06-17 10:18:58 michiel Exp $
+ * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -32,14 +33,14 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public final static int RICHBODY = 6;
 
     // cannot yet be encoded even..
-    public final static int HTML_INLINE                       = 7;
-    public final static int HTML_BLOCK                        = 8;
-    public final static int HTML_BLOCK_BR                     = 9;
-    public final static int HTML_BLOCK_NOSURROUNDINGP         = 10;
-    public final static int HTML_BLOCK_BR_NOSURROUNDINGP      = 11;
-    public final static int HTML_BLOCK_LIST                   = 12;
-    public final static int HTML_BLOCK_LIST_BR                = 13;
-    public final static int HTML_BLOCK_LIST_NOSURROUNDINGP    = 14;
+    public final static int HTML_INLINE = 7;
+    public final static int HTML_BLOCK = 8;
+    public final static int HTML_BLOCK_BR  = 9;
+    public final static int HTML_BLOCK_NOSURROUNDINGP = 10;
+    public final static int HTML_BLOCK_BR_NOSURROUNDINGP = 11;
+    public final static int HTML_BLOCK_LIST = 12;
+    public final static int HTML_BLOCK_LIST_BR = 13;
+    public final static int HTML_BLOCK_LIST_NOSURROUNDINGP = 14;
     public final static int HTML_BLOCK_LIST_BR_NOSURROUNDINGP = 15;
 
     // cannot be decoded:
@@ -168,6 +169,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         }
 
     }
+
     /**
      * If you want to add a _ in your text, that should be possible too...
      * Should be done last, because no tags can appear in <em>
@@ -299,7 +301,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                     break;
                 }
             }
-            StringBuilder add = new StringBuilder();
+            StringBuffer add = new StringBuffer();
             for (; requested_level <= level; level--) {
                 // same or higher level section
                 add.append("</section>");
@@ -727,22 +729,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         return new StringObject(prepareDataString(data));
     }
 
-    /**
-     * Constant for use as argument of {@link #handleRich}
-     * @since MMBase-1.9
-     */
-    protected final static boolean SECTIONS         = true;
-    protected final static boolean NO_SECTIONS      = false;
-    protected final static boolean LEAVE_NEWLINES   = true;
-    protected final static boolean REMOVE_NEWLINES  = false;
-    protected final static boolean SURROUNDING_P    = true;
-    protected final static boolean NO_SURROUNDING_P = false;
-    protected final static boolean LISTS_INSIDE_P   = true;
-    protected final static boolean LISTS_OUTSIDE_P  = false;
-
-
     protected static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines, boolean surroundingP) {
-        handleRich(obj, sections, leaveExtraNewLines, surroundingP, LISTS_OUTSIDE_P);
+        handleRich(obj, sections, leaveExtraNewLines, surroundingP, false);
     }
 
     protected static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines, boolean surroundingP, boolean placeListsInsideP) {
@@ -761,10 +749,12 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
 
     protected static void handleNewlines(StringObject obj) {
-        obj.replace("</ul>\n", "</ul>"); // otherwise we will wind up with the silly "</ul><br />  the \n was necessary for </ul></p>
+        obj.replace("</ul>\n", "</ul>"); // otherwise we will wind up with the silly "</ul><br /> the \n was necessary for </ul></p>
         obj.replace("</ol>\n", "</ol>");
         obj.replace("\n", "<br />");  // handle new remaining newlines.
     }
+
+
 
     /**
      * Defines a kind of 'rich' text format. This is a way to easily
@@ -795,16 +785,16 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     public static String richToXML(String data, boolean format, boolean placeListsInsideP) {
         StringObject obj = prepareData(data);
-        handleRich(obj, SECTIONS, LEAVE_NEWLINES, SURROUNDING_P, placeListsInsideP);
+        handleRich(obj, true, true, true, placeListsInsideP);
         handleNewlines(obj);
         handleFormat(obj, format);
         return obj.toString();
     }
 
     public static String richToXML(String data, boolean format) {
-        return richToXML(data, format, LISTS_OUTSIDE_P);
-    }
+        return richToXML(data, format, false);
 
+    }
     public static String richToXML(String data) {
         return richToXML(data, false);
     }
@@ -814,13 +804,13 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      */
     public static String poorToXML(String data, boolean format, boolean placeListsInsideP) {
         StringObject obj = prepareData(data);
-        handleRich(obj, SECTIONS, REMOVE_NEWLINES, SURROUNDING_P, placeListsInsideP);
+        handleRich(obj, true, false, true, placeListsInsideP);
         handleFormat(obj, format);
         return obj.toString();
     }
 
     public static String poorToXML(String data, boolean format) {
-        return poorToXML(data, format, LISTS_OUTSIDE_P);
+        return poorToXML(data, format, false);
     }
 
     public static String poorToXML(String data) {
@@ -835,10 +825,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      */
     public static String richToHTMLBlock(String data, boolean multipibleBrs, boolean surroundingP, boolean placeListsInsideP) {
         StringObject obj = prepareData(data);
-
-        handleRich(obj, false, multipibleBrs, surroundingP, placeListsInsideP);
-        // no <section> tags, leave newlines if multipble br's requested
-
+        handleRich(obj, false, multipibleBrs, surroundingP, placeListsInsideP);   // no <section> tags, leave newlines if multipble br's requested
         handleNewlines(obj);
         handleFormat(obj, false);
         return obj.toString();
@@ -850,7 +837,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
 
     public static String richToHTMLBlock(String data, boolean multipibleBrs, boolean surroundingP) {
-        return richToHTMLBlock(data, multipibleBrs, surroundingP, LISTS_OUTSIDE_P);
+        return richToHTMLBlock(data, multipibleBrs, surroundingP, true);
     }
 
     /**
@@ -896,11 +883,11 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
 
             // in order to find the dtd.....
-            org.mmbase.util.xml.EntityResolver resolver = new org.mmbase.util.xml.EntityResolver();
+            org.mmbase.util.XMLEntityResolver resolver = new org.mmbase.util.XMLEntityResolver();
             documentBuilder.setEntityResolver(resolver);
 
             // in order to log our xml-errors
-            StringBuilder errorBuff = new StringBuilder();
+            StringBuffer errorBuff = new StringBuffer();
             ErrorHandler errorHandler = new ErrorHandler(errorBuff);
             documentBuilder.setErrorHandler(errorHandler);
             // documentBuilder.init();
@@ -932,9 +919,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     // Catch any errors or warnings,....
     static class ErrorHandler implements org.xml.sax.ErrorHandler {
         boolean errorOrWarning;
-        StringBuilder errorBuff;
+        StringBuffer errorBuff;
 
-        ErrorHandler(StringBuilder errorBuff) {
+        ErrorHandler(StringBuffer errorBuff) {
             super();
             this.errorBuff = errorBuff;
             errorOrWarning = false;
@@ -964,7 +951,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
          * Returns a string of the location.
          */
         private String getLocationString(org.xml.sax.SAXParseException ex) {
-            StringBuilder str = new StringBuilder();
+            StringBuffer str = new StringBuffer();
             String systemId = ex.getSystemId();
             if (systemId != null) {
                 int index = systemId.lastIndexOf('/');
@@ -988,8 +975,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         super(to);
     }
 
-    public Map<String,Config> transformers() {
-        Map<String,Config> h = new HashMap<String,Config>();
+    public Map transformers() {
+        Map h = new HashMap();
         h.put("MMXF_ASCII", new Config(XmlField.class, ASCII, "Converts xml to ASCII (cannoted be reversed)"));
         h.put("MMXF_BODY_RICH", new Config(XmlField.class, RICHBODY, "XHTML 2 compliant XML."));
         h.put("MMXF_BODY_POOR", new Config(XmlField.class, POORBODY, "XHTML 2 compliant XML, but withough <br/> tags"));

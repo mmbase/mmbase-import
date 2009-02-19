@@ -36,19 +36,21 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxSqlHandler.java,v 1.11 2008-07-17 12:55:23 michiel Exp $
+ * @version $Id: EtxSqlHandler.java,v 1.7 2005-10-05 12:26:11 michiel Exp $
  * @since MMBase-1.7
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.
 public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
 
-    private static final Logger log = Logging.getLoggerInstance(EtxSqlHandler.class);
+    /** Logger instance. */
+    private static Logger log
+    = Logging.getLoggerInstance(EtxSqlHandler.class.getName());
 
     /**
      * The indexed fields, stored as {@link #BuilderField BuilderField}
      *  instances.
      */
-    private Set<String> indexedFields = new HashSet<String>();
+    private Set indexedFields = new HashSet();
 
     /**
      * Creates a new instance of EtxueryHandler.
@@ -61,7 +63,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    public void appendConstraintToSql(StringBuilder sb, Constraint constraint,
+    public void appendConstraintToSql(StringBuffer sb, Constraint constraint,
     SearchQuery query, boolean inverse, boolean inComposite)
     throws SearchQueryException {
         // Net effect of inverse setting with constraint inverse property.
@@ -73,7 +75,7 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
             StringSearchConstraint stringSearchConstraint
                 = (StringSearchConstraint) constraint;
             StepField field = stringSearchConstraint.getField();
-            Map<String,Object> parameters = stringSearchConstraint.getParameters();
+            Map parameters = stringSearchConstraint.getParameters();
 
             // TODO: how to implement inverse,
             // it is actually more complicated than this:
@@ -86,10 +88,10 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
             append(getAllowedValue(field.getFieldName())).
             append(", Row('");
 
-            Iterator<String> iSearchTerms
+            Iterator iSearchTerms
                 = stringSearchConstraint.getSearchTerms().iterator();
             while (iSearchTerms.hasNext()) {
-                String searchTerm = iSearchTerms.next();
+                String searchTerm = (String) iSearchTerms.next();
                 sb.append(searchTerm);
                 if (iSearchTerms.hasNext()) {
                     sb.append(" ");
@@ -227,10 +229,10 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
      *         false otherwise.
      */
     protected boolean hasAdditionalConstraints(SearchQuery query) {
-        Iterator<Step> iSteps = query.getSteps().iterator();
+        Iterator iSteps = query.getSteps().iterator();
         while (iSteps.hasNext()) {
-            Step step = iSteps.next();
-            if (step instanceof RelationStep || step.getNodes() != null) {
+            Step step = (Step) iSteps.next();
+            if (step instanceof RelationStep || step.getNodes().size() > 0) {
                 // Additional constraints on relations or nodes.
                 return true;
             }
@@ -254,11 +256,13 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
     StringSearchConstraint searchConstraint) {
         if (constraint instanceof CompositeConstraint) {
             // Composite constraint.
-            Iterator<Constraint> iChildConstraints
-                = ((CompositeConstraint) constraint).getChilds().iterator();
+            Iterator iChildConstraints
+            = ((CompositeConstraint) constraint).getChilds().iterator();
             while (iChildConstraints.hasNext()) {
-                Constraint childConstraint = iChildConstraints.next();
-                if (containsOtherStringSearchConstraints(childConstraint, searchConstraint)) {
+                Constraint childConstraint
+                = (Constraint) iChildConstraints.next();
+                if (containsOtherStringSearchConstraints(
+                childConstraint, searchConstraint)) {
                     // Another stringsearch constraint found in childs.
                     return true;
                 }
@@ -296,11 +300,11 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
                     new BufferedReader(
                         new FileReader(etxConfigFile))));
 
-        for (Iterator<Element> eSbspaces = configReader.getSbspaceElements(); eSbspaces.hasNext();) {
-            Element sbspace = eSbspaces.next();
-
-            for (Iterator<Element> eEtxIndices = configReader.getEtxindexElements(sbspace); eEtxIndices.hasNext();) {
-                Element etxIndex = eEtxIndices.next();
+        for (Iterator eSbspaces = configReader.getSbspaceElements(); eSbspaces.hasNext();) {
+            Element sbspace = (Element) eSbspaces.next();
+            
+            for (Iterator eEtxIndices = configReader.getEtxindexElements(sbspace); eEtxIndices.hasNext();) {
+                Element etxIndex = (Element) eEtxIndices.next();
                 String table = configReader.getEtxindexTable(etxIndex);
                 String field = configReader.getEtxindexField(etxIndex);
                 String index = configReader.getEtxindexValue(etxIndex);
@@ -352,9 +356,9 @@ public class EtxSqlHandler extends ChainedSqlHandler implements SqlHandler {
             "Unknown builder: \"" + builderName + "\".");
         }
 
-        Iterator<String> iFieldNames = builder.getFieldNames().iterator();
+        Iterator iFieldNames = builder.getFieldNames().iterator();
         while (iFieldNames.hasNext()) {
-            String fieldName = iFieldNames.next();
+            String fieldName = (String) iFieldNames.next();
             if (factory.getStorageIdentifier(fieldName).equals(dbField)) {
                 return builderName + "." + fieldName;
             }

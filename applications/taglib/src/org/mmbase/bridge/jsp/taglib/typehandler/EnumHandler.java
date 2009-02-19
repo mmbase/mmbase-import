@@ -29,17 +29,16 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.49 2009-01-12 12:48:20 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.38.2.2 2008-03-31 13:04:06 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EnumHandler.class);
     private static final Xml XML = new Xml(Xml.ESCAPE);
+
     private Iterator iterator;
     private boolean available;
-
-    private boolean multiple = false;
 
     /**
      * @since MMBase-1.8
@@ -49,15 +48,11 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         available = true;
     }
 
-    public void setMultiple(boolean m) {
-        multiple = m;
-    }
-
     /**
      * @since MMBase-1.8
      */
     protected Iterator getIterator(Node node, Field field) throws JspTagException  {
-        DataType<Object> dataType = field.getDataType();
+        DataType dataType = field.getDataType();
         Locale locale = tag.getLocale();
         return dataType.getEnumerationValues(locale, tag.getCloudVar(), node, field);
     }
@@ -82,7 +77,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                         resource = enumType;
 
                     }
-                    Class<?> type;
+                    Class type;
                     switch(field.getType()) {
                     case Field.TYPE_STRING:  type = String.class; break;
                     case Field.TYPE_INTEGER: type = Integer.class; break;
@@ -114,19 +109,19 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
 
-    @Override protected EnumHandler getEnumHandler(Node node, Field field) throws JspTagException {
+    protected EnumHandler getEnumHandler(Node node, Field field) throws JspTagException {
         return null;
     }
     public boolean isAvailable() {
         return available;
     }
 
-    @Override protected Object cast(Object value, Node node, Field field) {
+    protected Object cast(Object value, Node node, Field field) {
         if ("".equals(value)) return null;
         return field.getDataType().cast(value, node, field);
     }
 
-    @Override protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
+    protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
         Object value = super.getFieldValue(node, field, useDefault);
         // if an enum is required ('not null'), and no default value was specified, then we simply default to the first
         // entry, as HTML rendering would do any way.
@@ -139,22 +134,18 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         return value;
     }
 
-
-    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        StringBuilder buffer = new StringBuilder();
+    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+        StringBuffer buffer = new StringBuffer();
         String fieldName = field.getName();
         buffer.append("<select class=\"" + getClasses(node, field) + "\" name=\"").append(prefix(fieldName)).append("\" ");
         buffer.append("id=\"").append(prefixID(fieldName)).append("\" ");
-        if (multiple) {
-            buffer.append("multiple=\"multiple\" ");
-        }
         addExtraAttributes(buffer);
         buffer.append(">");
         Object value  = cast(getFieldValue(node, field, true), node, field);
         if (log.isDebugEnabled()) {
             log.debug("using value " + (value == null ? "NULL" : value.getClass().getName() + " " + value));
         }
-        if (! field.getDataType().isRequired() && ! multiple) {
+        if (! field.getDataType().isRequired()) {
             buffer.append("<option value=\"\" ");
             if (value == null) buffer.append("selected=\"selected\" ");
             buffer.append(">--</option>");
@@ -163,12 +154,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             iterator = getIterator(node, field);
         }
 
-        List<String> valueString = multiple ? new ArrayList<String>() : Collections.singletonList(Casting.toString(value));
-        if (multiple) {
-            for (Object v : Casting.toList(value)) {
-                valueString.add(Casting.toString(v));
-            }
-        }
+        String valueString = Casting.toString(value);
         while(iterator != null && iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             Object key = entry.getKey();
@@ -180,10 +166,10 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             buffer.append("<option value=\"");
             buffer.append(XML.transform(keyString));
             buffer.append("\"");
-            if (valueString.contains(keyString)) {
+            if (keyString.equals(valueString)) {
                 buffer.append(" selected=\"selected\"");
             } else if (search) {
-                String searchs = Casting.toString(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName())));
+                String searchs = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
                 if (keyString.equals(searchs)) {
                     buffer.append(" selected=\"selected\"");
                 }
@@ -196,10 +182,10 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         if (search) {
             String name = prefix(field.getName()) + "_search";
             String fieldid = prefixID(field.getName() + "_search");
-            String searchi =  Casting.toString(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name));
+            String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
             buffer.append("<input type=\"checkbox\" name=\"").append(name).append("\" ");
             buffer.append("id=\"").append(fieldid).append("\" ");
-            if (! "".equals(searchi)) {
+            if (searchi != null) {
                 buffer.append(" checked=\"checked\"");
             }
             buffer.append(" />");
@@ -210,9 +196,9 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
     public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
         String name = prefix(field.getName() + "_search");
-        String searchi =  Casting.toString(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name));
-        if (! "".equals(searchi)) {
-            handler.addParameter(name, "on");
+        String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
+        if (searchi != null) {
+            handler.addParameter(name, "yes");
         }
         super.paramHtmlInput(handler, field);
     }
@@ -221,7 +207,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    @Override public String whereHtmlInput(Field field) throws JspTagException {
+    public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
         if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
@@ -232,10 +218,10 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     }
 
 
-    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
-        if (tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
+        if ( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), id) == null) {
             return null;
         } else {
             return super.whereHtmlInput(field, query);

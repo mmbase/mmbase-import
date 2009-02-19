@@ -27,25 +27,24 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: RegexpReplacer.java,v 1.28 2008-10-17 14:08:35 michiel Exp $
  */
 
-public class RegexpReplacer extends ChunkedTransformer<Pattern> {
+public class RegexpReplacer extends ChunkedTransformer {
     private static final Logger log = Logging.getLoggerInstance(RegexpReplacer.class);
 
     /**
      * Every extension of regexp-replacer can make use of this.
      */
-    private static final Map<String,UtilReader> utilReaders = new HashMap<String,UtilReader>();     // class -> utilreader
+    private static final Map utilReaders = new HashMap();     // class -> utilreader
 
     /**
      * The regexps for the unextended RegexpReplacer
      */
-    protected static final Collection<Entry<Pattern, String>> regexps = new ArrayList<Entry<Pattern, String>>();
+    protected static final Collection regexps = new ArrayList();
 
     protected static abstract class PatternWatcher extends ResourceWatcher {
-        protected Collection<Entry<Pattern, String>> patterns;
-        PatternWatcher(Collection<Entry<Pattern, String>> p) {
+        protected Collection  patterns;
+        PatternWatcher(Collection p) {
             patterns = p;
         }
     }
@@ -55,8 +54,6 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
     static {
         new RegexpReplacer().readPatterns(regexps);
     }
-
-    protected boolean replaceInA = false;
 
 
     public RegexpReplacer(int i) {
@@ -70,7 +67,7 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
      * This on default gives the regexps configured for the base-class (a static member). You can
      * override this method to return another Collection.
      */
-    protected Collection<Entry<Pattern,String>> getPatterns() {
+    protected Collection getPatterns() {
         return regexps;
     }
 
@@ -85,14 +82,14 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
      * Reads defaults translation patterns into the given collection patterns. Override this for
      * other default patterns.
      */
-    protected void readDefaultPatterns(Collection<Entry<Pattern,String>> patterns) {
+    protected void readDefaultPatterns(Collection patterns) {
     }
 
     /**
      * Reads patterns from config-file into given Collection
      */
-    protected final void readPatterns(Collection<Entry<Pattern,String>> patterns) {
-        UtilReader utilReader = utilReaders.get(this.getClass().getName());
+    protected final void readPatterns(Collection patterns) {
+        UtilReader utilReader = (UtilReader) utilReaders.get(this.getClass().getName());
         if (utilReader == null) {
             utilReader = new UtilReader(getConfigFile(),
                                         new PatternWatcher(patterns) {
@@ -105,7 +102,7 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
 
         patterns.clear();
 
-        Collection<Map.Entry<String, String>> regs = utilReader.getMaps().get("regexps");
+        Collection  regs = (Collection) utilReader.getMaps().get("regexps");
         if (regs != null) {
             addPatterns(regs, patterns);
         } else {
@@ -121,12 +118,48 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
      *        expression. The value is still a String. New entries will be added to this collection
      *        by this function.
      */
-    protected static void addPatterns(Collection<Map.Entry<String, String>> list,
-                                      Collection<Entry<Pattern, String>> patterns) {
+    protected static void addPatterns(Collection list, Collection patterns) {
         if (list != null) {
-            for (Map.Entry<String, String> entry : list) {
-                Pattern p = Pattern.compile(entry.getKey());
-                patterns.add(new Entry<Pattern, String>(p, entry.getValue()));
+            Iterator i = list.iterator();
+            while (i.hasNext()) {
+                Object next = i.next();
+                Pattern p;
+                String result;
+                if (next == null) {
+                    log.warn("Found null in " + list);
+                    continue;
+                } else if (next instanceof Map.Entry) {
+                    Map.Entry entry  = (Map.Entry) next;
+                    p        = Pattern.compile(Casting.toString(entry.getKey()));
+                    Object value = entry.getValue();
+                    if (value instanceof Collection) {
+                        result = null;
+                        Iterator  j = ((Collection) value).iterator();
+                        while (j.hasNext()) {
+                            Object n = j.next();
+                            if (! (n instanceof Map.Entry)) {
+                                log.warn("Could not understand " + n.getClass() + " '" + n + "' (in collection " + value + "). It should be a Map.Entry.");
+                                continue;
+                            }
+                            Map.Entry  subEntry = (Map.Entry) n;
+                            Object key = subEntry.getKey();
+                            if ("key".equals(key)) {
+                                p        = Pattern.compile(Casting.toString(subEntry.getValue()));
+                                continue;
+                            }
+                            if ("value".equals(key)) {
+                                result   = Casting.toString(subEntry.getValue());
+                            }
+                        }
+                        if (result == null) result = "";
+                    } else {
+                        result   = Casting.toString(value);
+                    }
+                } else {
+                    log.warn("Could not understand " + next.getClass() + " '" + next + "'. It should be a Map.Entry.");
+                    continue;
+                }
+                patterns.add(new Entry(p, result));
             }
         }
     }
@@ -144,90 +177,87 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
 
     }
 
-    @Override
     protected boolean replace(String string, Writer w, Status status) throws IOException {
-        if (! (status.inA && ! replaceInA)) {
 
-            boolean r = false; // result value
+        boolean r = false; // result value
 
-            List<Chunk> chunks;
-            if (onlyFirstPattern) {
-                // linked list while we're going to do a lot of changing:
-                chunks = new LinkedList<Chunk>();
-            } else {
-                // will not make additions
-                chunks = new ArrayList<Chunk>(1);
-            }
-            chunks.add(new Chunk(string));
-
-
-            for (Map.Entry<Pattern, String> entry : getPatterns()) {
-                Pattern p = entry.getKey();
+        List chunks;
+        if (onlyFirstPattern) {
+            // linked list while we're going to do a lot of changing:
+            chunks = new LinkedList();
+        } else {
+            // will not make any changes
+            chunks = new ArrayList(1);
+        }
+        chunks.add(new Chunk(string));
 
 
-                if (onlyFirstMatch && status.used.contains(p)) continue;
+        Iterator j = getPatterns().iterator();
+        while (j.hasNext()) {
+            Map.Entry entry = (Map.Entry) j.next();
+            Pattern p = (Pattern) entry.getKey();
 
-                ListIterator<Chunk> i = chunks.listIterator();
-                while (i.hasNext()) {
-                    Chunk chunk = i.next();
-                    if (onlyFirstPattern && chunk.replaced) {
-                        continue;
-                    }
-                    Matcher m = p.matcher(chunk.string);
-                    String replacement = entry.getValue();
-                    boolean result = false;
-                    if (to == ChunkedTransformer.XMLTEXT_WORDS || to == ChunkedTransformer.WORDS) {
-                        result = m.matches(); // try for a full match, as string is one word.
-                    } else {
-                        result = m.find();
-                    }
-                    if (result) {
-                        r = true;
-                        StringBuffer sb = new StringBuffer();
-                        do {
+
+            if (onlyFirstMatch && status.used.contains(p)) continue;
+
+            ListIterator  i = chunks.listIterator();
+            while (i.hasNext()) {
+                Chunk chunk = (Chunk) i.next();
+                if (onlyFirstPattern && chunk.replaced) {
+                    continue;
+                }
+                Matcher m = p.matcher(chunk.string);
+                String replacement = (String) entry.getValue();
+                boolean result = false;
+                if (to == ChunkedTransformer.XMLTEXT_WORDS || to == ChunkedTransformer.WORDS) {
+                    result = m.matches(); // try for a full match, as string is one word.
+                } else {
+                    result = m.find();
+                }
+                if (result) {
+                    r = true;
+                    StringBuffer sb = new StringBuffer();
+                    do {
                         status.replaced++;
                         m.appendReplacement(sb, replacement);
                         if (onlyFirstMatch || onlyFirstPattern ||
                             to == ChunkedTransformer.XMLTEXT_WORDS ||
                             to == ChunkedTransformer.WORDS) break;
                         result = m.find();
-                        } while (result);
+                    } while (result);
 
-                        if (onlyFirstPattern) {
-                            // make a new chunk.
-                            i.remove();
-                            int s = m.start();
-                            if (s > 0) {
-                                i.add(new Chunk(sb.toString().substring(0, s)));
-                                sb.delete(0, s);
-                            }
-                            i.add(new Chunk(sb.toString(), true));
-                            sb.setLength(0);
-                            m.appendTail(sb);
-                            i.add(new Chunk(sb.toString()));
-                            i.previous();
-                        } else {
-                            m.appendTail(sb);
-                            i.set(new Chunk(sb.toString()));
+                    if (onlyFirstPattern) {
+                        // make a new chunk.
+                        i.remove();
+                        int s = m.start();
+                        if (s > 0) {
+                            i.add(new Chunk(sb.toString().substring(0, s)));
+                            sb.delete(0, s);
                         }
-                        if (onlyFirstMatch ||
-                            to == ChunkedTransformer.XMLTEXT_WORDS ||
-                            to == ChunkedTransformer.WORDS) {
-                            // next pattern
-                            break;
-                        }
+                        i.add(new Chunk(sb.toString(), true));
+                        sb.setLength(0);
+                        m.appendTail(sb);
+                        i.add(new Chunk(sb.toString()));
+                        i.previous();
+                    } else {
+                        m.appendTail(sb);
+                        i.set(new Chunk(sb.toString()));
+                    }
+                    if (onlyFirstMatch ||
+                        to == ChunkedTransformer.XMLTEXT_WORDS ||
+                        to == ChunkedTransformer.WORDS) {
+                        // next pattern
+                        break;
                     }
                 }
             }
-            for (Chunk s : chunks) {
-                w.write(s.string);
-            }
-
-            return r;
-        } else {
-            w.write(string);
-            return false;
         }
+        Iterator k = chunks.iterator();
+        while (k.hasNext()) {
+            Chunk s = (Chunk) k.next();
+            w.write(s.string);
+        }
+        return r;
 
     }
     protected final String base() {

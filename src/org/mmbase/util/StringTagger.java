@@ -21,7 +21,7 @@ import java.util.*;
  * @code-conventions Some methods (Values, Value etc) have wrong names (and are duplicating Map methods btw)
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: StringTagger.java,v 1.18 2008-08-23 18:56:31 michiel Exp $
+ * @version $Id: StringTagger.java,v 1.17 2005-01-30 16:46:35 nico Exp $
  */
 public class StringTagger implements Map {
 
@@ -423,7 +423,7 @@ public class StringTagger implements Map {
         if (tmp!=null && tmp.size()>0) {
             val=(String) tmp.elementAt(0);
             if (val != null) {
-                val = Strip.doubleQuote(val,Strip.BOTH); // added stripping daniel
+                val = Strip.DoubleQuote(val,Strip.BOTH); // added stripping daniel
                 return val;
             } else {
                 return null;

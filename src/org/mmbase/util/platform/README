@@ -1,0 +1,17 @@
+This is the support class for changing userid and group on platforms
+that require this.
+
+The native code should be portable to most unix systems.
+
+If your platform doesn't need this (because of no restrictions on
+binding to ports below 1024) see if it is checked for in SetUser.java
+
+Currently supported in the Makefile are :
+Solaris
+Linux
+
+Testing on your platform can easily be done by using the provided Main.java
+
+Also set your shared library path to this directory before starting
+youre server if you use the code, by setting -Dmmbase.userlevel=<user>:<group> 
+Most likely : LD_LIBRARY_PATH=<ServerRoot>/mmbase/util/platform

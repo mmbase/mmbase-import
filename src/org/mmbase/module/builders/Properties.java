@@ -39,13 +39,9 @@ import org.mmbase.bridge.util.Queries;
           &lt;/mm:listnodes&gt;
         &lt;/div&gt;
       &lt;/mm:cloud&gt;
-
-      &lt;mm:nodelistfunction nodemanager="properties" name="list" referids="_node@node"&gt;
-        &lt;mm:field name="key" /&gt;:&lt;mm:field name="value" /&gt;
-      &lt;/mm:nodelistfunction&gt;
- </pre>
+  </pre>
  *
- * @version $Id: Properties.java,v 1.21 2009-01-15 21:22:47 michiel Exp $
+ * @version $Id: Properties.java,v 1.15.2.2 2008-06-12 12:05:13 michiel Exp $
  */
 public class Properties extends MMObjectBuilder {
 
@@ -60,88 +56,62 @@ public class Properties extends MMObjectBuilder {
         }
     }
 
-    /**
-     * @since MMBase-1.8.6
-     */
-    protected final static Parameter<Node>  NODE   = new Parameter<Node>("node", Node.class, true);
-    protected final static Parameter<String> KEY   = new Parameter<String>("key", String.class, true);
-    protected final static Parameter<Object> VALUE = new Parameter<Object>("value", Object.class);
-    protected final static Parameter<Object>  DEFAULT = new Parameter<Object>("default", Object.class);
-    protected final static Parameter[] LIST_PARAMETERS = { NODE };
+    protected final static Parameter NODE  = new Parameter("node", Node.class, true);
+    protected final static Parameter KEY   = new Parameter("key", String.class, true);
+    protected final static Parameter VALUE = new Parameter("value", Object.class);
+    protected final static Parameter DEFAULT = new Parameter("default", Object.class);
     protected final static Parameter[] GET_PARAMETERS = { NODE, KEY, DEFAULT };
     protected final static Parameter[] SET_PARAMETERS = { new Parameter.Wrapper(GET_PARAMETERS), VALUE };
 
-
-    /**
-     * @since MMBase-1.8.6
-     */
-    protected List<Node> getValueNode(Node node, String key) {
+    protected List getValueNode(Node node, String key) {
         NodeQuery q = node.getCloud().getNodeManager(Properties.this.getTableName()).createQuery();
         Queries.addConstraint(q, Queries.createConstraint(q, "parent", FieldCompareConstraint.EQUAL, node));
         Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
         return q.getNodeManager().getList(q);
     }
-    /**
-     * @since MMBase-1.8.6
-     */
-    protected Object getValue(List<Node> prop) {
+    protected Object getValue(List prop) {
         if (prop.size() == 0) {
             return null;
         } else if (prop.size() == 1) {
-            return prop.get(0).getValue("value");
+            return ((Node) prop.get(0)).getValue("value");
         } else {
-            List<Object> result = new ArrayList<Object>();
-            for (Node p : prop) {
+            List result = new ArrayList();
+            for (Iterator i = prop.iterator(); i.hasNext();) {
+                Node p = (Node) i.next();
                 result.add(p.getValue("value"));
             }
             return result;
         }
     }
-    /**
-     * @since MMBase-1.8.6
-     */
     protected Object getValue(Node node, String key) {
         return getValue(getValueNode(node, key));
 
     }
 
-    /**
-     * @since MMBase-1.9.1
-     */
-    protected NodeList getPropertyNodes(Node node) {
-        NodeQuery q = node.getCloud().getNodeManager(Properties.this.getTableName()).createQuery();
-        Queries.addConstraint(q, Queries.createConstraint(q, "parent", FieldCompareConstraint.EQUAL, node));
-        return q.getNodeManager().getList(q);
-    }
-
     {
-        addFunction(new AbstractFunction<NodeList>("list", LIST_PARAMETERS) {
-                public NodeList getFunctionValue(Parameters parameters) {
-                    return Properties.this.getPropertyNodes(parameters.get(NODE));
-                }
-            });
-        addFunction(new AbstractFunction<Object>("get", GET_PARAMETERS) {
+        addFunction(new AbstractFunction("get", GET_PARAMETERS, ReturnType.UNKNOWN) {
                 public Object getFunctionValue(Parameters parameters) {
-                    Object v = Properties.this.getValue(parameters.get(NODE), parameters.get(KEY));
+                    Object v = Properties.this.getValue((Node) parameters.get(NODE), (String) parameters.get(KEY));
                     if (v == null) return parameters.get(DEFAULT);
                     return v;
                 }
             });
-        addFunction(new AbstractFunction<Object>("set", SET_PARAMETERS) {
+        addFunction(new AbstractFunction("set", SET_PARAMETERS, ReturnType.UNKNOWN) {
                 public Object getFunctionValue(Parameters parameters) {
-                    Node node = parameters.get(NODE);
-                    String key = parameters.get(KEY);
-                    List<Node> list = new ArrayList<Node>(Properties.this.getValueNode(node, key));
+                    Node node =  (Node) parameters.get(NODE);
+                    String key = (String) parameters.get(KEY);
+                    List list = new ArrayList(Properties.this.getValueNode(node, key));
                     Object orgValue = getValue(list);
                     Object newValue = parameters.get(VALUE);
                     if (newValue == null) {
-                        for (Node n : list) {
+                        for (Iterator i = list.iterator(); i.hasNext();) {
+                            Node n = (Node) i.next();
                             n.delete(true);
                         }
                     } else if (newValue instanceof Collection) {
                         Collection c = (Collection) newValue;
                         while (list.size() > c.size()) {
-                            list.remove(0).delete(true);
+                            ((Node) list.remove(0)).delete(true);
                         }
                         while (list.size() < c.size()) {
                             Node p = node.getCloud().getNodeManager(Properties.this.getTableName()).createNode();
@@ -150,15 +120,16 @@ public class Properties extends MMObjectBuilder {
                             list.add(p);
                         }
                         int i = 0;
-                        for (Object v : c) {
-                            Node n = list.get(i++);
+                        for (Iterator j = c.iterator(); j.hasNext();) {
+                            Object v = j.next();
+                            Node n = (Node) list.get(i++);
                             n.setValue("value", v);
                             n.commit();
                         }
 
                     } else {
                         while (list.size() > 1) {
-                            list.remove(0).delete(true);
+                            ((Node) list.remove(0)).delete(true);
                         }
                         while (list.size() < 1) {
                             Node p = node.getCloud().getNodeManager(Properties.this.getTableName()).createNode();
@@ -166,7 +137,7 @@ public class Properties extends MMObjectBuilder {
                             p.setNodeValue("parent", node);
                             list.add(p);
                         }
-                        Node n = list.get(0);
+                        Node n = (Node) list.get(0);
                         n.setValue("value", newValue);
                         n.commit();
                     }
@@ -188,7 +159,7 @@ public class Properties extends MMObjectBuilder {
             if (event.getType() == NodeEvent.TYPE_CHANGE || event.getType() == NodeEvent.TYPE_NEW ) {
                 // The passed node number is node of prop node
                 int parent = getNode(event.getNodeNumber()).getIntValue("parent");
-                if (isNodeCached(parent)) {
+                if (isNodeCached(new Integer(parent))) {
                     log.debug("nodeChanged(): Zapping node properties cache for " + parent);
                     MMObjectNode pnode = getNode(parent);
                     if (pnode != null) pnode.delPropertiesCache();

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.33 2008-11-28 14:28:59 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.31 2008-08-08 08:05:48 michiel Exp $
  * @since  MMBase-1.7
  */
 class EmailHandler {
@@ -42,7 +42,7 @@ class EmailHandler {
      * then parse the content for subject and body
      * lastly mail it using the sendmail module
      */
-    public static Node sendMailNode(final Node node, Object... messageFormatArguments) throws MessagingException {
+    public static Node sendMailNode(final Node node) throws MessagingException {
         // get the sendmail module
         SendMail sendmail = EmailBuilder.getSendMail();
         if (sendmail == null) {
@@ -66,7 +66,7 @@ class EmailHandler {
             boolean success = true;
             // loop all the users we need to mail
             for (NodeRecipient to : toUsers) {
-                if (! sendMail(node, from, to, body, headers, messageFormatArguments)) {
+                if (! sendMail(node, from, to, body, headers)) {
                     success = false;
                 }
 
@@ -77,7 +77,7 @@ class EmailHandler {
         } else {
             // one simple mail
             NodeRecipient to = new NodeRecipient(-1, node.getStringValue("to"));
-            sendMail(node, from, to, body, headers, messageFormatArguments);
+            sendMail(node, from, to, body, headers);
         }
         // set the new mailedtime, that can be used by admins
         // to see when it was mailed vs the requested mail
@@ -85,18 +85,10 @@ class EmailHandler {
         node.setValue("mailedtime", (int)(System.currentTimeMillis()/1000));
 
         // commit the changes to the cloud
-        if (! node.isNew()) {
+        if (node.getNumber() > 0) {
             node.commit();
         }
         return node;
-    }
-
-    protected static String applyMessageFormat(String pattern, Object... messageFormatArguments) {
-        if (messageFormatArguments == null) {
-            return null;
-        } else {
-            return java.text.MessageFormat.format(pattern, messageFormatArguments);
-        }
     }
 
     /**
@@ -117,8 +109,8 @@ class EmailHandler {
         if (email.hasField("bcc")) {
             headers.put("BCC",      unemptyString(node.getStringValue("bcc")));
         }
-        // subject field is obligatory
-        headers.put("Subject",      unemptyString(node.getStringValue("subject")));
+        // subject field is obligotary
+        headers.put("Subject",  unemptyString(node.getStringValue("subject")));
 
         headers.put("X-mmbase-node", node.getNodeManager().getName() + "/" + node.getNumber());
         return headers;
@@ -138,13 +130,10 @@ class EmailHandler {
      * get the To header if its not set directly
      * try to obtain it from related objects.
      */
-    private static Set<NodeRecipient> getTo(Node node, Object... messageFormatArguments) {
+    private static Set<NodeRecipient> getTo(Node node) {
         Set<NodeRecipient> toUsers = new LinkedHashSet<NodeRecipient>();
         String to = node.getStringValue("to");
         if (to != null && !to.equals("")) {
-            if (messageFormatArguments != null) {
-                to = applyMessageFormat(to, messageFormatArguments);
-            }
             toUsers.add(new NodeRecipient(-1, to));
         }
         return toUsers;
@@ -205,10 +194,20 @@ class EmailHandler {
 
             // If a Content-Type header is present: get the encoding from there
             if (contentType != null) {
-                String e = org.mmbase.util.GenericResponseWrapper.getEncoding(contentType);
-                if (e != null) {
-                    encoding = e;
-                }
+
+               StringTokenizer tokenizer = new StringTokenizer(contentType, "; ");
+               while (tokenizer.hasMoreTokens()) {
+                   String value = tokenizer.nextToken();
+                   if (value.startsWith("charset=")) {
+                       // charset overrides the defaults for the mimetypes
+                       encoding = value.substring(8);
+                   } else if (value.equals("text/xml")) {
+                       // default encoding for text/xml
+                       encoding = "utf-8";
+                   }
+                   // default encoding for text/html en text/plain is ISO-8859-1
+
+               }
             }
             BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream(), encoding));
             int buffersize = 10240;
@@ -248,20 +247,27 @@ class EmailHandler {
      * @return whether successful
      */
 
-    private static boolean sendMail(Node node, String from, NodeRecipient to,  String body, Map<String, String> headers, Object[] messageFormatArguments) throws MessagingException {
+    private static boolean sendMail(Node node, String from, NodeRecipient to,  String body, Map<String, String> headers) throws MessagingException {
+        String obody = body;
+
+        // WTF!
+
         // if the body starts with a url call that url
-        if (body.startsWith("http://")) {
-            body = getUrlExtern(body, "", "" + to.nodeNumber);
+        if (obody.indexOf("http://") == 0) {
+            body = getUrlExtern(obody, "", "" + to.nodeNumber);
+            // convert html to plain text unless a the html tag is found
+            if (body.indexOf("<html>") == -1 && body.indexOf("<HTML>") == -1) {
+                //body=html2plain(body);
+            }
         }
 
-        {
-            String subject = headers.get("Subject");
-            // if the subject starts with a url call that url
-            if (subject != null && subject.startsWith("http://")) {
-                subject = getUrlExtern(subject, "" , "" + to.nodeNumber);
-                subject = stripToOneLine(subject);
-                headers.put("Subject", subject);
-            }
+        String osubject = headers.get("Subject");
+
+        // if the subject starts with a url call that url
+        if (osubject != null && osubject.indexOf("http://") == 0) {
+            String subject = getUrlExtern(osubject, "" , "" + to.nodeNumber);
+            subject = stripToOneLine(subject);
+            headers.put("Subject", subject);
         }
 
 
@@ -269,57 +275,63 @@ class EmailHandler {
 
         // Follow horrible hacks
 
-        // the headers for html mail This is stupid.
+        // the headers for html mail
         if (body.indexOf("<HTML>") != -1 && body.indexOf("</HTML>")!=-1) {
             headers.put("Mime-Version", "1.0");
             headers.put("Content-Type", "text/html; charset=\"ISO-8859-1\""); // oh no!
         }
 
-
-
-        if (messageFormatArguments != null ) {
-            body = applyMessageFormat(body, messageFormatArguments);
-            from = applyMessageFormat(from, messageFormatArguments);
-            String subj = headers.get("Subject");
-            subj = applyMessageFormat(subj, messageFormatArguments);
-            headers.put("Subject", subj);
-        }
-
-
-        boolean mailResult = false;
-        MessagingException exception = null;
-        try {
-            // get mail text to see if we have a mime msg
-            if (body.indexOf("<multipart") == -1) {
-                mailResult =  EmailBuilder.getSendMail().sendMail(from, to.email, body, headers);
+        // is the don't mail tag set ? this allows
+        // a generated body to signal it doesn't
+        // want to be mailed since for some reason
+        // invalid (for example there is no news for
+            // you
+        if (body.indexOf("<DONTMAIL>") == -1) {
+            // if the subject contains 'fakemail'
+            // perform all actions butt don't really
+            // mail. This is done for testing
+            String subject = headers.get("Subject");
+            if (subject != null && subject.indexOf("fakemail")!=-1) {
+                // add one to the sendmail counter
+                // refix numberofmailsend++;
+                log.info("Email -> fake send to " + to);
+                return true;
             } else {
-                MimeMultipart mmpart = MimeMessageGenerator.getMimeMultipart(body, node);
-                if (mmpart == null) throw new NullPointerException();
-                mailResult =  EmailBuilder.getSendMail().sendMultiPartMail(from, to.email, headers, mmpart);
-            }
-        } catch (MessagingException me) {
-            exception = me;
 
-        }
-        if (! mailResult) {
-            log.warn("Mail to " + to.email + " failed", exception);
-            if (node.getNodeManager().hasField("mailstatus")) {
-                node.setValue("mailstatus", EmailBuilder.STATE_FAILED);
+                boolean mailResult = false;
+                MessagingException exception = null;
+                try {
+                    // get mail text to see if we have a mime msg
+                    if (body.indexOf("<multipart") == -1) {
+                        mailResult =  EmailBuilder.getSendMail().sendMail(from, to.email, body, headers);
+                    } else {
+                        MimeMultipart mmpart = MimeMessageGenerator.getMimeMultipart(body, node);
+                        if (mmpart == null) throw new NullPointerException();
+                        mailResult =  EmailBuilder.getSendMail().sendMultiPartMail(from, to.email, headers, mmpart);
+                    }
+                } catch (MessagingException me) {
+                    exception = me;
+
+                }
+                if (! mailResult) {
+                    log.debug("Email -> mail failed");
+                    node.setValue("mailstatus", EmailBuilder.STATE_FAILED);
+                    // add one to the sendmail counter
+                    // refix numberofmailsend++;
+                } else {
+                    // add one to the sendmail counter
+                    // refix numberofmailsend++;
+                    log.debug("Email -> mail send");
+                    node.setValue("mailstatus", EmailBuilder.STATE_DELIVERED);
+                }
+                if (exception != null) throw exception;
+
+                return true;
             }
-            // add one to the sendmail counter
-            // refix numberofmailsend++;
         } else {
-            // add one to the sendmail counter
-            // refix numberofmailsend++;
-            log.debug("Email -> mail send");
-            if (node.getNodeManager().hasField("mailstatus")) {
-                node.setValue("mailstatus", EmailBuilder.STATE_DELIVERED);
-            }
+            log.debug("Don't mail tag found");
+            return true;
         }
-        if (exception != null) throw exception;
-
-        return true;
-
     }
     /**
      * Simple structure representing an email-adres which is associated with a node-number.

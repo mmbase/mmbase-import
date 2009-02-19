@@ -10,7 +10,7 @@
      * deletelistitem.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: deletelistitem.jsp,v 1.14 2008-10-23 14:11:40 michiel Exp $
+     * @version  $Id: deletelistitem.jsp,v 1.12.2.1 2007-05-31 11:57:38 michiel Exp $
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
      */
@@ -21,7 +21,7 @@
         wizard=((Config.SubConfig)con).wizard;
     }
 
-    Wizard wiz = new Wizard(request, ewconfig.uriResolver, wizard, null, cloud);
+    Wizard wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, wizard, null, cloud);
     Node deleteaction = Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='delete']");
     if (deleteaction != null) {
         // Ok. let's delete this object.

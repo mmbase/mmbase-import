@@ -20,29 +20,28 @@ import org.mmbase.util.logging.Logging;
 /**
  * A thread-local is used to store a stack of JSP PageContext.objects. MMBase Functions and other
  * objects can use this class to retrieve the current PageContext while it was not passed in as a parameter
- *
- * @since MMBase-1.8.6
+ *  
+ * @since MMBase-1.8.7
  */
 public class PageContextThreadLocal {
 
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(PageContextThreadLocal.class.getName());
-
-    private static ThreadLocal<LinkedList<PageContextInfo>> threadPageContexts
-                        = new ThreadLocal<LinkedList<PageContextInfo>>() {
-        protected LinkedList<PageContextInfo> initialValue() {
-                return new LinkedList<PageContextInfo>();
+    
+    private static ThreadLocal threadPageContexts = new ThreadLocal() {
+        protected Object initialValue() {
+                return new LinkedList();
             }
     };
 
     protected static void setThreadPageContext(final PageContext pc, ContextReferrerTag contextReferrerTag) {
-        LinkedList<PageContextInfo> stack = threadPageContexts.get();
+        LinkedList stack = (LinkedList) threadPageContexts.get();
         if (stack.size() == 0) {
             stack.add(0, new PageContextInfo(pc, contextReferrerTag));
             log.trace("added new stack size = " + stack.size());
         }
         else {
-            PageContextInfo first = stack.getFirst();
+            PageContextInfo first = (PageContextInfo) stack.getFirst();
             if (first.pageContext != pc) {
                 stack.add(0, new PageContextInfo(pc, contextReferrerTag));
                 log.trace("added new stack size = " + stack.size());
@@ -54,16 +53,16 @@ public class PageContextThreadLocal {
     }
 
     public static PageContext getThreadPageContext() {
-        LinkedList<PageContextInfo> stack = threadPageContexts.get();
+        LinkedList stack = (LinkedList) threadPageContexts.get();
         if (stack.size() == 0) throw new RuntimeException("Used in thread which did not yet use mmbase tags");
-        PageContextInfo first = stack.getFirst();
+        PageContextInfo first = (PageContextInfo) stack.getFirst();
         return first.pageContext;
     }
 
     protected static void cleanThreadPageContexts(ContextReferrerTag contextReferrerTag) {
-        LinkedList<PageContextInfo> stack = threadPageContexts.get();
+        LinkedList stack = (LinkedList) threadPageContexts.get();
         if (stack.size() == 0) return;
-        PageContextInfo first = stack.getFirst();
+        PageContextInfo first = (PageContextInfo) stack.getFirst();
         if (first.firstTagWithPageContext == contextReferrerTag) {
             stack.removeFirst();
             log.trace("removed new stack size = " + stack.size());
@@ -73,12 +72,12 @@ public class PageContextThreadLocal {
     private static class PageContextInfo {
         PageContext pageContext;
         ContextReferrerTag firstTagWithPageContext;
-
+        
         PageContextInfo(PageContext pc, ContextReferrerTag contextReferrerTag) {
             this.pageContext = pc;
             this.firstTagWithPageContext = contextReferrerTag;
         }
-
+        
     }
 
 }

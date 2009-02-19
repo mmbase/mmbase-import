@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @rename VwmTasks
  * @author Arjan Houtman
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwmtasks.java,v 1.20 2008-08-07 08:26:41 michiel Exp $
+ * @version $Id: Vwmtasks.java,v 1.18.2.1 2007-06-18 15:16:12 michiel Exp $
  */
 public class Vwmtasks extends MMObjectBuilder implements Runnable {
     /**
@@ -133,8 +133,8 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
 
         while (kicker!=null) {
             log.debug("Periodically sleep " + SLEEP_TIME
-                      + " seconds and add all new vwmtasks that were created since last check ("
-                      + lastchecked + ").");
+                        + " seconds and add all new vwmtasks that were created since last check ("
+                        + DateSupport.date2string(lastchecked)+").");
             try {Thread.sleep(SLEEP_TIME*1000);} catch (InterruptedException e){return;}
             getVwmTasks();
         }
@@ -190,6 +190,15 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
             } else {
                 return "unknown";
             }
+        } else if (field.equals("changedtime")) {
+            int str=node.getIntValue("changedtime");
+            return DateSupport.getTimeSec(str)+" op "+DateSupport.getMonthDay(str)+"/"+DateSupport.getMonth(str)+"/"+DateSupport.getYear(str);
+        } else if (field.equals("wantedtime")) {
+            int str=node.getIntValue("wantedtime");
+            return DateSupport.getTimeSec(str)+" op "+DateSupport.getMonthDay(str)+"/"+DateSupport.getMonth(str)+"/"+DateSupport.getYear(str);
+        } else if (field.equals("expiretime")) {
+            int str=node.getIntValue("expiretime");
+            return DateSupport.getTimeSec(str)+" op "+DateSupport.getMonthDay(str)+"/"+DateSupport.getMonth(str)+"/"+DateSupport.getYear(str);
         }
         return null;
     }
@@ -211,20 +220,18 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
         int checktime = lastchecked;
         lastchecked= (int)(System.currentTimeMillis()/1000);
         //Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND status=1");
-        log.debug("Search vwmtasks  WHERE changedtime>" + checktime
-                  + " AND wantedcpu='" + getMachineName() + "'"
-                  + " AND " + mmb.getStorageManagerFactory().getStorageIdentifier("status") + "=" + STATUS_REQUEST);
-        Enumeration e = search("WHERE changedtime>" + checktime
-                               + " AND wantedcpu='" + getMachineName() + "'"
-                               + " AND " + mmb.getStorageManagerFactory().getStorageIdentifier("status") + "=" + STATUS_REQUEST);
-
-        for (MMObjectNode node=null; e.hasMoreElements();) {
+        log.debug("Search vwmtasks "+"WHERE changedtime>"+checktime
+                    +" AND wantedcpu='"+getMachineName()+"'"
+                    +" AND "+mmb.getStorageManagerFactory().getStorageIdentifier("status")+"="+STATUS_REQUEST);
+        Enumeration e = search("WHERE changedtime>"+checktime
+                               +" AND wantedcpu='"+getMachineName()+"'"
+                               +" AND "+mmb.getStorageManagerFactory().getStorageIdentifier("status")+"="+STATUS_REQUEST);
+        
+        for (MMObjectNode node = null; e.hasMoreElements();) {
             node = (MMObjectNode)e.nextElement();
             vwm  = node.getStringValue("vwm");
             task = node.getStringValue("task");
-            if (log.isTraceEnabled()) {
-                log.trace("Adding " + vwm + " tasknode " + node);
-            }
+            log.trace("Adding "+vwm+" tasknode "+node);
             vwms.putTask(vwm,node);
         }
     }

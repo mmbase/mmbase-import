@@ -5,52 +5,62 @@
   <articleinfo>
     <title>MMBase Documentation Overview</title>
 
-    <date>2008-11-19</date>
+    <date>2006-11-07</date>
 
-    <edition>$Id: index.xml,v 1.72 2009-01-16 23:02:27 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.58.2.1 2006-11-07 10:07:56 andre Exp $</edition>
+
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
+
         <surname>Meeuwissen</surname>
       </author>
 
       <author>
         <firstname>Pierre</firstname>
+
         <surname>van Rooden</surname>
       </author>
 
       <author>
         <firstname>Daniel</firstname>
+
         <surname>Ockeloen</surname>
       </author>
 
       <author>
         <firstname>Nico</firstname>
+
         <surname>Klasens</surname>
       </author>
 
       <author>
         <firstname>Henk</firstname>
+
         <surname>Hangyi</surname>
       </author>
 
       <author>
         <firstname>Ernst</firstname>
+
         <surname>Bunders</surname>
       </author>
 
       <author>
         <firstname>Johannes</firstname>
+
         <surname>Verelst</surname>
       </author>
 
       <author>
         <firstname>Kees</firstname>
+
         <surname>Jongenburger</surname>
       </author>
 
       <author>
         <firstname>Eduard</firstname>
+
         <surname>Witteveen</surname>
       </author>
 
@@ -92,11 +102,11 @@
       <revision>
         <revnumber>0.2</revnumber>
 
-        <date>2009-11-19</date>
+        <date>2006-06-16</date>
 
         <authorinitials>AvT</authorinitials>
 
-        <revremark>1.8 to 1.9</revremark>
+        <revremark>Moved pdf to seperate document.</revremark>
       </revision>
     </revhistory>
 
@@ -112,11 +122,9 @@
   <section id="introduction">
     <title>Introduction</title>
 
-<!--
     <para>If you ran the documentation build with PDF's enabled then the PDF
     versions of these documents can be accessed via the <ulink
     url="index-pdf.html">PDF index page</ulink>.</para>
- -->
 
     <itemizedlist>
       <listitem>
@@ -242,23 +250,7 @@
 
       <listitem>
         <para><ulink url="backenddevelopers/functionsets.html">The MMBase
-        Function sets</ulink>, examples like &lt;mm:function set="utils"
-        name="generatePassword" /&gt; to generate a password.</para>
-      </listitem>
-
-      <listitem>
-        <para>
-          <ulink url="backenddevelopers/components.html">Component Framework</ulink>
-          document describing the MMBase Component Framework, as of version 1.9.
-          Applications developed with the component requirements will be compitable
-          with all websites implementing this framework.
-        </para>
-      </listitem>
-
-      <listitem>
-        <para><ulink
-        url="applications/rmmci/backenddevelopers/rmmci/index.html">Remote
-        MMBase Cloud Interface</ulink></para>
+        Function sets</ulink></para>
       </listitem>
 
       <listitem>
@@ -303,6 +295,14 @@
       </listitem>
 
       <listitem>
+        <para><ulink
+        url="applications/oscache-cache/build/javadoc/oscache/index.html">Javadocs
+        of OSCache Cache</ulink> An implementation of the MMBase
+        'CacheImplementationInterface' interface, which delegates all calls to
+        an OSCache implementation.</para>
+      </listitem>
+
+      <listitem>
         <para><ulink url="backenddevelopers/resourceloader.html">The MMBase
         Resource loader</ulink></para>
       </listitem>
@@ -317,12 +317,6 @@
     section.</para>
 
     <itemizedlist>
-
-      <listitem>
-        <para><ulink url="frontenddevelopers/codingstandards.html">Proposal
-        Coding Standards from Michiel</ulink></para>
-      </listitem>
-
       <listitem>
         <para><ulink
         url="applications/cloudcontext/cloudcontextsecurity.html">Cloud
@@ -334,6 +328,10 @@
         Crontab</ulink></para>
       </listitem>
 
+      <listitem>
+        <para><ulink url="applications/email/email.html">Email
+        application</ulink></para>
+      </listitem>
 
       <listitem>
         <para><ulink
@@ -342,14 +340,22 @@
       </listitem>
 
       <listitem>
-        <para><ulink url="applications/notifications/notifications.html">MMBase
-        Notifications and SMS</ulink></para>
+        <para><ulink
+        url="applications/packaging/build/javadoc/packaging/index.html">Javadocs
+        of Packaging</ulink> the package
+        org.mmbase.applications.packaging</para>
       </listitem>
 
       <listitem>
         <para><ulink
         url="applications/richtext/frontenddevelopers/richtext/richtext.html">The
         Richtext Functional Reference</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink
+        url="applications/rmmci/backenddevelopers/rmmci/index.html">Remote
+        MMBase Cloud Interface</ulink></para>
       </listitem>
 
       <listitem>
@@ -363,21 +369,20 @@
     <itemizedlist>
       <listitem>
         <para><ulink
-        url="frontenddevelopers/taglib/taglib-tutorial.html">Taglib
-        Tutorial</ulink> - a tutorial for page designers and JSP developers to build web
-        pages using the MMBase Tag Library</para>
+        url="applications/taglib/frontenddevelopers/taglib/taglib-tutorial.html">Taglib
+        Tutorial</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="frontenddevelopers/taglib/include.html">MMBase
+        url="applications/taglib/frontenddevelopers/taglib/include.html">MMBase
         Include / TreeInclude / LeafInclude (HTML</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="frontenddevelopers/taglib/reference.html">MMBase
-        taglib reference</ulink> - documentation about all the MMBase tags</para>
+        url="applications/taglib/build/frontenddevelopers/taglib/reference.html">MMBase
+        taglib reference</ulink></para>
       </listitem>
     </itemizedlist>
 
@@ -386,27 +391,32 @@
     <itemizedlist>
       <listitem>
         <para><ulink
-                  url="frontenddevelopers/editwizard/index.html">Editwizards</ulink></para>
+        url="applications/editwizard/build/frontenddevelopers/editwizard/index.html">Editwizards</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-                  url="frontenddevelopers/editwizard/editwizard-reference.html">Editwizard
+        url="applications/editwizard/build/frontenddevelopers/editwizard/editwizard-reference.html">Editwizard
         Syntax Reference</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-                  url="frontenddevelopers/editwizard/editwizard-frontend.html">Editwizard
+        url="applications/editwizard/build/frontenddevelopers/editwizard/editwizard-frontend.html">Editwizard
         Front end</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink
-        url="frontenddevelopers/dove/index.html">Dove
+        url="applications/dove/build/frontenddevelopers/dove/index.html">Dove
         XML API</ulink></para>
       </listitem>
 
+      <listitem>
+        <para><ulink
+        url="applications/editwizard/build/javadoc/editwizard/index.html">Editwizards
+        Javadoc</ulink> org.mmbase.applications.editwizard</para>
+      </listitem>
     </itemizedlist>
 
     <para>XML Importer (TCP 2.0)</para>
@@ -444,18 +454,13 @@
       </listitem>
 
       <listitem>
-        <para><ulink url="informationanalysts/datatypes.html">Datatypes in
-        MMBase</ulink>, How to configure new ones, plus a summary of all datatypes and their specializations which are predefined</para>
-      </listitem>
-
-      <listitem>
         <para><ulink url="informationanalysts/relations.html">Relations in
         MMBase</ulink></para>
       </listitem>
 
       <listitem>
         <para><ulink url="informationanalysts/applications.html">MMBase
-        Applications</ulink>, how-to create a shipable package containing data, objectmodel (builders, relations) etc.</para>
+        Applications</ulink></para>
       </listitem>
     </itemizedlist>
   </section>
@@ -522,13 +527,10 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="javadoc/index.html">MMBase ApiDocs</ulink></para>
-      </listitem>
+        <para><ulink url="javadoc/index.html">MMBase ApiDocs
+        1.8</ulink></para>
 
-      <listitem>
-        <para><ulink
-        url="http://www.mmbase.org/development/api/1.8/overview-summary.html">MMBase
-        ApiDocs 1.8 </ulink></para>
+        <!-- is this allways correct? -->
       </listitem>
 
       <listitem>
@@ -560,7 +562,7 @@
   <section id="release">
     <title>Release information</title>
 
-    <para>Information about the MMBase 1.9 release.</para>
+    <para>Information about the (upcoming) MMBase 1.8 release.</para>
 
     <itemizedlist>
       <listitem>
@@ -569,32 +571,32 @@
       </listitem>
 
       <listitem>
-        <para>MMBase 1.9.x - Building (<ulink
+        <para>MMBase 1.8.x - Building (<ulink
         url="releases/building.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.9.x - Installation (<ulink
+        <para>MMBase 1.8.x - Installation (<ulink
         url="releases/installation.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.9.x - Readme (<ulink
+        <para>MMBase 1.8.x - Readme (<ulink
         url="releases/readme.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.9.x - Release Notes (<ulink
+        <para>MMBase 1.8.x - Release Notes (<ulink
         url="releases/release-notes.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.9.x - Release Plan (<ulink
+        <para>MMBase 1.8.x - Release Plan (<ulink
         url="releases/release-plan.txt">Text</ulink>)</para>
       </listitem>
 
       <listitem>
-        <para>MMBase 1.9.x - Upgrade Notes (<ulink
+        <para>MMBase 1.8.x - Upgrade Notes (<ulink
         url="releases/upgrade.txt">Text</ulink>)</para>
       </listitem>
     </itemizedlist>

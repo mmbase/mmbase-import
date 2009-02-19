@@ -51,7 +51,7 @@ class MimeMessageGenerator {
 		String type    = tag.getType();
 		String related = tag.getRelated();
 		String alt     = tag.getAlt();
-                log.debug("" + tag);
+                log.info("" + tag);
 		// add it to the id cache
                 if (tag.getId() != null) {
                     nodes.put(tag.getId(), tag);
@@ -86,7 +86,7 @@ class MimeMessageGenerator {
                 try {
                     MimeMultipart root = new MimeMultipart();
                     root.addBodyPart(t.getMimeBodyPart());
-                    log.debug("Returing " + root);
+                    log.info("Returing " + root);
                     return root;
                 } catch (MessagingException e) {
                     log.error("Root generation error" + e.getMessage());
@@ -100,12 +100,12 @@ class MimeMessageGenerator {
                     for (MimeBodyTag t : rootNodes) {
                         MimeMultipart mmp = t.getMimeMultipart();
                         if (mmp != null) {
-                            log.debug("setting parent info : " + t.getId());
+                            log.info("setting parent info : " + t.getId());
                             MimeBodyPart wrapper = new MimeBodyPart();
                             wrapper.setContent(mmp);
                             root.addBodyPart(wrapper);
                         } else {
-                            log.debug("adding info : " + t.getId());
+                            log.info("adding info : " + t.getId());
                             root.addBodyPart(t.getMimeBodyPart());
                         }
                     }
@@ -194,7 +194,7 @@ class MimeMessageGenerator {
             body = body.substring(endpos + endkey.length());
             pos = body.indexOf(startkey);
         }
-        log.debug("Found " + results);
+        log.info("Found " + results);
         return results;
     }
 
@@ -441,7 +441,7 @@ class MimeMessageGenerator {
                 if (relatedNodes != null) {
                     return relatedNodes;
                 } else {
-                    log.debug("No multipart for " + this);
+                    log.info("No multipart for " + this);
                 }
             } catch (MessagingException e) {
                 log.error("Failed to get Multipart" + e.getMessage());
@@ -460,7 +460,7 @@ class MimeMessageGenerator {
          * @javadoc
          */
         public MimeBodyPart getMimeBodyPart() {
-            log.debug("Creating mimebody part for " + this);
+            log.info("Creating mimebody part for " + this);
             MimeBodyPart mmbp = new MimeBodyPart();
             try {
                 if (number != null && !number.equals("")) {

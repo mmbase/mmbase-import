@@ -25,7 +25,7 @@ import org.mmbase.util.Entry;
 
 public class LinkFinder extends RegexpReplacer {
 
-    protected static Collection<Entry<Pattern,String>> urlPatterns = new ArrayList<Entry<Pattern,String>>();
+    protected static Collection  urlPatterns = new ArrayList();
 
     static {
         new LinkFinder().readPatterns(urlPatterns);
@@ -34,7 +34,6 @@ public class LinkFinder extends RegexpReplacer {
     public LinkFinder() {
         super(XMLTEXT_WORDS);
         onlyFirstPattern = true;
-        replaceInA = false;
     }
 
 
@@ -42,18 +41,17 @@ public class LinkFinder extends RegexpReplacer {
         return "linkfinder.xml";
     }
 
-    protected Collection<Entry<Pattern,String>> getPatterns() {
+    protected Collection getPatterns() {
         return urlPatterns;
     }
 
 
-    protected void readDefaultPatterns(Collection<Entry<Pattern,String>> patterns) {
-
-        patterns.add(new Entry<Pattern,String>(Pattern.compile(".+@.+"),      "<a href=\"mailto:$0\">$0</a>"));
-        patterns.add(new Entry<Pattern,String>(Pattern.compile("http://.+"),  "<a href=\"$0\">$0</a>"));
-        patterns.add(new Entry<Pattern,String>(Pattern.compile("https://.+"), "<a href=\"$0\">$0</a>"));
-        patterns.add(new Entry<Pattern,String>(Pattern.compile("ftp://.+"),   "<a href=\"$0\">$0</a>"));
-        patterns.add(new Entry<Pattern,String>(Pattern.compile("www\\..+"),   "<a href=\"http://$0\">$0</a>"));
+    protected void readDefaultPatterns(Collection patterns) {
+        patterns.add(new Entry(Pattern.compile(".+@.+"),      "<a href=\"mailto:$0\">$0</a>"));
+        patterns.add(new Entry(Pattern.compile("http://.+"),  "<a href=\"$0\">$0</a>"));
+        patterns.add(new Entry(Pattern.compile("https://.+"), "<a href=\"$0\">$0</a>"));
+        patterns.add(new Entry(Pattern.compile("ftp://.+"),   "<a href=\"$0\">$0</a>"));
+        patterns.add(new Entry(Pattern.compile("www\\..+"),   "<a href=\"http://$0\">$0</a>"));
         return;
     }
 

@@ -17,14 +17,14 @@ import java.util.*;
  * restricted maximal size ('Least Recently Used' cache algorithm).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: LRUCache.java,v 1.7 2008-08-23 19:01:08 michiel Exp $
+ * @version $Id: LRUCache.java,v 1.2.2.3 2008-07-28 14:59:35 michiel Exp $
  * @see    org.mmbase.cache.Cache
  * @since MMBase-1.8.6
  */
-public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
+public class LRUCache implements CacheImplementationInterface {
 
     public int maxSize = 100;
-    private final Map<K, V> backing;
+    private final Map backing;
 
     public LRUCache() {
         this(100);
@@ -33,15 +33,18 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
     public LRUCache(int size) {
         maxSize = size;
         // caches can typically be accessed/modified by multipible thread, so we need to synchronize
-        backing = Collections.synchronizedMap(new LinkedHashMap<K, V>(size, 0.75f, true) {
-                @Override
-                protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+        backing = Collections.synchronizedMap(new LinkedHashMap(size, 0.75f, true) {
+                protected boolean removeEldestEntry(Map.Entry eldest) {
                     return size() > LRUCache.this.maxSize;
                 }
             });
     }
 
-    public int getCount(K key) {
+    public Object getLock() {
+        return backing;
+    }
+
+    public int getCount(Object key) {
         return -1;
     }
 
@@ -51,11 +54,11 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
      * @param size the new desired size
      */
     public void setMaxSize(int size) {
-        if (size < 0 ) throw new IllegalArgumentException("Cannot set size to negative value " + size);
+        if (size < 0 ) throw new IllegalArgumentException("Cannot set size to negative value");
         maxSize = size;
         while (size() > maxSize()) {
             try {
-                Iterator<Entry<K,V>> i = entrySet().iterator();
+                Iterator i = entrySet().iterator();
                 i.next();
                 i.remove();
             } catch (Exception e) {
@@ -77,12 +80,8 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
     }
 
 
-    public void config(Map<String, String> map) {
+    public void config(Map map) {
         // needs no configuration.
-    }
-
-    public Object getLock() {
-        return backing;
     }
 
     // wrapping for synchronization
@@ -90,14 +89,12 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
     public boolean isEmpty() { return backing.isEmpty();}
     public boolean containsKey(Object key) { return backing.containsKey(key);}
     public boolean containsValue(Object value){ return backing.containsValue(value);}
-    public V get(Object key) { return backing.get(key);}
-    public V put(K key, V value) { return backing.put(key, value);}
-    public V remove(Object key) { return backing.remove(key);}
-    public void putAll(Map<? extends K, ? extends V> map) { backing.putAll(map); }
+    public Object get(Object key) { return backing.get(key);}
+    public Object put(Object key, Object value) { return backing.put(key, value);}
+    public Object remove(Object key) { return backing.remove(key);}
+    public void putAll(Map map) { backing.putAll(map); }
     public void clear() { backing.clear(); }
-    public Set<K> keySet() { return backing.keySet(); }
-    public Set<Map.Entry<K,V>> entrySet() { return backing.entrySet(); }
-    public Collection<V> values() { return backing.values();}
-
-
+    public Set keySet() { return backing.keySet(); }
+    public Set entrySet() { return backing.entrySet(); }
+    public Collection values() { return backing.values();}
 }

@@ -1,4 +1,5 @@
 /*
+ * Created on 7-sep-2005
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative. The
  * license (Mozilla version 1.0) can be read at the MMBase site. See
@@ -6,14 +7,22 @@
  */
 package org.mmbase.core.event;
 
+import java.util.Properties;
+
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * This class is the event broker implementation for the NodeEvent
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: IdEventBroker.java,v 1.3 2007-07-26 11:45:54 michiel Exp $
  */
 public class IdEventBroker extends AbstractEventBroker {
+
+    private static Logger log = Logging.getLoggerInstance(NodeEventBroker.class);
 
 
     // javadoc inherited

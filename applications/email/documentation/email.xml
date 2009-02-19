@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
     <date>2007-10-10</date>
-    <edition>$Id: email.xml,v 1.15 2008-11-28 14:35:33 michiel Exp $</edition>
+    <edition>$Id: email.xml,v 1.14 2007-12-21 10:16:51 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
@@ -305,35 +305,6 @@ example5_body.jsp?usernumer=343 for the body
 </mm:setfield>
       ]]></programlisting>
 
-    </section>
-    <section>
-      <title>Email dynamic content based on 'templates' mails</title>
-      <para>
-        You can also make emails of the type 'template', which can server as a base for actual emails to be sent.
-        it is perhaps easiestly documented by means of an example:
-      </para>
-      <programlisting format="linespecific">
-<![CDATA[
-        <mm:relatednodescontainer type="emails" role="posrel">
-          <mm:constraint field="type" value="TYPE_TEMPLATE" />
-          <mm:sortorder  field="posrel.pos" />
-          <mm:relatednodes>
-            <mm:nodefunction name="clone">
-              <mm:setfield name="to">${user.email}</mm:setfield>
-              <mm:setfield name="type">TYPE_ONESHOT</mm:setfield>
-              <mm:import id="formatarguments" listdelimiter="\|" vartype="list"><mm:field node="lesson" name="name" /></mm:import>
-              <mm:function name="startmail" referids="formatarguments" />
-            </mm:nodefunction>
-          </mm:relatednodes>
-]]>
-      </programlisting>
-      <para>
-        This example comes from didactor and does the following. It checks whether the current nodes
-        has related email templates. If it does, such a template is cloned, and then the 'to' and
-        'type' fields are reset to mirror what we want. This copy is then actualy sent, where we
-        also make use of the 'formatarguments' parameter. In this case all occurances of {0} (see
-        Java's MessageFormat) are replaced by the name of the lesson.
-      </para>
     </section>
     <section id="receiving">
       <title>Receiving email</title>

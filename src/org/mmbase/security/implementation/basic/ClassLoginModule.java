@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.basic;
 
 import java.util.Map;
-import java.util.HashMap;
 
 import org.mmbase.security.Rank;
 
@@ -18,33 +17,32 @@ import org.mmbase.security.Rank;
  * Support for authentication method 'class' for 'basic' authentication.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ClassLoginModule.java,v 1.9 2008-10-01 16:57:34 michiel Exp $
+ * @version $Id: ClassLoginModule.java,v 1.3 2005-01-30 16:46:37 nico Exp $
  * @since   MMBase-1.8
  */
 public class ClassLoginModule implements LoginModule {
 
-    private Map<String, String> ranks = new HashMap<String, String>();
+    private Map ranks;
 
-    public void load(Map<String, Object> properties) {
-        for (Map.Entry<String, Object> entry : properties.entrySet()) {
-            if (entry.getValue() instanceof String) {
-                ranks.put(entry.getKey(), (String) entry.getValue());
-            }
-        }
+    public void load(Map properties) {
+        ranks = properties;
     }
 
-    public boolean login(NameContext user, Map<String, ?> loginInfo,  Object[] parameters) {
-        org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class", loginInfo);
+    public boolean login(NameContext user, Map loginInfo,  Object[] parameters) {
+        org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
         if (li == null) {
             throw new SecurityException("Class authentication failed (class not authorized)");
         }
-        String userName = li.getMap().get("username"); // specified
-        if (userName == null) userName = (String) loginInfo.get("username");
+        String userName = (String) li.getMap().get("username");
 
-        String r = li.getMap().get("rank");
-        if (r == null) r = (String) loginInfo.get("rank");
-        if (r == null) r = ranks.get(userName);
-        Rank rank = r == null ? Rank.BASICUSER : Rank.getRank(r);
+        String r = (String) ranks.get(userName);
+        Rank rank;
+        if (r == null) {
+            rank = Rank.BASICUSER;
+        } else {
+            rank = Rank.getRank(r);
+        }
+
         user.setIdentifier(userName);
         user.setRank(rank);
         return true;

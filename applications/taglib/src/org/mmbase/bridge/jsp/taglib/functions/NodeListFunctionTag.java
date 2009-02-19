@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeListFunctionTag.java,v 1.18 2008-08-14 13:58:49 michiel Exp $
+ * @version $Id: NodeListFunctionTag.java,v 1.15.2.1 2008-07-21 17:02:31 michiel Exp $
  */
 public class NodeListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
 
@@ -95,15 +95,6 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
     public void setComparator(String c) throws JspTagException {
         listHelper.setComparator(c);
     }
-    public void setAdd(String c) throws JspTagException {
-        listHelper.setAdd(c);
-    }
-    public void setRetain(String c) throws JspTagException {
-        listHelper.setRetain(c);
-    }
-    public void setRemove(String c) throws JspTagException {
-        listHelper.setRemove(c);
-    }
     public void setVarStatus(String s) throws JspTagException {
         listHelper.setVarStatus(s);
     }
@@ -113,7 +104,6 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
     }
 
     public int doStartTag() throws JspTagException {
-        initTag();
         NodeList list;
         Object value = getFunctionValue(false);
 

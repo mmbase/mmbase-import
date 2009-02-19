@@ -6,9 +6,9 @@
 <mm:write session="orderby"    referid="orderby" />
 <mm:write session="directions" referid="directions" />
 
+  <mm:import id="fields" externid="user_fields">username,defaultcontext,status,owner</mm:import>
   <mm:import externid="search" />
-  <mm:import id="nodetype"><%=org.mmbase.security.implementation.cloudcontext.Authenticate.getInstance().getUserProvider().getUserBuilder().getTableName()%></mm:import>
-  <mm:import id="fields" externid="user_fields"><mm:write value="${mm:managerProperty(nodetype, 'security_editor_fields')}" write="true"><mm:isempty>username,defaultcontext,status,owner</mm:isempty></mm:write></mm:import>
+  <mm:import id="nodetype">mmbaseusers</mm:import>
 
   <%@include file="you.div.jsp" %>
   <mm:import id="current">users</mm:import>
@@ -97,7 +97,7 @@
             href="<mm:url referids="user,parameters,$parameters"><mm:param name="url">edit_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="<%=getPrompt(m,"update")%>" title="<%=getPrompt(m,"update")%>" /></a>
           </mm:maywrite>
           <mm:function name="rank" >
-            <mm:compare value='<%="" + org.mmbase.security.Rank.ADMIN.getInt()%>' inverse="true">
+            <mm:compare value="<%="" + org.mmbase.security.Rank.ADMIN.getInt()%>" inverse="true">
               <mm:maydelete>
                 <mm:import id="prompt">reallydeleteusers</mm:import>
                 <a onclick="<%@include file="confirm.js" %>" href="<mm:url referids="user@deleteuser,parameters,$parameters"><mm:param name="url">delete_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-delete.gif" />" alt="<%=getPrompt(m,"delete")%>" title="<%=getPrompt(m,"delete")%>" /></a>

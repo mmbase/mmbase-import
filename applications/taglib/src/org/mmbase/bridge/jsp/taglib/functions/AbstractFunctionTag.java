@@ -11,18 +11,16 @@ package org.mmbase.bridge.jsp.taglib.functions;
 
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Iterator;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.NotFoundException;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import java.util.Map;
-import org.mmbase.util.Casting;
-
-import org.mmbase.util.Entry;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.functions.Functions;
 import org.mmbase.util.logging.*;
@@ -39,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.33 2008-10-21 18:29:18 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.27.2.3 2008-01-24 12:06:54 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -92,55 +90,6 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
         referids = getAttribute(r);
     }
 
-
-
-    protected Attribute add = Attribute.NULL;
-    protected Attribute retain = Attribute.NULL;
-    protected Attribute remove= Attribute.NULL;
-    public void setAdd(String c) throws JspTagException {
-        add = getAttribute(c);
-    }
-    public void setRetain(String c) throws JspTagException {
-        retain = getAttribute(c);
-    }
-    public void setRemove(String c) throws JspTagException {
-        remove = getAttribute(c);
-    }
-
-    protected <C> Collection<C> useCollectionMethods(Collection<C> col) throws JspTagException {
-        if (add != Attribute.NULL) {
-            Object addObject = getObjectConditional(add.getString(this));
-            if (addObject != null) {
-                if (addObject instanceof Collection) {
-                    col.addAll((Collection<C>) addObject);
-                } else {
-                    col.add((C) addObject);
-                }
-            }
-        }
-        if (retain != Attribute.NULL) {
-            Object retainObject = getObjectConditional(retain.getString(this));
-            if (retainObject != null) {
-                if (retainObject instanceof Collection) {
-                    col.retainAll((Collection<C>) retainObject);
-                } else {
-                    col.retainAll(Collections.singletonList((C) retainObject));
-                }
-            }
-        }
-        if (remove != Attribute.NULL) {
-            Object removeObject = getObjectConditional(remove.getString(this));
-            if (removeObject != null) {
-                if (removeObject instanceof Collection) {
-                    col.removeAll((Collection<C>) removeObject);
-                } else {
-                    col.remove((C)removeObject);
-                }
-            }
-        }
-        return col;
-    }
-
     /**
      * Gets function object, and checks consistency of attributes.
      */
@@ -163,7 +112,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
             String set = functionSet.getString(this);
             if (set.equals(THISPAGE)) {
-                Class<? extends Object> jspClass = pageContext.getPage().getClass();
+                Class jspClass = pageContext.getPage().getClass();
                 Method method = Functions.getMethodFromClass(jspClass, functionName);
                 return FunctionFactory.getFunction(method, functionName); // or: new MethodFunction(method, functionName);
             } else {
@@ -180,9 +129,9 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
             String className = functionClass.getString(this);
             try {
-                Class<?> clazz;
+                Class clazz;
                 if (className.indexOf(".") == -1) {
-                    Class<? extends Object> jspClass = pageContext.getPage().getClass();
+                    Class jspClass = pageContext.getPage().getClass();
                     clazz   = BeanFunction.getClass(jspClass, className);
                 } else {
                     clazz = Class.forName(className);
@@ -195,6 +144,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
 
         } else { // working as Node-referrer unless explicitely specified that it should not (a container must be present!)
+
             log.debug("Node-referrer?");
             if (container != Attribute.NULL || "".equals(parentNodeId.getValue(this)) || functionName == null) { // explicitit container
                 log.debug("explicitely not");
@@ -213,7 +163,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 log.debug("explicitely specified node");
                 functionOrNode = findNodeProvider();
             } else {
-                functionOrNode = findParentTag(FunctionContainerOrNodeProvider.class, null, false);
+                functionOrNode = (FunctionContainerOrNodeProvider) findParentTag(FunctionContainerOrNodeProvider.class, null, false);
             }
             if (log.isDebugEnabled()) {
                 log.debug("Found functionOrNode " + functionOrNode);
@@ -221,8 +171,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             if (functionOrNode != null) {
                 if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use
                     log.debug("using node-function!");
-                    Node node = ((NodeProvider) functionOrNode).getNodeVar();
-                    return node != null ?  node.getFunction(functionName) : null;
+                    return ((NodeProvider) functionOrNode).getNodeVar().getFunction(functionName);
                 } else { // just use the functioncontainer
                     return ((FunctionContainerTag) functionOrNode).getFunction(functionName);
                 }
@@ -302,27 +251,28 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             params.setAutoCasting(true);
 
             FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
-            if (functionContainer != null) {
+            try {
+                if (functionContainer != null) {
+                    Iterator i = functionContainer.getParameters().iterator();
+                    while (i.hasNext()) {
+                        Map.Entry entry = (Map.Entry) i.next();
+                        params.set((String) entry.getKey(), entry.getValue());
+                    }
+                }
+                if (referids != Attribute.NULL) {
+                    params.setAll(Referids.getReferids(referids, this));
+                }
+
+                fillStandardParameters(params);
+
                 if (log.isDebugEnabled()) {
-                    log.debug("Using parameters " + functionContainer.getParameters() + " of functioncontainer " + functionContainer.getId());
+                    log.debug("using parameters " + params + " on " + function.getClass() + " " + function);
                 }
-                Iterator<Entry<String, Object>> i = functionContainer.getParameters().iterator();
-                while (i.hasNext()) {
-                    Map.Entry<String, Object> entry = i.next();
-                    params.set(entry.getKey(), entry.getValue());
-                }
-            }
-            if (referids != Attribute.NULL) {
-                params.setAll(Referids.getReferids(referids, this));
-            }
 
-            fillStandardParameters(params);
-
-            if (log.isDebugEnabled()) {
-                log.debug("using parameters " + params + " on " + function.getClass() + " " + function);
+                params.checkRequiredParameters();
+            } catch (Throwable e) {
+                throw new IllegalArgumentException("function " + functionName + " " + e.getMessage());
             }
-
-            params.checkRequiredParameters();
 
             value =  function.getFunctionValue(params);
 

@@ -28,11 +28,13 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.2
- * @version $Id: DurationHandler.java,v 1.11 2009-01-12 12:48:20 michiel Exp $
+ * @version $Id: DurationHandler.java,v 1.6.2.1 2007-10-22 14:10:01 michiel Exp $
  */
 public class DurationHandler extends AbstractTypeHandler {
 
     private static final Logger log = Logging.getLoggerInstance(DurationHandler.class);
+
+    private static int DATE_FACTOR      = 1000; // MMBase stores dates in seconds not in milliseconds
 
     /**
      * @param tag
@@ -44,7 +46,7 @@ public class DurationHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         long currentValue = -1;
         long currentHours = 0;
         long currentMinutes = 0;
@@ -62,7 +64,7 @@ public class DurationHandler extends AbstractTypeHandler {
             currentHours   = help / 60;
         }
 
-        StringBuilder buffer = new StringBuilder();
+        StringBuffer buffer = new StringBuffer();
         buffer.append("<input type=\"hidden\" class=\"" + getClasses(node, field) + "\" name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" value=\"");
@@ -142,7 +144,7 @@ public class DurationHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
 
         String fieldName = field.getName();
         try {
@@ -162,10 +164,10 @@ public class DurationHandler extends AbstractTypeHandler {
     protected long getSpecifiedValue(Field field) throws JspTagException {
         try {
             String fieldName = field.getName();
-            Integer hours  = Integer.parseInt((String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_hours")));
-            Integer minutes  = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minutes")));
-            Integer seconds   = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_seconds")));
-            Integer milliSeconds   = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_milliseconds")));
+            Integer hours  = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_hours")));
+            Integer minutes  = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minutes")));
+            Integer seconds   = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_seconds")));
+            Integer milliSeconds   = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_milliseconds")));
             return  (long) milliSeconds.intValue() + 1000 * (seconds.intValue()  + 60 * (minutes.intValue() + 60 * hours.intValue()));
         } catch (java.lang.NumberFormatException e) {
             throw new JspTagException("Not a valid number (" + e.toString() + ")");
@@ -175,7 +177,7 @@ public class DurationHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
-    @Override public String whereHtmlInput(Field field) throws JspTagException {
+    public String whereHtmlInput(Field field) throws JspTagException {
      String fieldName = field.getName();
         String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
         if (operator == null || operator.equals("no")) {
@@ -203,14 +205,14 @@ public class DurationHandler extends AbstractTypeHandler {
         }
     }
 
-    @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
+    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
         if (operator == null || operator.equals("no")) {
             return null;
         }
 
-        Long time = getSpecifiedValue(field);
+        Long time = new Long(getSpecifiedValue(field));
 
         if (query.getSteps().size() > 1) {
             fieldName = field.getNodeManager().getName()+"."+fieldName;
@@ -223,7 +225,7 @@ public class DurationHandler extends AbstractTypeHandler {
         } else if (operator.equals("equal")) {
             String options = tag.getOptions();
             if (options != null && options.indexOf("date") > -1) {
-                con = Queries.createConstraint(query, fieldName, Queries.OPERATOR_BETWEEN, time, time + 24 * 60 * 60, false);
+                con = Queries.createConstraint(query, fieldName, Queries.OPERATOR_BETWEEN, time, new Long(time.longValue() + 24 * 60 * 60), false);
             } else {
                 con = Queries.createConstraint(query, fieldName, FieldCompareConstraint.EQUAL, time);
             }
@@ -236,7 +238,7 @@ public class DurationHandler extends AbstractTypeHandler {
 
     }
 
-    @Override public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
+    public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
         String fieldName = field.getName();
         String operator = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_search"));
         if (operator == null || operator.equals("no")) {

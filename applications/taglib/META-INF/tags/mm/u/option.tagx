@@ -31,9 +31,6 @@
   <jsp:directive.attribute name="lang" />
   <jsp:directive.attribute name="xmllang" />
   <jsp:directive.attribute name="tabindex" />
-  <jsp:directive.attribute name="onchange" />
-  <jsp:directive.attribute name="onclick" />
-
 
   <c:if test="! empty referid">
     <mm:write id="compare" referid="${referid}" write="false" />
@@ -46,7 +43,7 @@
     <mm:xslt xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:template match="option">
         <option value="${value}">
-          <c:if test="${! empty selected and (selected eq true  or selected eq 'true' or selected eq 'selected') }">
+          <c:if test="${! empty selected}">
             <xsl:attribute name="selected">${selected}</xsl:attribute>
           </c:if>
           <c:if test="${empty selected and value eq compare}">
@@ -84,12 +81,6 @@
           </c:if>
           <c:if test="${! empty tabindex}">
             <xsl:attribute name="tabindex">${tabindex}</xsl:attribute>
-          </c:if>
-          <c:if test="${! empty onchange}">
-            <xsl:attribute name="onchange">${onchange}</xsl:attribute>
-          </c:if>
-          <c:if test="${! empty onclick}">
-            <xsl:attribute name="onclick">${onclick}</xsl:attribute>
           </c:if>
           <xsl:apply-templates select="*|text()" />
         </option>

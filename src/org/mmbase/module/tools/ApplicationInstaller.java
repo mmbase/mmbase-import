@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.tools;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.cache.NodeCache;
@@ -21,20 +20,20 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.*;
-import org.mmbase.util.xml.applicationdata.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.xml.ApplicationReader;
 import org.xml.sax.InputSource;
 
 
 /**
- * Application installations functionality of MMAdmin.
+ * Application installations functionalite of MMAdmin.
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.18 2008-10-01 20:15:49 michiel Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.8.2.3 2007-10-02 12:15:34 michiel Exp $
  */
-class ApplicationInstaller {
+public class ApplicationInstaller {
 
     private static final Logger log = Logging.getLoggerInstance(ApplicationInstaller.class);
 
@@ -49,10 +48,12 @@ class ApplicationInstaller {
 
     public void installApplications() throws SearchQueryException {
         ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
-        for (String appResource :  applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false)) {
+        Iterator i = applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false).iterator();
+        while (i.hasNext()) {
+            String appResource = (String) i.next();
             ApplicationResult result = new ApplicationResult();
-            if (!installApplication(appResource.substring(0, appResource.length() - 4), -1, null, result, new HashSet<String>(), true)) {
-                log.error("Problem installing application : " + appResource + ", cause: "+result.getMessage());
+            if (!installApplication(appResource.substring(0, appResource.length() - 4), -1, null, result, new HashSet(), true)) {
+                log.error("Problem installing application : " + appResource + ", cause: \n" + result.getMessage());
             }
         }
     }
@@ -70,17 +71,17 @@ class ApplicationInstaller {
      * @return true if succesfull, false otherwise
      */
     public boolean installApplication(String applicationName, int requiredVersion,
-            String requiredMaintainer, ApplicationResult result, Set<String> installationSet,
+            String requiredMaintainer, ApplicationResult result, Set installationSet,
             boolean autoDeploy) throws SearchQueryException {
-
 
         if (installationSet.contains(applicationName)) {
             return result.error("Circular reference to application with name " + applicationName);
         }
 
         ApplicationReader reader = getApplicationReader(applicationName);
+        Versions ver = (Versions)mmb.getMMObject("versions");
         if (reader != null) {
-            Versions ver = (Versions) mmb.getBuilder("versions");
+            // test autodeploy
             // test autodeploy
             if (autoDeploy) {
                 if (!reader.hasAutoDeploy()) {
@@ -92,6 +93,7 @@ class ApplicationInstaller {
                     }
                 }
             }
+
             String name = reader.getName();
             String maintainer = reader.getMaintainer();
             if (requiredMaintainer != null && !maintainer.equals(requiredMaintainer)) {
@@ -120,19 +122,19 @@ class ApplicationInstaller {
                  */
                 // should be installed - add to installation set
                 installationSet.add(applicationName);
-                List<Map<String,String>> requires = reader.getRequirements();
-                for (Map<String, String> reqapp : requires) {
-                    String reqType = reqapp.get("type");
+                List requires = reader.getRequirements();
+                for (Iterator i = requires.iterator(); i.hasNext();) {
+                    Map reqapp = (Map)i.next();
+                    String reqType = (String)reqapp.get("type");
                     if (reqType == null || reqType.equals("application")) {
-                        String appName = reqapp.get("name");
+                        String appName = (String)reqapp.get("name");
                         int installedAppVersion = ver.getInstalledVersion(appName, "application");
-                        String appMaintainer = reqapp.get("maintainer");
+                        String appMaintainer = (String)reqapp.get("maintainer");
                         int appVersion = -1;
                         try {
-                            String appVersionAttr = reqapp.get("version");
-                            if (appVersionAttr != null) {
+                            String appVersionAttr = (String)reqapp.get("version");
+                            if (appVersionAttr != null)
                                 appVersion = Integer.parseInt(appVersionAttr);
-                            }
                         } catch (Exception e) {}
                         if (installedAppVersion == -1 || appVersion > installedAppVersion) {
                             log.service("Application '" + applicationName + "' requires : " + appName);
@@ -198,13 +200,14 @@ class ApplicationInstaller {
      * @javadoc
      * @since MMBase-1.7
      */
-    protected boolean installDataSources(List<Map<String,String>> dataSources, String appName, ApplicationResult result) {
-        MMObjectBuilder syncbul = mmb.getBuilder("syncnodes");
+    protected boolean installDataSources(List dataSources, String appName, ApplicationResult result) {
+        MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
 
-        List<MMObjectNode> nodeFieldNodes = new ArrayList<MMObjectNode>(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
+        List nodeFieldNodes = new ArrayList(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
         if (syncbul != null) {
-            for (Map<String, String> bh : dataSources) {
-                NodeReader nodeReader = getNodeReader(bh, appName);
+            for (Iterator h = dataSources.iterator(); h.hasNext();) {
+                Map bh = (Map) h.next();
+                XMLNodeReader nodeReader = getNodeReader(bh, appName);
                 if (nodeReader == null) {
                     continue;
                 }
@@ -221,16 +224,16 @@ class ApplicationInstaller {
         }
     }
 
-    private void installDatasource(MMObjectBuilder syncbul, NodeReader nodeReader, List<MMObjectNode> nodeFieldNodes, ApplicationResult result) {
+    private void installDatasource(MMObjectBuilder syncbul, XMLNodeReader nodeReader, List nodeFieldNodes, ApplicationResult result) {
         String exportsource = nodeReader.getExportSource();
         int timestamp = nodeReader.getTimeStamp();
 
         nodeReader.setLoadBinaries(false);
 
         // loop all nodes , and add to syncnodes.
-        for (Iterator<MMObjectNode> n = nodeReader.getNodes(mmb).iterator(); n.hasNext();) {
+        for (Iterator n = nodeReader.getNodes(mmb).iterator(); n.hasNext();) {
             try {
-                MMObjectNode newNode = n.next();
+                MMObjectNode newNode = (MMObjectNode)n.next();
                 nodeReader.loadBinairyFields(newNode);
 
                 int exportnumber = newNode.getIntValue("number");
@@ -246,7 +249,7 @@ class ApplicationInstaller {
                             findFieldsOfTypeNode(nodeFieldNodes, exportsource, newNode);
                         }
                     }
-                    NodeCache.getCache().remove(localnumber);
+                    NodeCache.getCache().remove(new Integer(localnumber));
                 }
                 n.remove();
             }
@@ -256,12 +259,12 @@ class ApplicationInstaller {
         }
     }
 
-    private void findFieldsOfTypeNode(List<MMObjectNode> nodeFieldNodes, String exportsource, MMObjectNode newNode) {
+    private void findFieldsOfTypeNode(List nodeFieldNodes, String exportsource, MMObjectNode newNode) {
         // determine if there were NODE fields, which need special treatment later.
-        Collection<CoreField> fields = newNode.getBuilder().getFields();
-        Iterator<CoreField> i = fields.iterator();
+        Collection fields = newNode.getBuilder().getFields();
+        Iterator i = fields.iterator();
         while (i.hasNext()) {
-            CoreField field = i.next();
+            CoreField field = (CoreField) i.next();
 
             // Fields with type NODE and notnull=true will be handled
             // by the doKeyMergeNode() method.
@@ -276,18 +279,18 @@ class ApplicationInstaller {
         }
     }
 
-    private void treatNodeFields(List<MMObjectNode> nodeFieldNodes, MMObjectBuilder syncbul) {
-        Iterator<MMObjectNode> i = nodeFieldNodes.iterator();
+    private void treatNodeFields(List nodeFieldNodes, MMObjectBuilder syncbul) {
+        Iterator i = nodeFieldNodes.iterator();
         while (i.hasNext()) {
-            MMObjectNode importedNode = i.next();
+            MMObjectNode importedNode = (MMObjectNode) i.next();
             String exportsource = (String) importedNode.getValues().get("__exportsource");
             // clean it up
             importedNode.storeValue("__exportsource", null); // hack to remove it.
 
-            Collection<CoreField> fields = importedNode.getBuilder().getFields();
-            Iterator<CoreField> j = fields.iterator();
+            Collection fields = importedNode.getBuilder().getFields();
+            Iterator j = fields.iterator();
             while (j.hasNext()) {
-                CoreField def = j.next();
+                CoreField def = (CoreField) j.next();
                 String fieldName = def.getName();
                 if (def.getType() == Field.TYPE_NODE &&
                     !fieldName.equals("number") &&
@@ -311,10 +314,11 @@ class ApplicationInstaller {
     private int doKeyMergeNode(MMObjectBuilder syncbul, MMObjectNode newNode, String exportsource, ApplicationResult result) {
         MMObjectBuilder bul = newNode.getBuilder();
         if (bul != null) {
-            Collection<CoreField> vec = bul.getFields();
+            Collection vec = bul.getFields();
             Constraint constraint = null;
             NodeSearchQuery query = null;
-            for (CoreField def : vec) {
+            for (Iterator h = vec.iterator(); h.hasNext();) {
+                CoreField def = (CoreField)h.next();
                 // check for notnull fields with type NODE.
                 if (def.getType() == Field.TYPE_NODE
                     && ! def.getName().equals("number")
@@ -360,9 +364,9 @@ class ApplicationInstaller {
             if (query != null && constraint != null) {
                 query.setConstraint(constraint);
                 try {
-                    List<MMObjectNode> nodes = bul.getNodes(query);
+                    List nodes = bul.getNodes(query);
                     if (nodes.size()>0) {
-                        MMObjectNode oldNode = nodes.get(0);
+                        MMObjectNode oldNode = (MMObjectNode)nodes.get(0);
                         return oldNode.getIntValue("number");
                     }
                 } catch (SearchQueryException sqe) {
@@ -408,7 +412,7 @@ class ApplicationInstaller {
 
       int localNumber = -1;
 
-      List<MMObjectNode> syncnodes = null;
+      List syncnodes = null;
       try {
           syncnodes = getSyncnodes(syncbul, exportsource, exportnumber);
       }
@@ -416,7 +420,7 @@ class ApplicationInstaller {
           log.warn("Search for exportnumber " + exportnumber + " exportsource " + exportsource + "failed", e);
       }
       if (syncnodes != null && !syncnodes.isEmpty()) {
-          MMObjectNode n2 = syncnodes.get(0);
+          MMObjectNode n2 = (MMObjectNode) syncnodes.get(0);
           localNumber = n2.getIntValue("localnumber");
       }
       if (localNumber != -1) { // leave it unset in that case, because foreign keys whine otherwise (so, if you have foreign keys (e.g. hsql), the field _must not_ be required).
@@ -427,13 +431,14 @@ class ApplicationInstaller {
    /**
      * @javadoc
      */
-    boolean installRelationSources(List<Map<String,String>> ds, String appname, ApplicationResult result) {
-        MMObjectBuilder syncbul = mmb.getBuilder("syncnodes");
+    boolean installRelationSources(Vector ds, String appname, ApplicationResult result) {
+        MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
         InsRel insRel = mmb.getInsRel();
         if (syncbul != null) {
-            List<MMObjectNode> nodeFieldNodes = new ArrayList<MMObjectNode>(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
-            for (Map<String, String> bh : ds) {
-                RelationNodeReader nodereader = getRelationNodeReader(appname, bh);
+            List nodeFieldNodes = new ArrayList(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
+            for (Enumeration h = ds.elements(); h.hasMoreElements();) {
+                Hashtable bh = (Hashtable)h.nextElement();
+                XMLRelationNodeReader nodereader = getRelationNodeReader(appname, bh);
                 if (nodereader == null) {
                     continue;
                 }
@@ -448,13 +453,13 @@ class ApplicationInstaller {
         return result.isSuccess();
     }
 
-    private void installRelationSource(MMObjectBuilder syncbul, InsRel insRel, RelationNodeReader nodereader, List<MMObjectNode> nodeFieldNodes, ApplicationResult result) {
+    private void installRelationSource(MMObjectBuilder syncbul, InsRel insRel, XMLRelationNodeReader nodereader, List nodeFieldNodes, ApplicationResult result) {
         String exportsource = nodereader.getExportSource();
         int timestamp = nodereader.getTimeStamp();
 
-        for (Iterator<MMObjectNode> n = (nodereader.getNodes(mmb)).iterator(); n.hasNext();) {
+        for (Enumeration n = (nodereader.getNodes(mmb)).elements(); n.hasMoreElements();) {
             try {
-                MMObjectNode newNode = n.next();
+                MMObjectNode newNode = (MMObjectNode)n.nextElement();
                 int exportnumber = newNode.getIntValue("number");
 
                 if (existsSyncnode(syncbul, exportsource, exportnumber)) {
@@ -472,9 +477,9 @@ class ApplicationInstaller {
 
                     // find snumber
                     int snumber = newNode.getIntValue("snumber");
-                    List<MMObjectNode> snumberNodes = getSyncnodes(syncbul, exportsource, snumber);
+                    List snumberNodes = getSyncnodes(syncbul, exportsource, snumber);
                     if (!snumberNodes.isEmpty()) {
-                        MMObjectNode n2 = snumberNodes.get(0);
+                        MMObjectNode n2 = (MMObjectNode)snumberNodes.get(0);
                         snumber = n2.getIntValue("localnumber");
                     } else {
                         snumber = -1;
@@ -483,9 +488,9 @@ class ApplicationInstaller {
 
                     // find dnumber
                     int dnumber = newNode.getIntValue("dnumber");
-                    List<MMObjectNode> dnumberNodes = getSyncnodes(syncbul, exportsource, dnumber);
+                    List dnumberNodes = getSyncnodes(syncbul, exportsource, dnumber);
                     if (!dnumberNodes.isEmpty()) {
-                        MMObjectNode n2 = dnumberNodes.get(0);
+                        MMObjectNode n2 = (MMObjectNode)dnumberNodes.get(0);
                         dnumber = n2.getIntValue("localnumber");
                     } else {
                         dnumber = -1;
@@ -522,22 +527,22 @@ class ApplicationInstaller {
     }
 
     private boolean existsSyncnode(MMObjectBuilder syncbul, String exportsource, int exportnumber) throws SearchQueryException {
-        List<MMObjectNode> nodes = getSyncnodes(syncbul, exportsource, exportnumber);
+        List nodes = getSyncnodes(syncbul, exportsource, exportnumber);
         return !nodes.isEmpty();
     }
 
-    private List<MMObjectNode> getSyncnodes(MMObjectBuilder syncbul, String exportsource, int exportnumber) throws SearchQueryException {
+    private List getSyncnodes(MMObjectBuilder syncbul, String exportsource, int exportnumber) throws SearchQueryException {
         NodeSearchQuery existQuery = new NodeSearchQuery(syncbul);
-        BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(existQuery.getField(syncbul.getField("exportnumber")), exportnumber);
+        BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(existQuery.getField(syncbul.getField("exportnumber")), new Integer(exportnumber));
         BasicFieldValueConstraint constraint2 = new BasicFieldValueConstraint(existQuery.getField(syncbul.getField("exportsource")), exportsource);
         BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
         constraint.addChild(constraint1);
         constraint.addChild(constraint2);
         existQuery.setConstraint(constraint);
-        List<MMObjectNode> nodes  = syncbul.getNodes(existQuery);
+        List nodes  = syncbul.getNodes(existQuery);
         if (nodes == null) {
             // could this happen?
-            nodes = new ArrayList<MMObjectNode>();
+            nodes = new ArrayList();
         }
         return nodes;
     }
@@ -572,10 +577,10 @@ class ApplicationInstaller {
         }
     }
 
-    private NodeReader getNodeReader(Map<String,String> bh, String appName) {
-        NodeReader nodeReader = null;
+    private XMLNodeReader getNodeReader(Map bh, String appName) {
+        XMLNodeReader nodeReader = null;
 
-        String path = bh.get("path");
+        String path = (String) bh.get("path");
         ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
         InputSource is = null;
         try {
@@ -584,15 +589,15 @@ class ApplicationInstaller {
             log.info("No datasource resource " + path);
         }
         if (is != null) {
-            nodeReader = new NodeReader(is, applicationLoader.getChildResourceLoader(appName));
+            nodeReader = new XMLNodeReader(is, applicationLoader.getChildResourceLoader(appName));
         }
         return nodeReader;
     }
 
-    private RelationNodeReader getRelationNodeReader(String appname, Map<String,String> bh) {
-        RelationNodeReader nodereader = null;
+    private XMLRelationNodeReader getRelationNodeReader(String appname, Hashtable bh) {
+        XMLRelationNodeReader nodereader = null;
 
-        String path = bh.get("path");
+        String path = (String)bh.get("path");
         ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
         InputSource is = null;
         try {
@@ -601,7 +606,7 @@ class ApplicationInstaller {
             log.info("No relationsource resource " + path);
         }
         if (is != null) {
-            nodereader = new RelationNodeReader(is, applicationLoader.getChildResourceLoader(appname));
+            nodereader = new XMLRelationNodeReader(is, applicationLoader.getChildResourceLoader(appname));
         }
         return nodereader;
     }
@@ -611,9 +616,10 @@ class ApplicationInstaller {
         MMObjectNode testNode = insRel.getRelation(snumber, dnumber, newNode.getIntValue("rnumber"));
         if (testNode != null) {
             relationAlreadyExists = true;
-            Map<String,Object> values = newNode.getValues();
-            for (Entry<String, Object> entry : values.entrySet()) {
-                String newFieldName = entry.getKey();
+            Map values = newNode.getValues();
+            for (Iterator iter = values.entrySet().iterator(); iter.hasNext();) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                String newFieldName = (String) entry.getKey();
                 if (!insRel.hasField(newFieldName)) {
                     Object newValue = entry.getValue();
                     Object testValue = testNode.getValue(newFieldName);
@@ -633,20 +639,21 @@ class ApplicationInstaller {
      *      pairs (the reldef attributes).
      * @return Always <code>true</code> (?)
      */
-    private boolean installRelDefs(List<Map<String,String>> reldefs, ApplicationResult result) {
-        for (Map<String, String> bh : reldefs) {
-            String source = bh.get("source");
-            String target = bh.get("target");
-            String direction = bh.get("direction");
-            String guisourcename = bh.get("guisourcename");
-            String guitargetname = bh.get("guitargetname");
+    private boolean installRelDefs(Vector reldefs, ApplicationResult result) {
+        for (Enumeration h = reldefs.elements(); h.hasMoreElements();) {
+            Hashtable bh = (Hashtable)h.nextElement();
+            String source = (String)bh.get("source");
+            String target = (String)bh.get("target");
+            String direction = (String)bh.get("direction");
+            String guisourcename = (String)bh.get("guisourcename");
+            String guitargetname = (String)bh.get("guitargetname");
             // retrieve builder info
             int builder = -1;
             if (RelDef.usesbuilder) {
-                String buildername = bh.get("builder");
+                String buildername = (String)bh.get("builder");
                 // if no 'builder' attribute is present (old format), use source name as builder name
                 if (buildername == null) {
-                    buildername = bh.get("source");
+                    buildername = (String)bh.get("source");
                 }
                 builder = mmb.getTypeDef().getIntValue(buildername);
             }
@@ -669,11 +676,12 @@ class ApplicationInstaller {
      *      pairs (the allowed relation attributes).
      * @return <code>true</code> if succesfull, <code>false</code> if an error occurred
      */
-    private boolean installAllowedRelations(List<Map<String,String>> relations, ApplicationResult result) {
-        for (Map<String, String> bh : relations) {
-            String from = bh.get("from");
-            String to = bh.get("to");
-            String type = bh.get("type");
+    private boolean installAllowedRelations(Vector relations, ApplicationResult result) {
+        for (Enumeration h = relations.elements(); h.hasMoreElements();) {
+            Hashtable bh = (Hashtable)h.nextElement();
+            String from = (String)bh.get("from");
+            String to = (String)bh.get("to");
+            String type = (String)bh.get("type");
             if (!installTypeRel(from, to, type, -1, result)) {
                 return false;
             }
@@ -691,10 +699,11 @@ class ApplicationInstaller {
      * @param applicationRoot the rootpath where the application's configuration files are located
      * @return true if the builders were succesfully installed, false if the installation failed
      */
-    private boolean installBuilders(List<Map<String,String>> neededbuilders, String applicationRoot, ApplicationResult result) {
-        for (Map<String, String> builderdata : neededbuilders) {
-            String name = builderdata.get("name");
-            MMObjectBuilder bul = mmb.getBuilder(name);
+    private boolean installBuilders(List neededbuilders, String applicationRoot, ApplicationResult result) {
+        for (Iterator i = neededbuilders.iterator(); i.hasNext();) {
+            Map builderdata = (Map)i.next();
+            String name = (String)builderdata.get("name");
+            MMObjectBuilder bul = mmb.getMMObject(name);
             // if builder not loaded
             if (bul == null) {
                 // if 'inactive' in the config/builder path, fail
@@ -752,7 +761,7 @@ class ApplicationInstaller {
                     result.error(e.getMessage());
                     continue;
                 }
-                    // we now made the builder active.. look for other builders...
+                // we now made the builder active.. look for other builders...
             }
         }
         return result.isSuccess();
@@ -769,12 +778,11 @@ class ApplicationInstaller {
      * @return <code>true</code> if succesfull, <code>false</code> if an error occurred
      */
     private boolean installRelDef(String sname, String dname, int dir, String sguiname,
-                                  String dguiname, int builder, ApplicationResult result) {
+            String dguiname, int builder, ApplicationResult result) {
 
         RelDef reldef = mmb.getRelDef();
         if (reldef != null) {
-            int rnumber = reldef.getNumberByName(sname );
-            if (rnumber == -1) {
+            if (reldef.getNumberByName(sname + "/" + dname) == -1) {
                 MMObjectNode node = reldef.getNewNode("system");
                 node.setValue("sname", sname);
                 node.setValue("dname", dname);
@@ -793,18 +801,6 @@ class ApplicationInstaller {
                     log.debug("RefDef (" + sname + "," + dname + ") installed");
                 } else {
                     return result.error("RelDef (" + sname + "," + dname + ") could not be installed");
-                }
-            } else {
-                MMObjectNode node = reldef.getNode(rnumber);
-                String foundDname = node.getStringValue("dname");
-                int foundBuilder = node.getIntValue("builder");
-                if (! foundDname.equals(dname)) {
-                    // MMB-1727
-                    log.warn("Found already an reldef with this sname ('" + sname + "') but with different dname ('" + foundDname + "'). So not using " + sname + "/" + dname + " but " + sname + "/" + foundDname + ".");
-                }
-                if (foundBuilder != builder) {
-                    result.error("Role '" + sname + "' already defined with different builder (" + foundBuilder + "), while this application required it to be " + builder);
-                    return false;
                 }
             }
         } else {

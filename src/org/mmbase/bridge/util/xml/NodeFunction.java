@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 import javax.servlet.http.HttpServletRequest;
 
-import javax.xml.xpath.*;
+import org.apache.xpath.XPathAPI;
 
 /**
  * Nodes of the bridge can have `virtual fields', which are in fact
@@ -51,7 +51,7 @@ import javax.xml.xpath.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.22 2008-07-29 09:19:10 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.16.2.1 2006-12-12 21:15:17 michiel Exp $
  * @since   MMBase-1.6
  */
 
@@ -75,8 +75,6 @@ public  class NodeFunction {
     }
 
     /**
-     * Note: Saxon cannnot distinguish this function from {@link #function(Cloud, String, String)},
-     * consider using {@link #saxonFunction(Object, String, String)} in stead.
      * @param  cloudName The name of the Cloud.
      * @param  number  The number (or alias) of the Node
      * @param  function The function (with arguments).
@@ -90,14 +88,6 @@ public  class NodeFunction {
         } catch (Exception e) {
             return "could not execute '" + function + "' on node '" + number + "' (" + e.toString() + ")";
         }
-    }
-
-    /**
-     * Note: Saxon cannnot distinguish this function from {@link #function(String, String, String)},
-     * consider using {@link #saxonFunction(Object, String, String)} in stead.
-     */
-    public static String function(Cloud cloud, String number, String function) {
-        return function(cloud, number, function, "");
     }
 
     /**
@@ -117,7 +107,7 @@ public  class NodeFunction {
      * @since MMBase-1.8
      */
     public static org.w3c.dom.Element nodeFunction(org.w3c.dom.NodeList destination, Cloud cloud, String number, String function, String arguments) {
-        // it only wants to work withh a NodeList. I think my book sais that it should also work with
+        // it only want to work withh a NodeList. I think my book sais that it should also work with
         // Element, but no..
 
         try {
@@ -144,13 +134,16 @@ public  class NodeFunction {
      * @param  node  The number (or alias) of the Node
      * @param  function The function (with arguments).
      * @return The result of the function (as a String)
-     * @throws XPathExpressionException if xpath fails
+     * @throws javax.xml.transform.TransformerException if xpath fails
      */
-    public static String function(org.w3c.dom.Node node, String function) throws XPathExpressionException {
+    public static String function(org.w3c.dom.Node node, String function) throws javax.xml.transform.TransformerException {
         log.debug("calling with dom node");
-        XPath xpath = XPathFactory.newInstance().newXPath();
-        String number = xpath.evaluate("./field[@name='number']", node);
+        String number = XPathAPI.eval(node, "./field[@name='number']").toString();
         return function(number, function);
+    }
+
+    public static String function(Cloud cloud, String number, String function) {
+        return function(cloud, number, function, "");
     }
 
     /**
@@ -165,7 +158,7 @@ public  class NodeFunction {
 
             Function func = null;
             Parameters params = null;
-            if (function.indexOf("(") > -1) {
+            if (function.indexOf("(") > -1) { 
                 List args = new ArrayList();
                 String functionName = org.mmbase.util.functions.NodeFunction.getFunctionNameAndFillArgs(function, args);
                 func = node.getFunction(functionName);
@@ -176,14 +169,15 @@ public  class NodeFunction {
                 func = node.getFunction(function);
                 params = func.createParameters();
             }
-
+            
             params.setIfDefined(Parameter.CLOUD, cloud);
             if (request instanceof HttpServletRequest) {
-                params.setIfDefined(Parameter.REQUEST, (HttpServletRequest) request);
+                params.setIfDefined(Parameter.REQUEST, request);
             }
             return func.getFunctionValue(params).toString();
         } catch (Throwable e) {
-            log.info("could not execute '" + function + "' on node '" + number + "'", e);
+            log.info("could not execute '" + function + "' on node '" + number + "'");
+            log.info(Logging.stackTrace(e) + Logging.stackTrace());
             return "could not execute " + function + " on node " + number + "(" + e.getClass() + " " + e.getMessage() + ")";
         }
     }
@@ -196,10 +190,9 @@ public  class NodeFunction {
      * @return The result of the function (as a String)
      * @throws javax.xml.transform.TransformerException if xpath fails
      */
-    public static String function(Cloud cloud, org.w3c.dom.Node node, String function) throws XPathExpressionException {
+    public static String function(Cloud cloud, org.w3c.dom.Node node, String function) throws javax.xml.transform.TransformerException {
         log.debug("calling with dom node");
-        XPath xpath = XPathFactory.newInstance().newXPath();
-        String number = xpath.evaluate("./field[@name='number']", node);
+        String number = XPathAPI.eval(node, "./field[@name='number']").toString();
         return function(cloud, number, function);
     }
 

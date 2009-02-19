@@ -1,5 +1,4 @@
-<mm:content 
-    unacceptable="Please use a better browser"
+<mm:content
     type="application/xhtml+xml" language="client" expires="0" postprocessor="none" jspvar="locale"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -8,19 +7,19 @@
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <jsp:directive.page session="true" buffer="200kb" />
-  
+
   <html lang="${locale}" xmlns="http://www.w3.org/1999/xhtml">
 
-    <!-- 
+    <!--
          Offers a form for one new MMBase node.
          Also handles the form, and then redirects to change.jspx, because the node is existng then.
-         $Id: create.jspx,v 1.15 2007-07-12 08:54:40 michiel Exp $
+         $Id: create.jspx,v 1.13.2.1 2008-08-20 09:16:48 michiel Exp $
     -->
     <mm:include page="head.jspx" />
     <body>
       <mm:import id="referids">nodemanager,only?</mm:import>
       <mm:cloud rank="basic user">
-        <mm:import externid="nodemanager" required="true" />        
+        <mm:import externid="nodemanager" required="true" />
 
         <mm:import externid="submitted">new</mm:import>
 
@@ -33,7 +32,7 @@
 
         </h1>
         <mm:form id="createform">
-          <input type="hidden" name="nodemanager" value="${nodemanager}" />
+          <input type="hidden" name="nodemager" value="${nodemanager}" />
           <input type="hidden" name="submitted" value="submitted" />
           <table summary="fields of new node of type ${nodemanager}">
             <mm:fieldlist type="edit" nodetype="$nodemanager">

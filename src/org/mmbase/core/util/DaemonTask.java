@@ -14,8 +14,6 @@ package org.mmbase.core.util;
  * A task should define a {@link #executeTask()} method and a {@link #getSleepPeriod()} method to define it's behavior.
  *
  * @since MMBase-1.8
- * @deprecated  This class copies functionality present in
- * e.g. java.util.concurrent.ScheduledThreadPoolExecutor (a thread pool which can be used is e.g. {@link org.mmbase.util.ThreadPools#scheduler}).
  */
 public interface DaemonTask {
 

@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.56 2008-03-18 15:15:12 pierre Exp $
+  version: $Id: taglibcontent.xml,v 1.51.2.5 2008-03-18 15:14:42 pierre Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -187,9 +187,9 @@
     <class config="ESCAPE_DOUBLE_QUOTES">org.mmbase.util.transformers.Javascript</class>
     <info>Escapes double quotes for use in Javascript (with &quot;).</info>
   </escaper>
-    <escaper id="js-both-quotes">
+  <escaper id="js-both-quotes">
     <class config="ESCAPE_BOTH_QUOTES">org.mmbase.util.transformers.Javascript</class>
-    <info>Escapes both quote types (' and ") for use in Javascript (with \').</info>
+    <info>Escapes both quote types (' and ")for use in Javascript (with \').</info>
   </escaper>
   <escaper id="url">
     <class config="ESCAPE">org.mmbase.util.transformers.Url</class>
@@ -498,13 +498,13 @@
   <parameterizedescaper id="toxml">
     <class>org.mmbase.util.transformers.TagStripperFactory</class>
     <info>
-      <p>This filters HTML-4, and cleanes it up, so that it is valid XML. At the moment, like tagstrippers(XSS), with escapeamps is true.
-      </p>
+      <p>This filters HTML-4, and cleanes it up, so that it is valid XML. At the moment, like tagstrippers(XSS), with escapeamps is true.</p>
     </info>
     <param name="tags" value="XSS" />
     <param name="addbrs" value="false" />
     <param name="escapeamps" value="true" />
   </parameterizedescaper>
+
 
 
   <!-- The content-tag then can 'postprocess' everything in its body.

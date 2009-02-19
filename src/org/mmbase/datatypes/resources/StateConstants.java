@@ -12,11 +12,8 @@ package org.mmbase.datatypes.resources;
 
 
 /**
- * States, as used in the 'state' field of the {@link org.mmbase.module.builders.MMServers}
- * builders. Used in test-cases too.
- *
  * @author  Michiel Meeuwissen
- * @version $Id: StateConstants.java,v 1.2 2008-09-06 10:42:31 michiel Exp $
+ * @version $Id: StateConstants.java,v 1.1 2006-07-03 14:22:42 michiel Exp $
  * @since   MMBase-1.8.1
  */
 public interface StateConstants {
@@ -25,6 +22,6 @@ public interface StateConstants {
     static final int ACTIVE = 1;
     static final int INACTIVE = 2;
     static final int ERROR = 3;
-
+    
 }
 

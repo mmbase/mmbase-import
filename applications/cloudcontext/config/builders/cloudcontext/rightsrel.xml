@@ -1,12 +1,11 @@
 <?xml version="1.0" ?>
-<builder
+<builder 
   xmlns="http://www.mmbase.org/xmlns/builder"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                      http://www.mmbase.org/xmlns/builder.xsd"
-  name="rightsrel" maintainer="www.mmbase.org" version="1" extends="insrel"
-  defaultcontextintypedef="security"
-  >
+  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                      http://www.mmbase.org/xmlns/builder.xsd"                        
+  name="rightsrel" maintainer="www.mmbase.org" version="1" extends="insrel">
+  <status>active</status>
   <class>org.mmbase.security.implementation.cloudcontext.builders.RightsRel</class>
   <searchage>14</searchage>
   <names>
@@ -21,18 +20,20 @@
   </descriptions>
   <properties/>
   <fieldlist>
-    <field name="operation">
+    <field>
       <gui>
         <guiname xml:lang="fr">Operation</guiname>
         <guiname xml:lang="nl">Operatie</guiname>
         <guiname xml:lang="eo">Ago</guiname>
         <guiname xml:lang="en">Operation</guiname>
       </gui>
-      <editor><positions><list>3</list></positions></editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <editor>
+        <positions>
+          <list>3</list>
+        </positions>
+      </editor>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="read" />
-        <required value="true" enforce="never" />
-        <maxLength value="15" enforce="never" />
         <enumeration>
           <entry value="read" />
           <entry value="write" />
@@ -42,6 +43,10 @@
           <entry value="change context" />
         </enumeration>
       </datatype>
+      <db>
+        <name>operation</name>
+        <type notnull="true" size="15" state="persistent">STRING</type>
+      </db>
     </field>
   </fieldlist>
 </builder>

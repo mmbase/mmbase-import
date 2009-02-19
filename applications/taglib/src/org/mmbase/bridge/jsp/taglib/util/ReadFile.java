@@ -11,8 +11,8 @@ import org.mmbase.util.Casting;
  * @author Johannes Verelst 
  */
 public class ReadFile {
-    public static Node readExample(String actualFileName) {
-        return Casting.toXML("<example><![CDATA[" + contents(actualFileName) + "]]></example>").getDocumentElement();
+    public static Document readExample(String actualFileName) {
+        return Casting.toXML("<example><![CDATA[" + contents(actualFileName) + "]]></example>");
     }
 
     public static String contents(String actualFileName) {

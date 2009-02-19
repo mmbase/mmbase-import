@@ -21,14 +21,14 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.21 2009-01-03 10:16:56 michiel Exp $
+ * @version $Id: AbstractField.java,v 1.14 2006-07-18 12:40:39 michiel Exp $
  */
 
-abstract public class AbstractField<D> extends AbstractDescriptor implements Field {
+abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractField.class);
 
-    protected DataType<D> dataType = null;
+    protected DataType dataType = null;
     protected int type = TYPE_UNKNOWN;
     protected int state = STATE_UNKNOWN;
     protected int listItemType = TYPE_UNKNOWN;
@@ -59,7 +59,7 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
         readOnly = field.isReadOnly();
         listItemType = field.getListItemType();
         if (cloneDataForRewrite) {
-            setDataType((DataType<D>)field.getDataType().clone());
+            setDataType((DataType)field.getDataType().clone());
         } else {
             setDataType(dataType = field.getDataType());
         }
@@ -68,12 +68,9 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
     /**
      * Create a field object
      * @param name the name of the field
-     * @param type the identifier for the MMBase base type for this field
-     * @param listItemType If the type of this field is TYPE_LIST, then this is the MMBase base type for the list elements.
-     * @param state identifier (virtual, persistent, system, systemvirtual)
      * @param dataType the data type of the field
      */
-    protected AbstractField(String name, int type, int listItemType, int state, DataType<D> dataType) {
+    protected AbstractField(String name, int type, int listItemType, int state, DataType dataType) {
         super(name);
         this.type = type;
         this.listItemType = listItemType;
@@ -83,16 +80,20 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
 
     abstract public NodeManager getNodeManager();
 
-    public int compareTo(Field f) {
-        int compared = getName().compareTo(f.getName());
-        if (compared == 0) compared = dataType.compareTo(f.getDataType());
-        return compared;
+    public int compareTo(Object o) {
+        if (o instanceof Field) {
+            Field f = (Field) o;
+            int compared = getName().compareTo(f.getName());
+            if (compared == 0) compared = dataType.compareTo(f.getDataType());
+            return compared;
+        } else {
+            throw new ClassCastException("Object is not of type Field");
+        }
     }
 
     /**
      * Whether data type equals to other data type. Only key and type are considered. DefaultValue and
-     * required properties are only 'utilities'.
-     * @param o the reference object with which to compare.
+     * required propererties are only 'utilities'.
      * @return true if o is a DataType of which key and type equal to this' key and type.
      */
     public boolean equals(Object o) {
@@ -107,7 +108,7 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
         return getName().hashCode() * 13 + dataType.hashCode();
     }
 
-    public final int getState() {
+    public int getState() {
         return state;
     }
 
@@ -126,18 +127,16 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
         return listItemType;
     }
 
-    public DataType<D> getDataType() {
+    public DataType getDataType() {
         return dataType;
     }
 
     /**
      * Sets the datatype of a field.
      * It is possible that the datatype of a field is different from the actual field type.
-     * @param dataType
-     * @throws IllegalArgumentException
      * @see #getType
      */
-    public void setDataType(DataType<D> dataType) throws IllegalArgumentException {
+    public void setDataType(DataType dataType) throws IllegalArgumentException {
         int dataTypeType = dataType.getBaseType();
         if (dataTypeType != type) {
             log.debug("DataType (" + dataType.getBaseTypeIdentifier() + ") is different from db type (" + Fields.getTypeDescription(type) + ").");
@@ -159,7 +158,6 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
 
     /**
      * Retrieve whether the field is a key and thus need be unique.
-     * @return <code>true</code> when field is unique
      */
     public boolean isUnique() {
         return dataType.isUnique();
@@ -178,7 +176,7 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
      * @see org.mmbase.bridge.Field#isVirtual()
      */
     public boolean isVirtual() {
-       return state == STATE_VIRTUAL || state == STATE_SYSTEM_VIRTUAL;
+       return getState() == STATE_VIRTUAL || getState() == STATE_SYSTEM_VIRTUAL;
     }
 
     /**
@@ -186,7 +184,6 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
      * Temporary fields hold data needed by a builder to facilitate certain functionality,
      * such as holding node references in a transaction.
      * Temporary fields are never persistent and should normally be ignored.
-     * @return <code>true</code> when temporary
      * @since MMBase-1.8
      */
     public boolean isTemporary() {
@@ -198,8 +195,6 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
     }
 
     /**
-     * Returns whether a field is a read only.
-     * @return <code>true</code> when read only
      * @see org.mmbase.bridge.Field#isVirtual()
      */
     public boolean isReadOnly() {
@@ -210,7 +205,6 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
 
     /**
      * Returns a description for this field.
-     * @return a string representation of the object.
      */
     public String toString() {
         return getName() + ":" +
@@ -219,16 +213,21 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
             getDataType();
     }
 
-    public AbstractField clone() {
+    public Object clone() {
         return clone (null, false);
     }
 
-    public AbstractField clone(String name, boolean copyDataTypeForRewrite) {
-        AbstractField clone = (AbstractField)super.clone(name);
-        if (copyDataTypeForRewrite) {
-            clone.dataType = (DataType<Object>) dataType.clone();
+    public Object clone(String name, boolean copyDataTypeForRewrite) {
+        try {
+            AbstractField clone = (AbstractField)super.clone(name);
+            if (copyDataTypeForRewrite) {
+                clone.dataType = (DataType) dataType.clone();
+            }
+            return clone;
+        } catch (CloneNotSupportedException cnse) {
+            // should not happen
+            throw new RuntimeException("Cannot clone this Field", cnse);
         }
-        return clone;
     }
 
 }

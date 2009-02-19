@@ -10,14 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search;
 
 /**
- * Exception thrown by the methods that process search queries.
+ * Exception thrown by the methods that process search queries. 
  *
  * @author Rob van Maris
- * @version $Id: SearchQueryException.java,v 1.5 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id: SearchQueryException.java,v 1.4 2003-08-29 09:36:55 pierre Exp $
  * @since MMBase-1.7
  */
 public class SearchQueryException extends Exception {
-
+    
     //javadoc is inherited
     public SearchQueryException() {
         super();

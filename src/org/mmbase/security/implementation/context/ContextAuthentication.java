@@ -12,14 +12,14 @@ package org.mmbase.security.implementation.context;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 
-import org.mmbase.util.xml.DocumentReader;
-
 import java.util.*;
 
 import org.w3c.dom.*;
+import org.w3c.dom.traversal.NodeIterator;
+
 import org.xml.sax.InputSource;
 
-import javax.xml.xpath.*;
+import org.apache.xpath.XPathAPI;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,12 +29,12 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.31 2008-09-23 16:29:07 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.22 2006-01-17 21:25:28 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(ContextAuthentication.class);
-    private Map<String, ContextLoginModule>  loginModules = new LinkedHashMap<String, ContextLoginModule>();
+    private Map  loginModules = new LinkedHashMap();
     private Document document;
 
     /** Public ID of the Builder DTD version 1.0 */
@@ -48,13 +48,12 @@ public class ContextAuthentication extends Authentication {
     public static final String DTD_SECURITY_CONTEXT_CONFIG_1_2 = "securitycontextconfig_1_2.dtd";
 
     static {
-        org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_0, DTD_SECURITY_CONTEXT_CONFIG_1_0, MMBaseCopConfig.class);
-        org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_1, DTD_SECURITY_CONTEXT_CONFIG_1_1, MMBaseCopConfig.class);
-        org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_2, DTD_SECURITY_CONTEXT_CONFIG_1_2, MMBaseCopConfig.class);
+        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_0, DTD_SECURITY_CONTEXT_CONFIG_1_0, MMBaseCopConfig.class);
+        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_1, DTD_SECURITY_CONTEXT_CONFIG_1_1, MMBaseCopConfig.class);
+        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_2, DTD_SECURITY_CONTEXT_CONFIG_1_2, MMBaseCopConfig.class);
     }
 
     public ContextAuthentication() {
-        attributes.put(STORES_CONTEXT_IN_OWNER, Boolean.TRUE);
     }
 
     protected void load() {
@@ -64,9 +63,17 @@ public class ContextAuthentication extends Authentication {
 
         try {
             InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
-            document = new DocumentReader(in, this.getClass()).getDocument();
+            document = org.mmbase.util.XMLBasicReader.getDocumentBuilder(this.getClass()).parse(in);
+        } catch(org.xml.sax.SAXException se) {
+            log.error("error parsing file :"+configResource);
+            String message = "error loading configfile :'" + configResource + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
+            log.error(message);
+            log.error(Logging.stackTrace(se));
+            throw new SecurityException(message);
         } catch(java.io.IOException ioe) {
-            throw new SecurityException("error loading configfile :'"+configResource+"'("+ioe+")" , ioe);
+            log.error("error parsing file :"+configResource);
+            log.error(Logging.stackTrace(ioe));
+            throw new SecurityException("error loading configfile :'"+configResource+"'("+ioe+")" );
         }
         if (log.isDebugEnabled()) {
             log.debug("loaded: '" +  configResource + "' as config file for authentication");
@@ -76,17 +83,16 @@ public class ContextAuthentication extends Authentication {
         // do the xpath query...
         String xpath = "/contextconfig/loginmodules/module";
         if (log.isDebugEnabled()) log.debug("going to execute the query:" + xpath );
-
-        XPathFactory xf = XPathFactory.newInstance();
-        NodeList found;
+        NodeIterator found;
         try {
-            found = (NodeList) xf.newXPath().evaluate(xpath, document, XPathConstants.NODESET);
-        } catch(XPathExpressionException xe) {
-            throw new SecurityException("error executing query: '"+xpath+"' ", xe);
+            found = XPathAPI.selectNodeIterator(document, xpath);
+        } catch(javax.xml.transform.TransformerException te) {
+            log.error("error executing query: '" + xpath + "' ");
+            log.error( Logging.stackTrace(te));
+            throw new SecurityException("error executing query: '"+xpath+"' ");
         }
         // we now have a list of login modules.. process them all, and load them...
-        for(int i = 0; i < found.getLength(); i++) {
-            Node contains = found.item(i);
+        for(Node contains = found.nextNode(); contains != null; contains = found.nextNode()) {
             NamedNodeMap nnm = contains.getAttributes();
             String moduleName = nnm.getNamedItem("name").getNodeValue();
             String className = nnm.getNamedItem("class").getNodeValue();
@@ -98,7 +104,9 @@ public class ContextAuthentication extends Authentication {
                 module = (ContextLoginModule) moduleClass.newInstance();
             } catch(Exception e) {
                 String msg = "could not load module with the name: '" + moduleName + "' with class: " + className;
-                throw new SecurityException(msg, e);
+                log.error(msg);
+                log.error( Logging.stackTrace(e));
+                throw new SecurityException(msg);
             }
             module.load(document, getKey(), moduleName, manager);
             log.info("loaded module with the name: '" + moduleName + "' with class: " + className);
@@ -116,12 +124,12 @@ public class ContextAuthentication extends Authentication {
     }
 
 
-    public UserContext login(String moduleName, Map<String, ?> loginInfo, Object[] parameters) throws SecurityException {
+    public UserContext login(String moduleName, Map loginInfo, Object[] parameters) throws SecurityException {
         // look if we can find our login module...
         if(!loginModules.containsKey(moduleName)) {
             throw new UnknownAuthenticationMethodException("could not load module with name: '" +  moduleName + "'");
         }
-        ContextLoginModule module = loginModules.get(moduleName);
+        ContextLoginModule module = (ContextLoginModule) loginModules.get(moduleName);
         // and we do the login...
         UserContext user = module.login(loginInfo, parameters);
         if (log.isServiceEnabled()) {
@@ -141,13 +149,11 @@ public class ContextAuthentication extends Authentication {
      */
     public boolean isValid(UserContext userContext) throws SecurityException {
         if ( getKey() == ((ContextUserContext)userContext).getKey()) return true;
-        if (log.isDebugEnabled()) {
-            log.debug("not valid because " + getKey () + " != " + ((ContextUserContext) userContext).getKey());
-        }
+        log.debug("not valid because " + getKey () + " != " + ((ContextUserContext) userContext).getKey());
         return false;
     }
 
     public String[] getTypes() {
-        return loginModules.keySet().toArray(new String[] {});
+        return (String[]) loginModules.keySet().toArray(new String[] {});
     }
 }

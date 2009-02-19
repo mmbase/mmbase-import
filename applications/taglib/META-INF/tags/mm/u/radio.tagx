@@ -16,7 +16,6 @@
 
   <jsp:directive.attribute name="value"   required="true"  />
   <jsp:directive.attribute name="compare" />
-  <jsp:directive.attribute name="compareset" type="java.util.Collection" />
   <jsp:directive.attribute name="referid" />
 
   <!-- other attribute are simply copied -->
@@ -33,8 +32,6 @@
   <jsp:directive.attribute name="lang" />
   <jsp:directive.attribute name="xmllang" />
   <jsp:directive.attribute name="tabindex" />
-  <jsp:directive.attribute name="onchange" />
-  <jsp:directive.attribute name="onclick" />
 
   <jsp:directive.attribute name="type" />
 
@@ -49,13 +46,10 @@
     <mm:xslt xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:template match="input">
         <input value="${value}" type="${empty type ? 'radio' : type}">
-          <c:if test="${! empty checked and (checked eq true  or checked eq 'true' or checked eq 'checked') }">
+          <c:if test="${! empty checked}">
             <xsl:attribute name="checked">${checked}</xsl:attribute>
           </c:if>
           <c:if test="${empty checked and value eq compare}">
-            <xsl:attribute name="checked">checked</xsl:attribute>
-          </c:if>
-          <c:if test="${empty checked and (! empty compareset) and mm:contains(compareset, value)}">
             <xsl:attribute name="checked">checked</xsl:attribute>
           </c:if>
           <c:if test="${! empty disabled}">
@@ -90,12 +84,6 @@
           </c:if>
           <c:if test="${! empty tabindex}">
             <xsl:attribute name="tabindex">${tabindex}</xsl:attribute>
-          </c:if>
-          <c:if test="${! empty onchange}">
-            <xsl:attribute name="onchange">${onchange}</xsl:attribute>
-          </c:if>
-          <c:if test="${! empty onclick}">
-            <xsl:attribute name="onclick">${onclick}</xsl:attribute>
           </c:if>
           <xsl:apply-templates select="*|text()" />
         </input>

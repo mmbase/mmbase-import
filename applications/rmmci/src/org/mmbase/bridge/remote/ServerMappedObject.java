@@ -8,15 +8,10 @@ import java.rmi.*;
  * object and the stub
  * @author Kees Jongenburger <keesj@dds.nl>
  **/
-public interface ServerMappedObject extends Remote {
+public interface ServerMappedObject extends Remote{
     /**
      * @return a value that when fed to the StubToLocalMapper returns the origirnal object
      **/
     public String getMapperCode() throws RemoteException;
-
-    public int wrapped_hashCode() throws RemoteException;
-    public boolean wrapped_equals(java.lang.Object arg0) throws RemoteException;
-    public java.lang.String wrapped_toString() throws RemoteException;
-
 }
 

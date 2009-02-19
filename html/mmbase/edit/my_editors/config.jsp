@@ -14,14 +14,14 @@
   <div id="helpbox">
   <h3>About the icons</h3>
   <dl>
-    <dt>new object</dt>
-    <dd><img src="img/mmbase-new.png" alt="new" width="21" height="20" /></dd>
+	<dt>new object</dt>
+	<dd><img src="img/mmbase-new.png" alt="new" width="21" height="20" /></dd>
   </dl><dl>
-    <dt>delete object</dt>
-    <dd><img src="img/mmbase-delete.png" alt="delete" width="21" height="20" /></dd>
+	<dt>delete object</dt>
+	<dd><img src="img/mmbase-delete.png" alt="delete" width="21" height="20" /></dd>
   </dl><dl>
-    <dt>edit object</dt>
-    <dd><img src="img/mmbase-edit.png" alt="edit" width="21" height="20" /></dd>
+	<dt>edit object</dt>
+	<dd><img src="img/mmbase-edit.png" alt="edit" width="21" height="20" /></dd>
   </dl><dl>
     <dt>relate object (child)</dt>
     <dd><img src="img/mmbase-relleft.png" alt="&larr; relate" width="21" height="20" /></dd>
@@ -29,35 +29,35 @@
     <dt>relate object (parent)</dt>
     <dd><img src="img/mmbase-relright.png" alt="relate &rarr;" width="21" height="20" /></dd>
   </dl><dl>
-    <dt>up</dt>
-    <dd><img src="img/mmbase-up.png" alt="up" width="21" height="20" /></dd>
+	<dt>up</dt>
+	<dd><img src="img/mmbase-up.png" alt="up" width="21" height="20" /></dd>
   </dl><dl>
-    <dt>down</dt>
-    <dd><img src="img/mmbase-down.png" alt="down" width="21" height="20" /></dd>
+	<dt>down</dt>
+	<dd><img src="img/mmbase-down.png" alt="down" width="21" height="20" /></dd>
   </dl><dl>
-    <dt>left</dt>
-    <dd><img src="img/mmbase-left.png" alt="left" width="21" height="20" /></dd>
+	<dt>left</dt>
+	<dd><img src="img/mmbase-left.png" alt="left" width="21" height="20" /></dd>
   </dl><dl>
-    <dt>right</dt>
-    <dd><img src="img/mmbase-right.png" alt="right" width="21" height="20" /></dd>
+	<dt>right</dt>
+	<dd><img src="img/mmbase-right.png" alt="right" width="21" height="20" /></dd>
   </dl><dl>
-    <dt>ok</dt>
-    <dd><img src="img/mmbase-ok.png" alt="ok" width="21" height="20" /></dd>
+	<dt>ok</dt>
+	<dd><img src="img/mmbase-ok.png" alt="ok" width="21" height="20" /></dd>
   </dl><dl>
-    <dt>help</dt>
-    <dd><img src="img/mmbase-help.png" alt="help" width="21" height="20" /></dd>
+	<dt>help</dt>
+	<dd><img src="img/mmbase-help.png" alt="help" width="21" height="20" /></dd>
   </dl><dl>
-    <dt>home</dt>
-    <dd><img src="img/mmbase-home.png" alt="home" width="21" height="20" /></dd>
+	<dt>home</dt>
+	<dd><img src="img/mmbase-home.png" alt="home" width="21" height="20" /></dd>
   </dl><dl>
-    <dt>cancel action</dt>
-    <dd><img src="img/mmbase-cancel.png" alt="cancel" width="21" height="20" /></dd>
+	<dt>cancel action</dt>
+	<dd><img src="img/mmbase-cancel.png" alt="cancel" width="21" height="20" /></dd>
   </dl><dl>
-    <dt>reload</dt>
+	<dt>reload</dt>
 	<dd><mm:link><a href="${_}"><img src="img/mmbase-reload.png" alt="reload" width="21" height="20" /></a></mm:link></dd>
   </dl><dl>
-    <dt>search</dt>
-    <dd><img src="img/mmbase-search.png" alt="search" width="21" height="20" /></dd>
+	<dt>search</dt>
+	<dd><img src="img/mmbase-search.png" alt="search" width="21" height="20" /></dd>
   </dl>
   <div class="stopfloat">&nbsp;</div>
   </div><!-- /#helpbox -->
@@ -89,12 +89,8 @@
 <ul>
   <li>the maximum age of the items that will be found: <b><mm:write referid="max_days" /></b> days;</li>
   <li>maximum number of items in each list: <b><mm:write referid="max_items" /></b>;</li>
-  <%-- li>if you want all the node types to be shown or only the ones you are allowed to edit: <b><mm:write referid="type_list" /></b>; and</li --%>
-  <li>where you want the searchbox to be displayed: <strong><mm:write referid="search_box" /></strong> the searchresults; or</li>
-  <li>
-    the position of the content column vs. the sidebar, or vise versa: 
-    <strong><mm:write referid="columns_pos" /></strong> 
-  </li>
+  <li>if you want all the node types to be shown or only the ones you are allowed to edit: <b><mm:write referid="type_list" /></b>; and</li>
+  <li>where you want the searchbox to be displayed: <strong><mm:write referid="search_box" /></strong> the searchresults.</li>
 </ul>
 
 <p>Your preferences are saved in several cookies starting with 'my_editors'. You'll find them in your browsers cookie jar.</p>
@@ -111,18 +107,18 @@
   <input type="text" name="max_items" value="<mm:write referid="max_items" />" size="9" maxlength="9" />
   or other lists.
 </div>
-<%-- div class="row">
+<div class="row">
   <label><strong>Show me</strong></label>
   <select name="type_list">
-    <option label="all the node types" value="all"<mm:compare referid="type_list" value="all"> selected="selected"</mm:compare>>all the node types</option>
-    <option label="only the editable node types" value="editable"<mm:compare referid="type_list" value="editable"> selected="selected"</mm:compare>>only the editable node types</option>
+	<option label="all the node types" value="all"<mm:compare referid="type_list" value="all"> selected="selected"</mm:compare>>all the node types</option>
+	<option label="only the editable node types" value="editable"<mm:compare referid="type_list" value="editable"> selected="selected"</mm:compare>>only the editable node types</option>
   </select>
-</div --%>
+</div>
 <div class="row">
   <label><strong>Show the searchbox</strong></label>
   <select name="search_box">
-    <option label="after" value="after"<mm:compare referid="search_box" value="after"> selected="selected"</mm:compare>>after</option>
-    <option label="before" value="before"<mm:compare referid="search_box" value="before"> selected="selected"</mm:compare>>before</option>
+	<option label="after" value="after"<mm:compare referid="search_box" value="after"> selected="selected"</mm:compare>>after</option>
+	<option label="before" value="before"<mm:compare referid="search_box" value="before"> selected="selected"</mm:compare>>before</option>
   </select> the list with searchresults
 </div>
 <div class="row">
@@ -138,7 +134,7 @@
 </fieldset>
 </form>
 
-    </div><!-- / #config -->  
+	</div><!-- / #config -->  
   </div><!-- / .padcontent -->
   <div class="padfoot">&nbsp;</div>
 </div><!-- / #content -->

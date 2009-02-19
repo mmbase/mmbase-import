@@ -10,16 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import java.util.*;
-import java.util.Map.Entry;
-
 import org.mmbase.module.Module;
-import org.mmbase.util.xml.EntityResolver;
+import org.mmbase.util.XMLEntityResolver;
 
 import org.w3c.dom.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: ModuleWriter.java,v 1.10 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id: ModuleWriter.java,v 1.8 2005-09-12 14:07:39 pierre Exp $
  */
 public class ModuleWriter extends DocumentWriter  {
 
@@ -35,7 +33,7 @@ public class ModuleWriter extends DocumentWriter  {
      */
     public ModuleWriter(Module module) throws DOMException {
         super("module", ModuleReader.PUBLIC_ID_MODULE,
-                        EntityResolver.DOMAIN + EntityResolver.DTD_SUBPATH + ModuleReader.DTD_MODULE);
+                        XMLEntityResolver.DOMAIN + XMLEntityResolver.DTD_SUBPATH + ModuleReader.DTD_MODULE);
         this.module = module;
         getMessageRetriever("org.mmbase.util.xml.resources.modulewriter");
     }
@@ -60,10 +58,11 @@ public class ModuleWriter extends DocumentWriter  {
         addComment("module.properties",root);
         root.appendChild(properties);
         // properties.property
-        Map<String, String> datamap=module.getInitParameters();
-        for (Entry<String, String> entry : datamap.entrySet()) {
-            String propname = entry.getKey();
-            String propvalue = entry.getValue();
+        Map datamap=module.getInitParameters();
+        for (Iterator i=datamap.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            String propname = (String) entry.getKey();
+            String propvalue = (String) entry.getValue();
             Element elm=addContentElement("property",propvalue,properties);
             elm.setAttribute("name",propname);
         }

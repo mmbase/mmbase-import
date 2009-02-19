@@ -3,19 +3,33 @@
 <mm:cloud loginpage="login.jsp" sessionname="$config.session" jspvar="cloud" rank="$rank">
   <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
   <mm:param name="org.mmbase.richtext.wiki.show_broken"    value="true" />
+  <mm:param name="show_broken" value="true" />
 <mm:write referid="style" escape="none" />
 <title><%= m.getString("change_node.change")%></title>
 </head>
 <body class="basic" onLoad="document.change.elements[0].focus();">
-
 <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
 <mm:context id="change_node">
-<mm:import externid="node_number" required="true" from="parameters" escape="trimmer" />
+<mm:import externid="node_number" required="true" from="parameters"/>
 <!-- We use two forms to avoid uploading stuff when not needed, because we cancel or only delete.-->
 
 <mm:url page="change_node.jsp" id="purl" write="false" referids="node_number" />
 
-<mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="thisNode">
+<mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="thisNode" commitonclose="false">
+
+  <script type="text/javascript">
+    var validator = new MMBaseValidator();
+    validator.logEnabled = false;
+    validator.traceEnabled = false;
+    validator.sessionName = '${config.session}';
+    validator.prefetchNodeManager('<%=thisNode.getNodeManager().getName()%>');
+    validator.validateHook = function() {
+       document.getElementById('okbutton').disabled = this.invalidElements != 0;
+       document.getElementById('savebutton').disabled = this.invalidElements != 0;
+    }
+    validator.lang = '${config.lang}';
+    validator.setup(window);
+  </script>
 
 
 <%
@@ -46,7 +60,9 @@
   <tr><th colspan="3">
 
     <div style="width: 30em; overflow: hidden;"><mm:nodeinfo type="gui" /></div>:
-  <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
+  <%=m.getString("Node")%>  <mm:link page="change_node.jsp" referids="_node@node_number">
+       <a href="${_}"><mm:field name="number" /></a>
+     </mm:link>  <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
 
     <a href="<mm:url page="navigate.jsp" referids="this_node@node_number" />">
@@ -84,8 +100,8 @@
 <tr>
 <td colspan="3" class="buttons">
 <p>
-<input class="submit"  id="okbutton" type ="submit" name="ok" value="<%=m.getString("ok")%>" />
-<input class="submit"  id="savebutton" type ="submit" name="save" value="save" />
+<input class="submit"   type ="submit" name="ok" id="okbutton" value="<%=m.getString("ok")%>" />
+<input class="submit"   type ="submit" name="save" id="savebutton" value="save" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <mm:maydelete>
    <!-- input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" /-->

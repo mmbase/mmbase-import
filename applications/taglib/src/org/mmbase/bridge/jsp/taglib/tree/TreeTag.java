@@ -9,8 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.tree;
 
+
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.*;
 import javax.servlet.jsp.jstl.core.*;
 
 import java.io.IOException;
@@ -18,7 +20,6 @@ import java.util.*;
 
 import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.jsp.taglib.tree.ShrinkTag.Entry;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 import org.mmbase.bridge.jsp.taglib.*;
@@ -48,7 +49,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.27 2008-10-15 12:36:46 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.18.2.4 2008-02-29 13:16:20 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -56,7 +57,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     private TreeList     tree;
     private TreeIterator iterator;
 
-    private Stack<ShrinkTag.Entry> shrinkStack;
+    private Stack        shrinkStack;
 
     private int previousDepth = -1;
     private int depth = 0;
@@ -66,10 +67,17 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
     private Node nextNode;
     private BranchLoopStatus nextBranchStatus;
-    private List<BranchLoopStatus> branchLoopStatus;
+    private List/*<BranchLoopStatus>*/ branchLoopStatus;
 
     private Object prevDepthProvider;
     private Object prevTreeProvider;
+
+    protected Attribute varStatus = Attribute.NULL;
+    protected String varStatusName = null;
+
+    protected Attribute varBranchStatus = Attribute.NULL;
+    protected String varBranchStatusName = null;
+
 
     /**
      * Lists do implement ContextProvider
@@ -86,14 +94,6 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     protected Attribute orderby     = Attribute.NULL;
     protected Attribute directions  = Attribute.NULL;
     protected Attribute max         = Attribute.NULL;
-
-    protected Attribute varStatus = Attribute.NULL;
-    protected String varStatusName = null;
-
-    protected Attribute varBranchStatus = Attribute.NULL;
-    protected String varBranchStatusName = null;
-
-
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -127,7 +127,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     }
 
 
-    public Stack<ShrinkTag.Entry> getShrinkStack() {
+    public Stack getShrinkStack() {
         return shrinkStack;
     }
 
@@ -136,10 +136,12 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     }
 
 
+
+
     // ContextProvider implementation
     public ContextContainer getContextContainer() throws JspTagException {
         if (collector == null) return getContextProvider().getContextContainer(); // to make sure old-style implemntation work (which do not initialize container)
-        return collector;
+        return collector.getContextContainer();
     }
 
 
@@ -189,16 +191,6 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     }
 
 
-    public void setAdd(String c) throws JspTagException {
-        throw new UnsupportedOperationException();
-    }
-    public void setRetain(String c) throws JspTagException {
-        throw new UnsupportedOperationException();
-    }
-    public void setRemove(String c) throws JspTagException {
-        throw new UnsupportedOperationException();
-    }
-
     protected void noSpecification() throws JspTagException {
         if (nodeManager != Attribute.NULL) {
             throw new JspTagException("'type' attribute does not make sense with 'referid' attribute");
@@ -216,7 +208,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
      */
     public int doStartTag() throws JspTagException {
         log.debug("starttag");
-        shrinkStack = new Stack<Entry>();
+        shrinkStack = new Stack();
         collector = new ContextCollector(getContextProvider());
         prevDepthProvider = pageContext.getAttribute(DepthProvider.KEY, PageContext.REQUEST_SCOPE);
         prevTreeProvider = pageContext.getAttribute(TreeProvider.KEY, PageContext.REQUEST_SCOPE);
@@ -230,9 +222,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         }
 
         // serve parent timer tag:
-        TimerTag t = findParentTag(TimerTag.class, null, false);
+        TagSupport t = findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            timerHandle = t.startTimer(getId(), getClass().getName());
+            timerHandle = ((TimerTag)t).startTimer(getId(), getClass().getName());
         }
 
         if (getReferid() != null) {
@@ -249,7 +241,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         } else {
             tree = null;
             if (parentNodeId == Attribute.NULL) {
-                TreeContainerTag c = findParentTag(TreeContainerTag.class, (String) container.getValue(this), false);
+                TreeContainerTag c = (TreeContainerTag) findParentTag(TreeContainerTag.class, (String) container.getValue(this), false);
                 if (c != null) {
                     GrowingTreeList growingTree = c.getTree();
                     if (! "".equals(maxDepth.getString(this))) {
@@ -279,7 +271,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         iterator = tree.treeIterator();
 
         // returnList is known, now we can serve parent formatter tag
-        FormatterTag f = findParentTag(FormatterTag.class, null, false);
+        FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
         if (f != null && f.wantXML()) {
             f.getGenerator().add(tree);
             f.setCloud(tree.getCloud());
@@ -294,7 +286,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             setNodeVar(node);
             fillVars();
             depth         = iterator.currentDepth();
-          if (varStatusName != null) {
+            if (varStatusName != null) {
                 org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
                 cc.register(varStatusName, getLoopStatus());
             }
@@ -304,6 +296,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
                 branchLoopStatus.set(depth - 1, new BranchLoopStatus(node, iterator.getSiblings()));
                 cc.register(varBranchStatusName, branchLoopStatus.subList(0, depth));
             }
+
 
             if (iterator.hasNext()) {
                 nextNode  = iterator.nextNode();
@@ -337,9 +330,6 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         if (getId() != null) {
             getContextProvider().getContextContainer().unRegister(getId());
         }
-        if (varStatusName != null) {
-            getContextProvider().getContextContainer().unRegister(varStatusName);
-        }
 
         collector.doAfterBody();
 
@@ -347,6 +337,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             log.debug("using next-node");
             setNodeVar(nextNode);
             fillVars();
+            previousDepth = depth;
+            depth         = nextDepth;
+
             if (varStatusName != null) {
                 org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
                 cc.reregister(varStatusName, new ListProviderLoopTagStatus(this));
@@ -357,8 +350,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
                 branchLoopStatus.set(depth - 1, nextBranchStatus);
                 cc.reregister(varBranchStatusName, branchLoopStatus.subList(0, depth));
             }
-            previousDepth = depth;
-            depth         = nextDepth;
+
 
             if (iterator.hasNext()) {
                 nextNode  = iterator.nextNode();
@@ -396,9 +388,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), tree, false); // use false because check was done in doStartTag (and doAfterBody not always called).
         }
-        TimerTag t = findParentTag(TimerTag.class, null, false);
+        TagSupport t = findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            t.haltTimer(timerHandle);
+            ((TimerTag)t).haltTimer(timerHandle);
         }
         pageContext.setAttribute(DepthProvider.KEY, prevDepthProvider, PageContext.REQUEST_SCOPE);
         pageContext.setAttribute(TreeProvider.KEY, prevTreeProvider, PageContext.REQUEST_SCOPE);
@@ -457,9 +449,6 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             return null;
         }
     }
-
-
-
 
 
 

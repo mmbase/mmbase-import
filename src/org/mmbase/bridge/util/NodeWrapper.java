@@ -22,11 +22,11 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.22 2008-12-01 22:41:06 michiel Exp $
+ * @version $Id: NodeWrapper.java,v 1.15 2006-07-18 13:03:19 michiel Exp $
  * @since   MMBase-1.8
  */
 
-public abstract class NodeWrapper implements Node {
+public abstract class NodeWrapper implements Node, Comparable {
     protected final Node node;
     public NodeWrapper(Node node) {
         assert node != null;
@@ -54,8 +54,7 @@ public abstract class NodeWrapper implements Node {
     public void setLongValue(String fieldName, long value) { node.setLongValue(fieldName, value); }
     public void setStringValue(String fieldName, String value) { node.setStringValue(fieldName, value); }
     public void setDateValue(String fieldName, Date value) { node.setDateValue(fieldName, value); }
-    public void setDecimalValue(String fieldName, java.math.BigDecimal value) { node.setDecimalValue(fieldName, value); }
-    public void setListValue(String fieldName, List<?> value) { node.setListValue(fieldName, value); }
+    public void setListValue(String fieldName, List value) { node.setListValue(fieldName, value); }
     public boolean isNull(String fieldName) { return node.isNull(fieldName); }
     public long    getSize(String fieldName) { return node.getSize(fieldName); }
     public Object getValue(String fieldName) { return node.getValue(fieldName); }
@@ -71,22 +70,20 @@ public abstract class NodeWrapper implements Node {
     public java.io.InputStream getInputStreamValue(String fieldName) { return node.getInputStreamValue(fieldName); }
     public String getStringValue(String fieldName) { return node.getStringValue(fieldName); }
     public Date getDateValue(String fieldName) { return node.getDateValue(fieldName); }
-    public java.math.BigDecimal getDecimalValue(String fieldName) { return node.getDecimalValue(fieldName); }
-    public List<?> getListValue(String fieldName) { return node.getListValue(fieldName); }
+    public List getListValue(String fieldName) { return node.getListValue(fieldName); }
     public FieldValue getFieldValue(String fieldName) throws NotFoundException {
         return node.getFieldValue(fieldName);
     }
     public FieldValue getFieldValue(Field field) { return node.getFieldValue(field); }
-    public Collection<String> validate() { return node.validate(); }
+    public Collection validate() { return node.validate(); }
     public void commit() { node.commit(); }
     public void cancel() { node.cancel(); }
     public boolean isNew() {  return node.isNew(); }
     public boolean isChanged(String fieldName) {  return node.isChanged(fieldName); }
     public boolean isChanged() {  return node.isChanged(); }
-    public Set<String> getChanged() {  return node.getChanged(); }
+    public Set getChanged() {  return node.getChanged(); }
     public void delete() { node.delete(); }
     public void delete(boolean deleteRelations) { node.delete(deleteRelations); }
-    @Override
     public String toString() { return node.toString(); }
     public Document getXMLValue(String fieldName) throws IllegalArgumentException {
         return node.getXMLValue(fieldName);
@@ -122,17 +119,15 @@ public abstract class NodeWrapper implements Node {
     public boolean mayWrite() { return node.mayWrite(); }
     public boolean mayDelete() { return node.mayDelete(); }
     public boolean mayChangeContext() { return node.mayChangeContext(); }
-    public Collection<Function<?>> getFunctions() { return node.getFunctions(); }
+    public Collection getFunctions() { return node.getFunctions(); }
     public Function getFunction(String functionName) { return node.getFunction(functionName); }
     public Parameters createParameters(String functionName) { return node.createParameters(functionName); }
-    public FieldValue getFunctionValue(String functionName, List<?> parameters) { return node.getFunctionValue(functionName, parameters);}
+    public FieldValue getFunctionValue(String functionName, List parameters) { return node.getFunctionValue(functionName, parameters);}
 
 
-    @Override
     public int hashCode() { return node.hashCode(); }
-    @Override
     public boolean equals(Object o) { return node.equals(o); }
-    public int compareTo(Node o) { return node.compareTo(o); }
+    public int compareTo(Object o) { return node.compareTo(o); }
 
     public Node getNode() {
         return node;

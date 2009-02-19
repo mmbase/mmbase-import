@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * following Job can be used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseQueryJob.java,v 1.2 2008-12-09 13:37:42 michiel Exp $
+ * @version $Id: MMBaseQueryJob.java,v 1.1 2005-12-27 09:29:13 michiel Exp $
  */
 
 public class MMBaseQueryJob extends AbstractCronJob  {
@@ -60,10 +60,12 @@ public class MMBaseQueryJob extends AbstractCronJob  {
                 }
                 log.service(heading.toString());
                 while(results.next()) {
+                    StringBuffer row = new StringBuffer();
                     for (int i = 1; i <= meta.getColumnCount(); i++)  {
                         heading.append(results.getString(i));
                         if (i < meta.getColumnCount()) heading.append("|");
                     }
+                    log.service(row);
                 }
             } catch (Exception e) {
                 // perhaps the result set simply is not available for use any more (this class is

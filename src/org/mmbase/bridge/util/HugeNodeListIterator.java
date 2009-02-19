@@ -24,7 +24,7 @@ import java.util.*;
  * are marked with {@link CachePolicy#NEVER}.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: HugeNodeListIterator.java,v 1.6 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: HugeNodeListIterator.java,v 1.5 2005-12-10 14:30:09 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -153,14 +153,14 @@ public class HugeNodeListIterator implements NodeIterator {
     /**
      * {@inheritDoc}
      */
-    public Node next() {
+    public Object next() {
         return nextNode();
     }
 
     /**
      * {@inheritDoc}
      */
-    public Node previous() {
+    public Object previous() {
         return previousNode();
     }
     /**
@@ -205,7 +205,7 @@ public class HugeNodeListIterator implements NodeIterator {
                 // We don't use offset to determin the 'next' batch of query results
                 // because there could have been deletions/insertions.
                 // We use the sort-order to apply a constraint.
-                SortOrder order = originalQuery.getSortOrders().get(0);
+                SortOrder order = (SortOrder) originalQuery.getSortOrders().get(0);
                 Object value = Queries.getSortOrderFieldValue(previousNode, order);
                 Constraint cons;
                 if (order.getDirection() == SortOrder.ORDER_ASCENDING) {
@@ -247,7 +247,7 @@ public class HugeNodeListIterator implements NodeIterator {
                 previousNode = nodeIterator.previousNode();
             } else {
                 Query currentQuery = (Query) originalQuery.clone();
-                SortOrder order = originalQuery.getSortOrders().get(0);
+                SortOrder order = (SortOrder) originalQuery.getSortOrders().get(0);
                 Object value = Queries.getSortOrderFieldValue(nextNode, order);
                 Constraint cons;
                 if (order.getDirection() == SortOrder.ORDER_ASCENDING) {
@@ -282,14 +282,14 @@ public class HugeNodeListIterator implements NodeIterator {
     /**
      * @throws UnsupportedOperationException
      */
-    public void add(Node o) {
+    public void add(Object o) {
         throw new UnsupportedOperationException("Optional operation 'add' not implemented");
     }
 
     /**
      * @throws UnsupportedOperationException
      */
-    public void set(Node o) {
+    public void set(Object o) {
         throw new UnsupportedOperationException("Optional operation 'set' not implemented");
     }
 

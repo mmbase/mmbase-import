@@ -19,20 +19,11 @@
         artifactIdOverride="kupu-i18n"
         type="jar"
         project="${pom}"/>
-
     <artifact:install
         artifact="${maven.build.dir}/mmbase-richtext/lib/mmbase-kupu-i18n.jar"
         artifactIdOverride="mmbase-kupu-i18n"
         type="jar"
         project="${pom}"/>
-
-    <copy todir="${maven.build.dir}/mmbase-richtext/lib/">
-      <fileset dir="${maven.repo.local}/xalan/jars/">
-        <include name="xalan-2.7.1.jar" />
-      </fileset>
-    </copy>
-
-
 
   </goal>
 

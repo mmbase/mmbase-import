@@ -19,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: DoubleHandler.java,v 1.7 2009-01-12 12:48:20 michiel Exp $
+ * @version $Id: DoubleHandler.java,v 1.6 2006-02-03 16:02:49 michiel Exp $
  */
 
 public class DoubleHandler extends AbstractTypeHandler {
@@ -32,7 +32,7 @@ public class DoubleHandler extends AbstractTypeHandler {
         super(tag);
     }
 
-    @Override protected Object cast(Object value, Node node, Field field) {
+    protected Object cast(Object value, Node node, Field field) {
         if (value == null || "".equals(value)) return "";
         return  super.cast(value, node, field);
     }

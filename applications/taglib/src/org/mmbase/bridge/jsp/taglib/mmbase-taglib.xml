@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.450 2009-01-05 18:36:53 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.32 2008-08-19 10:09:34 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -78,6 +78,7 @@ version: $Id: mmbase-taglib.xml,v 1.450 2009-01-05 18:36:53 michiel Exp $
     </example>
     <since>MMBase-1.8</since>
   </function>
+
   <function>
     <description>
       Removes an object from a Collection (or if the object is a Collection itself, remove all its elements).
@@ -146,15 +147,6 @@ version: $Id: mmbase-taglib.xml,v 1.450 2009-01-05 18:36:53 michiel Exp $
   </function>
   <function>
     <description>
-      Evaluates an MMBase LocalizedString object using the current locale.
-    </description>
-    <name>string</name>
-    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
-    <function-signature>org.mmbase.util.LocalizedString string(org.mmbase.util.LocalizedString)</function-signature>
-    <since>MMBase-1.9</since>
-  </function>
-  <function>
-    <description>
       Simple version of the 'treefile' tag, which can be used more concisely directly in a href attribute or so.
     </description>
     <name>treefile</name>
@@ -211,29 +203,19 @@ version: $Id: mmbase-taglib.xml,v 1.450 2009-01-05 18:36:53 michiel Exp $
     <name>applicationContext</name>
     <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
     <function-signature>java.util.Map applicationContext(java.lang.String)</function-signature>
-    <since>MMBase-1.8.7</since>
+    <since>MMBase-1.8.8</since>
   </function>
-  <function>
-    <description>
-      As mm:hasalias
-    </description>
-    <name>hasalias</name>
-    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
-    <function-signature>java.lang.Boolean hasAlias(org.mmbase.bridge.Node, java.lang.String)</function-signature>
-    <since>MMBase-1.9</since>
-  </function>
-
 
   <tagtypes>
-    <type name="all">
-      <description>all tags</description>
-      <info>
-        <p>
-          This is the group containing all mmbase tags.
-        </p>
-      </info>
-    </type>
-    <type name="mmbase.basic">
+  <type name="all">
+    <description>all tags</description>
+    <info>
+      <p>
+        This is the group containing all mmbase tags.
+      </p>
+    </info>
+  </type>
+  <type name="mmbase.basic">
     <description>basic tags</description>
     <info>
       <p>
@@ -270,15 +252,6 @@ version: $Id: mmbase-taglib.xml,v 1.450 2009-01-05 18:36:53 michiel Exp $
     </p>
   </info>
   </type>
-  <type name="html">
-  <description>HTML related tags</description>
-  <info>
-    <p>
-      Small, simple utilities (normally implmented with a tag-file), to help producing (valid) HTML.
-    </p>
-  </info>
-  </type>
-
   <type name="util.context">
   <description>context/variable tags</description>
   <info>
@@ -619,6 +592,17 @@ version: $Id: mmbase-taglib.xml,v 1.450 2009-01-05 18:36:53 michiel Exp $
         </p>
       </info>
     </attribute>
+    <attribute>
+      <name>varStatus</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8.6</since>
+      <info>
+        <p>
+          Like varStatus of <a href="http://java.sun.com/products/jsp/jstl/1.1/docs/tlddocs/c/forEach.html">c:forEach</a>.
+        </p>
+      </info>
+    </attribute>
     <see tag="listreferrer" />
     <example>
       <pre><![CDATA[
@@ -637,17 +621,6 @@ version: $Id: mmbase-taglib.xml,v 1.450 2009-01-05 18:36:53 michiel Exp $
 a,b,c,d,e,c,d,e,f / c,d,e / a,b
       </pre>
     </example>
-    <attribute>
-      <name>varStatus</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <since>MMBase-1.9</since>
-      <info>
-        <p>
-          Like varStatus of <a href="http://java.sun.com/products/jsp/jstl/1.1/docs/tlddocs/c/forEach.html">c:forEach</a>.
-        </p>
-      </info>
-    </attribute>
   </taginterface>
   <taginterface>
     <name>condition</name>
@@ -663,10 +636,10 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Inverts the condition: the body of the tag will only be
-        executed if the condition does not evaluate to true. This
-        is an optional attribute with its default value set to
-        'false'.
+  Inverts the condition: the body of the tag will only be
+  executed if the condition does not evaluate to true. This
+  is an optional attribute with its default value set to
+  'false'.
       </info>
       <possiblevalue>
         <value>true</value>
@@ -830,7 +803,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
     <type>util</type>
     <info>
       A writer is a tag that can produce output. Normally the default will be to
-      written to the page, unless the tag has a body. All tags which
+      write to the page, unless the tag has a body. All tags which
       produce output themselves are `writers'. This is contrary to tags which don't produce
       output, but only produce contextual information (e.g. mm:cloud, mm:node), or programmatic
       tools (e.g. mm:present, mm:import, mm:list)
@@ -958,10 +931,8 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <info>
         Override the default escape behaviour determined by the surrounding Content-tag.
         <document file="resources/taglibcontent.xml" mode="escapers" />
-    <p>The value can also refer to the id of an escaper tag</p>
       </info>
       <see tag="content" />
-      <see tag="escaper" />
       <see tag="formatter" attribute="format" />
       <since>MMBase-1.7</since>
     </attribute>
@@ -1112,9 +1083,8 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The `functionset' from which the function must be taken. These are a kind of static
-        functions (no mmbase object is associated with them). These `sets' of functions are a bit
-        like name-spaces.
+        The `functionset' from which the function must be taken. These are a kind of static functions (no
+        object is associated with them). These `sets' of functions are a bit like name-spaces.
       </info>
     </attribute>
     <attribute>
@@ -1125,7 +1095,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
         <p>
           The java class name from which the function must be taken. The function will be
           interpreted as a `bean' function, meaning that you can set parameters with `set' methods,
-          and get function values with any method with no  arguments.
+          and get function values with any function with no further arguments.
         </p>
         <p>
           There are two exceptions to this:
@@ -2405,13 +2375,6 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
           way, it is possible. Use on own risk!
         </info>
       </possiblevalue>
-      <possiblevalue>
-        <value>log</value>
-        <info>
-          Like 'skip' but also logs a message.
-          <since>MMBase-1.9</since>
-        </info>
-      </possiblevalue>
     </attribute>
     <attribute>
       <name>element</name>
@@ -2548,13 +2511,6 @@ access the value of title:
         <value>null|providenull</value>
         <info>
           Provides null as the value for the field
-        </info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>log</value>
-        <info>
-          Like 'skip' but logs a message.
-          <since>MMBase-1.9</since>
         </info>
       </possiblevalue>
       <since>MMBase-1.8</since>
@@ -2856,24 +2812,6 @@ access the value of title:
     <see tag="function" />
     <see tag="functioncontainer" />
     <see tag="nodelistfunction" />
-    <attribute>
-      <name>add</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <since>MMBase-1.9</since>
-    </attribute>
-    <attribute>
-      <name>retain</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <since>MMBase-1.9</since>
-    </attribute>
-    <attribute>
-      <name>remove</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <since>MMBase-1.9</since>
-    </attribute>
     <example><![CDATA[
 <mm:listnodes type="mediasources" max="10">
   <mm:function name="mimetype" />:  <mm:function name="format" />
@@ -2945,24 +2883,6 @@ access the value of title:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="offset" />
-    </attribute>
-    <attribute>
-      <name>add</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <since>MMBase-1.9</since>
-    </attribute>
-    <attribute>
-      <name>retain</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <since>MMBase-1.9</since>
-    </attribute>
-    <attribute>
-      <name>remove</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <since>MMBase-1.9</since>
     </attribute>
   </tag>
 
@@ -3640,7 +3560,6 @@ transaction was commited, following should result anything:
   <tag>
     <name>fieldinfo</name>
     <extends>fieldreferrer</extends>
-    <extends>nodereferrer</extends>
     <extends>contextwriter</extends>
     <extends>writer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
@@ -3802,32 +3721,19 @@ transaction was commited, following should result anything:
       </info>
       <examplevalue>
         <value>datetime</value>
-        <info>
-          If the value is a date-time, treat it as a date time combination.
-          This is deprecated. In 1.8 you can indicate this with the pattern setting on the datatype.
-        </info>
+        <info>If the value is a date-time, treat it as a date time combination</info>
       </examplevalue>
       <examplevalue>
         <value>time</value>
-        <info>
-          If the value is a date-time, treat it as time only
-          This is deprecated. In 1.8 you can indicate this with the pattern setting on the datatype.
-        </info>
+        <info>If the value is a date-time, treat it as time only </info>
       </examplevalue>
       <examplevalue>
         <value>date</value>
-        <info>
-          If the value is a date-time, treat it as date only.
-          This is deprecated. In 1.8 you can indicate this with the pattern setting on the datatype.
-        </info>
+        <info>If the value is a date-time, treat it as date only</info>
       </examplevalue>
       <examplevalue>
         <value>extra:onchange='doStuff()'</value>
-        <info>
-        if the type is `input' then you might want to add javascript on the onchange (or add other
-        attributes, like `style' or so) This is deprecated. In 1.8 the produces input entries have
-        very precise CSS classing, which can be used to implicitely attach events on load of the window.
-        </info>
+        <info>if the type is `input' then you might want to add javascript on the onchange (or add other attributes, like `style' or so)</info>
         <since>MMBase-1.7</since>
       </examplevalue>
       <examplevalue>
@@ -4171,45 +4077,45 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         is also possible to get different variables with the same name
         from different sources.
     </info>
-    <possiblevalue>
-      <value>parent</value>
-      <info>
-        Imports the variable from a parent context.
-      </info>
-    </possiblevalue>
-    <possiblevalue>
-      <value>page</value>
-      <info>
-        Import the variable from the standard JSP `page
-        context'.
-      </info>
-    </possiblevalue>
-    <possiblevalue>
-      <value>session</value>
-      <info>
-        Import the variable from the session.
-      </info>
-    </possiblevalue>
-    <possiblevalue>
-      <value>cookie</value>
-      <info>
-        Import the variable from a user cookie.
-      </info>
-    </possiblevalue>
-    <possiblevalue>
-      <value>parameters</value>
-      <info>
-        Import the variable from a POST (a simple form) or GET (the
-        URL) parameter.
-      </info>
-    </possiblevalue>
-    <possiblevalue>
-      <value>multipart</value>
-      <info>
-        If the form is a `multipart' form
-        (enctype="multipart/form-data"), which is necessary e.g. for
-        images, then you can read the results with
-        this. `postparameters' is a synonym for this, but
+      <possiblevalue>
+        <value>parent</value>
+        <info>
+          Imports the variable from a parent context.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>page</value>
+        <info>
+          Import the variable from the standard JSP `page
+          context'.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>session</value>
+        <info>
+          Import the variable from the session.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>cookie</value>
+        <info>
+          Import the variable from a user cookie.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>parameters</value>
+        <info>
+          Import the variable from a POST (a simple form) or GET (the
+          URL) parameter.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>multipart</value>
+        <info>
+          If the form is a `multipart' form
+          (enctype="multipart/form-data"), which is necessary e.g. for
+          images, then you can read the results with
+          this. `postparameters' is a synonym for this, but
           `multipart' is probably a clearer description.
         </info>
       </possiblevalue>
@@ -4430,14 +4336,6 @@ like the parameter list or the session (where ever it is available) --&gt;
       </info>
     </attribute>
     <attribute>
-      <name>block</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        The block to create an URL to. This can only be used from within MMBase components, where the current component block needs to generate a link to another block of the same component.
-      </info>
-    </attribute>
-    <attribute>
       <name>referid</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -4495,22 +4393,6 @@ like the parameter list or the session (where ever it is available) --&gt;
         <info>Makes the URL absolute on the current servlet context, so it starts with /, but it is not prefixed by the context. The result could e.g. be used as an argument for another url-tag.</info>
       </possiblevalue>
       <since>MMBase-1.8</since>
-    </attribute>
-    <attribute>
-      <name>internal</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-      </info>
-      <since>MMBase-1.9</since>
-    </attribute>
-    <attribute>
-      <name>process</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-      </info>
-      <since>MMBase-1.9.1</since>
     </attribute>
     <example>
 &lt;mm:url referids="a?,name@b,c" page="codesamples/index.jsp"&gt;
@@ -4690,39 +4572,6 @@ like the parameter list or the session (where ever it is available) --&gt;
       </possiblevalue>
     </attribute>
     <attribute>
-      <name>absolute</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <info>
-        <p>
-          Whether the used url will be 'absolute' or not. Defaults to 'server'.
-        </p>
-      </info>
-      <see tag="url" attribute="absolute" />
-      <since>MMBase-1.9.1</since>
-    </attribute>
-    <attribute>
-      <name>disposition</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <info>
-        <p>
-        </p>
-      </info>
-
-      <since>MMBase-1.9.1</since>
-      <possiblevalue>
-        <value>attachment</value>
-        <info>The image will be served out as an attachment.</info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>inline</value>
-        <info>The image will be served out inline.</info>
-      </possiblevalue>
-    </attribute>
-    <attribute>
       <name>element</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -4883,26 +4732,6 @@ like the parameter list or the session (where ever it is available) --&gt;
       <see tag="node" attribute="element" />
       <since>MMBase-1.7.4</since>
     </attribute>
-    <attribute>
-      <name>absolute</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <info>
-        <p>
-          Whether the used url will be 'absolute' or not. Defaults to 'server'.
-        </p>
-      </info>
-      <see tag="url" attribute="absolute" />
-      <since>MMBase-1.9.1</since>
-    </attribute>
-    <attribute>
-      <name>disposition</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <see tag="image" attribute="disposition" />
-    </attribute>
     <info>
       <p>
         Returns an URL to the attachment servlet. This is a NodeReferrer
@@ -4921,8 +4750,8 @@ like the parameter list or the session (where ever it is available) --&gt;
   </tag>
   <tag>
     <name>include</name>
-    <extends>writer</extends>
     <type>util</type>
+    <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -4969,33 +4798,6 @@ like the parameter list or the session (where ever it is available) --&gt;
         MMBase documentation on include mechanisms in MMBase taglib.</a>.
       </p>
     </info>
-    <attribute>
-      <name>referids</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <see tag="url" attribute="referids" />
-    </attribute>
-    <attribute>
-      <name>page</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <see tag="url" attribute="page" />
-    </attribute>
-    <attribute>
-      <name>component</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <see tag="url" attribute="component" />
-    </attribute>
-    <attribute>
-      <name>referid</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <see tag="url" attribute="referid" />
-    </attribute>
     <attribute>
       <name>debug</name>
       <required>false</required>
@@ -5078,13 +4880,6 @@ like the parameter list or the session (where ever it is available) --&gt;
         <value>exception</value>
         <info>Raise an exception if the file cannot be found</info>
       </possiblevalue>
-      <possiblevalue>
-        <value>log</value>
-        <info>
-          Log a warning if the file cannot be found
-          <since>MMBase-1.8.5</since>
-        </info>
-      </possiblevalue>
       <since>MMBase-1.8</since>
     </attribute>
     <attribute>
@@ -5100,31 +4895,12 @@ like the parameter list or the session (where ever it is available) --&gt;
       </info>
       <since>MMBase-1.8</since>
     </attribute>
-    <attribute>
-      <name>timeout</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <info>
-        For 'external' includes you can indicate a 'timeout' in milliseconds. A _responseCode
-        variable will be produced.
-      </info>
-      <since>MMBase-1.9</since>
-    </attribute>
     <see tag="param" />
     <see tag="url" />
     <see tag="haspage" />
     <see tag="treeinclude" />
     <see tag="leafinclude" />
     <example>&lt;mm:include page="codesamples/index.jsp.1" /&gt;
-    </example>
-    <example><![CDATA[
-      <os:cache>
-        <mm:include page="http://site.which.sometimes.does.not.work.com" timeout="200" />
-        <c:if test="${_responseCode ne 200}">
-          <os:usecached />
-        </c:if>
-      </os:cache>]]>
     </example>
   </tag>
   <tag>
@@ -5629,9 +5405,9 @@ like the parameter list or the session (where ever it is available) --&gt;
     <name>listrelations</name>
     <type>mmbase.list</type>
     <extends>nodeprovider</extends>
+    <extends>listprovider</extends>
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
-    <extends>listprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListRelationsTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -5705,7 +5481,6 @@ like the parameter list or the session (where ever it is available) --&gt;
     <type>mmbase.list</type>
     <extends>querycontainer</extends>
     <extends>nodereferrer</extends>
-    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListRelationsContainerTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -5900,14 +5675,6 @@ like the parameter list or the session (where ever it is available) --&gt;
       <possiblevalue>
         <value>exception</value>
         <info>Raise an exception if the file cannot be found</info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>log</value>
-        <info>Log a message if the file cannot be found</info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>message</value>
-        <info>Write message if the file cannot be found</info>
       </possiblevalue>
       <since>MMBase-1.8</since>
     </attribute>
@@ -6127,11 +5894,11 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <see tag="functioncontainer" attribute="referids"/>
     <attribute>
       <name>name</name>
-      <required>false</required>
+      <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-        The name of the parameter. If this attribute is missing, the value is interpreted as a , separated list of name=value pairs.
+        The name of the parameter.
       </info>
     </attribute>
     <attribute>
@@ -6163,61 +5930,6 @@ Of course, the default behavior of getSmartPath can still be overridden.
       </info>
       <since>MMBase-1.7</since>
     </attribute>
-    <example>See the example for tag `url'.</example>
-  </tag>
-  <tag>
-    <name>frameworkparam</name>
-    <type>util</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.FrameworkParamTag</tagclass>
-    <bodycontent>JSP</bodycontent>
-    <info>
-      Adds a parameter to the parent parameterprovider Tag. Param-tags can be nested; like that it
-      is possible to create map-like parameter values.
-    </info>
-    <see tag="url" />
-    <see tag="include" />
-    <see tag="functioncontainer" />
-    <see tag="url" attribute="referids" />
-    <see tag="escaper" />
-    <see tag="functioncontainer" attribute="referids"/>
-    <attribute>
-      <name>name</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <info>
-        The name of the parameter. If this attribute is missing, the value is interpreted as a , separated list of name=value pairs.
-      </info>
-    </attribute>
-    <attribute>
-      <name>value</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <info>
-        The value of the parameter. Is this attribute, and 'referid', is missing, then the body of the param tag is used.
-      </info>
-    </attribute>
-    <attribute>
-      <name>referid</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <info>
-        The value of the parameter, as referred from the variable context.
-      </info>
-    </attribute>
-    <attribute>
-      <name>vartype</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        The `vartype' of the parameter. In principle url-parameters should always be string. When
-        using this attribute, the value is first cast to this type. You could e.g. set it to
-        `integer' if you want to ensure the variable is parseable as an integer.
-      </info>
-    </attribute>
-    <since>MMBase-1.9</since>
     <example>See the example for tag `url'.</example>
   </tag>
   <tag>
@@ -6399,24 +6111,15 @@ Of course, the default behavior of getSmartPath can still be overridden.
       </p>
       <pre>
 <![CDATA[
-   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+   <xsl:stylesheet xmlns:xsl ="http://www.w3.org/1999/XSL/Transform" version ="1.0"
                    xmlns:mm="org.mmbase.bridge.jsp.taglib.functions.Functions"
-                   xmlns:taglib="org.mmbase.bridge.jsp.taglib.functions.Functions"
-                   xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
-                   xmlns:o="http://www.mmbase.org/xmlns/objects"
-                   xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
-                   extension-element-prefixes="mm taglib node"
-                   exclude-result-prefixes="node mmxf o mm taglib node"
-                   version="1.0">
-
+                   extension-element-prefixes="mm">
    ...
    </xsl:stylesheet>
 ]]>
       </pre>
       <p>
-       Which means that you have access to some functions (see <a
-       href="http://www.mmbase.org/api/org/mmbase/bridge/jsp/taglib/functions/Functions.html">Javadoc
-       of 'Functions'</a>too, which main goal is to provide the `escape' method:
+       Which means that you have access to some static too, which main goal is to provide the `escape' method:
       </p>
       <pre>
 <![CDATA[
@@ -6437,12 +6140,6 @@ Of course, the default behavior of getSmartPath can still be overridden.
       </info>
       <since>MMBase-1.8.5</since>
     </attribute>
-    <extends>contextreader</extends>
-    <see tag="formatter" />
-    <see tag="writer" attribute="escape"/>
-    <example>
-      <include base="examples.taglib" href="codesamples/xsltinline.jsp" />
-    </example>
     <extends>contextreader</extends>
     <see tag="formatter" />
     <see tag="writer" attribute="escape"/>
@@ -6574,7 +6271,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
           second)).
         </p>
         <p>
-          Since MMBase-1.8.2, if the value of this attribute does not evaluate to one of the known
+          Since MMBase-1.8.2, if the value of this attribute does not evualate to one of the known
           units, it will fall back by prefixing with 'duration +' and then feeding it to the MMBase
           date parser. The specified time will be divided and multiplied by the thusly specified
           number of seconds since 1970. Specifying e.g. '3 minute' will effectively allow you to
@@ -6700,15 +6397,6 @@ Of course, the default behavior of getSmartPath can still be overridden.
         `Logger'. This can be handy if your page contains a lot of
         Java code.
       </info>
-    </attribute>
-    <attribute>
-      <name>level</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <info>
-        Only relevant without the jspvar attribute.
-      </info>
-      <since>MMBase-1.9</since>
     </attribute>
     <example>
 &lt;mm:log&gt;Log this to the log file&lt;/mm:log&gt;
@@ -6876,6 +6564,12 @@ The 0 is just counter, which starts at 0 on every page.
       <since>MMBase-1.8.1</since>
     </attribute>
     <attribute>
+      <name>disposition</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8.5</since>
+    </attribute>
+    <attribute>
       <name>jspvar</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
@@ -6927,22 +6621,6 @@ The 0 is just counter, which starts at 0 on every page.
           which is not public.
         </p>
       </info>
-    </attribute>
-    <attribute>
-      <name>disposition</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <since>MMBase-1.8.5</since>
-      <info>
-        Provides a proposal filename for the response. The content-disposition of the resonse will be set to 'attachment', and this filename.
-      </info>
-      <example><![CDATA[
-      <mm:content
-      type="text/csv"
-      disposition="export.csv"
-      > ...
-      ]]>
-      </example>
     </attribute>
     <attribute>
       <name>postprocessor</name>
@@ -7006,13 +6684,6 @@ The 0 is just counter, which starts at 0 on every page.
         <value>&lt;:message&gt;</value>
         <info>Send a NOT_ACCEPTABLE with this message. If message = "_" it will be leaft empty.</info>
       </possiblevalue>
-      <example><![CDATA[
-      <mm:content
-      type="application/xhtml+xml"
-      unacceptable="Not Acceptable. You need to use a better browser (this one does not support xhtml). Try e.g. Firefox, Opera or Safari. _NOT_ MS Internet Explorer."
-      > ...
-      ]]>
-      </example>
     </attribute>
   </tag>
   <tag>
@@ -7081,7 +6752,6 @@ The 0 is just counter, which starts at 0 on every page.
     <see tag="function" />
     <extends>functiontag</extends>
     <extends>container</extends>
-    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.FunctionContainerTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>
@@ -7197,26 +6867,12 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8.6</since>
-      <info>
-        This is the same as 'referid' attribute, but ensures that the query is cloned first, so the original query remains unchanged.
-        The query will implicitely be cloned, also when using 'referid', when changes are made to an already 'used' query.
-      </info>
-      <possiblevalue>
-        <value>true</value>
-      </possiblevalue>
     </attribute>
     <attribute>
       <name>markused</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8.6</since>
-      <info>
-        If this attribute is used (and set to 'true') then the query will be marked 'used' in the
-        doEndTag. This ensures that the query cannot be changed before cloning it.
-      </info>
-      <possiblevalue>
-        <value>true</value>
-      </possiblevalue>
     </attribute>
     <example>
       <include base="examples.taglib" href="codesamples/query.jsp" />
@@ -7284,14 +6940,12 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8.6</since>
-      <see tag="listnodescontainer" attribute="clone" />
     </attribute>
     <attribute>
       <name>markused</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <since>MMBase-1.8.6</since>
-      <see tag="listnodescontainer" attribute="markused" />
     </attribute>
     <example>
       <include base="examples.taglib" href="codesamples/query.relatednodes.jsp" />
@@ -7592,34 +7246,6 @@ The 0 is just counter, which starts at 0 on every page.
   </tag>
 
   <tag>
-    <name>addnode</name>
-    <type>mmbase.list</type>
-    <extends>querycontainerreferrer</extends>
-    <see tag="listnodescontainer" />
-    <see tag="listcontainer" />
-    <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryAddNodeTag</tagclass>
-    <bodycontent>JSP</bodycontent>
-    <see tag="querycontainer" />
-    <since>MMBase-1.9</since>
-    <attribute>
-      <name>element</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        The step to which the nodes must be added
-      </info>
-    </attribute>
-    <attribute>
-      <name>number</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        The node(s) to be added
-      </info>
-    </attribute>
-  </tag>
-
-  <tag>
     <name>composite</name>
     <type>mmbase.list</type>
     <extends>querycontainerreferrer</extends>
@@ -7679,14 +7305,14 @@ The 0 is just counter, which starts at 0 on every page.
     <bodycontent>empty</bodycontent>
     <info>
       <p>
-        In MMBase, objects on default do not have a `creation time' field. But the `number' field can
-        be used to estimate the age (in days), because for every day a `day mark' is remembered. This
-        tag gives easy access to this functionality.
+  In MMBase, objects on default do not have a `creation time' field. But the `number' field can
+  be used to estimate the age (in days), because for every day a `day mark' is remembered. This
+  tag gives easy access to this functionality.
       </p>
       <p>
-        Note that in MMBase 1.8 it <em>is</em> possible to define creation and lastmodified time
-        fields of DATETIME database type. Age-constraints can then also be accomplished by constraints
-        on the date parts of such a field.
+  Note that in MMBase 1.8 it <em>is</em> possible to define creation and lastmodified time
+  fields of DATETIME database type. Age-constraints can then also be accomplished by constraints
+  on the date parts of such a field.
       </p>
     </info>
     <see tag="constraint" attribute="part" />
@@ -7712,7 +7338,7 @@ The 0 is just counter, which starts at 0 on every page.
         If the surrounding nodelist container is a list container then the constraint can be on the
         several elements from the path. With this attribute you must indicate to which. This is not
         needed for listnodes and relatednodes containers (and probably would be a `number' field otherwise).
-        This attribute is deprecated in favour of 'element'.
+  This attribute is deprecated in favour of 'element'.
       </info>
       <see tag="ageconstraint" attribute="element"/>
       <see tag="listcontainer" />
@@ -8298,7 +7924,6 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.tree.list</type>
     <extends>querycontainerreferrer</extends>
     <extends>nodeprovider</extends>
-    <extends>listprovider</extends>
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.tree.TreeTag</tagclass>
@@ -8735,21 +8360,15 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <possiblevalue>
         <value>url</value>
-        <info>Produces an URL for an HTML form only (available in the body), and (reuses) an MMBase transaction. Only explicit commit/cancel</info>
+        <info>An URL is made available in the body (can be write in action of a form-tag</info>
       </possiblevalue>
       <possiblevalue>
         <value>form</value>
-        <info> Produces an HTML form, and (reuses) an MMBase transaction. Only explicit commit/cancel (with
-        mm:commit, mm:cancel, or 'commitonclose'). This value is the default</info>
+        <info>Produces a form-tag with the correct attribute (default)</info>
       </possiblevalue>
       <possiblevalue>
         <value>validate</value>
-        <info>Does nothing, besides communicating with mm:fieldinfo's and mm:valid's.  Does not produce any content. Implicitely cancels the transaction if not committed.</info>
-      </possiblevalue>
-      <possiblevalue>
-        <value>transaction</value>
-        <info> Does not produce any content. Besides communicating with children fieldinfo's and valid's ehaves like mm:transaction. Only difference is that on default
-        it does not commit on close. </info>
+        <info>Does nothing, besides communicating with mm:fieldinfo's and mm:valid's.</info>
       </possiblevalue>
     </attribute>
     <attribute>
@@ -8770,13 +8389,6 @@ The 0 is just counter, which starts at 0 on every page.
       </info>
       <since>MMBase-1.8.1</since>
       <see tag="image" attribute="styleClass" />
-    </attribute>
-    <attribute>
-      <name>absolute</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <since>MMBase-1.9</since>
-      <see tag="url" attribute="absolute" />
     </attribute>
   </tag>
   <tag>
@@ -8800,135 +8412,15 @@ The 0 is just counter, which starts at 0 on every page.
       </info>
     </attribute>
   </tag>
-
   <tag>
-    <name>component</name>
-    <extends>contextreferrer</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.ComponentTag</tagclass>
-    <bodycontent>JSP</bodycontent>
-    <info>
-      Renders a component block.
-    </info>
-    <since>MMBase-1.9</since>
-    <attribute>
-      <name>name</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        The name of the component of which a block must be rendered.
-      </info>
-    </attribute>
-    <attribute>
-      <name>block</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        The name of the block which must be rendered. If this is empty, the default block of the
-        component will be rendered.
-      </info>
-    </attribute>
-    <attribute>
-      <name>windowstate</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>render</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <possiblevalue>
-        <value>head</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>body</value>
-      </possiblevalue>
-      <possiblevalue>
-        <value>processor</value>
-      </possiblevalue>
-    </attribute>
-    <attribute>
-      <name>debug</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <refercontext>true</refercontext>
-      <see tag="include" attribute="debug" />
-    </attribute>
-  </tag>
-
-  <tag>
-    <name>setting</name>
-    <extends>cloudreferrer</extends>
-    <extends>writer</extends>
-    <extends>contextwriter</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.SettingTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
-    <bodycontent>JSP</bodycontent>
-    <info>
-    </info>
-    <since>MMBase-1.9</since>
-    <attribute>
-      <name>name</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>component</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-
-  <tag>
-    <name>hassetting</name>
-    <extends>cloudreferrer</extends>
-    <extends>condition</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.HasSettingTag</tagclass>
-    <bodycontent>JSP</bodycontent>
-    <info>
-    </info>
-    <since>MMBase-1.9</since>
-    <attribute>
-      <name>name</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>component</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-
-  <tag>
-    <name>may</name>
-    <extends>cloudreferrer</extends>
-    <extends>condition</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.security.MayTag</tagclass>
-    <bodycontent>JSP</bodycontent>
-    <info>
-    </info>
-    <since>MMBase-1.9</since>
-    <attribute>
-      <name>action</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>component</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-
-  <tag>
-    <name>escape</name>
     <extends>cloudreferrer</extends>
     <type>util.html</type>
+    <name>escape</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.EscapeTag</tagclass>
     <info>
       Simply escapes it's body.
     </info>
-    <since>MMBase-1.9</since>
+    <since>MMBase-1.8.6</since>
     <attribute>
       <name>escape</name>
       <required>false</required>
@@ -8941,12 +8433,12 @@ The 0 is just counter, which starts at 0 on every page.
 
   <tag>
     <name>datatype</name>
-    <extends>cloudreferrer</extends>
+    <extends>cloudtreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.DataTypeTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>This tag defines a new datatype with a lifetime of the current request. It's body is XML as used in datatypes.xml and builder xml's.</info>
+    <info>
+    </info>
     <since>MMBase-1.8.7</since>
-    <see tag="fieldinfo" attribute="datatype" />
     <attribute>
       <name>base</name>
       <required>false</required>
@@ -8965,27 +8457,6 @@ The 0 is just counter, which starts at 0 on every page.
     </attribute>
   </tag>
 
-  <tag>
-    <name>instanceof</name>
-    <extends>nodereferrer</extends>
-    <extends>condition</extends>
-    <tagclass>org.mmbase.bridge.jsp.taglib.InstanceOfTag</tagclass>
-    <bodycontent>JSP</bodycontent>
-    <info>
-    </info>
-    <since>MMBase-1.8.7</since>
-    <attribute>
-      <name>nodemanager</name>
-      <required>true</required>
-    </attribute>
-    <attribute>
-      <name>descendants</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <see tag="typeconstraint" attribute="descendants" />
-    </attribute>
-  </tag>
-
   <!--
   <tag>
     <name>test</name>
@@ -8999,6 +8470,12 @@ The 0 is just counter, which starts at 0 on every page.
   </tag>
   -->
 
+  <!--
+  <tag-file>
+    <name>search</name>
+    <path>/META-INF/tags/mml/search.tagx</path>
+  </tag-file>
+  -->
   <tag-file>
     <type>util.html</type>
     <name>option</name>
@@ -9020,65 +8497,24 @@ The 0 is just counter, which starts at 0 on every page.
       Like the HTML input radio tag, which it produces. It only support also a 'compare' attribute to support added checked="checked" or not.
     </info>
     <example><pre><![CDATA[
-    <mm:radio name="a" value="hoi" compare="${a}" />
+    <mm:option name="a" value="hoi" compare="${a}" />
 ]]></pre>
     </example>
     <since>MMBase-1.8.5</since>
-  </tag-file>
-  <tag-file>
-    <type>util.html</type>
-    <name>hiddens</name>
-    <path>/META-INF/tags/mm/u/hiddens.tagx</path>
-    <info>
-      With the referids attribute it produces 'hidden' form-entries.
-    </info>
-    <since>MMBase-1.9</since>
   </tag-file>
   <tag-file>
     <type>util</type>
     <name>jdbc</name>
     <path>/META-INF/tags/mm/u/jdbc.tag</path>
     <info>
-      A tag to directly excecute SQL on the mmbase database. This is mainly used for hacking around
-      some limitation of mmbase, and should not be used for code meant to be generic.
+      A tag to directly excecute SQL on the mmbase database. This is mainly used for hacking around some limitation of mmbase.
     </info>
     <example><pre><![CDATA[
-<mm:jdbc max="2"
-         throwexception="true"
-         mode="nodes"
-         query="select e.number from $PREFIX_emails e
-                                     left join $PREFIX_insrel i on e.number = i.dnumber
-                                     left join  $PREFIX_mailboxes b  on i.snumber = b.number
-                                     where b.number is null">
-   <mm:deletenode />
-</mm:jdbc>
+       <mm:jdbc max="2" throwexception="true" mode="nodes" query="select e.number from $PREFIX_emails e left join $PREFIX_insrel i on e.number = i.dnumber left join  $PREFIX_mailboxes b  on i.snumber = b.number where b.number is null">
+         <mm:deletenode />
+       </mm:jdbc>
 ]]></pre>
     </example>
     <since>MMBase-1.8.6</since>
   </tag-file>
-  <tag-file>
-    <type>mmbase.basic</type>
-    <name>selectnode</name>
-    <path>/META-INF/tags/mm/u/selectnode.tagx</path>
-    <since>MMBase-1.9</since>
-  </tag-file>
-  <tag-file>
-    <type>mmbase.basic</type>
-    <name>relation</name>
-    <path>/META-INF/tags/mm/u/relation.tagx</path>
-    <since>MMBase-1.9</since>
-  </tag-file>
-  <tag-file>
-    <type>mmbase.util</type>
-    <name>exception</name>
-    <path>/META-INF/tags/mm/u/exception.tag</path>
-    <since>MMBase-1.9</since>
-  </tag-file>
-  <tag-file>
-    <type>mmbase.util.framework</type>
-    <name>blocks</name>
-    <path>/META-INF/tags/mm/u/blocks.tagx</path>
-    <since>MMBase-1.9.1</since>
-  </tag-file>
-
 </taglib>

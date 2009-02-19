@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @author vpro (as org.mmbase.util.URLEscape, still present in SCAN application)
  * @author Michiel Meeuwissen
- * @version $Id: UrlEscaper.java,v 1.2 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: UrlEscaper.java,v 1.1.2.1 2007-07-24 09:57:58 michiel Exp $
  */
 public class UrlEscaper extends ReaderTransformer{
 
@@ -113,8 +113,9 @@ public class UrlEscaper extends ReaderTransformer{
 
     /**
      * Unescape a url.
-     * Replaces escape sequences with the actual character.
-     * i.e %3F is replaced with the the question mark (?).
+     * Replaces escapesequenced with the actual character.
+     * i.e %3F is replaced with the the questionmark (?).
+     * @param url the urls to unescape
      * @return the unescaped url.
      */
     public Writer transformBack(Reader reader, Writer w) {

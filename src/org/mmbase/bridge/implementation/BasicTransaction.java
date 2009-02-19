@@ -13,59 +13,33 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.*;
-import org.mmbase.security.UserContext;
+import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
  * The basic implementation for a Transaction cLoud.
- * A Transaction cloud is a cloud which buffers all changes made to nodes -
- * which means that changes are committed only if you commit the transaction itself.
+ * A Transaction cloud is a cloud which buffers allc hanegs made to nodes -
+ * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.44 2009-01-12 15:40:51 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.25.2.12 2008-07-07 13:31:10 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
+    private static final long serialVersionUID = 1;
+
     private static final Logger log = Logging.getLoggerInstance(BasicTransaction.class);
     /**
-     * The id of the transaction for use with the transaction manager. This is the name as speficied
-     * by the user, prefixed by the account name.
+     * The id of the transaction for use with the transaction manager.
      */
-    protected String transactionName; // not final because of deserialization
+    protected String transactionName;
 
     private boolean canceled = false;
     private boolean committed  = false;
 
 
-    protected BasicCloud parentCloud; // not final because of deserialization
-
-    /**
-     * @since MMBase 1.9
-     */
-    protected final Collection<MMObjectNode> getCoreNodes() {
-        // if the parent cloud is itself a transaction,
-        // do not create a new one, just use that context instead!
-        // this allows for nesting of transactions without loosing performance
-        // due to additional administration
-        if (parentCloud instanceof BasicTransaction) {
-            return ((BasicTransaction)parentCloud).getCoreNodes();
-        } else {
-            try {
-                // XXX: the current transaction manager does not allow multiple transactions with the
-                // same name for different users
-                // We solved this here, but this should really be handled in the Transactionmanager.
-                log.debug("using transaction " + transactionName);
-                Collection<MMObjectNode> cn = BasicCloudContext.transactionManager.getTransactions().get(transactionName);
-                if (cn == null) {
-                    cn = BasicCloudContext.transactionManager.createTransaction(transactionName);
-                }
-                return cn;
-            } catch (TransactionManagerException e) {
-                throw new BridgeException(e.getMessage(), e);
-            }
-        }
-    }
+    protected  BasicCloud parentCloud;
 
     /*
      * Constructor to call from the CloudContext class.
@@ -76,6 +50,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     BasicTransaction(String name, BasicCloud cloud) {
         super(name, cloud);
         this.parentCloud = cloud;
+
         // if the parent cloud is itself a transaction,
         // do not create a new one, just use that context instead!
         // this allows for nesting of transactions without loosing performance
@@ -83,30 +58,24 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         if (parentCloud instanceof BasicTransaction) {
             transactionName = ((BasicTransaction)parentCloud).transactionName;
         } else {
-            // XXX: the current transaction manager does not allow multiple transactions with the
-            // same name for different users
-            // We solved this here, but this should really be handled in the Transactionmanager.
-            transactionName = account + "_" + name;
-            log.debug("using transaction " + transactionName);
-            getCoreNodes(); // will call 'createTransaction
+            try {
+                // XXX: the current transaction manager does not allow multiple transactions with the
+                // same name for different users
+                // We solved this here, but this should really be handled in the Transactionmanager.
+                transactionName = account + "_" + name;
+                BasicCloudContext.transactionManager.createTransaction(transactionName);
+            } catch (TransactionManagerException e) {
+                throw new BridgeException(e.getMessage(), e);
+            }
         }
     }
 
     /**
      */
     String getAccount() {
-        // should be something different than for normal clouds, so use the transaction-name
         return transactionName;
     }
 
-    public NodeList getNodes() {
-        return new BasicNodeList(getCoreNodes(), this);
-    }
-
-
-    boolean verify() {
-        return BasicCloudContext.transactionManager.getTransactions().containsKey(transactionName);
-    }
 
     public synchronized boolean commit() {
         if (canceled) {
@@ -122,64 +91,33 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         // if this is a transaction within a transaction (theoretically possible)
         // leave the committing to the 'parent' transaction
         if (parentCloud instanceof Transaction) {
-            log.debug("Ignoring commit, because parent is transaction");
             // do nothing
         } else {
             try {
-                assert BasicCloudContext.transactionManager.getTransaction(transactionName).size() == getNodes().size();
-
-
-                //log.info("Commiting " + getNodes());
-
-                if (log.isDebugEnabled()) {
-                    log.debug("Resolving " + getNodes().size() + " nodes");
-                }
-
-                BasicCloudContext.transactionManager.resolve(transactionName);
-
-                if (log.isDebugEnabled()) {
-                    log.debug("Committing " + getNodes().size() + " nodes");
-                }
-
+                Collection col = BasicCloudContext.transactionManager.getTransaction(transactionName);
+                // BasicCloudContext.transactionManager.commit(account, transactionName);
                 BasicCloudContext.transactionManager.commit(userContext, transactionName);
-
-                if (log.isDebugEnabled()) {
-                    log.debug("Commitprocessing " + getNodes().size() + " nodes");
+                // This is a hack to call the commitprocessors which are only available in the bridge.
+                // The EXISTS_NOLONGER check is required to prevent committing of deleted nodes.
+                Iterator i = col.iterator();
+                while (i.hasNext()) {
+                    MMObjectNode n = (MMObjectNode) i.next();
+                    if (!TransactionManager.EXISTS_NOLONGER.equals(n.getStringValue("_exists"))) {
+                        Node node = parentCloud.makeNode(n, "" + n.getNumber());
+                        node.commit();
+                    }
                 }
-
-                // This is a hack to call the commitprocessors which are only available in the
-                // bridge.
-
-                for (Node n : getNodes()) {
-                    if (n == null) {
-                        log.warn("Found null in transaction");
-                        continue;
-                    }
-                    if (! n.isChanged() && ! n.isNew()) {
-                        log.debug("Ignored because not changed " + n.isChanged() + "/" + n.isNew());
-                        continue;
-                    }
-                    if (TransactionManager.EXISTS_NOLONGER.equals(n.getStringValue("_exists"))) {
-                        log.debug("Ignored because exists no longer.");
-                        continue;
-                    }
-                    log.debug("Calling commit on " + n);
-                    n.commit();
-                }
-
-
-
-
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
                 // return false;
-                throw new BridgeException(e.getMessage() + " for transaction with " + getNodes(), e);
+                throw new BridgeException(e.getMessage(), e);
             }
         }
 
         committed = true;
         return true;
     }
+
 
 
 
@@ -197,7 +135,6 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             ((Transaction)parentCloud).cancel();
         } else {
             try {
-            //   BasicCloudContext.transactionManager.cancel(account, transactionContext);
                 BasicCloudContext.transactionManager.cancel(userContext, transactionName);
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
@@ -209,25 +146,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         canceled = true;
     }
 
-
-    /*
-     */
-    @Override
-    int add(BasicNode node) {
-        String id = "" + node.getNumber();
-        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(getAccount(), id);
-        // store new temporary node in transaction
-        add(currentObjectContext);
-        node.setNode(BasicCloudContext.tmpObjectManager.getNode(getAccount(), id));
-        //  check nodetype afterwards?
-        return  node.getNumber();
-    }
-
     /*
      * Transaction-notification: add a new temporary node to a transaction.
      * @param currentObjectContext the context of the object to add
      */
-    @Override
     void add(String currentObjectContext) {
         try {
             BasicCloudContext.transactionManager.addNode(transactionName, getAccount(), currentObjectContext);
@@ -236,35 +158,26 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
-
-    @Override
-    void createAlias(BasicNode node, String aliasName) {
-        checkAlias(aliasName);
-        try {
-            String aliasContext = BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName, getAccount(), "a" + node.temporaryNodeId, "" + node.temporaryNodeId);
-            BasicCloudContext.transactionManager.addNode(transactionName, getAccount(), aliasContext);
-        } catch (TransactionManagerException e) {
-            throw new BridgeException(e.getMessage(), e);
-        }
+    int add(BasicNode node) {
+        String id = "" + node.getNumber();
+        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(getAccount(), id, id);
+        // store new temporary node in transaction
+        add(currentObjectContext);
+        node.setNode(BasicCloudContext.tmpObjectManager.getNode(getAccount(), id));
+        //  check nodetype afterwards?
+        return  node.getNumber();
     }
+
     /*
      * Transaction-notification: remove a temporary (not yet committed) node in a transaction.
      * @param currentObjectContext the context of the object to remove
      */
-    @Override
     void remove(String currentObjectContext) {
         try {
             BasicCloudContext.transactionManager.removeNode(transactionName, getAccount(), currentObjectContext);
         } catch (TransactionManagerException e) {
             throw new BridgeException(e.getMessage(), e);
         }
-    }
-    @Override
-    void remove(MMObjectNode node) {
-        String oMmbaseId = "" + node.getValue("number");
-        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(getAccount(),  oMmbaseId);
-        add(currentObjectContext);
-        delete(currentObjectContext);
     }
 
     void delete(String currentObjectContext, MMObjectNode node) {
@@ -282,21 +195,20 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
-    @Override
     boolean contains(MMObjectNode node) {
         // additional check, so transaction can still get nodes after it has committed.
         if (transactionName == null) {
             return false;
         }
         try {
-            Collection<MMObjectNode> transaction = BasicCloudContext.transactionManager.getTransaction(transactionName);
+            Collection transaction = BasicCloudContext.transactionManager.get(getAccount(), transactionName);
             return transaction.contains(node);
         } catch (TransactionManagerException tme) {
             throw new BridgeException(tme.getMessage(), tme);
         }
     }
 
-    @Override
+
     BasicNode makeNode(MMObjectNode node, String nodeNumber) {
         if (committed) {
             return parentCloud.makeNode(node, nodeNumber);
@@ -304,7 +216,6 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             return super.makeNode(node, nodeNumber);
         }
     }
-
     /**
      * If this Transaction is scheduled to be garbage collected, the transaction is canceled and cleaned up.
      * Unless it has already been committed/canceled, ofcourse, and
@@ -313,8 +224,8 @@ public class BasicTransaction extends BasicCloud implements Transaction {
      * This means that a transaction is always cleared - if it 'times out', or is not properly removed, it will
      * eventually be removed from the MMBase cache.
      */
-    @Override
     protected void finalize() {
+        log.debug("Canceling transaction " + this + " because this object is garbage collected");
         if ((transactionName != null) && !(parentCloud instanceof Transaction)) {
             cancel();
         }
@@ -326,6 +237,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     public boolean isCommitted() {
         return committed;
     }
+
     public Object getProperty(Object key) {
         Object value = super.getProperty(key);
         if (value == null) {
@@ -353,6 +265,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
+
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         _readObject(in);
         transactionName = (String) in.readObject();
@@ -370,10 +283,9 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         out.writeObject(parentCloud);
     }
 
-
     public String toString() {
         UserContext uc = getUser();
-        return  "BasicTransaction " + count +  "'" + getName() + "' of " + (uc != null ? uc.getIdentifier() : "NO USER YET") + " @" + Integer.toHexString(hashCode());
+        return  "BasicTransaction" + count + " '" + getName() + "' of " + parentCloud.toString();
     }
 
     /*
@@ -381,5 +293,6 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         return parentCloud.getNonTransactionalCloud();
     }
     */
+
 }
 

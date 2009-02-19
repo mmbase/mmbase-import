@@ -11,7 +11,6 @@ package org.mmbase.datatypes;
 
 import java.util.Collection;
 import org.mmbase.util.Casting;
-import org.mmbase.util.LocalizedString;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
@@ -21,10 +20,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.34 2009-01-07 17:54:19 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.30.2.1 2008-06-10 11:08:45 michiel Exp $
  * @since MMBase-1.8
  */
-public class NodeDataType extends BasicDataType<Node> {
+public class NodeDataType extends BasicDataType {
 
     private static final Logger log = Logging.getLoggerInstance(NodeDataType.class);
 
@@ -53,11 +52,16 @@ public class NodeDataType extends BasicDataType<Node> {
         }
     }
     protected Object castToValidate(Object value, Node node, Field field) throws CastException {
-        if (value == null || "".equals(value)) return null;
+        if (value == null) return null;
         Object preCast = preCast(value, node, field); // resolves enumerations
+        if (log.isDebugEnabled()) {
+        log.debug("CAsting to validate " + preCast);
+        }
         if (preCast instanceof Node) {
+            log.debug("A Node already");
             return preCast;
         }  else {
+            log.debug("A calling toType");
             Object res = Casting.toType(Node.class, getCloud(node, field), preCast);
             if (res == null) {
                 if (Casting.toString(value).equals("-1")) {
@@ -65,6 +69,9 @@ public class NodeDataType extends BasicDataType<Node> {
                 }
                 throw new CastException("No such node " + preCast);
             } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("Found " + res);
+                }
                 return res;
             }
         }
@@ -85,17 +92,13 @@ public class NodeDataType extends BasicDataType<Node> {
         return mustExistRestriction;
     }
 
-    public int getEnforceStrength() {
-        return Math.max(super.getEnforceStrength(), mustExistRestriction.getEnforceStrength());
-    }
-
-    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
+    protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = mustExistRestriction.validate(errors, value, node, field);
         return errors;
     }
 
-    private class MustExistRestriction extends AbstractRestriction<Boolean> {
+    private class MustExistRestriction extends AbstractRestriction {
         MustExistRestriction(MustExistRestriction me) {
             super(me);
             enforceStrength = DataType.ENFORCE_ONCHANGE;

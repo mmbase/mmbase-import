@@ -1,13 +1,14 @@
-table.rights  {
+table.rights  {   
 }
-table.rights  td {
+table.rights  td { 
+  border: 1px solid;
   text-align: center;
 }
 
-table.rights  td.text {
+table.rights  td.text { 
   text-align: left;
 }
 
-table.rights td.parent {
+table.rights td.parent { 
   background-color: #bfb;
 }

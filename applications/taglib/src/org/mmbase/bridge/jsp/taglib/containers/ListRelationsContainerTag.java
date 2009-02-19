@@ -11,7 +11,6 @@ package org.mmbase.bridge.jsp.taglib.containers;
 
 import java.util.*;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
@@ -20,17 +19,21 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.storage.search.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 
 /**
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.24 2008-12-30 16:19:54 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.14.2.1 2008-02-26 15:42:41 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
+    private static final Logger log = Logging.getLoggerInstance(ListRelationsContainerTag.class);
     private NodeQuery   query        = null;
-    private Object      prevQuery    = null;
+    private NodeQuery   relatedQuery        = null;
     private Attribute cachePolicy  = Attribute.NULL;
     private Attribute type       = Attribute.NULL;
     private Attribute role       = Attribute.NULL;
@@ -51,10 +54,18 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
      * @param r a role
      */
     public void setRole(String r) throws JspTagException {
-        role  = getAttribute(r, true);
+        role  = getAttribute(r);
     }
+
     public void setSearchdir(String s) throws JspTagException {
-        searchDir = getAttribute(s, true);
+        searchDir = getAttribute(s);
+    }
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    public void setJspvar(String jv) {
+        jspVar = jv;
     }
 
 
@@ -70,32 +81,46 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         return getNode();
     }
 
+    public NodeQuery getRelatedQuery() {
+        NodeQuery r = (NodeQuery) relatedQuery.clone();
+        // copy constraint and sort-orders of the query.
+        List querySteps = query.getSteps();
+        List rSteps     = r.getSteps();
+        for (int i = 0 ; i < querySteps.size(); i++) {
+            Step queryStep = (Step) querySteps.get(i);
+            Step rStep = (Step) rSteps.get(i);
+            Queries.copyConstraint(query.getConstraint(), queryStep, r, rStep);
+            Queries.copySortOrders(query.getSortOrders(), queryStep, r, rStep);
+        }
 
-    public int doStartTag() throws JspException {
-        initTag();
-        prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
+        return r;
+    }
+
+
+    public int doStartTag() throws JspTagException {
         if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
         } else {
-            Node relatedFromNode = getNode();
-            Cloud cloud = relatedFromNode.getCloud();
+            Cloud cloud = getCloudVar();
             NodeManager nm = null;
             if (type != Attribute.NULL) {
-                nm = cloud.getNodeManager(type.getString(this));
+                nm = getCloudVar().getNodeManager(type.getString(this));
             }
+            Node relatedFromNode = getNode();
             query        = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
+            relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
         }
-
         if (cachePolicy != Attribute.NULL) {
             query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+            relatedQuery.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
         }
+
         if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), query);
         }
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, query);
         }
-        pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
         return EVAL_BODY;
     }
 
@@ -112,9 +137,8 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         return SKIP_BODY;
     }
     public int doEndTag() throws JspTagException {
-        pageContext.setAttribute(KEY, prevQuery, SCOPE);
-        prevQuery = null;
         query = null;
+        relatedQuery = null;
         return super.doEndTag();
     }
 

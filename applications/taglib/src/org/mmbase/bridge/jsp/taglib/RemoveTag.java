@@ -19,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
  * Remove an object from the Context.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RemoveTag.java,v 1.13 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: RemoveTag.java,v 1.12 2006-06-22 18:15:44 johannes Exp $
  */
 
 public class RemoveTag extends ContextReferrerTag {
@@ -45,7 +45,7 @@ public class RemoveTag extends ContextReferrerTag {
      * @since MMBase-1.8
      */
     protected void remove(ContextContainer cc, String referid) throws JspTagException {
-        if (value.getString(this).length() == 0) {
+        if (value.getString(this).equals("")) {
             cc.unRegister(referid);
         } else {
             Collection col = (Collection) cc.get(referid);
@@ -57,7 +57,7 @@ public class RemoveTag extends ContextReferrerTag {
         super.doEndTag();
         String fromString = from.getString(this);
         if (! "".equals(fromString)) {
-            boolean useCollection = value.getString(this).length() != 0;
+            boolean useCollection = ! value.getString(this).equals("");
             Collection col = null;
             int from = ContextContainer.stringToLocation(fromString);
             switch(from) {

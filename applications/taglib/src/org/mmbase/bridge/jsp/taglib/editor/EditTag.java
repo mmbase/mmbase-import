@@ -11,6 +11,9 @@ package org.mmbase.bridge.jsp.taglib.editor;
 
 import javax.servlet.jsp.*;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -44,7 +47,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.26 2008-09-04 12:31:07 michiel Exp $
+ * @version $Id: EditTag.java,v 1.17.2.2 2008-03-31 13:06:37 michiel Exp $
  * @see Editor
  * @see BasicEditor
  * @see YAMMEditor
@@ -53,14 +56,14 @@ import org.xml.sax.InputSource;
 public class EditTag extends CloudReferrerTag implements ParamHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EditTag.class);
-    private static final Map<String, EditorDefinition> edittagTypes = new HashMap<String, EditorDefinition>();      // edittagtype -> editordefinition
+    private static final Map edittagTypes = new HashMap();      // edittagtype -> editordefinition
 
     public static final String KEY = "org.mmbase.taglib.edit";
     public static final int SCOPE = PageContext.REQUEST_SCOPE;
 
     static {
         try {
-            org.mmbase.util.xml.EntityResolver.registerPublicID("-//MMBase//DTD edittagtypes 1.0//EN", "edittagtypes_1_0.dtd", EditTag.class);
+            org.mmbase.util.XMLEntityResolver.registerPublicID("-//MMBase//DTD edittagtypes 1.0//EN", "edittagtypes_1_0.dtd", EditTag.class);
             ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib")) {
                 public void onChange(String resource) {
                     edittagTypes.clear();
@@ -74,12 +77,12 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
 
 
                     ResourceLoader taglibLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib");
-                    List<URL> resources = taglibLoader.getResourceList(resource);
+                    List resources = taglibLoader.getResourceList(resource);
                     log.service("Reading edittag resources: " + resources);
-                    ListIterator<URL> i = resources.listIterator();
+                    ListIterator i = resources.listIterator();
                     while (i.hasNext()) {
                         try {
-                            URL u = i.next();
+                            URL u = (URL) i.next();
                             URLConnection con = u.openConnection();
                             if (con.getDoInput()) {
                                 log.debug("Reading edittag resource: " + u);
@@ -92,7 +95,7 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
                             log.error("Error connecting or resource not found: " + e);
                         }
                     }
-                    ArrayList<String> l = new ArrayList<String>(edittagTypes.keySet());
+                    ArrayList l = new ArrayList(edittagTypes.keySet());
                     Collections.sort(l);
                     log.service("Found edit-tag types " + l);
                 }
@@ -114,8 +117,11 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
         DocumentReader reader  = new DocumentReader(edittagSource, EditTag.class);
         Element root = reader.getElementByPath("edittagtypes");
 
-        for (Element element: reader.getChildElements(root, "editor")) {
+        Iterator i = reader.getChildElements(root, "editor");
+        while (i.hasNext()) {
+            Element element = (Element) i.next();
             String type = element.getAttribute("type");
+
             try {
                 EditorDefinition newDef = new EditorDefinition(element);
                 Object original = edittagTypes.put(type, newDef);
@@ -179,10 +185,9 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
      */
     public int doStartTag() throws JspTagException {
         if (log.isDebugEnabled()) log.debug("doStartTag of EditTag");
-
         prevEditor = pageContext.getAttribute(KEY, SCOPE);
 
-        EditorDefinition def = edittagTypes.get(getType());
+        EditorDefinition def = (EditorDefinition) edittagTypes.get(getType());
         if (def == null) {
             throw new JspTagException("'" + getType() + "' is not a known edit type. Known are " + edittagTypes.keySet());
         }
@@ -191,6 +196,7 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
         }
         editor = def.newInstance();
         pageContext.setAttribute(KEY, editor, SCOPE);
+
 
         return EVAL_BODY;
     }
@@ -216,6 +222,9 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
         return super.doEndTag();
     }
 
+    public Editor getEditor() {
+        return editor;
+    }
 
 
     // if EVAL_BODY == EVAL_BODY_BUFFERED
@@ -232,11 +241,11 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
 
 
     static class EditorDefinition {
-        private final Class<?> clazz;
-        private final Map<String, String>   params = new HashMap<String, String>(); /* String -> String */
+        private final Class clazz;
+        private final Map   params = new HashMap(); /* String -> String */
 
         public EditorDefinition(Element element) throws ClassNotFoundException {
-            Class<?> c = null;
+            Class c = null;
             org.w3c.dom.NodeList childNodes = element.getChildNodes();
             for (int i = 0; i < childNodes.getLength(); i++) {
                 if (childNodes.item(i) instanceof Element) {

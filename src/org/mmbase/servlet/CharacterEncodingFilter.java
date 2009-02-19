@@ -19,6 +19,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.mmbase.module.Module;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -85,7 +86,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens (Finalist IT Group)
  *
  * @since  MMBase-1.6
- * @version $Id: CharacterEncodingFilter.java,v 1.5 2007-06-06 11:35:48 nklasens Exp $
+ * @version $Id: CharacterEncodingFilter.java,v 1.3 2003-09-01 13:29:45 pierre Exp $
  */
 public class CharacterEncodingFilter implements Filter {
 
@@ -94,14 +95,17 @@ public class CharacterEncodingFilter implements Filter {
         Logging.getLoggerInstance(CharacterEncodingFilter.class.getName());
 
     private String encoding = null;
+    private FilterConfig filterConfig = null;
+
     /**
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
     public void init(FilterConfig config) throws ServletException {
         log.info("CharacterEncodingFilter init");
+        filterConfig = config;
         encoding = config.getInitParameter("encoding");
         if (encoding == null) {
-           MMBase mmbase = MMBase.getMMBase();
+           MMBase mmbase = (MMBase) Module.getModule("MMBASEROOT");
            encoding = mmbase.getEncoding();
            if (encoding == null) {
               encoding = "UTF-8";
@@ -114,6 +118,7 @@ public class CharacterEncodingFilter implements Filter {
      */
     public void destroy() {
         log.info("CharacterEncodingFilter destroy");
+        filterConfig = null;
     }
 
     /**

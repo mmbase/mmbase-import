@@ -31,11 +31,10 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.33 2009-01-29 21:51:25 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.17 2006-02-20 18:34:16 michiel Exp $
  */
-public class Authenticate extends CloudContextAuthentication {
+public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
-
 
     protected static final String ADMINS_PROPS = "admins.properties";
 
@@ -44,7 +43,7 @@ public class Authenticate extends CloudContextAuthentication {
     private boolean allowEncodedPassword = false;
 
     private static Properties extraAdmins = new Properties();      // Admins to store outside database.
-    protected static Map<String, User>      loggedInExtraAdmins = new HashMap<String, User>();
+    protected static Map      loggedInExtraAdmins = new HashMap();
 
 
     protected void readAdmins(InputStream in) {
@@ -62,14 +61,18 @@ public class Authenticate extends CloudContextAuthentication {
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override protected void load() throws SecurityException {
-        attributes.put(STORES_CONTEXT_IN_OWNER, Boolean.TRUE);
-        UserProvider users = getUserProvider();
+    // javadoc inherited
+    protected void load() throws SecurityException {
+        Users users = Users.getBuilder();
         if (users == null) {
-            throw new SecurityException("builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)");
+            String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
+            log.fatal(msg);
+           throw new SecurityException(msg);
+        }
+        if (!users.check()) {
+           String msg = "builder mmbaseusers was not configured correctly";
+            log.error(msg);
+            throw new SecurityException(msg);
         }
 
         ResourceWatcher adminsWatcher = new ResourceWatcher(MMBaseCopConfig.securityLoader) {
@@ -85,57 +88,22 @@ public class Authenticate extends CloudContextAuthentication {
 
     }
 
-    /**
-     * @since MMBase-1.9
-     */
-    @Override public int getNode(UserContext user) throws SecurityException {
-        return ((User) user).getNode().getNumber();
-    }
-
-    @Override public String getUserBuilder() {
-        return getUserProvider().getUserBuilder().getTableName();
-    }
-
-    private boolean warnedNoAnonymousUser = false;
-
-    /**
-     * {@inheritDoc}
-     *
-     <table>
-       <caption>Password comparison strategies</caption>
-       <tr><th>client provided</th><th>database</th><th>application to use</th><th>comments</th><tr>
-       <tr><td>plain</td><th>encoded</td><td>name/password</td><td>this is the default and most
-       sensible case</td></tr>
-       <tr><td>encoded</td><th>encoded</td><td>name/encodedpassword</td><td>The 'allowEnoded' property must be true for this to work.</td></tr>
-
-       <tr><td>plain</td><th>plain</td><td>name/password</td><td>this is the default if the password
-       set-processor is empty.</td></tr>
-
-       <tr><td>encoded</td><th>plain</td><td>name/encodedpassword</td><td></td></tr>
-     </table>
-     */
-    @Override public User login(String type, Map<String, ?> map, Object aobj[]) throws SecurityException  {
-        if (log.isTraceEnabled()) {
-            log.trace("login-module: '" + type + "'");
+    // javadoc inherited
+    public UserContext login(String s, Map map, Object aobj[]) throws SecurityException  {
+        if (log.isDebugEnabled()) {
+            log.trace("login-module: '" + s + "'");
         }
         MMObjectNode node = null;
-        UserProvider users = getUserProvider();
+        Users users = Users.getBuilder();
         if (users == null) {
             String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
             log.fatal(msg);
             throw new SecurityException(msg);
         }
-        allowEncodedPassword = org.mmbase.util.Casting.toBoolean(users.getUserBuilder().getInitParameter("allowencodedpassword"));
-        if ("anonymous".equals(type)) {
+        allowEncodedPassword = org.mmbase.util.Casting.toBoolean(users.getInitParameter("allowencodedpassword"));
+        if ("anonymous".equals(s)) {
             node = users.getAnonymousUser();
-            if (node == null) {
-                if (! warnedNoAnonymousUser) {
-                    log.warn("No user node for anonymous found");
-                    warnedNoAnonymousUser = true;
-                }
-                return new LocalAdmin("anonymous", type, Rank.getRank("anonymous"));
-            }
-        } else if ("name/password".equals(type)) {
+        } else if ("name/password".equals(s)) {
             String userName = (String)map.get("username");
             String password = (String)map.get("password");
             if(userName == null || password == null) {
@@ -144,16 +112,16 @@ public class Authenticate extends CloudContextAuthentication {
             if (extraAdmins.containsKey(userName)) {
                 if(extraAdmins.get(userName).equals(password)) {
                     log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                    User user = new LocalAdmin(userName, type);
+                    User user = new LocalAdmin(userName, s);
                     loggedInExtraAdmins.put(userName, user);
                     return user;
                 }
             }
-            node = users.getUser(userName, password, false);
+            node = users.getUser(userName, password);
             if (node != null && ! users.isValid(node)) {
                 throw new SecurityException("Logged in an invalid user");
             }
-        } else if (allowEncodedPassword && "name/encodedpassword".equals(type)) {
+        } else if (allowEncodedPassword && "name/encodedpassword".equals(s)) {
             String userName = (String)map.get("username");
             String password = (String)map.get("encodedpassword");
             if(userName == null || password == null) {
@@ -162,54 +130,49 @@ public class Authenticate extends CloudContextAuthentication {
             if (extraAdmins.containsKey(userName)) {
                 if(users.encode((String) extraAdmins.get(userName)).equals(password)) {
                     log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                    User user = new LocalAdmin(userName, type);
+                    User user = new LocalAdmin(userName, s);
                     loggedInExtraAdmins.put(userName, user);
                     return user;
                 }
             }
-            node = users.getUser(userName, password, true);
+            node = users.getUser(userName, password, false);
             if (node != null && ! users.isValid(node)) {
                 throw new SecurityException("Logged in an invalid user");
             }
-        } else if ("class".equals(type)) {
-            ClassAuthentication.Login li = ClassAuthentication.classCheck("class", map);
+        } else if ("class".equals(s)) {
+            ClassAuthentication.Login li = ClassAuthentication.classCheck("class");
             if (li == null) {
-                throw new SecurityException("Class authentication failed  '" + type + "' (class not authorized)");
+                throw new SecurityException("Class authentication failed  '" + s + "' (class not authorized)");
             }
-            String userName = li.getMap().get(PARAMETER_USERNAME.getName());
-            String rank     = li.getMap().get(PARAMETER_RANK.getName());
+            String userName = (String) li.getMap().get(PARAMETER_USERNAME.getName());
+            String rank     = (String) li.getMap().get(PARAMETER_RANK.getName());
             if (userName != null && (rank == null || (Rank.ADMIN.toString().equals(rank) && extraAdmins.containsKey(userName)))) {
                 log.service("Logged in an 'extra' admin '" + userName + "'. (from admins.properties)");
-                User user = new LocalAdmin(userName, type);
+                User user = new LocalAdmin(userName, s);
                 loggedInExtraAdmins.put(userName, user);
                 return user;
             } else {
                 if (userName != null) {
-                    try {
-                        node = users.getUser(userName);
-                    } catch (SecurityException se) {
-                        log.service(se);
-                        return new LocalAdmin(userName, type, rank == null ? Rank.ADMIN : Rank.getRank(rank));
+                    node = users.getUser(userName);
+                    if (rank != null) {
                     }
                 } else if (rank != null) {
                     node = users.getUserByRank(rank, userName);
                     log.debug("Class authentication to rank " + rank + " found node " + node);
-                    if (node == null) {
-                        return new LocalAdmin(rank, type, Rank.getRank(rank));
-                    }
                 }
             }
         } else {
-            throw new UnknownAuthenticationMethodException("login module with name '" + type + "' not found, only 'anonymous', 'name/password' and 'class' are supported");
+            throw new UnknownAuthenticationMethodException("login module with name '" + s + "' not found, only 'anonymous', 'name/password' and 'class' are supported");
         }
         if (node == null)  return null;
-        return new User(node, getKey(), type);
+        return new User(node, getKey(), s);
     }
 
     public static User getLoggedInExtraAdmin(String userName) {
-        return loggedInExtraAdmins.get(userName);
+        return (User) loggedInExtraAdmins.get(userName);
     }
 
+    // javadoc inherited
     public boolean isValid(UserContext userContext) throws SecurityException {
         if (! (userContext instanceof User)) {
             log.debug("Changed to other security implementation");
@@ -219,7 +182,7 @@ public class Authenticate extends CloudContextAuthentication {
         if (user.node == null) {
             log.debug("No node associated to user object, --> user object is invalid");
             return false;
-        }
+        } 
         if (! user.isValidNode()) {
             log.debug("Node associated to user object, is invalid");
             return false;
@@ -233,7 +196,7 @@ public class Authenticate extends CloudContextAuthentication {
     }
 
 
-    @Override public String[] getTypes(int method) {
+    public String[] getTypes(int method) {
         if (allowEncodedPassword) {
             if (method == METHOD_ASIS) {
                 return new String[] {"anonymous", "name/password", "name/encodedpassword", "class"};
@@ -257,7 +220,7 @@ public class Authenticate extends CloudContextAuthentication {
             PARAMETER_ENCODEDPASSWORD,
             new Parameter.Wrapper(PARAMETERS_USERS) };
 
-    @Override public Parameters createParameters(String application) {
+    public Parameters createParameters(String application) {
         application = application.toLowerCase();
         if ("anonymous".equals(application)) {
             return new Parameters(PARAMETERS_ANONYMOUS);
@@ -277,19 +240,14 @@ public class Authenticate extends CloudContextAuthentication {
 
         private String userName;
         private long   l;
-        private Rank   r = Rank.ADMIN;
         LocalAdmin(String user, String app) {
             super(new AdminVirtualNode(), Authenticate.this.getKey(), app);
             l = extraAdminsUniqueNumber;
             userName = user;
         }
-        LocalAdmin(String user, String app, Rank r) {
-            this(user, app);
-            this.r = r;
-        }
         public String getIdentifier() { return userName; }
         public String  getOwnerField() { return userName; }
-        public Rank getRank() throws SecurityException { return r; }
+        public Rank getRank() throws SecurityException { return Rank.ADMIN; }
         public boolean isValidNode() { return l == extraAdminsUniqueNumber; }
         private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
             userName = in.readUTF();
@@ -321,7 +279,7 @@ public class Authenticate extends CloudContextAuthentication {
     }
     public  class AdminVirtualNode extends VirtualNode {
         AdminVirtualNode() {
-            super(Authenticate.this.getUserProvider().getUserBuilder());
+            super(Users.getBuilder());
         }
     }
 

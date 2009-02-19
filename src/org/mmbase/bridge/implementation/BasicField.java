@@ -20,9 +20,9 @@ import java.util.Collection;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.35 2009-01-03 10:17:47 michiel Exp $
+ * @version $Id: BasicField.java,v 1.31 2006-07-11 09:30:26 michiel Exp $
  */
-public class BasicField extends AbstractField<Object> implements Field {
+public class BasicField extends AbstractField implements Field {
 
     private final NodeManager nodeManager;
     protected final CoreField coreField;
@@ -37,49 +37,41 @@ public class BasicField extends AbstractField<Object> implements Field {
         }
     }
 
-    @Override
     public NodeManager getNodeManager() {
         return nodeManager;
     }
 
-    @Override
     public int getSearchPosition(){
         return coreField.getSearchPosition();
     }
 
-    @Override
     public int getListPosition(){
         return coreField.getListPosition();
     }
 
-    @Override
     public int getEditPosition(){
         return coreField.getEditPosition();
     }
 
-    @Override
     public int getStoragePosition(){
         return coreField.getStoragePosition();
     }
 
-    public Collection<String> validate(Object value) {
-        Collection<LocalizedString> errors = getDataType().validate(value, null, this);
+    public Collection validate(Object value) {
+        Collection errors = getDataType().validate(value, null, this);
         return LocalizedString.toStrings(errors, getNodeManager().getCloud().getLocale());
     }
 
-    @Override
     public int getMaxLength() {
         return coreField.getMaxLength();
     }
 
 
-    @Override
     protected java.util.Locale getDefaultLocale() {
         return nodeManager.getCloud().getLocale();
     }
 
     // deprecated methods
-    @Override
     public String getGUIType() {
         return coreField.getGUIType();
     }

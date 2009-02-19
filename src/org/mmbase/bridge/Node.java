@@ -1,10 +1,10 @@
 /*
 
-  This software is OSI Certified Open Source Software.
-  OSI Certified is a certification mark of the Open Source Initiative.
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
 
-  The license (Mozilla version 1.0) can be read at the MMBase site.
-  See http://www.MMBase.org/license
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
 
 */
 
@@ -21,21 +21,21 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.82 2009-02-11 10:44:09 michiel Exp $
+ * @version $Id: Node.java,v 1.70.2.1 2007-06-21 07:39:08 pierre Exp $
  */
-public interface Node extends Comparable<Node> {
+public interface Node extends Comparable {
 
     /**
      * Returns the cloud this node belongs to.
      * @return the Cloud
      */
-    Cloud getCloud();
+    public Cloud getCloud();
 
     /**
      * Returns the node manager for this node.
      * @return the node manager
      */
-    NodeManager getNodeManager();
+    public NodeManager getNodeManager();
 
     /**
      * Returns the unique number for this node. Every node has a unique number
@@ -48,14 +48,14 @@ public interface Node extends Comparable<Node> {
      * @return the unique number for this node
      * @see    #createAlias(String alias)
      */
-    int getNumber();
+    public int getNumber();
 
     /**
      * Determine whether this Node is a Relation.
      * @since MMBase-1.6
      * @return <code>true</code> if this Node is a Relation.
      */
-    boolean isRelation();
+    public boolean isRelation();
 
     /**
      * Returns this as a Relation.
@@ -63,14 +63,14 @@ public interface Node extends Comparable<Node> {
      * @return a <code>Relation</code> object
      * @throws ClassCastException if the Node is not a Relation
      */
-    Relation toRelation();
+    public Relation toRelation();
 
     /**
      * Determine whether this Node is a NodeManager.
      * @since MMBase-1.6
      * @return <code>true</code> if this Node is a NodeManager.
      */
-    boolean isNodeManager();
+    public boolean isNodeManager();
 
     /**
      * Returns this as a NodeManager.
@@ -78,14 +78,14 @@ public interface Node extends Comparable<Node> {
      * @return a <code>NodeManager</code> object
      * @throws ClassCastException if the Node is not a NodeManager
      */
-    NodeManager toNodeManager();
+    public NodeManager toNodeManager();
 
     /**
      * Determine whether this Node is a RelationManager.
      * @since MMBase-1.6
      * @return <code>true</code> if this Node is a RelationManager.
      */
-    boolean isRelationManager();
+    public boolean isRelationManager();
 
     /**
      * Returns this as a RelationManager.
@@ -93,7 +93,7 @@ public interface Node extends Comparable<Node> {
      * @return a <code>NodeManager</code> object
      * @throws ClassCastException if the Node is not a RelationManager
      */
-    RelationManager toRelationManager();
+    public RelationManager toRelationManager();
 
     /**
      * Sets the value of the specified field using an object, but delegated to the right
@@ -106,7 +106,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    void setValue(String fieldName, Object value);
+    public void setValue(String fieldName, Object value);
 
     /**
      * Like setValue, but skips any processing that MMBase would normally perform on a field.
@@ -117,7 +117,7 @@ public interface Node extends Comparable<Node> {
      * @param value new value of the field
      * @since MMBase-1.8
      */
-    void setValueWithoutProcess(String fieldName, Object value);
+    public void setValueWithoutProcess(String fieldName, Object value);
 
     /**
      * Sets the value of the specified field using an object, but without dispatching to the right
@@ -127,7 +127,7 @@ public interface Node extends Comparable<Node> {
      * @param value      the new value for the given field
      * @since MMBase-1.7
      */
-    void setObjectValue(String fieldName, Object value);
+    public void setObjectValue(String fieldName, Object value);
 
     /**
      * Sets the value of the specified field using an <code>boolean</code>.
@@ -138,7 +138,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    void setBooleanValue(String fieldName, boolean value);
+    public void setBooleanValue(String fieldName, boolean value);
 
     /**
      * Sets the value of the specified field using an <code>Node</code>.
@@ -149,7 +149,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    void setNodeValue(String fieldName, Node value);
+    public void setNodeValue(String fieldName, Node value);
 
     /**
      * Sets the value of the specified field using an <code>int</code>.
@@ -159,7 +159,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    void setIntValue(String fieldName, int value);
+    public void setIntValue(String fieldName, int value);
 
     /**
      * Sets the value of the specified field using a <code>float</code>.
@@ -169,7 +169,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    void setFloatValue(String fieldName, float value);
+    public void setFloatValue(String fieldName, float value);
 
     /**
      * Sets the value of the specified field using a <code>double</code>.
@@ -179,7 +179,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    void setDoubleValue(String fieldName, double value);
+    public void setDoubleValue(String fieldName, double value);
 
     /**
      * Sets the value of the specified field using a <code>byte array</code>.
@@ -189,16 +189,13 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    void setByteValue(String fieldName, byte[] value);
+    public void setByteValue(String fieldName, byte[] value);
 
     /**
      * Sets the value of the specified field using a <code>java.io.InputStream</code>.
-     * @param fieldName  the name of the field to be updated
-     * @param value      the new value for the given field
-     * @param size       size of input stream
      * @since MMBase-1.8.
      */
-    void setInputStreamValue(String fieldName, InputStream value, long size);
+    public void setInputStreamValue(String fieldName, InputStream value, long size);
 
     /**
      * Sets the value of the specified field using a <code>long</code>.
@@ -208,7 +205,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    void setLongValue(String fieldName, long value);
+    public void setLongValue(String fieldName, long value);
 
     /**
      * Sets the value of the specified field using a <code>String</code>.
@@ -218,7 +215,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
      */
-    void setStringValue(String fieldName, String value);
+    public void setStringValue(String fieldName, String value);
 
     /**
      * Sets the value of the specified field using a <code>Date</code>.
@@ -229,20 +226,7 @@ public interface Node extends Comparable<Node> {
      * @param value      the new value for the given field
      * @since MMBase-1.8
      */
-    void setDateValue(String fieldName, Date value);
-
-
-
-    /**
-     * Sets the value of the specified field using a <code>BigDecimal</code>.
-     * This change will not be visible to the cloud until the commit method is
-     * called.
-     *
-     * @param fieldName  the name of the field to be updated
-     * @param value      the new value for the given field
-     * @since MMBase-1.9.1
-     */
-    void setDecimalValue(String fieldName, java.math.BigDecimal value);
+    public void setDateValue(String fieldName, Date value);
 
 
     /**
@@ -255,26 +239,22 @@ public interface Node extends Comparable<Node> {
      * // not yet working
      * @since MMBase-1.8
      */
-    void setListValue(String fieldName, List<?> value);
+    public void setListValue(String fieldName, List value);
 
     /**
-     * Whether the value for the specified field is <code>null</code>. This avoids acquiring the
-     * complete value if you only want to check if for emptiness.
-     * @param fieldName   the name of the field
-     * @return <code>true</code> when value is <code>null</code>
+     * Whether the value for the speficied field is <code>null</code>. This avoids acquiring the
+     * complete value if you only want to check if for emptyness.
      * @since MMBase-1.8
      */
-    boolean isNull(String fieldName);
+    public boolean isNull(String fieldName);
 
 
     /**
      * Returns the 'size' (e.g. the number of bytes of a byte array) for the specified field. This
      * avoids acquiring the complete value if you only want to know how big the value of the field is.
-     * @param fieldName    the name of the field
-     * @return  the 'size'
      * @since MMBase-1.8
      */
-    long getSize(String fieldName);
+    public long getSize(String fieldName);
 
 
     /**
@@ -286,32 +266,25 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
      */
-    Object getValue(String fieldName);
+    public Object getValue(String fieldName);
 
     /**
      * Returns the field's value as an object. It is not delegated to the right get--Value.
      * @param fieldName name of the field
      * @return object value
      * @since MMBase-1.7
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
      */
-    Object getObjectValue(String fieldName);
+    public Object getObjectValue(String fieldName);
 
     /**
      * Like getObjectValue, but skips any processing that MMBase would normally perform on a field.
      * You can use this to get data from a field for validation purposes.
      *
      * @param fieldName name of field
-     * @return value without processing
      * @since MMBase-1.8
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
      */
-    Object getValueWithoutProcess(String fieldName);
+    public Object getValueWithoutProcess(String fieldName);
 
     /**
      * Returns the value of the specified field as a <code>boolean</code>.
@@ -325,11 +298,8 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
-
      */
-    boolean getBooleanValue(String fieldName);
+    public boolean getBooleanValue(String fieldName);
 
     /**
      * Returns the value of the specified field as a <code>Node</code>.
@@ -355,12 +325,9 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
-
      * @see Cloud#getList(String, String, String, String, String, String, String, boolean)
      */
-    Node getNodeValue(String fieldName);
+    public Node getNodeValue(String fieldName);
 
     /**
      * Returns the value of the specified field as an <code>int</code>.
@@ -374,11 +341,8 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
-
      */
-    int getIntValue(String fieldName);
+    public int getIntValue(String fieldName);
 
     /**
      * Returns the value of the specified field as a <code>float</code>.
@@ -392,7 +356,7 @@ public interface Node extends Comparable<Node> {
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
      */
-    float getFloatValue(String fieldName);
+    public float getFloatValue(String fieldName);
 
     /**
      * Returns the value of the specified field as a <code>long</code>.
@@ -405,11 +369,8 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
-
      */
-    long getLongValue(String fieldName);
+    public long getLongValue(String fieldName);
 
     /**
      * Returns the value of the specified field as a <code>double</code>.
@@ -422,11 +383,8 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
-
      */
-    double getDoubleValue(String fieldName);
+    public double getDoubleValue(String fieldName);
 
     /**
      * Returns the value of the specified field as a <code>byte array</code>.
@@ -436,24 +394,17 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
-
      */
-    byte[] getByteValue(String fieldName);
+    public byte[] getByteValue(String fieldName);
 
 
     /**
      * Returns the value of the specified field as a <code>java.io.InputStream</code> This is
-     * especially useful for large byte-array fields. By this you can avoid them to be completely
+     * especially usefull for large byte-array fields. By this you can avoid them to be completely
      * stored in memory.
-     * @param fieldName  the name of the field
-     * @return value of field as a input stream
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
      * @since MMBase-1.8
      */
-    InputStream getInputStreamValue(String fieldName);
+    public InputStream getInputStreamValue(String fieldName);
 
 
     /**
@@ -464,38 +415,23 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
      */
-    String getStringValue(String fieldName);
+    public String getStringValue(String fieldName);
 
     /**
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
      * @since MMBase-1.8
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
      */
-    Date getDateValue(String fieldName);
+    public Date getDateValue(String fieldName);
 
     /**
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @since MMBase-1.9.1
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
-     */
-    java.math.BigDecimal getDecimalValue(String fieldName);
-
-    /**
-     * @param fieldName  the name of the field to be returned
-     * @return           the value of the specified field
-     * @throws IllegalArgumentException if mmbase is 'in development' (i.e. 'strict' mode) and the
-     * field does not exist.
      * not yet working
      * @since MMBase-1.8
      */
-    List<?> getListValue(String fieldName);
+    public List getListValue(String fieldName);
 
 
     /**
@@ -504,10 +440,9 @@ public interface Node extends Comparable<Node> {
      * @since MMBase-1.6
      * @param fieldName  the name of the field whose value to return
      * @return           the value of the specified field
-     * @throws NotFoundException is the field does not exist and MMBase 'in development'
-     * (i.e. strict mode)
+     * @throws NotFoundException is the field does not exist
      */
-    FieldValue getFieldValue(String fieldName) throws NotFoundException;
+    public FieldValue getFieldValue(String fieldName) throws NotFoundException;
 
     /**
      * Returns the value of the specified field as a <code>FieldValue</code> object.
@@ -516,20 +451,20 @@ public interface Node extends Comparable<Node> {
      * @param field  the Field object whose value to return
      * @return       the value of the specified field
      */
-    FieldValue getFieldValue(Field field);
+    public FieldValue getFieldValue(Field field);
 
     /**
      * Validates a node by checking the values from it's fields against the constraints of
      * each field's datatype.
-     * For performance reasons, it only validates fields that actually changed (as of MMBase 1.8.4),
-     * or when a new node is created.
      * This method is called by the {@link #commit} method, after commit processors are run.
+     * For performance reasons, it only validates fields that actually changed (as of MMBase 1.8.4), 
+     * or when a new node is created.
      * Note that because commit processors may make necessary changes to field values, it is possible for
      * validate() to fail when used outside the commit process if the constraints are set too strict.
      * @return Collection of errors as <code>String</code> (in the current locale of the cloud) or an empty collection if everything ok.
      * @since MMBase-1.8
      */
-    Collection<String> validate();
+    public Collection validate();
 
     /**
      * Commit the node to the database.
@@ -544,48 +479,43 @@ public interface Node extends Comparable<Node> {
      * @throws BridgeException
      * @throws IllegalArgumentException If certain value of the node are invalid according to their data type.
      */
-    void commit();
+    public void commit();
 
     /**
      * Cancel changes to a node
      * This fails if the current node is not in edit mode.
      * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
      */
-    void cancel();
+    public void cancel();
 
     /**
      * Removes the Node. Throws an exception if still has relations. Like delete(false).
      */
-    void delete();
+    public void delete();
 
     /**
-     * Whether this Node is new (not yet committed).
-     * @return <code>true</code> when new
+     * Whether this Node is new (not yet commited).
      * @since MMBase-1.8
      */
-    boolean isNew();
+    public boolean isNew();
 
     /**
      * Whether a certain field's value was changed since the last commit.
-     * @param fieldName  the name of the field
-     * @return <code>true</code> when field's value was changed
      * @since MMBase-1.8
      */
-    boolean isChanged(String fieldName);
+    public boolean isChanged(String fieldName);
 
     /**
      * A Set of Strings containing the names of all changed fields.
-     * @return Set of changed fields
      * @since MMBase-1.8
      */
-    Set<String> getChanged();
+    public Set getChanged();
 
     /**
      * Whether  field values were changed since the last commit.
-     * @return <code>true</code> when  changed
      * @since MMBase-1.8
      */
-    boolean isChanged();
+    public boolean isChanged();
 
     /**
      * Removes the Node.
@@ -593,13 +523,13 @@ public interface Node extends Comparable<Node> {
      * existing relations with this node will be removed.
      */
 
-    void delete(boolean deleteRelations);
+    public void delete(boolean deleteRelations);
 
     /**
      * Converts the node to a string
      * @return string representation of a node
      */
-    String toString();
+    public String toString();
 
     /**
      * Returns the value of the specified field as a <code>dom.Document</code>
@@ -610,11 +540,10 @@ public interface Node extends Comparable<Node> {
      *
      * @param fieldName  the name of the field to be returned
      * @return the value of the specified field as a DOM Element or <code>null</code>
-     * @throws  IllegalArgumentException if the value cannot be converted to xml, or the field does
-     * not exist.
+     * @throws  IllegalArgumentException if the value cannot be converted to xml.
      * @since MMBase-1.6
      */
-    Document getXMLValue(String fieldName) throws IllegalArgumentException;
+    public Document getXMLValue(String fieldName) throws IllegalArgumentException;
 
     /**
      * Returns the value of the specified field as a <code>dom.Element</code>
@@ -631,7 +560,7 @@ public interface Node extends Comparable<Node> {
      * @since MMBase-1.6
      */
 
-    Element getXMLValue(String fieldName, Document tree) throws IllegalArgumentException;
+    public Element getXMLValue(String fieldName, Document tree) throws IllegalArgumentException;
 
     /**
      * Set's the value of the specified field as a <code>dom.Element</code>
@@ -641,35 +570,35 @@ public interface Node extends Comparable<Node> {
      *                   system will try to convert it to the wanted type.
      * @since MMBase-1.6
      */
-    void setXMLValue(String fieldName, Document value);
+    public void setXMLValue(String fieldName, Document value);
 
     /**
      * Checks whether this node has any relations.
      *
      * @return <code>true</code> if the node has relations
      */
-    boolean hasRelations();
+    public boolean hasRelations();
 
     /**
      * Removes all relation nodes attached to this node.
      */
-    void deleteRelations();
+    public void deleteRelations();
 
     /**
-     * Removes all relation nodes with a certain relation manager that are
+      * Removes all relation nodes with a certain relation manager that are
      * attached to this node.
      *
      * @param relationManager  the name of the relation manager the removed
      *                         relation nodes should have
      */
-    void deleteRelations(String relationManager);
+    public void deleteRelations(String relationManager);
 
     /**
      * Returns all relation nodes attached to this node.
      *
      * @return a list of relation nodes
      */
-    RelationList getRelations();
+    public RelationList getRelations();
 
     /**
      * Returns all relation nodes attached to this node that have a specific
@@ -679,7 +608,7 @@ public interface Node extends Comparable<Node> {
      *              relation nodes should have
      * @return      a list of relation nodes
      */
-    RelationList getRelations(String role);
+    public RelationList getRelations(String role);
 
     /**
      * Returns all relation nodes attached to this node that have a specific
@@ -691,7 +620,7 @@ public interface Node extends Comparable<Node> {
      *                     relation nodes should have a relation to
      * @return      a list of relation nodes
      */
-    RelationList getRelations(String role, String nodeManager);
+    public RelationList getRelations(String role, String nodeManager);
 
     /**
      * Returns all relation nodes attached to this node that have a specific
@@ -703,7 +632,7 @@ public interface Node extends Comparable<Node> {
      *                     relation nodes should have a relation to (can be null)
      * @return      a list of relation nodes
      */
-    RelationList getRelations(String role, NodeManager nodeManager);
+    public RelationList getRelations(String role, NodeManager nodeManager);
 
 
     /**
@@ -713,14 +642,14 @@ public interface Node extends Comparable<Node> {
      * @return List of relations
      * @since MMBase-1.7
      */
-    RelationList getRelations(String role, NodeManager nodeManager, String searchDir);
+    public RelationList getRelations(String role, NodeManager nodeManager, String searchDir);
 
     /**
      * Returns the number of relations this node has with other nodes.
      *
      * @return the number of relations this node has with other nodes
      */
-    int countRelations();
+    public int countRelations();
 
     /**
      * Returns the number of relation nodes attached to this node that have a
@@ -729,7 +658,7 @@ public interface Node extends Comparable<Node> {
      * @return the number of relation nodes attached to this node that have a
      *         specific relation manager
      */
-    int countRelations(String relationManager);
+    public int countRelations(String relationManager);
 
 
     /**
@@ -740,7 +669,7 @@ public interface Node extends Comparable<Node> {
      *
      * @return a list of all related nodes
      */
-    NodeList getRelatedNodes();
+    public NodeList getRelatedNodes();
 
     /**
      * Returns all related nodes that have a specific node manager.
@@ -752,7 +681,7 @@ public interface Node extends Comparable<Node> {
      *                     should have
      * @return             a list of related nodes
      */
-    NodeList getRelatedNodes(String nodeManager);
+    public NodeList getRelatedNodes(String nodeManager);
 
     /**
      * Returns all related nodes that have a specific node manager.
@@ -763,7 +692,7 @@ public interface Node extends Comparable<Node> {
      * @param nodeManager  the node manager the returned nodes should have, can be null
      * @return             a list of related nodes
      */
-    NodeList getRelatedNodes(NodeManager nodeManager);
+    public NodeList getRelatedNodes(NodeManager nodeManager);
 
     /**
      * Returns all related nodes that have a specific node manager and role.
@@ -778,7 +707,7 @@ public interface Node extends Comparable<Node> {
      * @param searchDir    the direction of the relation
      * @return             a list of related nodes
      */
-    NodeList getRelatedNodes(String nodeManager, String role, String searchDir);
+    public NodeList getRelatedNodes(String nodeManager, String role, String searchDir);
 
     /**
      * Returns all related nodes that have a specific node manager and role.
@@ -792,7 +721,7 @@ public interface Node extends Comparable<Node> {
      * @param searchDir    the direction of the relation
      * @return             a list of related nodes
      */
-    NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir);
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir);
 
 
 
@@ -804,7 +733,7 @@ public interface Node extends Comparable<Node> {
      * @see   NodeManager#getList
      * @see   Query#addRelationStep
      */
-    //Query    createQuery();
+    //public Query    createQuery();
 
     /**
      * Returns the number of related nodes that have a specific node manager.
@@ -817,7 +746,7 @@ public interface Node extends Comparable<Node> {
      * @return             the number of related nodes that have a specific node
      *                     manager
      */
-    int countRelatedNodes(String nodeManager);
+    public int countRelatedNodes(String nodeManager);
 
 
     /**
@@ -827,7 +756,7 @@ public interface Node extends Comparable<Node> {
      * @return number of related nodes
      * @since MMBase-1.7
      */
-    int countRelatedNodes(NodeManager otherNodeManager, String role, String searchDir);
+    public int countRelatedNodes(NodeManager otherNodeManager, String role, String searchDir);
 
 
 
@@ -836,7 +765,7 @@ public interface Node extends Comparable<Node> {
      *
      * @return a list of alias names for this node
      */
-    StringList getAliases();
+    public StringList getAliases();
 
     /**
      * Create an alias for this node. An alias can be used to refer to a node in
@@ -845,14 +774,14 @@ public interface Node extends Comparable<Node> {
      * @param alias             the alias to be created for this node
      * @throws BridgeException  if the alias allready exists
      */
-    void createAlias(String alias);
+    public void createAlias(String alias);
 
     /**
      * Delete an alias for this node.
      *
      * @param alias  the alias to be removed for this node
      */
-    void deleteAlias(String alias);
+    public void deleteAlias(String alias);
 
     /**
      * Adds a relation between this node and a specified node to the cloud.
@@ -863,8 +792,8 @@ public interface Node extends Comparable<Node> {
      * @throws BridgeException  if the relation manager is not the right one
      *                          for this type of relation
      */
-    Relation createRelation(Node destinationNode,
-                            RelationManager relationManager);
+    public Relation createRelation(Node destinationNode,
+                                   RelationManager relationManager);
 
     /**
      * Sets the security context of this Node (AKA the 'owner' field)
@@ -872,7 +801,7 @@ public interface Node extends Comparable<Node> {
      * @param context	    	   The security context to which this node should belong,
      * @throws SecurityException   When appropriate rights to perform this are lacking (write / change context rights)
      */
-    void setContext(String context);
+    public void setContext(String context);
 
     /**
      * Get the security context of the current Node
@@ -880,7 +809,7 @@ public interface Node extends Comparable<Node> {
      * @return the current context of the node (as a String)
      * @throws SecurityException   When appropriate rights to perform this are lacking (read rights)
      */
-    String getContext();
+    public String getContext();
 
     /**
      * Contacts the security implementation to find out to which other possible contexts the
@@ -889,7 +818,7 @@ public interface Node extends Comparable<Node> {
      * @return A StringList containing the contexts which can be used in setContext on this node.
      * @throws SecurityException   When appropriate rights to perform this are lacking (read rights)
      */
-    StringList getPossibleContexts();
+    public StringList getPossibleContexts();
 
     /**
      * Check write rights on this node.
@@ -897,7 +826,7 @@ public interface Node extends Comparable<Node> {
      * @return                      Whether the node may be changed by the current user
      */
 
-    boolean mayWrite();
+    public boolean mayWrite();
 
     /**
      * Check delete rights on this node.
@@ -905,7 +834,7 @@ public interface Node extends Comparable<Node> {
      * @return                      Whether the node may be deleted by the current user
      */
 
-    boolean mayDelete();
+    public boolean mayDelete();
 
 
     /**
@@ -913,7 +842,7 @@ public interface Node extends Comparable<Node> {
      *
      * @return                      Whether the current user may change the context of this node
      */
-    boolean mayChangeContext();
+    public boolean mayChangeContext();
 
     /**
      * Returns all the Function objects of this Node
@@ -921,7 +850,7 @@ public interface Node extends Comparable<Node> {
      * @since MMBase-1.8
      * @return a Collection of {@link org.mmbase.util.functions.Function} objects.
      */
-    Collection<Function<?>> getFunctions();
+    public Collection getFunctions();
 
     /**
      * Returns a Fuction object.
@@ -934,7 +863,7 @@ public interface Node extends Comparable<Node> {
      * @return a {@link org.mmbase.util.functions.Function} object.
      * @throws NotFoundException if the function does not exist
      */
-    Function<?> getFunction(String functionName);
+    public Function getFunction(String functionName);
 
     /**
      * Creates a parameter list for a function.
@@ -948,7 +877,7 @@ public interface Node extends Comparable<Node> {
      * @return a {@link org.mmbase.util.functions.Parameters} object.
      * @throws NotFoundException if the function does not exist
      */
-    Parameters createParameters(String functionName);
+    public Parameters createParameters(String functionName);
 
     /**
      * Returns the value of the specified function on the node.  A
@@ -960,6 +889,6 @@ public interface Node extends Comparable<Node> {
      * @return the result value of executing the function
      * @throws NotFoundException if the function does not exist
      */
-    FieldValue getFunctionValue(String functionName, List<?> parameters);
+    public FieldValue getFunctionValue(String functionName, List parameters);
 
 }

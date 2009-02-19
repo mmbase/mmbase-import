@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.76 2008-02-08 10:40:20 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.68.2.4 2008-02-08 10:39:28 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -49,18 +49,20 @@ public class TypeDef extends MMObjectBuilder {
 
     /**
      * Number-to-name cache.
+     * @duplicate should be moved to org.mmbase.cache
      */
-    private Map<Integer, String> numberToNameCache = null; // object number -> typedef name
+    private Map numberToNameCache = null; // object number -> typedef name
 
     /**
      * Name-to-number cache.
+     * @duplicate should be moved to org.mmbase.cache
      */
-    private Map<String, Integer> nameToNumberCache = null; // typedef name -> object number
+    private Map nameToNumberCache = null; // typedef name -> object number
 
     /**
      * List of known builders.
      */
-    private final Vector<String> typedefsLoaded = new Vector<String>();     // Contains the names of all active builders
+    private Vector typedefsLoaded = new Vector();     // Contains the names of all active builders
 
     /**
      * Sets the default deploy directory for the builders.
@@ -84,12 +86,12 @@ public class TypeDef extends MMObjectBuilder {
         return result;
     }
 
-    protected Map<Integer, String> getNumberToNameCache() {
+    protected Map getNumberToNameCache() {
         if (numberToNameCache == null) readCache();
         return numberToNameCache;
     }
 
-    protected Map<String, Integer> getNameToNumberCache() {
+    protected Map getNameToNumberCache() {
         if (nameToNumberCache == null) readCache();
         return nameToNumberCache;
     }
@@ -133,13 +135,10 @@ public class TypeDef extends MMObjectBuilder {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
-        // Quick fix around MMB-1590. Perhaps it should be solved more genericly, closer to the
-        // storage layer.
         String desc = node.getStringValue("description");
         if (desc.length() > getField("description").getMaxLength()) {
             node.setValue("description", desc.substring(0, getField("description").getMaxLength()));
         }
-
         // try if the builder was already in TypeDef for some reason
         // this can happen when another thread was here first
         int result = getIntValue(node.getStringValue("name"));
@@ -149,7 +148,7 @@ public class TypeDef extends MMObjectBuilder {
         }
         if (result != -1) {
             // update the cache
-            Integer number = result;
+            Integer number = new Integer(result);
             String name = node.getStringValue("name");
             getNameToNumberCache().put(name, number);
             getNumberToNameCache().put(number, name);
@@ -248,16 +247,18 @@ public class TypeDef extends MMObjectBuilder {
     private boolean readCache() {
         // at least fill in typedef
         log.service("Reading typedef caches");
-        numberToNameCache = Collections.synchronizedMap(new HashMap<Integer, String>());
-        nameToNumberCache = Collections.synchronizedMap(new HashMap<String, Integer>());
+        numberToNameCache = Collections.synchronizedMap(new HashMap());
+        nameToNumberCache = Collections.synchronizedMap(new HashMap());
         NodeSearchQuery query = new NodeSearchQuery(this);
         try {
-            for (MMObjectNode n : getNodes(query)) {
+            Iterator typedefs = getNodes(query).iterator();
+            while (typedefs.hasNext()) {
+                MMObjectNode n = (MMObjectNode) typedefs.next();
                 Integer number = n.getIntegerValue("number");
                 String name    = n.getStringValue("name");
                 if (number != null && name != null) {
-                    nameToNumberCache.put(name, number);
-                    numberToNameCache.put(number, name);
+                    nameToNumberCache.put(name,number);
+                    numberToNameCache.put(number,name);
                 } else {
                     log.error("Could not add typedef cache-entry number/name= " + number + "/" + name);
                 }
@@ -276,7 +277,7 @@ public class TypeDef extends MMObjectBuilder {
      * @return the object type as an int, -1 if not defined.
      */
     public int getIntValue(String builderName) {
-        Integer result = getNameToNumberCache().get(builderName);
+        Integer result = (Integer) getNameToNumberCache().get(builderName);
         if (result != null) {
             return result.intValue();
         } else {
@@ -290,7 +291,7 @@ public class TypeDef extends MMObjectBuilder {
      * @return the name of the builder as a string, null if not found
      */
     public String getValue(int type) {
-        String result = getNumberToNameCache().get(type);
+        String result = (String) getNumberToNameCache().get(new Integer(type));
         if (result == null) {
             log.warn("Could not find builder name for typedef number " + type);
         }
@@ -305,7 +306,7 @@ public class TypeDef extends MMObjectBuilder {
      */
     public String getValue(String type) {
         try {
-            return getNumberToNameCache().get(Integer.parseInt(type));
+            return (String) getNumberToNameCache().get(new Integer(Integer.parseInt(type)));
         } catch(Exception e) {
             return "unknown";
         }
@@ -572,9 +573,9 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * @javadoc
      */
-    public Vector<String> getList(PageInfo sp,StringTagger tagger, StringTokenizer tok) {
+    public Vector getList(PageInfo sp,StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
-            String cmd = tok.nextToken();
+            String cmd=tok.nextToken();
             if (cmd.equals("builders")) {
                 return typedefsLoaded;
             }
@@ -582,11 +583,11 @@ public class TypeDef extends MMObjectBuilder {
         return null;
     }
 
-    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
+    protected Object executeFunction(MMObjectNode node, String function, List args) {
         log.debug("executefunction of typedef");
         if (function.equals("info")) {
-            List<Object> empty = new ArrayList<Object>();
-            java.util.Map<String,String> info = (java.util.Map<String,String>) super.executeFunction(node, function, empty);
+            List empty = new ArrayList();
+            java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put("gui", info.get("info") + " (localized)");
             if (args == null || args.size() == 0) {
                 return info;
@@ -611,7 +612,7 @@ public class TypeDef extends MMObjectBuilder {
                 return rtn;
             }
         } else if (function.equals("defaultsearchage")) {
-            return getBuilder(node).getSearchAge();
+            return new Integer(getBuilder(node).getSearchAge());
         } else {
             return super.executeFunction(node, function, args);
         }
@@ -624,7 +625,7 @@ public class TypeDef extends MMObjectBuilder {
             // inactive builder, does it have nodes?
             MMObjectBuilder rootBuilder = mmb.getRootBuilder();
             NodeSearchQuery q = new NodeSearchQuery(rootBuilder);
-            Integer value = typeDefNode.getNumber();
+            Integer value = new Integer(typeDefNode.getNumber());
             Constraint constraint = new BasicFieldValueConstraint(q.getField(rootBuilder.getField("otype")), value);
             q.setConstraint(constraint);
             try {
@@ -648,14 +649,14 @@ public class TypeDef extends MMObjectBuilder {
             try {
                 MMObjectBuilder typeRel = mmb.getTypeRel();
                 NodeSearchQuery q = new NodeSearchQuery(typeRel);
-                Integer value = typeDefNode.getNumber();
+                Integer value = new Integer(typeDefNode.getNumber());
                 BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
                 Constraint constraint1 = new BasicFieldValueConstraint(q.getField(typeRel.getField("snumber")), value);
                 Constraint constraint2 = new BasicFieldValueConstraint(q.getField(typeRel.getField("dnumber")), value);
                 constraint.addChild(constraint1);
                 constraint.addChild(constraint2);
                 q.setConstraint(constraint);
-                List<MMObjectNode> typerels = typeRel.getNodes(q);
+                List typerels = typeRel.getNodes(q);
                 if (typerels.size() > 0) {
                     throw new RuntimeException("Cannot delete this builder, it is referenced by typerels: " + typerels);
                 }

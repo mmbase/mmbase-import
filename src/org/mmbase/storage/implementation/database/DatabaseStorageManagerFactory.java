@@ -12,12 +12,11 @@ package org.mmbase.storage.implementation.database;
 import java.sql.*;
 import java.util.StringTokenizer;
 
-
+import javax.naming.*;
 import javax.sql.DataSource;
+
 import java.io.*;
 import javax.servlet.ServletContext;
-import java.text.*;
-
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.storage.*;
@@ -26,7 +25,6 @@ import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.StorageReader;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.ResourceLoader;
-import org.mmbase.util.xml.UtilReader;
 import org.xml.sax.InputSource;
 
 /**
@@ -42,9 +40,9 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.57 2009-02-17 23:09:51 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.40.2.5 2008-06-10 11:16:32 michiel Exp $
  */
-public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
+public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManagerFactory.class);
 
@@ -96,40 +94,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     protected boolean supportsTransactions = false;
 
 
-    private static final File BASE_PATH_UNSET = new File("UNSET");
+    private static final String BASE_PATH_UNSET = "UNSET";
     /**
      * Used by #getBinaryFileBasePath
      */
-    private File basePath = BASE_PATH_UNSET;
-
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    static long MS = 1000000; // 1 ms in ns
-    private long debugDuration   = 50 * MS;
-    private long serviceDuration = 100 * MS;
-    private long infoDuration    = 500 * MS;
-    private long warnDuration    = 2000 * MS;
-    private long errorDuration  = 5000 * MS;
-    private long fatalDuration  = 1000000 * MS;
-    private String durationFormat = "#.#";
-
-    final UtilReader.PropertiesMap<String> utilProperties =  new UtilReader("querylogging.xml",
-                                                                            new Runnable() {public void run() {readDurations(); }}).getProperties();
-    private void readDurations() {
-        debugDuration     = new Float(Float.parseFloat(utilProperties.getProperty("debug",   "" + debugDuration)) * MS).longValue();
-        serviceDuration   = new Float(Float.parseFloat(utilProperties.getProperty("service",   "" + debugDuration)) * MS).longValue();
-        infoDuration      = new Float(Float.parseFloat(utilProperties.getProperty("info",   "" + debugDuration)) * MS).longValue();
-        warnDuration      = new Float(Float.parseFloat(utilProperties.getProperty("warn",   "" + debugDuration)) * MS).longValue();
-        errorDuration     = new Float(Float.parseFloat(utilProperties.getProperty("error",   "" + debugDuration)) * MS).longValue();
-        fatalDuration     = new Float(Float.parseFloat(utilProperties.getProperty("fatal",   "" + debugDuration)) * MS).longValue();
-
-        durationFormat     = utilProperties.getProperty("durationFormat", durationFormat);
-    }
-    {
-        readDurations();
-    }
+    private String basePath = BASE_PATH_UNSET;
 
     public double getVersion() {
         return 0.1;
@@ -179,15 +148,29 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     }
 
     /**
-     * @param binaryFileBasePath
-     *            For some datasource a file base path may be needed (some configurations of hsql).
-     *            It can be <code>null</code> during bootstrap. In lookup.xml an alternative URL
-     *            may be configured then which does not need the file base path.
+     * @param binaryFileBasePath For some datasource a file base path may be needed (some configurations of hsql). It can be <code>null</code> during bootstrap. In lookup.xml an alternative URL may be configured then which does not need the file base path.
      * @since MMBase-1.8
      */
-    protected DataSource createDataSource(File binaryFileBasePath) {
-        DataSource ds = mmbase.getDataSource();
-
+    protected DataSource createDataSource(String binaryFileBasePath) {
+        DataSource ds = null;
+        // get the Datasource for the database to use
+        // the datasource uri (i.e. 'jdbc/xa/MMBase' )
+        // is stored in the mmbaseroot module configuration file
+        String dataSourceURI = mmbase.getInitParameter("datasource");
+        if (dataSourceURI != null) {
+            try {
+                String contextName = mmbase.getInitParameter("datasource-context");
+                if (contextName == null) {
+                    contextName = "java:comp/env";
+                }
+                log.service("Using configured datasource " + dataSourceURI);
+                Context initialContext = new InitialContext();
+                Context environmentContext = (Context) initialContext.lookup(contextName);
+                ds = (DataSource)environmentContext.lookup(dataSourceURI);
+            } catch(NamingException ne) {
+                log.warn("Datasource '" + dataSourceURI + "' not available. (" + ne.getMessage() + "). Attempt to use JDBC Module to access database.");
+            }
+        }
         if (ds == null) {
             log.service("No data-source configured, using Generic data source");
             // if no datasource is provided, try to obtain the generic datasource (which uses JDBC Module)
@@ -202,9 +185,6 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         return ds;
 
     }
-
-
-
 
     /**
      * Opens and reads the storage configuration document.
@@ -222,9 +202,6 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
 
         dataSource = createDataSource(null);
         // temporary source only used once, for the meta data.
-
-
-
 
         String sqlKeywords;
 
@@ -285,12 +262,14 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         // why is this not stored in real properties?
 
         setOption(Attributes.SUPPORTS_TRANSACTIONS, supportsTransactions);
-        setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, transactionIsolation);
+        setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, new Integer(transactionIsolation));
         setOption(Attributes.SUPPORTS_COMPOSITE_INDEX, true);
         setOption(Attributes.SUPPORTS_DATA_DEFINITION, true);
 
-        for (String element : STANDARD_SQL_KEYWORDS) {
-            disallowedFields.put(element, null); // during super.load, the null values will be replaced by actual replace-values.
+        // create a default disallowedfields list:
+        // get the standard sql keywords
+        for (int i = 0; i < STANDARD_SQL_KEYWORDS.length; i++) {
+            disallowedFields.put(STANDARD_SQL_KEYWORDS[i], null); // during super.load, the null values will be replaced by actual replace-values.
         }
 
         // get the extra reserved sql keywords (according to the JDBC driver)
@@ -378,53 +357,65 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     /**
      * As {@link #getBinaryFileBasePath(boolean)} with <code>true</code>
      */
-    public File getBinaryFileBasePath() {
+    public String getBinaryFileBasePath() {
         return getBinaryFileBasePath(true);
     }
+
+
 
     /**
      * Returns the base path for 'binary file'
      * @param check If the path is only perhaps needed, you may want to provide 'false' here.
      * @since MMBase-1.8.1
      */
-    protected File getBinaryFileBasePath(boolean check) {
+    public String getBinaryFileBasePath(boolean check) {
         if (basePath == BASE_PATH_UNSET) {
-            String path = (String) getAttribute(Attributes.BINARY_FILE_PATH);
-            if (path == null || path.equals("")) {
-                basePath = mmbase.getDataDir();
+            basePath = (String) getAttribute(Attributes.BINARY_FILE_PATH);
+            if (basePath == null || basePath.equals("")) {
+                basePath = getDataDir();
             } else {
-                MessageFormat mf = new MessageFormat(path);
-
-                java.io.File baseFile = new java.io.File(mf.format(new String[] {mmbase.getDataDir().toString()}));
+                java.text.MessageFormat mf = new java.text.MessageFormat(basePath);
+                basePath = mf.format(new String[] {getDataDir()});
+                log.debug("Base path is now " + basePath + " (" + getDataDir() + ")");
+                java.io.File baseFile = new java.io.File(basePath);
                 if (! baseFile.isAbsolute()) {
                     ServletContext sc = MMBaseContext.getServletContext();
                     String absolute = sc != null ? sc.getRealPath("/") + File.separator : null;
                     if (absolute == null) absolute = System.getProperty("user.dir") + File.separator;
-                    basePath = new File(absolute + basePath);
+                    basePath = absolute + basePath;
                 }
             }
             if (basePath == null) {
-                log.warn("Cannot determin a Binary File Base Path");
+                log.warn("Cannot determin a a Binary File Base Path");
                 return null;
-            } else {
-                log.service("Binary file base path " + basePath);
             }
-            if (check) checkBinaryFileBasePath(basePath);
+            File baseDir = new File(basePath);
+            try {
+                basePath = baseDir.getCanonicalPath();
+                if (check) checkBinaryFileBasePath(basePath);
+            } catch (IOException ioe) {
+                log.error(ioe);
+            }
+            if (! basePath.endsWith(File.separator)) {
+                basePath += File.separator;
+            }
         }
+        log.debug("Using " + basePath);
         return basePath;
     }
 
     /**
-     * Tries to ensure that baseDir exists and is writable. Logs error and returns false otherwise.
-     * @param baseDir a Directory name
+     * Tries to ensure that basePath existis and is writable. Logs error and returns false otherwise.
+     * @param basePath a Directory name
      * @since MMBase-1.8.1
      */
-    public static boolean checkBinaryFileBasePath(File baseDir) {
+    public static boolean checkBinaryFileBasePath(String basePath) {
+        File baseDir = new File(basePath);
         if (! baseDir.mkdirs() && ! baseDir.exists()) {
-            log.error("Cannot create the binary file path " + baseDir);
+            log.error("Cannot create the binary file path " + basePath);
         }
         if (! baseDir.canWrite()) {
-            log.error("Cannot write in the binary file path " + baseDir);
+            log.error("Cannot write in the binary file path " + basePath);
             return false;
         } else {
             return true;
@@ -434,8 +425,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     protected Object instantiateBasicHandler(Class handlerClass) {
         // first handler
         try {
-            java.lang.reflect.Constructor constructor = handlerClass.getConstructor();
-            SqlHandler sqlHandler = (SqlHandler) constructor.newInstance();
+            java.lang.reflect.Constructor constructor = handlerClass.getConstructor(new Class[] {});
+            SqlHandler sqlHandler = (SqlHandler) constructor.newInstance( new Object[] {} );
             log.service("Instantiated SqlHandler of type " + handlerClass.getName());
             return sqlHandler;
         } catch (NoSuchMethodException nsme) {
@@ -470,66 +461,6 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     protected SearchQueryHandler instantiateQueryHandler(Object data) {
         return new BasicQueryHandler((SqlHandler)data);
     }
-
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    private String getLogSqlMessage(String sql, long queries,  long time) {
-        StringBuilder mes = new StringBuilder();
-        mes.append('#');
-        mes.append(queries);
-        mes.append(" ");
-        float t = ((float) time) / MS;
-        //DecimalFormat format = new DecimalFormat(durationFormat, DecimalFormatSymbols.getInstance(java.util.Locale.US)); // java 1.6
-        DecimalFormat format = new DecimalFormat(durationFormat, new DecimalFormatSymbols(java.util.Locale.US));
-        String f = format.format(t);
-        for (int i = f.length() ; i < durationFormat.length() + 3; i++) {
-            mes.append(' ');
-        }
-        mes.append(f);
-        mes.append(" ms: ").append(sql);
-        return mes.toString();
-    }
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    private Logger getLogger(String sql) {
-        return Logging.getLoggerInstance("org.mmbase.QUERIES." + sql.split(" ", 2)[0].toUpperCase());
-    }
-
-    private long count = 0;
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    protected void logQuery(String query, long duration) {
-        count++;
-        Logger qlog = getLogger(query);
-        if (duration < debugDuration) {
-            if (qlog.isTraceEnabled()) {
-                qlog.trace(getLogSqlMessage(query, count, duration));
-            }
-        } else if (duration < serviceDuration) {
-            if (qlog.isDebugEnabled()) {
-                qlog.debug(getLogSqlMessage(query, count, duration));
-            }
-        } else if (duration < infoDuration) {
-            if (qlog.isServiceEnabled()) {
-                qlog.service(getLogSqlMessage(query, count, duration));
-            }
-        } else if (duration < warnDuration) {
-            qlog.info(getLogSqlMessage(query, count, duration));
-        } else if (duration < errorDuration) {
-            qlog.warn(getLogSqlMessage(query, count, duration));
-        } else if (duration < fatalDuration) {
-            qlog.error(getLogSqlMessage(query, count, duration));
-        } else {
-            qlog.fatal(getLogSqlMessage(query, count, duration));
-        }
-    }
-
 
 
     public static void main(String[] args) {

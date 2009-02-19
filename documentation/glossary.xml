@@ -5,17 +5,15 @@
   <articleinfo>
     <title>MMBase Glossary</title>
 
-    <edition>$Id: glossary.xml,v 1.26 2009-01-13 20:28:53 michiel Exp $</edition>
+    <edition>$Id: glossary.xml,v 1.22 2005-11-15 11:42:45 michiel Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
       is a certification mark of the Open Source Initiative.</para>
 
       <para>The license (Mozilla version 1.0) can be read at the MMBase site.
-      See <ulink
-      url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+      See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
     </legalnotice>
-
     <date>2005-03</date>
 
     <authorgroup>
@@ -30,14 +28,17 @@
       </author>
     </authorgroup>
 
+
     <abstract>
-      <para>This glossary tries to provide an overview of the terms used in
-      MMBase and their meaning. As MMBase has evolved during the last years,
-      its language evolved with it. This means that sometimes one term refers
-      to two concepts, whereas in other occasions two terms are synonyms for
-      one and the same thing. Therefore this document tries to describe the
-      meaning of the terms used in MMBase in the different contexts. Next to
-      this, the glossary tries to provide a list preferred terms.</para>
+      <para>
+        This glossary tries to provide an overview of the terms used in
+        MMBase and their meaning. As MMBase has evolved during the last years,
+        its language evolved with it. This means that sometimes one term refers
+        to two concepts, whereas in other occasions two terms are synonyms for
+        one and the same thing. Therefore this document tries to describe the
+        meaning of the terms used in MMBase in the different contexts. Next to
+        this, the glossary tries to provide a list preferred terms.
+      </para>
     </abstract>
   </articleinfo>
 
@@ -47,48 +48,41 @@
     <glosslist>
       <glossentry id="mmbase">
         <glossterm>Multi Media Base</glossterm>
-
         <abbrev>MMBase</abbrev>
-
+        
         <glossdef>
           <!-- MM: I doubt if this is the correct use of ordered list.
                I think that it makes more sense to use multible glossdef entries, but:
-               - It is not very clearly defined in the docbook reference
+               - It is not very clearly defined in the docbook reference 
                - It looks ugly when converted to HTML
           -->
-
           <orderedlist>
             <listitem>
-              <para>for managers: open source content management system, with
-              strong multi-media features</para>
+              <para>
+                for managers: open source content management system, with strong multi-media
+                features
+              </para>
             </listitem>
-
             <listitem>
-              <para>for dummies: a tool by which you can build intelligent web
-              sites</para>
+              <para>
+                for dummies: a tool by which you can build intelligent web sites </para>
             </listitem>
+            <listitem><para>for
+            techies: java based web-application, which acts as an object oriented
+              interface to relational databases </para></listitem><listitem><para>for
+              information analysts: content management system by which text, images
+              and other content can be managed in an object oriented way.</para></listitem>
 
-            <listitem>
-              <para>for techies: java based web-application, which acts as an
-              object oriented interface to relational databases</para>
-            </listitem>
-
-            <listitem>
-              <para>for information analysts: content management system by
-              which text, images and other content can be managed in an object
-              oriented way.</para>
-            </listitem>
-          </orderedlist>
-
-          <remark>It is not clear whether MMBase really stands for Multi Media
-          Base. <emphasis>The preferred term is MMBase</emphasis></remark>
-
-          <glossseealso otherterm="opensource"></glossseealso>
-
-          <glossseealso otherterm="contentmanagement"></glossseealso>
-
-          <glossseealso>Everywhere else</glossseealso>
+              </orderedlist><remark>
+              It is not clear whether MMBase really stands for Multi Media Base.
+              <emphasis>The preferred term is MMBase</emphasis>
+              </remark>
+              <glossseealso otherterm="opensource" />
+              <glossseealso otherterm="contentmanagement" />
+              <glossseealso>Everywhere else</glossseealso>
         </glossdef>
+        
+        
       </glossentry>
 
       <glossentry id="builder">
@@ -108,59 +102,56 @@
           </orderedlist>
 
           <example>
-            <title>Example of a builder with only one field, named
-            title.</title>
-            <para><programlisting><![CDATA[
-<?xml version="1.0">
-<builder
-    xmlns="http://www.mmbase.org/xmlns/builder"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
-    name="news" maintainer="mmbase.org" version="0" extends="object">
-  <searchage>14</searchage>
-  <names>
-    <singular xml:lang="en">NewsItem</singular>
-    <singular xml:lang="nl">NieuwsItem</singular>
-    <plural xml:lang="en">NewsItems</plural>
-    <plural xml:lang="nl">NieuwsItems</plural>
-  </names>
+            <title>Example of a builder with only one field, named title.</title>
 
-  <descriptions>
-    <description xml:lang="en">News item</description>
-    <description xml:lang="nl">Nieuws item</description>
-  </descriptions>
+            <para><programlisting>
+&#60;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&#62;
+&#60;!DOCTYPE builder PUBLIC &#34;-//MMBase//DTD builder config 1.1//EN&#34; &#34;http://www.mmbase.org/dtd/builder_1_1.dtd&#34;&#62;
+&#60;builder extends=&#34;object&#34; maintainer=&#34;mmbase.org&#34; name=&#34;news&#34; version=&#34;0&#34;&#62;
+  &#60;searchage&#62;14&#60;/searchage&#62;
+  &#60;names&#62;
+    &#60;singular xml:lang=&#34;en&#34;&#62;NewsItem&#60;/singular&#62;
+    &#60;singular xml:lang=&#34;nl&#34;&#62;NieuwsItem&#60;/singular&#62;
+    &#60;plural xml:lang=&#34;en&#34;&#62;NewsItems&#60;/plural&#62;
+    &#60;plural xml:lang=&#34;nl&#34;&#62;NieuwsItems&#60;/plural&#62;
+  &#60;/names&#62;
 
-  <fieldlist>
-    <field name="title">
-      <descriptions>
-        <description xml:lang="en">Title of the news item</description>
-        <description xml:lang="nl">Titel (hoofdkop) van het nieuwsitem</description>
-      </descriptions>
-      <gui>
-        <guiname xml:lang="en">Title</guiname>
-        <guiname xml:lang="nl">Titel</guiname>
-      </gui>
-      <editor>
-        <positions>
-          <list>1</list>
-        </positions>
-      </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="true" />
-        <maxLength value="255" />
-      </datatype>
-    </field>
-  </fieldlist>
-</builder>
-]]></programlisting></para>
+  &#60;descriptions&#62;
+    &#60;description xml:lang=&#34;en&#34;&#62;News item&#60;/description&#62;
+    &#60;description xml:lang=&#34;nl&#34;&#62;Nieuws item&#60;/description&#62;
+  &#60;/descriptions&#62;
+
+  &#60;fieldlist&#62;
+    &#60;field&#62;
+      &#60;descriptions&#62;
+        &#60;description xml:lang=&#34;en&#34;&#62;Title of the news item&#60;/description&#62;
+        &#60;description xml:lang=&#34;nl&#34;&#62;Titel (hoofd kop) van het nieuwsitem&#60;/description&#62;
+      &#60;/descriptions&#62;
+      &#60;gui&#62;
+        &#60;guiname xml:lang=&#34;en&#34;&#62;Title&#60;/guiname&#62;
+        &#60;guiname xml:lang=&#34;nl&#34;&#62;Titel&#60;/guiname&#62;
+      &#60;/gui&#62;
+      &#60;editor&#62;
+        &#60;positions&#62;
+          &#60;list&#62;1&#60;/list&#62;
+        &#60;/positions&#62;
+      &#60;/editor&#62;
+      &#60;db&#62;
+        &#60;name&#62;title&#60;/name&#62;
+        &#60;type key=&#34;false&#34; notnull=&#34;true&#34; size=&#34;255&#34; state=&#34;persistent&#34;&#62;STRING&#60;/type&#62;
+      &#60;/db&#62;
+    &#60;/field&#62;
+  &#60;/fieldlist&#62;
+&#60;/builder&#62;
+
+</programlisting></para>
           </example>
 
-          <remark>The term builder is used when one speaks about the object
-          cloud and its representation in the database.</remark>
-
+          <remark>
+            The term builder is used when one speaks about the object
+            cloud and its representation in the database.
+          </remark>
           <glossseealso otherterm="nodemanager"></glossseealso>
-
           <glossseealso otherterm="objecttype"></glossseealso>
         </glossdef>
       </glossentry>
@@ -171,17 +162,22 @@
         <glossdef>
           <orderedlist>
             <listitem>
-              <para>This bridge concept represents the object which describes
-              meta information (which fields are available and so on) about
-              node types, and serves to create new nodes and so on.</para>
+              <para>
+                This bridge concept represents the object which describes
+                meta information (which fields are available and so on) about
+                node types, and serves to create new nodes and so on.
+              </para>
             </listitem>
+
             <listitem>
               <para>A synonym for `builder'.</para>
             </listitem>
+
             <listitem>
               <para>...</para>
             </listitem>
           </orderedlist>
+
           <example>
             <title>Example of use in spoken language</title>
 
@@ -193,9 +189,7 @@
           functionality of the bridge.</remark>
 
           <glossseealso otherterm="builder"></glossseealso>
-
           <glossseealso otherterm="objecttype"></glossseealso>
-
           <glossseealso otherterm="bridge"></glossseealso>
         </glossdef>
       </glossentry>
@@ -206,8 +200,7 @@
         <glossdef>
           <orderedlist>
             <listitem>
-              <para>An object type defines an object in the object
-              cloud</para>
+              <para>An object type defines an object in the object cloud</para>
             </listitem>
 
             <listitem>
@@ -223,8 +216,7 @@
             in departments and projects.</para>
           </example>
 
-          <remark>The term is used when one speaks about information
-          analysis.</remark>
+          <remark>The term is used when one speaks about information analysis.</remark>
 
           <glossseealso otherterm="builder"></glossseealso>
 
@@ -236,23 +228,23 @@
         <glossterm>role</glossterm>
 
         <glossdef>
-          <para>The name of an reldef object. Practicly, it serves as extra
-          way of distinguishing relations, and connects a relation builder to
-          it. One could for example define the role `author' (by creating a
-          reldef object). This role could then be used to allow relations
-          between news and people.</para>
-
-          <para>The most often roles are `related' and `posrel', which both
-          lack any real-life semantics.</para>
-
-          <para>Two `related' nodes are just that. Two `posrel' related nodes
-          are also just related, but to the posrel role normally the `posrel'
-          relation builder is associated, which allows for one extra field in
-          the relations; the `pos' field with integer type, which makes it
-          possible to order relations.</para>
-
+          <para>
+            The name of an reldef object. Practicly, it serves as extra way of distinguishing
+            relations, and connects a relation builder to it. One could for example define the
+            role `author' (by creating a reldef object). This role could then be used to allow
+            relations between news and people. 
+          </para>
+          <para>
+            The most often roles are `related' and `posrel', which both lack any real-life
+            semantics.
+          </para>
+          <para>
+            Two `related' nodes are just that. Two `posrel' related nodes are also just related, but
+            to the posrel role normally the `posrel' relation builder is associated, which allows
+            for one extra field in the relations; the `pos' field with integer type, which makes it
+            possible to order relations.
+          </para>
           <glossseealso otherterm="reldef"></glossseealso>
-
           <glossseealso otherterm="typerel"></glossseealso>
         </glossdef>
       </glossentry>
@@ -261,32 +253,26 @@
         <glossterm>reldef</glossterm>
 
         <glossdef>
-          <para>The builder defining relation roles. It has several fields,
-          which are not all equally important. The most important fields are
-          `sname', `dir' and `builder'. `sname' is the identifying name of
-          this role. `dir' specifies if relations with this role are uni- or
-          bidirectional, and `builder' defines the relation builder (so the
-          actual fields the relations has, and in which table the relations
-          will be stored).</para>
-
-          <para>`sguiname' and `dguiname' can be used to attribute names to
-          the source and destination sides of the relations, which can be used
-          in GUI interfaces to describe the relations. The remaining field is
-          `dname' which has no real use. It's original idea would be the
-          `role' as seen from the destination node, but this is not used (in
-          stead, to define that relations must be followed in a certain
-          direction the search direction is stated explicitely).</para>
-
+          <para>
+            The builder defining relation roles. It has several fields, which are not all equally
+            important. The most important fields are `sname', `dir' and `builder'. `sname' is the
+            identifying name of this role. `dir' specifies if relations with this role are uni- or
+            bidirectional, and `builder' defines the relation builder (so the actual fields the
+            relations has, and in which table the relations will be stored).
+          </para>
+          <para>
+            `sguiname' and `dguiname' can be used to attribute names to the source and destination
+            sides of the relations, which can be used in GUI interfaces to describe the
+            relations. The remaining field is `dname' which has no real use. It's original idea
+            would be the `role' as seen from the destination node, but this is not used (in stead,
+            to define that relations must be followed in a certain direction the search direction is
+            stated explicitely).
+          </para>
           <glossseealso otherterm="role"></glossseealso>
-
           <glossseealso otherterm="unidir"></glossseealso>
-
           <glossseealso otherterm="bidir"></glossseealso>
-
           <glossseealso otherterm="typerel"></glossseealso>
-
           <glossseealso otherterm="relation"></glossseealso>
-
           <glossseealso otherterm="path"></glossseealso>
         </glossdef>
       </glossentry>
@@ -295,13 +281,13 @@
         <glossterm>insrel</glossterm>
 
         <glossdef>
-          <para>A relation instance. This is special kind of object type which
-          contains relation objects.</para>
+          <para>
+            A relation instance. This is special kind of object type which
+            contains relation objects.
+          </para>
 
           <glossseealso otherterm="builder"></glossseealso>
-
           <glossseealso otherterm="objecttype"></glossseealso>
-
           <glossseealso otherterm="reldef"></glossseealso>
         </glossdef>
       </glossentry>
@@ -310,23 +296,22 @@
         <glossterm>typerel</glossterm>
 
         <glossdef>
-          <para>Typerel is the MMBase builder which defines the allowed
-          relations. If for example you want to create a certain relation from
-          news node to an URL node, then a corresponding typerel record, which
-          allows that must exist.</para>
-
-          <para>Inheritance is taken into consideration, so if you allow from
-          object to object (with a certain role), then every kind of relation
-          (with that certain role) should be allowed (because all node types
-          extends object). It is by the way usually not very prudent to
-          actually do this, because allowing every relation will often enforce
-          MMBase to do very complicated queries, which can be very bad for
-          performance.</para>
+          <para>
+            Typerel is the MMBase builder which defines the allowed
+            relations. If for example you want to create a certain relation from
+            news node to an URL node, then a corresponding typerel record, which
+            allows that must exist.
+          </para>
+          <para>
+            Inheritance is taken into consideration, so if you allow from object to object (with a
+            certain role), then every kind of relation (with that certain role) should be allowed
+            (because all node types extends object). It is by the way usually not very prudent to
+            actually do this, because allowing every relation will often enforce MMBase to do very
+            complicated queries, which can be very bad for performance.
+          </para>
 
           <glossseealso otherterm="inheritance"></glossseealso>
-
           <glossseealso otherterm="relation"></glossseealso>
-
           <glossseealso otherterm="role"></glossseealso>
         </glossdef>
       </glossentry>
@@ -337,15 +322,17 @@
         <glossdef>
           <orderedlist>
             <listitem>
-              <para>An MMBase Node defining a link between to other MMBase
-              Nodes. A relation can contain other data. A relation
-              instance.</para>
+              <para>
+                An MMBase Node defining a link between to other MMBase
+                Nodes. A relation can contain other data. A relation instance.
+              </para>
             </listitem>
-
             <listitem>
-              <para>An allowed relation. Sometimes also 'typerel' entries are
-              referred to as simply 'relations'. It would perhaps be clearer
-              to call these 'allowed relations'</para>
+              <para>
+                An allowed relation. Sometimes also 'typerel'
+                entries are referred to as simply 'relations'. It would
+              perhaps be clearer to call these 'allowed relations'
+              </para>
             </listitem>
 
             <listitem>
@@ -354,9 +341,7 @@
           </orderedlist>
 
           <glossseealso otherterm="insrel"></glossseealso>
-
           <glossseealso otherterm="reldef"></glossseealso>
-
           <glossseealso otherterm="typerel"></glossseealso>
         </glossdef>
       </glossentry>
@@ -366,9 +351,10 @@
 
         <glossdef>
           <para>In MMBase object types are objects too. These nodes are stored
-          in the `typedef' builder. It generates a small chicken/egg problem
-          because the typedef type itself is also present aa a node of itself.
-          (Normally the typedef node will have to have number 1)</para>
+          in the `typedef' builder. It generates a small chicken/egg
+          problem because the typedef type itself is also present aa a node of
+          itself. (Normally the typedef node will have to have number 1)
+          </para>
         </glossdef>
       </glossentry>
 
@@ -378,8 +364,7 @@
         <glossdef>
           <orderedlist>
             <listitem>
-              <para>The base builder, from which every other builder
-              extends.</para>
+              <para>The base builder, from which every other builder extends.</para>
             </listitem>
 
             <listitem>
@@ -403,11 +388,11 @@
         <glossterm>inheritance</glossterm>
 
         <glossdef>
-          <para>MMBase supports inheritance. This means that every `news' node
-          is also an `object' node. You can also extend your `mynews' builder
-          from the `news' builder. All fields from news are then inherited to
-          mynews, and mynews nodes can be treated as (because they are) news
-          nodes.</para>
+          <para>MMBase supports inheritance. This means that every
+          `news' node is also an `object' node. You can also
+          extend your `mynews' builder from the `news'
+          builder. All fields from news are then inherited to mynews, and
+          mynews nodes can be treated as (because they are) news nodes.</para>
 
           <glossseealso otherterm="builder"></glossseealso>
         </glossdef>
@@ -417,10 +402,11 @@
         <glossterm>node</glossterm>
 
         <glossdef>
-          <para>MMBase objects are generally referred to as 'node', especially
-          in the bridge. A normal MMBase node corresponds to one record in the
-          database (in the table(s) associated with the builder). We recognize
-          also 'cluster nodes' and 'virtual nodes'.</para>
+          <para>MMBase objects are generally referred to as 'node',
+          especially in the bridge. A normal MMBase node corresponds to one
+          record in the database (in the table(s) associated with the
+          builder). We recognize also 'cluster nodes' and 'virtual
+          nodes'.</para>
 
           <para>Every Node is uniquely (inside the MMBase instance) identified
           by a node number. In editors this number field is sometimes even be
@@ -442,8 +428,8 @@
         <glossdef>
           <para>Complicated database queries do not give back simple nodes,
           but fields from several tables. A record from such a table join is
-          represented by a 'cluster node'. A cluster node is a special kind of
-          virtual node.</para>
+          represented by a 'cluster node'. A cluster node is a special
+          kind of virtual node.</para>
 
           <glossseealso otherterm="virtualnode"></glossseealso>
         </glossdef>
@@ -453,10 +439,10 @@
         <glossterm>virtual node</glossterm>
 
         <glossdef>
-          <para>A non-persistent node, which means that you cannot `commit'
-          such a node. Generally no builder xml is associated witch such a
-          node.</para>
-
+          <para>
+            A non-persistent node, which means that you cannot `commit' such a node. Generally no
+            builder xml is associated witch such a node.
+          </para>
           <glossseealso otherterm="clusternode"></glossseealso>
         </glossdef>
       </glossentry>
@@ -515,9 +501,7 @@
           committer on the developers list.</para>
 
           <glossseealso otherterm="plusone"></glossseealso>
-
           <glossseealso otherterm="committer"></glossseealso>
-
           <glossseealso otherterm="devlist"></glossseealso>
         </glossdef>
       </glossentry>
@@ -544,11 +528,10 @@
           MMBase source codes. Typical for CVS is that it is possible to use
           it without acquiring locks on files (which is the way it is used for
           MMBase). This means that files can be edited simultaneously by
-          different people, but also that the risk for 'conflicts' arises (if
-          a patch cannot be made automatically).</para>
+          different people, but also that the risk for 'conflicts'
+          arises (if a patch cannot be made automatically).</para>
 
-          <para>The MMBase CVS repository is hosted on the mmbase.org
-          server.</para>
+          <para>The MMBase CVS repository is hosted on the mmbase.org server.</para>
 
           <glossseealso otherterm="vote"></glossseealso>
 
@@ -560,24 +543,26 @@
         <glossterm>bridge</glossterm>
 
         <glossdef>
-          <para>The bridge is the set of Java interfaces which are to be used
-          to talk to MMBase. If one uses the bridge, all actions are
-          authorized by the security system, which does not happen if one
-          talks to the core of MMBase directly.</para>
+          <para>
+            The bridge is the set of Java interfaces which are to be used
+            to talk to MMBase.  If one uses the bridge, all actions are authorized by the security
+            system, which does not happen if one talks to the core of MMBase directly.
+          </para>
+          <para>
+            Templating languages should communicate through the bridge, and for example the MMBase
+            Taglib is doing this.
+          </para>
 
-          <para>Templating languages should communicate through the bridge,
-          and for example the MMBase Taglib is doing this.</para>
-
-          <para>There is currently one `basic' implementation of the bridge,
-          and also one alternative implementation which makes it possible to
-          talk to a `remote' MMBase by remote method invocations.</para>
+          <para>
+            There is currently one `basic' implementation of the
+            bridge, and also one alternative implementation which makes it
+            possible to talk to a `remote' MMBase by remote method
+            invocations.
+          </para>
 
           <glossseealso otherterm="rmmci"></glossseealso>
-
           <glossseealso otherterm="mmci"></glossseealso>
-
           <glossseealso otherterm="core"></glossseealso>
-
           <glossseealso otherterm="mmbasetaglib"></glossseealso>
         </glossdef>
       </glossentry>
@@ -588,23 +573,26 @@
         <glossdef>
           <orderedlist>
             <listitem>
-              <para>The java classes of MMBase which are `under' the bridge,
-              and should be invisible for casual users. They provide the data
-              persistence and other basic MMBase concepts like relations. The
-              MMBase core is not protected by MMBase security.</para>
+              <para>
+                The java classes of MMBase which are `under' the
+                bridge, and should be invisible for casual users. They provide
+                the data persistence and other basic MMBase concepts like
+                relations. The MMBase core is not protected by MMBase security.
+              </para>
             </listitem>
 
             <listitem>
-              <para>All java classes from the 'src' CVS module which are
-              present in mmbase.jar, so everything which is not an MMBase
+              <para>All java classes from the 'src' CVS module which
+              are present in mmbase.jar, so everything which is not an MMBase
               application, is MMBase 'core'.</para>
             </listitem>
 
             <listitem>
               <para>MMObjectBuilder/MMObjectNode vs NodeManager/Node. When you
-              want to define a new 'object type' with extra functionality then
-              it is currently not possible to extend NodeManagers or Nodes,
-              but you need to extend the core's MMObjectBuilder.</para>
+              want to define a new 'object type' with extra
+              functionality then it is currently not possible to extend
+              NodeManagers or Nodes, but you need to extend the core's
+              MMObjectBuilder.</para>
             </listitem>
           </orderedlist>
 
@@ -628,11 +616,9 @@
         <glossdef>
           <para>An alternative implementation of the bridge. Can be used to
           implement life/staging MMBase's, but can also be useful to
-          inspect/test a running MMBase, because it can run stand alone, and
-          talks by remote method calls to an MMBase instance.</para>
+          inspect/test a running MMBase, because it can run stand alone, and talks by remote method calls to an MMBase instance.</para>
 
           <glossseealso otherterm="bridge"></glossseealso>
-
           <glossseealso otherterm="wiab"></glossseealso>
         </glossdef>
       </glossentry>
@@ -659,15 +645,14 @@
         <acronym>MMC</acronym>
 
         <glossdef>
-          <para>This used to be a small group of MMBase committers who are
-          supposed to meet every Thursday to talk about MMBase. Originally it
-          were 4 or 5 people, from which in the last year a few were
-          democraticly elected. In march 2005 the MMC in this form was
-          abolished, and the committors divided the tasks of the MMC among
-          them, so it can be said that the MMC now consists of all committors.
-          It has also be suggested that the subgroup for external
-          communication can be referred to as MMC now.</para>
-
+          <para>
+            This used to be a small group of MMBase committers who are supposed to meet every
+            Thursday to talk about MMBase. Originally it were 4 or 5 people, from which in the last
+            year a few were democraticly elected. In march 2005 the MMC in this form was abolished,
+            and the committors divided the tasks of the MMC among them, so it can be said that the
+            MMC now consists of all committors. It has also be suggested that the subgroup for
+            external communication can be referred to as MMC now.
+          </para>
           <glossseealso otherterm="committer"></glossseealso>
         </glossdef>
       </glossentry>
@@ -691,10 +676,10 @@
 
         <glossdef>
           <para>An XML way to add content to an MMBase cloud. It is hardly
-          used anymore.</para>
+          used anymore.
+          </para>
 
           <glossseealso otherterm="xmlimporter"></glossseealso>
-
           <glossseealso otherterm="scan"></glossseealso>
         </glossdef>
       </glossentry>
@@ -709,16 +694,14 @@
           pages use to be mapped to `.shtml'.</para>
 
           <para>Use of SCAN is nowadays discouraged in favor of more modern
-          and standardized scripting manner like JSP and (MMBase)
-          taglib.</para>
+          and standardized scripting manner like JSP and (MMBase) taglib.</para>
 
           <para>Because the long history of SCAN, SCAN-specific legacy code
           can still be found on a lot of places in the MMBase core code. Even
-          the bridge way to handle with `MMBase modules' is influenced by
-          SCAN.</para>
+          the bridge way to handle with `MMBase modules' is influenced
+          by SCAN.</para>
 
           <glossseealso otherterm="mmbasetaglib"></glossseealso>
-
           <glossseealso otherterm="core"></glossseealso>
         </glossdef>
       </glossentry>
@@ -740,41 +723,42 @@
           <orderedlist>
             <listitem>
               <para>In several MMBase security implementations the concept
-              `security context' is stored in the owner field, to attribute
-              rights to objects.</para>
+              `security context' is stored in the owner field, to
+              attribute rights to objects.</para>
             </listitem>
 
             <listitem>
-              <para>A 'User Context' is the MMBase security object which
-              provides the essential identity information for a user: an
-              identifier, an 'owner' abstraction (sometimes also called
-              'context') and a rank. It is provided by the
+              <para>A 'User Context' is the MMBase security object
+              which provides the essential identity information for a user: an
+              identifier, an 'owner' abstraction (sometimes also
+              called 'context') and a rank. It is provided by the
               <emphasis>authentication</emphasis> implementation and is used
               by the <emphasis>authorization</emphasis> implementation.</para>
             </listitem>
 
             <listitem>
-              <para>A 'Cloud Context' is the bridge object which provides
-              clouds, modules, and empty lists.</para>
+              <para>A 'Cloud Context' is the bridge object which
+              provides clouds, modules, and empty lists.</para>
             </listitem>
 
             <listitem>
-              <para>In MMBase taglib a 'context' is a container for Taglib
-              variables. It is also associated with every page, the 'context'
-              tag, and (in MMBase &gt;= 1.7) list tags.</para>
+              <para>In MMBase taglib a 'context' is a container for
+              Taglib variables. It is also associated with every page, the
+              'context' tag, and (in MMBase &#62;= 1.7) list tags.</para>
             </listitem>
 
             <listitem>
-              <para>MMBaseContext is a core MMBase class, which takes care of
-              initializing MMBase and its configuration. It provides several
-              static methods for that.</para>
+              <para>
+                MMBaseContext is a core MMBase class, which takes care of initializing MMBase and
+                its configuration.  It provides several static methods for that.
+              </para>
             </listitem>
 
             <listitem>
               <para>In a J2EE environment the web-application is associated
-              with a 'context', which is basically the first part of the path.
-              Often it will be '/', but this is not required for
-              MMBase.</para>
+              with a 'context', which is basically the first part of
+              the path. Often it will be '/', but this is not required
+              for MMBase.</para>
             </listitem>
           </orderedlist>
         </glossdef>
@@ -786,27 +770,29 @@
         <glossdef>
           <orderedlist>
             <listitem>
-              <para>An piece of (MMBase) functionality which is configured by
-              a XML file in &lt;config&gt;/modules/. MMBase itself can be seen
-              as a group of such modules.</para>
-
-              <para>An extension from org.mmbase.module.Module, such as
-              MMBase.java itself. In MMBase modules are started on
-              initizalization, and are configured by an XML in
-              &lt;config&gt;/modules (which contains only key/value
-              properties). Modules were more important in the SCAN era, where
-              they provided all kind of auxiliary functionality. Nowadays they
-              mainly provide a way to plug things in the bootstrap of MMBase
-              accompanied with a convenient way of customization.</para>
+              <para>
+                An piece of (MMBase) functionality which is configured by
+                a XML file in &lt;config&gt;/modules/. MMBase itself can be
+                seen as a group of such modules.
+              </para>
+              <para>
+                An extension from org.mmbase.module.Module, such as MMBase.java itself.
+                In MMBase modules are started on initizalization, and are configured by
+                an XML in &lt;config&gt;/modules (which contains only key/value properties).
+                Modules were more important in the SCAN era, where they provided all
+                kind of auxiliary functionality. Nowadays they mainly provide a way to
+                plug things in the bootstrap of MMBase accompanied with a convenient
+                way of customization.
+              </para>
             </listitem>
 
             <listitem>
-              <para>When talking about CVS, a 'module' is a kind of main entry
-              of the repository. The MMBase CVS repository currently has the
-              following modules: src (core java classes), documentation
-              (docbook sources), html (general content for the mmbase distro),
-              config (example configuration) and applications (components
-              supported by the community).</para>
+              <para>When talking about CVS, a 'module' is a kind of
+              main entry of the repository. The MMBase CVS repository
+              currently has the following modules: src (core java classes),
+              documentation (docbook sources), html (general content for the
+              mmbase distro), config (example configuration) and applications
+              (components supported by the community).</para>
             </listitem>
 
             <listitem>
@@ -835,15 +821,12 @@
         <glossterm>unidirectional</glossterm>
 
         <glossdef>
-          <para>A value for the 'dir' attribute of reldef and insrel nodes. It
-          only says something about the visibility of the relation. A
-          unidirectional relation is not visible from the destination
-          node.</para>
+          <para>A value for the 'dir' attribute of reldef and insrel
+          nodes. It only says something about the visibility of the relation.
+          A unidirectional relation is not visible from the destination node.</para>
 
           <glossseealso otherterm="bidir"></glossseealso>
-
           <glossseealso otherterm="reldef"></glossseealso>
-
           <glossseealso otherterm="insrel"></glossseealso>
         </glossdef>
       </glossentry>
@@ -852,16 +835,16 @@
         <glossterm>bidirectional</glossterm>
 
         <glossdef>
-          <para>A value for the `dir' attribute of reldef and insrel nodes. It
-          only says something about the visibility of the relation. Every
-          MMBase relation is bidirectional in the sense that it has a clearly
-          defined source and destination, but that it not meant when we talk
-          about `bidirectional' relations in MMBase.</para>
+          <para>
+            A value for the `dir' attribute of reldef and insrel
+            nodes. It only says something about the visibility of the relation.
+            Every MMBase relation is bidirectional in the sense that it has a
+            clearly defined source and destination, but that it not meant when we talk about
+            `bidirectional' relations in MMBase.            
+          </para>
 
           <glossseealso otherterm="unidir"></glossseealso>
-
           <glossseealso otherterm="reldef"></glossseealso>
-
           <glossseealso otherterm="insrel"></glossseealso>
         </glossdef>
       </glossentry>
@@ -872,9 +855,11 @@
         <abbrev>taglib</abbrev>
 
         <glossdef>
-          <para>A Tag Library is a SUN defined way to define extra XML-like
-          tags. A tag library is implemented in Java and currently only
-          available in mixture with JSP-pages.</para>
+          <para>
+            A Tag Library is a SUN defined way to define extra XML-like
+            tags. A tag library is implemented in Java and currently only
+            available in mixture with JSP-pages.
+          </para>
 
           <glossseealso otherterm="mmbasetaglib"></glossseealso>
         </glossdef>
@@ -886,43 +871,46 @@
         <abbrev>MMBase taglib</abbrev>
 
         <glossdef>
-          <para>A taglib implementation for MMBase. Tags to access MMBase
-          data, but also more general tags. It consists more or less a
-          complete (however simple) language. The taglib can be used in
-          combination with pieces of Java in your JSP pages.</para>
-
+          <para>
+            A taglib implementation for MMBase. Tags to access MMBase
+            data, but also more general tags. It consists more or less a
+            complete (however simple) language. The taglib can be used in
+            combination with pieces of Java in your JSP pages.
+          </para>
           <glossseealso otherterm="taglib"></glossseealso>
         </glossdef>
       </glossentry>
+
 
       <glossentry id="path">
         <glossterm>path</glossterm>
 
         <glossdef>
-          <para>A list of steps. The definition from the bridge's javadoc
-          follows. A comma separated list of node manager names which
-          specifies the path that should be followed. It is possible to
-          explicitly specify a relation manager that should be used to go from
-          one node to an other. If no relation manager is specified between
-          two nodes, all possible relation managers that can be used to go to
-          the next specified node in the path are followed.</para>
-
+          <para>
+            A list of steps. The definition from the bridge's javadoc follows.
+            A comma separated list of node manager names
+            which specifies the path that should be followed.
+            It is possible to explicitly specify a relation
+            manager that should be used to go from one node to
+            an other. If no relation manager is specified
+            between two nodes, all possible relation managers
+            that can be used to go to the next specified node in
+            the path are followed. 
+          </para>
           <glossseealso otherterm="searchquery"></glossseealso>
-
           <glossseealso otherterm="step"></glossseealso>
         </glossdef>
       </glossentry>
 
+
       <glossentry id="step">
         <glossterm>step</glossterm>
-
         <glossdef>
-          <para>One of the items of a path in a query. You could often read it
-          as `database table' or `builder'. Step is an abstraction of this in
-          the Search Query framework of MMBase.</para>
-
+         <para>
+           One of the items of a path in a query. You could often read it as `database table' or
+           `builder'. Step is an abstraction of this in the Search Query framework of MMBase.
+         </para>
           <glossseealso otherterm="searchquery"></glossseealso>
-
           <glossseealso otherterm="path"></glossseealso>
         </glossdef>
       </glossentry>
@@ -931,51 +919,46 @@
         <glossterm>Search Query</glossterm>
 
         <glossdef>
-          <para>MMBase has a completely abstract way of querying its storage
-          layer. This allows for a great deal of database independency, and
-          also for efficient and object oriented manipulating of search
-          queries. The other option is to use the String oriented SQL
-          language, and this was tried in MMBase &lt; 1.7, but was abandoned
-          as non-feasible in a database (or even <emphasis>storage</emphasis>)
-          independent product as MMBase is.</para>
-
+          <para>
+            MMBase has a completely abstract way of querying its storage layer. This allows for a
+            great deal of database independency, and also for efficient and object oriented
+            manipulating of search queries. The other option is to use the String oriented SQL
+            language, and this was tried in MMBase &lt; 1.7, but was abandoned as non-feasible in a
+            database (or even <emphasis>storage</emphasis>) independent product as MMBase is.
+          </para>
           <glossseealso otherterm="sql"></glossseealso>
-
           <glossseealso otherterm="storage"></glossseealso>
-
           <glossseealso otherterm="step"></glossseealso>
         </glossdef>
       </glossentry>
 
       <glossentry id="sql">
         <glossterm>Structured Query Language</glossterm>
-
         <acronym>SQL</acronym>
-
         <glossdef>
-          <para>This is the `general' language to talk to databases. The
-          common denominator of all databases in SQL is actually very small,
-          which largely limits its use for database independent products like
-          MMBase.</para>
-
-          <para>To work around the babylon of SQL dialects, MMBase makes use
-          of Search Query objects.</para>
-
+          <para>
+            This is the `general' language to talk to databases. The common denominator of all
+            databases in SQL is actually very small, which largely limits its use for database
+            independent products like MMBase.
+          </para>
+          <para>
+            To work around the babylon of SQL dialects, MMBase makes use of Search Query objects.
+          </para>
           <glossseealso otherterm="searchquery"></glossseealso>
         </glossdef>
       </glossentry>
 
+
       <glossentry id="storage">
         <glossterm>storage</glossterm>
-
         <glossdef>
-          <para>MMBase has an abstract `storage' layer, which is used for
-          persistency of MMBase objects. Currently only database storages are
-          implemented so you can safely read `storage' as `the database which
-          MMBase is using'. There are several types of databases which are
-          supported however, most notably Informix, MySql, Postgresql and
-          HSql.</para>
-
+          <para>
+            MMBase has an abstract `storage' layer, which is used for persistency of MMBase objects.
+            Currently only database storages are implemented
+            so you can safely read `storage' as `the database which MMBase is using'. There are
+            several types of databases which are supported however, most notably Informix, MySql,
+            Postgresql and HSql.
+          </para>
           <glossseealso otherterm="searchquery"></glossseealso>
         </glossdef>
       </glossentry>
@@ -984,38 +967,35 @@
         <glossterm>Don't Panic!</glossterm>
 
         <glossdef>
-          <para>An exception from an edit wizard. It is called like this,
-          because the error page of an editwizard is (was?) introduced with
-          these big friendly letters.</para>
-
-          <para>Normally, but a bit unexpectedly, this is read as the
-          completely opposite advice.</para>
-
-          <para>This is a reference to the Hitchhiker's guide to the Galaxy
-          which according to the book of Douglas Adams had these words written
-          on the cover.</para>
-
+          <para>
+            An exception from an edit wizard. It is called like this, because the error page of an
+            editwizard is (was?) introduced with these big friendly letters.
+          </para>
+          <para>
+            Normally, but a bit unexpectedly, this is read as the completely opposite advice.
+          </para>
+          <para>
+            This is a reference to the Hitchhiker's guide to the Galaxy which according to the
+            book of Douglas Adams had these words written on the cover.
+          </para>
           <glossseealso otherterm="editwizard"></glossseealso>
         </glossdef>
       </glossentry>
 
       <glossentry id="editwizard">
         <glossterm>Editwizards</glossterm>
-
         <glossdef>
-          <para>Editwizards are `task oriented' content editors. Tasks are
-          defined by XML and could for example be something like `create news
-          articles and relate one author and several images to them'.
-          Editwizards are not `generic' editors, which means that they not
-          automaticly allow for creating all possible types of relations,
-          though some parties have been creating tools to automaticly generate
-          all possible editwizards.</para>
-
-          <para>Editwizards communicate with MMBase by the 'dove'
-          protocol.</para>
-
+          <para>
+            Editwizards are `task oriented' content editors. Tasks are defined by XML and could for
+            example be something like `create news articles and relate one author and several
+            images to them'. Editwizards are not `generic' editors, which means that they not automaticly
+            allow for creating all possible types of relations, though some parties have been
+            creating tools to automaticly generate all possible editwizards.
+          </para>
+          <para>
+            Editwizards communicate with MMBase by the 'dove' protocol.
+          </para>
           <glossseealso otherterm="dove"></glossseealso>
-
           <glossseealso otherterm="dontpanic"></glossseealso>
         </glossdef>
       </glossentry>
@@ -1024,319 +1004,228 @@
         <glossterm>Dove</glossterm>
 
         <glossdef>
-          <para>Dove is a protocol to receive a part of the MMBase cloud in
-          XML, make changes to it, and send it back. It was inspired by the
-          SOAP protocol (and hence the name Dove, which is a brand of soap),
-          but sadly is not compatible with it.</para>
-
-          <para>It was created for use by the editwizards. There is also a
-          Dove servlet, which is not used by the editwizards, but which one
-          could use for similar purposes.</para>
-
+          <para>
+            Dove is a protocol to receive a part of the MMBase cloud in XML, make changes to it, and
+            send it back. It was inspired by the SOAP protocol (and hence the name Dove, which is a
+            brand of soap), but sadly is not compatible with it.
+          </para>
+          <para>
+            It was created for use by the editwizards. There is also a Dove servlet, which is not
+            used by the editwizards, but which one could use for similar purposes.
+          </para>
           <glossseealso otherterm="editwizard"></glossseealso>
         </glossdef>
       </glossentry>
 
       <glossentry id="devlist">
         <glossterm>developers list</glossterm>
-
         <glossdef>
-          <para>The developers@lists.mmbase.org mailing list, sometimes
-          shorthanded to dev-list. This is the most active MMBase mailing
-          list, which is used by the developers community to discuss and
-          answer questions about technical issues.</para>
-
-          <para>Information about the subscription and about other mmbase
-          mailing lists can be found on the mmbase web-site.</para>
-
-          <para>Before november 2004 this list was addressed as
-          developers@mmbase.org.</para>
-
+          <para>
+            The developers@lists.mmbase.org mailing list, sometimes shorthanded to dev-list. This is the
+            most active MMBase mailing list, which is used by the developers community to discuss
+            and answer questions about technical issues. 
+          </para>
+          <para>
+            Information about the subscription and about other mmbase mailing lists can be found on
+            the mmbase web-site.
+          </para>
+          <para>
+            Before november 2004 this list was addressed as developers@mmbase.org.
+          </para>
           <glossseealso otherterm="vote"></glossseealso>
-
           <glossseealso otherterm="irc"></glossseealso>
         </glossdef>
       </glossentry>
-
       <glossentry id="irc">
         <glossterm>Internet Relay Chat</glossterm>
-
         <acronym>IRC</acronym>
-
         <glossdef>
-          <para>The channel #mmbase of the <ulink
-          url="http://www.slashnet.org">Slashnet IRC network</ulink> is an
-          active scene which is used by MMBase developers to discuss MMBase in
-          a casual way. It is also much used to get help for installation and
-          implementation issues.</para>
-
+          <para>
+            The channel #mmbase of the <ulink url="http://www.slashnet.org">Slashnet IRC network</ulink> is
+            an active scene which is used by MMBase developers to discuss MMBase in a casual way. It
+            is also much used to get help for installation and implementation issues.
+          </para>
           <glossseealso otherterm="devlist"></glossseealso>
         </glossdef>
       </glossentry>
-
       <glossentry id="application">
         <glossterm>application</glossterm>
-
         <glossdef>
           <orderedlist>
             <listitem>
+              
               <para>
-                An 'mmbase application' is a modular piece of
-                functionality, which can contain code (jars, classes), templates
-                and a piece of an object model, with possbily some data, and
-                other resources. A tool implemented with MMBase means.
+                An 'mmbase application' is a modular piece of functionality, which can
+                contain code (jars, classes), templates and a piece of an object model,
+                with possbily some data, and other resources. A tool implemented with
+                MMBase means.
               </para>
-
-              <para>This thing is also called 'package' by some.</para>
-              <para>This functionality was never quite finished. In MMBase 1.9 we talk about 'components'</para>
-
+              <para>
+                This thing is also called 'package' by some.
+              </para>
             </listitem>
-
             <listitem>
-              <para>In the 'apps1' framework, 'application' refers to only the
-              object model and data.</para>
+              <para>
+                In the 'apps1' framework, 'application' refers to only the object model
+                and data.
+              </para>
             </listitem>
-
             <listitem>
-              <para>An 'authentication application' is one of the handlers -
-              identified by a string - of a certain security {authentication}
-              implementation, to deal with a authentication request. Most
-              security implementations support a 'name/password', a 'class'
-              and an 'anonymous' authentication application, but these modules
-              can be pluggable, and some implementations allow for a unlimited
-              number of these. In taglib this is shorthanded to
-              'authentication' rather then to 'application' (meant is the
-              attribute of the mm:cloud tag).</para>
+              <para>
+                An 'authentication application' is one of the handlers - identified by
+                a string - of a certain security {authentication} implementation, to
+                deal with a authentication request. Most security implementations
+                support a 'name/password', a 'class' and an 'anonymous' authentication
+                application, but these modules can be pluggable, and some
+                implementations allow for a unlimited number of these. In taglib this
+                is shorthanded to 'authentication' rather then to 'application' (meant
+                is the attribute of the mm:cloud tag).
+              </para>
             </listitem>
-
             <listitem>
-              <para>Copied from WordNet: a program that gives a computer
-              instructions that provide the user with tools to accomplish a
-              task; "he has tried several different word processing
-              applications" [syn: {application program}, {applications
-              programme}]</para>
+              <para>
+                Copied from WordNet: a program that gives a computer instructions that provide the user
+                with tools to accomplish a task; "he has tried several different word processing
+                applications" [syn: {application program}, {applications programme}]
+              </para>
             </listitem>
           </orderedlist>
-
           <glossseealso otherterm="package" />
           <glossseealso otherterm="bundle" />
-          <glossseealso otherterm="component" />
           <glossseealso otherterm="contribution" />
         </glossdef>
       </glossentry>
-
       <glossentry id="package">
         <glossterm>package</glossterm>
         <glossdef>
           <orderedlist>
             <listitem>
-              <para>Functional unit of software.</para>
+              <para>
+                Functional unit of software.
+              </para>
             </listitem>
-
             <listitem>
               <para>
-                A package is the concretization of an application (1). It
-                is the thing which you can download and install, or burn on a
-                CD.
+                A package is the concretization of an application (1). It is the thing
+                which you can download and install, or burn on a CD.
               </para>
-              <para>This functionality was never quite finished. In MMBase 1.9 we talk about
-              'components'</para>
             </listitem>
-
             <listitem>
-              <para>In java a package is like a directory of classes. It is
-              the part of a fully qualified class name until the last dot. All
-              MMBase classes are in the org.mmbase package or subpackages of
-              that.</para>
+              <para>
+                In java a package is like a directory of classes. It is the part of a
+                fully qualified class name until the last dot. All MMBase classes are
+                in the org.mmbase package or subpackages of that.
+              </para>
             </listitem>
           </orderedlist>
-
           <glossseealso otherterm="application" />
-          <glossseealso otherterm="component" />
         </glossdef>
       </glossentry>
-
       <glossentry id="bundle">
         <glossterm>bundle</glossterm>
-
         <glossdef>
           <orderedlist>
             <listitem>
               <para>
-                A bundle is a special kind of package (1) containing other
-                packages, and distributed as a unit.
+                A bundle is a special kind of package (1) containing other packages,
+                and distributed as a unit.
               </para>
-              <para>This functionality was never quite finished. In MMBase 1.9 we talk about 'components'</para>
             </listitem>
             <listitem>
-              <para>A resource bundle is generally a bunch of property files
-              (or something functionally similar) , see
-              java.util.ResourceBundle.</para>
+              <para>
+                A resource bundle is generally a bunch of property files (or something
+                functionally similar) , see java.util.ResourceBundle.
+              </para>
             </listitem>
           </orderedlist>
           <glossseealso otherterm="package" />
-          <glossseealso otherterm="component" />
         </glossdef>
       </glossentry>
-
       <glossentry id="component">
         <glossterm>component</glossterm>
-
         <glossdef>
           <para>
-            It means approximately 'one part of a whole', 'something that can be installed in
-            some program to make it more powerful'. Since MMBase 1.9 and the MMBase Component
-            Framework (MMCF) a component has gathered meaning as a piece of functionality that can be
-            installed using the component framework. A component in the MMCF sence can be a poll, an
-            e-card application or even some more hidden functionality like the e-mail application as
-            long it is 'plugable' within the framework.
+            Has no MMBase specific meanings.
+            It means approximately 'one part of a whole', 'something that can be
+            installed in some program to make it more powerful'.
           </para>
-
-          <!--
-          <glossseealso otherterm="package"></glossseealso>
-          <glossseealso otherterm="bundle"></glossseealso>
-          -->
+          <glossseealso otherterm="package" />
+          <glossseealso otherterm="bundle" />
           <glossseealso otherterm="application" />
-          <glossseealso otherterm="block" />
         </glossdef>
       </glossentry>
-
       <glossentry id="extension">
         <glossterm>extension</glossterm>
-
         <glossdef>
-          <para>Has no MMBase specific meanings. In java you can 'extend'
-          classes, and extensions of classes are therefore specializations of
-          some kind of functionality.</para>
-
-          <!--
-          <glossseealso otherterm="package"></glossseealso>
-          <glossseealso otherterm="bundle"></glossseealso>
-          -->
-          <glossseealso otherterm="component" />
+          <para>
+            Has no MMBase specific meanings.
+            In java you can 'extend' classes, and extensions of classes are therefore
+            specializations of some kind of functionality.
+          </para>
+          <glossseealso otherterm="package" />
+          <glossseealso otherterm="bundle" />
           <glossseealso otherterm="application" />
         </glossdef>
-      </glossentry>
-
+      </glossentry>     
       <glossentry id="template">
         <glossterm>template</glossterm>
-
         <glossdef>
-          <para>A JSP-file with belonging css, javascript and images, also
-          XSL's are templates. The customized pieces of front-end code which
-          arrange presentation of MMBase data.</para>
+          <para>
+            A JSP-file with belonging css, javascript and images, also XSL's are
+            templates. The customized pieces of front-end code which arrange
+            presentation of MMBase data.
+          </para>
         </glossdef>
       </glossentry>
-
       <glossentry id="opensource">
         <glossterm>open source</glossterm>
-
         <glossdef>
-          <para>MMBase is open source. This means that the MMBase source code
-          can be downloaded freely. The licence is quite free.</para>
+          <para>
+            MMBase is open source. This means that the MMBase source code can be downloaded freely. The licence is quite free.
+          </para>
         </glossdef>
-      </glossentry>
-
+      </glossentry>     
       <glossentry id="contentmanagement">
         <glossterm>content management</glossterm>
-
         <glossdef>
-          <para>MMBase is described as a 'content managment system', which
-          means that it is used to manage the content of normally
-          web-sites.</para>
+          <para>
+            MMBase is described as a 'content managment system', which means that it is used to manage the content of normally web-sites.
+          </para>
         </glossdef>
       </glossentry>
-
       <glossentry id="contribution">
         <glossterm>contribution</glossterm>
-
         <glossdef>
-          <para>In the `contributions' CVS module you find MMBase applicitions
-          and other MMBase related code, which is contributed by third parties
-          to MMBase, and are not maintained by the `community' but individual
-          commitors are responsible.</para>
-          <!--
-          <glossseealso otherterm="package"></glossseealso>
-          <glossseealso otherterm="bundle"></glossseealso>
-          -->
+          <para>
+            In the `contributions' CVS module you find MMBase applicitions and other MMBase related
+            code, which is contributed by third parties to MMBase, and are not maintained by the
+            `community' but individual commitors are responsible.
+          </para>
+          <glossseealso otherterm="package" />
+          <glossseealso otherterm="bundle" />
           <glossseealso otherterm="application" />
-          <glossseealso otherterm="component" />
         </glossdef>
       </glossentry>
-
       <glossentry id="datatype">
         <glossterm>data type</glossterm>
-
         <glossdef>
-          <para>Since MMBase 1.8, with mmbase values are associated 'data
-          types', which assign restrictions, a default value and processors.
-          Generic data types are specified in the 'datatypes.xml'
-          configuration file, but they can also be defined `on the fly' in
-          builder xmls and editwizard xmls.</para>
-
+          <para>
+            Since MMBase 1.8, with mmbase values are associated 'data types', which assign
+            restrictions, a default value and processors. Generic data types are specified in the
+            'datatypes.xml' configuration file, but they can also be defined `on the fly' in builder
+            xmls and editwizard xmls.
+          </para>
           <glossseealso otherterm="restriction" />
         </glossdef>
       </glossentry>
-
       <glossentry id="restriction">
         <glossterm>restriction</glossterm>
-
         <glossdef>
-          <para>The value of a certain field for parameter in MMBase can be
-          `restricted'. It can e.g. have a minimal or maximal value, or be one
-          of the values of an 'enumeration'.</para>
-
+          <para>
+            The value of a certain field for parameter in MMBase can be `restricted'. It can
+            e.g. have a minimal or maximal value, or be one of the values of an 'enumeration'.
+          </para>
           <glossseealso otherterm="datatype" />
-        </glossdef>
-      </glossentry>
-
-      <glossentry id="function">
-        <glossterm>function</glossterm>
-        <glossdef>
-          <para>
-            A function is a piece of functionality, normally implemented in java, which can be
-            attached to objects on several places in MMBase. Functions can be assigned to 'sets',
-            'nodes', 'nodemanagers' and 'modules'
-          </para>
-          <glossseealso otherterm="functionsets" />
-        </glossdef>
-      </glossentry>
-
-      <glossentry id="functionsets">
-        <glossterm>function set</glossterm>
-        <glossdef>
-          <para>
-            A function set is just a set of functions, which are declared in the 'functionsets.xml'
-            resource. These are a kind of public methods which can be called from everywhere, any
-            time.
-          </para>
-          <glossseealso otherterm="function" />
-        </glossdef>
-      </glossentry>
-
-      <glossentry id="block">
-        <glossterm>block</glossterm>
-        <glossdef>
-          <para>
-            A component can have 1 or more 'blocks', which are actual pieces of markup, which
-            represent a rendering of the component's functionality.
-          </para>
-          <glossseealso otherterm="component" />
-        </glossdef>
-      </glossentry>
-
-      <glossentry id="resourceloader">
-        <glossterm>resourceloader</glossterm>
-        <glossdef>
-          <para>
-            MMBase has a 'resourceloader' which loads its configuration files. This uses several
-            strategies, and is like a java class loader.
-          </para>
-          <para>
-            The effect is that mmbase configuration files can be present in jars, in WEB-INF/config
-            or both. Or even in the database. The admin-pages provide an overview, to check how a
-            certain configuration was loaded.
-          </para>
         </glossdef>
       </glossentry>
     </glosslist>

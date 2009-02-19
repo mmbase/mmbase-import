@@ -1,19 +1,21 @@
 <?xml version="1.0"?>
-<project name="community" default="jar" basedir=".">
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="community" default="dependent.jar" basedir=".">
   <property name="project.name"   value="community" />
   <property name="source-community.xml" value="org/mmbase/applications/community/taglib/mmcommunity-taglib.xml" />
   <property name="project.jars.includes" value="taglib/build/mmbase-taglib-2.jar" />
-
-  <import file="../buildbase-include.xml" />
-
+  &base;
 
 
-  <target name="jar" depends="community.tld,buildbase.jar">
+
+  <target name="dependent.jar" depends="community.tld,jar">
     <ant dir="../taglib" target="jar1" />
   </target>
-
-  <target name="package" depends="jar,community.doc,buildbase.package" />
-	<target name="install" depends="jar,buildbase.install" />
+  <target name="dependent.package" depends="dependent.jar,community.doc,package" />
+	<target name="dependent.install" depends="dependent.jar,install" />
 
   <target name="community.tld.check">
     <uptodate property="community.tld.uptodate" targetfile="${project.metainf.dir}/taglib.tld" >
@@ -25,13 +27,18 @@
           depends="compile,community.tld.check" unless="community.tld.uptodate">
     <mkdir dir="${project.metainf.dir}" />
     <!-- create the mmcommunity tld: -->
-    <java classname="org.mmbase.util.XSLTransformer"
+    <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile.classpath"
           fork="yes"
           failonerror="yes">
-      <arg value="${share.dir}/xslt/xml2tld.xslt" />
-      <arg value="${project.source.dir}/src/${source-community.xml}"/>
+      <arg value="-Q"/>
+      <arg value="-DIAG"/>
+      <arg value="-IN"/>
+      <arg value="file:///${project.source.dir}/src/${source-community.xml}"/>
+      <arg value="-OUT"/>
       <arg value="${project.metainf.dir}/taglib.tld"/>
+      <arg value="-XSL"/>
+      <arg value="${share.dir}/xslt/xml2tld.xslt" />
     </java>
   </target>
 
@@ -47,16 +54,23 @@
           depends="init,compile,community.doc.check"  if="do.documentation">
     <mkdir dir="${project.build.dir}/documentation/community"/>
     <!-- and its documentation: -->
-    <java classname="org.mmbase.util.XSLTransformer"
+    <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile.classpath"
           fork="yes"
           failonerror="yes">
-      <arg value="${share.dir}/xslt/xml2html.xslt" />
-      <arg value="${project.source.dir}/src/${source-community.xml}" />
-      <arg value="${project.build.dir}/documentation/community/community-taglib.html" />
-      <arg value="basedir=${project.build.dir}/documentation/community"/>
-      <arg value="files=files" />
+      <arg value="-DIAG"/>
+      <arg value="-IN"/>
+      <arg value="file:///${project.source.dir}/src/${source-community.xml}" />
+      <arg value="-PARAM"/>
+      <arg value="basedir"/>
+      <arg value="${project.build.dir}/documentation/community"/>
+      <arg value="-PARAM"/>
+      <arg value="files"/>
       <arg value="community-taglib" />
+      <arg value="-OUT"/>
+      <arg value="${project.build.dir}/documentation/community/community-taglib.html" />
+      <arg value="-XSL"/>
+      <arg value="${share.dir}/xslt/xml2html.xslt" />
     </java>
   </target>
 

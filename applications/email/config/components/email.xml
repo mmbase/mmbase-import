@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component
     name="email"
-    xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
@@ -45,19 +44,6 @@
       classification="mmbase.examples"
       name="emailexamples" mimetype="text/html">
     <body jsp="index.jspx" />
-  </block>
-
-  <block name="email-documentation"
-         classification="mmbase.documentation"
-         mimetype="text/html">
-    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
-    <body>
-      <class name="org.mmbase.framework.DocumentationRenderer">
-        <param name="docbook">documentation/email.xml</param>
-        <param name="module">applications/email</param>
-        <param name="includeRenderTime">xml-comments</param>
-      </class>
-    </body>
   </block>
 
 </component>

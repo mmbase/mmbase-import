@@ -16,9 +16,8 @@ package org.mmbase.bridge.jsp.taglib.containers;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryContainerReferrer.java,v 1.2 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: QueryContainerReferrer.java,v 1.1 2003-12-18 09:05:47 michiel Exp $
  */
 public interface QueryContainerReferrer extends ContainerReferrer {
-
 
 }

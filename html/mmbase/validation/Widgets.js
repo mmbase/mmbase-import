@@ -9,7 +9,7 @@
  *  -  Widgets.instance.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
  *  -  Widgets.instance.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
  *
- * @version $Id: Widgets.js,v 1.9 2008-12-30 17:54:06 michiel Exp $   BETA
+ * @version $Id: Widgets.js,v 1.2.2.11 2008-12-30 17:54:21 michiel Exp $   BETA
  * @author Michiel Meeuwissen
 
  */

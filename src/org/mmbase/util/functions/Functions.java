@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import java.lang.reflect.*;
+import java.lang.reflect.Field;
 import java.util.*;
 
 import org.mmbase.util.logging.*;
@@ -25,17 +26,16 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.20 2009-01-06 15:16:49 michiel Exp $
+ * @version $Id: Functions.java,v 1.12 2006-01-13 15:37:24 pierre Exp $
  */
 public class Functions {
 
     private static final Logger log = Logging.getLoggerInstance(Functions.class);
 
-
     /**
      * Converts a certain List to an Parameters if it is not already one.
      */
-    public static Parameters buildParameters(Parameter<?>[] def, List<?> args) {
+    public static Parameters buildParameters(Parameter[] def, List args) {
         Parameters a;
         if (args instanceof Parameters) {
             a = (Parameters) args;
@@ -49,45 +49,30 @@ public class Functions {
      * Adds the definitions to a List. Resolves the {@link Parameter.Wrapper}'s (recursively).
      * @return List with only simple Parameter's.
      */
-    public static List<Parameter<?>> define(Parameter<?>[] def, List<Parameter<?>> list) {
+    public static List define(Parameter[] def, List list) {
         if (def == null) return list;
-
-        int firstPattern = 0;
-        while (firstPattern < list.size() && ! (list.get(firstPattern) instanceof PatternParameter)) firstPattern++;
-        boolean patterns = false;
-        for (Parameter d : def) {
-            if (d instanceof Parameter.Wrapper) {
-                define(((Parameter.Wrapper) d).arguments, list);
-            } else if (d instanceof PatternParameter) {
-                list.add(d);
-                patterns = true;
+        for (int i = 0; i < def.length; i++) {
+            if (def[i] instanceof Parameter.Wrapper) {
+                define(((Parameter.Wrapper) def[i]).arguments, list);
             } else {
-                if (patterns) throw new IllegalArgumentException("PatternParameter's must be last in the definition");
-                list.add(firstPattern, d);
-                firstPattern++;
+                list.add(def[i]);
             }
         }
         return list;
-    }
-    /**
-     * @since MMBase-1.9
-     */
-    public static List<Parameter<?>> define(Parameter<?>[] def) {
-        return define(def, new ArrayList<Parameter<?>>());
     }
 
     /**
      * @javadoc
      */
-    public static Method getMethodFromClass(Class<?> claz, String name) {
+    public static Method getMethodFromClass(Class claz, String name) {
         Method method = null;
         Method[] methods = claz.getMethods();
-        for (Method element : methods) {
-            if (element.getName().equals(name)) {
+        for (int j = 0; j < methods.length; j++) {
+            if (methods[j].getName().equals(name)) {
                 if (method != null) {
                     throw new IllegalArgumentException("There is more than one method with name '" + name + "' in " + claz);
                 }
-                method = element;
+                method = methods[j];
             }
         }
         if (method == null) {
@@ -128,11 +113,12 @@ public class Functions {
      * @param map
      * @return A map of parameter definitions (Parameter[] objects), keys by function name (String)
     */
-    public static Map<String, Parameter<?>[]> getParameterDefinitonsByReflection(Class<?> clazz, Map<String, Parameter<?>[]> map) {
+    public static Map getParameterDefinitonsByReflection(Class clazz, Map map) {
 
         log.debug("Searching " + clazz);
         Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
+        for (int i = 0 ; i < fields.length; i++) {
+            Field field = fields[i];
             int mod = field.getModifiers();
             // only static public final Parameter[] constants are considered
             if (Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod) &&
@@ -145,7 +131,7 @@ public class Functions {
                 }
                 if (! map.containsKey(name)) { // overriding works, but don't do backwards :-)
                     try {
-                        Parameter<?>[] params = (Parameter<?>[])field.get(null);
+                        Parameter[] params = (Parameter[])field.get(null);
                         if (log.isDebugEnabled()) {
                             log.debug("Found a function definition '" + name + "' in " + clazz + " with parameters " + Arrays.asList(params));
                         }
@@ -157,7 +143,7 @@ public class Functions {
                 }
              }
         }
-        Class<?> sup = clazz.getSuperclass();
+        Class sup = clazz.getSuperclass();
         if (sup != null) {
             getParameterDefinitonsByReflection(sup, map);
         }

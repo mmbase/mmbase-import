@@ -20,6 +20,9 @@ package org.mmbase.util;
 
 import java.io.*;
 
+import org.mmbase.util.logging.*;
+
+
 /**
  * Oddly enough, Java does not provide this itself. Stolen from Ant code.
  * 
@@ -27,12 +30,12 @@ import java.io.*;
  * Adapted from <CODE>StringInputStream</CODE>.
  *
  * @since	MMBase-1.8.2
- * @version $Id: ReaderInputStream.java,v 1.2 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ReaderInputStream.java,v 1.1.2.1 2006-10-02 14:36:12 michiel Exp $
  */
 
 
 public class ReaderInputStream extends InputStream {
-
+    private static Logger log = Logging.getLoggerInstance(ReaderInputStream.class);
     /** Source Reader */
     private Reader in;
 

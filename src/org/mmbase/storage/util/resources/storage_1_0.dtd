@@ -66,8 +66,8 @@
 -->
 <!ELEMENT store-binary-as-file-objects (store-binary-as-file-object*)>
 
-<!--
-    Describe a object name of objects of which binary data should not be stored in the database.
+<!-- 
+    Describe a object name of objects of which binary data should not be stored in the database. 
     The element contains one attribute, namely the name of the object.
 -->
 <!ELEMENT store-binary-as-file-object EMPTY>

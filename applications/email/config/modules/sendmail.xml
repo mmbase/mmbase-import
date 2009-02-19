@@ -48,16 +48,10 @@
     <property name="emailbuilder.bccfield">bcc</property>
     <property name="emailbuilder.fromfield">from</property>
     <property name="emailbuilder.subjectfield">subject</property>
-    <!--
     <property name="emailbuilder.headersfield">headers</property>
-    -->
     <property name="emailbuilder.datefield">date</property>
-    <property name="emailbuilder.typefield">mailtype</property>
+    <property name="emailbuilder.typefield">type</property>
 
-
-    <!--
-        this property is used by the VerifyEmailProcessor to encrypt the data sent to the client, to make sure that it cannot be spoofed.
-    -->
     <property name="verify_email.password">secret</property>
 
 

@@ -22,13 +22,13 @@ import org.mmbase.util.logging.Logging;
  * Simple implemetation, to provide authentication from files...
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: FileLoginModule.java,v 1.8 2008-09-24 10:48:25 michiel Exp $
+ * @version $Id: FileLoginModule.java,v 1.4.2.1 2006-09-22 14:40:59 andre Exp $
  */
 public class FileLoginModule implements LoginModule {
     private static Logger log=Logging.getLoggerInstance(FileLoginModule.class.getName());
     private File configFile = null;
 
-    public void load(Map<String, Object> properties) {
+    public void load(Map properties) {
         String passwordFile = (String)properties.get("file");
 
         if (passwordFile == null || passwordFile.equals("")) {
@@ -62,7 +62,7 @@ public class FileLoginModule implements LoginModule {
         log.debug("file login loaded");
     }
 
-    public boolean login(NameContext user, Map<String, ?> loginInfo,  Object[] parameters) {
+    public boolean login(NameContext user, Map loginInfo,  Object[] parameters) {
         if(!loginInfo.containsKey("username")) throw new org.mmbase.security.SecurityException("key 'username' not found  in login information");
         if(!loginInfo.containsKey("password")) throw new org.mmbase.security.SecurityException("key 'password' not found  in login information");
         ExtendedProperties reader = new ExtendedProperties();
@@ -73,7 +73,7 @@ public class FileLoginModule implements LoginModule {
         if (accounts == null) {
             log.error("Could not find accounts!");
         }
-
+	
         // do a list with usernames and passwords...
         log.debug("There are  "+accounts.size()+" users which can logon to our system");
         if ( !accounts.containsKey(loginInfo.get("username"))) {
@@ -90,7 +90,7 @@ public class FileLoginModule implements LoginModule {
 
         // set the identifier
         user.setIdentifier((String)loginInfo.get("username"));
-
+        
         // Admins are admins
 		if ("admin".equals(loginInfo.get("username"))) {
 			user.setRank(Rank.getRank("administrator"));

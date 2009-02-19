@@ -30,14 +30,13 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.17 2008-10-29 20:46:37 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.15 2008-06-10 15:46:11 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class MmxfGetString implements  Processor {
     public static String MODE_SHOWBROKEN    = "org.mmbase.richtext.wiki.show_broken";
     public static String MODE_LOADRELATIONS = "org.mmbase.richtext.wiki.load_relations";
-    public static String MODE_LOADRELATED   = "org.mmbase.richtext.wiki.load_related";
     public static String MODE_UNDECORATEIDS = "org.mmbase.richtext.wiki.undecorateids";
     public static String MODE_BRS           = "org.mmbase.richtext.wiki.brs";
 
@@ -80,8 +79,7 @@ public class MmxfGetString implements  Processor {
         generator.add(node, field);
 
         Object loadRelations = node.getCloud().getProperty(MODE_LOADRELATIONS);
-        Object loadRelated  = node.getCloud().getProperty(MODE_LOADRELATED);
-        if (loadRelated != null &&  Casting.toBoolean(loadRelated)) {
+        if (loadRelations == null || Casting.toBoolean(loadRelations)) {
             org.mmbase.bridge.NodeList relatedNodes = node.getRelatedNodes("object", "idrel", "destination");
             if (log.isDebugEnabled()) {
                 log.debug("Idrelated " + relatedNodes);
@@ -91,9 +89,6 @@ public class MmxfGetString implements  Processor {
             if (log.isDebugEnabled()) {
                 log.debug("Idrelations " + relationsNodes);
             }
-            generator.add(relationsNodes);
-        } else if (loadRelations == null || Casting.toBoolean(loadRelations)) {
-            org.mmbase.bridge.RelationList relationsNodes = node.getRelations("idrel", node.getCloud().getNodeManager("object"), "destination");
             generator.add(relationsNodes);
         }
 

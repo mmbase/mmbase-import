@@ -1,5 +1,0 @@
-<form-schema id="step2">
-  <title xml:lang="nl">Deze stap is dynamisch geinclude</title>
-  <title xml:lang="en">This step was dynamicly added</title>
-  <field name="title" />
-</form-schema>

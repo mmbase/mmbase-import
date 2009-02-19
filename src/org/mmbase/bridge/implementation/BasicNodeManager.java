@@ -38,10 +38,10 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.139 2008-08-27 17:35:26 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.121.2.9 2008-07-03 15:55:50 michiel Exp $
 
  */
-public class BasicNodeManager extends BasicNode implements NodeManager {
+public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static final  Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
 
     /**
@@ -53,7 +53,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     protected MMObjectBuilder builder;
 
     // field types
-    protected Map<String, Field> fieldTypes = new HashMap<String, Field>();
+    protected Map fieldTypes = new HashMap();
 
     /**
      * Instantiates a new NodeManager (for insert) based on a newly created node which either represents or references a builder.
@@ -119,7 +119,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    @Override
     protected void setNodeManager(MMObjectNode node) {
         int nodeNumber = node.getNumber();
         if (nodeNumber >= 0 && nodeNumber == node.getBuilder().getNumber()) { // this is the typedef itself
@@ -130,12 +129,10 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    @Override
     public final boolean isNodeManager() {
         return true;
     }
 
-    @Override
     public final NodeManager toNodeManager() {
         return this;
     }
@@ -170,11 +167,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     /**
      * @since MMBase-1.8
      */
-    protected static void sync(MMObjectBuilder builder, Map<String, Field> fieldTypes, NodeManager nodeManager) {
-        Collection<CoreField> fields = builder.getFields();
+    protected static void sync(MMObjectBuilder builder, Map fieldTypes, NodeManager nodeManager) {
+        Collection fields = builder.getFields();
         if (fields != null) { // when is it null?
             fieldTypes.clear();
-            for (CoreField f : fields) {
+            for(Iterator i = fields.iterator(); i.hasNext();){
+                CoreField f = (CoreField) i.next();
                 Field ft = new BasicField(f, nodeManager);
                 if (f.getStoragePosition() > 0) {
                     fieldTypes.put(ft.getName().toLowerCase(), ft);
@@ -201,7 +199,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
      * Returns the fieldlist of this nodemanager after making sure the manager is synced with the builder.
      * @since MMBase-1.8
      */
-    protected Map<String, Field> getFieldTypes() {
+    protected Map getFieldTypes() {
         sync();
         return fieldTypes;
     }
@@ -228,7 +226,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         // create object as a temporary node
         int id = BasicCloud.uniqueId();
         {
-            String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(getMMObjectBuilder().getTableName(), cloud.getAccount(), ""+id);
+            String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(getMMObjectBuilder().getTableName(), cloud.getAccount(), "" + id);
             // if we are in a transaction, add the node to the transaction;
             cloud.add(currentObjectContext);
         }
@@ -258,15 +256,16 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             if (field.getName().equals(MMObjectBuilder.FIELD_OWNER))       continue;
             if (field.getName().equals(MMObjectBuilder.FIELD_OBJECT_TYPE)) continue;
 
+
             if (node.isNull(field.getName()) || "".equals(node.getStringValue(field.getName()))) { // required field are set to '', which would destroy the default value...
+
                 org.mmbase.datatypes.DataType dt = field.getDataType();
                 //log.info("" + field.getName() + " " + dt);
                 Object defaultValue = dt.getDefaultValue(getCloud().getLocale(), getCloud(), field);
                 if (defaultValue != null) {
                     if (defaultValue instanceof Node) {
-                        defaultValue = ((Node) defaultValue).getNumber();
+                        defaultValue = new Integer(((Node) defaultValue).getNumber());
                     }
-
                     node.setValue(field.getName(), defaultValue);
                 }
             } else {
@@ -276,7 +275,6 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             }
         }
     }
-
 
     /**
      * BasicNodeManager is garantueed to return BasicNode's. So extendsion must override this, and not {@link #createNode}
@@ -309,7 +307,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     }
 
     public NodeManagerList getDescendants() {
-        List<MMObjectBuilder> descs = getMMObjectBuilder().getDescendants();
+        List descs = getMMObjectBuilder().getDescendants();
         return new BasicNodeManagerList(descs, cloud);
     }
 
@@ -329,11 +327,11 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
     }
 
-    public Map<String, String> getProperties() {
+    public Map getProperties() {
         if (builder != null) {
-            return Collections.unmodifiableMap(builder.getInitParameters());
+            return new HashMap(builder.getInitParameters());
         } else {
-            return Collections.emptyMap();
+            return Collections.EMPTY_MAP;
         }
     }
 
@@ -384,7 +382,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     }
 
     public Field getField(String fieldName) throws NotFoundException {
-        Field f =  getFieldTypes().get(fieldName.toLowerCase());
+        Field f = (Field) getFieldTypes().get(fieldName.toLowerCase());
         if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
         return f;
     }
@@ -406,16 +404,21 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             boolean checked = cloud.setSecurityConstraint(query);
 
             boolean useCache = query.getCachePolicy().checkPolicy(query);
-            List<MMObjectNode> resultList = builder.getStorageConnector().getNodes(query, useCache);
-
-            if (! checked) {
-                resultList = cloud.checkNodes(resultList, query);
-            }
+            List resultList = builder.getStorageConnector().getNodes(query, useCache);
 
             BasicNodeList resultNodeList;
             NodeManager nm = query.getNodeManager();
-            resultNodeList = new BasicNodeList(resultList, cloud);
+            if (nm instanceof RelationManager || (nm == this && builder instanceof InsRel)) {
+                resultNodeList = new BasicRelationList(resultList, cloud);
+            } else {
+                resultNodeList = new BasicNodeList(resultList, cloud);
+            }
+
             resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
+
+            if (! checked) {
+                cloud.checkNodes(resultNodeList, query);
+            }
 
             return resultNodeList;
         } catch (SearchQueryException sqe) {
@@ -474,7 +477,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
 
         int dir  = ClusterBuilder.getSearchDir(direction);
 
-        Enumeration<MMObjectNode> typerelNodes;
+        Enumeration typerelNodes;
         if (nodeManager != null) {
             int otherOType = nodeManager.getNumber();
             typerelNodes = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(thisOType, otherOType);
@@ -482,9 +485,10 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             typerelNodes = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(thisOType);
         }
 
-        List<MMObjectNode> nodes = new ArrayList<MMObjectNode>();
+
+        List nodes = new ArrayList();
         while (typerelNodes.hasMoreElements()) {
-            MMObjectNode n = typerelNodes.nextElement();
+            MMObjectNode n = (MMObjectNode) typerelNodes.nextElement();
             if ((requestedRole == -1) || (requestedRole == n.getIntValue("rnumber"))) {
                 int snumber = n.getIntValue("snumber");
                 int dnumber = n.getIntValue("dnumber");
@@ -521,8 +525,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
 
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){
         MMObjectBuilder builder = getMMObjectBuilder();
-        StringTagger params = new StringTagger("");
-        if (parameters != null) {
+        StringTagger params= new StringTagger("");
+        if (parameters!=null) {
             for (Iterator entries = parameters.entrySet().iterator(); entries.hasNext(); ) {
                 Map.Entry entry = (Map.Entry) entries.next();
                 String key=(String) entry.getKey();
@@ -536,9 +540,9 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         }
         try {
             StringTokenizer tokens= new StringTokenizer(command,"-");
-            List<String> v = builder.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud()), params, tokens);
+            List v = builder.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp, getCloud()), params, tokens);
             if (v == null) {
-                v = new ArrayList<String>();
+                v = new ArrayList();
             }
             int items=1;
             try {
@@ -546,25 +550,26 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             } catch (Exception e) {
                 log.warn("parameter 'ITEMS' must be a int value, it was :" + params.Value("ITEMS"));
             }
-            Vector<String> fieldlist = params.Values("FIELDS");
-            Vector<MMObjectNode> res = new Vector<MMObjectNode>(v.size() / items);
+            Vector fieldlist = params.Values("FIELDS");
+            Vector res = new Vector(v.size() / items);
             for (int i= 0; i<v.size(); i+=items) {
                 MMObjectNode node = new org.mmbase.module.core.VirtualNode(builder);
                 for(int j= 0; (j<items) && (j<v.size()); j++) {
                     if ((fieldlist!=null) && (j<fieldlist.size())) {
-                        node.setValue(fieldlist.get(j), v.get(i+j));
+                        node.setValue((String)fieldlist.get(j),v.get(i+j));
                     } else {
                         node.setValue("item"+(j+1),v.get(i+j));
                     }
                 }
                 res.add(node);
             }
-            if (res.size() > 0) {
+            if (res.size()>0) {
                 NodeManager tempNodeManager = new VirtualNodeManager((org.mmbase.module.core.VirtualNode)res.get(0), cloud);
                 return new BasicNodeList(res, tempNodeManager);
             }
             return createNodeList();
         } catch (Exception e) {
+            log.error(Logging.stackTrace(e));
             throw new BridgeException(e);
         }
     }
@@ -583,25 +588,21 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
 
     // overriding behavior of BasicNode
 
-    @Override
     public void commit() {
         super.commit();  // commit the node - the builder should now be loaded by TypeDef
         // rebuild builder reference and fieldlist.
         initManager();
     }
 
-    @Override
     public void delete(boolean deleteRelations) {
         super.delete(deleteRelations);
         builder=null;  // invalidate (builder does not exist any more)
     }
 
-    @Override
-    public Collection<Function<?>> getFunctions() {
+    public Collection getFunctions() {
         return  builder.getFunctions();
     }
 
-    @Override
     protected Function getNodeFunction(String functionName) {
         if (log.isDebugEnabled()) {
             log.debug("Getting function '" + functionName + "' for " + this);
@@ -621,16 +622,23 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     }
 
     public FieldList createFieldList() {
-        return new BasicFieldList(Collections.emptyList(), this);
+        return new BasicFieldList(Collections.EMPTY_LIST, this);
     }
 
     public NodeList createNodeList() {
-        return new BasicNodeList(Collections.emptyList(), this);
+        return new BasicNodeList(Collections.EMPTY_LIST, this);
     }
 
     public RelationList createRelationList() {
-        return new BasicRelationList(Collections.emptyList(), this);
+        return new BasicRelationList(Collections.EMPTY_LIST, this);
     }
+
+    /*
+    public String toString() {
+        return "NodeManager " + getName() + "( " + getNode().getNumber() + ")";
+    }
+    */
+
 
 }
 

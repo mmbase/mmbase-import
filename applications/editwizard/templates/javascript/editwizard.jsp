@@ -1,16 +1,17 @@
-/** -*- mode: java -*-
+<% response.setContentType("text/javascript"); %>
+/**
  * editwizard.jsp
  * Routines for refreshing the edit wizard,
  * interaction between form elements, navigation,
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.75 2008-11-28 16:51:01 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.62.2.8 2008-05-09 14:01:40 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
  */
-<% response.setContentType("text/javascript"); %>
+
 var form = null;
 
 function doOnLoad_ew() {
@@ -22,9 +23,7 @@ function doOnLoad_ew() {
 
     //scan form fields
     for (var i=0; i<form.elements.length; i++) {
-
         var elem = form.elements[i];
-
 
         // set date fields to clientside now time if a new wizard.
         var superId = elem.getAttribute("super");
@@ -40,8 +39,8 @@ function doOnLoad_ew() {
               var d = new Date();
 
               if (elem.name == "internal_" + id + "_day") {
-                if (elem.selectedIndex) {
-                  elem.selectedIndex = d.getDate() - 1;
+                if (elem.selectedIndex) { 
+                elem.selectedIndex = d.getDate() - 1;
                 } else {
                   elem.value = d.getDate();
                 }
@@ -93,9 +92,7 @@ function doOnUnLoad_ew() {
 // onunload handler with one of his own. It is hard to override that one,
 // because a timer is used to wait a while before attaching it.
 // In short, DON'T USE OR OVERRIDE THIS FUNCTION.
-    //
 }
-
 
 //********************************
 // COMMAND STUFF

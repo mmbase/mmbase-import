@@ -1,4 +1,5 @@
 /*
+ * Created on 7-sep-2005
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative. The
  * license (Mozilla version 1.0) can be read at the MMBase site. See
@@ -6,15 +7,19 @@
  */
 package org.mmbase.core.event;
 
+import java.util.Properties;
+import org.mmbase.module.core.*;
+import org.mmbase.util.logging.*;
+
 /**
  * This class is the event broker implementation for the RelationEvent
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @author Ernst Bunders
- * @version $Id: RelationEventBroker.java,v 1.13 2007-07-26 11:45:54 michiel Exp $
  */
 public class RelationEventBroker extends AbstractEventBroker {
+
+    private static Logger log = Logging.getLoggerInstance(RelationEventBroker.class);
 
     /**
      * use this property to make shure your listener only gets the relation

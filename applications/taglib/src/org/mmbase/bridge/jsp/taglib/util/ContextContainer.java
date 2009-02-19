@@ -25,10 +25,10 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.64 2008-12-29 11:19:17 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.53.2.2 2006-11-21 20:39:56 michiel Exp $
  **/
 
-public abstract class ContextContainer extends AbstractMap<String, Object> implements Map<String, Object> {
+public abstract class ContextContainer extends AbstractMap implements Map {
     private static final Logger log = Logging.getLoggerInstance(ContextContainer.class);
 
     public static final int LOCATION_NOTSET         = -10;
@@ -112,18 +112,17 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      *
      * @since MMBase-1.8
      */
-    public abstract Backing getBacking();
+    protected abstract Backing getBacking();
 
 
     public void release(PageContext pc, ContextContainer p) {
         getBacking().pullPageContext(pc);
-        // restore also the parent.
+        // restore also the parent.xb
         parent = p;
     }
 
 
-    @Override
-    public Set<Entry<String, Object>> entrySet() {
+    public Set entrySet() {
         return getBacking().entrySet();
     }
 
@@ -151,9 +150,6 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      * @since MMBase-1.8
      */
     public void setParent(PageContext pc, ContextContainer p) {
-        if (log.isDebugEnabled()) {
-            log.debug("Setting parent of " + getClass() + " "  + this + " to " + pc + " backing " + getBacking().getClass());
-        }
         getBacking().pushPageContext(pc);
         parent = p;
     }
@@ -172,15 +168,35 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         return getBacking().getPageContext();
     }
 
+
+    /**
+     * Keys must be Strings, so put(Object, ..) is forbidden in this HashMap!
+     */
+
+    public Object put(Object key, Object value) {
+        if (key instanceof String) {
+            try {
+                return put((String) key, value);
+            } catch (JspTagException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            throw new RuntimeException("Error, key should be string in ContextContainers! (Tried " + key.getClass().getName() + ")");
+        }
+    }
+
     /**
      * Not all Strings can be allowed as keys. Keys are like variable names.
      */
-    @Override
-    public Object put(String key, Object value) {
+
+    public Object put(String key, Object value) throws JspTagException {
         if (key.indexOf('.') != -1) {
-            throw new RuntimeException("Key may not contain dots (" + key + ")");
+            throw new JspTagException("Key may not contain dots (" + key + ")");
         }
         return getBacking().put(key, value);
+    }
+    public boolean containsKey(Object key) {
+        throw new RuntimeException("Error, key should be string in ContextContainers!");
     }
 
     /**
@@ -226,7 +242,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             if (c instanceof ContextContainer) {
                 return new ContextContainerPair((ContextContainer)c, newKey, wentDown);
             } else if (c instanceof Map) {
-                return new MapPair((Map<String, Object>)c, newKey, wentDown);
+                return new MapPair((Map)c, newKey, wentDown);
             } else {
                 return new BeanPair(c, newKey, wentDown);
             }
@@ -239,14 +255,11 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      * Like containsKey but doesn't check for dots.
      */
     private boolean simpleContainsKey(String key, boolean checkParent) {
-        if (getBacking().containsKey(key)) {
-            return true;
-        } else if (checkParent && parent != null) {
-            log.debug("Checking " + parent + " for " + key);
-            return parent.simpleContainsKey(key, true);
-        } else {
-            return false;
+        boolean result = getBacking().containsKey(key);
+        if (!result && checkParent && parent != null) {
+            result = parent.simpleContainsKey(key, true);
         }
+        return result;
     }
 
     /**
@@ -265,14 +278,8 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         }
     }
 
-    @Override
-    public boolean containsKey(Object key) {
-        try {
-            return containsKey((String) key, true);
-        } catch (Exception e) {
-            log.error(e);
-            return false;
-        }
+    public boolean containsKey(String key) throws JspTagException {
+        return containsKey(key, true);
     }
 
     /**
@@ -299,20 +306,28 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         }
     }
 
+    /**
+     *
+     */
 
-    @Override
+    public Object get(String key) throws JspTagException {
+        return get(key, true);
+    }
+
     public Object get(Object key) {
+        if (!(key instanceof String)) {
+            return null;
+        }
         try {
-            return get((String) key, true);
+            return get((String)key, true);
         } catch (JspTagException e) {
-            log.warn("Exception when trying to get value '" + key + "': " + e, e);
+            log.warn("Exception when trying to get value '" + key + "': " + e);
         }
         return null;
     }
 
-    @Override
-    public Set<String> keySet() {
-        HashSet<String> result = new HashSet<String>(getBacking().keySet());
+    public Set keySet() {
+        HashSet result = new HashSet(getBacking().keySet());
         if (parent != null) {
             result.addAll(parent.keySet());
         }
@@ -322,7 +337,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     /**
      * @since MMBase-1.7
      */
-    Set<String> keySet(boolean checkParent) {
+    Set keySet(boolean checkParent) {
         if (checkParent) {
             return keySet();
         } else {
@@ -398,6 +413,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             }
             if (! valid) {
                 JspTagException exception = new TaglibException ("'" + newId + "' is not a valid Context identifier", new Throwable());
+                log.info(Logging.stackTrace(exception));
                 throw exception;
             }
 
@@ -427,21 +443,24 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     /**
      * @since MMBase-1.7
      */
-    void registerAll(Map<String, Object> map) throws JspTagException {
+    void registerAll(Map map) throws JspTagException {
         if (map == null) return;
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            register(entry.getKey(), entry.getValue());
+        Iterator i = map.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            String key = (String) entry.getKey();
+            register(key, entry.getValue());
         }
 
     }
     /**
      * @since MMBase-1.7
      */
-    void unRegisterAll(Set<String> set) throws JspTagException {
+    void unRegisterAll(Set set) throws JspTagException {
         if (set == null) return;
-        Iterator<String> i = set.iterator();
+        Iterator i = set.iterator();
         while (i.hasNext()) {
-            String key = i.next();
+            String key = (String) i.next();
             unRegister(key);
         }
 
@@ -508,7 +527,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
                 throw new TaglibException("Unsupported Encoding ", e);
             }
         } else if (value instanceof List) {
-            ListIterator<Object> i = ((List<Object>)value).listIterator();
+            ListIterator i = ((List)value).listIterator();
             while(i.hasNext()) {
                 i.set(fixEncoding(i.next(), encoding));
             }
@@ -549,15 +568,15 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
                 log.debug("Cannot use cookies");
             } else {
                 log.debug("Found cookies");
-                for (Cookie element : cookies) {
+                for (int i=0; i< cookies.length; i++) {
                     if (log.isDebugEnabled()) {
-                        log.debug(element.getName() + "/" + element.getValue());
+                        log.debug(cookies[i].getName() + "/" + cookies[i].getValue());
                     }
-                    if (element.getName().equals(referId)) {
+                    if (cookies[i].getName().equals(referId)) {
                         // simply return the first value found.
                         // this is probably a little to simple...
                         // since a cookie can e.g. also have another path.
-                        result = element.getValue();
+                        result = cookies[i].getValue();
                         break;
                     }
                 }
@@ -598,7 +617,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             if (resultvec != null) {
                 if (log.isDebugEnabled()) log.debug("Found: " + resultvec);
                 if (resultvec.length > 1) {
-                    result = fixEncoding(java.util.Arrays.asList(resultvec), pageContext);
+                    result = (List) fixEncoding(java.util.Arrays.asList(resultvec), pageContext);
                 } else {
                     result = fixEncoding(resultvec[0], pageContext);
                 }
@@ -725,8 +744,8 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         if (value == null) {
             return false;
         } else {
-            if (value instanceof Collection) {
-                if (((Collection) value).size() == 0) return false;
+            if (value instanceof List) {
+                if (((List) value).size() == 0) return false;
             }
             return true;
         }
@@ -753,7 +772,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         if (id == null) {
             return "the context without id " + getBacking().toString();
         } else {
-            return "context '" + id  + "'";
+            return "context '" + id  + "'" + getBacking().toString();
         }
     }
 }
@@ -805,8 +824,8 @@ class ContextContainerPair extends Pair {
  * @since MMBase-1.8
  */
 class MapPair extends Pair {
-    private Map<String, Object> map;
-    MapPair(Map<String, Object> c, String k, boolean w) {
+    private Map map;
+    MapPair(Map c, String k, boolean w) {
         super(k, w);
         map = c;
     }
@@ -832,8 +851,8 @@ class MapPair extends Pair {
  * @since MMBase-1.8
  */
 class BeanPair extends Pair {
-    private final Object bean;
-    private final Class<? extends Object> clazz;
+    private Object bean;
+    private Class clazz;
     BeanPair(Object c, String k, boolean w) {
         super(k, w);
         bean = c;
@@ -844,16 +863,14 @@ class BeanPair extends Pair {
         String methodKey =  Character.toUpperCase(key.charAt(0)) + key.substring(1);
         Method method;
         try {
-            method = clazz.getMethod("get" + methodKey);
+            method = clazz.getMethod("get" + methodKey, null);
         } catch (Exception e) {
             try {
-                method = clazz.getMethod("is" + methodKey);
+                method = clazz.getMethod("is" + methodKey, null);
             } catch (Exception f) {
                 return null;
             }
         }
-        //while (! method.isAccessible()) {
-        //}
         return method;
     }
     final boolean containsKey(String key, boolean checkParent) throws JspTagException {
@@ -865,9 +882,9 @@ class BeanPair extends Pair {
         try {
             Method method = getMethod(key);
             if (method == null) return null;
-            return method.invoke(bean);
+            return method.invoke(bean, null);
         } catch (Exception iae) {
-            throw new TaglibException(iae.getClass() + " Method " + getMethod(key) + " for " + bean + ": " + iae.getMessage(), iae);
+            throw new TaglibException(iae.getMessage(), iae);
         }
     }
     final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {

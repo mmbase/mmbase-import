@@ -10,9 +10,12 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
+import org.mmbase.util.Casting;
 import org.mmbase.bridge.util.MapNode;
 import org.mmbase.module.core.VirtualNode;
 import org.mmbase.module.core.MMObjectNode;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import java.util.*;
 
 /**
@@ -20,7 +23,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.23 2008-12-22 17:30:20 michiel Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.19 2005-12-29 22:03:13 michiel Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValue {
@@ -48,7 +51,7 @@ public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValu
         super(null, cloud);
         Object v = value;
         if (v instanceof List) { // might be a collection of MMObjectNodes
-            List<Node> list  = (List<Node>) v;
+            List list  = (List) v;
             if (list.size() > 0) {
                 Object first = list.get(0);
                 if (first instanceof MMObjectNode || first instanceof Node) { // if List of MMObjectNodes, make NodeList
@@ -60,8 +63,9 @@ public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValu
                         }
                         // throw new IllegalStateException("Cloud is unknown, cannot convert MMObjectNode to Node");
                     }
-                    NodeList l = new BasicNodeList(list, cloud);
+                    NodeList l = cloud.createNodeList();
                     v = l;
+                    l.addAll(list);
                 }
             }
         }
@@ -79,7 +83,6 @@ public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValu
         return o;
     }
 
-    @Override
     public Object get() {
         return value;
     }

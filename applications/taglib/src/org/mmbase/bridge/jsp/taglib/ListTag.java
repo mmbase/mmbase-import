@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.54 2008-11-06 12:25:11 michiel Exp $
+ * @version $Id: ListTag.java,v 1.51.2.1 2007-02-16 09:13:25 andre Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -106,7 +106,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
     }
 
     protected QueryContainer getListContainer() throws JspTagException {
-        return findParentTag(ListContainerTag.class, (String) container.getValue(this), false);
+        return (QueryContainer) findParentTag(ListContainerTag.class, (String) container.getValue(this), false);
     }
 
     /**
@@ -124,7 +124,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
         if (c == null || path != Attribute.NULL) {
             // old-style, container-less working
             if (path == Attribute.NULL) {
-                throw new JspTagException("Path attribute is mandatory if referid not speficied");
+                throw new JspTagException("Path attribute is mandatory if referid not specified");
             }
 
             String distinctString = distinct.getString(this).toLowerCase();
@@ -135,7 +135,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
 
 
             String searchString = search.getString(this).toUpperCase();
-            if (searchString.length() == 0) {
+            if (searchString.equals("")) {
                 searchString = "BOTH";
             } else if (
                 !searchString.equals("BOTH")
@@ -153,14 +153,14 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
             }
 
             query = Queries.createQuery(getCloudVar(),
-                                        getSearchNodes(),
-                                        getPath(),
-                                        fields.getString(this),
-                                        (String) constraints.getValue(this),
-                                        (String) orderby.getValue(this),
-                                        (String) directions.getValue(this),
-                                        searchString,
-                                        searchDistinct);
+                    getSearchNodes(),
+                    getPath(),
+                    fields.getString(this),
+                    (String) constraints.getValue(this),
+                    (String) orderby.getValue(this),
+                    (String) directions.getValue(this),
+                    searchString,
+                    searchDistinct);
         } else {   // container found!
             if (path != Attribute.NULL || search != Attribute.NULL) {
                 throw new JspTagException("search and path attributes not supported within a container.");

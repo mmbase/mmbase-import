@@ -13,7 +13,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.19 2008-07-10 10:02:11 michiel Exp $
+     * @version  $Id: processuploads.jsp,v 1.18 2004-09-30 09:13:48 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -50,9 +50,9 @@ if (! ewconfig.subObjects.empty()) {
 }
 
     String did = request.getParameter("did");
-    long maxsize = ewconfig.maxupload;
+    int maxsize = ewconfig.maxupload;
     try {
-        maxsize = Long.parseLong(request.getParameter("maxsize"));
+        maxsize = Integer.parseInt(request.getParameter("maxsize"));
     } catch (Exception e) {}
 
     // Initialization
@@ -94,7 +94,7 @@ if (! ewconfig.subObjects.empty()) {
                   }
                   wizardConfig.wiz.setBinary(fi.getFieldName(), fi.get(), fileName, fullFileName, fi.getContentType());
                   fileCount++;
-                }
+                } 
             }
         }
         out.println("Uploaded files:" + fileCount);

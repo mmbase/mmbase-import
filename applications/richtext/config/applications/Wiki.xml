@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="Wiki" maintainer="mmbase.org" version="3" auto-deploy="false">
+<application name="Wiki" maintainer="mmbase.org" version="2" auto-deploy="false">
 
   <requirements>
     <requires name="RichTextBasics" maintainer="mmbase.org" version="1" />
@@ -19,7 +19,6 @@
     <relation from="wikiobjects"    to="urls"        type="idrel" /><!-- inline urls -->
     <relation from="wikiobjects"    to="images"      type="idrel" /><!-- inline images -->
     <relation from="wikiobjects"    to="attachments" type="idrel" /><!-- inline images -->
-    <relation from="wikiobjects"    to="flashobjects" type="idrel" /><!-- inline images -->
   </allowedrelationlist>
 
   <datasourcelist />

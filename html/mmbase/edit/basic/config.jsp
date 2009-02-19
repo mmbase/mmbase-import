@@ -16,12 +16,12 @@
     <mm:write cookie="mmjspeditors_indexoffset"   referid="indexoffset"      />
     <mm:write cookie="mmjspeditors_page_size"     referid="page_size"      />
     <mm:write cookie="mmjspeditors_xmlmode"       referid="xmlmode"      />
-  </mm:context>
+  </mm:context>  
   <form name="config">
     <table class="edit" summary="editor configuration" width="93%"  cellspacing="1" cellpadding="3" border="0">
       <tr><th colspan="2"><%= m.getString("config.config") %></th></tr>
       <tr>
-        <td><%= m.getString("config.pagesize")%></td>
+        <td><%= m.getString("config.pagesize")%></td>  
         <td>
           <mm:import id="mmjspeditors_page_size_list" vartype="list">5,10,20,30,40,100</mm:import>
           <select name="mmjspeditors_page_size">
@@ -63,7 +63,7 @@
         </td>
       </tr>
       <tr>
-        <td><%= m.getString("config.session")%></td>
+        <td><%= m.getString("config.session")%></td>  
         <td><input type="text" size="30" name="mmjspeditors_session" value="<mm:write referid="config.session" />" /></td>
       </tr>
       <tr>
@@ -71,7 +71,7 @@
           <mm:write referid="config.lang">
             <mm:compare value="en" inverse="true">language/</mm:compare>
           </mm:write>
-          <%= m.getString("config.language") %></td>
+          <%= m.getString("config.language") %></td>  
         <td>
           <input type="text" size="30" name="mmjspeditors_language" value="<mm:write referid="config.lang" />" />
           <select name="languages" onChange="document.forms['config'].elements['mmjspeditors_language'].value = document.forms['config'].elements['languages'].value;">
@@ -83,10 +83,10 @@
               <option value="<mm:write referid="config.lang" />" selected="selected"><mm:locale language="$config.lang" jspvar="loc"><%= loc.getDisplayLanguage(loc)%></mm:locale></option>
             </mm:notpresent>
           </select>
-        </td>
+        </td>        
       </tr>
       <tr>
-        <td><%= m.getString("config.country") %></td>
+        <td><%= m.getString("config.country") %></td>  
         <td>
           <input type="text" size="30" name="mmjspeditors_country" value="<mm:write referid="config.country" />" />
           <select name="countries" onChange="document.forms['config'].elements['mmjspeditors_country'].value = document.forms['config'].elements['countries'].value;">
@@ -98,10 +98,10 @@
               <option value="<mm:write referid="config.country" />" selected="selected"><mm:locale language="$config.lang" country="$config.country" jspvar="loc"><%= loc.getDisplayCountry(loc)%></mm:locale></option>
             </mm:notpresent>
           </select>
-        </td>
+        </td>        
       </tr>
       <tr>
-        <td><%= m.getString("config.xmlmode") %></td>
+        <td><%= m.getString("config.xmlmode") %></td>  
         <td>
           <select name="mmjspeditors_xmlmode">
             <mm:import id="xmlmodes" vartype="list">wiki,xml,prettyxml,kupu</mm:import>
@@ -109,13 +109,13 @@
               <option value="<mm:write />" <mm:compare referid2="config.xmlmode">selected="selected"</mm:compare>><mm:write /></option>
             </mm:aliaslist>
           </select>
-        </td>
+        </td>        
       </tr>
       <input type="hidden" name="configsubmitted" value="yes" />
       <tr><td colspan="2"><input type="submit"  name="config" value="config" /></td></tr>
     </table>
   </form>
   <mm:cloud method="asis" jspvar="cloud">
-    <%@ include file="foot.jsp"  %>
+    <%@ include file="foot.jsp"  %>      
   </mm:cloud>
 </mm:content>

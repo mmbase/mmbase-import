@@ -1,24 +1,35 @@
-<%@ page import="org.mmbase.bridge.*" %>
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<mm:cloud rank="administrator" loginpage="login.jsp" jspvar="cloud">
-<div
-  class="mm_c mm_c_core mm_c_b_email ${requestScope.componentClassName}"
-  id="${requestScope.componentId}">
-  
-  <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@page import="org.mmbase.bridge.*" %>
+<%@include file="../settings.jsp" %>
+<mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
+<html xmlns="http://www.w3.org/TR/xhtml">
+<head>
+<title>Timed Email Queue Monitor</title>
+<meta http-equiv="pragma" value="no-cache" />
+<meta http-equiv="expires" value="0" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
+</head>
+<body class="basic" >
 
-
-
-<mm:hasnodemanager name="email">
 <table summary="email test">
+
 <%
-    // mm:hasnodemanager already did the check for NotFoundException
-    NodeManager email=email=cloud.getNodeManager("email");
+    NodeManager email=null;
+    try {
+       email=cloud.getNodeManager("email");
+    } catch (NotFoundException e) {}
 %>
 
 <tr>
   <th class="header" colspan="4">Dynamic &amp; Timed Email System - Queue Monitor - v1.0</th>
 </tr>
+<% if (email==null) { %>
+<tr>
+  <td class="multidata" colspan="4"><p>Email builder not active</p></td>
+</tr>
+<% } else { %>
+
 <tr>
   <td class="multidata" colspan="4"><p>This tool shows the performamce of the timed MMBase email builder.</p></td>
 </tr>
@@ -55,6 +66,8 @@
   </td>
 </tr>
 
+<% } %>
+
 <tr><td>&nbsp;</td></tr>
 
 <tr class="footer">
@@ -62,10 +75,5 @@
 <td class="data" colspan="3">Return to home page</td>
 </tr>
 </table>
-</mm:hasnodemanager>
-<mm:hasnodemanager name="email" inverse="true">
-  <p>email not installed</p>
-</mm:hasnodemanager>
-
-</div>
+</body></html>
 </mm:cloud>

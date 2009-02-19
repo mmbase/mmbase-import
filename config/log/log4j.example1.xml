@@ -4,12 +4,12 @@
          <!ENTITY logdir   "${catalina.base}/logs/" >
 ]>
 
-<!--
-  MMBase logging configuration
+<!-- 
+  MMBase logging configuration 
 
   This is an example. It does the following.
 
-  It uses tree appenders (both are very slow!). The first one is the regular log file
+  It uses tree appenders (both are very slow!). The first one is the regular log file 
   ,the second is used only to log events from the security classes, and the last one logs
   sql-queries.
 
@@ -17,7 +17,8 @@
   to use environment variables like the catalina.base
 
 -->
-<log4j:configuration  debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/" >
+
+<log4j:configuration>
 
 <!-- appenders -->
 <!-- This file is rather slow, because of code information, use it -->
@@ -30,8 +31,8 @@
 	    <param name="ConversionPattern" value="%d %-5p %c{4} %M.%L %x - %m%n" />
     </layout>
   </appender>
-
-
+  
+  
   <appender name="securityfile" class="org.apache.log4j.FileAppender" >
     <param name="File"   value="&logdir;mmtestsecurity.log" />
     <param name="Append" value="true" />
@@ -40,42 +41,47 @@
     </layout>
   </appender>
 
-  <!--
+  <!-- 
   Another example: The sqllog appender can be used for
-  'org.mmbase.QUERIES' (see below), to achieve logging of every SQL
+  'MultiConnection' (see below), to achieve logging of every SQL
   query, which is handy during debugging
-   See also config/utils/querylogging.xml for how to configure the relation between query duration and logging level.
   -->
+  
   <appender name="sqllog" class="org.apache.log4j.FileAppender" >
     <param name="File" value="&logdir;mmbase-sql.log" />
-    <param name="Encoding"   value="UTF-8" />
+    <param name="Encoding"   value="UTF-8" />    
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{MM-dd HH:mm:ss} %m%n" />
     </layout>
   </appender>
 
-
+  
   <!-- categories -->
-
+  
   <!-- base logger for all MMBase classes -->
   <logger name="org.mmbase">
     <!-- nothing special -->
   </logger>
-
+  
   <logger name="org.mmbase.security" additivity="false" >
     <level class="&mmlevel;" value ="info" />
     <appender-ref ref="securityfile" />
   </logger>
 
   <!-- SQL logging -->
-  <logger name="org.mmbase.QUERIES" additivity="false">
-    <level class="&mmlevel;" value ="debug" />
+  <logger name="org.mmbase.module.database.MultiConnection" additivity="false">
+    <level class="&mmlevel;" value ="debug" />   
     <appender-ref ref="sqllog" />
   </logger>
 
+  
+  <logger name="STDERR">
+    <priority class="&priority;" value ="debug" />	
+  </logger>
+  
   <root>
     <level class="&mmlevel;" value="info" />
    	<appender-ref ref="logfile" />
   </root>
-
+  
 </log4j:configuration>

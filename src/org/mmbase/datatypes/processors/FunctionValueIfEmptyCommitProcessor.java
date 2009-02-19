@@ -11,6 +11,7 @@ package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
+import java.util.Date;
 
 /**
  * If this commit-processor is configured on a field, then on commit of the node, the value of a
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.*;
  * 'fieldName') parameter.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionValueIfEmptyCommitProcessor.java,v 1.4 2008-04-02 12:37:17 michiel Exp $
+ * @version $Id: FunctionValueIfEmptyCommitProcessor.java,v 1.1.2.3 2008-04-02 12:33:53 michiel Exp $
  * @since MMBase-1.8.5
  */
 

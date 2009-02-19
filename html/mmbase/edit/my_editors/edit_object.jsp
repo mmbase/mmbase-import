@@ -53,11 +53,10 @@
 <div id="node">
 <mm:import externid="change" />
 <mm:import externid="new_alias" />
-<mm:import externid="property_key" /><mm:import externid="property_value" />
 <form enctype="multipart/form-data" method="post" action="<mm:url referids="nr" />">
   <fieldset>
   <div class="firstrow">
-    <strong><mm:link page="edit_object.jsp" referids="nr"><a href="${_}">#  <mm:field name="number" /></a></mm:link></strong>
+    <strong># <mm:field name="number" /></strong>
     <mm:maydelete><a href="<mm:url page="delete_object.jsp" referids="nr" />" title="delete"><img src="img/mmbase-delete.png" alt="delete" width="21" height="20" /></a></mm:maydelete>
     <h2>Edit node of type <mm:nodeinfo type="guinodemanager" />  (<mm:nodeinfo type="type" />)</h2>
   </div>
@@ -92,12 +91,7 @@
   </mm:fieldlist>
   <%-- /editfields --%>
   
-  <mm:compare referid="ntype" value="oalias" inverse="true">
-    <%@ include file="inc/aliases.jsp" %>
-  </mm:compare>
-  <mm:compare referid="ntype" value="properties" inverse="true">
-    <mm:hasnodemanager name="properties"><%@ include file="inc/properties.jsp" %></mm:hasnodemanager>
-  </mm:compare>
+  <%@ include file="inc/aliases.jsp" %>
   <mm:maywrite>
     <div class="lastrow">
       <input type="submit" name="change" value="Change" />

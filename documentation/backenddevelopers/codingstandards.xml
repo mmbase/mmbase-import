@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Summary of Coding Standards</title>
     <date>2003-02-14</date>
-    <edition>$Id: codingstandards.xml,v 1.12 2008-08-27 07:18:26 michiel Exp $</edition>
+    <edition>$Id: codingstandards.xml,v 1.10 2006-06-21 05:24:39 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -52,7 +52,7 @@
   </section>
   <section id="introduction">
     <title>Introduction</title>
-    <para>We understand that formatting is a matter of taste and that many developers prefer other formmatting styles, but try to stick to the
+    <para>We understamd that formatting is a matter of taste and that many developers prefer other formmatting styles, but try to stick to the
     guidelines. We are using them to keep the code readable. Don't take it personally when someone points you to the coding standards when you submit
     some code. We will accept your code anyway.</para>
   </section>
@@ -198,15 +198,8 @@
     <itemizedlist>
       <listitem>
         <simpara>Indentation is four spaces for each block. Do not use tabs.</simpara>
-        <simpara>This deviates from some standards, there are differences in how people use tabs or
-        how editors show them. The alternative would have been to use ONLY tabs, but this conflicts
-        with the java code conventions of SUN, which tells us to indent with units of 4 spaces and
-        have a tab width of 8. So a tab can only replace <emphasis>two</emphasis> indents. So
-        because the logical tab width is 4 and the required tab width is 8. This made us choose to
-        require to not use tabs at all, this is compatible with both the logical and the required
-        choice of tab-width, while not incompatible with the SUN code conventions because those
-        <emphasis>don't</emphasis> say that you have to use tabs. We simply add to these conventions
-        that you have to <emphasis>not use tabs</emphasis></simpara>
+        <simpara>This deviates from some standards, there are differences in how people use tabs or how editors show them. The alternate would be to
+        use ONLY tabs (which is not likely to work).</simpara>
       </listitem>
       <listitem>
         <simpara>A keyword followed by a parenthesis should be separated by a space (i.e. if (...))</simpara>
@@ -219,12 +212,6 @@
       </listitem>
       <listitem>
         <simpara>All binary operators should be separated by spaces.</simpara>
-      </listitem>
-      <listitem>
-	<simpara>The Code Conventions for the JavaTM Programming Language tells us to avoid lines
-	longer than 80 characters. You could do that, but since it is the 21th century, probably not
-	many people are using such small terminals. You could instruct your editor to wrap at 100
-	characters or so too.</simpara>
       </listitem>
     </itemizedlist>
   </section>

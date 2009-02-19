@@ -48,8 +48,6 @@
     <type-mapping name="XML" type="TEXT" />
     <type-mapping name="DATETIME" type="TIMESTAMP" />
     <type-mapping name="BOOLEAN" type="BOOLEAN" />
-    <type-mapping name="DECIMAL"       type="NUMERIC({0}, {1})" />
-
     <type-mapping name="LIST[FLOAT]"   type="FLOAT[]" />
     <type-mapping name="LIST[DOUBLE]"  type="DOUBLE PRECISION[]" />
     <type-mapping name="LIST[LONG]"    type="BIGINT[]" />

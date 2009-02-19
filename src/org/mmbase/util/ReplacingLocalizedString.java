@@ -15,23 +15,25 @@ import org.mmbase.util.logging.*;
 /**
  * Extends and wraps LocalizedString. It extends to look like a 'normal' LocalizedString, but it
  * overrides 'get' to do token-replacements first.
- *
+ * 
  * This functionality is not in LocalizedString itself, because now you can have different
  * replacements on the same value set represented by a LocalizedString withouth having to copy
  * everything every time.
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReplacingLocalizedString.java,v 1.8 2008-11-14 10:07:37 michiel Exp $
+ * @version $Id: ReplacingLocalizedString.java,v 1.4 2005-10-21 16:46:11 michiel Exp $
  * @since MMBase-1.8
  */
-public class ReplacingLocalizedString extends WrappedLocalizedString {
-
+public class ReplacingLocalizedString extends LocalizedString {
+    
     private static final Logger log = Logging.getLoggerInstance(ReplacingLocalizedString.class);
 
-    private List<Map.Entry<String, String>> replacements = new ArrayList<Map.Entry<String, String>>();
 
+    private LocalizedString wrapped;
+    private List replacements = new ArrayList();
 
+    
     // just for the contract of Serializable
     protected ReplacingLocalizedString() {
 
@@ -41,18 +43,21 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
      * @param s The wrapped LocalizedString.
      */
     public ReplacingLocalizedString(LocalizedString s) {
-        super(s);
+        if (s == null) s = new LocalizedString("NULL");
+        wrapped = s;
     }
-
+    
     public void replaceAll(String regexp, String replacement) {
-        replacements.add(new Entry<String, String>(regexp, replacement));
+        replacements.add(new Entry(regexp, replacement));
     }
 
     protected String replace(String input) {
         String output = input;
-        for (Map.Entry<String, String> entry : replacements) {
+        Iterator i = replacements.iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
             try {
-                output = output.replaceAll(entry.getKey(), entry.getValue());
+                output = output.replaceAll((String) entry.getKey(), (String) entry.getValue());
             } catch (Throwable t) {
                 log.warn("Could not replace " + entry + " in " + input + " because " + t);
             }
@@ -60,9 +65,24 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
         return output;
     }
 
+    //javadoc inherited
+    public String getKey() {
+        return wrapped.getKey();
+    }
+
+    //javadoc inherited
+    public void setKey(String key) {
+        wrapped.setKey(key);
+    }
+
     // javadoc inherited
     public String get(Locale locale) {
-        return replace(super.get(locale));
+        return replace(wrapped.get(locale));
+    }
+
+    //javadoc inherited
+    public void set(String value, Locale locale) {
+        wrapped.set(value, locale);
     }
 
     /**
@@ -70,47 +90,54 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
      *
      * Also takes into account the replacements in the values (but only 'lazily', when actually requested).
      */
-    public Map<Locale, String> asMap() {
-        final Map<Locale, String> map = super.asMap();
-        return new AbstractMap<Locale, String>() {
-            public Set<Map.Entry<Locale, String>> entrySet() {
-                return new AbstractSet<Map.Entry<Locale, String>>() {
-                    public int size() {
-                        return map.size();
-                    }
-                    public Iterator<Map.Entry<Locale, String>> iterator() {
-                        final Iterator<Map.Entry<Locale, String>> it = map.entrySet().iterator();
-                        return new Iterator<Map.Entry<Locale, String>>() {
-                            public boolean hasNext() {
-                                return it.hasNext();
+    public Map asMap() {
+        final Map map = super.asMap();
+        return new AbstractMap() {
+                public Set entrySet() {
+                    return new AbstractSet() {
+                            public int size() {
+                                return map.size();
                             }
-                            public Map.Entry<Locale, String> next() {
-                                final Map.Entry<Locale, String> value = it.next();
-                                return new Map.Entry<Locale, String>() {
-                                    public Locale getKey() {
-                                        return value.getKey();
-                                    }
-                                    public String  getValue() {
-                                        return replace(value.getValue());
-                                    }
-                                    public String setValue(String v) {
-                                        throw new UnsupportedOperationException(); // map is umodifiable
-                                    }
-                                };
-                            }
-                            public void remove() {
-                                throw new UnsupportedOperationException(); // map is umodifiable
+                            public Iterator iterator() {
+                                final Iterator it = map.entrySet().iterator();
+                                return new Iterator() {
+                                        public boolean hasNext() {
+                                            return it.hasNext();
+                                        }
+                                        public Object next() {
+                                            final Map.Entry value = (Map.Entry) it.next();
+                                            return new Map.Entry() {
+                                                    public Object getKey() {
+                                                        return value.getKey();
+                                                    }
+                                                    public Object getValue() {
+                                                        return replace((String) value.getValue());
+                                                    }
+                                                    public Object setValue(Object v) {
+                                                        throw new UnsupportedOperationException(); // map is umodifiable
+                                                    }
+                                                };
+                                        }
+                                        public void remove() {
+                                            throw new UnsupportedOperationException(); // map is umodifiable
+                                        }
+                                    };
                             }
                         };
-                    }
-                };
-            }
-        };
+                }
+            };
     }
 
+    // javadoc inherited
+    public void setBundle(String b) {
+        wrapped.setBundle(b);
+    }
 
-    @SuppressWarnings("unchecked")
-    public ReplacingLocalizedString clone() {
+    public String toString() {
+        return "replacing-" + wrapped.toString();
+    }
+
+    public Object clone() {
         ReplacingLocalizedString clone = (ReplacingLocalizedString) super.clone();
         clone.replacements = (List)((ArrayList)replacements).clone();
         return clone;
@@ -121,8 +148,7 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
      */
     public static String makeLiteral(String s) {
         // sometimes, implementing java looks rather idiotic, but honestely, this is correct!
-        s =  s.replaceAll("\\\\", "\\\\\\\\");
-        s =  s.replaceAll("\\.", "\\\\.");
+        s =  s.replaceAll("\\\\", "\\\\\\\\"); 
         return s.replaceAll("\\$", "\\\\\\$");
     }
 
@@ -130,7 +156,7 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
     public static void main(String argv[]) {
         ReplacingLocalizedString s = new ReplacingLocalizedString(new LocalizedString("abcd"));
         s.replaceAll("b", makeLiteral(argv[0]));
-        System.out.println(s.get((Locale) null));
+        System.out.println(s.get(null));
     }
 
 }

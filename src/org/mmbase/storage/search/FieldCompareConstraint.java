@@ -15,7 +15,7 @@ package org.mmbase.storage.search;
  * This corresponds with comparison operators <, =, > and LIKE in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: FieldCompareConstraint.java,v 1.5 2008-11-25 12:53:02 michiel Exp $
+ * @version $Id: FieldCompareConstraint.java,v 1.4 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public interface FieldCompareConstraint extends FieldConstraint {
@@ -35,8 +35,6 @@ public interface FieldCompareConstraint extends FieldConstraint {
     /** Operator 'like' */
     public final static int LIKE = 7;
 
-    public final static int REGEXP = 8;
-
     /**
      * Operator descriptions corresponding to the operator values:
      * {@link #LESS}, {@link #LESS_EQUAL}, {@link #EQUAL}, {@link #NOT_EQUAL},
@@ -45,7 +43,7 @@ public interface FieldCompareConstraint extends FieldConstraint {
     public final static String[] OPERATOR_DESCRIPTIONS = new String[] {
         null, // not specified
         "less than", "less than or equal", "equal", "not equal",
-        "greater than", "greater than or equal", "like", "regexp"
+         "greater than", "greater than or equal", "like"
     };
 
     /**

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<templates exportsource="mmbase://grgrijze.toly.net/null/v2" timestamp="20090210213553">
-	<node number="70" owner="default">
-		<title>Contact</title>
-		<description>Template voor een contactpagina</description>
-		<url>/contact.jsp</url>
-	</node>
-
-</templates>

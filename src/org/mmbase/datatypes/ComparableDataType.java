@@ -12,8 +12,9 @@ package org.mmbase.datatypes;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.LocalizedString;
+import org.mmbase.util.DynamicDate;
 import org.w3c.dom.Element;
 
 /**
@@ -21,10 +22,10 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.41 2008-12-22 17:02:53 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.21.2.4 2008-06-09 10:18:40 michiel Exp $
  * @since MMBase-1.8
  */
-public abstract class ComparableDataType<E extends java.io.Serializable & Comparable<E>> extends BasicDataType<E> {
+public abstract class ComparableDataType extends BasicDataType {
 
     private static final Logger log = Logging.getLoggerInstance(ComparableDataType.class);
 
@@ -33,26 +34,26 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
     protected MinRestriction minRestriction  = new MinRestriction(true);
     protected MaxRestriction maxRestriction  = new MaxRestriction(true);
 
-    protected ComparableDataType(String name, Class<E> classType) {
+    protected ComparableDataType(String name, Class classType) {
         super(name, classType);
     }
 
-    @Override protected void inheritRestrictions(BasicDataType<E> origin) {
+    protected void inheritRestrictions(BasicDataType origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof ComparableDataType) {
-            ComparableDataType<E> compOrigin = (ComparableDataType<E>) origin;
+            ComparableDataType compOrigin = (ComparableDataType) origin;
 
-            E currentMin = minRestriction.getValue();
+            Comparable currentMin = (Comparable)minRestriction.getValue();
             // cast origin minimum type to new datatype type
-            E originMin = cast(compOrigin.minRestriction.getValue(), null, null);
+            Comparable originMin = (Comparable)cast(compOrigin.minRestriction.getValue(), null, null);
             // Only apply the new min if it is higher
             if (currentMin == null || (originMin != null &&  (currentMin.compareTo(originMin) < 0))) {
                 minRestriction.inherit(compOrigin.minRestriction, true);
             }
 
-            E currentMax = maxRestriction.getValue();
+            Comparable currentMax = (Comparable)maxRestriction.getValue();
             // cast origin maximum type to new datatype type
-            E originMax = cast(compOrigin.maxRestriction.getValue(), null, null);
+            Comparable originMax = (Comparable)cast(compOrigin.maxRestriction.getValue(), null, null);
             // Only apply the new max if it is lower
             if (currentMax == null || (originMax != null &&  (currentMax.compareTo(originMax) > 0))) {
                 maxRestriction.inherit(compOrigin.maxRestriction, true);
@@ -60,10 +61,10 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
         }
     }
 
-    @Override protected void cloneRestrictions(BasicDataType<E> origin) {
+    protected void cloneRestrictions(BasicDataType origin) {
         super.cloneRestrictions(origin);
         if (origin instanceof ComparableDataType) {
-            ComparableDataType<E> dataType = (ComparableDataType<E>) origin;
+            ComparableDataType dataType = (ComparableDataType) origin;
             minRestriction  = new MinRestriction(dataType.minRestriction);
             maxRestriction  = new MaxRestriction(dataType.maxRestriction);
         }
@@ -71,7 +72,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
 
     /**
      */
-    public DataType.Restriction<E> getMinRestriction() {
+    public DataType.Restriction getMinRestriction() {
         return minRestriction;
     }
 
@@ -85,7 +86,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
 
     /**
      */
-    public DataType.Restriction<E> getMaxRestriction() {
+    public DataType.Restriction getMaxRestriction() {
         return maxRestriction;
     }
 
@@ -103,37 +104,38 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
      *
      * If the default value of comparable datatype is somewhy out the range, it will be truncated into it.
      */
-    @Override public  E getDefaultValue(Locale locale, Cloud cloud, Field field) {
-        E def = super.getDefaultValue(locale, cloud, field);
-        if (! minRestriction.valid(def, null, null)) {
+    public Object getDefaultValue(Locale locale, Cloud cloud, Field field) {
+        Object def = super.getDefaultValue(locale, cloud, field);
+        if (! minRestriction.valid(def, null, field)) {
             def = minRestriction.getValue();
-        } else if (! maxRestriction.valid(def, null, null)) {
+        } else if (! maxRestriction.valid(def, null, field)) {
             def = maxRestriction.getValue();
         }
         return def;
     }
 
 
-    @Override public void toXml(Element parent) {
+    public void toXml(Element parent) {
         super.toXml(parent);
 
         if (minRestriction.getValue() != null) {
             if (minRestriction.isInclusive()) {
-                addRestriction(parent, "(minInclusive|minExclusive)", "minInclusive",   "name,description,class,property,default,unique,required,(minInclusive|minExclusive)", minRestriction);
+                addRestriction(parent, "(minInclusive|minExclusive)", "minInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive)", minRestriction);
 
             } else {
-                addRestriction(parent, "(minExclusive|minInclusive)", "minExclusive",  "name,description,class,property,default,unique,required,(minInclusive|minExclusive)", minRestriction);
+                addRestriction(parent, "(minExclusive|minInclusive)", "minExclusive",  "description,class,property,default,unique,required,(minInclusive|minExclusive)", minRestriction);
             }
         }
         if (maxRestriction.getValue() != null) {
             if (maxRestriction.isInclusive()) {
-                addRestriction(parent, "(maxInclusive|maxExclusive)", "maxInclusive",   "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)", maxRestriction);
+                addRestriction(parent, "(maxInclusive|maxExclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)", maxRestriction);
             } else {
-                addRestriction(parent, "(maxExclusive|maxInclusive)", "maxInclusive",   "name,description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)", maxRestriction);
+                addRestriction(parent, "(maxExclusive|maxInclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)", maxRestriction);
             }
         }
 
     }
+
 
     /**
      * Sets the minimum Date value for this data type.
@@ -141,11 +143,11 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
      * @param inclusive whether the minimum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MMBase)
      */
-    public void setMin(E value, boolean inclusive) {
+    public void setMin(Comparable value, boolean inclusive) {
         edit();
         checkType(value);
         if (inclusive != minRestriction.isInclusive()) minRestriction = new MinRestriction(inclusive);
-        minRestriction.setValue(value);
+        minRestriction.setValue((java.io.Serializable) value);
     }
 
 
@@ -155,32 +157,29 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
      * @param inclusive whether the maximum value is inclusive or not
      * @throws Class Identifier: java.lang.UnsupportedOperationException if this data type is read-only (i.e. defined by MMBase)
      */
-    public void setMax(E value, boolean inclusive) {
+    public void setMax(Comparable value, boolean inclusive) {
         edit();
         checkType(value);
         if (inclusive != maxRestriction.isInclusive()) maxRestriction = new MaxRestriction(inclusive);
-        maxRestriction.setValue(value);
+        maxRestriction.setValue((java.io.Serializable) value);
     }
 
-    @Override public int getEnforceStrength() {
-        int enforceStrength = Math.max(super.getEnforceStrength(), minRestriction.getEnforceStrength());
-        return Math.max(enforceStrength, maxRestriction.getEnforceStrength());
-    }
 
-    @Override protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value,  Node node, Field field) {
+
+    protected Collection validateCastValue(Collection errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = minRestriction.validate(errors, castValue, node, field);
         errors = maxRestriction.validate(errors, castValue, node, field);
         return errors;
     }
 
-    @Override public ComparableDataType<E> clone(String name) {
-        ComparableDataType<E> clone = (ComparableDataType<E>) super.clone(name);
+    public Object clone(String name) {
+        ComparableDataType clone = (ComparableDataType) super.clone(name);
         return clone;
     }
 
-    @Override protected StringBuilder toStringBuilder() {
-        StringBuilder buf = super.toStringBuilder();
+    protected StringBuffer toStringBuffer() {
+        StringBuffer buf = super.toStringBuffer();
         Object minValue = minRestriction.getValue();
         Object maxValue = maxRestriction.getValue();
         if (minValue != null) {
@@ -207,7 +206,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
         return buf;
     }
 
-    protected class MinRestriction extends AbstractRestriction<E> {
+    protected class MinRestriction extends AbstractRestriction {
         private boolean inclusive;
         MinRestriction(MinRestriction source) {
             super(source);
@@ -218,7 +217,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
             inclusive = inc;
         }
 
-        @Override protected boolean simpleValid(Object v, Node node, Field field) {
+        protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             Comparable comparable = (Comparable) v;
             Comparable minimum;
@@ -229,15 +228,14 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
                 // invalid value, but not because of min-restriction
                 return true;
             }
-            int ct = comparable.compareTo(minimum);
-            if (inclusive && (ct == 0)) return true;
-            return ct > 0;
+            if (inclusive && (comparable.equals(minimum))) return true;
+            return comparable.compareTo(minimum) > 0;
         }
         public boolean isInclusive() {
             return inclusive;
         }
     }
-    protected class MaxRestriction extends AbstractRestriction<E>  {
+    protected class MaxRestriction extends AbstractRestriction {
         private boolean inclusive;
         MaxRestriction(MaxRestriction source) {
             super(source);
@@ -247,7 +245,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
             super("max" + (inc ? "Inclusive" : "Exclusive"), null);
             inclusive = inc;
         }
-        @Override protected boolean simpleValid(Object v, Node node, Field field) {
+        protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
             Comparable comparable = (Comparable) v;
             Comparable maximum;
@@ -258,9 +256,8 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
                 // invalid value, but not because of max-restriction
                 return true;
             }
-            int ct = comparable.compareTo(maximum);
-            if (inclusive && (ct == 0)) return true;
-            boolean res = ct < 0;
+            if (inclusive && (comparable.equals(maximum))) return true;
+            boolean res = comparable.compareTo(maximum) < 0;
             return res;
         }
 

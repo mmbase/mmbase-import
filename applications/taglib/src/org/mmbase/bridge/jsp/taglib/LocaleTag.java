@@ -17,14 +17,18 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import java.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * Provides Locale (language, country) information  to its body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTag.java,v 1.32 2009-01-03 11:08:49 nklasens Exp $
+ * @version $Id: LocaleTag.java,v 1.28.2.2 2007-08-16 08:46:14 michiel Exp $
  */
 
 public class LocaleTag extends CloudReferrerTag  {
+    private static final Logger log = Logging.getLoggerInstance(LocaleTag.class);
 
     public static final String KEY = "javax.servlet.jsp.jstl.fmt.locale.request";
     public static final String TZ_KEY = "org.mmbase.timezone";
@@ -36,12 +40,11 @@ public class LocaleTag extends CloudReferrerTag  {
     private Attribute timezone =  Attribute.NULL;
 
     protected Locale locale;
-    protected Locale prevCloudLocale = null;
-    protected Locale prevJstlLocale = null;
+    protected Locale prevLocale = null;
     protected Cloud  cloud;
     private String jspvar = null;
 
-    protected Set<String> varyHeaders;
+    protected Set varyHeaders;
 
     // ------------------------------------------------------------
     // Attributes (documenation can be found in tld).
@@ -87,19 +90,19 @@ public class LocaleTag extends CloudReferrerTag  {
             }
             // compatibility with jstl fmt tags:
             // should use their constant, but that would make compile-time dependency.
-            prevJstlLocale = (Locale) pageContext.findAttribute(KEY);
+            prevLocale = (Locale) pageContext.findAttribute(KEY);
             pageContext.setAttribute(KEY, locale, SCOPE);
             CloudProvider cloudProvider = findCloudProvider(false);
             if (cloudProvider != null) {
                 cloud = cloudProvider.getCloudVar();
-                prevCloudLocale = cloud.getLocale();
+                prevLocale = cloud.getLocale();
                 cloud.setLocale(locale);
             } else {
                 cloud = null;
             }
         }
         String tz = timezone.getString(this);
-        if (tz.length() != 0) {
+        if (timezone != null && ! tz.equals("")) {
             pageContext.setAttribute(TZ_KEY, TimeZone.getTimeZone(tz), SCOPE);
         } else {
             if (pageContext.getAttribute(TZ_KEY, SCOPE) == null) {
@@ -136,16 +139,15 @@ public class LocaleTag extends CloudReferrerTag  {
     }
 
     protected void addVary(String header) {
-        if (varyHeaders == null) varyHeaders = new HashSet<String>();
+        if (varyHeaders == null) varyHeaders = new HashSet();
         varyHeaders.add(header);
     }
-
     /**
      * @throws JspTagException
      */
     protected void determineLocaleFromAttributes() throws JspTagException {
         String l = language.getString(this);
-        if (l.length() != 0) {
+        if (! l.equals("")) {
             if (l.equalsIgnoreCase("client")) {
                 locale = pageContext.getRequest().getLocale();
                 addVary("Accept-Language");
@@ -175,14 +177,11 @@ public class LocaleTag extends CloudReferrerTag  {
 
     public int doEndTag() throws JspTagException {
         if (locale != null) {
-            if (prevCloudLocale != null) {
+            if (prevLocale != null) {
+                pageContext.setAttribute(KEY, prevLocale, SCOPE);
                 if (cloud != null) {
-                    cloud.setLocale(prevCloudLocale);
+                    cloud.setLocale(prevLocale);
                 }
-            }
-            
-            if (prevJstlLocale != null) {
-                pageContext.setAttribute(KEY, prevJstlLocale, SCOPE);
             } else {
                 pageContext.removeAttribute(KEY, SCOPE);
             }
@@ -195,8 +194,7 @@ public class LocaleTag extends CloudReferrerTag  {
     public void doFinally() {
         cloud = null;
         locale = null;
-        prevCloudLocale = null;
-        prevJstlLocale = null;
+        prevLocale = null;
         jspvar = null;
         super.doFinally();
     }

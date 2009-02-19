@@ -11,7 +11,7 @@
 <%
     /**
      * @since    MMBase-1.8.4
-     * @version  $Id: unlinklistitem.jsp,v 1.5 2008-08-01 16:40:13 michiel Exp $
+     * @version  $Id: unlinklistitem.jsp,v 1.2.2.5 2008-02-21 16:02:26 andre Exp $
      * @author   Michiel Meeuwissen
      */
 
@@ -19,7 +19,7 @@
     Config.SubConfig con = (Config.SubConfig) ewconfig.subObjects.peek();
     wizard = con.wizard;
 
-    Wizard wiz = new Wizard(request, ewconfig.uriResolver, wizard, null, cloud);
+    Wizard wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, wizard, null, cloud);
     Node unlinkaction = Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='unlink']");
     String relationOriginNode = (String) con.getAttributes().get("relationOriginNode");
     if (relationOriginNode == null) relationOriginNode = (String) con.getAttributes().get("origin");
@@ -30,7 +30,7 @@
         org.mmbase.bridge.Node n      = cloud.getNode(objectnumber);
         org.mmbase.bridge.Node origin = cloud.getNode(relationOriginNode);
         log.debug("objectnumber " + n.getNumber() + " " + origin.getNumber() + " " + relationOriginNode);
-
+        
         RelationList l = SearchUtil.findRelations(n, origin, relationRole, relationCreateDir);
         log.debug("" + l);
         RelationIterator i = l.relationIterator();
@@ -39,7 +39,7 @@
           //log.info("deleting " + r);
           r.delete();
         }
-
+        
         response.sendRedirect(response.encodeRedirectURL("list.jsp?proceed=true&sessionkey=" + sessionKey));
     } else {
         // No delete action defined in the wizard schema. We cannot delete.

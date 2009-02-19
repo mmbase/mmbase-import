@@ -16,6 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.util.xml.*;
@@ -39,7 +40,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.32 2008-12-01 17:24:34 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.21.2.2 2008-01-28 18:43:54 michiel Exp $
  */
 
 public class DataTypes {
@@ -78,68 +79,52 @@ public class DataTypes {
 
     }
 
-    /**
-     * Retry to read a datype which previously failed to read. It could succeed now, because other
-     * datatypes, on which it may depend, were defined in the mean time.
-     * @return The number of datatypes which were resolved after all.
-     */
-    private static int readFailedDependencies(List<DependencyException> failed) {
-        int resolved = 0;
-        ListIterator<DependencyException> i = failed.listIterator();
+    private static void readFailedDependencies(List failed) {
+        ListIterator i = failed.listIterator();
         while(i.hasNext()) {
-            DependencyException de = i.next();
+            DependencyException de = (DependencyException) i.next();
             if (de.retry()) {
                 log.debug("Resolved " + de.getId() + " after all");
-                resolved++;
                 i.remove();
             }
         }
-        return resolved;
     }
 
     /**
      * Initialize the type handlers defaultly supported by the system, plus those configured in WEB-INF/config.
      */
     private static void readDataTypes(ResourceLoader loader, String resource) {
-        List<URL> resources = loader.getResourceList(resource);
+        List resources = loader.getResourceList(resource);
         if (log.isDebugEnabled()) log.debug("Using " + resources);
-        ListIterator<URL> i = resources.listIterator();
-        List<DependencyException> failed = new ArrayList<DependencyException>();
+        ListIterator i = resources.listIterator();
+        List failed = new ArrayList();
         while (i.hasNext()) i.next();
         while (i.hasPrevious()) {
             try {
-                URL u = i.previous();
+                URL u = (URL) i.previous();
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
-                    log.service("Reading " + u + " with weight " + ResourceLoader.getWeight(u));
                     InputSource dataTypesSource = new InputSource(con.getInputStream());
                     dataTypesSource.setSystemId(u.toExternalForm());
-                    DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true,
-                                                                           new org.mmbase.util.xml.ErrorHandler(),
-                                                                           new org.mmbase.util.xml.EntityResolver(true, DataTypeReader.class));
+                    DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true, new XMLErrorHandler(), new XMLEntityResolver(true, DataTypeReader.class));
                     Document doc = db.parse(dataTypesSource);
                     Element dataTypesElement = doc.getDocumentElement(); // fieldtypedefinitons or datatypes element
-                    List<DependencyException> f = DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector);
-                    log.service("Failed " + f);
-                    failed.addAll(f);
-                } else {
-                    log.debug("Not reading, because not existing " + u);
+                    failed.addAll(DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector));
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
         }
-
-        while (readFailedDependencies(failed) > 0);
-
+        int previousFailedSize = -1;
+        while (failed.size() > 0 && failed.size() > previousFailedSize) {
+            previousFailedSize = failed.size();
+            log.debug(failed);
+            readFailedDependencies(failed);
+        }
         if (failed.size() > 0) {
             log.error("Failed " + failed);
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Read datatypes: " + dataTypeCollector.toString());
-        } else {
-            log.service("Read datatypes: " + dataTypeCollector.getDataTypes().keySet());
-        }
+        if (log.isDebugEnabled()) log.debug(dataTypeCollector.toString());
     }
 
     /**
@@ -151,7 +136,7 @@ public class DataTypes {
      * @param classType The class of the datatype to create. If <code>null</code> is passed, the
       *          dataType returned is based on Object.class.
      */
-    public static <C> BasicDataType<C> createDataType(String name, Class<C> classType) {
+    public static BasicDataType createDataType(String name, Class classType) {
         int type = Fields.classToType(classType);
         if (name == null && classType != null) {
             name = classType.getName();
@@ -159,7 +144,7 @@ public class DataTypes {
         if (type != Field.TYPE_UNKNOWN || classType == null) {
             return createDataType(name, type, classType.isPrimitive());
         } else {
-            return new BasicDataType<C>(name, classType);
+            return new BasicDataType(name, classType);
         }
     }
 
@@ -183,7 +168,6 @@ public class DataTypes {
         case Field.TYPE_NODE: return new NodeDataType(name);
         case Field.TYPE_DATETIME: return new DateTimeDataType(name);
         case Field.TYPE_LIST: return new ListDataType(name);
-        case Field.TYPE_DECIMAL: return new DecimalDataType(name);
         default: return new BasicDataType(name);
         }
     }
@@ -325,39 +309,30 @@ public class DataTypes {
      * Returns a new XML completely describing the given DataType.
      * This means that the XML will <em>not</em> have a base attribute.
      */
-    public static Document toXml(DataType<?> dataType) {
+    public static Document toXml(DataType dataType) {
         // create an inheritance stack
-        LinkedList<DataType<?>> stack = new LinkedList<DataType<?>>();
-        stack.addFirst(dataType);
+        List stack = new ArrayList();
+        stack.add(dataType);
         while (dataType.getOrigin() != null) {
             dataType = dataType.getOrigin();
-            stack.addFirst(dataType);
+            stack.add(0, dataType);
         }
 
         // new XML
         Document doc = DocumentReader.getDocumentBuilder().newDocument();
 
         // iterate the stack to completely resolve everything.
-        Iterator<DataType<?>> i = stack.iterator();
-        dataType = i.next();
+        Iterator i = stack.iterator();
+        dataType = (DataType) i.next();
         Element e = (Element) doc.importNode(dataType.toXml(), true);
         doc.appendChild(e);
         dataType.toXml(e);
         while (i.hasNext()) {
-            dataType = i.next();
+            dataType = (DataType) i.next();
             dataType.toXml(e);
         }
         DocumentReader.setPrefix(doc, DataType.XMLNS, "dt");
         return doc;
-    }
-
-    public static void main(String arg[]) throws Exception {
-        DataTypes.initialize();
-        DataType dt = DataTypes.getDataType(arg[0]);
-        if (dt == null) {
-            throw new Exception("No such datatyep " + arg[0]);
-        }
-        System.out.println(org.mmbase.util.xml.XMLWriter.write(DataTypes.toXml(dt), true, true));
     }
 
 }

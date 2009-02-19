@@ -1,3 +1,9 @@
+// Mozilla does not like this.
+var hist = window.history;
+if (hist) {
+    hist.go(1);
+}
+
 var cancelClick = false;
 
 function objMouseOver(el) {
@@ -24,7 +30,7 @@ function doDelete(prompt) {
       conf = confirm(prompt);
    } else {
       conf=true;
-   }
+   }	
    cancelClick=true;
    return conf;
 }

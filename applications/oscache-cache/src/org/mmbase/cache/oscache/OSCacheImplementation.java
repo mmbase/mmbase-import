@@ -31,7 +31,7 @@ import java.util.Collection;
  * </pre>
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
-public class OSCacheImplementation<K, V> implements CacheImplementationInterface<K, V>  {
+public class OSCacheImplementation implements CacheImplementationInterface  {
     private AbstractConcurrentReadCache cacheImpl;
     private static final String classname = com.opensymphony.oscache.base.algorithm.LRUCache.class.getName();
     private static final String persistanceclass = com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener.class.getName();
@@ -44,7 +44,7 @@ public class OSCacheImplementation<K, V> implements CacheImplementationInterface
      * This method is called by MMBase to configure the cache using the given
      * map of configuration parameters.
      */
-    public void config(Map<String, String> config) {
+    public void config(Map config) {
        try {
            Class c = Class.forName(classname);
            if (c != null) {
@@ -84,7 +84,7 @@ public class OSCacheImplementation<K, V> implements CacheImplementationInterface
     /**
      * Wrapper around the getCount() method of the cache implementation. (not implemented)
      */
-    public int getCount(K key) {
+    public int getCount(Object key) {
         return -1; //not implemented
     }
 
@@ -116,7 +116,7 @@ public class OSCacheImplementation<K, V> implements CacheImplementationInterface
     /**
      * Wrapper around the entrySet() method of the cache implementation.
      */
-    public Set<Map.Entry<K, V>> entrySet() {
+    public Set entrySet() {
         return cacheImpl.entrySet();
     }
 
@@ -130,11 +130,11 @@ public class OSCacheImplementation<K, V> implements CacheImplementationInterface
     /**
      * Wrapper around the get() method of the cache implementation.
      */
-    public V get(Object key) {
+    public Object get(Object key) {
         if (key instanceof String) {
-            return (V) cacheImpl.get(key);
+            return cacheImpl.get(key);
         } else {
-            return (V) cacheImpl.get(computeKey(key));
+            return cacheImpl.get(computeKey(key));
         }
     }
 
@@ -155,25 +155,19 @@ public class OSCacheImplementation<K, V> implements CacheImplementationInterface
     /**
      * Wrapper around the keySet() method of the cache implementation.
      */
-    public Set<K> keySet() {
+    public Set keySet() {
         return cacheImpl.keySet();
     }
 
     /**
      * Wrapper around the put() method of the cache implementation.
      */
-    public V put(K key, V value) {
-        V oldValue = get(key);
-        // returning does not work because of bug CACHE-255 in oscache (http://jira.opensymphony.com/browse/CACHE-255)
+    public Object put(Object key, Object value) {
         if (key instanceof String) {
-            //return (V) cacheImpl.put(key, value);
-            cacheImpl.put(key, value);
+            return cacheImpl.put(key, value);
         } else {
-            //return (V) cacheImpl.put(computeKey(key), value);
-            cacheImpl.put(computeKey(key), value);
-
+            return cacheImpl.put(computeKey(key), value);
         }
-        return oldValue;
     }
 
     /**
@@ -186,11 +180,11 @@ public class OSCacheImplementation<K, V> implements CacheImplementationInterface
     /**
      * Wrapper around the remove() method of the cache implementation.
      */
-    public V remove(Object key) {
+    public Object remove(Object key) {
         if (key instanceof String) {
-            return (V) cacheImpl.remove(key);
+            return cacheImpl.remove(key);
         } else {
-            return (V) cacheImpl.remove(computeKey(key));
+            return cacheImpl.remove(computeKey(key));
         }
     }
 
@@ -204,7 +198,7 @@ public class OSCacheImplementation<K, V> implements CacheImplementationInterface
     /**
      * Wrapper around the values() method of the cache implementation.
      */
-    public Collection<V> values() {
+    public Collection values() {
         return cacheImpl.values();
     }
 
@@ -234,10 +228,6 @@ public class OSCacheImplementation<K, V> implements CacheImplementationInterface
         throw new UnsupportedOperationException("Size is not available for OSCache");
     }
 
-    /**
-     * @todo This will also be used to lock 'get' iteration operations in QueryResultCache, but that
-     * is not actually needed for this implementation. You cannot synchronize on null though, in java.
-     */
     public Object getLock() {
         return cacheImpl;
     }

@@ -27,25 +27,22 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.30 2009-02-10 15:42:21 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.8.2.7 2007-09-07 15:51:53 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
  */
-public class BeanFunction extends AbstractFunction<Object> {
+public class BeanFunction extends AbstractFunction {
 
-
-    private static int producerSeq = 0;
     /**
      * @since MMBase-1.8.5
      */
     public static abstract class Producer {
         public abstract Object getInstance();
         public String toString() {
-            return getClass().getName() + "." + (producerSeq++);
+            return getClass().getName();
         }
     }
-
     private static final Logger log = Logging.getLoggerInstance(BeanFunction.class);
     /**
      * Utility function, searches an inner class of a given class. This inner class can perhaps be used as a
@@ -56,7 +53,8 @@ public class BeanFunction extends AbstractFunction<Object> {
      */
     public static Class getClass(Class claz, String name) {
         Class[] classes = claz.getDeclaredClasses();
-        for (Class c : classes) {
+        for (int j=0; j < classes.length; j++) {
+            Class c = classes[j];
             if (c.getName().endsWith("$" + name)) {
                 return c;
             }
@@ -67,7 +65,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     /**
      * A cache for bean classes. Used to avoid some reflection.
      */
-    private static Cache<String, BeanFunction> beanFunctionCache = new Cache<String, BeanFunction>(50) {
+    private static Cache beanFunctionCache = new Cache(50) {
         public String getName() {
             return "BeanFunctionCache";
         }
@@ -75,32 +73,27 @@ public class BeanFunction extends AbstractFunction<Object> {
             return "ClassName.FunctionName -> BeanFunction object";
         }
     };
-    static {
-        beanFunctionCache.putCache();
-    }
-
 
     /**
      * Gives back a Function object based on the 'bean' concept.
-     * @param claz The class which must be considered a 'bean' function
-     * @param name The name of the function (the name of a Method in the given class)
-     * @param producer An object that can produce in instance of the class
-     * <code>claz</code>. Defaults to a producer that simply calls <code>claz.newInstance()</code>
      * @since MMBase-1.8.5
      */
     public static BeanFunction getFunction(final Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         String key = claz.getName() + '.' + name + '.' + producer;
-        BeanFunction result = beanFunctionCache.get(key);
+        BeanFunction result = (BeanFunction) beanFunctionCache.get(key);
         if (result == null) {
             result = new BeanFunction(claz, name, producer);
+            log.debug("Created new function " + result);
             beanFunctionCache.put(key, result);
+        } else {
+            log.debug("Found in cache " + result);
         }
         return result;
     }
     /**
      * Called from {@link FunctionFactory}
      */
-    public static BeanFunction getFunction(final Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    public static Function getFunction(final Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         return getFunction(claz, name, new Producer() {
                 public Object getInstance()  {
                     try {
@@ -114,6 +107,7 @@ public class BeanFunction extends AbstractFunction<Object> {
                 }
             });
     }
+
     /**
      * Utitily function to create an instance of a certain class. Two constructors are tried, a one
      * argument one, and if that fails, simply newInstance is used.
@@ -123,17 +117,17 @@ public class BeanFunction extends AbstractFunction<Object> {
         Class c = constructorArgument.getClass();
         while (c != null) {
             try {
-                Constructor con = claz.getConstructor(c);
-                return con.newInstance(constructorArgument);
+                Constructor con = claz.getConstructor(new Class[] {c});
+                return con.newInstance(new Object[] {constructorArgument});
             } catch (NoSuchMethodException e) {
                 c = c.getSuperclass();
             }
         }
         Class[] interfaces = constructorArgument.getClass().getInterfaces();
-        for (Class element : interfaces) {
+        for (int i = 0; i < interfaces.length; i++) {
             try {
-                Constructor con = claz.getConstructor(element);
-                return con.newInstance(constructorArgument);
+                Constructor con = claz.getConstructor(new Class[] {interfaces[i]});
+                return con.newInstance(new Object[] {constructorArgument});
             } catch (NoSuchMethodException e) {
             }
 
@@ -141,34 +135,46 @@ public class BeanFunction extends AbstractFunction<Object> {
         return claz.newInstance();
     }
 
-
     /* ================================================================================
        Instance methods
        ================================================================================
     */
 
     /**
+     * This class of the bean
+     */
+    private final Class  claz;
+
+    /**
      * The method corresponding to the function called in getFunctionValue.
      */
     private final Method method;
 
+
     /**
      * A list of all found setter methods. This list 1-1 corresponds with getParameterDefinition. Every Parameter belongs to a setter method.
      */
-    private List<Method> setMethods = new ArrayList<Method>();
+    private final List   setMethods = new ArrayList();
+
 
     private final Producer producer;
+
+
 
     /**
      * The constructor! Performs reflection to fill 'method' and 'setMethods' members.
      */
     private  BeanFunction(Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException,  InvocationTargetException {
         super(name, null, null);
+        this.claz = claz;
         this.producer = producer;
+
 
         Method candMethod = null;
         // Finding the  methods to be used.
-        for (Method m : claz.getMethods()) {
+        Method[] methods = claz.getMethods();
+        for (int i = 0 ; i < methods.length; i++) {
+            Method m = methods[i];
             String methodName = m.getName();
             if (methodName.equals(name) && m.getParameterTypes().length == 0) {
                 candMethod = m;
@@ -179,7 +185,6 @@ public class BeanFunction extends AbstractFunction<Object> {
         if (candMethod == null) {
             throw new IllegalArgumentException("The class " + claz + " does not have method " + name + " (with no argument)");
         }
-
         method = candMethod;
 
         // Now finding the parameters.
@@ -187,23 +192,21 @@ public class BeanFunction extends AbstractFunction<Object> {
 
         // need a sample instance to get the default values from.
         Object sampleInstance = producer.getInstance();
+        if (sampleInstance == null) throw new RuntimeException("Producer " + producer + " did not produce an instance");
 
-        List<Parameter> parameters = new ArrayList<Parameter>();
+        List parameters = new ArrayList();
         Method nodeParameter = null;
-        for (Method m : claz.getMethods()) {
-            String methodName = m.getName();
-            Class[] parameterTypes = m.getParameterTypes();
+        for (int i = 0 ; i < methods.length; i++) {
+            Method method = methods[i];
+            String methodName = method.getName();
+            Class[] parameterTypes = method.getParameterTypes();
             if (parameterTypes.length == 1 && methodName.startsWith("set")) {
                 String parameterName = methodName.substring(3);
-                boolean required = false;
-                Required requiredAnnotation = m.getAnnotation(Required.class);
-                required = requiredAnnotation != null;
-
                 // find a corresponding getter method, which can be used for a default value;
                 Object defaultValue;
                 try {
-                    Method getter = claz.getMethod("get" + parameterName);
-                    defaultValue = getter.invoke(sampleInstance);
+                    Method getter = claz.getMethod("get" + parameterName, new Class[] {});
+                    defaultValue = getter.invoke(sampleInstance, new Object[] {});
                 } catch (NoSuchMethodException nsme) {
                     defaultValue = null;
                 }
@@ -217,17 +220,10 @@ public class BeanFunction extends AbstractFunction<Object> {
                     }
                 }
                 if (parameterName.equals("node") && org.mmbase.bridge.Node.class.isAssignableFrom(parameterTypes[0])) {
-                    nodeParameter = m;
+                    nodeParameter = method;
                 } else {
-                    if(defaultValue != null) {
-                        if (required) {
-                            log.warn("Required annotation ignored, because a default value is present");
-                        }
-                        parameters.add(new Parameter(parameterName, parameterTypes[0], defaultValue));
-                    } else {
-                        parameters.add(new Parameter(parameterName, parameterTypes[0], required));
-                    }
-                    setMethods.add(m);
+                    parameters.add(new Parameter(parameterName, parameterTypes[0], defaultValue));
+                    setMethods.add(method);
                 }
 
             }
@@ -236,7 +232,7 @@ public class BeanFunction extends AbstractFunction<Object> {
             parameters.add(Parameter.NODE);
             setMethods.add(nodeParameter);
         }
-        setParameterDefinition(parameters.toArray(Parameter.emptyArray()));
+        setParameterDefinition((Parameter[]) parameters.toArray(new Parameter[0]));
         ReturnType returnType = new ReturnType(method.getReturnType(), "");
         setReturnType(returnType);
 
@@ -256,22 +252,21 @@ public class BeanFunction extends AbstractFunction<Object> {
         return producer;
     }
 
-
     /**
      * {@inheritDoc}
      * Instantiates the bean, calls all setters using the parameters, and executes the method associated with this function.
      */
     public Object getFunctionValue(Parameters parameters) {
-        Object b = getProducer().getInstance();
-        int count = 0;
-        Iterator<?> i = parameters.iterator();
-        Iterator<Method> j = setMethods.iterator();
-        while(i.hasNext() && j.hasNext()) {
-            Object value  = i.next();
-            Method setter = j.next();
-            try {
+        try {
+            Object bean = getProducer().getInstance();
+            int count = 0;
+            Iterator i = parameters.iterator();
+            Iterator j = setMethods.iterator();
+            while(i.hasNext() && j.hasNext()) {
+                Object value = i.next();
+                Method method = (Method) j.next();
                 if (value == null) {
-                    if (setter.getParameterTypes()[0].isPrimitive()) {
+                    if (method.getParameterTypes()[0].isPrimitive()) {
                         log.debug("Tried to sed null in in primitive setter method");
                         //primitive types cannot be null, never mind.
                         continue;
@@ -280,26 +275,15 @@ public class BeanFunction extends AbstractFunction<Object> {
                 Object defaultValue = parameters.getDefinition()[count].getDefaultValue();
                 if ((defaultValue == null && value != null) ||
                     (defaultValue != null && (! defaultValue.equals(value)))) {
-                    setter.invoke(b, value);
+                    method.invoke(bean, new Object[] {value});
                 }
                 count++;
-            } catch (Exception e) {
-                throw new RuntimeException("" + setter + " value: " + value + " " + e.getMessage(), e);
             }
-
-        }
-        try {
-            Object ret =  method.invoke(b);
+            Object ret =  method.invoke(bean, new Object[] {});
             return ret;
         } catch (Exception e) {
-            throw new RuntimeException("" + this + " " + e.getMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 
-
-    public static void main(String[] argv) throws Exception {
-        Function fun = getFunction(Class.forName(argv[0]), argv[1]);
-        System.out.println("" + fun);
-        System.out.println("" + fun.createParameters());
-    }
 }

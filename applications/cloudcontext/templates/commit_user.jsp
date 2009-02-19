@@ -8,7 +8,7 @@
 
 <mm:compare referid="user" value="new">
   <mm:remove referid="user" />
-  <mm:import id="wasnew" />
+  <mm:import id="wasnew" />  
   <mm:createnode id="user" type="mmbaseusers" />
 </mm:compare>
 
@@ -20,10 +20,10 @@
       <mm:fieldlist type="edit" fields="owner">
         <mm:fieldinfo type="errors">
           <mm:compare inverse="true" regexp=".*\> \<\/.*">
-            <mm:fieldinfo type="guiname" />: <mm:write escape="none" />
+            <mm:fieldinfo type="guiname" />: <mm:write escape="none" /> 
           </mm:compare>
         </mm:fieldinfo>
-      </mm:fieldlist>
+      </mm:fieldlist>       
       <mm:valid>
         <mm:import id="valid" />
       </mm:valid>
@@ -37,7 +37,7 @@
   <mm:cloudinfo type="user" write="false" id="clouduser" />
   <mm:field name="username">
     <mm:compare referid2="clouduser" inverse="true">
-      <mm:import externid="_groups" vartype="list" jspvar="groups" />
+      <mm:import externid="_groups" vartype="list" jspvar="groups" /> 
       <mm:listrelations type="mmbasegroups" role="contains">
         <mm:relatednode jspvar="group">
           <% if (! groups.contains("" + group.getNumber())) { %>
@@ -48,9 +48,9 @@
           <mm:deletenode />
         </mm:present>
       </mm:listrelations>
-      <mm:unrelatednodes id="unrelated" type="mmbasegroups" />
+      <mm:unrelatednodes id="unrelated" type="mmbasegroups" />   
       <mm:write referid="unrelated" jspvar="unrelated" vartype="list">
-        <mm:stringlist referid="_groups">
+        <mm:stringlist referid="_groups">              
           <mm:node id="ugroup" number="$_" jspvar="ugroup">
             <% if (unrelated.contains(ugroup)) { %>
             <mm:createrelation source="ugroup" destination="user" role="contains" />
@@ -59,23 +59,16 @@
         </mm:stringlist>
       </mm:write>
       <mm:import externid="_rank" />
-      <mm:isnotempty referid="_rank">
-        <mm:relatednodescontainer type="mmbaseranks" role="rank">
-          <mm:constraint field="number" value="$_rank" />
-          <mm:size>
-            <mm:compare value="0">
-              <mm:listrelations type="mmbaseranks" role="rank">
-                <mm:deletenode />
-              </mm:listrelations>
-              <mm:node id="ranknode" number="$_rank" />
-              <mm:createrelation source="user" destination="ranknode" role="rank" />
-            </mm:compare>
-          </mm:size>
-        </mm:relatednodescontainer>
+      <mm:isnotempty referid="_rank">      
+        <mm:listrelations type="mmbaseranks" role="rank">
+          <mm:deletenode />
+        </mm:listrelations> 
+        <mm:node id="ranknode" number="$_rank" />
+        <mm:createrelation source="user" destination="ranknode" role="rank" />
       </mm:isnotempty>
     </mm:compare>
   </mm:field>
-
+  
   <%@include file="commitGroupOrUserRights.jsp" %>
     </mm:context>
 

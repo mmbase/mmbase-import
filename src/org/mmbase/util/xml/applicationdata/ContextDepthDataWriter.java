@@ -14,7 +14,9 @@ import java.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.XMLContextDepthReader;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.xml.ApplicationReader;
 
 /**
  * This class is used to write (export) a selection of nodes to xml format.
@@ -28,10 +30,14 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: ContextDepthDataWriter.java,v 1.6 2008-09-03 23:17:25 michiel Exp $
+ * @version $Id: ContextDepthDataWriter.java,v 1.2 2005-10-07 18:42:49 michiel Exp $
  */
 public class ContextDepthDataWriter  {
-    private static final Logger log = Logging.getLoggerInstance(ContextDepthDataWriter.class);
+
+    /**
+     * Logging instance
+     */
+    private static Logger log = Logging.getLoggerInstance(ContextDepthDataWriter.class.getName());
 
     /**
      * Writes an application's nodes, according to that application's contexts, to a path.
@@ -39,7 +45,7 @@ public class ContextDepthDataWriter  {
      * both datanodes and relation nodes.
      * @param app A <code>ApplicationReader</code> initialised to read the application's description (xml) file
      *		This object is used to retrieve what builder and relations are needed, and in which files data should be stored.
-     * @param capp A <code>ContextDepthDataReader</code> initialised to read the application's context file
+     * @param capp A <code>XMLContextDepthReader</code> initialised to read the application's context file
      *		This object is used to retrieve information regarding search depth and starting nodes for
      *		the search tree whoch determines what nodes are part of this application.
      * @param targetpath The path where to save the application
@@ -49,8 +55,8 @@ public class ContextDepthDataWriter  {
      *		Failure of the export itself is not detected, though may be visible in the messages returned.
      * @throws IOException if one or more files could not be written
      */
-    public static boolean writeContext(ApplicationReader app, ContextDepthDataReader capp,String targetpath,
-                                       MMBase mmb, Logger logger) {
+    public static boolean writeContext(ApplicationReader app, XMLContextDepthReader capp,String targetpath,
+                                       MMBase mmb, Logger logger) throws IOException {
         // First determine the startnodes, following the specs in the current context reader.
         int startnode=getStartNode(capp,mmb);
         if (startnode==-1) {
@@ -62,11 +68,11 @@ public class ContextDepthDataWriter  {
             return false;
         }
         // get valid builders to filter
-        HashSet<Integer> fb=getFilterBuilders(app.getNeededBuilders(),mmb.getTypeDef());
+        HashSet fb=getFilterBuilders(app.getNeededBuilders(),mmb.getTypeDef());
 
         // the trick is to get all nodes until depth x and filter them
-        HashSet<Integer> relnodes = new HashSet<Integer>();
-        HashSet<Integer> nodes = new HashSet<Integer>();
+        HashSet relnodes = new HashSet();
+        HashSet nodes = new HashSet();
         getSubNodes(startnode,depth,fb, nodes,relnodes,mmb);
 
         logger.info("Context found : "+nodes.size()+" nodes in application, "+relnodes.size()+" relations.");
@@ -90,7 +96,7 @@ public class ContextDepthDataWriter  {
      * @param mmb MMBase object used to retrieve builder information
      * @param logger Used to store messages that can be showmn to the user
      */
-    static void writeDataSources(ApplicationReader app, HashSet<Integer> nodes, String targetpath,MMBase mmb, Logger logger) {
+    static void writeDataSources(ApplicationReader app, HashSet nodes, String targetpath,MMBase mmb, Logger logger) {
         writeNodes(app, nodes, targetpath, mmb, logger, false);
    }
 
@@ -103,7 +109,7 @@ public class ContextDepthDataWriter  {
      * @param mmb MMBase object used to retrieve builder information
      * @param logger Used to store messages that can be showmn to the user
      */
-    static void writeRelationSources(ApplicationReader app, HashSet<Integer> nodes, String targetpath,MMBase mmb, Logger logger) {
+    static void writeRelationSources(ApplicationReader app, HashSet nodes, String targetpath,MMBase mmb, Logger logger) {
         writeNodes(app, nodes, targetpath, mmb, logger, true);
    }
 
@@ -116,7 +122,7 @@ public class ContextDepthDataWriter  {
      * @param logger Used to store messages that can be showmn to the user
      * @param isRelation Indicates whether the nodes to write are data (false) or relation (true) nodes
      */
-    static void writeNodes(ApplicationReader app, HashSet<Integer> nodes, String targetpath, MMBase mmb, Logger logger,
+    static void writeNodes(ApplicationReader app, HashSet nodes, String targetpath, MMBase mmb, Logger logger,
             boolean isRelation) {
 
         //before we write the data first sort the list
@@ -125,17 +131,17 @@ public class ContextDepthDataWriter  {
         //where the message nodes contain a thread nodefield
         //upon creation there first must exist a thread message
         //so the "thread message" will have a lower number
-        List<Integer> list = new Vector<Integer>();
+        List list = new Vector();
         list.addAll(nodes);
-        Collections.sort(list, new Comparator<Integer>(){
-            public int compare(Integer o1, Integer o2) {
-                return o1.compareTo(o2);
+        Collections.sort(list, new Comparator(){
+            public int compare(Object o1, Object o2) {
+                return ((Integer)o1).compareTo((Integer)o2);
             }
         }
         );
         // Retrieve an enumeration of sources to write
         // The list of sources retrieved is dependent on whether the nodes to write are data or relation nodes
-        Iterator<Map<String,String>> res;
+        Iterator res;
         if (isRelation) {
             res = app.getRelationSources().iterator();
         } else {
@@ -145,10 +151,10 @@ public class ContextDepthDataWriter  {
         String subtargetpath=targetpath+"/"+app.getName()+"/";
 
         // create a list of writer objects for the nodes
-        Hashtable<String, NodeWriter> nodeWriters = new Hashtable<String, NodeWriter>();
+        Hashtable nodeWriters = new Hashtable();
         while (res.hasNext()) {
-            Map<String,String> bset = res.next(); // retrieve source builder name
-            String name = bset.get("builder");
+            Hashtable bset = (Hashtable)res.next(); // retrieve source builder name
+            String name = (String) bset.get("builder");
 
             // Create nodewriter for this builder
             NodeWriter nw = new NodeWriter(mmb, logger, subtargetpath, name, isRelation);
@@ -158,12 +164,12 @@ public class ContextDepthDataWriter  {
         MMObjectBuilder bul = mmb.getMMObject("typedef"); // get Typedef object
         int nrofnodes=0;	// set total nodes to export to zero (is this used?).
         // Store all the nodes that apply using their corresponding NodeWriter object
-        for (Integer integer : list) {
+        for (Iterator nods=list.iterator(); nods.hasNext(); ) {
         // retrieve the node to export
-            int nr = integer.intValue();
+            int nr = ((Integer)nods.next()).intValue();
             MMObjectNode node = bul.getNode(nr);
             String name = node.getName();
-            NodeWriter nodeWriter = nodeWriters.get(name);
+            NodeWriter nodeWriter = (NodeWriter)nodeWriters.get(name);
             // export the node if the writer was found
             if (nodeWriter!=null) {
                 nodeWriter.write(node);
@@ -176,10 +182,10 @@ public class ContextDepthDataWriter  {
         }
 
         // close the files.
-        for (Enumeration<String> e = nodeWriters.keys(); e.hasMoreElements();) {
-            String name = e.nextElement();
+        for (Enumeration e = nodeWriters.keys(); e.hasMoreElements();) {
+            String name = (String)e.nextElement();
             NodeWriter nodeWriter;
-            nodeWriter = nodeWriters.get(name);
+            nodeWriter = (NodeWriter)nodeWriters.get(name);
             nodeWriter.done();
         }
     }
@@ -214,36 +220,36 @@ public class ContextDepthDataWriter  {
      * @param mmb MMBase object used to retrieve builder information
      */
 
-    static void getSubNodes(int startnodenr, int maxdepth, HashSet<Integer> fb, HashSet<Integer> nodesdoneSet, HashSet<Integer> relationnodesSet,MMBase mmb) {
-        HashSet<Integer> nodesSet_current = null;	// holds all nodes not yet 'done' that are on the current level
-        HashSet<Integer> nodesSet_next = new HashSet<Integer>();  // holds all nodes not yet 'done' that are on the next level
+    static void getSubNodes(int startnodenr, int maxdepth, HashSet fb, HashSet nodesdoneSet, HashSet relationnodesSet,MMBase mmb) {
+        HashSet nodesSet_current = null;	// holds all nodes not yet 'done' that are on the current level
+        HashSet nodesSet_next = new HashSet();  // holds all nodes not yet 'done' that are on the next level
         InsRel bul = mmb.getInsRel();		// builder for collecting relations. should be changed to MMRelations later on!
-        Integer type = bul.getNodeType(startnodenr);	// retrieve node type (new method in MMObjectBuiilder)
+        Integer type = new Integer(bul.getNodeType(startnodenr));	// retrieve node type (new method in MMObjectBuiilder)
         if (!fb.contains(type)) {   // exit if the type of this node conflicts.
             // essentially, no nodes are added. This can only occur if the context of
             // an application specified an invalid node.
             return;
         }
-        nodesSet_next.add(startnodenr); // add the very first node to the set...
+        nodesSet_next.add(new Integer(startnodenr)); // add the very first node to the set...
         // For each depth of the tree, traverse the nodes on that depth
         for (int curdepth=1;curdepth<=maxdepth;curdepth++) {
             nodesSet_current = nodesSet_next;	// use the next level of nodes to tarverse
-            nodesSet_next = new HashSet<Integer>();          // and create a new holder for the nodes one level deeper
+            nodesSet_next = new HashSet();          // and create a new holder for the nodes one level deeper
 
             // since the nodes on this level are 'almost done', and therefor should be skipped
             // when referenced in the next layer, add the current set to the set of nodes that are 'done'
             //
             nodesdoneSet.addAll(nodesSet_current);
             // iterate through the current level
-            for (Iterator<Integer> curlist=nodesSet_current.iterator(); curlist.hasNext();) {
+            for (Iterator curlist=nodesSet_current.iterator(); curlist.hasNext();) {
                 // get the next node's number
-                Integer thisnodenr = curlist.next();
+                Integer thisnodenr = (Integer)curlist.next();
                 // Iterate through all the relations of a node
                 // determining relations has to be adapted when using MMRelations!
-                for (Iterator<MMObjectNode> rel=bul.getRelationsVector(thisnodenr.intValue()).iterator(); rel.hasNext();) {
+                for (Iterator rel=bul.getRelationsVector(thisnodenr.intValue()).iterator(); rel.hasNext();) {
                     // get the relation node and node number
-                    MMObjectNode relnode = rel.next();
-                    Integer relnumber=relnode.getIntValue("number");
+                    MMObjectNode relnode=(MMObjectNode)rel.next();
+                    Integer relnumber=new Integer(relnode.getIntValue("number"));
                     // check whether to add the referenced node
                     // and the relation between this node and the referenced one.
                     // if relation is in pool, save trouble and do not traverse further
@@ -251,12 +257,12 @@ public class ContextDepthDataWriter  {
                         // determine node referenced
                         int nodenumber=getRelatedNode(thisnodenr.intValue(),relnode);
                         // check type of referenced node
-                        type = bul.getNodeType(nodenumber);
+                        type = new Integer(bul.getNodeType(nodenumber));
                         if (fb.contains(type)) {	// good node? then proceed
                             // add the relation node
                             relationnodesSet.add(relnumber);
                             // if the node has been 'done', don't add it!
-                            Integer nodeNumber=nodenumber;
+                            Integer nodeNumber=new Integer(nodenumber);
                             if (!nodesdoneSet.contains(nodeNumber)) {
                                 // because we use a set, no double nodes will be added (cool, uh?)
                                 nodesSet_next.add(nodeNumber);
@@ -278,13 +284,14 @@ public class ContextDepthDataWriter  {
      * @param bul reference to the TypeDef builder, used for rertrieving builder types
      * @return a <code>HashSet</code>, containing the types (Integer) of all builders part of this application.
      */
-    static HashSet<Integer> getFilterBuilders(List<Map<String,String>> filter,TypeDef bul) {
-        HashSet<Integer> resultset=new HashSet<Integer>();
-        for (Map<String, String> bset : filter) {
-            String name = bset.get("name");
+    static HashSet getFilterBuilders(Vector filter,TypeDef bul) {
+        HashSet resultset=new HashSet();
+        for(Iterator res=filter.iterator(); res.hasNext(); ) {
+            Hashtable bset=(Hashtable)res.next();
+            String name=(String)bset.get("name");
             int value=bul.getIntValue(name);
             if (value!=-1) {
-                resultset.add(value);
+                resultset.add(new Integer(value));
             } else {
                 log.error("XMLContextDepthWriter -> can't get intvalue for : "+name);
             }
@@ -296,11 +303,11 @@ public class ContextDepthDataWriter  {
     /**
      * Retrieves the number of the startnode referenced by the context configuration file..
      * Returns always only one node (should be changed?)
-     * @param capp ContextDepthDataReader object for retrieving data from the context
+     * @param capp XMLContextDepthReader object for retrieving data from the context
      * @param mmb reference to the MMBase object, used for retrieving aliases and builders
      * @return An <code>integer</code>, the number of the startnode if succesful, -1 otherwise.
      */
-    static int getStartNode(ContextDepthDataReader capp, MMBase mmb) {
+    static int getStartNode(XMLContextDepthReader capp, MMBase mmb) {
         // first check for an alias
         String alias=capp.getStartAlias();
         if (alias!=null) {
@@ -317,11 +324,11 @@ public class ContextDepthDataWriter  {
             MMObjectBuilder bul=mmb.getMMObject(builder);
             if (bul!=null) {
                 // find the nodes that match
-                Enumeration<MMObjectNode> results=bul.search(where);
+                Enumeration results=bul.search(where);
                 // check if there are any nodes
                 if (results.hasMoreElements()) {
                     // then return the first node found.
-                    MMObjectNode node = results.nextElement();
+                    MMObjectNode node=(MMObjectNode)results.nextElement();
                     return node.getIntValue("number");
                 }
             } else {
@@ -376,11 +383,11 @@ public class ContextDepthDataWriter  {
 
     /**
      * Writes the context file, based on what was supplied by the application
-     * @param capp ContextDepthDataReader providing original context data
+     * @param capp XMLContextDepthReader providing original context data
      * @param filename Name of the xml file to save.
      * @return always true
      */
-    public static boolean writeContextXML(ContextDepthDataReader capp,String filename) {
+    public static boolean writeContextXML(XMLContextDepthReader capp,String filename) {
         String body="<contextdepth>\n";
         String alias=capp.getStartAlias();
         if (alias!=null) {

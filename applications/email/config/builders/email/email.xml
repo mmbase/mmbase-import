@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="email" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: email.xml,v 1.18 2008-11-27 16:07:10 michiel Exp $ -->
+  <!-- @version $Id: email.xml,v 1.13 2007-10-11 17:47:50 michiel Exp $ -->
 
   <class>org.mmbase.applications.email.EmailBuilder</class>
   <searchage>14</searchage>
@@ -31,18 +31,6 @@
     <property name="groups-builder">pools</property> <!-- you might want to use 'groups' -->
     <property name="users-builder">people</property> <!-- you might want to use 'users' -->
     <property name="users-email-field">email</property>
-
-    <!-- Time, in seconds after which sent (ONESHOT) mails are deleted from the database
-         if set to a negative value, they will never be deleted.
-    -->
-
-    <property name="expireTime">1800</property>
-
-    <!--
-        How many seconds must there be between checks of 'expireTime'.
-
-    -->
-    <property name="sleepTime">60</property>
   </properties>
 
   <fieldlist>
@@ -64,8 +52,10 @@
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="true" />
         <minLength value="1" enforce="oncreate" />
-        <maxLength value="255" />
       </datatype>
+      <db>
+        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+      </db>
     </field>
     <field name="from">
       <descriptions>
@@ -117,7 +107,7 @@
     <field name="cc">
       <descriptions>
         <description xml:lang="en">Carbon copy email adress(es)</description>
-        <description xml:lang="nl">Doorslagemailadres(sen)</description>
+        <description xml:lang="nl">Doorslag email adres(sen)</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Cc</guiname>
@@ -134,7 +124,7 @@
     <field name="bcc">
       <descriptions>
         <description xml:lang="en">Blind carbon copy email adress(es)</description>
-        <description xml:lang="nl">Geheime doorslagemailadres(sen)</description>
+        <description xml:lang="nl">Geheime doorslag email adres(sen)</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Bcc</guiname>
@@ -163,12 +153,6 @@
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    <!--
-    This field is completely not implemented.
-    I think the meant functinality is available by starting the value of the body feidl with 'http:'.
-    (would also work for the subject btw).
-    -->
-    <!--
     <field name="bodyurl">
       <descriptions>
         <description xml:lang="en">URL to a script that generates the message to send</description>
@@ -184,7 +168,6 @@
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    -->
     <field name="body">
       <descriptions>
         <description xml:lang="en">Main message text</description>
@@ -201,14 +184,25 @@
       </db>
     </field>
     <field name="mailtype">
+      <descriptions>
+        <description xml:lang="en">Type of the email: 1:one shot email, 2: repeat email, 3: oneshot email, but keep result</description>
+        <description xml:lang="nl">Berichttype: 1: eenmalig bericht, 2: herhaald bericht, 3: eenmalig bericht, bewaar resultaat</description>
+      </descriptions>
       <gui>
         <guiname xml:lang="en">Type</guiname>
         <guiname xml:lang="nl">Type</guiname>
         <guiname xml:lang="eo">Tipo</guiname>
       </gui>
-      <editor><positions><list>4</list></positions></editor>
-      <datatype base="email_type" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-
+      <editor>
+        <positions>
+          <list>4</list>
+        </positions>
+      </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry basename="org.mmbase.applications.email.resources.mailtype" />
+        </enumeration>
+      </datatype>
     </field>
     <field name="mailstatus">
       <descriptions>
@@ -226,11 +220,8 @@
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="-1" />
         <enumeration>
-          <entry
-              javaconstants="org.mmbase.applications.email.EmailBuilder"
-              basename="org.mmbase.applications.email.resources.mailstatus" />
+          <entry basename="org.mmbase.applications.email.resources.mailstatus" />
         </enumeration>
       </datatype>
     </field>
@@ -288,14 +279,5 @@
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
   </fieldlist>
-  <!--
-      Some optional fields. Ported from didactor.
-
-  <xi:include
-      xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="http://www.mmbase.org/builders/email/optional.email.fields.xml" />
-
-  -->
-
 </builder>
 

@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="vacature_types">
-    <option id="interne vacature">interne vacature</option>
-    <option id="externe vacature">externe vacature</option>
-    <option id="intern/extern">intern/extern</option>
-    <option id="vacature buiten Natuurmonumenten">vacature buiten Natuurmonumenten</option>
-</optionlist>

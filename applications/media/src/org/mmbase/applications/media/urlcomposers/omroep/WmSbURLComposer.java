@@ -10,14 +10,12 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.urlcomposers.omroep;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
-
-import java.util.Locale;
 import java.util.Map;
 
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: WmSbURLComposer.java,v 1.9 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: WmSbURLComposer.java,v 1.8 2003-11-26 16:48:37 michiel Exp $
  * @since MMBase-1.7
  */
 public class WmSbURLComposer extends URLComposer {
@@ -34,7 +32,7 @@ public class WmSbURLComposer extends URLComposer {
     protected String getBand() {
         return "smalband";
     }
-    public String getGUIIndicator(Map<String,Locale> options) {
+    public String getGUIIndicator(Map options) {
         return super.getGUIIndicator(options) + " (" + getBand() + ")";
     }
 

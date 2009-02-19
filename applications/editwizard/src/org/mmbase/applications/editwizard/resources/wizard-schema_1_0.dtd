@@ -1,4 +1,4 @@
-<!ELEMENT wizard-schema ( title*, task-description*, description*, action*, lists*, steps?, form-schema+, blocks*) >
+<!ELEMENT wizard-schema ( title*, task-description*, description*, action*, lists*, steps?, form-schema+ ) >
 <!ATTLIST wizard-schema id NMTOKEN #IMPLIED >
 
 <!ELEMENT title ( #PCDATA ) >
@@ -9,7 +9,7 @@
   -->
 <!ELEMENT task-description ( #PCDATA ) >
 
-<!ELEMENT action ( field | object | relation  | prompt | description | blocks )* >
+<!ELEMENT action ( field | object | relation  | prompt | description )* >
 <!ATTLIST action type NMTOKEN #IMPLIED >
 <!ATTLIST action include CDATA #IMPLIED >
 <!ATTLIST action extends CDATA #IMPLIED >
@@ -38,7 +38,7 @@
 <!ATTLIST query where CDATA #IMPLIED >
 <!ATTLIST query orderby CDATA #IMPLIED >
 
-<!ELEMENT form-schema ( title | subtitle | field | fieldset | listset | list | blocks )* >
+<!ELEMENT form-schema ( title | subtitle | field | fieldset | list)* >
 <!ATTLIST form-schema id NMTOKEN #IMPLIED >
 <!ATTLIST form-schema include CDATA #IMPLIED >
 <!ATTLIST form-schema extends CDATA #IMPLIED >
@@ -52,8 +52,6 @@
 <!ATTLIST relation role NMTOKEN #IMPLIED >
 <!ATTLIST relation searchdir (source | destination | both | all | either) #IMPLIED >
 <!ATTLIST relation createdir (source | destination | either) #IMPLIED >
-
-
 
 <!ELEMENT list ( title | description | action | command | item )* >
 <!ATTLIST list maxoccurs CDATA #IMPLIED >
@@ -83,7 +81,6 @@
 <!ATTLIST command nodepath CDATA #IMPLIED >
 <!ATTLIST command objectnumber CDATA #IMPLIED >
 <!ATTLIST command wizardname CDATA #IMPLIED >
-<!ATTLIST command wizardjsp  CDATA #IMPLIED >
 <!ATTLIST command orderby CDATA #IMPLIED >
 <!ATTLIST command directions CDATA #IMPLIED >
 <!ATTLIST command command NMTOKEN #IMPLIED >
@@ -95,8 +92,6 @@
 <!ATTLIST command pagelength CDATA #IMPLIED >
 
 <!ELEMENT fieldset ( prompt*, field+, prompt* ) >
-
-<!ELEMENT listset ( list* ) >
 
 <!ELEMENT field ( #PCDATA | optionlist | prompt | description | prefix | postfix )* >
 <!ATTLIST field dtpattern CDATA #IMPLIED >
@@ -144,10 +139,3 @@
 <!ATTLIST postfix xml:lang NMTOKEN #IMPLIED >
 
 
-
-<!ELEMENT blocks EMPTY >
-<!ATTLIST blocks classification CDATA #REQUIRED >
-<!ATTLIST blocks render NMTOKEN #IMPLIED >
-
-
-<!ELEMENT nop EMPTY >

@@ -11,14 +11,11 @@ package org.mmbase.storage.implementation.database;
 
 import java.sql.*;
 
-import java.io.File;
 import javax.sql.DataSource;
-import java.lang.reflect.*;
 
 import org.mmbase.module.Module;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.database.JDBC;
-import org.mmbase.module.database.MultiConnection;
 import org.mmbase.storage.StorageInaccessibleException;
 import org.mmbase.util.logging.*;
 
@@ -33,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.18 2008-04-11 11:42:02 pierre Exp $
+ * @version $Id: GenericDataSource.java,v 1.12.2.1 2008-03-07 14:37:09 michiel Exp $
  */
 public final class GenericDataSource implements DataSource {
     private static final Logger log = Logging.getLoggerInstance(GenericDataSource.class);
@@ -43,7 +40,7 @@ public final class GenericDataSource implements DataSource {
 
     private java.io.PrintWriter printWriter = null;
 
-    final private File dataDir;
+    final private String dataDir;
     final private boolean meta;
 
     private boolean basePathOk = false;
@@ -55,19 +52,18 @@ public final class GenericDataSource implements DataSource {
      * @param A Datadir (as a string ending in a /) which may be used in some URL's (most noticably those of HSQLDB). Can be <code>null</code> if not used.
      * @throws StorageInaccessibleException if the JDBC module used in creating the datasource is inaccessible
      */
-    GenericDataSource(MMBase mmbase, File dataDir) throws StorageInaccessibleException {
-        jdbc = Module.getModule(JDBC.class);
+    GenericDataSource(MMBase mmbase, String dataDir) throws StorageInaccessibleException {
+        jdbc = (JDBC) Module.getModule("JDBC", true);
         if (jdbc == null) {
             throw new StorageInaccessibleException("Cannot load Datasource or JDBC Module");
         }
-        jdbc.startModule();
-        this.dataDir = dataDir;
+        this.dataDir = dataDir == null ? "" : dataDir;
         meta = false;
     }
     /**
      */
     GenericDataSource(MMBase mmbase) throws StorageInaccessibleException {
-        jdbc = Module.getModule(JDBC.class);
+        jdbc = (JDBC) Module.getModule("JDBC", false);
         if (jdbc == null) {
             throw new StorageInaccessibleException("Cannot load Datasource or JDBC Module");
         }
@@ -75,46 +71,6 @@ public final class GenericDataSource implements DataSource {
         meta = true;
     }
 
-    /**
-     * Interesting trick to make things compile in both java 1.5 and 1.6
-     */
-    public static class ConnectionProxy implements java.lang.reflect.InvocationHandler {
-
-        private final MultiConnection multiCon;
-
-        public static Connection newInstance(MultiConnection multiConnection) {
-            return (Connection) java.lang.reflect.Proxy.newProxyInstance(multiConnection.getClass().getClassLoader(),
-                                                                         new Class[] {Connection.class, MultiConnection.class},
-                                                                         new ConnectionProxy(multiConnection));
-        }
-
-        private ConnectionProxy(MultiConnection m) {
-            this.multiCon = m;
-        }
-
-        public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
-            Object result;
-            try {
-
-                Method multiMethod = multiCon.getClass().getMethod(m.getName(), m.getParameterTypes());
-                result = multiMethod.invoke(multiCon, args);
-            } catch (InvocationTargetException e) {
-                throw e.getTargetException();
-            } catch (IllegalArgumentException iae) {
-                log.service("Probably called unimplemented method " + m + ", falling back to wrapped object. " + iae.getMessage(), iae);
-                try {
-                    result = m.invoke(multiCon.unwrap(Connection.class), args);
-                } catch (Exception e) {
-                    throw new RuntimeException("unexpected invocation exception: " + e.getMessage());
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("unexpected invocation exception: " + e.getMessage());
-            } finally {
-
-            }
-            return result;
-        }
-    }
     // see javax.sql.DataSource
     public Connection getConnection() throws SQLException {
         String url = makeUrl();
@@ -130,9 +86,7 @@ public final class GenericDataSource implements DataSource {
                 return DriverManager.getConnection(url, name, password);
             }
         } else {
-            // why is this
-            return ConnectionProxy.newInstance(jdbc.getConnection(url));
-
+            return jdbc.getConnection(url);
         }
     }
     /**
@@ -152,7 +106,7 @@ public final class GenericDataSource implements DataSource {
         if (meta) {
             return DriverManager.getConnection(url, userName, password);
         } else {
-            return ConnectionProxy.newInstance(jdbc.getConnection(url, userName, password));
+            return jdbc.getConnection(url, userName, password);
         }
     }
 
@@ -210,16 +164,7 @@ public final class GenericDataSource implements DataSource {
             }
         }
         String url = jdbc.makeUrl();
-        String data = "";
-        if (dataDir !=null) {
-            try {
-                data = dataDir.getCanonicalPath();
-            } catch (Exception e) {
-                log.error(e + " Falling back to " + dataDir);
-                data = dataDir.toString();
-				    }
-        }
-        String newUrl = url.replaceAll("\\$DATADIR", data + File.separator);
+        String newUrl = url.replaceAll("\\$DATADIR", dataDir);
         if ((!basePathOk) && (! newUrl.equals(url))) {
             basePathOk = DatabaseStorageManagerFactory.checkBinaryFileBasePath(dataDir);
         }
@@ -227,13 +172,14 @@ public final class GenericDataSource implements DataSource {
     }
 
     //untested
-    public boolean isWrapperFor(Class<?> iface) {
+    public boolean isWrapperFor(Class iface) {
         return iface.isAssignableFrom(JDBC.class);
     }
     //untested
-    public <T> T unwrap(Class<T> iface) {
-        return (T) jdbc;
+    public Object unwrap(Class iface) {
+        return jdbc;
     }
+
 
 
 }

@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.9 2008-11-27 12:26:37 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.7 2008-06-12 14:15:35 michiel Exp $ -->
 
 
   <datatype base="string" id="internetaddress">
@@ -42,18 +42,9 @@
       <class name="org.mmbase.datatypes.VerifyEmailProcessor">
         <param name="emailField" value="email" />
         <param name="textBundle" value="org.mmbase.datatypes.resources.verifyemailtemplate" />
-        <param name="url"        value="/mmbase/email/verify/" />
-        <param name="includeUrl"  value="" />
       </class>
     </commitprocessor>
+
   </datatype>
 
-  <datatype base="integer" id="email_type">
-    <default value="1" />
-    <enumeration>
-      <entry
-          javaconstants="org.mmbase.applications.email.EmailBuilder"
-          basename="org.mmbase.applications.email.resources.mailtype" />
-    </enumeration>
-  </datatype>
 </datatypes>

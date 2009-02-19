@@ -4,9 +4,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                       http://www.mmbase.org/xmlns/builder.xsd"                        
-  name="mmbaseranks" maintainer="www.mmbase.org" version="0" extends="object"
-  defaultcontextintypedef="security"
-  >
+  name="mmbaseranks" maintainer="www.mmbase.org" version="0" extends="object">
   <class>org.mmbase.security.implementation.cloudcontext.builders.Ranks</class>
   <names>
     <singular xml:lang="en">Security Rank</singular>
@@ -24,7 +22,7 @@
     </description>
   </descriptions>
   <fieldlist>
-    <field name="rank">
+    <field>
       <gui>
         <guiname xml:lang="nl">Rang</guiname>
         <guiname xml:lang="eo">Rango</guiname>
@@ -35,9 +33,12 @@
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>rank</name>
+        <type key="true" notnull="true" state="persistent">INTEGER</type>
+      </db>
     </field>
-    <field name="name">
+    <field>
       <gui>
         <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="eo">Nomo</guiname>
@@ -48,25 +49,23 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <unique value="true" />
-        <required value="true" enforce="never" />
-        <maxLength value="32" />
-      </datatype>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>name</name>
+        <type key="true" notnull="true" size="32" state="persistent">STRING</type>
+      </db>
     </field>
-    <field name="description">
+    <field>
       <gui>
         <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="eo">Priskribo</guiname>
       </gui>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <maxLength value="1024" enforce="never"/>
-      </datatype>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>description</name>
+        <type notnull="false" size="1024" state="persistent">STRING</type>
+      </db>
     </field>
   </fieldlist>
-  <indexlist>
-    <index name="rank"><indexfield name="rank" /></index>
-    <index name="name"><indexfield name="name" /></index>
-  </indexlist>
 </builder>

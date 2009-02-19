@@ -12,39 +12,43 @@ package org.mmbase.bridge.util;
 
 import org.mmbase.bridge.*;
 import java.util.*;
-
 import org.mmbase.util.logging.*;
 
 /**
- * A list of {@link org.mmbase.bridge.Relation}s, based on a Collection of Nodes
+ * A list of nodes, based on a Collection of Nodes
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionRelationList.java,v 1.8 2009-01-31 07:42:19 michiel Exp $
+ * @version $Id: CollectionRelationList.java,v 1.1 2005-12-29 19:08:01 michiel Exp $
  * @since MMBase-1.8
  */
-public class CollectionRelationList extends AbstractCollectionNodeList<Relation> implements RelationList {
+public class CollectionRelationList extends CollectionNodeList implements RelationList {
 
     private static final Logger log = Logging.getLoggerInstance(CollectionRelationList.class);
 
 
-    public CollectionRelationList(Collection<? extends Node> c, NodeManager nodeManager) {
+    public CollectionRelationList(Collection c, NodeManager nodeManager) {
         super(c, nodeManager);
     }
 
 
-    public CollectionRelationList(Collection<? extends Node> c, Cloud cloud) {
+    public CollectionRelationList(Collection c, Cloud cloud) {
         super(c, cloud);
     }
 
+    protected Object validate(Object o) throws ClassCastException,IllegalArgumentException {
+        return (Relation)o;
+    }
+    /**
+     *
+     */
     public Relation getRelation(int index) {
-        return get(index);
+        return (Relation)get(index);
     }
 
-    public CollectionRelationList subList(int fromIndex, int toIndex)  {
-        return subRelationList(fromIndex, toIndex);
-    }
-
-    public CollectionRelationList subRelationList(int fromIndex, int toIndex) {
+    /**
+     *
+     */
+    public RelationList subRelationList(int fromIndex, int toIndex) {
         if (nodeManager != null) {
             return new CollectionRelationList(subList(fromIndex, toIndex), nodeManager);
         } else {
@@ -52,18 +56,21 @@ public class CollectionRelationList extends AbstractCollectionNodeList<Relation>
         }
     }
 
+    /**
+     *
+     */
     public RelationIterator relationIterator() {
         return new BasicRelationIterator();
     }
 
-    protected class BasicRelationIterator extends BasicIterator implements RelationIterator {
+    protected class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {
 
         public Relation nextRelation() {
-            return next();
+            return (Relation)next();
         }
 
         public Relation previousRelation() {
-            return previous();
+            return (Relation)previous();
         }
     }
 }

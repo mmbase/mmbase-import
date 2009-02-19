@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * A tool to convert between 'cloud' context security and 'xml' context security. Used in /mmbase/security/admin/
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConvertTool.java,v 1.4 2008-10-27 19:15:27 michiel Exp $
+ * @version $Id: ConvertTool.java,v 1.3 2005-01-30 16:46:35 nico Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts
  * @since MMBase-1.7
  */
@@ -99,7 +99,7 @@ public class ConvertTool {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
-
+   
 
 
     /**
@@ -109,8 +109,8 @@ public class ConvertTool {
 
         InputSource in = new InputSource(new FileInputStream(file));
         Document document = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(true, /* validate */
-                                                                                  new org.mmbase.util.xml.ErrorHandler(false, 0), /* don't log, throw exception if not valid */
-                                                                                  new org.mmbase.util.xml.EntityResolver(true, contextAuthentication) /* validate */
+                                                                                  new org.mmbase.util.XMLErrorHandler(false, 0), /* don't log, throw exception if not valid */
+                                                                                  new org.mmbase.util.XMLEntityResolver(true, contextAuthentication) /* validate */
                                                                                   ).parse(in);
 
 
@@ -127,7 +127,7 @@ public class ConvertTool {
                 n.commit();
                 log("Created a context '" + name + "'");
             }
-
+            
         }
 
 
@@ -145,7 +145,7 @@ public class ConvertTool {
                 n.commit();
                 log("Created a group '" + name + "'");
             }
-
+            
         }
 
 
@@ -157,7 +157,7 @@ public class ConvertTool {
             NamedNodeMap nnm = node.getAttributes();
             String name    = nnm.getNamedItem("name").getNodeValue();
             String context = nnm.getNamedItem("context").getNodeValue();
-
+            
             if (getNode(userManager, name, Users.FIELD_USERNAME) == null) {
 
                 Node identify = node.getFirstChild();
@@ -178,7 +178,7 @@ public class ConvertTool {
                 n.setStringValue(Users.FIELD_USERNAME, name);
                 n.setStringValue(Users.FIELD_PASSWORD, password);
                 n.setIntValue(Users.FIELD_STATUS, 1);
-
+                
                 n.commit();
                 n.setNodeValue(Users.FIELD_DEFAULTCONTEXT, defaultContext);
                 n.commit();
@@ -189,7 +189,7 @@ public class ConvertTool {
                 }
                 log("Created a user '" + name + "' (" + rank + ")");
             }
-
+            
         }
 
 
@@ -212,7 +212,7 @@ public class ConvertTool {
                 }
                 contains = contains.getNextSibling();
             }
-
+            
         }
 
 
@@ -225,7 +225,7 @@ public class ConvertTool {
             log("found " + context.getChildNodes().getLength() + " for context " + c.getStringValue("name"));
             Node operation = context.getFirstChild();
             while (operation != null) {
-                if (operation instanceof Element && operation.getNodeName().equals("operation")) {
+                if (operation instanceof Element && operation.getNodeName().equals("operation")) {                    
                     String type = operation.getAttributes().getNamedItem("type").getNodeValue();
                     log("found operation '" + type + "'");
                     Node grant = operation.getFirstChild();
@@ -246,7 +246,7 @@ public class ConvertTool {
                                     r.setStringValue("operation", type);
                                     r.commit();
                                 }
-
+                                
                             }
                         } catch (Exception e) {
                             log("Ignored " + type  + " because " + e.getMessage());
@@ -265,12 +265,12 @@ public class ConvertTool {
                 }
                 operation = operation.getNextSibling();
             }
-
+            
         }
 
 
 
         return document;
-
+        
     }
 }

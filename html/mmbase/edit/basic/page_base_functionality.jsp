@@ -9,7 +9,7 @@ void push(Stack stack, String id,  String url) {
 }
 void push(Stack stack, String id, HttpServletRequest request) {
    String qs = request.getQueryString();
-   push(stack, id, request.getServletPath() + (qs != null ? ("?" + qs) : ""));
+   push(stack, id, request.getServletPath() + (qs != null ? ("?" + org.mmbase.util.transformers.Xml.XMLAttributeEscape(qs)) : ""));
 }
 String peek(Stack stack) {
     if (stack.size() > 0) {

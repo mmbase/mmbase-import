@@ -13,6 +13,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletResponse;
+
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 
 
@@ -25,36 +26,30 @@ import org.mmbase.util.logging.Logging;
  * Does a redirect, using the features of UrlTag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RedirectTag.java,v 1.10 2009-01-12 14:14:12 michiel Exp $
+ * @version $Id: RedirectTag.java,v 1.5 2005-01-30 16:46:38 nico Exp $
  * @since MMBase-1.7
  */
 
 public class RedirectTag extends UrlTag  {
 
-    private static final Logger log = Logging.getLoggerInstance(RedirectTag.class);
+    private static final Logger log = Logging.getLoggerInstance(RedirectTag.class); 
 
-
-    @Override protected final String getAbsolute() throws JspTagException {
-        return "server";
-    }
-    @Override protected final boolean escapeAmps() throws JspTagException {
-        return false;
-    }
-    @Override protected final boolean encode() throws JspTagException {
-        return true;
-    }
     /**
      * Method called at end of Tag used to send redirect,
      * always skips the remainder of the JSP page.
      *
      * @return SKIP_PAGE
-     */
-    @Override public final int doEndTag() throws JspTagException {
-        super.doEndTag();
+     */ 
+    public final int doEndTag() throws JspTagException {
         try {
             // dont set value, but redirect.
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-            response.sendRedirect(url.get());
+            String url = getUrl(false, false);
+            String encodedUrl = response.encodeRedirectURL(url);
+            if (log.isDebugEnabled()) {
+                log.debug("Redirecting to " + url + " / " + encodedUrl);
+            }
+            response.sendRedirect(encodedUrl);
         } catch (java.io.IOException io) {
             throw new TaglibException(io);
         }

@@ -15,7 +15,7 @@ See http://www.MMBase.org/license
             <artifactId>postgresql</artifactId>
             <!-- Currently, this version is not in the repo1.maven.org, 
             	but we want a bugfix which changed the LargeObject interface -->
-            <version>8.2-507.jdbc3</version>
+            <version>8.2-506.jdbc3</version>
             <url>http://jdbc.postgresql.org/download.html</url>
         </dependency>
     </dependencies>    

@@ -5,7 +5,7 @@
 <mm:cloud jspvar="cloud" loginpage="login.jsp">
 <html>
 <head>
-  <title><mm:write id="title" value='<%=m.getString("title")%>' /></title>
+  <title><mm:write id="title" value="<%=m.getString("title")%>" /></title>
   <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
   <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
 <head>

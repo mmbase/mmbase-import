@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.17 2008-10-15 12:37:36 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.12.2.2 2008-07-22 09:33:27 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
@@ -82,18 +82,16 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
 
 
     public ContextContainer getContextContainer() {
-        return collector;
+        return collector.getContextContainer();
     }
 
     public int doStartTag() throws JspTagException {
-        initTag();
         Object value = getFunctionValue(false); // registration is done in doInitBody
         if (value instanceof Collection && comparator.equals(Attribute.NULL)) {
             returnCollection = (Collection) value;
         } else {
-            returnCollection = Casting.toCollection(value);
+            returnCollection = Casting.toCollection(value, helper.getListdelimiter());
         }
-        returnCollection = useCollectionMethods(returnCollection);
         if (log.isDebugEnabled()) {
             log.debug("Using " + returnCollection);
         }

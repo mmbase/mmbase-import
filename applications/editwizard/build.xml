@@ -7,7 +7,6 @@
   <property name="project.jars.includes" value="dove/build/mmbase-dove.jar" />
 
   <import file="../buildbase-include.xml" />
-
   <target name="dove">
     <echo message="${applications.dir}/dove" />
     <ant dir="${applications.dir}/dove" inheritAll="false" />

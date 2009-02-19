@@ -11,8 +11,6 @@ package org.mmbase.bridge.jsp.taglib;
 import java.io.IOException;
 
 import javax.servlet.jsp.*;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestWrapper;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
@@ -45,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.94 2008-12-29 11:19:17 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.87 2006-07-17 15:38:47 johannes Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -58,12 +56,13 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     public static final String DEFAULTENCODING_KEY   = "org.mmbase.taglib.defaultencoding";
     public static final String ISELIGNORED_PARAM     = "mmbase.taglib.isELIgnored";
 
+    private ContextProvider  parent = null;
+    private boolean    searchedParent = false;
     private static int  latestNumber = 0;
 
     private int number;
 
     private CloudContext cloudContext;
-    private ContextContainer prevParent;
 
     private Attribute referid = Attribute.NULL;
     private Attribute scope   = Attribute.NULL;
@@ -115,15 +114,9 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * @param c Parent context-container, if <code>null</code> then a container writing to page context will be instantiated.
      */
     ContextContainer createContainer(ContextContainer c) { //throws JspTagException {
-        if (log.isDebugEnabled()) {
-            log.debug("Creating context container for " + this + " " + pageContext) ;
-        }
         number = latestNumber++;
-        ContextContainer container;
+        ContextContainer container = null;
         if (c == null && (!"true".equals(pageContext.getServletContext().getInitParameter(ISELIGNORED_PARAM)))) {
-            if (log.isDebugEnabled()) {
-                log.debug("page context for " + pageContext);
-            }
             container = new PageContextContainer(pageContext);
         } else {
             container = new StandaloneContextContainer(pageContext, getId(), c);
@@ -136,30 +129,20 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         return (ContextContainer)pageContext.getAttribute(CONTAINER_KEY_PREFIX + number);
     }
 
-
-    /**
-     * @since MMBase-1.9
-     */
-    protected static ServletRequest unwrap(ServletRequest req) {
-        while (req instanceof ServletRequestWrapper) {
-            req = ((ServletRequestWrapper) req).getRequest();
-        }
-        return req;
-    }
-
-
     public int doStartTag() throws JspTagException {
         log.debug("Start tag of ContextTag");
+        parent = null;
+        searchedParent = false;
+
         ContextContainer container;
         int s = getScope();
-        prevParent = null;
         if (referid != Attribute.NULL || (s != PageContext.PAGE_SCOPE && getId() != null)) {
             Object o;
             if (s == PageContext.PAGE_SCOPE) {
                 o = getObject(referid.getString(this));
             } else {
                 String id = referid.getString(this);
-                if (id.length() == 0) {
+                if (id.equals("")) {
                     id = getId();
                     if (id == null) throw new JspTagException("Must use id or referid attributes when using 'scope' attibute of context tag");
                 }
@@ -172,23 +155,6 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     throw new JspTagException("Found context var '" + o + "' is not of type Context but of '" + o.getClass().getName());
                 }
                 container = (ContextContainer)  o;
-                log.debug("Resetting parent of " + container + " to " + getContextProvider().getContextContainer());
-                prevParent = container.getParent();
-                if (prevParent instanceof PageContextContainer) {
-                    // if for some reason, the parent in the container is from a different
-                    // request. Do not accept that.
-                    PageContextContainer prevPc = (PageContextContainer) prevParent;
-                    if (((PageContextBacking) prevPc.getBacking()).getPageContext() != pageContext) {
-                        ServletRequest prevReq = unwrap(((PageContextBacking) prevPc.getBacking()).getPageContext().getRequest());
-                        if (prevReq != unwrap(pageContext.getRequest())) {
-                            log.warn("found a pagecontext container for a different request (" + prevReq + " !=  '" + pageContext.getRequest() + "'). Reparing");
-                        } else {
-                            log.debug("found a pagecontext container for a different pageContext. Reparing");
-                        }
-                        prevParent = new PageContextContainer(pageContext);
-                    }
-                }
-
                 container.setParent(pageContext, getContextProvider().getContextContainer());
                 pageContext.setAttribute(CONTAINER_KEY_PREFIX + number, container, PageContext.PAGE_SCOPE);
             }
@@ -202,8 +168,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
             if (id == null) {
                 id = referid.getString(this);
             }
-            ContextContainer storedContainer =  new StandaloneContextContainer(id, container.getBacking().getOriginalMap(), container.getBacking().isELIgnored());
-            pageContext.setAttribute(id, storedContainer, s);
+            pageContext.setAttribute(id, container, s);
         }
         setCloudContext(getContextTag().cloudContext);
         if (getId() != null) {
@@ -307,6 +272,13 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         return getContextContainer().isRegistered(key);
     }
     /**
+     * @deprecated Use getContextProvider().getContextContainer().isRegisteredSomewhere
+     */
+    private boolean isRegisteredSomewhere(String key) throws JspTagException {
+        return getContextContainer().containsKey(key, true); // do check parent.
+    }
+
+    /**
      * @deprecated Use getContextProvider().getContextContainer().findAndRegister
      */
     public Object findAndRegister(String id) throws JspTagException {
@@ -346,6 +318,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
         }
+        getContextContainer().release(pageContext, getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
         // just to serve lousy app-server which do not support EVAL_BODY_INCLUDE
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
@@ -360,20 +333,19 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
     }
 
     public int doEndTag() throws JspTagException {
-        getContextContainer().release(pageContext, prevParent != null ? prevParent : getContextProvider().getContextContainer()); // remove the vars from 'page-context' again if necessary.
+        parent = null;
         cloudContext = null;
-        prevParent = null;
         return super.doEndTag();
     }
 
     public void doFinally() {
+        parent = null;
         cloudContext = null;
-        prevParent = null;
         super.doFinally();
     }
 
     public String toString() {
-        return getClass().getName() + " with id " + getId() + " with container " + getContextContainer();
+        return getClass().getName() + " with id " + getId();
     }
 }
 

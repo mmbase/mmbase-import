@@ -48,10 +48,10 @@ a:active { color: #D6E44B; }
 
 #header
 {
-    border-bottom: 1px solid #c8cfd9;
-    font-size: 0.9em;
-    padding: 6px 0 12px 0;
-    min-height: 36px;
+	border-bottom: 1px solid #c8cfd9;
+	font-size: 0.9em;
+	padding: 6px 0 12px 0;
+	min-height: 36px;
 }
 
 #crumbpath
@@ -64,10 +64,10 @@ a:active { color: #D6E44B; }
 
 #content
 {
-    float: right;
-    width: 70%;
-    min-width: 420px;
-    z-index: 9;
+	float: right;
+	width: 70%;
+	min-width: 420px;
+	z-index: 9;
 }
 
 #sidebar
@@ -75,19 +75,19 @@ a:active { color: #D6E44B; }
     float: left;
     width: 30%;
     min-width: 240px;
-    z-index: 8;
+	z-index: 8;
 }
 
 /* to create space between columns */
 /*.padder { padding: 0.5em; }*/
 .padsidebar
 {
-    padding: 0;
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 10px;
-    background-color: #fff;
-    overflow: auto;
+	padding: 0;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 10px;
+	background-color: #fff;
+	overflow: auto;
 }
 
 .padcontent
@@ -97,26 +97,26 @@ a:active { color: #D6E44B; }
     background-image: url(../img/shadow.png);
     background-repeat: repeat-y;
     background-position: 0 0;
-    background-color: #fff;
+	background-color: #fff;
 }
 
 .padfoot
 {
-    background-image: url(../img/shadow-foot.png);
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    height: 12px;
+	background-image: url(../img/shadow-foot.png);
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	height: 12px;
 }
 
 #footer
 {
-    padding: 0;
-    margin: 0;
-    height: 32px;
-    background-color: #e8e8e8;
-    border-top: 1px solid #c8cfd9;
-    font-size: 0.9em;
-    clear: both;
+	padding: 0;
+	margin: 0;
+	height: 32px;
+	background-color: #e8e8e8;
+	border-top: 1px solid #c8cfd9;
+	font-size: 0.9em;
+	clear: both;
 }
 
 .message
@@ -153,7 +153,7 @@ caption
     border-bottom: 1px solid #c8cfd9;
     min-height: 20px;
     font-size: 1.2em;
-    text-align: center;
+	text-align: center;
 }
 
 /* ### form stuff ### */
@@ -179,6 +179,7 @@ label
     width: 12%;
     text-align: right;
     padding-right: 6px;
+    padding-top: 2px;
 }
 
 input
@@ -294,8 +295,8 @@ textarea
 }
 #footer ul
 {
-    padding: 0 0 0 1em;
-    margin: 0;
+	padding: 0 0 0 1em;
+	margin: 0;
 }
 
 
@@ -365,8 +366,8 @@ textarea
 /* table with nodetypes */
 #nodetypes
 {
-    width: 100%;
-    background-color: #fff;
+	width: 100%;
+	background-color: #fff;
 }
 
 #nodetypes th, #nodetypes td
@@ -391,7 +392,7 @@ textarea
 {
     width: 100%;
     border-bottom: 1px solid #c8cfd9;
-    background-color: #fff;
+	background-color: #fff;
 }
 
 #results th { border-bottom: 1px solid #c8cfd9; }
@@ -414,7 +415,6 @@ textarea
 #results p { text-align: center; }
 #results h3 { text-align: center; }
 .batches { border-top: 1px solid #c8cfd9; }
-.batches p { word-spacing: 0.5em; }
 .even { background: #E6E9DD; }
 .odd { background: #fff; }
 tr.odd:hover { background-color: #e0f0e0; }
@@ -434,23 +434,23 @@ tr.even:hover { background-color: #d8e8d8; }
 }
 
 #node label strong { display: block; }
-#node .aliasses, #node .properties { padding-left: 13%; }
-#node .aliasses img, #node .properties img { vertical-align: middle; }
+#node .aliasses { padding-left: 12%; }
+#node .aliasses img { vertical-align: middle; }
 
 /* edit node relations */
 #relationssource, #relationsdestination { width: 100%; }
 #relationssource caption
 {
-    border-bottom: 0;
-    text-align: left;
-    padding-left: 32px;
+	border-bottom: 0;
+	text-align: left;
+	padding-left: 32px;
 }
 #relationsdestination caption
 {
-    border-top: 1px solid #c8cfd9;
-    border-bottom: 0;
-    text-align: left;
-    padding-left: 32px;
+	border-top: 1px solid #c8cfd9;
+	border-bottom: 0;
+	text-align: left;
+	padding-left: 32px;
 }
 
 #relationssource td, #relationsdestination td
@@ -493,8 +493,8 @@ tr.even:hover { background-color: #d8e8d8; }
 
 #relationssource .buttons, #relationsdestination .buttons
 {
-    text-align: right;
-    white-space: nowrap;
+	text-align: right;
+	white-space: nowrap;
 }
 
 /*
@@ -512,7 +512,12 @@ tr.even:hover { background-color: #d8e8d8; }
     padding: 4px;
 }
 
-.editrelation label { width: 20%; }
+/* label for relation fields */
+label.rel
+{
+    width: 4.5em;
+    font-weight: bold;
+}
 
 #relationssource .small, #relationsdestination .small
 {
@@ -536,7 +541,7 @@ tr.even:hover { background-color: #d8e8d8; }
     width: 24px;
 }
 
-#relate .firstrow { border-top: 1px solid #c8cfd9; }
+#relate .firstrow {	border-top: 1px solid #c8cfd9; }
 #relate h3 { margin-left: 12%; }
 #relate label strong { display: block; }
 
@@ -571,20 +576,20 @@ label a:hover { cursor: help; }
 
 .config .padsidebar
 {
-    border: 0;
-    padding-top: 4px;
+	border: 0;
+	padding-top: 4px;
 }
 
 .config h2
 {
-    margin: 0;
-    padding: 4px;
+	margin: 0;
+	padding: 4px;
 }
 
 .config p
 {
-    margin: 0;
-    padding: 4px;
+	margin: 0;
+	padding: 4px;
 }
 
 .config legend { display: none; }
@@ -592,44 +597,44 @@ label a:hover { cursor: help; }
 #config { padding: 1em; }
 #helpbox
 {
-    margin: 0 auto 5px auto;
-    width: 220px;
-    border: 1px solid #c8cfd9;
-    padding: 0;
+	margin: 0 auto 5px auto;
+	width: 220px;
+	border: 1px solid #c8cfd9;
+	padding: 0;
 }
 
 #helpbox h3
 {
-    background: #ccc;
-    margin: 0;
+	background: #ccc;
+	margin: 0;
 }
 
 #helpbox dl
 {
-    width: 180px;
-    float: left;
-    padding: 4px;
-    margin: 0;
-    display: inline; /* fixes some IE/Win bug */
+	width: 180px;
+	float: left;
+	padding: 4px;
+	margin: 0;
+	display: inline; /* fixes some IE/Win bug */
 }
 #helpbox dt
 {
-    float: right;
-    width: 150px;
-    margin: 0;
-    padding: 0;
-    font-size: 1.1em;
+	float: right;
+	width: 150px;
+	margin: 0;
+	padding: 0;
+	font-size: 1.1em;
 }
 #helpbox dd
 {
-    margin: 0 6px 0 0;
-    width: 24px;
-    padding: 0;
-    float: left;
+	margin: 0 6px 0 0;
+	width: 24px;
+	padding: 0;
+	float: left;
 }
 #helpbox dd img { float: right; }
 #helpbox .stopfloat
 {
-    clear: both;
-    height: 1px;
+	clear: both;
+	height: 1px;
 }

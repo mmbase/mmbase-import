@@ -1,4 +1,6 @@
 /*
+ * Created on 2-nov-2005
+ *
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative.
  *
@@ -12,20 +14,14 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
- * This is a utility class to create node event and relation event instances. the reason for it is
- * that we want to references to core classes in the NodeEvent and RelationEvent classes, to keep them bridge-friendly,
- * but we need a little help for easy instantiation.
  * @author Ernst Bunders
- * @since MMBase-1.8
- * @version $Id: NodeEventHelper.java,v 1.13 2008-07-03 15:29:40 michiel Exp $
-
+ *this is a utility class to create node event and relation event instances. the reason for it is
+ *that we want to references to core classes in the NodeEvent and RelationEvent classes, to keep them bridge-friendly,
+ *but we need a little help for easy instantiation.
  */
 public class NodeEventHelper {
-    private static final Logger log = Logging.getLoggerInstance(NodeEventHelper.class);
 
     public static NodeEvent createNodeEventInstance(Node node, int eventType, String machineName){
         if(machineName == null)machineName = MMBase.getMMBase().getMachineName();
@@ -42,31 +38,32 @@ public class NodeEventHelper {
      */
     public static NodeEvent createNodeEventInstance(MMObjectNode node, int eventType, String machineName){
         if(machineName == null) machineName = MMBase.getMMBase().getMachineName();
-        Map<String, Object> oldEventValues;
-        Map<String, Object> newEventValues;
+        Map oldEventValues;
+        Map newEventValues;
 
         //fill the old and new values maps for the event
         switch(eventType) {
         case Event.TYPE_NEW:
-            newEventValues = removeNonSerializingValues(node.getValues());
-            oldEventValues = Collections.emptyMap();
+            newEventValues = removeBinaryValues(node.getValues());
+            oldEventValues = Collections.EMPTY_MAP;
             break;
         case Event.TYPE_CHANGE:
-            oldEventValues = removeNonSerializingValues(node.getOldValues());
-            newEventValues = new HashMap<String, Object>();
-            Map<String, Object> values = node.getValues();
-            for (String key : oldEventValues.keySet()) {
+            oldEventValues = removeBinaryValues(node.getOldValues());
+            newEventValues = new HashMap();
+            Map values = node.getValues();
+            for(Iterator i = oldEventValues.keySet().iterator(); i.hasNext(); ) {
+                Object key = i.next();
                 newEventValues.put(key, values.get(key));
             }
-            newEventValues = removeNonSerializingValues(newEventValues);
+            newEventValues = removeBinaryValues(newEventValues);
             break;
         case Event.TYPE_DELETE:
-            newEventValues = Collections.emptyMap();
-            oldEventValues = removeNonSerializingValues(node.getValues());
+            newEventValues = Collections.EMPTY_MAP;
+            oldEventValues = removeBinaryValues(node.getValues());
             break;
         default: {
-            oldEventValues = Collections.emptyMap();
-            newEventValues = Collections.emptyMap();
+            oldEventValues = Collections.EMPTY_MAP;
+            newEventValues = Collections.EMPTY_MAP;
             // err.
         }
         }
@@ -74,33 +71,22 @@ public class NodeEventHelper {
         return new NodeEvent(machineName, node.getBuilder().getTableName(), node.getNumber(), oldEventValues, newEventValues, eventType);
     }
 
-    /**
-     * Removes all non-serializable values, and all values we don't want to serialize (binaries,
-     * because they are too big).
-     */
-    private static Map<String, Object> removeNonSerializingValues(Map<String, Object> oldEventValues) {
-        Set<String> toremove = null;
+    private static Map removeBinaryValues(Map oldEventValues) {
+        Set toremove = null;
         synchronized(oldEventValues) {
-            for (Map.Entry<String, Object> entry : oldEventValues.entrySet()) {
-                Object value = entry.getValue();
-                if (value != null) {
-                    if (value instanceof byte[]) {
-                        if (toremove == null) toremove = new HashSet<String>();
-                        toremove.add(entry.getKey());
-                    } else if (! (value instanceof java.io.Serializable)) {
-                        log.warn("Found non serializable '" + entry.getKey() + "' in " + oldEventValues);
-                        if (toremove == null) toremove = new HashSet<String>();
-                        toremove.add(entry.getKey());
-
-                    }
+            for (Iterator iterator = oldEventValues.entrySet().iterator(); iterator.hasNext();) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                if (entry.getValue() != null && (entry.getValue() instanceof byte[])) {
+                    if (toremove == null) toremove = new HashSet();
+                    toremove.add(entry.getKey());
                 }
             }
         }
         if (toremove != null) {
-            Map<String, Object> newMap = new HashMap<String, Object>();
+            Map newMap = new HashMap();
             newMap.putAll(oldEventValues);
-            for (String k : toremove) {
-                newMap.remove(k);
+            for (Iterator iterator = toremove.iterator(); iterator.hasNext();) {
+                newMap.remove(iterator.next());
             }
             return Collections.unmodifiableMap(newMap);
         } else {
@@ -125,17 +111,14 @@ public class NodeEventHelper {
         if (!(node.getBuilder() instanceof InsRel)) {
             throw new IllegalArgumentException( "you can not create a relation changed event with this node");
         }
-        MMBase mmbase = MMBase.getMMBase();
-        if(machineName == null) machineName = mmbase.getMachineName();
+        if(machineName == null) machineName = MMBase.getMMBase().getMachineName();
         MMObjectNode reldef = node.getNodeValue("rnumber");
 
         int relationSourceNumber = node.getIntValue("snumber");
         int relationDestinationNumber = node.getIntValue("dnumber");
 
-        String relationSourceType = mmbase.getBuilderNameForNode(relationSourceNumber);
-        if (relationSourceType == null) relationSourceType = "object";
-        String relationDestinationType = mmbase.getBuilderNameForNode(relationDestinationNumber);
-        if (relationDestinationType == null) relationDestinationType = "object";
+        String relationSourceType = MMBase.getMMBase().getBuilderNameForNode(relationSourceNumber);
+        String relationDestinationType =MMBase.getMMBase().getBuilderNameForNode(relationDestinationNumber);
         NodeEvent nodeEvent = createNodeEventInstance(node, eventType, machineName);
         int role = reldef.getNumber();
         return new RelationEvent(nodeEvent, relationSourceNumber, relationDestinationNumber, relationSourceType, relationDestinationType, role);

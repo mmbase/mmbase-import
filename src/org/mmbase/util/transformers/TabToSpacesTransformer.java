@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 /**
  * Replace every tab by n spaces.
  *
- * @author Michiel Meeuwissen
+ * @author Michiel Meeuwissen 
  * @since MMBase-1.7
  */
 
@@ -35,7 +35,7 @@ public class TabToSpacesTransformer extends ReaderTransformer implements CharTra
     public TabToSpacesTransformer(int spaces) {
         spaceNum = spaces;
         {
-            StringBuilder buf = new StringBuilder();
+            StringBuffer buf = new StringBuffer();
             for (int i = 0; i < spaceNum; i++) {
                 buf.append(' ');
             }
@@ -74,15 +74,15 @@ public class TabToSpacesTransformer extends ReaderTransformer implements CharTra
                     }
                 } else {
                     while(spaces > 1) { --spaces; w.write(' '); }
-                    w.write(c);
+                    w.write(c);                    
                 }
-
+                
             }
         } catch (java.io.IOException e) {
             log.error(e.toString());
         }
         return w;
-
+     
     }
 
 

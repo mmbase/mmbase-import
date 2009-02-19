@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.w3c.dom.*;
 
-import javax.xml.xpath.*;
+import org.apache.xpath.XPathAPI;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.24 2008-11-03 18:42:49 michiel Exp $
+ * @version $Id: ContextLoginModule.java,v 1.19 2005-12-29 20:43:16 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -44,7 +44,7 @@ public abstract class ContextLoginModule {
         this.manager =manager;
     }
 
-    public abstract ContextUserContext login(Map<String, ?> userLoginInfo, Object[] userParameters) throws SecurityException;
+    public abstract ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws SecurityException;
 
     protected ContextUserContext getValidUserContext(String username, Rank rank) throws SecurityException{
         return new ContextUserContext(username, rank, validKey, manager, name);
@@ -72,10 +72,12 @@ public abstract class ContextLoginModule {
         }
         Node found;
         try {
-            XPath xp = XPathFactory.newInstance().newXPath();
-            found = (Node) xp.evaluate(xpath, document, XPathConstants.NODE);
-        } catch(XPathExpressionException xe) {
-            throw new java.lang.SecurityException("error executing query: '" + xpath + "' ", xe);
+            found = XPathAPI.selectSingleNode(document, xpath);
+        } catch(javax.xml.transform.TransformerException te) {
+            String msg = "error executing query: '" + xpath + "'";
+            log.error(msg);
+            log.error( Logging.stackTrace(te));
+            throw new java.lang.SecurityException(msg);
         }
         if(found == null) {
             log.warn("user '" + username + "' was not found for module: " + name);
@@ -125,37 +127,38 @@ public abstract class ContextLoginModule {
             }
             if (rank != null) {
                 if (identifyCons.length() > 0) identifyCons.append(" and ");
-                identifyCons.append("@rank='").append(rank).append("'");
+                identifyCons.append("@rank='").append(rank).append("'");                
             }
             xpath = "/contextconfig/accounts/user" + userCons + "/identify[" + identifyCons + "]";
         } else {
             xpath = "/contextconfig/accounts/user" + userCons;
         }
-
+        
         if (log.isDebugEnabled()) {
             log.debug("going to execute the query: " + xpath);
         }
-
+        
         final Element found;
-        XPath xp = XPathFactory.newInstance().newXPath();
         try {
-            found = (Element) xp.evaluate(xpath, document, XPathConstants.NODE);
-        } catch(XPathExpressionException xe) {
-            throw new java.lang.SecurityException("error executing query: '" + xpath + "' ", xe);
+            found = (Element) XPathAPI.selectSingleNode(document, xpath);
+        } catch(javax.xml.transform.TransformerException te) {
+            String msg = "error executing query: '" + xpath + "'";
+            log.error(msg);
+            log.error(Logging.stackTrace(te));
+            throw new java.lang.SecurityException(msg);
         }
-
         if(found == null) {
             if (rank != null) {
-                log.warn("No user with rank '" + rank + "' " + (userName != null ? "and username '" + userName + "'": "") + " was not found for identify type: '" + identifyType  + "'", new Exception());
+                log.warn("No user with rank '" + rank + "' " + (userName != null ? "and username '" + userName + "'": "") + "was not found for identify type: '" + identifyType  + "'");
             } else {
-                log.warn("No user with username '" + userName + "' was found for identify type: '" + identifyType  + "'");
+                log.warn("No user with username '" + userName + "' was not found for identify type: '" + identifyType  + "'");
             }
             return null;
         }
         if (identifyType != null || rank != null) {
             return (Element) found.getParentNode();
         } else {
-            return found;
+            return (Element) found;
         }
     }
 }

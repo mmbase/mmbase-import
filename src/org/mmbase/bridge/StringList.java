@@ -14,9 +14,9 @@ package org.mmbase.bridge;
  * A list of Strings
  *
  * @author Pierre van Rooden
- * @version $Id: StringList.java,v 1.8 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: StringList.java,v 1.6 2004-10-09 09:39:31 nico Exp $
  */
-public interface StringList extends BridgeList<String> {
+public interface StringList extends BridgeList {
 
     /**
      * Returns the string at the indicated postion in the list

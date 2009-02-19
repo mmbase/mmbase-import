@@ -51,7 +51,6 @@
         </positions>
       </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="*/5 * * * *" />
         <maxLength value="127" />
       </datatype>
     </field>
@@ -85,7 +84,7 @@
         <guiname xml:lang="nl">Configuratie</guiname>
         <guiname xml:lang="en">Configuration</guiname>
       </gui>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="2048" />
       </datatype>
     </field>

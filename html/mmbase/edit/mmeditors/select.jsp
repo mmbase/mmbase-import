@@ -49,7 +49,7 @@
         <tr>
           <td class="fieldsearchprompt"><%=translate(mmlanguage,"age")%></td>
           <td class="fieldsearch"><input name="search_age" type="text"
-             value="<mm:listnodes type="typedef" constraints="<%=\"[name]='\"+managerName+\"'\"%>" max="1"><mm:field name="defaultsearchage()" /></mm:listnodes>"
+             value="<mm:listnodes type="typedef" constraints='<%="[name]='"+managerName+"'"%>' max="1"><mm:field name="defaultsearchage()" /></mm:listnodes>"
              class="fieldsearch"/></td>
         </tr>
       </table>

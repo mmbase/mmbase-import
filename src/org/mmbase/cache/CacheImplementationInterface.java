@@ -17,10 +17,10 @@ import java.util.*;
  * An implementation of this interface has to be thread-safe to guarantee correctness.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheImplementationInterface.java,v 1.10 2008-06-24 09:54:44 michiel Exp $
+ * @version $Id: CacheImplementationInterface.java,v 1.5.2.1 2008-06-24 09:52:22 michiel Exp $
  * @since MMBase-1.8
  */
-public interface CacheImplementationInterface<K, V> extends Map<K, V> {
+public interface CacheImplementationInterface extends Map {
 
     /**
      * Sets the (maximal)  size  of the cache (if implementable).
@@ -33,19 +33,15 @@ public interface CacheImplementationInterface<K, V> extends Map<K, V> {
     int  maxSize();
 
     /**
-     * Returns the hit-count on a certain key (if implementable, -1 otherwise).
+     * Returns the hit-count on a certain key (if implementable).
      */
-    int getCount(K key);
+    int getCount(Object key);
 
     /**
      * Configure the implementation with the given configuration values
      */
-    void config(Map<String, String> configuration);
+    void config(Map configuration);
 
-    /**
-     * The cache implementation must be somehow thread-safe. This method should
-     * return the object on which to synchronize, e.g. when looping over entrySet.
-     * @since MMBase-1.8.6
-     */
     Object getLock();
+
 }

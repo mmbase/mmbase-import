@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.21 2008-08-14 13:58:37 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.14.2.3 2008-06-20 14:38:11 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -46,13 +46,11 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
      * @param role a role
      */
     public void setRole(String role) throws JspTagException {
-        this.role = getAttribute(role, true);
+        this.role = getAttribute(role);
     }
 
 
     public int doStartTag() throws JspTagException {
-        initTag();
-        prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(cloneId);
@@ -87,12 +85,12 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
                 RelationStep relationStep = query.addRelationStep(cloud.getNodeManager(nodeManagerName),
                                                                   (String) role.getValue(this), (String) searchDirs.getValue(this));
                 query.setNodeStep(relationStep.getNext());
-                if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type'/'role' or 'path' attributes on relatednodescontainer. Path=" + path + " Nodmanager=" + nodeManager + " role=" + role);
-                if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute. Element=" + element);
+                if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type'/'role' or 'path' attributes on relatednodescontainer");
+                if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
             } else {
                 if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
 
-                List<Step> newSteps = Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+                List newSteps = Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
                 if (element != Attribute.NULL) {
                     String alias = element.getString(this);
@@ -103,7 +101,7 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
                     query.setNodeStep(nodeStep);
                 } else {
                     // default to third step (first two are the node and the relation)
-                    query.setNodeStep(query.getSteps().get(2));
+                    query.setNodeStep((Step) query.getSteps().get(2));
                 }
             }
         }
@@ -117,7 +115,6 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, query);
         }
-        pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
         return EVAL_BODY;
     }
 

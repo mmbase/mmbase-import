@@ -17,10 +17,10 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Utility function to create DateFormat instances.
- *
+ * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: DateFormats.java,v 1.7 2008-08-23 18:56:31 michiel Exp $
+ * @version $Id: DateFormats.java,v 1.4.2.1 2008-07-07 08:50:08 nklasens Exp $
  */
 public class DateFormats {
 
@@ -29,8 +29,8 @@ public class DateFormats {
     /**
      * Creates a DateFormat instance, based on a String.
      *
-     * @param format The format defining the DateFormat. This can be constants like :FULL, :FULL.FULL, :LONG, :MEDIUM or :SHORT.
-     *               It can also be 'e' for weekday. Also 'RFC822' or 'rfc822' is possible then the
+     * @param format The format defining the DateFormat. This can be constants like :FULL, :FULL.FULL, :LONG, :MEDIUM or :SHORT. 
+     *               It can also be 'e' for weekday. Also 'RFC822' or 'rfc822' is possible then the 
      *               quite complicated http://www.faqs.org/rfcs/rfc822.html compliant date and time
      *               is made, which comes in handy when you need to create a rss feed f.e.
      *               Or none of those, then a SimpleDateFormat is instantiated.
@@ -55,7 +55,6 @@ public class DateFormats {
             df = new DayOfWeekDateFormat();
         } else if (format.equals("RFC822") || format.equals("rfc822")) {
             df = new SimpleDateFormat("EE, dd MMM yyyy HH:mm:ss Z", Locale.US);
-            timeZone = "UTC";
         } else {
             df = new SimpleDateFormat(format, locale);
         }
@@ -91,7 +90,7 @@ public class DateFormats {
 
     /**
      * There is no DateFormat which can return the day of the week as a number available in
-     * java.text package.  This provides one.
+     * java.text package.  This provides one. 
      */
 
     protected static class DayOfWeekDateFormat extends DateFormat {
@@ -115,6 +114,6 @@ public class DateFormats {
             zone = value;
         }
 
-
+        
     }
 }

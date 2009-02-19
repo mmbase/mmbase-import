@@ -92,13 +92,13 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
         ResourceLoader rl = Logging.getResourceLoader();
 
-        log.info("using " + rl + " for resolving " + s + " -> " + rl.getResource(s));
+        log.info("using " + rl + " for resolving " + s);
         configWatcher = new ResourceWatcher (rl) {
                 public void onChange(String s) {
-                    doConfigure(resourceLoader.getResourceAsStream(s));
-                }
-            };
-        
+                doConfigure(resourceLoader.getResourceAsStream(s));
+            }
+        };
+
         configWatcher.clear();
         configWatcher.add(s);
 
@@ -216,13 +216,14 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             return false;
         return Log4jLevel.TRACE.isGreaterOrEqual(this.getEffectiveLevel());
     }
-
+    
     public static void shutdown() {
         Log4jImpl err = getLoggerInstance("STDERR");
         if(err.getLevel() != Log4jLevel.FATAL) {
             log.service("System stderr now going to stdout");
             System.setErr(System.out);
         }
+        log.service("Shutting down log4j");
         repository.shutdown();
     }
 

@@ -14,14 +14,15 @@ import org.w3c.dom.*;
 import org.w3c.dom.NodeList;
 
 import org.mmbase.datatypes.*;
-import org.mmbase.util.xml.*;
+import org.mmbase.util.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.*;
 
 /**
  * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.24 2008-09-04 05:56:22 michiel Exp $
+ * @version $Id: DataTypeReader.java,v 1.20.2.1 2008-01-28 18:43:28 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
@@ -41,27 +42,35 @@ public class DataTypeReader {
 
     /**
      * Register the namespace and XSD used by DataTypeConfigurer
-     * This method is called by EntityResolver.
+     * This method is called by XMLEntityResolver.
      */
     static  {
-        EntityResolver.registerSystemID(NAMESPACE_DATATYPES_1_0 + ".xsd", XSD_DATATYPES_1_0, DataTypeReader.class);
-        EntityResolver.registerSystemID(NAMESPACE_ENUMERATIONQUERY_1_0 + ".xsd", XSD_ENUMERATIONQUERY_1_0, DataTypeReader.class);
+        XMLEntityResolver.registerSystemID(NAMESPACE_DATATYPES_1_0 + ".xsd", XSD_DATATYPES_1_0, DataTypeReader.class);
+        XMLEntityResolver.registerSystemID(NAMESPACE_ENUMERATIONQUERY_1_0 + ".xsd", XSD_ENUMERATIONQUERY_1_0, DataTypeReader.class);
     }
+
+    /**
+     * Returns the value of a certain attribute, either an unqualified attribute or an attribute that fits in the
+     * searchquery namespace
+     */
+    static private String getAttribute(Element element, String localName) {
+        return DocumentReader.getAttribute(element, NAMESPACE_DATATYPES_1_0, localName);
+    }
+
 
     /**
      * Initialize the data types default supported by the system.
      */
-    public static List<DependencyException> readDataTypes(Element dataTypesElement, DataTypeCollector collector) {
+    public static List readDataTypes(Element dataTypesElement, DataTypeCollector collector) {
         return readDataTypes(dataTypesElement, collector, null);
     }
 
     /**
      * Initialize the data types default supported by the system.
-     * @return a list of failures.
      */
-    public static List<DependencyException> readDataTypes(Element dataTypesElement, DataTypeCollector collector, BasicDataType baseDataType) {
+    public static List readDataTypes(Element dataTypesElement, DataTypeCollector collector, BasicDataType baseDataType) {
         NodeList childNodes = dataTypesElement.getChildNodes();
-        List<DependencyException> failed = new ArrayList<DependencyException>();
+        List failed = new ArrayList();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
                 Element childElement = (Element) childNodes.item(k);
@@ -69,7 +78,7 @@ public class DataTypeReader {
                 try {
                     if (log.isDebugEnabled()) log.debug("Found child " + childElement.getTagName());
                     if ("fieldtype".equals(localName) ||  // backward compatibility   XXXX DO WE NEED BACKWARDS COMPATIBILITY??!
-                        "specialization".equals(localName) ||
+                        "specialization".equals(localName) ||  // backward compatibility
                         "datatype".equals(localName)) {
                         BasicDataType dataType = readDataType(childElement, baseDataType, collector).dataType;
                         collector.finish(dataType);

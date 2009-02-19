@@ -18,7 +18,7 @@ import javax.servlet.jsp.jstl.core.*;
  *
  * @author Michiel Meeuwissen 
  *
- * @version $Id: ListReferrerTag.java,v 1.11 2006-09-29 10:04:08 michiel Exp $ 
+ * @version $Id: ListReferrerTag.java,v 1.10 2005-12-05 17:21:17 michiel Exp $ 
  */
 
 public abstract class ListReferrerTag extends ContextReferrerTag  {
@@ -31,7 +31,7 @@ public abstract class ListReferrerTag extends ContextReferrerTag  {
 
     protected ListProvider getList() throws JspTagException {
         // find the parent list:
-        return findParentTag(ListProvider.class, (String) parentListId.getValue(this));
+        return (ListProvider) findParentTag(ListProvider.class, (String) parentListId.getValue(this));
     }
 
     /**
@@ -39,7 +39,7 @@ public abstract class ListReferrerTag extends ContextReferrerTag  {
      */
     protected LoopTag getLoopTag() throws JspTagException {
         // find the parent list:
-        return findParentTag(LoopTag.class, (String) parentListId.getValue(this));
+        return (LoopTag) findParentTag(LoopTag.class, (String) parentListId.getValue(this));
     }
  
 

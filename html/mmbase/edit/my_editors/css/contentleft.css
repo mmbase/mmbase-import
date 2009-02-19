@@ -1,4 +1,4 @@
-/* css for my_editors v2 to put the content column left and the other column right */
+/* css for my_editors v2 to put the content column and site */
 #content { float: left; }
 #sidebar { float: right; }
 

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryPreviousBatchesTag.java,v 1.10 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: QueryPreviousBatchesTag.java,v 1.7 2006-04-11 22:58:36 michiel Exp $
  */
 public class QueryPreviousBatchesTag extends StringListTag implements QueryContainerReferrer {
     private static final Logger log = Logging.getLoggerInstance(QueryPreviousBatchesTag.class);
@@ -55,9 +55,9 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
                 indexOffset += (returnList.size() - m);
                 log.error("Setting index offset to " + indexOffset);
                 returnList = returnList.subList(returnList.size() - m, returnList.size());
-
+                
             }
-        }
+        }        
     }
 
     public int getIndexOffset() {
@@ -65,8 +65,9 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
     }
 
 
-    protected List<String> getList() throws JspTagException {
-        Query query = getQuery(container);
+    protected List getList() throws JspTagException {
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
+        Query query = c.getQuery();
         int offset = query.getOffset();
         int maxNumber = query.getMaxNumber();
         if (maxNumber == SearchQuery.DEFAULT_MAX_NUMBER) {
@@ -77,14 +78,14 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
         }
 
 
-        int maxTotalSize = maxtotal.getInt(this, -1);
+        int maxTotalSize = maxtotal.getInt(this, -1); 
 
         int maxSize; // the size of this list.
 
         if (maxTotalSize > 0) {
             maxSize = maxTotalSize / 2;              // first guess
 
-            int totalSize = Queries.count(query);
+            int totalSize = Queries.count(query);    
             int nextSize  = totalSize - offset - maxNumber;
             int numberOfNextBatches = nextSize/ maxNumber;         // number of complete pages
             if (nextSize % maxNumber > 0) numberOfNextBatches++;   // last page may be incomplete
@@ -101,12 +102,12 @@ public class QueryPreviousBatchesTag extends StringListTag implements QueryConta
         }
 
 
-        List<String> result = new ArrayList<String>();
+        List result = new ArrayList();
 
         while (offset > 0) {
             offset -= maxNumber;
             if (offset < 0) offset = 0;
-            result.add(0, String.valueOf(offset));
+            result.add(0, new Integer(offset));
             if (maxSize > 0 && result.size() == maxSize) break;
         }
         if (offset > 0) {

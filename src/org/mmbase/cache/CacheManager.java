@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.cache;
 
 import java.util.*;
-import java.util.regex.*;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
@@ -18,83 +17,24 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 
-import java.util.concurrent.ConcurrentHashMap;
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 
-import java.lang.management.*;
-import javax.management.*;
 
 
 /**
- * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on
- * this in stead.
- *
- * Since 1.9.1 this class represents a singleton. Actually most methods should more logically not be
- * static any more.
+ * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.44 2008-11-15 19:15:10 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.6.2.3 2008-07-28 15:06:54 michiel Exp $
  */
-public class CacheManager implements CacheManagerMBean {
+public class CacheManager {
 
     private static final Logger log = Logging.getLoggerInstance(CacheManager.class);
 
     /**
      * All registered caches
      */
-    //private static final NavigableMap<String, Cache<?,?>> caches = new ConcurrentSkipListMap<String, Cache<?,?>>();
-    private final Map<String, Cache<?,?>> caches = new ConcurrentHashMap<String, Cache<?,?>>();
-
-    private static CacheManager instance = null;
-
-
-    private CacheManager() {
-        // singleton
-    }
-
-    /**
-     * @since MMBase-1.9.1
-     */
-
-    public static CacheManager getInstance() {
-        if (instance == null) {
-            instance = new CacheManager();
-            ThreadPools.jobsExecutor.execute(new Runnable() {
-                    public void run() {
-                        ObjectName on;
-                        final Hashtable<String, String> props = new Hashtable<String, String>();
-
-                        try {
-                            org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
-
-                            props.put("type", "Caches");
-                            String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
-                            if (machineName != null) {
-                                props.put("type", machineName);
-                            }
-                            on = new ObjectName("org.mmbase", props);
-                        } catch (MalformedObjectNameException mfone) {
-                            log.warn("" + props + " " + mfone);
-                            return;
-                        }
-                        try {
-                            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-                            mbs.registerMBean(instance, on);
-                        } catch (JMException jmo) {
-                            log.warn("" + on + " " + jmo.getClass() + " " + jmo.getMessage());
-                        } catch (Throwable t) {
-                            log.error("" + on + " " + t.getClass() + " " + t.getMessage());
-                        }
-
-
-                    }
-                });
-
-        }
-        return instance;
-    }
-
-
-
+    private static final Map caches = new ConcurrentHashMap();
 
     /**
      * Returns the Cache with a certain name. To be used in combination with getCaches(). If you
@@ -104,29 +44,7 @@ public class CacheManager implements CacheManagerMBean {
      * @see #getCaches
      */
     public static Cache getCache(String name) {
-        return getInstance().caches.get(name);
-    }
-
-    /**
-     * Returns a cache wrapped in a 'Bean', so it is not a Map any more. This makes it easier
-     * accesible by tools which want that (like EL).
-     * @since MMBase-1.9
-     */
-    public static Bean getBean(String name) {
-        return new Bean(getCache(name));
-    }
-    public static Set<Bean> getCaches(String className) {
-        SortedSet<Bean> result = new TreeSet<Bean>();
-        for (Cache c : getInstance().caches.values()) {
-            try {
-                if (className == null || Class.forName(className).isInstance(c)) {
-                    result.add(new Bean(c));
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return result;
+        return (Cache) caches.get(name);
     }
 
     /**
@@ -134,15 +52,14 @@ public class CacheManager implements CacheManagerMBean {
      *
      * @return A Set containing the names of all caches.
      */
-    public static Set<String> getCaches() {
-        return Collections.unmodifiableSet(getInstance().caches.keySet());
+    public static Set getCaches() {
+        return Collections.unmodifiableSet(caches.keySet());
     }
-
     /**
      * @since MMBase-1.8.6
      */
-    public static Map<String, Cache<?, ?>> getMap() {
-        return Collections.unmodifiableMap(getInstance().caches);
+    public static Map getMap() {
+        return Collections.unmodifiableMap(caches);
     }
 
 
@@ -153,60 +70,14 @@ public class CacheManager implements CacheManagerMBean {
      * @param cache A cache.
      * @return The previous cache of the same type (stored under the same name)
      */
-    public static <K,V> Cache<K,V> putCache(final Cache<K,V> cache) {
-        Cache old = getInstance().caches.put(cache.getName(), cache);
+    protected static Cache putCache(Cache cache) {
+        Cache old = (Cache) caches.put(cache.getName(), cache);
         try {
             configure(configReader, cache.getName());
         } catch (Throwable t) {
             log.error(t.getMessage(), t);
         }
-        Runnable run = new Runnable() {
-                public void run() {
-                    org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
-                    ObjectName name = getObjectName(cache);
-                    try {
-                        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-                        mbs.registerMBean(cache, name);
-                    } catch (JMException jmo) {
-                        log.warn("" + name + " " + jmo.getClass() + " " + jmo.getMessage());
-                    } catch (Throwable t) {
-                        log.error("" + name + " " + t.getClass() + " " + t.getMessage());
-                    }
-                }
-            };
-        if (org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp()) {
-            run.run();
-        } else {
-            ThreadPools.jobsExecutor.execute(run);
-        }
-
         return old;
-    }
-
-
-    /**
-     * @since MMBase-1.9
-     */
-    private static ObjectName getObjectName(Cache cache) {
-        Hashtable<String, String> props = new Hashtable<String, String>();
-        try {
-            props.put("type", "Caches");
-            org.mmbase.util.transformers.CharTransformer identifier = new org.mmbase.util.transformers.Identifier();
-            String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
-            if (machineName != null) {
-                props.put("mmb", machineName);
-            } else {
-            }
-            if (cache != null) {
-                props.put("name", identifier.transform(cache.getName()));
-            } else {
-                //props.put("name", "*"); // WTF, this does not work in java 5.
-            }
-            return new ObjectName("org.mmbase", props);
-        } catch (MalformedObjectNameException mfone) {
-            log.warn("" + props + " " + mfone);
-            return null;
-        }
     }
 
     /**
@@ -236,13 +107,13 @@ public class CacheManager implements CacheManagerMBean {
             if (log.isDebugEnabled()) log.debug("Configuring cache " + only + " with file " + xmlReader.getSystemId());
         }
 
-        for (Element cacheElement: xmlReader.getChildElements("caches", "cache")) {
+        Iterator e =  xmlReader.getChildElements("caches", "cache");
+        while (e.hasNext()) {
+            Element cacheElement = (Element) e.next();
             String cacheName =  cacheElement.getAttribute("name");
             if (only != null && ! only.equals(cacheName)) {
                 continue;
             }
-            // TODO: fix again when everybody runs 1.5.0_08, because of
-            // generics bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620
             Cache cache = getCache(cacheName);
             if (cache == null) {
                 log.service("No cache " + cacheName + " is present (perhaps not used yet?)");
@@ -250,8 +121,10 @@ public class CacheManager implements CacheManagerMBean {
                 String clazz = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.implementation.class"));
                 if(!"".equals(clazz)) {
                     Element cacheImpl = xmlReader.getElementByPath(cacheElement, "cache.implementation");
-                    Map<String,String> configValues = new HashMap<String,String>();
-                    for (Element attrNode: xmlReader.getChildElements(cacheImpl, "param")) {
+                    Iterator it = xmlReader.getChildElements(cacheImpl, "param");
+                    Map configValues = new HashMap();
+                    while (it.hasNext()) {
+                        Element attrNode = (Element)it.next();
                         String paramName = xmlReader.getElementAttributeValue(attrNode, "name");
                         String paramValue = xmlReader.getElementValue(attrNode);
                         configValues.put(paramName, paramValue);
@@ -261,7 +134,7 @@ public class CacheManager implements CacheManagerMBean {
                 String status = xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.status"));
                 cache.setActive(status.equalsIgnoreCase("active"));
                 try {
-                    Integer size = Integer.valueOf(xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.size")));
+                    Integer size = new Integer(xmlReader.getElementValue(xmlReader.getElementByPath(cacheElement, "cache.size")));
                     cache.setMaxSize(size.intValue());
                     log.service("Setting " + cacheName + " " + status + " with size " + size);
                 } catch (NumberFormatException nfe) {
@@ -309,7 +182,6 @@ public class CacheManager implements CacheManagerMBean {
     }
 
 
-
     /**
      * The caches can be configured with an XML file, this file can
      * be changed which causes the caches to be reconfigured automaticly.
@@ -317,11 +189,9 @@ public class CacheManager implements CacheManagerMBean {
     private static ResourceWatcher configWatcher = new ResourceWatcher () {
             public void onChange(String resource) {
                 try {
-                    org.xml.sax.InputSource is =  ResourceLoader.getConfigurationRoot().getInputSource(resource);
-                    log.service("Reading " + is.getSystemId());
-                    configReader = new DocumentReader(is, Cache.class);
+                    configReader = new DocumentReader(ResourceLoader.getConfigurationRoot().getInputSource(resource), Cache.class);
                 } catch (Exception e) {
-                    log.warn(e.getClass() + " " + e.getMessage());
+                    log.error(e);
                     return;
                 }
                 configure(configReader);
@@ -339,9 +209,11 @@ public class CacheManager implements CacheManagerMBean {
 
 
     public static int getTotalByteSize() {
+        Iterator i = caches.entrySet().iterator();
         int len = 0;
         SizeOf sizeof = new SizeOf();
-        for (Map.Entry<String, Cache<?, ?>> entry : getInstance().caches.entrySet()) {
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
             len += sizeof.sizeof(entry.getKey()) + sizeof.sizeof(entry.getValue());
         }
         return len;
@@ -352,181 +224,13 @@ public class CacheManager implements CacheManagerMBean {
      * @since MMBase-1.8.1
      */
     public static void shutdown() {
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        log.info("Clearing and unregistering all caches");
-        log.debug(mbs.queryNames(getObjectName(null), null));
-        for(Cache<?,?> cache : getInstance().caches.values()) {
+        log.info("Clearing all caches");
+        Iterator  i =  caches.values().iterator();
+        while (i.hasNext()) {
+            Cache cache = (Cache) i.next();
             cache.clear();
-            ObjectName name = getObjectName(cache);
-            if (mbs.isRegistered(name)) {
-                try {
-                    mbs.unregisterMBean(name);
-                } catch (JMException jmo) {
-                    log.warn("" + name + " " + jmo.getClass() + " " + jmo.getMessage() + " " + mbs.queryNames(null, null));
-                }
-            }
-        }
-        {
-            final Hashtable<String, String> props = new Hashtable<String, String>();
-            props.put("type", "Caches");
-            String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
-            if (machineName != null) {
-                props.put("type", machineName);
-            }
-            try {
-                ObjectName name = new ObjectName("org.mmbase", props);
-                if (mbs.isRegistered(name)) {
-                    mbs.unregisterMBean(name);
-                }
-            } catch (JMException jmo) {
-
-            }
-        }
-        if(mbs.queryNames(getObjectName(null), null).size() > 0) {
-            log.warn("Didn't unregister all caches" + mbs.queryNames(getObjectName(null), null));
-        }
-        getInstance().caches.clear();
-        instance = null;
-    }
-
-
-    /**
-     * Used in config/functions/caches.xml
-     */
-    public static Object remove(String name, Object key) {
-        Cache cache = getCache(name);
-        if (cache == null) throw new IllegalArgumentException();
-        return cache.remove(key);
-    }
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    public String clear(String pattern) {
-        if (pattern == null) pattern = ".*";
-        StringBuilder buf = new StringBuilder();
-        Pattern p = Pattern.compile(pattern);
-        for (Map.Entry<String, Cache<?, ?>> entry : caches.entrySet()) {
-            if (p.matcher(entry.getKey()).matches()) {
-                buf.append("Clearing " + entry.getValue() + "\n");
-                entry.getValue().clear();
-            }
-        }
-        if (buf.length() == 0) buf.append("The regular expression '" + pattern + "' matched no cache at all");
-        return buf.toString();
-    }
-    /**
-     * @since MMBase-1.9.1
-     */
-    public String enable(String pattern) {
-        if (pattern == null) pattern = ".*";
-        StringBuilder buf = new StringBuilder();
-        Pattern p = Pattern.compile(pattern);
-        for (Map.Entry<String, Cache<?, ?>> entry : caches.entrySet()) {
-            if (p.matcher(entry.getKey()).matches()) {
-                Cache c = entry.getValue();
-                if(c.isActive()) {
-                    buf.append("Already active " + c + "\n");
-                } else {
-                    c.setActive(true);
-                    buf.append("Making active " + c + "\n");
-                }
-
-            }
-        }
-        if (buf.length() == 0) buf.append("The regular expression '" + pattern + "' matched no cache at all");
-        return buf.toString();
-    }
-    /**
-     * @since MMBase-1.9.1
-     */
-    public String disable(String pattern) {
-        if (pattern == null) pattern = ".*";
-        StringBuilder buf = new StringBuilder();
-        Pattern p = Pattern.compile(pattern);
-        for (Map.Entry<String, Cache<?, ?>> entry : caches.entrySet()) {
-            if (p.matcher(entry.getKey()).matches()) {
-                Cache c = entry.getValue();
-                if(c.isActive()) {
-                    c.setActive(false);
-                    buf.append("Making inactive " + c + "\n");
-                } else {
-                    buf.append("Already inactive " + c + "\n");
-                }
-
-            }
-        }
-        if (buf.length() == 0) buf.append("The regular expression '" + pattern + "' matched no cache at all");
-        return buf.toString();
-    }
-    /**
-     * @since MMBase-1.9.1
-     */
-    public String readConfiguration() {
-        configWatcher.onChange("caches.xml");
-        return "Read " + ResourceLoader.getConfigurationRoot().getResource("caches.xml");
-    }
-
-
-    public static class Bean<K, V> implements Comparable<Bean<?, ?>> {
-        /* private final Cache<K, V> cache; // this line prevents building in Java 1.5.0_07 probably because of http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620 */
-        private final Cache cache;
-        public Bean(Cache<K, V> c) {
-            cache = c;
-        }
-        public String getName() { return cache.getName(); }
-        public String getDescription() { return cache.getDescription(); }
-        public int getMaxEntrySize() { return cache.getMaxEntrySize(); }
-        public Set<Map.Entry<K, V>> getEntrySet() { return new HashSet<Map.Entry<K, V>>(cache.entrySet()); }
-        public Set<K> getKeySet() { return new HashSet<K>(cache.keySet()); }
-        public long getHits() { return cache.getHits(); }
-        public long  getMisses() { return cache.getMisses(); }
-        public long getPuts() { return cache.getPuts(); }
-        public  int getMaxSize() { return cache.maxSize(); }
-        public  int getSize() { return cache.size(); }
-        public double getRatio() { return cache.getRatio(); }
-        public String getStats() { return cache.getStats(); }
-        public String toString() { return cache.toString(); }
-        public boolean isActive() { return cache.isActive(); }
-        public int getByteSize() { return cache.getByteSize(); }
-        public int getCheapByteSize() { return cache.getCheapByteSize(); }
-        public boolean isEmpty() { return cache.isEmpty(); }
-        public ReleaseStrategy getReleaseStrategy() { return cache instanceof QueryResultCache ? ((QueryResultCache) cache).getReleaseStrategy() : null;}
-        public Map<K, V> getMap() {  return cache; }
-        public Map<K, Integer> getCounts() {
-            return new AbstractMap<K, Integer>() {
-                public Set<Map.Entry<K, Integer>> entrySet() {
-                    return new AbstractSet<Map.Entry<K, Integer>>() {
-                        public int size() {
-                            return cache.size();
-                        }
-                        public Iterator<Map.Entry<K, Integer>> iterator() {
-                            return new Iterator<Map.Entry<K, Integer>>() {
-                                private Iterator<K> iterator = new HashSet<K>(cache.keySet()).iterator();
-                                public boolean hasNext() {
-                                    return iterator.hasNext();
-                                }
-                                public Map.Entry<K, Integer> next() {
-                                    K key = iterator.next();
-                                    return new org.mmbase.util.Entry<K, Integer>(key, cache.getCount(key));
-                                }
-                                public void remove() {
-                                    throw new UnsupportedOperationException();
-                                }
-                            };
-                        }
-                    };
-                }
-            };
-        }
-        public boolean equals(Object o) {
-            return  o instanceof Bean && ((Bean) o).cache.equals(cache);
-        }
-        public int hashCode() {
-            return cache.hashCode();
-        }
-        public int compareTo(Bean<?, ?> bean) {
-            return getName().compareTo(bean.getName());
+            i.remove();
         }
     }
+
 }

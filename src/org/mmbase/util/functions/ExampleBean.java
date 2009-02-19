@@ -9,17 +9,17 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A bean can be accessed through the function framework.
+ * A bean can be accessed through the function framework. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBean.java,v 1.12 2008-06-13 09:29:42 michiel Exp $
+ * @version $Id: ExampleBean.java,v 1.9 2006-06-20 20:51:49 michiel Exp $
  * @since MMBase-1.8
  */
 public final class ExampleBean {
 
     private static final Logger log = Logging.getLoggerInstance(ExampleBean.class);
     private String parameter1;
-    private Integer parameter2 = 0;
+    private Integer parameter2 = new Integer(0);
     private String parameter3 = "default";
     private Node node;
     private Cloud cloud;
@@ -65,14 +65,14 @@ public final class ExampleBean {
     }
 
     public Integer integerFunction() {
-        return parameter2 * 3;
+        return new Integer(parameter2.intValue() * 3);
     }
 
     /**
      * A function returning a Map
      */
-    public Map<String,String> mapFunction() {
-        Map<String,String> map = new HashMap<String,String>();
+    public Map mapFunction() {
+        Map map = new HashMap();
         map.put("bloe", parameter1);
         return map;
     }
@@ -91,24 +91,22 @@ public final class ExampleBean {
      * A function returning a Node as a bridge object, but based on a Map of values.
      */
     public Node nodeFunction2() {
-        Map<String,String> map = new HashMap<String,String>();
-        map.put("bloe", parameter1);
+        Map map = new HashMap();
+        map.put("bloe", parameter1);   
         return new org.mmbase.bridge.util.MapNode(map);
     }
 
 
-    public Collection<Object> nodeListFunction() {
-        List<Object> result = new ArrayList<Object>();
+    public Collection nodeListFunction() {
+        List result = new ArrayList();
         result.add(nodeFunction1());
         result.add(nodeFunction2());
         return result;
     }
     public NodeList nodeListFunction1() {
-        Collection<Object> col = nodeListFunction();
+        Collection col = nodeListFunction();
         col.add(mapFunction());
-        //return new org.mmbase.bridge.util.CollectionNodeList(col);
-        // it's safer to specify the cloud too, especially to be able to convert the result of nodeFunction1()
-        return new org.mmbase.bridge.util.CollectionNodeList(col, cloud);
+        return new org.mmbase.bridge.util.CollectionNodeList(col);
     }
 
     /**
@@ -122,7 +120,7 @@ public final class ExampleBean {
             NodeManager nm = node.getNodeManager();
             NodeQuery q = nm.createQuery();
             StepField field = q.getStepField(nm.getField("number"));
-            q.setConstraint(q.createConstraint(field, FieldCompareConstraint.GREATER, Integer.valueOf(node.getNumber())));
+            q.setConstraint(q.createConstraint(field, FieldCompareConstraint.GREATER, new Integer(node.getNumber())));
             q.addSortOrder(field, SortOrder.ORDER_ASCENDING);
             q.setMaxNumber(1);
             NodeIterator i = nm.getList(q).nodeIterator();
@@ -132,14 +130,14 @@ public final class ExampleBean {
             MMObjectBuilder builder = MMBase.getMMBase().getBuilder(node.getNodeManager().getName());
             NodeSearchQuery query = new NodeSearchQuery(builder);
             StepField field = query.getField(builder.getField("number"));
-            BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, node.getNumber());
+            BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, new Integer(node.getNumber()));
             cons.setOperator(FieldCompareConstraint.GREATER);
             query.setConstraint(cons);
             query.addSortOrder(field);
             query.setMaxNumber(1);
             try {
-                java.util.Iterator<MMObjectNode> i = builder.getNodes(query).iterator();
-                return i.hasNext() ?  i.next() : null;
+                java.util.Iterator i = builder.getNodes(query).iterator();
+                return i.hasNext() ? ((MMObjectNode) i.next()) : null;
             } catch (Exception e) {
                 return null;
             }

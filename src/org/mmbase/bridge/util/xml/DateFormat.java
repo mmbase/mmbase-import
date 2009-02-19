@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.util.xml;
 
-import javax.xml.xpath.*;
-
+import org.apache.xpath.XPathAPI;
 import java.util.*;
 
 import org.mmbase.bridge.*;
@@ -34,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Martijn Houtman
  * @author Michiel Meeuwissen
- * @version $Id: DateFormat.java,v 1.15 2007-04-09 19:10:27 michiel Exp $
+ * @version $Id: DateFormat.java,v 1.14 2005-10-07 18:47:41 michiel Exp $
  * @since   MMBase-1.7
  */
 public class DateFormat {
@@ -177,11 +176,10 @@ public class DateFormat {
      * @return the formatted string
      * @throws javax.xml.transform.TransformerException if something went wrong while searching the DOM Node
      */
-    public static String format(Cloud cloud, org.w3c.dom.Node node, String fieldName, String pattern, String timeZone) throws XPathExpressionException {
+    public static String format(Cloud cloud, org.w3c.dom.Node node, String fieldName, String pattern, String timeZone) throws javax.xml.transform.TransformerException {
         log.debug("calling with dom node");
         // bit of a waste to use an xpath here?
-        XPath xpath = XPathFactory.newInstance().newXPath();
-        String number = xpath.evaluate("./field[@name='number']", node);
+        String number = XPathAPI.eval(node, "./field[@name='number']").toString();
         return format(cloud, number, fieldName, pattern, timeZone);
     }
 

@@ -9,14 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.clustering;
 
+
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.mmbase.core.event.*;
 import org.mmbase.core.util.DaemonThread;
 import org.mmbase.module.core.*;
+import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,19 +29,21 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.38 2008-07-03 15:08:29 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.32 2006-08-09 11:52:33 pierre Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(ClusterManager.class);
 
+
     protected final Statistics receive = new Statistics();
     protected final Statistics send    = new Statistics();
 
+
     /** Queue with messages to send to other MMBase instances */
-    protected BlockingQueue<byte[]> nodesToSend = new LinkedBlockingQueue<byte[]>(64);
+    protected Queue nodesToSend = new Queue(64);
     /** Queue with received messages from other MMBase instances */
-    protected BlockingQueue<byte[]> nodesToSpawn = new LinkedBlockingQueue<byte[]>(64);
+    protected Queue nodesToSpawn = new Queue(64);
 
     /** Thread which processes the messages */
     protected Thread kicker = null;
@@ -50,6 +52,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
 
     protected boolean compatible17 = false;
 
+
     public final void shutdown(){
         log.info("Shutting down clustering");
         stopCommunicationThreads();
@@ -57,8 +60,8 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         kicker = null;
     }
 
-    protected void readConfiguration(Map<String,String> configuration) {
-        String tmp = configuration.get("spawnthreads");
+    protected void readConfiguration(Map configuration) {
+        String tmp = (String) configuration.get("spawnthreads");
         if (tmp != null && !tmp.equals("")) {
             spawnThreads = !"false".equalsIgnoreCase(tmp);
         }
@@ -78,16 +81,8 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         //we only want to propagate the local events into the cluster
         if(event.getMachine().equals(MMBase.getMMBase().getMachineName())){
             byte[] message = createMessage(event);
-            if (message != null) {
-                if (message.length > 5000) {
-                    log.warn("Sending large event to the cluster. Serialization of  " + event + " is " + message.length + " long!");
-                } else {
-                    log.debug("Sending an event to the cluster");
-                }
-                nodesToSend.offer(message);
-            } else {
-                log.debug("MEssage was null");
-            }
+            log.debug("Sending an event to the cluster");
+            nodesToSend.append(message);
         } else {
             log.trace("Ignoring remote event from " + event.getMachine() + " it will not be propagated");
         }
@@ -131,13 +126,13 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                         b1.write(rel1, 0, rel1.length);
                         b1.write(',');
                         b1.write(0);
-                        nodesToSend.offer(b1.toByteArray());
+                        nodesToSend.append(b1.toByteArray());
                         ByteArrayOutputStream b2 = new ByteArrayOutputStream();
                         byte[] rel2 = createMessage(re.getMachine(), re.getRelationDestinationNumber(), re.getRelationDestinationType(), "r").getBytes();
                         b2.write(rel2, 0, rel2.length);
                         b2.write(',');
                         b2.write(0);
-                        nodesToSend.offer(b2.toByteArray());
+                        nodesToSend.append(b2.toByteArray());
                     } else {
                         ne = (NodeEvent) event;
                     }
@@ -162,7 +157,6 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
 
     /** Followup number of message */
     protected int follownr = 1;
-    protected int lastRecievedMessage;
 
     /**
      * Creates MMBase 1.7 parseable message. This is simple String, which is prefixed before the actual 1.8 message.
@@ -226,13 +220,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         if (tok.hasMoreTokens()) {
             String machine = tok.nextToken();
             if (tok.hasMoreTokens()) {
-                String fnr = tok.nextToken();
-                int newFollowNr = Integer.valueOf(fnr);
-                int expectedFollowNr = lastRecievedMessage + 1;
-                if (newFollowNr != expectedFollowNr) {
-                    log.info("Expected message " + expectedFollowNr + ", but message " + newFollowNr + " was recieved ");
-                }
-                lastRecievedMessage = newFollowNr;
+                String vnr = tok.nextToken();
                 if (tok.hasMoreTokens()) {
                     String id = tok.nextToken();
                     if (tok.hasMoreTokens()) {
@@ -271,7 +259,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
     public void run() {
         while(kicker != null) {
             try {
-                byte[] message = nodesToSpawn.take();
+                byte[] message = (byte[]) nodesToSpawn.get();
                 if (message == null) continue;
                 long startTime = System.currentTimeMillis();
                 if (log.isDebugEnabled()) {
@@ -294,10 +282,11 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
                 log.error(t.getMessage(), t);
             }
         }
+
     }
 
     /**
-     * @javadoc
+
      * @param event
      */
     protected void handleEvent(final Event event) {
@@ -316,7 +305,6 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             }
             return;
         }
-
         if (event instanceof NodeEvent) {
             MMObjectBuilder builder = mmbase.getBuilder(((NodeEvent) event).getBuilderName());
             if (builder != null && (! builder.broadcastChanges())) {
@@ -342,7 +330,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             try {
                 EventManager.getInstance().propagateEvent(event);
             } catch (Throwable t) {
-                log.error("Exception during propagation of event: " + event + ": " + t.getMessage(), t);
+                log.error("Exception during propegation of event: " + event + ": " + t.getMessage(), t);
             }
         }
     }

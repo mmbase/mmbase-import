@@ -11,9 +11,10 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
-import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 
 import javax.servlet.jsp.*;
+
+import javax.servlet.jsp.tagext.TagSupport;
 
 import org.w3c.dom.Document;
 
@@ -42,7 +43,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.79 2008-09-04 12:31:07 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.68.2.1 2006-09-18 12:54:53 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -57,7 +58,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     protected Attribute namespaceAware   = Attribute.NULL;
     protected Attribute referids   = Attribute.NULL;
 
-    protected List<Entry<String, Object>>       extraParameters      = new ArrayList<Entry<String, Object>>();
+    protected List       extraParameters      = new ArrayList();
 
     protected Source   xsltSource = null;
 
@@ -94,6 +95,8 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     // These formats take the body as a string. So the body doesn't need to be valid XML.
     private static final int FORMAT_ESCAPEXML       = 1001;
     private static final int FORMAT_DATE            = 1002;
+    private static final int FORMAT_LOWERCASE       = 1003;
+    private static final int FORMAT_UPPERCASE       = 1004;
     private static final int FORMAT_NONE            = 2000; // can be useful for only the escape= functionality.
 
 
@@ -105,7 +108,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     private static final int WANTS_STRING          = 2;
 
     private static final String PAGECONTEXT_COUNTER = "formatter__counter";
-
+    
     /* transformer properties */
     Properties props = new Properties();
 
@@ -114,14 +117,12 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
         try {
             javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-
-            dfactory.setXIncludeAware(true);
             dfactory.setNamespaceAware(false);
             documentBuilder = dfactory.newDocumentBuilder();
             dfactory.setNamespaceAware(true);
             documentBuilderNS = dfactory.newDocumentBuilder();
-            org.xml.sax.ErrorHandler    handler = new org.mmbase.util.xml.ErrorHandler();
-            org.xml.sax.EntityResolver resolver = new org.mmbase.util.xml.EntityResolver();
+            org.xml.sax.ErrorHandler    handler = new org.mmbase.util.XMLErrorHandler();
+            org.xml.sax.EntityResolver resolver = new org.mmbase.util.XMLEntityResolver();
             documentBuilder.setErrorHandler(handler);
             documentBuilder.setEntityResolver(resolver);
             documentBuilderNS.setErrorHandler(handler);
@@ -219,9 +220,8 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         if (log.isDebugEnabled()) {
             log.debug("adding parameter " + key + "/" + value);
         }
-        extraParameters.add(new Entry<String, Object>(key, value));
+        extraParameters.add(new Entry(key, value));
     }
-
     /**
      * The  Xslt tag will call this, to inform this tag about the XSLT which must be done.
      */
@@ -288,9 +288,9 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         if (log.isDebugEnabled()) log.debug("startag of formatter tag " + counter);
 
         // serve parent timer tag:
-        TimerTag t = findParentTag(TimerTag.class, null, false);
+        TagSupport t = findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false);
         if (t != null) {
-            timerHandle = t.startTimer(getId(), getClass().getName());
+            timerHandle = ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)t).startTimer(getId(), getClass().getName());
         } else {
             timerHandle = -1;
         }
@@ -338,25 +338,18 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                     throw new JspTagException ("It is not possible to have tags which produce DOM-XML and  text in the body. Perhaps you want to use the attribute wants='string'?");
                 } else {
                     doc = xmlGenerator.getDocument();
-                    long cost = xmlGenerator.getCost() / 1000000;
-                    if (cost > 50) {
-                        log.service("Cost : " + cost + " ms for " + xmlGenerator.getSize() + " nodes");
-                    } else {
-                        log.debug("Cost : " + cost + " ms for " + xmlGenerator.getSize() + " nodes");
-                    }
                 }
             } else {
-                if (body == null || body.length() == 0) body = "<mmxf />"; // something random that will at least parse.
+                if (body == null || body.equals("")) body = "<mmxf />"; // something random that will at least parse.
                 if (log.isDebugEnabled()) log.debug("Using bodycontent as input:>" + body + "<");
                 try {
                     String encoding = org.mmbase.util.GenericResponseWrapper.getXMLEncoding(body);
                     if (encoding == null) encoding = "UTF-8"; // it _must_ be XML.
                     javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
                     DocumentBuilder db =  namespaceAware.getBoolean(this, true) ? documentBuilderNS : documentBuilder;
-                    log.debug("xinclude " + db.isXIncludeAware());
                     doc = db.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)),
-                                   pageContext.getServletContext().getResource(request.getServletPath()).toString()
-                                   );
+                                                pageContext.getServletContext().getResource(request.getServletPath()).toString()
+                                                );
                 } catch (Exception e) {
                     throw new TaglibException(e.getMessage() + "when parsing '" + body + "'", e);
                 }
@@ -436,7 +429,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                 }
                 // iso 8601 for date/time
                 dateFormat.applyPattern(pattern);
-                Date datum = new Date(Long.parseLong(body) * 1000);
+                Date datum = new Date((new Long(body)).longValue() * 1000);
                 helper.setValue(dateFormat.format(datum));
                 break;
             default:
@@ -471,7 +464,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         }
 
         if (timerHandle != -1) {
-            findParentTag(TimerTag.class, null, false).haltTimer(timerHandle);
+            ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false)).haltTimer(timerHandle);
         }
         helper.doEndTag();
         return super.doEndTag();
@@ -536,12 +529,12 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         }
 
         // set some parameters to the XSLT style sheet.
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map params = new HashMap();
         String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath();
         params.put("formatter_requestcontext",  context);
         //params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         // use node function
-        LocaleTag localeTag = findParentTag(LocaleTag.class, null, false);
+        LocaleTag localeTag = (LocaleTag) findParentTag(org.mmbase.bridge.jsp.taglib.LocaleTag.class, null, false);
         Locale locale;
         if (localeTag != null) {
             locale = localeTag.getLocale();
@@ -566,11 +559,11 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
         //other options
         // a=b,c=d,e=f
         if (options != Attribute.NULL) {
-            Iterator<String> i = options.getList(this).iterator();
+            Iterator i = options.getList(this).iterator();
             while (i.hasNext()) {
-                String option = i.next();
+                String option = (String) i.next();
                 // List   o = StringSplitter.split(option, "=");
-                List<String> o = Arrays.asList( option.trim().split("\\s*=\\s*") );
+                List o = Arrays.asList( option.trim().split("\\s*=\\s*") );
                 if (o.size() != 2) {
                     throw  new JspTagException("Option '" + option + "' is not in the format key=value (required for XSL transformations)");
 
@@ -581,9 +574,9 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             }
         }
         params.putAll(Referids.getReferids(referids, this));
-        Iterator<Entry<String, Object>> i = extraParameters.iterator();
+        Iterator i = extraParameters.iterator();
         while (i.hasNext()) {
-            Map.Entry<String, Object> entry = i.next();
+            Map.Entry entry = (Map.Entry) i.next();
             params.put(entry.getKey(), entry.getValue());
         }
 

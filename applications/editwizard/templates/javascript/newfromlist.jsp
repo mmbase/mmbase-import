@@ -4,7 +4,7 @@
  * Routines for NewFromList
  * 
  * @since    MMBase-1.9
- * @version  $Id: newfromlist.jsp,v 1.5 2008-04-25 16:55:45 andre Exp $
+ * @version  $Id: newfromlist.jsp,v 1.1.2.8 2008-02-21 13:50:35 andre Exp $
  */
 
 function doMySearch(el) {
@@ -58,19 +58,18 @@ function doMySearch(el) {
 
 
     // build url
-    // var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/newfromlist.xsl&nodepath="+objectType+"&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>&country=<%=request.getParameter("country")%>&timezone=<%=request.getParameter("timezone")%>";
     var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/newfromlist.xsl&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>&country=<%=request.getParameter("country")%>&timezone=<%=request.getParameter("timezone")%>";
     if (relationNodepath.length != 0) {
         url += "&nodepath=" + relationNodepath + "&startnodes=" + relationStartnodes;
     } else {
         url += "&nodepath=" + objectType;
-    }
+   }
     url += setParam("relationOriginNode", relationOriginNode);
     url += setParam("relationRole", relationRole);
     url += setParam("relationCreateDir", createDir);
     url += setParam("constraints", constraints);
     url += setParam("age", searchage+"");
-   
+    
     showPopup(url);
 }
 

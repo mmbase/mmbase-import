@@ -8,16 +8,15 @@
       Plugins into set- and getValue methods on Node (Setting and getting Fields).
     </p>
     <p>
+      In this directory the framework for putting functionality there is implemented. The basic
+      agent is 'ValueIntercepter' which reads an XML and provides the set- and get-Value
+      implemntation with the specified 'Processor'.
+    </p>
+    <p>
       When functionality is added to a certain field type then a Processor must be implemented and turned on in
       datatypes.xml or the builder xml.
     </p>
-    <p>
-      Processors can be parameterized in two ways. Using a {@link org.mmbase.datatypes.processors.ParameterizedProcessorFactory} or
-      {@link org.mmbase.datatypes.processors.ParameterizedCommitProcessorFactory} or simply by using bean-like setting on the instance.
-      Both ways are recognized in builder xml&apos;s.
-    </p>
-    <!-- version of package description $Id: package.html,v 1.5 2008-08-27 17:08:36 michiel Exp $
-         -->
+    <!-- version of package description $Id: package.html,v 1.2 2005-12-10 14:33:36 michiel Exp $ -->
     @since   MMBase-1.7
     @see     org.mmbase.bridge.Node
   </body>

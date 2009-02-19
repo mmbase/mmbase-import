@@ -92,7 +92,6 @@ function toggle(targetId){
 	  <mm:size id="total" write="false" />
 	  <mm:maxnumber value="$max" />
 	  <mm:offset value="$offset" />
-	  <mm:sortorder field="number" direction="DOWN" />
 	  <mm:listnodes>
 		<mm:first>
 		<table border="0" cellspacing="0" cellpadding="3">

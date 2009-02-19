@@ -29,15 +29,12 @@ import org.w3c.dom.Element;
       init();
     }
  </pre>
- * This produces a 'watched map' utilProperties. Every time the
- * underlying config file(s) are changed 'init' is called. Init is
- * called on instantation of the surrounding class too. The map is
- * unmodifiable, and only mirrors the resource(s) "utils/myutil.xml".
+ * This produces a 'watched map' utilProperties. Every time the underlying config file(s) are changed 'init' is called. Init is called on instantation of the surrounding class too.
  *
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.41 2008-12-30 11:02:34 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.25.2.3 2008-07-24 16:16:32 michiel Exp $
  */
 public class UtilReader {
 
@@ -57,13 +54,13 @@ public class UtilReader {
 
     /**
      * Register the Public Ids for DTDs used by UtilReader
-     * This method is called by EntityResolver.
+     * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        EntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
     }
 
-    private static final Map<String, UtilReader> utilReaders = new HashMap<String, UtilReader>();     // file-name -> utilreader
+    private static final Map utilReaders = new HashMap();     // file-name -> utilreader
 
     /**
      * Returns a UtilReader for the given fileName. When you use this, the UtilReader instance will be cached.
@@ -72,7 +69,7 @@ public class UtilReader {
      */
 
     public static UtilReader get(String fileName) {
-        UtilReader utilReader = utilReaders.get(fileName);
+        UtilReader utilReader = (UtilReader) utilReaders.get(fileName);
         if (utilReader == null) {
             synchronized(utilReaders) {
                 utilReader = new UtilReader(fileName);
@@ -103,8 +100,8 @@ public class UtilReader {
         }
     }
 
-    private final Map<String, String> properties = new HashMap<String, String>();
-    private final Map<String,Collection<Map.Entry<String, String>>> maps = new HashMap<String, Collection<Map.Entry<String,String>>>();
+    private final Map properties = new HashMap();
+    private final Map maps = new HashMap();
     private final ResourceWatcher watcher;
     private final String file;
 
@@ -152,7 +149,7 @@ public class UtilReader {
                     onChange.run();
                 }
             }
-            );
+             );
     }
 
     public void finalize() {
@@ -162,18 +159,16 @@ public class UtilReader {
     /**
      * Get the properties of this utility.
      */
-    public PropertiesMap<String> getProperties() {
-        return new PropertiesMap<String>(properties);
+    public PropertiesMap getProperties() {
+        return new PropertiesMap(properties);
     }
 
     /**
      * Get the properties of this utility.
-     * @since MMBase-1.8.6
      */
-    public PropertiesMap<Collection<Map.Entry<String,String>>> getMaps() {
-        return new PropertiesMap<Collection<Map.Entry<String,String>>>(maps);
+    public PropertiesMap getMaps() {
+        return new PropertiesMap(maps);
     }
-
 
     /**
      * Reports whether the configured resource (in the constructor) is actually backed. If not,
@@ -188,22 +183,15 @@ public class UtilReader {
         }
     }
 
-    /**
-     * @since MMBase-1.9.1
-     */
-    protected Map.Entry<String, String> getEntry(DocumentReader reader, String k, String v) {
-        return new Entry<String,String>(k, v);
-    }
-
-
-
     protected void readProperties(String s) {
         properties.clear();
         maps.clear();
 
         ResourceLoader configLoader = ResourceLoader.getConfigurationRoot();
-        List<URL> configList = configLoader.getResourceList(s);
-        for (URL url : configList) {
+        List configList = configLoader.getResourceList(s);
+        Iterator configs = configList.iterator();
+        while (configs.hasNext()) {
+            URL url = (URL) configs.next();
             org.xml.sax.InputSource is;
             try {
                 is = ResourceLoader.getInputSource(url);
@@ -217,25 +205,20 @@ public class UtilReader {
                 DocumentReader reader = new DocumentReader(is, UtilReader.class);
                 Element e = reader.getElementByPath("util.properties");
                 if (e != null) {
-                    for (Element p : reader.getChildElements(e, "property")) {
+                    for (Iterator iter = reader.getChildElements(e, "property"); iter.hasNext();) {
+                        Element p = (Element) iter.next();
                         String name = reader.getElementAttributeValue(p, "name");
                         String type = reader.getElementAttributeValue(p, "type");
-                        if (type.equals("mergingmap") ||
-                            type.equals("map")) {
-                            Collection<Map.Entry<String, String>> entryList = null;
-                            if (type.equals("mergingmap")) {
-                                entryList = maps.get(name);
-                            }
+                        if (type.equals("map")) {
+                            Collection entryList = new ArrayList();
 
-                            if (entryList == null) {
-                                entryList = new ArrayList<Map.Entry<String,String>>();
-                            }
-
-                            for (Element entry : reader.getChildElements(p, "entry")) {
+                            for (Iterator entriesIter = reader.getChildElements(p, "entry"); entriesIter.hasNext();) {
+                                Element entry = (Element) entriesIter.next();
                                 String key = null;
                                 String value = null;
 
-                                for (Element keyorvalue : reader.getChildElements(entry, "*")) {
+                                for (Iterator en = reader.getChildElements(entry, "*"); en.hasNext();) {
+                                    Element keyorvalue = (Element) en.next();
                                     if (keyorvalue.getTagName().equals("key")) {
                                         key = reader.getElementValue(keyorvalue);
                                     } else {
@@ -243,21 +226,20 @@ public class UtilReader {
                                     }
                                 }
                                 if (key != null) {
-                                    entryList.add(getEntry(reader, key, value));
+                                    entryList.add(new Entry(key, value));
                                 }
                             }
-                            if (maps.containsKey(name) && ! type.equals("mergingmap")) {
+                            if (maps.containsKey(name)) {
                                 log.debug("Property '" + name + "' (" + entryList + ") of " + url + " is shadowed");
                             } else {
                                 maps.put(name, entryList);
                             }
                         } else {
                             String value = reader.getElementValue(p);
-                            Map.Entry<String, String> entry = getEntry(reader, name, value);
-                            if (properties.containsKey(entry.getKey())) {
-                                log.debug("Property '" + entry.getKey() + "' ('" + entry.getValue() + "') of " + url + " is shadowed");
+                            if (properties.containsKey(name)) {
+                                log.service("Property '" + name + "'(" + value + "') of " + url + " is shadowed");
                             } else {
-                                properties.put(entry.getKey(), entry.getValue());
+                                properties.put(name, value);
                             }
                         }
                     }
@@ -265,12 +247,11 @@ public class UtilReader {
             } else {
                 log.debug("Resource " + s + " does not exist");
             }
-
         }
-        if (properties.size() == 0 && maps.size() == 0) {
+        if (properties.size() == 0) {
             log.service("No properties read from " + configList);
         } else {
-            log.service("Read " + properties.entrySet() + " from " + configList);
+            log.service("Read " + properties.keySet() + " from " + configList);
         }
     }
 
@@ -281,27 +262,27 @@ public class UtilReader {
      * @since MMBase-1.8
      */
 
-    public static class PropertiesMap<E> extends AbstractMap<String, E> {
+    public static class PropertiesMap extends AbstractMap {
 
-        private final Map<String, E> wrappedMap;
+        private final Map wrappedMap;
 
         /**
          * Creates an empty Map (not very useful since this Map is unmodifiable).
          */
         public PropertiesMap() {
-            wrappedMap = new HashMap<String, E>();
+            wrappedMap = new HashMap();
         }
 
         /**
          * Wrapping the given map.
          */
-        public PropertiesMap(Map<String, E> map) {
+        public PropertiesMap(Map map) {
             wrappedMap = map;
         }
         /**
          * {@inheritDoc}
          */
-        public Set<Map.Entry<String, E>> entrySet() {
+        public Set entrySet() {
             return new EntrySet();
 
         }
@@ -309,29 +290,29 @@ public class UtilReader {
         /**
          * Returns the object mapped with 'key', or defaultValue if there is none.
          */
-        public E getProperty(String key, E defaultValue) {
-            E result = get(key);
+        public Object getProperty(Object key, Object defaultValue) {
+            Object result = get(key);
             return result == null ? defaultValue : result;
         }
 
-        private class  EntrySet extends AbstractSet<Map.Entry<String, E>> {
+        private class  EntrySet extends AbstractSet {
             EntrySet() {}
             public int size() {
                 return PropertiesMap.this.wrappedMap.size();
             }
-            public Iterator<Map.Entry<String, E>> iterator() {
+            public Iterator iterator() {
                 return new EntrySetIterator();
             }
         }
-        private class EntrySetIterator implements Iterator<Map.Entry<String, E>> {
-            private Iterator<Map.Entry<String, E>> i;
+        private class EntrySetIterator implements Iterator {
+            private Iterator i;
             EntrySetIterator() {
                 i = PropertiesMap.this.wrappedMap.entrySet().iterator();
             }
             public boolean hasNext() {
                 return i.hasNext();
             }
-            public Map.Entry<String, E> next() {
+            public Object next() {
                 return i.next();
             }
             public void remove() {

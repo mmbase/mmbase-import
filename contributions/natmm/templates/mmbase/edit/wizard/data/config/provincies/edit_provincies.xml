@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<form-schema id="edit_provincies">
-   <field name="naam" ftype="line" ><prompt>naam</prompt></field>
-   <field name="afkorting" ftype="line" ><prompt>afkorting</prompt></field>
-   <field name="metatags" ftype="line"><prompt>redactionele aantekening</prompt></field>
-   <list include="config/images/zoek_posrel_images.xml" />
-   <list include="config/natuurgebieden/zoek_provincies_pos4rel_natuurgebieden.xml" />
-</form-schema>

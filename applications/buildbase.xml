@@ -8,7 +8,11 @@ Generates a jar for your project.
 You can also do a test. (specify test.class).
 This makes sure you use the right class-path and so on.
 
-Import this file.
+Create a build.xml with a DOCTYPE like this:
+<!DOCTYPE project
+ [ <!ENTITY base     SYSTEM "buildbase.xml" > ]
+>
+(point to this file)
 
 @author Michiel Meeuwissen.
 
@@ -19,10 +23,10 @@ Import this file.
   <!-- Init                                                                -->
   <!-- =================================================================== -->
   <!-- Read customized values if available -->
-  <property file="build.properties" />
+  <property file="build.properties"/>
   <property file="../buildbase.properties" />
   <property name="source.dir"   location="../.." />
-  <property name="java.source.version" value="1.5" />
+  <property name="java.source.version" value="1.4" />
   <property file="${source.dir}/build.properties" />
   <property file="${source.dir}/build.properties.version" />
 
@@ -33,7 +37,6 @@ Import this file.
   <property name="debug"          value="on" />
   <property name="deprecation"    value="on" />
   <property name="nowarn"         value="off" />
-  <property name="default.excludes"         value="yes" />
 
 
   <property name="applications.dir"   location=".." />
@@ -51,8 +54,6 @@ Import this file.
   <property name="project.javadoc.packages" value="org.mmbase.*"/>
   <property name="project.documentation.dir" value="${project.source.dir}/documentation" />
   <property name="project.javadoc.dir" value="${project.build.dir}/documentation/javadoc/${project.name}" />
-
-  <property name="project.external.lib.dir" value="${project.source.dir}/external.libs" />
 
   <property name="project.extra.path"  value="" />  <!-- deprecated ! -->
   <property name="project.extra.path2" value="" /><!-- deprecated ! -->
@@ -79,7 +80,7 @@ Import this file.
   <property name="examples.dir"    value="${webapp.dir}/mmexamples" />
 
   <property name="web.dir"         value="${webapp.dir}/WEB-INF"/>
-  <property name="tagfile.dir"         value="${web.dir}/tags"/>
+    <property name="tagfile.dir"         value="${web.dir}/tags"/>
   <property name="mmdocs.dir"      value="${webapp.dir}/mmdocs"/>
   <property name="release.lib.dir" value="${web.dir}/lib"/>
   <property name="mmbase.jar"      value="${build.dir}/mmbase.jar"/>
@@ -89,11 +90,12 @@ Import this file.
 
   <property name="share.dir"    location="../share" />
 
-  <property name="servlet.jar" value="${build.dir}/lib/servletapi-2.4.jar"/>
-  <property name="jspapi.jar" value="${build.dir}/lib/jsp-api-2.0.jar"/>
+  <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
   <property name="mail.jar" value="${build.dir}/lib/mail.jar"/>
   <property name="activation.jar" value="${build.dir}/lib/activation.jar"/>
+  <property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
   <property name="fileupload.jar"   value="${build.dir}/lib/commons-fileupload.jar"/>
+  <property name="concurrent.jar"   value="${build.dir}/lib/backport-util-concurrent.jar"/>
 
   <property name="project.name" value="${ant.project.name}" />
   <property name="project.jar.name" value="mmbase-${project.name}" />
@@ -135,7 +137,9 @@ Import this file.
     <available property="config.available"        file="${project.config.dir}"/>
 
     <available property="templates.available"      file="${project.templates.dir}"/>
+    <available property="blocks.available"         file="${project.source.dir}/blocks"/>
     <available property="mmbase.templates.available"      file="${project.mmbase.templates.dir}"/>
+
 
     <condition property="do.jar">
       <or>
@@ -156,8 +160,6 @@ Import this file.
       </and>
     </condition>
 
-    <echo message="${build.documentation} ${documentation.available} ${do.documentation} ${do.generate.documentation}" />
-
     <condition property="do.javadoc">
       <and>
         <equals arg1="${build.documentation}" arg2="true" />
@@ -167,6 +169,7 @@ Import this file.
 
     <tstamp/>
     <mkdir dir="${project.build.dir}"/>
+    <mkdir dir="${project.build.dir}/classes"/>
     <property name="builddate"       value="${DSTAMP}"/>
 
     <property name="zip.name"      value="mmbase-${distro.version}.${builddate}-${project.name}" />
@@ -258,14 +261,18 @@ Import this file.
         <exclude name="*.xml" />
         <exclude name="config/**" />
         <exclude name="documentation/**" />
-        <exclude name="external.libs/**" />
         <exclude name="src/**" />
         <exclude name="build*/**" />
+        <exclude name="target*/**" />
         <exclude name="META-INF/**" />
         <exclude name="README*" />
+        <exclude name="blocks/**" />
       </patternset>
     </zipfileset>
+    <available property="blocks.exists" file="blocks" type="dir" />
   </target>
+
+
 
   <target name="package" depends="package.check,package.documentation,template.include" unless="package.uptodate">
     <antcall target="jar" />
@@ -315,51 +322,21 @@ web-app/*                All kind of templates. They problably can (need?) to be
       <patternset refid="web-app.package.files" />
     </zipfileset>
   </zip>
+  <antcall  target="package.update.blocks" />
+  </target>
+
+  <target name="package.update.blocks" if="blocks.exists">
+    <zip zipfile="${project.zip}" update="true">
+      <zipfileset dir="${project.source.dir}/blocks" prefix="${zip.name}/web-app/mmbase/components/${project.name}" >
+        <patternset id="web-app.block.files">
+          <include name="**" />
+        </patternset>
+      </zipfileset>
+    </zip>
   </target>
 
 
-  <target name="test.explicit.dependency.dir">
-    <echo message="Testing for ${project.external.lib.dir} as an alternative classpath for compilation" />
-    <available file="${project.external.lib.dir}" property="external.libs.exist"/>
-
-  </target>
-
-  <target name="explicit.dependency.dir" depends="test.explicit.dependency.dir" if="external.libs.exist">
-    <echo message="Using ${project.external.lib.dir} and ${project.jars.dir}" />
-
-    <available property="dummy" classname="dummy">
-      <classpath id="compile.classpath">
-        <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
-        <fileset     dir="${project.external.lib.dir}" includes="**" />
-      </classpath>
-    </available>
-
-  </target>
-
-  <target name="init.compile" depends="explicit.dependency.dir" unless="external.libs.exist" description="Sets up the classpath for compiling this">
-    <mkdir dir="${project.build.dir}/classes"/>
-    <echo message="Using default classpath based on on ${project.jars.dir} and ${build.dir}/lib" />
-    <available property="dummy" classname="dummy">
-      <classpath id="compile.classpath">
-        <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
-        <pathelement path="${mmbase.jar}" />
-        <pathelement path="${servlet.jar}" />
-        <pathelement path="${jspapi.jar}" />
-        <pathelement path="${fileupload.jar}" />
-        <pathelement path="${concurrent.jar}" />
-        <pathelement path="${mail.jar}" />
-        <pathelement path="${activation.jar}" />
-        <pathelement path="${taglibs-standard-jstl.jar}" />
-        <pathelement path="${project.build.dir}/classes" />
-        <pathelement path="${project.extra.path}" />
-        <pathelement path="${project.extra.path2}" />
-      </classpath>
-    </available>
-  </target>
-
-
-  <target name="compile" description="Compile the source directory" depends="init,init.compile" if="src.available">
-
+  <target name="compile" description="Compile the source directory" depends="init" if="src.available">
 
     <echo message="java version: ${ant.java.version}" />
 
@@ -375,22 +352,34 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </copy>
 
     <echo message="compiling" />
-    <echo message="${project.jars.dir}/${project.jars.includes} ${servlet.jar}" />
+    <echo message="${project.jars.dir}${project.jars.includes} ${servlet.jar}" />
     <javac srcdir ="${project.source.dir}/src"
            destdir="${project.build.dir}/classes"
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}"
-           classpathref="compile.classpath"
            nowarn="${nowarn}"
            excludes="${compile.excludes}"
            source="${java.source.version}"
            includeAntRuntime="false"
       >
-
+      <classpath id="compile.classpath">
+        <fileset     dir="${project.jars.dir}" includes="${project.jars.includes}" />
+        <pathelement path="${mmbase.jar}" />
+        <pathelement path="${servlet.jar}" />
+        <pathelement path="${xalan.jar}" />
+        <pathelement path="${fileupload.jar}" />
+        <pathelement path="${concurrent.jar}" />
+        <pathelement path="${mail.jar}" />
+        <pathelement path="${activation.jar}" />
+        <pathelement path="${taglibs-standard-jstl.jar}" />
+        <pathelement path="${project.build.dir}/classes" />
+        <pathelement path="${project.extra.path}" />
+        <pathelement path="${project.extra.path2}" />
+      </classpath>
       <include name="**/*.java"/>
     </javac>
-  </target>
+    </target>
 
 
   <target name="clean" description="Clean">
@@ -399,7 +388,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
 
 
-  <target name="documentation" description="Documentation" depends="init,javadocs,documentation.html,documentation.pdf,documentation.rawhtml">
+  <target name="documentation" description="Documentation" depends="init,javadocs,documentation.html,documentation.rawhtml">
     <available property="documentation.build.available"        file="${project.build.dir}/documentation"/>
   </target>
 
@@ -413,14 +402,14 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
 
   <target name="documentation.html" depends="init" if="do.generate.documentation">
-    <ant dir="${source.dir}" target="documentation.html" antfile="${source.dir}/build-documentation.xml">
+    <ant dir="${documentation.home}" target="documentation.html">
       <property name="documentation.xml-source.dir" value="${project.documentation.dir}" />
       <property name="documentation.dest.dir"       value="${project.build.dir}/documentation" />
     </ant>
   </target>
 
   <target name="documentation.pdf" depends="init" if="do.generate.documentation">
-    <ant dir="${documentation.home}" target="documentation.pdf" antfile="${source.dir}/build-documentation.xml">
+    <ant dir="${documentation.home}" target="documentation.pdf">
       <property name="documentation.xml-source.dir" value="${project.documentation.dir}" />
       <property name="documentation.temp.dir"       value="${project.build.dir}/temp" />
       <property name="documentation.dest.dir"       value="${project.build.dir}/documentation" />
@@ -445,9 +434,10 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <fileset dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
-        <pathelement path="${jspapi.jar}" />
+        <pathelement path="${xalan.jar}" />
         <pathelement path="${mail.jar}" />
         <pathelement path="${fileupload.jar}" />
+        <pathelement path="${activation.jar}" />
         <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
         <pathelement path="${taglibs-standard-jstl.jar}" />
@@ -476,7 +466,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </javadoc>
   </target>
 
-  <target name="install.templates" depends="init,install.mmbase.templates" if="templates.available">
+  <target name="install.templates" depends="init,install.mmbase.templates,install.blocks" if="templates.available">
     <copy todir="${templates.dir}/${project.target.templates.dir}" preservelastmodified="true">
       <fileset dir="${project.templates.dir}">
         <include name="${project.templates.include}" />
@@ -492,14 +482,17 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </copy>
   </target>
 
-
+  <target name="install.blocks" depends="init" if="blocks.available">
+    <copy todir="${webapp.dir}/mmbase/components/${project.name}" preservelastmodified="true">
+      <fileset dir="blocks">
+        <include name="**" />
+      </fileset>
+    </copy>
+  </target>
 
   <target name="install.examples" depends="init" if="examples.available">
-    <copy
-        todir="${examples.dir}/${project.target.examples.dir}" preservelastmodified="true">
-      <fileset
-          defaultexcludes="${default.excludes}"
-          dir="${project.examples.dir}">
+    <copy todir="${examples.dir}/${project.target.examples.dir}" preservelastmodified="true">
+      <fileset dir="${project.examples.dir}">
       </fileset>
     </copy>
   </target>
@@ -507,12 +500,9 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
 
   <target name="install.config" depends="init" if="config.available">
-    <copy
-        todir="${mmbase.config}" preservelastmodified="true">
-      <fileset
-          defaultexcludes="${default.excludes}"
-          dir="${project.config.dir}"
-          includes="${project.config.dir.includes}"
+    <copy todir="${mmbase.config}" preservelastmodified="true">
+      <fileset dir="${project.config.dir}"
+               includes="${project.config.dir.includes}"
                >
         <exclude name="functions/**" /> <!-- should be in the jar -->
       </fileset>
@@ -526,14 +516,15 @@ web-app/*                All kind of templates. They problably can (need?) to be
       </fileset>
     </copy>
   </target>
-  
-   <target name="install.tagfiles" depends="init" if="tagfiles.available">
+
+  <target name="install.tagfiles" depends="init" if="tagfiles.available">
     <copy todir="${tagfile.dir}/${project.name}" preservelastmodified="true">
       <fileset dir="${project.source.dir}/tagfiles"/>
     </copy>
   </target>
 
   <target name="install.dependencies" depends="jar,install.templates,install.examples,install.config,install.documentation,install.tagfiles" />
+
   <target name="install" depends="install.dependencies">
     <copy todir="${release.lib.dir}" preservelastmodified="true" flatten="true">
       <fileset dir="${project.jar.dir}">
@@ -555,7 +546,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <fileset dir="${project.jars.dir}" includes="${project.jars.includes}" />
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
-        <pathelement path="${jspapi.jar}" />
+        <pathelement path="${xalan.jar}" />
         <pathelement path="${fileupload.jar}" />
         <pathelement path="${mail.jar}" />
         <pathelement path="${activation.jar}" />
@@ -569,5 +560,44 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <!--
+      Well it is not very complicated, this download stuff,
+      but should we reuse the code of the main build.xml rather then copying it?
   -->
-  <import file="${source.dir}/download.xml" />
+
+
+  <target name="downloadzip" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
+    <mkdir dir="${destdir}" />
+    <unzip src="${destfile}" dest="${destdir}"/>
+  </target>
+  <target name="downloadgz" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
+    <gunzip src="${destfile}" dest="${download.dir}/file.tar"/>
+    <untar src="${download.dir}/file.tar" dest="${expand.dir}"/>
+    <delete file="${download.dir}/file.tar"/>
+  </target>
+  <target name="downloadbz2" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
+    <mkdir dir="${destdir}" />
+    <bunzip2 src="${destfile}" dest="${download.dir}/file.tar"/>
+    <untar src="${download.dir}/file.tar" dest="${destdir}"/>
+    <delete file="${download.dir}/file.tar"/>
+  </target>
+
+
+  <target name="download" unless="exist" depends="testexist">
+    <!-- Download the package -->
+    <mkdir dir="${download.dir}" />
+    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+  </target>
+
+  <target name="testexist">
+    <echo message="Testing  for ${destfile}"/>
+    <available file="${destfile}" property="exist"/>
+  </target>
+
+  <target name="testexpanded">
+    <echo message="Testing for ${expandedfile}"/>
+    <available file="${expandedfile}" property="expanded"/>
+  </target>
+

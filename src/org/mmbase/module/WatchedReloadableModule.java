@@ -17,18 +17,19 @@ import org.mmbase.util.ResourceWatcher;
  *
  * @author   Michiel Meeuwissen
  * @since    MMBase-1.8
- * @version  $Id: WatchedReloadableModule.java,v 1.6 2007-06-19 13:59:30 michiel Exp $
+ * @version  $Id: WatchedReloadableModule.java,v 1.4.2.1 2008-08-12 08:17:45 michiel Exp $
  */
 public abstract class WatchedReloadableModule extends ReloadableModule {
 
     private ResourceWatcher configWatcher = new ResourceWatcher() {
             public void onChange(String resource) {
                 // resource parameter can be ignored, because it inconveniently contains ".xml".
-                if (reloadConfiguration()) {
+                if (reloadConfiguration(getName())) {
                     reload();
                 }
             }
         };
+
     public WatchedReloadableModule() {
     }
     public WatchedReloadableModule(String name) {
@@ -43,7 +44,7 @@ public abstract class WatchedReloadableModule extends ReloadableModule {
     public void onload() {
         configWatcher.setDelay(10 * 1000);
         configWatcher.start();
-        configWatcher.add("modules/" +  configurationPath + ".xml");
+        configWatcher.add("modules/" +  getName() + ".xml");
     }
 
 

@@ -12,17 +12,22 @@ package org.mmbase.core;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.datatypes.*;
+import org.mmbase.core.*;
+import org.mmbase.core.util.Fields;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.*;
 import org.mmbase.util.*;
-
 import java.util.Collection;
+
+import org.mmbase.util.logging.*;
 
 /**
  * @since MMBase-1.8
  */
-public class CoreField extends AbstractField<Object> implements Field, Storable {
+public class CoreField extends AbstractField implements Field, Storable, Cloneable {
+
+    private static final Logger log = Logging.getLoggerInstance(CoreField.class);
 
     private static final int NO_POSITION = -1;
 
@@ -50,7 +55,7 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
     public CoreField(Field field) {
         this(field.getName(), field.getType(), field.getListItemType(), field.getState(), field.getDataType());
     }
-
+    
     /**
      * Create a core object
      * @param name the name of the data type
@@ -94,13 +99,13 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
         throw new UnsupportedOperationException("Core fields currently do not support calls to getNodeManager.");
     }
 
-    public final CoreField clone() {
-        return clone(null);
+    public Object clone() {
+        return clone (null);
     }
 
-    public CoreField clone(String name) {
+    public Object clone(String name) {
         hashcodeChanged = true;
-        return (CoreField) super.clone(name, true);
+        return super.clone(name, true);
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -214,8 +219,8 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
         hashcodeChanged = true;
     }
 
-    public Collection<String> validate(Object value) {
-        Collection<LocalizedString> errors = getDataType().validate(value, null, this);
+    public Collection validate(Object value) {
+        Collection errors = getDataType().validate(value, null, this);
         return LocalizedString.toStrings(errors, parent.getMMBase().getLocale());
     }
 
@@ -282,7 +287,7 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
      * @return -1,1, or 0 according to wether this object is smaller, greater, or equal
      *         to the supplied one.
      */
-    public int compareTo(Field o) {
+    public int compareTo(Object o) {
         int pos1 = getStoragePosition();
         int pos2 = ((CoreField)o).getStoragePosition();
         if (pos1 < pos2) {
@@ -294,12 +299,7 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
         }
     }
 
-    /**
-     * Finishes this encapsulated DataType with current field.
-     * @throw IllegalStateException If the datatype is already finished
-     */
     public void finish() {
-        if (dataType.isFinished()) throw new IllegalStateException("The datatype " + dataType + " is already finished");
         dataType.finish(this);
     }
 

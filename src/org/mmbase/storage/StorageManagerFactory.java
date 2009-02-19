@@ -10,17 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.storage;
 
 import java.util.*;
+
 import org.xml.sax.InputSource;
 import javax.servlet.ServletContext;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 
 import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.clustering.ChangeManager;
+import org.mmbase.clustering.MMBaseChangeInterface;
 import org.mmbase.core.CoreField;
 
 import org.mmbase.util.ResourceLoader;
@@ -38,19 +37,10 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.37 2009-01-30 22:02:14 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.27.2.2 2008-06-10 11:16:32 michiel Exp $
  */
-public abstract class StorageManagerFactory<SM extends StorageManager> {
+public abstract class StorageManagerFactory {
 
-    /**
-     * Transaction of the current thread, or <code>null</code> if it is not currently in a
-     * transaction.
-     * @since MMBase-1.9.1
-     */
-    private final ThreadLocal<SM> transaction = new ThreadLocal<SM>();
-
-
-    private static final Object NULL = new Object();
     private static final Logger log = Logging.getLoggerInstance(StorageManagerFactory.class);
 
     /**
@@ -61,22 +51,22 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * The class used to instantiate storage managers.
      * The classname is retrieved from the storage configuration file
      */
-    protected Class<SM> storageManagerClass;
+    protected Class storageManagerClass;
 
     /**
      * The map with configuration data
      */
-    protected Map<String, Object> attributes;
+    protected Map attributes;
 
     /**
      * The list with type mappings
      */
-    protected List<TypeMapping> typeMappings;
+    protected List typeMappings;
 
     /**
      * The list with objects of which binary data should not be stored in database
      */
-    protected List <String> storeBinaryAsFileObjects;
+    protected List storeBinaryAsFileObjects;
 
     /**
      * The ChangeManager object, used to register/broadcast changes to a node or set of nodes.
@@ -87,7 +77,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
     /**
      * The map with disallowed fieldnames and (if given) alternates
      */
-    protected final SortedMap<String, String> disallowedFields = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+    protected final SortedMap disallowedFields = new TreeMap(String.CASE_INSENSITIVE_ORDER);
 
     /**
      * The query handler to use with this factory.
@@ -101,7 +91,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * The query handler classes.
      * Assign a value to this class if you want to set a default query handler.
      */
-    protected List<Class<?>> queryHandlerClasses = new ArrayList<Class<?>>();
+    protected List queryHandlerClasses = new ArrayList();
 
     /**
      * @see #getSetSurrogator()
@@ -160,7 +150,6 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         return newInstance(MMBase.getMMBase());
     }
 
-
     /**
      * Initialize the StorageManagerFactory.
      * This method should be called after instantiation of the factory class.
@@ -168,39 +157,20 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param mmbase the MMBase instance to which this factory belongs
      * @throws StorageError when something went wrong during configuration of the factory, or when the storage cannot be accessed
      */
-    protected final void init(MMBase mmbase) throws StorageError  {
+    protected final void init(MMBase mmbase) throws StorageError {
         log.service("initializing Storage Manager factory " + this.getClass().getName());
         this.mmbase = mmbase;
-        attributes    = new ConcurrentHashMap<String, Object>();
-        typeMappings  = new CopyOnWriteArrayList<TypeMapping>();
-        storeBinaryAsFileObjects = Collections.synchronizedList(new ArrayList<String>());
+        attributes    = Collections.synchronizedMap(new HashMap());    // ConcurrentHashMap not possible because null-values are put (TODO)
+        typeMappings  = Collections.synchronizedList(new ArrayList()); // CopyOnWriteArrayList not possible because Collections.sort is done (TODO)
+        storeBinaryAsFileObjects = Collections.synchronizedList(new ArrayList());
         changeManager = new ChangeManager();
-
-        int loadTries = 0;
-
-
-        while(true) {
-            try {
-                log.debug("loading Storage Manager factory " + this.getClass().getName());
-                loadTries++;
-                load();
-                break;
-            } catch (StorageException se) {
-                // pass exceptions as a StorageError to signal a serious (unrecoverable) error  condition
-                if (loadTries == 1) {
-                    log.fatal(se.getMessage(), se);
-                } else if (loadTries < 3) {
-                    log.fatal(se.getMessage());
-                } else {
-                    log.fatal(se.getClass().getName());
-                }
-                try {
-                    Thread.sleep(10000);
-                    log.info("Retrying (" + loadTries + ")");
-                } catch (InterruptedException ie) {
-                    throw se;
-                }
-            }
+        try {
+            log.debug("loading Storage Manager factory " + this.getClass().getName());
+            load();
+        } catch (StorageException se) {
+            // pass exceptions as a StorageError to signal a serious (unrecoverable) error condition
+            log.fatal(se.getMessage() + Logging.stackTrace(se));
+            throw new StorageError(se);
         }
     }
 
@@ -253,20 +223,20 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
      */
     protected void load() throws StorageException {
-        StorageReader<SM> reader = getDocumentReader();
+        StorageReader reader = getDocumentReader();
         if (reader == null) {
             if (storageManagerClass == null || queryHandlerClasses.size() == 0) {
                 throw new StorageConfigurationException("No storage reader specified, and no default values available.");
             } else {
                 log.warn("No storage reader specified, continue using default values.");
                 log.debug("Default storage manager : " + storageManagerClass.getName());
-                log.debug("Default query handler : " + queryHandlerClasses.get(0).getName());
+                log.debug("Default query handler : " + ((Class)queryHandlerClasses.get(0)).getName());
                 return;
             }
         }
 
         // get the storage manager class
-        Class<SM> configuredClass = reader.getStorageManagerClass();
+        Class configuredClass = reader.getStorageManagerClass();
         if (configuredClass != null) {
             storageManagerClass = configuredClass;
         } else if (storageManagerClass == null) {
@@ -283,11 +253,12 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         disallowedFields.putAll(reader.getDisallowedFields());
 
         // add default replacements when DEFAULT_STORAGE_IDENTIFIER_PREFIX is given
-        String prefix = (String) getAttribute(Attributes.DEFAULT_STORAGE_IDENTIFIER_PREFIX);
-        if (prefix != null) {
-            for (Map.Entry<String, String> e : disallowedFields.entrySet()) {
-                String name = e.getKey();
-                String replacement =  e.getValue();
+        String prefix = (String)getAttribute(Attributes.DEFAULT_STORAGE_IDENTIFIER_PREFIX);
+        if (prefix !=null) {
+            for (Iterator i = disallowedFields.entrySet().iterator(); i.hasNext();) {
+                Map.Entry e = (Map.Entry)i.next();
+                String name = (String) e.getKey();
+                String replacement = (String) e.getValue();
                 if (replacement == null ) {
                     e.setValue(prefix + "_" + name);
                 }
@@ -295,15 +266,13 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         }
 
         log.service("get type mappings");
-        List<TypeMapping> list = new ArrayList<TypeMapping>();
-        list.addAll(reader.getTypeMappings());
-        Collections.sort(list);
-        typeMappings.addAll(list);
+        typeMappings.addAll(reader.getTypeMappings());
+        Collections.sort(typeMappings);
 
         // get the queryhandler class
         // has to be done last, as we have to passing the disallowedfields map (doh!)
         // need to move this to DatabaseStorageManagerFactory
-        List <Class<?>> configuredClasses = reader.getSearchQueryHandlerClasses();
+        List configuredClasses = reader.getSearchQueryHandlerClasses();
         if (configuredClasses.size() != 0) {
             queryHandlerClasses = configuredClasses;
         } else if (queryHandlerClasses.size() == 0) {
@@ -311,8 +280,10 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         }
         log.service("Found queryhandlers " + queryHandlerClasses);
         // instantiate handler(s)
+        Iterator iHandlers = reader.getSearchQueryHandlerClasses().iterator();
         Object handler = null;
-        for (Class handlerClass : reader.getSearchQueryHandlerClasses()) {
+        while (iHandlers.hasNext()) {
+            Class handlerClass = (Class) iHandlers.next();
             if (handler == null) {
                 handler = instantiateBasicHandler(handlerClass);
             } else {
@@ -333,22 +304,6 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         }
     }
 
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    protected SM createStorageManager() throws StorageException {
-        try {
-            SM storageManager = storageManagerClass.newInstance();
-            storageManager.init(this);
-            return storageManager;
-        } catch(InstantiationException ie) {
-            throw new StorageException(ie);
-        } catch(IllegalAccessException iae) {
-            throw new StorageException(iae);
-        }
-    }
-
     /**
      * Obtains a StorageManager from the factory.
      * The instance represents a temporary connection to the datasource -
@@ -356,15 +311,16 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @return a StorageManager instance
      * @throws StorageException when the storagemanager cannot be created
      */
-    public SM getStorageManager() throws StorageException {
-        SM sm  = transaction.get();
-        if (sm != null) {
-            return sm;
-        } else {
-            return createStorageManager();
+    public StorageManager getStorageManager() throws StorageException {
+        try {
+            StorageManager storageManager = (StorageManager)storageManagerClass.newInstance();
+            storageManager.init(this);
+            return storageManager;
+        } catch(InstantiationException ie) {
+            throw new StorageException(ie);
+        } catch(IllegalAccessException iae) {
+            throw new StorageException(iae);
         }
-
-
     }
 
     // javadoc inherited
@@ -377,7 +333,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @throws StorageException when the handler cannot be created
      */
     public SearchQueryHandler getSearchQueryHandler() throws StorageException {
-        if (queryHandler == null) {
+        if (queryHandler==null) {
             throw new StorageException("Cannot obtain a query handler.");
         } else {
             return queryHandler;
@@ -392,7 +348,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @throws StorageException if something went wrong while obtaining the document reader
      * @return a StorageReader instance, or null if no reader has been configured
      */
-    public StorageReader<SM> getDocumentReader() throws StorageException {
+    public StorageReader getDocumentReader() throws StorageException {
         // determine storage resource.
         String storagePath = mmbase.getInitParameter("storage");
         // use the parameter set in mmbaseroot if it is given
@@ -402,7 +358,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
                 if (resource == null) {
                     throw new StorageConfigurationException("Storage resource '" + storagePath + "' not found.");
                 }
-                return new StorageReader<SM>(this, resource);
+                return new StorageReader(this, resource);
             } catch (java.io.IOException ioe) {
                 throw  new StorageConfigurationException(ioe);
             }
@@ -418,7 +374,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * You cannot change this map, though you can change the attributes themselves.
      * @return an unmodifiable Map
      */
-    public Map<String, Object> getAttributes() {
+    public Map getAttributes() {
         return Collections.unmodifiableMap(attributes);
     }
 
@@ -429,10 +385,8 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * The attributes are added to any attributes already knwon to the factory.
      * @param attributes the map of attributes to add
      */
-    public void setAttributes(Map<String, Object> attributes) {
-        for (Map.Entry<String, Object> entry : attributes.entrySet()) {
-            setAttribute(entry.getKey(), entry.getValue());
-        }
+    public void setAttributes(Map attributes) {
+        this.attributes.putAll(attributes);
         log.debug("Database attributes " + this.attributes);
     }
 
@@ -442,10 +396,8 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param key the key of the attribute
      * @return the attribute value, or null if it is unknown
      */
-    public Object getAttribute(String key) {
-        Object o = attributes.get(key);
-        if (o == NULL)  o = null;
-        return o;
+    public Object getAttribute(Object key) {
+        return attributes.get(key);
     }
 
     /**
@@ -456,8 +408,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param key the key of the attribute
      * @param value the value of the attribute
      */
-    public void setAttribute(String  key, Object value) {
-        if (value == null) value = NULL;
+    public void setAttribute(Object key, Object value) {
         attributes.put(key, value);
     }
 
@@ -468,7 +419,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param key the key of the attribute
      * @return the scheme value, or null if it is unknown
      */
-    public Scheme getScheme(String key) {
+    public Scheme getScheme(Object key) {
         return getScheme(key, null);
     }
 
@@ -481,14 +432,12 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param defaultPattern the pattern to use for the default scheme, <code>null</code> if there is no default
      * @return the scheme value, <code>null</code> if there is no scheme
      */
-    public Scheme getScheme(String key, String defaultPattern) {
-        Object o = getAttribute(key);
-        if (o!= null && ! (o instanceof Scheme)) throw new RuntimeException("value of " + key + " is not a Schema, but " + (o == null ? "NuLL" : o.getClass()) + " " + o);
-        Scheme scheme = (Scheme) getAttribute(key);
+    public Scheme getScheme(Object key, String defaultPattern) {
+        Scheme scheme =(Scheme)getAttribute(key);
         if (scheme == null && defaultPattern != null) {
             if (attributes.containsKey(key)) return null;
-            scheme = new Scheme(this, defaultPattern);
-            setAttribute(key, scheme);
+            scheme = new Scheme(this,defaultPattern);
+            setAttribute(key,scheme);
         }
         return scheme;
     }
@@ -500,11 +449,11 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param key the key of the scheme
      * @param pattern the pattern to use for the scheme
      */
-    public void setScheme(String key, String pattern) {
+    public void setScheme(Object key, String pattern) {
         if (pattern == null || pattern.equals("")) {
-            setAttribute(key, null);
+            setAttribute(key,null);
         } else {
-            setAttribute(key, new Scheme(this, pattern));
+            setAttribute(key,new Scheme(this,pattern));
         }
     }
 
@@ -514,7 +463,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param key the key of the option
      * @return <code>true</code> if the option was set
      */
-    public boolean hasOption(String key) {
+    public boolean hasOption(Object key) {
         Object o = getAttribute(key);
         return (o instanceof Boolean) && ((Boolean)o).booleanValue();
     }
@@ -524,7 +473,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * @param key the key of the option
      * @param value the value of the option (true or false)
      */
-    public void setOption(String key, boolean value) {
+    public void setOption(Object key, boolean value) {
         setAttribute(key, Boolean.valueOf(value));
     }
 
@@ -532,16 +481,15 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * Returns a sorted list of type mappings for this storage.
      * @return  the list of TypeMapping objects
      */
-    public List<TypeMapping> getTypeMappings() {
+    public List getTypeMappings() {
         return Collections.unmodifiableList(typeMappings);
     }
 
     /**
      * Returns a list of objects of which binary data should be stored in a file.
      * @return the list of objects of which BLOB fields should not be stored in database.
-     * @since MMBase-1.8.5
      */
-    public List<String> getStoreBinaryAsFileObjects() {
+    public List getStoreBinaryAsFileObjects() {
     	return Collections.unmodifiableList(storeBinaryAsFileObjects);
     }
 
@@ -549,7 +497,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * Returns a map of disallowed field names and their possible alternate values.
      * @return  A Map of disallowed field names
      */
-    public Map<String, String> getDisallowedFields() {
+    public Map getDisallowedFields() {
         return Collections.unmodifiableSortedMap(disallowedFields);
     }
 
@@ -613,7 +561,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
                 key = key.toLowerCase();
             }
             if (disallowedFields.containsKey(key)) {
-                String newid = disallowedFields.get(key);
+                String newid = (String)disallowedFields.get(key);
                 if (newid == null) {
                     if (hasOption(Attributes.ENFORCE_DISALLOWED_FIELDS)) {
                         throw new StorageException("The name of the field '"+((CoreField)mmobject).getName()+"' is disallowed, and no alternate value is available.");
@@ -713,41 +661,16 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         return TimeZone.getDefault().getOffset(time);
     }
 
-
-    /**
-     * Puts the current thread in a database transaction
-     * @throws IllegalStateException if the current thread already in transaction
-     * @since MMBase-1.9.1
-     */
-    public void beginTransaction() throws StorageException {
-        if (transaction.get() != null) throw new IllegalStateException("Transaction already started");
-        SM sm = createStorageManager();
-        sm.beginTransaction();
-        transaction.set(sm);
-    }
-
-    /**
-     * Commits the current thread's database transaction
-     * @throws IllegalStateException if the current thread not in a transaction
-     * @since MMBase-1.9.1
-     */
-    public void commit() throws StorageException {
-        SM sm = transaction.get();
-        if (sm == null) throw new IllegalStateException("No transaction started to commit");
-        transaction.set(null);
-        sm.commit();
-    }
-
-    /**
-     * Rolls back the current thread's database transaction
-     * @throws IllegalStateException if the current thread not in a transaction
-     * @since MMBase-1.9.1
-     */
-    public boolean rollback() throws StorageException {
-        SM sm = transaction.get();
-        if (sm == null) throw new IllegalStateException("No transaction started to rollback");
-        transaction.set(null);
-        return sm.rollback();
+    protected String getDataDir() {
+        String dataDir = mmbase.getInitParameter("datadir");
+        if (dataDir == null || dataDir.equals("")) {
+            ServletContext sc = MMBaseContext.getServletContext();
+            dataDir = sc != null ? sc.getRealPath("/WEB-INF/data") : null;
+            if (dataDir == null) {
+                dataDir = System.getProperty("user.dir") + java.io.File.separator + "data";
+            }
+        }
+        return dataDir;
     }
 
 

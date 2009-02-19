@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author Johannes Verelst
  * @since MMBase-1.8.1
- * @version $Id: Hex.java,v 1.5 2007-08-04 08:09:14 michiel Exp $
+ * @version $Id: Hex.java,v 1.2 2006-07-24 14:36:16 pierre Exp $
  */
 
 public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransformer, ConfigurableTransformer {
@@ -35,8 +35,8 @@ public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransfo
      * Used when registering this class as a possible Transformer
      */
 
-    public Map<String,Config> transformers() {
-        Map<String,Config> h = new HashMap<String,Config>();
+    public Map transformers() {
+        HashMap h = new HashMap();
         h.put(ENCODING, new Config(Hex.class, HEX, "Encoding bytearrays to and from a hexidecimal string"));
         return h;
     }
@@ -46,12 +46,12 @@ public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransfo
      * Transform a bytearray to a string of hexadecimal digits.
      */
     public String transform(byte[] bytes) {
-        StringBuilder strbuf = new StringBuilder(bytes.length * 2);
-        for (byte element : bytes) {
-            if ((element & 0xff) < 0x10) {
+        StringBuffer strbuf = new StringBuffer(bytes.length * 2);
+        for (int i = 0; i<bytes.length; i++) {
+            if (((int) bytes[i] & 0xff) < 0x10) {
                 strbuf.append("0");
             }
-            strbuf.append(Long.toString(element & 0xff, 16));
+            strbuf.append(Long.toString((int) bytes[i] & 0xff, 16));
         }
 
         return strbuf.toString();

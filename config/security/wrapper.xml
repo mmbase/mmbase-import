@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE security PUBLIC "-//MMBase//DTD classsecurity config 1.0//EN" "http://www.mmbase.org/dtd/classsecurity_1_0.dtd">
+<security>
+
+  <!-- THIS IS AN EXAMPLE CONFIGURATION FOR ClassAuthenticationWrapper in security.xml -->
+
+  <!-- the wrapped Authentication implementation, in this case from 'context security' -->
+  <authentication class="org.mmbase.security.implementation.context.ContextAuthentication" url="context/config.xml" />
+ 
+  <!--
+  cloud context security:
+  <authentication class="org.mmbase.security.implementation.cloudcontext.Authenticate"  url="" />	 
+  -->
+  <!--
+  <authentication class="org.mmbase.security.implementation.basic.AuthenticationHandler" url="basic/authentication.xml" />
+  -->
+  
+  <!-- authenticate 
+       class: regular expression matching the classes which can be authenticated.
+       method: the login 'application'. (XXX should attribute be renamed?)
+       property: name/value pair which will be added to the credential-map.
+       -->
+  <authenticate class="org\.mmbase\..*" requestedmethod="class" method="name/password">
+    <property name="username" value="foo" />
+    <property name="password" value="bar" />
+  </authenticate>
+  
+  <!-- A cron-job needing admin privileges -->
+  <authenticate class="nl\.omroep\.mmbase\.MediaImporter" requestedmethod="class" method="name/password">
+    <property name="username" value="admin" />
+    <property name="password" value="admin2k" />
+  </authenticate>
+
+
+  <authenticate class=".*" requestedmethod="delegate" method="name/password">
+  </authenticate>
+</security>

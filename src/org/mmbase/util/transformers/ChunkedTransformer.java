@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.8
  */
 
-public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransformer implements CharTransformer {
+public abstract class ChunkedTransformer extends ConfigurableReaderTransformer implements CharTransformer {
     private static final Logger log = Logging.getLoggerInstance(ChunkedTransformer.class);
 
     /**
@@ -90,8 +90,7 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
 
     protected class Status {
         int replaced = 0;
-        boolean inA = false;
-        final Set<P> used = onlyFirstMatch ? new HashSet<P>() : null;
+        final Set used = onlyFirstMatch ? new HashSet() : null;
     }
     protected Status newStatus() {
         return new Status();
@@ -102,13 +101,13 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
      */
     protected abstract boolean replace(String string, Writer w, Status status) throws IOException;
 
-    protected boolean replaceWord(StringBuilder word, Writer writer, Status status) throws IOException {
+    protected boolean replaceWord(StringBuffer word, Writer writer, Status status) throws IOException {
         int l = word.length();
-        StringBuilder postFix = null;
+        StringBuffer postFix = null;
         String w;
         if (l > 0) {
 
-            postFix = new StringBuilder();
+            postFix = new StringBuffer();
 
             // surrounding quotes might look like &quot; because of earlier escaping, so we take those out of consideration.
             w = word.toString();
@@ -159,7 +158,7 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
 
     public Writer transformXmlTextWords(Reader r, Writer w)  {
         Status status = newStatus();
-        StringBuilder word = new StringBuilder();  // current word
+        StringBuffer word = new StringBuffer();  // current word
         boolean translating = true;
         try {
             log.trace("Starting  replacing");
@@ -168,20 +167,17 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
                 if (c == -1) break;
                 if (!replace(status)) {
                     w.write(c);
-                } else if (c == '<') {  // don't do it in existing tags and attributes
+                } else
+                if (c == '<') {  // don't do it in existing tags and attributes
                     translating = false;
                     replaceWord(word, w, status);
-                    word.setLength(0);
                     w.write(c);
                 } else if (c == '>') {
                     translating = true;
-                    w.write(word.toString());
-                    w.write(c);
-                    String tag = word.toString();
-                    status.inA  = tag.equals("a") || tag.startsWith("a ");
                     word.setLength(0);
+                    w.write(c);
                 } else if (! translating) {
-                    word.append((char) c);
+                    w.write(c);
                 } else {
                     if (Character.isWhitespace((char) c) || c == '\'' || c == '\"' || c == '(' || c == ')' ) {
                         replaceWord(word, w, status);
@@ -194,12 +190,7 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
             }
             // write last word
             if (replace(status)) {
-                if (translating) {
-                    replaceWord(word, w, status);
-                } else {
-                    w.write(word.toString());
-                }
-                word.setLength(0);
+                if (translating) replaceWord(word, w, status);
             }
             if (log.isDebugEnabled()) {
                 log.debug("Finished  replacing. Replaced " + status.replaced + " words");
@@ -212,7 +203,7 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
 
     public Writer transformXmlText(Reader r, Writer w)  {
         Status status = newStatus();
-        StringBuilder xmltext = new StringBuilder();  // current word
+        StringBuffer xmltext = new StringBuffer();  // current word
         boolean translating = true;
         try {
             log.trace("Starting replacing");
@@ -251,7 +242,7 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
     }
     public Writer transformWords(Reader r, Writer w)  {
         Status status = newStatus();
-        StringBuilder word = new StringBuilder();  // current word
+        StringBuffer word = new StringBuffer();  // current word
         try {
             if (log.isDebugEnabled()) {
                 log.trace("Starting replacing words." + Logging.stackTrace());
@@ -354,8 +345,8 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
         }
     }
 
-    public Map<String,Config> transformers() {
-        Map<String,Config> h = new HashMap<String,Config>();
+    public Map transformers() {
+        Map h = new HashMap();
         h.put(base() + "_XMLTEXT_WORDS",  new Config(RegexpReplacer.class, XMLTEXT_WORDS,  "Search and replaces regexps word-by-word, only in XML text() blocks."));
         h.put(base() + "_XMLTEXT",        new Config(RegexpReplacer.class, XMLTEXT,  "Search and replaces regexps, only in XML text() blocks."));
         h.put(base() + "_WORDS",          new Config(RegexpReplacer.class, WORDS,  "Search and replaces regexps word-by-word"));
@@ -376,13 +367,11 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
                 }
             };
         CharTransformer trans2 = new BufferedReaderTransformer() {
-                @Override
                 protected boolean transform(PrintWriter bw, String line,Status status) {
                     bw.println(line);
                     return true;
                 }
 
-                @Override
                 protected Status createNewStatus() {
                     return null;
                 }

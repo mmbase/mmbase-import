@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: EscapeTag.java,v 1.3 2008-06-26 10:18:22 michiel Exp $
+ * @version $Id: EscapeTag.java,v 1.2.2.1 2008-06-17 13:18:32 michiel Exp $
  * @since MMBase-1.8.6
  */
 

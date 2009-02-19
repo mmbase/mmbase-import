@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page language="java" contentType="text/html;charset=utf-8" session="true" import="org.mmbase.util.*,org.mmbase.util.transformers.*,java.io.*,java.net.*,org.w3c.dom.*,java.util.*"
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><mm:content type="text/html" expires="0">
 <html>
   <head>
@@ -31,9 +31,9 @@
            || resourceLoader.equals(ResourceLoader.getWebRoot()) ) {
           if (dir.equals("..")) dir = ""; // can hapen in case of lost session (server restart)
         }
-        resourceLoader = resourceLoader.getChildResourceLoader(dir); 
+        resourceLoader = resourceLoader.getChildResourceLoader(dir);
         session.setAttribute("resourceedit_resourceloader", resourceLoader);
-    %>    
+    %>
     </mm:isnotempty>
   </mm:write>
   <mm:import externid="root" />
@@ -72,21 +72,21 @@
   <tr>
     <th class="main" colspan="2">
       <mm:present referid="resource">
-        <a href="<mm:url referids="search,recursive?" />">&lt;-- Back</a> | 
+        <a href="<mm:url referids="search,recursive?" />">&lt;-- Back</a> |
       </mm:present>
-      <mm:write referid="title" /> 
-    </th> 
+      <mm:write referid="title" />
+    </th>
     <th class="main" colspan="1">
       <mm:present referid="resource">
         <%= parent.equals(ResourceLoader.getConfigurationRoot()) ? "configuration root" : "web root" %>
         <%= resourceLoader.toInternalForm("") %>
       </mm:present>
       <mm:notpresent referid="resource">
-      <select name="root" onChange="document.forms[0].submit();">         
+      <select name="root" onChange="document.forms[0].submit();">
          <option value="config" <%= parent.equals(ResourceLoader.getConfigurationRoot()) ? "selected=\"selected\"" : "" %> >configuration root</option>
          <option value="web"    <%= parent.equals(ResourceLoader.getWebRoot())           ? "selected=\"selected\"" : "" %> >web root</option>
       </select>
-      <% if (resourceLoader.getParentResourceLoader() != null) { %>      
+      <% if (resourceLoader.getParentResourceLoader() != null) { %>
          <a href="<mm:url referids="search,recursive?"><mm:param name="dirs" value=".." /></mm:url>"><%= resourceLoader.toInternalForm("") %></a>
       <% } else { %>
       <%= resourceLoader.toInternalForm("") %>
@@ -98,7 +98,7 @@
            <option value="..">..</option>
         <%
            }
-           Iterator diri = resourceLoader.getChildContexts(null, false).iterator(); 
+           Iterator diri = resourceLoader.getChildContexts(null, false).iterator();
            while (diri.hasNext()) {
            String dir = (String) diri.next();
         %>
@@ -106,11 +106,11 @@
         <%
            }
         %>
-      </select>      
+      </select>
         recursive: <input type="checkbox" name="recursive" <mm:present referid="recursive">checked="checked"</mm:present> onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();" />
       </mm:notpresent>
     </th>
-  </tr> 
+  </tr>
 
   <input type="hidden" name="keepsearch" value="<mm:write referid="search" />" />
 
@@ -122,7 +122,7 @@
       <td>Search (regular expression):</td>
       <td colspan="2">
         <input type="text" name="search" value="<mm:write referid="search" />" />
-        <select name="examples" onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();">         
+        <select name="examples" onChange="document.forms[0].search.value = document.forms[0].examples.value; document.forms[0].submit();">
            <option value=".*" <mm:isempty referid="search"> selected="selected" </mm:isempty> >ALL</option>
            <mm:write value=".*\.xml$$">
               <option value="<mm:write />" <mm:compare referid2="search"> selected="selected" </mm:compare> >xml's</option>
@@ -162,14 +162,14 @@
 </mm:notpresent><%-- resource --%>
 
 
-<%-- showing one resource --%> 
+<%-- showing one resource --%>
 <mm:present referid="resource">
    <mm:import externid="save" />
    <mm:import externid="wasxml">TEXT</mm:import>
    <mm:import externid="xml"><mm:write referid="wasxml" /></mm:import>
 
 
-   <%  
+   <%
       {
        List urls = resourceLoader.getResourceList(resource);
        for(int i = 0; i < urls.size(); i++) {
@@ -177,7 +177,7 @@
       <mm:context>
           <mm:import  id="del" externid='<%="delete" + i%>' />
           <mm:present referid="del">
-            <% 
+            <%
               URL u = (URL) urls.get(i);
               u.openConnection().getOutputStream().write(null);
             %>
@@ -185,12 +185,12 @@
       </mm:context>
     <% }
       }
-       URL url = resourceLoader.getResource(resource); 
+       URL url = resourceLoader.getResource(resource);
        URLConnection con = url.openConnection();
    %>
   <tr>
-    <td colspan="3">     
-        Resource: 
+    <td colspan="3">
+        Resource:
         <input type="text" name="resource" style="width: 200px;" value="<%=resource%>" />
         <input type="submit" name="load" value="load" />
          <% if (con.getDoOutput()) { %>
@@ -201,7 +201,7 @@
 
 
          <%-- XML mode --%>
-        <mm:compare referid="xml" value="XML">          
+        <mm:compare referid="xml" value="XML">
           <input type="hidden" name="wasxml" value="<mm:write referid="xml" />" />
           <input type="submit" name="xml" value="TEXT" />
 <%
@@ -220,7 +220,7 @@
             } else {
 %>
    <mm:present referid="save">
-     <% resourceLoader.storeDocument(resource, doc); %>     
+     <% resourceLoader.storeDocument(resource, doc); %>
    </mm:present>
 
 <%
@@ -228,8 +228,8 @@
             out.println("<br />");
             for (int i = 0 ; i < list.getLength(); i++) {
                Node node = list.item(i);
-               out.println("" + node.getNodeName() + " "  + node.getNodeType() + "<textarea name='bla'>" + node.getNodeValue() + "</textarea><br />"); 
-            } 
+               out.println("" + node.getNodeName() + " "  + node.getNodeType() + "<textarea name='bla'>" + node.getNodeValue() + "</textarea><br />");
+            }
             }
           }
 %>
@@ -251,7 +251,7 @@
        if (r != null) {
          ChainedCharTransformer t = new ChainedCharTransformer();
          t.add(xmlEscaper);
-         if (resource.endsWith(".xml")) { // apply some mmbase code-conventions.           
+         if (resource.endsWith(".xml")) { // apply some mmbase code-conventions.
            t.add(new TabToSpacesTransformer(2));
          }
          BufferedReader reader = new BufferedReader(new TransformingReader(r, t));
@@ -262,7 +262,7 @@
          }
        } else {
           out.println("new resource");
-       }             
+       }
 
        }
        %></textarea>
@@ -275,7 +275,7 @@
        Resolve-scheme.
        <table>
          <tr><th>URL</th><th>read</th><th>write</th><th></th></tr>
-         <% 
+         <%
             List urls = resourceLoader.getResourceList(resource.equals("") ? "&lt;new resource name&gt;" : resource);
             ListIterator i = urls.listIterator();
             int read = 0;
@@ -314,16 +314,16 @@
                <% } %>
              </td>
           </tr>
-          <% 
+          <%
           counter++;
           }
           if (read != write && read < counter) {
             %>
-            
+
             <tr>
               <th colspan="4">
-                Warning, current resource is not writeable. 
-                <% if (canWrite) { %> 
+                Warning, current resource is not writeable.
+                <% if (canWrite) { %>
                   Will be upgraded on save.
                 <% } else { %>
                   Can <em>not</em> be upgraded. Saving is impossible!
@@ -332,8 +332,8 @@
             </tr>
             <% } %>
             <tr><td colspan="4"><hr /></td></tr>
-       </table>  
-       
+       </table>
+
      </td>
    </tr>
 

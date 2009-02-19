@@ -15,12 +15,10 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * An enumeration datatype representing all days of a week, so an integer with the value 1 through
- * 7. It considers the locale to determin which day is to be the first of the week, and hence the
- * first in the enumeration.
+ * A StringDataType with all security contexts strings as possible value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WeekdaysDataType.java,v 1.5 2008-09-04 16:31:02 michiel Exp $
+ * @version $Id: WeekdaysDataType.java,v 1.1.2.2 2008-07-09 11:46:14 michiel Exp $
  * @since MMBase-1.8.6
  */
 public class WeekdaysDataType extends IntegerDataType {
@@ -33,23 +31,23 @@ public class WeekdaysDataType extends IntegerDataType {
      */
     public WeekdaysDataType(String name) {
         super(name, false);
-        setMin(1, true);
-        setMax(7, true);
+        setMin(new Integer(1), true);
+        setMax(new Integer(7), true);
     }
 
-    public Iterator<Map.Entry<Integer, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
+    public Iterator getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
         final Calendar cal = Calendar.getInstance(locale);
-        final SortedMap<Object, String> bundle = SortedBundle.getResource("org.mmbase.datatypes.resources.weekdays", locale, null,
-                                                                          SortedBundle.getConstantsProvider(Calendar.class), Integer.class, null);
+        final SortedMap bundle = SortedBundle.getResource("org.mmbase.datatypes.resources.weekdays", locale, null,
+                                                          SortedBundle.getConstantsProvider(Calendar.class), Integer.class, null);
 
-        return new Iterator<Map.Entry<Integer, String>>() {
+        return new Iterator() {
             int i = 0;
             int day = cal.getFirstDayOfWeek();
             public boolean hasNext() {
                 return i < 7;
             }
-            public Map.Entry<Integer, String> next() {
-                Entry res  = new Entry(day, bundle.get(day));
+            public Object next() {
+                Entry res  = new Entry(new Integer(day), bundle.get(new Integer(day)));
                 i++;
                 day++;
                 if (day > 7) day = 1;

@@ -20,7 +20,7 @@ import org.mmbase.storage.search.*;
  * The directionality property defaults to DIRECTIONS_BOTH.
  *
  * @author Rob van Maris
- * @version $Id: BasicRelationStep.java,v 1.13 2008-07-17 12:55:23 michiel Exp $
+ * @version $Id: BasicRelationStep.java,v 1.11 2005-10-30 19:08:33 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicRelationStep extends BasicStep implements RelationStep {
@@ -163,7 +163,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
             RelationStep step = (RelationStep) obj;
             return getTableName().equals(step.getTableName())
                 && (alias != null ? alias.equals(step.getAlias()) : step.getAlias() == null)
-                && (nodes == null ? step.getNodes() == null : nodes.equals(step.getNodes()))
+                && getNodes().equals(step.getNodes())
                 && step.getDirectionality() == directionality
                 && (role == null? step.getRole() == null: role.equals(step.getRole()));
         } else {
@@ -175,18 +175,23 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
     public int hashCode() {
         return 41 * (getTableName().hashCode()
                      + 43 * ( (alias != null ? alias.hashCode() : 0)
-                              +  47 * (nodes == null ? 1 : nodes.hashCode()
-                                       + 113 * (directionality
-                                                + 31 * (role != null ? role.intValue() : 0)))));
+                              + 47 * (getNodes().hashCode()
+                                      + 113 * (directionality
+                                               + 31 * (role != null ? role.intValue() : 0)))));
 }
 
     // javadoc is inherited
     public String toString() {
-        StringBuilder sb = new StringBuilder("RelationStep(tablename:").append(getTableName()).
-        append(", alias:").append(getAlias()).
-        append(", nodes:").append(getNodes()).
-        append(", dir:").append(getDirectionalityDescription()).
-        append(", role:").append(getRoleDescription()).
+        StringBuffer sb = new StringBuffer("RelationStep(tablename:");
+        sb.append(getTableName()).
+        append(", alias:").
+        append(getAlias()).
+        append(", nodes:").
+        append(getNodes()).
+        append(", dir:").
+        append(getDirectionalityDescription()).
+        append(", role:").
+        append(getRoleDescription()).
         append(")");
         return sb.toString();
     }

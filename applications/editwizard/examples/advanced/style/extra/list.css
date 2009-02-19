@@ -1,0 +1,12 @@
+/**
+  Editwizard cascading style sheet.
+
+  @version  $Id: list.css,v 1.1 2004-01-21 16:51:01 nico Exp $
+*/
+tr.headtitle  {         
+   text-align: left;
+} 
+
+td.field {
+   width: 1%;
+}

@@ -19,7 +19,7 @@ import java.io.StringWriter;
  * Checksum 'processor', and the field for which this field is a checksum.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumProcessorFactory.java,v 1.8 2008-09-24 20:26:08 michiel Exp $
+ * @version $Id: ChecksumProcessorFactory.java,v 1.5.2.1 2008-02-19 20:56:41 nklasens Exp $
  * @since MMBase-1.8
  */
 
@@ -29,7 +29,7 @@ public class ChecksumProcessorFactory implements ParameterizedCommitProcessorFac
 
     protected static final Parameter[] PARAMS = new Parameter[] {
         new Parameter.Wrapper(ChecksumFactory.PARAMS),
-        new Parameter<String>("field", String.class, true)
+        new Parameter("field", String.class, true)
     };
 
     private static final ParameterizedTransformerFactory factory = new ChecksumFactory();
@@ -45,16 +45,14 @@ public class ChecksumProcessorFactory implements ParameterizedCommitProcessorFac
 
                 public void commit(Node node, Field field) {
                     if (!field.isVirtual()) {
-                        if (node.getChanged().contains(sourceField)) {
-                            if (node.isNull(sourceField)) {
-                                // set checksum null too.
-                                node.setValue(field.getName(), null);
-                                return;
-                            }
-                            StringWriter writer = new StringWriter();
-                            transformer.transform(node.getInputStreamValue(sourceField), writer);
-                            node.setStringValue(field.getName(), writer.toString());
+                        if (node.isNull(sourceField)) {
+                            // set checksum null too.
+                            node.setValue(field.getName(), null);
+                            return;
                         }
+                        StringWriter writer = new StringWriter();
+                        transformer.transform(node.getInputStreamValue(sourceField), writer);
+                        node.setStringValue(field.getName(), writer.toString());
                     }
                 }
                 public String toString() {

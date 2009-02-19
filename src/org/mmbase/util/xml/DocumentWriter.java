@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.11 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: DocumentWriter.java,v 1.10 2006-04-18 13:11:41 michiel Exp $
  */
 abstract public class DocumentWriter extends DocumentReader {
 
@@ -94,7 +94,7 @@ abstract public class DocumentWriter extends DocumentReader {
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
      * @since MMBase-1.7
      */
-    public DocumentWriter(InputSource source, boolean validating, Class<?> resolveBase) {
+    public DocumentWriter(InputSource source, boolean validating, Class resolveBase) {
         super(source, validating, resolveBase);
         documentGenerated = true;
     }

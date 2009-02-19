@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<pools exportsource="mmbase://grgrijze.toly.net/null/v2" timestamp="20090210213553">
-	<node number="71" owner="default" alias="pool_website">
-		<description></description>
-		<name>Vinessen website</name>
-	</node>
-
-</pools>

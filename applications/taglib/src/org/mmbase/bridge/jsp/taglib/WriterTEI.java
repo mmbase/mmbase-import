@@ -18,12 +18,12 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * Writer tags can also produce a jsp variable, for use in the
  * body. This is the TEI class which is needed for that.
  *
- * @author Michiel Meeuwissen 
- * @version $Id: WriterTEI.java,v 1.14 2007-04-26 10:25:49 michiel Exp $ 
+ * @author Michiel Meeuwissen
+ * @version $Id: WriterTEI.java,v 1.12.2.2 2007-11-19 15:16:25 michiel Exp $
  */
 
 public class WriterTEI extends TagExtraInfo {
-    
+
     protected int scope() {
         return VariableInfo.NESTED;
     }
@@ -74,41 +74,38 @@ public class WriterTEI extends TagExtraInfo {
         case WriterHelper.TYPE_BOOLEAN:
             type = Boolean.class.getName(); break;
         case WriterHelper.TYPE_BYTES:
-            type = "byte[]"; break; 
+            type = "byte[]"; break;
             // this doesn't work like this...
             // How it does??
 
             //Class.forName("[B").getName(); break;
         case WriterHelper.TYPE_FILEITEM:
             type = org.apache.commons.fileupload.FileItem.class.getName();
-            break; 
-        default: 
+            break;
+        default:
             type = typeAttribute;
-            //default:
-            //type = "java.lang.Object"; 
-            //throw new RuntimeException("Unknown type '" + typeAttribute + "'");
         }
         return type;
-   
+
     }
 
     public VariableInfo[] getVariableInfo(TagData data) {
         VariableInfo[] variableInfo = null;
 
-        String jspvarAttribute  = (String) data.getAttribute("jspvar"); 
+        String jspvarAttribute  = (String) data.getAttribute("jspvar");
 
         if (jspvarAttribute != null) {
             variableInfo = new VariableInfo[1];
-            
-            String typeAttribute    = (String) data.getAttribute("vartype"); 
-            if (typeAttribute == null) typeAttribute = defaultType();           
+
+            String typeAttribute    = (String) data.getAttribute("vartype");
+            if (typeAttribute == null) typeAttribute = defaultType();
             String type = getType(typeAttribute);
-                        
+
             variableInfo[0] =  new VariableInfo(jspvarAttribute,
                                                 type,
                                                 true,
                                                 scope());
         }
         return variableInfo;
-    }        
+    }
 }

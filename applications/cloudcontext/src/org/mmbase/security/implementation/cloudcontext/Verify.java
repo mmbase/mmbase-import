@@ -10,14 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.cloudcontext;
 
 import org.mmbase.bridge.Query;
-import org.mmbase.module.core.MMObjectNode;
-import java.util.*;
+import java.util.Set;
 import org.mmbase.security.implementation.cloudcontext.builders.*;
 import org.mmbase.security.*;
-import org.mmbase.security.SecurityException;
-import org.mmbase.util.functions.*;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * Implementation of Authorization. Most implementation is delegated to the Contexts builder.
@@ -25,105 +20,66 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Verify.java,v 1.17 2009-01-05 17:01:43 michiel Exp $
+ * @version $Id: Verify.java,v 1.11.2.1 2006-09-07 12:46:49 pierre Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts
  */
 public class Verify extends Authorization {
-
-    private static final Logger log = Logging.getLoggerInstance(Verify.class);
-
+    // javadoc inherited
     protected void load() {
     }
 
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    public final static Verify getInstance() {
-        return (Verify) org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthorization();
-    }
-
-    /**
-     * @since MMBase-1.9.1
-     */
-    public  ContextProvider getContextProvider() {
-        return Contexts.getBuilder().getProvider();
-    }
-
-
-    @Override public void create(UserContext userContext, int nodeId) {
+    // javadoc inherited
+    public void create(UserContext userContext, int nodeId) {
         User user = (User) userContext;
         // odd, getOwnerField is called in BasicNodeManager yet, so I wonder when this is called.
-        setContext(userContext, nodeId, user.getOwnerField());
+        Contexts.getBuilder().setContext(user, nodeId, user.getOwnerField());
     }
 
-    @Override
+    // javadoc inherited
     public void update(UserContext userContext, int nodeId)  {
     }
 
 
-    @Override
+    // javadoc inherited
     public void remove(UserContext userContext, int nodeId)  {
     }
 
-    @Override
+    // javadoc inherited
     public boolean check(UserContext userContext, int nodeId, Operation operation)  {
-        return getContextProvider().mayDo((User) userContext, getContextNode(nodeId, true), operation);
+        return Contexts.getBuilder().mayDo((User) userContext, nodeId, operation);
     }
 
-    @Override public boolean check(UserContext userContext, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) {
-        // admin bypasses security system
-        if (userContext.getRank().getInt() >= Rank.ADMIN_INT) {
-            return true;
-        }
-        return check(userContext, nodeId, operation);
+    // javadoc inherited
+    public boolean check(UserContext userContext, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) {
+        //log.debug("check if operation: " + operation + " is valid for: " + usercontext + " for node with number # " + i + "(between 2 nodes..)");
+        return Contexts.getBuilder().mayDo((User) userContext, nodeId, sourceNodeId, destinationNodeId, operation);
+    }
+
+    // javadoc inherited
+    public String getContext(UserContext userContext, int nodeId) throws org.mmbase.security.SecurityException {
+        //log.debug("check if we may read the node with # " + i + " nodeid?");
+        return Contexts.getBuilder().getContext((User) userContext, nodeId);
     }
 
 
-
-    @Override public String getContext(UserContext userContext, int nodeId) throws org.mmbase.security.SecurityException {
-        // userContext ignored
-        return getContextProvider().getContext(getContextNode(nodeId, true));
+    // javadoc inherited
+    public void setContext(UserContext userContext, int nodeId, String context) throws org.mmbase.security.SecurityException {
+        //log.debug("[node #" + i + "] changed to context: " + s + " by [" + usercontext.getIdentifier() + "]");
+        Contexts.getBuilder().setContext((User) userContext, nodeId, context);
     }
 
-    @Override public void setContext(UserContext user, int nodeId, String context) throws org.mmbase.security.SecurityException {
-        getContextProvider().setContext((User) user, getContextNode(nodeId, true), context);
+    // javadoc inherited
+    public Set getPossibleContexts(UserContext userContext, int nodeId)  throws org.mmbase.security.SecurityException {
+        return Contexts.getBuilder().getPossibleContexts((User) userContext, nodeId);
     }
 
-    @Override public Set<String> getPossibleContexts(UserContext userContext, int nodeId)  throws org.mmbase.security.SecurityException {
-        return getContextProvider().getPossibleContexts((User) userContext, getContextNode(nodeId, true));
+    public Set getPossibleContexts(UserContext userContext) throws org.mmbase.security.SecurityException {
+        return Contexts.getBuilder().getPossibleContexts((User) userContext);
     }
 
-    @Override public Set<String> getPossibleContexts(UserContext userContext) throws org.mmbase.security.SecurityException {
-        return getContextProvider().getPossibleContexts((User) userContext);
-    }
-
-    @Override
+    // javadoc inherited
     public QueryCheck check(UserContext userContext, Query query, Operation operation) {
-        return getContextProvider().check((User) userContext, query, operation);
+        return Contexts.getBuilder().check((User) userContext, query, operation);
 
     }
-
-    @Override public boolean check(UserContext user, Action ac, Parameters parameters) {
-        return Actions.getBuilder().check((User) user, ac, parameters);
-    }
-
-
-
-
-    protected MMObjectNode getContextNode(int nodeId, boolean exception) {
-        MMObjectNode node =  getContextProvider().getContextQueries().iterator().next().getBuilder().getNode(nodeId);
-        if (node == null) {
-            if (exception) {
-                throw new SecurityException("node #" + nodeId + " not found");
-            } else {
-                log.warn("node #" + nodeId + " not found");
-            }
-        }
-        return node;
-    }
-
-
-
-
 }

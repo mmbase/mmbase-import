@@ -16,41 +16,37 @@ import java.util.*;
  * Simple utility to chain several lists into a new one.
  *
  * @author	Michiel Meeuwissen
- * @since	MMBase-1.9
- * @version $Id: ChainedList.java,v 1.4 2009-01-04 18:51:56 nklasens Exp $
+ * @since	MMBase-1.8.5
+ * @version $Id: ChainedList.java,v 1.3.2.1 2008-07-29 09:29:41 michiel Exp $
  * @see ChainedIterator
  */
-public class ChainedList<E> extends AbstractList<E> {
+public class ChainedList extends AbstractList {
 
-    private final List<List<? extends E>> lists = new ArrayList<List<? extends E>>();
-    
+    private final List lists = new ArrayList();
     public ChainedList() {
-        // nothing to do yet
-    }
-    
-    public ChainedList(List<? extends E>... ls) {
-        for (List<? extends E> l : ls) {
-            addList(l);
-        }
     }
 
-    public ChainedList<E> addList(List<? extends E> l) {
+    public ChainedList addList(List l) {
         lists.add(l);
         return this;
     }
     public int size() {
         int size = 0;
-        for (List<? extends E> l : lists) {
+        Iterator i =  lists.iterator();
+        while (i.hasNext()) {
+            List l = (List) i.next();
             size += l.size();
         }
         return size;
     }
-    public E get(int i) {
-        for (List<? extends E> l : lists) {
-            if (l.size() > i) {
-                return l.get(i);
+    public Object get(int j) {
+        Iterator i =  lists.iterator();
+        while (i.hasNext()) {
+            List l = (List) i.next();
+            if (l.size() > j) {
+                return l.get(j);
             }
-            i -= l.size();
+            j -= l.size();
         }
         throw new IndexOutOfBoundsException();
     }

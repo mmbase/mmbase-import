@@ -12,12 +12,11 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
 import org.mmbase.bridge.jsp.taglib.util.Notfound;
-import org.mmbase.bridge.jsp.taglib.util.Debug;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.ContextTag;
 import org.mmbase.bridge.NotFoundException;
 import java.net.*;
-
+//import javax.net.ssl.*;
 import java.io.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyContent;
@@ -36,26 +35,26 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.88 2008-07-24 14:11:46 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.66.2.9 2008-03-14 16:59:42 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
 
-    private static  final Logger log     = Logging.getLoggerInstance(IncludeTag.class);
+    private static  final Logger log = Logging.getLoggerInstance(IncludeTag.class);
     private static  final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
 
+    private static final int DEBUG_NONE = 0;
+    private static final int DEBUG_HTML = 1;
+    private static final int DEBUG_CSS  = 2;
+    private static final int DEBUG_XML  = 3;
 
     public static final String INCLUDE_PATH_KEY   = "javax.servlet.include.servlet_path";
     public static final String INCLUDE_LEVEL_KEY = "org.mmbase.taglib.includeLevel";
 
-    protected static int MAX_INCLUDE_LEVEL = -1;
-    private static final Xml xml = new Xml(Xml.ESCAPE);
 
+    protected Attribute debugType = Attribute.NULL;
 
-
-    protected Attribute debugType       = Attribute.NULL;
-
-    private Attribute cite              = Attribute.NULL;
+    private Attribute cite = Attribute.NULL;
 
     private Attribute encodingAttribute = Attribute.NULL;
 
@@ -65,10 +64,6 @@ public class IncludeTag extends UrlTag {
 
     protected Attribute resource        = Attribute.NULL;
 
-    protected Attribute timeOut        = Attribute.NULL;
-    //protected Attribute configuration   = Attribute.NULL;
-
-    protected Attribute omitXmlDeclaration = Attribute.NULL;
 
     /**
      * Test whether or not the 'cite' parameter is set
@@ -96,24 +91,11 @@ public class IncludeTag extends UrlTag {
     public void setResource(String r) throws JspTagException {
         resource = getAttribute(r);
     }
-    /**
-     * @since MMBase-1.8.5
-     */
-    public void setTimeout(String t) throws JspTagException {
-        timeOut = getAttribute(t);
-    }
-    /*
-    public void setConfiguration(String r) throws JspTagException {
-        configuration = getAttribute(r);
-    }
-    */
 
-    @Override
     protected String getPage() throws JspTagException {
         if (resource != Attribute.NULL) return resource.getString(this);
         return super.getPage();
     }
-
 
     /**
      * @since MMBase-1.8.5
@@ -123,21 +105,14 @@ public class IncludeTag extends UrlTag {
             throw new JspTagException("No attribute 'page', 'resource' or 'referid' was specified");
         }
     }
-    @Override
+
     public int doStartTag() throws JspTagException {
         checkAttributes();
-        initTag(true);
-        return EVAL_BODY_BUFFERED;
+        return super.doStartTag();
     }
 
-
-    @Override
     protected void doAfterBodySetValue() throws JspTagException {
-        try {
-            includePage();
-        } catch (org.mmbase.framework.FrameworkException fw) {
-            throw new TaglibException(fw);
-        }
+        includePage();
     }
     /**
      * Opens an Http Connection, retrieves the page, and returns the result.
@@ -149,24 +124,22 @@ public class IncludeTag extends UrlTag {
         try {
             URL includeURL = new URL(absoluteUrl);
 
+            log.service("Opening onnection with " + includeURL);
+
+
             HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
-            int to = timeOut.getInt(this, 10000);
-            connection.setConnectTimeout(to);
-            connection.setReadTimeout(to);
 
             if (request != null) {
                 // Also propagate the cookies (like the jsession...)
                 // Then these, and the session,  also can be used in the include-d page
                 Cookie[] cookies = request.getCookies();
                 if (cookies != null) {
-                    StringBuilder koekjes = new StringBuilder();
-                    String sep = "";
-                    for (Cookie cookie : cookies) {
+                    StringBuffer koekjes = new StringBuffer();
+                    for (int i=0; i < cookies.length; i++) {
                         if (log.isDebugEnabled()) {
-                            log.debug("setting cookie:" + cookie.getName() + "=" + cookie.getValue());
+                            log.debug("setting cookie " + i + ":" + cookies[i].getName() + "=" + cookies[i].getValue());
                         }
-                        koekjes.append(sep).append(cookie.getName()).append("=").append(cookie.getValue());
-                        sep = ";";
+                        koekjes.append((i > 0 ? ";" : "")).append(cookies[i].getName()).append("=").append(cookies[i].getValue());
                     }
                     connection.setRequestProperty("Cookie", koekjes.toString());
                 }
@@ -180,7 +153,7 @@ public class IncludeTag extends UrlTag {
                 if (responseCode < 300) {
 
                     String encoding = encodingAttribute.getString(this);
-                    if (encoding.length() == 0) {
+                    if (encoding.equals("")) {
                         encoding = connection.getContentEncoding();
                     }
                     log.debug("Found content encoding " + encoding);
@@ -192,7 +165,7 @@ public class IncludeTag extends UrlTag {
                         c = inputStream.read();
                     }
                     byte[] allBytes = bytes.toByteArray();
-                    if (encoding == null || encoding.length() == 0) {
+                    if (encoding == null || encoding.equals("")) {
                         String contentType = connection.getContentType();
                         if (contentType != null) {
                             // according to http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020801/, 'higher level' charset indication should prevail
@@ -208,7 +181,7 @@ public class IncludeTag extends UrlTag {
 
                     }
                     log.debug("Using " + encoding);
-                    result = new String(allBytes, encoding) + getDebug().end(getThisName(), absoluteUrl);
+                    result = new String(allBytes, encoding) + debugEnd(absoluteUrl);
 
                 } else {
                     if (responseCode >= 500) {
@@ -222,44 +195,55 @@ public class IncludeTag extends UrlTag {
             } catch (java.net.ConnectException ce) {
                 result = "For " + includeURL + ": " + ce.getMessage();
                 responseCode = -1;
-            } catch (java.net.SocketTimeoutException ste) {
-                result = "";
-                responseCode = -2;
+                log.warn(result);
             }
-
 
             handleResponse(responseCode, result, absoluteUrl);
 
             if (log.isDebugEnabled()) {
                 log.debug("found string: " + helper.getValue());
             }
+
         } catch (IOException e) {
             throw new TaglibException (e.getMessage(), e);
         }
     }
 
     /**
+     * Include a local file by doing a new HTTP request
+     * Do not use this method, but use the 'internal()' method instead
+     */
+    private void externalRelative(BodyContent bodyContent, String relativeUrl, HttpServletRequest request, HttpServletResponse response) throws JspTagException {
+        external(bodyContent,
+                 request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + relativeUrl,
+                 request, response);
+    }
+
+
+    protected boolean addContext() {
+        return false;
+    }
+
+    /**
      * @since MMBase-1.8
      */
     protected void handleResponse(int code, String result, String url) throws JspTagException {
-        pageContext.setAttribute("_responseCode", code);
-        log.debug("" + code);
-        String output;
+
+        String page;
         switch(code) {
-        case -2:
         case 200:
-            output = result;
+            page = result;
             break;
         default:
         case 404:
             switch(Notfound.get(notFound, this)) {
             case Notfound.LOG:
                 pageLog.warn("The requested resource '" + url + "' is not available", new Exception());
-                output = "";
+                page = "";
                 break;
             case Notfound.SKIP:
             case Notfound.PROVIDENULL:
-                output = "";
+                page = "";
                 break;
             case Notfound.THROW:
                 if ("".equals(result)) result = "The requested resource '" + url + "' is not available";
@@ -268,14 +252,14 @@ public class IncludeTag extends UrlTag {
             case Notfound.DEFAULT:
             case Notfound.MESSAGE:
                 if ("".equals(result)) {
+                    Xml xml = new Xml(Xml.ESCAPE);
                     result = "The requested resource '" + xml.transform(url) + "' is not available";
                 }
-                output = result;
+                page = result;
             }
             break;
         }
-        Debug debug = getDebug();
-        helper.setValue(debug.start(getThisName(), url) + output + debug.end(getThisName(), url));
+        helper.setValue(debugStart(url) + page + debugEnd(url));
     }
     /**
      * Use the RequestDispatcher to include a page without doing a request.
@@ -304,25 +288,27 @@ public class IncludeTag extends UrlTag {
         req.removeAttribute(ContextTag.CONTEXTTAG_KEY);
 
         if (attributes != Attribute.NULL) {
-            Iterator<Map.Entry<String, Object>> i = Referids.getReferids(attributes, this).entrySet().iterator();
+            Iterator i = Referids.getReferids(attributes, this).entrySet().iterator();
             while (i.hasNext()) {
-                Map.Entry<String, Object> entry = i.next();
-                req.setAttribute(entry.getKey(), entry.getValue());
+                Map.Entry entry = (Map.Entry) i.next();
+                req.setAttribute((String) entry.getKey(), entry.getValue());
             }
 
         }
         // Orion bug fix.
-        req.getParameterMap();
+        //req.getParameterMap();
 
         try {
             ServletContext sc = pageContext.getServletContext();
             if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");
-
             if (! ResourceLoader.getWebRoot().getResource(relativeUrl).openConnection().getDoInput()) {
+                Xml xml = new Xml(Xml.ESCAPE);
                 handleResponse(404, "No such resource " + xml.transform(relativeUrl), relativeUrl);
             } else {
                 HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
-
+                if (log.isTraceEnabled()) {
+                    log.trace("Attributes " + Collections.list(req.getAttributeNames()) + " -> " + Collections.list(requestWrapper.getAttributeNames()));
+                }
                 RequestDispatcher requestDispatcher = sc.getRequestDispatcher(relativeUrl);
                 if (requestDispatcher == null) {
                     throw new NotFoundException("Page \"" + relativeUrl + "\" does not exist (No request-dispatcher could be created)");
@@ -339,9 +325,8 @@ public class IncludeTag extends UrlTag {
                 handleResponse(responseWrapper.getStatus(), responseWrapper.toString(), relativeUrl);
             }
 
-            getThreadPageContext();
+
         } catch (Throwable e) {
-            log.error(relativeUrl, e);
             throw new TaglibException(relativeUrl + " " + e.getMessage(), e);
         }
 
@@ -412,23 +397,10 @@ public class IncludeTag extends UrlTag {
     /**
      * Includes another page in the current page.
      */
-    protected void includePage() throws JspTagException, org.mmbase.framework.FrameworkException {
-        if (MAX_INCLUDE_LEVEL == -1) {
-            String s =  pageContext.getServletContext().getInitParameter("mmbase.taglib.max_include_level");
-            if (s != null && ! "".equals(s)) {
-                MAX_INCLUDE_LEVEL = Integer.parseInt(s);
-            }
-            if (MAX_INCLUDE_LEVEL == -1) {
-                MAX_INCLUDE_LEVEL = 50;
-            }
-        }
-
+    protected void includePage() throws JspTagException {
+        String gotUrl = null;
         try {
-            String gotUrl = url == null ? null : url.get(false);
-            if (gotUrl == null) {
-                gotUrl = page.getString(this);
-                pageLog.service("No URL object found (" + url + "), using: " + gotUrl);
-            }
+            gotUrl = getUrl(false, false); // false, false: don't write &amp; tags but real & and don't urlEncode
 
             if (gotUrl == null || "".equals(gotUrl)) {
                 return; //if there is no url, we cannot include
@@ -493,30 +465,23 @@ public class IncludeTag extends UrlTag {
 
                 // Increase level and put it together with the new URI in the Attributes of the request
                 includeLevel++;
-                request.setAttribute(INCLUDE_LEVEL_KEY, Integer.valueOf(includeLevel));
+                request.setAttribute(INCLUDE_LEVEL_KEY, new Integer(includeLevel));
 
                 if (log.isDebugEnabled()) {
                     log.debug("Next Include: Level=" + includeLevel + " URI=" + includedServlet);
                 }
 
-                if (includeLevel < MAX_INCLUDE_LEVEL) {
-                    if (getCite()) {
-                        cite(bodyContent, includedServlet, request);
-                    } else {
-                        internal(bodyContent, includedServlet, request, response);
-                    }
+                if (getCite()) {
+                    cite(bodyContent, includedServlet, request);
                 } else {
-                    log.warn("TOO DEEP mm:include recursion (" + includedServlet + "), " + includeLevel + ">=" + MAX_INCLUDE_LEVEL);
-                    handleResponse(200,
-                                   "TOO DEEP mm:include recursion (" + xml.transform(includedServlet) + "), " + includeLevel + ">=" + MAX_INCLUDE_LEVEL, includedServlet);
-
+                    internal(bodyContent, includedServlet, request, response);
                 }
                 // Reset include level and URI to previous state
                 includeLevel--;
                 if (includeLevel == 0) {
                     request.removeAttribute(INCLUDE_LEVEL_KEY);
                 } else {
-                    request.setAttribute(INCLUDE_LEVEL_KEY, Integer.valueOf(includeLevel));
+                    request.setAttribute(INCLUDE_LEVEL_KEY, new Integer(includeLevel));
                 }
 
             } else { // really absolute
@@ -532,7 +497,7 @@ public class IncludeTag extends UrlTag {
             throw new TaglibException (e);
         }
         if (pageLog.isDebugEnabled()) {
-            pageLog.debug("END Parsing mm:include JSP page");
+            pageLog.debug("END Parsing mm:include JSP page " + gotUrl);
         }
     }
 
@@ -544,12 +509,23 @@ public class IncludeTag extends UrlTag {
         debugType = getAttribute(p);
     }
 
-    protected Debug getDebug() throws JspTagException {
+    protected int getDebug() throws JspTagException {
 
-        if (debugType == Attribute.NULL) return Debug.NONE;
-        String dtype = debugType.getString(this).toUpperCase();
-        if (dtype.length() == 0) return Debug.NONE;
-        return Debug.valueOf(dtype);
+        if (debugType == Attribute.NULL) return DEBUG_NONE;
+
+        String dtype = debugType.getString(this).toLowerCase();
+        if (dtype.equals("none") || dtype.equals("")) {
+            return  DEBUG_NONE; // also implement the default, then people can use a variable
+                               // to select this property in their jsp pages.
+        } else if (dtype.equals("html")) {
+            return DEBUG_HTML;
+        } else if (dtype.equals("xml")) {
+            return DEBUG_XML;
+        } else if (dtype.equals("css")) {
+            return DEBUG_CSS;
+        } else {
+            throw new JspTagException("Unknow value for debug attribute " + dtype);
+        }
     }
 
     /**
@@ -560,7 +536,35 @@ public class IncludeTag extends UrlTag {
         return clazz.substring(clazz.lastIndexOf(".") + 1);
     }
 
+    /**
+     * Write the comment that is just above the include page.
+     */
+    private String debugStart(String url) throws JspTagException {
+        switch(getDebug()) {
+        case DEBUG_NONE: return "";
+        case DEBUG_HTML:
+            return "\n<!-- " + getThisName() + " page = '" + url + "' -->\n";
+        case DEBUG_XML:
+            return "<!-- " + getThisName() + " page = '" + url + "' -->";
+        case DEBUG_CSS:  return "\n/* " + getThisName() +  " page  = '" + url + "' */\n";
+        default: return "";
+        }
+    }
 
+    /**
+     * Write the comment that is just below the include page.
+     */
+    private String debugEnd(String url) throws JspTagException {
+        switch(getDebug()) {
+        case DEBUG_NONE: return "";
+        case DEBUG_HTML:
+            return "\n<!-- END " + getThisName() + " page = '" + url + "' -->\n";
+        case DEBUG_XML:
+            return "<!-- END " + getThisName() + " page = '" + url + "' -->";
+        case DEBUG_CSS:  return "\n/* END " + getThisName() + " page = '" + url + "' */\n";
+        default: return "";
+        }
+    }
     private static class IncludeWrapper extends GenericResponseWrapper {
         int includeStatus = 200;
         public IncludeWrapper(HttpServletResponse resp) {

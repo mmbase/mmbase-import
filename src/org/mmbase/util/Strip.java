@@ -22,31 +22,32 @@ import org.mmbase.util.logging.Logging;
  * </PRE>
  *
  * @author Rico Jansen
- * @version $Id: Strip.java,v 1.8 2008-08-23 18:56:31 michiel Exp $
+ * @version $Id: Strip.java,v 1.7 2004-09-30 14:07:13 pierre Exp $
  */
 public class Strip {
 
-    private static final Logger log = Logging.getLoggerInstance(Strip.class);
+    // logger
+    private static Logger log = Logging.getLoggerInstance(Strip.class.getName());
 
     /**
      * Strip nothing, a rather ineffecient form of a copy
      */
-    public static final int NOTHING = 0;
+    public static final int NOTHING=0;
 
     /**
      * Strip leading, only characters at begin of string are checked
      */
-    public static final int LEADING = 1;
+    public static final int LEADING=1;
 
     /**
      * Strip trailing, only characters at end of string are checked
      */
-    public static final int TRAILING = 2;
+    public static final int TRAILING=2;
 
     /**
      * Strip both, characters at begin and end of string are checked
      */
-    public static final int BOTH = 3;
+    public static final int BOTH=3;
 
     /**
      * Strip double quotes from beginning, end or both, only once.
@@ -55,8 +56,8 @@ public class Strip {
      * or {@link #BOTH}
      * @return the stripped String
      */
-    public static String doubleQuote(String str,int where) {
-        return character(str, '"', where);
+    public static String DoubleQuote(String str,int where) {
+        return Char(str,'"',where);
     }
 
     /**
@@ -66,8 +67,8 @@ public class Strip {
      * or {@link #BOTH}
      * @return the stripped String
      */
-    public static String singleQuote(String str,int where) {
-        return character(str, '\'', where);
+    public static String SingleQuote(String str,int where) {
+        return Char(str,'\'',where);
     }
 
     /**
@@ -78,8 +79,8 @@ public class Strip {
      * or {@link #BOTH}
      * @return the stripped String
      */
-    public static String whitespace(String str, int where) {
-        return chars(str, " \t\n\r", where);
+    public static String Whitespace(String str,int where) {
+        return Chars(str," \t\n\r",where);
     }
 
     /**
@@ -90,26 +91,26 @@ public class Strip {
      * or {@link #BOTH}
      * @return the stripped String
      */
-    public static String character(String str, char chr, int where) {
-        if (str != null && str.length() > 0) {
-            int lead = 0;
-            int trail = str.length() - 1;
+    public static String Char(String str,char chr,int where) {
+        if (str!=null && str.length()>0) {
+            int lead=0;
+            int trail=str.length()-1;
 
             switch(where) {
-            case LEADING:
-                if (str.charAt(lead) == chr) lead++;
-                break;
-            case TRAILING:
-                if (str.charAt(trail) == chr) trail--;
-                break;
-            case BOTH:
-                if (str.charAt(lead) == chr) lead++;
-                if (str.charAt(trail) == chr) trail--;
-                break;
-            default:
-                break;
+                case LEADING:
+                    if (str.charAt(lead)==chr) lead++;
+                    break;
+                case TRAILING:
+                    if (str.charAt(trail)==chr) trail--;
+                    break;
+                case BOTH:
+                    if (str.charAt(lead)==chr) lead++;
+                    if (str.charAt(trail)==chr) trail--;
+                    break;
+                default:
+                    break;
             }
-            str = str.substring(lead, trail + 1);
+            str=str.substring(lead,trail+1);
         }
         return str;
     }
@@ -123,34 +124,34 @@ public class Strip {
      * or {@link #BOTH}
      * @return the stripped String
      */
-    public static String chars(String str, String chars, int where) {
+    public static String Chars(String str,String chars,int where) {
 
-        if (str != null && str.length() > 0) {
-            int lead = 0;
-            int trail = str.length() - 1;
+        if (str!=null && str.length()>0) {
+            int lead=0;
+            int trail=str.length()-1;
 
-            if (trail < 1) {
-                where = LEADING;
+            if (trail<1) {
+                where=LEADING;
             } else {
                 switch(where) {
-                case LEADING:
-                    while(chars.indexOf(str.charAt(lead))!=-1 && (lead<str.length()-1)) lead++;
-                    break;
-                case TRAILING:
-                    while(chars.lastIndexOf(str.charAt(trail))!=-1 && trail>0) trail--;
-                    break;
-                case BOTH:
-                    while(chars.indexOf(str.charAt(lead))!=-1 && lead<(str.length()-1)) lead++;
-                    while(chars.lastIndexOf(str.charAt(trail))!=-1 && trail>=lead) trail--;
-                    break;
-                default:
-                    break;
+                    case LEADING:
+                        while(chars.indexOf(str.charAt(lead))!=-1 && (lead<str.length()-1)) lead++;
+                        break;
+                    case TRAILING:
+                        while(chars.lastIndexOf(str.charAt(trail))!=-1 && trail>0) trail--;
+                        break;
+                    case BOTH:
+                        while(chars.indexOf(str.charAt(lead))!=-1 && lead<(str.length()-1)) lead++;
+                        while(chars.lastIndexOf(str.charAt(trail))!=-1 && trail>=lead) trail--;
+                        break;
+                    default:
+                        break;
                 }
             }
-            if (lead <= trail) {
-                str = str.substring(lead, trail + 1);
+            if (lead<=trail) {
+                str=str.substring(lead,trail+1);
             } else {
-                str = "";
+                str="";
             }
         }
         return str;
@@ -160,8 +161,8 @@ public class Strip {
      * Test the class
      */
     public static void main(String args[]) {
-        log.info("Double " + Strip.doubleQuote("\"double\"", Strip.BOTH));
-        log.info("Single " + Strip.singleQuote("'single'", Strip.BOTH));
-        log.info("White |" + Strip.whitespace("   white         \n", Strip.BOTH) + "|");
+        log.info("Double "+Strip.DoubleQuote("\"double\"",Strip.BOTH));
+        log.info("Single "+Strip.SingleQuote("'single'",Strip.BOTH));
+        log.info("White |"+Strip.Whitespace("   white         \n",Strip.BOTH)+"|");
     }
 }

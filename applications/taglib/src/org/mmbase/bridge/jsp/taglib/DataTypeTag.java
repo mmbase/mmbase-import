@@ -14,8 +14,8 @@ import org.mmbase.datatypes.util.xml.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 
-import org.mmbase.util.xml.EntityResolver;
-import org.mmbase.util.xml.ErrorHandler;
+import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.XMLErrorHandler;
 
 import java.io.StringReader;
 
@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * This tags produces request scoped new datatypes. (To be used in conjuction with mm:fieldinfo datatype='')
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeTag.java,v 1.5 2008-09-04 12:31:07 michiel Exp $
+ * @version $Id: DataTypeTag.java,v 1.1.2.3 2008-08-19 11:44:16 michiel Exp $
  * @since MMBase-1.8.7
  */
 public class DataTypeTag extends CloudReferrerTag {
@@ -46,14 +46,14 @@ public class DataTypeTag extends CloudReferrerTag {
     private Attribute field = Attribute.NULL;
 
     public void setBase(String b) throws JspTagException {
-        base = getAttribute(b, true);
+        base = getAttribute(b);
     }
 
     public void setNodemanager(String n) throws JspTagException {
-        nodeManager = getAttribute(n, true);
+        nodeManager = getAttribute(n);
     }
     public void setField(String f) throws JspTagException {
-        field = getAttribute(f, true);
+        field = getAttribute(f);
     }
 
     protected DataTypeCollector getCollector() {
@@ -84,7 +84,7 @@ public class DataTypeTag extends CloudReferrerTag {
         "xsi:schemaLocation=\"" + DataTypeReader.NAMESPACE_DATATYPES + " " + DataTypeReader.NAMESPACE_DATATYPES + ".xsd\"";
 
     protected BasicDataType getBaseDataType(DataTypeCollector collector) throws JspTagException {
-        if (base == Attribute.NULL) {
+        if (base.getString(this).equals("")) {
             String nm = nodeManager.getString(this);
             if ("".equals(nm)) throw new JspTagException("Should specify either 'base' or 'nodemanager' attribute");
             String fn = field.getString(this);
@@ -96,13 +96,16 @@ public class DataTypeTag extends CloudReferrerTag {
     }
 
     public int doEndTag() throws JspTagException {
-        StringBuilder buf = new StringBuilder("<datatype base=\"");
-        buf.append(base.getString(this)).append("\" id=\"").append(getId()).append("\" ").append(ATTR).append(">");
+        StringBuffer buf = new StringBuffer("<datatype id=\"");
+        buf.append(getId()).append("\" ").append(ATTR).append(">");
         if (body != null) buf.append(body);
         buf.append("</datatype>");
+        if (log.isTraceEnabled()) {
+            log.trace("Parsing: " + buf);
+        }
         try {
-            org.xml.sax.ErrorHandler errorHandler = new ErrorHandler(false, ErrorHandler.WARNING);
-            org.xml.sax.EntityResolver resolver = new EntityResolver(true, DataTypeReader.class);
+            XMLErrorHandler errorHandler = new XMLErrorHandler(false, XMLErrorHandler.WARNING);
+            XMLEntityResolver resolver = new XMLEntityResolver(true, DataTypeReader.class);
             DocumentBuilder dbuilder = org.mmbase.util.xml.DocumentReader.getDocumentBuilder(true, true,
                                                                                              errorHandler, resolver);
             Element element = dbuilder.parse(new InputSource(new StringReader(buf.toString()))).getDocumentElement();
@@ -110,11 +113,12 @@ public class DataTypeTag extends CloudReferrerTag {
             BasicDataType dt = DataTypeReader.readDataType(element, getBaseDataType(collector), collector).dataType;
             collector.finish(dt);
             getContextProvider().getContextContainer().register(getId(), dt);
-            BasicDataType old  = collector.addDataType(dt);
             if (log.isDebugEnabled()) {
                 log.debug("Created " + dt);
                 log.debug("In " + collector.getDataTypes());
             }
+            BasicDataType old  = collector.addDataType(dt);
+
         } catch (org.mmbase.datatypes.util.xml.DependencyException de) {
             throw new TaglibException(de);
         } catch (org.xml.sax.SAXException se) {

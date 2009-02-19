@@ -9,22 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * Do MD5 encoding. Decoding is of course not possible. MD5 encoding
  * can not be efficiently 'piped', because the complete String is
  * needed. So, be careful 'chaining' it.
  *
- * @author Michiel Meeuwissen
- * @version $Id: MD5.java,v 1.9 2008-10-18 10:23:14 michiel Exp $
+ * @author Michiel Meeuwissen 
+ * @version $Id: MD5.java,v 1.7 2003-05-12 14:33:00 kees Exp $
  */
 
 public class MD5 extends StringTransformer implements CharTransformer {
-
-    private static final Logger log = Logging.getLoggerInstance(MD5.class);
-
     private final static String ENCODING = "MD5";
     private MD5Implementation transformer = new MD5Implementation();
 
@@ -42,7 +36,7 @@ public class MD5 extends StringTransformer implements CharTransformer {
 
     // from http://pajhome.org.uk/crypt/md5/md5.java.txt
     // With permission of Thomas Weber (tw@orange-interactive.de)
-    static class MD5Implementation implements java.io.Serializable {
+    class MD5Implementation {
         /*
          * A Java implementation of the RSA Data Security, Inc. MD5 Message
          * Digest Algorithm, as defined in RFC 1321.
@@ -208,10 +202,5 @@ public class MD5 extends StringTransformer implements CharTransformer {
             }
             return rhex(a) + rhex(b) + rhex(c) + rhex(d);
         }
-    }
-
-    public static void main(String[] argv) {
-        MD5Implementation transformer = new MD5Implementation();
-        System.out.println(transformer.calcMD5(argv[0]));
     }
 }

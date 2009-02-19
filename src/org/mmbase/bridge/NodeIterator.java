@@ -15,9 +15,9 @@ import java.util.ListIterator;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeIterator.java,v 1.9 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: NodeIterator.java,v 1.7 2004-10-09 09:39:32 nico Exp $
  */
-public interface NodeIterator extends ListIterator<Node> {
+public interface NodeIterator extends ListIterator {
 
     /**
      * Returns the next element in the iterator as a Node

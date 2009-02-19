@@ -10,8 +10,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
+import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.bridge.jsp.taglib.ParamHandler;
+import org.mmbase.storage.search.Constraint;
 
 
 /**
@@ -20,7 +23,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: LongHandler.java,v 1.14 2009-01-12 12:48:20 michiel Exp $
+ * @version $Id: LongHandler.java,v 1.12 2006-07-05 15:20:45 pierre Exp $
  */
 
 public class LongHandler extends AbstractTypeHandler {
@@ -33,7 +36,7 @@ public class LongHandler extends AbstractTypeHandler {
         super(tag);
     }
 
-    @Override protected Object cast(Object value, Node node, Field field) {
+    protected Object cast(Object value, Node node, Field field) {
         if (value == null || "".equals(value)) return "";
         return  super.cast(value, node, field);
     }

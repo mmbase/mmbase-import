@@ -5,14 +5,13 @@
   MMXF itself is, besides the mmxf tag itself, nearly a subset of XHTML2, so this XSLT is pretty straightforward.
 
 
-  @version $Id: mmxf2xhtml.xslt,v 1.10 2008-09-19 16:04:32 michiel Exp $
+  @version $Id: mmxf2xhtml.xslt,v 1.9 2008-04-22 11:16:59 michiel Exp $
   @author Michiel Meeuwissen
 -->
 <xsl:stylesheet
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
-    xmlns="http://www.w3.org/1999/xhtml"
-    exclude-result-prefixes="mmxf"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:mmxf="http://www.mmbase.org/xmlns/mmxf"
+  exclude-result-prefixes="mmxf"
   version = "1.0"
 >
   <xsl:output

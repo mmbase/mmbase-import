@@ -20,12 +20,12 @@ import org.mmbase.applications.email.SendMail;
 /**
  * Forwarding MailHandler. Fill {@link #forwards} to make this actually do something.
  *
- * @version $Id: Forwarder.java,v 1.4 2008-12-30 11:06:12 michiel Exp $
+ * @version $Id: Forwarder.java,v 1.3 2008-02-03 17:42:06 nklasens Exp $
  */
 public class Forwarder implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(Forwarder.class);
 
-    private static UtilReader.PropertiesMap f = new UtilReader("forwards.xml", new Runnable() { public void run() {readForwards();}}).getMaps();
+    private static UtilReader.PropertiesMap f = new UtilReader("forwards.xml", new Runnable() { public void run() {readForwards();}}).getProperties();
     protected static final Map<String, InternetAddress[]> forwards = new HashMap<String, InternetAddress[]>();
 
     protected static void readForwards() {

@@ -38,7 +38,7 @@ import org.jgroups.*;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: Multicast.java,v 1.12 2008-07-29 20:56:18 michiel Exp $
+ * @version $Id: Multicast.java,v 1.9 2006-07-06 11:40:48 michiel Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -104,21 +104,19 @@ public class Multicast extends ClusterManager {
     }
 
     /**
-     * Read configuration settings
-     * @param configuration read from config resource
      * @since MMBase-1.8.1
      */
-    protected synchronized void readConfiguration(Map<String,String> configuration) {
+    protected synchronized void readConfiguration(Map configuration) {
         super.readConfiguration(configuration);
 
-        String tmp = configuration.get("channelproperties");
+        String tmp = (String) configuration.get("channelproperties");
         if (tmp != null && !tmp.equals("")) {
             channelProperties = tmp;
         } else {
             log.error("No channel properties found");
         }
 
-        tmp = configuration.get("channelname");
+        tmp = (String) configuration.get("channelname");
         if (tmp != null && !tmp.equals("")) {
             channelName = tmp;
         }
@@ -168,7 +166,7 @@ public class Multicast extends ClusterManager {
             log.service("Stopped communication sender " + mcs);
             mcs = null;
         }
-        if (mcr != null) {
+        if (mcr != null) { 
             mcr.stop();
             log.service("Stopped communication receiver " + mcr);
             mcr = null;
@@ -178,9 +176,5 @@ public class Multicast extends ClusterManager {
             channel.disconnect();
             channel = null;
         }
-    }
-
-    public String toString() {
-        return "JGroups ClusterManager";
     }
 }

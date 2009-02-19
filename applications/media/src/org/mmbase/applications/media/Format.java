@@ -12,7 +12,6 @@ package org.mmbase.applications.media;
 import java.io.File;
 import java.util.*;
 import org.mmbase.util.*;
-import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.MMBaseContext;
@@ -25,7 +24,7 @@ import org.w3c.dom.Element;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.23 2008-09-03 21:27:20 michiel Exp $
+ * @version $Id: Format.java,v 1.19.2.2 2007-10-02 13:36:04 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -39,15 +38,15 @@ public final class Format {   // final class!!
 
     // in case you want i18ed format strings.
 
-    private static Map<String,String> mimeMapping = null;
+    private static Map mimeMapping = null;
     static {
 
         XMLEntityResolver.registerPublicID(PUBLIC_ID_MIMEMAPPING_1_0, DTD_MIMEMAPPING_1_0, Format.class);
 
-        String mimeMappingFile = "media/mimemapping.xml";
+        File mimeMappingFile = new File(MMBaseContext.getConfigPath() + File.separator + "media" + File.separator + "mimemapping.xml");
         readMimeMapping(mimeMappingFile);
-        ResourceWatcher watcher = new ResourceWatcher() {
-                public void onChange(String file) {
+        FileWatcher watcher = new FileWatcher() {
+                public void onChange(File file) {
                     readMimeMapping(file);
                 }
             };
@@ -56,15 +55,16 @@ public final class Format {   // final class!!
 
     }
 
-    static void readMimeMapping(String mimeMappingFile) {
-        mimeMapping = new HashMap<String, String>();
+    static void readMimeMapping(File mimeMappingFile) {
+        mimeMapping = new HashMap();
 
 
-        log.service("Reading " + mimeMappingFile);
-        try {
-            DocumentReader reader = new DocumentReader(ResourceLoader.getConfigurationRoot().getDocument(mimeMappingFile, DocumentReader.validate(), Format.class));
+        if (mimeMappingFile.canRead()) {
+            log.service("Reading " + mimeMappingFile);
+            XMLBasicReader reader = new XMLBasicReader(mimeMappingFile.toString(), Format.class);
 
-            for(Element map:reader.getChildElements("mimemapping", "map")) {
+            for(Iterator e = reader.getChildElements("mimemapping", "map"); e.hasNext();) {
+                Element map = (Element)e.next();
                 String format = reader.getElementAttributeValue(map, "format");
                 String codec = reader.getElementAttributeValue(map, "codec");
                 String mime = reader.getElementValue(map);
@@ -72,12 +72,12 @@ public final class Format {   // final class!!
                 mimeMapping.put(format + "/" + codec,mime);
                 log.debug("Adding mime mapping " + format + "/" + codec + " -> " + mime);
             }
-        } catch (Exception e) {
-            log.error(e);
+        } else {
+            log.service("The file " + mimeMappingFile + " can not be read");
         }
     }
 
-    private static List<Format> formats = new ArrayList<Format>(); // to make possible to get the Format object by int.
+    private static List formats = new ArrayList(); // to make possible to get the Format object by int.
     private int    number; // for storage
     private String id;     // for toString(), and as identifier in config file etc.
                            // Also sync with common extension?
@@ -137,14 +137,13 @@ public final class Format {   // final class!!
     public static final Format M4V = new Format(61, "m4v");
 
     public static final Format GGP = new Format(70, "3gpp");
-
     public static final Format FLASH = new Format(80, "flv");
 
     public int toInt()    { return number; }
     public String toString() { return id;     }
     public static Format get(int i) {
         try {
-            return formats.get(i);
+            return (Format) formats.get(i);
         } catch (java.lang.IndexOutOfBoundsException e) {
             return UNKNOWN;
         }
@@ -153,14 +152,14 @@ public final class Format {   // final class!!
     /**
      * don't know if this is nice
      */
-    public static List<Format> getMediaFormats() {
+    public static List getMediaFormats() {
         return Arrays.asList(new Format[] {MP3, RA, RA,WAV, PCM, MP2, RM, VOB, AVI, MPEG, MP4, MPG, ASF, MOV, WMA, OGG, OGM, RAM, WMP, QT, ASX, WAX, WMV, WVX, WM, WMZ, WMD, MID, PODCAST, VODCAST, M4A, M4V, GGP, FLASH});
     }
     public static Format get(String id) {
         id = id.toLowerCase();
-        Iterator<Format> i = formats.iterator();
+        Iterator i = formats.iterator();
         while (i.hasNext()) {
-            Format format = i.next();
+            Format format = (Format) i.next();
             if(format.toString().equals(id)) {
                 return format;
             }
@@ -180,8 +179,8 @@ public final class Format {   // final class!!
     }
 
 
-    protected static final List<Format> windowsMedia = Arrays.asList(new Format[] {ASF, WMP, WMA, ASX,  WAX, WMV, WVX, WM, WMX, WMZ, WMD});
-    protected static final List<Format> real         = Arrays.asList(new Format[] {RA, RM, RAM});
+    protected static final List windowsMedia = Arrays.asList(new Format[] {ASF, WMP, WMA, ASX,  WAX, WMV, WVX, WM, WMX, WMZ, WMD});
+    protected static final List real         = Arrays.asList(new Format[] {RA, RM, RAM});
 
     public boolean isReal() {
         return real.contains(this);
@@ -189,7 +188,7 @@ public final class Format {   // final class!!
     public boolean isWindowsMedia() {
         return windowsMedia.contains(this);
     }
-    public List<Format> getSimilar() {
+    public List getSimilar() {
         if (isReal()) {
             return real;
         } else if (isWindowsMedia()) {
@@ -211,17 +210,17 @@ public final class Format {   // final class!!
             codec = "*";
         }
 
-        String mimeType = mimeMapping.get(format + "/" + codec);
+        String mimeType = (String) mimeMapping.get(format + "/" + codec);
         while (mimeType == null) {
             if (! codec.equals("*")) {
-                mimeType = mimeMapping.get(format + "/*");
+                mimeType = (String) mimeMapping.get(format + "/*");
                 if (mimeType != null) break;
             }
             if (! format.equals("*")) {
-                mimeType = mimeMapping.get("*/" + codec);
+                mimeType = (String) mimeMapping.get("*/" + codec);
                 if (mimeType != null) break;
             }
-            mimeType = mimeMapping.get("*/*");
+            mimeType = (String) mimeMapping.get("*/*");
             if (mimeType == null) mimeType =  "application/octet-stream";
             break;
         }

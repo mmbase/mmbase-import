@@ -1,13 +1,10 @@
 <?xml version="1.0" ?>
-<builder
+<builder 
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:xi="http://www.w3.org/2001/XInclude"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
-    name="mmbaseusers" maintainer="www.mmbase.org" version="0" extends="object"
-    defaultcontextintypedef="security"
-    >
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="mmbaseusers" maintainer="www.mmbase.org" version="0" extends="object">
   <class>org.mmbase.security.implementation.cloudcontext.builders.Users</class>
   <names>
     <singular xml:lang="en">Security Account</singular>
@@ -33,8 +30,15 @@
   </descriptions>
   <properties>
     <!--
+        String identifying how the passwords must be stored in the database.  This can be a one-way
+        encryption.  This default to 'MD5', and that is quite ok. The disadvantage of MD5 is that it
+        is a one-way encryption, so you can never find the password back, and it must actually be
+        remembered by the client.
+    -->
+    <property name="encoding">MD5</property>
+    <!--
         With the option 'allowencodedpassword' you can actually sabotage the 'encoding' of the password again.
-        When this is true, then you can also loging with name/encodedpassword, and you can provide the encoded password directly.
+        When this is true, then you can also loging with name/encodedpassword, and you can provide the encoded password directly. 
         This can perhaps have been stored in a cookie.
         You may want this if the passwords are sensitive, but not necessarily only for this site.
         Switching this to true makes the 'encoded' password about as good as the password itself.
@@ -42,7 +46,7 @@
     <property name="allowencodedpassword">false</property>
   </properties>
   <fieldlist>
-    <field name="username">
+    <field>
       <gui>
         <guiname xml:lang="nl">Account</guiname>
         <guiname xml:lang="eo">Uzulo</guiname>
@@ -53,13 +57,13 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <unique value="true" />
-        <required value="true" enforce="never" />
-        <maxLength value="32" />
-      </datatype>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>username</name>
+        <type key="true" notnull="true" size="32" state="persistent">STRING</type>
+      </db>
     </field>
-    <field  name="password">
+    <field>
       <gui>
         <guiname xml:lang="nl">Wachtwoord</guiname>
         <guiname xml:lang="eo">Pasvorto</guiname>
@@ -71,18 +75,13 @@
           <search>-1</search>
         </positions>
       </editor>
-    <!--
-        The datatype of the password fields determines how they are stored in the database.  This can be a one-way
-        encryption.  This default to 'md5password', and that is quite ok. The disadvantage of MD5 is that it
-        is a one-way encryption, so you can never find the password back, and it must actually be
-        remembered by the client, or reset by an administrator.
-    -->
-      <datatype base="md5password" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="true" enforce="never" />
-        <maxLength value="32" />
-      </datatype>
+      <datatype base="md5password" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>password</name>
+        <type notnull="true" size="32" state="persistent">STRING</type>
+      </db>
     </field>
-    <field name="confirmpassword" state="virtual">
+    <field>
       <gui>
         <guiname xml:lang="nl">Bevestig wachtwoord</guiname>
         <guiname xml:lang="eo">Konfirmu pasvorton</guiname>
@@ -95,8 +94,12 @@
         </positions>
       </editor>
       <datatype base="confirmpassword" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>confirmpassword</name>
+        <type notnull="false" size="32" state="virtual">STRING</type>
+      </db>
     </field>
-    <field name="defaultcontext">
+    <field>
       <gui>
         <guiname xml:lang="nl">Default Context</guiname>
         <guiname xml:lang="en">Default Context</guiname>
@@ -107,15 +110,19 @@
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
           <query type="mmbasecontexts" xmlns="http://www.mmbase.org/xmlns/searchquery" >
             <sortorder field="name" />
           </query>
         </enumeration>
       </datatype>
+      <db>
+        <name>defaultcontext</name>
+        <type key="false" notnull="false" required="true" state="persistent">NODE</type>
+      </db>
     </field>
-    <field name="status">
+    <field>
       <gui>
         <guiname xml:lang="nl">Status</guiname>
         <guiname xml:lang="en">Status</guiname>
@@ -126,15 +133,19 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="0" />
         <enumeration>
           <entry basename="org.mmbase.security.status" />
         </enumeration>
       </datatype>
+      <db>
+        <name>status</name>
+        <type notnull="true" required="true" state="persistent">INTEGER</type>
+      </db>
     </field>
 
-    <field name="validfrom">
+    <field>
       <gui>
         <guiname xml:lang="nl">Geldig vanaf</guiname>
         <guiname xml:lang="en">Valid from</guiname>
@@ -150,9 +161,13 @@
         <minInclusive enforce="never" value="yesterday"  />
         <maxInclusive enforce="never" value="today + 10 year"  />
       </datatype>
+      <db>
+        <name>validfrom</name>
+        <type notnull="true" state="persistent">DATETIME</type>
+      </db>
     </field>
 
-    <field name="validto">
+    <field>
       <gui>
         <guiname xml:lang="nl">Geldig tot</guiname>
         <guiname xml:lang="en">Valid to</guiname>
@@ -168,9 +183,13 @@
         <minInclusive enforce="never" value="yesterday"  />
         <maxInclusive enforce="never" value="today + 199 year"  />
       </datatype>
+      <db>
+        <name>validto</name>
+        <type notnull="true" state="persistent">DATETIME</type>
+      </db>
     </field>
 
-    <field name="lastlogon" state="system">
+    <field>
       <gui>
         <guiname xml:lang="nl">Laatste login</guiname>
         <guiname xml:lang="en">Last logon</guiname>
@@ -187,15 +206,11 @@
         <minInclusive enforce="never" value="toyear - 100 year"  />
         <maxInclusive enforce="never" value="now"  />
       </datatype>
+      <db>
+        <name>lastlogon</name>
+        <type notnull="true" state="system">DATETIME</type>
+      </db>
     </field>
 
   </fieldlist>
-
-  <xi:include href="http://www.mmbase.org/builders/cloudcontext/mmbaseusers.virtual.fields.xml" />
-
-  <indexlist>
-    <index name="name">
-      <indexfield name="username" />
-    </index>
-  </indexlist>
 </builder>

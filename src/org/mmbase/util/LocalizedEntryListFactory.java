@@ -12,8 +12,8 @@ package org.mmbase.util;
 import java.util.*;
 import java.io.*;
 import org.w3c.dom.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.Node;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.util.xml.DocumentSerializable;
@@ -38,10 +38,10 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.55 2009-01-26 16:35:09 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.39.2.5 2008-08-19 11:42:51 michiel Exp $
  * @since MMBase-1.8
  */
-public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
+public class LocalizedEntryListFactory implements Serializable, Cloneable {
 
     private static final Logger log = Logging.getLoggerInstance(LocalizedEntryListFactory.class);
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
@@ -53,14 +53,14 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
     private static class LocalizedEntry implements Serializable, PublicCloneable {
         private static final long serialVersionUID = 1L;
         ArrayList entries    = new ArrayList(); //  List of Map.Entries, Bundles and DocumentSerializable's
-        ArrayList<Serializable> unusedKeys = new ArrayList<Serializable>(); //  List of unused keys;
+        ArrayList unusedKeys = new ArrayList(); //  List of unused keys;
         public Object clone() {
             try {
                 LocalizedEntry clone = (LocalizedEntry) super.clone();
-                Iterator<PublicCloneable> i = clone.entries.iterator();
+                Iterator i = clone.entries.iterator();
                 clone.entries = new ArrayList();
                 while(i.hasNext()) {
-                    clone.entries.add(i.next().clone());
+                    clone.entries.add(((PublicCloneable)i.next()).clone());
                 }
                 clone.unusedKeys = (ArrayList) unusedKeys.clone();
                 return clone;
@@ -73,9 +73,9 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             return "entries:" + entries + "uu:" + unusedKeys;
         }
     }
-    private HashMap<Locale, LocalizedEntry> localized  = new HashMap<Locale, LocalizedEntry>();
-    private ArrayList<Bundle> bundles  = new ArrayList<Bundle>(); // contains all Bundles
-    private ArrayList<Serializable> fallBack = new ArrayList<Serializable>(); // List of known keys, used as fallback, if nothing defined for a certain locale
+    private HashMap localized  = new HashMap();   // Locale -> LocalizedEntry
+    private ArrayList bundles  = new ArrayList(); // contains all Bundles
+    private ArrayList fallBack = new ArrayList(); // List of known keys, used as fallback, if nothing defined for a certain locale
 
     private DocumentSerializable xml = null;
 
@@ -93,20 +93,22 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
      * Adds a value for a certain key and Locale
      * @return The created Map.Entry.
      */
-    public Map.Entry<Serializable, Serializable> add(Locale locale, Serializable key, Serializable value) {
+    public Map.Entry add(Locale locale, Serializable key, Serializable value) {
         if (locale == null) {
             locale = LocalizedString.getDefault();
         }
 
-        Entry<Serializable, Serializable> entry = new Entry(key, value);
-        List<Serializable> unused = add(locale, entry);
+        Entry entry = new Entry(key, value);
+        List unused = add(locale, entry);
         if (! fallBack.contains(key)) {
             // this is an as yet unknown key.
             size++;
             fallBack.add(key);
-            for (Map.Entry<Locale, LocalizedEntry> e : localized.entrySet()) {
+            Iterator i = localized.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry e = (Map.Entry) i.next();
                 if (! e.getKey().equals(locale)) {
-                    LocalizedEntry loc = e.getValue();
+                    LocalizedEntry loc = (LocalizedEntry) e.getValue();
                     loc.unusedKeys.add(key);
                 }
             }
@@ -122,16 +124,16 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
      * @return List of currently unused keys for this locale.
      */
 
-    protected List<Serializable> add(Locale locale, Object entry) {
+    protected List add(Locale locale, Object entry) {
         if (locale == null) {
             locale = LocalizedString.getDefault();
         }
-        LocalizedEntry local = localized.get(locale);
+        LocalizedEntry local = (LocalizedEntry) localized.get(locale);
         if (local == null) {
             Locale loc = locale;
             loc = LocalizedString.degrade(loc, locale);
             while (loc != null && local == null) {
-                local = localized.get(loc);
+                local = (LocalizedEntry) localized.get(loc);
                 loc = LocalizedString.degrade(loc, locale);
             }
             if (local == null) {
@@ -176,7 +178,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             log.info("Adding bundle " + b + " for second time in " + b + ", because " + Logging.stackTrace());
         }
         bundles.add(b);
-        Iterator<LocalizedEntry> i = localized.values().iterator();
+        Iterator i = localized.values().iterator();
         if (!i.hasNext()) {
             // adding very first localizedlist
             Locale locale = LocalizedString.getDefault();
@@ -184,7 +186,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             local.entries.add(b);
             local.unusedKeys.addAll(fallBack);
         } else while(i.hasNext()) {
-            LocalizedEntry local  = i.next();
+            LocalizedEntry local  = (LocalizedEntry) i.next();
             local.entries.add(b);
         }
     }
@@ -201,7 +203,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
     /**
      * Defaulting version of {@link #get(Locale, Cloud)}. Using default anonymous cloud.
      */
-    public List<Map.Entry<C, String>> get(final Locale locale) {
+    public List get(final Locale locale) {
         return get(locale, usesCloud ? getCloud(locale) : null);
     }
 
@@ -213,7 +215,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 if (locale != null) cloud.setLocale(locale);
                 return cloud;
             } catch (SecurityException se) {
-                log.warn("" + se.getMessage(), se);
+                log.warn("" + se.getMessage());
                 try {
                     Cloud cloud = context.getCloud("mmbase");
                     if (locale != null && cloud != null) cloud.setLocale(locale);
@@ -227,7 +229,6 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         }
     }
 
-
     /**
      * Returns a Collection of Map.Entries for the given Locale. The collection is kind of 'virtual',
      * it only reflects the underlying memory structures.
@@ -238,179 +239,178 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
      * @param cloud  The cloud to use. Can be <code>null</code> if no queries added (see {@link #addQuery}).
      *               If Locale is <code>null</code>, but cloud isn't, the locale of the cloud is used.
      */
-    public List<Map.Entry<C, String>> get(final Locale locale, final Cloud cloud) {
-        return new AbstractSequentialList<Map.Entry<C, String>> () {
+    public List /* <Map.Entry> */ get(final Locale locale, final Cloud cloud) {
+        return new AbstractSequentialList () {
 
             public int size() {
                 return LocalizedEntryListFactory.this.size(cloud);
             }
-            public ListIterator<Map.Entry<C, String>> listIterator(final int index) {
-                return new ListIterator<Map.Entry<C, String>>() {
-                        int   i = -1;
-                        Locale useLocale = locale;
-                        Cloud useCloud = cloud;
-
-                        {
-                            if (useLocale == null) {
-                                useLocale = useCloud != null ? useCloud.getLocale() : LocalizedString.getDefault();
-                            }
-                            log.debug("using locale " + useLocale);
+            public ListIterator listIterator(final int index) {
+                return new ListIterator() {
+                    int   i = -1;
+                    Locale useLocale = locale;
+                    Cloud useCloud = cloud;
+                    {
+                        if (useLocale == null) {
+                            useLocale = useCloud != null ? useCloud.getLocale() : LocalizedString.getDefault();
                         }
-                        private ChainedIterator iterator = new ChainedIterator();
-                        private Iterator<Map.Entry<C, String>> subIterator = null;
-                        private Map.Entry<C, String> next = null;
+                        log.debug("using locale " + useLocale);
+                    }
+                    private ChainedIterator iterator = new ChainedIterator();
+                    private Iterator subIterator = null;
+                    private Map.Entry next = null;
 
-                        {
-                            Locale orgLocale = useLocale;
+                    {
+                        Locale orgLocale = useLocale;
 
-                            LocalizedEntry loc = localized.get(useLocale);
-                            while (loc == null && useLocale != null) {
-                                useLocale = LocalizedString.degrade(useLocale, orgLocale);
-                                if (log.isDebugEnabled()) {
-                                    log.debug("Degraded to " + useLocale);
+                        LocalizedEntry loc = (LocalizedEntry) localized.get(useLocale);
+                        while (loc == null && useLocale != null) {
+                            useLocale = LocalizedString.degrade(useLocale, orgLocale);
+                            if (log.isDebugEnabled()) {
+                                log.debug("Degraded to " + useLocale);
+                            }
+                            loc = (LocalizedEntry) localized.get(useLocale);
+                        }
+                        if (loc == null) {
+                            useLocale = orgLocale;
+                            loc = (LocalizedEntry) localized.get(LocalizedString.getDefault());
+                        }
+
+                        if (loc == null) {
+                            iterator.addIterator(bundles.iterator());
+                            iterator.addIterator(fallBack.iterator());
+                        } else {
+                            iterator.addIterator(loc.entries.iterator());
+                            iterator.addIterator(loc.unusedKeys.iterator());
+                        }
+
+                        findNext();
+                        while (i < index) next();
+                    }
+                    protected void findNext() {
+                        next = null;
+                        i++;
+                        while(next == null && iterator.hasNext()) {
+                            Object candidate = iterator.next();
+                            if (candidate instanceof Map.Entry) {
+                                next = (Map.Entry) candidate;
+                            } else if (candidate instanceof Bundle) {
+                                subIterator = ((Bundle) candidate).get(useLocale).iterator();
+                                if (subIterator.hasNext()) {
+                                    break;
+                                } else {
+                                    subIterator = null;
                                 }
-                                loc = localized.get(useLocale);
-                            }
-                            if (loc == null) {
-                                useLocale = orgLocale;
-                                loc = localized.get(LocalizedString.getDefault());
-                            }
-
-                            if (loc == null) {
-
-                                iterator.addIterator(bundles.iterator());
-                                iterator.addIterator(fallBack.iterator());
-                            } else {
-                                iterator.addIterator(loc.entries.iterator());
-                                iterator.addIterator(loc.unusedKeys.iterator());
-                            }
-
-                            findNext();
-                            while (i < index) next();
-                        }
-
-                        protected void findNext() {
-                            next = null;
-                            i++;
-                            while(next == null && iterator.hasNext()) {
-                                Object candidate = iterator.next();
-                                if (candidate instanceof Map.Entry) {
-                                    next = (Map.Entry) candidate;
-                                } else if (candidate instanceof Bundle) {
-                                    subIterator = ((Bundle) candidate).get(useLocale).iterator();
+                            } else if (candidate instanceof DocumentSerializable) {
+                                Element element = ((DocumentSerializable) candidate).getDocument().getDocumentElement();
+                                try {
+                                    if (useCloud == null) {
+                                        useCloud = getCloud(useLocale);
+                                        if (useCloud == null) {
+                                            if (log.isDebugEnabled()) {
+                                                log.debug("Defined query for " + this + " but no cloud provided. Skipping results.");
+                                            }
+                                            continue;
+                                        }
+                                    }
+                                    final Query query = QueryReader.parseQuery(element, useCloud, null).query;
+                                    final org.mmbase.bridge.NodeList list = query.getList();
+                                    subIterator = new Iterator() {
+                                            final NodeIterator nodeIterator = list.nodeIterator();
+                                            public boolean hasNext() {
+                                                return nodeIterator.hasNext();
+                                            }
+                                            public Object next() {
+                                                org.mmbase.bridge.Node next = nodeIterator.nextNode();
+                                                if (query instanceof NodeQuery) {
+                                                    return new Entry(next, next.getFunctionValue("gui", null));
+                                                } else {
+                                                    String alias = Queries.getFieldAlias((StepField) query.getFields().get(0));
+                                                    log.debug("using field " + alias);
+                                                    if (query.getFields().size() == 1) {
+                                                        return new Entry(next.getValue(alias),
+                                                                         next.getStringValue(alias));
+                                                    } else {
+                                                        StringBuffer buf = new StringBuffer();
+                                                        for (int i = 1 ; i < query.getFields().size(); i++) {
+                                                            String a = Queries.getFieldAlias((StepField) query.getFields().get(i));
+                                                            if (buf.length() > 0) buf.append(" ");
+                                                            buf.append(next.getStringValue(a));
+                                                        }
+                                                        return new Entry(next.getValue(alias),
+                                                                         buf.toString());
+                                                    }
+                                                }
+                                            }
+                                            public void remove() {
+                                                throw new UnsupportedOperationException();
+                                            }
+                                        };
                                     if (subIterator.hasNext()) {
                                         break;
                                     } else {
                                         subIterator = null;
                                     }
-                                } else if (candidate instanceof DocumentSerializable) {
-                                    Element element = ((DocumentSerializable) candidate).getDocument().getDocumentElement();
-                                    try {
-                                        if (useCloud == null) {
-                                            useCloud = getCloud(useLocale);
-                                            if (useCloud == null) {
-                                                if (log.isDebugEnabled()) {
-                                                    log.debug("Defined query for " + this + " but no cloud provided. Skipping results.");
-                                                }
-                                                continue;
-                                            }
-                                        }
-                                        final Query query = QueryReader.parseQuery(element, useCloud, null).query;
-                                        final org.mmbase.bridge.NodeList list = query.getList();
-                                        subIterator = new Iterator<Map.Entry<C, String>>() {
-                                                final NodeIterator nodeIterator = list.nodeIterator();
-                                                public boolean hasNext() {
-                                                    return nodeIterator.hasNext();
-                                                }
-                                                public Map.Entry<C, String> next() {
-                                                    org.mmbase.bridge.Node next = nodeIterator.nextNode();
-                                                    if (query instanceof NodeQuery) {
-                                                        String gui = next == null ? "NULL_NODE" : next.getFunctionValue("gui", null).toString();
-                                                        return new Entry<C, String>((C) next, gui);
-                                                    } else {
-                                                        String alias = Queries.getFieldAlias(query.getFields().get(0));
-                                                        log.debug("using field " + alias);
-                                                        if (query.getFields().size() == 1) {
-                                                            return new Entry<C, String>((C) next.getValue(alias),
-                                                                             next.getStringValue(alias));
-                                                        } else {
-                                                            StringBuilder buf = new StringBuilder();
-                                                            for (int i = 1 ; i < query.getFields().size(); i++) {
-                                                                String a = Queries.getFieldAlias(query.getFields().get(i));
-                                                                if (buf.length() > 0) buf.append(" ");
-                                                                buf.append(next.getStringValue(a));
-                                                            }
-                                                            return new Entry<C, String>((C) next.getValue(alias),
-                                                                                        buf.toString());
-                                                        }
-                                                    }
-                                                }
-                                                public void remove() {
-                                                    throw new UnsupportedOperationException();
-                                                }
-                                            };
-                                        if (subIterator.hasNext()) {
-                                            break;
-                                        } else {
-                                            subIterator = null;
-                                        }
-                                    } catch (Exception e) {
-                                        log.error(e.getMessage(), e);
-                                    }
-                                } else {
-                                    next = new Entry(candidate, candidate);
-                                }
-                            }
-                        }
-
-                        public boolean hasNext() {
-                            return next != null || subIterator != null;
-                        }
-                        public Map.Entry<C, String> next() {
-                            Map.Entry<C, String> res;
-                            if (subIterator != null) {
-                                res = subIterator.next();
-                                Object key = res.getKey();
-                                if (key != null && key instanceof SortedBundle.ValueWrapper) {
-                                    res = new Entry(((SortedBundle.ValueWrapper) key).getKey(), res.getValue());
-                                }
-                                if (!subIterator.hasNext()) {
-                                    subIterator = null;
-                                    findNext();
+                                } catch (Exception e) {
+                                    log.error(e.getMessage(), e);
                                 }
                             } else {
-                                res = next;
+                                next = new Entry(candidate, candidate);
+                            }
+                        }
+                    }
+
+                    public boolean hasNext() {
+                        return next != null || subIterator != null;
+                    }
+                    public Object next() {
+                        Map.Entry res;
+                        if (subIterator != null) {
+                            res = (Map.Entry) subIterator.next();
+                            Object key = res.getKey();
+                            if (key != null && key instanceof SortedBundle.ValueWrapper) {
+                                res = new Entry(((SortedBundle.ValueWrapper) key).getKey(), res.getValue());
+                            }
+                            if (!subIterator.hasNext()) {
+                                subIterator = null;
                                 findNext();
                             }
-                            return res;
+                        } else {
+                            res = next;
+                            findNext();
                         }
-                        public int nextIndex() {
-                            return i;
-                        }
-                        public int previousIndex() {
-                            return i - 1;
-                        }
-                        public boolean hasPrevious() {
-                            // TODO
-                            throw new UnsupportedOperationException();
-                        }
-                        public Map.Entry<C, String> previous() {
-                            // TODO
-                            throw new UnsupportedOperationException();
-                        }
-                        // this is why we hate java:
+                        return res;
+                    }
+                    public int nextIndex() {
+                        return i;
+                    }
+                    public int previousIndex() {
+                        return i - 1;
+                    }
+                    public boolean hasPrevious() {
+                        // TODO
+                        throw new UnsupportedOperationException();
+                    }
+                    public Object previous() {
+                        // TODO
+                        throw new UnsupportedOperationException();
+                    }
+                    // this is why we hate java:
 
 
-                        public void remove() {
-                            throw new UnsupportedOperationException();
-                        }
-                        public void add(Map.Entry<C, String> o) {
-                            throw new UnsupportedOperationException();
-                        }
-                        public void set(Map.Entry<C, String> o) {
-                            throw new UnsupportedOperationException();
-                        }
-                    };
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                    public void remove(int index) {
+                        throw new UnsupportedOperationException();
+                    }
+                    public void add(Object o) {
+                        throw new UnsupportedOperationException();
+                    }
+                    public void set(Object o) {
+                        throw new UnsupportedOperationException();
+                    }
+                };
             }
         };
     }
@@ -421,10 +421,10 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         if (cloud == null) cloud = getCloud(LocalizedString.getDefault());
         int queriesSize = size();
         Locale locale = cloud == null ? LocalizedString.getDefault() : cloud.getLocale();
-        LocalizedEntry localizedList = localized.get(locale);
+        LocalizedEntry localizedList = (LocalizedEntry) localized.get(locale);
         if (localizedList == null) {
             locale = LocalizedString.getDefault();
-            localizedList = localized.get(locale);
+            localizedList = (LocalizedEntry) localized.get(locale);
         }
         if (localizedList != null) {
             Iterator i = localizedList.entries.iterator();
@@ -480,13 +480,13 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
      */
     public Object castKey(final Object key, final Cloud cloud) {
         String string = null;
-        Iterator<Bundle> i = bundles.iterator();
+        Iterator i = bundles.iterator();
         if (i.hasNext()) {
             string = Casting.toString(key);
             while (i.hasNext()) {
-                Bundle b = i.next();
+                Bundle b = (Bundle) i.next();
                 Class wrapper = b.wrapper;
-                Map<String,Object> constants = b.constantsProvider;
+                HashMap constants = b.constantsProvider;
                 Object nk = SortedBundle.castKey(string, null, constants, wrapper);
                 if (string != nk) {
                     if (log.isDebugEnabled()) {
@@ -502,9 +502,6 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                 return cloud.getNode(string);
             }
         }
-        if (key != null && key instanceof SortedBundle.ValueWrapper) {
-            return ((SortedBundle.ValueWrapper) key).getKey();
-        }
         return key;
 
     }
@@ -512,16 +509,16 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
     public Object clone() {
         try {
             LocalizedEntryListFactory clone = (LocalizedEntryListFactory) super.clone();
-            Iterator<Bundle> j = clone.bundles.iterator();
-            clone.bundles   = new ArrayList<Bundle>();
+            Iterator j = clone.bundles.iterator();
+            clone.bundles   = new ArrayList();
             while(j.hasNext()) {
-                clone.bundles.add((j.next().clone()));
+                clone.bundles.add(((PublicCloneable) j.next()).clone());
             }
-            Iterator<Map.Entry<Locale, LocalizedEntry>> i = clone.localized.entrySet().iterator();
+            Iterator i = clone.localized.entrySet().iterator();
             clone.localized = new HashMap();
             while(i.hasNext()) {
-                Map.Entry<Locale, LocalizedEntry> entry =  i.next();
-                clone.localized.put(entry.getKey(), (entry.getValue()).clone());
+                Map.Entry entry = (Map.Entry) i.next();
+                clone.localized.put(entry.getKey(), ((PublicCloneable) entry.getValue()).clone());
             }
             clone.fallBack  = (ArrayList) fallBack.clone();
             return clone;
@@ -572,13 +569,11 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                     // Perhaps this should happen a bit more generically. Casting.toSerializable, or so.
                     key = new Integer(((org.mmbase.bridge.Node) key).getNumber());
                 }
-                if (key instanceof Serializable) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Added " + key + "/" + display + " for " + locale);
-                    }
-                    add(locale, (Serializable) key, display);
+                if (key instanceof java.io.Serializable) {
+                    log.debug("Added " + key + "/" + display + " for " + locale);
+                    add(locale, (java.io.Serializable) key, display);
                 } else {
-                    log.error("key " + key + " for " + wrapperDefault + " is not serializable, cannot be added to entrylist factory.");
+                    log.error("key " + key.getClass() + " " + key + " for " + wrapperDefault + " is not serializable, cannot be added to entrylist factory.");
                 }
             } else {
                 String resource = entryElement.getAttribute("basename");
@@ -647,12 +642,12 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         return "(localized: " + localized  + "bundles: " + bundles + "fallBack: " + fallBack + ")";
     }
 
-    private static class Bundle<D> implements Serializable, PublicCloneable {
+    private static class Bundle implements Serializable, PublicCloneable {
         private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
         private String      resource;
         private ClassLoader classLoader;
-        private HashMap<String,Object>     constantsProvider;
+        private HashMap     constantsProvider;
         private Class       wrapper;
         private Comparator  comparator;
 
@@ -679,18 +674,18 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
 
 
-        Bundle(String r, ClassLoader cl, HashMap<String,Object> cp, Class w, Comparator comp) {
+        Bundle(String r, ClassLoader cl, HashMap cp, Class w, Comparator comp) {
             resource = r; classLoader = cl; constantsProvider = cp ; wrapper = w; comparator = comp;
         }
         /**
          * Collection of Map.Entry's
          */
-        Collection<Map.Entry<D, String>> get(Locale loc) throws MissingResourceException {
+        Collection get(Locale loc) throws MissingResourceException {
             try {
                 return  SortedBundle.getResource(resource, loc, classLoader, constantsProvider, wrapper, comparator).entrySet();
             } catch (IllegalArgumentException iae) {
                 log.error(iae);
-                return Collections.emptyList();
+                return Collections.EMPTY_LIST;
             }
         }
 
@@ -726,7 +721,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             log.debug("Cloning bundle " + this);
             try {
                 Bundle clone = (Bundle) super.clone();
-                clone.constantsProvider = constantsProvider != null ? (HashMap<String,Object>) constantsProvider.clone() : null;
+                clone.constantsProvider = constantsProvider != null ? (HashMap) constantsProvider.clone() : null;
                 return clone;
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
@@ -754,7 +749,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         fact.add(en, "a", "good bye");
         fact.addBundle(resource1, null, null, Boolean.class, SortedBundle.NO_COMPARATOR);
         fact.add(nl, "c", "doegg");
-        fact.add(dk, 5, "dk");
+        fact.add(dk, new Integer(5), "dk");
         fact.add(null, "e", "oi");
         fact.addBundle(resource2, null, null, String.class, SortedBundle.NO_COMPARATOR);
 
