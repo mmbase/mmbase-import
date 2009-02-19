@@ -112,7 +112,6 @@ Exceptions/errors/other problems and what to do:
 *
 
 
-
 Name: Flash movies/apps do not work with Flash 10.
 Goal: fix it in JSPs 
 Type:  user action
@@ -129,9 +128,12 @@ This is fixed by two requirements:
 Name: Check your overridden edit_default templates
 Goal: Fix JSP's
 Type:  user action
-
 --- Start script ---
-Check all of the edit_default templates your project overrides. From version 1.6 up, the edit_default templates have been refactored to reduce code duplication. All commonly used parts of an edit_default template have been put into includable JSP's. See the default edit_default templates in the CMSc /cmsc/portlets/src/webapps/WEB-INF/templates/edit_defaults directory for an example.
+Check all of the edit_default templates your project overrides. 
+From version 1.6 up, the edit_default templates have been refactored to reduce code duplication. 
+All commonly used parts of an edit_default template have been put into includable JSP's. 
+See the default edit_default templates in 
+the CMSc /cmsc/portlets/src/webapps/WEB-INF/templates/edit_defaults directory for an example.
 Please do not edit the includable parts, because this might cuase problems in other portlets that use them. 
 --- End script ---
 *
@@ -139,16 +141,39 @@ Please do not edit the includable parts, because this might cuase problems in ot
 *
 
 
-
-
-
 Name: Check references to ServerUtil - Has been moved
 Goal: 
 Type:  user action
-
 --- Start script ---
-Change all references to ServerUtil, which was located in com.finalist.cmsc.navigation. It has been moved to com.finalist.cmsc.util.
+1) Search and change all references to ServerUtil, which was located in com.finalist.cmsc.navigation. 
+   Search in JSPs as well as in Java files! 
+2) It has been moved to com.finalist.cmsc.util so fix the includes and paths to use the newest location.
 --- End script ---
 *
 *
 *
+
+
+Name: Assets have different ftypes used in search-XML files
+Goal: change customer XMLs to comply to latest 1.6 standards.
+Type:  user action
+--- Start script ---
+* Search for XML files that match these constraints 
+1) search_*_urls.xml 
+2) search_*_images.xml
+3) search_*_attachments.xml
+
+* For all 3 types: 
+1) change description,title to ftype="data"
+2) compare the '<action type="create">' with CMSc 1.6 XML file
+3) Use the assetsselector for searching.
+
+- For images specific: change the ftype to use 'imagedata' instead of image. 
+- For attachments specific: change the ftype to use 'filedata'.
+- For URLs specific: keep the 'description' on ftype='text'. Change 'url' to type 'data'
+  
+--- End script ---
+*
+*
+*
+
