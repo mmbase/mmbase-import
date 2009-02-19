@@ -20,6 +20,10 @@ public class SecondaryEditAction extends MMBaseAction {
       if (SecondaryEditForm.ACTION_SAVE.equals(editForm.getAction())) {
          Node node = cloud.getNode(editForm.getNumber());
          node.setStringValue("title", editForm.getTitle());
+         String nodetype = node.getNodeManager().getName();
+         if("urls".equals(nodetype)){
+            node.setStringValue("url", editForm.getUrl());
+         }
          node.setStringValue("description", editForm.getDescription());
          node.commit();
 
@@ -35,6 +39,10 @@ public class SecondaryEditAction extends MMBaseAction {
       else if (SecondaryEditForm.ACTION_INIT.equals(editForm.getAction())) {
          Node node = cloud.getNode(editForm.getNumber());
          editForm.setTitle(node.getStringValue("title"));
+         String nodetype = node.getNodeManager().getName();
+         if("urls".equals(nodetype)){
+            editForm.setUrl(node.getStringValue("url"));
+         }
          editForm.setDescription(node.getStringValue("description"));
       }
 

@@ -3,7 +3,7 @@ package com.finalist.cmsc.resources.forms;
 @SuppressWarnings("serial")
 public class UrlForm extends SearchForm {
 
-   private String name;
+   private String title;
    private String description;
    private String url;
    private String valid;
@@ -24,13 +24,13 @@ public class UrlForm extends SearchForm {
    }
 
 
-   public String getName() {
-      return name;
+   public String getTitle() {
+      return title;
    }
 
 
-   public void setName(String name) {
-      this.name = name;
+   public void setTitle(String name) {
+      this.title = name;
    }
 
 

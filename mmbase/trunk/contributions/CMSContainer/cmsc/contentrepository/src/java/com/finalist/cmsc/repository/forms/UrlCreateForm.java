@@ -5,16 +5,17 @@ import org.apache.struts.action.ActionForm;
 @SuppressWarnings("serial")
 public class UrlCreateForm extends ActionForm {
 
-   private String name;
+   private String title;
    private String description;
    private String url;
    private String parentchannel;
+   private String strict;
    
-   public String getName() {
-      return name;
+   public String getTitle() {
+      return title;
    }
-   public void setName(String name) {
-      this.name = name;
+   public void setTitle(String name) {
+      this.title = name;
    }
    public String getDescription() {
       return description;
@@ -33,6 +34,12 @@ public class UrlCreateForm extends ActionForm {
    }
    public void setParentchannel(String parentchannel) {
       this.parentchannel = parentchannel;
+   }
+   public String getStrict() {
+      return strict;
+   }
+   public void setStrict(String strict) {
+      this.strict = strict;
    }
 
 }

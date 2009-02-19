@@ -23,6 +23,7 @@
       <form-bean name="RepositoryPasteForm" type="com.finalist.cmsc.repository.forms.PasteForm" />
 
       <form-bean name="AssetUploadForm" type="com.finalist.cmsc.repository.forms.AssetUploadForm" />
+      <form-bean name="UrlCreateForm" type="com.finalist.cmsc.repository.forms.UrlCreateForm" />
    </form-beans>
 
    <!-- ========== Global Exceptions Definitions =================================== -->
@@ -260,7 +261,7 @@
          <forward name="success" path="/editors/resources/attachmentupload.jsp" redirect="true" />
       </action>
       <action path="/editors/repository/UrlCreateAction" type="com.finalist.cmsc.repository.forms.UrlCreateAction" 
-         name="AssetUploadForm" unknown="false" validate="true">
+         name="UrlCreateForm" unknown="false" validate="true">
          <forward name="success" path="/editors/resources/urlcreate.jsp" redirect="true" />
       </action>
       <action path="/editors/recyclebin/RestoreAssetAction" type="com.finalist.cmsc.recyclebin.forms.RestoreAssetAction" 

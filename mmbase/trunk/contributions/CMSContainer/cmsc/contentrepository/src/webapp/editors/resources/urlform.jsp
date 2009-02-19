@@ -1,8 +1,8 @@
 <html:hidden property="contenttypes" value="urls" />
 <table border="0">
    <tr>
-      <td style="width: 105px"><fmt:message key="urlform.name" /></td>
-      <td><html:text style="width: 200px" property="name"/></td>
+      <td style="width: 105px"><fmt:message key="urlform.title" /></td>
+      <td><html:text style="width: 200px" property="title"/></td>
    </tr>
    <tr>
       <td><fmt:message key="imageform.description" /></td>
