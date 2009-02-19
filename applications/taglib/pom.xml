@@ -78,6 +78,7 @@
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-resources</artifactId>
       <version>${mmbase.version}</version>
+      <classifier>classes</classifier>
       <scope>provided</scope>
     </dependency>
 
