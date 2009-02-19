@@ -75,16 +75,6 @@
         <artifactId>app-plugin</artifactId>
         <executions>
           <execution>
-            <id>install</id>
-            <phase>install</phase>
-            <goals><goal>install-jar</goal></goals>
-          </execution>
-          <execution>
-            <id>deploy</id>
-            <phase>deploy</phase>
-            <goals><goal>deploy-jar</goal></goals>
-          </execution>
-          <execution>
             <id>resources</id>
             <phase>generate-resources</phase>
             <goals><goal>install-resources</goal></goals>
@@ -99,6 +89,7 @@
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
           <archiveClasses>true</archiveClasses>
+          <attachClasses>true</attachClasses>
         </configuration>
       </plugin>
     </plugins>
