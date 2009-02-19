@@ -108,6 +108,7 @@
          <html:form action="${formAction}" method="post">
             <html:hidden property="action" value="${action}"/>
             <html:hidden property="assetShow" value="${assetShow}"/>
+            <html:hidden property="strict" value="${strict}"/>
             <html:hidden property="offset"/>
             <c:if test="${action eq 'often'}">
             <html:hidden property="assettypes" value="attachments"/>
