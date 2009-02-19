@@ -37,6 +37,7 @@
           <div class="body">
               <html:form action="/editors/repository/ImageUploadAction.do" enctype="multipart/form-data" method="post">
                   <input type="hidden" id="parentchannel" name="parentchannel" value="${param.channelid}"/>
+                  <html:hidden property="strict" value="${param.strict}"/>
                   <table border="0">
                   <tr>
                      <td><fmt:message key="images.upload.explanation" /></td>
@@ -87,15 +88,21 @@
          <mm:listnodes>
 
             <mm:field name="description" escape="js-single-quotes" jspvar="description">
-               <mm:field name="title" escape="js-single-quotes" jspvar="title">
-            <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<%=title%>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
-               </mm:field>
+               <%
+                  description = ((String) description).replaceAll("[\\n\\r\\t]+", " ");
+               %>
+               <c:if test="${param.strict == 'images'}">
+                 <mm:import id="url">javascript:top.opener.selectContent('<mm:field name="number" />', '', ''); top.close();</mm:import>
+               </c:if>
+               <c:if test="${ empty param.strict}">
+                  <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:image />','<mm:field name="width"/>','<mm:field name="height"/>', '<%=description%>');</mm:import>
+               </c:if>
             </mm:field>
 
             <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
                <td >
 <%-- use uploadedNodes and numberOfUploadedNodes in return url --%>
-                  <c:set var="returnUrl">/editors/resources/imageupload.jsp?uploadedNodes=${param.uploadedNodes}&uploadAction=${param.uploadAction}</c:set>
+                  <c:set var="returnUrl">/editors/resources/imageupload.jsp?uploadedNodes=${param.uploadedNodes}&uploadAction=${param.uploadAction}&strict={param.strict}</c:set>
                   <c:choose>
                      <c:when test="${param.uploadAction == 'select'}">
                         <a href="<mm:url page="SecondaryEditAction.do">
