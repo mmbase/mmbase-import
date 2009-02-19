@@ -49,6 +49,10 @@
 
    <div class="editor">
       <div class="ruler_green"><div>&nbsp;<fmt:message key="newsletter.publication.result"/>&nbsp;</div></div>
+      <c:if test="${not empty errors}">
+	  <div style="color:red">&nbsp;&nbsp;&nbsp;&nbsp;<fmt:message key='newsletter.edition.errors'><fmt:param value="${errors}"/> </fmt:message>&nbsp;</div>
+	  </c:if>
+	  <c:remove var="errors"/>
       <div class="body">
          <edit:ui-table items="${results}" var="result" size="${resultCount}" requestURI="/editors/newsletter/NewsletterPublicationManagement.do">
             <edit:ui-tcolumn title="" width="5%"><nobr>
