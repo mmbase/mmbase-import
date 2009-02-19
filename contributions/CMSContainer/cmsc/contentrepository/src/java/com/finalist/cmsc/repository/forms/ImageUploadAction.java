@@ -27,6 +27,7 @@ public class ImageUploadAction extends AbstractUploadAction {
       AssetUploadForm imageUploadForm = (AssetUploadForm) form;
       String parentchannel = imageUploadForm.getParentchannel();
       FormFile file = imageUploadForm.getFile();
+      String strict = imageUploadForm.getStrict();
 
       String exist = "1";
       String exceed = "yes";
@@ -59,7 +60,7 @@ public class ImageUploadAction extends AbstractUploadAction {
          exist = "0";
          exceed = "no";
       }
-      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?uploadAction=select&exist=" + exist
+      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?uploadAction=select&strict=" + strict + "&exist=" + exist
             + "&exceed=" + exceed + "&channelid=" + parentchannel + "&uploadedNodes=" + nodeId, true);
    }
 }

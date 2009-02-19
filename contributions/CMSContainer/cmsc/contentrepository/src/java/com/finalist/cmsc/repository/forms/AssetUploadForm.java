@@ -9,6 +9,7 @@ public class AssetUploadForm extends ActionForm {
    private String parentchannel;
    private String insertAsset;
    private FormFile file;
+   private String strict;
 
    public String getParentchannel() {
       return parentchannel;
@@ -32,5 +33,13 @@ public class AssetUploadForm extends ActionForm {
 
    public String getInsertAsset() {
       return insertAsset;
+   }
+
+   public String getStrict() {
+      return strict;
+   }
+
+   public void setStrict(String strict) {
+      this.strict = strict;
    }
 }
