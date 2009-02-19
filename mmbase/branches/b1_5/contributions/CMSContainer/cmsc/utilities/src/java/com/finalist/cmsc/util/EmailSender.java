@@ -74,7 +74,7 @@ public final class EmailSender {
     * @throws MessagingException message send faiked
     * @throws UnsupportedEncodingException The Character Encoding is not supported
     */
-   public void sendEmail(String emailFrom, String nameFrom, List<String> toAddresses, String subject, String body,
+   public static void sendEmail(String emailFrom, String nameFrom, List<String> toAddresses, String subject, String body,
          DataSource attachment) throws UnsupportedEncodingException, MessagingException {
       sendEmail(emailFrom, nameFrom, toAddresses, subject, body, attachment, null);
    }
