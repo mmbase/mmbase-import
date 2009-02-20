@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.remote.generator;
 
+import java.io.File;
 import java.lang.reflect.*;
 
 /**
@@ -17,7 +18,7 @@ import java.lang.reflect.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: InterfaceGenerator.java,v 1.2 2008-07-16 13:28:20 michiel Exp $
+ * @version $Id: InterfaceGenerator.java,v 1.3 2009-02-20 14:01:18 michiel Exp $
  */
 public class InterfaceGenerator extends AbstractClassGenerator {
 
@@ -103,10 +104,9 @@ public class InterfaceGenerator extends AbstractClassGenerator {
         buffer.append("}\n");
     }
 
-    public void generate(String remoteDir) {
+    public void generate(File remoteDir) {
         generate();
-        String filename = remoteDir + interfaceName + ".java";
-        writeSourceFile(filename);
+        writeSourceFile(new File(remoteDir, interfaceName + ".java"));
     }
 
 }

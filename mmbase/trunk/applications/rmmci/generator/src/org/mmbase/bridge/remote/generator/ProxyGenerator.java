@@ -12,6 +12,7 @@ package org.mmbase.bridge.remote.generator;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.io.File;
 
 
 /**
@@ -19,7 +20,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: ProxyGenerator.java,v 1.2 2008-07-16 13:28:20 michiel Exp $
+ * @version $Id: ProxyGenerator.java,v 1.3 2009-02-20 14:01:18 michiel Exp $
  */
 public class ProxyGenerator extends AbstractClassGenerator {
 
@@ -270,10 +271,9 @@ public class ProxyGenerator extends AbstractClassGenerator {
         buffer.append("  }\n\n");
     }
 
-    public void generate(String proxyDir) {
+    public void generate(File proxyDir) {
         generate();
-        String filename = proxyDir + proxyName + ".java";
-        writeSourceFile(filename);
+        writeSourceFile(new File(proxyDir, proxyName + ".java"));
     }
 
 }
