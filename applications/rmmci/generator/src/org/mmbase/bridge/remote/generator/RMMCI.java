@@ -18,35 +18,23 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: RMMCI.java,v 1.5 2009-01-12 21:31:54 michiel Exp $
+ * @version $Id: RMMCI.java,v 1.6 2009-02-20 14:01:18 michiel Exp $
  */
 public class RMMCI {
 
-    protected String targetDir = null;
-    protected String remoteDir = null;
-    protected String rmiDir = null;
-    protected String proxyDir = null;
-    protected List<Class<?>> objectsToWrap = new ArrayList<Class<?>>();
+    protected final File remoteDir;
+    protected final File rmiDir;
+    protected final File proxyDir;
+    protected final List<Class<?>> objectsToWrap = new ArrayList<Class<?>>();
 
     public RMMCI(String targetDir) {
         //check if the org/mmbase/bridge/remote dir exists
-        remoteDir =  targetDir + "/org/mmbase/bridge/remote/";
-        File file = new File(remoteDir);
-        if (!file.exists() || !file.isDirectory()) {
-            throw new IllegalArgumentException("directory {" + file.getName() + "} does not contain a sub directory org/mmbase/bridge/remote. this is required for RemoteGenerator to work");
-        }
-
-        rmiDir =  remoteDir + "/rmi/";
-        file = new File(rmiDir);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-
-        proxyDir =  remoteDir + "/proxy/";
-        file = new File(proxyDir);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
+        remoteDir =  new File(targetDir + File.separator + "org" + File.separator + "mmbase" + File.separator + "bridge" + File.separator + "remote");
+        remoteDir.mkdirs();
+        rmiDir    =  new File(remoteDir, "rmi");
+        rmiDir.mkdirs();
+        proxyDir  =  new File(remoteDir, "proxy");
+        proxyDir.mkdirs();
     }
 
 
@@ -64,18 +52,18 @@ public class RMMCI {
 
     public void generate(Class<?> c) {
         if (needsRemote(c)) {
-           objectsToWrap.add(c);
-           new InterfaceGenerator(c).generate(remoteDir);
-           new RmiGenerator(c).generate(rmiDir);
-           new ProxyGenerator(c).generate(proxyDir);
+            objectsToWrap.add(c);
+            new InterfaceGenerator(c).generate(remoteDir);
+            new RmiGenerator(c).generate(rmiDir);
+            new ProxyGenerator(c).generate(proxyDir);
         }
-    }
+     }
 
-    public void generateObjectWrapper() {
-        new ObjectWrapperGenerator(objectsToWrap).generate(remoteDir);
-    }
+     public void generateObjectWrapper() {
+         new ObjectWrapperGenerator(objectsToWrap).generate(remoteDir);
+     }
 
-    public void generateBridgeClasses() throws Exception {
+     public void generateBridgeClasses() throws Exception {
         // Bridge interfaces
         generate(org.mmbase.cache.Cacheable.class);
 //        generate(org.mmbase.bridge.BridgeList.class);
