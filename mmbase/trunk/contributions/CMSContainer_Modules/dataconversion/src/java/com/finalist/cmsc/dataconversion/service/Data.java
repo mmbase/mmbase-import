@@ -26,9 +26,6 @@ public class Data {
    
    private String reverse ;
    
-   public Data() {    
-   }
-   
    public Data(Byte type) {
       this.type = type;
    }
