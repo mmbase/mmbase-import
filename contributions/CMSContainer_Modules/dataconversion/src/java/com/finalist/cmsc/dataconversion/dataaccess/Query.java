@@ -61,8 +61,9 @@ public class Query {
    public String getQueryString(ElementMeta elementMeta,int offset,int limit) throws Exception {
       
       String sql = getAllQueryString(elementMeta);
-      if(offset !=-1 && limit != -1)
-      sql += SQL_LIMIT+limit+SQL_OFFSET+offset;
+      if(offset !=-1 && limit != -1) {
+         sql += SQL_LIMIT+limit+SQL_OFFSET+offset;
+      }
      // sql += SQL_LIMIT+limit+" ,"+offset;
       return sql; 
    }  
