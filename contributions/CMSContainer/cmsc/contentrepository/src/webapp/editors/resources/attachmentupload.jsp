@@ -134,7 +134,7 @@
                   </c:if>
                   ${title}
                </td>
-               <td onMouseDown="objClick(this);">${title}</td>
+               <td onMouseDown="objClick(this);"><mm:field name="filename"/></td>
                <td onMouseDown="objClick(this);"><mm:field name="mimetype"/></td>
                <td onMouseDown="objClick(this);">
 					 <c:if test="${assettype eq 'attachments'}">
