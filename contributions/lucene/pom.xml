@@ -17,14 +17,14 @@
 
   <dependencies>
     <dependency>
-      <groupId>lucene</groupId>
+      <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-      <version>2.3.0</version>
+      <version>2.4.0</version>
     </dependency>
     <dependency>
-      <groupId>lucene</groupId>
+      <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-queries</artifactId>
-      <version>2.3.0</version>
+      <version>2.4.0</version>
     </dependency>
 
     <dependency>
@@ -54,16 +54,18 @@
     </dependency>
 
     <dependency>
-      <groupId>org.mmbase.jars</groupId>
+      <groupId>org.mmbase</groupId>
       <artifactId>mmbase-crontab</artifactId>
       <version>${mmbase.version}</version>
+      <classifier>classes</classifier>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.mmbase.jars</groupId>
+      <groupId>org.mmbase</groupId>
       <artifactId>mmbase-taglib</artifactId>
       <version>${mmbase.version}</version>
+      <classifier>classes</classifier>
       <scope>provided</scope>
     </dependency>
   </dependencies>
