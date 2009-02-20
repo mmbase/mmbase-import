@@ -27,6 +27,7 @@
     <module>mynews</module>
     <module>jumpers</module>
     <module>rmmci</module>
+    <module>clustering</module>
   </modules>
 
   <build>
