@@ -4,18 +4,17 @@
    <title xml:lang="nl">Nieuwsbrief</title>
    <title xml:lang="en">Newsletter</title>
    <title xml:lang="zh">时事通讯</title>
-   <field name="title" dtmaxlength="40"  dtrequired="true">
+   <field name="title" dtmaxlength="255" dtrequired="true">
       <prompt xml:lang="en">Title</prompt>
       <prompt xml:lang="nl">Titel</prompt>
       <prompt xml:lang="zh">标题</prompt>
    </field>
-   <field name="subject" dtmaxlength="40"  dtrequired="true">
+   <field name="subject" dtmaxlength="100" dtrequired="true">
       <prompt xml:lang="en">Subject</prompt>
       <prompt xml:lang="nl">Onderwerp</prompt>
       <prompt xml:lang="zh">主题</prompt>
    </field>
-   <field name="urlfragment" dtmaxlength="255">
-      dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,253}[a-zA-Z0-9]$">
+   <field name="urlfragment" dtmaxlength="255" dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,253}[a-zA-Z0-9]$">
       <prompt xml:lang="en">URL fragment</prompt>
       <prompt xml:lang="nl">URL-fragment</prompt>
       <prompt xml:lang="zh">Url-片段</prompt>
@@ -40,7 +39,6 @@
       <prompt xml:lang="nl">Naam afzender</prompt>
       <prompt xml:lang="zh">发件人</prompt>
    </field>
-
    <field name="replyto_mail" dtmaxlength="40" dtpattern="(\w+)@(\w+\.)(\w+)(\.\w+)*"  dtrequired="true">
       <prompt xml:lang="en">E-mail reply</prompt>
       <prompt xml:lang="nl">E-mail antwoord</prompt>
