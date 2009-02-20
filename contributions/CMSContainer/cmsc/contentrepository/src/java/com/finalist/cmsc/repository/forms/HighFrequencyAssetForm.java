@@ -1,5 +1,9 @@
 package com.finalist.cmsc.repository.forms;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionMapping;
+
 import com.finalist.cmsc.struts.PagerForm;
 
 @SuppressWarnings("serial")
@@ -40,6 +44,12 @@ public class HighFrequencyAssetForm extends PagerForm {
 
    public void setStrict(String strict) {
       this.strict = strict;
+   }
+   
+   @Override
+   public void reset(ActionMapping mapping, HttpServletRequest request) {
+      this.strict = "";
+      super.reset(mapping, request);
    }
 
 }
