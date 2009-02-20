@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.remote.generator;
 
 import java.util.*;
+import java.io.File;
 
 
 /**
@@ -18,7 +19,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: ObjectWrapperGenerator.java,v 1.5 2008-11-03 17:45:59 michiel Exp $
+ * @version $Id: ObjectWrapperGenerator.java,v 1.6 2009-02-20 14:01:18 michiel Exp $
  */
 public class ObjectWrapperGenerator extends AbstractGenerator {
 
@@ -137,10 +138,9 @@ public class ObjectWrapperGenerator extends AbstractGenerator {
         buffer.append("}\n");
     }
 
-    public void generate(String remoteDir) {
+    public void generate(File remoteDir) {
         generate();
-        String filename = remoteDir + "ObjectWrapperHelper.java";
-        writeSourceFile(filename);
+        writeSourceFile(new File(remoteDir, "ObjectWrapperHelper.java"));
     }
 
 }

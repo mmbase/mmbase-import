@@ -19,7 +19,7 @@ import java.lang.reflect.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: AbstractGenerator.java,v 1.2 2008-11-03 18:39:09 michiel Exp $
+ * @version $Id: AbstractGenerator.java,v 1.3 2009-02-20 14:01:18 michiel Exp $
  */
 abstract public class AbstractGenerator {
 
@@ -71,9 +71,10 @@ abstract public class AbstractGenerator {
         return className.substring(shortIndex + 1);
     }
 
-    public void writeSourceFile(String fileName) {
+    public void writeSourceFile(File file) {
         try {
-            File file = new File(fileName);
+            //System.out.println("Generating remote " + file);
+
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(buffer.toString().getBytes());
             fos.flush();
