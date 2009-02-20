@@ -7,14 +7,19 @@
 	<script>
 		function save() {
 			var form = document.forms["SecondaryEditForm"];
-			if(form["title"].value.length > 0) {
-				form["action"].value = "save";
-				return true;
-			}
-			else {
-				alert("<fmt:message key="secondaryedit.error.title" />");
-				return false;
-			}
+         var re = new RegExp("\://|javascript\:|mailto\:");
+         if (form["title"].value.replace(/(^\s*)|(\s*$)/g,"") == "") {
+             alert("<fmt:message key="secondaryedit.error.title" />");
+             form["title"].focus();
+             return false;
+         } else if (form["url"] && !form["url"].value.replace(/(^\s*)|(\s*$)/g,"").match(re)) {
+             alert("<fmt:message key="secondaryedit.error.url" />");
+             form["url"].focus();
+             return false;
+       } else {
+           form["action"].value = "save";
+           return true;
+       }
 		}
 
 		function cancel() {
