@@ -34,3 +34,69 @@ var debugAlpha = false;
 
 
 window.onload = alphaImages;
+
+ajaxUrl = null;
+load=null;
+time=null;
+function workfor(url, a){			
+	ajaxUrl = url + "number=" + a;
+	getFreezeInfo();
+	time=setTimeout("clear()",60000*5);
+}
+function clear(){
+	clearInterval(load);			
+	document.getElementById("needajax").style.display="none";
+	document.getElementById("working").style.display="";
+}
+
+function getFreezeInfo(){
+   load=setInterval("loadInfo()", 10000);
+  
+}
+
+function loadInfo(){          
+	var req = loadXMLDoc(ajaxUrl, false);
+	var result = req.status;
+	if (result == 200) {
+		var areaInfo = req.responseText;
+		if (areaInfo == "0") {
+			location.reload();
+		}
+	}
+	req = null;
+}
+        
+		
+function loadXMLDoc(url, async) {
+	var req = false;
+	// branch for native XMLHttpRequest object
+	if(window.XMLHttpRequest && !(window.ActiveXObject)) {
+		try {
+			req = new XMLHttpRequest();
+		} catch(e) {
+			req = false;
+		}
+	// branch for IE/Windows ActiveX version
+	} else if(window.ActiveXObject) {
+		try {
+			req = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch(e) {
+			try {
+				req = new ActiveXObject("Microsoft.XMLHTTP");
+			} catch(e) {
+				req = false;
+			}
+		}
+	}
+	if(req) {
+		var as;
+	if (async == undefined) {
+		as = true;
+	} else {
+			as = async;
+		}		
+		req.open("GET", url, as);
+		req.send("");
+	}
+	return req;
+}
