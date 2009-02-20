@@ -25,7 +25,7 @@
     <defaultGoal>install</defaultGoal>
     <resources>
       <resource>
-        <directory>${basedir}/src</directory>
+        <directory>${myBasedir}/src</directory>
         <includes>
           <include>**/*.xml</include>
           <include>**/*.dtd</include>
@@ -44,14 +44,14 @@
       </resource>
       <resource>
         <targetPath>META-INF</targetPath>
-        <directory>${basedir}/META-INF</directory>
+        <directory>${myBasedir}/META-INF</directory>
         <includes>
           <include>**</include>
         </includes>
       </resource>
       <resource>
         <targetPath>org/mmbase/config</targetPath>
-        <directory>config</directory>
+        <directory>${myBaseDir}/config</directory>
         <excludes>
           <exclude>"**/CVS"</exclude>
         </excludes>
