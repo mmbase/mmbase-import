@@ -1,26 +1,12 @@
 package com.finalist.cmsc.dataconversion.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.Map.Entry;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.CloudContext;
-import org.mmbase.bridge.ContextProvider;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -42,7 +28,7 @@ public class NodeService {
     * @param data
     * @param sources
     * @param key
-    * @return
+    * @return mew node number
     */
    public static Integer insertData(DataHolder holder,Data data,List<Data> sources,Integer key) {  
       Cloud cloud = initCloud();      
@@ -55,7 +41,7 @@ public class NodeService {
             type = tableName;
             Collection<Elements> collection = holder.getCollection();
             Iterator<Elements> iterator = collection.iterator();
-            Object modifyDate = null ;
+
             while (iterator.hasNext()) {
                Node node = nodeManger.createNode();
                Elements element = iterator.next();
@@ -63,21 +49,11 @@ public class NodeService {
                Iterator<Map.Entry<String,Object>>  properties = element.getMap().entrySet().iterator();
                while (properties.hasNext()) {
                   Map.Entry<String,Object> entry= properties.next();
-                  if(!entry.getKey().toString().equals("lastmodifieddate")) {
-                     node.setValueWithoutProcess(entry.getKey().toString(), entry.getValue());
-                     //node.setObjectValue(entry.getKey().toString(), entry.getValue()) ;
-                  }
-                  else {
-                     modifyDate = entry.getValue();
-                  }
+                  setNodeField(node, entry.getKey().toString(), entry.getValue());
                } 
                node.commit();
                number = node.getNumber();
-               if(modifyDate != null) {
-                  MMObjectNode objectNode = MMBase.getMMBase().getBuilder(tableName).getNode(number);
-                  objectNode.setValue("lastmodifieddate", modifyDate); 
-                  objectNode.commit();
-               }
+
                if(element.getValue("title") != null) {
                   log.info("->[new node number="+number+"] [title = "+element.getValue("title")+"]"); 
                }
@@ -85,7 +61,6 @@ public class NodeService {
                   log.info("->[new node number="+number+"]");
                }
             }
-            nodeManger.commit();
          }
          else if (data.getType() == Constants.RELATION_TYPE) {         
 
@@ -115,11 +90,10 @@ public class NodeService {
                      Map.Entry<String,Object> entry= properties.next();
                      String name = entry.getKey().toString();
                      if(name.equals("pos") && data.getDestinationRelationType().equals("imagerel")) {
-                        relate.setObjectValue(name, "intro") ;
+                        relate.setValue(name, "intro") ;
                      }
                      else {
-                        relate.setValueWithoutProcess(entry.getKey().toString(), entry.getValue());
-                       // relate.setObjectValue(entry.getKey().toString(), entry.getValue()) ;
+                        setNodeField(relate, entry.getKey().toString(), entry.getValue());
                      }
                   }
                   relate.commit();
@@ -153,6 +127,15 @@ public class NodeService {
          log.info(String.format("[type %s] [old Node %s] [Node %s ] +"+e.getMessage(),type,key,number));
       }
       return number;
+   }
+   private static void setNodeField(Node node, String fieldname, Object value) {
+      Field nodeField = node.getNodeManager().getField(fieldname);
+      if (nodeField.isReadOnly() || nodeField.getState() == Field.STATE_SYSTEM) {
+         node.setValueWithoutProcess(fieldname, value);
+      }
+      else {
+         node.setValue(fieldname, value) ;
+      }
    }
    //createRelationData for the element relateddatatype
    public static void createRelationData(List<String> reskeys, Data reldata) {
@@ -272,13 +255,12 @@ public class NodeService {
       for (Data data : clonedSources) {
          if (data.getType() == Constants.ENTITY_TYPE || data.getType() == Constants.ROOT_CATEGORY_TYPE) {
             HashMap<Integer, Integer> mappingNumber = data.getIdentifiers();
-            for (Iterator iter = mappingNumber.entrySet().iterator(); iter.hasNext();) {
-               Map.Entry entry = (Map.Entry) iter.next();
+            for (Entry<Integer, Integer> entry : mappingNumber.entrySet()) {
                Node node = manager.createNode();
-               Object key = entry.getKey();
-               Object val = entry.getValue();
-               node.setObjectValue("old_number", key);
-               node.setObjectValue("new_number", val);
+               Integer key = entry.getKey();
+               Integer val = entry.getValue();
+               node.setValue("old_number", key);
+               node.setValue("new_number", val);
                node.commit();
             }
          }
@@ -295,15 +277,14 @@ public class NodeService {
    public static void linkRootDatas(Map<String, ArrayList<Integer>> rootDatas, String node) {
       Cloud cloud = initCloud();
       Node desNode = cloud.getNode(Integer.parseInt(node));
-      for (Iterator iter = rootDatas.entrySet().iterator(); iter.hasNext();) {
-         Map.Entry entry = (Map.Entry) iter.next();
-         ArrayList<Integer> val = (ArrayList<Integer>) entry.getValue();
+      for (Entry<String, ArrayList<Integer>> entry : rootDatas.entrySet()) {
+         ArrayList<Integer> val = entry.getValue();
          for (Integer i : val) {
             int sn=getNewkey(cloud,i);            
             if (sn>0) {
                Node sourceNode = cloud.getNode(sn);
-               Relation relate = RelationUtil.createRelation(sourceNode, desNode, "creationrel");
-               Relation rel = RelationUtil.createRelation(desNode, sourceNode, "contentrel");
+               RelationUtil.createRelation(sourceNode, desNode, "creationrel");
+               RelationUtil.createRelation(desNode, sourceNode, "contentrel");
             }
          }
       }

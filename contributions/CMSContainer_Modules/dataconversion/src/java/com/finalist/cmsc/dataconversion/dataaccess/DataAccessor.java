@@ -54,6 +54,7 @@ public class DataAccessor {
 
    /**
     *  get  numbers 
+    * @param type 
     * @return key number
     * @throws Exception
     */
@@ -137,20 +138,20 @@ public class DataAccessor {
          else if(type == Constants.RELATION_TYPE||type==Constants.RELATION_DATA_TYPE){//add new type
             if(StringUtils.isNotEmpty(query.getRelateFieldsString(elementMeta,key))) {
                relRs = statement.executeQuery(query.getRelateFieldsString(elementMeta,key));
-               parse(relRs,list,elementMeta,holder,key);
+               parse(relRs,list,elementMeta,holder);
                holder.setCollection(list);
                holder.setTableName(elementMeta.getDestinationRelTableName());
             }
          }
          else if(type == Constants.SELF_RELATION_TYPE){
             relRs = statement.executeQuery(query.getSelfRelFieldString(elementMeta,key));
-            parse(relRs,list,elementMeta,holder,key);
+            parse(relRs,list,elementMeta,holder);
             holder.setCollection(list);
             holder.setTableName(elementMeta.getSelfRelDesTableName());
          }
          else {
             relRs = statement.executeQuery(query.getSelfRelFieldString(elementMeta,key));
-            parse(relRs,list,elementMeta,holder,key);
+            parse(relRs,list,elementMeta,holder);
             holder.setCollection(list);
             holder.setTableName(elementMeta.getSelfRelDesTableName()); 
          }
@@ -167,7 +168,9 @@ public class DataAccessor {
    
    private void parseResultSet(ResultSet rs,List<Elements> list,ElementMeta elementMeta) throws SQLException {
       
-      if(rs == null) return;
+      if(rs == null) {
+         return;
+      }
       while(rs.next()) {
          Elements element = new Elements();
          for(String fieldName : elementMeta.getFieldNames()) {
@@ -242,9 +245,11 @@ public class DataAccessor {
       return null;
    }
 
-   private void parse(ResultSet rs,List<Elements> list,ElementMeta elementMeta,DataHolder holder,Integer key) throws SQLException {
+   private void parse(ResultSet rs,List<Elements> list,ElementMeta elementMeta,DataHolder holder) throws SQLException {
 
-      if(rs == null) return;
+      if(rs == null) {
+         return;
+      }
       while(rs.next()) {
          Elements element = new Elements();
          for(String fieldName : elementMeta.getRelateFields()) {
@@ -282,7 +287,7 @@ public class DataAccessor {
       }
    }
 
-   public List<String> getResOfRelation(Data relData, List<Data> sources) {
+   public List<String> getResOfRelation(Data relData) {
       Connection connection = null;
       Statement statement = null;
       ResultSet rs = null;

@@ -35,7 +35,7 @@ public class DataAccessDelegate {
       return new DataAccessor(dataSource,elementMeta);
    }
 
-   public static List<String> getResOfRelation(List<Data> sources, Data reldata, DataSource dataSource) {
-      return new DataAccessor(dataSource).getResOfRelation(reldata,sources);
+   public static List<String> getResOfRelation(Data reldata, DataSource dataSource) {
+      return new DataAccessor(dataSource).getResOfRelation(reldata);
    }
 }

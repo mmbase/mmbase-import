@@ -25,7 +25,7 @@ public class ConversionThread  extends Thread{
 
           synchronized(Job.class) {             
              Conversion conversion = new Conversion(form, context);
-             conversion.converseAll();
+             conversion.convertAll();
           }
       }
   }

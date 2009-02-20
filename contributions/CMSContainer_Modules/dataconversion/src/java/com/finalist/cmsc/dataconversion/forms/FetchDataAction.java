@@ -29,8 +29,9 @@ public class FetchDataAction  extends MMBaseAction{
       if(nodes != null && nodes.size() >0) {
          node = nodes.getNode(0);
       }
-      if(node != null && node.getStringValue("signal") != null)
+      if(node != null && node.getStringValue("signal") != null) {
          responseString = String.format(strFormat, node.getIntValue("signal"));
+      }
       else {
          responseString = String.format(strFormat," ");
       }
