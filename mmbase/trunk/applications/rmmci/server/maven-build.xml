@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="MMBase" default="rmmci" basedir=".">
+
+
+  <!-- =================================================================== -->
+  <!-- (Step 1 for remote) Compile the remote generator classes            -->
+  <!-- =================================================================== -->
+  <target name="compile.remote.generator" description="Compile the remote generator classes" >
+    <mkdir dir="target/generator/classes"/>
+    <javac srcdir="../generator/src"
+           destdir="target/generator/classes"
+           classpath="${compile_classpath}"
+           debug="yes"
+           source="1.5"
+           optimize="yes">
+    </javac>
+  </target>
+  <!-- =================================================================== -->
+  <!-- (Step 2 for remote) Generate the source for the remote classes      -->
+  <!-- =================================================================== -->
+  <target name="generate.remote" description="Generate the source for the remote classes" depends="compile.remote.generator">
+    <mkdir dir="target/generated-resources/rmmci" />
+    <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
+         using the sun jaxp implementation. By forking we do not use the ant classloader -->
+    <java classname="org.mmbase.bridge.remote.generator.RMMCI" fork="true"
+          classpath="${compile_classpath}">
+      <arg value="target/generated-sources/rmmci"/>
+      <classpath>
+        <pathelement location="target/generator/classes"/>
+      </classpath>
+    </java>
+  </target>
+
+
+</project>
