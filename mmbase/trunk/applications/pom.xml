@@ -28,6 +28,8 @@
     <module>jumpers</module>
     <module>rmmci</module>
     <module>clustering</module>
+    <module>searchrelate</module>
+    <module>notifications</module>
   </modules>
 
   <build>
