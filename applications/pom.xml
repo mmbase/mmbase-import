@@ -26,6 +26,7 @@
     <module>editwizard</module>
     <module>mynews</module>
     <module>jumpers</module>
+    <module>rmmci</module>
   </modules>
 
   <build>
