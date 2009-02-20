@@ -225,7 +225,7 @@
          name="AssetSearchForm" scope="request" input="/editors/repository/assetsearch.jsp" unknown="false" validate="true">
       </action>
       <action path="/editors/repository/InsertAssetSearchAction" type="com.finalist.cmsc.repository.forms.InsertAssetSearchAction"
-         name="AssetSearchForm" scope="request" input="/editors/resources/attachmentsearchold.jsp" unknown="false" validate="true">
+         name="AssetSearchForm" scope="request" input="/editors/resources/attachmentsearch.jsp" unknown="false" validate="true">
       </action>
       <action path="/editors/repository/AssetUploadAction" type="com.finalist.cmsc.repository.forms.AssetUploadAction" 
          name="AssetUploadForm" unknown="false" validate="true">
@@ -280,7 +280,7 @@
          name="AssetSearchForm" scope="request" unknown="false" validate="false">
          <forward name="searchoptions" path="/editors/repository/assetsearch.jsp" redirect="false" />
          <forward name="dosearch" path="/editors/repository/AssetSearchAction.do" redirect="false" />
-         <forward name="insertAsset" path="/editors/resources/attachmentsearchold.jsp" redirect="false" />
+         <forward name="insertAsset" path="/editors/resources/attachmentsearch.jsp" redirect="false" />
       </action>
    </action-mappings>
 
