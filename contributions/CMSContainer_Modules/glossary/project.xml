@@ -11,5 +11,13 @@ See http://www.MMBase.org/license
     <artifactId>cmsc-modules-glossary</artifactId>
     <name>CMS Container glossary</name>
     <shortDescription>CMS Container glossary</shortDescription>
+   	<dependencies>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-modules-publish-remote</artifactId>
+         <version>${cmscmodules.version}</version>
+         <type>jar</type>
+      </dependency>
+	</dependencies>
 </project>
 
