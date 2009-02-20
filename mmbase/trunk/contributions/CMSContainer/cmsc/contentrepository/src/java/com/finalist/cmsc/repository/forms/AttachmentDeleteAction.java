@@ -25,6 +25,7 @@ public class AttachmentDeleteAction extends MMBaseFormlessAction {
       String channelnumber = getParameter(request, "channelnumber");
       Node channelNode = cloud.getNode(channelnumber);
       String objectnumber = getParameter(request, "objectnumber");
+      String strict = getParameter(request, "strict");
 
       Node objectNode = cloud.getNode(objectnumber);
 
@@ -32,6 +33,6 @@ public class AttachmentDeleteAction extends MMBaseFormlessAction {
       RepositoryUtil.removeCreationRelForAsset(objectNode);
       RepositoryUtil.addAssetToChannel(objectNode, RepositoryUtil.getTrashNode(cloud));
 
-      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?&channelid=" + channelnumber, true);
+      return new ActionForward(mapping.findForward(SUCCESS).getPath() + "?&channelid=" + channelnumber + "&strict=" + strict, true);
    }
 }
