@@ -6,7 +6,19 @@
 <cmscedit:head title="urls.create.title">
   <script src="../repository/search.js" type="text/javascript"></script>
   <script type="text/javascript">
-    function create() {
+    function create(){
+        var titlefield = document.getElementById("title");
+        var urlfield = document.getElementById("url");
+        var re = new RegExp("\://|javascript\:|mailto\:");
+        if (titlefield.value.replace(/(^\s*)|(\s*$)/g,"") == "") {
+              alert("<fmt:message key="urls.create.error.title" />");
+              titlefield.focus();
+              return false;
+        } else if (!urlfield.value.replace(/(^\s*)|(\s*$)/g,"").match(re)) {
+              alert("<fmt:message key="urls.create.error.url" />");
+              urlfield.focus();
+              return false;
+        }
         setTimeout('sayWait();',0);
     }
 
@@ -41,18 +53,18 @@
                   <table border="0">
                   <tr>
                      <td style="width: 150px"><fmt:message key="urls.create.titlefield" /></td>
-                     <td><html:text property="title" style="width: 350px" value=""/></td>
+                     <td><html:text property="title" styleId="title" style="width: 350px" value=""/></td>
                   </tr>
                   <tr>
                      <td style="width: 150px"><fmt:message key="urls.create.urlfield" /></td>
-                     <td><html:text property="url" style="width: 350px" value=""/></td>
+                     <td><html:text property="url" styleId="url" style="width: 350px" value=""/></td>
                   </tr>
                   <tr>
                      <td style="width: 150px"><fmt:message key="urls.create.description" /></td>
-                     <td><html:text property="description" style="width: 350px; height:75px" value=""/></td>
+                     <td><html:text property="description" styleId="description" style="width: 350px; height:75px" value=""/></td>
                   </tr>
                   <tr>
-                     <td><html:submit property="createButton" onclick="create();">
+                     <td><html:submit property="createButton" onclick="return create();">
                      <fmt:message key='urls.create.submit' /></html:submit></td>
                   </tr>
                   </table>
