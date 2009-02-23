@@ -179,7 +179,7 @@ public abstract class NewsletterPublicationUtil {
     * @throws MessagingException 
     */
    public static void freezeEdition(Node edition) throws MessagingException {
-      publish(edition);
+      //publish(edition);
       String static_html = getStaticHtml(edition.getNumber());
       edition.setStringValue("process_status", EditionStatus.FROZEN.value());
 //      edition.setValue("static_html", StringEscapeUtils.escapeHtml(static_html));
