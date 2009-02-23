@@ -178,5 +178,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/com.thoughtworks.xstream/jars/xstream-1.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-dbcp/jars/commons-dbcp-1.2.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/spiffyframework/jars/spiffy-with_source-all-0.05.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/supercsv/jars/SuperCSV-1.52.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
