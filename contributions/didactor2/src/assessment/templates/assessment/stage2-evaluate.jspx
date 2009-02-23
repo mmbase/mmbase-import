@@ -29,16 +29,51 @@
 
     <div class="problemImpact">
       <h2>Wijzig eventueel per les hoeveel last je van dit probleem had</h2>
-
+	
       <mm:include page="/assessment/stage2-editdifficulties.jspx" />
 
     </div>
 
     <div id="problemEvaluateTest" class="problem">
  
-    
-      <mm:include page="/education/tests/buildtest.jsp"
-                  referids="test@learnobject" />
+    	<mm:node referid="test">
+    		<di:copybook><mm:node id="copybookNo" /></di:copybook>
+  				<mm:relatednodescontainer path="madetests,copybooks" element="madetests">
+            <mm:constraint field="copybooks.number" referid="copybookNo"/>
+            <mm:relatednodes>
+              <mm:field name="number" jspvar="this_madetest" vartype="String" write="false">
+                <mm:related path="related,problems" constraints="problems.number=$problem">
+                  <mm:import id="madetest" reset="true">${this_madetest}</mm:import>
+                  
+                 
+                </mm:related>
+              </mm:field>
+            </mm:relatednodes>
+          </mm:relatednodescontainer>
+
+          <mm:notpresent referid="madetest">
+            <mm:createnode type="madetests" id="madetest">
+              <mm:setfield name="date"><mm:time time="now"/></mm:setfield>
+              <mm:setfield name="testpath"></mm:setfield>
+              <mm:setfield name="score">-4</mm:setfield>
+            </mm:createnode>
+            <mm:node number="${test}" id="this_test"/>
+            <mm:createrelation role="related" source="this_test" destination="madetest"/>
+            <mm:createrelation role="related" source="copybookNo" destination="madetest"/>
+            <mm:node number="$problem" notfound="skip">
+              <mm:createrelation role="related" source="problem" destination="madetest"/>
+            </mm:node>
+            <mm:remove referid="this_test"/>
+            <mm:remove referid="copybookNo"/>
+          </mm:notpresent>
+    	
+    	</mm:node>
+
+      
+      <mm:treeinclude page="/assessment/stage2-evaluate-buildtest.jspx"
+                  referids="test@learnobject,madetest"  objectlist="$includePath"/>
+      
+      
     </div>
 		
     <mm:link page="/assessment/stage5.js.jsp">
