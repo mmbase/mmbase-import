@@ -6,10 +6,10 @@
 		<table class="editcontent">
 
 			<%-- Portletdefinition display --%>
-			<c:import url="sections/definitiondisplay.jsp" />
+			<c:import url="../sections/definitiondisplay.jsp" />
 		
 			<%-- View selector --%>
-			<c:import url="sections/viewselector.jsp" />
+			<c:import url="../sections/viewselector.jsp" />
 
 			<cmsc:location var="cur" sitevar="site" />
 			<c:set var="page" value="${cur.id}" />
@@ -32,7 +32,7 @@
 			</tr>
 
 			<%-- Save button --%>
-			<c:import url="sections/savebutton.jsp" />
+			<c:import url="../sections/savebutton.jsp" />
 			
 		</table>
 	</form>
