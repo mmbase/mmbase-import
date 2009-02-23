@@ -8,7 +8,13 @@
  */
 package com.finalist.cmsc.services.community.person;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -27,6 +33,7 @@ import com.finalist.cmsc.services.community.preferences.Preference;
 import com.finalist.cmsc.services.community.preferences.PreferenceService;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.cmsc.services.community.security.Authority;
 
 /**
  * @author Remco Bos
@@ -210,16 +217,33 @@ public class PersonHibernateService extends HibernateService implements PersonSe
    @SuppressWarnings("unchecked")
    public void creatRelationRecord(PersonExportImportVO xperson) {
       Authentication authentication = xperson.getAuthentication();
-      authentication = authenticationService.createAuthentication(authentication);
-      Person person = new Person();
-      converPersonPropertis(xperson, person);
-      person.setAuthenticationId(authentication.getId());
-      updatePerson(person);
-      String userId = xperson.getAuthentication().getUserId();
-      List < Preference > preferences = xperson.getPreferences();
-      if (preferences.size() > 0) {
-         for (Preference preference : preferences) {
-            preferenceService.createPreference(preference, userId);
+      if(authenticationService.authenticationExists(authentication.getUserId()) && xperson.getAuthorityId()>0 ){
+         Authority authority = this.getAuthorityById(xperson.getAuthorityId());
+         if(null!=authority){
+            authentication = authenticationService.getAuthenticationById(authenticationService.getAuthenticationIdForUserId(authentication.getUserId()));
+            authentication.getAuthorities().add(authority);
+            getSession().saveOrUpdate(authentication);
+         }
+      }
+      else if(!authenticationService.authenticationExists(authentication.getUserId())){
+         authentication = authenticationService.createAuthentication(authentication);
+         if(xperson.getAuthorityId()>0 ){
+            Authority authority = this.getAuthorityById(xperson.getAuthorityId());
+            if (null!=authentication.getAuthorities()) {
+               authentication.getAuthorities().add(authority);
+            }
+         }
+         Person person = new Person();
+         converPersonPropertis(xperson, person);
+         person.setAuthenticationId(authentication.getId());
+         getSession().saveOrUpdate(authentication);
+         updatePerson(person);
+         String userId = xperson.getAuthentication().getUserId();
+         List < Preference > preferences = xperson.getPreferences();
+         if (preferences.size() > 0) {
+            for (Preference preference : preferences) {
+               preferenceService.createPreference(preference, userId);
+            }
          }
       }
    }
@@ -237,6 +261,19 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       }
       return XPersons;
    }
+   @Transactional(readOnly = true)
+   public List < PersonExportImportVO > getPersonExportImportVO(String group) {
+      List < PersonExportImportVO > XPersons = new ArrayList < PersonExportImportVO >();
+      List < Person > persons = getPersonsByGroup(group);
+      if (null == persons) {
+         return null;
+      }
+      for (Person tempPerson : persons) {
+         PersonExportImportVO o = transformToPersonExportImportVO(tempPerson);
+         XPersons.add(o);
+      }
+      return XPersons;
+   }
 
    private void converPersonPropertis(Person t, Person o) {
       o.setFirstName(t.getFirstName());
@@ -245,6 +282,8 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       o.setLastName(t.getLastName());
       o.setEmail(t.getEmail());
       o.setUri(t.getUri());
+      o.setActive(t.getActive());
+      o.setRegisterDate(t.getRegisterDate());
    }
 
    private PersonExportImportVO transformToPersonExportImportVO(Person tempPerson) {
@@ -260,6 +299,14 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       o.setAuthentication(authentication);
       o.setPreferences(preferences);
       return o;
+   }
+   private List<Person> getPersonsByGroup(String groupId){
+      String sql = "select distinct person from Person person , Authentication authentication " +
+      		       "left join authentication.authorities authority " +
+      		       "where person.authenticationId = authentication.id"+
+      		       " and authority.id = "+Integer.parseInt(groupId);
+      Query q = getSession().createQuery(sql);
+      return q.list();
    }
 
    @Transactional(readOnly = true)
@@ -378,12 +425,21 @@ public class PersonHibernateService extends HibernateService implements PersonSe
    private void updateRelationRecord(Person oldDataPerson, PersonExportImportVO importPerson) {
       Session session = getSession();
       Authentication activedAuthentication = importPerson.getAuthentication();
+      if(importPerson.getAuthorityId()>0){
+         Authority authority = this.getAuthorityById(importPerson.getAuthorityId());
+         activedAuthentication.getAuthorities().add(authority);
+      }
       Authentication dbAuthentication = (Authentication) session.load(Authentication.class, oldDataPerson.getId());
       converPersonPropertis(importPerson, oldDataPerson);
       converAuthenticationPropertis(activedAuthentication, dbAuthentication);
       parsePreferences(importPerson, session, activedAuthentication, dbAuthentication);
    }
-
+   private Authority getAuthorityById(Long authorityId){
+      Criteria criteria = getSession().createCriteria(Authority.class).add(
+            Restrictions.eq("id", authorityId));
+      return (Authority)criteria.list().get(0);
+   }
+   
    private void parsePreferences(PersonExportImportVO importPerson, Session session,
          Authentication activedAuthentication, Authentication dbAuthentication) {
       List < Preference > importPreferences = importPerson.getPreferences();
@@ -423,18 +479,25 @@ public class PersonHibernateService extends HibernateService implements PersonSe
    @Transactional
    public void addRelationRecord(String level, PersonExportImportVO importPerson) {
       Person p = getPersonByUserId(importPerson.getAuthentication().getUserId());
-      if (null != p && "over".equals(level)) {
+      if ("over".equals(level)) {
          updateRelationRecord(p, importPerson);
       }
-      if (null == p) {
-         // only add new users
+      else{
+         // add new users or put user to another group
          creatRelationRecord(importPerson);
       }
+     
    }
    @Transactional
    public void changeStateByAuthenticationId(Long authenticationId, String active) {
       Person per=getPersonByAuthenticationId(authenticationId);
       per.setActive(active);
       updatePerson(per);      
+   }
+   @Transactional
+   public List<Authority> getAllAuthorities() {
+      Criteria criteria = getSession().createCriteria(Authority.class);
+      criteria = criteria.setResultTransformer(criteria.DISTINCT_ROOT_ENTITY); 
+      return criteria.list();
    }
 }

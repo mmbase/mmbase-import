@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.finalist.cmsc.services.community.domain.PersonExportImportVO;
+import com.finalist.cmsc.services.community.security.Authority;
 
 /**
  * This service encapsulates the management of people and groups.
@@ -83,4 +84,7 @@ public interface PersonService {
    public void addRelationRecord(String level, PersonExportImportVO importPerson);
 
    void changeStateByAuthenticationId(Long authenticationId, String active);
+   public List<PersonExportImportVO> getPersonExportImportVO(String group);
+
+   public List<Authority> getAllAuthorities();
 }

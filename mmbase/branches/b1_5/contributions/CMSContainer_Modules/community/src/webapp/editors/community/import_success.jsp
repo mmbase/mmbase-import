@@ -41,6 +41,9 @@
    <div class="body">
 
       <p>
+         ${confirm_userNum} users are added or overwritten successfully.
+      </p>
+      <p>
          <fmt:message key="community.datafile.import.success"/>
       </p>
 
