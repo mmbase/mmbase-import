@@ -6,19 +6,19 @@
 		<table class="editcontent">
 
 			<%-- Portletdefinition display --%>
-			<c:import url="sections/definitiondisplay.jsp" />
+			<c:import url="../sections/definitiondisplay.jsp" />
 		
 			<%-- View selector --%>
-			<c:import url="sections/viewselector.jsp" />
+			<c:import url="../sections/viewselector.jsp" />
 
 			<%-- Order by option--%>
-			<c:import url="sections/orderby.jsp" />
+			<c:import url="../sections/orderby.jsp" />
 
 			<%-- Paging --%>
-			<c:import url="sections/paging.jsp" />
+			<c:import url="../sections/paging.jsp" />
 
 			<%-- Save button --%>
-			<c:import url="sections/savebutton.jsp" />
+			<c:import url="../sections/savebutton.jsp" />
 			
 		</table>
 	</form>
