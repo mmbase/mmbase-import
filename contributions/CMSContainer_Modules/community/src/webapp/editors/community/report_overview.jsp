@@ -3,7 +3,23 @@
 %><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <fmt:setBundle basename="cmsc-community" scope="request" />
-<cmscedit:head title="community.data.title"/>
+<cmscedit:head title="community.data.title">
+   <script type="text/javascript">
+      function commitToXml(){
+         document.getElementById("fileType").value="xml";
+         docummnt.forms[0].submit();
+      }
+      function commitToCsv(){
+         document.getElementById("fileType").value="csv";
+         docummnt.forms[0].submit();
+      }
+      function commitImport(){
+         var groupId = document.getElementById("imgroups").value;
+         document.getElementById("imGroupId").value = groupId;
+      }
+   </script>
+
+</cmscedit:head>
 <div class="tabs">
    <div class="tab_active">
       <div class="body">
@@ -13,20 +29,45 @@
       </div>
    </div>
 </div>
+
 <div class="editor">
-   <div class="body">     
-      <div> 
-         <p>
-            <a href="ReferenceImportExportAction.do?action=export">
-               <fmt:message key="community.data.export"/>
-            </a>
-         </p>
-         <p>
-            <a href="${pageContext.request.contextPath }/editors/community/import.jsp">
-               <fmt:message key="community.data.import"/>
-            </a>
-         </p>         
-      </div>
+   <div class="ruler_green">
+      <div>&nbsp;<fmt:message key="community.data.export.title"/>&nbsp;</div>
+   </div>
+   <div class="body">
+      <html:form action="/editors/community/ReferenceImportExportAction.do?action=export">
+         <input type="hidden" id="fileType" name="fileType"/>
+         <p><input type="submit" onclick="javascript:commitToXml()" value="<fmt:message key="community.data.export.xml"/>"/></p>
+         <p><input type="submit" onclick="javascript:commitToCsv()" value="<fmt:message key="community.data.export.csv"/>"/></p>
+         <b>Options</b>
+         <select property="groups" style="width:150px" name="groups">
+            <option value="0">ALL GROUP</option>
+            <c:if test="${not empty requestScope.groups}">
+               <c:forEach items="${requestScope.groups}" var="groupItem">
+                  <option value="${groupItem.id}">${groupItem.name}</option>
+               </c:forEach>
+            </c:if>
+         </select>
+      </html:form>
+   </div>
+   <div class="ruler_green">
+      <div>&nbsp;<fmt:message key="community.data.import.title"/>&nbsp;</div>
+   </div>
+   
+   <div class="body">
+      <html:form action="/editors/community/ReferenceImportExportAction.do?action=showImportPage">
+         <input type="hidden" name="imGroupId" id="imGroupId"/>
+         <p><input type="submit" onclick="javascript:commitImport()" value="<fmt:message key="community.data.import.from"/>"/></p>
+         <b>Options</b>
+         <select property="groups" style="width:150px" name="groups" id="imgroups">
+            <option value="0">NO GROUP</option>
+            <c:if test="${not empty requestScope.groups}">
+               <c:forEach items="${requestScope.groups}" var="groupItem">
+                  <option value="${groupItem.id}">${groupItem.name}</option>
+               </c:forEach>
+            </c:if>
+         </select>
+      </html:form>
    </div>
 </div>
 </mm:content>

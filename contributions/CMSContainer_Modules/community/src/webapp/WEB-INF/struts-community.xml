@@ -88,13 +88,16 @@
          <forward name="list" path="/editors/community/PreferenceAction.do?method=list" redirect="true" />
          <forward name="init" path="/editors/community/preferenceadd.jsp" redirect="false" />
       </action>
-      <!-- ======export====== -->
+      <!-- ======Import export====== -->
 	  <action path="/editors/community/ReferenceImportExportAction" name="referdatafilebean"
               type="org.springframework.web.struts.DelegatingActionProxy" parameter="action"
               validate="true">
-         <forward name="failed" path="/editors/community/import.jsp"/>
+         <forward name="show" path="/editors/community/report_overview.jsp"/>
+         <forward name="transferGroupId" path="/editors/community/import.jsp" redirect="false"/>
+         <forward name="failed" path="/editors/community/import.jsp" redirect="false"/>
          <forward name="success" path="/editors/community/import_success.jsp"/>
       </action>
+      <action path="/editors/community/ReferenceImportAction" scope="request" forward="/editors/community/import.jsp"></action> 
    </action-mappings>
    <message-resources parameter="cmsc-community" key="COMMUNITY" />
 </struts-config>
