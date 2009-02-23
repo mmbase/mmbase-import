@@ -101,6 +101,24 @@
       </properties>
     </dependency>
 
+	<dependency>
+      <groupId>csv</groupId>
+      <artifactId>SuperCSV</artifactId>
+      <version>1.52</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
+		<dependency>
+      <groupId>csv</groupId>
+      <artifactId>spiffy-with_source-all</artifactId>
+      <version>0.05</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+    </dependency>
 <!-- Spring dependencies -->
     <dependency>
       <groupId>springframework</groupId>

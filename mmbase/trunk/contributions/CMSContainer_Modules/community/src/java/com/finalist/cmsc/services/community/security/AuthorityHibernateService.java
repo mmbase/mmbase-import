@@ -66,6 +66,12 @@ public class AuthorityHibernateService extends HibernateService implements Autho
       Criteria criteria = getSession().createCriteria(Authority.class).add(Restrictions.eq("name", name));
       return findAuthorityByCriteria(criteria);
    }
+   /** {@inheritDoc} */
+   @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+   public Authority findAuthorityById(Long authorityId) {
+      Criteria criteria = getSession().createCriteria(Authority.class).add(Restrictions.eq("id",authorityId));
+      return findAuthorityByCriteria(criteria);
+   }
 
    @SuppressWarnings("unchecked")
    private List < Authority > addConditionToCriteria(PagingStatusHolder holder, Criteria criteria) {
@@ -219,4 +225,6 @@ public class AuthorityHibernateService extends HibernateService implements Autho
       Query q = getSession().createSQLQuery(strb.toString());
       return q.list().size();
    }
+
+
 }
