@@ -7,14 +7,32 @@
  */
 package com.finalist.cmsc.repository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import net.sf.mmapps.commons.bridge.CloneUtil;
 import net.sf.mmapps.commons.bridge.NodeFieldComparator;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.FieldIterator;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.RelationIterator;
+import org.mmbase.bridge.RelationList;
+import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.FieldValueDateConstraint;
@@ -24,9 +42,12 @@ import org.mmbase.storage.search.implementation.BasicFieldValueDateConstraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.mmbase.TreeUtil;
-import com.finalist.cmsc.security.*;
+import com.finalist.cmsc.security.Role;
+import com.finalist.cmsc.security.SecurityUtil;
+import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.security.forms.RolesInfo;
 
 public final class RepositoryUtil {
@@ -1165,9 +1186,23 @@ public final class RepositoryUtil {
             Node childChannel = iter.next();
             copyChannel(childChannel, newChannel);
          }
+         String cloneCopy = PropertiesUtil.getProperty("clonecopy");
+         if(cloneCopy != null && "true".equalsIgnoreCase(cloneCopy)) {
+            StringBuilder output = new StringBuilder().append("Start");
+            Map<Integer, Integer> copiedNodes = new HashMap<Integer, Integer>();
+            List<Integer> channelNumbers = new ArrayList<Integer>();
+            cloneAssetNodes(sourceChannel,newChannel,copiedNodes,output);
+            iterateChannels(sourceChannel,channelNumbers);
+            cloneRelatedNodes(sourceChannel, newChannel,copiedNodes,output,channelNumbers); 
+            output.append("<br/><br/>copiedNodes has #" + copiedNodes.size() + ":<br/>" + copiedNodes.toString());
+            if(log.isDebugEnabled()) {
+               log.debug("#################:"+output.toString());
+            }
 
-         CloneUtil.cloneRelations(sourceChannel, newChannel, CONTENTREL, CONTENTELEMENT);
-
+         }
+         else {
+            CloneUtil.cloneRelations(sourceChannel, newChannel, CONTENTREL, CONTENTELEMENT);
+         }
          return newChannel;
       }
       return null;
@@ -1343,5 +1378,230 @@ public final class RepositoryUtil {
          SearchUtil.addDayConstraint(query, query.getNodeManager(), ContentElementUtil.CREATIONDATE_FIELD, "-" + maxDays);
       }
       return query.getNodeManager().getList(query);
+   }
+   public static void cloneRelatedNodes(Node sourceNode,Node destNode,Map<Integer, Integer> copiedNodes ,StringBuilder output,List<Integer> channels) {
+      List<Relation> relations = sourceNode.getRelations(null, null, "destination");
+     
+      for (Relation rel : relations) {
+         if(rel == null) {
+            output.append("skipped " + rel + "; ");
+            continue; //Skip contentchannels and collection channels. 
+         }
+         if (! rel.isRelation()) {
+            output.append("skipped " + rel + "; ");
+            continue; //Skip contentchannels and collection channels.  
+         }
+         RelationManager relManager = rel.getRelationManager();
+         if (relManager == null) {
+            //When a relation exists, but it is not defined in the typedef, the relManager could not be found and resolves in null
+            //Apparently, there is a typedef missing in the MMBase typedef table. Check the numbers in the logfile and add the relation to fix it!
+            //You need to cleanrun the script again (from previous database) or fix these listed nodes by hand!
+            output.append("strangely not found relManager for " + rel.getNumber() + ", please check destNode(" + sourceNode.getNumber() + "|" + destNode.getNumber() + ") (might need to add a relation in typedef table!);");
+            continue;
+         }
+         
+         if (!(AssetElementUtil.isAssetElement(rel.getDestination()) ||  ContentElementUtil.isContentElement(rel.getDestination()))) {
+            output.append("skipped " + relManager.getName() + "; ");
+            continue; //Skip contentchannels and collection channels.  
+         }
+         
+         if (!isRelatedWithCurrentChannelTree(rel.getDestination(),channels)) {
+            output.append("skipped " + relManager.getName() + "; ");
+            continue; //Skip contentchannels and collection channels. 
+         }
+         if (isChannel(rel.getDestination()) || 
+               relManager.getName().equalsIgnoreCase("deletionrel")
+//               || relManager.getName().equalsIgnoreCase("creationrel")
+               ) {
+            output.append("skipped " + relManager.getName() + "; ");
+            continue; //Skip contentchannels and collection channels.
+         } 
+         else if (rel.getNodeManager().getName().equals(ContentElementUtil.OWNERREL)) {
+            CloneUtil.cloneRelations(sourceNode, destNode, ContentElementUtil.OWNERREL, SecurityUtil.USER);
+            output.append(ContentElementUtil.OWNERREL + " copied;");
+         } else 
+         {
+            //*** Start cloning the node from sourceChild -> destChild
+            //If the related node should be cloned, dive into the node and deepcopy it
+            Node sourceChild = rel.getDestination();
+            boolean cloned = false;
+            
+            //Only clone node, when it hasn't been cloned before.
+            Node destChild;
+            if (copiedNodes.get(sourceChild.getNumber()) == null) { 
+               destChild = cloneNode(sourceChild);
+               copiedNodes.put(Integer.valueOf(sourceChild.getNumber()),Integer.valueOf(destChild.getNumber()));
+               cloned = true;
+               //Logging
+               if (destChild.getNodeManager().hasField("name")) {
+                //  output.append(destChild.getFieldValue("name") + " of ");
+               }
+               output.append(rel.getNodeManager().getName() + " cloned (" + sourceNode.getNumber() + "|" + destChild.getNumber() + ");");
+            } else {
+               //Retrieve the already cloned node from the Map
+               destChild = sourceNode.getCloud().getNode(copiedNodes.get(sourceChild.getNumber()));
+               output.append(rel.getNodeManager().getName() + " reused clone (" + sourceChild.getNumber() + "|" + destChild.getNumber() + ");");
+            }
+            //*** End cloning node
+        
+            //Create a new relation between the new node and its parent
+            Relation destRel = destNode.createRelation(destChild, relManager);
+            String relName = destRel.getNodeManager().getName();
+            if (relName.equalsIgnoreCase("posrel") || 
+                  relName.equalsIgnoreCase("contentrel") ||
+                  relName.equalsIgnoreCase("childrel") || 
+                  relName.equalsIgnoreCase("detailimagerel")) {
+               destRel.setIntValue("pos", rel.getIntValue("pos"));
+            }
+            destRel.commit();
+            
+            //If no clone was needed, but reused an existing clone, the relations are fine already..continue!
+            if (!cloned) continue;
+            
+            //Creation channels are skipped at copying relations, so do it by hand.
+            if (hasCreationChannel(sourceChild)  && isChannel(destNode)) {
+               addCreationChannel(destChild, destNode);
+               output.append("added creationrel to " + destChild.getNumber() + ";");
+            }
+            
+            //If destChild is an image, also change title
+            if (destChild.getNodeManager().getName().equalsIgnoreCase("images")) {
+               destChild.setStringValue("title", destChild.getStringValue("title") + "-North");
+               destChild.commit();
+            }
+              output.append("[newRel:" + destNode.getNumber() + "," + relName + "];");
+            
+//            if (destChild.getNodeManager().getName().equalsIgnoreCase("subject")) {
+               //Now go deeper into the tree
+               cloneRelatedNodes(sourceChild, destChild, copiedNodes, output,channels);
+//            }
+         }
+      }
+   }
+   public static Node cloneNode(Node localNode) {
+      if (isRelation(localNode)) {
+         return CloneUtil.cloneRelation(localNode);
+      }
+      else {
+        NodeManager localNodeManager = localNode.getNodeManager();
+        NodeManager nodeManager = localNode.getCloud().getNodeManager(localNodeManager.getName());
+        Node newNode = nodeManager.createNode();
+
+        FieldIterator fields = localNodeManager.getFields().fieldIterator();
+        while (fields.hasNext()) {
+           Field field = fields.nextField();
+           String fieldName = field.getName();
+
+           if (field.getState() == Field.STATE_PERSISTENT) {
+               if (!(fieldName.equals("owner") || fieldName.equals("number") ||
+                     fieldName.equals("otype") ||
+                     (fieldName.indexOf("_") == 0))) {
+                  cloneNodeField(localNode, newNode, field);
+               }
+           }
+        }
+        newNode.commit();
+
+        return newNode;
+      }
+   }
+   
+   /**
+    * cloneNodeField copies node fields from one node to an other
+    * 
+    * @param sourceNode
+    *           the source node
+    * @param destinationNode
+    *           destination node
+    * @param field
+    *           the field to clone
+    */
+   public static void cloneNodeField(Node sourceNode, Node destinationNode, Field field) {
+      String fieldName = field.getName();
+
+      if (destinationNode.getNodeManager().hasField(fieldName) == true) {
+         Field sourceField = sourceNode.getNodeManager().getField(fieldName);
+         if (sourceField.getState() != Field.STATE_SYSTEM && !sourceField.isVirtual()) {
+            destinationNode.setValueWithoutProcess(fieldName, 
+                    sourceNode.getValueWithoutProcess(fieldName));
+         }
+      }
+   }
+   
+   /**
+    * quick test to see if node is a relation by testing fieldnames
+    * @param node Possible relation
+    * @return <code>true</code> when relation fields present
+    */
+   public static boolean isRelation(Node node) {
+      FieldIterator fi = node.getNodeManager().getFields().fieldIterator();
+      int count = 0;
+
+      while (fi.hasNext()) {
+         String name = fi.nextField().getName();
+
+         if (name.equals("rnumber") || name.equals("snumber") ||
+               name.equals("dnumber")) {
+            count++;
+         }
+      }
+
+      if (count == 3) {
+         return true;
+      }
+
+      return false;
+   }
+   public static void iterateChannels(Node sourceChannel, List<Integer> channelList) {
+      NodeList children = RepositoryUtil.getOrderedChildren(sourceChannel);  
+      channelList.add(sourceChannel.getNumber());
+      for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+         Node childChannel = iter.next();
+         iterateChannels(childChannel, channelList);
+      }
+   }
+   
+   /**
+    * check the node if it is in the current channel tree
+    * @param sourceNode
+    * @param channels
+    * @return
+    */
+   public static boolean isRelatedWithCurrentChannelTree(Node sourceNode,List<Integer> channels) {
+
+      if (AssetElementUtil.isAssetElement(sourceNode)) {
+         
+         Node creationNode = getCreationChannel(sourceNode);
+         if(creationNode != null && channels.contains(creationNode.getNumber())) {
+            return true;
+         }
+      }      
+      else if (ContentElementUtil.isContentElement(sourceNode)) {
+         NodeList contentChannels = getContentChannelsForContent(sourceNode);
+         for(int i = 0 ; i < contentChannels.size() ; i++) {
+            if (channels.contains(contentChannels.getNode(i).getNumber())) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+   
+   /**
+    *  Clone related assets according to the channel
+    * @param sourceChannel   source channel 
+    * @param newChannel      destination channel
+    * @param copiedNodes     Nodes have been copied 
+    * @param output
+    */
+   public static void cloneAssetNodes(Node sourceChannel,Node newChannel,Map<Integer, Integer> copiedNodes ,StringBuilder output) {
+      
+      List<Relation> relations = sourceChannel.getRelations("creationrel", sourceChannel.getCloud().getNodeManager("assetelement"), SOURCE);
+      for (Relation rel : relations) {
+         Node sourceChild = rel.getSource();
+         Node destChild = CloneUtil.cloneNode(sourceChild);
+         copiedNodes.put(sourceChild.getNumber(), destChild.getNumber());
+         addAssetToChannel(destChild,newChannel);
+      }
    }
 }
