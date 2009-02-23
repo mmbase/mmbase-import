@@ -102,7 +102,7 @@
     </dependency>
 
 	<dependency>
-      <groupId>csv</groupId>
+      <groupId>supercsv</groupId>
       <artifactId>SuperCSV</artifactId>
       <version>1.52</version>
       <type>jar</type>
@@ -111,7 +111,7 @@
       </properties>
     </dependency>
 		<dependency>
-      <groupId>csv</groupId>
+      <groupId>spiffyframework</groupId>
       <artifactId>spiffy-with_source-all</artifactId>
       <version>0.05</version>
       <type>jar</type>
