@@ -57,6 +57,7 @@ public abstract class NewsletterUtil {
    public static final String NUMBER = "number";
    public static final String ARTICLE = "article";
    public static final String NEWSLETTER = "newsletter";
+   public static final String M_VALUE = "value";
    public static final String NEWSLETTERPUBLICATION = "newsletterpublication";
    public static final String RELATED = "related";
 
@@ -96,6 +97,25 @@ public abstract class NewsletterUtil {
       Node newsletterNode = cloud.getNode(number);
       deleteSubscriptionByNewsletter(newsletterNode);
       deleteNewsletterLogForNewsletter(number);
+      deleteSubscriptionForNewsletter(number);
+   }
+   
+   public static void deleteSubscriptionForNewsletter(int newsletterNumber) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
+      NodeManager nodeparameterManager = cloud.getNodeManager("nodeparameter");
+      NodeQuery query = cloud.createNodeQuery();
+      Step step = query.addStep(nodeparameterManager);
+      query.setNodeStep(step);
+      SearchUtil.addEqualConstraint(query, nodeparameterManager.getField(M_VALUE), newsletterNumber);
+  
+      NodeList nodeparameters = query.getList();
+      if (nodeparameters != null) {
+         for (int i = 0; i < nodeparameters.size(); i++) {
+            Node logNode = nodeparameters.getNode(i);
+            logNode.deleteRelations();
+            logNode.delete();
+         }
+      }
    }
 
    public static void deleteNewsletterLogForNewsletter(int newsletterNumber) {

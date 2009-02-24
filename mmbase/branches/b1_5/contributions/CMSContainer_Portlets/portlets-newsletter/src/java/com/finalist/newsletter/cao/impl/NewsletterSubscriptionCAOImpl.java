@@ -148,11 +148,13 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       log.debug("getSubscriptionrecord that newsletterId=" + newsletterId);
 
       Node subscriptionNode = null;
-      List<Node> records = cloud.getNode(newsletterId).getRelatedNodes("subscriptionrecord");
-      for (Node record : records) {
-         if (record.getStringValue("subscriber").equals(Integer.toString(userId))) {
-            subscriptionNode = record;
-            break;
+      if(cloud.hasNode(newsletterId)){
+         List<Node> records = cloud.getNode(newsletterId).getRelatedNodes("subscriptionrecord");
+         for (Node record : records) {
+            if (record.getStringValue("subscriber").equals(Integer.toString(userId))) {
+               subscriptionNode = record;
+               break;
+            }
          }
       }
 
