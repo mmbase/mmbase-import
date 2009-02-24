@@ -76,7 +76,9 @@ public class NewsletterPublisher {
          else {
             if("text/plain".equals(subscription.getMimeType())){
                OnlyText onlyText = new OnlyText();
-               originalBody = onlyText.html2Text(static_html);
+               String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription.getTerms(), publication.getId());
+               originalBody += url+"\n";
+               originalBody += onlyText.html2Text(static_html);
             }
             else {
                originalBody = static_html;
