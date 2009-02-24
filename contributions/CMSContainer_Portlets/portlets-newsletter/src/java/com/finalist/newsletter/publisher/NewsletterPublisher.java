@@ -65,23 +65,25 @@ public class NewsletterPublisher {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterEditionNode = cloud.getNode(publication.getId());
          // if needed to prompt user this validate will be remove to Action
+         String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription.getTerms(), publication.getId());
          String originalBody  = "";
+         if("text/plain".equals(subscription.getMimeType())){
+            originalBody += url+"\n";
+         }
          String status = newsletterEditionNode.getStringValue("process_status");
          String static_html = "";
          if (newsletterEditionNode.getValueWithoutProcess("static_html") != null)
             static_html = (String)newsletterEditionNode.getValueWithoutProcess("static_html");
          if (EditionStatus.INITIAL.value().equals(status) && StringUtils.isEmpty(static_html)) {
-            originalBody = getBody(publication, subscription);
+            originalBody += getBody(publication, subscription);
          }
          else {
             if("text/plain".equals(subscription.getMimeType())){
                OnlyText onlyText = new OnlyText();
-               String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription.getTerms(), publication.getId());
-               originalBody += url+"\n";
                originalBody += onlyText.html2Text(static_html);
             }
             else {
-               originalBody = static_html;
+               originalBody += static_html;
             }
 
          }
