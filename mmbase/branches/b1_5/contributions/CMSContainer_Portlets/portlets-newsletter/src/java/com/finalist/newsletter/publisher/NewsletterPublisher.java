@@ -36,7 +36,6 @@ import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.newsletter.NewsletterSendFailException;
-import com.finalist.newsletter.domain.EditionStatus;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Subscription;
@@ -65,21 +64,24 @@ public class NewsletterPublisher {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterEditionNode = cloud.getNode(publication.getId());
          // if needed to prompt user this validate will be remove to Action
+         String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription.getTerms(), publication.getId());
          String originalBody  = "";
-         String status = newsletterEditionNode.getStringValue("process_status");
-         String static_html = null;
+         if("text/plain".equals(subscription.getMimeType())){
+            originalBody += url+"\n";
+         }
+         String static_html = "";
          if (newsletterEditionNode.getValueWithoutProcess("static_html") != null)
             static_html = (String)newsletterEditionNode.getValueWithoutProcess("static_html");
-         if (EditionStatus.INITIAL.value().equals(status) && StringUtils.isEmpty(static_html)) {
-            originalBody = getBody(publication, subscription);
+         if (StringUtils.isEmpty(static_html)) {
+            originalBody += getBody(publication, subscription);
          }
          else {
             if("text/plain".equals(subscription.getMimeType())){
                OnlyText onlyText = new OnlyText();
-               originalBody = onlyText.html2Text(static_html);
+               originalBody += onlyText.html2Text(static_html);
             }
             else {
-               originalBody = static_html;
+               originalBody += static_html;
             }
 
          }
