@@ -29,6 +29,7 @@
       </div>
    </div>
 </div>
+
 <div class="editor">
    <div class="ruler_green">
       <div>&nbsp;<fmt:message key="community.data.export.title"/>&nbsp;</div>
@@ -38,15 +39,15 @@
          <input type="hidden" id="fileType" name="fileType"/>
          <p><input type="submit" onclick="javascript:commitToXml()" value="<fmt:message key="community.data.export.xml"/>"/></p>
          <p><input type="submit" onclick="javascript:commitToCsv()" value="<fmt:message key="community.data.export.csv"/>"/></p>
-         <b>Options</b>
-         <select property="groups" style="width:150px" name="groups">
-            <option value="0">ALL GROUP</option>
+         <p><b><fmt:message key="community.data.options"/></b></p>
+        <p><fmt:message key="community.data.export.option.title"/>  <select property="groups" style="width:150px" name="groups">
+            <option value="0"><fmt:message key="community.data.export.allgroup"/></option>
             <c:if test="${not empty requestScope.groups}">
                <c:forEach items="${requestScope.groups}" var="groupItem">
                   <option value="${groupItem.id}">${groupItem.name}</option>
                </c:forEach>
             </c:if>
-         </select>
+         </select></p>
       </html:form>
    </div>
    <div class="ruler_green">
@@ -57,15 +58,15 @@
       <html:form action="/editors/community/ReferenceImportExportAction.do?action=showImportPage">
          <input type="hidden" name="imGroupId" id="imGroupId"/>
          <p><input type="submit" onclick="javascript:commitImport()" value="<fmt:message key="community.data.import.from"/>"/></p>
-         <b>Options</b>
-         <select property="groups" style="width:150px" name="groups" id="imgroups">
-            <option value="0">NO GROUP</option>
+         <p> <b><fmt:message key="community.data.options"/></b></p>
+         <p> <fmt:message key="community.data.import.option.title"/>   <select property="groups" style="width:150px" name="groups" id="imgroups">
+            <option value="0"><fmt:message key="community.data.inport.nogroup"/></option>
             <c:if test="${not empty requestScope.groups}">
                <c:forEach items="${requestScope.groups}" var="groupItem">
                   <option value="${groupItem.id}">${groupItem.name}</option>
                </c:forEach>
             </c:if>
-         </select>
+         </select></p>
       </html:form>
    </div>
 </div>
