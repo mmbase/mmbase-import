@@ -6,7 +6,7 @@
 		<table class="editcontent">
 
 			<%-- Portletdefinition display --%>
-			<c:import url="sections/definitiondisplay.jsp" />
+			<c:import url="../sections/definitiondisplay.jsp" />
 
 			<tr>
 				<td colspan="3"><h4><fmt:message key="edit_defaults.register.group" /></h4></td>
