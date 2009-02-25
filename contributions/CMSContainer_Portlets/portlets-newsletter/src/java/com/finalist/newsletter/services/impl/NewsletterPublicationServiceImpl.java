@@ -112,7 +112,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       sendResults.put(SEND_FAIL, sendFails);
 
       publicationCAO.setStatus(publicationId, STATUS.DELIVERED);
-      publicationCAO.renamePublicationTitle(publicationId);
+//      publicationCAO.renamePublicationTitle(publicationId);
       return sendResults;
    }
 
