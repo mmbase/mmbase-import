@@ -24,10 +24,8 @@ public class NewsletterEditionFreeze extends NewsletterEditionAction{
    @Override
    protected void doSave(HttpServletRequest request, Node edition) throws Exception {
       if (!EditionStatus.FROZEN.value().equals(edition.getValue("process_status"))) {
-         if(ServerUtil.isSingle()) {
-            NewsletterPublicationUtil.freezeEdition(edition);
-         }
-         else {
+         if(ServerUtil.isStaging() && !ServerUtil.isSingle())  {
+
             if (Publish.isPublished(edition)) {
                NewsletterPublicationUtil.freezeEdition(edition);
             } else {
@@ -49,6 +47,9 @@ public class NewsletterEditionFreeze extends NewsletterEditionAction{
                }
                request.getSession().setAttribute(NEEDAJAX, edition.getNumber());
             }
+         }
+         else {
+            NewsletterPublicationUtil.freezeEdition(edition);
          }
       } 
    }
