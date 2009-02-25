@@ -73,28 +73,29 @@ public abstract class TreeAction extends MMBaseAction {
          }
          return null;
       }
-      else {
-         String channel = getChannelId(request, cloud);
-         if (StringUtils.isNotEmpty(channel) && !"notfound".equals(channel)) {
-            Node channelNode = cloud.getNode(channel);
-            List<Node> openChannels = getOpenChannels(channelNode);
-            if (openChannels != null) {
-               for (Node node : openChannels) {
-                  info.expand(node.getNumber());
-               }
-               addToRequest(request, "channel", channelNode);
-            }
-         }
-         else {
-            Node rootNode = getRootNode(cloud);
-            if (rootNode != null) {
-               addToRequest(request, "channel", rootNode);
-            }
-         }
 
-         ActionForward ret = mapping.findForward(SUCCESS);
-         return ret;
+      String channel = getChannelId(request, cloud);
+      if (StringUtils.isNotEmpty(channel) && !"notfound".equals(channel) 
+            && cloud.hasNode(channel)) {
+
+         Node channelNode = cloud.getNode(channel);
+         List<Node> openChannels = getOpenChannels(channelNode);
+         if (openChannels != null) {
+            for (Node node : openChannels) {
+               info.expand(node.getNumber());
+            }
+            addToRequest(request, "channel", channelNode);
+         }
       }
+      else {
+         Node rootNode = getRootNode(cloud);
+         if (rootNode != null) {
+            addToRequest(request, "channel", rootNode);
+         }
+      }
+
+      ActionForward ret = mapping.findForward(SUCCESS);
+      return ret;
    }
 
 

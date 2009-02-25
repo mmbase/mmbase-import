@@ -10,14 +10,14 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.struts;
 
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.mmapps.commons.util.HttpUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.*;
 import org.mmbase.bridge.Cloud;
@@ -36,7 +36,7 @@ public abstract class TreeAction extends MMBaseAction {
       TreeInfo info = getTreeInfo(cloud);
 
       String action = request.getParameter("action");
-      if (!StringUtil.isEmpty(action)) {
+      if (StringUtils.isNotEmpty(action)) {
          response.setContentType("text/xml");
          if ("expand".equals(action)) {
             String persistentid = request.getParameter("persistentid");
@@ -67,22 +67,22 @@ public abstract class TreeAction extends MMBaseAction {
 
             PrintWriter out = HttpUtil.getWriterForXml(response);
             out.write("<options>");
-            for (Iterator<String> iter = children.iterator(); iter.hasNext();) {
-               String element = iter.next();
+            for (String element : children) {
                out.write("<option>" + element + "</option>");
             }
             out.write("</options>");
          }
          return null;
       }
-      else {
+
          String channel = getChannelId(request, cloud);
-         if (!StringUtil.isEmpty(channel) && !"notfound".equals(channel)) {
+      if (StringUtils.isNotEmpty(channel) && !"notfound".equals(channel) 
+            && cloud.hasNode(channel)) {
+
             Node channelNode = cloud.getNode(channel);
             List<Node> openChannels = getOpenChannels(channelNode);
             if (openChannels != null) {
-               for (Iterator<Node> iter = openChannels.iterator(); iter.hasNext();) {
-                  Node node = iter.next();
+            for (Node node : openChannels) {
                   info.expand(node.getNumber());
                }
                addToRequest(request, "channel", channelNode);
@@ -98,7 +98,6 @@ public abstract class TreeAction extends MMBaseAction {
          ActionForward ret = mapping.findForward(SUCCESS);
          return ret;
       }
-   }
 
 
    protected String getChannelId(HttpServletRequest request, Cloud cloud) {
