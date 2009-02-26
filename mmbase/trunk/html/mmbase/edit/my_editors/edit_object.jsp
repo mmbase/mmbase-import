@@ -1,5 +1,5 @@
 <%@ include file="inc/top.jsp" %>
-<mm:content type="text/html" escaper="none" expires="0">
+<mm:content type="text/html" postprocessor="none" escaper="none" expires="0">
 <mm:cloud jspvar="cloud" method="loginpage" loginpage="login.jsp" rank="$rank">
 <mm:import externid="nr" escape="text/html,trimmer" />  <%-- the node we're going to edit --%>
 <mm:import id="nr" reset="true"><mm:node number="$nr" notfound="skipbody"><mm:field name="number" /><mm:import id="nodefound">y</mm:import></mm:node></mm:import>
