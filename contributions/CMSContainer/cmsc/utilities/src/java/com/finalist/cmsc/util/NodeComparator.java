@@ -48,7 +48,7 @@ public class NodeComparator implements Comparator<Node> {
      * The two message nodes will be compared using the compare function of
      * the values of their fields.
      * Only Comparable values can be used (String, Numbers, Date), as well as
-     * Boolean values.
+     * Boolean values. Default null is less than any values.
      * In other cases it's assumed that the values cannot be ordered.
      * <br />
      * Note: this class assumes that values in fields are of similar types
@@ -70,7 +70,7 @@ public class NodeComparator implements Comparator<Node> {
             f2 = o2.getObjectValue(field);
             if (f1 instanceof Comparable) {
                try {
-                   result=((Comparable)f1).compareTo(f2);
+                   result = (f2==null)? 1:((Comparable)f1).compareTo(f2);
                } catch (ClassCastException e) {
                    // types do not compare -
                    // possibly the in-memory value type differs from the
@@ -79,10 +79,12 @@ public class NodeComparator implements Comparator<Node> {
                    // Solving this could bring this compare to a crawl, so we
                    // don't. Just edit stuff the right way.
                }
-           } else if (!f1.equals(f2)) {
+           } else if (f1 != null && !f1.equals(f2)) {
                if (f1 instanceof Boolean) {
                    result=((Boolean)f1).booleanValue() ? 1 : -1;
                }
+           } else if (f1 == null ){
+              result=-1;
            }
             fieldnr++;
         }
