@@ -7,9 +7,9 @@
   <version>${version}</version>
   <name>Custom CMS Container single web application</name>
   <properties>
-	<cmsc.version>1.6.0</cmsc.version>
-	<cmscportlets.version>1.6.0</cmscportlets.version>
-	<cmscmodules.version>1.6.0</cmscmodules.version>
+	<cmsc.version>1.7-SNAPSHOT</cmsc.version>
+	<cmscportlets.version>1.7-SNAPSHOT</cmscportlets.version>
+	<cmscmodules.version>1.7-SNAPSHOT</cmscmodules.version>
 	<mmbase.version>1.8.6-20080927</mmbase.version>
   </properties>
   <repositories>
@@ -32,7 +32,7 @@
     <!--dependency>
       <groupId>finalist</groupId>
       <artifactId>cmsc-demo-webapp</artifactId>
-      <version>1.6.0</version>
+      <version>1.7-SNAPSHOT</version>
       <type>mmbase-module</type>
     </dependency-->
     <dependency>

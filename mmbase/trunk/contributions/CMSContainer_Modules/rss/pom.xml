@@ -7,6 +7,6 @@
   <parent>
         <groupId>finalist</groupId>
         <artifactId>modules</artifactId>
-        <version>1.6.0</version>
+        <version>1.7-SNAPSHOT</version>
   </parent>
 </project>
