@@ -10,7 +10,7 @@
 <mm:import externid="rkind" />
 <mm:import externid="dir" />
 
-<mm:import id="pagetitle">New <mm:write referid="ntype" /> node</mm:import>
+<mm:import id="pagetitle">new <mm:nodeinfo type="guitype" nodetype="$ntype" escape="lowercase" /> node - my_editors</mm:import>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
   <%@ include file="inc/head.jsp" %>
