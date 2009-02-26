@@ -1,7 +1,7 @@
 <%@ include file="inc/top.jsp" %>
 <mm:content type="text/html" escaper="none" expires="0">
 <mm:cloud name="mmbase" jspvar="cloud" method="loginpage" loginpage="login.jsp" rank="$rank">
-<mm:import externid="pagetitle">Config</mm:import>
+<mm:import externid="pagetitle">configure &amp; help - my_editors</mm:import>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
   <%@ include file="inc/head.jsp" %>
