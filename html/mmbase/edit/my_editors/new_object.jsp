@@ -1,5 +1,5 @@
 <%@ include file="inc/top.jsp" %>
-<mm:content type="text/html" escaper="none" expires="0">
+<mm:content type="text/html" postprocessor="none" escaper="none" expires="0">
 <mm:cloud jspvar="cloud" method="loginpage" loginpage="login.jsp" rank="$rank">
 
 <mm:import externid="ntype" escape="text/html,trimmer" />  <%-- type of node to create --%>
