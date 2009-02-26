@@ -50,7 +50,7 @@
                      </mm:haspage>
                      <mm:haspage page="/editors/community">
                         <li class="users">
-                           <c:url var="communityUrl" value="/editors/community/report_overview.jsp"/>
+                           <c:url var="communityUrl" value="/editors/community/ReferenceImportExportAction.do?action=listGroups"/>
                            <a href="${communityUrl}" target="rightpane"><fmt:message key="modules.community.data" /></a>
                         </li>
                      </mm:haspage>
