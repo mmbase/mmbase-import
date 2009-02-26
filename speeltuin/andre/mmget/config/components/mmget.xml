@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="mmget"
+    version="1"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+  <class name="org.mmbase.framework.BasicComponent"></class>
+
+  <description xml:lang="nl">MMGet component</description>
+  <description xml:lang="en">MMGet component</description>
+
+  <block name="mmget" 
+    classification="mmbase.tools"
+    mimetype="text/html">
+    <title xml:lang="en">MMGet</title>
+    <title xml:lang="nl">MMGet</title>
+    <description xml:lang="en">
+      An application like 'wget', it downloads a site from an url and saves it in a directory.
+      Both parameters or fields must be specified. Additional settings, like the default homepage,
+      can be configured in 'config/utils/mmget.xml'.
+    </description>
+    <description xml:lang="nl">
+      Een applicatie zoals 'wget', het download een site en saved het in een directory. 
+      Beide parameters of velden zijn veplicht. Overige voorkeuren, zoals de default homepage,
+      kunnen opgegeven worden in 'config/utils/mmget.xml'.
+    </description>
+    <body jsp="index.jspx">
+    </body>
+  </block>
+
+  
+</component>
