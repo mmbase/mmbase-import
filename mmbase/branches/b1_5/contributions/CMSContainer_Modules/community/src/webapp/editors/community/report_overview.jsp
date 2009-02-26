@@ -2,6 +2,7 @@
 %><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc"
 %><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html:html xhtml="true">
 <fmt:setBundle basename="cmsc-community" scope="request" />
 <cmscedit:head title="community.data.title">
    <script type="text/javascript">
@@ -20,6 +21,7 @@
    </script>
 
 </cmscedit:head>
+<body>
 <div class="tabs">
    <div class="tab_active">
       <div class="body">
@@ -70,4 +72,6 @@
       </html:form>
    </div>
 </div>
+</body>
+</html:html>
 </mm:content>
