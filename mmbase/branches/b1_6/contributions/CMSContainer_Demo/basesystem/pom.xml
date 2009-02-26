@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>finalist</groupId>
     <artifactId>basesystem</artifactId>
-    <version>1.6.0</version>
+    <version>1.6.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>basesystem</name>
     <properties>
-        <cmsc.version>1.6.0</cmsc.version>
-        <cmscmodules.version>1.6.0</cmscmodules.version>
+        <cmsc.version>1.6.1-SNAPSHOT</cmsc.version>
+        <cmscmodules.version>1.6.1-SNAPSHOT</cmscmodules.version>
         <mmbase.version>1.8.6-20080927</mmbase.version>
         <mmbasermmci.version>1.8.2-20061020</mmbasermmci.version>
         <pluto.version>1.0.1</pluto.version>

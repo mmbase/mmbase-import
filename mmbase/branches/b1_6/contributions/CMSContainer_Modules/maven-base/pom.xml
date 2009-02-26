@@ -4,10 +4,10 @@
   <artifactId>modules</artifactId>
   <packaging>pom</packaging>
   <name>modules</name>
-  <version>1.6.0</version>
+  <version>1.6.1-SNAPSHOT</version>
   <properties>
-    <cmsc.version>1.6.0</cmsc.version>
-    <cmscportlets.version>1.6.0</cmscportlets.version>
+    <cmsc.version>1.6.1-SNAPSHOT</cmsc.version>
+    <cmscportlets.version>1.6.1-SNAPSHOT</cmscportlets.version>
   </properties>
   <modules>
     <module>portlets-emailalert</module>
