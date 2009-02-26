@@ -3,7 +3,14 @@
 <mm:cloud jspvar="cloud" method="loginpage" loginpage="login.jsp" rank="$rank">
 <mm:import externid="nr" escape="text/html,trimmer" />  <%-- the node we're going to edit --%>
 <mm:import id="nr" reset="true"><mm:node number="$nr" notfound="skipbody"><mm:field name="number" /><mm:import id="nodefound">y</mm:import></mm:node></mm:import>
-<mm:import externid="pagetitle">Edit <mm:node number="$nr" notfound="skipbody"><mm:nodeinfo type="type" id="ntype" /></mm:node> node</mm:import>
+<mm:node number="$nr" notfound="skipbody">
+  <mm:nodeinfo type="type" id="ntype" write="false" />
+  <mm:import id="pagetitle">
+    <mm:hasfield name="title"><mm:field name="title" escape="inline" /></mm:hasfield>
+    <mm:hasfield name="title" inverse="true"><mm:function name="gui" escape="tagstripper" /></mm:hasfield>
+    : <mm:nodeinfo type="guitype" escape="lowercase" /> - my_editors
+  </mm:import>
+</mm:node>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
   <%@ include file="inc/head.jsp" %>

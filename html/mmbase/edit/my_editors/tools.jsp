@@ -7,7 +7,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <title>my_editors - Tools</title>
+  <title>tools - my_editors</title>
 </head>
 <body>
 <h1>Tools</h1>

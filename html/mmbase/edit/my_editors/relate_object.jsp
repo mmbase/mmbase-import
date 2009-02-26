@@ -6,7 +6,7 @@
 <mm:import externid="rnr" />
 <mm:import externid="rkind" /> 
 <mm:import externid="dir" /> 
-<mm:import externid="pagetitle">Relate with <mm:present referid="ntype"><mm:write referid="ntype" /></mm:present> node</mm:import>
+<mm:import externid="pagetitle">relate with <c:if test="${!empty ntype}"><mm:nodeinfo type="guitype" nodetype="$ntype" escape="lowercase" /> node - </c:if>my_editors</mm:import>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
   <%@ include file="inc/head.jsp" %>

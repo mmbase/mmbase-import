@@ -2,7 +2,8 @@
 <mm:content type="text/html" escaper="none" expires="0">
 <mm:cloud jspvar="cloud" method="loginpage" loginpage="login.jsp" rank="$rank">
 <mm:import externid="ntype" />
-<mm:import externid="pagetitle">Home</mm:import>
+<mm:import externid="pagetitle"><c:if test="${!empty ntype}"><mm:nodeinfo type="plural_guitype" nodetype="$ntype" escape="lowercase" /> - </c:if>my_editors
+</mm:import>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
   <%@ include file="inc/head.jsp" %>

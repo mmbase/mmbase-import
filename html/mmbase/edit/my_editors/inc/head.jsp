@@ -13,7 +13,7 @@
   <link href="<mm:url absolute="server" page="img/favicon.ico" />" rel="icon" type="image/x-icon" />
   <link href="<mm:url absolute="server" page="img/favicon.ico" />" rel="shortcut icon" type="image/x-icon" />
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <title>my_editors - <mm:write referid="pagetitle" /></title>
+  <title><c:choose><c:when test="${!empty pagetitle}">${pagetitle}</c:when><c:otherwise>my_editors</c:otherwise></c:choose></title>
   <mm:haspage page="/mmbase/jquery/jquery.jspx">
     <mm:include page="/mmbase/jquery/jquery.jspx" />
     <mm:link page="scripts/my_editors.js" absolute="server"><script src="${_}" type="text/javascript"><!-- help msie --></script></mm:link>
