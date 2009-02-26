@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.1 2009-02-26 16:29:00 andre Exp $
+ * @version $Id: MMGet.java,v 1.1 2009-02-26 19:33:13 andre Exp $
  */
 public final class MMGet {
     
