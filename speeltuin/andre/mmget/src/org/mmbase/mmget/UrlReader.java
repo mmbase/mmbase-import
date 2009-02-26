@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * @author  &lt;&gt;
  * @version $Rev$
  */
-public final class UrlReader {
+public class UrlReader {
 	private static final Logger log = Logging.getLoggerInstance(UrlReader.class);
 	
 	protected URL url = null;
@@ -38,13 +38,12 @@ public final class UrlReader {
 		// open the URL for reading
 		URLConnection uc = url.openConnection();
 		contenttype = MMGet.contentType(uc);
+		
 		if (contenttype == MMGet.CONTENTTYPE_HTML) {
-		    return HTMLReader(url);
+		    new HTMLReader(url);
 		} else {
-		    return CSSReader(url);
+		    new CSSReader(url);
 		}
-		//log.debug("contenttype: " + contenttype);
-		//inrdr = new BufferedReader(new InputStreamReader(url.openStream()));
 	}
 	
 	protected int getContentType() {
@@ -74,15 +73,11 @@ public final class UrlReader {
 	 */
 	public static void main (String[] args) throws MalformedURLException, IOException {
 		if (args.length == 0) {
-			System.out.println("Usage: UrlReaders [...]");
+			System.out.println("Usage: UrlReader [...]");
 			return;
 		}
 		for (int i = 0; i < args.length; i++) {
 			UrlReader ur = new UrlReader(args[0]);
-			String tag;
-			while ((tag = ur.nextTag()) != null ) {
-				System.out.println(tag);
-			}
 			ur.close();
 		}		
 	}
