@@ -1,0 +1,44 @@
+<mm:cloud 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    rank="basic user">
+  <jsp:output omit-xml-declaration="true" />
+  <div
+      class="mm_c c_mmget mmget ${requestScope.className}"
+      id="${requestScope['org.mmbase.componentId']}">
+    
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+    <p>
+      ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
+    </p>
+    
+    <mm:import externid="url" />
+    <mm:import externid="dir" />
+    <mm:import externid="action" />
+        
+    <mm:present referid="action"> 
+      <mm:isnotempty referid="url"> 
+        <p class="msg">
+          Status: <pre><mm:function set="mmget" name="exportsite" referids="url,dir" /></pre>
+        </p>
+      </mm:isnotempty>
+      <mm:isempty referid="url"> 
+        <p class="err">Error: No url!</p>
+      </mm:isempty>
+    </mm:present>
+    
+    <form action="${mm:link('mmget')}" method="post">
+      <p>
+        <label for="link">URL to start from</label>
+        <input name="url" id="url" type="text" value="${url}" size="72" maxlength="255" />
+        <label for="dir">Directory to save in</label>
+        <input name="dir" id="dir" type="text" value="${dir}" size="72" maxlength="255" />
+      </p>
+      <p> 
+       <input type="submit" name="action" value="Start" />
+      </p>  
+    </form>
+    
+  </div>
+</mm:cloud>
