@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<action type="delete">
+	<prompt xml:lang="en">Delete term from glossary?</prompt>
+	<prompt xml:lang="nl">Verwijder woord van verklarende woordenlijst?</prompt>
+	<prompt xml:lang="zh">从关键字索引中删除本项？</prompt>
+	<description xml:lang="en">Delete a term from glossary</description>
+	<description xml:lang="nl">Verwijder woord van verklarende woordenlijst</description>
+	<description xml:lang="zh">从关键字索引中删除一项数据</description>
+</action>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<allowrel exportsource="jdbc:mysql://localhost/poll" timestamp="20060906000000">
+   <node number="801" owner="default" snumber="44002" dnumber="44020" rtype="allowrel" dir="bidirectional">
+      <allow>yes</allow>
+   </node>
+</allowrel>

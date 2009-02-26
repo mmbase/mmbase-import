@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_newsletter">
+   <title xml:lang="nl">Nieuwsbrief</title>
+   <title xml:lang="en">Newsletter</title>
+   <title xml:lang="zh">时事通讯</title>
+   <field name="title" dtmaxlength="255" dtrequired="true">
+      <prompt xml:lang="en">Title</prompt>
+      <prompt xml:lang="nl">Titel</prompt>
+      <prompt xml:lang="zh">标题</prompt>
+   </field>
+   <field name="subject" dtmaxlength="100" dtrequired="true">
+      <prompt xml:lang="en">Subject</prompt>
+      <prompt xml:lang="nl">Onderwerp</prompt>
+      <prompt xml:lang="zh">主题</prompt>
+   </field>
+   <field name="urlfragment" dtmaxlength="255" dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,253}[a-zA-Z0-9]$">
+      <prompt xml:lang="en">URL fragment</prompt>
+      <prompt xml:lang="nl">URL-fragment</prompt>
+      <prompt xml:lang="zh">Url-片段</prompt>
+   </field>
+   <field name="description" dtmaxlength="1024" ftype="text" rows="3">
+      <prompt xml:lang="en">Description</prompt>
+      <prompt xml:lang="nl">Omschrijving</prompt>
+      <prompt xml:lang="zh">描述</prompt>
+   </field>
+   <field name="intro" dtmaxlength="1024" ftype="text" rows="3" dtrequired="true">
+      <prompt xml:lang="en">Introduction</prompt>
+      <prompt xml:lang="nl">Inleiding</prompt>
+      <prompt xml:lang="zh">摘要</prompt>
+   </field>
+   <field name="from_mail" dtmaxlength="40">
+      <prompt xml:lang="en">E-mail of sender</prompt>
+      <prompt xml:lang="nl">E-mail afzender</prompt>
+      <prompt xml:lang="zh">发件人邮箱</prompt>
+   </field>
+   <field name="from_name" dtmaxlength="40">
+      <prompt xml:lang="en">Name of sender</prompt>
+      <prompt xml:lang="nl">Naam afzender</prompt>
+      <prompt xml:lang="zh">发件人</prompt>
+   </field>
+   <field name="replyto_mail" dtmaxlength="40" dtpattern="(\w+)@(\w+\.)(\w+)(\.\w+)*"  dtrequired="true">
+      <prompt xml:lang="en">E-mail reply</prompt>
+      <prompt xml:lang="nl">E-mail antwoord</prompt>
+      <prompt xml:lang="zh">收件人邮箱</prompt>
+   </field>
+   <field name="replyto_name" dtmaxlength="40">
+      <prompt xml:lang="en">Name of reply</prompt>
+      <prompt xml:lang="nl">Naam antwoord</prompt>
+      <prompt xml:lang="zh">收件人</prompt>
+   </field>
+   <field name="paused" ftype="enum">
+      <prompt xml:lang="en">Paused</prompt>
+      <prompt xml:lang="nl">Pauze</prompt>
+      <prompt xml:lang="zh">暂停</prompt>
+      <optionlist select="boolean" />
+   </field>
+     <field name="pausedstartdate">
+      <prompt xml:lang="en">Pause Start</prompt>
+      <prompt xml:lang="nl">Pauze van</prompt>
+      <prompt xml:lang="zh">暂停起始</prompt>
+      <optionlist select="boolean" />
+   </field>
+   <field name="pausedstopdate">
+      <prompt xml:lang="en">Pause Stop</prompt>
+      <prompt xml:lang="nl">Pauze tot</prompt>
+      <prompt xml:lang="zh">暂停截止</prompt>
+      <optionlist select="boolean" />
+   </field>
+   <field name="schedule" ftype="calendar">
+      <prompt xml:lang="en">Schedule</prompt>
+      <prompt xml:lang="nl">Schedule</prompt>
+      <prompt xml:lang="zh">定时发送</prompt>
+   </field>
+   <field name="bounce_checking" ftype="enum">
+      <prompt xml:lang="en">Bounce Checking</prompt>
+      <prompt xml:lang="nl">Bounce controle</prompt>
+      <prompt xml:lang="zh">跟踪退信</prompt>
+      <optionlist select="bouncechecking_options" />
+   </field>
+   <field name="max_bounces">
+      <prompt xml:lang="en">Max Bounces</prompt>
+      <prompt xml:lang="nl">Max Bounces</prompt>
+      <prompt xml:lang="zh">最大退信数</prompt>
+   </field>
+   <field name="server">
+      <prompt xml:lang="en">Server</prompt>
+      <prompt xml:lang="nl">Server</prompt>
+      <prompt xml:lang="zh">服务器名称或地址</prompt>
+   </field>
+   <field name="user_name">
+      <prompt xml:lang="en">User Name</prompt>
+      <prompt xml:lang="nl">Gebruikersnaam</prompt>
+      <prompt xml:lang="zh">用户名</prompt>
+   </field>
+   <field name="password" ftype="password">
+      <prompt xml:lang="en">Password</prompt>
+      <prompt xml:lang="nl">Wachtwoord</prompt>
+      <prompt xml:lang="zh">密码</prompt>
+   </field>
+   <list include="config/layout/search_page_layoutrel_layout.xml" />
+   <list include="config/images/search_page_namedrel_images.xml" />
+   <list include="config/attachments/search_newsletter_posrel_attachments.xml" />
+   <list include="config/newsletter/search_newsletter_posrel_term.xml" />
+</form-schema>

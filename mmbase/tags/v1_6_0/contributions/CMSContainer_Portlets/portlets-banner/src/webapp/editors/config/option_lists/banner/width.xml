@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<optionlist name="width">
+   <option id="-1">auto</option>
+   <option id="120">120</option>
+   <option id="234">234</option>
+   <option id="468">468</option>
+</optionlist>

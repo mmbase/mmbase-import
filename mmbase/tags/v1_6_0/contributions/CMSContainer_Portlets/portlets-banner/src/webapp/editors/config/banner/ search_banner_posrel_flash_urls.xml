@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="posrel" destination="urls" minoccurs="0" maxoccurs="1" orderby="field[@name='pos']" ordertype="number">
+   <title xml:lang="nl">Flash URL</title>
+   <title xml:lang="en">Flash URL</title>
+   <title xml:lang="zh">Flash URL</title>
+
+   <item>
+		<field name="title" ftype="data">
+         <prompt xml:lang="en">Name</prompt>
+         <prompt xml:lang="nl">Naam</prompt>
+         <prompt xml:lang="zh">名称</prompt>
+      </field>
+		<field name="url" dtpattern="\://|javascript\:|mailto\:" ftype="data">
+			<prompt xml:lang="en">URL</prompt>
+			<prompt xml:lang="nl">URL</prompt>
+			<prompt xml:lang="zh">URL</prompt>
+      </field>
+      <field dtrequired="false" ftype="text" name="description" rows="3">
+         <prompt xml:lang="en">Description</prompt>
+         <prompt xml:lang="nl">Omschrijving</prompt>
+         <prompt xml:lang="zh">描述</prompt>
+      </field>
+   </item>
+
+	<command name="assetsselector" nodepath="urls" age="-1" fields="title,url,description">
+      <prompt xml:lang="en">Search URL</prompt>
+      <prompt xml:lang="nl">Zoek URL</prompt>
+      <prompt xml:lang="zh">查找URL</prompt>
+      <search-filter>
+         <name xml:lang="en">Name contains</name>
+         <name xml:lang="nl">Naam bevat</name>
+         <name xml:lang="zh">名称包含</name>
+			<search-fields>[title]</search-fields>
+      </search-filter>
+      <search-filter>
+			<name xml:lang="en">URL contains</name>
+			<name xml:lang="nl">URL bevat</name>
+			<name xml:lang="zh">名URL包含</name>
+         <search-fields>[url]</search-fields>
+      </search-filter>
+      <search-filter>
+         <name xml:lang="en">Description contains</name>
+         <name xml:lang="nl">Omschrijving bevat</name>
+         <name xml:lang="zh">描述包含</name>
+         <search-fields>[description]</search-fields>
+      </search-filter>
+   </command>
+
+   <command name="insert" objectnumber="new">
+      <prompt xml:lang="en">New</prompt>
+      <prompt xml:lang="nl">Nieuw</prompt>
+      <prompt xml:lang="zh">新建</prompt>
+   </command>
+
+   <action type="create">
+      <relation destinationtype="urls" role="posrel">
+         <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/object[@type='urls']/../field[@name='pos'])+{$pos}}</field>
+      </relation>
+   </action>
+</list>

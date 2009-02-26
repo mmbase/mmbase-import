@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>finalist</groupId>
+  <artifactId>cmsc-modules-import-excelmenu</artifactId>
+  <packaging>war</packaging>
+  <name>CMS Container Excel2Menu import</name>
+  <parent>
+        <groupId>finalist</groupId>
+        <artifactId>modules</artifactId>
+        <version>1.6.0</version>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>2.5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>poi</groupId>
+      <artifactId>poi-scratchpad</artifactId>
+      <version>2.5.1-final-20040804</version>
+    </dependency>
+  </dependencies>
+  <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>                
+                    <webResources>
+                        <resource>
+                            <targetPath>WEB-INF/config</targetPath>
+                            <directory>${basedir}/config</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+        </plugins>
+  </build>
+</project>

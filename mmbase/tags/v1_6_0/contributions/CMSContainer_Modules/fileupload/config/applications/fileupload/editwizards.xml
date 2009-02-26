@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editwizards exportsource="mmbase://127.0.0.1/fileupload" timestamp="20040225000000">
+
+	<node number="34004" owner="admin">
+		<name>file</name>
+		<description>File</description>
+		<wizard>config/file/file</wizard>
+		<nodepath>file</nodepath>
+		<fields>title</fields>
+	</node>
+</editwizards>

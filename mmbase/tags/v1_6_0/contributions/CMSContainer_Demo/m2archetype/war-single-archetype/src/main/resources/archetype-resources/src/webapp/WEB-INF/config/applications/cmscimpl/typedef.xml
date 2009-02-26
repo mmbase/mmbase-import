@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typedef exportsource="cmsc file dumper" timestamp="20070324161134">
+	<node number="138" owner="system">
+		<name>article</name>
+		<description></description>
+	</node>
+	<node number="15" owner="system">
+		<name>contentelement</name>
+		<description></description>
+	</node>
+	<node number="146" owner="system">
+		<name>link</name>
+		<description></description>
+	</node>
+	<node number="69" owner="system">
+		<name>urls</name>
+		<description>URLs to external sites</description>
+	</node>
+	<node number="16" owner="system">
+		<name>faqitem</name>
+		<description></description>
+	</node>
+	<node number="50" owner="system">
+		<name>attachments</name>
+		<description>Attachment, such as a PDF file</description>
+	</node>
+	<node number="140" owner="system">
+		<name>images</name>
+		<description>Images</description>
+	</node>
+</typedef>

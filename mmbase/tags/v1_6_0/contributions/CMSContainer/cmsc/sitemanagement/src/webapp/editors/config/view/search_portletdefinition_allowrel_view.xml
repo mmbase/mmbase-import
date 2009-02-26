@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="allowrel" destination="view" minoccurs="0" maxoccurs="*">
+	<title xml:lang="nl">View</title>
+	<title xml:lang="en">View</title>
+	<title xml:lang="zh">视图</title>
+
+	<item>
+		<field ftype="data" name="title">
+			<prompt xml:lang="en">Title</prompt>
+			<prompt xml:lang="nl">Titel</prompt>
+			<prompt xml:lang="zh">名称</prompt>
+		</field>
+		<field ftype="data" name="resource">
+			<prompt xml:lang="en">Resource</prompt>
+			<prompt xml:lang="nl">View</prompt>
+			<prompt xml:lang="zh">资源</prompt>
+		</field>
+		<field ftype="startwizard" wizardname="config/view/view" inline="true" />
+	</item>
+	
+	<command name="search" nodepath="view" age="-1" fields="title" pagelength="20" orderby="title">
+		<prompt xml:lang="en">Search view</prompt>
+		<prompt xml:lang="nl">Zoek view</prompt>
+		<prompt xml:lang="zh">查找视图</prompt>
+		<search-filter>
+			<name xml:lang="en">Title contains</name>
+			<name xml:lang="nl">Titel bevat</name>
+			<name xml:lang="zh">标题包含</name>
+			<search-fields>[title]</search-fields>
+		</search-filter>
+	</command>
+
+	<action type="create">
+		<relation destinationtype="view" role="allowrel">
+         <field name="allow">1</field>      
+      </relation>
+	</action>
+</list>

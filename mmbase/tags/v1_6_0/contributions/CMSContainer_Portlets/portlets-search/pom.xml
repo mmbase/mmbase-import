@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>finalist</groupId>
+  <artifactId>cmsc-portlets-search</artifactId>
+  <packaging>war</packaging>
+  <name>Search portlet</name>
+  <parent>
+        <groupId>finalist</groupId>
+        <artifactId>portlets</artifactId>
+        <version>1.6.0</version>
+  </parent>
+  <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native2ascii-maven-plugin</artifactId>
+                <version>1.0-alpha-1</version>
+                <configuration>
+                    <dest>${basedir}/target/classes</dest>
+                    <src>${basedir}/resources</src>
+                </configuration>
+                <executions>
+                    <execution>
+                    <id>native2ascii-utf8</id>
+                        <goals>
+                            <goal>native2ascii</goal>
+                        </goals>
+                        <configuration>
+                             <encoding>UTF-8</encoding>
+                             <includes>**/*.properties</includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+  </build>
+</project>

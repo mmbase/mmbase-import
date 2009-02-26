@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+
+	<!-- ========== Data Sources Definitions =================================== -->
+	<!-- ========== Form Bean Definitions =================================== -->
+	<form-beans>
+		<form-bean name="uploadFileForm" type="com.finalist.cmsc.fileupload.forms.UploadFileForm" />
+		<form-bean name="listFilesForm" type="com.finalist.cmsc.fileupload.forms.ListFilesForm" />
+	</form-beans>
+
+	<!-- ========== Global Exceptions Definitions =================================== -->
+	<!-- ========== Global Forward Definitions =================================== -->
+	<!-- ========== Action Mapping Definitions =================================== -->
+	<action-mappings>
+		<action 
+			path="/editors/fileupload/UploadFile" 
+			type="com.finalist.cmsc.fileupload.actions.UploadFileAction"
+			name="uploadFileForm"
+			scope="request"
+			validate="true"
+			input="/editors/fileupload/ListFiles.do"
+		>
+			<forward name="success" path="/editors/fileupload/ListFiles.do" redirect="true" />
+		</action>
+
+		<action 
+			path="/editors/fileupload/ListFiles" 
+			type="com.finalist.cmsc.fileupload.actions.ListFilesAction"
+			name="listFilesForm"
+			scope="request"
+			input="/editors/fileupload/listfiles.jsp"
+		>
+			<forward name="configerror" path="/editors/fileupload/configurationerror.jsp" />
+			<forward name="success" path="/editors/fileupload/listfiles.jsp" />
+		</action>
+
+		<action path="/editors/fileupload/DeleteFile" type="com.finalist.cmsc.fileupload.actions.DeleteFileAction">
+			<forward name="error" path="/editors/fileupload/ListFiles.do" redirect="true" />
+			<forward name="success" path="/editors/fileupload/ListFiles.do" redirect="true" />
+			<forward name="cancel" path="/editors/fileupload/ListFiles.do" redirect="true" />
+			<forward name="confirm" path="/editors/fileupload/confirmdelete.jsp" />
+		</action>
+		
+		<action 
+			path="/editors/fileupload/EditFile" 
+			type="com.finalist.cmsc.fileupload.actions.EditFileAction" 
+			validate="false"
+		>
+			<forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false" />
+			<forward name="returnurl" path="/editors/fileupload/ListFiles.do" redirect="false" />
+			<forward name="success" path="/editors/fileupload/ListFiles.do" redirect="false" />
+		</action>
+	</action-mappings>
+
+	<message-resources parameter="modules-fileupload" key="MODULES-FILEUPLOAD" />
+</struts-config>
