@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<namedallowrel exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
+   <node number="400" owner="default" snumber="257" dnumber="44002" rtype="namedallowrel" dir="bidirectional">
+      <name>menu</name>
+   </node>
+   <node number="401" owner="default" snumber="257" dnumber="44002" rtype="namedallowrel" dir="bidirectional">
+      <name>breadcrumb</name>
+   </node>
+   <node number="402" owner="default" snumber="257" dnumber="44001" rtype="namedallowrel" dir="bidirectional">
+      <name>center1</name>
+   </node>
+   <node number="403" owner="default" snumber="257" dnumber="44003" rtype="namedallowrel" dir="bidirectional">
+      <name>center1</name>
+   </node>
+   <node number="404" owner="default" snumber="257" dnumber="44001" rtype="namedallowrel" dir="bidirectional">
+      <name>center2</name>
+   </node>
+   <node number="405" owner="default" snumber="257" dnumber="44003" rtype="namedallowrel" dir="bidirectional">
+      <name>center2</name>
+   </node>
+   <node number="406" owner="default" snumber="257" dnumber="44001" rtype="namedallowrel" dir="bidirectional">
+      <name>center3</name>
+   </node>
+   <node number="407" owner="default" snumber="257" dnumber="44003" rtype="namedallowrel" dir="bidirectional">
+      <name>center3</name>
+   </node>
+   <node number="408" owner="default" snumber="257" dnumber="44001" rtype="namedallowrel" dir="bidirectional">
+      <name>center4</name>
+   </node>
+   <node number="409" owner="default" snumber="257" dnumber="44003" rtype="namedallowrel" dir="bidirectional">
+      <name>center4</name>
+   </node>
+   <node number="410" owner="default" snumber="257" dnumber="44001" rtype="namedallowrel" dir="bidirectional">
+      <name>center5</name>
+   </node>
+   <node number="411" owner="default" snumber="257" dnumber="44003" rtype="namedallowrel" dir="bidirectional">
+      <name>center5</name>
+   </node>
+   <node number="412" owner="default" snumber="257" dnumber="44001" rtype="namedallowrel" dir="bidirectional">
+      <name>left1</name>
+   </node>
+   <node number="413" owner="default" snumber="257" dnumber="44003" rtype="namedallowrel" dir="bidirectional">
+      <name>left1</name>
+   </node>
+   <node number="414" owner="default" snumber="257" dnumber="44001" rtype="namedallowrel" dir="bidirectional">
+      <name>left2</name>
+   </node>
+   <node number="415" owner="default" snumber="257" dnumber="44003" rtype="namedallowrel" dir="bidirectional">
+      <name>left2</name>
+   </node>
+   <node number="416" owner="default" snumber="257" dnumber="44001" rtype="namedallowrel" dir="bidirectional">
+      <name>left3</name>
+   </node>
+   <node number="417" owner="default" snumber="257" dnumber="44003" rtype="namedallowrel" dir="bidirectional">
+      <name>left3</name>
+   </node>
+</namedallowrel>

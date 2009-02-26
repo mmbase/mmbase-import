@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="poll" maintainer="finalist.com" version="1" auto-deploy="true">
+   <requirements>
+      <requires name="basecontentelements" maintainer="finalist.com" version="1" type="application"/>
+      <requires name="contentrepository" maintainer="finalist.com" version="3" type="application" />
+   </requirements>
+   
+   <neededbuilderlist>
+      <builder maintainer="finalist.com" version="1">poll</builder>
+      <builder maintainer="finalist.com" version="1">pollchoice</builder>
+    </neededbuilderlist>
+
+   <neededreldeflist>
+   </neededreldeflist>
+
+   <allowedrelationlist>
+      <relation from="poll" to="pollchoice" type="posrel" />
+   </allowedrelationlist>
+   
+   <datasourcelist>
+      <datasource builder="portletdefinition" path="poll/portletdefinition.xml"/>
+      <datasource builder="view" path="poll/view.xml"/>
+   
+      <datasource builder="editwizards" path="poll/editwizards.xml" />
+      <datasource builder="properties" path="poll/properties.xml" />
+      <datasource builder="poll" path="poll/poll.xml" />
+      <datasource builder="pollchoice" path="poll/pollchoice.xml" />
+   </datasourcelist>
+   
+   <relationsourcelist>
+      <relationsource builder="allowrel" path="poll/allowrel.xml"/>
+      <relationsource builder="posrel" path="poll/posrel.xml"/>
+   </relationsourcelist>
+   
+   <contextsourcelist>
+   </contextsourcelist>
+</application>

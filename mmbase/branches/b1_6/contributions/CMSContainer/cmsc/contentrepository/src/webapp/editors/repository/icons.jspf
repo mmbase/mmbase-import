@@ -1,0 +1,41 @@
+     <a href="javascript:callEditWizard('<mm:field name="number" />');"
+       title="<fmt:message key="asset.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16"
+                                                       title="<fmt:message key="asset.edit" />"
+                                                       alt="<fmt:message key="asset.edit" />"/></a>
+    <a href="<cmsc:contenturl number="${number}"/>" target="_blank"><img src="../gfx/icons/preview.png"
+                                                                         alt="<fmt:message key="asset.preview.title" />"
+                                                                         title="<fmt:message key="asset.preview.title" />"/></a>
+    <a href="javascript:showInfo('<mm:nodeinfo type="type"/>', '<mm:field name="number" />');">
+                              <img src="../gfx/icons/info.png" title="<fmt:message key="asset.info"/>" alt="<fmt:message key="asset.info"/>"/></a>
+    <mm:haspage page="/editors/versioning">
+        <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
+            <c:param name="nodenumber"><mm:field name="number"/></c:param>
+        </c:url>
+        <a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')"><img
+                src="../gfx/icons/versioning.png" title="<fmt:message key="asset.icon.versioning.title" />"
+                alt="<fmt:message key="asset.icon.versioning.title" />"/></a>
+    </mm:haspage>
+    <% if (role != null && SecurityUtil.isWriter(role)) { %>
+    <a href="javascript:unpublish('<mm:write referid="parentchannel" />','<mm:field name="number" />');"
+       title="<fmt:message key="asset.delete" />"><img src="../gfx/icons/delete.png" width="16" height="16"
+                                                         title="<fmt:message key="asset.delete" />"
+                                                         alt="<fmt:message key="asset.delete" />"/></a>
+    <a href="<c:url value='/editors/repository/select/SelectorChannel.do?role=writer' />"
+       target="selectchannel" onclick="moveContent(<mm:field name="number" />, ${parentchannel} )">
+        <img src="../gfx/icons/page_move.png" title="<fmt:message key="searchform.icon.move.title" />"/></a>
+    <% } %>
+
+    <cmsc:hasfeature name="savedformmodule">
+        <c:set var="typeval">
+            <mm:nodeinfo type="type"/>
+        </c:set>
+        <c:if test="${typeval == 'responseform'}">
+            <mm:url page="/editors/savedform/ShowSavedForm.do" id="showSavedForms" write="false">
+                <mm:param name="nodenumber"><mm:field name="number"/></mm:param>
+                <mm:param name="initreturnurl" value="${returnurl}"/>
+            </mm:url>
+            <a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png"
+                                                                title="<fmt:message key="asset.icon.savedform.title" />"
+                                                                alt="<fmt:message key="asset.icon.savedform.title" />"/></a>
+        </c:if>
+    </cmsc:hasfeature>

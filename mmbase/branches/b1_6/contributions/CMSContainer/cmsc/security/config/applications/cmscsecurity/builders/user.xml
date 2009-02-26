@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    extends="mmbaseusers" maintainer="finalist.com" name="user" version="1">
+<!--
+ 
+-->
+	<status>active</status>
+	<!--
+   <class>ContentRepository.User</class>
+	-->
+	<searchage>70</searchage>
+	<names>
+      <singular xml:lang="nl">user</singular>
+      <singular xml:lang="en">user</singular>
+      <plural xml:lang="nl">user</plural>
+      <plural xml:lang="en">user</plural>
+	</names>
+	<descriptions>
+      <description xml:lang="nl"> 
+</description>
+      <description xml:lang="en"> 
+</description>
+	</descriptions>
+	<properties>
+	    <property name="userNameCaseSensitive">true</property>
+	</properties>
+	<fieldlist>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+            <guiname xml:lang="nl">Achternaam</guiname>
+            <guiname xml:lang="en">surname</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>4</input>
+               <list>4</list>
+               <search>4</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>surname</name>
+				<type key="false" notnull="false" size="40" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+            <guiname xml:lang="nl">Voornaam</guiname>
+            <guiname xml:lang="en">firstname</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>5</input>
+               <list>5</list>
+               <search>5</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>firstname</name>
+				<type key="false" notnull="false" size="40" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+            <guiname xml:lang="nl">tussenvoegsel</guiname>
+            <guiname xml:lang="en">prefix</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>6</input>
+               <list>6</list>
+               <search>6</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>prefix</name>
+				<type key="false" notnull="false" size="40" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+            <guiname xml:lang="nl">email</guiname>
+            <guiname xml:lang="en">Emailaddress</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>7</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>emailaddress</name>
+				<type key="false" notnull="false" size="255" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+            <guiname xml:lang="nl">Bedrijf</guiname>
+            <guiname xml:lang="en">company</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>8</input>
+               <list>8</list>
+               <search>8</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>company</name>
+				<type key="false" notnull="false" size="40" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+            <guiname xml:lang="nl">Afdeling</guiname>
+            <guiname xml:lang="en">department</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>9</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>department</name>
+				<type key="false" notnull="false" size="40" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+            <guiname xml:lang="nl">Functie</guiname>
+            <guiname xml:lang="en">function</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>10</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>function</name>
+				<type key="false" notnull="false" size="40" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+            <guiname xml:lang="nl">Opmerking</guiname>
+            <guiname xml:lang="en">note</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>11</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>note</name>
+				<type key="false" notnull="false" size="1024" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+            <guiname xml:lang="nl">Website</guiname>
+            <guiname xml:lang="en">website</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>12</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>website</name>
+				<type key="false" notnull="false" size="255" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+            <guiname xml:lang="nl">email signalering</guiname>
+            <guiname xml:lang="en">Emailsignal</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>13</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>emailsignal</name>
+				<type key="false" required="true" state="persistent">BOOLEAN</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+            <guiname xml:lang="nl">Taal</guiname>
+            <guiname xml:lang="en">Language</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>14</input>
+					<list>14</list>
+					<search>14</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>language</name>
+            <type key="false" notnull="false" size="2" state="persistent">STRING</type>
+         </db>
+		</field>
+	</fieldlist>
+</builder>

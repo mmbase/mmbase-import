@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view exportsource="jdbc:mysql://localhost/ecard" timestamp="20060906000000">
+	<node number="54930" owner="default">
+		<title>Google Map View</title>
+		<resource>googlemap/googlemap.jsp</resource>
+	</node>
+</view>

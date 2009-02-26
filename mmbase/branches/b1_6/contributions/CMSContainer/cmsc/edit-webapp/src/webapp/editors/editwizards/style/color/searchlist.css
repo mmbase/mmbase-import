@@ -1,0 +1,44 @@
+/**
+
+  Editwizard cascading style sheet.
+
+  The following is used in searchlist.
+  Search-lists are those things that pop-up if you want to search for a node to make a relation to.
+  Here you can customize how they must look like.
+*/ 
+
+@import url("base.css");
+
+body {         
+        color: #062A4A;
+        background-color: #FFFFFF;
+} 
+
+table.searchresult tr.even td  {         
+        color: #000000;
+        background-color: #FFFFFF
+} 
+
+table.searchresult tr.odd td  {         
+        color: #000000;
+        background-color: #EEEEEE
+} 
+
+table.searchresult tr.selected-even td  {         
+        color: #FFFFFF;
+        background-color: #CCCCCC
+} 
+
+table.searchresult tr.selected-odd td  {         
+        color: #FFFFFF;
+        background-color: #CCCCCC
+} 
+
+input.button  {         
+        color: #FFFFFF;
+        background-color: #4A7BA5;
+        border-top-color: #FFFFFF;
+        border-right-color: #000000;
+        border-bottom-color: #000000;
+        border-left-color: #FFFFFF;
+}

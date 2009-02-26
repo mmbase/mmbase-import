@@ -1,0 +1,195 @@
+##
+##
+## UML2MMBase module.
+##
+## The contents of this file are subject to the Mozilla Public License
+##
+## Version 1.0 (the "License"); you may not use this file except in
+## compliance with the License. You may obtain a copy of the License at
+## http://www.mozilla.org/MPL/
+##
+## Software distributed under the License is distributed on an "AS IS"
+## basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+## License for the specific language governing rights and limitations
+## under the License.
+##
+## Velocity Template for de mmbase application XML generation
+## based on a UML class diagram with the MMBase sterotype
+##
+## @author  Rudie Ekkelenkamp
+## @version 0.1
+##
+#macro ( generateDocumentation $item $indent)
+$transform.documentationHelper.getXML($transform.getJavaDoc($item))
+#end
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<article id="uml2mmbasereport">
+  <articleinfo>
+    <title>UML2MMBase Report</title>
+    <author>
+      <firstname>Rudie</firstname>
+      <surname>Ekkelenkamp</surname>
+      <affiliation>
+        <orgname>Finalist IT Group</orgname>
+        <address>
+               <street>Stationsplein 45</street>,
+               <postcode>3013 AK </postcode>
+               <city>Rotterdam</city>,
+               <country>The Netherlands</country>,
+               Phone:
+               <phone>+31 10 217 08 00</phone>,
+               Fax:
+               <fax>+31 10 280 96 20</fax>,
+               Email:
+               <email>rudie@finalist.com</email>
+            </address>
+      </affiliation>
+    </author>
+    <date>$transform.date</date>
+  </articleinfo>
+  <section id="overview">
+    <title>Overview</title>
+    <para>The MMBase Object Cloud contains the following builders:
+    <itemizedlist>
+#foreach ( $modelElement in $transform.modelElements )
+#if ($transform.getStereotype($modelElement)==$transform.profile.STEREOTYPE_CLASS_MMBASE || $transform.getStereotype($modelElement)==$transform.profile.STEREOTYPE_CLASS_RELATION)
+#set ($class = $modelElement)
+#set ($classnameLowercase = $transform.toLowerCase(${class.name}))
+      <listitem>
+        <para>$classnameLowercase</para>
+      </listitem>
+#end
+#end
+    </itemizedlist>
+  </para>
+</section>
+  <section id="builders">
+    <title>MMBase Object Cloud</title>
+#foreach ( $modelElement in $transform.modelElements )
+#if ($transform.getStereotype($modelElement)==$transform.profile.STEREOTYPE_CLASS_MMBASE)
+#set ($class = $modelElement)
+#set ($packagename = $transform.findPackageName(${class.package}))
+## Voor nu zetten we het altijd op MMBase.org.
+#set ($classnameLowercase = $transform.toLowerCase(${class.name}))
+#set ($extendedObject = $transform.getGeneralizationName($class.id))
+#if (!$extendedObject || $extendedObject=="")
+#set ($extendedObject = "object")
+#end
+#set ($i = 0)
+#set ($attributes = $transform.getAllAttributes($class.id,"true","true","false",""))
+<section id="${classnameLowercase}_attributes">
+<title>${classnameLowercase}: #generateDocumentation ($class "")</title>
+<para>Extends: $extendedObject</para>
+#if($i == 0)
+<table colsep="1" frame="all" rowsep="1">
+<title>Attributes</title>
+        <tgroup cols="4">
+          <thead>
+            <colspec align="center" />
+            <row>
+              <entry>Name</entry>
+              <entry>Type</entry>
+              <entry>Size</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+#end
+#foreach ( $att in $attributes )
+#set ($atttypename = $transform.getAttributeType($att))
+#set ($notNullValue = "optional")
+## Determine if the field has a Required stereotype. In that casse notNull will be set to true.
+#if ($att.hasStereotype($transform.profile.STEREOTYPE_ATTRIBUTE_REQUIRED))
+	#set ($notNullValue = "required")
+#end
+<row>
+<entry>$transform.toLowerCase($transform.getAttributeName($att))</entry>
+<entry>$transform.getMMBaseDatabaseType($atttypename)</entry>
+<entry>#if($att.size)$att.size#else$transform.getMMBaseDatabaseSize($atttypename)#end</entry>
+<entry>#if($transform.getAttributeDocumentation($att) != "")$transform.getAttributeDocumentation($att)#end</entry>
+</row>
+#set($i = $i + 1)
+#end
+#if ($i > 0)
+</tbody>
+</tgroup>
+</table>
+#end
+#set ($relations = $transform.relationHelper.getRelations($class))
+#set ($i = 0)
+#foreach ( $rel in $relations )
+#if($i == 0)
+<table colsep="1" frame="all" rowsep="1">
+<title>Relations</title>
+        <tgroup cols="5">
+          <thead>
+            <colspec align="center" />
+            <row>
+              <entry>Name</entry>
+              <entry>Source</entry>
+              <entry>Target</entry>
+              <entry>Directed</entry>
+              <entry>Target Rolename</entry>
+            </row>
+          </thead>
+          <tbody>
+#end
+<row>
+<entry>$rel.type</entry>
+<entry>$rel.sourceName ($rel.sourceCardinalityLower..$rel.sourceCardinalityUpper)</entry>
+<entry>$rel.targetName ($rel.targetCardinalityLower..$rel.targetCardinalityUpper)</entry>
+<entry>$rel.directed</entry>
+<entry>#if($rel.targetRoleName)$rel.targetRoleName#else - #end</entry>
+</row>
+#set($i = $i + 1)
+#end
+## if i > 0 then there was at least one entry. So we have to close the table.
+#if ($i > 0)
+</tbody>
+</tgroup>
+</table>
+#end
+</section>
+#end
+#end
+</section>
+<section id="custom_relations">
+<title>Custom relation types</title>
+  <para>The MMBase Object cloud contains the following custom relation types:
+    <itemizedlist>
+#foreach ( $modelElement in $transform.modelElements )
+#if ($transform.getStereotype($modelElement)==$transform.profile.STEREOTYPE_CLASS_RELATION)
+#set ($class = $modelElement)
+#set ($classnameLowercase = $transform.toLowerCase(${class.name}))
+      <listitem>
+        <para>$classnameLowercase</para>
+      </listitem>
+#end
+#end
+    </itemizedlist>
+  </para>
+</section>
+<section id="option_lists">
+<title>Option lists</title>
+  <para>The following option lists are defined:
+    <orderedlist>
+#foreach ( $modelElement in $transform.modelElements )
+#if ($transform.getStereotype($modelElement)==$transform.profile.STEREOTYPE_CLASS_OPTIONLIST)
+#set ($class = $modelElement)
+#set ($classnameLowercase = $transform.toLowerCase(${class.name}))
+      <listitem>
+        <para>$classnameLowercase</para>
+        <itemizedlist>
+#foreach ($option in $transform.getOptions(${class}))
+        <listitem><para>${option.key} = ${option.value}</para></listitem>
+#end
+        </itemizedlist>
+      </listitem>
+#end
+#end
+    </orderedlist>
+  </para>
+</section>
+</article>

@@ -1,0 +1,40 @@
+div.editor div.body div.thumbnail_show {
+   width:160px;
+   height:150px;
+   float:left;
+   text-align:center;
+   padding:0;
+   margin:0.4em;
+}
+div.editor div.body div.thumbnail_show .thumbnail_operation{
+   clear:both;
+   float:left;
+   width:77%;
+   height:33px;
+   margin-left:0.55em;
+   text-align:center;
+}
+div.editor div.body div.thumbnail_show .thumbnail_body{
+   width:77%;
+   float:left;
+   height:100px;
+   text-align:center;
+   padding:0em 1.2em 0.2em 0.95em;
+   vertical-align:middle;
+   display:block;
+}
+div.editor div.body div.thumbnail_show .thumbnail_body .thumbnail_img{
+   float:left;
+   padding:0;
+   margin:0;
+   height:100px;
+   text-align:center;
+}
+div.editor div.body div.thumbnail_show .thumbnail_body .thumnail_info{
+   width:100%;
+   float:right;
+   text-align:center;
+   margin:0em;
+   padding:0em 0.2em;
+   overflow-x:hidden;
+}

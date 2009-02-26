@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_urls">
+	<title xml:lang="nl">Url</title>
+	<title xml:lang="en">Url</title>
+	<title xml:lang="zh">Url</title>
+
+	<field name="title">
+      <prompt xml:lang="en">Title</prompt>
+      <prompt xml:lang="nl">Titel</prompt>
+      <prompt xml:lang="zh">标题</prompt>
+	</field>
+	<field name="url" dtpattern="\://|javascript\:|mailto\:">
+		<prompt xml:lang="en">Url</prompt>
+		<prompt xml:lang="nl">Url</prompt>
+		<prompt xml:lang="zh">Url</prompt>
+	</field>
+	<field dtrequired="false" ftype="text" name="description" rows="3">
+		<prompt xml:lang="en">Description</prompt>
+		<prompt xml:lang="nl">Omschrijving</prompt>
+		<prompt xml:lang="zh">描述</prompt>
+	</field>
+</form-schema>

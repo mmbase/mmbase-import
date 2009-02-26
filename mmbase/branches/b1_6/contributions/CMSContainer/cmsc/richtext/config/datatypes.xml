@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<datatypes
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
+
+  <datatype id="string">
+    <specialization id="cmscrichtext">
+      <description xml:lang="en">
+      	Html field with inline links to other objects
+      </description>
+      <setprocessor type="string">
+        <class name="com.finalist.cmsc.richtext.RichTextSetProcessor">
+          <param name="replaceHeaders">false</param>
+          <param name="replaceParagraphs">true</param>
+        </class>
+      </setprocessor>
+      <getprocessor type="string">
+        <class name="com.finalist.cmsc.richtext.RichTextGetProcessor" >
+           <param name="dynamicDescriptions">false</param>
+        </class>
+      </getprocessor>
+    </specialization>
+  </datatype>
+
+</datatypes>

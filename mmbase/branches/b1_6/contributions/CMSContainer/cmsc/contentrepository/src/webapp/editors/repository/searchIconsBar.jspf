@@ -1,0 +1,47 @@
+                  <mm:write referid="action" jspvar="action" write="false"/>
+               <c:if test="${not empty strict}">
+                  <a href="#" onClick="top.opener.selectContent('<mm:field name="number" />', '', ''); top.close();">
+                      <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
+               </c:if>
+               <c:if test="${action == 'search' || action == 'save' || action == 'cancel'}">
+                        <a href="<mm:url page="../WizardInitAction.do">
+                           <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+                           <mm:param name="returnurl" value="/editors/repository/AssetSearchAction.do${geturl}" />
+                        </mm:url>">
+                           <img src="../gfx/icons/page_edit.png" alt="<fmt:message key="searchform.icon.edit.title" />" title="<fmt:message key="searchform.icon.edit.title" />" /></a>
+               </c:if>
+               <mm:field name="number"  write="false" id="nodenumber">
+                  <a href="<cmsc:contenturl number="${nodenumber}"/>" target="_blank"><img src="../gfx/icons/preview.png" alt="<fmt:message key="searchform.icon.preview.title" />" title="<fmt:message key="searchform.icon.preview.title" />" /></a>
+               </mm:field>
+               <a href="javascript:showInfo('<mm:nodeinfo type="type"/>', '<mm:field name="number" />');">
+                  <img src="../gfx/icons/info.png" title="<fmt:message key="asset.info"/>" alt="<fmt:message key="asset.info"/>"/></a>
+               <mm:compare referid="action" value="search">
+                  <mm:haspage page="/editors/versioning">
+                     <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
+                        <c:param name="nodenumber"><mm:field name="number" /></c:param>
+                     </c:url>
+                     <a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')"><img src="../gfx/icons/versioning.png" alt="<fmt:message key="searchform.icon.versioning.title" />" title="<fmt:message key="searchform.icon.versioning.title" />" /></a>
+                  </mm:haspage>
+                  <cmsc:hasfeature name="responseform">
+                     <c:set var="typeval">
+                        <mm:nodeinfo type="type" />
+                     </c:set>
+                     <c:if test="${typeval == 'responseform'}">
+                        <mm:url page="/editors/savedform/ShowSavedForm.do" id="showSavedForms" write="false">
+                           <mm:param name="nodenumber"><mm:field name="number" /></mm:param>
+                           <mm:param name="initreturnurl" value="/editors/repository/AssetSearchAction.do${geturl}" />
+                        </mm:url>
+                        <a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>
+                     </c:if>
+                  </cmsc:hasfeature>
+               </mm:compare>
+<c:if test="${empty insertAsset}">
+               <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster'}">
+               <a href="javascript:deleteAsset('<mm:field name='number'/>','<fmt:message key="recyclebin.removeconfirm"/>')">
+                  <img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.recyclebin" />" alt="<fmt:message key="searchform.icon.delete.recyclebin" />"/>
+               </a>
+            </c:if>
+            <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster')}">
+               <a href="javascript:deleteAsset('<mm:field name='number'/>')"><img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.channel" />" alt="<fmt:message key="searchform.icon.delete.channel" />"/></a>
+            </c:if>
+</c:if>

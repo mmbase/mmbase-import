@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="calendar" maintainer="finalist.com" version="1" auto-deploy="true">
+   <requirements>
+      <requires name="basecontentelements" maintainer="finalist.com" version="1" type="application"/>
+      <requires name="contentrepository" maintainer="finalist.com" version="3" type="application" />     
+   </requirements>
+   <neededbuilderlist>      
+      <builder maintainer="finalist.com" version="1">event</builder>
+   </neededbuilderlist>
+
+   <neededreldeflist>
+   </neededreldeflist>
+   
+   <allowedrelationlist>      
+   </allowedrelationlist>
+   
+   <datasourcelist>
+      <datasource builder="view" path="calendar/view.xml" />
+      <datasource builder="editwizards" path="calendar/editwizards.xml" />
+      <datasource builder="properties" path="calendar/properties.xml" />
+   </datasourcelist>
+   
+   <relationsourcelist>
+   </relationsourcelist>
+   
+   <contextsourcelist>
+   </contextsourcelist>
+</application>

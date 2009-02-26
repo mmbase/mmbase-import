@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven"
+         xmlns:ant="jelly:ant" xmlns:artifact="artifact">
+    <!--
+         These goals and pre/post goals are inherited by
+         any subproject that extends the POM in maven-base
+     -->
+
+    <beforeGoal name="mmbase-module:webapp">
+        <ant:delete file="${maven.src.dir}/webapp/WEB-INF/spring-newsletter.xml"/>
+        <ant:copy file="${maven.src.dir}/config/spring-newsletter${cmsc.workingmodel}.xml"
+                  tofile="${maven.src.dir}/webapp/WEB-INF/spring-newsletter.xml"/>
+    </beforeGoal>
+    <postGoal name="mmbase-module:webapp">
+        <ant:delete file="${maven.src.dir}/webapp/WEB-INF/spring-newsletter.xml"/>
+    </postGoal>
+</project>
