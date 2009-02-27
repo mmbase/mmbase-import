@@ -8,7 +8,7 @@
 		<property name="interval">1440</property>
 		<property name="starthour">1</property>
 		<!-- Do or do not index on startup -->
-		<property name="index-on-startup">true</property>
+		<property name="index-on-startup">false</property>
 		<!-- seconds to wait before first index run -->
 		<property name="index-on-startup-wait">30</property>
 		<!-- Definition file for index, what is indexed from where -->
