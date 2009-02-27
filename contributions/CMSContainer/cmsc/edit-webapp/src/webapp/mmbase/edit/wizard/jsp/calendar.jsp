@@ -74,10 +74,12 @@
       }
       hour.options.add(opt);
      }
-     for(var j = 0 ; j <60 ;j++) {
+     var hasSelected = false;
+     for(var j = 0 ; j <60 ;) {
       var opt = document.createElement('OPTION');
-      if(j ==  now.getMinutes()) {
-         opt.selected = true;
+      if( j >= now.getMinutes() && hasSelected == false){
+            opt.selected = true;
+            hasSelected = true;
       }
       if(j <10) {
          opt.value ="0"+ j;
@@ -87,8 +89,9 @@
          opt.value =j;
          opt.text = j;
       }
+      j += 5;
       minute.options.add(opt);
-     }
+    }
    }
 </script>
 <script type="text/javascript">
