@@ -1,9 +1,8 @@
-<%@page language="java" contentType="text/html;charset=utf-8"%>
-<%@include file="../globals.jsp"%>
-<fmt:setBundle basename="newsletter" scope="request" />
-
+<%@page language="java" contentType="text/html;charset=utf-8"
+%><%@include file="../globals.jsp"
+%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <mm:content type="text/html" encoding="UTF-8" expires="0">
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<fmt:setBundle basename="newsletter" scope="request" />
 <html:html xhtml="true">
 <cmscedit:head title="testinput.title">
 	<style type="text/css">
@@ -11,7 +10,6 @@
 	</style>
    <script src="check.js" type="text/javascript"></script>
    <script language="javascript">
-
       function sendEmail() {
          var email = document.getElementById("email");
          if(!isEmail(email.value)) {
@@ -46,7 +44,7 @@
       <table>
          <tr>
             <td><fmt:message key="testinput.email"/></td>
-            <td><input type="text" name="email" id="email" /></td>
+            <td><input type="text" name="email" id="email" style="width:170px"/></td>
          </tr>
          <tr>
             <td><fmt:message key="testinput.mimetype"/></td>
