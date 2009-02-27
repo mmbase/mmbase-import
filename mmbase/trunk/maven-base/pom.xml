@@ -5,7 +5,7 @@ OSI Certified is a certification mark of the Open Source Initiative
 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-Version $Id: pom.xml,v 1.8 2009-02-20 15:21:28 michiel Exp $
+Version $Id: pom.xml,v 1.9 2009-02-27 09:36:44 michiel Exp $
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
@@ -219,7 +219,7 @@ Version $Id: pom.xml,v 1.8 2009-02-20 15:21:28 michiel Exp $
 
   <build>
     <defaultGoal>install</defaultGoal>
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>${myBasedir}/src</sourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
