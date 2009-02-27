@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.2 2009-02-27 10:38:28 andre Exp $
+ * @version $Id: MMGet.java,v 1.3 2009-02-27 10:45:07 andre Exp $
  */
 public final class MMGet {
     
@@ -37,35 +37,35 @@ public final class MMGet {
                                                      configure(reader.getProperties());
                                                  }
                                              });
-	/* link to start exporting from and directory of the start url  */
+    /* link to start exporting from and directory of the start url  */
     public static String url;
-	protected static URL startURL;
-	protected static URL startdirURL;
+    protected static URL startURL;
+    protected static URL startdirURL;
     
     /* location the files should be saved to, directory to save files should be in the webroot (for now) */
     public static String directory;
-	protected static File savedir;
+    protected static File savedir;
 
     /* not wanted: offsite etc. */
-	protected Set<URL> ignoredURLs = new HashSet<URL>();
-	/* urls to parse (html, css) */
-	protected List<URL> parseURLs = Collections.synchronizedList(new ArrayList<URL>());
-	/* url -> filename */
-	protected HashMap<URL,String> savedURLs = new HashMap<URL,String>();
-	/* url -> link in page/new link in page */
-	protected Map<URL,Map<String,String>> url2links = Collections.synchronizedMap(new HashMap<URL,Map<String,String>>());
-	
+    protected Set<URL> ignoredURLs = new HashSet<URL>();
+    /* urls to parse (html, css) */
+    protected List<URL> parseURLs = Collections.synchronizedList(new ArrayList<URL>());
+    /* url -> filename */
+    protected HashMap<URL,String> savedURLs = new HashMap<URL,String>();
+    /* url -> link in page/new link in page */
+    protected Map<URL,Map<String,String>> url2links = Collections.synchronizedMap(new HashMap<URL,Map<String,String>>());
+    
     /* future status */
     public Future<String> fstatus;
     
-	/* homepage to use when saving a file with no extension (thus presuming directory) */
-	protected static String homepage = "index.html";
+    /* homepage to use when saving a file with no extension (thus presuming directory) */
+    protected static String homepage = "index.html";
     protected static List<String> contentheadersHTML = Arrays.asList(
-    	"text/html",
-		"application/xhtml+xml",
-		"application/xml",
-		"text/xml"
-	);
+        "text/html",
+        "application/xhtml+xml",
+        "application/xml",
+        "text/xml"
+    );
     protected static List<String> contentheadersCSS = Arrays.asList(
         "text/css"
     );
@@ -76,26 +76,26 @@ public final class MMGet {
     protected static final int CONTENTTYPE_CSS   = 2;
     
 
-	/**
-	 * Checks and sets links and export directory. 
-	 * Checks if the export directory exists, if not will try to create one in the MMBase data directory. 
-	 */
-	public static void init() throws IOException, URISyntaxException, MalformedURLException {
-		configure(reader.getProperties());
-		File datadir = MMBase.getMMBase().getDataDir();
-		ResourceLoader webroot = ResourceLoader.getWebRoot();
-		
-		startURL = new URL(url);
-		startdirURL = getDirectoryURL(startURL);
-		if (startdirURL.toString().length() > startURL.toString().length()) 
-		        startURL = startdirURL;
-		
-		// savedir
-		if (directory == null || "".equals(directory) || !webroot.getResource(directory).openConnection().getDoInput()) {
-			log.warn("Exportdir '" + directory + "' does not exist! Will try to save to MMBase datadir.");
-			log.debug("Datadir is: " + datadir.toString());
+    /**
+     * Checks and sets links and export directory. 
+     * Checks if the export directory exists, if not will try to create one in the MMBase data directory. 
+     */
+    public static void init() throws IOException, URISyntaxException, MalformedURLException {
+        configure(reader.getProperties());
+        File datadir = MMBase.getMMBase().getDataDir();
+        ResourceLoader webroot = ResourceLoader.getWebRoot();
+        
+        startURL = new URL(url);
+        startdirURL = getDirectoryURL(startURL);
+        if (startdirURL.toString().length() > startURL.toString().length()) 
+                startURL = startdirURL;
+        
+        // savedir
+        if (directory == null || "".equals(directory) || !webroot.getResource(directory).openConnection().getDoInput()) {
+            log.warn("Exportdir '" + directory + "' does not exist! Will try to save to MMBase datadir.");
+            log.debug("Datadir is: " + datadir.toString());
 
-			savedir = new File(datadir, "mmget");
+            savedir = new File(datadir, "mmget");
             if (! savedir.exists()) {
                 if (savedir.mkdirs()) {
                     log.info("Directory " + savedir + " was created");
@@ -103,10 +103,10 @@ public final class MMGet {
                     log.warn("Directory " + savedir + " could not be created");
                 }
             }
-		} else {
-			URL savedirURL = webroot.getResource(directory);
-			savedir = new File(savedirURL.toURI());
-		}
+        } else {
+            URL savedirURL = webroot.getResource(directory);
+            savedir = new File(savedirURL.toURI());
+        }
 
     }
 
@@ -139,56 +139,56 @@ public final class MMGet {
 
     }
 
-	/**
-	 * Starts the job saving the site and inits export directory
-	 *
-	 * @param	url	The link to start from, normally the homepage
-	 * @param	dir	The directory to save the files to
-	 * @return	Message with the results
-	 */
-	public String downloadSite(String url, String dir) {
-		this.directory = dir;
-		this.url = url;
-		
-		String status = "";
-		try {
-			init();
-    	} catch (MalformedURLException e) {
-    		status = "Can't parse: " + url + ", " + e;
-			log.error(status);
-    		return "Error: " + status;
-		} catch (IOException e) {
-			status = "Could not find (or create) export directory '" + dir + "': " + e;
-			log.error(status);
-			return "Error: " + status;
-		} catch (URISyntaxException e) {
-			status = "Could not make a correct link to directory '" + dir + "': " + e;
-			log.error(status);
-			return "Error: " + status;
-		}
-		
+    /**
+     * Starts the job saving the site and inits export directory
+     *
+     * @param   url The link to start from, normally the homepage
+     * @param   dir The directory to save the files to
+     * @return  Message with the results
+     */
+    public String downloadSite(String url, String dir) {
+        this.directory = dir;
+        this.url = url;
+        
+        String status = "";
+        try {
+            init();
+        } catch (MalformedURLException e) {
+            status = "Can't parse: " + url + ", " + e;
+            log.error(status);
+            return "Error: " + status;
+        } catch (IOException e) {
+            status = "Could not find (or create) export directory '" + dir + "': " + e;
+            log.error(status);
+            return "Error: " + status;
+        } catch (URISyntaxException e) {
+            status = "Could not make a correct link to directory '" + dir + "': " + e;
+            log.error(status);
+            return "Error: " + status;
+        }
+        
         Future<String> fthread = ThreadPools.jobsExecutor.submit(new Callable() {
-	             public String call() {
-					  return start();
-	             }
-       	    });
-		
-		try {
-		    status = fthread.get();
-		} catch(ExecutionException e) {
-		    log.error(e);
-		} catch(InterruptedException e) {
-		    log.error(e);
-		}
-		
-		StringBuilder info = new StringBuilder(status);
-		info.append("\n***    url: ").append(startURL.toString());
-		info.append("\n**    dir.: ").append(startdirURL.toString());
-		info.append("\n* saved in: ").append(savedir.toString());
-		status = info.toString();
-		log.info(status);
-		return status;
-	}
+                 public String call() {
+                      return start();
+                 }
+            });
+        
+        try {
+            status = fthread.get();
+        } catch(ExecutionException e) {
+            log.error(e);
+        } catch(InterruptedException e) {
+            log.error(e);
+        }
+        
+        StringBuilder info = new StringBuilder(status);
+        info.append("\n***    url: ").append(startURL.toString());
+        info.append("\n**    dir.: ").append(startdirURL.toString());
+        info.append("\n* saved in: ").append(savedir.toString());
+        status = info.toString();
+        log.info(status);
+        return status;
+    }
 
     /**
      * Kick method that starts export from the initial link
@@ -198,42 +198,42 @@ public final class MMGet {
         parseURLs.clear();
         ignoredURLs.clear();
         savedURLs.clear();
-    	url2links.clear();
+        url2links.clear();
         
         readUrl(startURL);
         return "Job finished?!";
     }
 
-	/**
-	 * Parses urls it recieves.
-	 * @param url   to html page or css
-	 */
+    /**
+     * Parses urls it recieves.
+     * @param url   to html page or css
+     */
     private void readUrl(URL url) {
         log.debug("---------------------------------------------------------------------");
         log.debug("reading:   " + url.toString());
         
-    	UrlReader reader = null;
-		try {
+        UrlReader reader = null;
+        try {
             reader = UrlReaders.getUrlReader(url);
-		} catch (IOException e) {
-			log.error("Can't parse: " + e);
-			return;
-		}
-		if (reader == null) return;
-		
-		try {
-			ArrayList<String> links = reader.getLinks();
-        	Map<String,String> links2files = new HashMap<String,String>();    	/* maps a harvested link to the resulting saved file if different */
-			
+        } catch (IOException e) {
+            log.error("Can't parse: " + e);
+            return;
+        }
+        if (reader == null) return;
+        
+        try {
+            ArrayList<String> links = reader.getLinks();
+            Map<String,String> links2files = new HashMap<String,String>();      /* maps a harvested link to the resulting saved file if different */
+            
             URL dirURL = getDirectoryURL(url);
             if (startdirURL == null) startdirURL = dirURL;
-			String calcUrl = startdirURL.toString() + makeFilename(url, reader.getContentType());
-			String calcDir = calcUrl.substring(0, calcUrl.lastIndexOf("/"));
+            String calcUrl = startdirURL.toString() + makeFilename(url, reader.getContentType());
+            String calcDir = calcUrl.substring(0, calcUrl.lastIndexOf("/"));
             
             log.debug("directory: " + dirURL.toString());
-			log.debug("@ calcUrl: " + calcUrl);
-			log.debug("@ calcDir: " + calcDir);
-			
+            log.debug("@ calcUrl: " + calcUrl);
+            log.debug("@ calcDir: " + calcDir);
+            
             Iterator<String> it = links.iterator();
             while (it.hasNext()) {
                 String link = it.next();
@@ -274,28 +274,28 @@ public final class MMGet {
                 }
                 
             } // while ends
-    		
-    		reader.close();
-		    synchronized(url2links) {
-    		    if (!url2links.containsKey(url)) url2links.put(url, links2files);
-    		}
-    		saveResource(url);
-    		
-    		URL nextURL = getParseURL();
+            
+            reader.close();
+            synchronized(url2links) {
+                if (!url2links.containsKey(url)) url2links.put(url, links2files);
+            }
+            saveResource(url);
+            
+            URL nextURL = getParseURL();
             if (nextURL != null) readUrl(nextURL);  // recurse!
             
-    	} catch (IOException e) {
-    		log.error("IOException: " + e);
-		}
+        } catch (IOException e) {
+            log.error("IOException: " + e);
+        }
         
     }
-	
-	/**
-	 * Saves a url and returns the filename. Returns null when no connection.
-	 * @param  url
-	 * @return the filename of the saved file or null if we dit not succeed to connect
-	 */
-	protected String saveResource(URL url) throws IOException {
+    
+    /**
+     * Saves a url and returns the filename. Returns null when no connection.
+     * @param  url
+     * @return the filename of the saved file or null if we dit not succeed to connect
+     */
+    protected String saveResource(URL url) throws IOException {
         if (savedURLs.containsKey(url)) {
             return savedURLs.get(url);
         }
@@ -340,17 +340,17 @@ public final class MMGet {
         
         savedURLs.put(url, filename);
         log.debug("Saved: " + f.toString() );
-	    
-	    return filename;
-	}
+        
+        return filename;
+    }
 
-	/**
-	 * Saves and rewrites the links in the resource to (relative?) ones that work
-	 * on the filesystem. Only for HTML or CSS (text) files of course.
-	 * @param url
-	 * @param uc the already elsewhere created URLConnection for efficiency
-	 */
-	protected String rewriteSaveResource(URL url, URLConnection uc) throws IOException {
+    /**
+     * Saves and rewrites the links in the resource to (relative?) ones that work
+     * on the filesystem. Only for HTML or CSS (text) files of course.
+     * @param url
+     * @param uc the already elsewhere created URLConnection for efficiency
+     */
+    protected String rewriteSaveResource(URL url, URLConnection uc) throws IOException {
         String filename = makeFilename(url, contentType(uc));
         File f = getFile(filename);
         if (f.exists()) {
@@ -406,40 +406,40 @@ public final class MMGet {
         log.debug("Saved: " + f.toString());
         
         return filename;
-	}
-	
-	protected static int contentType(URLConnection uc) {
-	    String contentheader = uc.getHeaderField("content-type");
+    }
+    
+    protected static int contentType(URLConnection uc) {
+        String contentheader = uc.getHeaderField("content-type");
         //log.debug("header: " + contentheader);
         int pk = contentheader.indexOf(";");
         if (pk > -1) contentheader = contentheader.substring(0, pk);
-	    
-	    int type;
-	    if (contentheadersHTML.contains(contentheader)) {
-	        type = 1;
-	    } else if (contentheadersCSS.contains(contentheader)) {
-	        type = 2;
-	    } else {
-	        type = 0;
-	    }
-	    return type;
-	}
+        
+        int type;
+        if (contentheadersHTML.contains(contentheader)) {
+            type = 1;
+        } else if (contentheadersCSS.contains(contentheader)) {
+            type = 2;
+        } else {
+            type = 0;
+        }
+        return type;
+    }
 
-	/**
-	 * Gets a files directory. This normally ends with a '/' !
-	 * It returns http://www.toly.net/ for html-pages like http://www.toly.net/contact
-	 * presuming (for convenience) http://www.toly.net/contact/index.html
-	 *
-	 * @param  url page or other resource
-	 * @return the directory it is in
-	 */
-	private static URL getDirectoryURL(URL url) {
-	    String link = url.toString();
-	    String path = url.getPath();
-	    
-	    String server = link;
-	    if (link.lastIndexOf("/") > 7) server = link.substring(0, link.indexOf("/", 7));
-	    
+    /**
+     * Gets a files directory. This normally ends with a '/' !
+     * It returns http://www.toly.net/ for html-pages like http://www.toly.net/contact
+     * presuming (for convenience) http://www.toly.net/contact/index.html
+     *
+     * @param  url page or other resource
+     * @return the directory it is in
+     */
+    private static URL getDirectoryURL(URL url) {
+        String link = url.toString();
+        String path = url.getPath();
+        
+        String server = link;
+        if (link.lastIndexOf("/") > 7) server = link.substring(0, link.indexOf("/", 7));
+        
         if ("".equals(path)) { // this only happens with links like: http://www.toly.net
             link = link + "/";
         } else if (hasExtension(path)) {
@@ -461,32 +461,32 @@ public final class MMGet {
             link = link.substring(0, link.lastIndexOf("/") + 1);
         }
         
-	    log.debug("url: " + url + ", returning: " + link);
-	    
-	    try {
-    	    return new URL(link);
-    	} catch (MalformedURLException e) {
-    	    return null;
-    	}
-	}
+        log.debug("url: " + url + ", returning: " + link);
+        
+        try {
+            return new URL(link);
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
 
-	/**
-	 * Creates the directory/filename to save a file (= url - url startdir),
-	 * does not start with a "/". The filename is the exact location of the 
-	 * file in the export directory. Goes something like this:
+    /**
+     * Creates the directory/filename to save a file (= url - url startdir),
+     * does not start with a "/". The filename is the exact location of the 
+     * file in the export directory. Goes something like this:
      *    1. substract the startdir from this url, that is the file to save
      *    2. check if /bla is a html-page, make it /bla/index.html if needed
      *       possible input is:
      *       /bla
      *       /bla/
      *       /bla/blabla.html
-     *       /	 
-	 *
-	 * @param  url resource for which a filename is needed
-	 * @param  type content-type of the file to save
-	 * @return path and filename that can be saved (f.e. dir/bla)
-	 */
-	public String makeFilename(URL url, int type) {
+     *       /   
+     *
+     * @param  url resource for which a filename is needed
+     * @param  type content-type of the file to save
+     * @return path and filename that can be saved (f.e. dir/bla)
+     */
+    public String makeFilename(URL url, int type) {
         String filename = "";
         
         String link = url.toString();
@@ -514,12 +514,12 @@ public final class MMGet {
         }
     
         return filename;
-	}
-	
-	/**
-	 * remove ;jsessionid=a69bd9e162de1cfa3ea57ef6f3cf03af
-	 */
-	public static String removeSessionid(String str) {
+    }
+    
+    /**
+     * remove ;jsessionid=a69bd9e162de1cfa3ea57ef6f3cf03af
+     */
+    public static String removeSessionid(String str) {
         int pk = str.indexOf(";");
         if (pk > -1) {
             int q = str.indexOf("?");
@@ -529,70 +529,70 @@ public final class MMGet {
                 str = str.substring(0, pk);
             }
         }
-	    return str;   
-	}
-	
-	/**
-	 * Opens and tests a connection to an url
-	 *
-	 * @param  url
-	 * @return a connection or null in case of a bad response (f.e. not a 200)
-	 */
-	private static URLConnection getURLConnection(URL url) throws SocketException, IOException {
-   		URLConnection uc = url.openConnection();
-   		if (url.getProtocol().equals("http")) {
-   			HttpURLConnection huc = (HttpURLConnection)uc;
-			int res = huc.getResponseCode();
-   			if (res == -1) {
-   			    log.error("Server error, bad HTTP response: " + res);
-   			    return null;
-   			} else if (res < 200 || res >= 300) {
-   			    log.warn(res + " - " + huc.getResponseMessage() + " : " + url.toString());
-				return null;
-		    } else {
-		        return huc;
-		    }
-   		} else if (url.getProtocol().equals("file")) {
-   		    InputStream is = uc.getInputStream();
-   		    is.close();
-   		    // If that didn't throw an exception, the file is probably OK
-			return uc;
-   		} else {
-   			// return "(non-HTTP)";
-			return null;
-   		}
-	}
-	
-	/**
-	 * Creates an empty file in the save directory, checks if its directories exist (but not itself).
-	 *
-	 * @param  path the exact path from the startposition of the export (that's seen as 'root')
-	 * @return file
-	 */
-	public File getFile(String path) {
-		File f;
-		String resource;
-		
-		if (path.lastIndexOf("/") > 0) {
-			String dir = ResourceLoader.getDirectory(path);
-			//log.debug("dir: " + dir);
-			f = new File(savedir, dir);
-			if (!f.exists()) {
-				if (f.mkdirs()) {
-	                //log.debug("Directory created: " + savedir);
-	            } else {
-	                log.warn("Directory '" + f + "' could not be created");
-	            }
-			}
-			resource = path.substring(path.lastIndexOf("/"), path.length());
-		} else {
-			f = savedir;
-			resource = path;
-		}
-		return new File(f, resource);
-	}
+        return str;   
+    }
+    
+    /**
+     * Opens and tests a connection to an url
+     *
+     * @param  url
+     * @return a connection or null in case of a bad response (f.e. not a 200)
+     */
+    private static URLConnection getURLConnection(URL url) throws SocketException, IOException {
+        URLConnection uc = url.openConnection();
+        if (url.getProtocol().equals("http")) {
+            HttpURLConnection huc = (HttpURLConnection)uc;
+            int res = huc.getResponseCode();
+            if (res == -1) {
+                log.error("Server error, bad HTTP response: " + res);
+                return null;
+            } else if (res < 200 || res >= 300) {
+                log.warn(res + " - " + huc.getResponseMessage() + " : " + url.toString());
+                return null;
+            } else {
+                return huc;
+            }
+        } else if (url.getProtocol().equals("file")) {
+            InputStream is = uc.getInputStream();
+            is.close();
+            // If that didn't throw an exception, the file is probably OK
+            return uc;
+        } else {
+            // return "(non-HTTP)";
+            return null;
+        }
+    }
+    
+    /**
+     * Creates an empty file in the save directory, checks if its directories exist (but not itself).
+     *
+     * @param  path the exact path from the startposition of the export (that's seen as 'root')
+     * @return file
+     */
+    public File getFile(String path) {
+        File f;
+        String resource;
+        
+        if (path.lastIndexOf("/") > 0) {
+            String dir = ResourceLoader.getDirectory(path);
+            //log.debug("dir: " + dir);
+            f = new File(savedir, dir);
+            if (!f.exists()) {
+                if (f.mkdirs()) {
+                    //log.debug("Directory created: " + savedir);
+                } else {
+                    log.warn("Directory '" + f + "' could not be created");
+                }
+            }
+            resource = path.substring(path.lastIndexOf("/"), path.length());
+        } else {
+            f = savedir;
+            resource = path;
+        }
+        return new File(f, resource);
+    }
 
-	/** 
+    /** 
      * Checks if a filename ends with an extension.
      *
      * @param   file    path or filename to check
@@ -603,43 +603,43 @@ public final class MMGet {
         return (i != -1 && i != file.length() - 1);
     }
     
-	/** 
+    /** 
      * Extracts the link from a tag.
      *
      * @param tag    the first parameter
      * @return       a link to a resource hopefully
      */
     public static String extractHREF(String tag) {
-    	String lcTag = tag.toLowerCase(); 
-    	String attr;
-    	int p1, p2, p3, p4;
-    	
-    	if (lcTag.startsWith("<a ") || lcTag.startsWith("<link ") || lcTag.startsWith("<area ")) {
+        String lcTag = tag.toLowerCase(); 
+        String attr;
+        int p1, p2, p3, p4;
+        
+        if (lcTag.startsWith("<a ") || lcTag.startsWith("<link ") || lcTag.startsWith("<area ")) {
             attr = "href";
         } else {
-            attr = "src"; 		// TODO: src's of css in html
+            attr = "src";       // TODO: src's of css in html
         }
-    	
-    	p1 = lcTag.indexOf(attr);
-    	if (p1 < 0) {
-    		log.warn("Can't find attribute '" + attr + "' in '" + tag + "'");
-    	}
-    	p2 = tag.indexOf("=", p1);
-    	p3 = tag.indexOf("\"", p2);
-    	p4 = tag.indexOf("\"", p3 + 1);
-    	if (p3 < 0 || p4 < 0) {
-    		log.warn("Invalide attribute '" + attr + "' in '" + tag + "'");
-    	}
-    	
-    	String href = tag.substring(p3 + 1, p4);
-    	return href;
+        
+        p1 = lcTag.indexOf(attr);
+        if (p1 < 0) {
+            log.warn("Can't find attribute '" + attr + "' in '" + tag + "'");
+        }
+        p2 = tag.indexOf("=", p1);
+        p3 = tag.indexOf("\"", p2);
+        p4 = tag.indexOf("\"", p3 + 1);
+        if (p3 < 0 || p4 < 0) {
+            log.warn("Invalide attribute '" + attr + "' in '" + tag + "'");
+        }
+        
+        String href = tag.substring(p3 + 1, p4);
+        return href;
     }
 
-	private void addParseURL(URL url) {
-	    synchronized(parseURLs) {
-       	    if (!parseURLs.contains(url)) parseURLs.add(url);
-	    }
-	}
+    private void addParseURL(URL url) {
+        synchronized(parseURLs) {
+            if (!parseURLs.contains(url)) parseURLs.add(url);
+        }
+    }
 
     private URL getParseURL() {
         URL url = null;
