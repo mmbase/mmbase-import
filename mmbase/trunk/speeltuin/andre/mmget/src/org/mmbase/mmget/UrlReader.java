@@ -15,25 +15,25 @@ import org.mmbase.util.logging.Logging;
  * Reads a web resource an returns its tags that may contain links to other resources. 
  *
  * @author Andr&eacute; van Toly
- * @version $Id: UrlReader.java,v 1.3 2009-02-27 10:38:28 andre Exp $
+ * @version $Id: UrlReader.java,v 1.4 2009-02-27 10:45:07 andre Exp $
  */
 public abstract class UrlReader {
-	private static final Logger log = Logging.getLoggerInstance(UrlReader.class);
-	
-	/** 
-	 * Gets all links to resources
-	 *
-	 * @return  list with tags that can contain links
-	 */
-	protected abstract ArrayList<String> getLinks() throws IOException;
-	
-	/** 
-	 * Contenttype from urlconection
-	 *
-	 * @return  contenttype constant
-	 */
-	protected abstract int getContentType();
+    private static final Logger log = Logging.getLoggerInstance(UrlReader.class);
+    
+    /** 
+     * Gets all links to resources
+     *
+     * @return  list with tags that can contain links
+     */
+    protected abstract ArrayList<String> getLinks() throws IOException;
+    
+    /** 
+     * Contenttype from urlconection
+     *
+     * @return  contenttype constant
+     */
+    protected abstract int getContentType();
 
-	protected abstract void close() throws IOException;
+    protected abstract void close() throws IOException;
 
 }
