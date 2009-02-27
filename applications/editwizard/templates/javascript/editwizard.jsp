@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.62.2.8 2008-05-09 14:01:40 nklasens Exp $
+ * @version  $Id: editwizard.jsp,v 1.62.2.9 2009-02-27 12:02:20 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -148,29 +148,32 @@ function doSearch(el, cmd, sessionkey) {
     }
 
     var startnodes = el.getAttribute("startnodes");
-    var nodepath   = el.getAttribute("nodepath");
-    var fields     = el.getAttribute("fields");
+    var nodepath = el.getAttribute("nodepath");
+    var fields = el.getAttribute("fields");
     var constraints= el.getAttribute("constraints");
-    var orderby    = el.getAttribute("orderby");
+    var orderby = el.getAttribute("orderby");
     var directions = el.getAttribute("directions");
     var searchdir = el.getAttribute("searchdir");
-    var distinct   = el.getAttribute("distinct");
+    var distinct = el.getAttribute("distinct");
+    var main  = el.getAttribute("main");
     var pagelength = el.getAttribute("pagelength");
     if (!pagelength) {
         pagelength = 10;
     }
 
-    // lastobject is generally the last builder in the nodepath.
+    // lastobject is generally the last builder in the nodepath or the builder in 'main'.
     // however, if the first field is a "<buildername>.number" field, that buildername is used
 
-    var tmp=nodepath.split(",");
-    var lastobject="";
-    if (tmp.length>1) {
-        lastobject=tmp[tmp.length-1];
-        tmp=fields.split(",");
-        if (tmp.length>1 && tmp[0].indexOf(".number") != -1) {
-            lastobject=tmp[0].split(".")[0];
-        }
+    var lastobject = main;
+    if (lastobject == "" || lastobject == null) {
+      var tmp = nodepath.split(",");
+      if (tmp.length > 1) {
+          lastobject = tmp[tmp.length-1];
+          tmp = fields.split(",");
+          if (tmp.length > 1 && tmp[0].indexOf(".number") != -1) {
+              lastobject = tmp[0].split(".")[0];
+          }
+      }
     }
 
     // check constraints
@@ -227,6 +230,7 @@ function doSearch(el, cmd, sessionkey) {
     url += setParam("directions", directions);
     url += setParam("searchdir", searchdir);
     url += setParam("distinct", distinct);
+    url += setParam("main", main);
     url += setParam("age", searchage+"");
     url += setParam("type", el.getAttribute("type"));
 

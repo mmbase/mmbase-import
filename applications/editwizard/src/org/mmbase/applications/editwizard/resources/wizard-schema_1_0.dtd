@@ -79,6 +79,7 @@
 <!ATTLIST command filterrequired NMTOKEN #IMPLIED >
 <!ATTLIST command inline NMTOKEN #IMPLIED >
 <!ATTLIST command nodepath CDATA #IMPLIED >
+<!ATTLIST command main CDATA #IMPLIED >
 <!ATTLIST command objectnumber CDATA #IMPLIED >
 <!ATTLIST command wizardname CDATA #IMPLIED >
 <!ATTLIST command orderby CDATA #IMPLIED >
