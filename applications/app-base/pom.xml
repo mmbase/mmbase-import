@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
-<project>
-  <!--
-      Experimental base for maven 2 builds.
-
-  -->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.mmbase</groupId>
@@ -51,7 +48,7 @@
       </resource>
       <resource>
         <targetPath>org/mmbase/config</targetPath>
-        <directory>${myBaseDir}/config</directory>
+        <directory>${myBasedir}/config</directory>
         <excludes>
           <exclude>"**/CVS"</exclude>
         </excludes>
