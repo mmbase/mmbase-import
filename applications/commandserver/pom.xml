@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-application-parent</artifactId>
+    <version>1.9</version>
+    <relativePath>../app-base/pom.xml</relativePath>
+  </parent>
+
+  <groupId>org.mmbase</groupId>
+  <artifactId>mmbase-commandserver</artifactId>
+  <name>MMBase CommandServer</name>
+  <version>${mmbase.version}</version>
+  <packaging>jar</packaging>
+
+  <description>
+    Very small java application that allows you to execute command-line applications from a seperate
+    java process. This is because the System.execute call needs to fork() on unix OS-es, which means
+    the executed command allocates just as much memory as the entire java JVM has allocated.
+
+    Try java -jar mmbase-commandserver.jar -?
+  </description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>org.mmbase.util.CommandServer</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
