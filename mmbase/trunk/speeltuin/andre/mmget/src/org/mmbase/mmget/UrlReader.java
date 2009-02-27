@@ -1,6 +1,6 @@
 package org.mmbase.mmget;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.*;
 import java.util.*;
 
@@ -13,73 +13,27 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Reads a web resource an returns its tags that may contain links to other resources. 
- * Originally made for webpages, altered to be able to parse css-files.
  *
- * @author  &lt;&gt;
- * @version $Rev$
+ * @author Andr&eacute; van Toly
+ * @version $Id: UrlReader.java,v 1.3 2009-02-27 10:38:28 andre Exp $
  */
-public class UrlReader {
+public abstract class UrlReader {
 	private static final Logger log = Logging.getLoggerInstance(UrlReader.class);
 	
-	protected URL url = null;
-	protected BufferedReader inrdr = null;
-	protected static int contenttype = -1;
-		
 	/** 
-	 * Constructor
+	 * Gets all links to resources
+	 *
+	 * @return  list with tags that can contain links
 	 */
-	public UrlReader(String str) throws IOException, MalformedURLException {
-		this(new URL(str));
-	}
+	protected abstract ArrayList<String> getLinks() throws IOException;
+	
+	/** 
+	 * Contenttype from urlconection
+	 *
+	 * @return  contenttype constant
+	 */
+	protected abstract int getContentType();
 
-	public UrlReader(URL url) throws IOException {
-	    this.url = url;
-		
-		// open the URL for reading
-		URLConnection uc = url.openConnection();
-		contenttype = MMGet.contentType(uc);
-		
-		if (contenttype == MMGet.CONTENTTYPE_HTML) {
-		    new HTMLReader(url);
-		} else {
-		    new CSSReader(url);
-		}
-	}
-	
-	protected int getContentType() {
-	    return contenttype;
-	}
-
-	/** 
-	 * Gets all links that look they can contain to resources
-	 * @return        list contain links
-	 */
-	public ArrayList<String> getLinks() throws IOException {
-	    return new ArrayList<String>();
-	}
-	
-	public void close() throws IOException {
-		//inrdr.close();
-	}
-	
-	/* return a String representation of this object */
-	public String toString() {
-		return "UrlReader[" + url.toString() + "]";
-	}
-	
-	/** 
-	 * Main method for command-line invocation.
-	 * @param argv    the argument String array
-	 */
-	public static void main (String[] args) throws MalformedURLException, IOException {
-		if (args.length == 0) {
-			System.out.println("Usage: UrlReader [...]");
-			return;
-		}
-		for (int i = 0; i < args.length; i++) {
-			UrlReader ur = new UrlReader(args[0]);
-			ur.close();
-		}		
-	}
+	protected abstract void close() throws IOException;
 
 }

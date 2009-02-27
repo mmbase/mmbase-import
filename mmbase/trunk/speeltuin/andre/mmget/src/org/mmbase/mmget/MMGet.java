@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.1 2009-02-26 19:33:13 andre Exp $
+ * @version $Id: MMGet.java,v 1.2 2009-02-27 10:38:28 andre Exp $
  */
 public final class MMGet {
     
@@ -214,7 +214,7 @@ public final class MMGet {
         
     	UrlReader reader = null;
 		try {
-            reader = new UrlReader(url);
+            reader = UrlReaders.getUrlReader(url);
 		} catch (IOException e) {
 			log.error("Can't parse: " + e);
 			return;
