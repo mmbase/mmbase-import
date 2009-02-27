@@ -45,7 +45,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.149.2.13 2009-01-13 15:03:49 michiel Exp $
+ * @version $Id: Wizard.java,v 1.149.2.14 2009-02-27 12:00:50 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -169,7 +169,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @deprecated use Wizard(String, URIResolver, Config.WizardConfig, Cloud)
      * @param context the editwizard context path
      * @param uri  the URIResolver with which the wizard schema's and the xsl's will be loaded
-     * @param wizardname name of teh wizard
+     * @param wizardname name of the wizard
      * @param dataid the objectnumber
      * @param cloud the Cloud to use
      */
