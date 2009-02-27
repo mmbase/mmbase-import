@@ -5,7 +5,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.75 2008-11-28 16:51:01 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.76 2009-02-27 12:11:30 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -93,7 +93,6 @@ function doOnUnLoad_ew() {
 // onunload handler with one of his own. It is hard to override that one,
 // because a timer is used to wait a while before attaching it.
 // In short, DON'T USE OR OVERRIDE THIS FUNCTION.
-    //
 }
 
 
@@ -158,21 +157,24 @@ function doSearch(el, cmd, sessionkey) {
     var directions = el.getAttribute("directions");
     var searchdir = el.getAttribute("searchdir");
     var distinct   = el.getAttribute("distinct");
+    var main  = el.getAttribute("main");
     var pagelength = el.getAttribute("pagelength");
     if (!pagelength) {
         pagelength = 10;
     }
 
-    // lastobject is generally the last builder in the nodepath.
+    // lastobject is generally the last builder in the nodepath or the builder in 'main'.
     // however, if the first field is a "<buildername>.number" field, that buildername is used
 
-    var tmp=nodepath.split(",");
-    var lastobject="";
-    if (tmp.length>1) {
-        lastobject=tmp[tmp.length-1];
-        tmp=fields.split(",");
-        if (tmp.length>1 && tmp[0].indexOf(".number") != -1) {
-            lastobject=tmp[0].split(".")[0];
+    var lastobject = main;
+    if (lastobject == "" || lastobject == null) {
+        var tmp = nodepath.split(",");
+        if (tmp.length>1) {
+            lastobject=tmp[tmp.length-1];
+            tmp=fields.split(",");
+            if (tmp.length>1 && tmp[0].indexOf(".number") != -1) {
+                lastobject=tmp[0].split(".")[0];
+            }
         }
     }
 
@@ -230,6 +232,7 @@ function doSearch(el, cmd, sessionkey) {
     url += setParam("directions", directions);
     url += setParam("searchdir", searchdir);
     url += setParam("distinct", distinct);
+    url += setParam("main", main);
     url += setParam("age", searchage+"");
     url += setParam("type", el.getAttribute("type"));
 
