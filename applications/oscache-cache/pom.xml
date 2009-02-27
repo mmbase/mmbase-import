@@ -30,6 +30,13 @@
       <groupId>opensymphony</groupId>
       <artifactId>oscache</artifactId>
       <version>2.4</version>
+      <exclusions>
+        <exclusion>
+          <!-- mmbase has a dependency on this already, we don't want 2 version of the same thing -->
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 </project>
