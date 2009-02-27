@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.3 2009-02-27 10:45:07 andre Exp $
+ * @version $Id: MMGet.java,v 1.4 2009-02-27 15:30:52 andre Exp $
  */
 public final class MMGet {
     
@@ -51,8 +51,8 @@ public final class MMGet {
     /* urls to parse (html, css) */
     protected List<URL> parseURLs = Collections.synchronizedList(new ArrayList<URL>());
     /* url -> filename */
-    protected HashMap<URL,String> savedURLs = new HashMap<URL,String>();
-    /* url -> link in page/new link in page */
+    protected Map<URL,String> savedURLs = Collections.synchronizedMap(new HashMap<URL,String>());
+    /* url -> link in page / new link in rewritten page */
     protected Map<URL,Map<String,String>> url2links = Collections.synchronizedMap(new HashMap<URL,Map<String,String>>());
     
     /* future status */
