@@ -1,5 +1,5 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
 %><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" 
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -74,10 +74,12 @@
       }
       hour.options.add(opt);
      }
-     for(var j = 0 ; j <60 ;j++) {
+     var hasSelected = false;
+     for(var j = 0 ; j <60 ;) {
       var opt = document.createElement('OPTION');
-      if(j ==  now.getMinutes()) {
-         opt.selected = true;
+      if( j >= now.getMinutes() && hasSelected == false){
+            opt.selected = true;
+            hasSelected = true;
       }
       if(j <10) {
          opt.value ="0"+ j;
@@ -87,8 +89,9 @@
          opt.value =j;
          opt.text = j;
       }
+      j += 5;
       minute.options.add(opt);
-     }
+    }
    }
 </script>
 <script type="text/javascript">
