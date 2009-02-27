@@ -162,7 +162,7 @@
 			<attribute name="javadoc_location" value="http://junit.sourceforge.net/javadoc"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-core-0.42.jar" sourcepath="/MAVEN_REPO"/>
+	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-core-0.42.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-server-0.42.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.samba.jcifs/jars/jcifs-1.2.9.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/acegisecurity/jars/acegi-security-1.0.6.jar"/>
@@ -177,6 +177,8 @@
 	<classpathentry kind="var" path="MAVEN_REPO/com.thoughtworks.xstream/jars/xstream-1.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-dbcp/jars/commons-dbcp-1.2.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/spiffyframework/jars/spiffy-with_source-all-0.05.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/supercsv/jars/SuperCSV-1.52.jar"/>	
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer-1_5"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
