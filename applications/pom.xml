@@ -30,6 +30,7 @@
     <module>clustering</module>
     <module>searchrelate</module>
     <module>commandserver</module>
+    <module>largeobjects</module>
   </modules>
 
   <build>
