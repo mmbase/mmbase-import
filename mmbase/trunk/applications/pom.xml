@@ -29,7 +29,7 @@
     <module>rmmci</module>
     <module>clustering</module>
     <module>searchrelate</module>
-    <module>notifications</module>
+    <module>commandserver</module>
   </modules>
 
   <build>
