@@ -88,6 +88,7 @@
 <!ATTLIST command directions CDATA #IMPLIED >
 <!ATTLIST command command NMTOKEN #IMPLIED >
 <!ATTLIST command startnodes CDATA #IMPLIED >
+<!ATTLIST command main CDATA #IMPLIED >
 <!ATTLIST command constraints CDATA #IMPLIED >
 <!ATTLIST command origin CDATA #IMPLIED >
 <!ATTLIST command searchdir CDATA #IMPLIED >
