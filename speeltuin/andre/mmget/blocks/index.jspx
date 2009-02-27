@@ -20,7 +20,7 @@
     <mm:present referid="action"> 
       <mm:isnotempty referid="url"> 
         <p class="msg">
-          Status: <pre><mm:function set="mmget" name="exportsite" referids="url,dir" /></pre>
+          Status: <pre><mm:function set="mmget" name="download" referids="url,dir" /></pre>
         </p>
       </mm:isnotempty>
       <mm:isempty referid="url"> 
