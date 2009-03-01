@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
  * UrlConnection.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: UrlReaders.java,v 1.2 2009-02-27 10:45:07 andre Exp $
+ * @version $Id: UrlReaders.java,v 1.3 2009-03-01 11:26:11 andre Exp $
  */
 public class UrlReaders {
     private static final Logger log = Logging.getLoggerInstance(UrlReaders.class);
@@ -25,7 +25,7 @@ public class UrlReaders {
     protected URL url = null;
     protected static int contenttype = -1;
 
-    public static UrlReader getUrlReader(URL url) throws IOException {
+    public static UrlReader getUrlReader(URL url) throws IOException, MalformedURLException {
         
         URLConnection uc = url.openConnection();
         contenttype = MMGet.contentType(uc);
