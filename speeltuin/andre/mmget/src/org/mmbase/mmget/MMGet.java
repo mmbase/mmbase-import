@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.4 2009-02-27 15:30:52 andre Exp $
+ * @version $Id: MMGet.java,v 1.5 2009-03-01 11:26:11 andre Exp $
  */
 public final class MMGet {
     
@@ -46,7 +46,7 @@ public final class MMGet {
     public static String directory;
     protected static File savedir;
 
-    /* not wanted: offsite etc. */
+    /* not wanted: offsite, already tried but 404 etc. */
     protected Set<URL> ignoredURLs = new HashSet<URL>();
     /* urls to parse (html, css) */
     protected List<URL> parseURLs = Collections.synchronizedList(new ArrayList<URL>());
@@ -86,9 +86,17 @@ public final class MMGet {
         ResourceLoader webroot = ResourceLoader.getWebRoot();
         
         startURL = new URL(url);
-        startdirURL = getDirectoryURL(startURL);
-        if (startdirURL.toString().length() > startURL.toString().length()) 
+        String strUrl = startURL.toString();
+        if (strUrl.lastIndexOf("/") > 5) {
+            strUrl = strUrl.substring(0, strUrl.lastIndexOf("/") + 1);
+            startdirURL = new URL(strUrl);
+        } else {
+            startdirURL = startURL;
+        }
+        //startdirURL = getDirectoryURL(startURL);
+        /*if (startdirURL.toString().length() > startURL.toString().length()) 
                 startURL = startdirURL;
+        */
         
         // savedir
         if (directory == null || "".equals(directory) || !webroot.getResource(directory).openConnection().getDoInput()) {
@@ -167,6 +175,12 @@ public final class MMGet {
             return "Error: " + status;
         }
         
+        StringBuilder info = new StringBuilder();
+        info.append("\n***    url: ").append(startURL.toString());
+        info.append("\n**    dir.: ").append(startdirURL.toString());
+        info.append("\n* saved in: ").append(savedir.toString());
+        log.info(info.toString());
+        
         Future<String> fthread = ThreadPools.jobsExecutor.submit(new Callable() {
                  public String call() {
                       return start();
@@ -181,13 +195,9 @@ public final class MMGet {
             log.error(e);
         }
         
-        StringBuilder info = new StringBuilder(status);
-        info.append("\n***    url: ").append(startURL.toString());
-        info.append("\n**    dir.: ").append(startdirURL.toString());
-        info.append("\n* saved in: ").append(savedir.toString());
-        status = info.toString();
+        info.append(status);
         log.info(status);
-        return status;
+        return info.toString();
     }
 
     /**
@@ -212,11 +222,16 @@ public final class MMGet {
         log.debug("---------------------------------------------------------------------");
         log.debug("reading:   " + url.toString());
         
+        URL dirURL;
         UrlReader reader = null;
         try {
             reader = UrlReaders.getUrlReader(url);
+            dirURL = getDirectoryURL(url);
+        } catch (MalformedURLException e) {
+            log.error("Can't parse '" + url + "' - " + e);
+            return;
         } catch (IOException e) {
-            log.error("Can't parse: " + e);
+            log.error("Can't parse '" + url + "' - " + e);
             return;
         }
         if (reader == null) return;
@@ -225,8 +240,7 @@ public final class MMGet {
             ArrayList<String> links = reader.getLinks();
             Map<String,String> links2files = new HashMap<String,String>();      /* maps a harvested link to the resulting saved file if different */
             
-            URL dirURL = getDirectoryURL(url);
-            if (startdirURL == null) startdirURL = dirURL;
+            //if (startdirURL == null) startdirURL = dirURL;
             String calcUrl = startdirURL.toString() + makeFilename(url, reader.getContentType());
             String calcDir = calcUrl.substring(0, calcUrl.lastIndexOf("/"));
             
@@ -238,12 +252,21 @@ public final class MMGet {
             while (it.hasNext()) {
                 String link = it.next();
                 link = removeSessionid(link);   // remove sessionid crud etc. (changes over time)
-                
                 URL linkURL;
                 if (link.indexOf("://") < 0) {
-                    linkURL = new URL(url, link);
+                    try {
+                        linkURL = new URL(url, link);
+                    } catch (MalformedURLException e) {
+                        log.warn("Can't parse '" + link + "' - " + e);
+                        continue;
+                    }
                 } else {
-                    linkURL = new URL(link);
+                    try {
+                        linkURL = new URL(link);
+                    } catch (MalformedURLException e) {
+                        log.warn("Can't parse '" + link + "' - " + e);
+                        continue;
+                    }
                 }
                 
                 if (ignoredURLs.contains(linkURL)) continue;
@@ -252,8 +275,9 @@ public final class MMGet {
                     ignoredURLs.add(linkURL);
                     continue;
                 }
-                if (linkURL.toString().length() < startdirURL.toString().length()) {    // BUG: Klopt niet!
-                    //log.info(linkURL.toString() + " -- UP TREE, not following");
+                if (!linkURL.toString().startsWith(startdirURL.toString())) {
+                    // if (linkURL.toString().length() < startdirURL.toString().length()) {    // BUG: Klopt niet!
+                    log.info(linkURL.toString() + " -- UP TREE, not following");
                     ignoredURLs.add(linkURL);
                     continue;
                 }
@@ -261,6 +285,7 @@ public final class MMGet {
                 // save resource
                 String filename = saveResource(linkURL);
                 if (filename == null) continue;
+                //log.debug("filename: " + filename);
                 
                 // !!? String dir = dirURL.toString();  /* remove last / from dir for UriParser */
                 // !!? if (dir.endsWith("/")) dir = dir.substring(0, dir.lastIndexOf("/"));
@@ -269,7 +294,7 @@ public final class MMGet {
                 String relative = UriParser.makeRelative(calcDir, calclink);
 
                 if (!"".equals(link) && !links2files.containsKey(link) && !link.equals(relative)) { // only when different
-                    log.debug("link: " + link + ", relative: " + relative);
+                    //log.debug("link: " + link + ", relative: " + relative);
                     links2files.put(link, relative); /* /dir/css/bla.css + ../css/bla.css */
                 }
                 
@@ -299,6 +324,7 @@ public final class MMGet {
         if (savedURLs.containsKey(url)) {
             return savedURLs.get(url);
         }
+        if (ignoredURLs.contains(url)) return null;        
         
         URLConnection uc = null;
         try {
@@ -306,7 +332,10 @@ public final class MMGet {
         } catch (SocketException e) {
             log.warn(e);
         }
-        if (uc == null) return null;
+        if (uc == null) { 
+            ignoredURLs.add(url);        
+            return null;
+        }
 
         int type = contentType(uc);
         if (type > 0) {
@@ -374,25 +403,24 @@ public final class MMGet {
                     StringBuilder sbf = new StringBuilder();
                     sbf.append("\"").append(file).append("\"");
                     
-                    int pos = line.indexOf(sbl.toString());
-                    if (pos > -1) {
-                        int pos2 = line.indexOf("\"", pos + 1);
-                        log.debug("pos: " + pos + ", pos2: " + pos2);
-                        String linelink = line.substring(pos, pos2 + 1);
-                        log.debug("linelink: " + linelink);
+                    int pos1 = line.indexOf(sbl.toString());
+                    if (pos1 > -1) {
+                        int pos2 = line.indexOf("\"", pos1 + 1);
+                        //log.debug("pos1: " + pos1 + ", pos2: " + pos2);
+                        String linelink = line.substring(pos1, pos2 + 1);
+                        //log.debug("linelink: " + linelink);
                         
-                        // compensate for ;jsessionid=ECF5A0BB7709202CEDC4D7FBA3AC3AAD
-                        if ((pos2 - pos) > link.length() && linelink.indexOf(";") > -1) {
+                        // compensate for ;jsessionid=ECF5A0BB7709202CEDC4D7FBA3AC3AAD etc.
+                        if ((pos2 - pos1) > link.length() && linelink.indexOf(";") > -1) {
                             link = linelink;
                         } else {
                             sbl.append("\"");
                             link = sbl.toString();
                         }
-                        log.debug("link: " + link);
+                        //log.debug("link: " + link);
                         
-                        //sbl.append("\"");
                         line = line.replace(link, sbf.toString());
-                        log.debug("replaced '" + link + "' with '" + sbf + "' in: " + filename);
+                        //log.debug("replaced '" + link + "' with '" + sbf + "' in: " + filename);
                     }
                 }
             }
@@ -484,10 +512,24 @@ public final class MMGet {
      *
      * @param  url resource for which a filename is needed
      * @param  type content-type of the file to save
-     * @return path and filename that can be saved (f.e. dir/bla)
+     * @return path and filename that can be saved (f.e. pics/button.gif)
      */
     public String makeFilename(URL url, int type) {
-        String filename = "";
+        /*
+        
+        start: www.toly.nl/bla
+        link:  www.toly.nl/pics/button.gif
+        
+        filename: 1up/pics/buttons.gif
+        
+        start: www.toly.nl/bla/bla
+        link:  www.toly.nl/pics/button.gif
+        
+        filename: 2up/pics/buttons.gif
+        
+        */
+        String filename = url.getFile();    
+        filename = removeSessionid(filename);
         
         String link = url.toString();
         link = removeSessionid(link);
@@ -603,38 +645,15 @@ public final class MMGet {
         return (i != -1 && i != file.length() - 1);
     }
     
-    /** 
-     * Extracts the link from a tag.
-     *
-     * @param tag    the first parameter
-     * @return       a link to a resource hopefully
-     */
-    public static String extractHREF(String tag) {
-        String lcTag = tag.toLowerCase(); 
-        String attr;
-        int p1, p2, p3, p4;
-        
-        if (lcTag.startsWith("<a ") || lcTag.startsWith("<link ") || lcTag.startsWith("<area ")) {
-            attr = "href";
-        } else {
-            attr = "src";       // TODO: src's of css in html
+/*
+    public List splitPath(String path) {
+        List<String> pathList = new ArrayList<String>();
+        for (String p: path.split("/")) {
+            if (!p.equals("")) pathList.add(p);
         }
-        
-        p1 = lcTag.indexOf(attr);
-        if (p1 < 0) {
-            log.warn("Can't find attribute '" + attr + "' in '" + tag + "'");
-        }
-        p2 = tag.indexOf("=", p1);
-        p3 = tag.indexOf("\"", p2);
-        p4 = tag.indexOf("\"", p3 + 1);
-        if (p3 < 0 || p4 < 0) {
-            log.warn("Invalide attribute '" + attr + "' in '" + tag + "'");
-        }
-        
-        String href = tag.substring(p3 + 1, p4);
-        return href;
+        return pathList;
     }
-
+*/
     private void addParseURL(URL url) {
         synchronized(parseURLs) {
             if (!parseURLs.contains(url)) parseURLs.add(url);
