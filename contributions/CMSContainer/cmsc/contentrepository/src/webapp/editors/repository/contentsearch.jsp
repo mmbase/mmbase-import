@@ -398,7 +398,7 @@
             </mm:relatednodes>
 
 
-
+         <c:if test="${creationRelNumber ne trashnumber}">
             <tr <mm:even inverse="true">class="swap"</mm:even>>
                <td style="white-space: nowrap;">
                <cmsc:rights nodeNumber="${creationRelNumber}" var="rights"/>
@@ -406,10 +406,7 @@
                    <input type="checkbox" value="<mm:field name="number" />" class="checkbox" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
                </mm:compare>
                <mm:compare referid="action" value="link" inverse="true">
-                  <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster' && fn:length(results) >1}">
-                      <input type="checkbox" value="permanentDelete:<mm:field name="number" />" class="checkbox" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
-                  </c:if>
-                  <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster') && fn:length(results) >1}">
+                  <c:if test="${(rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster') && fn:length(results) >1}">
                     <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" class="checkbox" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
                   </c:if>
                </mm:compare>    
@@ -465,12 +462,7 @@
                              </c:if>
                      </cmsc:hasfeature>
                   </mm:compare>
-            <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster'}">
-               <a href="javascript:deleteContent('<mm:field name='number'/>','<fmt:message key="recyclebin.removeconfirm"/>')">
-                  <img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.recyclebin" />" alt="<fmt:message key="searchform.icon.delete.recyclebin" />"/>
-               </a>
-            </c:if>
-            <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster')}">
+            <c:if test="${rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster'}">
                <a href="javascript:deleteContent('<mm:field name='number'/>')"><img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.channel" />" alt="<fmt:message key="searchform.icon.delete.channel" />"/></a>
             </c:if>
 
@@ -519,7 +511,7 @@
                   </td>
                 </c:if>
             </tr>
-
+         </c:if>
          </mm:node>
       </mm:field>
 
