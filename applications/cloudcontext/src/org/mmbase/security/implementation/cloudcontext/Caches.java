@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * listener to arrange invalidation of (entries of) them  when necessary.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Caches.java,v 1.3 2009-01-05 14:45:07 michiel Exp $
+ * @version $Id: Caches.java,v 1.4 2009-03-02 17:27:56 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public abstract class Caches {
@@ -37,7 +37,7 @@ public abstract class Caches {
             public String getDescription() { return "Caches the rank of users. User node --> Rank"; }
         };
 
-    protected static Cache<String, MMObjectNode> userCache = new Cache<String,MMObjectNode>(20) {
+    protected static Cache<String, MMObjectNode> userCache = new Cache<String, MMObjectNode>(20) {
             public String getName()        { return "CCS:SecurityUser"; }
             public String getDescription() { return "Caches the users. UserName --> User Node"; }
         };
@@ -45,7 +45,7 @@ public abstract class Caches {
 
 
 
-    protected static Cache<String,MMObjectNode> contextCache = new Cache<String,MMObjectNode>(30) { // 30 'contexts' (organisations or so)
+    protected static Cache<String, MMObjectNode> contextCache = new Cache<String, MMObjectNode>(30) { // 30 'contexts' (organisations or so)
             public String getName()        { return "CCS:ContextCache"; }
             public String getDescription() { return "Links owner field to Contexts MMObjectNodes"; }
         };
