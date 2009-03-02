@@ -391,12 +391,10 @@
                 <c:set var="channelUrl" value="Asset.do?type=asset&parentchannel=${channelNumber}&direction=down"/>
             </mm:compare>
          </mm:relatednodes>
+         <c:if test="${creationRelNumber ne trashnumber}">
          <tr <mm:even inverse="true">class="swap"</mm:even>>
             <td style="white-space: nowrap;">
-                  <c:if test="${creationRelNumber == trashnumber && rights == 'webmaster' && fn:length(results) >1}">
-                      <input type="checkbox" value="permanentDelete:<mm:field name="number" />" class="checkbox" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
-                  </c:if>
-                  <c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster') && fn:length(results) >1}">
+                  <c:if test="${(rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster') && fn:length(results) >1}">
                     <input type="checkbox" value="moveToRecyclebin:<mm:field name="number" />" class="checkbox" name="chk_<mm:field name="number" />" onClick="document.forms['linkForm'].elements.selectall.checked=false;"/>
                   </c:if>
                <%@ include file="searchIconsBar.jspf" %>
@@ -441,6 +439,7 @@
                </td>
             </c:if>
          </tr>
+         </c:if>
       </mm:node>
    </mm:field>
    <mm:last>
@@ -475,7 +474,7 @@
             <mm:field name="number" jspvar="channelNumber" write="false"/>
             <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
          </mm:relatednodes>
-
+         <c:if test="${creationRelNumber ne trashnumber}">
          <div class="thumbnail_show" onMouseOut="javascript:hideEditItems(<mm:field name='number'/>)" onMouseOver="showEditItems(<mm:field name='number'/>)">
             <div class="thumbnail_operation">
                <div class="asset-info" id="asset-info-<mm:field name='number'/>" style="display: none; position: relative; border: 1px solid #eaedff" >
@@ -516,6 +515,7 @@
                </div>
             </div>
             </div>
+            </c:if>
       </mm:node>
    </mm:field>
    </mm:list>
