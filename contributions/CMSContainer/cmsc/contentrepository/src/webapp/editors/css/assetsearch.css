@@ -1,61 +1,71 @@
 div.editor div.body ul.shortcuts li {
-	padding-left: 5px;
-	font-size: 12px;
-	font-weight: normal;
+   padding-left: 5px;
+   font-size: 12px;
+   font-weight: normal;
 }
 
 div.editor div.body ul.shortcuts li a {
-	background-image: url(../gfx/button_side_block.gif);
-	background-position: right center;
-	background-repeat: no-repeat;
-	padding-right: 15px;
+   background-image: url(../gfx/button_side_block.gif);
+   background-position: right center;
+   background-repeat: no-repeat;
+   padding-right: 15px;
 }
 
 div.editor div.body #assetList div.grid {
-	width: 130px;
-	height: 135px;
-	float: left;
-	text-align: center
+   width: 130px;
+   height: 170px;
+   float: left;
+   text-align: center
 }
 
 div.editor div.body #assetList div.grid:hover,div.editor div.body #assetList #selected
-	{
-	background-color: #f1f400;
+   {
+   background-color: #f1f400;
+}
+
+div.editor div.body #assetList div.grid div.thumbnail-icons {
+   visibility :hidden; 
+   border:1px solid #eaedff; 
+   position:relative; 
+   top:-10px; 
+   left:-5px; 
+   height:20px; 
+   width: 99%; 
+   background-color: white;
 }
 
 div.editor div.body #assetList div.grid div.thumbnail {
-	width: 100%;
-	height: 80%;
-	text-align: center;
-	vertical-align: middle;
-	padding: 0;
+   width: 100%;
+   text-align: center;
+   vertical-align: middle;
+   padding: 0;
 }
 
 div.editor div.body #assetList div.grid div.assetInfo {
-	width: 100%;
-	height: 20%;
-	text-align: center;
-	padding: 0px;
+   width: 100%;
+   height: 30px;
+   text-align: center;
+   padding: 0px;
 }
 
 div.buttonscontent {
-	text-align: right;
-	height: 39px;
+   text-align: right;
+   height: 39px;
 }
 
 div.page_buttons div.button div.button_body {
-	background-image: url('../../../gfx/tab_2_right.gif');
-	background-repeat: no-repeat;
-	background-position: top right;
-	height: 39px;
-	float: left;
+   background-image: url('../../../gfx/tab_2_right.gif');
+   background-repeat: no-repeat;
+   background-position: top right;
+   height: 39px;
+   float: left;
 }
 
 div.page_buttons div.button div.button_body a {
-	float: left;
-	padding: 10px;
-	color: #313728;
-	font-size: 13px;
-	display: block;
-	text-decoration:none;
+   float: left;
+   padding: 10px;
+   color: #313728;
+   font-size: 13px;
+   display: block;
+   text-decoration:none;
 }
