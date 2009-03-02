@@ -8,6 +8,12 @@
 <cmscedit:head title="attachments.title">
    <script src="../repository/search.js" type="text/javascript"></script>
    <script type="text/javascript">
+   function showIcons(id){
+     document.getElementById('thumbnail-icons-'+id).style.visibility = 'visible';
+   }
+   function hideIcons(id){
+     document.getElementById('thumbnail-icons-'+id).style.visibility = 'hidden';
+   }
    function setShowMode() {
 	   var showMode = document.getElementsByTagName("option");
 	   var assetShow;
@@ -174,8 +180,12 @@
                         </mm:relatednodes>
                      </mm:field>
                      <c:if test="${creationRelNumber ne trashnumber}">
-                     <div class="grid" href="<mm:write referid="url"/>" onclick="initParentHref(this)" title="double click to show the info">
-                        <div class="thumbnail" ondblclick="showInfo('<mm:field name="number"/>')">
+                     <div class="grid" href="<mm:write referid="url"/>" onMouseOut="javascript:hideIcons(<mm:field name='number'/>)" onMouseOver="showIcons(<mm:field name='number'/>)">
+                        <div id="thumbnail-icons-<mm:field name='number'/>" class="thumbnail-icons">
+                            <a href="javascript:showInfo(<mm:field name="number" />)">
+                              <img src="../gfx/icons/info.png" alt="<fmt:message key="attachmentsearch.icon.info" />" title="<fmt:message key="attachmentsearch.icon.info" />"/></a>
+                        </div>
+                        <div class="thumbnail" onclick="initParentHref(this.parentNode)">
 	                         <c:set var="typedef" ><mm:nodeinfo type="type"/></c:set>
 	                         <c:if test="${typedef eq 'attachments'}">
 	                            <c:set var="filename"><mm:field name="filename"/></c:set>
@@ -188,7 +198,7 @@
 	                            </mm:haspage>
 	                         </c:if>
 						</div>
-                        <div class="assetInfo">
+                        <div class="assetInfo" onclick="initParentHref(this.parentNode)">
                               <mm:field id="title" write="false" name="title"/>
                               <c:if test="${fn:length(title) > 15}">
                                  <c:set var="title">${fn:substring(title,0,14)}...</c:set>
