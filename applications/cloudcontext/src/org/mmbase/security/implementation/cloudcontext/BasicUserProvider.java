@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link Provider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUserProvider.java,v 1.3 2009-01-06 14:38:21 michiel Exp $
+ * @version $Id: BasicUserProvider.java,v 1.4 2009-03-02 17:29:57 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public abstract class BasicUserProvider implements UserProvider {
@@ -194,6 +194,15 @@ public abstract class BasicUserProvider implements UserProvider {
      * @since MMBase-1.8
      */
     public MMObjectNode getUserByRank(String rank, String userName) {
+
+        Cache<String, MMObjectNode> userCache = Caches.getUserCache();
+        final String key = userName + "::" + rank;
+        if (userCache.containsKey(key)) {
+            return userCache.get(key);
+        }
+
+
+
         MMBase mmb = MMBase.getMMBase();
         BasicSearchQuery query = new BasicSearchQuery();
         MMObjectBuilder ranks = mmb.getBuilder("mmbaseranks");
@@ -223,11 +232,14 @@ public abstract class BasicUserProvider implements UserProvider {
             if (log.isDebugEnabled()) {
                 log.debug("Executing " + query + " --> " + result);
             }
+            MMObjectNode res;
             if (result.size() > 0) {
-                return result.get(0).getNodeValue("mmbaseusers");
+                res = result.get(0).getNodeValue("mmbaseusers");
             } else {
-                return null;
+                res =  null;
             }
+            userCache.put(key, res);
+            return res;
         } catch (SearchQueryException sqe) {
             log.error(sqe);
             return null;
