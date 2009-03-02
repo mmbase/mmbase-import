@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.40 2006-01-24 12:29:27 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.40.2.1 2009-03-02 14:22:56 michiel Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static final Logger log = Logging.getLoggerInstance(BasicRelation.class);
@@ -47,7 +47,7 @@ public class BasicRelation extends BasicNode implements Relation {
      * @javadoc
      */
     BasicRelation(MMObjectNode node, BasicRelationManager nodeManager) {
-        super(node, nodeManager);        
+        super(node, nodeManager);
     }
 
     /**
@@ -96,13 +96,14 @@ public class BasicRelation extends BasicNode implements Relation {
         if (node.getCloud() != cloud) {
             throw new BridgeException("Source and relation are not in the same transaction or from different clouds.");
         }
+        edit(ACTION_EDIT);
         relationChanged = true;
-        int source=node.getIntValue("number");
-        if (source==-1) {
+        int source = node.getIntValue("number");
+        if (source == -1) {
             // set a temporary field, transactionmanager resolves this
             getNode().setValue("_snumber", node.getValue(MMObjectBuilder.TMP_FIELD_NUMBER));
         } else {
-          getNode().setValue("snumber",source);
+            getNode().setValue("snumber", source);
         }
         snum = node.getNumber();
         sourceNodeType = node.getIntValue("otype");
@@ -112,9 +113,10 @@ public class BasicRelation extends BasicNode implements Relation {
         if (node.getCloud() != cloud) {
             throw new BridgeException("Destination and relation are not in the same transaction or from different clouds.");
         }
+        edit(ACTION_EDIT);
         relationChanged = true;
-        int dest=node.getIntValue("number");
-        if (dest==-1) {
+        int dest = node.getIntValue("number");
+        if (dest == -1) {
             // set a temporary field, transactionmanager resolves this
             getNode().setValue("_dnumber", node.getValue(MMObjectBuilder.TMP_FIELD_NUMBER));
         } else {
@@ -148,7 +150,7 @@ public class BasicRelation extends BasicNode implements Relation {
         }
         //int snumber = snumtype.getNumber();
         //int dnumber = dnumtype.getNumber();
-        
+
         if (sourceNodeType == UNSET) {
             sourceNodeType = -1;
             if (snum != -1) sourceNodeType = BasicCloudContext.mmb.getTypeDef().getNodeType(snum);
@@ -213,6 +215,7 @@ public class BasicRelation extends BasicNode implements Relation {
                 }
             }
         }
+        log.debug("Committing " + getChanged());
         super.commit();
         if (!(cloud instanceof Transaction)) {
             snum = getNode().getIntValue("snumber");
