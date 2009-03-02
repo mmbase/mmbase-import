@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.33 2009-01-29 21:51:25 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.34 2009-03-02 17:29:15 michiel Exp $
  */
 public class Authenticate extends CloudContextAuthentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -200,7 +200,8 @@ public class Authenticate extends CloudContextAuthentication {
                 }
             }
         } else {
-            throw new UnknownAuthenticationMethodException("login module with name '" + type + "' not found, only 'anonymous', 'name/password' and 'class' are supported");
+            throw new UnknownAuthenticationMethodException("login method with name '" + type + "' not found, only 'anonymous', 'name/password', 'name/encodedpassword' " + (allowEncodedPassword ? " (DISALLOWED) " : "")
+                                                           + "  and 'class' are supported");
         }
         if (node == null)  return null;
         return new User(node, getKey(), type);
