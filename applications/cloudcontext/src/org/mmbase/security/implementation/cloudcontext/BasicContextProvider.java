@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link ContextProvider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicContextProvider.java,v 1.9 2009-01-06 11:42:10 michiel Exp $
+ * @version $Id: BasicContextProvider.java,v 1.10 2009-03-02 17:28:35 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public  class BasicContextProvider implements ContextProvider {
@@ -405,8 +405,9 @@ public  class BasicContextProvider implements ContextProvider {
         }
         */
 
+        UserProvider up = Authenticate.getInstance().getUserProvider();
         // when it is our user node, and you are this user, you may do anything on it (change password)
-        if (Authenticate.getInstance().getUserProvider().isOwnNode(user, node)) {
+        if (up.isOwnNode(user, node)) {
             if ((operation == Operation.READ || operation == Operation.WRITE)) {
                 if (log.isDebugEnabled()) {
                     log.debug("May always " + operation + " on own user node: " + node.getNumber());
@@ -416,6 +417,10 @@ public  class BasicContextProvider implements ContextProvider {
             if (operation == Operation.DELETE || operation == Operation.CHANGE_CONTEXT) {
                 // may not delete/give away own user.
                 return false;
+            }
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("According to " + up + " " + node.getNumber() + " is not an own node");
             }
         }
 
