@@ -64,24 +64,20 @@ public class NewsletterPublisher {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterEditionNode = cloud.getNode(publication.getId());
          // if needed to prompt user this validate will be remove to Action
-         String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription.getTerms(), publication.getId());
          String originalBody  = "";
-         if("text/plain".equals(subscription.getMimeType())){
-            originalBody += url+"\n";
-         }
-         String static_html = "";
+         String static_html = null;
          if (newsletterEditionNode.getValueWithoutProcess("static_html") != null)
             static_html = (String)newsletterEditionNode.getValueWithoutProcess("static_html");
          if (StringUtils.isEmpty(static_html)) {
-            originalBody += getBody(publication, subscription);
+            originalBody = getBody(publication, subscription);
          }
          else {
             if("text/plain".equals(subscription.getMimeType())){
                OnlyText onlyText = new OnlyText();
-               originalBody += onlyText.html2Text(static_html);
+               originalBody = onlyText.html2Text(static_html);
             }
             else {
-               originalBody += static_html;
+               originalBody = static_html;
             }
 
          }
@@ -117,7 +113,12 @@ public class NewsletterPublisher {
       Node newsletterPublicationNode = cloud.getNode(publication.getId());
       NodeList attachmentNodes = newsletterPublicationNode.getRelatedNodes("attachments");
       Multipart multipart = new MimeMultipart();
-      setBody(publication, subscription, multipart,originalBody);
+      if("text/plain".equals(subscription.getMimeType())){
+         setBody(publication, subscription, multipart,originalBody);
+      }
+      else {
+         setMultipartBody(publication, subscription, multipart,originalBody);
+      }
       setAttachment(multipart, attachmentNodes, MimeType.attachment);
       NodeList imageNodes = newsletterPublicationNode.getRelatedNodes("images");
       setAttachment(multipart, imageNodes, MimeType.image);
@@ -135,6 +136,31 @@ public class NewsletterPublisher {
          String type=subscription.getMimeType();
          mdp.setContent(originalBody, type+";charset=utf-8");
          mdp.addHeader("Content-Transfer-Encoding", "quoted-printable");
+         multipart.addBodyPart(mdp);
+      }
+      catch (MessagingException e) {
+         log.error(e);
+      }
+   }
+
+   private void setMultipartBody(Publication publication, Subscription subscription, Multipart multipart,String originalBody) {
+      MimeBodyPart mdp = new MimeBodyPart();
+      Multipart subMultipart = new MimeMultipart("alternative");
+      MimeBodyPart textMdp = new MimeBodyPart();
+      MimeBodyPart htmlMdp = new MimeBodyPart();
+      try {
+         
+         String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription.getTerms(), publication.getId());
+         textMdp.setText(url);
+         subMultipart.addBodyPart(textMdp);
+         
+         String type=subscription.getMimeType();
+         htmlMdp.addHeader("Content-Transfer-Encoding", "quoted-printable");
+         htmlMdp.setContent(originalBody, type+";charset=utf-8");
+         subMultipart.addBodyPart(htmlMdp);
+         
+         mdp.setContent(subMultipart);
+         
          multipart.addBodyPart(mdp);
       }
       catch (MessagingException e) {
@@ -294,8 +320,8 @@ new javax.mail.Authenticator() {
       }
       return session;
    }
-
    private static String getParameter(String name) {
+
       Module sendmailModule = Module.getModule("sendmail");
       if (sendmailModule == null) {
          log
