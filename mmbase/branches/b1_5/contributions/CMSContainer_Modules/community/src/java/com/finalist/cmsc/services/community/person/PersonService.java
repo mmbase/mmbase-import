@@ -84,7 +84,10 @@ public interface PersonService {
    public void addRelationRecord(String level, PersonExportImportVO importPerson);
 
    void changeStateByAuthenticationId(Long authenticationId, String active);
+
    public List<PersonExportImportVO> getPersonExportImportVO(String group);
 
    public List<Authority> getAllAuthorities();
+   
+   public void ImportDataFromFileRecord(String level, PersonExportImportVO importPerson);
 }
