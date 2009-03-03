@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.71 2009-02-23 09:46:09 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.72 2009-03-03 19:36:41 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -172,7 +172,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @param node This parameter could be used if the client does not fully specify the field's
      * value (possible e.g. with Date fields). The existing specification could be used then.
      * @return <code>null</code> if the client did not post, something else if it did. If the client
-     * meant to set <code>null</code>, this method shoudl return the empty string.
+     * meant to set <code>null</code>, this method should return the empty string.
      */
     protected Object getFieldValue(Node node, Field field) throws JspTagException {
         Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
