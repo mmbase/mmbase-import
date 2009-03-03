@@ -39,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.13 2008-10-28 15:20:55 michiel Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.14 2009-03-03 15:10:01 michiel Exp $
 
  */
 
@@ -48,6 +48,8 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
     private static final long serialVersionUID = 1L;
 
     private static final String SEP = ":";
+
+    private static CharTransformer paramEscaper = new Url(Url.PARAM_ESCAPE);
 
     private static final String ENCRYPT_IMPL = "PBEWithMD5AndDES";
     private static final PBEParameterSpec PBE_PARAM_SPEC;
@@ -213,7 +215,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
 
     public static Node validate(Cloud cloud, String encryptedKey) {
         String keyChain = decrypt(encryptedKey.replaceAll(" ", "+"));
-        log.debug("Found keyChain " + keyChain + " (from " + encryptedKey + " )");
+        log.debug("Found keyChain " + keyChain + " (from " + encryptedKey + " ). User " + cloud.getUser());
         int pos1 = keyChain.indexOf(SEP);
         String nodeManager = keyChain.substring(0, pos1);
         int pos2 = keyChain.indexOf(SEP, pos1 + 1);
@@ -301,7 +303,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                 u.append(url);
                 String sep = url.indexOf("?") > 0 ? "&amp;" : "?";
                 u.append(sep);
-                u.append("signature=" + encryptedKey);
+                u.append("signature=" + paramEscaper.transform(encryptedKey));
 
                 emailNode.setStringValue(toField, email);
 
