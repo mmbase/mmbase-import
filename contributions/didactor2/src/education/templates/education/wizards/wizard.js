@@ -1,7 +1,7 @@
 
 
 function WizardTree() {
-    this.mode = $("body").attr("class").replace(/editwizards/, '').trim();
+    //this.mode = $("body").attr("class").replace(/editwizards/, '').trim();
     this.education = $("html head meta[name='Didactor-Education']").attr("content");
     this.setupTree();
 }
