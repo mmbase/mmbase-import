@@ -27,6 +27,7 @@ import org.supercsv.cellprocessor.ConvertNullTo;
 import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.constraint.StrRegEx;
 import org.supercsv.cellprocessor.ift.CellProcessor;
+import org.supercsv.exception.SuperCSVException;
 import org.supercsv.exception.SuperCSVReflectionException;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.CsvBeanWriter;
@@ -192,9 +193,10 @@ public class ReferenceImportExportAction extends DispatchAction {
       String level = myForm.getLevel();
       ActionMessages messages = new ActionMessages();
       if (!isXML && !isCSV) {
-         messages.add("file", new ActionMessage("datafile.unsupport"));
-         saveMessages(request, messages);
+//         messages.add("invalidMessage", new ActionMessage("datafile.unsupport"));
+//         saveMessages(request, messages);
          request.setAttribute("warning", 1);
+         request.setAttribute("invalidMessage", "datafile.unsupport");
          return mapping.findForward("failed");
       }
 
@@ -204,10 +206,11 @@ public class ReferenceImportExportAction extends DispatchAction {
             request.setAttribute("confirm_userNum", size);
          } catch (Exception e) {
             log.error(e);
-            messages.add("file", new ActionMessage("datafile.invalid"));
-            saveMessages(request, messages);
+//            messages.add("invalidMessage", new ActionMessage("datafile.invalid"));
+//            saveMessages(request, messages);
             request.setAttribute("warning", 1);
             request.setAttribute("groupId", groupId);
+            request.setAttribute("invalidMessage", "datafile.invalid");
             return mapping.findForward("failed");
          }
       } else if (isCSV) {
@@ -221,20 +224,29 @@ public class ReferenceImportExportAction extends DispatchAction {
                header = inFile.getCSVHeader(true);
             }
             Map<String, PersonExportImportVO> personVOMap = fillPersonVO(groupId, inFile, header);
+            if(personVOMap == null) {
+//               messages.add("invalidMessage", new ActionMessage("datafile.invalid.data"));
+//               saveMessages(request, messages);
+               request.setAttribute("warning", 1);
+               request.setAttribute("groupId", groupId);
+               request.setAttribute("invalidMessage", "datafile.invalid.data");
+               return mapping.findForward("failed");
+            }
             if ("clean".equals(level)) {
                batchCleanRecord();
             }
             Iterator<String> it = personVOMap.keySet().iterator();
             while (it.hasNext()) {
-               personService.addRelationRecord(level, personVOMap.get(it.next()));
+               personService.ImportDataFromFileRecord(level, personVOMap.get(it.next()));
             }
             request.setAttribute("confirm_userNum", personVOMap.size());
          } catch (Exception e) {
             log.error(e);
-            messages.add("file", new ActionMessage("datafile.invalid"));
-            saveMessages(request, messages);
+//            messages.add("invalidMessage", new ActionMessage("datafile.invalid"));
+//            saveMessages(request, messages);
             request.setAttribute("warning", 1);
             request.setAttribute("groupId", groupId);
+            request.setAttribute("invalidMessage", "datafile.invalid");
             return mapping.findForward("failed");
          } finally {
             inFile.close();
@@ -248,6 +260,9 @@ public class ReferenceImportExportAction extends DispatchAction {
       CommunityExportForCsvVO communityVO;
       Map<String, PersonExportImportVO> personVOMap = new HashMap<String, PersonExportImportVO>();
       while ((communityVO = inFile.read(CommunityExportForCsvVO.class, header, userProcessors)) != null) {
+         if(StringUtils.isEmpty(communityVO.getAuthenticationUserId()) || StringUtils.isEmpty(communityVO.getAuthenticationPassword()) || StringUtils.isEmpty(communityVO.getEmail())) {
+            return null;
+         }
          PersonExportImportVO personExImVO = new PersonExportImportVO();
          Authentication auth = new Authentication();
          List<Preference> preferences = new ArrayList<Preference>();
@@ -267,7 +282,7 @@ public class ReferenceImportExportAction extends DispatchAction {
             personExImVO.setInfix(communityVO.getInfix());
             personExImVO.setEmail(communityVO.getEmail());
             personExImVO.setRegisterDate(new Date(System.currentTimeMillis()));
-            if (null != communityVO.getActive()) {
+            if (StringUtils.isNotBlank(communityVO.getActive())) {
                personExImVO.setActive(communityVO.getActive());
             } else {
                personExImVO.setActive("active");
@@ -338,5 +353,16 @@ public class ReferenceImportExportAction extends DispatchAction {
 
    public static Log getLog() {
       return log;
+   }
+   private boolean isCorretFile(ICsvBeanReader inFile , String[] header) throws SuperCSVReflectionException, SuperCSVException, IOException{
+      CommunityExportForCsvVO communityVO;
+      boolean isCorrectFile = true;
+      while ((communityVO = inFile.read(CommunityExportForCsvVO.class, header, userProcessors)) != null) {
+         if(StringUtils.isEmpty(communityVO.getAuthenticationUserId()) || StringUtils.isEmpty(communityVO.getAuthenticationPassword()) || StringUtils.isEmpty(communityVO.getEmail())) {
+            isCorrectFile = false;
+            break;
+         }
+      }
+      return isCorrectFile;
    }
 }
