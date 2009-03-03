@@ -110,9 +110,9 @@ public class NewsletterCronJob extends AbstractCronJob {
                } else if (expressions[4].equals("2")) {
                   int interval = Integer.parseInt(expressions[5]);
                   if (lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)) {
-                     if (DateUtils.isSameDay(DateUtils.addDays(startDate, interval), now)) {
-                        isPublish = true;
-                     }
+//                     if (DateUtils.isSameDay(DateUtils.addDays(startDate, interval), now)) {
+                     isPublish = true;
+//                     }
                   } else {
                      if (DateUtils.isSameDay(DateUtils.addDays(lastCreatedDateTime, interval), now)) {
                         isPublish = true;
