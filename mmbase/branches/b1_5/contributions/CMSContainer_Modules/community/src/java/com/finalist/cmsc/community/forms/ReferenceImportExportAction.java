@@ -237,7 +237,7 @@ public class ReferenceImportExportAction extends DispatchAction {
             }
             Iterator<String> it = personVOMap.keySet().iterator();
             while (it.hasNext()) {
-               personService.ImportDataFromFileRecord(level, personVOMap.get(it.next()));
+               personService.importDataFromFileRecord(level, personVOMap.get(it.next()));
             }
             request.setAttribute("confirm_userNum", personVOMap.size());
          } catch (Exception e) {
