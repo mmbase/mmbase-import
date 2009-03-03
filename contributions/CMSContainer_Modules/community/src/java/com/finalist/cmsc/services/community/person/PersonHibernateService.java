@@ -502,4 +502,68 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       criteria = criteria.setResultTransformer(criteria.DISTINCT_ROOT_ENTITY); 
       return criteria.list();
    }
+   @Transactional
+   public void ImportDataFromFileRecord(String level,
+         PersonExportImportVO importPerson) {
+      Person p = getPersonByUserId(importPerson.getAuthentication().getUserId());
+      if ("over".equals(level)) {
+         if(p != null) {
+            authenticationService.updateAuthenticationPassword(importPerson.getAuthentication().getUserId(), importPerson.getAuthentication().getPassword());
+            p.setEmail(importPerson.getEmail());
+            p.setActive(importPerson.getActive());
+            updatePerson(p);
+         }
+         else {
+            Authentication authentication = authenticationService.createAuthentication(importPerson.getAuthentication());
+            if (authentication.getId() != null) {
+               if(importPerson.getAuthorityId()>0 ){
+                  Authority authority = this.getAuthorityById(importPerson.getAuthorityId());
+                  if (null!=authentication.getAuthorities()) {
+                     authentication.getAuthorities().add(authority);
+                  }
+               }
+               addPerson(importPerson, authentication);
+            } 
+         }         
+      }
+      else{
+         // add new users or put user to another group
+         createNewPerson(importPerson);
+      }
+      
+   }
+   @Transactional
+   private void addPerson(PersonExportImportVO importPerson,
+         Authentication authentication) {
+      Person person = new Person();
+      person.setEmail(importPerson.getEmail());
+      person.setActive(importPerson.getActive());
+      person.setAuthenticationId(authentication.getId());
+      getSession().saveOrUpdate(authentication);
+      updatePerson(person);
+   }
+   @Transactional(propagation = Propagation.REQUIRED)
+   private void createNewPerson(PersonExportImportVO xperson) {
+
+      Authentication authentication = xperson.getAuthentication();
+      if(authenticationService.authenticationExists(authentication.getUserId()) && xperson.getAuthorityId()>0 ){
+         Authority authority = this.getAuthorityById(xperson.getAuthorityId());
+         if(null!=authority){
+            authentication = authenticationService.getAuthenticationById(authenticationService.getAuthenticationIdForUserId(authentication.getUserId()));
+            authentication.getAuthorities().add(authority);
+            getSession().saveOrUpdate(authentication);
+         }
+      }
+      else if(!authenticationService.authenticationExists(authentication.getUserId())){
+         authentication = authenticationService.createAuthentication(authentication);
+         if(xperson.getAuthorityId()>0 ){
+            Authority authority = this.getAuthorityById(xperson.getAuthorityId());
+            if (null!=authentication.getAuthorities()) {
+               authentication.getAuthorities().add(authority);
+            }
+         }
+         addPerson(xperson, authentication);
+      }
+   
+   }
 }
