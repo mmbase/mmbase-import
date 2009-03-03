@@ -431,7 +431,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
          Authority authority = this.getAuthorityById(importPerson.getAuthorityId());
          activedAuthentication.getAuthorities().add(authority);
       }
-      Authentication dbAuthentication = (Authentication) session.load(Authentication.class, oldDataPerson.getId());
+      Authentication dbAuthentication = (Authentication) session.load(Authentication.class, oldDataPerson.getAuthenticationId());
       converPersonPropertis(importPerson, oldDataPerson);
       converAuthenticationPropertis(activedAuthentication, dbAuthentication);
       parsePreferences(importPerson, session, activedAuthentication, dbAuthentication);
