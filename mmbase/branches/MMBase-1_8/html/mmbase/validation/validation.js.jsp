@@ -9,7 +9,7 @@
  *                              then call validator.setup(el).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.29 2008-11-11 16:06:36 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.30 2009-03-03 15:33:03 michiel Exp $
  */
 
 
@@ -31,7 +31,7 @@ function MMBaseValidator(root) {
     this.sessionName   = null;
     this.id = MMBaseValidator.validators.push(this);
     if (MMBaseValidator.validators.length == 1) {
-	setTimeout(MMBaseValidator.watcher, 500);
+	    setTimeout(MMBaseValidator.watcher, 500);
     }
     this.activeElement = null;
     this.checkAfter    = 600;
@@ -49,9 +49,9 @@ MMBaseValidator.watcher = function() {
 	var now = new Date().getTime();
         if (el != null) {
             if (! el.serverValidated) {
-		if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
+		        if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
                     MMBaseValidator.validators[i].validateElement(MMBaseValidator.validators[i].activeElement, true);
-		}
+		        }
             }
         }
     }
@@ -92,9 +92,9 @@ MMBaseValidator.prototype.log = function (msg) {
             errorTextArea.value = "LOG: " + msg + "\n" + errorTextArea.value;
         } else {
             // firebug console
-	    if (typeof(console) != "undefined") {
-		console.log(msg);
-	    }
+	        if (typeof(console) != "undefined") {
+		        console.log(msg);
+	        }
         }
     }
 }
@@ -106,9 +106,9 @@ MMBaseValidator.prototype.trace = function (msg) {
             errorTextArea.value = "TRACE: " + msg + "\n" + errorTextArea.value;
         } else {
             // firebug console
-	    if (typeof(console) != "undefined") {
-		console.log(msg);
-	    }
+	        if (typeof(console) != "undefined") {
+		        console.log(msg);
+	        }
         }
     }
 }
@@ -135,14 +135,14 @@ MMBaseValidator.prototype.enforce = function(el, enf) {
 
 MMBaseValidator.prototype.isChanged = function(el) {
     if (el != null) {
-	return this.getValue(el) != el.originalValue;
+	    return this.getValue(el) != el.originalValue;
     } else {
-	var els = this.elements;
-	for (var  i = 0; i < els.length; i++) {
+	    var els = this.elements;
+	    for (var  i = 0; i < els.length; i++) {
             var entry = els[i];
-	    if (this.isChanged(entry)) return true;
-	}
-	return false;
+	        if (this.isChanged(entry)) return true;
+	    }
+	    return false;
     }
 }
 
@@ -156,19 +156,19 @@ MMBaseValidator.prototype.find = function(el, path, r) {
 
     var tagName = path.shift();
 
-    var tag = el.firstChild;
+    var tag = el == null ? null : el.firstChild;
     while (tag != null) {
-	if (tag.nodeType == 1) {
-	    var name = tag.nodeName.replace(/^.*:/,'');
-	    if (name == tagName) {
-		if (path.length == 0) {
-		    r.push(tag);
-		} else {
-		    this.find(tag, path, r);
-		}
+	    if (tag.nodeType == 1) {
+	        var name = tag.nodeName.replace(/^.*:/,'');
+	        if (name == tagName) {
+		        if (path.length == 0) {
+		            r.push(tag);
+		        } else {
+		            this.find(tag, path, r);
+		        }
+	        }
 	    }
-	}
-	tag = tag.nextSibling;
+	    tag = tag.nextSibling;
     }
     return r;
 }
@@ -459,10 +459,10 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
 	    $.ajax({async: false, url: url, type: "GET",
                 dataType: "xml", data: params,
 		        complete: function(res, status){
-		            if (status == "success") {
+		            if (status == "success" || res.status == '404') {
 			            dataType = res.responseXML;
 			            self.dataTypeCache[el.mm_key] = dataType;
-		            }
+                    }
 		        }
 	           });
 	    this.log("Found " + dataType);
