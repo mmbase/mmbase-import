@@ -46,7 +46,9 @@
   <tr><th colspan="3">
 
     <div style="width: 30em; overflow: hidden;"><mm:nodeinfo type="gui" /></div>:
-  <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
+  <%=m.getString("Node")%><mm:link page="change_node.jsp" referids="_node@node_number">
+       <a href="${_}"><mm:field name="number" /></a>
+     </mm:link>  <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
 
     <a href="<mm:url page="navigate.jsp" referids="this_node@node_number" />">
@@ -77,6 +79,7 @@
        <td class="data" title="<mm:fieldinfo type="description"  escape="text/html/attribute" /> (<mm:fieldinfo type="datatype" />: <mm:fieldinfo type="datatypedescription" escape="text/html/attribute" />)"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
        <td class="listdata" colspan="2">
          <mm:fieldinfo type="$showtype" />
+         <mm:isnull>(null)</mm:isnull>
          <mm:fieldinfo type="errors" />
        </td>
      </tr>
