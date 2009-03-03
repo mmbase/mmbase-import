@@ -54,7 +54,7 @@ public class GoogleAnalyticsTag extends SimpleTagSupport {
 			Context env = (Context) context.lookup("java:comp/env");
 			contextAccount = (String) env.lookup("googleAnalytics/account");
 		} catch (NamingException e) {
-			log.error("problems getting google context account", e);
+         log.info("No default account found in the context. Provide account information as attribute.");
 		}
 	}
 
