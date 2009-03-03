@@ -5,7 +5,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.76 2009-02-27 12:11:30 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.77 2009-03-03 11:35:30 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -167,13 +167,14 @@ function doSearch(el, cmd, sessionkey) {
     // however, if the first field is a "<buildername>.number" field, that buildername is used
 
     var lastobject = main;
-    if (lastobject == "" || lastobject == null) {
+    if (lastobject == null) lastobject = "";
+    if (lastobject == "") {
         var tmp = nodepath.split(",");
-        if (tmp.length>1) {
-            lastobject=tmp[tmp.length-1];
-            tmp=fields.split(",");
-            if (tmp.length>1 && tmp[0].indexOf(".number") != -1) {
-                lastobject=tmp[0].split(".")[0];
+        if (tmp.length > 1) {
+            lastobject = tmp[tmp.length-1];
+            tmp = fields.split(",");
+            if (tmp.length > 1 && tmp[0].indexOf(".number") != -1) {
+                lastobject = tmp[0].split(".")[0];
             }
         }
     }
