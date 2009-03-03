@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rich exportsource="mmbase://www.didactor.org/version2.0" timestamp="20020516170724">
+    <node number="17004" owner="system" alias="vu_homework_assessment">
+        <title>Assessment</title>
+        <body>.....</body>
+    </node>
+    <node number="17006" owner="system" alias="vu_homework_assessment_note_problemtypes">
+        <title>Toelichting problemen indelen</title>
+        <body>.....</body>
+    </node>
+    <node number="17007" owner="system" alias="vu_homework_assessment_note_problems">
+        <title>Toelichting problemen</title>
+        <body>.....</body>
+    </node>
+    <node number="17008" owner="system" alias="vu_homework_assessment_note_importantthings">
+        <title>Toelichting belangrijke dingen</title>
+        <body>.....</body>
+    </node>
+    <node number="17009" owner="system" alias="vu_homework_assessment_coach">
+        <title>Assessment</title>
+        <body>.....</body>
+    </node>
+    <node number="17010" owner="system" alias="vu_homework_assessment_opens_stage4-problems">
+        <title>Toelichting les 4</title>
+        <body>.....</body>
+    </node>
+    <node number="17011" owner="system" alias="vu_homework_assessment_opens_stage3-problems">
+        <title>Toelichting les 3</title>
+        <body>.....</body>
+    </node>
+    <node number="17012" owner="system" alias="vu_homework_assessment_opens_stage2-problems">
+        <title>Toelichting les 2</title>
+        <body>.....</body>
+    </node>
+     <node number="17013" owner="system" alias="vu_homework_assessment_evaluate">
+        <title>Uitwerken</title>
+        <body>.....</body>
+    </node>
+    <node number="17014" owner="system" alias="vu_homework_assessment_overview">
+        <title>Overzicht</title>
+        <body>.....</body>
+    </node>
+</rich>
