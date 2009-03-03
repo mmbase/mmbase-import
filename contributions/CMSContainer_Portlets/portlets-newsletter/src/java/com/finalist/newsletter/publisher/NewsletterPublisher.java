@@ -151,7 +151,8 @@ public class NewsletterPublisher {
       try {
          
          String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription.getTerms(), publication.getId());
-         textMdp.setText(url);
+         textMdp.addHeader("Content-Transfer-Encoding", "quoted-printable");
+         textMdp.setText(url+"\n"+originalBody, "utf-8");
          subMultipart.addBodyPart(textMdp);
          
          String type=subscription.getMimeType();
