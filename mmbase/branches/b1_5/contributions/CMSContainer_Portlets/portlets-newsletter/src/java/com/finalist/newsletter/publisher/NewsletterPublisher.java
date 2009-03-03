@@ -151,7 +151,8 @@ public class NewsletterPublisher {
       try {
          
          String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription.getTerms(), publication.getId());
-         textMdp.setText(url);
+         textMdp.addHeader("Content-Transfer-Encoding", "quoted-printable");
+         textMdp.setText(url+"\n"+originalBody, "utf-8");
          subMultipart.addBodyPart(textMdp);
          
          String type=subscription.getMimeType();
@@ -320,8 +321,8 @@ new javax.mail.Authenticator() {
       }
       return session;
    }
-
    private static String getParameter(String name) {
+
       Module sendmailModule = Module.getModule("sendmail");
       if (sendmailModule == null) {
          log
