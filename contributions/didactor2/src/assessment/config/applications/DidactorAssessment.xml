@@ -7,6 +7,7 @@
     <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
     <requires name="DidactorEducation" maintainer="didactor.nl" version="22" />
     <requires name="DidactorEmail"     maintainer="didactor.nl" version="3" />
+    <requires name="RichText"    			 maintainer="mmbase.org" version="2" />
   </requirements>
 
   <neededbuilderlist>
@@ -18,6 +19,7 @@
     <builder maintainer="didactor.nl" version="1">problems</builder>
     <builder maintainer="didactor.nl" version="1">problemtypes</builder>
     <builder maintainer="didactor.nl" version="3">emails</builder>
+    <builder maintainer="didactor.nl" version="1">rich</builder>
 
   </neededbuilderlist>
 
