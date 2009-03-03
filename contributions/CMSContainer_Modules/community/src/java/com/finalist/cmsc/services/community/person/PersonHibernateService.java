@@ -503,7 +503,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       return criteria.list();
    }
    @Transactional
-   public void ImportDataFromFileRecord(String level,
+   public void importDataFromFileRecord(String level,
          PersonExportImportVO importPerson) {
       Person p = getPersonByUserId(importPerson.getAuthentication().getUserId());
       if ("over".equals(level)) {

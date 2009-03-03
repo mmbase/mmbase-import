@@ -89,5 +89,5 @@ public interface PersonService {
 
    public List<Authority> getAllAuthorities();
    
-   public void ImportDataFromFileRecord(String level, PersonExportImportVO importPerson);
+   public void importDataFromFileRecord(String level, PersonExportImportVO importPerson);
 }
