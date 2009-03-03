@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.62.2.9 2009-02-27 12:02:20 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.62.2.10 2009-03-03 11:41:12 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -39,7 +39,7 @@ function doOnLoad_ew() {
               var d = new Date();
 
               if (elem.name == "internal_" + id + "_day") {
-                if (elem.selectedIndex) { 
+                if (elem.selectedIndex) {
                 elem.selectedIndex = d.getDate() - 1;
                 } else {
                   elem.value = d.getDate();
@@ -165,7 +165,8 @@ function doSearch(el, cmd, sessionkey) {
     // however, if the first field is a "<buildername>.number" field, that buildername is used
 
     var lastobject = main;
-    if (lastobject == "" || lastobject == null) {
+    if (lastobject == null) lastobject = "":
+    if (lastobject == "") {
       var tmp = nodepath.split(",");
       if (tmp.length > 1) {
           lastobject = tmp[tmp.length-1];
