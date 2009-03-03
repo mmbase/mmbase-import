@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.450 2009-01-05 18:36:53 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.451 2009-03-03 20:23:09 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2560,6 +2560,25 @@ access the value of title:
       <since>MMBase-1.8</since>
     </attribute>
     <example>See the example for tag `node'.</example>
+  </tag>
+  <tag>
+    <name>isnull</name>
+    <extends>condition</extends>
+    <extends>fieldreferrer</extends>
+    <extends>contextreader</extends>
+    <type>mmbase.basic</type>
+    <tagclass>org.mmbase.bridge.jsp.taglib.IsNullTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+      <since>MMBase-1.9.1</since>
+    </info>
+    <see tag="node" />
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+    </attribute>
   </tag>
   <tag>
     <name>function</name>
