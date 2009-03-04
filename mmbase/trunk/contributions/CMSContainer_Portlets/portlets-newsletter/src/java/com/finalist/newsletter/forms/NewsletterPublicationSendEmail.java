@@ -15,9 +15,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
-import org.mmbase.remotepublishing.PublishManager;
 
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
@@ -49,7 +49,7 @@ public class NewsletterPublicationSendEmail extends MMBaseFormlessAction {
          return mapping.findForward(SUCCESS);
       }
       if (isSendAction(request)) {
-         if(PublishManager.isPublished(cloud.getNode(number))){
+         if(Publish.isPublished(cloud.getNode(number))){
             String email = getParameter(request, "email");
             String mimeType = request.getParameter("mimetype");
             NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
