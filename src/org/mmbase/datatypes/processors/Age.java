@@ -36,10 +36,10 @@ public class Age {
         }
 
         public Object process(Node node, Field field, Object value) {
-            log.debug("setting age to " + value);
             try {
                 // educated guess for the birth date:
                 Date date = DynamicDate.eval(DynamicDate.getInstance("today - 6 month - " + value + " year"));
+                log.debug("setting age to " + value + " -> " + date);
                 node.setValueWithoutProcess(birthdateField, date);
             } catch (org.mmbase.util.dateparser.ParseException pe) {
                 log.warn(pe);
