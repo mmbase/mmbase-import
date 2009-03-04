@@ -110,6 +110,16 @@ public class RegisterPorlet extends AbstractLoginPortlet {
          request.getPortletSession().setAttribute("errorMessages", errorMessages);
          return;
       }
+      if (StringUtils.isBlank(firstName)) {
+         errorMessages = "register.firstName.empty";
+         request.getPortletSession().setAttribute("errorMessages", errorMessages);
+         return;
+      }
+      if (StringUtils.isBlank(lastName)) {
+         errorMessages = "register.lastName.empty";
+         request.getPortletSession().setAttribute("errorMessages", errorMessages);
+         return;
+      }
       if (StringUtils.isEmpty(passwordText)) {
          errorMessages = "register.password.empty";
          request.getPortletSession().setAttribute("errorMessages", errorMessages);
