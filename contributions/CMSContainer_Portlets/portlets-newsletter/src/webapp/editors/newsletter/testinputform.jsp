@@ -8,6 +8,15 @@
 <cmscedit:head title="testinput.title">
 	<style type="text/css">
 	input { width: 100px;}
+	
+	#errorpublication {
+		letter-spacing:1px;
+		font-family:Arial,Verdana,Helvetica;
+		font-size:11px;
+		background-color:#CC0000 !important;
+		color:#FFFFFF;
+		margin:0 10px;
+	}
 	</style>
    <script src="check.js" type="text/javascript"></script>
    <script language="javascript">
@@ -66,12 +75,9 @@
 	</form>
 	</c:if>
 	<c:if test="${errormessage}">
-		<p style="letter-spacing:1px;
-		font-family:Arial,Verdana,Helvetica;
-		font-size:11px;
-		background-color:#CC0000 !important;
-		color:#FFFFFF;
-		margin:0 10px;">Could not send the email because the newsletter publication isn't published.</p>
+	<div id="errorpublication">
+		<p><fmt:message key="testinput.errormessage"/></p>
+	</div>
 	</c:if>
 </cmscedit:sideblock>
 </body>
