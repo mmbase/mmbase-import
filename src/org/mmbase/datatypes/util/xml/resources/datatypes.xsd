@@ -8,7 +8,7 @@
     attributeFormDefault="unqualified"
     version="1.0">
   <!--
-      Version: $Id: datatypes.xsd,v 1.37 2009-03-04 13:25:21 michiel Exp $
+      Version: $Id: datatypes.xsd,v 1.38 2009-03-04 13:29:31 michiel Exp $
   -->
 
   <xsd:import
@@ -176,6 +176,7 @@
       <xsd:enumeration value="datetime" />
       <xsd:enumeration value="boolean" />
       <xsd:enumeration value="list" />
+      <xsd:enumeration value="decimal" />
       <xsd:enumeration value="*" />
     </xsd:restriction>
   </xsd:simpleType>
