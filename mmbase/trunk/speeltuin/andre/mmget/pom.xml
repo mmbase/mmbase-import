@@ -19,5 +19,12 @@
     webapp. Open the MMBase admin pages, you'll find it in the section 'Tools'.
   </description>
 
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+  </repositories>
+
 
 </project>
