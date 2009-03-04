@@ -32,6 +32,7 @@
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 <body>
 <cmscedit:sideblock title="testinput.title" titleClass="side_block_green">
+	<c:if test="${!errormessage}">
 	<p>
 		<fmt:message key="testinput.subtitle" />
 	</p>
@@ -63,7 +64,15 @@
          <input type="button" onclick="sendEmail()" value='<fmt:message key="testinput.send"/>'/>
          <input type="button" onclick="cancel()" value='<fmt:message key="testinput.cancel"/>'/>
 	</form>
-
+	</c:if>
+	<c:if test="${errormessage}">
+		<p style="letter-spacing:1px;
+		font-family:Arial,Verdana,Helvetica;
+		font-size:11px;
+		background-color:#CC0000 !important;
+		color:#FFFFFF;
+		margin:0 10px;">Could not send the email because the newsletter publication isn't published.</p>
+	</c:if>
 </cmscedit:sideblock>
 </body>
 </mm:cloud>
