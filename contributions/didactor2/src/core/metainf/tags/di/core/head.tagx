@@ -35,6 +35,21 @@
     <meta name="Didactor-Provider" content="${provider}" />
     <meta name="Didactor-Education" content="${education}" />
     <meta name="Didactor-PageReporter" content="${di:setting('core', 'pagereporter')}" />
+
+    <!-- The page marked as 'lastpage'
+         (todo: does this work?)
+    -->
+    <mm:listnodescontainer type="classrel">
+      <mm:constraint field="snumber" value="${user}" />
+      <mm:composite operator="or">
+        <mm:constraint field="dnumber" value="${class}" />
+        <mm:constraint field="dnumber" value="${education}" />
+      </mm:composite>
+      <mm:listnodes>
+        <meta name="Didactor-LastPage" content="${_node.lastpage}" />
+      </mm:listnodes>
+    </mm:listnodescontainer>
+
     <c:if test="${di:setting('core', 'pagereporter') eq 'true'}">
       <meta name="Didactor-PageReporterInterval" content="${di:setting('core', 'pagereporter_interval')}" />
     </c:if>
