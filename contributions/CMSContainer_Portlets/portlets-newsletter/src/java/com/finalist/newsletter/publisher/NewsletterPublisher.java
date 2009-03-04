@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -199,7 +198,7 @@ public class NewsletterPublisher {
       }
    }
 
-   private String getBody(Publication publication, Subscription subscription) throws MessagingException {
+   private String getBody(Publication publication, Subscription subscription) {
 
       String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription.getTerms(), publication.getId());
       ICache cache = null;
@@ -213,7 +212,7 @@ public class NewsletterPublisher {
       if ((subscription.getTerms() == null) || (subscription.getTerms().size() == 0) || !cache.contains(url)) {
          if (null != getPersonalise()) {
             content = getPersonalise().personalise(content, subscription, publication);
-            log.info("the content sended is Personalised :" + content);
+            log.debug("the content sent is Personalized:" + content);
          }else {
             log.info("url---->" + url);
             content = NewsletterGenerator.generate(url, subscription.getMimeType());
@@ -221,7 +220,7 @@ public class NewsletterPublisher {
          cache.add(url, content);
       } else {
          content = (String) cache.get(url);
-         log.info("the content sended is from the cache" + content);
+         log.debug("the content sent is from cache:" + content);
       }
       return content + "\n";
    }
@@ -244,13 +243,6 @@ public class NewsletterPublisher {
       InternetAddress senderAddress = new InternetAddress(emailFrom);
       senderAddress.setPersonal(nameFrom);
       message.setFrom(senderAddress);
-   }
-
-   private void setMIME(Message message, String mime) throws MessagingException {
-      message.setHeader("MIME-Version", "1.0");
-      message.setHeader("Content-Type", mime);
-      message.setHeader("X-Mailer", "Recommend-It Mailer V2.03c02");
-      message.setSentDate(new Date());
    }
 
    private void setTitle(Message message, String title)
@@ -302,18 +294,8 @@ public class NewsletterPublisher {
 
          String verpFrom = String.format("%s-%s@%s", sender[0], toEmail.replaceAll("@", "="), sender[1]);
          properties.put("mail.smtp.from", verpFrom);
-//         properties.put("mail.smtp.from", "dguo-mark.guo=gmail.com@cpier.pku.edu.cn");
-//         properties.put("mail.smtp.from", senderEmail);
          properties.putAll(session.getProperties());
 
-/*
-session = Session.getInstance(properties,
-new javax.mail.Authenticator() {
-   protected PasswordAuthentication getPasswordAuthentication() {
-      return new PasswordAuthentication("dguo@cpier.pku.edu.cn", "lgs9000");
-   }
-});
-*/
       }
       catch (NamingException e) {
          log.fatal("Configured dataSource '" + datasource + "' of context '" + context + "' is not a Session ");
