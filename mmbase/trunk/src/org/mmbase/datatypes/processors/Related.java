@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.7
- * @version $Id: Related.java,v 1.5 2008-12-30 12:39:25 michiel Exp $
+ * @version $Id: Related.java,v 1.6 2009-03-04 11:32:09 michiel Exp $
  */
 
 public class Related {
@@ -89,6 +89,10 @@ public class Related {
         public Object process(Node node, Field field, Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("getting "  + node);
+            }
+            if (node.isNew()) {
+                log.info("The node is new, returning " + field.getDataType().getDefaultValue());
+                return field.getDataType().getDefaultValue();
             }
             NodeList nl = node.getRelatedNodes(type, role, searchDir);
             if (nl.size() == 0) {

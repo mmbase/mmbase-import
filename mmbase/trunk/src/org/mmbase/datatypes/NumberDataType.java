@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * A DataType representing some kind of numeric value, like a floating point number or an integer number.
  *
  * @author Pierre van Rooden
- * @version $Id: NumberDataType.java,v 1.35 2009-02-03 10:05:42 michiel Exp $
+ * @version $Id: NumberDataType.java,v 1.36 2009-03-04 11:32:09 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class NumberDataType<E extends Number & Comparable<E>> extends ComparableDataType<E> {
@@ -40,27 +40,33 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
     protected Number castString(Object preCast, Cloud cloud) throws CastException {
         if (preCast == null || "".equals(preCast)) return null;
         if (preCast instanceof String) {
-            Locale l = cloud != null ? cloud.getLocale() : Locale.getDefault();
-            NumberFormat nf = NumberFormat.getNumberInstance(l);
-            nf.setGroupingUsed(false); // we never want to parse e.g. "1.2" to "12". It simply makes
-                                       // no sense, and hard to make backwards compatible
-            ParsePosition p = new ParsePosition(0);
+
             String s = (String) preCast;
-            Number number =  nf.parse(s, p);
-            if (log.isDebugEnabled()) {
-                log.debug("Parsed " + s + " to " + number + " (" + p + " " + l);
+            try {
+                return Casting.toDecimal(s);
+            } catch (NumberFormatException nfe) {
+                log.debug(nfe);
+                Locale l = cloud != null ? cloud.getLocale() : Locale.getDefault();
+                NumberFormat nf = NumberFormat.getNumberInstance(l);
+                nf.setGroupingUsed(false); // we never want to parse e.g. "1.2" to "12". It simply makes
+                // no sense, and hard to make backwards compatible
+                ParsePosition p = new ParsePosition(0);
+                Number number =  nf.parse(s, p);
+                if (log.isDebugEnabled()) {
+                    log.debug("Parsed " + s + " to " + number + " (" + p + " " + l);
+                }
+                if (p.getIndex() < s.length() || p.getErrorIndex() >= 0) {
+                    log.debug("Not correct, falling back to toDouble");
+                    if (! StringDataType.DOUBLE_PATTERN.matcher(s).matches()) {
+                        log.debug("Not a valid double");
+                        throw new CastException("Not a number: '" + s + "'");
+                    } else {
+                        log.debug("Casting to decimal " + s);
+                        return Casting.toDecimal(s);
+                    }
+                }
+                return Casting.toDecimal(number);
             }
-             if (p.getIndex() < s.length() || p.getErrorIndex() >= 0) {
-                 log.debug("Not correct, falling back to toDouble");
-                 if (! StringDataType.DOUBLE_PATTERN.matcher(s).matches()) {
-                     log.debug("Not a valid double");
-                     throw new CastException("Not a number: '" + s + "'");
-                 } else {
-                     log.debug("Casting to double " + s);
-                     return Casting.toDecimal(s);
-                 }
-             }
-             return Casting.toDecimal(number);
         } else if (preCast instanceof Float) {
             if (((Float) preCast).isInfinite()) {
                 return (Float) preCast;
