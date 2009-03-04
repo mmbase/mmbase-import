@@ -98,9 +98,9 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
       String contentType = myFile.getContentType();
       String fileName = myFile.getFileName();
 
-      boolean isXML = "text/xml".equals(contentType);
+      boolean isXML = "xml".equalsIgnoreCase(fileName.substring(fileName.lastIndexOf(".")+1));
       boolean isPlain = "text/plain".equals(contentType);
-      boolean isCSV = ".csv".endsWith(fileName.toLowerCase());
+      boolean isCSV = "csv".equalsIgnoreCase(fileName.substring(fileName.lastIndexOf(".")+1));
 
       ActionMessages messages = new ActionMessages();
 
