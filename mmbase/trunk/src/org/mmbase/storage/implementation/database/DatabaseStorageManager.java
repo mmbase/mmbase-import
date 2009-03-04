@@ -35,7 +35,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.210 2009-02-11 20:41:56 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.211 2009-03-04 11:48:57 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2173,11 +2173,11 @@ public class DatabaseStorageManager implements StorageManager {
         if (found > -1) {
             String fieldDef;
             TypeMapping tm = typeMappings.get(found);
-            if (dt instanceof LengthDataType) {
-                fieldDef = tm.getType(size);
-            } else if (dt instanceof DecimalDataType) {
+            if (dt instanceof DecimalDataType) {
                 DecimalDataType dec = (DecimalDataType) dt;
                 fieldDef = tm.getType(dec.getPrecisionRestriction().getValue(), dec.getScaleRestriction().getValue());
+            } else if (dt instanceof LengthDataType) {
+                fieldDef = tm.getType(size);
             } else {
                 fieldDef = tm.getType(size); // size does make much sense, but added for
                                              // compatibility, e.g. if datatype is boolean, but
