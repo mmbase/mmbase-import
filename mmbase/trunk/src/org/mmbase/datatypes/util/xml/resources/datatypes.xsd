@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <xsd:schema
     xmlns="http://www.mmbase.org/xmlns/datatypes"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -7,6 +7,9 @@
     elementFormDefault="qualified"
     attributeFormDefault="unqualified"
     version="1.0">
+  <!--
+      Version: $Id: datatypes.xsd,v 1.37 2009-03-04 13:25:21 michiel Exp $
+  -->
 
   <xsd:import
       namespace="http://www.w3.org/XML/1998/namespace"
