@@ -188,9 +188,10 @@ public class ReferenceImportExportAction extends DispatchAction {
       ReferenceImportUploadForm myForm = (ReferenceImportUploadForm) form;
       FormFile myFile = myForm.getFile();
       byte[] fileData = myFile.getFileData();
-      String contentType = myFile.getContentType();
-      boolean isXML = "text/xml".equals(contentType);
-      boolean isCSV = "text/csv".equals(contentType);
+     // String contentType = myFile.getContentType();
+      String fileName = myFile.getFileName();
+      boolean isXML = "xml".equalsIgnoreCase(fileName.substring(fileName.lastIndexOf(".")+1));
+      boolean isCSV = "csv".equalsIgnoreCase(fileName.substring(fileName.lastIndexOf(".")+1));
       String level = myForm.getLevel();
       ActionMessages messages = new ActionMessages();
       if (!isXML && !isCSV) {
