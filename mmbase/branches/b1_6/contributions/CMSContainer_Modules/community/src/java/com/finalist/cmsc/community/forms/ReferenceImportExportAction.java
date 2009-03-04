@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -324,6 +325,7 @@ public class ReferenceImportExportAction extends DispatchAction {
                || StringUtils.isBlank(authentication.getPassword())) {
             continue;
          }
+         authentication.setAuthorities(new HashSet());
          importPerson.setRegisterDate(new Date(System.currentTimeMillis()));
          if (StringUtils.isBlank(importPerson.getActive())) {
             importPerson.setActive("active");
