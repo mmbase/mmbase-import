@@ -21,7 +21,7 @@ public class DummyPublishService extends PublishService {
 
    @Override
    public boolean isPublished(Node node) {
-      return false;
+      return true;
    }
 
 
