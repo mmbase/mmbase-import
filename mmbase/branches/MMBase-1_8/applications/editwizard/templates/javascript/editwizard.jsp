@@ -1,17 +1,16 @@
-<% response.setContentType("text/javascript"); %>
-/**
+/** -*- mode: java -*-
  * editwizard.jsp
  * Routines for refreshing the edit wizard,
  * interaction between form elements, navigation,
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.62.2.10 2009-03-03 11:41:12 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.62.2.11 2009-03-04 18:07:09 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
  */
-
+<% response.setContentType("text/javascript"); %>
 var form = null;
 
 function doOnLoad_ew() {
@@ -23,7 +22,9 @@ function doOnLoad_ew() {
 
     //scan form fields
     for (var i=0; i<form.elements.length; i++) {
+
         var elem = form.elements[i];
+
 
         // set date fields to clientside now time if a new wizard.
         var superId = elem.getAttribute("super");
@@ -40,7 +41,7 @@ function doOnLoad_ew() {
 
               if (elem.name == "internal_" + id + "_day") {
                 if (elem.selectedIndex) {
-                elem.selectedIndex = d.getDate() - 1;
+                  elem.selectedIndex = d.getDate() - 1;
                 } else {
                   elem.value = d.getDate();
                 }
@@ -93,6 +94,7 @@ function doOnUnLoad_ew() {
 // because a timer is used to wait a while before attaching it.
 // In short, DON'T USE OR OVERRIDE THIS FUNCTION.
 }
+
 
 //********************************
 // COMMAND STUFF
@@ -148,13 +150,13 @@ function doSearch(el, cmd, sessionkey) {
     }
 
     var startnodes = el.getAttribute("startnodes");
-    var nodepath = el.getAttribute("nodepath");
-    var fields = el.getAttribute("fields");
+    var nodepath   = el.getAttribute("nodepath");
+    var fields     = el.getAttribute("fields");
     var constraints= el.getAttribute("constraints");
-    var orderby = el.getAttribute("orderby");
+    var orderby    = el.getAttribute("orderby");
     var directions = el.getAttribute("directions");
     var searchdir = el.getAttribute("searchdir");
-    var distinct = el.getAttribute("distinct");
+    var distinct   = el.getAttribute("distinct");
     var main  = el.getAttribute("main");
     var pagelength = el.getAttribute("pagelength");
     if (!pagelength) {
@@ -165,16 +167,16 @@ function doSearch(el, cmd, sessionkey) {
     // however, if the first field is a "<buildername>.number" field, that buildername is used
 
     var lastobject = main;
-    if (lastobject == null) lastobject = "":
+    if (lastobject == null) lastobject = "";
     if (lastobject == "") {
-      var tmp = nodepath.split(",");
-      if (tmp.length > 1) {
-          lastobject = tmp[tmp.length-1];
-          tmp = fields.split(",");
-          if (tmp.length > 1 && tmp[0].indexOf(".number") != -1) {
-              lastobject = tmp[0].split(".")[0];
-          }
-      }
+        var tmp = nodepath.split(",");
+        if (tmp.length > 1) {
+            lastobject = tmp[tmp.length-1];
+            tmp = fields.split(",");
+            if (tmp.length > 1 && tmp[0].indexOf(".number") != -1) {
+                lastobject = tmp[0].split(".")[0];
+            }
+        }
     }
 
     // check constraints
