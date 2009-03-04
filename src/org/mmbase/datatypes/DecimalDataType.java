@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: DecimalDataType.java,v 1.5 2009-01-26 16:28:31 michiel Exp $
+ * @version $Id: DecimalDataType.java,v 1.6 2009-03-04 17:45:21 michiel Exp $
  * @since MMBase-1.9.1
  */
 public class DecimalDataType extends NumberDataType<BigDecimal> implements LengthDataType<BigDecimal> {
@@ -95,17 +95,11 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
 
     @Override protected BigDecimal castString(Object preCast, Cloud cloud) throws CastException {
         if (preCast == null || "".equals(preCast)) return null;
-        if (preCast instanceof CharSequence) {
-            try {
-                BigDecimal dec = new BigDecimal("" + preCast, new MathContext(Integer.MAX_VALUE, roundingMode));
-                return dec;
-            } catch (NumberFormatException nfe) {
-                throw new CastException(nfe);
-            } catch (ArithmeticException ae) {
-                throw new CastException(ae);
-            }
+        Number su = super.castString(preCast, cloud);
+        if (su instanceof BigDecimal) {
+            return ((BigDecimal) su).round(new MathContext(Integer.MAX_VALUE, roundingMode));
         } else {
-            return Casting.toDecimal(preCast);
+            throw new CastException("Not a big decimal " + preCast);
         }
     }
 
