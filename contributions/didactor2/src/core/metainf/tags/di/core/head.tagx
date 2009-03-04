@@ -32,8 +32,8 @@
       <link href="${_}" rel="stylesheet" type="text/css"  media="print"/>
     </mm:treefile>
 
-    <meta name="Didactor-Provider" content="${provider}" />
-    <meta name="Didactor-Education" content="${education}" />
+    <meta name="Didactor-Provider"     content="${provider}" />
+    <meta name="Didactor-Education"    content="${education}" />
     <meta name="Didactor-PageReporter" content="${di:setting('core', 'pagereporter')}" />
 
     <!-- The page marked as 'lastpage'
@@ -53,6 +53,7 @@
     <c:if test="${di:setting('core', 'pagereporter') eq 'true'}">
       <meta name="Didactor-PageReporterInterval" content="${di:setting('core', 'pagereporter_interval')}" />
     </c:if>
+    <meta name="Didactor-Root"         content="${mm:link('/')}" />
     <mm:link absolute="context">
       <meta name="Didactor-URL" content="${_}" />
     </mm:link>
