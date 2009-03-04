@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.130 2009-02-12 13:52:09 michiel Exp $
+ * @version $Id: Lucene.java,v 1.131 2009-03-04 18:02:46 sdeboer Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
@@ -681,7 +681,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         indexPath = path;
                         indexPath = indexPath.replace("$BINARYFILEBASEPATH", binaryFileBasePath);
                         indexPath = indexPath.replace("$DATABASE", databaseName);
-                        indexPath = indexPath.replaceAll("/+", File.separator);
+
+                        //hack, to get backslashes working on windows
+                        indexPath = indexPath.replaceAll("/+", "/");
+                        indexPath = indexPath.replace('/', File.separatorChar);
+
                         log.service("found module parameter for lucene index path : " + indexPath);
                     } else {
                         indexPath = binaryFileBasePath + "lucene" + File.separator + databaseName;
