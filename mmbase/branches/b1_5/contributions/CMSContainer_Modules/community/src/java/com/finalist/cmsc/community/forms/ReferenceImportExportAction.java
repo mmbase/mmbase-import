@@ -202,7 +202,7 @@ public class ReferenceImportExportAction extends DispatchAction {
 
       if (isXML) {
          try {
-            int size = importFromFile(fileData, level);
+            int size = importFromFile(fileData, level,groupId);
             request.setAttribute("confirm_userNum", size);
          } catch (Exception e) {
             log.error(e);
@@ -310,7 +310,7 @@ public class ReferenceImportExportAction extends DispatchAction {
       return pre;
    }
 
-   private int importFromFile(byte[] fileData, String level) throws Exception {
+   private int importFromFile(byte[] fileData, String level,String groupId) throws Exception {
       String xml = new String(fileData);
       CommunityExport communityExport;
       communityExport = (CommunityExport) getXStream().fromXML(xml);
@@ -320,9 +320,16 @@ public class ReferenceImportExportAction extends DispatchAction {
       }
       for (PersonExportImportVO importPerson : xpersons) {
          Authentication authentication = importPerson.getAuthentication();
-         if (null == authentication || StringUtils.isWhitespace(authentication.getUserId())
-               || StringUtils.isWhitespace(authentication.getPassword())) {
+         if (null == authentication || StringUtils.isBlank(authentication.getUserId())
+               || StringUtils.isBlank(authentication.getPassword())) {
             continue;
+         }
+         importPerson.setRegisterDate(new Date(System.currentTimeMillis()));
+         if (StringUtils.isBlank(importPerson.getActive())) {
+            importPerson.setActive("active");
+         }
+         if (null != groupId && groupId != "0" && groupId != "") {
+            importPerson.setAuthorityId(new Long(groupId));
          }
          personService.addRelationRecord(level, importPerson);
       }
