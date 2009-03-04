@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Glossary {
-   public static final String LINKPATTERN = "<span class=\"glossaryWord\" title=\"%s\" id=\"_glossary_%s\">%s</span>";
+   public static final String LINKPATTERN = "<dfn class=\"glossaryWord\" title=\"%2$s - %s\" id=\"_glossary_%2$s\">%2$s</dfn>";
    public static final String GLOSSARY = "glossary";
    private final Map<String, String> terms = new HashMap<String, String>();
    private static Glossary glossary = null;
@@ -34,7 +34,7 @@ public class Glossary {
             int end = matcher.end();
             String found = material.substring(start, end);
             if (!isInFormatedFragment(material, word, start)) {
-               String highlight = String.format(LINKPATTERN, terms.get(word), found, found);
+               String highlight = String.format(LINKPATTERN, terms.get(word), found);
                material = (new StringBuilder()).append(material.substring(0, start)).append(highlight).append(
                      material.substring(end, material.length())).toString();
                break;
