@@ -37,6 +37,11 @@
     </dependency>
     <dependency>
       <groupId>finalist</groupId>
+      <artifactId>cmsc-modules-publish-remote</artifactId>
+      <version>${cmsc.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>finalist</groupId>
       <artifactId>cmsc-portlets-login</artifactId>
       <version>${cmsc.version}</version>
     </dependency>
