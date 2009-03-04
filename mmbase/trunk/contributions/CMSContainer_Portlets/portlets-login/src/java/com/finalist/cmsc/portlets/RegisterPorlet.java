@@ -12,6 +12,7 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
+import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
@@ -27,6 +28,7 @@ import com.finalist.cmsc.services.community.person.RegisterStatus;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.finalist.cmsc.services.community.security.AuthorityService;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.util.EmailSender;
 
 public class RegisterPorlet extends AbstractLoginPortlet {
@@ -37,10 +39,15 @@ public class RegisterPorlet extends AbstractLoginPortlet {
    private static final String ACEGI_SECURITY_FORM_LASTNAME_KEY = "lastName";
    private static final String ACEGI_SECURITY_FORM_PASSWORD_KEY = "passwordText";
    private static final String ACEGI_SECURITY_FORM_PASSWORDCONF_KEY = "passwordConfirmation";
+   private static final String ACEGI_SECURITY_FORM_TERMS = "agreedToTerms";
    private static final String GROUPNAME = "groupName";
+
    private static final String ALLGROUPNAMES = "allGroupNames";
    private static final String NoGROUP = "nogroup";
-
+   
+   private static final String USE_TERMS="useterms";
+   private static final String TERMS_PAGE = "page";
+   
    private static final Log log = LogFactory.getLog(RegisterPorlet.class);
    
    @Override
@@ -49,7 +56,18 @@ public class RegisterPorlet extends AbstractLoginPortlet {
       PortletPreferences preferences = req.getPreferences();
       setAttribute(req, GROUPNAME, preferences.getValue(GROUPNAME,""));
       setAttribute(req, ALLGROUPNAMES, getAllGroupNames());
+      /* NWS-32 */
+      setAttribute(req, USE_TERMS, preferences.getValue(USE_TERMS,""));
       
+      String pageid = preferences.getValue(TERMS_PAGE, null);
+      if (StringUtils.isNotEmpty(pageid)) {
+         String pagepath = SiteManagement.getPath(Integer.valueOf(pageid), true);
+         
+         if (pagepath != null) {
+            setAttribute(req, "pagepath", pagepath);
+         }   
+      }
+         
       super.doEditDefaults(req, res);
    }
    
@@ -59,6 +77,9 @@ public class RegisterPorlet extends AbstractLoginPortlet {
       PortletPreferences preferences = request.getPreferences();
       String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
       setPortletParameter(portletId, GROUPNAME, request.getParameter(GROUPNAME));
+      setPortletParameter(portletId, USE_TERMS, request.getParameter(USE_TERMS));
+      setPortletParameter(portletId, TERMS_PAGE, request.getParameter(TERMS_PAGE));
+      
 
       super.processEditDefaults(request, response);
    }
@@ -75,26 +96,33 @@ public class RegisterPorlet extends AbstractLoginPortlet {
       String lastName = request.getParameter(ACEGI_SECURITY_FORM_LASTNAME_KEY);
       String passwordText = request.getParameter(ACEGI_SECURITY_FORM_PASSWORD_KEY);
       String passwordConfirmation = request.getParameter(ACEGI_SECURITY_FORM_PASSWORDCONF_KEY);
+      String terms = request.getParameter(ACEGI_SECURITY_FORM_TERMS);
       String errorMessages = "";
       Long authId = null;
+    
       if (StringUtils.isBlank(email)) {
          errorMessages = "register.email.empty";
-         response.setRenderParameter("errorMessages", errorMessages);
+         request.getPortletSession().setAttribute("errorMessages", errorMessages);
          return;
       }
       if (!isEmailAddress(email)) {
          errorMessages = "register.email.match";
-         response.setRenderParameter("errorMessages", errorMessages);
+         request.getPortletSession().setAttribute("errorMessages", errorMessages);
          return;
       }
       if (StringUtils.isEmpty(passwordText)) {
          errorMessages = "register.password.empty";
-         response.setRenderParameter("errorMessages", errorMessages);
+         request.getPortletSession().setAttribute("errorMessages", errorMessages);
          return;
       }
       if (!passwordText.equals(passwordConfirmation)) {
          errorMessages = "register.passwords.not_equal";
-         response.setRenderParameter("errorMessages", errorMessages);
+         request.getPortletSession().setAttribute("errorMessages", errorMessages);
+         return;
+      }
+      if (preferences.getValue(USE_TERMS,"").equals("yes") && StringUtils.isBlank(terms)) {
+         errorMessages = "register.terms.agree";
+         request.getPortletSession().setAttribute("errorMessages", errorMessages);
          return;
       }
       AuthenticationService authenticationService = (AuthenticationService) ApplicationContextFactory
@@ -131,7 +159,7 @@ public class RegisterPorlet extends AbstractLoginPortlet {
                if (StringUtils.isNotBlank(emailFrom) && !isEmailAddress(emailFrom)) {
                   throw new AddressException("Email address '" + emailFrom + "' is not available or working!");
                }
-                  EmailSender.sendEmail(emailFrom, nameFrom, email, emailSubject, emailText,
+               EmailSender.sendEmail(emailFrom, nameFrom, email, emailSubject, emailText,
                         email, "text/plain;charset=utf-8");
             } 
             catch (AddressException e) {
@@ -156,6 +184,8 @@ public class RegisterPorlet extends AbstractLoginPortlet {
    protected void doView(RenderRequest request, RenderResponse response)
          throws PortletException, IOException {
       String screenId = (String) request.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
+      PortletSession portletSession = request.getPortletSession();
+      
       request.setAttribute("page", screenId);
       String template;
       String error = request.getParameter("errorMessages");
@@ -173,6 +203,12 @@ public class RegisterPorlet extends AbstractLoginPortlet {
             }
             template = "login/register.jsp";
          }
+      }
+      /* NWS-46 errorMessages never came out so I added this */
+      if (portletSession.getAttribute("errorMessages") != null) {
+         String errormessages = (String) portletSession.getAttribute("errorMessages");
+         portletSession.removeAttribute("errorMessages");
+         request.setAttribute("errorMessages", errormessages);
       }
       doInclude("view", template, request, response);
    }
