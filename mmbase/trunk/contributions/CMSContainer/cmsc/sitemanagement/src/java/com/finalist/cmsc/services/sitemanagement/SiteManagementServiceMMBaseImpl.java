@@ -196,7 +196,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
          stylesheets = getStylesheetForPage(pagesToRoot.get(0));
 
          // loop through pages
-			for (int count = 1; count < pagesToRoot.size() - 1; count++) {
+			for (int count = 1; count < pagesToRoot.size(); count++) {
 			   Page page = pagesToRoot.get(count);
 			   List<Stylesheet> pageSheets = getStylesheetForPage(page);
 			   if (!pageSheets.isEmpty()) {
