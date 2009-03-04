@@ -12,6 +12,10 @@
   <name>MMBase base webapp</name>
   <version>${mmbase.version}</version>
 
+  <description>
+    This is a minimalistic war containing the essentials for an MMBase web applications. This can be used as initial war overlay for your own project.
+  </description>
+
   <build>
     <defaultGoal>install</defaultGoal>
     <plugins>
@@ -39,6 +43,18 @@
       <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
     </dependency>
+
+    <!--
+         admin pages, generic editors templates use mmbase taglib
+         So it is more or less essential.
+    -->
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-taglib</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
+
   </dependencies>
 
   <repositories>
