@@ -4,6 +4,9 @@
    targetNamespace="http://www.mmbase.org/xmlns/searchquery"
    xmlns="http://www.mmbase.org/xmlns/searchquery"
    version="1.0">
+  <!--
+      Version: $Id: searchquery.xsd,v 1.7 2009-03-04 13:36:22 michiel Exp $
+  -->
     <xsd:annotation>
       <xsd:documentation>
         This scheme defines a xml for the description of MMBase search queries.
