@@ -20,7 +20,7 @@ public class Glossary {
       terms.remove(term);
    }
 
-
+   
    public String mark(String material) {
       Set<String> keyWords = terms.keySet();
 
@@ -46,20 +46,24 @@ public class Glossary {
    }
 
 
-   private boolean isInFormatedFragment(String material, String keywords, int keywordStartPosition) {
-      Pattern pattern = Pattern.compile(String.format("<[abh][^</]*%s[^>]*>", keywords));
-      Matcher matcher = pattern.matcher(material);
-
-      while (matcher.find()) {
-         int start = matcher.start();
-         int end = matcher.end();
-
-         if (keywordStartPosition + keywords.length() < end && keywordStartPosition > start)
-            return true;
+   private boolean isInFormatedFragment(String material, String keyword, int keywordStartPosition) {
+      String materialBefore = material.substring(0, keywordStartPosition);
+      
+      int openA = materialBefore.lastIndexOf("<a");
+      int closeA = materialBefore.lastIndexOf("/a>");
+      if(openA > closeA) {
+         return true;
       }
+
+      int openInput = materialBefore.lastIndexOf("<input");
+      int closeInput = materialBefore.lastIndexOf(">");
+      if(openInput > closeInput) {
+         return true;
+      }
+
       return false;
    }
-
+   
 
    public static synchronized Glossary instance() {
       if (null == glossary) {
