@@ -42,7 +42,6 @@ function Init() {
             }
             if ( typeof param["f_href"] != "undefined" ) {
                   document.getElementById("f_href").value = param["f_href"];
-                  document.getElementById("f_name").value = param["f_name"];
                   document.getElementById("f_title").value = param["f_title"];
                   document.getElementById("f_destination").value = param["f_destination"];
                   comboSelectValue(target_select, param["f_target"]);
@@ -74,16 +73,7 @@ function onOK() {
       var elhref = document.getElementById("f_href");
       var re = new RegExp("\://|javascript\:|mailto\:");
       var destination = document.getElementById("f_destination");
-      if(elhref.value.match(re)||destination.value){
-            var el = document.getElementById("f_title");
-            if (el.value == "") {
-                  var message = i18n("You must enter a title");
-                  alert(message);
-                  el.focus();
-                  return false;
-            }
-      }
-      else{
+      if(!elhref.value.match(re) && !destination.value ){
             if (!elhref.value.match(re)) {
                   var message = i18n("URL is missing protocol (eg http://)");
                   alert(message);
@@ -96,13 +86,13 @@ function onOK() {
                   return false;
             }
       }
-      var tmpLinkName = document.getElementById("f_name");
+      var tmpLinkName = document.getElementById("f_title");
       if(!tmpLinkName.value){
             // set the defult linkname the same as href's value
             tmpLinkName.value = elhref.value;
       }
       // pass data back to the calling window
-      var fields = ["f_href", "f_name","f_title", "f_target", "f_destination" ];//f_name is added by Rain.Tang
+      var fields = ["f_href", "f_title", "f_target", "f_destination" ];
       var param = new Object();
       for (var i in fields) {
             var id = fields[i];
@@ -171,7 +161,7 @@ function selectElement(element_id, title, url) {
       document.getElementById("f_href").value = url;
    }
    if (title != undefined && title.length != 0 ) {
-      document.getElementById("f_name").value = title;
+      document.getElementById("f_title").value = title;
    }
 }
 
@@ -238,15 +228,13 @@ function openPopupWindow(url, windowName, width, height) {
     <td class="label">URL:</td>
     <td><input type="text" id="f_href" style="width: 100%" readonly /></td>
   </tr>
-  <!--Add by Rain.Tang ( -->
   <tr>
     <td class="label">Title:</td>
-    <td><input type="text" id="f_name" style="width: 100%" /></td>
+    <td><input type="text" id="f_title" style="width: 100%" /></td>
   </tr>
-  <!-- ) -->
   <tr>
     <td class="label">Tooltip:</td>
-    <td><input type="text" id="f_title" style="width: 100%" /></td>
+    <td><input type="text" id="f_tooltip" style="width: 100%" /></td>
   </tr>
   <tr>
     <td class="label"><span id="f_target_label">Target:</span></td>
