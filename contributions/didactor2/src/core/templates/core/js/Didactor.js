@@ -6,54 +6,118 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.17 2008-11-13 11:17:15 michiel Exp $
+ * @version $Id: Didactor.js,v 1.18 2009-03-05 08:28:03 michiel Exp $
  */
 
 
-
-
 function Didactor() {
-    this.onlineReporter = this.getSetting("Didactor-OnlineReporter");
-    this.url            = this.getSetting("Didactor-URL");
-    this.lastCheck      = new Date();
-    this.pageReporter   = this.getSetting("Didactor-PageReporter") == "true";
-
-    this.questions      = {};
     var self = this;
+    $(document).ready(function() {
+        self.onlineReporter = self.getSetting("Didactor-OnlineReporter");
+        self.url            = self.getSetting("Didactor-URL");
+        self.root           = self.getSetting("Didactor-Root");
+        self.lastCheck      = new Date();
+        self.pageReporter   = self.getSetting("Didactor-PageReporter") == "true";
+        self.lastPage       = self.getSetting("Didactor-LastPage"); // not currently used
+        self.usedFrames     = {};
+        self.questions      = {};
 
-    $.timer(500, function(timer) {
-	    self.reportOnline();
-        var interval = self.getSetting("Didactor-PageReporterInterval");
-        interval = interval == "" ? 10000 : interval * 1000;
-        if (interval < 10000) interval = 10000;
-	    timer.reset(self.pageReporter ? interval : 1000 * 60 * 2);
+        self.fragments      = [];
+        {
+            var url = document.location.href;
+            var fragmentIndex = url.indexOf('#');
+            if (fragmentIndex > 0) {
+                self.fragments = url.substring(fragmentIndex + 1).split('_');
+            }
+            if (self.fragments.length > 0) {
+                self.openContent(self.fragments[0]);
+            }
+        }
+
+
+        $.timer(500, function(timer) {
+	        self.reportOnline();
+            var interval = self.getSetting("Didactor-PageReporterInterval");
+            interval = interval == "" ? 10000 : interval * 1000;
+            if (interval < 10000) interval = 10000;
+	        timer.reset(self.pageReporter ? interval : 1000 * 60 * 2);
+        });
+        if (self.pageReporter) {
+	        $(window).bind("beforeunload", function() {
+	            self.reportOnline(null, false);
+	        });
+        }
+
+        self.content = null;
+        for (var i = 0; i < Didactor.contentParameters.length; i++) {
+	        var param = Didactor.contentParameters[i];
+	        self.content = $.query.get(param);
+	        $.query.REMOVE(param);
+	        if (self.content != null) break;
+        }
+        self.block = self.content; // This is the content as defined by the URL. 'block' will no be changed.
+        for (var i = 0; i < Didactor.ignoredParameters.length; i++) {
+	        var param = Didactor.ignoredParameters[i];
+	        $.query.REMOVE(param);
+        }
+        self.q = $.query.toString();
+
+
+        for (var i = 0; i < Didactor.welcomeFiles.length; i++) {
+	        var welcomeFile = Didactor.welcomeFiles[i];
+	        self.url = self.url.replace(new RegExp(welcomeFile + "$"), "");
+        }
+
+        $(document).bind("didactorContentLoaded",  function(ev, data) {
+            self.setContent(data.number);
+            self.resolveQuestions(data.loaded);
+        });
+        $(document).bind("didactorContent",  function(ev, data) {
+            self.setContent(data.number);
+            self.setUpQuestionEvents(data.loaded);
+        });
+
+        $(document).bind("didactorContentBeforeUnload",  function(ev, el) {
+        self.saveQuestions();
+        });
+        $(document).bind("beforeunload", function() {
+            self.saveQuestions();
+        });
+        // if this is a staticly loaded piece of html, there may be some questions already
+        self.resolveQuestions(document);
+
+
+
+        $(document).bind("didactorContent", function(ev, data) {
+            var url = document.location.href;
+            var fragmentIndex = url.indexOf('#');
+            var fragment = url.substring(fragmentIndex);
+            var i = fragment.indexOf('learnblock_');
+            if (i > -1) {
+                learnblock = fragment;
+            }
+            $(".subnavigationPage  ul.navigation li").each(function() {
+                var href = $(this).find("a")[0].href;
+                var i = href.indexOf('#');
+                var anchor = href.substring(i) + "_block";
+                if (learnblock == null) {
+                    learnblock = anchor;
+                }
+
+                $(this).click(function() {
+                    $(".subnavigationPage  ul.navigation li").removeClass("active");
+                    $(this).addClass("active");
+                    $(learnblock).hide();
+                    learnblock = anchor;
+                    $(learnblock).show();
+                    document.location.href = href;
+                    return false;
+                });
+
+            });
+        });
+
     });
-    if (this.pageReporter) {
-	    $(window).bind("beforeunload", function() {
-	        self.reportOnline(null, false);
-	    });
-    }
-
-    this.content = null;
-    for (var i = 0; i < Didactor.contentParameters.length; i++) {
-	    var param = Didactor.contentParameters[i];
-	    this.content = $.query.get(param);
-	    $.query.REMOVE(param);
-	    if (this.content != null) break;
-    }
-    this.block = this.content; // This is the content as defined by the URL. 'block' will no be changed.
-    for (var i = 0; i < Didactor.ignoredParameters.length; i++) {
-	    var param = Didactor.ignoredParameters[i];
-	    $.query.REMOVE(param);
-    }
-    this.q = $.query.toString();
-
-
-    for (var i = 0; i < Didactor.welcomeFiles.length; i++) {
-	    var welcomeFile = Didactor.welcomeFiles[i];
-	    this.url = this.url.replace(new RegExp(welcomeFile + "$"), "");
-    }
-
 }
 
 Didactor.contentParameters = ["learnobject", "openSub" ];
@@ -146,9 +210,6 @@ Didactor.prototype.resolveQuestions = function(el) {
         $(this).remove();
     });
 
-
-
-
 }
 
 Didactor.prototype.saveQuestions = function() {
@@ -165,27 +226,120 @@ Didactor.prototype.saveQuestions = function() {
 }
 
 
-var didactor;
-$(document).ready(function() {
-    didactor = new Didactor();
+/**
+ * Request content using AJAX from the server
+ */
+Didactor.prototype.requestContent = function(href, number) {
+    var contentEl = document.getElementById('contentFrame');
+    $(document).trigger("didactorContentBeforeUnload",  { unloaded: contentEl });
     var self = this;
-    $(document).bind("didactorContentLoaded",  function(ev, data) {
-        didactor.setContent(data.number);
-        didactor.resolveQuestions(data.loaded);
-    });
-    $(document).bind("didactorContent",  function(ev, data) {
-        didactor.setContent(data.number);
-        didactor.setUpQuestionEvents(data.loaded);
-    });
+    var content = this.usedFrames[href];
+    if (content == null) {
+        loadIconOn();
+        $.ajax({async: true, url: href, type: "GET", dataType: "xml", data: null,
+                    complete: function(res, status){
+                    loadIconOff();
+                    if (status == "success") {
+                        $(contentEl).empty();
+                        $(document).trigger("didactorContentBeforeLoaded",  { response: res, number: number });
+                        $(contentEl).append(res.responseText);
+                        // console.log("updating " + contentEl + "with" + xmlhttp.responseXML);
+                        contentEl.validator = new MMBaseValidator();
+                        //contentEl.validator.logEnabled = true;
+                        //contentEl.validator.traceEnabled = true;
+                        contentEl.validator.validateHook = function(valid) {
+                            var buttons = $(contentEl).find("input.formbutton");
+                            for (i = 0; i < buttons.length; i++) {
+                                var disabled = (contentEl.validator.invalidElements > 0);
+                                buttons[i].disabled = disabled;
+                                // just because IE does not recognize input[disabled]
+                                // IE SUCKS
+                                buttons[i].className = "formbutton " + (disabled ? "disabled" : "enabled");
+                            }
+                        };
+                        contentEl.validator.validatePage(false, contentEl);
+                        contentEl.validator.addValidation(contentEl);
+                        check(res.responseXML.documentElement.getAttribute('class'));
+                        document.href_frame = href;
+                        var array = [];
+                        // in case it is more than one element (e.g. comments or so), store all childnodes.
 
-    $(document).bind("didactorContentBeforeUnload",  function(ev, el) {
-        didactor.saveQuestions();
+                        try {
+                            for (var i = 0; i < contentEl.childNodes.length; i++) {
+                                array.push(contentEl.childNodes[i]);
+                            }
+                        } catch (ex) {
+                            alert(ex);
+                        }
+                        self.usedFrames[href] = array;
+                        if ($.browser.msie) {
+                            if ($.browser.version.substr(0, 3) <= 6.0) {
+                                // alert("IE 6 is a horrible browser which cannot do this correctly at once
+                                setTimeout(function() {
+                                        $(contentEl).empty();
+                                        for (var i=0; i < array.length; i++) {
+                                            contentEl.appendChild(array[i]);
+                                        }
+                                        $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
+                                        $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
+                                    }, 500);
+                            }
+                        } else {
+                            $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
+                            $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
+                        }
 
-    });
-    $(window).bind("beforeunload", function() {
-        didactor.saveQuestions();
-    });
+                    }
+                }
+           });
+   } else {
+       $(contentEl).empty();
+       for (var i = 0; i < content.length; i++) {
+           contentEl.appendChild(content[i]);
+       }
+       document.href_frame = href;
+       $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
+   }
+    //scrollToTop();
+};
 
-    // if this is a staticly loaded piece of html, there may be some questions already
-    didactor.resolveQuestions(document);
-});
+
+
+
+/**
+ * Opens content with a certain number
+ * @param type (optional, is supposed to be absent if first argument numeric). The type of the content.
+ * @param number MMBase object number as an integer.
+ * @param navigationElement (option) The element which was used to open this content. It'll receive a class
+ * 'active'
+ */
+Didactor.prototype.openContent = function(type, number, navigationElement) {
+    // The 'type' argument is optional.
+    // So, of the first argument is numeric. Interpret that has the 'number".
+    if (/^[+-]?\d+$/.test(type)) {
+        navigationElement = number;
+        number = type;
+        type = null;
+    }
+    if (this.currentNavigationElement != null) {
+        $(this.currentNavigationElement).removeClass("active");
+    }
+
+    if ( number > 0 ) {
+        currentnumber = number;
+    }
+
+    var href = addParameter(this.root + 'content/', 'object=' + number);
+    if (type != null && type != '') {
+        href = addParameter(href, 'type=' + type);
+    }
+    this.requestContent(href, number);
+    this.currentNavigationElement = navigationElement;
+    if (this.currentNavigationElement != null) {
+        $(this.currentNavigationElement).addClass("active");
+    }
+
+};
+
+
+var didactor = new Didactor();
