@@ -55,7 +55,7 @@
                   <a href="${_}"
                      id="a_${_node}"
                      class="${object eq _node.number ? 'active' : ''}${status.first ? ' first' : ''}${status.last ? ' last' :''}"
-                     onclick="openContent('${_node}', this); document.location.href = '${bookmark}'; return false;"
+                     onclick="didactor.openContent('${_node}', this); document.location.href = '${bookmark}'; return false;"
                      >
                     <mm:field name="title"/>
                   </a>
@@ -85,7 +85,7 @@
                   <a href="${_}"
                      id="a_${_node}"
                      class="${firstItem ne '' ? ' first' : ''}"
-                     onclick="openContent('${_node}', this); document.location.href = '${bookmark}'; return false;"
+                     onclick="didactor.openContent('${_node}', this); document.location.href = '${bookmark}'; return false;"
                      >
                     <mm:field name="title"/>
                   </a>
