@@ -98,8 +98,7 @@ public class LoginPortlet extends AbstractLoginPortlet {
          String sendMessage = "view.account.success";
          AuthenticationService authenticationService = (AuthenticationService) ApplicationContextFactory
          .getBean("authenticationService");
-         PersonService personHibernateService = (PersonService) ApplicationContextFactory
-               .getBean("personService");
+         PersonService personHibernateService = (PersonService) ApplicationContextFactory.getBean("personService");
 
          if (authenticationService.authenticationExists(email)) {
             Person person = personHibernateService.getPersonByUserId(email);

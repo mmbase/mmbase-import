@@ -2,7 +2,7 @@ package com.finalist.cmsc.portlets;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -86,10 +86,10 @@ public class RegisterPortlet extends AbstractLoginPortlet {
    @Override
    public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
 
-      Map<String, String> errorMessages = new Hashtable<String, String>();
+      Map<String, String> errorMessages = new HashMap<String, String>();
       PortletPreferences preferences = request.getPreferences();
 
-      String email = request.getParameter(ACEGI_SECURITY_FORM_EMAIL_KEY).trim();
+      String emailTo = request.getParameter(ACEGI_SECURITY_FORM_EMAIL_KEY).trim();
       String firstName = request.getParameter(ACEGI_SECURITY_FORM_FIRSTNAME_KEY);
       String infix = request.getParameter(ACEGI_SECURITY_FORM_INFIX_KEY);
       String lastName = request.getParameter(ACEGI_SECURITY_FORM_LASTNAME_KEY);
@@ -98,60 +98,73 @@ public class RegisterPortlet extends AbstractLoginPortlet {
 
       Long authId = null;
 
-      if (StringUtils.isBlank(email)) {
+      if (StringUtils.isBlank(emailTo)) {
          errorMessages.put(ACEGI_SECURITY_FORM_EMAIL_KEY, "register.email.empty");
-      } else if (!isEmailAddress(email)) {
+      } else if (!isEmailAddress(emailTo)) {
          errorMessages.put(ACEGI_SECURITY_FORM_EMAIL_KEY, "register.email.match");
       }
 
       validateInputFields(request, errorMessages, preferences, firstName, lastName, passwordText, passwordConfirmation);
 
-      AuthenticationService authenticationService = (AuthenticationService) ApplicationContextFactory.getBean("authenticationService");
-      PersonService personHibernateService = (PersonService) ApplicationContextFactory.getBean("personService");
-      Long authenticationId = authenticationService.getAuthenticationIdForUserId(email);
-
-      if (authenticationId == null) {
-         Authentication authentication = authenticationService.createAuthentication(email, passwordText);
-         if (authentication.getId() != null) {
-            authId = authentication.getId();
-
-            //If the names are not needed in the form, they can be emptied and stored.
-            if (firstName == null) firstName="";
-            if (infix == null) infix="";
-            if (lastName == null) lastName = "";
-            
-            Person person = personHibernateService.createPerson(firstName, infix, lastName, authId, RegisterStatus.UNCONFIRMED.getName(), new Date());
-            person.setEmail(email);
-            personHibernateService.updatePerson(person);
-
-            String groupName = preferences.getValue(GROUPNAME, null);
-            if (null != groupName && !NOGROUP.equals(groupName)) {
-               authenticationService.addAuthorityToUserByAuthenticationId(authId.toString(), groupName);
-            }
-
-            String emailSubject = preferences.getValue(EMAIL_SUBJECT, "Your account details associated with the given email address.\n");
-            String emailText = preferences.getValue(EMAIL_TEXT, null);
-            String emailFrom = preferences.getValue(EMAIL_FROMEMAIL, null);
-            String nameFrom = preferences.getValue(EMAIL_FROMNAME, null);
-
-            emailText = getEmailBody(emailText, request, authentication, person);
-            try {
-               if (!isEmailAddress(emailFrom)) {
-                  throw new AddressException("Email address '" + emailFrom + "' is not available or working!");
+      if (errorMessages.isEmpty()) { //Only continue with Community checks, when there are no other errors yet.
+      
+         AuthenticationService authenticationService = (AuthenticationService) ApplicationContextFactory.getBean("authenticationService");
+         PersonService personHibernateService = (PersonService) ApplicationContextFactory.getBean("personService");
+         Long authenticationId = authenticationService.getAuthenticationIdForUserId(emailTo);
+   
+         if (authenticationId == null) {
+            Authentication authentication = authenticationService.createAuthentication(emailTo, passwordText);
+            if (authentication.getId() != null) {
+               authId = authentication.getId();
+   
+               //If the names are not needed in the form, they can be emptied and stored.
+               if (firstName == null) firstName="";
+               if (infix == null) infix="";
+               if (lastName == null) lastName = "";
+               
+               Person person = personHibernateService.createPerson(firstName, infix, lastName, authId, RegisterStatus.UNCONFIRMED.getName(), new Date());
+               person.setEmail(emailTo);
+               personHibernateService.updatePerson(person);
+   
+               String groupName = preferences.getValue(GROUPNAME, null);
+               if (null != groupName && !NOGROUP.equals(groupName)) {
+                  authenticationService.addAuthorityToUserByAuthenticationId(authId.toString(), groupName);
                }
-               EmailSender.sendEmail(emailFrom, nameFrom, email, emailSubject, emailText, email, "text/plain;charset=utf-8");
-            } catch (AddressException e) {
-               log.error("Email address failed", e);
-            } catch (MessagingException e) {
-               log.error("Email MessagingException failed", e);
-            }
+   
+               String emailSubject = preferences.getValue(EMAIL_SUBJECT, "Your account details associated with the given email address.\n");
+               String emailText = preferences.getValue(EMAIL_TEXT, null);
+               String emailFrom = preferences.getValue(EMAIL_FROMEMAIL, null);
+               String nameFrom = preferences.getValue(EMAIL_FROMNAME, "Senders Name"); //Add default name
+   
+               emailText = getEmailBody(emailText, request, authentication, person);
+               try {
+                  if (!isEmailAddress(emailFrom)) {
+                     errorMessages.put(ACEGI_SECURITY_DEFAULT, "Email address '" + emailFrom + "' set in the edit_defaults properties is not available or working!");
+                  } else {
+                     EmailSender.sendEmail(emailFrom, nameFrom, emailTo, emailSubject, emailText, emailTo, "text/plain;charset=utf-8");
+                  }
+               } catch (AddressException e) {
+                  log.error("Email address failed", e);
+                  errorMessages.put(ACEGI_SECURITY_DEFAULT, "One of the email addresses failed '" + emailFrom + "' or '" + emailTo + "'!"); 
+               } catch (MessagingException e) {
+                  log.error("Email MessagingException failed", e);
+                  errorMessages.put(ACEGI_SECURITY_DEFAULT, "Sending email failed, from '" + emailFrom + "' or '" + emailTo + "'!");
+               }
+               if (errorMessages.isEmpty()) {
+                  response.setRenderParameter("email", emailTo);
+               } else {
+                  //Email could not be sent, but the user is created..should remove user & authentication
+                  personHibernateService.deletePersonByAuthenticationId(authId);
+                  authenticationService.deleteAuthentication(authId);
+               }
 
-            response.setRenderParameter("email", email);
+            } else {
+               log.error("adding of authenticationId in database failed");
+               errorMessages.put(ACEGI_SECURITY_DEFAULT, "adding of authenticationId in database failed");
+            }
          } else {
-            log.error("add authenticationId failed");
+            errorMessages.put(ACEGI_SECURITY_DEFAULT, "register.user.exists");
          }
-      } else {
-         errorMessages.put(ACEGI_SECURITY_DEFAULT, "register.user.exists");
       }
 
       if (errorMessages.size() > 0) {
@@ -168,7 +181,7 @@ public class RegisterPortlet extends AbstractLoginPortlet {
       request.setAttribute("page", screenId);
       String template;
       
-      Map<String, String> errorMessages = (Map<String, String>) portletSession.getAttribute(ERRORMESSAGES);
+      Map<String, String> errorMessages = (HashMap<String, String>) portletSession.getAttribute(ERRORMESSAGES);
       
       
       String email = request.getParameter("email");
