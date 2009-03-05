@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.18 2009-03-05 08:28:03 michiel Exp $
+ * @version $Id: Didactor.js,v 1.19 2009-03-05 09:50:59 michiel Exp $
  */
 
 
@@ -272,18 +272,16 @@ Didactor.prototype.requestContent = function(href, number) {
                             alert(ex);
                         }
                         self.usedFrames[href] = array;
-                        if ($.browser.msie) {
-                            if ($.browser.version.substr(0, 3) <= 6.0) {
-                                // alert("IE 6 is a horrible browser which cannot do this correctly at once
-                                setTimeout(function() {
-                                        $(contentEl).empty();
-                                        for (var i=0; i < array.length; i++) {
-                                            contentEl.appendChild(array[i]);
-                                        }
-                                        $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
-                                        $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
-                                    }, 500);
-                            }
+                        if ($.browser.msie && $.browser.version.substr(0, 3) <= 6.0) {
+                            // alert("IE 6 is a horrible browser which cannot do this correctly at once
+                            setTimeout(function() {
+                                $(contentEl).empty();
+                                for (var i = 0; i < array.length; i++) {
+                                    contentEl.appendChild(array[i]);
+                                }
+                                $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
+                                $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
+                            }, 500);
                         } else {
                             $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
                             $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
