@@ -111,7 +111,7 @@
 
       <action type="add">
         <relation role="posrel" destinationtype="urls">
-          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and @source=/data/object/@number and object/@searchtype = 'urls']/field[@name='pos'])+{$pos}}</field>
         </relation>
       </action>
 
@@ -121,7 +121,7 @@
 
       <action type="create">
         <relation role="posrel" destinationtype="urls">
-          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and @source=/data/object/@number and object/@searchtype = 'urls']/field[@name='pos'])+{$pos}}</field>
           <object type="urls">
             <field name="url">http://</field>
           </object>
@@ -151,7 +151,7 @@
 
       <action type="add">
         <relation role="posrel" destinationtype="news" createdir="source">
-          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and @source=/data/object/@number and object/@searchtype = 'news']/field[@name='pos'])+{$pos}}</field>
          </relation>
       </action>
     </list>
