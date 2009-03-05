@@ -41,48 +41,66 @@ import com.finalist.cmsc.util.EmailSender;
  * @author Remco Bos
  */
 public class LoginPortlet extends AbstractLoginPortlet {
+   
+   public static final String ERRORMESSAGE = "errormessage";
+
    protected static final String ACTION_PARAMETER = "action";
 
-   private static final String ACEGI_SECURITY_FORM_USERNAME_KEY = "j_username";
-   private static final String ACEGI_SECURITY_FORM_PASSWORD_KEY = "j_password";
-   private static final String EMAIL_TEMPLATE_DIR = "../templates/view/login/forgotpassword.txt";
+   protected static final String ACEGI_SECURITY_FORM_USERNAME_KEY = "j_username";
+   protected static final String ACEGI_SECURITY_FORM_PASSWORD_KEY = "j_password";
+   protected static final String EMAIL_TEMPLATE_DIR = "../templates/view/login/forgotpassword.txt";
    
-   private static final String SEND_PASSWORD = "send_password";
+   protected static final String SEND_PASSWORD = "send_password";
 
-   private static final Log log = LogFactory.getLog(LoginPortlet.class);
+   protected static final Log log = LogFactory.getLog(LoginPortlet.class);
+   
    protected void doEditDefaults(RenderRequest req, RenderResponse res) throws IOException,
    PortletException {
       super.DEFAULT_EMAIL_CONFIRM_TEMPLATE_DIR = EMAIL_TEMPLATE_DIR;
       super.doEditDefaults(req, res);
    }
+   
    @Override
    public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
       String action = request.getParameter(ACTION_PARAMETER);
       PortletPreferences preferences = request.getPreferences();
+      
       if ("login".equals(action)) {
          String userName = request.getParameter(ACEGI_SECURITY_FORM_USERNAME_KEY);
          String password = request.getParameter(ACEGI_SECURITY_FORM_PASSWORD_KEY);
          String send_password =  request.getParameter(SEND_PASSWORD);
+         
          if (StringUtils.isEmpty(send_password)) {
             request.getPortletSession().setAttribute("username", userName, PortletSession.APPLICATION_SCOPE);
+            
             if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
                Community.login(userName, password);
+            } else {
+               if (StringUtils.isBlank(userName)) {
+                  response.setRenderParameter(ERRORMESSAGE, "register.email.empty");
+               } else {
+                  response.setRenderParameter(ERRORMESSAGE, "register.password.empty");
+               }
+
+               return; //Because one of the required fields are empty, there is nothing to check anymore
             }
+            
             if (Community.isAuthenticated()) {
                log.info(String.format("Login successful for user %s", userName));
             } else {
-               PersonService personHibernateService = (PersonService) ApplicationContextFactory
-               .getBean("personService");
+               
+               PersonService personHibernateService = (PersonService) ApplicationContextFactory.getBean("personService");
                Person person = personHibernateService.getPersonByUserId(userName);
+               
                if (person == null) {
                   log.info(String.format("Login failed for user %s", userName));
-                  response.setRenderParameter("errormessage", "login.failed");
+                  response.setRenderParameter(ERRORMESSAGE, "login.failed");
                }
                else if (RegisterStatus.UNCONFIRMED.getName().equalsIgnoreCase(person.getActive())) {
-                  response.setRenderParameter("errormessage", "view.account.unconfirmed");
+                  response.setRenderParameter(ERRORMESSAGE, "view.account.unconfirmed");
                }
                else if (RegisterStatus.BLOCKED.getName().equalsIgnoreCase(person.getActive())) {
-                  response.setRenderParameter("errormessage", "view.account.blocked");
+                  response.setRenderParameter(ERRORMESSAGE, "view.account.blocked");
                }
             }
          }
@@ -92,6 +110,7 @@ public class LoginPortlet extends AbstractLoginPortlet {
       } else if ("logout".equals(action)) {
          request.getPortletSession().removeAttribute("username", PortletSession.APPLICATION_SCOPE);
          Community.logout();
+         
       } else if ("send_password".equals(action)) {
          //TODO  send password
          String email =  request.getParameter("username");
@@ -154,10 +173,10 @@ public class LoginPortlet extends AbstractLoginPortlet {
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
       
       String template;
-      String error = request.getParameter("errormessage");
+      String error = request.getParameter(ERRORMESSAGE);
       String send_password = request.getParameter(SEND_PASSWORD);
       if (StringUtils.isNotBlank(error)) {
-         request.setAttribute("errormessage", error);
+         request.setAttribute(ERRORMESSAGE, error);
       }
       if (Community.isAuthenticated()) {
          template = "login/logout.jsp";
@@ -170,6 +189,7 @@ public class LoginPortlet extends AbstractLoginPortlet {
       }
       doInclude("view", template, request, response);
    }
+   
    protected String getEmailBody(String emailText,ActionRequest request,
          Authentication authentication, Person person) {
       super.DEFAULT_EMAIL_CONFIRM_TEMPLATE_DIR = EMAIL_TEMPLATE_DIR;
