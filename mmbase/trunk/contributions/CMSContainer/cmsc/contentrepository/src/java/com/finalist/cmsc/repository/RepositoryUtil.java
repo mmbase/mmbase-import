@@ -35,24 +35,21 @@ import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.FieldValueDateConstraint;
 import org.mmbase.storage.search.StepField;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueDateConstraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.mmbase.TreeUtil;
+import com.finalist.cmsc.richtext.RichText;
 import com.finalist.cmsc.security.Role;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.security.forms.RolesInfo;
-import com.finalist.cmsc.util.XmlUtil;
 
 public final class RepositoryUtil {
 
@@ -1564,198 +1561,7 @@ public final class RepositoryUtil {
     * @return
     */
    public static Object strip(Node sourceNode,Field field,Map<Integer, Integer> copiedNodes,List<Integer> channels) {
-      DataType dataType = field.getDataType();
-      while (StringUtils.isEmpty(dataType.getName())) {
-         dataType = dataType.getOrigin();
-      }
-      if ("cmscrichtext".equals(dataType.getName())) {
-         String fieldname = field.getName();
-         String fieldValue = (String) sourceNode.getValueWithoutProcess(fieldname);
-         log.debug("richtext field: " + fieldname.trim());
-       //  htmlFields.add(fieldname);
-         if (StringUtils.isNotEmpty(fieldValue)) {
-            try {
-               if (hasRichtextItems(fieldValue)) {
-                  Document doc = getRichTextDocument(new GetRichTextDocumentParameter(fieldValue));
-                  resolveResources(sourceNode,doc,copiedNodes,channels);
-                  String out = getRichTextString(doc);
-                  out = fixEmptyAnchors(out);
-                  log.debug("final richtext text = " + out);
-                  return out;
-               }
-            }
-            catch (Exception e) {
-               log.error("An error occured while resolving inline resources!", e);
-            }
-         }
-      }
-      return sourceNode.getValueWithoutProcess(field.getName());
-   }
-   public static String fixEmptyAnchors(String xmlStr) {
-      String xml = "";
-      int begin = 0;
-      int end = 0;
-      while ((begin = nextResult(xmlStr, "<a ", end)) > -1) {
-         xml += xmlStr.substring(end, begin);
-
-         int gt = xmlStr.indexOf('>', begin);
-         int closinggt = xmlStr.indexOf("/>", begin);
-         boolean emptyTag = closinggt != -1 && gt >= closinggt + 1;
-         if (emptyTag) {
-            end = closinggt;
-            xml += xmlStr.substring(begin, end) + "></a>";
-            end += 2;
-         }
-         else {
-            end = gt + 1;
-            xml += xmlStr.substring(begin, end);
-         }
-      }
-      if (end < xmlStr.length()) {
-         xml += xmlStr.substring(end);
-      }
-      return xml;
-   }
-   private static int nextResult(String xmlStr, String substr, int from) {
-      String upXmlStr = xmlStr.toLowerCase();
-      String upSubstr = substr.toLowerCase();
-
-      xmlStr.indexOf(upSubstr, from);
-
-      return upXmlStr.indexOf(upSubstr, from);
-   }
-   public final static String getRichTextString(Document doc) {
-      // to string and strip root node, doctype and xmldeclaration
-      String out = XmlUtil.serializeDocument(doc, false, false, true, true);
-      out = out.replaceAll("<.?richtext.?>", "");
-      out = XmlUtil.unescapeXMLEntities(out);
-      return out;
-   }
-
-
-   public final static Document getRichTextDocument(GetRichTextDocumentParameter parameterObject) {
-      String out = XmlUtil.escapeXMLEntities(parameterObject.in);
-      out = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "<richtext>" + out + "</richtext>";
-      Document doc = XmlUtil.toDocument(out, false);
-      return doc;
-   }
-   public static void resolveResources(Node node,Document doc,Map<Integer, Integer> copiedNodes,List<Integer> channels) {
-      resolveLinks(doc,  node,copiedNodes,channels);
-      resolveImages(doc,  node,copiedNodes,channels);
-   }
-   public final static boolean hasRichtextItems(String in) {
-      return (in.indexOf("<a") > -1 || in.indexOf("<img") > -1);
-   }
-   /**
-    *    To resolve the links in Richtext fields
-    * @param doc
-    * @param sourceNode
-    * @param copiedNodes
-    * @param channels
-    */
-   public static void resolveLinks(Document doc, Node sourceNode,Map<Integer, Integer> copiedNodes,List<Integer> channels) {
-      if (doc == null) {
-         return;
-      }
-      // collect <A> tags
-      org.w3c.dom.NodeList nl = doc.getElementsByTagName("a");
-      log.debug("number of links: " + nl.getLength());
-
-      for (int i = 0, len = nl.getLength(); i < len; i++) {
-         Element link = (Element) nl.item(i);
-
-         if (link.hasAttribute(DESTINATION_LOWER)
-               && "undefined".equalsIgnoreCase(link.getAttribute(DESTINATION_LOWER))) {
-            link.removeAttribute(DESTINATION_LOWER);
-         }
-         if (link.hasAttribute(RELATION_ID)
-               && "undefined".equalsIgnoreCase(link.getAttribute(RELATION_ID))) {
-            link.removeAttribute(RELATION_ID);
-         }
-         // handle relations to other objects
-         if (isInlineAttributesComplete(link)) {
-            // get id of the link
-            //String id = link.getAttribute("relationID");
-            int source = Integer.parseInt(link.getAttribute(DESTINATION_LOWER));
-            org.w3c.dom.Node parentNode = link.getParentNode();
-            if (source > 0) {
-               Node node = sourceNode.getCloud().getNode(source);
-               if (!isRelatedWithCurrentChannelTree(node, channels)) {
-                  Element newNode = doc.createElement("span");
-                  newNode.appendChild(link.getFirstChild());
-                  parentNode.replaceChild(newNode,link);
-               }
-               else {
-                  Integer destination = copiedNodes.get(source);
-                  if (destination  != null && destination > 0 && sourceNode.getCloud().hasNode(destination)) {
-                     Relation rel = RelationUtil.createRelation(sourceNode, sourceNode.getCloud().getNode(destination), "inlinerel");
-                     link.setAttribute(DESTINATION_LOWER, String.valueOf(destination));
-                     link.setAttribute(RELATION_ID, String.valueOf(rel.getNumber()));
-                  }
-               }
-            }
-         }
-      }
-   }
-
-   
-   public static boolean isNewInline(Element element) {
-      return element.hasAttribute(DESTINATION_LOWER) && !element.hasAttribute(RELATION_ID);
-   }
-
-
-   public static  boolean isInlineAttributesComplete(Element element) {
-      return element.hasAttribute(DESTINATION_LOWER) && element.hasAttribute(RELATION_ID);
-   }
-   /**
-    *   To resolve the images used in the richtext fileds
-    * @param doc
-    * @param sourceNode
-    * @param copiedNodes
-    * @param channels
-    */
-   public static  void resolveImages(Document doc,Node sourceNode,Map<Integer, Integer> copiedNodes,List<Integer> channels) {
-      if (doc == null) {
-         return;
-      }
-      org.w3c.dom.NodeList nl = doc.getElementsByTagName("img");
-      log.debug("number of images: " + nl.getLength());
-      for (int i = 0, len = nl.getLength(); i < len; i++) {
-         Element image = (Element) nl.item(i);
-
-         if (image.hasAttribute(DESTINATION_LOWER)
-               && "undefined".equalsIgnoreCase(image.getAttribute(DESTINATION_LOWER))) {
-            image.removeAttribute(DESTINATION_LOWER);
-         }
-         if (image.hasAttribute(RELATION_ID)
-               && "undefined".equalsIgnoreCase(image.getAttribute(RELATION_ID))) {
-            image.removeAttribute(RELATION_ID);
-         }
-
-         if (isInlineAttributesComplete(image)) {
-            // get id of the image
-            int source = Integer.parseInt(image.getAttribute(DESTINATION_LOWER));
-           
-            org.w3c.dom.Node parentNode = image.getParentNode();
-           // parentNode.removeChild(image);
-           // MMObjectNode imagerel = getImageInlineRel(id);
-            if (source > 0 ) {
-               Node node = sourceNode.getCloud().getNode(source);
-               if (!isRelatedWithCurrentChannelTree(node, channels)) {
-                  parentNode.removeChild(image);
-               }
-               else {
-                  Integer destination = copiedNodes.get(source);
-                  if (destination  != null && destination > 0 && sourceNode.getCloud().hasNode(destination)) {
-                     Relation rel = RelationUtil.createRelation(sourceNode, sourceNode.getCloud().getNode(destination), "imageinlinerel");
-                     image.setAttribute(DESTINATION_LOWER, String.valueOf(destination));
-                     image.setAttribute(RELATION_ID, String.valueOf(rel.getNumber()));
-                  }
-               }
-            }
-         }
-
-      }
+      return RichText.stripLinkAndImage(sourceNode, field, copiedNodes, channels);
    }
    /**
     * quick test to see if node is a relation by testing fieldnames

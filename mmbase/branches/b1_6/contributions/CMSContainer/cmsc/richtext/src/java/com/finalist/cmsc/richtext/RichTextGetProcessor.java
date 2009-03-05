@@ -9,11 +9,17 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.richtext;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.RelationList;
 import org.mmbase.datatypes.processors.ParameterizedProcessorFactory;
 import org.mmbase.datatypes.processors.Processor;
 import org.mmbase.security.Rank;
@@ -21,9 +27,11 @@ import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.mmbase.ResourcesUtil;
 
 @SuppressWarnings("serial")
@@ -297,6 +305,116 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
 
       String id = node.getStringValue("number");
       return ResourcesUtil.getServletPathWithAssociation("content", "/content/*", id, title);
+   }
+
+   public void resolve(Node node,Document doc,Map<Integer, Integer> copiedNodes,List<Integer> channels) {
+      resolveLinks(doc,  node,copiedNodes,channels);
+      resolveImages(doc,  node,copiedNodes,channels);
+   }
+   /**
+    *    To resolve the links in Richtext fields
+    * @param doc
+    * @param sourceNode
+    * @param copiedNodes
+    * @param channels
+    */
+   public static void resolveLinks(Document doc, Node sourceNode,Map<Integer, Integer> copiedNodes,List<Integer> channels) {
+      if (doc == null) {
+         return;
+      }
+      // collect <A> tags
+      org.w3c.dom.NodeList nl = doc.getElementsByTagName("a");
+      log.debug("number of links: " + nl.getLength());
+
+      for (int i = 0, len = nl.getLength(); i < len; i++) {
+         Element link = (Element) nl.item(i);
+
+         if (link.hasAttribute(RichText.DESTINATION_ATTR)
+               && "undefined".equalsIgnoreCase(link.getAttribute(RichText.DESTINATION_ATTR))) {
+            link.removeAttribute(RichText.DESTINATION_ATTR);
+         }
+         if (link.hasAttribute(RichText.RELATIONID_ATTR)
+               && "undefined".equalsIgnoreCase(link.getAttribute(RichText.RELATIONID_ATTR))) {
+            link.removeAttribute(RichText.RELATIONID_ATTR);
+         }
+         // handle relations to other objects
+         if (link.hasAttribute(RichText.DESTINATION_ATTR) && link.hasAttribute(RichText.RELATIONID_ATTR)) {
+            // get id of the link
+            //String id = link.getAttribute("relationID");
+            int source = Integer.parseInt(link.getAttribute(RichText.DESTINATION_ATTR));
+            org.w3c.dom.Node parentNode = link.getParentNode();
+            if (source > 0) {
+               Node node = sourceNode.getCloud().getNode(source);
+               Object number = copiedNodes.get(node.getNumber());
+               if (number == null) {
+                  Element newNode = doc.createElement("span");
+                  newNode.appendChild(link.getFirstChild());
+                  parentNode.replaceChild(newNode,link);
+               }
+               else {
+                  Integer destination = copiedNodes.get(source);
+                  if (destination  != null && destination > 0 && sourceNode.getCloud().hasNode(destination)) {
+                     Relation rel = RelationUtil.createRelation(sourceNode, sourceNode.getCloud().getNode(destination), "inlinerel");
+                     link.setAttribute(RichText.DESTINATION_ATTR, String.valueOf(destination));
+                     link.setAttribute(RichText.RELATIONID_ATTR, String.valueOf(rel.getNumber()));
+                  }
+               }
+            }
+         }
+      }
+   }
+
+
+   /**
+    *   To resolve the images used in the richtext fileds
+    * @param doc
+    * @param sourceNode
+    * @param copiedNodes
+    * @param channels
+    */
+   public static  void resolveImages(Document doc,Node sourceNode,Map<Integer, Integer> copiedNodes,List<Integer> channels) {
+      if (doc == null) {
+         return;
+      }
+      org.w3c.dom.NodeList nl = doc.getElementsByTagName("img");
+      log.debug("number of images: " + nl.getLength());
+      for (int i = 0, len = nl.getLength(); i < len; i++) {
+         Element image = (Element) nl.item(i);
+
+         if (image.hasAttribute(RichText.DESTINATION_ATTR)
+               && "undefined".equalsIgnoreCase(image.getAttribute(RichText.DESTINATION_ATTR))) {
+            image.removeAttribute(RichText.DESTINATION_ATTR);
+         }
+         if (image.hasAttribute(RichText.RELATIONID_ATTR)
+               && "undefined".equalsIgnoreCase(image.getAttribute(RichText.RELATIONID_ATTR))) {
+            image.removeAttribute(RichText.RELATIONID_ATTR);
+         }
+
+         if (image.hasAttribute(RichText.DESTINATION_ATTR) && image.hasAttribute(RichText.RELATIONID_ATTR)) {
+            // get id of the image
+            int source = Integer.parseInt(image.getAttribute(RichText.DESTINATION_ATTR));
+           
+            org.w3c.dom.Node parentNode = image.getParentNode();
+           // parentNode.removeChild(image);
+           // MMObjectNode imagerel = getImageInlineRel(id);
+            if (source > 0 ) {
+               Node node = sourceNode.getCloud().getNode(source);
+               Object number = copiedNodes.get(node.getNumber());
+               if (number == null) {
+                  parentNode.removeChild(image);
+               }
+               else {
+                  Integer destination = copiedNodes.get(source);
+                  if (destination  != null && destination > 0 && sourceNode.getCloud().hasNode(destination)) {
+                     Relation rel = RelationUtil.createRelation(sourceNode, sourceNode.getCloud().getNode(destination), "imageinlinerel");
+                     image.setAttribute(RichText.DESTINATION_ATTR, String.valueOf(destination));
+                     image.setAttribute(RichText.RELATIONID_ATTR, String.valueOf(rel.getNumber()));
+                  }
+               }
+            }
+         }
+
+      }
    }
 
 }
