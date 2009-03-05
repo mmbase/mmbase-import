@@ -114,6 +114,12 @@ public class RegisterPortlet extends AbstractLoginPortlet {
          Authentication authentication = authenticationService.createAuthentication(email, passwordText);
          if (authentication.getId() != null) {
             authId = authentication.getId();
+
+            //If the names are not needed in the form, they can be emptied and stored.
+            if (firstName == null) firstName="";
+            if (infix == null) infix="";
+            if (lastName == null) lastName = "";
+            
             Person person = personHibernateService.createPerson(firstName, infix, lastName, authId, RegisterStatus.UNCONFIRMED.getName(), new Date());
             person.setEmail(email);
             personHibernateService.updatePerson(person);
