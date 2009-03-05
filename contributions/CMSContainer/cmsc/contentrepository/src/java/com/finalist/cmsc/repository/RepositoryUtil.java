@@ -76,6 +76,7 @@ public final class RepositoryUtil {
    public static final String CONTENTREL = "contentrel";
    public static final String DELETIONREL = "deletionrel";
    public static final String CREATIONREL = "creationrel";
+   public static final String TYPEDEF = "typedef";
 
    public static final String ALIAS_ROOT = "repository.root";
    public static final String ALIAS_TRASH = "repository.trash";
@@ -850,8 +851,15 @@ public final class RepositoryUtil {
          if (orderby == null) {
             orderby = CONTENTREL + ".pos";
          }
-         query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager, CONTENTREL, null, null, orderby,
-               direction);
+         if("otype".equals(orderby)){
+            query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager, CONTENTREL);
+            query.addStep(query.getCloud().getNodeManager("typedef"));
+            Queries.addConstraints(query, destinationManager+".otype="+TYPEDEF+".number");
+            Queries.addSortOrders(query, TYPEDEF+".name", direction);
+         }else {
+            query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager, CONTENTREL, null, null, orderby,
+                  direction);
+         }
       } else {
          if (orderby == null) {
             orderby = CONTENTREL + ".pos";
@@ -861,9 +869,18 @@ public final class RepositoryUtil {
          if (contentchannels.isEmpty()) {
             throw new IllegalArgumentException("contentchannels or collectionchannel is empty; should be at least one.");
          }
-         query = SearchUtil.createRelatedNodeListQuery(contentchannels, destinationManager, CONTENTREL);
-         SearchUtil.addFeatures(query, contentchannels.getNode(0), destinationManager, CONTENTREL, null, null, orderby,
-               direction);
+         if("otype".equals(orderby)){
+            query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager, CONTENTREL);
+            SearchUtil.addFeatures(query, contentchannels.getNode(0), destinationManager, CONTENTREL, null, null, null,
+                  null);
+            query.addStep(query.getCloud().getNodeManager("typedef"));
+            Queries.addConstraints(query, destinationManager+".otype="+TYPEDEF+".number");
+            Queries.addSortOrders(query, TYPEDEF+".name", direction);
+         }else {
+            query = SearchUtil.createRelatedNodeListQuery(contentchannels, destinationManager, CONTENTREL);
+            SearchUtil.addFeatures(query, contentchannels.getNode(0), destinationManager, CONTENTREL, null, null, orderby,
+                  direction);
+         }
       }
 
       if (contenttypes != null && contenttypes.size() > 1) {
@@ -952,16 +969,35 @@ public final class RepositoryUtil {
 
       NodeQuery query;
       if (isContentChannel(channel)) {
-         query = SearchUtil.createRelatedNodeListQuery(channel, sourceManager, CREATIONREL, null, null, orderby,
-               direction, SOURCE);
+         if("otype".equals(orderby)){
+            query = SearchUtil.createRelatedNodeListQuery(channel, sourceManager, CREATIONREL, null, null, null,
+               null, SOURCE);
+            query.addStep(query.getCloud().getNodeManager("typedef"));
+            Queries.addConstraints(query, sourceManager+".otype="+TYPEDEF+".number");
+            Queries.addSortOrders(query, TYPEDEF+".name", direction);
+         }else {
+            query = SearchUtil.createRelatedNodeListQuery(channel, sourceManager, CREATIONREL, null, null, orderby,
+                  direction, SOURCE);
+         }
       } else {
          NodeList contentchannels = SearchUtil.findRelatedNodeList(channel, CONTENTCHANNEL, COLLECTIONREL);
          if (contentchannels.isEmpty()) {
             throw new IllegalArgumentException("contentchannels or collectionchannel is empty; should be at least one.");
          }
-         query = SearchUtil.createRelatedNodeListQuery(contentchannels, sourceManager, CREATIONREL);
-         SearchUtil.addFeatures(query, contentchannels.getNode(0), sourceManager, CREATIONREL, null, null, orderby,
-               direction);
+         if("otype".equals(orderby)){
+            query = SearchUtil.createRelatedNodeListQuery(channel, sourceManager, CREATIONREL, null, null, null,
+                  null, SOURCE);
+            SearchUtil.addFeatures(query, contentchannels.getNode(0), sourceManager, CREATIONREL, null, null, null,
+                  null);
+            query.addStep(query.getCloud().getNodeManager("typedef"));
+            Queries.addConstraints(query, sourceManager+".otype="+TYPEDEF+".number");
+            Queries.addSortOrders(query, TYPEDEF+".name", direction);
+         }else {
+            query = SearchUtil.createRelatedNodeListQuery(channel, sourceManager, CREATIONREL, null, null, null,
+                  null, SOURCE);
+            SearchUtil.addFeatures(query, contentchannels.getNode(0), sourceManager, CREATIONREL, null, null, orderby,
+                  direction);
+         }
       }
 
       if (assettypes != null && assettypes.size() > 1) {
