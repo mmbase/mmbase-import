@@ -33,7 +33,7 @@
    </portlet>
    <portlet>
       <description>Register Portlet</description>
-      <portlet-name>RegisterPortlet</portlet-name>
+      <portlet-name>registerportlet</portlet-name>
       <display-name>RegisterPortlet</display-name>
       <portlet-class>com.finalist.cmsc.portlets.RegisterPortlet</portlet-class>
         <init-param>
