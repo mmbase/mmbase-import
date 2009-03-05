@@ -363,7 +363,7 @@
                   <th><a href="javascript:orderBy('otype')" class="headerlink" ><fmt:message key="locate.typecolumn" /></a></th>
                   <th><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="locate.titlecolumn" /></a></th>
                   <th><fmt:message key="locate.creationchannelcolumn" /></th>
-                  <th><a href="javascript:orderBy('creator')" class="headerlink" ><fmt:message key="locate.authorcolumn" /></th>
+                  <th><a href="javascript:orderBy('lastmodifier')" class="headerlink" ><fmt:message key="locate.authorcolumn" /></th>
                   <th><a href="javascript:orderBy('lastmodifieddate')" class="headerlink" ><fmt:message key="locate.lastmodifiedcolumn" /></th>
                   <th><a href="javascript:orderBy('number')" class="headerlink" ><fmt:message key="locate.numbercolumn" /></th>
                </tr>
@@ -419,7 +419,7 @@
                      ${channelName}
                   </mm:compare>
             </td>
-            <td style="white-space: nowrap;" onMouseDown="objClick(this);"><mm:field name="creator" /></td>
+            <td style="white-space: nowrap;" onMouseDown="objClick(this);"><mm:field name="lastmodifier" /></td>
             <td style="white-space: nowrap;" onMouseDown="objClick(this);"><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
             <td  style="white-space: nowrap;" onMouseDown="objClick(this);"><mm:field name="number"/></td>
             <c:if test="${hasWorkflow}">
