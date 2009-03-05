@@ -53,8 +53,6 @@ import com.finalist.cmsc.security.forms.RolesInfo;
 
 public final class RepositoryUtil {
 
-   private static final String RELATION_ID = "relationID";
-
    private static final String DESTINATION_LOWER = "destination";
 
    public static final String NAME_FIELD = "name";
@@ -1561,7 +1559,7 @@ public final class RepositoryUtil {
     * @return
     */
    public static Object strip(Node sourceNode,Field field,Map<Integer, Integer> copiedNodes,List<Integer> channels) {
-      return RichText.stripLinkAndImage(sourceNode, field, copiedNodes, channels);
+      return RichText.stripLinkAndImage(sourceNode, field, copiedNodes);
    }
    /**
     * quick test to see if node is a relation by testing fieldnames

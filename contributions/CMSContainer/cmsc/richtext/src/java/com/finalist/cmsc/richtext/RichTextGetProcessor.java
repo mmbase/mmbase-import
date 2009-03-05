@@ -307,9 +307,9 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
       return ResourcesUtil.getServletPathWithAssociation("content", "/content/*", id, title);
    }
 
-   public void resolve(Node node,Document doc,Map<Integer, Integer> copiedNodes,List<Integer> channels) {
-      resolveLinks(doc,  node,copiedNodes,channels);
-      resolveImages(doc,  node,copiedNodes,channels);
+   public void resolve(Node node,Document doc,Map<Integer, Integer> copiedNodes) {
+      resolveLinks(doc,  node,copiedNodes);
+      resolveImages(doc,  node,copiedNodes);
    }
    /**
     *    To resolve the links in Richtext fields
@@ -318,7 +318,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
     * @param copiedNodes
     * @param channels
     */
-   public static void resolveLinks(Document doc, Node sourceNode,Map<Integer, Integer> copiedNodes,List<Integer> channels) {
+   public static void resolveLinks(Document doc, Node sourceNode,Map<Integer, Integer> copiedNodes) {
       if (doc == null) {
          return;
       }
@@ -372,7 +372,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
     * @param copiedNodes
     * @param channels
     */
-   public static  void resolveImages(Document doc,Node sourceNode,Map<Integer, Integer> copiedNodes,List<Integer> channels) {
+   public static  void resolveImages(Document doc,Node sourceNode,Map<Integer, Integer> copiedNodes) {
       if (doc == null) {
          return;
       }
