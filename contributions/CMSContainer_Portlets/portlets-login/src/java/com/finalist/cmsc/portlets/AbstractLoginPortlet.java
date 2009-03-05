@@ -112,15 +112,15 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
          }
       }
       relation = RelationUtil.getRelation(cloud.getRelationManager("portletrel"), page.getNumber(), portlet.getNumber());
-      if (page != null) {
-         link = "&pn=" + page.getNumber();  
-         if (relation != null) {
-            String name = relation.getStringValue("name");
-            if (name != null) {
-               link += "&nm=" + name;
-            }
+
+      link = "&pn=" + page.getNumber();  
+      if (relation != null) {
+         String name = relation.getStringValue("name");
+         if (name != null) {
+            link += "&nm=" + name;
          }
       }
+         
       return link;
    }
    
