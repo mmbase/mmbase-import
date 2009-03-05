@@ -210,9 +210,8 @@ HTMLArea.prototype._insertInlineLink = function(link) {
 	if (link){
          	outparam = {
                	f_href   : HTMLArea.is_ie ? editor.stripBaseURL(link.href) : link.getAttribute("href"),
-                  f_destination : link.destination ,
-               	f_name   : link.name?link.name: sel_value,
-               	f_title  :link.title?link.title:'',
+                f_destination : link.destination ,
+               	f_title   : link.title?link.title: sel_value,
                	f_target : link.target,
                	f_usetarget : editor.config.makeLinkShowsTarget
          	};
@@ -220,9 +219,8 @@ HTMLArea.prototype._insertInlineLink = function(link) {
 	else{
          	outparam = {
                	f_href   : "Click \"New Url\" to enter URL",
-                  f_destination : null,
-               	f_name   : sel_value?sel_value:'',
-               	f_title  : '',
+                f_destination : null,
+               	f_title   : sel_value?sel_value:'',
                	f_target : '',
                	f_usetarget : editor.config.makeLinkShowsTarget
          	};
@@ -239,7 +237,7 @@ HTMLArea.prototype._insertInlineLink = function(link) {
                         var range = editor._createRange(sel);
                         if(editor._selectionEmpty(sel))
                         {
-                              editor.insertHTML("<a href='"+param.f_href+"'title='"+param.f_title+"' name='"+param.f_name+"'>"+param.f_name+"</a>");
+                              editor.insertHTML("<a href='" + param.f_href + "' title='" + param.f_title + "'>" + param.f_title+ "</a>");
                         }
                         else{
                               if ( !HTMLArea.is_ie )
@@ -253,7 +251,7 @@ HTMLArea.prototype._insertInlineLink = function(link) {
                                                 a = range.startContainer.parentNode;
                                           }
                                     }
-                                    a.innerHTML = param.f_name.trim();
+                                    a.innerHTML = param.f_title.trim();
                               }
                         }
 			} catch(ex) {}
@@ -271,13 +269,12 @@ HTMLArea.prototype._insertInlineLink = function(link) {
 			else
 			{
       			  a.href = href;
-                          a.innerHTML = param.f_name.trim();
+                          a.innerHTML = param.f_title.trim();
 			}
 		}
 		a.target = param.f_target.trim();
 		a.title = param.f_title.trim();
-		a.name = param.f_name.trim();
-		
+
             if (HTMLArea.is_ie) {
                   a.destination = param.f_destination.trim();
                   if (!a.destination && a.relationID) {
