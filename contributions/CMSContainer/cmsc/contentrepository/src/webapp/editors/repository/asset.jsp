@@ -138,7 +138,7 @@
                                  <fmt:message key="asset.typecolumn"/></a></th>
                            <th><a href="javascript:sortBy('Asset', 'title','<mm:write referid="parentchannel" />')" class="headerlink">
                                  <fmt:message key="asset.titlecolumn"/></a></th>
-                           <th><a href="javascript:sortBy('Asset', 'creator','<mm:write referid="parentchannel" />')" class="headerlink">
+                           <th><a href="javascript:sortBy('Asset', 'lastmodifier','<mm:write referid="parentchannel" />')" class="headerlink">
                                  <fmt:message key="asset.authorcolumn"/></a> </th>
                            <th><a href="javascript:sortBy('Asset', 'lastmodifieddate','<mm:write referid="parentchannel" />')" class="headerlink">
                                  <fmt:message key="asset.lastmodifiedcolumn"/></a></th>
