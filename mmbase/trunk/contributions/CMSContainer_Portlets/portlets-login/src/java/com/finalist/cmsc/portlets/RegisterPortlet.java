@@ -168,7 +168,7 @@ public class RegisterPortlet extends AbstractLoginPortlet {
       request.setAttribute("page", screenId);
       String template;
       
-      Map<String, String> errorMessages = (Map<String, String>) portletSession.getAttribute("errorMessages");
+      Map<String, String> errorMessages = (Map<String, String>) portletSession.getAttribute(ERRORMESSAGES);
       
       
       String email = request.getParameter("email");
