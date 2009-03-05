@@ -32,10 +32,10 @@
       </portlet-info>
    </portlet>
    <portlet>
-      <description>Register Porlet</description>
-      <portlet-name>RegisterPorlet</portlet-name>
-      <display-name>RegisterPorlet</display-name>
-      <portlet-class>com.finalist.cmsc.portlets.RegisterPorlet</portlet-class>
+      <description>Register Portlet</description>
+      <portlet-name>RegisterPortlet</portlet-name>
+      <display-name>RegisterPortlet</display-name>
+      <portlet-class>com.finalist.cmsc.portlets.RegisterPortlet</portlet-class>
         <init-param>
             <name>template.edit_defaults</name>
             <value>login/register.jsp</value>
