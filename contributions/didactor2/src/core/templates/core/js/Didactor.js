@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.22 2009-03-06 16:29:52 michiel Exp $
+ * @version $Id: Didactor.js,v 1.23 2009-03-06 16:56:35 michiel Exp $
  */
 
 
@@ -30,7 +30,6 @@ function Didactor() {
             }
         }
 
-
         $.timer(500, function(timer) {
 	        self.reportOnline();
             var interval = self.getSetting("Didactor-PageReporterInterval");
@@ -51,7 +50,7 @@ function Didactor() {
 	        $.query.REMOVE(param);
 	        if (self.content != null) break;
         }
-        self.block = self.content; // This is the content as defined by the URL. 'block' will no be changed.
+        self.block = self.content; // This is the content as defined by the URL. 'block' will not be changed.
         for (var i = 0; i < Didactor.ignoredParameters.length; i++) {
 	        var param = Didactor.ignoredParameters[i];
 	        $.query.REMOVE(param);
@@ -85,22 +84,34 @@ function Didactor() {
 
 
         $(document).bind("didactorContent", function(ev, data) {
-            var url = document.location.href;
             self.fillFragments();
+            if (self.fragments.length > 1) {
+                self.learnblock = "#" + self.fragments[0] + "_" + self.fragments[1] + "_block";
+                $(self.learnblock).addClass("active");
+            }
             $(".subnavigationPage  ul.navigation li").each(function() {
-                var href = $(this).find("a")[0].href;
+                var li = this;
+                var a = $(li).find("a")[0];
+                var href = a.href;
                 var i = href.indexOf('#');
-                var anchor = href.substring(i) + "_block";
+                var div = href.substring(i) + "_block";
                 if (self.learnblock == null) {
-                    self.learnblock = anchor;
-                    $(self.learnblock).addClass("active");
+                    // if no explict sub fragment on the URL, take the first one.
+                    self.learnblock = div;
                 }
+
+                if (self.learnblock == div) {
+                    // if this is the active sub fragment, make it active
+                    $(li).addClass("active");                  // both the navigation item
+                    $(self.learnblock).addClass("active");     // as the block itself
+                }
+
                 var li = this;
                 $(this).click(function() {
                     $(".subnavigationPage  ul.navigation li").removeClass("active");
                     $(this).addClass("active");
                     $(self.learnblock).removeClass("active");
-                    self.learnblock = anchor;
+                    self.learnblock = div;
                     $(self.learnblock).addClass("active");
                     document.location.href = href;
                     return false;
