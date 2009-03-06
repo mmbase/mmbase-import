@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.20 2009-03-06 11:00:07 michiel Exp $
+ * @version $Id: Didactor.js,v 1.21 2009-03-06 11:20:39 michiel Exp $
  */
 
 
@@ -316,8 +316,12 @@ Didactor.prototype.openContent = function(type, number) {
         number = type;
         type = null;
     }
-    var navigationElement = $("#a_" + number);
+    var navigationElement = $("#a_" + number)[0];
 
+    if (this.currentNavigationElement == null) {
+        // For some reason, e.g. on intial load and 'default 'navigation element is not yet known, try to determin it.
+        this.currentNavigationElement = $(navigationElement).siblings("a.active");
+    }
     if (this.currentNavigationElement != null) {
         $(this.currentNavigationElement).removeClass("active");
     }
