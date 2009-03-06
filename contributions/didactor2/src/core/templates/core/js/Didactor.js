@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.23 2009-03-06 16:56:35 michiel Exp $
+ * @version $Id: Didactor.js,v 1.24 2009-03-06 17:57:10 michiel Exp $
  */
 
 
@@ -84,10 +84,17 @@ function Didactor() {
 
 
         $(document).bind("didactorContent", function(ev, data) {
+            // Arrange active class of sublearnblock divs.
+            if (self.sublearnblock != null) {
+                $(self.sublearnblock).removeClass("active");
+                $(self.sublearnblock_navigation).removeClass("active");
+            }
+            self.sublearnblock            = null;
+            self.sublearnblock_navigation = null;
             self.fillFragments();
             if (self.fragments.length > 1) {
-                self.learnblock = "#" + self.fragments[0] + "_" + self.fragments[1] + "_block";
-                $(self.learnblock).addClass("active");
+                self.sublearnblock = "#" + self.fragments[0] + "_" + self.fragments[1] + "_block";
+                $(self.sublearnblock).addClass("active");
             }
             $(".subnavigationPage  ul.navigation li").each(function() {
                 var li = this;
@@ -95,24 +102,26 @@ function Didactor() {
                 var href = a.href;
                 var i = href.indexOf('#');
                 var div = href.substring(i) + "_block";
-                if (self.learnblock == null) {
+                if (self.sublearnblock == null) {
                     // if no explict sub fragment on the URL, take the first one.
-                    self.learnblock = div;
+                    self.sublearnblock = div;
+                    self.sublearnblock_navigation = li;
                 }
 
-                if (self.learnblock == div) {
+                if (self.sublearnblock == div) {
                     // if this is the active sub fragment, make it active
                     $(li).addClass("active");                  // both the navigation item
-                    $(self.learnblock).addClass("active");     // as the block itself
+                    $(self.sublearnblock).addClass("active");     // as the block itself
                 }
 
                 var li = this;
                 $(this).click(function() {
                     $(".subnavigationPage  ul.navigation li").removeClass("active");
                     $(this).addClass("active");
-                    $(self.learnblock).removeClass("active");
-                    self.learnblock = div;
-                    $(self.learnblock).addClass("active");
+                    $(self.sublearnblock).removeClass("active");
+                    self.sublearnblock = div;
+                    self.sublearnblock_navigation = li;
+                    $(self.sublearnblock).addClass("active");
                     document.location.href = href;
                     return false;
                 });
