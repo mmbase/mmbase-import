@@ -211,7 +211,8 @@ HTMLArea.prototype._insertInlineLink = function(link) {
          	outparam = {
                	f_href   : HTMLArea.is_ie ? editor.stripBaseURL(link.href) : link.getAttribute("href"),
                 f_destination : link.destination ,
-               	f_title   : link.title?link.title: sel_value,
+               	f_title   : link.name?link.name: sel_value,
+				f_tooltip : link.title,
                	f_target : link.target,
                	f_usetarget : editor.config.makeLinkShowsTarget
          	};
@@ -221,6 +222,7 @@ HTMLArea.prototype._insertInlineLink = function(link) {
                	f_href   : "Click \"New Url\" to enter URL",
                 f_destination : null,
                	f_title   : sel_value?sel_value:'',
+				f_tooltip : '',
                	f_target : '',
                	f_usetarget : editor.config.makeLinkShowsTarget
          	};
@@ -237,7 +239,7 @@ HTMLArea.prototype._insertInlineLink = function(link) {
                         var range = editor._createRange(sel);
                         if(editor._selectionEmpty(sel))
                         {
-                              editor.insertHTML("<a href='" + param.f_href + "' title='" + param.f_title + "'>" + param.f_title+ "</a>");
+                              editor.insertHTML("<a href='" + param.f_href + "' title='" + param.f_tooltip + "' name='"+param.f_title+"'>" + param.f_title+ "</a>");
                         }
                         else{
                               if ( !HTMLArea.is_ie )
@@ -269,11 +271,11 @@ HTMLArea.prototype._insertInlineLink = function(link) {
 			else
 			{
       			  a.href = href;
-                          a.innerHTML = param.f_title.trim();
+                  a.innerHTML = param.f_title.trim();
 			}
 		}
 		a.target = param.f_target.trim();
-		a.title = param.f_title.trim();
+		a.title = param.f_tooltip.trim();
 
             if (HTMLArea.is_ie) {
                   a.destination = param.f_destination.trim();
