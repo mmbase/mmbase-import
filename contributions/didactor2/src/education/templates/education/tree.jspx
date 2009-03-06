@@ -84,7 +84,7 @@
 
         <mm:nodeinfo type="type">
           <a href="#_${_node}"
-             onclick="if(openOnly('div${_node}','img${_node}')) { openContent( '${_}','${_node}' ); }"><mm:field name="name" /></a>
+             onclick="if(openOnly('div${_node}','img${_node}')) { didactor.openContent( '${_}','${_node}' ); }"><mm:field name="name" /></a>
 
         </mm:nodeinfo>
 
@@ -211,7 +211,7 @@
                             <mm:link page="." referids="$referids,type@learnobjectype,_node@learnobject">
                               <mm:param name="frame" />
                               <a href="#"
-                                 onclick="if (openOnly('div${_node}','img${_node}')) { openContent('${type}', '${_node}' ); } return false;"
+                                 onclick="if (openOnly('div${_node}','img${_node}')) { didactor.openContent('${type}', '${_node}' ); } return false;"
                                  style="padding-left: 0px"><mm:field name="name"/></a>
                             </mm:link>
                           </mm:nodeinfo>
