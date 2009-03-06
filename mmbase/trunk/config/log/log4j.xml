@@ -2,7 +2,7 @@
 <!--
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.12 2009-01-30 20:13:37 michiel Exp $
+   @version $Id: log4j.xml,v 1.13 2009-03-06 22:11:39 michiel Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd.
@@ -121,6 +121,10 @@
   <!--
   <logger name="org.mmbase.QUERIES" additivity="false">
     <level class="&mmlevel;" value ="debug" />
+    <appender-ref ref="sqllog" />
+  </logger>
+  <logger name="org.mmbase.STACK.QUERIES" additivity="false">
+    <level class="&mmlevel;" value ="info" />
     <appender-ref ref="sqllog" />
   </logger>
    -->
