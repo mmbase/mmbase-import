@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.21 2009-03-06 11:20:39 michiel Exp $
+ * @version $Id: Didactor.js,v 1.22 2009-03-06 16:29:52 michiel Exp $
  */
 
 
@@ -24,11 +24,7 @@ function Didactor() {
 
         self.fragments      = [];
         {
-            var url = document.location.href;
-            var fragmentIndex = url.indexOf('#');
-            if (fragmentIndex > 0) {
-                self.fragments = url.substring(fragmentIndex + 1).split('_');
-            }
+            self.fillFragments();
             if (self.fragments.length > 0) {
                 self.openContent(self.fragments[0]);
             }
@@ -90,26 +86,22 @@ function Didactor() {
 
         $(document).bind("didactorContent", function(ev, data) {
             var url = document.location.href;
-            var fragmentIndex = url.indexOf('#');
-            var fragment = url.substring(fragmentIndex);
-            var i = fragment.indexOf('learnblock_');
-            if (i > -1) {
-                learnblock = fragment;
-            }
+            self.fillFragments();
             $(".subnavigationPage  ul.navigation li").each(function() {
                 var href = $(this).find("a")[0].href;
                 var i = href.indexOf('#');
                 var anchor = href.substring(i) + "_block";
                 if (self.learnblock == null) {
                     self.learnblock = anchor;
+                    $(self.learnblock).addClass("active");
                 }
-
+                var li = this;
                 $(this).click(function() {
                     $(".subnavigationPage  ul.navigation li").removeClass("active");
                     $(this).addClass("active");
-                    $(self.learnblock).hide();
+                    $(self.learnblock).removeClass("active");
                     self.learnblock = anchor;
-                    $(self.learnblock).show();
+                    $(self.learnblock).addClass("active");
                     document.location.href = href;
                     return false;
                 });
@@ -155,6 +147,14 @@ Didactor.prototype.setContent = function(c) {
 	    this.reportOnline();
     }
     this.content = c;
+}
+
+Didactor.prototype.fillFragments = function() {
+    var url = document.location.href;
+    var fragmentIndex = url.indexOf('#');
+    if (fragmentIndex > 0) {
+        this.fragments = url.substring(fragmentIndex + 1).split('_');
+    }
 }
 
 Didactor.prototype.setUpQuestionEvents = function(div) {
@@ -290,14 +290,14 @@ Didactor.prototype.requestContent = function(href, number) {
                     }
                 }
            });
-   } else {
-       $(contentEl).empty();
-       for (var i = 0; i < content.length; i++) {
-           contentEl.appendChild(content[i]);
-       }
-       document.href_frame = href;
-       $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
-   }
+    } else {
+        $(contentEl).empty();
+        for (var i = 0; i < content.length; i++) {
+            contentEl.appendChild(content[i]);
+        }
+        document.href_frame = href;
+        $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
+    }
     //scrollToTop();
 };
 
