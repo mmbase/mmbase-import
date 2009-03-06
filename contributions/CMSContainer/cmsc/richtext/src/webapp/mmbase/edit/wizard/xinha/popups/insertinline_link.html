@@ -43,6 +43,7 @@ function Init() {
             if ( typeof param["f_href"] != "undefined" ) {
                   document.getElementById("f_href").value = param["f_href"];
                   document.getElementById("f_title").value = param["f_title"];
+                  document.getElementById("f_tooltip").value = param["f_tooltip"];
                   document.getElementById("f_destination").value = param["f_destination"];
                   comboSelectValue(target_select, param["f_target"]);
 				  
@@ -92,7 +93,7 @@ function onOK() {
             tmpLinkName.value = elhref.value;
       }
       // pass data back to the calling window
-      var fields = ["f_href", "f_title", "f_target", "f_destination" ];
+      var fields = ["f_href", "f_title", "f_tooltip", "f_target", "f_destination" ];
       var param = new Object();
       for (var i in fields) {
             var id = fields[i];
