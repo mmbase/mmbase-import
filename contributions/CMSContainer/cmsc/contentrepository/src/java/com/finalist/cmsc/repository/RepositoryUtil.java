@@ -7,13 +7,18 @@
  */
 package com.finalist.cmsc.repository;
 
+import java.text.CollationKey;
+import java.text.Collator;
+import java.text.RuleBasedCollator;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -36,6 +41,7 @@ import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.FieldValueDateConstraint;
+import org.mmbase.storage.search.SearchQuery;
 import org.mmbase.storage.search.StepField;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueDateConstraint;
@@ -76,7 +82,6 @@ public final class RepositoryUtil {
    public static final String CONTENTREL = "contentrel";
    public static final String DELETIONREL = "deletionrel";
    public static final String CREATIONREL = "creationrel";
-   public static final String TYPEDEF = "typedef";
 
    public static final String ALIAS_ROOT = "repository.root";
    public static final String ALIAS_TRASH = "repository.trash";
@@ -811,24 +816,41 @@ public final class RepositoryUtil {
 
    public static NodeList getLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction,
          boolean useLifecycle, int offset, int maxNumber, int year, int month, int day) {
-      NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, null, offset,
+      NodeList elements = getLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, null, offset,
             maxNumber, year, month, day);
-      return query.getNodeManager().getList(query);
+      return elements;
    }
 
    public static NodeList getLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction,
          boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
-      NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive,
-            offset, maxNumber, year, month, day);
-      return query.getNodeManager().getList(query);
+      NodeList elements = getLinkedElements(channel, contenttypes, orderby, direction, useLifecycle, archive, offset,
+            maxNumber, year, month, day, null);
+      return elements;
    }
 
    public static NodeList getLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction,
          boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day,
          HashMap<String, Object> extraParameters) {
-      NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive,
+      NodeQuery query;
+      NodeList elements;
+      // CMSC-1313 Sorting on TYPE should not sort of the otype value but the title of the type
+      if(orderby != null && "otype".equals(orderby)){
+         query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive,
+               SearchQuery.DEFAULT_OFFSET, SearchQuery.DEFAULT_MAX_NUMBER, year, month, day, extraParameters);
+         elements = query.getNodeManager().getList(query);
+         boolean reverse = false;
+         if ("DOWN".equalsIgnoreCase(direction)) {
+            reverse = true;
+         }
+         Collections.sort(elements, new NodeGUITypeComparator(query.getCloud().getLocale(), reverse));
+         int toIndex = elements.size()<(offset+maxNumber)? elements.size(): (offset+maxNumber);
+         elements = elements.subNodeList(offset, toIndex);
+      }else {
+         query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive,
             offset, maxNumber, year, month, day, extraParameters);
-      return query.getNodeManager().getList(query);
+         elements = query.getNodeManager().getList(query);
+      }
+      return elements;
    }
 
    public static NodeQuery createLinkedContentQuery(Node channel, List<String> contenttypes, String orderby,
@@ -851,15 +873,8 @@ public final class RepositoryUtil {
          if (orderby == null) {
             orderby = CONTENTREL + ".pos";
          }
-         if("otype".equals(orderby)){
-            query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager, CONTENTREL);
-            query.addStep(query.getCloud().getNodeManager("typedef"));
-            Queries.addConstraints(query, destinationManager+".otype="+TYPEDEF+".number");
-            Queries.addSortOrders(query, TYPEDEF+".name", direction);
-         }else {
-            query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager, CONTENTREL, null, null, orderby,
-                  direction);
-         }
+         query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager, CONTENTREL, null, null, orderby,
+               direction);
       } else {
          if (orderby == null) {
             orderby = CONTENTREL + ".pos";
@@ -869,18 +884,9 @@ public final class RepositoryUtil {
          if (contentchannels.isEmpty()) {
             throw new IllegalArgumentException("contentchannels or collectionchannel is empty; should be at least one.");
          }
-         if("otype".equals(orderby)){
-            query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager, CONTENTREL);
-            SearchUtil.addFeatures(query, contentchannels.getNode(0), destinationManager, CONTENTREL, null, null, null,
-                  null);
-            query.addStep(query.getCloud().getNodeManager("typedef"));
-            Queries.addConstraints(query, destinationManager+".otype="+TYPEDEF+".number");
-            Queries.addSortOrders(query, TYPEDEF+".name", direction);
-         }else {
-            query = SearchUtil.createRelatedNodeListQuery(contentchannels, destinationManager, CONTENTREL);
-            SearchUtil.addFeatures(query, contentchannels.getNode(0), destinationManager, CONTENTREL, null, null, orderby,
-                  direction);
-         }
+         query = SearchUtil.createRelatedNodeListQuery(contentchannels, destinationManager, CONTENTREL);
+         SearchUtil.addFeatures(query, contentchannels.getNode(0), destinationManager, CONTENTREL, null, null, orderby,
+               direction);
       }
 
       if (contenttypes != null && contenttypes.size() > 1) {
@@ -932,24 +938,41 @@ public final class RepositoryUtil {
 
    public static NodeList getCreatedAssets(Node channel, List<String> assettypes, String orderby, String direction,
          boolean useLifecycle, int offset, int maxNumber, int year, int month, int day) {
-      NodeQuery query = createCreatedAssetQuery(channel, assettypes, orderby, direction, useLifecycle, null, offset,
+      NodeList elements = getCreatedAssets(channel, assettypes, orderby, direction, useLifecycle, null, offset,
             maxNumber, year, month, day);
-      return query.getNodeManager().getList(query);
+      return elements;
    }
 
    public static NodeList getCreatedAssets(Node channel, List<String> assettypes, String orderby, String direction,
          boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
-      NodeQuery query = createCreatedAssetQuery(channel, assettypes, orderby, direction, useLifecycle, archive, offset,
-            maxNumber, year, month, day);
-      return query.getNodeManager().getList(query);
+      NodeList elements = getCreatedAssets(channel, assettypes, orderby, direction, useLifecycle, archive, offset,
+            maxNumber, year, month, day, null);
+      return elements;
    }
 
    public static NodeList getCreatedAssets(Node channel, List<String> assettypes, String orderby, String direction,
          boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day,
          HashMap<String, Object> extraParameters) {
-      NodeQuery query = createCreatedAssetQuery(channel, assettypes, orderby, direction, useLifecycle, archive, offset,
-            maxNumber, year, month, day, extraParameters);
-      return query.getNodeManager().getList(query);
+      NodeQuery query;
+      NodeList elements;
+      // CMSC-1313 Sorting on TYPE should not sort of the otype value but the title of the type
+      if(orderby != null && "otype".equals(orderby)){
+         query = createCreatedAssetQuery(channel, assettypes, orderby, direction, useLifecycle, archive,
+               SearchQuery.DEFAULT_OFFSET, SearchQuery.DEFAULT_MAX_NUMBER, year, month, day, extraParameters);
+         elements = query.getNodeManager().getList(query);
+         boolean reverse = false;
+         if ("DOWN".equalsIgnoreCase(direction)) {
+            reverse = true;
+         }
+         Collections.sort(elements, new NodeGUITypeComparator(query.getCloud().getLocale(), reverse));
+         int toIndex = elements.size()<(offset+maxNumber)? elements.size(): (offset+maxNumber);
+         elements = elements.subNodeList(offset, toIndex);
+      }else {
+         query = createCreatedAssetQuery(channel, assettypes, orderby, direction, useLifecycle, archive,
+            offset, maxNumber, year, month, day, extraParameters);
+         elements = query.getNodeManager().getList(query);
+      }
+      return elements;
    }
 
    public static NodeQuery createCreatedAssetQuery(Node channel, List<String> assettypes, String orderby,
@@ -969,35 +992,16 @@ public final class RepositoryUtil {
 
       NodeQuery query;
       if (isContentChannel(channel)) {
-         if("otype".equals(orderby)){
-            query = SearchUtil.createRelatedNodeListQuery(channel, sourceManager, CREATIONREL, null, null, null,
-               null, SOURCE);
-            query.addStep(query.getCloud().getNodeManager("typedef"));
-            Queries.addConstraints(query, sourceManager+".otype="+TYPEDEF+".number");
-            Queries.addSortOrders(query, TYPEDEF+".name", direction);
-         }else {
-            query = SearchUtil.createRelatedNodeListQuery(channel, sourceManager, CREATIONREL, null, null, orderby,
-                  direction, SOURCE);
-         }
+         query = SearchUtil.createRelatedNodeListQuery(channel, sourceManager, CREATIONREL, null, null, orderby,
+               direction, SOURCE);
       } else {
          NodeList contentchannels = SearchUtil.findRelatedNodeList(channel, CONTENTCHANNEL, COLLECTIONREL);
          if (contentchannels.isEmpty()) {
             throw new IllegalArgumentException("contentchannels or collectionchannel is empty; should be at least one.");
          }
-         if("otype".equals(orderby)){
-            query = SearchUtil.createRelatedNodeListQuery(channel, sourceManager, CREATIONREL, null, null, null,
-                  null, SOURCE);
-            SearchUtil.addFeatures(query, contentchannels.getNode(0), sourceManager, CREATIONREL, null, null, null,
-                  null);
-            query.addStep(query.getCloud().getNodeManager("typedef"));
-            Queries.addConstraints(query, sourceManager+".otype="+TYPEDEF+".number");
-            Queries.addSortOrders(query, TYPEDEF+".name", direction);
-         }else {
-            query = SearchUtil.createRelatedNodeListQuery(channel, sourceManager, CREATIONREL, null, null, null,
-                  null, SOURCE);
-            SearchUtil.addFeatures(query, contentchannels.getNode(0), sourceManager, CREATIONREL, null, null, orderby,
-                  direction);
-         }
+         query = SearchUtil.createRelatedNodeListQuery(contentchannels, sourceManager, CREATIONREL);
+         SearchUtil.addFeatures(query, contentchannels.getNode(0), sourceManager, CREATIONREL, null, null, orderby,
+               direction);
       }
 
       if (assettypes != null && assettypes.size() > 1) {
@@ -1673,4 +1677,5 @@ public final class RepositoryUtil {
          addAssetToChannel(destChild,newChannel);
       }
    }
+   
 }
