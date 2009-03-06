@@ -19,10 +19,10 @@
 		</mm:listnodes>
 	</select>
 	<select name="status">
-		<option value="0">draft</option>
-		<option value="1">finished</option>
-		<option value="2">approved</option>
-		<option value="3">published</option>
+		<option value="draft">draft</option>
+		<option value="finished">finished</option>
+		<option value="approved">approved</option>
+		<option value="published">published</option>
 	</select>
 	<input type="submit" value="remove"/>
 </form>
