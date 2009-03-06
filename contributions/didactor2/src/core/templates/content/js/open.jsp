@@ -25,11 +25,9 @@ var may_open_future =
 
 
 var currentnumber = -1;
-var currentel = -1;
-var contenttype   = new Array();
-var contentnumber = new Array();
-var openDivs      = new Object();
-var usedFrames    = new Object();
+var contenttype   = [];
+var contentnumber = [];
+var openDivs      = {};
 var enabledPopups = false;
 
 
@@ -50,7 +48,16 @@ function resize() {
     }
 }
 
+/**
+ * @deprecated
+ */
+function openContent(type, number, el) {
+    didactor.openContent(type, number, el);
+}
 
+/**
+ * Don't know where this is for.
+ */
 function addContent( type, number ) {
     contenttype[contenttype.length] = type;
     contentnumber[contentnumber.length] = number;
@@ -59,6 +66,10 @@ function addContent( type, number ) {
     }
 }
 
+
+/**
+ * Navigates to the next content. Should be moved to Didactor.js
+ */
 function nextContent() {
     for(var count = 0; count <= contentnumber.length; count++) {
         if ( contentnumber[count] == currentnumber ) {
@@ -72,10 +83,13 @@ function nextContent() {
             }
         }
     }
-    openContent(opentype, opennumber);
+    didactor.openContent(opentype, opennumber);
     openOnly('div' + opennumber, 'img' + opennumber);
 }
 
+/**
+ * Navigates to the previous content. Should be moved to Didactor.js
+ */
 function previousContent() {
     for(var count = 0; count <= contentnumber.length; count++) {
         if ( contentnumber[count] == currentnumber ) {
@@ -89,25 +103,35 @@ function previousContent() {
             }
         }
     }
-    openContent(opentype, opennumber);
+    didactor.openContent(opentype, opennumber);
     openOnly('div' + opennumber, 'img' + opennumber);
 }
 
+
+/**
+ * Don't know why this is usefull
+ */
 
 function invalidateCurrentFrame() {
     usedFrames[document.href_frame] = null;
 }
 
 
+/**
+ * @deprecated
+ */
 function loadIconOn() {
-    var ajax = document.getElementById("ajax_loader");
-    if (ajax) ajax.style.display = "inline";
+    didactor.loadIconOn();
 }
+/**
+ * @deprecated
+ */
 function loadIconOff() {
-    var ajax = document.getElementById("ajax_loader");
-    if (ajax) ajax.style.display = "none";
+    didactor.loadIconOff();
 }
-
+/**
+ *  No idea when and why you'd want to use this
+ */
 function disablePopups() {
     if (enabledPopups) {
         enabledPopups = false;
@@ -119,6 +143,9 @@ function disablePopups() {
 
 }
 
+/**
+ *  No idea when and why you'd want to use this
+ */
 function enablePopups() {
     if (! enabledPopups) {
         enabledPopups = true;
@@ -129,7 +156,9 @@ function enablePopups() {
     }
 
 }
-
+/**
+ * check what?
+ */
 function check(className) {
     if (/\btests\b/.test(className)) {
         disablePopups();
@@ -138,78 +167,7 @@ function check(className) {
     }
 }
 
-function requestContent(href, number) {
-    var contentEl = document.getElementById('contentFrame');
-    $(document).trigger("didactorContentBeforeUnload",  { unloaded: contentEl });
-    var content = usedFrames[href];
-    if (content == null) {
-        loadIconOn();
-        $.ajax({async: true, url: href, type: "GET", dataType: "xml", data: null,
-                    complete: function(res, status){
-                    loadIconOff();
-                    if (status == "success") {
-                        $(contentEl).empty();
-                        $(document).trigger("didactorContentBeforeLoaded",  { response: res, number: number });
-                        $(contentEl).append(res.responseText);
-                        // console.log("updating " + contentEl + "with" + xmlhttp.responseXML);
-                        contentEl.validator = new MMBaseValidator();
-                        //contentEl.validator.logEnabled = true;
-                        //contentEl.validator.traceEnabled = true;
-                        contentEl.validator.validateHook = function(valid) {
-                            var buttons = $(contentEl).find("input.formbutton");
-                            for (i = 0; i < buttons.length; i++) {
-                                var disabled = (contentEl.validator.invalidElements > 0);
-                                buttons[i].disabled = disabled;
-                                // just because IE does not recognize input[disabled]
-                                // IE SUCKS
-                                buttons[i].className = "formbutton " + (disabled ? "disabled" : "enabled");
-                            }
-                        };
-                        contentEl.validator.validatePage(false, contentEl);
-                        contentEl.validator.addValidation(contentEl);
-                        check(res.responseXML.documentElement.getAttribute('class'));
-                        document.href_frame = href;
-                        var array = new Array();
-                        // in case it is more than one element (e.g. comments or so), store all childnodes.
 
-                        try {
-                            for (var i = 0; i < contentEl.childNodes.length; i++) {
-                                array.push(contentEl.childNodes[i]);
-                            }
-                        } catch (ex) {
-                            alert(ex);
-                        }
-                        usedFrames[href] = array;
-                        if ($.browser.msie) {
-                            if ($.browser.version.substr(0, 3) <= 6.0) {
-                                // alert("IE 6 is a horrible browser which cannot do this correctly at once
-                                setTimeout(function() {
-                                        $(contentEl).empty();
-                                        for (var i=0; i < array.length; i++) {
-                                            contentEl.appendChild(array[i]);
-                                        }
-                                        $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
-                                        $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
-                                    }, 500);
-                            }
-                        } else {
-                            $(document).trigger("didactorContentLoaded",  { loaded: contentEl, number: number });
-                            $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
-                        }
-
-                    }
-                }
-           });
-   } else {
-       $(contentEl).empty();
-       for (var i=0; i < content.length; i++) {
-           contentEl.appendChild(content[i]);
-       }
-       document.href_frame = href;
-       $(document).trigger("didactorContent",  { loaded: contentEl, number: number });
-   }
-    scrollToTop();
-}
 
 function postContent(href, form, async) {
     loadIconOn();
@@ -245,40 +203,9 @@ function postContent(href, form, async) {
 
 
     //console.log("posting " + content);
-    scrollToTop();
+    //scrollToTop();
 }
 
-function openContent(type, number, el) {
-    if (currentel != null) {
-        $(currentel).removeClass("active");
-    }
-    if (/^[+-]?\d+$/.test(type)) {
-        el = number;
-        number = type;
-        type = null;
-    }
-
-    if (el != null) {
-        $(el).addClass("active");
-    }
-    if (document.getElementById('content-' + currentnumber)) {
-        $("#content-" + currentnumber).removeClass("selectedContent");
-    }
-    if ( number > 0 ) {
-        currentnumber = number;
-    }
-    currentel = el;
-
-
-
-    var href = addParameter('<mm:url page="/content/" />', 'object=' + number);
-    if (type != null && type != '') {
-        href = addParameter(href, 'type=' + type);
-    }
-    requestContent(href, number);
-    $("#content-" + currentnumber).addClass("selectedContent");
-
-}
 
 function openClose(div, img) {
     var realdiv = document.getElementById(div);
@@ -452,6 +379,9 @@ function scrollToTop() {
         }
     }
 }
+
+
+
 
 </mm:cloud>
 </mm:content>
