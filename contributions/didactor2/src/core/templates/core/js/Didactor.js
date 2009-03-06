@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.19 2009-03-05 09:50:59 michiel Exp $
+ * @version $Id: Didactor.js,v 1.20 2009-03-06 11:00:07 michiel Exp $
  */
 
 
@@ -78,7 +78,7 @@ function Didactor() {
         });
 
         $(document).bind("didactorContentBeforeUnload",  function(ev, el) {
-        self.saveQuestions();
+            self.saveQuestions();
         });
         $(document).bind("beforeunload", function() {
             self.saveQuestions();
@@ -100,16 +100,16 @@ function Didactor() {
                 var href = $(this).find("a")[0].href;
                 var i = href.indexOf('#');
                 var anchor = href.substring(i) + "_block";
-                if (learnblock == null) {
-                    learnblock = anchor;
+                if (self.learnblock == null) {
+                    self.learnblock = anchor;
                 }
 
                 $(this).click(function() {
                     $(".subnavigationPage  ul.navigation li").removeClass("active");
                     $(this).addClass("active");
-                    $(learnblock).hide();
-                    learnblock = anchor;
-                    $(learnblock).show();
+                    $(self.learnblock).hide();
+                    self.learnblock = anchor;
+                    $(self.learnblock).show();
                     document.location.href = href;
                     return false;
                 });
@@ -232,13 +232,13 @@ Didactor.prototype.saveQuestions = function() {
 Didactor.prototype.requestContent = function(href, number) {
     var contentEl = document.getElementById('contentFrame');
     $(document).trigger("didactorContentBeforeUnload",  { unloaded: contentEl });
-    var self = this;
     var content = this.usedFrames[href];
+    var self = this;
     if (content == null) {
-        loadIconOn();
+        self.loadIconOn();
         $.ajax({async: true, url: href, type: "GET", dataType: "xml", data: null,
-                    complete: function(res, status){
-                    loadIconOff();
+                complete: function(res, status){
+                    self.loadIconOff();
                     if (status == "success") {
                         $(contentEl).empty();
                         $(document).trigger("didactorContentBeforeLoaded",  { response: res, number: number });
@@ -308,17 +308,16 @@ Didactor.prototype.requestContent = function(href, number) {
  * Opens content with a certain number
  * @param type (optional, is supposed to be absent if first argument numeric). The type of the content.
  * @param number MMBase object number as an integer.
- * @param navigationElement (option) The element which was used to open this content. It'll receive a class
- * 'active'
  */
-Didactor.prototype.openContent = function(type, number, navigationElement) {
+Didactor.prototype.openContent = function(type, number) {
     // The 'type' argument is optional.
     // So, of the first argument is numeric. Interpret that has the 'number".
     if (/^[+-]?\d+$/.test(type)) {
-        navigationElement = number;
         number = type;
         type = null;
     }
+    var navigationElement = $("#a_" + number);
+
     if (this.currentNavigationElement != null) {
         $(this.currentNavigationElement).removeClass("active");
     }
@@ -336,8 +335,21 @@ Didactor.prototype.openContent = function(type, number, navigationElement) {
     if (this.currentNavigationElement != null) {
         $(this.currentNavigationElement).addClass("active");
     }
+    return false;
 
 };
+
+
+
+Didactor.prototype.loadIconOn = function()  {
+    var ajax = document.getElementById("ajax_loader");
+    if (ajax) ajax.style.display = "inline";
+}
+Didactor.prototype.loadIconOff = function() {
+    var ajax = document.getElementById("ajax_loader");
+    if (ajax) ajax.style.display = "none";
+}
+
 
 
 var didactor = new Didactor();
