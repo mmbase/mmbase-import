@@ -21,7 +21,7 @@
             <mm:onshrink><![CDATA[</ul>]]></mm:onshrink>
           </mm:grow>
           <![CDATA[<li>]]>
-          <a href="${'#'}${parent}_learnblock_${_node}"><mm:field name="name" /></a>
+          <a href="${'#'}${parent}_${_node}"><mm:field name="name" /></a>
           <mm:onshrink><![CDATA[</li>]]></mm:onshrink>
           <mm:shrink />
 
