@@ -9,28 +9,6 @@
   -->
   <div class="navigationbar">
 
-    <!-- Open the page marked as 'lastpage'
-         (todo: does this work?)
-    -->
-    <mm:listnodescontainer type="classrel">
-      <mm:constraint field="snumber" value="${user}" />
-      <mm:composite operator="or">
-        <mm:constraint field="dnumber" value="${class}" />
-        <mm:constraint field="dnumber" value="${education}" />
-      </mm:composite>
-      <script type="text/javascript">
-        $(window).ready(function() {
-        <mm:listnodes >
-        <c:if test="${ ! empty _node.lastpage}">
-          <!-- is lastpage field ever filled ? -->
-            openContent("learnblocks", ${_node.lastpage});
-        </c:if>
-        </mm:listnodes>
-        });
-      </script>
-    </mm:listnodescontainer>
-
-
     <div class="pathbar">
       <mm:node number="$education">
         <mm:field name="name"/>
@@ -53,46 +31,4 @@
 
   </div>
 
-  <!--
-       I don't recall where this frame-stuff is used for
-  -->
-  <mm:import externid="frame" />
-  <mm:present referid="frame">
-    <script type="text/javascript">
-      $(document).ready(function() {
-      closeAll();
-      openContent('${learnobjectype}','${education}');
-      openOnly('div${learnobject}',   'img${education}');
-      });
-    </script>
-  </mm:present>
-
-    <mm:notpresent referid="frame">
-      <script type="text/javascript">
-        $(window).ready(function() {
-        closeAll();
-
-        <!-- we open need menu item in case it is a reference from another education -->
-        <mm:present referid="the_only_node_to_show">
-          openContent('${learnobjectype}','${the_only_node_to_show}');
-          openOnly('div${the_only_node_to_show}','img${the_only_node_to_show}');
-        </mm:present>
-
-
-        <mm:notpresent referid="the_only_node_to_show">
-          <mm:present referid="learnobject">
-            openContent('${learnobjecttype}','${learnobject}');
-            openOnly('div${learnobject}','img${learnobject}');
-          </mm:present>
-
-          <mm:notpresent referid="learnobject">
-            if (contentnumber.length >= 1) {
-            openContent(contenttype[0],contentnumber[0]);
-            openOnly('div'+contentnumber[0],'img'+contentnumber[0]);
-            }
-          </mm:notpresent>
-        </mm:notpresent>
-        });
-      </script>
-    </mm:notpresent>
 </jsp:root>
