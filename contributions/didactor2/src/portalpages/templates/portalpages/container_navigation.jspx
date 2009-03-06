@@ -54,7 +54,7 @@
                 <mm:link referids="_node@object,n?">
                   <a href="${_}"
                      id="a_${_node}"
-                     class="${object eq _node.number ? 'active' : ''}${status.first ? ' first' : ''}${status.last ? ' last' :''}"
+                     class="${object eq _node.number ? 'active' : ''}${status.first ? ' first active' : ''}${status.last ? ' last' :''}"
                      onclick="didactor.openContent('${_node}'); document.location.href = '${bookmark}'; return false;"
                      >
                     <mm:field name="title"/>
@@ -84,7 +84,7 @@
                 <mm:link referids="_node@object,n?">
                   <a href="${_}"
                      id="a_${_node}"
-                     class="${firstItem ne '' ? ' first' : ''}"
+                     class="${firstItem ne '' ? ' first active' : ''}"
                      onclick="didactor.openContent('${_node}'); document.location.href = '${bookmark}'; return false;"
                      >
                     <mm:field name="title"/>
