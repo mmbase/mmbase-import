@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.implementation.database;
 
 import java.sql.*;
-import java.util.StringTokenizer;
+import java.util.*;
 
 
 import javax.sql.DataSource;
@@ -42,7 +42,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.57 2009-02-17 23:09:51 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.58 2009-03-06 22:10:05 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -106,24 +106,24 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     /**
      * @since MMBase-1.9.1
      */
-    static long MS = 1000000; // 1 ms in ns
-    private long debugDuration   = 50 * MS;
-    private long serviceDuration = 100 * MS;
-    private long infoDuration    = 500 * MS;
-    private long warnDuration    = 2000 * MS;
-    private long errorDuration  = 5000 * MS;
-    private long fatalDuration  = 1000000 * MS;
-    private String durationFormat = "#.#";
+    static final long MS = 1000000; // 1 ms in ns
+    private long debugDuration   = 50      * MS;
+    private long serviceDuration = 100     * MS;
+    private long infoDuration    = 500     * MS;
+    private long warnDuration    = 2000    * MS;
+    private long errorDuration   = 5000    * MS;
+    private long fatalDuration   = 1000000 * MS;
+    private String durationFormat = "0.00";
 
     final UtilReader.PropertiesMap<String> utilProperties =  new UtilReader("querylogging.xml",
                                                                             new Runnable() {public void run() {readDurations(); }}).getProperties();
     private void readDurations() {
         debugDuration     = new Float(Float.parseFloat(utilProperties.getProperty("debug",   "" + debugDuration)) * MS).longValue();
-        serviceDuration   = new Float(Float.parseFloat(utilProperties.getProperty("service",   "" + debugDuration)) * MS).longValue();
-        infoDuration      = new Float(Float.parseFloat(utilProperties.getProperty("info",   "" + debugDuration)) * MS).longValue();
-        warnDuration      = new Float(Float.parseFloat(utilProperties.getProperty("warn",   "" + debugDuration)) * MS).longValue();
-        errorDuration     = new Float(Float.parseFloat(utilProperties.getProperty("error",   "" + debugDuration)) * MS).longValue();
-        fatalDuration     = new Float(Float.parseFloat(utilProperties.getProperty("fatal",   "" + debugDuration)) * MS).longValue();
+        serviceDuration   = new Float(Float.parseFloat(utilProperties.getProperty("service", "" + serviceDuration)) * MS).longValue();
+        infoDuration      = new Float(Float.parseFloat(utilProperties.getProperty("info",    "" + infoDuration)) * MS).longValue();
+        warnDuration      = new Float(Float.parseFloat(utilProperties.getProperty("warn",    "" + warnDuration)) * MS).longValue();
+        errorDuration     = new Float(Float.parseFloat(utilProperties.getProperty("error",   "" + errorDuration)) * MS).longValue();
+        fatalDuration     = new Float(Float.parseFloat(utilProperties.getProperty("fatal",   "" + fatalDuration)) * MS).longValue();
 
         durationFormat     = utilProperties.getProperty("durationFormat", durationFormat);
     }
@@ -394,9 +394,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
                 basePath = mmbase.getDataDir();
             } else {
                 MessageFormat mf = new MessageFormat(path);
-
-                java.io.File baseFile = new java.io.File(mf.format(new String[] {mmbase.getDataDir().toString()}));
-                if (! baseFile.isAbsolute()) {
+                basePath = new java.io.File(mf.format(new String[] {mmbase.getDataDir().toString()}));
+                if (! basePath.isAbsolute()) {
                     ServletContext sc = MMBaseContext.getServletContext();
                     String absolute = sc != null ? sc.getRealPath("/") + File.separator : null;
                     if (absolute == null) absolute = System.getProperty("user.dir") + File.separator;
@@ -499,7 +498,25 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         return Logging.getLoggerInstance("org.mmbase.QUERIES." + sql.split(" ", 2)[0].toUpperCase());
     }
 
+    private Logger getStackTraceLogger(String sql) {
+        return Logging.getLoggerInstance("org.mmbase.STACK.QUERIES." + sql.split(" ", 2)[0].toUpperCase());
+    }
+
     private long count = 0;
+
+    protected Throwable getTraceException() {
+        Throwable ex = new Throwable();
+        List<StackTraceElement> result = new ArrayList<StackTraceElement>();
+        for (StackTraceElement el : ex.getStackTrace()) {
+            if (el.getClassName().startsWith("org.mmbase.") &&
+                (! el.getClassName().startsWith("org.mmbase.storage.implementation.database"))) {
+                result.add(el);
+            }
+        }
+
+        ex.setStackTrace(result.toArray(new StackTraceElement[result.size()]));
+        return ex;
+    }
 
     /**
      * @since MMBase-1.9.1
@@ -507,26 +524,40 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     protected void logQuery(String query, long duration) {
         count++;
         Logger qlog = getLogger(query);
+        Logger slog = getStackTraceLogger(query);
         if (duration < debugDuration) {
             if (qlog.isTraceEnabled()) {
                 qlog.trace(getLogSqlMessage(query, count, duration));
+            }
+            if (slog.isTraceEnabled()) {
+                slog.trace("trace for #" + count, getTraceException());
             }
         } else if (duration < serviceDuration) {
             if (qlog.isDebugEnabled()) {
                 qlog.debug(getLogSqlMessage(query, count, duration));
             }
+            if (slog.isDebugEnabled()) {
+                slog.debug("trace for #" + count, getTraceException());
+            }
         } else if (duration < infoDuration) {
             if (qlog.isServiceEnabled()) {
                 qlog.service(getLogSqlMessage(query, count, duration));
             }
+            if (slog.isServiceEnabled()) {
+                slog.service("trace for #" + count, getTraceException());
+            }
         } else if (duration < warnDuration) {
             qlog.info(getLogSqlMessage(query, count, duration));
+            slog.info("trace for #" + count, getTraceException());
         } else if (duration < errorDuration) {
             qlog.warn(getLogSqlMessage(query, count, duration));
+            slog.warn("trace for #" + count, getTraceException());
         } else if (duration < fatalDuration) {
             qlog.error(getLogSqlMessage(query, count, duration));
+            slog.error("trace for #" + count, getTraceException());
         } else {
             qlog.fatal(getLogSqlMessage(query, count, duration));
+            slog.fatal("trace for #" + count, getTraceException());
         }
     }
 
