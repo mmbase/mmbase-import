@@ -8,8 +8,9 @@
     >
   <jsp:output omit-xml-declaration="yes" />
   <mm:import externid="parent" />
-  <div class="learnblock" id="${parent}${empty parent ? '' : '_'}learnblock_${_node}">
-    
+  <div class="learnblock"
+       id="${parent}${empty parent ? '' : '_'}_${_node}_block">
+    <a class="learnblock_anchor" name="${parent}${empty parent ? '' : '_'}_${_node}"><jsp:text> </jsp:text></a>
 
     <mm:nodeinfo type="type">
       &lt;!-- type ${_} --&gt;
@@ -41,7 +42,7 @@
                                     type="learnobjects" searchdirs="destination">
             <mm:sortorder field="posrel.pos" />
             <mm:relatednodes varStatus="status">
-              <div class="item${status.index}">
+              <div class="item${status.index} ${status.first ? 'first' : ''} ${status.last ? 'last' : ''}">
                 <mm:treeinclude
                     page="/education/learnblocks/node.jspx"
                     objectlist="${includePath}"
