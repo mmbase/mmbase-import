@@ -1,6 +1,5 @@
 package nl.natuurmonumenten.activiteiten;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,34 +30,40 @@ public class ActiviteitenHelper {
         logger.debug("lDateSearchFrom: " + lDateSearchFrom);
         logger.debug("lDateSearchTill: " + lDateSearchTill);
         
+        
+        
         // geen idee, maar ze rekken de tijd nog wat op
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        long lDateSearchFromDefault = (cal.getTime().getTime()/1000);
-        cal.add(Calendar.YEAR,1); // cache events for one year from now
-        long lDateSearchTillDefault = (cal.getTime().getTime()/1000);
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(new Date());
+//        long lDateSearchFromDefault = (cal.getTime().getTime()/1000);
+//        cal.add(Calendar.YEAR,1); // cache events for one year from now
+//        long lDateSearchTillDefault = (cal.getTime().getTime()/1000);
 
+        //If the startdate is after the enddate, there can not exist any event 
+        if (lDateSearchFrom >= lDateSearchTill) {
+           return new TreeMap();
+        }
         
         StringBuffer defaultParentEvents = new StringBuffer();
-        if (lDateSearchTill <= lDateSearchTillDefault) {
-            HashSet defaultEvents = nl.leocms.evenementen.Evenement.getEvents(cloud,lDateSearchFromDefault,lDateSearchTillDefault);
-            logger.debug("defaultEvents: " + defaultEvents);
-            boolean first = true;
-            for (Iterator iter = defaultEvents.iterator(); iter.hasNext();) {
-                String eventnumber = (String) iter.next();
-                if (first) {
-                    first = false;
-                } else {
-                    defaultParentEvents.append(",");
-                }
-                defaultParentEvents.append(eventnumber);
+        
+        HashSet parentEventSet = nl.leocms.evenementen.Evenement.getEvents(cloud,lDateSearchFrom,lDateSearchTill);
+        logger.debug("defaultEvents: " + parentEventSet);
+        boolean first = true;
+        for (Iterator iter = parentEventSet.iterator(); iter.hasNext();) {
+            String eventnumber = (String) iter.next();
+            if (first) {
+                first = false;
+            } else {
+                defaultParentEvents.append(",");
             }
+            defaultParentEvents.append(eventnumber);
         }
+        
         logger.debug("defaultParentEvents: " + defaultParentEvents);
 
         StringBuffer eventTypeConstraint = new StringBuffer();
         if (eventTypeIds != null) {
-            boolean first = true;
+            first = true;
             for (int i = 0; i < eventTypeIds.length; i++) {
                 // sommige soap clients geven een array met 1 leeg element ipv een lege array of null
                 if (isEmpty(eventTypeIds[i])) {
@@ -124,7 +129,7 @@ public class ActiviteitenHelper {
         }
         logger.debug("parentEvents: " + parentEvents);
         StringBuffer sb = new StringBuffer();
-        boolean first = true;
+        first = true;
         for (Iterator iter = parentEvents.iterator(); iter.hasNext();) {
             if (first) {
                 first = false;
@@ -143,6 +148,7 @@ public class ActiviteitenHelper {
         logger.debug("childConstraints na: <" + childConstraints + ">");
 
         Map events = new TreeMap();
+        
         if (!parentEvents.isEmpty()) {
             NodeList childList = cloud.getList(parentEventsString, "evenement1,partrel,evenement", "evenement.number,evenement.begindatum", childConstraints, null, null, "destination", true);
             for (NodeIterator iter = childList.nodeIterator(); iter.hasNext();) {
