@@ -8,7 +8,7 @@
     >
   <jsp:output omit-xml-declaration="yes" />
   <mm:import externid="parent" />
-  <div class="learnblock active"
+  <div class="learnblock ${empty parent ? 'active' : ''}"
        id="${parent}${empty parent ? '' : '_'}${_node}_block">
     <a class="learnblock_anchor" name="${parent}${empty parent ? '' : '_'}${_node}"><jsp:text> </jsp:text></a>
 
