@@ -9,8 +9,12 @@
     <version>1.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>mmbase-crontab</artifactId>
-  <name>MMBase Crontab</name>
-  <packaging>war</packaging>
+  <artifactId>mmbase-cloudsecurity</artifactId>
+  <name>MMBase Simple Cloud Security</name>
+  <packaging>jar</packaging>
+
+  <description>
+    The MMBase cloud security module allows you to administer your users in the database.
+  </description>
 
 </project>
