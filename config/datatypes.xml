@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.78 2008-12-29 16:40:49 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.79 2009-03-08 12:55:50 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -347,6 +347,7 @@
       <description xml:lang="en">
         ISO 639 language 2-letter codes (sorted alphabeticly on the name of the language in the current locale)
       </description>
+      <maxLength value="12" />
       <pattern value="\A..\z" />
       <enumeration>
         <!-- ValueWrapper ensures that the enumeration is presented sorted on _value_ -->
