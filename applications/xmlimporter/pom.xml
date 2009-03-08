@@ -9,8 +9,8 @@
     <version>1.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>mmbase-crontab</artifactId>
-  <name>MMBase Crontab</name>
+  <artifactId>mmbase-xmlimporter</artifactId>
+  <name>MMBase XML Importer</name>
   <packaging>war</packaging>
 
 </project>

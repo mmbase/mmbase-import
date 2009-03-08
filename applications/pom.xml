@@ -1,47 +1,120 @@
-<?xml version="1.0"?>
-<project>
-  <!--
-      Experimental mvn2 build
-  -->
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
-    <version>1.9</version>
+    <version>1.9-SNAPSHOT</version>
+    <relativePath>../maven-base/pom.xml</relativePath>
   </parent>
 
-  <artifactId>applications</artifactId>
+  <artifactId>mmbase-application-parent</artifactId>
   <packaging>pom</packaging>
-  <name>MMBase Applications</name>
-  <version>${mmbase.version}</version>
+  <name>MMBase Application Parent</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${project.version}</version>
+<!--      <classifier>classes</classifier> -->
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>${basedir}/src</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.dtd</include>
+          <include>**/*.xsd</include>
+          <include>**/*.properties</include>
+          <include>INDEX</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${basedir}/target/generated-resources/xml/xslt/</directory>
+        <includes>
+          <include>**/*.tld</include>
+        </includes>
+      </resource>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${basedir}/META-INF</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </resource>
+      <resource>
+        <targetPath>org/mmbase/config</targetPath>
+        <directory>${basedir}/config</directory>
+      </resource>
+      <resource>
+        <directory>${basedir}/target/generated-resources</directory>
+        <includes>
+          <include>org/**</include>
+        </includes>
+      </resource>
+    </resources>
+  
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.mmbase.maven</groupId>
+        <artifactId>maven-mmbase-plugin</artifactId>
+        <version>1.9-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>create-index-files</id>
+            <goals>
+              <goal>create-index-files</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>copy-web-resources</id>
+            <goals>
+              <goal>install-resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <modules>
     <module>resources</module>
     <module>taglib</module>
-    <module>crontab</module>
-    <module>email</module>
     <module>cloudcontext</module>
-    <module>richtext</module>
+    <module>crontab</module>
     <module>dove</module>
     <module>editwizard</module>
-    <module>mynews</module>
-    <module>jumpers</module>
-    <module>rmmci</module>
-    <module>clustering</module>
+    <module>email</module>
+    <module>media</module>
+    <module>notifications</module>
     <module>searchrelate</module>
-    <module>commandserver</module>
+    <module>richtext</module>
+    <module>rmmci</module>
+    
+    <module>jumpers</module>
+    <module>xmlimporter</module>
     <module>largeobjects</module>
     <module>oscache-cache</module>
+    <module>clustering</module>
+    <module>commandserver</module>
+    <module>cloudsecurity</module>
+    
+    <module>mynews</module>
+
   </modules>
-
-  <build>
-    <defaultGoal>install</defaultGoal>
-  </build>
-
-  <repositories>
-    <repository>
-      <id>mmbase</id>
-      <url>http://www.mmbase.org/maven2</url>
-    </repository>
-  </repositories>
 </project>
