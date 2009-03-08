@@ -90,13 +90,12 @@ public class InstallResources extends AbstractMojo {
         if (packaging.equals("war") || packaging.equals("jar")) {
             try {
                 File configDir = new File(project.getBasedir(), "config");
-
                 File dest      = new File(project.getBuild().getDirectory(),
                                           "generated-resources" + File.separator + "org" + File.separator + "mmbase" + File.separator + "config");
                 if (configDir.isDirectory()) {
-                    createIndex(new File(configDir, "modules"), new File(dest, "modules"));
+                    createIndex(new File(configDir, "modules"),    new File(dest, "modules"));
                     createIndex(new File(configDir, "components"), new File(dest, "components"));
-                    createIndex(new File(configDir, "builders"), new File(dest, "builders"));
+                    createIndex(new File(configDir, "builders"),   new File(dest, "builders"));
                 }
             } catch(IOException ioe) {
                 throw new MojoExecutionException(ioe.getMessage(), ioe);
@@ -127,6 +126,13 @@ public class InstallResources extends AbstractMojo {
                     File target = new File(webapp, blocksTarget);
                     getLog().info("Copying " + blocks + " to " + target);
                     int[] result = copyDirectory(blocks, target, true);
+                    getLog().info("Copied " + result[0]+ " files. " + result[1] + " files were not modified");
+                }
+                File mmbase = new File(project.getBasedir(), "mmbase");
+                if (mmbase.isDirectory()) {
+                    File target = new File(webapp, "mmbase");
+                    getLog().info("Copying " + blocks + " to " + target);
+                    int[] result = copyDirectory(mmbase, target, true);
                     getLog().info("Copied " + result[0]+ " files. " + result[1] + " files were not modified");
                 }
             } catch (IOException ioe) {
