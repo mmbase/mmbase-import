@@ -375,7 +375,7 @@
       </mm:first>
 
 
-      <mm:field name="${contenttypes}.number" id="number">
+      <mm:field name="number" id="number">
          <mm:node number="${number}">
 
             <mm:relatednodes role="creationrel" type="contentchannel">
