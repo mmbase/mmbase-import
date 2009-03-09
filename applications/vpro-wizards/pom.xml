@@ -14,7 +14,7 @@
 	<packaging>war</packaging>
 
 	<properties>
-		
+
 	</properties>
 
 	<description>
@@ -91,41 +91,64 @@
 			<version>4.01</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
-		<plugin>
-			<artifactId>maven-antrun-plugin</artifactId>
-			<executions>
-				<execution>
-					<!--
-						weird to have to assign this action to phase 'test'. but
-						prepare-package (the more logical phase) is not available in older
-						versions of maven, and the war:war task is bound to the lifecycle
-						first, so you can not get before that
-					-->
-					<phase>generate-sources</phase>
-					<configuration>
-						<tasks name="merge the vpro-wizards with this project">
-							<property name="webapp.dir" value="${pom.artifactId}-${pom.version}" />
-							<property name="remote.download.url" value="http://surfnet.dl.sourceforge.net/sourceforge/fckeditor/FCKeditor_2.6.4.zip"/>
-							<property name="local.file" value="fckeditor.zip"/>
-							<property name="deploy.sources" value="fckeditor"/>
-							<property name="deploy.destination" value="mmbase/vpro-wizards/system/javascript/fckeditor"/>
-							
-							<ant antfile="${basedir}/antsupport-fck.xml" inheritRefs="true">
-								<target name="doit" />
-							</ant>
-							
-							<copy file="${basedir}/ext/fckconfig.js" todir="${basedir}/target/${webapp.dir}/mmbase/vpro-wizards/system/javascript/fckeditor"/>
-						</tasks>
-					</configuration>
-					<goals>
-						<goal>run</goal>
-					</goals>
-				</execution>
-			</executions>
-		</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<!--
+							weird to have to assign this action to phase 'test'. but
+							prepare-package (the more logical phase) is not available in
+							older versions of maven, and the war:war task is bound to the
+							lifecycle first, so you can not get before that
+						-->
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks name="merge the vpro-wizards with this project">
+								<property name="webapp.dir" value="${pom.artifactId}-${pom.version}" />
+								<property name="remote.download.url"
+									value="http://surfnet.dl.sourceforge.net/sourceforge/fckeditor/FCKeditor_2.6.4.zip" />
+								<property name="local.file" value="fckeditor.zip" />
+								<property name="deploy.sources" value="fckeditor" />
+								<property name="deploy.destination"
+									value="mmbase/vpro-wizards/system/javascript/fckeditor" />
+
+								<ant antfile="${basedir}/antsupport-fck.xml" inheritRefs="true">
+									<target name="doit" />
+								</ant>
+
+								<copy file="${basedir}/ext/fckconfig.js"
+									todir="${basedir}/target/${webapp.dir}/mmbase/vpro-wizards/system/javascript/fckeditor" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>examples-assembly.xml
+								</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
