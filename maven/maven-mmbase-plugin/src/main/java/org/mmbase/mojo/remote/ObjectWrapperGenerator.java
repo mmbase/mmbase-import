@@ -19,7 +19,7 @@ import java.io.File;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: ObjectWrapperGenerator.java,v 1.1 2009-03-08 18:12:44 nklasens Exp $
+ * @version $Id: ObjectWrapperGenerator.java,v 1.2 2009-03-09 08:58:30 michiel Exp $
  */
 public class ObjectWrapperGenerator extends AbstractGenerator {
 
@@ -62,7 +62,7 @@ public class ObjectWrapperGenerator extends AbstractGenerator {
     protected List<Class> getSuperClasses(Class<?> c) {
         List<Class> retval = superClassLists.get(c);
         if (retval == null) {
-            List<Class> interfaces = Arrays.asList(c.getInterfaces());
+            List<Class<?>> interfaces = Arrays.asList(c.getInterfaces());
             retval = new ArrayList<Class>(interfaces);
             for(Iterator<Class> i = retval.iterator(); i.hasNext();) {
                 if (!needsRemote(i.next())) {
