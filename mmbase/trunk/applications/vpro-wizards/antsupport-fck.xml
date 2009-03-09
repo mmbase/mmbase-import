@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="vpro-wizards-integration"  basedir=".">
+
+    <!--
+        Deze task moet worden aangeroepen met de volgende properties:
+        remote.download.url        wat te downloaden?
+        webapp.dir                 De directory waarin de webapp wordt gebouwd, en waar de vpro-wizards dus worden ingevoegd.
+        version             De versie die moet worden gedownload. bijv: 1.9.SNAPSHOT
+        remote.dir			URL naar de directory waaruit het archief moet worden gedownload
+    -->
+   
+
+    <target name="init">
+        <property name="local.download.dir" value="${basedir}/target/download"/>
+        <property name="expand.dir" value="${local.download.dir}/expand"/>
+        <mkdir dir="${local.download.dir}"/>
+        <mkdir dir="${expand.dir}"/>
+    </target>
+
+    <target name="test">
+        <echo>local file: ${local.file}</echo>
+        <echo>webapp.dir: ${webapp.dir}</echo>
+        <echo>expand.dir: ${expand.dir}</echo>
+        <echo>basedir: ${basedir}</echo>
+        <echo>war.webapp.dir: ${war.webapp.dir}</echo>
+        <echo>expand.dir: ${expand.dir}</echo>
+    </target>
+	
+	<target name="doit" depends="init,download,expand,deploy">
+	
+	</target>
+
+    <target name="download" depends="check.download" unless="download.done">
+        <echo>Downloading ...</echo>
+        <get src="${remote.download.url}" dest="${local.download.dir}/${local.file}"/>
+    </target>
+
+    <target name="check.download">
+        <available file="${local.download.dir}/${local.file}" property="download.done" value="true"/>
+        <echo>Check download flag: ${download.done}</echo>
+    </target>
+
+    <target name="expand">
+        <unzip src="${local.download.dir}/${local.file}" dest="${expand.dir}"/>
+    </target>
+	
+	<target name="deploy">
+		<copy todir="${basedir}/target/${webapp.dir}/${deploy.destination}">
+            <fileset dir="${expand.dir}/${deploy.sources}"/>
+        </copy>
+	</target>
+
+</project>
