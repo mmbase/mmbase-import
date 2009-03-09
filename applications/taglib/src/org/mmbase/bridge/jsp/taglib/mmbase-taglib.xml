@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.35 2008-12-09 16:10:18 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.36 2009-03-09 18:09:38 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -7272,6 +7272,29 @@ The 0 is just counter, which starts at 0 on every page.
 </mm:listnodescontainer>]]>
     </example>
   </tag>
+
+  <tag>
+    <name>addconstraint</name>
+    <type>mmbase.list</type>
+    <extends>querycontainerreferrer</extends>
+    <see tag="listnodescontainer" />
+    <see tag="listcontainer" />
+    <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryAddConstraintTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+      Applies a constraint to the query of the surrounding nodelist container.
+    </info>
+    <see tag="querycontainer" />
+    <see tag="ageconstraint" />
+    <see tag="composite" />
+    <since>MMBase-1.9.1</since>
+    <attribute>
+      <name>constraint</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+
 
   <tag>
     <name>composite</name>
