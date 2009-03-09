@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>mmbase-searchrelate</artifactId>
-  <name>MMBase Search &amp; Relate</name>
+  <name>MMBase Search and Relate</name>
   <packaging>war</packaging>
 
   <build>
