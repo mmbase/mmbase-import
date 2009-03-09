@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9.1
- * @version $Id: QueryAddConstraintTag.java,v 1.1 2009-03-09 18:05:50 michiel Exp $
+ * @version $Id: QueryAddConstraintTag.java,v 1.1.2.1 2009-03-09 18:09:38 michiel Exp $
  */
 public class QueryAddConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -38,7 +38,7 @@ public class QueryAddConstraintTag extends CloudReferrerTag implements QueryCont
 
     private Constraint addConstraint(Query query) throws JspTagException {
         Constraint newConstraint = constraint;
-        QueryCompositeConstraintTag cons = findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
+        QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
         if (cons != null) {
             cons.addChildConstraint(constraint);
         } else {
@@ -48,7 +48,8 @@ public class QueryAddConstraintTag extends CloudReferrerTag implements QueryCont
     }
 
     public int doStartTag() throws JspTagException {
-        Query query = getQuery(container);
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
+        Query query = c.getQuery();
         addConstraint(query);
         findWriter(false);
         return SKIP_BODY;
