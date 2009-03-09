@@ -1,6 +1,9 @@
 package com.finalist.cmsc.repository.forms;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,18 +12,29 @@ import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.LabelValueBean;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.FieldIterator;
+import org.mmbase.bridge.FieldList;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.SortOrder;
 import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
+import com.finalist.cmsc.repository.NodeGUITypeComparator;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.resources.forms.QueryStringComposer;
 import com.finalist.cmsc.services.publish.Publish;
@@ -131,7 +145,10 @@ public class ContentSearchAction extends PagerAction {
       if (StringUtils.isNotEmpty(order)) {
          queryStringComposer.addParameter(ORDER, searchForm.getOrder());
          queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
-         query.addSortOrder(query.getStepField(nodeManager.getField(order)), searchForm.getDirection());
+         // CMSC-1313 Sorting on TYPE should not sort of the otype value but the title of the type
+         if(!"otype".equals(order)){
+            query.addSortOrder(query.getStepField(nodeManager.getField(order)), searchForm.getDirection());
+         }
       }
 
       query.setDistinct(true);
@@ -217,21 +234,40 @@ public class ContentSearchAction extends PagerAction {
       // Set the maximum result size.
       String resultsPerPage = PropertiesUtil.getProperty(REPOSITORY_SEARCH_RESULTS_PER_PAGE);
       if (resultsPerPage == null || !resultsPerPage.matches("\\d+")) {
-         query.setMaxNumber(25);
-      } else {
+         resultsPerPage = "25";
+      }
+      // CMSC-1313 Sorting on TYPE should not sort of the otype value but the title of the type
+      if (StringUtils.isEmpty(order)||!"otype".equals(order)) {
          query.setMaxNumber(Integer.parseInt(resultsPerPage));
       }
 
       // Set the offset (used for paging).
+      String offset = "0";
       if (searchForm.getOffset() != null && searchForm.getOffset().matches("\\d+")) {
-         query.setOffset(query.getMaxNumber() * Integer.parseInt(searchForm.getOffset()));
+         offset = searchForm.getOffset();
+         // CMSC-1313 Sorting on TYPE should not sort of the otype value but the title of the type
+         if (StringUtils.isEmpty(order)||!"otype".equals(order)) {
+            query.setOffset(query.getMaxNumber() * Integer.parseInt(offset));
+         }
          queryStringComposer.addParameter(OFFSET, searchForm.getOffset());
       }
 
       log.debug("QUERY: " + query);
 
       int resultCount = Queries.count(query);
-      NodeList results = cloud.getList(query);
+      NodeList results = query.getNodeManager().getList(query);
+      // CMSC-1313 Sorting on TYPE should not sort of the otype value but the title of the type
+      if (StringUtils.isNotEmpty(order)&&"otype".equals(order)) {
+         boolean reverse = false;
+         if (searchForm.getDirection()==SortOrder.ORDER_DESCENDING) {
+            reverse = true;
+         }
+         Collections.sort(results, new NodeGUITypeComparator(cloud.getLocale(), reverse));
+         int fromIndex = (Integer.parseInt(resultsPerPage)) * Integer.parseInt(offset);
+         int toIndex = resultCount < (fromIndex + Integer.parseInt(resultsPerPage)) ? resultCount
+               : (fromIndex + Integer.parseInt(resultsPerPage));
+         results = results.subNodeList(fromIndex, toIndex);
+      }
 
       // Set everything on the request.
       searchForm.setResultCount(resultCount);

@@ -372,7 +372,7 @@
             <tbody class="hover">
       </mm:first>
 
-   <mm:field name="${assettypes}.number" id="number" write="false">
+   <mm:field name="number" id="number" write="false">
       <mm:node number="${number}">
          <mm:relatednodes role="creationrel" type="contentchannel">
             <c:set var="creationRelNumber"><mm:field name="number" id="creationnumber"/></c:set>
@@ -466,7 +466,7 @@
          <%@include file="searchpages.jsp" %>
       </mm:first>
 
-   <mm:field name="${assettypes}.number" id="number" write="false">
+   <mm:field name="number" id="number" write="false">
       <mm:node number="${number}">
 
          <mm:relatednodes role="creationrel" type="contentchannel">
