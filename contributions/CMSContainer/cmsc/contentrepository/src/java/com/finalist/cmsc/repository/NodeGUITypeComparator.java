@@ -18,21 +18,28 @@ public class NodeGUITypeComparator implements Comparator<Node> {
 
    private Collator collator;
    private boolean reverse;
+   
+   public NodeGUITypeComparator(){
+      this(false);
+   }
 
    public NodeGUITypeComparator(boolean reverse) {
-      this.collator = (RuleBasedCollator)Collator.getInstance();
-      this.reverse = reverse;
+      this(Locale.getDefault(), reverse);
+   }
+   
+   public NodeGUITypeComparator(Locale locale) {
+      this(locale, false);
    }
    
    public NodeGUITypeComparator(Locale locale, boolean reverse){
-      collator = (RuleBasedCollator)Collator.getInstance(locale);
+      this.collator = (RuleBasedCollator)Collator.getInstance(locale);
       this.reverse = reverse;
    }
    
    public int compare(Node node1, Node node2) {
-       CollationKey key1 = collator.getCollationKey(node1.getNodeManager().getGUIName());
-       CollationKey key2 = collator.getCollationKey(node2.getNodeManager().getGUIName());
-       return reverse? -key1.compareTo(key2): key1.compareTo(key2);
+      CollationKey key1 = collator.getCollationKey(node1.getNodeManager().getGUIName());
+      CollationKey key2 = collator.getCollationKey(node2.getNodeManager().getGUIName());
+      return reverse? -key1.compareTo(key2): key1.compareTo(key2);
    }
    
 }
