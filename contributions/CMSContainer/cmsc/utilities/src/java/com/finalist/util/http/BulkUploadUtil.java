@@ -94,7 +94,7 @@ public class BulkUploadUtil {
             log.debug("contentType: " + binary.getContentType());
          }
 
-         if (isZipFile(binary)) {
+         if (isZipFile(binary.getContentType(), binary.getOriginalFileName())) {
             log.debug("unzipping content");
             nodes.addAll(createNodesInZip(manager, new ZipInputStream(binary.getInputStream())));
          } else {
@@ -116,25 +116,23 @@ public class BulkUploadUtil {
       return nodes;
    }
 
-   private static boolean isZipFile(FormFile file) {
+   public static boolean isZipFile(String contentType, String fileName) {
 
       for (String element : ZIP_MIME_TYPES) {
-         if (element.equalsIgnoreCase(file.getContentType())) {
+         if (element.equalsIgnoreCase(contentType)) {
             return true;
          }
       }
-      return false;
-   }
-
-   private static boolean isZipFile(BinaryData binary) {
-
-      for (String element : ZIP_MIME_TYPES) {
-         if (element.equalsIgnoreCase(binary.getContentType())) {
-            return true;
-         }
+      
+      //Sometimes browsers don't return a nice mime-type (for example application/octet-stream)
+      //So checking on extension might be a good idea too.
+      if (getExtension(fileName).equalsIgnoreCase(".zip")) {
+         return true;
       }
+      
       return false;
    }
+
 
    private static Node createNode(NodeManager manager, String fileName, InputStream in, long length) {
       if (length > manager.getField("handle").getMaxLength()) {
@@ -168,7 +166,7 @@ public class BulkUploadUtil {
    private static List<Integer> getNodeList(Integer parentChannel, NodeManager manager, FormFile file, Cloud cloud) {
       List<Integer> nodes = null;
       try {
-         if (isZipFile(file)) {
+         if (isZipFile(file.getContentType(), file.getFileName())) {
 
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             InputStream in = file.getInputStream();
@@ -219,6 +217,9 @@ public class BulkUploadUtil {
                   log.debug("Skipping " + entry.getName() + " because it is not an image");
                }
                continue;
+            }
+            if (log.isDebugEnabled()) {
+               log.debug("reading file (from ZIP): '" + entry.getName() + "'");
             }
             count++;
             // create temp file for zip entry, create a node from it and
@@ -316,14 +317,21 @@ public class BulkUploadUtil {
       }
    }
 
-   private static boolean isImage(String fileName) {
+   public static boolean isImage(String fileName) {
+      if (StringUtils.isBlank(fileName)) {
+         return false;
+      }
       if (supportedImages == null) {
          initSupportedImages();
       }
-      return fileName != null && supportedImages.contains(getExtension(fileName).toLowerCase());
+      
+      return supportedImages.contains(getExtension(fileName).toLowerCase());
    }
 
-   private static String getExtension(String fileName) {
+   public static String getExtension(String fileName) {
+      if (StringUtils.isBlank(fileName)) {
+         return null;
+      }
       int index = fileName.lastIndexOf('.');
       if (index < 0) {
          return null;
@@ -358,5 +366,10 @@ public class BulkUploadUtil {
       System.out.println(isImage(getExtension("test.bummer")));
       System.out.println(isImage(""));
       System.out.println(isImage(" "));
+
+      //Also test the isZipFile method
+      System.out.println(isZipFile("content","helloworld.zip")); //Should be true
+      System.out.println(isZipFile("application/x-zip-compressed","helloworld.zipper")); //Should be true
+      System.out.println(isZipFile("content","helloworld.zipper")); //Should be false
    }
 }
