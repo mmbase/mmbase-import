@@ -26,6 +26,7 @@ import java.util.zip.ZipInputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Node;
@@ -86,7 +87,7 @@ public class BulkUploadUtil {
             log.debug("contentType: " + binary.getContentType());
          }
 
-         if (isZipFile(binary)) {
+         if (isZipFile(binary.getContentType(), binary.getOriginalFileName())) {
             log.debug("unzipping content");
             nodes.addAll(createNodesInZip(manager, new ZipInputStream(binary.getInputStream())));
          }
@@ -101,13 +102,20 @@ public class BulkUploadUtil {
    }
 
 
-   private static boolean isZipFile(BinaryData binary) {
+   public static boolean isZipFile(String contentType, String fileName) {
 
       for (String element : ZIP_MIME_TYPES) {
-         if (element.equalsIgnoreCase(binary.getContentType())) {
+         if (element.equalsIgnoreCase(contentType)) {
             return true;
          }
       }
+      
+      //Sometimes browsers don't return a nice mime-type (for example application/octet-stream)
+      //So checking on extension might be a good idea too.
+      if (getExtension(fileName).equalsIgnoreCase(".zip")) {
+         return true;
+      }
+      
       return false;
    }
 
@@ -142,6 +150,9 @@ public class BulkUploadUtil {
                   log.debug("Skipping " + entry.getName() + " because it is not an image");
                }
                continue;
+            }
+            if (log.isDebugEnabled()) {
+               log.debug("reading file (from ZIP): '" + entry.getName() + "'");
             }
             count++;
             // create temp file for zip entry, create a node from it and
@@ -181,15 +192,22 @@ public class BulkUploadUtil {
    }
 
 
-   private static boolean isImage(String fileName) {
+   public static boolean isImage(String fileName) {
+      if (StringUtils.isBlank(fileName)) {
+         return false;
+      }
       if (supportedImages == null) {
          initSupportedImages();
       }
-      return fileName != null && supportedImages.contains(getExtension(fileName).toLowerCase());
+      
+      return supportedImages.contains(getExtension(fileName).toLowerCase());
    }
 
 
-   private static String getExtension(String fileName) {
+   public static String getExtension(String fileName) {
+      if (StringUtils.isBlank(fileName)) {
+         return null;
+      }
       int index = fileName.lastIndexOf('.');
       if (index < 0) {
          return null;
@@ -226,5 +244,11 @@ public class BulkUploadUtil {
       System.out.println(isImage(getExtension("test.bummer")));
       System.out.println(isImage(""));
       System.out.println(isImage(" "));
-   }
+
+      //Also test the isZipFile method
+      //Also test the isZipFile method
+      System.out.println(isZipFile("content","helloworld.zip")); //Should be true
+      System.out.println(isZipFile("application/x-zip-compressed","helloworld.zipper")); //Should be true
+      System.out.println(isZipFile("content","helloworld.zipper")); //Should be false
+  }
 }
