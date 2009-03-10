@@ -27,7 +27,6 @@ import java.util.zip.ZipInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.mmapps.commons.util.UploadUtil;
-import net.sf.mmapps.commons.util.UploadUtil.BinaryData;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;

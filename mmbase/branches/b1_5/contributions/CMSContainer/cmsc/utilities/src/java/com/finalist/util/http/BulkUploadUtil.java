@@ -33,7 +33,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
 
 import com.finalist.cmsc.util.UploadUtil;
-import com.finalist.cmsc.util.UploadUtil.BinaryData;
 
 public class BulkUploadUtil {
 

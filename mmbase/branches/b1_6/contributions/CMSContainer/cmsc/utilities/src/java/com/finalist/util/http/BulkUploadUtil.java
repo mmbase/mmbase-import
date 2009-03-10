@@ -43,7 +43,6 @@ import org.mmbase.util.transformers.ChecksumFactory;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.mmbase.RelationUtil;
 import com.finalist.cmsc.util.UploadUtil;
-import com.finalist.cmsc.util.UploadUtil.BinaryData;
 
 public class BulkUploadUtil {
 
