@@ -132,7 +132,8 @@
         </di:has>
       </c:if>
 
-
+      <di:include debug="html"
+                  page="/education/wizards/menu_items.jspx" />
 
       <di:has editcontext="opleidingen">
         <mm:link page="." referids="e?">
