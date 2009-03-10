@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.26 2008-12-08 17:02:46 michiel Exp $
+ * @version $Id: User.java,v 1.27 2009-03-10 17:11:20 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends BasicUser implements WeakNodeEventListener  {
@@ -47,7 +47,9 @@ public class User extends BasicUser implements WeakNodeEventListener  {
         if (n == null) throw new IllegalArgumentException();
         node = n;
         key = l;
-        EventManager.getInstance().addEventListener(this);
+        if (! (n instanceof VirtualNode)) {
+            EventManager.getInstance().addEventListener(this);
+        }
     }
 
     // javadoc inherited
