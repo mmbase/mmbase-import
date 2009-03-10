@@ -23,10 +23,11 @@
                <br/>
                <b><fmt:message key="rights.groupson">
                	    <fmt:param><mm:nodeinfo type="guitype"/></fmt:param>
-                  </fmt:message> 
-               <c:if test="${mode == 'page'}"><mm:field name="title"/></c:if>
-               <c:if test="${mode != 'page'}"><mm:field name="name"/></c:if>
-               </b>: 
+                      <fmt:param>
+			               <c:if test="${mode == 'page'}"><mm:field name="title"/></c:if>
+			               <c:if test="${mode != 'page'}"><mm:field name="name"/></c:if>
+                      </fmt:param>
+               </fmt:message></b>
                <br/>
             </p>
             <div style="padding: 5px">
@@ -55,16 +56,17 @@
                   </mm:listnodes>
                </table>
             </div>
-				<p>
-					<br/>
-					<b><fmt:message key="rights.userson" >
-        		       		<fmt:param><mm:nodeinfo type="guitype"/></fmt:param>
-						</fmt:message>  
-					<c:if test="${mode == 'page'}"><mm:field name="title"/></c:if>
-					<c:if test="${mode != 'page'}"><mm:field name="name"/></c:if>
-					</b>:	
-					<br/>
-				</p>
+            <p>
+               <br/>
+               <b><fmt:message key="rights.userson" >
+                        <fmt:param><mm:nodeinfo type="guitype"/></fmt:param>
+                        <fmt:param>
+                           <c:if test="${mode == 'page'}"><mm:field name="title"/></c:if>
+                           <c:if test="${mode != 'page'}"><mm:field name="name"/></c:if>
+                        </fmt:param>
+               </fmt:message></b>
+               <br/>
+            </p>
 				<div style="padding: 5px">
 					<table class="compact">
 						<mm:listnodes type="mmbaseusers" jspvar="user" orderby="username">
