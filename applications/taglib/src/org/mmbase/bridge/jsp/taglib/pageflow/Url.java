@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.56 2009-01-26 13:33:43 michiel Exp $;
+ * @version $Id: Url.java,v 1.57 2009-03-10 17:51:30 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -104,11 +104,11 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     /**
      * @since MMBase-1.9.1
      */
-    Url(Url u, boolean encode) {
+    Url(Url u, boolean escapeAmps, boolean encode) {
         this.tag = u.tag;
         this.abs = u.abs;
         this.encodeUrl = encode;
-        this.escapeAmps = u.escapeAmps;
+        this.escapeAmps = escapeAmps;
         this.page = u.page;
         this.params = u.params;
         this.frameworkParams = u.frameworkParams;
@@ -224,6 +224,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     }
 
     final static Pattern ABSOLUTE_URLS = Pattern.compile("(?i)[a-z]+\\:.*");
+
     /**
      *
      */
@@ -275,6 +276,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     }
 
 
+    /**
+     * Returns the actual URL, considering all options of the url-tag, like 'absolute' and 'encode'.
+     */
     public String get() {
         if (string != null) return string;
         try {
@@ -316,8 +320,13 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         return string;
     }
 
-    public boolean encodeUrl() {
+    public boolean getEncodeUrl() {
         return encodeUrl;
+    }
+
+
+    public boolean getEscapeAmps() {
+        return escapeAmps;
     }
 
     protected void invalidate() {
