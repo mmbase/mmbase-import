@@ -27,7 +27,7 @@ import org.xml.sax.InputSource;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.19.2.3 2009-02-04 13:53:43 rico Exp $
+ * @version $Id: Format.java,v 1.19.2.4 2009-03-10 14:51:36 ernst Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -37,7 +37,8 @@ public final class Format {   // final class!!
     public final static String RESOURCE = "org.mmbase.applications.media.resources.formats";
     public static final String PUBLIC_ID_MIMEMAPPING_1_0 = "-//MMBase//DTD mimemapping config 1.0//EN";
     public static final String DTD_MIMEMAPPING_1_0       = "mimemapping_1_0.dtd";
-    public static final String CONFIG_FILE= "media" + File.separator + "mimemapping.xml";
+    //don't use File.separator here to replace the forward slash. It creates an error on windows
+    public static final String CONFIG_FILE= "media/mimemapping.xml";
 
     // in case you want i18ed format strings.
 
