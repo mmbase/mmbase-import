@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.34 2009-03-02 17:29:15 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.35 2009-03-10 08:58:19 michiel Exp $
  */
 public class Authenticate extends CloudContextAuthentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -313,7 +313,7 @@ public class Authenticate extends CloudContextAuthentication {
                 LocalAdmin ou = (LocalAdmin) o;
                 return
                     super.equals(o) &&
-                    userName.equals(ou.userName) &&
+                    (userName == null ? ou.userName == null : userName.equals(ou.userName)) &&
                     l == ou.l;
             } else {
                 return false;
