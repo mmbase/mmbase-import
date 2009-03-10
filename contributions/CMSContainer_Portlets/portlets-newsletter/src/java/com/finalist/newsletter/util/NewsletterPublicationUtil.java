@@ -144,6 +144,9 @@ public abstract class NewsletterPublicationUtil {
       Node node = relatedNewsletters.get(0);
       new POConvertUtils<Newsletter>().convert(newsletter, node);
       newsletter.setReplyAddress(node.getStringValue("replyto_mail"));
+      newsletter.setReplyName(node.getStringValue("replyto_name"));
+      newsletter.setFromAddress(node.getStringValue("from_mail"));
+      newsletter.setFromName(node.getStringValue("from_name"));
       pub.setNewsletter(newsletter);
 
       return pub;
