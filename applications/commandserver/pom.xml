@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>mmbase-commandserver</artifactId>
-  <name>MMBase Image Command Server</name>
+  <name>MMBase Command Server</name>
   <packaging>jar</packaging>
 
   <description>
@@ -19,6 +19,8 @@
     the executed command allocates just as much memory as the entire java JVM has allocated.
 
     Try java -jar mmbase-commandserver.jar -?
+
+    This is mainly targeted at executing image-magick, but it could execute all kind of external commands.
   </description>
 
   <build>
