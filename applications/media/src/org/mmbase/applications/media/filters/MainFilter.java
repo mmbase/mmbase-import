@@ -49,7 +49,8 @@ public class MainFilter {
     public static final String FILTER_TAG        = "filter";
     public static final String FILTER_ATT        = "filter";
     public static final String ID_ATT            = "id";
-    public static final String CONFIG_FILE       = "media" + File.separator + "filters.xml";
+    //don't use File.separator here to replace the forward slash. It creates an error on windows
+    public static final String CONFIG_FILE       = "media/filters.xml";
         
     private ResourceWatcher configWatcher = new ResourceWatcher() {
         public void onChange(String res) {
