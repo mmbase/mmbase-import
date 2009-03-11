@@ -239,7 +239,7 @@ HTMLArea.prototype._insertInlineLink = function(link) {
                         var range = editor._createRange(sel);
                         if(editor._selectionEmpty(sel))
                         {
-                              editor.insertHTML("<a href='" + param.f_href + "' title='" + param.f_tooltip + "' name='"+param.f_title+"'>" + param.f_title+ "</a>");
+                              editor.insertHTML("<a href='" + param.f_href + "' title='" + param.f_tooltip + "' name='"+param.f_title+"' destination='"+ param.f_destination + "'>" + param.f_title+ "</a>");
                         }
                         else{
                               if ( !HTMLArea.is_ie )
