@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
  * Writes a resource found on an url to disk. 
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ResourceWriter.java,v 1.1 2009-03-11 08:34:20 andre Exp $
+ * @version $Id: ResourceWriter.java,v 1.2 2009-03-11 16:11:51 andre Exp $
  */
 public class ResourceWriter {
     private static final Logger log = Logging.getLoggerInstance(ResourceWriter.class);
@@ -27,22 +27,26 @@ public class ResourceWriter {
      * Constructs  writer.
      * @throws IOException When failed to write
      */
-    public ResourceWriter(URL url) throws IOException {
-        log.debug("Trying to download .. " + url.toString());
-        this.url = url;
+    public ResourceWriter(URL u) throws IOException {
+        log.debug("Trying to download .. " + u.toString());
 
         try {
-            uc = (HttpURLConnection)getURLConnection(url);
+            uc = (HttpURLConnection)getURLConnection(u);
         } catch (IOException e) {
             log.warn(e);
         }
         if (uc == null) { 
-            MMGet.ignoredURLs.add(url);        
-            throw new MalformedURLException("Not found/correct? : " + url);
+            MMGet.ignoredURLs.add(u);
+            throw new MalformedURLException("Not found/correct? : " + u);
         }
         
-        this.filename = makeFilename(url);
+        this.url = getUrl();
         this.contenttype = MMGet.contentType(uc);
+        this.filename = makeFilename(url);
+    }
+    
+    protected URL getUrl() {
+        return uc.getURL();
     }
     
     protected String getFilename() {
@@ -54,7 +58,10 @@ public class ResourceWriter {
     }
     
     protected void disconnect() {
-        if (uc != null) uc.disconnect();
+        if (uc != null) { 
+            log.debug("disconnecting... " + url.toString());
+            uc.disconnect(); 
+        }
     }
     
     /**
@@ -79,9 +86,8 @@ public class ResourceWriter {
         in.close();
         out.close();
         
-        MMGet.savedURLs.put(url, filename);
         log.debug("Saved: " + f.toString() );
-        
+        MMGet.savedURLs.put(url, filename);
     }
     
     /**
@@ -182,18 +188,18 @@ public class ResourceWriter {
             filename = link.substring(startdirlength);
         }
         
-        log.debug("0: file: " + filename);
+        //log.debug("0: file: " + filename);
         if (contenttype == MMGet.CONTENTTYPE_HTML) {
             if (filename.equals("")) {
                 filename = "index.html";
             } else if (!filename.endsWith("/") && !MMGet.hasExtension(filename)) {
                 filename = filename + "/index.html";
-                log.debug("1: /bla file: " + filename);
+                //log.debug("1: /bla file: " + filename);
             }
             
             if (filename.endsWith("/")) {
                 filename = filename + "index.html";
-                log.debug("2: /bla/ file: " + filename);
+                //log.debug("2: /bla/ file: " + filename);
             }
         }
         
