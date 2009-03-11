@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.6 2009-03-11 08:34:20 andre Exp $
+ * @version $Id: MMGet.java,v 1.7 2009-03-11 16:11:51 andre Exp $
  */
 public final class MMGet {
     
@@ -50,9 +50,9 @@ public final class MMGet {
     protected static Set<URL> ignoredURLs = new HashSet<URL>();
     /* urls to parse (html, css) */
     protected static List<URL> parseURLs = Collections.synchronizedList(new ArrayList<URL>());
-    /* url -> filename */
+    /* saved: url -> filename */
     protected static Map<URL,String> savedURLs = Collections.synchronizedMap(new HashMap<URL,String>());
-    /* url -> link in page / new link in rewritten page */
+    /* rewrite these: url -> link in page / new link in rewritten page */
     protected static Map<URL,Map<String,String>> url2links = Collections.synchronizedMap(new HashMap<URL,Map<String,String>>());
     
     /* future status */
@@ -85,24 +85,6 @@ public final class MMGet {
         ResourceLoader webroot = ResourceLoader.getWebRoot();
         
         startURL = new URL(url);
-        /*
-        String strUrl = startURL.toString();
-        if (strUrl.endsWith("/")) {
-            startdirURL = startURL;
-            log.debug("1: startdir " + startdirURL.toString());
-        } else if (hasExtension(startURL.getFile())) {
-            strUrl = strUrl.substring(0, strUrl.lastIndexOf("/") + 1);
-            startdirURL = new URL(strUrl);
-            log.debug("2: startdir " + startdirURL.toString());
-        } else {
-            startdirURL = new URL(strUrl + "/");    // only for html !
-            log.debug("3: startdir " + startdirURL.toString());
-        }
-        */
-        //startdirURL = getDirectoryURL(startURL);
-        /*if (startdirURL.toString().length() > startURL.toString().length()) 
-                startURL = startdirURL;
-        */
         
         // savedir
         if (directory == null || "".equals(directory) || !webroot.getResource(directory).openConnection().getDoInput()) {
@@ -298,21 +280,30 @@ public final class MMGet {
                     continue;
                 }
                     
-                ResourceWriter rw = null;
-                try {
-                    rw = new ResourceWriter(linkURL);
-                    int ctype = rw.getContentType();
-                    if (ctype < 1) { 
-                        rw.write(); 
-                    } else {
-                        rw.disconnect();
-                        addParseURL(linkURL);
+                String filename = null;
+                if (savedURLs.containsKey(linkURL)) {
+                    filename = savedURLs.get(linkURL);
+                    log.debug("already saved");
+                    
+                } else {
+                    ResourceWriter rw = null;
+                    try {
+                        rw = new ResourceWriter(linkURL);
+                        filename = rw.getFilename();
+                        
+                        if (rw.getContentType() < 1) {
+                            rw.write(); 
+                        } else {
+                            rw.disconnect();
+                            addParseURL(linkURL);   // save for later
+                            rw = null;
+                        }
+                    } catch(IOException e) {
+                        log.error(e);
+                        ignoredURLs.add(linkURL);
                     }
-                } catch(IOException e) {
-                    log.error(e);
+                    if (rw == null) continue;
                 }
-                if (rw == null) continue;
-                String filename = rw.getFilename();
                 
                 String calclink = startdirURL.toString() + filename;    // 'calculated' link
                 String calcdir  = dirURL.toString();
@@ -334,10 +325,11 @@ public final class MMGet {
             try {
                 rrw = new ResourceReWriter(url);
                 rrw.write();
+
             } catch (IOException e) {
                 log.error(e);
+                ignoredURLs.add(url);
             }
-            //saveResource(url);
             
             URL nextURL = getParseURL();
             if (nextURL != null) readUrl(nextURL);  // recurse!
@@ -346,127 +338,6 @@ public final class MMGet {
             log.error("IOException: " + e);
         }
         
-    }
-    
-    /**
-     * Saves a url and returns the filename. Returns null when no connection.
-     * @param  url
-     * @return the filename of the saved file or null if we dit not succeed to connect
-     */
-    protected String saveResource(URL url) throws IOException {
-        if (savedURLs.containsKey(url)) {
-            return savedURLs.get(url);
-        }
-        if (ignoredURLs.contains(url)) return null;        
-        
-        URLConnection uc = null;
-        try {
-            uc = getURLConnection(url);
-        } catch (SocketException e) {
-            log.warn(e);
-        }
-        if (uc == null) { 
-            ignoredURLs.add(url);        
-            return null;
-        }
-
-        int type = contentType(uc);
-        if (type > 0) {
-            if (url2links.containsKey(url)) {
-                return rewriteSaveResource(url, uc);
-            } else {
-                log.debug("Not parsed yet: " + url.toString());
-                addParseURL(url);
-                return makeFilename(url, type);
-            }
-        }
-        
-        String filename = makeFilename(url, type);
-        File f = getFile(filename);
-        if (f.exists()) {
-            //log.warn("File '" + f.toString() + "' already exists, deleting it and saving again.");
-            f.delete();
-        }
-
-        BufferedInputStream  in  = new BufferedInputStream(uc.getInputStream());
-        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
-        byte[] buf = new byte[1024];
-        int b = 0;
-        while ((b = in.read(buf)) != -1) {
-            out.write(buf, 0, b);
-        }
-        
-        out.flush();
-        in.close();
-        out.close();
-        
-        savedURLs.put(url, filename);
-        log.debug("Saved: " + f.toString() );
-        
-        return filename;
-    }
-
-    /**
-     * Saves and rewrites the links in the resource to (relative?) ones that work
-     * on the filesystem. Only for HTML or CSS (text) files of course.
-     * @param url
-     * @param uc the already elsewhere created URLConnection for efficiency
-     */
-    protected String rewriteSaveResource(URL url, URLConnection uc) throws IOException {
-        String filename = makeFilename(url, contentType(uc));
-        File f = getFile(filename);
-        if (f.exists()) {
-            //log.warn("File '" + f.toString() + "' already exists, deleting it and saving again.");
-            f.delete();
-        }
-        
-        Map<String,String> links2files = url2links.get(url);        
-        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-        PrintWriter out = new PrintWriter(new FileWriter(f));
-        String line;
-        while((line = in.readLine()) != null) {
-            if (links2files != null) {
-                for (Map.Entry<String,String> pair : links2files.entrySet()) {
-                    String link = pair.getKey();
-                    String file = pair.getValue();
-
-                    StringBuilder sbl = new StringBuilder();
-                    sbl.append("\"").append(link);
-                    
-                    StringBuilder sbf = new StringBuilder();
-                    sbf.append("\"").append(file).append("\"");
-                    
-                    int pos1 = line.indexOf(sbl.toString());
-                    if (pos1 > -1) {
-                        int pos2 = line.indexOf("\"", pos1 + 1);
-                        //log.debug("pos1: " + pos1 + ", pos2: " + pos2);
-                        String linelink = line.substring(pos1, pos2 + 1);
-                        //log.debug("linelink: " + linelink);
-                        
-                        // compensate for ;jsessionid=ECF5A0BB7709202CEDC4D7FBA3AC3AAD etc.
-                        if ((pos2 - pos1) > link.length() && linelink.indexOf(";") > -1) {
-                            link = linelink;
-                        } else {
-                            sbl.append("\"");
-                            link = sbl.toString();
-                        }
-                        //log.debug("link: " + link);
-                        
-                        line = line.replace(link, sbf.toString());
-                        //log.debug("replaced '" + link + "' with '" + sbf + "' in: " + filename);
-                    }
-                }
-            }
-            out.write(line + "\n");
-        }
-        out.flush();
-        in.close();
-        out.close();
-        
-        savedURLs.put(url, filename);
-        log.debug("Saved: " + f.toString());
-        
-        return filename;
     }
     
     protected static int contentType(URLConnection uc) {
@@ -495,7 +366,22 @@ public final class MMGet {
      * @return the directory it is in
      */
     private static URL getDirectoryURL(URL url) {
-        String link = url.toString();
+        String dir = url.toString();
+        
+        if (dir.lastIndexOf("/") > 7 && hasExtension(url.getFile())) {
+            dir = dir.substring(0, dir.lastIndexOf("/") + 1);
+        }
+        
+        /*
+        } else if (hasExtension(url.getFile())) {
+            dir = link.substring(0, link.lastIndexOf("/") + 1);
+            log.debug("2: dir " + dir);
+        } else {
+            startdirURL = new URL(strUrl + "/");    // only for html !
+            log.debug("3: startdir " + startdirURL.toString());
+        }
+        */
+        /*
         String path = url.getPath();
         
         String server = link;
@@ -521,11 +407,11 @@ public final class MMGet {
             link = server + path;   // make sure query and fragment (#sdf) are gone
             link = link.substring(0, link.lastIndexOf("/") + 1);
         }
-        
-        log.debug("url: " + url + ", returning: " + link);
+        */
+        log.debug("url: " + url + ", returning: " + dir);
         
         try {
-            return new URL(link);
+            return new URL(dir);
         } catch (MalformedURLException e) {
             return null;
         }
@@ -546,25 +432,25 @@ public final class MMGet {
      * @param  url resource for which a filename is needed
      * @return path and filename that can be saved (f.e. pics/button.gif)
      */
-    public String makeFilename(URL url) {
-        String filename = url.getFile();    
-        filename = removeSessionid(filename);
-        
-        String link = url.toString();
-        link = removeSessionid(link);
-        
-        // path starting from startdirURL
-        int startdirlength = startdirURL.toString().length();
-        if (link.length() > startdirlength) {
-            filename = link.substring(startdirlength);
-        }
-        
-        if (filename.equals("") || filename.endsWith("/")) {
-            filename = filename + "index.html";
-        }
-    
-        return filename;
-    }
+//     public String makeFilename(URL url) {
+//         String filename = url.getFile();    
+//         filename = removeSessionid(filename);
+//         
+//         String link = url.toString();
+//         link = removeSessionid(link);
+//         
+//         // path starting from startdirURL
+//         int startdirlength = startdirURL.toString().length();
+//         if (link.length() > startdirlength) {
+//             filename = link.substring(startdirlength);
+//         }
+//         
+//         if (filename.equals("") || filename.endsWith("/")) {
+//             filename = filename + "index.html";
+//         }
+//     
+//         return filename;
+//     }
     
     /**
      * Creates the directory/filename to save a file (= url - url startdir),
@@ -582,81 +468,81 @@ public final class MMGet {
      * @param  type content-type of the file to save
      * @return path and filename that can be saved (f.e. pics/button.gif)
      */
-    public String makeFilename(URL url, int type) {
-        /*
-        
-        start: www.toly.nl/bla
-        link:  www.toly.nl/pics/button.gif
-        
-        filename: 1up/pics/buttons.gif
-        
-        start: www.toly.nl/bla/bla
-        link:  www.toly.nl/pics/button.gif
-        
-        filename: 2up/pics/buttons.gif
-        
-        */
-        String filename = url.getFile();    
-        filename = removeSessionid(filename);
-        
-        String link = url.toString();
-        link = removeSessionid(link);
-        
-        // path starting from startdirURL
-        int startdirlength = startdirURL.toString().length();
-        if (link.length() > startdirlength) {
-            filename = link.substring(startdirlength);
-        }
-        
-        log.debug("0: file: " + filename);
-        if (type == CONTENTTYPE_HTML) {
-            if (filename.equals("")) {
-                filename = "index.html";
-            } else if (!filename.endsWith("/") && !hasExtension(filename)) {
-                filename = filename + "/index.html";
-                log.debug("1: /bla file: " + filename);
-            }
-            
-            if (filename.endsWith("/")) {
-                filename = filename + "index.html";
-                log.debug("2: /bla/ file: " + filename);
-            }
-        }
-    
-        return filename;
-    }
+//     public String makeFilename(URL url, int type) {
+//         /*
+//         
+//         start: www.toly.nl/bla
+//         link:  www.toly.nl/pics/button.gif
+//         
+//         filename: 1up/pics/buttons.gif
+//         
+//         start: www.toly.nl/bla/bla
+//         link:  www.toly.nl/pics/button.gif
+//         
+//         filename: 2up/pics/buttons.gif
+//         
+//         */
+//         String filename = url.getFile();    
+//         filename = removeSessionid(filename);
+//         
+//         String link = url.toString();
+//         link = removeSessionid(link);
+//         
+//         // path starting from startdirURL
+//         int startdirlength = startdirURL.toString().length();
+//         if (link.length() > startdirlength) {
+//             filename = link.substring(startdirlength);
+//         }
+//         
+//         log.debug("0: file: " + filename);
+//         if (type == CONTENTTYPE_HTML) {
+//             if (filename.equals("")) {
+//                 filename = "index.html";
+//             } else if (!filename.endsWith("/") && !hasExtension(filename)) {
+//                 filename = filename + "/index.html";
+//                 log.debug("1: /bla file: " + filename);
+//             }
+//             
+//             if (filename.endsWith("/")) {
+//                 filename = filename + "index.html";
+//                 log.debug("2: /bla/ file: " + filename);
+//             }
+//         }
+//     
+//         return filename;
+//     }
     
     /**
      * Returns the file or guesses it
      */
-    public static String getFileUrl(URL url, int type) {
-        String link = url.toString();
-        String filename = url.getFile();
-        filename = removeSessionid(filename);
-        
-        String serverpart = link;
-        if (link.indexOf("/", 7) > 7) {
-            serverpart = link.substring(0, link.indexOf("/", 7));
-        }
-
-        if (type == CONTENTTYPE_HTML) {
-            if (filename.equals("")) {
-                filename = "index.html";
-            } else if (!filename.endsWith("/") && !hasExtension(filename)) {
-                filename = filename + "/index.html";
-                log.debug("1: /bla file: " + filename);
-            }
-            
-            if (filename.endsWith("/")) {
-                filename = filename + "index.html";
-                log.debug("2: /bla/ file: " + filename);
-            }
-        }
-            
-        filename = serverpart + filename;
-        log.debug("server: " + serverpart + ", returning filename: " + filename);
-        return filename;
-    }
+//     public static String getFileUrl(URL url, int type) {
+//         String link = url.toString();
+//         String filename = url.getFile();
+//         filename = removeSessionid(filename);
+//         
+//         String serverpart = link;
+//         if (link.indexOf("/", 7) > 7) {
+//             serverpart = link.substring(0, link.indexOf("/", 7));
+//         }
+// 
+//         if (type == CONTENTTYPE_HTML) {
+//             if (filename.equals("")) {
+//                 filename = "index.html";
+//             } else if (!filename.endsWith("/") && !hasExtension(filename)) {
+//                 filename = filename + "/index.html";
+//                 log.debug("1: /bla file: " + filename);
+//             }
+//             
+//             if (filename.endsWith("/")) {
+//                 filename = filename + "index.html";
+//                 log.debug("2: /bla/ file: " + filename);
+//             }
+//         }
+//             
+//         filename = serverpart + filename;
+//         log.debug("server: " + serverpart + ", returning filename: " + filename);
+//         return filename;
+//     }
     
     /**
      * remove ;jsessionid=a69bd9e162de1cfa3ea57ef6f3cf03af
@@ -680,31 +566,31 @@ public final class MMGet {
      * @param  url
      * @return a connection or null in case of a bad response (f.e. not a 200)
      */
-    private static URLConnection getURLConnection(URL url) throws SocketException, IOException {
-        URLConnection uc = url.openConnection();
-        if (url.getProtocol().equals("http")) {
-            HttpURLConnection huc = (HttpURLConnection)uc;
-            int res = huc.getResponseCode();
-            if (res == -1) {
-                log.error("Server error, bad HTTP response: " + res);
-                return null;
-            } else if (res < 200 || res >= 300) {
-                log.warn(res + " - " + huc.getResponseMessage() + " : " + url.toString());
-                return null;
-            } else {
-                log.debug("url from uc: " + huc.getURL().toString());
-                return huc;
-            }
-        } else if (url.getProtocol().equals("file")) {
-            InputStream is = uc.getInputStream();
-            is.close();
-            // If that didn't throw an exception, the file is probably OK
-            return uc;
-        } else {
-            // return "(non-HTTP)";
-            return null;
-        }
-    }
+//     private static URLConnection getURLConnection(URL url) throws SocketException, IOException {
+//         URLConnection uc = url.openConnection();
+//         if (url.getProtocol().equals("http")) {
+//             HttpURLConnection huc = (HttpURLConnection)uc;
+//             int res = huc.getResponseCode();
+//             if (res == -1) {
+//                 log.error("Server error, bad HTTP response: " + res);
+//                 return null;
+//             } else if (res < 200 || res >= 300) {
+//                 log.warn(res + " - " + huc.getResponseMessage() + " : " + url.toString());
+//                 return null;
+//             } else {
+//                 log.debug("url from uc: " + huc.getURL().toString());
+//                 return huc;
+//             }
+//         } else if (url.getProtocol().equals("file")) {
+//             InputStream is = uc.getInputStream();
+//             is.close();
+//             // If that didn't throw an exception, the file is probably OK
+//             return uc;
+//         } else {
+//             // return "(non-HTTP)";
+//             return null;
+//         }
+//     }
     
     /**
      * Creates an empty file in the save directory, checks if its directories exist (but not itself).
