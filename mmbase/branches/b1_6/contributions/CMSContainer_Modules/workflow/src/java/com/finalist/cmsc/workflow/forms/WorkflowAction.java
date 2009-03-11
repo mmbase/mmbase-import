@@ -7,12 +7,7 @@
  */
 package com.finalist.cmsc.workflow.forms;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -20,39 +15,20 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.CompositeConstraint;
-import org.mmbase.storage.search.SortOrder;
-import org.mmbase.storage.search.Step;
-import org.mmbase.storage.search.StepField;
+import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicStep;
 
-import com.finalist.cmsc.services.workflow.Workflow;
-import com.finalist.cmsc.services.workflow.WorkflowException;
-import com.finalist.cmsc.services.workflow.WorkflowStatusInfo;
+import com.finalist.cmsc.services.workflow.*;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.cmsc.workflow.RepositoryWorkflow;
 import com.finalist.cmsc.workflow.WorkflowManager;
 
 public abstract class WorkflowAction extends MMBaseFormlessAction {
 
-   public static final Object ACTION_FINISH = "finish";
-
-   public static final Object ACTION_ACCEPT = "accept";
-
-   public static final Object ACTION_REJECT = "reject";
-
-   public static final Object ACTION_PUBLISH = "publish";
-
-   public static final Object ACTION_RENAME = "rename";
-
-   private static final Object REMARK_UNCHANGED = "[unchanged-item]";
+   protected static final String REMARK_UNCHANGED = "[unchanged-item]";
 
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
       String actionValueStr = request.getParameter("actionvalue");
@@ -77,7 +53,7 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
                }
             }
          }
-         List<Node> workflowErrors = performWorkflowAction(actionValueStr, nodes, remark);
+         List<Node> workflowErrors = WorkflowUtil.performWorkflowAction(actionValueStr, nodes, remark);
 
          if (workflowErrors != null && workflowErrors.size() > 0) {
             String url = mapping.getPath() + "?status=" + request.getParameter("status");
@@ -175,55 +151,6 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
 
    protected abstract NodeQuery createDetailQuery(Cloud cloud, String orderby, boolean AorD);
 
-   protected List<Node> performWorkflowAction(String action, List<Node> nodes, String remark) {
-      List<Node> errors = new ArrayList<Node>();
-
-      if (ACTION_FINISH.equals(action)) {
-         for (Node node : nodes) {
-            Workflow.finish(node, remark);
-         }
-      }
-      if (ACTION_ACCEPT.equals(action)) {
-         for (Node node : nodes) {
-            Workflow.accept(node, remark);
-         }
-      }
-      if (ACTION_REJECT.equals(action)) {
-         for (Node node : nodes) {
-            // Node in status published might be completed already before
-            // request reaches this point.
-            if (node.getCloud().hasNode(node.getNumber())) {
-               Workflow.reject(node, remark);
-            }
-         }
-      }
-      if (ACTION_RENAME.equals(action)) {
-         for (Node node : nodes) {
-            Workflow.remark(node, remark);
-         }
-      }
-      if (ACTION_PUBLISH.equals(action)) {
-         List<Integer> publishNumbers = new ArrayList<Integer>();
-         for (Node publishNode : nodes) {
-            if (Workflow.isAllowedToPublish(publishNode)) {
-               publishNumbers.add((publishNode).getNumber());
-            }
-         }
-
-         for (Node publishNode : nodes) {
-            try {
-               if (publishNumbers.contains(publishNode.getNumber())) {
-                  Workflow.publish(publishNode, publishNumbers);
-               } else {
-                  Workflow.accept(publishNode, "");
-               }
-            } catch (WorkflowException wfe) {
-               errors.addAll(wfe.getErrors());
-            }
-         }
-      }
-      return errors;
-   }
 
    private void addWorkflowListToRequest(HttpServletRequest request, Cloud cloud, NodeQuery detailQuery,
          NodeQuery listQuery, String attributeName) {

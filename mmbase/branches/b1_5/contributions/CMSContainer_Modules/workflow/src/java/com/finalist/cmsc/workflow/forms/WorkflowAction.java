@@ -30,17 +30,7 @@ import com.finalist.cmsc.workflow.WorkflowManager;
 
 public abstract class WorkflowAction extends MMBaseFormlessAction {
 
-   public static final Object ACTION_FINISH = "finish";
-
-   public static final Object ACTION_ACCEPT = "accept";
-
-   public static final Object ACTION_REJECT = "reject";
-
-   public static final Object ACTION_PUBLISH = "publish";
-
-   public static final Object ACTION_RENAME = "rename";
-
-   private static final Object REMARK_UNCHANGED = "[unchanged-item]";
+   protected static final String REMARK_UNCHANGED = "[unchanged-item]";
 
 
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
@@ -64,7 +54,7 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
                }
             }
          }
-         List<Node> workflowErrors = performWorkflowAction(actionValueStr, nodes, remark);
+         List<Node> workflowErrors = WorkflowUtil.performWorkflowAction(actionValueStr, nodes, remark);
 
          if (workflowErrors != null && workflowErrors.size() > 0) {
             String url = mapping.getPath() + "?status=" + request.getParameter("status");
@@ -84,8 +74,7 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
       String laststatus = request.getParameter("laststatus");
       if (StringUtils.isEmpty(laststatus) || laststatus == null) {
          request.setAttribute("laststatus", true);
-      }
-      else {
+      } else {
          request.setAttribute("laststatus", laststatus.equals("true") ? false : true);
       }
 
@@ -95,8 +84,8 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
          status = statusStr;
       }
 
-      WorkflowStatusInfo ststusInfo = Workflow.getStatusInfo(cloud);
-      request.setAttribute("statusInfo", ststusInfo);
+      WorkflowStatusInfo statusInfo = Workflow.getStatusInfo(cloud);
+      request.setAttribute("statusInfo", statusInfo);
       String type = getWorkflowType();
       addToRequest(request, "workflowType", type);
 
@@ -123,59 +112,6 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
 
 
    protected abstract NodeQuery createDetailQuery(Cloud cloud, String orderby, boolean AorD);
-
-
-   protected List<Node> performWorkflowAction(String action, List<Node> nodes, String remark) {
-      List<Node> errors = new ArrayList<Node>();
-
-      if (ACTION_FINISH.equals(action)) {
-         for (Node node : nodes) {
-            Workflow.finish(node, remark);
-         }
-      }
-      if (ACTION_ACCEPT.equals(action)) {
-         for (Node node : nodes) {
-            Workflow.accept(node, remark);
-         }
-      }
-      if (ACTION_REJECT.equals(action)) {
-         for (Node node : nodes) {
-            // Node in status published might be completed already before
-            // request reaches this point.
-            if (node.getCloud().hasNode(node.getNumber())) {
-               Workflow.reject(node, remark);
-            }
-         }
-      }
-      if (ACTION_RENAME.equals(action)) {
-         for (Node node : nodes) {
-            Workflow.remark(node, remark);
-         }
-      }
-      if (ACTION_PUBLISH.equals(action)) {
-         List<Integer> publishNumbers = new ArrayList<Integer>();
-         for (Node publishNode : nodes) {
-            if (Workflow.isAllowedToPublish(publishNode)) {
-               publishNumbers.add((publishNode).getNumber());
-            }
-         }
-
-         for (Node publishNode : nodes) {
-            try {
-               if (publishNumbers.contains(publishNode.getNumber())) {
-                  Workflow.publish(publishNode, publishNumbers);
-               }
-               else {
-                  Workflow.accept(publishNode, "");
-               }
-            }
-            catch (WorkflowException wfe) {
-               errors.addAll(wfe.getErrors());
-            }
-         }
-      }
-      return errors;
-   }
 
 
    private void addWorkflowListToRequest(HttpServletRequest request, Cloud cloud, NodeQuery detailQuery,
