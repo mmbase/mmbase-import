@@ -398,7 +398,6 @@
             </mm:relatednodes>
 
 
-         <c:if test="${creationRelNumber ne trashnumber}">
             <tr <mm:even inverse="true">class="swap"</mm:even>>
                <td style="white-space: nowrap;">
                <cmsc:rights nodeNumber="${creationRelNumber}" var="rights"/>
@@ -511,7 +510,6 @@
                   </td>
                 </c:if>
             </tr>
-         </c:if>
          </mm:node>
       </mm:field>
 

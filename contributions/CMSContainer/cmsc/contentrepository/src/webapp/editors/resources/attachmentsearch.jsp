@@ -1,7 +1,6 @@
 <%@page language="java" contentType="text/html;charset=utf-8"
 %><%@include file="globals.jsp" 
 %><%@page import="java.util.Iterator,com.finalist.cmsc.mmbase.PropertiesUtil"
-%><%@page import="com.finalist.cmsc.repository.RepositoryUtil"
 %><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
@@ -161,9 +160,6 @@
 
             <c:if test="${assetShow eq 'thumbnail'}">
             <div id="assetList" class="hover" style="width:100%" href="">
-            <mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
-               <mm:field id="trashnumber" name="number" write="false"/>
-            </mm:node>
                   <mm:listnodes referid="results">
                      <mm:field name="description" escape="js-single-quotes" jspvar="description">
                         <%
@@ -175,11 +171,7 @@
                         <c:if test="${ empty strict}">
                         	<mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:image />','120','100', '<%=description%>');</mm:import>
                         </c:if>
-                        <mm:relatednodes role="creationrel" type="contentchannel">
-                           <c:set var="creationRelNumber"><mm:field name="number" id="creationnumber"/></c:set>
-                        </mm:relatednodes>
                      </mm:field>
-                     <c:if test="${creationRelNumber ne trashnumber}">
                      <div class="grid" href="<mm:write referid="url"/>" onMouseOut="javascript:hideIcons(<mm:field name='number'/>)" onMouseOver="showIcons(<mm:field name='number'/>)">
                         <div id="thumbnail-icons-<mm:field name='number'/>" class="thumbnail-icons">
                             <a href="javascript:showInfo(<mm:field name="number" />)">
@@ -206,7 +198,6 @@
                               <br/>
                         </div>
                      </div>
-                     </c:if>
                   </mm:listnodes>
             </div>
             </c:if>
@@ -228,9 +219,6 @@
 					</tr>
             </c:if>
 					<tbody id="assetList" class="hover"  href="">
-					   <mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
-                     <mm:field id="trashnumber" name="number" write="false"/>
-                  </mm:node>
 						<c:set var="useSwapStyle">true</c:set>
 						<mm:listnodes referid="results">
 							<mm:field name="description" escape="js-single-quotes"
@@ -244,11 +232,7 @@
 		                        <c:if test="${ empty strict}">
 		                        	<mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>','<mm:image />','120','100', '<%=description%>');</mm:import>
 		                        </c:if>
-		                        <mm:relatednodes role="creationrel" type="contentchannel">
-		                           <c:set var="creationRelNumber"><mm:field name="number" id="creationnumber"/></c:set>
-		                        </mm:relatednodes>
 							</mm:field>
-							<c:if test="${creationRelNumber ne trashnumber}">
 							<tr <c:if test="${useSwapStyle}">class="swap"</c:if>
 								href="<mm:write referid="url"/>">
 								<td style="white-space: nowrap;">
@@ -280,7 +264,6 @@
 									 </c:if>
 								</td>
 							</tr>
-							</c:if>
 							<c:set var="useSwapStyle">${!useSwapStyle}</c:set>
 						</mm:listnodes>
 					</tbody>
