@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @author vpro (as org.mmbase.util.URLEscape, still present in SCAN application)
  * @author Michiel Meeuwissen
- * @version $Id: UrlEscaper.java,v 1.3 2009-03-11 11:45:33 michiel Exp $
+ * @version $Id: UrlEscaper.java,v 1.4 2009-03-11 12:16:31 michiel Exp $
  */
 public class UrlEscaper extends ReaderTransformer{
 
@@ -84,7 +84,7 @@ public class UrlEscaper extends ReaderTransformer{
             while (n > 0) {
                 for (int i = 0; i < n;i++) {
                     int a = (int)buf[i] & 0xff;
-                    if (a >= 32 && a<128 && isacceptable[a-32]) {
+                    if (a >= 32 && a < 128 && isacceptable[a - 32]) {
                         w.write((char)a);
                     } else {
                         w.write(HEX_ESCAPE);
@@ -135,7 +135,6 @@ public class UrlEscaper extends ReaderTransformer{
                         int n2 = br.read();
                         if (n2 != -1) {
                             j += from_hex((char) n2);
-                            log.info("Found byte " + j);
                             buf[bufSize] = (byte) j;
                             bufSize++;
                         } else {
