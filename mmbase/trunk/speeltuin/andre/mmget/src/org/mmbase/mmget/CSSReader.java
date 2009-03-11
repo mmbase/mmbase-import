@@ -19,34 +19,35 @@ import org.mmbase.util.logging.Logging;
  *   @import url("mystyle.css");
  *
  * @author Andr&eacute; van Toly
- * @version $Id: CSSReader.java,v 1.2 2009-02-27 10:45:07 andre Exp $
+ * @version $Id: CSSReader.java,v 1.3 2009-03-11 08:34:20 andre Exp $
  */
 public class CSSReader extends UrlReader {
     private static final Logger log = Logging.getLoggerInstance(CSSReader.class);
     
-    protected URLConnection uc = null;
-    protected BufferedReader inrdr = null;
+    private URLConnection uc = null;
+    private BufferedReader inrdr = null;
 
     /*
      list-style-image: url("images/bullet.png");
      @import "form.css";
      @import url("mystyle.css");
     */
-    public static Pattern urlPattern;
     public static final String URL_PATTERN = "[\\w\\s?]url\\((.*)\\)[\\s;]";
-    public static Pattern importPattern;
+    private static final Pattern urlPattern = Pattern.compile(URL_PATTERN);;
     public static final String IMPORT_PATTERN = "@import\\s+[\"\'](.*)[\"\']";
+    private static final Pattern importPattern = Pattern.compile(IMPORT_PATTERN);
     
     public CSSReader(URLConnection uc) throws IOException {
         this.uc = uc;
         inrdr = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-        
-        urlPattern = Pattern.compile(URL_PATTERN);
-        importPattern = Pattern.compile(IMPORT_PATTERN);
     }
     
     protected int getContentType() {
         return MMGet.contentType(uc);
+    }
+    
+    protected URL getUrl() {
+        return uc.getURL();
     }
     
     /**
