@@ -27,8 +27,11 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.FieldCompareConstraint;
+import org.mmbase.storage.search.FieldValueConstraint;
 import org.mmbase.storage.search.SortOrder;
 import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -71,7 +74,7 @@ public class ContentSearchAction extends PagerAction {
 
       String deleteContentRequest = request.getParameter("deleteContentRequest");
       String index = searchForm.getIndex();
-      if(StringUtils.isEmpty(index)){
+      if (StringUtils.isEmpty(index)) {
          index = "no";
       }
       request.setAttribute("index", index);
@@ -118,18 +121,22 @@ public class ContentSearchAction extends PagerAction {
       queryStringComposer.addParameter(CONTENTTYPES, searchForm.getContenttypes());
 
       // First add the proper step to the query.
-      Step theStep = null;
+      NodeManager channelNodeManager = cloud.getNodeManager(RepositoryUtil.CONTENTCHANNEL);
+      Step channelStep = query.addStep(channelNodeManager);
+      Step contentStep = query.addRelationStep(nodeManager, RepositoryUtil.CONTENTREL, "DESTINATION").getNext();
       if (StringUtils.isNotEmpty(searchForm.getParentchannel())) {
-         Step step = query.addStep(cloud.getNodeManager(RepositoryUtil.CONTENTCHANNEL));
-         query.addNode(step, cloud.getNode(searchForm.getParentchannel()));
-         theStep = query.addRelationStep(nodeManager, RepositoryUtil.CONTENTREL, "DESTINATION").getNext();
-         query.setNodeStep(theStep);
+         query.addNode(channelStep, cloud.getNode(searchForm.getParentchannel()));
+         query.setNodeStep(contentStep);
          queryStringComposer.addParameter(PARENTCHANNEL, searchForm.getParentchannel());
       } else {
-         theStep = query.addStep(nodeManager);
-         query.setNodeStep(theStep);
+         // CMSC-1260 Content search also finds elements in Recycle bin
+         Integer trashNumber = Integer.parseInt(RepositoryUtil.getTrash(cloud));
+         StepField stepField = query.createStepField(channelStep, channelNodeManager.getField("number"));
+         FieldValueConstraint channelConstraint = query.createConstraint(stepField, FieldCompareConstraint.NOT_EQUAL,
+               trashNumber);
+         SearchUtil.addConstraint(query, channelConstraint);
+         query.setNodeStep(contentStep);
       }
-
       // Order the result by:
       String order = searchForm.getOrder();
 
@@ -146,7 +153,7 @@ public class ContentSearchAction extends PagerAction {
          queryStringComposer.addParameter(ORDER, searchForm.getOrder());
          queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
          // CMSC-1313 Sorting on TYPE should not sort of the otype value but the title of the type
-         if(!"otype".equals(order)){
+         if (!"otype".equals(order)) {
             query.addSortOrder(query.getStepField(nodeManager.getField(order)), searchForm.getDirection());
          }
       }
@@ -237,7 +244,7 @@ public class ContentSearchAction extends PagerAction {
          resultsPerPage = "25";
       }
       // CMSC-1313 Sorting on TYPE should not sort of the otype value but the title of the type
-      if (StringUtils.isEmpty(order)||!"otype".equals(order)) {
+      if (StringUtils.isEmpty(order) || !"otype".equals(order)) {
          query.setMaxNumber(Integer.parseInt(resultsPerPage));
       }
 
@@ -246,7 +253,7 @@ public class ContentSearchAction extends PagerAction {
       if (searchForm.getOffset() != null && searchForm.getOffset().matches("\\d+")) {
          offset = searchForm.getOffset();
          // CMSC-1313 Sorting on TYPE should not sort of the otype value but the title of the type
-         if (StringUtils.isEmpty(order)||!"otype".equals(order)) {
+         if (StringUtils.isEmpty(order) || !"otype".equals(order)) {
             query.setOffset(query.getMaxNumber() * Integer.parseInt(offset));
          }
          queryStringComposer.addParameter(OFFSET, searchForm.getOffset());
@@ -257,9 +264,9 @@ public class ContentSearchAction extends PagerAction {
       int resultCount = Queries.count(query);
       NodeList results = query.getNodeManager().getList(query);
       // CMSC-1313 Sorting on TYPE should not sort of the otype value but the title of the type
-      if (StringUtils.isNotEmpty(order)&&"otype".equals(order)) {
+      if (StringUtils.isNotEmpty(order) && "otype".equals(order)) {
          boolean reverse = false;
-         if (searchForm.getDirection()==SortOrder.ORDER_DESCENDING) {
+         if (searchForm.getDirection() == SortOrder.ORDER_DESCENDING) {
             reverse = true;
          }
          Collections.sort(results, new NodeGUITypeComparator(cloud.getLocale(), reverse));

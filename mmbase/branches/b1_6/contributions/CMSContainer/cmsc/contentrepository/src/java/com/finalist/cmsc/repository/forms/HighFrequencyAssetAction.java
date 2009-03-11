@@ -20,12 +20,17 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.AggregatedField;
+import org.mmbase.storage.search.FieldCompareConstraint;
+import org.mmbase.storage.search.FieldValueConstraint;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
 import org.mmbase.storage.search.implementation.BasicAggregatedField;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.PagerAction;
 import com.finalist.cmsc.util.NodeComparator;
 
@@ -62,34 +67,34 @@ public class HighFrequencyAssetAction extends PagerAction {
    private static final String TITLE = "title";
    private static final String COUNTALIAS = "countalias";
    private static final String ASSETSHOW = "assetShow";
-   private static final String STRICT = "strict";   
+   private static final String STRICT = "strict";
 
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
 
       HighFrequencyAssetForm highFrequencyAssetForm = (HighFrequencyAssetForm) form;
-      
+
       String channelid = highFrequencyAssetForm.getChannelid();
       boolean existChannelConstraint = StringUtils.isNotEmpty(channelid) && !ALL.equals(channelid);
       String imageShow = highFrequencyAssetForm.getAssetShow();
-      if(StringUtils.isEmpty(imageShow)){
-         imageShow="thumbnail";
+      if (StringUtils.isEmpty(imageShow)) {
+         imageShow = "thumbnail";
       }
-      
+
       Query query = cloud.createAggregatedQuery();
       List<Node> result = new ArrayList<Node>();
-      Step assetStep;
       String assettypes = highFrequencyAssetForm.getAssettypes();
       NodeManager assetManager = null;
-      if(assettypes.equals(ATTACHMENTS)){
+      if (assettypes.equals(ATTACHMENTS)) {
          assetManager = cloud.getNodeManager(ATTACHMENTS);
-      } else if(assettypes.equals(IMAGES)){
+      } else if (assettypes.equals(IMAGES)) {
          assetManager = cloud.getNodeManager(IMAGES);
-      } else if(assettypes.equals(URLS)){
+      } else if (assettypes.equals(URLS)) {
          assetManager = cloud.getNodeManager(URLS);
       }
       NodeManager channelManager = cloud.getNodeManager(CONTENTCHANNEL);
-      
+      Step assetStep;
+      Integer trashNumber = Integer.parseInt(RepositoryUtil.getTrash(cloud));
       // search in one contentchannel
       if (existChannelConstraint) {
          // search in the current channel
@@ -101,17 +106,23 @@ public class HighFrequencyAssetAction extends PagerAction {
          assetStep = creationrelStep.getNext();
          Queries.addConstraints(query, channelManager.getName() + ".number=" + channelid);
       } else {// search all contentchannels
-         assetStep = query.addStep(assetManager);
+         // CMSC-1260 Content search also finds elements in Recycle bin
+         Step channelStep = query.addStep(channelManager);
+         assetStep = query.addRelationStep(assetManager, CREATIONREL, SOURCE).getNext();
+         StepField stepField = query.createStepField(channelStep, channelManager.getField("number"));
+         FieldValueConstraint constraint = query.createConstraint(stepField, FieldCompareConstraint.NOT_EQUAL,
+               trashNumber);
+         Queries.addConstraint(query, constraint);
       }
-      
+
       NodeManager contentManager = cloud.getNodeManager(CONTENTELEMENT);
-      RelationStep assetrelStep= null;
-      if(assettypes.equals(ATTACHMENTS)||assettypes.equals(URLS)){
+      RelationStep assetrelStep = null;
+      if (assettypes.equals(ATTACHMENTS) || assettypes.equals(URLS)) {
          assetrelStep = query.addRelationStep(contentManager, POSREL, SOURCE);
-      } else if(assettypes.equals(IMAGES)){
+      } else if (assettypes.equals(IMAGES)) {
          assetrelStep = query.addRelationStep(contentManager, IMAGEREL, SOURCE);
       }
-      
+
       Step contentStep = assetrelStep.getNext();
       query.addAggregatedField(assetStep, assetManager.getField(NUMBER), AggregatedField.AGGREGATION_TYPE_GROUP_BY);
       query.addAggregatedField(assetStep, assetManager.getField(TITLE), AggregatedField.AGGREGATION_TYPE_GROUP_BY);
@@ -121,7 +132,7 @@ public class HighFrequencyAssetAction extends PagerAction {
 
       NodeList usedAssetCountResult = query.getList();
 
-      if(usedAssetCountResult!=null&&!usedAssetCountResult.isEmpty()){
+      if (usedAssetCountResult != null && !usedAssetCountResult.isEmpty()) {
          Vector<String> fields = new Vector();
          fields.addAll(Arrays.asList(COUNTALIAS, TITLE));
          Vector<String> sortDirs = new Vector();
@@ -129,18 +140,26 @@ public class HighFrequencyAssetAction extends PagerAction {
          NodeComparator comparator = new NodeComparator(fields, sortDirs);
          Collections.sort(usedAssetCountResult, comparator);
       }
-      
+
       NodeQuery nodeQuery = cloud.createNodeQuery();
-      assetStep = nodeQuery.addStep(assetManager);
-      //search in one contentchannel
-      if(existChannelConstraint){
-         nodeQuery.addRelationStep(channelManager,CREATIONREL,DESTINATION);
+      // search in one contentchannel
+      if (existChannelConstraint) {
+         assetStep = nodeQuery.addStep(assetManager);
+         nodeQuery.addRelationStep(channelManager, CREATIONREL, DESTINATION);
          Queries.addConstraints(nodeQuery, channelManager.getName() + ".number=" + channelid);
+      } else {
+         // CMSC-1260 Content search also finds elements in Recycle bin
+         Step channelStep = nodeQuery.addStep(channelManager);
+         assetStep = nodeQuery.addRelationStep(assetManager, RepositoryUtil.CREATIONREL, "SOURCE").getNext();
+         StepField stepField = nodeQuery.createStepField(channelStep, channelManager.getField("number"));
+         FieldValueConstraint channelConstraint = nodeQuery.createConstraint(stepField,
+               FieldCompareConstraint.NOT_EQUAL, trashNumber);
+         SearchUtil.addConstraint(nodeQuery, channelConstraint);
       }
       nodeQuery.setNodeStep(assetStep);
-      
+
       NodeList unusedAssetResult = nodeQuery.getList();
-      
+
       for (int i = 0; i < usedAssetCountResult.size(); i++) {
          int imgNumber = usedAssetCountResult.getNode(i).getIntValue(NUMBER);
          for (int j = 0; j < unusedAssetResult.size(); j++) {
@@ -152,20 +171,20 @@ public class HighFrequencyAssetAction extends PagerAction {
             }
          }
       }
-      
-      if(unusedAssetResult!=null&&!unusedAssetResult.isEmpty()){
+
+      if (unusedAssetResult != null && !unusedAssetResult.isEmpty()) {
          Vector<String> titleField = new Vector();
          titleField.add(TITLE);
          NodeComparator titleComparator = new NodeComparator(titleField);
          Collections.sort(unusedAssetResult, titleComparator);
       }
-      
-      if(unusedAssetResult!=null&&!unusedAssetResult.isEmpty()){
-      result.addAll(unusedAssetResult);
+
+      if (unusedAssetResult != null && !unusedAssetResult.isEmpty()) {
+         result.addAll(unusedAssetResult);
       }
-      
+
       int resultCount = result.size();
-      
+
       // used for paging about maxnum
       int maxnum = 0;
       String resultsPerPage = PropertiesUtil.getProperty(REPOSITORY_SEARCH_RESULTS_PER_PAGE);
@@ -192,14 +211,14 @@ public class HighFrequencyAssetAction extends PagerAction {
       request.setAttribute(RESULTCOUNT, resultCount);
       request.setAttribute(RESULTS, resultAfterPaging);
       request.setAttribute(STRICT, highFrequencyAssetForm.getStrict());
-      
+
       String targetForward = null;
-      if(assettypes.equals(ATTACHMENTS)){
-         targetForward =  ATTACHMENTSEARCH;
-      } else if(assettypes.equals(IMAGES)){
-         targetForward =  IMAGESEARCH;
-      } else if(assettypes.equals(URLS)){
-         targetForward =  URLSEARCH;
+      if (assettypes.equals(ATTACHMENTS)) {
+         targetForward = ATTACHMENTSEARCH;
+      } else if (assettypes.equals(IMAGES)) {
+         targetForward = IMAGESEARCH;
+      } else if (assettypes.equals(URLS)) {
+         targetForward = URLSEARCH;
       }
       return mapping.findForward(targetForward);
    }
