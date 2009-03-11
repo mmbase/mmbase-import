@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * Reads a web resource an returns its tags that may contain links to other resources. 
  *
  * @author Andr&eacute; van Toly
- * @version $Id: UrlReader.java,v 1.4 2009-02-27 10:45:07 andre Exp $
+ * @version $Id: UrlReader.java,v 1.5 2009-03-11 08:34:20 andre Exp $
  */
 public abstract class UrlReader {
     private static final Logger log = Logging.getLoggerInstance(UrlReader.class);
@@ -28,11 +28,20 @@ public abstract class UrlReader {
     protected abstract ArrayList<String> getLinks() throws IOException;
     
     /** 
-     * Contenttype from urlconection
+     * Contenttype from URLConnection
      *
      * @return  contenttype constant
      */
     protected abstract int getContentType();
+    
+    /** 
+     * The URL from URLConnection. Can be different: 
+     *   host/dir returns host/dir/ while
+     *   host/file returns host/file.
+     *
+     * @return  the url URLConnection connects to
+     */
+    protected abstract URL getUrl();
 
     protected abstract void close() throws IOException;
 

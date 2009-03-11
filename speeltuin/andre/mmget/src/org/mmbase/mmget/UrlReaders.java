@@ -12,11 +12,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Initiates an UrlReader for the url's contenttype and passes it the initiated
- * UrlConnection.
+ * Initiates an UrlReader matching the url's contenttype and passes it the initiated
+ * URLConnection.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: UrlReaders.java,v 1.3 2009-03-01 11:26:11 andre Exp $
+ * @version $Id: UrlReaders.java,v 1.4 2009-03-11 08:34:20 andre Exp $
  */
 public class UrlReaders {
     private static final Logger log = Logging.getLoggerInstance(UrlReaders.class);
@@ -25,11 +25,10 @@ public class UrlReaders {
     protected URL url = null;
     protected static int contenttype = -1;
 
-    public static UrlReader getUrlReader(URL url) throws IOException, MalformedURLException {
+    public static UrlReader getUrlReader(URL url) throws IOException {
         
         URLConnection uc = url.openConnection();
         contenttype = MMGet.contentType(uc);
-        log.debug("contenttype: " + contenttype);
         
         if (contenttype == MMGet.CONTENTTYPE_CSS) {
             reader = new CSSReader(uc);
@@ -38,9 +37,5 @@ public class UrlReaders {
         }
         return reader;
     }
-    
-    protected int getContentType() {
-        return contenttype;
-    }
-    
+
 }
