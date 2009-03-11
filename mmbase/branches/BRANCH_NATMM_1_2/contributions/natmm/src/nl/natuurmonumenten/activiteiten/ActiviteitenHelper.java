@@ -1,5 +1,6 @@
 package nl.natuurmonumenten.activiteiten;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,7 +22,7 @@ import org.mmbase.bridge.RelationList;
 public class ActiviteitenHelper {
     private static Logger logger = Logger.getLogger(ActiviteitenHelper.class);
     
-    public static Map findEvents(Cloud cloud, Date start, Date eind, String[] eventTypeIds, String provincieId, String natuurgebiedenId) {
+    public static Set findParentEvents(Cloud cloud, Date start, Date eind, String[] eventTypeIds, String provincieId, String natuurgebiedenId) {
         // Deze code komt uit searchresults.jsp, omdat ik er geen touw aan vast kan knopen heb ik geprobeerd deze letterlijk over te zetten vanuit de jsp code
         // ik heb geen poging gedaan om het refactoren, *************** (gecensureerd)
         
@@ -29,107 +30,38 @@ public class ActiviteitenHelper {
         long lDateSearchTill = eind.getTime()/1000;
         logger.debug("lDateSearchFrom: " + lDateSearchFrom);
         logger.debug("lDateSearchTill: " + lDateSearchTill);
-        
-        
-        
-        // geen idee, maar ze rekken de tijd nog wat op
-//        Calendar cal = Calendar.getInstance();
-//        cal.setTime(new Date());
-//        long lDateSearchFromDefault = (cal.getTime().getTime()/1000);
-//        cal.add(Calendar.YEAR,1); // cache events for one year from now
-//        long lDateSearchTillDefault = (cal.getTime().getTime()/1000);
-
         //If the startdate is after the enddate, there can not exist any event 
         if (lDateSearchFrom >= lDateSearchTill) {
-           return new TreeMap();
+           return Collections.EMPTY_SET;
         }
-        
-        StringBuffer defaultParentEvents = new StringBuffer();
-        
-        HashSet parentEventSet = nl.leocms.evenementen.Evenement.getEvents(cloud,lDateSearchFrom,lDateSearchTill);
-        logger.debug("defaultEvents: " + parentEventSet);
-        boolean first = true;
-        for (Iterator iter = parentEventSet.iterator(); iter.hasNext();) {
-            String eventnumber = (String) iter.next();
-            if (first) {
-                first = false;
-            } else {
-                defaultParentEvents.append(",");
-            }
-            defaultParentEvents.append(eventnumber);
+        String provincieConstraint = createProvincieConstraint(provincieId);
+        HashSet parentEvents = getEvents(cloud,lDateSearchFrom,lDateSearchTill, provincieConstraint);
+        logger.debug("parentEvents: " + parentEvents);
+        if (parentEvents.isEmpty()) {
+            return parentEvents;
         }
-        
-        logger.debug("defaultParentEvents: " + defaultParentEvents);
-
-        StringBuffer eventTypeConstraint = new StringBuffer();
-        if (eventTypeIds != null) {
-            first = true;
-            for (int i = 0; i < eventTypeIds.length; i++) {
-                // sommige soap clients geven een array met 1 leeg element ipv een lege array of null
-                if (isEmpty(eventTypeIds[i])) {
-                    continue;
-                }
-                if (first) {
-                    eventTypeConstraint.append("(");
-                    first = false;
-                } else {
-                    eventTypeConstraint.append(" OR ");
-                }
-                eventTypeConstraint.append("evenement_type.number='");
-                eventTypeConstraint.append(eventTypeIds[i]);
-                eventTypeConstraint.append("'");
-            }
-            if (!first) {
-                eventTypeConstraint.append(")");
-            }
+        removeEventsNotOnInternet(cloud, parentEvents);
+        if (!isEmpty(eventTypeIds)) {
+            removeEventsWithoutEventType(cloud, eventTypeIds, parentEvents);
         }
-        logger.debug("eventTypeConstraint: " + eventTypeConstraint);
-        
-        String provincieConstraint = null;
-        if (!isEmpty(provincieId)) {
-            provincieConstraint = "lokatie like '%," + provincieId + ",%'";
+        if (!isEmpty(natuurgebiedenId)) {
+            removeEventsWithoutNatuurgebied(cloud, natuurgebiedenId, parentEvents);
         }
-        logger.debug("provincieConstraint: " + provincieConstraint);
-        Set parentEvents = new HashSet();
-        NodeList list = cloud.getList(defaultParentEvents.toString(), "evenement,related,evenement_type", "evenement.number", provincieConstraint, null, null, null, true);
-        for (NodeIterator iter = list.nodeIterator(); iter.hasNext();) {
-            Node node = iter.nextNode();
-            String parentNumber = node.getStringValue("evenement.number");
-            boolean parentBelongsToActivityType = true;
-            boolean parentBelongsToNatuurgebied = true;
-            
-            // check evenementType
-            if (eventTypeIds != null) {
-                // TODO how to find 1 node if it exists, not the whole list?
-                NodeList list2 = cloud.getList(parentNumber, "evenement,related,evenement_type", "evenement.number", "evenement_type.isoninternet='1'", null, null, null, true);
-                if (!list2.isEmpty()) {
-                    parentBelongsToActivityType = false;
-                }
-                NodeList list3 = cloud.getList(parentNumber, "evenement,related,evenement_type", "evenement.number", eventTypeConstraint.toString(), null, null, null, true);
-                if (!list3.isEmpty()) {
-                    parentBelongsToActivityType = true;
-                }
-            }
-
-            logger.debug("natuurgebiedenId: " + natuurgebiedenId);
-            if (!isEmpty(natuurgebiedenId)) {
-                parentBelongsToNatuurgebied = false;
-                NodeList list2 = cloud.getList(natuurgebiedenId, "natuurgebieden,related,evenement", "evenement.number", "evenement.number='" + parentNumber +"'", null, null, null, true);
-                if (!list2.isEmpty()) {
-                    parentBelongsToNatuurgebied = true;
-                }
-            }
-            logger.debug("parentBelongsToNatuurgebied: " + parentBelongsToNatuurgebied);
-
-            if (parentBelongsToActivityType && parentBelongsToNatuurgebied) {
-                if (parentNumber != null && parentNumber.trim().length() > 0) {
-                    parentEvents.add(parentNumber);
-                }
-            }
+        return parentEvents;
+    }
+    public static Set getChildEvents(Cloud cloud, String parentNumber) {
+        HashSet childEvents = new HashSet();
+        NodeList childList = cloud.getList(parentNumber, "evenement1,partrel,evenement", "evenement.number", "evenement.isoninternet='true' and evenement.soort='child'", null, null, "destination", true);
+        for (NodeIterator iter = childList.nodeIterator(); iter.hasNext();) {
+            Node event = iter.nextNode();
+            childEvents.add(event.getStringValue("evenement.number"));
         }
+        return childEvents;
+    }
+    public static Map getChildEvents(Cloud cloud, long lDateSearchFrom, long lDateSearchTill, Set parentEvents) {
         logger.debug("parentEvents: " + parentEvents);
         StringBuffer sb = new StringBuffer();
-        first = true;
+        boolean first = true;
         for (Iterator iter = parentEvents.iterator(); iter.hasNext();) {
             if (first) {
                 first = false;
@@ -275,10 +207,143 @@ public class ActiviteitenHelper {
 
         return thisParticipant;
      }
+
+
+    private static void removeEventsNotOnInternet(Cloud cloud, HashSet parentEvents) {
+        for (Iterator iter = parentEvents.iterator(); iter.hasNext();) {
+            String parentNumber = (String) iter.next();
+            String constraint = createEventTypeIsOnInternetConstraint();
+            NodeList list = cloud.getList(parentNumber, "evenement,related,evenement_type", "evenement.number", constraint, null, null, null, true);
+            if (list.isEmpty()) {
+                iter.remove();
+            }
+        }
+    }
+
+    private static void removeEventsWithoutNatuurgebied(Cloud cloud, String natuurgebiedenId, HashSet parentEvents) {
+        logger.debug("natuurgebiedenId: " + natuurgebiedenId);
+        for (Iterator iter = parentEvents.iterator(); iter.hasNext();) {
+            String parentNumber = (String) iter.next();
+            String constraint = createNatuurgebiedConstraint(parentNumber);
+            NodeList list = cloud.getList(natuurgebiedenId, "natuurgebieden,related,evenement", "evenement.number", constraint, null, null, null, true);
+            if (list.isEmpty()) {
+                iter.remove();
+            }
+        }
+    }
+
+    private static void removeEventsWithoutEventType(Cloud cloud, String[] eventTypeIds, HashSet parentEvents) {
+        for (Iterator iter = parentEvents.iterator(); iter.hasNext();) {
+            String parentNumber = (String) iter.next();
+            String constraint = createEventTypeConstraint(eventTypeIds);
+            if (!isEmpty(constraint)) {
+                NodeList list = cloud.getList(parentNumber, "evenement,related,evenement_type", "evenement.number", constraint, null, null, null, true);
+                if (list.isEmpty()) {
+                    iter.remove();
+                }
+            }
+        }
+    }
+
+    private static String createProvincieConstraint(String provincieId) {
+        String provincieConstraint = null;
+        if (!isEmpty(provincieId)) {
+            provincieConstraint = " AND lokatie like '%," + provincieId + ",%' ";
+        }
+        return provincieConstraint;
+    }
+
+    private static String createNatuurgebiedConstraint(String parentNumber) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("evenement.number='");
+        sb.append(parentNumber);
+        sb.append("'");
+        logger.debug("natuurgebiedConstraint: " + sb);
+        return sb.toString();
+    }
+
+    private static String createEventTypeIsOnInternetConstraint() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("evenement_type.isoninternet='1'");
+        logger.debug("eventTypeIsOnInternetConstraint: " + sb);
+        return sb.toString();
+    }
+
+    private static String createEventTypeConstraint(String[] eventTypeIds) {
+        StringBuffer sb = new StringBuffer();
+        boolean first = true;
+        for (int i = 0; i < eventTypeIds.length; i++) {
+            if (first) {
+                sb.append("evenement_type.isoninternet = 1 AND (");
+                first = false;
+            } else {
+                sb.append(" OR ");
+            }
+            sb.append("evenement_type.number='");
+            sb.append(eventTypeIds[i]);
+            sb.append("'");
+        }
+        if (!first) {
+            sb.append(")");
+        }
+        logger.debug("eventTypeConstraint: " + sb);
+        return sb.toString();
+    }
+
     
+    public static HashSet getEvents(Cloud cloud, long lDateSearchFrom, long lDateSearchTill, String provincieConstraint) {
+        // all parent events that contain a date in the period
+        // [lDateSearchFrom,lDateSearchTill]
+        HashSet events = new HashSet();
+        String constraint = getEventsConstraint(lDateSearchFrom, lDateSearchTill);
+        if (provincieConstraint != null) {
+            constraint += provincieConstraint;
+        }
+        NodeList el = cloud.getList("", "evenement", "evenement.number", constraint, null, null, null, true);
+        for (int e = 0; e < el.size(); e++) {
+            String eventNumber = el.getNode(e).getStringValue("evenement.number");
+            if (!events.contains(eventNumber)) {
+                if (eventNumber != null && eventNumber.trim().length() > 0) {
+                    events.add(eventNumber);
+                }
+            }
+        }
+        return events;
+    }
+
+    private static String getEventsConstraint(long lDateSearchFrom, long lDateSearchTill) {
+        String sEventConstraint =
+           " (" +
+           "   ( " +
+           "       evenement.begindatum >= " + lDateSearchFrom +
+           "       AND evenement.begindatum <= " + lDateSearchTill + 
+           "   ) " +
+           "   OR " + 
+           "   (" +
+           "       evenement.einddatum >= " + lDateSearchFrom +
+           "       AND evenement.einddatum <= " + lDateSearchTill + 
+           "   ) " +
+           " ) " +
+           " AND evenement.isspare='false' AND evenement.isoninternet='true' " +
+           " AND soort='parent'";
+        return sEventConstraint;
+     }
+
     private static boolean isEmpty(String str) {
         return str == null || str.trim().length() == 0;
     }
 
+    private static boolean isEmpty(String[] str) {
+        if (str == null || str.length == 0) {
+            return true;
+        }
+        for (int i = 0; i < str.length; i++) {
+            if (!isEmpty(str[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
 
 }

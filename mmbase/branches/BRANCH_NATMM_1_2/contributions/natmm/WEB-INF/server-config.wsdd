@@ -49,6 +49,7 @@
     <beanMapping qname="myNS:Kosten" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.Kosten"/>
     <beanMapping qname="myNS:Subscription" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.Subscription"/>
     <beanMapping qname="myNS:Aanmelding" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.Aanmelding"/>
+    <beanMapping qname="myNS:EventData" xmlns:myNS="urn:activiteiten.natuurmonumenten.nl" languageSpecificType="java:nl.natuurmonumenten.activiteiten.EventData"/>
   </service>
   <transport name="http">
     <requestFlow>
