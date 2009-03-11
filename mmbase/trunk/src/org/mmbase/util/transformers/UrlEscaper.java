@@ -13,12 +13,12 @@ import org.mmbase.util.logging.*;
 
 /**
  * Escapes and Unescapes undesirable characters using % (URLEncoding)
- * 
+ *
  * Contrary to java.net.URLEncoder, it does <em>not</em> encode '+'.
  *
  * @author vpro (as org.mmbase.util.URLEscape, still present in SCAN application)
  * @author Michiel Meeuwissen
- * @version $Id: UrlEscaper.java,v 1.2 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: UrlEscaper.java,v 1.3 2009-03-11 11:45:33 michiel Exp $
  */
 public class UrlEscaper extends ReaderTransformer{
 
@@ -117,41 +117,58 @@ public class UrlEscaper extends ReaderTransformer{
      * i.e %3F is replaced with the the question mark (?).
      * @return the unescaped url.
      */
-    public Writer transformBack(Reader reader, Writer w) {
+    public Writer transformBack(Reader reader, Writer writer) {
         BufferedReader br = new BufferedReader(reader, BUF_SIZE);
         // can do something with using a buffer and anticipate that you can need a few chars more
         // (perhaps 3).
-
+        OutputStream out = new org.mmbase.util.WriterOutputStream(writer, "UTF-8");
+        byte[] buf = new byte[10];
+        int bufSize = 0;
         try {
             int t = br.read();
-            
+
             while (t != -1) {
                 if (t == HEX_ESCAPE) {
                     int n = br.read();
                     if (n != -1) {
-                        char j = (char)(from_hex((char) n)*16);
-                        int n2 = br.read();                        
+                        int j = from_hex((char) n)*16;
+                        int n2 = br.read();
                         if (n2 != -1) {
-                            j += from_hex((char) n2);                            
-                            w.write(j);
+                            j += from_hex((char) n2);
+                            log.info("Found byte " + j);
+                            buf[bufSize] = (byte) j;
+                            bufSize++;
                         } else {
-                            w.write(t);
-                            w.write(n);
+                            if (bufSize > 0) {
+                                out.write(buf, 0, bufSize);
+                                bufSize = 0;
+                            }
+                            out.write(t);
+                            out.write(n);
                             break;
                         }
                     } else {
-                        w.write(t);
+                        if (bufSize > 0) {
+                            out.write(buf, 0, bufSize);
+                            bufSize = 0;
+                        }
+                        out.write(t);
                         break;
                     }
                 } else {
-                    w.write(t);
+                    if (bufSize > 0) {
+                        out.write(buf, 0, bufSize);
+                        bufSize = 0;
+                    }
+                    out.write(t);
                 }
                 t = br.read();
             }
+            out.flush();
         } catch (IOException ioe) {
             log.warn(ioe.getMessage(), ioe);
         }
-        return w;
+        return writer;
 
     }
 
