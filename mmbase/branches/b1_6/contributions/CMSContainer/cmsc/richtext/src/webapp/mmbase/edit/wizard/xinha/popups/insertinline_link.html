@@ -161,8 +161,11 @@ function selectElement(element_id, title, url) {
    if (url != undefined && url.length != 0 ) {
       document.getElementById("f_href").value = url;
    }
-   if (title != undefined && title.length != 0 ) {
-      document.getElementById("f_title").value = title;
+   sourceTitle = document.getElementById("f_title").value;
+   if(sourceTitle == undefined || sourceTitle.length == 0 ){
+      if(title != undefined && title.length != 0 ) {
+         document.getElementById("f_title").value = title;
+      }
    }
 }
 
