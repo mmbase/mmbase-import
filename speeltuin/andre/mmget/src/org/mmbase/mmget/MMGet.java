@@ -25,18 +25,18 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.5 2009-03-01 11:26:11 andre Exp $
+ * @version $Id: MMGet.java,v 1.6 2009-03-11 08:34:20 andre Exp $
  */
 public final class MMGet {
     
     private static final Logger log = Logging.getLoggerInstance(MMGet.class);
         
     public static final String CONFIG_FILE = "mmget.xml";
-    private static final UtilReader reader = new UtilReader(CONFIG_FILE, new Runnable() {
-                                                 public void run() {
-                                                     configure(reader.getProperties());
-                                                 }
-                                             });
+    private static final UtilReader utilreader = new UtilReader(CONFIG_FILE, new Runnable() {
+                                                     public void run() {
+                                                         configure(utilreader.getProperties());
+                                                     }
+                                                 });
     /* link to start exporting from and directory of the start url  */
     public static String url;
     protected static URL startURL;
@@ -47,13 +47,13 @@ public final class MMGet {
     protected static File savedir;
 
     /* not wanted: offsite, already tried but 404 etc. */
-    protected Set<URL> ignoredURLs = new HashSet<URL>();
+    protected static Set<URL> ignoredURLs = new HashSet<URL>();
     /* urls to parse (html, css) */
-    protected List<URL> parseURLs = Collections.synchronizedList(new ArrayList<URL>());
+    protected static List<URL> parseURLs = Collections.synchronizedList(new ArrayList<URL>());
     /* url -> filename */
-    protected Map<URL,String> savedURLs = Collections.synchronizedMap(new HashMap<URL,String>());
+    protected static Map<URL,String> savedURLs = Collections.synchronizedMap(new HashMap<URL,String>());
     /* url -> link in page / new link in rewritten page */
-    protected Map<URL,Map<String,String>> url2links = Collections.synchronizedMap(new HashMap<URL,Map<String,String>>());
+    protected static Map<URL,Map<String,String>> url2links = Collections.synchronizedMap(new HashMap<URL,Map<String,String>>());
     
     /* future status */
     public Future<String> fstatus;
@@ -74,25 +74,31 @@ public final class MMGet {
     protected static final int CONTENTTYPE_OTHER = 0;
     protected static final int CONTENTTYPE_HTML  = 1;
     protected static final int CONTENTTYPE_CSS   = 2;
-    
 
     /**
      * Checks and sets links and export directory. 
      * Checks if the export directory exists, if not will try to create one in the MMBase data directory. 
      */
     public static void init() throws IOException, URISyntaxException, MalformedURLException {
-        configure(reader.getProperties());
+        configure(utilreader.getProperties());
         File datadir = MMBase.getMMBase().getDataDir();
         ResourceLoader webroot = ResourceLoader.getWebRoot();
         
         startURL = new URL(url);
+        /*
         String strUrl = startURL.toString();
-        if (strUrl.lastIndexOf("/") > 5) {
+        if (strUrl.endsWith("/")) {
+            startdirURL = startURL;
+            log.debug("1: startdir " + startdirURL.toString());
+        } else if (hasExtension(startURL.getFile())) {
             strUrl = strUrl.substring(0, strUrl.lastIndexOf("/") + 1);
             startdirURL = new URL(strUrl);
+            log.debug("2: startdir " + startdirURL.toString());
         } else {
-            startdirURL = startURL;
+            startdirURL = new URL(strUrl + "/");    // only for html !
+            log.debug("3: startdir " + startdirURL.toString());
         }
+        */
         //startdirURL = getDirectoryURL(startURL);
         /*if (startdirURL.toString().length() > startURL.toString().length()) 
                 startURL = startdirURL;
@@ -177,10 +183,16 @@ public final class MMGet {
         
         StringBuilder info = new StringBuilder();
         info.append("\n***    url: ").append(startURL.toString());
-        info.append("\n**    dir.: ").append(startdirURL.toString());
+        //info.append("\n**    dir.: ").append(startdirURL.toString());
         info.append("\n* saved in: ").append(savedir.toString());
         log.info(info.toString());
         
+        ThreadPools.jobsExecutor.submit(new Callable() {
+                 public String call() {
+                      return start();
+                 }
+            });
+        /*
         Future<String> fthread = ThreadPools.jobsExecutor.submit(new Callable() {
                  public String call() {
                       return start();
@@ -188,7 +200,9 @@ public final class MMGet {
             });
         
         try {
-            status = fthread.get();
+            status = fthread.get(60, TimeUnit.SECONDS);
+        } catch(TimeoutException e) {
+            log.error(e);
         } catch(ExecutionException e) {
             log.error(e);
         } catch(InterruptedException e) {
@@ -197,6 +211,7 @@ public final class MMGet {
         
         info.append(status);
         log.info(status);
+        */
         return info.toString();
     }
 
@@ -209,6 +224,7 @@ public final class MMGet {
         ignoredURLs.clear();
         savedURLs.clear();
         url2links.clear();
+        startdirURL = null;
         
         readUrl(startURL);
         return "Job finished?!";
@@ -216,7 +232,7 @@ public final class MMGet {
 
     /**
      * Parses urls it recieves.
-     * @param url   to html page or css
+     * @param url   link to html page or css
      */
     private void readUrl(URL url) {
         log.debug("---------------------------------------------------------------------");
@@ -226,12 +242,15 @@ public final class MMGet {
         UrlReader reader = null;
         try {
             reader = UrlReaders.getUrlReader(url);
+            url = reader.getUrl();
             dirURL = getDirectoryURL(url);
+            if (startdirURL == null) startdirURL = dirURL;
+            
         } catch (MalformedURLException e) {
             log.error("Can't parse '" + url + "' - " + e);
             return;
         } catch (IOException e) {
-            log.error("Can't parse '" + url + "' - " + e);
+            log.error("Can't find '" + url + "' - " + e);
             return;
         }
         if (reader == null) return;
@@ -241,12 +260,8 @@ public final class MMGet {
             Map<String,String> links2files = new HashMap<String,String>();      /* maps a harvested link to the resulting saved file if different */
             
             //if (startdirURL == null) startdirURL = dirURL;
-            String calcUrl = startdirURL.toString() + makeFilename(url, reader.getContentType());
-            String calcDir = calcUrl.substring(0, calcUrl.lastIndexOf("/"));
-            
-            log.debug("directory: " + dirURL.toString());
-            log.debug("@ calcUrl: " + calcUrl);
-            log.debug("@ calcDir: " + calcDir);
+            log.debug("@@ dirURL: " + dirURL.toString());
+            log.debug("@@ startdirURL: " + startdirURL.toString());
             
             Iterator<String> it = links.iterator();
             while (it.hasNext()) {
@@ -268,6 +283,7 @@ public final class MMGet {
                         continue;
                     }
                 }
+                log.debug("link: " + linkURL.toString());
                 
                 if (ignoredURLs.contains(linkURL)) continue;
                 if (!linkURL.getHost().equals(url.getHost())) {
@@ -281,20 +297,30 @@ public final class MMGet {
                     ignoredURLs.add(linkURL);
                     continue;
                 }
-                                
-                // save resource
-                String filename = saveResource(linkURL);
-                if (filename == null) continue;
-                //log.debug("filename: " + filename);
-                
-                // !!? String dir = dirURL.toString();  /* remove last / from dir for UriParser */
-                // !!? if (dir.endsWith("/")) dir = dir.substring(0, dir.lastIndexOf("/"));
+                    
+                ResourceWriter rw = null;
+                try {
+                    rw = new ResourceWriter(linkURL);
+                    int ctype = rw.getContentType();
+                    if (ctype < 1) { 
+                        rw.write(); 
+                    } else {
+                        rw.disconnect();
+                        addParseURL(linkURL);
+                    }
+                } catch(IOException e) {
+                    log.error(e);
+                }
+                if (rw == null) continue;
+                String filename = rw.getFilename();
                 
                 String calclink = startdirURL.toString() + filename;    // 'calculated' link
-                String relative = UriParser.makeRelative(calcDir, calclink);
-
+                String calcdir  = dirURL.toString();
+                if (calcdir.endsWith("/")) calcdir = calcdir.substring(0, calcdir.lastIndexOf("/"));
+                
+                String relative = UriParser.makeRelative(calcdir, calclink);
+                log.debug("relative: " + relative);
                 if (!"".equals(link) && !links2files.containsKey(link) && !link.equals(relative)) { // only when different
-                    //log.debug("link: " + link + ", relative: " + relative);
                     links2files.put(link, relative); /* /dir/css/bla.css + ../css/bla.css */
                 }
                 
@@ -304,7 +330,14 @@ public final class MMGet {
             synchronized(url2links) {
                 if (!url2links.containsKey(url)) url2links.put(url, links2files);
             }
-            saveResource(url);
+            ResourceReWriter rrw = null;
+            try {
+                rrw = new ResourceReWriter(url);
+                rrw.write();
+            } catch (IOException e) {
+                log.error(e);
+            }
+            //saveResource(url);
             
             URL nextURL = getParseURL();
             if (nextURL != null) readUrl(nextURL);  // recurse!
@@ -511,6 +544,41 @@ public final class MMGet {
      *       /   
      *
      * @param  url resource for which a filename is needed
+     * @return path and filename that can be saved (f.e. pics/button.gif)
+     */
+    public String makeFilename(URL url) {
+        String filename = url.getFile();    
+        filename = removeSessionid(filename);
+        
+        String link = url.toString();
+        link = removeSessionid(link);
+        
+        // path starting from startdirURL
+        int startdirlength = startdirURL.toString().length();
+        if (link.length() > startdirlength) {
+            filename = link.substring(startdirlength);
+        }
+        
+        if (filename.equals("") || filename.endsWith("/")) {
+            filename = filename + "index.html";
+        }
+    
+        return filename;
+    }
+    
+    /**
+     * Creates the directory/filename to save a file (= url - url startdir),
+     * does not start with a "/". The filename is the exact location of the 
+     * file in the export directory. Goes something like this:
+     *    1. substract the startdir from this url, that is the file to save
+     *    2. check if /bla is a html-page, make it /bla/index.html if needed
+     *       possible input is:
+     *       /bla
+     *       /bla/
+     *       /bla/blabla.html
+     *       /   
+     *
+     * @param  url resource for which a filename is needed
      * @param  type content-type of the file to save
      * @return path and filename that can be saved (f.e. pics/button.gif)
      */
@@ -540,21 +608,53 @@ public final class MMGet {
             filename = link.substring(startdirlength);
         }
         
-        //log.debug("0: file: " + filename);
+        log.debug("0: file: " + filename);
         if (type == CONTENTTYPE_HTML) {
             if (filename.equals("")) {
                 filename = "index.html";
             } else if (!filename.endsWith("/") && !hasExtension(filename)) {
                 filename = filename + "/index.html";
-                //log.debug("1: /bla file: " + filename);
+                log.debug("1: /bla file: " + filename);
             }
             
             if (filename.endsWith("/")) {
                 filename = filename + "index.html";
-                //log.debug("2: /bla/ file: " + filename);
+                log.debug("2: /bla/ file: " + filename);
             }
         }
     
+        return filename;
+    }
+    
+    /**
+     * Returns the file or guesses it
+     */
+    public static String getFileUrl(URL url, int type) {
+        String link = url.toString();
+        String filename = url.getFile();
+        filename = removeSessionid(filename);
+        
+        String serverpart = link;
+        if (link.indexOf("/", 7) > 7) {
+            serverpart = link.substring(0, link.indexOf("/", 7));
+        }
+
+        if (type == CONTENTTYPE_HTML) {
+            if (filename.equals("")) {
+                filename = "index.html";
+            } else if (!filename.endsWith("/") && !hasExtension(filename)) {
+                filename = filename + "/index.html";
+                log.debug("1: /bla file: " + filename);
+            }
+            
+            if (filename.endsWith("/")) {
+                filename = filename + "index.html";
+                log.debug("2: /bla/ file: " + filename);
+            }
+        }
+            
+        filename = serverpart + filename;
+        log.debug("server: " + serverpart + ", returning filename: " + filename);
         return filename;
     }
     
@@ -592,6 +692,7 @@ public final class MMGet {
                 log.warn(res + " - " + huc.getResponseMessage() + " : " + url.toString());
                 return null;
             } else {
+                log.debug("url from uc: " + huc.getURL().toString());
                 return huc;
             }
         } else if (url.getProtocol().equals("file")) {
@@ -637,7 +738,7 @@ public final class MMGet {
     /** 
      * Checks if a filename ends with an extension.
      *
-     * @param   file    path or filename to check
+     * @param   file    path or filename to check (not an URL!)
      * @return  true if it contains an extension like .html f.e.
      */
      public static boolean hasExtension(String file) {

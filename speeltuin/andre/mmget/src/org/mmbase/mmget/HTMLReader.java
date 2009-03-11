@@ -15,13 +15,13 @@ import org.mmbase.util.logging.Logging;
  * Reads a web resource an returns its tags that may contain links to other resources. 
  *
  * @author Andr&eacute; van Toly
- * @version $Id: HTMLReader.java,v 1.3 2009-03-01 11:26:11 andre Exp $
+ * @version $Id: HTMLReader.java,v 1.4 2009-03-11 08:34:20 andre Exp $
  */
 public class HTMLReader extends UrlReader {
     private static final Logger log = Logging.getLoggerInstance(HTMLReader.class);
     
-    protected URLConnection uc = null;
-    protected BufferedReader inrdr = null;
+    private URLConnection uc = null;
+    private BufferedReader inrdr = null;
 
     /** 
      * Tags to be looking for.
@@ -66,6 +66,10 @@ public class HTMLReader extends UrlReader {
 
     protected int getContentType() {
         return MMGet.contentType(uc);
+    }
+    
+    protected URL getUrl() {
+        return uc.getURL();
     }
     
     /** 
