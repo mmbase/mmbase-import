@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view exportsource="cmsc file dumper" timestamp="20060704141419">
+<!--  niet altijd default view aanmaken, is verstorend -->
+<!--  	<node number="102341" owner="default">
+		<title>gallery/basic</title>
+		<description>Gallery</description>
+		<resource>gallery/basic.jsp</resource>
+	</node>-->
+</view>

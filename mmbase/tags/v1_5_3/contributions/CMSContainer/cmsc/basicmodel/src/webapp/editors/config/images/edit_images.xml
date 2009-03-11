@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_images">
+	<title xml:lang="nl">Afbeelding</title>
+	<title xml:lang="en">Image</title>
+	<title xml:lang="zh">图片</title>
+
+    <field name="title" dtrequired="true">
+		<prompt xml:lang="en">Title</prompt>
+		<prompt xml:lang="nl">Titel</prompt>
+		<prompt xml:lang="zh">标题</prompt>
+	</field>
+    <field name="description" ftype="text" rows="4">
+		<prompt xml:lang="en">Description</prompt>
+		<prompt xml:lang="nl">Omschrijving</prompt>
+		<prompt xml:lang="zh">描述</prompt>
+	</field>
+    <field name="handle" ftype="image">
+		<prompt xml:lang="en">Image</prompt>
+		<prompt xml:lang="nl">Afbeelding</prompt>
+		<prompt xml:lang="zh">图片</prompt>
+	</field>
+</form-schema>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout exportsource="cmsc file dumper" timestamp="20070324161134">
+   <node number="173753" owner="default">
+      <title>Newsletter Basic</title>
+      <resource>newsletter/newsletter_basic.jsp</resource>
+   </node>
+</layout>

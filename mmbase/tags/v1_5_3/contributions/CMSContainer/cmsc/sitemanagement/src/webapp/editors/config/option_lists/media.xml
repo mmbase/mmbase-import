@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<optionlist name="media">
+   <option id="all">
+      <prompt xml:lang="nl">All</prompt>
+      <prompt xml:lang="en">All</prompt>
+      <prompt xml:lang="zh">全部</prompt>
+   </option>
+   <option id="screen">
+      <prompt xml:lang="nl">Screen</prompt>
+      <prompt xml:lang="en">Screen</prompt>
+      <prompt xml:lang="zh">屏幕</prompt>
+   </option>
+   <option id="print">
+      <prompt xml:lang="nl">Print</prompt>
+      <prompt xml:lang="en">Print</prompt>
+      <prompt xml:lang="zh">打印</prompt>
+   </option>
+   <option id="handheld">
+      <prompt xml:lang="nl">Handheld</prompt>
+      <prompt xml:lang="en">Handheld</prompt>
+      <prompt xml:lang="zh">可拖拽</prompt>
+   </option>
+   <option id="aural">
+      <prompt xml:lang="nl">Aural</prompt>
+      <prompt xml:lang="en">Aural</prompt>
+      <prompt xml:lang="zh">伴音</prompt>
+   </option>
+   <option id="braille">
+      <prompt xml:lang="nl">Braille</prompt>
+      <prompt xml:lang="en">Braille</prompt>
+      <prompt xml:lang="zh">点字印刷</prompt>
+   </option>
+   <option id="embossed">
+      <prompt xml:lang="nl">Embossed</prompt>
+      <prompt xml:lang="en">Embossed</prompt>
+      <prompt xml:lang="zh">浮凸</prompt>
+   </option>
+   <option id="projection">
+      <prompt xml:lang="nl">Projection</prompt>
+      <prompt xml:lang="en">Projection</prompt>
+      <prompt xml:lang="zh">投影</prompt>
+   </option>
+   <option id="tty">
+      <prompt xml:lang="nl">Tty (teletypes, terminals etc)</prompt>
+      <prompt xml:lang="en">Tty (teletypes, terminals etc)</prompt>
+      <prompt xml:lang="zh">电传打字电报机 (电传打字机, 终端设备等)</prompt>
+   </option>
+   <option id="Tv">
+      <prompt xml:lang="nl">Television</prompt>
+      <prompt xml:lang="en">Television</prompt>
+      <prompt xml:lang="zh">电视</prompt>
+   </option>
+</optionlist>
