@@ -18,6 +18,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.*;
 
 import org.mmbase.util.functions.*;
+import org.mmbase.util.transformers.UrlEscaper;
 import org.mmbase.servlet.*;
 import org.mmbase.module.core.*;
 
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.32 2008-09-03 20:40:11 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.33 2009-03-11 11:44:19 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -121,6 +122,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
     }
 
 
+    private static final UrlEscaper URL_ESCAPER = new UrlEscaper();
     public static String getPath(HttpServletRequest request) {
         String path = (String) request.getAttribute("javax.servlet.forward.servlet");
         if (path == null) {
@@ -134,7 +136,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
         // i think path is always != null now.
         if (path == null) path = request.getPathInfo();
 
-        return path;
+        return URL_ESCAPER.transformBack(path);
     }
 
 
