@@ -12,7 +12,7 @@ import org.mmbase.util.logging.Logging;
  * Typically to be used for html and css files.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ResourceReWriter.java,v 1.2 2009-03-11 16:11:51 andre Exp $
+ * @version $Id: ResourceReWriter.java,v 1.3 2009-03-12 10:30:38 andre Exp $
  */
 public class ResourceReWriter extends ResourceWriter {
     private static final Logger log = Logging.getLoggerInstance(ResourceReWriter.class);
@@ -28,7 +28,7 @@ public class ResourceReWriter extends ResourceWriter {
      */
     public ResourceReWriter(URL url) throws IOException {
         super(url);
-        log.debug("Trying to download... " + url.toString() + " to " + filename);
+        //log.debug("Trying to download... " + url.toString() + " to " + filename);
         this.uc = super.uc;
         
         this.url = getUrl();
@@ -51,7 +51,7 @@ public class ResourceReWriter extends ResourceWriter {
      * @param uc the already elsewhere created URLConnection for efficiency
      */
     private void rewrite() throws IOException {
-        log.debug("REwriting: " + url + ", filename: " + filename);
+        log.debug("REwriting: " + url + " -> file: " + filename);
         File f = getFile(filename);
         if (f.exists()) {
             //log.warn("File '" + f.toString() + "' already exists, deleting it and saving again.");
@@ -101,7 +101,7 @@ public class ResourceReWriter extends ResourceWriter {
         in.close();
         out.close();
         
-        log.debug("Saved: " + f.toString() );
+        log.debug("Saved: " + url + " -> file: " + f.toString() );
     
     }
     
