@@ -62,8 +62,8 @@
 			width:384px;
 			height:71px;
 			position:absolute;
-			left:780px;
-			top:35px;
+			right:18px;
+			top:36px;
 			z-index:1000;
 		}
 
