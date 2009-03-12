@@ -30,7 +30,7 @@ var commitDifficulties = function () {
 
     $.ajax({ type: "POST",
              async: false,
-             url: "${mm:link('/assessment/stage5-editdifficulties.jspx')}",
+             url: "${mm:link('/assessment/stage2-editdifficulties.jspx')}",
              data: params,
              complete: function(req, textStatus) {
 
