@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
  * Writes a resource found on an url to disk. 
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ResourceWriter.java,v 1.2 2009-03-11 16:11:51 andre Exp $
+ * @version $Id: ResourceWriter.java,v 1.3 2009-03-12 10:30:38 andre Exp $
  */
 public class ResourceWriter {
     private static final Logger log = Logging.getLoggerInstance(ResourceWriter.class);
@@ -28,8 +28,6 @@ public class ResourceWriter {
      * @throws IOException When failed to write
      */
     public ResourceWriter(URL u) throws IOException {
-        log.debug("Trying to download .. " + u.toString());
-
         try {
             uc = (HttpURLConnection)getURLConnection(u);
         } catch (IOException e) {
@@ -167,43 +165,13 @@ public class ResourceWriter {
      * @return path and filename that can be saved (f.e. pics/button.gif)
      */
     public String makeFilename(URL url) {
-        /*
-        start: www.toly.nl/bla
-        link:  www.toly.nl/pics/button.gif
-        filename: 1up/pics/buttons.gif
-        
-        start: www.toly.nl/bla/bla
-        link:  www.toly.nl/pics/button.gif
-        filename: 2up/pics/buttons.gif
-        */
-        String filename = url.getFile();    
-        filename = MMGet.removeSessionid(filename);
-        
         String link = url.toString();
         link = MMGet.removeSessionid(link);
         
-        // path starting from startdirURL
-        int startdirlength = MMGet.startdirURL.toString().length();
-        if (link.length() > startdirlength) {
-            filename = link.substring(startdirlength);
-        }
-        
-        //log.debug("0: file: " + filename);
-        if (contenttype == MMGet.CONTENTTYPE_HTML) {
-            if (filename.equals("")) {
-                filename = "index.html";
-            } else if (!filename.endsWith("/") && !MMGet.hasExtension(filename)) {
-                filename = filename + "/index.html";
-                //log.debug("1: /bla file: " + filename);
-            }
-            
-            if (filename.endsWith("/")) {
-                filename = filename + "index.html";
-                //log.debug("2: /bla/ file: " + filename);
-            }
-        }
-        
-        log.debug("filename: " + filename);
+        String filename = link.substring(MMGet.serverpart.length());
+        if (filename.startsWith("/")) filename = filename.substring(1);
+
+        log.debug("url: " + url.toString() + " -> file: " + filename);
         return filename;
     }
  }

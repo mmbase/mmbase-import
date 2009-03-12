@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.7 2009-03-11 16:11:51 andre Exp $
+ * @version $Id: MMGet.java,v 1.8 2009-03-12 10:30:38 andre Exp $
  */
 public final class MMGet {
     
@@ -39,6 +39,7 @@ public final class MMGet {
                                                  });
     /* link to start exporting from and directory of the start url  */
     public static String url;
+    public static String serverpart;
     protected static URL startURL;
     protected static URL startdirURL;
     
@@ -85,7 +86,11 @@ public final class MMGet {
         ResourceLoader webroot = ResourceLoader.getWebRoot();
         
         startURL = new URL(url);
-        
+        serverpart = url;
+        if (url.lastIndexOf("/") > 7) {
+            serverpart = url.substring(0, url.indexOf("/", 7));
+        }
+
         // savedir
         if (directory == null || "".equals(directory) || !webroot.getResource(directory).openConnection().getDoInput()) {
             log.warn("Exportdir '" + directory + "' does not exist! Will try to save to MMBase datadir.");
@@ -305,13 +310,13 @@ public final class MMGet {
                     if (rw == null) continue;
                 }
                 
-                String calclink = startdirURL.toString() + filename;    // 'calculated' link
+                String calclink = serverpart + "/" + filename;    // 'calculated' link
                 String calcdir  = dirURL.toString();
                 if (calcdir.endsWith("/")) calcdir = calcdir.substring(0, calcdir.lastIndexOf("/"));
                 
                 String relative = UriParser.makeRelative(calcdir, calclink);
-                log.debug("relative: " + relative);
                 if (!"".equals(link) && !links2files.containsKey(link) && !link.equals(relative)) { // only when different
+                    log.debug("link2files: " + link + " -> " + relative);
                     links2files.put(link, relative); /* /dir/css/bla.css + ../css/bla.css */
                 }
                 
