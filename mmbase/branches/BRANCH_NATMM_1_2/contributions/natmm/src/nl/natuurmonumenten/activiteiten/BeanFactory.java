@@ -166,6 +166,16 @@ class BeanFactory {
         
         Cloud cloud = node.getCloud();
         String eventNumber = node.getStringValue("number");
+        
+        NodeList medewerkerList = cloud.getList(eventNumber, "evenement,readmore,medewerkers", "medewerkers.email", null, null, null, "destination", true);
+        if (medewerkerList != null && !medewerkerList.isEmpty()) {
+            Node medewerkerNode= medewerkerList.getNode(0);
+             String email = medewerkerNode.getStringValue("medewerkers.email");
+             if (!isEmpty(email)) {
+                 bean.setContactPersoon("email");
+             }
+        }
+        
         Node imageNode = ActiviteitenHelper.getFoto(cloud, eventNumber);
         if (imageNode != null) {
             bean.setFoto(createFoto(imageNode));
