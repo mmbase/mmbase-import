@@ -3,13 +3,7 @@ package com.finalist.cmsc.community.forms;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,15 +14,12 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
 import org.apache.struts.actions.DispatchAction;
 import org.apache.struts.upload.FormFile;
 import org.supercsv.cellprocessor.ConvertNullTo;
 import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.constraint.StrRegEx;
 import org.supercsv.cellprocessor.ift.CellProcessor;
-import org.supercsv.exception.SuperCSVException;
 import org.supercsv.exception.SuperCSVReflectionException;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.CsvBeanWriter;
@@ -58,14 +49,14 @@ public class ReferenceImportExportAction extends DispatchAction {
          null };
 
    public ActionForward listGroups(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws IOException {
+         HttpServletResponse response) {
       List<Authority> groups = personService.getAllAuthorities();
       request.setAttribute("groups", groups);
       return mapping.findForward("show");
    }
 
    public ActionForward showImportPage(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-         HttpServletResponse response) throws IOException {
+         HttpServletResponse response) {
       String groupId = request.getParameter("imGroupId");
       request.setAttribute("groupId", groupId);
       return mapping.findForward("failed");
@@ -193,7 +184,6 @@ public class ReferenceImportExportAction extends DispatchAction {
       boolean isXML = "xml".equalsIgnoreCase(fileName.substring(fileName.lastIndexOf(".")+1));
       boolean isCSV = "csv".equalsIgnoreCase(fileName.substring(fileName.lastIndexOf(".")+1));
       String level = myForm.getLevel();
-      ActionMessages messages = new ActionMessages();
       if (!isXML && !isCSV) {
 //         messages.add("invalidMessage", new ActionMessage("datafile.unsupport"));
 //         saveMessages(request, messages);
@@ -364,15 +354,5 @@ public class ReferenceImportExportAction extends DispatchAction {
    public static Log getLog() {
       return log;
    }
-   private boolean isCorretFile(ICsvBeanReader inFile , String[] header) throws SuperCSVReflectionException, SuperCSVException, IOException{
-      CommunityExportForCsvVO communityVO;
-      boolean isCorrectFile = true;
-      while ((communityVO = inFile.read(CommunityExportForCsvVO.class, header, userProcessors)) != null) {
-         if(StringUtils.isEmpty(communityVO.getAuthenticationUserId()) || StringUtils.isEmpty(communityVO.getAuthenticationPassword()) || StringUtils.isEmpty(communityVO.getEmail())) {
-            isCorrectFile = false;
-            break;
-         }
-      }
-      return isCorrectFile;
-   }
+
 }

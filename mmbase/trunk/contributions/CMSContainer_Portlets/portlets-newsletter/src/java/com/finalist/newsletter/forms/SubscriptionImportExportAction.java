@@ -10,7 +10,6 @@ import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
-import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -40,13 +39,11 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
    private static final String PARAM_NEWSLETTERID = "newsletterId";
 
    private NewsletterSubscriptionServices subscriptionServices;
-   private NewsletterService newsletterService;
 
    protected void onInit() {
       super.onInit();
       subscriptionServices = (NewsletterSubscriptionServices) getWebApplicationContext().getBean(
                "subscriptionServices");
-      newsletterService = (NewsletterService) getWebApplicationContext().getBean("newsletterServices");
    }
 
    public ActionForward export(ActionMapping mapping, ActionForm form, HttpServletRequest request,
@@ -129,7 +126,7 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
       ActionMessages messages = new ActionMessages();
       FormFile myFile = myForm.getDatafile();
       boolean isCSV = myFile.getFileName().toLowerCase().endsWith(".csv");
-      int newsletterId = Integer.parseInt((String) request.getParameter(PARAM_NEWSLETTERID));
+      int newsletterId = Integer.parseInt(request.getParameter(PARAM_NEWSLETTERID));
       if (isCSV) {
          byte[] fileData = myFile.getFileData();
          String fileString = new String(fileData);
