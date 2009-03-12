@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
  * Writes a resource found on an url to disk. 
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ResourceWriter.java,v 1.3 2009-03-12 10:30:38 andre Exp $
+ * @version $Id: ResourceWriter.java,v 1.4 2009-03-12 10:55:20 andre Exp $
  */
 public class ResourceWriter {
     private static final Logger log = Logging.getLoggerInstance(ResourceWriter.class);
@@ -151,17 +151,10 @@ public class ResourceWriter {
     /**
      * Creates the directory/filename to save a file (= url - url startdir),
      * does not start with a "/". The filename is the exact location of the 
-     * file in the export directory. Goes something like this:
-     *    1. substract the startdir from this url, that is the file to save
-     *    2. check if /bla is a html-page, make it /bla/index.html if needed
-     *       possible input is:
-     *       /bla
-     *       /bla/
-     *       /bla/blabla.html
-     *       /   
+     * file in the export directory. The url should be the one from URLConverter 
+     * to be able to conclude if we have a directory or a file (directory should end with a slash).
      *
-     * @param  url resource for which a filename is needed
-     * @param  type content-type of the file to save
+     * @param  url of resource
      * @return path and filename that can be saved (f.e. pics/button.gif)
      */
     public String makeFilename(URL url) {
@@ -170,6 +163,21 @@ public class ResourceWriter {
         
         String filename = link.substring(MMGet.serverpart.length());
         if (filename.startsWith("/")) filename = filename.substring(1);
+
+        log.debug("0: file: " + filename);
+        if (contenttype == MMGet.CONTENTTYPE_HTML) {
+            if (filename.equals("")) {
+                filename = "index.html";
+            } else if (!filename.endsWith("/") && !MMGet.hasExtension(filename)) {
+                filename = filename + "/index.html";
+                log.debug("1: /bla file: " + filename); // TODO: add extra ../ to rewritten links !!?
+            }
+            
+            if (filename.endsWith("/")) {
+                filename = filename + "index.html";
+                log.debug("2: /bla/ file: " + filename);
+            }
+        }
 
         log.debug("url: " + url.toString() + " -> file: " + filename);
         return filename;
