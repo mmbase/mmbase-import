@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.8 2009-03-12 10:30:38 andre Exp $
+ * @version $Id: MMGet.java,v 1.9 2009-03-12 10:55:20 andre Exp $
  */
 public final class MMGet {
     
@@ -179,6 +179,7 @@ public final class MMGet {
                       return start();
                  }
             });
+        // this Future stuff prevents errors to surface
         /*
         Future<String> fthread = ThreadPools.jobsExecutor.submit(new Callable() {
                  public String call() {
@@ -376,43 +377,7 @@ public final class MMGet {
         if (dir.lastIndexOf("/") > 7 && hasExtension(url.getFile())) {
             dir = dir.substring(0, dir.lastIndexOf("/") + 1);
         }
-        
-        /*
-        } else if (hasExtension(url.getFile())) {
-            dir = link.substring(0, link.lastIndexOf("/") + 1);
-            log.debug("2: dir " + dir);
-        } else {
-            startdirURL = new URL(strUrl + "/");    // only for html !
-            log.debug("3: startdir " + startdirURL.toString());
-        }
-        */
-        /*
-        String path = url.getPath();
-        
-        String server = link;
-        if (link.lastIndexOf("/") > 7) server = link.substring(0, link.indexOf("/", 7));
-        
-        if ("".equals(path)) { // this only happens with links like: http://www.toly.net
-            link = link + "/";
-        } else if (hasExtension(path)) {
-            link = link.substring(0, link.lastIndexOf("/") + 1);
-        } else if (!path.endsWith("/")) {   // here we can have a page
-            
-            // this can only be tested with a connection 
-            try {
-                URLConnection uc = url.openConnection();
-                int type = contentType(uc);
-                if (type == CONTENTTYPE_HTML) {
-                    path = path + "/";
-                }
-            } catch (IOException ioe) {
-                log.warn("Can not open connection " + url + " : " + ioe );
-            }
-            
-            link = server + path;   // make sure query and fragment (#sdf) are gone
-            link = link.substring(0, link.lastIndexOf("/") + 1);
-        }
-        */
+
         log.debug("url: " + url + ", returning: " + dir);
         
         try {
@@ -422,132 +387,6 @@ public final class MMGet {
         }
     }
 
-    /**
-     * Creates the directory/filename to save a file (= url - url startdir),
-     * does not start with a "/". The filename is the exact location of the 
-     * file in the export directory. Goes something like this:
-     *    1. substract the startdir from this url, that is the file to save
-     *    2. check if /bla is a html-page, make it /bla/index.html if needed
-     *       possible input is:
-     *       /bla
-     *       /bla/
-     *       /bla/blabla.html
-     *       /   
-     *
-     * @param  url resource for which a filename is needed
-     * @return path and filename that can be saved (f.e. pics/button.gif)
-     */
-//     public String makeFilename(URL url) {
-//         String filename = url.getFile();    
-//         filename = removeSessionid(filename);
-//         
-//         String link = url.toString();
-//         link = removeSessionid(link);
-//         
-//         // path starting from startdirURL
-//         int startdirlength = startdirURL.toString().length();
-//         if (link.length() > startdirlength) {
-//             filename = link.substring(startdirlength);
-//         }
-//         
-//         if (filename.equals("") || filename.endsWith("/")) {
-//             filename = filename + "index.html";
-//         }
-//     
-//         return filename;
-//     }
-    
-    /**
-     * Creates the directory/filename to save a file (= url - url startdir),
-     * does not start with a "/". The filename is the exact location of the 
-     * file in the export directory. Goes something like this:
-     *    1. substract the startdir from this url, that is the file to save
-     *    2. check if /bla is a html-page, make it /bla/index.html if needed
-     *       possible input is:
-     *       /bla
-     *       /bla/
-     *       /bla/blabla.html
-     *       /   
-     *
-     * @param  url resource for which a filename is needed
-     * @param  type content-type of the file to save
-     * @return path and filename that can be saved (f.e. pics/button.gif)
-     */
-//     public String makeFilename(URL url, int type) {
-//         /*
-//         
-//         start: www.toly.nl/bla
-//         link:  www.toly.nl/pics/button.gif
-//         
-//         filename: 1up/pics/buttons.gif
-//         
-//         start: www.toly.nl/bla/bla
-//         link:  www.toly.nl/pics/button.gif
-//         
-//         filename: 2up/pics/buttons.gif
-//         
-//         */
-//         String filename = url.getFile();    
-//         filename = removeSessionid(filename);
-//         
-//         String link = url.toString();
-//         link = removeSessionid(link);
-//         
-//         // path starting from startdirURL
-//         int startdirlength = startdirURL.toString().length();
-//         if (link.length() > startdirlength) {
-//             filename = link.substring(startdirlength);
-//         }
-//         
-//         log.debug("0: file: " + filename);
-//         if (type == CONTENTTYPE_HTML) {
-//             if (filename.equals("")) {
-//                 filename = "index.html";
-//             } else if (!filename.endsWith("/") && !hasExtension(filename)) {
-//                 filename = filename + "/index.html";
-//                 log.debug("1: /bla file: " + filename);
-//             }
-//             
-//             if (filename.endsWith("/")) {
-//                 filename = filename + "index.html";
-//                 log.debug("2: /bla/ file: " + filename);
-//             }
-//         }
-//     
-//         return filename;
-//     }
-    
-    /**
-     * Returns the file or guesses it
-     */
-//     public static String getFileUrl(URL url, int type) {
-//         String link = url.toString();
-//         String filename = url.getFile();
-//         filename = removeSessionid(filename);
-//         
-//         String serverpart = link;
-//         if (link.indexOf("/", 7) > 7) {
-//             serverpart = link.substring(0, link.indexOf("/", 7));
-//         }
-// 
-//         if (type == CONTENTTYPE_HTML) {
-//             if (filename.equals("")) {
-//                 filename = "index.html";
-//             } else if (!filename.endsWith("/") && !hasExtension(filename)) {
-//                 filename = filename + "/index.html";
-//                 log.debug("1: /bla file: " + filename);
-//             }
-//             
-//             if (filename.endsWith("/")) {
-//                 filename = filename + "index.html";
-//                 log.debug("2: /bla/ file: " + filename);
-//             }
-//         }
-//             
-//         filename = serverpart + filename;
-//         log.debug("server: " + serverpart + ", returning filename: " + filename);
-//         return filename;
-//     }
     
     /**
      * remove ;jsessionid=a69bd9e162de1cfa3ea57ef6f3cf03af
@@ -565,37 +404,6 @@ public final class MMGet {
         return str;   
     }
     
-    /**
-     * Opens and tests a connection to an url
-     *
-     * @param  url
-     * @return a connection or null in case of a bad response (f.e. not a 200)
-     */
-//     private static URLConnection getURLConnection(URL url) throws SocketException, IOException {
-//         URLConnection uc = url.openConnection();
-//         if (url.getProtocol().equals("http")) {
-//             HttpURLConnection huc = (HttpURLConnection)uc;
-//             int res = huc.getResponseCode();
-//             if (res == -1) {
-//                 log.error("Server error, bad HTTP response: " + res);
-//                 return null;
-//             } else if (res < 200 || res >= 300) {
-//                 log.warn(res + " - " + huc.getResponseMessage() + " : " + url.toString());
-//                 return null;
-//             } else {
-//                 log.debug("url from uc: " + huc.getURL().toString());
-//                 return huc;
-//             }
-//         } else if (url.getProtocol().equals("file")) {
-//             InputStream is = uc.getInputStream();
-//             is.close();
-//             // If that didn't throw an exception, the file is probably OK
-//             return uc;
-//         } else {
-//             // return "(non-HTTP)";
-//             return null;
-//         }
-//     }
     
     /**
      * Creates an empty file in the save directory, checks if its directories exist (but not itself).
