@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.76 2008-08-01 16:39:30 michiel Exp $
+     * @version  $Id: list.jsp,v 1.77 2009-03-13 15:14:32 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -200,9 +200,12 @@ NodeManager manager=cloud.getNodeManager(mainManager);
 if (!manager.mayCreateNode()) creatable=false;
 
 // relationmanager test for searchlists
-String roleStr = request.getParameter("relationRole");
-String originNodeNr = request.getParameter("relationOriginNode");
-String createDir  = request.getParameter("relationCreateDir");
+String roleStr =(String) listConfig.getAttributes().get("relationRole");
+String originNodeNr = (String) listConfig.getAttributes().get("relationOriginNode");
+String createDir  = (String) listConfig.getAttributes().get("relationCreateDir");
+if ( originNodeNr == null || "".equals(originNodeNr)) {
+   originNodeNr = (String) listConfig.getAttributes().get("origin");
+}
 boolean checkRelationRights = originNodeNr != null && !"".equals(originNodeNr) && roleStr != null && !"".equals(roleStr);
 Node originNode = null;
 RelationManager relationManager = null;
