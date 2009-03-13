@@ -4,12 +4,14 @@ import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.functions.*;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
  * Several functions on mmbase nodes which are used by didactor.
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.10 2009-01-07 17:45:44 michiel Exp $
+ * @version $Id: Functions.java,v 1.11 2009-03-13 14:56:59 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
@@ -23,7 +25,10 @@ public class Functions {
 
     /**
      * returns a list of nodenumbers which follows the path in the cloud up, via learnobjects and posrel. This
-     * would mean that the last node in this path is the learobject directly related to the education node.
+     * would mean that the last node in this path is the learobject directly related to the
+     * education node.
+     * The first object in the returned list is the object itself.
+     * @return &lt;node number&gt;,&lt;parent node number&gt;,....&lt;node number node directly related to deducation&gt;
      */
     public List<Integer> path() {
         List<Integer> result = new ArrayList<Integer>();
@@ -72,7 +77,6 @@ public class Functions {
     /**
      * The sequence number in the tree of learnobjects in the current education.
      */
-
     public Integer sequence() {
         Node education = education();
         if (education != null) {
@@ -89,22 +93,25 @@ public class Functions {
         return null;
     }
 
-    /*
-    public String url() {
-        List<Integer> result = new ArrayList<Integer>();
-        result.add(node.getNumber());
-        NodeList parents = node.getRelatedNodes("learnobjects", "posrel", "source");
-        while (parents.size() > 0) {
-            assert parents.size() == 1;
-            Node parent = parents.getNode(0);
-            if (result.contains(parent.getNumber())) break;
-            result.add(parent.getNumber());
-            parents = parent.getRelatedNodes("learnobjects", "posrel", "source");
+    public static String url(@Required @Name("node") Node learnobject,
+                             @Required @Name("request") HttpServletRequest request) {
+        Functions fun = new Functions();
+        fun.setNode(learnobject);
+        // probably some didactor setting must be applied to determin which node is the 'learnboject'.x
+        StringBuilder buf = new StringBuilder(request.getContextPath());
+        buf.append("/education?learnobject=");
+        List<Integer> path = fun.path();
+        buf.append(path.get(path.size() -1));
+        char sep = '#';
+        for (int i = path.size() - 2; i >= 0; i--) {
+            buf.append(sep);
+            buf.append(path.get(i));
+            sep = '_';
         }
-        return result;
+        return buf.toString();
+
     }
 
-    */
 
     /**
      * Used on nodes of type 'tests'
