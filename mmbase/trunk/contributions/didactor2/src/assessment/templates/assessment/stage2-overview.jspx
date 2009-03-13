@@ -38,7 +38,7 @@
             <mm:relation to="${user}" role="classrel" searchdir="source" notfound="null">
             
               <td class="learnblockItemsTitle ${empty _node ? '' : 'closed'}">
-              	<jsp:text>|&amp;nbsp;&amp;nbsp;</jsp:text><mm:field name="name" node="learnBlock" /><mm:last><jsp:text> |</jsp:text></mm:last>
+              	<jsp:text>|&amp;nbsp;</jsp:text><mm:field name="name" node="learnBlock" /><mm:last><jsp:text> |</jsp:text></mm:last>
               </td>
             </mm:relation>
         </mm:nodelistfunction>
@@ -71,10 +71,10 @@
 
 	<table cellspacing="0">
 		<tr>
-    	<td class="problemHeader"><h2>2. Mijn zorgen en problemen</h2>
+    	<td class="problemHeaderLeft"><h2>2. Mijn zorgen en problemen</h2>
     	
     	</td>
-    	<td class="problemHeader" colspan="7"><h2>3. Hoeveel last had ik er van</h2></td>
+    	<td class="problemHeaderRight" colspan="7"><h2>3. Hoeveel last had ik er van</h2></td>
     </tr>
 
     <mm:listnodes orderby="pos" type="problemtypes">
