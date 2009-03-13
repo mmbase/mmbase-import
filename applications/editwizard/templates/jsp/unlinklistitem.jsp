@@ -11,7 +11,7 @@
 <%
     /**
      * @since    MMBase-1.8.4
-     * @version  $Id: unlinklistitem.jsp,v 1.5 2008-08-01 16:40:13 michiel Exp $
+     * @version  $Id: unlinklistitem.jsp,v 1.6 2009-03-13 15:14:32 pierre Exp $
      * @author   Michiel Meeuwissen
      */
 
@@ -42,9 +42,8 @@
 
         response.sendRedirect(response.encodeRedirectURL("list.jsp?proceed=true&sessionkey=" + sessionKey));
     } else {
-        // No delete action defined in the wizard schema. We cannot delete.
-        out.println("No delete action is defined in the wizard schema: '"+ wizard + "'. <br />You should place &lt;action type=\"delete\" /> in your schema so that delete actions will be allowed.");
-
+        // No unlink action defined in the wizard schema. We cannot unlink.
+        out.println("No unlink action is defined in the wizard schema: '"+ wizard + "'. <br />You should place &lt;action type=\"unlink\" /> in your schema so that unlink actions will be allowed.");
     }
 %>
 </mm:log>
