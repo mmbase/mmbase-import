@@ -16,13 +16,17 @@
 	<names>
       <singular xml:lang="nl">user</singular>
       <singular xml:lang="en">user</singular>
+      <singular xml:lang="zh">用户</singular>
       <plural xml:lang="nl">user</plural>
       <plural xml:lang="en">user</plural>
+      <plural xml:lang="zh">用户</plural>
 	</names>
 	<descriptions>
       <description xml:lang="nl"> 
 </description>
       <description xml:lang="en"> 
+</description>
+      <description xml:lang="zh"> 
 </description>
 	</descriptions>
 	<properties>
@@ -33,10 +37,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
             <guiname xml:lang="nl">Achternaam</guiname>
             <guiname xml:lang="en">surname</guiname>
+            <guiname xml:lang="zh">姓</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -55,10 +61,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
             <guiname xml:lang="nl">Voornaam</guiname>
             <guiname xml:lang="en">firstname</guiname>
+            <guiname xml:lang="zh">名</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -77,10 +85,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
             <guiname xml:lang="nl">tussenvoegsel</guiname>
             <guiname xml:lang="en">prefix</guiname>
+            <guiname xml:lang="zh">前缀</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -99,10 +109,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
             <guiname xml:lang="nl">email</guiname>
             <guiname xml:lang="en">Emailaddress</guiname>
+            <guiname xml:lang="zh">Email地址</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -125,6 +137,7 @@
 			<gui>
             <guiname xml:lang="nl">Bedrijf</guiname>
             <guiname xml:lang="en">company</guiname>
+            <guiname xml:lang="zh">公司</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -147,6 +160,7 @@
 			<gui>
             <guiname xml:lang="nl">Afdeling</guiname>
             <guiname xml:lang="en">department</guiname>
+            <guiname xml:lang="zh">部门</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -165,10 +179,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
             <guiname xml:lang="nl">Functie</guiname>
             <guiname xml:lang="en">function</guiname>
+            <guiname xml:lang="zh">功能</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -187,10 +203,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
             <guiname xml:lang="nl">Opmerking</guiname>
             <guiname xml:lang="en">note</guiname>
+            <guiname xml:lang="zh">备注</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -209,10 +227,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
             <guiname xml:lang="nl">Website</guiname>
             <guiname xml:lang="en">website</guiname>
+            <guiname xml:lang="zh">网站</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -231,10 +251,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
             <guiname xml:lang="nl">email signalering</guiname>
             <guiname xml:lang="en">Emailsignal</guiname>
+            <guiname xml:lang="zh">Email签名</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -253,10 +275,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
             <guiname xml:lang="nl">Taal</guiname>
             <guiname xml:lang="en">Language</guiname>
+            <guiname xml:lang="zh">语言</guiname>
 			</gui>
 			<editor>
 				<positions>
