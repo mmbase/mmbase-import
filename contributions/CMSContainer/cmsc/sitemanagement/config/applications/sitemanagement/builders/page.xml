@@ -14,12 +14,15 @@
 	<names>
       <singular xml:lang="nl">Pagina</singular>
       <singular xml:lang="en">Page</singular>
+      <singular xml:lang="zh">页面</singular>
       <plural xml:lang="nl">Pagina's</plural>
       <plural xml:lang="en">Pages</plural>
+      <plural xml:lang="zh">页面</plural>
 	</names>
 	<descriptions>
 		<description xml:lang="nl"></description>
 		<description xml:lang="en"></description>
+      <description xml:lang="zh"></description>
 	</descriptions>
 
 	<properties></properties>
@@ -28,10 +31,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Aangemaakt</guiname>
             <guiname xml:lang="en">Creationdate</guiname>
+            <guiname xml:lang="zh">创建日期</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -54,6 +59,7 @@
 			<gui>
 				<guiname xml:lang="nl">Gewijzigd</guiname>
             <guiname xml:lang="en">Lastmodifieddate</guiname>
+            <guiname xml:lang="zh">最后修改日期</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -72,10 +78,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Publicatie datum</guiname>
             <guiname xml:lang="en">Publishdate</guiname>
+            <guiname xml:lang="zh">发布日期</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -96,10 +104,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Verloopdatum</guiname>
             <guiname xml:lang="en">Expiredate</guiname>
+            <guiname xml:lang="zh">失效日期</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -120,10 +130,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Gewijzigd door</guiname>
             <guiname xml:lang="en">Lastmodifier</guiname>
+            <guiname xml:lang="zh">最后修改者</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -142,10 +154,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">use_expirydate</guiname>
 				<guiname xml:lang="en">use_expirydate</guiname>
+            <guiname xml:lang="zh">使用有效期</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -168,6 +182,7 @@
 			<gui>
 				<guiname xml:lang="nl">URL-fragment</guiname>
 				<guiname xml:lang="en">URL-fragment</guiname>
+            <guiname xml:lang="zh">URL-片段</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -186,10 +201,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Titel</guiname>
             <guiname xml:lang="en">Title</guiname>
+            <guiname xml:lang="zh">标题</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -208,10 +225,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Omschrijving</guiname>
 				<guiname xml:lang="en">Description</guiname>
+            <guiname xml:lang="zh">描述</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -230,10 +249,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
             <guiname xml:lang="nl">In menu</guiname>
             <guiname xml:lang="en">In menu</guiname>
+            <guiname xml:lang="zh">在菜单中</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -254,10 +275,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Beveiligd</guiname>
             <guiname xml:lang="en">Secure</guiname>
+            <guiname xml:lang="zh">安全</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -282,7 +305,8 @@
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Externe URL</guiname>
-				<guiname xml:lang="en">External URL</guiname>
+				<guiname xml:lang="en">External URL</guiname>、
+            <guiname xml:lang="zh">扩展URL</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -305,10 +329,12 @@
 			<descriptions>
 				<description xml:lang="nl" />
 				<description xml:lang="en" />
+            <description xml:lang="zh" />
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">level</guiname>
 				<guiname xml:lang="en">level</guiname>
+            <guiname xml:lang="zh">级别</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -326,10 +352,12 @@
 			<descriptions>
 				<description xml:lang="en">The complete path for this page</description>
 				<description xml:lang="nl">Het path van deze page</description>
+            <description xml:lang="zh">该页面的完全路径</description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="en">Path</guiname>
 				<guiname xml:lang="nl">Path</guiname>
+            <guiname xml:lang="zh">路径</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -347,10 +375,12 @@
 			<descriptions>
 				<description xml:lang="en">The old path for this page</description>
 				<description xml:lang="nl">Het oude path van deze page</description>
+            <description xml:lang="zh">该页面的旧路径</description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="en">Old Path</guiname>
 				<guiname xml:lang="nl">Oud Path</guiname>
+            <guiname xml:lang="zh">旧路径</guiname>
 			</gui>
 			<editor>
 				<positions>
