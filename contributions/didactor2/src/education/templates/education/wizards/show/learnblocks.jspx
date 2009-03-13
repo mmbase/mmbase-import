@@ -9,7 +9,7 @@
     <mm:import externid="wizardjsp" from="request" />
     <mm:import  externid="b" from="request" required="true" />
     <mm:link referid="wizardjsp" referids="_node@objectnumber,_node@origin">
-      <mm:param name="wizard">config/learnblocks/learnblocks</mm:param>
+      <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
       <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
       <a href='${_}' title="${di:translate('education.edit')} ${objecttype}">
         <mm:hasfield name="name"><mm:field name="name" /></mm:hasfield>
