@@ -13,13 +13,16 @@
     <singular xml:lang="en">Security Context</singular>
     <singular xml:lang="nl">Security context</singular>
     <singular xml:lang="eo">Sekureca konteksto</singular>
+    <singular xml:lang="zh">安全上下文</singular>
     <plural xml:lang="en">Security Contexts</plural>
     <plural xml:lang="nl">Security Contexten</plural>
     <plural xml:lang="eo">Sekuracaj kontekstoj</plural>
+    <plural xml:lang="zh">安全上下文</plural>
   </names>
   <descriptions>
     <description xml:lang="en">MMBase security contexts</description>
     <description xml:lang="nl">MMBase contexten voor security</description>
+    <description xml:lang="en">MMBase安全上下文</description>
   </descriptions>
   <properties>
     <property name="readall">true</property>
@@ -46,6 +49,7 @@
         <guiname xml:lang="en">Name</guiname>
         <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="eo">Nomo</guiname>
+        <guiname xml:lang="zh">名字</guiname>
       </gui>
       <editor>
         <positions>
@@ -63,6 +67,7 @@
         <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="eo">Priskribo</guiname>
+        <guiname xml:lang="zh">描述</guiname>
       </gui>
 			<datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
