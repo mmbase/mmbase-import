@@ -365,8 +365,8 @@
                   <th><a href="javascript:orderBy('otype')" class="headerlink" ><fmt:message key="locate.typecolumn" /></a></th>
                   <th><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="locate.titlecolumn" /></a></th>
                   <th><fmt:message key="locate.creationchannelcolumn" /></th>
-                  <th><a href="javascript:orderBy('lastmodifier')" class="headerlink" ><fmt:message key="locate.authorcolumn" /></th>
-                  <th><a href="javascript:orderBy('lastmodifieddate')" class="headerlink" ><fmt:message key="locate.lastmodifiedcolumn" /></th>
+                  <th><a href="javascript:orderBy('lastmodifier')" class="headerlink" ><fmt:message key="locate.lastmodifiercolumn" /></th>
+                  <th><a href="javascript:orderBy('lastmodifieddate')" class="headerlink" ><fmt:message key="locate.lastmodifieddatecolumn" /></th>
                   <th><a href="javascript:orderBy('number')" class="headerlink" ><fmt:message key="locate.numbercolumn" /></th>
                   <th></th>
                </tr>
