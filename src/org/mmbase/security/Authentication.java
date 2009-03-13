@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.46 2008-11-13 15:12:33 michiel Exp $
+ * @version $Id: Authentication.java,v 1.47 2009-03-13 13:33:35 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
@@ -74,7 +74,7 @@ public abstract class Authentication extends Configurable implements Authenticat
      * @since MMBase-1.9
      */
     public int getNode(UserContext userContext) throws SecurityException, UnsupportedOperationException {
-        throw new UnsupportedOperationException("This security implementation does not support mapping from Security usercontexts to MMBase nodes");
+        throw new UnsupportedOperationException("This security implementation (" + getClass() + ") does not support mapping from Security usercontexts to MMBase nodes");
     }
 
     /**
@@ -82,7 +82,7 @@ public abstract class Authentication extends Configurable implements Authenticat
      * @since MMBase-1.9
      */
     public String getUserBuilder() throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("This security implementation has no builder associated with UserContexts");
+        throw new UnsupportedOperationException("This security implementation (" + getClass() + ") has no builder associated with UserContexts");
     }
 
     /**
