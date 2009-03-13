@@ -118,9 +118,9 @@
         <th><a href="javascript:sortBy('Content','title','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="content.titlecolumn"/></a></th>
         <th><a href="javascript:sortBy('Content','lastmodifier','<mm:write referid="parentchannel" />')" class="headerlink">
-        <fmt:message key="content.authorcolumn"/></a></th>
+        <fmt:message key="content.lastmodifiercolumn"/></a></th>
         <th><a href="javascript:sortBy('Content','lastmodifieddate','<mm:write referid="parentchannel" />')" class="headerlink">
-        <fmt:message key="content.lastmodifiedcolumn"/></a></th>
+        <fmt:message key="content.lastmodifieddatecolumn"/></a></th>
         <th><a href="javascript:sortBy('Content','number','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="content.numbercolumn"/></a></th>
         <th><fmt:message key="content.creationchannelcolumn"/></th>
