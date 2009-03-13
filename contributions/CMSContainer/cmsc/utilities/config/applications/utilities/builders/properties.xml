@@ -38,7 +38,7 @@
          <gui>
             <guiname xml:lang="nl">Naam</guiname>
 			<guiname xml:lang="en">Key</guiname>
-			<guiname xml:lang="zh">关键字</guiname>
+			<guiname xml:lang="zh">键</guiname>
          </gui>
          <editor>
             <positions>
