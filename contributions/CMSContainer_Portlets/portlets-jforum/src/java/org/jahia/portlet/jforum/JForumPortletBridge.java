@@ -43,7 +43,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.portlet.fileupload.PortletRequestContext;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.portlets.CmscPortlet;
+import com.finalist.cmsc.util.ServerUtil;
 
 import freemarker.template.SimpleHash;
 
@@ -138,7 +140,7 @@ public class JForumPortletBridge extends CmscPortlet {
       boolean isFileUpload = isMultipartContent(request);
       if (isFileUpload) {
          postBody = handleMultipartRequest(request, response);
-      } else {
+      } else { 
          logger.debug("It's no a file Upload.");
       }
 
@@ -166,12 +168,29 @@ public class JForumPortletBridge extends CmscPortlet {
 
       try {
          // default values for reuqest wrapper
-         String defaultRequestUri;
+         String defaultRequestUri = "";
          String defaultModule;
          String defaultAction;
          // Manage auto login portal user
          PortalAutoConnectUserManager userProcesseur = new PortalAutoConnectUserManager(request, response);
-         defaultRequestUri = "forums/list.page";
+
+         if(ServerUtil.isLive()) {
+            String stagingPath = PropertiesUtil.getProperty("system.stagingpath");
+            if(StringUtils.isEmpty(stagingPath)) {
+               logger.info("Properity system.stagingpath is null");
+            }
+            if (!stagingPath.endsWith("/")) {
+               stagingPath += "/";
+            }
+            defaultRequestUri = stagingPath+"forums/list.page";
+         }
+         else {
+            String contextPath = request.getContextPath();
+            if (!contextPath.endsWith("/")) {
+               contextPath += "/";
+            }
+            defaultRequestUri += contextPath+"forums/list.page";
+         }
          defaultModule = "forums";
          defaultAction = "list";
          if (isAlreadyInstalled()) {
@@ -478,7 +497,7 @@ public class JForumPortletBridge extends CmscPortlet {
          String language = "en_US";
          String charset = (String) request.getPortletSession().getAttribute("javax.servlet.jsp.jstl.fmt.request.charset");
 
-         if (!locale.getLanguage().equals("en") && StringUtils.isEmpty(locale.getCountry())) {
+         if (locale != null && !locale.getLanguage().equals("en") && StringUtils.isEmpty(locale.getCountry())) {
             locale = Locale.getDefault();
             language = locale.getLanguage() + "_" + locale.getCountry();
          }

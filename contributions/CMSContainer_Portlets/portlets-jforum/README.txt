@@ -362,3 +362,21 @@ Step 4: If you like to use Single Sign On (SSO)
    - Enable the portlet-login in the portlet
    - configure it into a view at a page
 
+
+Step 5: If you run CMSc applicaiton in the Staging/Live mode.
+ 5.1.  add a  DataSource in live context xml file. same to staging
+    <Resource name="jdbc/jforum" auth="Container" type="javax.sql.DataSource"
+		removeAbandoned="true" 
+		removeAbandonedTimeout="60"
+		logAbandoned="true" 
+		maxActive="10"
+		maxIdle="1" 
+		maxWait="10000" 
+		username="root" 
+		password="1234"
+		driverClassName="com.mysql.jdbc.Driver" 
+		url="jdbc:mysql://localhost:3306/jforum" />
+5.2 Add a property named "system.stagingpath" in live .the value is the url of staging 
+   like http://localhost:8080/cmsc-demo-staging
+
+
