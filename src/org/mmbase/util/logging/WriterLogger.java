@@ -14,13 +14,13 @@ import java.io.Writer;
  * java.io.StringWriter} if you want to create one String.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: WriterLogger.java,v 1.3 2005-09-12 23:23:47 michiel Exp $
+ * @version $Id: WriterLogger.java,v 1.3.2.1 2009-03-16 17:18:07 michiel Exp $
  * @since   MMBase-1.8
  */
 
 public class WriterLogger extends AbstractSimpleImpl {
 
-    private Writer writer;
+    protected final Writer writer;
 
     public WriterLogger(Writer w) {
         this(w, Level.INFO);
@@ -31,7 +31,7 @@ public class WriterLogger extends AbstractSimpleImpl {
         writer = w;
     }
 
-    protected final void log(String s, Level level) {
+    protected void log(String s, Level level) {
         try {
             writer.write(s); writer.write('\n');
         } catch (java.io.IOException ioe) {
