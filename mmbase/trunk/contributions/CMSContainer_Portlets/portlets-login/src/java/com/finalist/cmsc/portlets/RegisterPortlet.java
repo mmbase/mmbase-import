@@ -209,10 +209,10 @@ public class RegisterPortlet extends AbstractLoginPortlet {
    protected void validateInputFields(ActionRequest request, Map<String, String> errorMessages, PortletPreferences preferences, String firstName,
          String lastName, String passwordText, String passwordConfirmation) {
       if (StringUtils.isBlank(firstName)) {
-         errorMessages.put(ACEGI_SECURITY_FORM_FIRSTNAME_KEY, "register.firstName.empty");
+         errorMessages.put(ACEGI_SECURITY_FORM_FIRSTNAME_KEY, "register.firstname.empty");
       }
       if (StringUtils.isBlank(lastName)) {
-         errorMessages.put(ACEGI_SECURITY_FORM_LASTNAME_KEY, "register.lastName.empty");
+         errorMessages.put(ACEGI_SECURITY_FORM_LASTNAME_KEY, "register.lastname.empty");
       }
 
       if (StringUtils.isEmpty(passwordText)) {
