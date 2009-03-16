@@ -92,6 +92,8 @@ public final class ContentElementUtil {
     * @return is content type
     */
    public static boolean isContentElement(Node element) {
+      if (element == null) return false;
+      
       NodeManager nm = element.getNodeManager();
       return isContentType(nm);
    }
