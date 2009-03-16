@@ -44,7 +44,8 @@ import org.apache.log4j.Logger;
 import org.jahia.portlet.fileupload.PortletRequestContext;
 
 import com.finalist.cmsc.portlets.CmscPortlet;
-
+import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.util.ServerUtil;
 import freemarker.template.SimpleHash;
 
 /**
@@ -166,11 +167,24 @@ public class JForumPortletBridge extends CmscPortlet {
 
         try {
             // default values for reuqest wrapper
-            String defaultRequestUri;
+            String defaultRequestUri = "";
             String defaultModule;
             String defaultAction;
             // Manage auto login portal user
             PortalAutoConnectUserManager userProcesseur = new PortalAutoConnectUserManager(request, response);
+            if(ServerUtil.isLive()) {
+               String stagingPath = PropertiesUtil.getProperty("system.stagingpath");
+               if(StringUtils.isEmpty(stagingPath)) {
+                  logger.info("Properity system.stagingpath is null");
+               }
+               stagingPath = checkSlash(stagingPath);
+               defaultRequestUri = stagingPath+"forums/list.page";
+            }
+            else {
+               String contextPath = request.getContextPath();
+               contextPath = checkSlash(contextPath);
+               defaultRequestUri += contextPath+"forums/list.page";
+            }
             defaultRequestUri = "forums/list.page";
             defaultModule = "forums";
             defaultAction = "list";
@@ -231,6 +245,13 @@ public class JForumPortletBridge extends CmscPortlet {
         logger.debug("End render method");
 
     }
+
+   private String checkSlash(String path) {
+      if (!path.endsWith("/")) {
+         path += "/";
+      }
+      return path;
+   }
 
     private void updateRemoteUser(RenderRequest request) {
         // set username in session (SSO purpose)
