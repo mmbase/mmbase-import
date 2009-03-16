@@ -176,16 +176,12 @@ public class JForumPortletBridge extends CmscPortlet {
             if(StringUtils.isEmpty(stagingPath)) {
                logger.info("Properity system.stagingpath is null");
             }
-            if (!stagingPath.endsWith("/")) {
-               stagingPath += "/";
-            }
+            stagingPath = checkSlash(stagingPath);
             defaultRequestUri = stagingPath+"forums/list.page";
          }
          else {
             String contextPath = request.getContextPath();
-            if (!contextPath.endsWith("/")) {
-               contextPath += "/";
-            }
+            contextPath = checkSlash(contextPath);
             defaultRequestUri += contextPath+"forums/list.page";
          }
          defaultModule = "forums";
@@ -246,6 +242,14 @@ public class JForumPortletBridge extends CmscPortlet {
       }
       logger.debug("End render method");
 
+   }
+
+
+   private String checkSlash(String path) {
+      if (!path.endsWith("/")) {
+         path += "/";
+      }
+      return path;
    }
 
    private void updateRemoteUser(RenderRequest request) {
