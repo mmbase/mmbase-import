@@ -159,8 +159,8 @@ public class StatusCronJob extends AbstractCronJob implements CronJob {
                log.debug("Altered MMObjectNode " + objectNode.getNumber());
                resultOk++;
             }
-            else {
-               log.debug("Node " + node.getNumber() + " is not a contentelement!");
+            else if (node != null) {
+                  log.debug("Node " + node.getNumber() + " is not a contentelement!");
             }
          }
          catch (Exception e) {
