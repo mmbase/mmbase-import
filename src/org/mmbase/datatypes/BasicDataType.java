@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.61.2.10 2008-09-08 09:01:10 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.61.2.11 2009-03-17 14:45:55 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -405,6 +405,7 @@ s     */
         case DataType.ENFORCE_ALWAYS:   return "always";
         case DataType.ENFORCE_ONCHANGE: return "onchange";
         case DataType.ENFORCE_ONCREATE: return "oncreate";
+        case DataType.ENFORCE_ONVALIDATE: return "onvalidate";
         case DataType.ENFORCE_NEVER:    return "never";
         default:                        return "???";
         }
@@ -997,6 +998,7 @@ s     */
             case DataType.ENFORCE_ALWAYS:   return true;
             case DataType.ENFORCE_ONCHANGE: if (node == null || field == null || node.isChanged(field.getName())) return true;
             case DataType.ENFORCE_ONCREATE: if (node == null || node.isNew()) return true;
+            case DataType.ENFORCE_ONVALIDATE: return true;
             case DataType.ENFORCE_NEVER:    return false;
             default:                        return true;
             }
