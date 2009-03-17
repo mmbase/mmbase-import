@@ -529,7 +529,7 @@
               <!-- on change the current value is copied back to the option's default, because of that, the user's search is stored between different types of search-actions -->
             </td>
             <td>
-           <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';getAssets('{@nodepath}','all')" class="button">
+           <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';getAssets('{@nodepath}','siteimages')" class="button">
                 <xsl:for-each select="@*">
                   <xsl:copy/>
                 </xsl:for-each>
