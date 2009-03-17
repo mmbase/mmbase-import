@@ -159,6 +159,12 @@ function resizeEditTable() {
             textareas[i].style.width = '99%';
         }
     }
+
+    var iframes = document.getElementsByTagName("iframe");
+
+    for (var i = 0 ; i < iframes.length ; i++) {
+        iframes[i].style.width = '99%';
+    }
 }
 
 function inits(){
