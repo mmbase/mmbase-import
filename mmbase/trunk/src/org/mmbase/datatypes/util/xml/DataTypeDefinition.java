@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.69 2008-12-01 17:25:01 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.70 2009-03-17 14:42:02 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -309,6 +309,8 @@ public class DataTypeDefinition {
             restriction.setEnforceStrength(DataType.ENFORCE_ONCHANGE);
         } else if (enforce.equals("oncreate")) {
             restriction.setEnforceStrength(DataType.ENFORCE_ONCREATE);
+        } else if (enforce.equals("onvalidate")) {
+            restriction.setEnforceStrength(DataType.ENFORCE_ONVALIDATE);
         } else if (enforce.equals("never")) {
             restriction.setEnforceStrength(DataType.ENFORCE_NEVER);
         } else {

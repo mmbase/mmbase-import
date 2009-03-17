@@ -33,7 +33,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.70 2008-08-27 17:09:16 michiel Exp $
+ * @version $Id: DataType.java,v 1.71 2009-03-17 14:42:02 michiel Exp $
  * @param <C> Class this DataType
  */
 
@@ -74,6 +74,17 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * restriction on a value must be enforced only on creation.
      */
     static final int ENFORCE_ONCREATE = 1000;
+
+    /**
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that ta
+     * restriction on a value must be enforced only on validation of the value. This means that it
+     * has no influence of the validity of the <em>node</em>.
+     * @todo No difference made between always/change/create for this. We could also add
+     *       ENfORCE_ONVALIDATE_CHANGE, ENFORMCE_ONVALIDATE_CREATE
+     * @since MMBase-1.9.1
+     */
+
+    static final int ENFORCE_ONVALIDATE = 500;
 
     /**
      * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the
