@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.103 2009-02-08 21:15:13 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.104 2009-03-17 14:42:02 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -430,6 +430,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         case DataType.ENFORCE_ALWAYS:   return "always";
         case DataType.ENFORCE_ONCHANGE: return "onchange";
         case DataType.ENFORCE_ONCREATE: return "oncreate";
+        case DataType.ENFORCE_ONVALIDATE: return "onvalidate";
         case DataType.ENFORCE_NEVER:    return "never";
         default:                        return "???";
         }
@@ -515,6 +516,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * {@inheritDoc}
      */
     private final Collection<LocalizedString> validate(final Object value, final Node node, final Field field, boolean testEnum) {
+        if (log.isDebugEnabled()) {
+            log.debug("Validating " + value);
+        }
         Collection<LocalizedString> errors = VALID;
         Object castValue;
         try {
@@ -527,6 +531,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         }
 
         if (errors.size() > 0) {
+            log.debug("Invalid");
             // no need continuing, restrictions will probably not know how to handle this value any way.
             return errors;
         }
@@ -1060,6 +1065,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             case DataType.ENFORCE_ALWAYS:   return true;
             case DataType.ENFORCE_ONCHANGE: if (node == null || field == null || node.isChanged(field.getName())) return true;
             case DataType.ENFORCE_ONCREATE: if (node == null || node.isNew()) return true;
+            case DataType.ENFORCE_ONVALIDATE: return true;
             case DataType.ENFORCE_NEVER:    return false;
             default:                        return true;
             }
@@ -1171,7 +1177,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         }
 
         protected boolean simpleValid(Object v, Node node, Field field) {
-            if (! isUnique()) return true;
+            if (! isUnique()) {
+                log.debug("Not unique");
+                return true;
+            }
             if (field != null && v != null && value != null ) {
 
                 if (field.isVirtual()) {
@@ -1192,6 +1201,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                     }
                 }
 
+                log.debug("Checking '" + value + "'");
                 NodeManager nodeManager = field.getNodeManager();
                 Cloud cloud = nodeManager.getCloud();
                 if (cloud.getUser().getRank().getInt() < Rank.ADMIN_INT) {
