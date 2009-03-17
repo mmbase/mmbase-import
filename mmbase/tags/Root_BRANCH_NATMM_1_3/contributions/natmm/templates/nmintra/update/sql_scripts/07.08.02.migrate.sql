@@ -1,0 +1,1 @@
+ALTER TABLE v1_archief ADD INDEX version_index (original_node,datum);
