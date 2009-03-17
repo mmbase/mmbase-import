@@ -491,7 +491,45 @@
               <!-- on change the current value is copied back to the option's default, because of that, the user's search is stored between different types of search-actions -->
             </td>
             <td>
-           <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';getAssets('{@nodepath}')" class="button">
+           <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';getAssets('{@nodepath}','current')" class="button">
+                <xsl:for-each select="@*">
+                  <xsl:copy/>
+                </xsl:for-each>
+                <xsl:attribute name="relationOriginNode"><xsl:value-of select="../@number" /></xsl:attribute>
+                <xsl:choose>
+                  <xsl:when test="../action[@type=&apos;add&apos;]/relation/@role">
+                    <xsl:attribute name="relationRole"><xsl:value-of select="../action[@type=&apos;add&apos;]/relation/@role" /></xsl:attribute>
+                    <xsl:attribute name="relationCreateDir"><xsl:value-of select="../action[@type=&apos;add&apos;]/relation/@createdir" /></xsl:attribute>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:attribute name="relationRole"><xsl:value-of select="../action[@type=&apos;create&apos;]/relation/@role" /></xsl:attribute>
+                    <xsl:attribute name="relationCreateDir"><xsl:value-of select="../action[@type=&apos;create&apos;]/relation/@createdir" /></xsl:attribute>
+                  </xsl:otherwise>
+                </xsl:choose>
+                <xsl:call-template name="prompt_search"/>
+           </a>
+            </td>
+          </tr>
+        </table>
+      </xsl:for-each>
+      <xsl:for-each select="command[@name=&apos;imagesselector&apos;]">
+        <table class="searchcontent">
+          <tr>
+            <xsl:if test="prompt">
+              <td class="searchprompt"><xsl:call-template name="prompt"/></td>
+            </xsl:if>
+            <td>
+              <xsl:call-template name="listsearch-age"/>
+            </td>
+            <td>
+              <xsl:call-template name="listsearch-fields"/>
+            </td>
+            <td>
+              <input type="text" name="searchterm_{../command[@name=&apos;add-item&apos;]/@cmd}" value="{search-filter[1]/default}" class="search" onChange="selectAssets(this,'{@nodepath}')"/>
+              <!-- on change the current value is copied back to the option's default, because of that, the user's search is stored between different types of search-actions -->
+            </td>
+            <td>
+           <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';getAssets('{@nodepath}','siteimages')" class="button">
                 <xsl:for-each select="@*">
                   <xsl:copy/>
                 </xsl:for-each>
@@ -643,6 +681,10 @@
   </xsl:template>
   
   <xsl:template match="command[@name=&apos;assetsselector&apos;]" mode="listnewbuttons">
+     <!-- Search is handled by the listsearch template -->
+  </xsl:template>
+  
+  <xsl:template match="command[@name=&apos;imagesselector&apos;]" mode="listnewbuttons">
      <!-- Search is handled by the listsearch template -->
   </xsl:template>
 
