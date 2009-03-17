@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.54.2.1 2008-04-24 11:41:58 michiel Exp $
+ * @version $Id: DataType.java,v 1.54.2.2 2009-03-17 14:45:55 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
@@ -74,6 +74,17 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the value must be enforced only on creation.
      */
     static final int ENFORCE_ONCREATE = 1000;
+
+    /**
+     * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that ta
+     * restriction on a value must be enforced only on validation of the value. This means that it
+     * has no influence of the validity of the <em>node</em>.
+     * @todo No difference made between always/change/create for this. We could also add
+     *       ENfORCE_ONVALIDATE_CHANGE, ENFORMCE_ONVALIDATE_CREATE
+     * @since MMBase-1.9.1
+     */
+
+    static final int ENFORCE_ONVALIDATE = 500;
 
     /**
      * Return value for {@link DataType.Restriction#getEnforceStrength}. This means that the

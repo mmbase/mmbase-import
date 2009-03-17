@@ -171,6 +171,7 @@
       <xsd:enumeration value="always" />
       <xsd:enumeration value="onchange" />
       <xsd:enumeration value="oncreate" />
+      <xsd:enumeration value="onvalidate" />
       <xsd:enumeration value="never" />
     </xsd:restriction>
   </xsd:simpleType>

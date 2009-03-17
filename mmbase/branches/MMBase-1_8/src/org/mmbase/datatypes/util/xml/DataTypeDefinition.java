@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.55.2.5 2008-09-08 08:51:44 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.55.2.6 2009-03-17 14:45:55 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -298,6 +298,8 @@ public class DataTypeDefinition {
             restriction.setEnforceStrength(DataType.ENFORCE_ONCHANGE);
         } else if (enforce.equals("oncreate")) {
             restriction.setEnforceStrength(DataType.ENFORCE_ONCREATE);
+        } else if (enforce.equals("onvalidate")) {
+            restriction.setEnforceStrength(DataType.ENFORCE_ONVALIDATE);
         } else if (enforce.equals("never")) {
             restriction.setEnforceStrength(DataType.ENFORCE_NEVER);
         } else {
