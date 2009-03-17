@@ -29,7 +29,7 @@ String sRubriekLayout = request.getParameter("rl");
          %>
       </select>
       <select name="from_year">
-         <% for(int f = 2000; f < 2010; f++) { 
+         <% for(int f = 2007; f < 2013; f++) { 
             %><option value="<%=f%>"<% if(iFromYear == f) { %> selected <% } %>><%=f%></option><%
             }
          %>
@@ -50,7 +50,7 @@ String sRubriekLayout = request.getParameter("rl");
          %>
       </select>
       <select name="till_year">
-         <% for(int f = 2000; f < 2010; f++) { 
+         <% for(int f = 2007; f < 2013; f++) { 
             %><option value="<%=f%>"<% if(iTillYear == f) { %> selected <% } %>><%=f%></option><%
             }
          %>
