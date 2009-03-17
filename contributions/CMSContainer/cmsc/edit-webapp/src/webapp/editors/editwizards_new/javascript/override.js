@@ -371,7 +371,7 @@ var Data = {
 	urls:""
 }
 
-function getAssets(type){    
+function getAssets(type, channelid){    
     //alert(Data[type]);
 	var iWidth=800; 
     var iHeight=200;
@@ -381,7 +381,7 @@ function getAssets(type){
                 xposition = (screen.width-iWidth ) / 2;
                 yposition = (screen.height-iHeight - 25) / 2;
             }
-	var url='../../../../editors/repository/HighFrequencyAsset.do?action=often&offset=0&channelid=current&assettypes='+type+'&strict='+type;
+	var url='../../../../editors/repository/HighFrequencyAsset.do?action=often&offset=0&channelid='+channelid+'&assettypes='+type+'&strict='+type;
 	window.open(url, 
 	'contentselector', 'width=730,height=550,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,left='+xposition+',top='+yposition+',menubar=no');
 }
