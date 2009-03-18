@@ -512,7 +512,7 @@
           </tr>
         </table>
       </xsl:for-each>
-      <xsl:for-each select="command[@name=&apos;imagesselector&apos;]">
+      <xsl:for-each select="command[@name=&apos;siteassetsselector&apos;]">
         <table class="searchcontent">
           <tr>
             <xsl:if test="prompt">
@@ -529,7 +529,7 @@
               <!-- on change the current value is copied back to the option's default, because of that, the user's search is stored between different types of search-actions -->
             </td>
             <td>
-           <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';getAssets('{@nodepath}','siteimages')" class="button">
+           <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';getAssets('{@nodepath}','siteassets')" class="button">
                 <xsl:for-each select="@*">
                   <xsl:copy/>
                 </xsl:for-each>
@@ -684,7 +684,7 @@
      <!-- Search is handled by the listsearch template -->
   </xsl:template>
   
-  <xsl:template match="command[@name=&apos;imagesselector&apos;]" mode="listnewbuttons">
+  <xsl:template match="command[@name=&apos;siteassetsselector&apos;]" mode="listnewbuttons">
      <!-- Search is handled by the listsearch template -->
   </xsl:template>
 

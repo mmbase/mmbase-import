@@ -57,7 +57,7 @@ public class HighFrequencyAssetAction extends PagerAction {
    private static final String IMAGES = "images";
    private static final String URLS = "urls";
    private static final String ALL = "all";
-   private static final String SITEIMAGES = "siteimages";
+   private static final String SITEASSETS = "siteassets";
    private static final String CREATION = "creation";
    private static final String CONTENTELEMENT = "contentelement";
    private static final String SOURCE = "source";
@@ -76,7 +76,7 @@ public class HighFrequencyAssetAction extends PagerAction {
       HighFrequencyAssetForm highFrequencyAssetForm = (HighFrequencyAssetForm) form;
 
       String channelid = highFrequencyAssetForm.getChannelid();
-      boolean existChannelConstraint = StringUtils.isNotEmpty(channelid) && !ALL.equals(channelid) && !SITEIMAGES.equals(channelid);
+      boolean existChannelConstraint = StringUtils.isNotEmpty(channelid) && !ALL.equals(channelid) && !SITEASSETS.equals(channelid);
       String imageShow = highFrequencyAssetForm.getAssetShow();
       if (StringUtils.isEmpty(imageShow)) {
          imageShow = "thumbnail";
