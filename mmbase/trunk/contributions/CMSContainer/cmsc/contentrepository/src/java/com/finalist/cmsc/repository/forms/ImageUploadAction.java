@@ -20,7 +20,7 @@ public class ImageUploadAction extends AbstractUploadAction {
 
    private static final String ALL = "all";
    private static final String SITEASSETS = "siteassets";
-   private static final String CREATION = "creation";
+   private static final String SESSION_CREATION = "creation";
 
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
@@ -38,7 +38,7 @@ public class ImageUploadAction extends AbstractUploadAction {
       if (parentchannel.equalsIgnoreCase(SITEASSETS)) {
          parentchannel = RepositoryUtil.getRoot(cloud);
       } else if (parentchannel.equalsIgnoreCase(ALL) || StringUtils.isEmpty(parentchannel)) {
-         parentchannel = (String) request.getSession().getAttribute(CREATION);
+         parentchannel = (String) request.getSession().getAttribute(SESSION_CREATION);
       }
       if (isImage(file.getFileName())) {
          int fileSize = file.getFileSize();
