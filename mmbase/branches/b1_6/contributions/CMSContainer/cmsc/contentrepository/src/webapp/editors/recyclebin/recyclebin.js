@@ -1,34 +1,38 @@
-   function restore(objectnumber, offset, type, url) {
-       if(type=="Attachment"||type=="Image"||type=="URL"){
-          url = "RestoreAssetAction.do";
-       }
-       else{
-          url = "RestoreAction.do";
-       }
+   function restoreAsset(objectnumber, offset) {
+       return restore(objectnumber, offset, "RestoreAssetAction.do");
+   }
+   
+   function restoreContent(objectnumber, offset) {
+	   return restore(objectnumber, offset, "RestoreAction.do");
+   }
+
+   function restore(objectnumber, offset, url) {
        url += "?objectnumber=" + objectnumber;
        url += "&returnurl=" + escape(document.location);
        url += "&offset=" + offset;
        document.location.href = url;
-    }
-    
-   function info(objectNumber, type) {
-      var url;
-	   if(type=="Attachment"||type=="Image"||type=="URL"){  
-		   url = '../resources/';
-		   url += type.toLowerCase();
-		   url += 'info.jsp?objectnumber=';
-		   url += objectNumber;
-		   openPopupWindow('imageinfo', '900', '500', url);
-	   }
-	   else{
-	      url = "../repository/showitem.jsp";
-	      url += "?objectnumber=" + objectNumber;
-	      
-	      var options = 'width=500,height=500,scrollbars=yes,resizable=yes'
-	      var w = window.open(url, 'viewItem', options);
-	      w.focus();
-	   }
-    }
+   }
+   
+   function infoAsset(objectNumber, type) {
+	   type = type.toLowerCase();
+	   // The info jsp's are called with the singular name and not the plural name
+	   // The nodetype is for the below types in plural
+	   if (type == 'images') type = 'image';
+	   if (type == 'attachments') type = 'attachment';
+	   if (type == 'urls') type = 'url';
+	   
+	   url = '../resources/';
+	   url += type;
+	   url += 'info.jsp?objectnumber=';
+	   url += objectNumber;
+	   openPopupWindow('imageinfo', '900', '500', url);
+   }
+   
+   function infoContent(objectNumber, type) {
+      url = "../repository/showitem.jsp";
+      url += "?objectnumber=" + objectNumber;
+      openPopupWindow('contentinfo', '500', '500', url);
+   }
     
     function permanentDelete(objectnumber, message, offset, type) {
        if (confirm(message)) {
