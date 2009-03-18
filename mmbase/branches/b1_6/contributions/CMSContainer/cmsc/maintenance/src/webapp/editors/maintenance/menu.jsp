@@ -70,6 +70,10 @@
                   <c:url var="publishQueueUrl" value="/editors/maintenance/staging/remove-publishqueue.jsp"/>
                   <a href="${publishQueueUrl}" target="rightpane"><fmt:message key="maintenance.publish.remove-publishqueue" /></a>
                </li>
+               <li class="advancedpublish">
+                  <c:url var="repairStagingUrlsUrl" value="/editors/maintenance/richtext/repair-staging-urls.jsp"/>
+                  <a href="${repairStagingUrlsUrl}" target="rightpane"><fmt:message key="maintenance.repairStagingUrls" /></a>
+               </li>
             <% } %>
          </mm:haspage>
 		<cmsc:hasfeature name="workflowitem">
