@@ -105,10 +105,10 @@
          </c:when>
          <c:otherwise>
             <mm:import id="formAction">/editors/repository/HighFrequencyAsset</mm:import>
-            <c:if test="${param.channelid eq 'all' || param.channelid eq 'siteimages'}">
+            <c:if test="${param.channelid eq 'all' || param.channelid eq 'siteassets'}">
                 <mm:import id="channelMsg"><fmt:message key="attachments.channel.title"><fmt:param>ALL CHANNELS</fmt:param></fmt:message></mm:import>
             </c:if>
-            <c:if test="${param.channelid ne 'all' && param.channelid ne 'siteimages'}">
+            <c:if test="${param.channelid ne 'all' && param.channelid ne 'siteassets'}">
                <mm:node number="${channelid}">
                   <mm:field name="path" id="path" write="false" />
                   <mm:import id="channelMsg">
