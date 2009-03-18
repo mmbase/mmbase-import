@@ -25,7 +25,7 @@
 		</field>
 	</item>
 
-	<command name="imagesselector" nodepath="images" age="-1" fields="title" pagelength="20">
+	<command name="siteassetsselector" nodepath="images" age="-1" fields="title" pagelength="20">
 		<prompt xml:lang="en">Search image</prompt>
 		<prompt xml:lang="nl">Zoek afbeelding</prompt>
 		<prompt xml:lang="zh">查找图片</prompt>
