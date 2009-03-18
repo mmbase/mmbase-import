@@ -16,7 +16,7 @@
          <prompt xml:lang="nl">URL</prompt>
          <prompt xml:lang="zh">URL</prompt>
       </field>
-      <field dtrequired="false" ftype="text" name="description" rows="3">
+      <field dtrequired="false" ftype="data" name="description" rows="3">
          <prompt xml:lang="en">Description</prompt>
          <prompt xml:lang="nl">Omschrijving</prompt>
          <prompt xml:lang="zh">描述</prompt>
@@ -53,7 +53,7 @@
       </search-filter>
    </command>
    
-   <command name="insert" objectnumber="new">
+   <command name="startwizard" inline="true" wizardname="config/urls/urls" objectnumber="new">
       <prompt xml:lang="en">New</prompt>
       <prompt xml:lang="nl">Nieuw</prompt>
       <prompt xml:lang="zh">新建</prompt>
