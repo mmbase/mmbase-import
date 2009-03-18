@@ -58,7 +58,7 @@ public class HighFrequencyAssetAction extends PagerAction {
    private static final String URLS = "urls";
    private static final String ALL = "all";
    private static final String SITEASSETS = "siteassets";
-   private static final String CREATION = "creation";
+   private static final String SESSION_CREATION = "creation";
    private static final String CONTENTELEMENT = "contentelement";
    private static final String SOURCE = "source";
    private static final String DESTINATION = "destination";
@@ -100,7 +100,7 @@ public class HighFrequencyAssetAction extends PagerAction {
       if (existChannelConstraint) {
          // search in the current channel
          if (CURRENTCHANNEL.equals(channelid)) {
-            channelid = (String) request.getSession().getAttribute(CREATION);
+            channelid = (String) request.getSession().getAttribute(SESSION_CREATION);
          }
          query.addStep(channelManager);
          RelationStep creationrelStep = query.addRelationStep(assetManager, CREATIONREL, SOURCE);
