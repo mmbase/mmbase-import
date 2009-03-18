@@ -42,7 +42,7 @@
       </field>
    </item>
 
-   <command name="assetsselector" nodepath="attachments" age="-1" fields="title,description">
+   <command name="siteassetsselector" nodepath="attachments" age="-1" fields="title,description">
       <prompt xml:lang="en">Search attachment</prompt>
       <prompt xml:lang="nl">Zoek bijlage</prompt>
       <prompt xml:lang="zh">查找附件</prompt>

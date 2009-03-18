@@ -19,7 +19,7 @@ import com.finalist.util.http.BulkUploadUtil;
 public class ImageUploadAction extends AbstractUploadAction {
 
    private static final String ALL = "all";
-   private static final String SITEIMAGES = "siteimages";
+   private static final String SITEASSETS = "siteassets";
    private static final String CREATION = "creation";
 
    @Override
@@ -35,7 +35,7 @@ public class ImageUploadAction extends AbstractUploadAction {
       String exceed = "yes";
       int nodeId = 0;
 
-      if (parentchannel.equalsIgnoreCase(SITEIMAGES)) {
+      if (parentchannel.equalsIgnoreCase(SITEASSETS)) {
          parentchannel = RepositoryUtil.getRoot(cloud);
       } else if (parentchannel.equalsIgnoreCase(ALL) || StringUtils.isEmpty(parentchannel)) {
          parentchannel = (String) request.getSession().getAttribute(CREATION);
