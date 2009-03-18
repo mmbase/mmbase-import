@@ -17,7 +17,7 @@ import com.finalist.cmsc.struts.MMBaseAction;
 public class UrlCreateAction extends MMBaseAction {
 
    private static final String ALL = "all";
-   private static final String CREATION = "creation";
+   private static final String SESSION_CREATION = "creation";
 
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
@@ -33,7 +33,7 @@ public class UrlCreateAction extends MMBaseAction {
       
 
       if (parentchannel.equalsIgnoreCase(ALL) || StringUtils.isEmpty(parentchannel)) {
-         parentchannel = (String) request.getSession().getAttribute(CREATION);
+         parentchannel = (String) request.getSession().getAttribute(SESSION_CREATION);
       }
 
       NodeManager manager = cloud.getNodeManager("urls");

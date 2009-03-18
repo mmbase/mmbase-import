@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AssetSearchInitAction extends MMBaseAction {
 
-   private static final String CREATION = "creation";
+   private static final String SESSION_CREATION = "creation";
 
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
@@ -58,7 +58,7 @@ public class AssetSearchInitAction extends MMBaseAction {
          }
       }
       addToRequest(request, "typesList", typesList);
-      String parentchannel = (String) request.getSession().getAttribute(CREATION);
+      String parentchannel = (String) request.getSession().getAttribute(SESSION_CREATION);
       if (StringUtils.isNotEmpty(parentchannel)) {
          request.setAttribute("parentchannel", parentchannel);
       }
