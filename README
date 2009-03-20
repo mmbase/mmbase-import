@@ -13,7 +13,8 @@ maven -Dmaven.test.skip=true jar:install
 If e.g. mmbase.org is unreachable, add 'maven.offline=true' to maven-base/build.properties.
 Sadly it is impossible to find out how to configure a timeout setting for that.
 
-The equivalent for 'ant clean' is 'maven all:clean' to clean all applications, and 'maven clean' to only clean the present one.
+The equivalent for 'ant clean' is 'maven all:clean' to clean all applications, and 'maven clean' to 
+only clean the present one.
 
 
 
@@ -40,8 +41,8 @@ How to compile everything:
 
    [compare with: ant bindist]
 
-   This is 'the' distro. A simple and clean war. It's pom can server as example for you you could
-   create your own webapp,
+   This is 'the' distro. A simple and clean war. It's pom can serve as an example to create your 
+   own webapp.
 
 
 But normally you can just type 'mvn' in the directory of interest. It will use artifacts of
