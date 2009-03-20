@@ -571,7 +571,27 @@ public final class RepositoryUtil {
             .countRelatedNodes(content.getCloud().getNodeManager(CONTENTCHANNEL), CREATIONREL, DESTINATION);
       return count > 0;
    }
-
+   /**
+    * Check if a contentnode has a creationchannel
+    * 
+    * @param content
+    *           - Content Node
+    * @return true if the node has a related creation channel
+    */
+   public static boolean hasCreationChannel(Node content,Node channel) {
+      if(!isChannel(channel)) {
+         return false;
+      }
+      NodeList channels = content.getRelatedNodes(content.getCloud().getNodeManager(CONTENTCHANNEL), CREATIONREL, DESTINATION);
+      if(channels == null || channels.size()  < 1) {
+         return false;
+      }
+      Node parentChannel = channels.getNode(0);
+      if(parentChannel.getNumber() == channel.getNumber()) {
+         return true;
+      }
+      return false;
+   }
    /**
     * Get creation channel
     * 
@@ -1214,7 +1234,23 @@ public final class RepositoryUtil {
       }
    }
 
-   public static Node copyChannel(Node sourceChannel, Node destChannel) {
+  public static Node copyChannel(Node sourceChannel, Node destChannel) {
+      List<Integer> channelList = new ArrayList<Integer>();
+      iterateChannels(sourceChannel,channelList);
+      StringBuilder output = new StringBuilder().append(" -Start: ");
+      Map<Integer, Integer> copiedNodes = new HashMap<Integer, Integer>();
+
+      Node newNode = copyChannel(sourceChannel,destChannel,channelList,copiedNodes,output);
+      output.append("<br/><br/>copiedNodes has #" + copiedNodes.size() + ":<br/>" + copiedNodes.toString());
+  
+      if(log.isDebugEnabled()) {
+         log.debug("#################:"+output.toString());
+      }
+ 
+      return newNode;
+   }
+   
+   public static Node copyChannel(Node sourceChannel, Node destChannel, List<Integer> channelList,Map<Integer, Integer> copiedNodes ,StringBuilder output) {
       if (!isParent(sourceChannel, destChannel)) {
          Node newChannel = CloneUtil.cloneNode(sourceChannel);
          appendChild(destChannel, newChannel);
@@ -1222,21 +1258,12 @@ public final class RepositoryUtil {
          NodeList children = getOrderedChildren(sourceChannel);
          for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
             Node childChannel = iter.next();
-            copyChannel(childChannel, newChannel);
+            copyChannel(childChannel, newChannel,channelList,copiedNodes,output);
          }
          String cloneCopy = PropertiesUtil.getProperty("clonecopy");
-         if(cloneCopy != null && "true".equalsIgnoreCase(cloneCopy)) {
-            StringBuilder output = new StringBuilder().append("Start");
-            Map<Integer, Integer> copiedNodes = new HashMap<Integer, Integer>();
-            List<Integer> channelNumbers = new ArrayList<Integer>();
+         if("true".equalsIgnoreCase(cloneCopy)) {
             cloneAssetNodes(sourceChannel,newChannel,copiedNodes,output);
-            iterateChannels(sourceChannel,channelNumbers);
-            cloneRelatedNodes(sourceChannel, newChannel,copiedNodes,output,channelNumbers); 
-            output.append("<br/><br/>copiedNodes has #" + copiedNodes.size() + ":<br/>" + copiedNodes.toString());
-            if(log.isDebugEnabled()) {
-               log.debug("#################:"+output.toString());
-            }
-
+            cloneRelatedNodes(sourceChannel, newChannel,copiedNodes,output,channelList); 
          }
          else {
             CloneUtil.cloneRelations(sourceChannel, newChannel, CONTENTREL, CONTENTELEMENT);
@@ -1450,14 +1477,9 @@ public final class RepositoryUtil {
             continue;
          }
          
-         if (!(AssetElementUtil.isAssetElement(rel.getDestination()) ||  ContentElementUtil.isContentElement(rel.getDestination()))) {
-            output.append("skipped " + relManager.getName() + "; ");
-            continue; //Skip contentchannels and collection channels.  
-         }
-         
-         if (!isRelatedWithCurrentChannelTree(rel.getDestination(),channels)) {
-            output.append("skipped " + relManager.getName() + "; ");
-            continue; //Skip contentchannels and collection channels. 
+         if (!isChannel(rel.getDestination()) && !isRelatedWithCurrentChannelTree(rel.getDestination(),channels)) {
+               output.append("skipped " + relManager.getName() + "; ");
+               continue; //Skip nodes not in the current channel tree. 
          }
          if (isChannel(rel.getDestination()) || 
                relManager.getName().equalsIgnoreCase("deletionrel")
@@ -1505,15 +1527,15 @@ public final class RepositoryUtil {
             }
             destRel.commit();
             
-            //If no clone was needed, but reused an existing clone, the relations are fine already..continue!
-            if (!cloned) continue;
+
             
             //Creation channels are skipped at copying relations, so do it by hand.
-            if (hasCreationChannel(sourceChild)  && isChannel(destNode)) {
+            if (hasCreationChannel(sourceChild,sourceNode) && isChannel(destNode)) {
                addCreationChannel(destChild, destNode);
                output.append("added creationrel to " + destChild.getNumber() + ";");
             }
-            
+                        //If no clone was needed, but reused an existing clone, the relations are fine already..continue!
+            if (!cloned) continue;
             //If destChild is an image, also change title
             if (destChild.getNodeManager().getName().equalsIgnoreCase("images")) {
                destChild.setStringValue("title", destChild.getStringValue("title") + "-North");
@@ -1637,21 +1659,10 @@ public final class RepositoryUtil {
     */
    public static boolean isRelatedWithCurrentChannelTree(Node sourceNode,List<Integer> channels) {
 
-      if (AssetElementUtil.isAssetElement(sourceNode)) {
-         
-         Node creationNode = getCreationChannel(sourceNode);
-         if(creationNode != null && channels.contains(creationNode.getNumber())) {
+         Node creationChannel = getCreationChannel(sourceNode);
+         if(creationChannel != null && channels.contains(creationChannel.getNumber())) {
             return true;
-         }
-      }      
-      else if (ContentElementUtil.isContentElement(sourceNode)) {
-         NodeList contentChannels = getContentChannelsForContent(sourceNode);
-         for(int i = 0 ; i < contentChannels.size() ; i++) {
-            if (channels.contains(contentChannels.getNode(i).getNumber())) {
-               return true;
-            }
-         }
-      }
+         }     
       return false;
    }
    
