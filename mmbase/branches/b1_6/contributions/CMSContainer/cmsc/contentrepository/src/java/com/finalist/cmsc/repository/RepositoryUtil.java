@@ -1242,7 +1242,6 @@ public final class RepositoryUtil {
 
       Node newNode = copyChannel(sourceChannel,destChannel,channelList,copiedNodes,output);
       output.append("<br/><br/>copiedNodes has #" + copiedNodes.size() + ":<br/>" + copiedNodes.toString());
-  
       if(log.isDebugEnabled()) {
          log.debug("#################:"+output.toString());
       }
@@ -1477,10 +1476,6 @@ public final class RepositoryUtil {
             continue;
          }
          
-         if (!isChannel(rel.getDestination()) && !isRelatedWithCurrentChannelTree(rel.getDestination(),channels)) {
-               output.append("skipped " + relManager.getName() + "; ");
-               continue; //Skip nodes not in the current channel tree. 
-         }
          if (isChannel(rel.getDestination()) || 
                relManager.getName().equalsIgnoreCase("deletionrel")
 //               || relManager.getName().equalsIgnoreCase("creationrel")
@@ -1491,7 +1486,12 @@ public final class RepositoryUtil {
          else if (rel.getNodeManager().getName().equals(ContentElementUtil.OWNERREL)) {
             CloneUtil.cloneRelations(sourceNode, destNode, ContentElementUtil.OWNERREL, SecurityUtil.USER);
             output.append(ContentElementUtil.OWNERREL + " copied;");
-         } else 
+         }
+         else if (!isRelatedWithCurrentChannelTree(rel.getDestination(),channels)) {
+            output.append("skipped " + relManager.getName() + "; ");
+            continue; //Skip nodes not in the current channel tree. 
+         }
+         else 
          {
             //*** Start cloning the node from sourceChild -> destChild
             //If the related node should be cloned, dive into the node and deepcopy it
