@@ -66,7 +66,7 @@ public class ScreenFragment extends AbstractFragment {
             }
          }
       }
-      
+
       LoginSession ls = SiteManagement.getLoginSession(request);
       if (!ls.isAuthenticated()) {
          if (expirationCache > -1) {
@@ -91,14 +91,20 @@ public class ScreenFragment extends AbstractFragment {
 
       if (page != null) {
          if (layout != null) {
-            log.debug("using layout:'" + layout.getResource() + "' for page:'" + page.getTitle() + "'");
+             log.debug("using layout:'" + layout.getResource() + "' for page:'" + page.getTitle() + "'");
 
-            request.setAttribute(PortalConstants.FRAGMENT, this);
-            RequestDispatcher rd = getMainRequestDispatcher(layout.getResource(), response.getContentType());
-            rd.include(request, response);
-            request.removeAttribute(PortalConstants.FRAGMENT);
-         }
-         else {
+             request.setAttribute(PortalConstants.FRAGMENT, this);
+
+             FragmentResouceRender render = FragmentResouceRenderFactory.getRender(layout.getResource());
+
+             if (null != render) {
+                 render.render(layout.getResource(), request, response);
+             } else {
+                 RequestDispatcher rd = getMainRequestDispatcher(layout.getResource(), response.getContentType());
+                 rd.include(request, response);
+             }
+             request.removeAttribute(PortalConstants.FRAGMENT);
+         } else {
             log.error("No layout for Screen");
          }
       }
@@ -159,4 +165,12 @@ public class ScreenFragment extends AbstractFragment {
       log.debug("getFragment: '" + id + "':'" + fragment + "'");
       return fragment;
    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Screen[page:%s(%s) layout:%s(%s)]",
+                page.getTitle(), page.getId(), layout.getNames(), layout.getId()
+        );
+    }
 }
