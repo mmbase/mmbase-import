@@ -12,7 +12,7 @@ import org.mmbase.util.logging.Logging;
  * Typically to be used for html and css files.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ResourceReWriter.java,v 1.3 2009-03-12 10:30:38 andre Exp $
+ * @version $Id: ResourceReWriter.java,v 1.4 2009-03-23 21:12:53 andre Exp $
  */
 public class ResourceReWriter extends ResourceWriter {
     private static final Logger log = Logging.getLoggerInstance(ResourceReWriter.class);
@@ -41,7 +41,8 @@ public class ResourceReWriter extends ResourceWriter {
      */
     protected void write() throws IOException {
         rewrite();
-        MMGet.savedURLs.put(url, filename);
+        // MMGet.savedURLs.put(url, filename);
+        MMGet.addSavedURL(url, filename);
     }
 
     /**
@@ -68,30 +69,21 @@ public class ResourceReWriter extends ResourceWriter {
                     String link = pair.getKey();
                     String file = pair.getValue();
 
-                    StringBuilder sbl = new StringBuilder();
-                    sbl.append("\"").append(link);
+                    StringBuilder sblink = new StringBuilder();
+                    sblink.append("\"").append(link);
                     
-                    StringBuilder sbf = new StringBuilder();
-                    sbf.append("\"").append(file).append("\"");
-                    
-                    int pos1 = line.indexOf(sbl.toString());
+                    int pos1 = line.indexOf(sblink.toString());
                     if (pos1 > -1) {
                         int pos2 = line.indexOf("\"", pos1 + 1);
-                        //log.debug("pos1: " + pos1 + ", pos2: " + pos2);
-                        String linelink = line.substring(pos1, pos2 + 1);
-                        //log.debug("linelink: " + linelink);
                         
-                        // compensate for ;jsessionid=ECF5A0BB7709202CEDC4D7FBA3AC3AAD etc.
-                        if ((pos2 - pos1) > link.length() && linelink.indexOf(";") > -1) {
-                            link = linelink;
-                        } else {
-                            sbl.append("\"");
-                            link = sbl.toString();
-                        }
-                        //log.debug("link: " + link);
+                        String hitlink = line.substring(pos1 + 1, pos2);
+                        String testlink = hitlink;
+                        if (hitlink.indexOf(";") > -1) testlink = MMGet.removeSessionid(hitlink);
+                        //log.debug("hitlink: '" + hitlink + "', testlink: '" + testlink + "'" + "', link: '" + link + "'");
+                        if (!testlink.equals(link)) continue;
                         
-                        line = line.replace(link, sbf.toString());
-                        log.debug("replaced '" + link + "' with '" + sbf + "' in: " + filename);
+                        line = line.replace(hitlink, file);
+                        log.debug("replaced '" + link + "' with '" + file + "' in: " + filename);
                     }
                 }
             }
