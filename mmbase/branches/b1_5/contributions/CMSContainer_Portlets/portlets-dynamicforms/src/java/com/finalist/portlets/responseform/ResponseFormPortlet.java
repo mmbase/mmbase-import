@@ -37,23 +37,23 @@ public class ResponseFormPortlet extends ContentPortlet {
    protected static final String PARAMETER_MAP = "parameterMap";
    protected static final String ERRORMESSAGES = "errormessages";
 
-   private static final int DEFAULT_MAXFILESIZE = 2; // default file size in Meg
-   private static final long MEGABYTE = 1024 * 1024; // 1 Meg
+   protected static final int DEFAULT_MAXFILESIZE = 6; // default file size in MB
+   protected static final long MEGABYTE = 1024 * 1024; // 1 MB (in bytes)
 
-   private static final String ENCODING_UTF8 = "UTF-8";
+   protected static final String ENCODING_UTF8 = "UTF-8";
 
-   private static final String FIELD_PREFIX = "field_";
-   private static final int TYPE_TEXTBOX = 1;
-   private static final int TYPE_TEXTAREA = 2;
-   private static final int TYPE_RADIO = 4;
-   private static final int TYPE_CHECKBOX = 6;
-   private static final int TYPE_ATTACHEMENT = 7;
-   private static final String CHECKBOX_NO = "nee";
+   protected static final String FIELD_PREFIX = "field_";
+   protected static final int TYPE_TEXTBOX = 1;
+   protected static final int TYPE_TEXTAREA = 2;
+   protected static final int TYPE_RADIO = 4;
+   protected static final int TYPE_CHECKBOX = 6;
+   protected static final int TYPE_ATTACHEMENT = 7;
+   protected static final String CHECKBOX_NO = "nee";
 //   private static final String CHECKBOX_YES = "ja";
-   private static final String RADIO_EMPTY = "[niets gekozen]";
-   private static final String TEXTBOX_EMPTY = "[niet ingevuld]";
-   private static final String REGEX = " ";
-   private static final String DEFAULT_EMAILREGEX = "^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$";
+   protected static final String RADIO_EMPTY = "[niets gekozen]";
+   protected static final String TEXTBOX_EMPTY = "[niet ingevuld]";
+   protected static final String REGEX = " ";
+   protected static final String DEFAULT_EMAILREGEX = "^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$";
 
 
    @Override
