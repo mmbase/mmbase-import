@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.10 2009-03-23 22:30:22 andre Exp $
+ * @version $Id: MMGet.java,v 1.11 2009-03-23 23:04:58 andre Exp $
  */
 public final class MMGet {
     
@@ -94,7 +94,7 @@ public final class MMGet {
         // savedir
         if (directory == null || "".equals(directory) || !webroot.getResource(directory).openConnection().getDoInput()) {
             log.warn("Exportdir '" + directory + "' does not exist! Will try to save to MMBase datadir.");
-            log.debug("Datadir is: " + datadir.toString());
+            log.warn("Datadir is: " + datadir.toString());
 
             savedir = new File(datadir, "mmget");
             if (! savedir.exists()) {
@@ -174,19 +174,21 @@ public final class MMGet {
         info.append("\n* saved in: ").append(savedir.toString());
         log.info(info.toString());
         
+        /*
         ThreadPools.jobsExecutor.submit(new Callable() {
                  public String call() {
                       return start();
                  }
             });
+        */
         // this Future stuff prevents errors to surface
-        /*
         Future<String> fthread = ThreadPools.jobsExecutor.submit(new Callable() {
                  public String call() {
                       return start();
                  }
             });
-        
+        String tname = ThreadPools.getString(fthread);
+        log.debug("thread: " + tname);
         try {
             status = fthread.get(60, TimeUnit.SECONDS);
         } catch(TimeoutException e) {
@@ -197,9 +199,9 @@ public final class MMGet {
             log.error(e);
         }
         
-        info.append(status);
+        info.append("\n").append(status);
         log.info(status);
-        */
+        
         return info.toString();
     }
 
@@ -215,7 +217,7 @@ public final class MMGet {
         startdirURL = null;
         
         readUrl(startURL);
-        return "Job finished?!";
+        return "Job finished!";
     }
 
     /**
@@ -224,8 +226,8 @@ public final class MMGet {
      */
     private void readUrl(URL url) {
         if (url == null) return;
-        log.debug("---------------------------------------------------------------------");
-        log.debug("reading:   " + url.toString());
+        if (log.isDebugEnabled()) log.debug("---------------------------------------------------------------------");
+        if (log.isDebugEnabled()) log.debug("reading:   " + url.toString());
         
         URL dirURL;
         UrlReader reader = null;
@@ -249,8 +251,8 @@ public final class MMGet {
             Map<String,String> links2files = new HashMap<String,String>();      /* maps a harvested link to the resulting saved file if different */
             
             //if (startdirURL == null) startdirURL = dirURL;
-            log.debug("@@ dirURL: " + dirURL.toString());
-            log.debug("@@ startdirURL: " + startdirURL.toString());
+            if (log.isDebugEnabled()) log.debug("@@ dirURL: " + dirURL.toString());
+            if (log.isDebugEnabled()) log.debug("@@ startdirURL: " + startdirURL.toString());
             
             Iterator<String> it = links.iterator();
             while (it.hasNext()) {
@@ -331,7 +333,7 @@ public final class MMGet {
                 
                 String relative = UriParser.makeRelative(calcdir, calclink.toString());
                 if (!"".equals(link) && !links2files.containsKey(link) && !link.equals(relative)) { // only when different
-                    log.debug("link2files: " + link + " -> " + relative);
+                    //log.debug("link2files: " + link + " -> " + relative);
                     links2files.put(link, relative);    /* /dir/css/bla.css + ../css/bla.css */
                 }
                 
