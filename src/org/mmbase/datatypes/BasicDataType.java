@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.104 2009-03-17 14:42:02 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.105 2009-03-23 17:41:48 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -51,8 +51,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     public static final String DATATYPE_BUNDLE = "org.mmbase.datatypes.resources.datatypes";
     private static final Logger log = Logging.getLoggerInstance(BasicDataType.class);
 
-    //private Collection<Restriction<?>> restrictions = new ArrayList<Restriction<?>>();
-    //private Collection<Restriction<?>> unmodifiableRestrictions = Collections.unmodifiableCollection(restrictions);
+    private Collection<Restriction<?>> restrictions = new ArrayList<Restriction<?>>();
+    private Collection<Restriction<?>> unmodifiableRestrictions = Collections.unmodifiableCollection(restrictions);
 
     protected RequiredRestriction requiredRestriction        = new RequiredRestriction(false);
     protected UniqueRestriction   uniqueRestriction          = new UniqueRestriction(false);
@@ -735,11 +735,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     public Map<String, Handler> getHandlers() {
         return handlers;
     }
-    /*
     public Collection<Restriction<?>> getRestrictions() {
         return unmodifiableRestrictions;
     }
-    */
     public int compareTo(DataType<C> a) {
         int compared = getName().compareTo(a.getName());
         if (compared == 0) compared = getTypeAsClass().getName().compareTo(a.getTypeAsClass().getName());
@@ -976,9 +974,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             if (source.enforceStrength == DataType.ENFORCE_ABSOLUTE) {
                 enforceStrength = DataType.ENFORCE_ALWAYS;
             }
-            //if (parent != null && parent.restrictions != null) { // could happen during deserialization
-            //parent.restrictions.add(this);
-            //}
+            if (parent != null && parent.restrictions != null) { // could happen during deserialization
+                parent.restrictions.add(this);
+            }
 
         }
 
@@ -986,9 +984,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             this.name = name;
             this.parent = parent;
             this.value = value;
-            //if (parent != null && parent.restrictions != null) { // could happen during deserialization
-            //parent.restrictions.add(this);
-            //}
+            if (parent != null && parent.restrictions != null) { // could happen during deserialization
+                parent.restrictions.add(this);
+            }
         }
 
         public String getName() {
@@ -1064,8 +1062,16 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             case DataType.ENFORCE_ABSOLUTE:
             case DataType.ENFORCE_ALWAYS:   return true;
             case DataType.ENFORCE_ONCHANGE: if (node == null || field == null || node.isChanged(field.getName())) return true;
-            case DataType.ENFORCE_ONCREATE: if (node == null || node.isNew()) return true;
-            case DataType.ENFORCE_ONVALIDATE: return true;
+            case DataType.ENFORCE_ONCREATE: return (node == null || node.isNew());
+            case DataType.ENFORCE_ONVALIDATE:
+                if (node == null) return true;
+                if (node != null) {
+                    Object committing = node.getCloud().getProperty(Node.CLOUD_COMMITNODE_KEY);
+                    if (Integer.valueOf(node.getNumber()).equals(committing)) {
+                        return false;
+                    }
+                }
+                return true;
             case DataType.ENFORCE_NEVER:    return false;
             default:                        return true;
             }
