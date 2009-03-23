@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.61.2.12 2009-03-23 16:00:03 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.61.2.13 2009-03-23 17:44:25 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -1003,8 +1003,16 @@ s     */
             case DataType.ENFORCE_ABSOLUTE:
             case DataType.ENFORCE_ALWAYS:   return true;
             case DataType.ENFORCE_ONCHANGE: if (node == null || field == null || node.isChanged(field.getName())) return true;
-            case DataType.ENFORCE_ONCREATE: if (node == null || node.isNew()) return true;
-            case DataType.ENFORCE_ONVALIDATE: return true;
+            case DataType.ENFORCE_ONCREATE: return (node == null || node.isNew());
+            case DataType.ENFORCE_ONVALIDATE:
+                if (node == null) return true;
+                if (node != null) {
+                    Object committing = node.getCloud().getProperty(Node.CLOUD_COMMITNODE_KEY);
+                    if (new Integer(node.getNumber()).equals(committing)) {
+                        return false;
+                    }
+                }
+                return true;
             case DataType.ENFORCE_NEVER:    return false;
             default:                        return true;
             }
