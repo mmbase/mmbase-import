@@ -53,19 +53,11 @@ abstract public class AbstractSimpleImpl  implements Logger {
         log("" + s, level);
     }
 
-
-    /**
-     * @since MMBase-1.8
-     */
-    protected void log (Object s, Throwable t) {
-        log("" + s + "\n"  + Logging.stackTrace(t));
-    }
-
     /**
      * @since MMBase-1.8
      */
     protected void log(Object s, Level level, Throwable t) {
-        log(s, t);
+        log(s + "\n" + Logging.stackTrace(t), level);
     }
 
     public void trace (Object m) {
