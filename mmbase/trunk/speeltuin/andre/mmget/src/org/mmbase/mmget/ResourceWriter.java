@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
  * Writes a resource found on an url to disk. 
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ResourceWriter.java,v 1.4 2009-03-12 10:55:20 andre Exp $
+ * @version $Id: ResourceWriter.java,v 1.5 2009-03-23 22:30:22 andre Exp $
  */
 public class ResourceWriter {
     private static final Logger log = Logging.getLoggerInstance(ResourceWriter.class);
@@ -57,7 +57,7 @@ public class ResourceWriter {
     
     protected void disconnect() {
         if (uc != null) { 
-            log.debug("disconnecting... " + url.toString());
+            //log.debug("disconnecting... " + url.toString());
             uc.disconnect(); 
         }
     }
@@ -67,10 +67,22 @@ public class ResourceWriter {
      */
     protected void write() throws IOException {
         File f = getFile(filename);
+        
         if (f.exists()) {
             //log.warn("File '" + f.toString() + "' already exists, deleting it and saving again.");
-            f.delete();
+            if (f.lastModified() <= uc.getLastModified()) {
+                f.delete();
+                
+            } else {
+                log.info("Not modified: " + f.toString() + ", f:" + f.lastModified() + " uc:" + uc.getLastModified());
+                // MMGet.savedURLs.put(url, filename);
+                MMGet.addSavedURL(url, filename);
+                
+                return;
+            }
+            
         }
+        
         
         BufferedInputStream  in  = new BufferedInputStream(uc.getInputStream());
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
@@ -85,7 +97,8 @@ public class ResourceWriter {
         out.close();
         
         log.debug("Saved: " + f.toString() );
-        MMGet.savedURLs.put(url, filename);
+        // MMGet.savedURLs.put(url, filename);
+        MMGet.addSavedURL(url, filename);
     }
     
     /**
@@ -96,7 +109,7 @@ public class ResourceWriter {
      */
     private static URLConnection getURLConnection(URL url) throws SocketException, IOException {
         URLConnection uc = url.openConnection();
-        if (url.getProtocol().equals("http")) {
+        if (url.getProtocol().equals("http") || url.getProtocol().equals("https")) {
             HttpURLConnection huc = (HttpURLConnection)uc;
             int res = huc.getResponseCode();
             if (res == -1) {
@@ -108,11 +121,13 @@ public class ResourceWriter {
             } else {
                 return huc;
             }
+        /*   
         } else if (url.getProtocol().equals("file")) {
             InputStream is = uc.getInputStream();
             is.close();
             // If that didn't throw an exception, the file is probably OK
             return uc;
+        */
         } else {
             // return "(non-HTTP)";
             return null;
@@ -164,22 +179,22 @@ public class ResourceWriter {
         String filename = link.substring(MMGet.serverpart.length());
         if (filename.startsWith("/")) filename = filename.substring(1);
 
-        log.debug("0: file: " + filename);
+        //log.debug("0: file: " + filename);
         if (contenttype == MMGet.CONTENTTYPE_HTML) {
             if (filename.equals("")) {
                 filename = "index.html";
             } else if (!filename.endsWith("/") && !MMGet.hasExtension(filename)) {
                 filename = filename + "/index.html";
-                log.debug("1: /bla file: " + filename); // TODO: add extra ../ to rewritten links !!?
+                //log.debug("1: /bla file: " + filename); // TODO: add extra ../ to rewritten links !!?
             }
             
             if (filename.endsWith("/")) {
                 filename = filename + "index.html";
-                log.debug("2: /bla/ file: " + filename);
+                //log.debug("2: /bla/ file: " + filename);
             }
         }
 
-        log.debug("url: " + url.toString() + " -> file: " + filename);
+        //log.debug("url: " + url.toString() + " -> file: " + filename);
         return filename;
     }
  }
