@@ -12,9 +12,9 @@ import org.mmbase.util.logging.Logging;
  * Typically to be used for html and css files.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ResourceReWriter.java,v 1.4 2009-03-23 21:12:53 andre Exp $
+ * @version $Id: ResourceReWriter.java,v 1.5 2009-03-23 22:30:22 andre Exp $
  */
-public class ResourceReWriter extends ResourceWriter {
+public final class ResourceReWriter extends ResourceWriter {
     private static final Logger log = Logging.getLoggerInstance(ResourceReWriter.class);
     
     private URL url;
@@ -52,14 +52,18 @@ public class ResourceReWriter extends ResourceWriter {
      * @param uc the already elsewhere created URLConnection for efficiency
      */
     private void rewrite() throws IOException {
-        log.debug("REwriting: " + url + " -> file: " + filename);
+        if (log.isDebugEnabled()) log.debug("REwriting: " + url + " -> file: " + filename);
         File f = getFile(filename);
         if (f.exists()) {
             //log.warn("File '" + f.toString() + "' already exists, deleting it and saving again.");
             f.delete();
         }
         
-        Map<String,String> links2files = MMGet.url2links.get(url);        
+        Map<String,String> links2files = new HashMap<String,String>();
+        synchronized(MMGet.url2links) {
+            links2files = MMGet.url2links.remove(url);
+        }
+
         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
         PrintWriter out = new PrintWriter(new FileWriter(f));
         String line;
@@ -83,7 +87,8 @@ public class ResourceReWriter extends ResourceWriter {
                         if (!testlink.equals(link)) continue;
                         
                         line = line.replace(hitlink, file);
-                        log.debug("replaced '" + link + "' with '" + file + "' in: " + filename);
+                        if (log.isDebugEnabled()) 
+                            log.debug("replaced '" + link + "' with '" + file + "' in: " + filename);
                     }
                 }
             }
@@ -93,7 +98,7 @@ public class ResourceReWriter extends ResourceWriter {
         in.close();
         out.close();
         
-        log.debug("Saved: " + url + " -> file: " + f.toString() );
+        if (log.isDebugEnabled()) log.debug("Saved: " + url + " -> file: " + f.toString() );
     
     }
     
