@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.210.2.10 2008-12-09 10:39:53 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.210.2.11 2009-03-23 17:33:11 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -293,6 +293,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (TemporaryNodeManager.UNKNOWN == result) {
             throw new BridgeException("Can't change unknown field '" + fieldName + "', of node " + getNumber() + " of nodeManager '" + getNodeManager().getName() +"'");
         } else if (TemporaryNodeManager.INVALID_VALUE == result) {
+
             getNode().storeValue(fieldName, value); // commit() will throw that invalid.
         }
     }
@@ -483,15 +484,27 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (isNew()) {
             cloud.verify(Operation.CREATE, BasicCloudContext.mmb.getTypeDef().getIntValue(getNodeManager().getName()));
         }
+        if (log.isDebugEnabled()) {
+            log.debug("security checking " + noderef.getChanged());
+        }
         edit(ACTION_COMMIT);
 
-        Collection errors = validate();
-        if (errors.size() > 0) {
-            String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
-            if (! Casting.toBoolean(getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION))) {
-                noderef.cancel();
-                throw new IllegalArgumentException(mes);
+        Object prev = getCloud().getProperty(CLOUD_COMMITNODE_KEY);
+        try {
+            getCloud().setProperty(CLOUD_COMMITNODE_KEY, new Integer(getNumber())); // Validation code want to know that we are commiting right now.
+            Collection errors = validate();
+            if (errors.size() > 0) {
+                String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
+                if (! Casting.toBoolean(getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION))) {
+                    noderef.cancel();
+                    throw new IllegalArgumentException(mes);
+                }
             }
+        } finally {
+            getCloud().setProperty(CLOUD_COMMITNODE_KEY, prev);
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("commitprocessing " + noderef.getChanged());
         }
         processCommit();
         if (log.isDebugEnabled()) {
@@ -506,7 +519,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 node.insert(cloud.getUser());
                 // cloud.createSecurityInfo(getNumber());
             } else {
-                log.debug("not new");
+                log.debug("not new " + node.getChanged());
                 node.commit(cloud.getUser());
                 //cloud.updateSecurityInfo(getNumber());
             }
