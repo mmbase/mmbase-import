@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.54.2.2 2009-03-17 14:45:55 michiel Exp $
+ * @version $Id: DataType.java,v 1.54.2.3 2009-03-23 16:00:03 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
@@ -190,6 +190,13 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
      * @javadoc
      */
     public void finish(Object owner);
+
+    /**
+     * The maximum enforce strength of all restrictions on this datatype.
+     * See {@link DataType#ENFORCE_ALWAYS}, {@link DataType#ENFORCE_ONCHANGE}, {@link DataType#ENFORCE_NEVER}.
+     * @return maximum enforce strength
+     */
+    public int getEnforceStrength();
 
 
     /**
