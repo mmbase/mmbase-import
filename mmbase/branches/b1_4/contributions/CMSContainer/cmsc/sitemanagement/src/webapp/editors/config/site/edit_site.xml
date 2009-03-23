@@ -4,19 +4,19 @@
 	<title xml:lang="nl">Site</title>
 	<title xml:lang="en">Site</title>
 
-	<field name="stagingfragment" dtmaxlength="255"
+	<field name="stagingfragment"
 		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,253}[a-zA-Z0-9]$"
 		dtrequired="true">
 		<prompt xml:lang="en">Staging domain</prompt>
 		<prompt xml:lang="nl">Staging domein</prompt>
 	</field>
-	<field name="urlfragment" dtmaxlength="255"
+	<field name="urlfragment"
 		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,253}[a-zA-Z0-9]$"
 		dtrequired="true">
 		<prompt xml:lang="en">Live domain</prompt>
 		<prompt xml:lang="nl">Live domein</prompt>
 	</field>
-	<field name="title" dtmaxlength="255" dtrequired="true">
+	<field name="title" dtrequired="true">
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
 	</field>
