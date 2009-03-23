@@ -130,6 +130,7 @@ public final class WordHtmlCleaner {
             xmlStr = fixBadLists(xmlStr);
             xmlStr = fixNiceLists(xmlStr);
             xmlStr = removeHtmlIfComments(xmlStr);
+            xmlStr = removeComments(xmlStr);
             xmlStr = fixBR(xmlStr);
             xmlStr = removeEmptyFonts(xmlStr);
             
@@ -204,6 +205,15 @@ public final class WordHtmlCleaner {
       return text;
    }
 
+   /**
+    * CMSC-1337: Remove inline style from e.g. Word
+    */
+   private static String removeComments(String text) {
+      Pattern pattern = Pattern.compile("<!--.*?-->", Pattern.DOTALL);
+      Matcher matcher = pattern.matcher(text);
+      text = matcher.replaceAll("");
+      return text;
+   }
 
    /**
     * remove xml namespace declarations

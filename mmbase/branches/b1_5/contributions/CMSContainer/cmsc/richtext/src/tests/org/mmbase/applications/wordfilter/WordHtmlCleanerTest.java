@@ -84,6 +84,11 @@ public class WordHtmlCleanerTest extends TestCase {
       doTestFilter("te<!--[if !supportLineBreaknewLine]-->\r\n<!--[endif]-->st", "test");
    }
    
+   public void testRemoveComments() {
+      doTestFilter("te<!-- /* Style Definitions */ -->st", "test");
+      doTestFilter("te<!-- /* Style Definitions */\r\np.MsoNormal, \r\n -->st", "test");
+   }
+   
     /**
      * As specified in NIJ-780, only a single <br/> should be the result of a replaced <p></p>
      */
@@ -111,7 +116,7 @@ public class WordHtmlCleanerTest extends TestCase {
     }
 
     private void doTestFilter(String input, String expected) {
-        String cleanedHtml = WordHtmlCleaner.cleanHtml(input, true);
+        String cleanedHtml = WordHtmlCleaner.cleanHtml(input, true, true);
         assertEquals(expected, cleanedHtml);
     }
     
