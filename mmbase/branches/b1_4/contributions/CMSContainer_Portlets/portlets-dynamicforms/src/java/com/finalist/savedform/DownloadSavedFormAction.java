@@ -6,6 +6,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,7 +81,18 @@ public class DownloadSavedFormAction extends MMBaseAction {
             }
          }
          response.setContentType("application/vnd.ms-excel");
-         String filename = formTitle.replace(" ", "_") + ".xls";
+         
+         formTitle = formTitle.replace(" ", "_"); //Replace spaces with _ before our pattern matching.
+
+         //Remove all non normal characters
+         Pattern pattern = Pattern.compile("[^\\w].*?", Pattern.DOTALL);
+         Matcher matcher = pattern.matcher(formTitle);
+         formTitle = matcher.replaceAll("");
+         
+         if (formTitle.length() > 31) { //POI does not accept sheet titles > 31 chars
+            formTitle = formTitle.substring(0, 31); 
+         }
+         String filename = formTitle + ".xls";
          response.addHeader("Content-disposition", "attachment; filename=" + filename);
          ExcelUtils.getInstance().generate(formTitle, response.getOutputStream(), headers.values(),
                savedFormNodeList.size(), values);
