@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.9 2009-03-12 10:55:20 andre Exp $
+ * @version $Id: MMGet.java,v 1.10 2009-03-23 22:30:22 andre Exp $
  */
 public final class MMGet {
     
@@ -49,8 +49,8 @@ public final class MMGet {
 
     /* not wanted: offsite, already tried but 404 etc. */
     protected static Set<URL> ignoredURLs = new HashSet<URL>();
-    /* urls to parse (html, css) */
-    protected static List<URL> parseURLs = Collections.synchronizedList(new ArrayList<URL>());
+    /* urls to read (html, css) */
+    protected static List<URL> readURLs = Collections.synchronizedList(new ArrayList<URL>());
     /* saved: url -> filename */
     protected static Map<URL,String> savedURLs = Collections.synchronizedMap(new HashMap<URL,String>());
     /* rewrite these: url -> link in page / new link in rewritten page */
@@ -208,7 +208,7 @@ public final class MMGet {
      * @param  link 
      */
     private String start() {
-        parseURLs.clear();
+        readURLs.clear();
         ignoredURLs.clear();
         savedURLs.clear();
         url2links.clear();
@@ -223,6 +223,7 @@ public final class MMGet {
      * @param url   link to html page or css
      */
     private void readUrl(URL url) {
+        if (url == null) return;
         log.debug("---------------------------------------------------------------------");
         log.debug("reading:   " + url.toString());
         
@@ -241,7 +242,7 @@ public final class MMGet {
             log.error("Can't find '" + url + "' - " + e);
             return;
         }
-        if (reader == null) return;
+        //if (reader == null) return;
         
         try {
             ArrayList<String> links = reader.getLinks();
@@ -271,7 +272,7 @@ public final class MMGet {
                         continue;
                     }
                 }
-                log.debug("link: " + linkURL.toString());
+                //log.debug("link: " + linkURL.toString());
                 
                 if (ignoredURLs.contains(linkURL)) continue;
                 if (!linkURL.getHost().equals(url.getHost())) {
@@ -279,46 +280,59 @@ public final class MMGet {
                     ignoredURLs.add(linkURL);
                     continue;
                 }
+                /*
                 if (!linkURL.toString().startsWith(startdirURL.toString())) {
-                    // if (linkURL.toString().length() < startdirURL.toString().length()) {    // BUG: Klopt niet!
                     log.info(linkURL.toString() + " -- UP TREE, not following");
                     ignoredURLs.add(linkURL);
                     continue;
                 }
+                */
                     
-                String filename = null;
-                if (savedURLs.containsKey(linkURL)) {
-                    filename = savedURLs.get(linkURL);
-                    log.debug("already saved");
-                    
-                } else {
+                String filename = getSavedFilename(linkURL);    // already saved?
+                if (filename == null) {
                     ResourceWriter rw = null;
                     try {
                         rw = new ResourceWriter(linkURL);
                         filename = rw.getFilename();
                         
                         if (rw.getContentType() < 1) {
-                            rw.write(); 
-                        } else {
+                            rw.write();
                             rw.disconnect();
-                            addParseURL(linkURL);   // save for later
-                            rw = null;
+                            
+                        } else {
+                            if (rw.getContentType() == CONTENTTYPE_HTML
+                                && !linkURL.toString().startsWith(startdirURL.toString())) {
+                                    log.info(linkURL.toString() + " -- UP TREE, not following");
+                                    
+                                    if (!link.equals(linkURL.toString()) && !links2files.containsKey(link)) {
+                                        links2files.put(link, linkURL.toString());  // replace with full url
+                                    }
+                                    rw.disconnect();
+                                    continue;
+                            }
+                            rw.disconnect();
+                            // save for later
+                            synchronized(readURLs) {
+                                if (!readURLs.contains(linkURL)) readURLs.add(linkURL);
+                            }
+                            
                         }
                     } catch(IOException e) {
                         log.error(e);
                         ignoredURLs.add(linkURL);
+                        continue;
                     }
-                    if (rw == null) continue;
                 }
                 
-                String calclink = serverpart + "/" + filename;    // 'calculated' link
+                StringBuilder calclink = new StringBuilder(serverpart);
+                calclink.append("/").append(filename);    // 'calculated' link
                 String calcdir  = dirURL.toString();
                 if (calcdir.endsWith("/")) calcdir = calcdir.substring(0, calcdir.lastIndexOf("/"));
                 
-                String relative = UriParser.makeRelative(calcdir, calclink);
+                String relative = UriParser.makeRelative(calcdir, calclink.toString());
                 if (!"".equals(link) && !links2files.containsKey(link) && !link.equals(relative)) { // only when different
                     log.debug("link2files: " + link + " -> " + relative);
-                    links2files.put(link, relative); /* /dir/css/bla.css + ../css/bla.css */
+                    links2files.put(link, relative);    /* /dir/css/bla.css + ../css/bla.css */
                 }
                 
             } // while ends
@@ -327,18 +341,17 @@ public final class MMGet {
             synchronized(url2links) {
                 if (!url2links.containsKey(url)) url2links.put(url, links2files);
             }
+            
             ResourceReWriter rrw = null;
             try {
                 rrw = new ResourceReWriter(url);
                 rrw.write();
-
             } catch (IOException e) {
                 log.error(e);
                 ignoredURLs.add(url);
             }
             
-            URL nextURL = getParseURL();
-            if (nextURL != null) readUrl(nextURL);  // recurse!
+            readUrl(getReadURL());  // recurse!
             
         } catch (IOException e) {
             log.error("IOException: " + e);
@@ -346,7 +359,7 @@ public final class MMGet {
         
     }
     
-    protected static int contentType(URLConnection uc) {
+    protected final static int contentType(URLConnection uc) {
         String contentheader = uc.getHeaderField("content-type");
         //log.debug("header: " + contentheader);
         int pk = contentheader.indexOf(";");
@@ -391,7 +404,7 @@ public final class MMGet {
     /**
      * remove ;jsessionid=a69bd9e162de1cfa3ea57ef6f3cf03af
      */
-    public static String removeSessionid(String str) {
+    public final static String removeSessionid(String str) {
         int pk = str.indexOf(";");
         if (pk > -1) {
             int q = str.indexOf("?");
@@ -411,7 +424,7 @@ public final class MMGet {
      * @param  path the exact path from the startposition of the export (that's seen as 'root')
      * @return file
      */
-    public File getFile(String path) {
+    public final File getFile(String path) {
         File f;
         String resource;
         
@@ -440,7 +453,7 @@ public final class MMGet {
      * @param   file    path or filename to check (not an URL!)
      * @return  true if it contains an extension like .html f.e.
      */
-     public static boolean hasExtension(String file) {
+     public static final boolean hasExtension(String file) {
         int i = file.lastIndexOf(".");
         return (i != -1 && i != file.length() - 1);
     }
@@ -454,16 +467,23 @@ public final class MMGet {
         return pathList;
     }
 */
-    private void addParseURL(URL url) {
-        synchronized(parseURLs) {
-            if (!parseURLs.contains(url)) parseURLs.add(url);
+    protected String getSavedFilename(URL url) {
+        synchronized(savedURLs) {
+            return savedURLs.get(url);
         }
     }
 
-    private URL getParseURL() {
+    protected static void addSavedURL(URL url, String filename) {
+        synchronized(savedURLs) {
+            if (!savedURLs.containsKey(url)) savedURLs.put(url, filename);
+        }
+    }
+
+
+    private URL getReadURL() {
         URL url = null;
-        synchronized(parseURLs) {
-            if (!parseURLs.isEmpty()) url = parseURLs.remove(0);
+        synchronized(readURLs) {
+            if (!readURLs.isEmpty()) url = readURLs.remove(0);
         }
         return url;
     }
