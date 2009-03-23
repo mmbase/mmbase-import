@@ -21,9 +21,18 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.70.2.1 2007-06-21 07:39:08 pierre Exp $
+ * @version $Id: Node.java,v 1.70.2.2 2009-03-23 17:33:08 michiel Exp $
  */
 public interface Node extends Comparable {
+
+    /**
+     * During commit of the node, this property of the cloud, should contain the node number of the
+     * node
+     * @since MMBase-1.9
+     */
+    public static String CLOUD_COMMITNODE_KEY = "org.mmbase.cloud.commit_node";
+
+
 
     /**
      * Returns the cloud this node belongs to.
@@ -457,7 +466,7 @@ public interface Node extends Comparable {
      * Validates a node by checking the values from it's fields against the constraints of
      * each field's datatype.
      * This method is called by the {@link #commit} method, after commit processors are run.
-     * For performance reasons, it only validates fields that actually changed (as of MMBase 1.8.4), 
+     * For performance reasons, it only validates fields that actually changed (as of MMBase 1.8.4),
      * or when a new node is created.
      * Note that because commit processors may make necessary changes to field values, it is possible for
      * validate() to fail when used outside the commit process if the constraints are set too strict.
