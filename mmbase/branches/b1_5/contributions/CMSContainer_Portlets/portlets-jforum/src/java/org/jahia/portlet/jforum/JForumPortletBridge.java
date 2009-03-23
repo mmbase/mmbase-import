@@ -554,7 +554,7 @@ public class JForumPortletBridge extends CmscPortlet {
            reqW.setAttribute("admin_pass1",StringUtils.isEmpty(SystemGlobals.getValue("admin.password"))?"admin2k":SystemGlobals.getValue("admin.password"));
            reqW.setAttribute("db_connection_type", "ds");
            reqW.setAttribute("site_link", "");
-           reqW.setAttribute("dbdatasource", StringUtils.isEmpty(SystemGlobals.getValue("database.dbdatasource"))?"java:comp/env/jdbc/jforum":SystemGlobals.getValue("database.dbdatasource"));
+           reqW.setAttribute("dbdatasource", StringUtils.isEmpty(SystemGlobals.getValue("database.datasource.name"))?"java:comp/env/jdbc/jforum":SystemGlobals.getValue("database.datasource.name"));
            try {
               net.jforum.context.RequestContext requestContext = new WebRequestContext(reqW);
               ResponseContext responseContext = new WebResponseContext(respW);
