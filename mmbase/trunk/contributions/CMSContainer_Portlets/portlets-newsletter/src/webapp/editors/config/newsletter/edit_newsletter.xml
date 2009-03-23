@@ -101,6 +101,5 @@
    <list include="config/layout/search_page_layoutrel_layout.xml" />
    <list include="config/stylesheet/search_page_stylerel_stylesheet.xml" />
    <list include="config/images/search_page_namedrel_images.xml" />
-   <list include="config/attachments/search_newsletter_posrel_attachments.xml" />
    <list include="config/newsletter/search_newsletter_posrel_term.xml" />
 </form-schema>

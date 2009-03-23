@@ -26,7 +26,6 @@
    <field name="server"/>
    <field name="user_name"/>
    <field name="password"/>
-   <relation destination="attachments" role="posrel" />
    <relation destination="term" role="posrel" />
 	<relation destination="images" role="namedrel" />
 	<relation destination="layout" role="allowrel" />
