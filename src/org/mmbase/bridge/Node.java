@@ -21,9 +21,16 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.82 2009-02-11 10:44:09 michiel Exp $
+ * @version $Id: Node.java,v 1.83 2009-03-23 17:42:11 michiel Exp $
  */
 public interface Node extends Comparable<Node> {
+
+    /**
+     * During commit of the node, this property of the cloud, should contain the node number of the
+     * node
+     * @since MMBase-1.9.1
+     */
+    public static String CLOUD_COMMITNODE_KEY = "org.mmbase.cloud.commit_node";
 
     /**
      * Returns the cloud this node belongs to.

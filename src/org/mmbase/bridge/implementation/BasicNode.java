@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.233 2008-12-22 17:21:19 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.234 2009-03-23 17:43:20 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -492,14 +492,21 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
         checkCommit();
 
-        Collection<String> errors = validate();
-        if (errors.size() > 0) {
-            String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
-            if (! Casting.toBoolean(getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION))) {
-                noderef.cancel();
-                throw new IllegalArgumentException(mes);
+        Object prev = getCloud().getProperty(CLOUD_COMMITNODE_KEY);
+        try {
+            getCloud().setProperty(CLOUD_COMMITNODE_KEY, new Integer(getNumber())); // Validation code want to know that we are commiting right now.
+            Collection<String> errors = validate();
+            if (errors.size() > 0) {
+                String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
+                if (! Casting.toBoolean(getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION))) {
+                    noderef.cancel();
+                    throw new IllegalArgumentException(mes);
+                }
             }
+        } finally {
+            getCloud().setProperty(CLOUD_COMMITNODE_KEY, prev);
         }
+
         processCommit();
         if (log.isDebugEnabled()) {
             log.debug("committing " + noderef.getChanged());
