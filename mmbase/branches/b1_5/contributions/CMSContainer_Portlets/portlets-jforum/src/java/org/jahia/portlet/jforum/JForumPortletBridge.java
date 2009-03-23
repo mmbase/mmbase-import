@@ -4,13 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -43,9 +40,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.portlet.fileupload.PortletRequestContext;
 
-import com.finalist.cmsc.portlets.CmscPortlet;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.portlets.CmscPortlet;
 import com.finalist.cmsc.util.ServerUtil;
+
 import freemarker.template.SimpleHash;
 
 /**
@@ -185,7 +183,7 @@ public class JForumPortletBridge extends CmscPortlet {
                contextPath = checkSlash(contextPath);
                defaultRequestUri += contextPath+"forums/list.page";
             }
-            defaultRequestUri = "forums/list.page";
+           // defaultRequestUri = "forums/list.page";
             defaultModule = "forums";
             defaultAction = "list";
             if (isAlreadyInstalled()) {
