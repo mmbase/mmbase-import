@@ -113,7 +113,6 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       String action = request.getParameter("action");
       log.debug("Process view action:" + action);
       if (action != null) {
-         response.setWindowState(WindowState.MAXIMIZED);
          if ("pause".equals(action)) {
             processPause(request, response);
          }
