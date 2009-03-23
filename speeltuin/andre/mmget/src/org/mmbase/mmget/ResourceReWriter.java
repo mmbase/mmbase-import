@@ -12,7 +12,7 @@ import org.mmbase.util.logging.Logging;
  * Typically to be used for html and css files.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ResourceReWriter.java,v 1.5 2009-03-23 22:30:22 andre Exp $
+ * @version $Id: ResourceReWriter.java,v 1.6 2009-03-23 23:04:58 andre Exp $
  */
 public final class ResourceReWriter extends ResourceWriter {
     private static final Logger log = Logging.getLoggerInstance(ResourceReWriter.class);
@@ -66,7 +66,7 @@ public final class ResourceReWriter extends ResourceWriter {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
         PrintWriter out = new PrintWriter(new FileWriter(f));
-        String line;
+        String line = null;
         while((line = in.readLine()) != null) {
             if (links2files != null) {
                 for (Map.Entry<String,String> pair : links2files.entrySet()) {
@@ -87,8 +87,7 @@ public final class ResourceReWriter extends ResourceWriter {
                         if (!testlink.equals(link)) continue;
                         
                         line = line.replace(hitlink, file);
-                        if (log.isDebugEnabled()) 
-                            log.debug("replaced '" + link + "' with '" + file + "' in: " + filename);
+                        //if (log.isDebugEnabled()) log.debug("replaced '" + link + "' with '" + file + "' in: " + filename);
                     }
                 }
             }
