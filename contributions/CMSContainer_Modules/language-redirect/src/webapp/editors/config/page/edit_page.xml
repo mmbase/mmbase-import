@@ -5,12 +5,12 @@
    <title xml:lang="en">Page</title>
    <title xml:lang="zh">页面</title>
 
-   <field name="title" dtmaxlength="255"  dtrequired="true">
+   <field name="title" dtrequired="true">
       <prompt xml:lang="en">Title</prompt>
       <prompt xml:lang="nl">Titel</prompt>
       <prompt xml:lang="zh">标题</prompt>
    </field>
-   <field name="urlfragment" dtmaxlength="255"
+   <field name="urlfragment" 
       dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,253}[a-zA-Z0-9]$">
       <prompt xml:lang="en">Urlfragment</prompt>
       <prompt xml:lang="nl">Urlfragment</prompt>
