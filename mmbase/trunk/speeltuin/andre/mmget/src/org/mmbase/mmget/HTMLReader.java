@@ -15,12 +15,12 @@ import org.mmbase.util.logging.Logging;
  * Reads a web resource an returns its tags that may contain links to other resources. 
  *
  * @author Andr&eacute; van Toly
- * @version $Id: HTMLReader.java,v 1.5 2009-03-23 22:30:22 andre Exp $
+ * @version $Id: HTMLReader.java,v 1.6 2009-03-24 13:32:24 andre Exp $
  */
 public final class HTMLReader extends UrlReader {
     private static final Logger log = Logging.getLoggerInstance(HTMLReader.class);
     
-    private URLConnection uc = null;
+    private HttpURLConnection huc = null;
     private BufferedReader inrdr = null;
 
     /** 
@@ -40,9 +40,9 @@ public final class HTMLReader extends UrlReader {
         "<script", "<SCRIPT",
     };
     
-    public HTMLReader(URLConnection uc) throws IOException {
-        this.uc = uc;
-        inrdr = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+    public HTMLReader(HttpURLConnection huc) throws IOException {
+        this.huc = huc;
+        inrdr = new BufferedReader(new InputStreamReader(huc.getInputStream()));
     }
     
     /** 
@@ -65,11 +65,11 @@ public final class HTMLReader extends UrlReader {
     }
 
     protected int getContentType() {
-        return MMGet.contentType(uc);
+        return MMGet.contentType(huc);
     }
     
     protected URL getUrl() {
-        return uc.getURL();
+        return huc.getURL();
     }
     
     /** 
@@ -141,8 +141,13 @@ public final class HTMLReader extends UrlReader {
     }
     
     public void close() throws IOException {
-        //log.debug("closing...");
+        log.debug("closing...");
         inrdr.close();
+
+        if (huc != null) { 
+            log.debug("disconnecting... " + getUrl().toString());
+            huc.disconnect(); 
+        }
     }
 
 }
