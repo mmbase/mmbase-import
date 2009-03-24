@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.11 2009-03-23 23:04:58 andre Exp $
+ * @version $Id: MMGet.java,v 1.12 2009-03-24 13:45:59 andre Exp $
  */
 public final class MMGet {
     
@@ -348,6 +348,7 @@ public final class MMGet {
             try {
                 rrw = new ResourceReWriter(url);
                 rrw.write();
+                rrw.disconnect();
             } catch (IOException e) {
                 log.error(e);
                 ignoredURLs.add(url);
