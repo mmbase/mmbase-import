@@ -89,7 +89,10 @@
       <td><fmt:message key="edit_defaults.register.useterms" />:</td>
       <td></td>
       <td>
-         <input type="text" name="useterms" value="${fn:escapeXml(useterms)}" />
+         <select name="useterms">
+            <option ${(useterms eq 'yes')?'selected':''} value="yes"><fmt:message key="edit_defaults.yes"/>"/></option>
+            <option ${(useterms eq 'yes')?'':'selected'} value="no"><fmt:message key="edit_defaults.no"/>"/></option>
+         </select>
       </td>
    </tr>
    <tr>
