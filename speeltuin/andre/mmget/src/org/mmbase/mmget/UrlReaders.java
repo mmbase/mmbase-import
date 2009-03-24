@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
  * URLConnection.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: UrlReaders.java,v 1.4 2009-03-11 08:34:20 andre Exp $
+ * @version $Id: UrlReaders.java,v 1.5 2009-03-24 13:32:24 andre Exp $
  */
 public class UrlReaders {
     private static final Logger log = Logging.getLoggerInstance(UrlReaders.class);
@@ -27,13 +27,13 @@ public class UrlReaders {
 
     public static UrlReader getUrlReader(URL url) throws IOException {
         
-        URLConnection uc = url.openConnection();
-        contenttype = MMGet.contentType(uc);
+        HttpURLConnection huc = (HttpURLConnection)url.openConnection();
+        contenttype = MMGet.contentType(huc);
         
         if (contenttype == MMGet.CONTENTTYPE_CSS) {
-            reader = new CSSReader(uc);
+            reader = new CSSReader(huc);
         } else {
-            reader = new HTMLReader(uc);
+            reader = new HTMLReader(huc);
         }
         return reader;
     }

@@ -19,12 +19,12 @@ import org.mmbase.util.logging.Logging;
  *   @import url("mystyle.css");
  *
  * @author Andr&eacute; van Toly
- * @version $Id: CSSReader.java,v 1.4 2009-03-23 22:30:22 andre Exp $
+ * @version $Id: CSSReader.java,v 1.5 2009-03-24 13:32:24 andre Exp $
  */
 public final class CSSReader extends UrlReader {
     private static final Logger log = Logging.getLoggerInstance(CSSReader.class);
     
-    private URLConnection uc = null;
+    private HttpURLConnection huc = null;
     private BufferedReader inrdr = null;
 
     /*
@@ -37,17 +37,17 @@ public final class CSSReader extends UrlReader {
     public static final String IMPORT_PATTERN = "@import\\s+[\"\'](.*)[\"\']";
     private static final Pattern importPattern = Pattern.compile(IMPORT_PATTERN);
     
-    public CSSReader(URLConnection uc) throws IOException {
-        this.uc = uc;
-        inrdr = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+    public CSSReader(HttpURLConnection huc) throws IOException {
+        this.huc = huc;
+        inrdr = new BufferedReader(new InputStreamReader(huc.getInputStream()));
     }
     
     protected int getContentType() {
-        return MMGet.contentType(uc);
+        return MMGet.contentType(huc);
     }
     
     protected URL getUrl() {
-        return uc.getURL();
+        return huc.getURL();
     }
     
     /**
@@ -87,8 +87,13 @@ public final class CSSReader extends UrlReader {
     }
 
     public void close() throws IOException {
-        //log.debug("closing...");
+        log.debug("closing...");
         inrdr.close();
+        
+        if (huc != null) { 
+            log.debug("disconnecting... " + getUrl().toString());
+            huc.disconnect(); 
+        }
     }
     
 }

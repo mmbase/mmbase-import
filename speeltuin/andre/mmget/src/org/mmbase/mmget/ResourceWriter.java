@@ -13,13 +13,13 @@ import org.mmbase.util.logging.Logging;
  * Writes a resource found on an url to disk. 
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ResourceWriter.java,v 1.5 2009-03-23 22:30:22 andre Exp $
+ * @version $Id: ResourceWriter.java,v 1.6 2009-03-24 13:32:24 andre Exp $
  */
 public class ResourceWriter {
     private static final Logger log = Logging.getLoggerInstance(ResourceWriter.class);
     
     private URL url;
-    protected HttpURLConnection uc = null;
+    protected HttpURLConnection huc = null;
     protected static String filename;
     protected static int contenttype;
 
@@ -29,22 +29,22 @@ public class ResourceWriter {
      */
     public ResourceWriter(URL u) throws IOException {
         try {
-            uc = (HttpURLConnection)getURLConnection(u);
+            huc = getURLConnection(u);
         } catch (IOException e) {
             log.warn(e);
         }
-        if (uc == null) { 
+        if (huc == null) { 
             MMGet.ignoredURLs.add(u);
             throw new MalformedURLException("Not found/correct? : " + u);
         }
         
         this.url = getUrl();
-        this.contenttype = MMGet.contentType(uc);
+        this.contenttype = MMGet.contentType(huc);
         this.filename = makeFilename(url);
     }
     
     protected URL getUrl() {
-        return uc.getURL();
+        return huc.getURL();
     }
     
     protected String getFilename() {
@@ -56,9 +56,9 @@ public class ResourceWriter {
     }
     
     protected void disconnect() {
-        if (uc != null) { 
+        if (huc != null) { 
             //log.debug("disconnecting... " + url.toString());
-            uc.disconnect(); 
+            huc.disconnect(); 
         }
     }
     
@@ -70,11 +70,11 @@ public class ResourceWriter {
         
         if (f.exists()) {
             //log.warn("File '" + f.toString() + "' already exists, deleting it and saving again.");
-            if (f.lastModified() <= uc.getLastModified()) {
+            if (f.lastModified() <= huc.getLastModified()) {
                 f.delete();
                 
             } else {
-                log.info("Not modified: " + f.toString() + ", f:" + f.lastModified() + " uc:" + uc.getLastModified());
+                log.info("Not modified: " + f.toString() + ", f:" + f.lastModified() + " huc:" + huc.getLastModified());
                 // MMGet.savedURLs.put(url, filename);
                 MMGet.addSavedURL(url, filename);
                 
@@ -84,7 +84,7 @@ public class ResourceWriter {
         }
         
         
-        BufferedInputStream  in  = new BufferedInputStream(uc.getInputStream());
+        BufferedInputStream  in  = new BufferedInputStream(huc.getInputStream());
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
         byte[] buf = new byte[1024];
         int b = 0;
@@ -107,8 +107,9 @@ public class ResourceWriter {
      * @param  url
      * @return a connection or null in case of a bad response (f.e. not a 200)
      */
-    private static URLConnection getURLConnection(URL url) throws SocketException, IOException {
+    private static HttpURLConnection getURLConnection(URL url) throws SocketException, IOException {
         URLConnection uc = url.openConnection();
+        //HttpURLConnection huc
         if (url.getProtocol().equals("http") || url.getProtocol().equals("https")) {
             HttpURLConnection huc = (HttpURLConnection)uc;
             int res = huc.getResponseCode();

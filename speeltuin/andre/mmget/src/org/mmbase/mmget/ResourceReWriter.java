@@ -12,13 +12,13 @@ import org.mmbase.util.logging.Logging;
  * Typically to be used for html and css files.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ResourceReWriter.java,v 1.6 2009-03-23 23:04:58 andre Exp $
+ * @version $Id: ResourceReWriter.java,v 1.7 2009-03-24 13:32:24 andre Exp $
  */
 public final class ResourceReWriter extends ResourceWriter {
     private static final Logger log = Logging.getLoggerInstance(ResourceReWriter.class);
     
     private URL url;
-    private HttpURLConnection uc = null;
+    private HttpURLConnection huc = null;
     private static String filename;
     private static int contenttype;
 
@@ -29,10 +29,10 @@ public final class ResourceReWriter extends ResourceWriter {
     public ResourceReWriter(URL url) throws IOException {
         super(url);
         //log.debug("Trying to download... " + url.toString() + " to " + filename);
-        this.uc = super.uc;
+        this.huc = super.huc;
         
         this.url = getUrl();
-        this.contenttype = MMGet.contentType(uc);
+        this.contenttype = MMGet.contentType(huc);
         this.filename = makeFilename(url);
     }
   
@@ -48,8 +48,6 @@ public final class ResourceReWriter extends ResourceWriter {
     /**
      * Saves and rewrites the links in the resource to (relative?) ones that work
      * on the filesystem. Only for HTML or CSS (text) files of course.
-     * @param url
-     * @param uc the already elsewhere created URLConnection for efficiency
      */
     private void rewrite() throws IOException {
         if (log.isDebugEnabled()) log.debug("REwriting: " + url + " -> file: " + filename);
