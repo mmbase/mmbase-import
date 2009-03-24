@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.12 2009-03-24 13:45:59 andre Exp $
+ * @version $Id: MMGet.java,v 1.13 2009-03-24 20:02:07 andre Exp $
  */
 public final class MMGet {
     
@@ -145,7 +145,7 @@ public final class MMGet {
      *
      * @param   url The link to start from, normally the homepage
      * @param   dir The directory to save the files to
-     * @return  Message with the results
+     * @return  Message with the name of the Future thread
      */
     public String downloadSite(String url, String dir) {
         this.directory = dir;
@@ -169,40 +169,32 @@ public final class MMGet {
         }
         
         StringBuilder info = new StringBuilder();
-        info.append("\n***    url: ").append(startURL.toString());
-        //info.append("\n**    dir.: ").append(startdirURL.toString());
-        info.append("\n* saved in: ").append(savedir.toString());
+        info.append("\n      url: ").append(startURL.toString());
+        info.append("\n saved in: ").append(savedir.toString());
         log.info(info.toString());
         
-        /*
-        ThreadPools.jobsExecutor.submit(new Callable() {
-                 public String call() {
-                      return start();
-                 }
-            });
-        */
-        // this Future stuff prevents errors to surface
         Future<String> fthread = ThreadPools.jobsExecutor.submit(new Callable() {
                  public String call() {
                       return start();
                  }
             });
+        ThreadPools.identify(fthread, "MMGet download of " + startURL.toString());
         String tname = ThreadPools.getString(fthread);
-        log.debug("thread: " + tname);
+        log.debug("threadname: " + tname);
         try {
-            status = fthread.get(60, TimeUnit.SECONDS);
+            status = "Job '" + tname + "' is " + fthread.get(10, TimeUnit.SECONDS);
         } catch(TimeoutException e) {
-            log.error(e);
+            //log.error(e);
+            status = tname;
         } catch(ExecutionException e) {
             log.error(e);
         } catch(InterruptedException e) {
             log.error(e);
         }
         
-        info.append("\n").append(status);
         log.info(status);
         
-        return info.toString();
+        return status;
     }
 
     /**
@@ -217,7 +209,7 @@ public final class MMGet {
         startdirURL = null;
         
         readUrl(startURL);
-        return "Job finished!";
+        return "finished!";
     }
 
     /**

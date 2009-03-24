@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *   @import url("mystyle.css");
  *
  * @author Andr&eacute; van Toly
- * @version $Id: CSSReader.java,v 1.5 2009-03-24 13:32:24 andre Exp $
+ * @version $Id: CSSReader.java,v 1.6 2009-03-24 20:02:07 andre Exp $
  */
 public final class CSSReader extends UrlReader {
     private static final Logger log = Logging.getLoggerInstance(CSSReader.class);
@@ -87,11 +87,8 @@ public final class CSSReader extends UrlReader {
     }
 
     public void close() throws IOException {
-        log.debug("closing...");
         inrdr.close();
-        
         if (huc != null) { 
-            log.debug("disconnecting... " + getUrl().toString());
             huc.disconnect(); 
         }
     }
