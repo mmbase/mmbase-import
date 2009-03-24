@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * Reads a web resource an returns its tags that may contain links to other resources. 
  *
  * @author Andr&eacute; van Toly
- * @version $Id: HTMLReader.java,v 1.6 2009-03-24 13:32:24 andre Exp $
+ * @version $Id: HTMLReader.java,v 1.7 2009-03-24 20:02:07 andre Exp $
  */
 public final class HTMLReader extends UrlReader {
     private static final Logger log = Logging.getLoggerInstance(HTMLReader.class);
@@ -141,11 +141,8 @@ public final class HTMLReader extends UrlReader {
     }
     
     public void close() throws IOException {
-        log.debug("closing...");
         inrdr.close();
-
         if (huc != null) { 
-            log.debug("disconnecting... " + getUrl().toString());
             huc.disconnect(); 
         }
     }
