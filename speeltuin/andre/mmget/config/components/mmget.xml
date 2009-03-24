@@ -21,13 +21,28 @@
       can be configured in 'config/utils/mmget.xml'.
     </description>
     <description xml:lang="nl">
-      Een applicatie zoals 'wget', het download een site en saved het in een directory. 
-      Beide parameters of velden zijn veplicht. Overige voorkeuren, zoals de default homepage,
-      kunnen opgegeven worden in 'config/utils/mmget.xml'.
+      Een applicatie zoals 'wget', het download een site en saved die in een directory. 
+      Vul een volledige link in van een pagina vanaf je waar wilt starten met downloaden, plus de 
+      directory in de webapp waarin de site gesaved moet worden. Beide parameters of velden zijn verplicht. 
+      Andere voorkeuren, zoals de default homepage, kunnen opgegeven worden in 'config/utils/mmget.xml'.
     </description>
     <body jsp="index.jspx">
     </body>
   </block>
 
+  <block name="mmget-status" 
+    mimetype="text/html">
+    <title xml:lang="en">MMGet status</title>
+    <title xml:lang="nl">MMGet status</title>
+    <description xml:lang="en">
+      Status of an mmget job. Hit reload to see the current status.
+    </description>
+    <description xml:lang="nl">
+      Status van een mmget job. Klik op reload om te zien of de job al klaar is.
+    </description>
+    <body jsp="status.jspx">
+      <param name="future" type="String" />
+    </body>
+  </block>
   
 </component>
