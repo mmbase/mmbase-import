@@ -7,7 +7,7 @@
 
     <date>2006-06-24</date>
 
-    <edition>$Id: configuration.xml,v 1.34 2009-01-30 21:33:13 michiel Exp $</edition>
+    <edition>$Id: configuration.xml,v 1.35 2009-03-25 21:07:57 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -890,7 +890,15 @@
           <varlistentry>
             <term>org.mmbase.QUERIES</term>
             <listitem>
-              <para>All fired queries are logged to this logger (and a few 'sub loggers' like org.mmbase.QUERIES.SELECT)</para>
+              <para>All fired queries are logged to this logger (and a few 'sub loggers' like org.mmbase.QUERIES.SELECT). Slow queries are logged at a higher logging level.
+              See also the configuration file &lt;config dir&gt;utils/querylogging.xml for thresholds of that.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>org.mmbase.STACK.QUERIES</term>
+            <listitem>
+              <para>All fired queries are logged to together with a stacktrace, so that you can see where it comes from). Same as org.mmbase.QUERIES otherwise.</para>
             </listitem>
           </varlistentry>
           <varlistentry>
@@ -911,6 +919,7 @@
     </para>
     </section>
   </section>
+
 
   <section id="caches">
     <title>Caches</title>
