@@ -38,6 +38,12 @@ See http://www.MMBase.org/license
 		</dependency>
 	   	<dependency>
 			<groupId>finalist</groupId>
+			<artifactId>cmsc-richtext</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency>
+	   	<dependency>
+			<groupId>finalist</groupId>
 			<artifactId>cmsc-utilities</artifactId>
 			<version>${cmsc.version}</version>
 			<type>jar</type>
