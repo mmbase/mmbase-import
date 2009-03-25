@@ -1,33 +1,5 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"
 %><%@include file="globals.jsp"
-%><%!/*
-* Comparator to order mmbase nodes on status. Sorting is not done on alphabetical order but on the value of status where 
-* status "init" has position 1; status "notified" position 2 and status "done" position 3.
-*/
-static public class StatusComparator implements Comparator {
-   private static final String INIT = "task.status.init"; 
-   private static final String NOTIFIED = "task.status.notified";
-   private static final String DONE = "task.status.done";
-   
-   public int compare(Object o1, Object o2) {
-      String status1 = ((org.mmbase.bridge.Node) o1).getStringValue("status"); 
-      String status2 = ((org.mmbase.bridge.Node) o2).getStringValue("status");
-      if (status1.equals(INIT) && status2.equals(INIT) || 
-         status1.equals(NOTIFIED) && status2.equals(NOTIFIED) || 
-         status1.equals(DONE) && status2.equals(DONE)) {
-         
-         return 0;
-      }
-      else if (status1.equals(INIT) && status2.equals(NOTIFIED) ||
-             status1.equals(INIT) && status2.equals(DONE) ||
-             status1.equals(NOTIFIED) && status2.equals(DONE)) {
-         return -1;
-      }
-      else {
-         return 1;
-      }
-   }
-}
 %><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
@@ -71,7 +43,7 @@ static public class StatusComparator implements Comparator {
                      </thead>
                      <tbody class="hover">
                         <c:set var="taskList" value="" /><c:set var="isSwapClass" value="true"/>
-                        <mm:relatednodes comparator="StatusComparator">
+                        <mm:relatednodes comparator="com.finalist.cmsc.tasks.TaskUrgencyComparator">
                            <c:set var="taskId"><mm:field name="number"/></c:set>
                            <c:if test="${not fn:contains(taskList, taskId)}">
                            <tr <c:if test="${isSwapClass}">class="swap"</c:if>>
