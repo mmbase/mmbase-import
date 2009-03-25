@@ -23,6 +23,7 @@
         <h1>a = ${a}</h1>
         <h1>b = ${b}</h1>
         <p>Render state: ${requestScope['org.mmbase.framework.state']}</p>
+        <p>Window state: ${requestScope['org.mmbase.framework.hints'].windowState}</p>
         <p>Used renderer: ${requestScope['org.mmbase.framework.state'].renderer.type}</p>
         <p>Block: ${requestScope['org.mmbase.framework.state'].renderer.block}</p>
         <p>Component: ${requestScope['org.mmbase.framework.state'].renderer.block.component}</p>
@@ -54,7 +55,7 @@
 	    <tr><th>b</th><td><input name="b" value="${b}" /></td></tr>
 	    <tr><td colspan="100"><input type="submit" /></td></tr>
 	  </table>
-	  
+
 	</mm:form>
         <h2>Sub-component</h2>
         <p>
