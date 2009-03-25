@@ -356,9 +356,9 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
                else {
                   Integer destination = copiedNodes.get(source);
                   if (destination  != null && destination > 0 && sourceNode.getCloud().hasNode(destination)) {
-                     Relation rel = RelationUtil.getRelation(sourceNode.getCloud().getNodeManager("inlinerel"), destinationNode.getNumber(), destination);
+                     Relation rel = RelationUtil.getRelation(sourceNode.getCloud().getNodeManager(RichText.INLINEREL_NM), destinationNode.getNumber(), destination);
                      if(rel == null) {
-                        rel = RelationUtil.createRelation(destinationNode, sourceNode.getCloud().getNode(destination), "inlinerel");
+                        rel = RelationUtil.createRelation(destinationNode, sourceNode.getCloud().getNode(destination), RichText.INLINEREL_NM);
                      }
                      link.setAttribute(RichText.DESTINATION_ATTR, String.valueOf(destination));
                      link.setAttribute(RichText.RELATIONID_ATTR, String.valueOf(rel.getNumber()));
@@ -416,9 +416,9 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
                else {
                   Integer destination = copiedNodes.get(source);
                   if (destination  != null && destination > 0 && sourceNode.getCloud().hasNode(destination)) {
-                     Relation rel = RelationUtil.getRelation(sourceNode.getCloud().getNodeManager("imageinlinerel"), destinationNode.getNumber(), destination);
+                     Relation rel = RelationUtil.getRelation(sourceNode.getCloud().getNodeManager(RichText.IMAGEINLINEREL_NM), destinationNode.getNumber(), destination);
                      if(rel == null) {
-                        rel = RelationUtil.createRelation(destinationNode, sourceNode.getCloud().getNode(destination), "imageinlinerel");
+                        rel = RelationUtil.createRelation(destinationNode, sourceNode.getCloud().getNode(destination), RichText.IMAGEINLINEREL_NM);
                      }
                      image.setAttribute(RichText.DESTINATION_ATTR, String.valueOf(destination));
                      image.setAttribute(RichText.RELATIONID_ATTR, String.valueOf(rel.getNumber()));
