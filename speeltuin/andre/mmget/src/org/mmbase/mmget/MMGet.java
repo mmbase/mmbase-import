@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.13 2009-03-24 20:02:07 andre Exp $
+ * @version $Id: MMGet.java,v 1.14 2009-03-25 10:11:29 andre Exp $
  */
 public final class MMGet {
     
@@ -46,6 +46,8 @@ public final class MMGet {
     /* location the files should be saved to, directory to save files should be in the webroot (for now) */
     public static String directory;
     protected static File savedir;
+    
+    protected static Future<String> future = null;
 
     /* not wanted: offsite, already tried but 404 etc. */
     protected static Set<URL> ignoredURLs = new HashSet<URL>();
@@ -55,9 +57,6 @@ public final class MMGet {
     protected static Map<URL,String> savedURLs = Collections.synchronizedMap(new HashMap<URL,String>());
     /* rewrite these: url -> link in page / new link in rewritten page */
     protected static Map<URL,Map<String,String>> url2links = Collections.synchronizedMap(new HashMap<URL,Map<String,String>>());
-    
-    /* future status */
-    public Future<String> fstatus;
     
     /* homepage to use when saving a file with no extension (thus presuming directory) */
     protected static String homepage = "index.html";
@@ -139,7 +138,7 @@ public final class MMGet {
         }
 
     }
-
+    
     /**
      * Starts the job saving the site and inits export directory
      *
@@ -173,16 +172,16 @@ public final class MMGet {
         info.append("\n saved in: ").append(savedir.toString());
         log.info(info.toString());
         
-        Future<String> fthread = ThreadPools.jobsExecutor.submit(new Callable() {
+        future = ThreadPools.jobsExecutor.submit(new Callable() {
                  public String call() {
                       return start();
                  }
             });
-        ThreadPools.identify(fthread, "MMGet download of " + startURL.toString());
-        String tname = ThreadPools.getString(fthread);
+        ThreadPools.identify(future, "MMGet download of '" + startURL.toString() + "' in '" + savedir.toString() + "'");
+        String tname = ThreadPools.getString(future);
         log.debug("threadname: " + tname);
         try {
-            status = "Job '" + tname + "' is " + fthread.get(10, TimeUnit.SECONDS);
+            status = tname + "' is " + future.get(10, TimeUnit.SECONDS);
         } catch(TimeoutException e) {
             //log.error(e);
             status = tname;
