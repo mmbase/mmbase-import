@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * TODO: init rootURL early on, and check all urls against it (so we don't travel up the rootURL)
  *
  * @author Andr&eacute; van Toly
- * @version $Id: MMGet.java,v 1.14 2009-03-25 10:11:29 andre Exp $
+ * @version $Id: MMGet.java,v 1.15 2009-03-25 14:14:58 andre Exp $
  */
 public final class MMGet {
     
@@ -47,7 +47,8 @@ public final class MMGet {
     public static String directory;
     protected static File savedir;
     
-    protected static Future<String> future = null;
+    public static Future<String> future = null;
+    protected boolean done = false;
 
     /* not wanted: offsite, already tried but 404 etc. */
     protected static Set<URL> ignoredURLs = new HashSet<URL>();
@@ -172,27 +173,40 @@ public final class MMGet {
         info.append("\n saved in: ").append(savedir.toString());
         log.info(info.toString());
         
-        future = ThreadPools.jobsExecutor.submit(new Callable() {
-                 public String call() {
-                      return start();
-                 }
-            });
-        ThreadPools.identify(future, "MMGet download of '" + startURL.toString() + "' in '" + savedir.toString() + "'");
-        String tname = ThreadPools.getString(future);
-        log.debug("threadname: " + tname);
-        try {
-            status = tname + "' is " + future.get(10, TimeUnit.SECONDS);
-        } catch(TimeoutException e) {
-            //log.error(e);
-            status = tname;
-        } catch(ExecutionException e) {
-            log.error(e);
-        } catch(InterruptedException e) {
-            log.error(e);
+        if (future != null) {
+            if (future.isCancelled()) {
+                future = null;
+            } else if (future.isDone()) {
+                future = null;
+            }
+        }
+        
+        if (future == null) {
+            future = ThreadPools.jobsExecutor.submit(new Callable() {
+                     public String call() {
+                        return start();
+                     }
+                });
+            ThreadPools.identify(future, "MMGet download of '" + startURL.toString() + "' in '" + savedir.toString() + "'");
+            String fname = ThreadPools.getString(future);
+            log.debug("fname: " + fname);
+            int timeout = 10;
+            try {
+                status = fname + " is " + future.get(timeout, TimeUnit.SECONDS);
+            } catch(TimeoutException e) {
+                //log.error(e);
+                status = fname + " is still running after " + timeout + " seconds. Check it's status.";
+            } catch(ExecutionException e) {
+                log.error(e);
+            } catch(InterruptedException e) {
+                log.error(e);
+            }
+        } else {
+            status = "Error! Another mmget is already busy: " + ThreadPools.getString(future);
+            log.error(status);
         }
         
         log.info(status);
-        
         return status;
     }
 
@@ -208,7 +222,11 @@ public final class MMGet {
         startdirURL = null;
         
         readUrl(startURL);
-        return "finished!";
+        return "Finished! Saved " + savedURLs.size() + " links to files.";
+    }
+    
+    public void cancel() {
+        done = true;
     }
 
     /**
@@ -216,6 +234,7 @@ public final class MMGet {
      * @param url   link to html page or css
      */
     private void readUrl(URL url) {
+        if (future.isCancelled()) return;
         if (url == null) return;
         if (log.isDebugEnabled()) log.debug("---------------------------------------------------------------------");
         if (log.isDebugEnabled()) log.debug("reading:   " + url.toString());
