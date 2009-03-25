@@ -90,8 +90,8 @@
       <td></td>
       <td>
          <select name="useterms">
-            <option ${(useterms eq 'yes')?'selected':''} value="yes"><fmt:message key="edit_defaults.yes"/>"/></option>
-            <option ${(useterms eq 'yes')?'':'selected'} value="no"><fmt:message key="edit_defaults.no"/>"/></option>
+            <option ${(useterms eq 'yes')?'selected':''} value="yes"><fmt:message key="edit_defaults.yes"/></option>
+            <option ${(useterms eq 'yes')?'':'selected'} value="no"><fmt:message key="edit_defaults.no"/></option>
          </select>
       </td>
    </tr>
