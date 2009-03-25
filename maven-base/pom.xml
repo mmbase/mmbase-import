@@ -439,7 +439,10 @@ See http://www.MMBase.org/license
             <attach>true</attach>
             <quiet>true</quiet>
             <bottom>MMBase.org</bottom>
-            <links>http://java.sun.com/j2se/1.5.0/docs/api/</links>
+            <links>
+              <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+              <link>http://java.sun.com/javaee/5/docs/api/</link>
+            </links>
             <source>1.5</source>
             <tags>
               <tag>
@@ -511,18 +514,22 @@ See http://www.MMBase.org/license
                 <head>This Class needs the indicated version of the MMBase core.</head>
                 <name>requires</name>
               </tag>
+              <!--
+                  This seems to conflict with something and fails to complete mvn javadoc:jar  build
               <tag>
                 <head>Section scope will be narrowed to &lt;scope> (i.e. private, package, protected)</head>
                 <name>scope</name>
               </tag>
               <tag>
-                <head>Section uses (direct) SQL queries, which will be removed/fixed</head>
                 <name>sql</name>
+                <head>Section uses (direct) SQL queries, which will be removed or fixed:</head>
               </tag>
               <tag>
-                <head>Section contains VPRO-specific code, which will be removed/fixed</head>
                 <name>vpro</name>
+                <head>Section contains VPRO-specific code, which will be removed or fixed:</head>
               </tag>
+              -->
+
             </tags>
           </configuration>
         </plugin>
