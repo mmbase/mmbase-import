@@ -24,6 +24,10 @@
         <h1>b = ${b}</h1>
         <p>Render state: ${requestScope['org.mmbase.framework.state']}</p>
         <p>Window state: ${requestScope['org.mmbase.framework.hints'].windowState}</p>
+        <p>Style Class: ${requestScope['org.mmbase.framework.hints'].styleClass}</p>
+        <p>Style Class: ${requestScope['org.mmbase.componentClassName']}</p>
+        <p>Id: ${requestScope['org.mmbase.framework.hints'].id}</p>
+        <p>Id: ${requestScope['org.mmbase.componentId']}</p>
         <p>Used renderer: ${requestScope['org.mmbase.framework.state'].renderer.type}</p>
         <p>Block: ${requestScope['org.mmbase.framework.state'].renderer.block}</p>
         <p>Component: ${requestScope['org.mmbase.framework.state'].renderer.block.component}</p>
