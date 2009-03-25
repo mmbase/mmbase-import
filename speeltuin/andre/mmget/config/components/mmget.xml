@@ -35,13 +35,13 @@
     <title xml:lang="en">MMGet status</title>
     <title xml:lang="nl">MMGet status</title>
     <description xml:lang="en">
-      Status of an mmget job. Hit reload to see the current status.
+      Status of the last MMGet job. Hit reload to see the current status.
     </description>
     <description xml:lang="nl">
-      Status van een mmget job. Klik op reload om te zien of de job al klaar is.
+      Status van de laatste MMGet job die gestart is. Klik op reload voor de huidige status.
     </description>
     <body jsp="status.jspx">
-      <param name="future" type="String" />
+      <param name="cancel" type="String" />
     </body>
   </block>
   
