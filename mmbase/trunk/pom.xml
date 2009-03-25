@@ -30,7 +30,7 @@ See http://www.MMBase.org/license
   <groupId>org.mmbase</groupId>
   <artifactId>mmbase</artifactId>
   <packaging>jar</packaging>
-  <name>MMBase</name>
+  <name>MMBase Core</name>
 
   <build>
     <resources>
@@ -78,7 +78,7 @@ See http://www.MMBase.org/license
        </configuration>
        -->
      </plugin>
-     
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>javacc-maven-plugin</artifactId>
@@ -111,7 +111,7 @@ See http://www.MMBase.org/license
     </plugins>
 
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>log4j</groupId>
@@ -126,7 +126,7 @@ See http://www.MMBase.org/license
       <artifactId>commons-logging</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
@@ -141,7 +141,7 @@ See http://www.MMBase.org/license
       <scope>compile</scope>
     </dependency>
   </dependencies>
-  
+
   <reporting>
     <plugins>
       <plugin>
