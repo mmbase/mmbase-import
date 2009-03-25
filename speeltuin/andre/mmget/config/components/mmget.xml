@@ -11,7 +11,7 @@
   <description xml:lang="en">MMGet component</description>
 
   <block name="mmget" 
-    classification="mmbase.tools"
+    classification="mmbase.mmget"
     mimetype="text/html">
     <title xml:lang="en">MMGet</title>
     <title xml:lang="nl">MMGet</title>
