@@ -37,6 +37,12 @@ public class QueuedUpdate {
 
    public final static int METHOD_CREATE_CONTENT_INDEX = 11;
 
+   public final static int METHOD_UPDATE_CUSTOMOBJECT_INDEX = 12;   
+   
+   public final static int METHOD_DELETE_CUSTOMOBJECT_INDEX = 13;
+   
+   public final static int METHOD_CREATE_CUSTOMOBJECT_INDEX = 14;
+   
    public static final int METHOD_ERASE_INDEX = 666;
 
    private int method;

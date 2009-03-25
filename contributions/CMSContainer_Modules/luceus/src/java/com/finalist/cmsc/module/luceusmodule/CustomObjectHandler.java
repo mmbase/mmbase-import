@@ -9,7 +9,6 @@
  */
 package com.finalist.cmsc.module.luceusmodule;
 
-import java.util.List;
 import java.util.Set;
 
 import org.mmbase.bridge.Node;
