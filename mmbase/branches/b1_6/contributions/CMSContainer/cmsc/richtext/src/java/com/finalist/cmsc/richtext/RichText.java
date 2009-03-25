@@ -15,7 +15,6 @@
  */
 package com.finalist.cmsc.richtext;
 
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -101,7 +100,7 @@ public class RichText {
       return doc;
    }
    
-   public final static Object stripLinkAndImage(Node sourceNode,Field field,Map<Integer, Integer> copiedNodes) {
+   public final static Object stripLinkAndImage(Node sourceNode,Node destinationNode,Field field,Map<Integer, Integer> copiedNodes) {
       DataType dataType = field.getDataType();
       while (StringUtils.isEmpty(dataType.getName())) {
          dataType = dataType.getOrigin();
@@ -116,10 +115,12 @@ public class RichText {
                if (hasRichtextItems(fieldValue)) {
                   Document doc = getRichTextDocument(fieldValue);
                   RichTextGetProcessor richTextGetProcessor = new RichTextGetProcessor();
-                  richTextGetProcessor.resolve(sourceNode,doc,copiedNodes);
+                  richTextGetProcessor.resolve(sourceNode,destinationNode,doc,copiedNodes);
                   String out = getRichTextString(doc);
                   out = WordHtmlCleaner.fixEmptyAnchors(out);
-                  log.debug("final richtext text = " + out);
+                  if(log.isDebugEnabled()) {
+                     log.debug("final richtext text = " + out);
+                  }
                   return out;
                }
             }

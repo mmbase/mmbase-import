@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.richtext;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -307,9 +308,9 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
       return ResourcesUtil.getServletPathWithAssociation("content", "/content/*", id, title);
    }
 
-   public void resolve(Node node,Document doc,Map<Integer, Integer> copiedNodes) {
-      resolveLinks(doc,  node,copiedNodes);
-      resolveImages(doc,  node,copiedNodes);
+   public void resolve(Node sourceNode,Node destinationNode,Document doc,Map<Integer, Integer> copiedNodes) {
+      resolveLinks(doc,sourceNode,destinationNode,copiedNodes);
+      resolveImages(doc,sourceNode,destinationNode,copiedNodes);
    }
    /**
     *    To resolve the links in Richtext fields
@@ -318,17 +319,20 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
     * @param copiedNodes
     * @param channels
     */
-   public static void resolveLinks(Document doc, Node sourceNode,Map<Integer, Integer> copiedNodes) {
+   public static void resolveLinks(Document doc, Node sourceNode,Node destinationNode,Map<Integer, Integer> copiedNodes) {
       if (doc == null) {
          return;
       }
       // collect <A> tags
       org.w3c.dom.NodeList nl = doc.getElementsByTagName("a");
-      log.debug("number of links: " + nl.getLength());
-
-      for (int i = 0, len = nl.getLength(); i < len; i++) {
-         Element link = (Element) nl.item(i);
-
+      List<org.w3c.dom.Node> links = new ArrayList<org.w3c.dom.Node>();
+      
+      int len = nl.getLength();
+      for(int i = 0 ; i < len ; i++) {
+         links.add(nl.item(i));
+      }
+      for (int i = 0; i < len; i++) {
+         Element link = (Element) links.get(i);
          if (link.hasAttribute(RichText.DESTINATION_ATTR)
                && "undefined".equalsIgnoreCase(link.getAttribute(RichText.DESTINATION_ATTR))) {
             link.removeAttribute(RichText.DESTINATION_ATTR);
@@ -354,7 +358,10 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
                else {
                   Integer destination = copiedNodes.get(source);
                   if (destination  != null && destination > 0 && sourceNode.getCloud().hasNode(destination)) {
-                     Relation rel = RelationUtil.createRelation(sourceNode, sourceNode.getCloud().getNode(destination), "inlinerel");
+                     Relation rel = RelationUtil.getRelation(sourceNode.getCloud().getNodeManager("inlinerel"), destinationNode.getNumber(), destination);
+                     if(rel == null) {
+                        rel = RelationUtil.createRelation(destinationNode, sourceNode.getCloud().getNode(destination), "inlinerel");
+                     }
                      link.setAttribute(RichText.DESTINATION_ATTR, String.valueOf(destination));
                      link.setAttribute(RichText.RELATIONID_ATTR, String.valueOf(rel.getNumber()));
                   }
@@ -372,14 +379,19 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
     * @param copiedNodes
     * @param channels
     */
-   public static  void resolveImages(Document doc,Node sourceNode,Map<Integer, Integer> copiedNodes) {
+   public static  void resolveImages(Document doc,Node sourceNode,Node destinationNode,Map<Integer, Integer> copiedNodes) {
       if (doc == null) {
          return;
       }
       org.w3c.dom.NodeList nl = doc.getElementsByTagName("img");
       log.debug("number of images: " + nl.getLength());
-      for (int i = 0, len = nl.getLength(); i < len; i++) {
-         Element image = (Element) nl.item(i);
+      List<org.w3c.dom.Node> links = new ArrayList<org.w3c.dom.Node>();
+      int len = nl.getLength();
+      for(int i = 0 ; i < len ; i++) {
+         links.add(nl.item(i));
+      }
+      for (int i = 0; i < len; i++) {
+         Element image = (Element) links.get(i);
 
          if (image.hasAttribute(RichText.DESTINATION_ATTR)
                && "undefined".equalsIgnoreCase(image.getAttribute(RichText.DESTINATION_ATTR))) {
@@ -406,7 +418,11 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
                else {
                   Integer destination = copiedNodes.get(source);
                   if (destination  != null && destination > 0 && sourceNode.getCloud().hasNode(destination)) {
-                     Relation rel = RelationUtil.createRelation(sourceNode, sourceNode.getCloud().getNode(destination), "imageinlinerel");
+                     Relation rel = RelationUtil.getRelation(sourceNode.getCloud().getNodeManager("imageinlinerel"), destinationNode.getNumber(), destination);
+                     if(rel == null) {
+                        rel = RelationUtil.createRelation(destinationNode, sourceNode.getCloud().getNode(destination), "imageinlinerel");
+                     }
+                   
                      image.setAttribute(RichText.DESTINATION_ATTR, String.valueOf(destination));
                      image.setAttribute(RichText.RELATIONID_ATTR, String.valueOf(rel.getNumber()));
                   }
