@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.45 2009-03-25 21:42:04 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.46 2009-03-25 21:55:25 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -222,7 +222,7 @@ public class BasicFramework extends Framework {
             state = new State(request);
         }
 
-        Object prevHints = request.getAttribute("org.mmbase.framework.hints");
+        Object prevHints = request.getAttribute(RenderHints.KEY);
         try {
 
             request.setAttribute(COMPONENT_CLASS_KEY, getComponentClass());
@@ -252,7 +252,7 @@ public class BasicFramework extends Framework {
             setBlockParametersForRender(state, blockParameters);
 
             RenderHints hints = new RenderHints(actualRenderer, windowState, state.getId(), getComponentClass());
-            request.setAttribute("org.mmbase.framework.hints", hints);
+            request.setAttribute(RenderHints.KEY, hints);
             actualRenderer.render(blockParameters, w, hints);
             request.setAttribute("org.mmbase.framework.hints", hints);
         } catch (FrameworkException fe) {
@@ -262,8 +262,7 @@ public class BasicFramework extends Framework {
             RenderHints hints = new RenderHints(error, windowState, state.getId(), getComponentClass());
             error.render(blockParameters, w, hints);
         } finally {
-            request.setAttribute("org.mmbase.framework.hints", prevHints);
-
+            request.setAttribute(RenderHints.KEY, prevHints);
             state.endBlock();
         }
     }
