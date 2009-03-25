@@ -52,6 +52,8 @@ public class IndexUpdateTask implements Runnable {
    private int id;
 
    private CustomContentHandler cch;
+   
+   private CustomObjectHandler coh;
 
 
    public IndexUpdateTask(LuceusModule module, LinkedBlockingQueue<QueuedUpdate> queue, int id) {
@@ -59,6 +61,7 @@ public class IndexUpdateTask implements Runnable {
       this.in = queue;
       this.id = id;
       this.cch = module.getCustomContentHandler();
+      this.coh = module.getCustomObjectHandler();
    }
 
 
@@ -93,10 +96,19 @@ public class IndexUpdateTask implements Runnable {
                      break;
                   case QueuedUpdate.METHOD_DELETE_CHANNELCONTENT_INDEX:
                      executeDeleteChannelContentIndex(update.getNodeNumber(), update.getRelatedNodeNumber());
-                     break;
+                     break;               
                   case QueuedUpdate.METHOD_CREATE_CONTENT_INDEX:
                      executeCreateContentIndex(update.getNodeNumber());
                      break;
+                  case QueuedUpdate.METHOD_UPDATE_CUSTOMOBJECT_INDEX:
+                      executeUpdateCustomObjectIndex(update.getNodeNumber());
+                      break;
+                  case QueuedUpdate.METHOD_DELETE_CUSTOMOBJECT_INDEX:
+                      executeDeleteCustomObjectIndex(update.getNodeNumber());
+                      break;                           
+                  case QueuedUpdate.METHOD_CREATE_CUSTOMOBJECT_INDEX:
+                      executeCreateCustomObjectIndex(update.getNodeNumber());
+                      break;
                   case QueuedUpdate.METHOD_ERASE_INDEX:
                      executeEraseIndex();
                      break;
@@ -151,18 +163,48 @@ public class IndexUpdateTask implements Runnable {
    private void executeDeletePageContentIndex(int page, int contentElement) {
       log.debug(id + " Delete page: " + page + " with content: " + contentElement);
       delete(String.valueOf(page), String.valueOf(contentElement));
+
+      // find and delete custom object related to the page
+      Node node = fetchNode(page);
+      Set<Node> elementen = Collections.emptySet();
+      if (node != null && coh != null) {
+         elementen = coh.findLinkedContent(node);
+      }
+      for (Node element : elementen) {
+          executeDeleteCustomObjectIndex(element.getNumber()); 
+      }            
    }
 
 
    private void executeDeletePageIndex(int pageNumber) {
       log.debug(id + " Delete page: " + pageNumber);
       delete(String.valueOf(pageNumber), null);
+
+      // find and delete custom object related to the page
+      Node node = fetchNode(pageNumber);
+      Set<Node> elementen = Collections.emptySet();
+      if (node != null && coh != null) {
+         elementen = coh.findLinkedContent(node);
+      }
+      for (Node element : elementen) {
+          executeDeleteCustomObjectIndex(element.getNumber()); 
+      }            
    }
 
 
    private void executeDeleteContentIndex(int ceNumber) {
       log.debug(id + " Delete content: " + ceNumber);
       delete(null, String.valueOf(ceNumber));
+ 
+      // find and delete custom object related to content
+      Node node = fetchNode(ceNumber);
+      Set<Node> elementen = Collections.emptySet();
+      if (node != null && coh != null) {
+         elementen = coh.findLinkedContent(node);
+      }
+      for (Node element : elementen) {
+          executeDeleteCustomObjectIndex(element.getNumber()); 
+      }           
    }
 
 
@@ -181,6 +223,15 @@ public class IndexUpdateTask implements Runnable {
          int pageId = info.getPageNumber();
          create(String.valueOf(pageId), node);
       }
+
+      // find and create custom object related to content
+      Set<Node> elementen = Collections.emptySet();
+      if (coh != null) {
+         elementen = coh.findLinkedContent(node);
+      }
+      for (Node element : elementen) {
+          executeCreateCustomObjectIndex(element);
+      }          
    }
 
 
@@ -194,7 +245,16 @@ public class IndexUpdateTask implements Runnable {
       for (PageInfo info : pages) {
          int pageId = info.getPageNumber();
          update(String.valueOf(pageId), node, triggeredByPrimary);
+      }      
+
+      // find and update custom object related to content
+      Set<Node> elementen = Collections.emptySet();
+      if (coh != null) {
+         elementen = coh.findLinkedContent(node);
       }
+      for (Node element : elementen) {
+          executeUpdateCustomObjectIndex(element);
+      }            
    }
 
 
@@ -205,6 +265,15 @@ public class IndexUpdateTask implements Runnable {
       }
       else {
          delete(null, "" + nodeNumber);
+
+         // find and delete custom object related to content
+         Set<Node> elementen = Collections.emptySet();
+         if (node != null && coh != null) {
+            elementen = coh.findLinkedContent(node);
+         }
+         for (Node element : elementen) {
+             executeDeleteCustomObjectIndex(element.getNumber()); 
+         }         
       }
    }
 
@@ -260,12 +329,82 @@ public class IndexUpdateTask implements Runnable {
          for (Node element : elementen) {
             update(pageNode, element, true);
          }
+
+         // find and update custom object related to page
+         elementen = Collections.emptySet();
+         if (coh != null) {
+            elementen = coh.findLinkedContent(pageNode);
+         }
+         for (Node element : elementen) {
+             executeUpdateCustomObjectIndex(element);
+         }         
       }
       else {
          delete("" + pageNumber, null);
+
+         // find and delete custom object related to the page
+         Node node = fetchNode(pageNumber);
+         Set<Node> elementen = Collections.emptySet();
+         if (node != null && coh != null) {
+            elementen = coh.findLinkedContent(node);
+         }
+         for (Node element : elementen) {
+             executeDeleteCustomObjectIndex(element.getNumber()); 
+         }       
       }
    }
+   
+   private void executeUpdateCustomObjectIndex(int nodeNumber) {
+       Node node = fetchNode(nodeNumber);
+       if (node != null) {
+          executeUpdateCustomObjectIndex(node);
+       }
+       else {
+          delete(null, "" + nodeNumber);
+       }
+    }
 
+   private void executeUpdateCustomObjectIndex(Node node) {
+       log.debug(id + " Update custom object index: " + node.getNumber());
+       
+       Set<PageInfo> pages = Collections.emptySet();
+       if (coh != null) {
+          pages = coh.findAllPagesForCustomObject(node);
+       }       
+       if (pages.size() == 0) {
+          log.debug(id + " Unable to find page(s) for update of custom object: " + node.getNumber());
+          delete(null, String.valueOf(node.getNumber()));
+       }   
+       for (PageInfo info : pages) {
+          int pageId = info.getPageNumber();
+          update(String.valueOf(pageId), node, false);
+       }
+    }   
+   
+   private void executeDeleteCustomObjectIndex(int nodeNumber) {
+       log.debug(id + " Delete custom object: " + nodeNumber);
+       delete(null, String.valueOf(nodeNumber));
+    }
+
+   private void executeCreateCustomObjectIndex(int nodeNumber) {
+       Node node = fetchNode(nodeNumber);
+       if (node != null) {
+           executeCreateCustomObjectIndex(node);
+       }
+    }      
+   
+   private void executeCreateCustomObjectIndex(Node node) {
+       log.debug(id + " Create custom object index: " + node.getNumber());
+       
+       Set<PageInfo> pages = Collections.emptySet();
+       if (coh != null) {
+          pages = coh.findAllPagesForCustomObject(node);
+       }
+       for (PageInfo info : pages) {
+          int pageId = info.getPageNumber();
+          create(String.valueOf(pageId), node);
+       }
+    }
 
    private void create(String pageId, Node contentElement) {
       Node pageNode = contentElement.getCloud().getNode(pageId);
@@ -381,6 +520,15 @@ public class IndexUpdateTask implements Runnable {
          }
       }
 
+      if (coh != null) {
+          custom = coh.findLinkedContent(contentElement);
+
+           // Finally fields of the custom object to the document
+           for (Node customNode : custom) {
+              LuceusUtil.nodeFields(customNode, doc);
+           }      
+      }
+      
       Indexer idx = module.getIndexer();
       if (idx != null) {
          idx.write(doc);

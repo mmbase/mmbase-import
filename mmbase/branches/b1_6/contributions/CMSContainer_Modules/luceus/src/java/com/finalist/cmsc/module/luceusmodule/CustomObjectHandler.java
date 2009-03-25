@@ -9,20 +9,26 @@
  */
 package com.finalist.cmsc.module.luceusmodule;
 
+import java.util.List;
 import java.util.Set;
 
 import org.mmbase.bridge.Node;
 
+import com.finalist.cmsc.services.search.PageInfo;
+
 /**
- * Custom content handler for content that needs to be indexed and is in some
+ * Custom object handler for objects (that is not content) that need to be indexed and are in some
  * way related to a ContentElement
  * 
- * @author Wouter Heijke
+ * @author Jurn de Ruijter
  */
-public interface CustomContentHandler {
+public interface CustomObjectHandler {
 
-   Set<Node> findLinkedContent(Node contentElement);
+   Set<Node> findLinkedContent(Node customObject);
+
+   Set<PageInfo> findAllPagesForCustomObject(Node customObject);
 
    void registerListeners(LuceusModule module);
 
+   void fullIndex(boolean erase);
 }
