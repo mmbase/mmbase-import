@@ -9,18 +9,27 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.navigation.select.forms;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-
-import org.apache.struts.action.*;
-import org.mmbase.bridge.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
 
 import com.finalist.cmsc.mmbase.TreeUtil;
-import com.finalist.cmsc.navigation.*;
+import com.finalist.cmsc.navigation.NavigationInfo;
+import com.finalist.cmsc.navigation.NavigationTreeModel;
+import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.cmsc.navigation.SiteUtil;
 import com.finalist.cmsc.navigation.select.SelectRenderer;
 import com.finalist.cmsc.util.bundles.JstlUtil;
 import com.finalist.tree.TreeInfo;
@@ -28,6 +37,8 @@ import com.finalist.tree.ajax.AjaxTree;
 import com.finalist.tree.ajax.SelectAjaxRenderer;
 
 public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
+
+   private boolean strictPageOnly;
 
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
@@ -37,6 +48,11 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
       if (StringUtils.isEmpty(action)) {
          NavigationInfo info = new NavigationInfo(NavigationUtil.getNavigationInfo(cloud));
          cloud.setProperty("Selector" + NavigationInfo.class.getName(), info);
+      }
+
+      if (mapping instanceof SelectorPageActionMapping) {
+         SelectorPageActionMapping selectoMapping = (SelectorPageActionMapping) mapping;
+         strictPageOnly = selectoMapping.isStrictPageOnly();
       }
 
       JstlUtil.setResourceBundle(request, "cmsc-site");
@@ -87,7 +103,7 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
          node = NavigationUtil.getSiteFromPath(cloud, node.getStringValue(TreeUtil.PATH_FIELD));
       }
 
-      NavigationTreeModel model = new NavigationTreeModel(node);
+      NavigationTreeModel model = new NavigationTreeModel(node, strictPageOnly);
       SelectAjaxRenderer chr = new SelectRenderer(response, getLinkPattern(), getTarget());
       AjaxTree t = new AjaxTree(model, chr, info);
       t.setImgBaseUrl("../../gfx/icons/");
@@ -109,6 +125,13 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
          Node parentNode = NavigationUtil.getPageFromPath(cloud, path);
          if (parentNode != null) {
             NodeList children = NavigationUtil.getChildren(parentNode);
+            if (strictPageOnly) {
+               children = NavigationUtil.getStrictPageOrderedChildren(parentNode);
+            }
+            else {
+               children = NavigationUtil.getChildren(parentNode);
+            }
+
             for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
                Node child = iter.next();
                strings.add(child.getStringValue(TreeUtil.PATH_FIELD));

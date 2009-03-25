@@ -100,8 +100,9 @@
         <!-- ==== Select page nodes ==== -->
 
         <action path="/editors/site/select/SelectorPage" type="com.finalist.cmsc.navigation.select.forms.SelectorAction"
-                unknown="false" className="com.finalist.cmsc.struts.SelectorActionMapping">
+                unknown="false" className="com.finalist.cmsc.navigation.select.forms.SelectorPageActionMapping">
             <set-property property="linkPattern" value="selectedpage.jsp?page={0}&amp;path={1}"/>
+            <set-property property="strictPageOnly" value="true" />
             <forward name="success" path="/editors/site/select/selectorpopup.jsp" redirect="false"/>
         </action>
 
