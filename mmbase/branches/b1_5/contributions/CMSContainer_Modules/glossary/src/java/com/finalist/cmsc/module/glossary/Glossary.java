@@ -61,6 +61,14 @@ public class Glossary {
          return true;
       }
 
+      for(int h = 1; h <= 6; h++) {
+         int openH = materialBefore.lastIndexOf("<h"+h);
+         int closeH = materialBefore.lastIndexOf("/h"+h+">");
+         if(openH > closeH) {
+            return true;
+         }
+      }
+
       return false;
    }
    

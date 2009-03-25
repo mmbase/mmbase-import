@@ -7,6 +7,8 @@ import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.module.core.MMBase;
 
+import com.finalist.cmsc.util.ServerUtil;
+
 import java.util.Iterator;
 
 // Referenced classes of package com.finalist.cmsc.module.glossary:
@@ -19,7 +21,9 @@ public class GlossaryFactory {
    public static Glossary getGlossary() {
       Glossary glossary = Glossary.instance();
 
-      MMBase.getMMBase().addNodeRelatedEventsListener("glossary", new GlossaryEventListener(glossary));
+      if(ServerUtil.isStaging()) {
+         MMBase.getMMBase().addNodeRelatedEventsListener("glossary", new GlossaryEventListener(glossary));
+      }
 
       if (glossary.getTerms().size() > 0)
          return glossary;
