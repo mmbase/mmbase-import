@@ -80,6 +80,8 @@ See http://www.MMBase.org/license
     <compile.flags>-Xlint:unchecked,deprecation,fallthrough,finally</compile.flags>
 
     <junit.version>4.4</junit.version>
+
+    <mmbase.version>${project.version}</mmbase.version>
   </properties>
 
   <mailingLists>
@@ -279,7 +281,7 @@ See http://www.MMBase.org/license
             <dependency>
               <groupId>org.mmbase.maven</groupId>
               <artifactId>assembly-descriptors</artifactId>
-              <version>1.9-SNAPSHOT</version>
+              <version>${mmbase.version}</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -292,7 +294,7 @@ See http://www.MMBase.org/license
             <dependency>
               <groupId>org.mmbase.maven</groupId>
               <artifactId>codestandards</artifactId>
-              <version>1.9-SNAPSHOT</version>
+              <version>${mmbase.version}</version>
             </dependency>
             <dependency>
               <groupId>checkstyle</groupId>
@@ -346,7 +348,7 @@ See http://www.MMBase.org/license
             <dependency>
               <groupId>org.mmbase.maven</groupId>
               <artifactId>codestandards</artifactId>
-              <version>1.9-SNAPSHOT</version>
+              <version>${mmbase.version}</version>
             </dependency>
           </dependencies>
           <configuration>
@@ -536,6 +538,14 @@ See http://www.MMBase.org/license
         <version>${servlet.version}</version>
         <scope>provided</scope>
       </dependency>
+
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>${servlet.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>jsp-api</artifactId>
