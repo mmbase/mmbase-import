@@ -13,7 +13,7 @@ See http://www.MMBase.org/license
   <groupId>org.mmbase</groupId>
   <artifactId>mmbase-parent</artifactId>
   <packaging>pom</packaging>
-  <name>MMBase Parent</name>
+  <name>MMBase</name>
   <version>1.9-SNAPSHOT</version>
 
   <description>
@@ -23,7 +23,7 @@ See http://www.MMBase.org/license
     Source Software (MPL) and all standards used are as 'open' as possible. The system can be used
     with all major operating systems, webservers and databases.
   </description>
-  <url>http://www.mmbase.org</url>
+  <url>http://www.mmbase.org/mm2</url>
   <inceptionYear>2000</inceptionYear>
 
   <organization>
@@ -378,6 +378,7 @@ See http://www.MMBase.org/license
             <autoVersionSubmodules>true</autoVersionSubmodules>
           </configuration>
         </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
@@ -478,6 +479,10 @@ See http://www.MMBase.org/license
 
             </tags>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
         </plugin>
       </plugins>
     </pluginManagement>
