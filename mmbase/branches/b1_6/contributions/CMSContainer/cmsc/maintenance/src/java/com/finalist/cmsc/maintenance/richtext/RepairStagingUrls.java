@@ -10,8 +10,9 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.maintenance.richtext;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.jsp.PageContext;
 
@@ -30,16 +31,22 @@ public class RepairStagingUrls {
    
    private Cloud cloud;
    private PageContext ctx;
+   private String search;
    
    public RepairStagingUrls(Cloud cloud, PageContext pageContext) {
+      this(cloud, pageContext, "staging");
+   }
+   
+   public RepairStagingUrls(Cloud cloud, PageContext pageContext, String search) {
       this.cloud = cloud;
       this.ctx =  pageContext;
+      this.search = search;
    }
    
    public void execute(boolean repair) throws IOException {
       NodeManager urlManager = cloud.getNodeManager(ResourcesUtil.URLS);
       NodeQuery urlQuery = urlManager.createQuery();
-      SearchUtil.addLikeConstraint(urlQuery, urlManager.getField("url"), "%staging%");
+      SearchUtil.addLikeConstraint(urlQuery, urlManager.getField("url"), "%"+search+"%");
       
       NodeList urlNodes = urlManager.getList(urlQuery);
       ctx.getOut().write(urlNodes.size() + " Urls found to repair <br>");
@@ -48,20 +55,27 @@ public class RepairStagingUrls {
          Node urlNode = iterator.next();
          repairUrlNode(urlNode, repair);
       }
-      
+
       List<NodeManager> contentTypes = ContentElementUtil.getContentTypes(cloud);
       for (NodeManager contentManager : contentTypes) {
-         NodeQuery contentQuery = contentManager.createQuery();
-         List<Field> fields = contentManager.getFields();
-         for (Field field : fields) {
+         FieldList managerFields = contentManager.getFields();
+         List<Field> fields = new ArrayList<Field>();
+         for (Iterator<Field> iterator = managerFields.iterator(); iterator.hasNext();) {
+            Field field = iterator.next();
             if (isRichtextField(field)) {
-               SearchUtil.addLikeConstraint(contentQuery, field, "%staging%");
-            }
+               fields.add(field);
+            }            
          }
-         NodeList contentNodes = contentManager.getList(contentQuery);
-         for (Iterator<Node> iterator = contentNodes.iterator(); iterator.hasNext();) {
-            Node contentNode = iterator.next();
-            repairContentNode(contentNode, repair);
+         if (!fields.isEmpty()) {
+            NodeQuery contentQuery = contentManager.createQuery();
+            for (Field field : fields) {
+               SearchUtil.addLikeConstraint(contentQuery, field, "%"+search+"%");
+            }
+            NodeList contentNodes = contentManager.getList(contentQuery);
+            for (Iterator<Node> iterator = contentNodes.iterator(); iterator.hasNext();) {
+               Node contentNode = iterator.next();
+               repairContentNode(contentNode, repair);
+            }
          }
       }
    }
@@ -73,17 +87,14 @@ public class RepairStagingUrls {
       NodeList relatedContent = urlNode.getRelatedNodes(ContentElementUtil.CONTENTELEMENT, RichText.INLINEREL_NM, "SOURCE");
       if (relatedContent.isEmpty()) {
          if (repair) {
-            if (Publish.isPublished(urlNode)) {
-               Publish.unpublish(urlNode);
-            }
-            urlNode.delete(true);
+            deleteUrlNode(urlNode);
          }
-         ctx.getOut().write("Staging url deleted: " + number + " " + url + "<br>");
+         ctx.getOut().write("Url deleted: " + number + " " + url + "<br>");
       }
       else {
          String inlineNumber = extractInlineNumber(url);
          if (inlineNumber == null) {
-            ctx.getOut().write("Staging url found without inlineNumber: " + number + " " + url + "<br>");
+            ctx.getOut().write("url found without inlineNumber: " + number + " " + url + "<br>");
          }
          else {
             for (Iterator<Node> iterator = relatedContent.iterator(); iterator.hasNext();) {
@@ -100,23 +111,31 @@ public class RepairStagingUrls {
                }
                if (contentElement.isChanged()) {
                   if (repair) {
-                     contentElement.commit();
-                     if (Publish.isPublished(contentElement)) {
-                        Publish.publish(contentElement);
-                     }
+                     commitContentNode(contentElement);
                   }
                   ctx.getOut().write(
-                        "Staging url " + url + " repaired in " + contentElement.getNumber() + " "
+                        "Url " + url + " repaired in " + contentElement.getNumber() + " "
                               + contentElement.getStringValue("title") + "<br>");
                }
             }
             if (repair) {
-               if (Publish.isPublished(urlNode)) {
-                  Publish.unpublish(urlNode);
-               }
-               urlNode.delete(true);
+               deleteUrlNode(urlNode);
             }
          }
+      }
+   }
+
+   private void deleteUrlNode(Node urlNode) {
+      if (Publish.isPublished(urlNode)) {
+         Publish.unpublish(urlNode);
+      }
+      urlNode.delete(true);
+   }
+
+   private void commitContentNode(Node contentElement) {
+      contentElement.commit();
+      if (Publish.isPublished(contentElement)) {
+         Publish.publish(contentElement);
       }
    }
    
@@ -135,12 +154,24 @@ public class RepairStagingUrls {
       }
       return null;
    }
-   
 
    private void repairContentNode(Node contentNode, boolean repair) throws IOException {
       ctx.getOut().write(
-            "Staging url repaired in " + contentNode.getNumber() + " "
+            search + " found in " + contentNode.getNumber() + " "
                   + contentNode.getStringValue("title") + "<br>");
-      
+
+      NodeManager contentManager = contentNode.getNodeManager();
+      List<Field> fields = contentManager .getFields();
+      for (Field field : fields) {
+         if (isRichtextField(field)) {
+            String value = contentNode.getStringValue(field.getName());
+            if (value.indexOf(search) > -1) {
+               Matcher m = Pattern.compile("<[aA].+?>").matcher(value);
+               while(m.find()) {
+                  ctx.getOut().write(field.getName() + " : " + value.substring(m.start(), m.end()) + "<br>");
+               }
+            }
+         }
+      }
    }
 }

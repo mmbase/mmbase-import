@@ -72,7 +72,7 @@
                </li>
                <li class="advancedpublish">
                   <c:url var="repairStagingUrlsUrl" value="/editors/maintenance/richtext/repair-staging-urls.jsp"/>
-                  <a href="${repairStagingUrlsUrl}" target="rightpane"><fmt:message key="maintenance.repairStagingUrls" /></a>
+                  <a href="${repairStagingUrlsUrl}" target="rightpane"><fmt:message key="maintenance.richtext.repairStagingUrls" /></a>
                </li>
             <% } %>
          </mm:haspage>
