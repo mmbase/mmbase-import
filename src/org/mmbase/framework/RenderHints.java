@@ -13,14 +13,16 @@ import java.net.URI;
 import org.mmbase.util.functions.*;
 
 /**
- * A Renderer is used ({@link Renderer#render}), with a RenderHints object, which gives to Renderer
+ * A Renderer is used by {@link Renderer#render}, with a RenderHints object, which gives to Renderer
  * implementation some instructions about how to render excactly, since it may vary a bit in that.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RenderHints.java,v 1.2 2008-09-04 21:20:02 michiel Exp $
+ * @version $Id: RenderHints.java,v 1.3 2009-03-25 21:55:25 michiel Exp $
  * @since MMBase-1.9
  */
 public class RenderHints {
+
+    public final static String KEY = "org.mmbase.framework.hints";
 
     private final WindowState state;
     private final String id;
@@ -62,5 +64,6 @@ public class RenderHints {
     public String getStyleClass() {
         return clazz;
     }
+
 
 }
