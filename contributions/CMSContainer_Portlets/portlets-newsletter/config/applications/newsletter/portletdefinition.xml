@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <portletdefinition exportsource="jdbc:mysql://localhost/teasers" timestamp="20050919142139">
-	<node number="54701" owner="default">
-		<title>NewsletterContentPortlet</title>
-		<description>Newsletter Content Portlet</description>
-		<definition>newslettercontentportlet</definition>
-		<type>multiple</type>
-	</node>
    <node number="54703" owner="default">
 		<title>Newsletter Subscription Portlet</title>
 		<description>Newsletter Subscription Portlet</description>
