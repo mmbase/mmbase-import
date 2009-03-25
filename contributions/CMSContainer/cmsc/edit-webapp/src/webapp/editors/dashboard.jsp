@@ -17,7 +17,7 @@ static public class StatusComparator implements Comparator {
          status1.equals(NOTIFIED) && status2.equals(NOTIFIED) || 
          status1.equals(DONE) && status2.equals(DONE)) {
          
-         return 0;
+         return ((org.mmbase.bridge.Node) o1).getStringValue("deadline").compareTo(((org.mmbase.bridge.Node) o2).getStringValue("deadline"));
       }
       else if (status1.equals(INIT) && status2.equals(NOTIFIED) ||
              status1.equals(INIT) && status2.equals(DONE) ||
@@ -132,7 +132,6 @@ static public class StatusComparator implements Comparator {
         <mm:maxnumber value="10" />
         <mm:listnodes>
            <mm:relatednodescontainer type="task" role="${tmpRole}" searchdirs="source">
-              <mm:maxnumber value="${dashboardTaskSize}" />
               <table>
                  <thead>
                     <tr>
@@ -147,9 +146,9 @@ static public class StatusComparator implements Comparator {
                  </thead>
                  <tbody class="hover">
                     <c:set var="taskList" value="" /><c:set var="isSwapClass" value="true"/>
-                    <mm:relatednodes comparator="StatusComparator">
+                    <mm:relatednodes comparator="StatusComparator" max="${dashboardTaskSize}">
                        <c:set var="taskId"><mm:field name="number"/></c:set>
-                       <c:if test="${not fn:contains(taskList, taskId) and fn:length(taskList) le dashboardTaskSize}">
+                       <c:if test="${not fn:contains(taskList, taskId)}">
                        <tr <c:if test="${isSwapClass}">class="swap"</c:if>>
                           <td><mm:field name="creationdate" id="created"><mm:time time="${created}" format="d/M/yyyy HH:mm" /></mm:field></td>
                           <td><mm:field name="deadline" id="deadl"><mm:time time="${deadl}" format="d/M/yyyy HH:mm"/></mm:field></td>
