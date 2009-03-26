@@ -497,7 +497,7 @@ public class JForumPortletBridge extends CmscPortlet {
            String language = "en_US";
            String charset = (String)request.getPortletSession().getAttribute("javax.servlet.jsp.jstl.fmt.request.charset");
 
-           if(!locale.getLanguage().equals("en") && StringUtils.isEmpty(locale.getCountry())) {
+           if(locale != null && !locale.getLanguage().equals("en") && StringUtils.isEmpty(locale.getCountry())) {
               locale = Locale.getDefault();
               language = locale.getLanguage()+"_"+locale.getCountry();
            }
