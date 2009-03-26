@@ -107,6 +107,9 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       }
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node edition = cloud.getNode(publicationId);  
+      if(!sendSuccess.isEmpty()){
+         edition.setDateValue("publishdate", new java.util.Date());
+      }
       NewsletterPublicationUtil.setIsSent(edition);
       sendResults.put(SEND_SUCCESS, sendSuccess);
       sendResults.put(SEND_FAIL, sendFails);
