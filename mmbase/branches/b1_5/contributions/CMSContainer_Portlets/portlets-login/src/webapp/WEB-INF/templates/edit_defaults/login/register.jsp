@@ -1,5 +1,4 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
-<fmt:setBundle basename="com.finalist.cmsc.portlets.LoginPortlet" scope="request"/>
 <div class="portlet-config-canvas">
 <script type="text/javascript">
    function selectElement(contentelement, title) {

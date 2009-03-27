@@ -1,7 +1,6 @@
 <%@ page import="com.finalist.newsletter.domain.Subscription" 
 %><%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 
-<fmt:setBundle basename="portlets-newslettersubscription" scope="request"/>
 <div class="content">
 <form method="POST" name="<portlet:namespace />form_subscribe" action="<cmsc:actionURL/>">
 <h3><fmt:message key="subscription.subscribe.title"/></h3>
