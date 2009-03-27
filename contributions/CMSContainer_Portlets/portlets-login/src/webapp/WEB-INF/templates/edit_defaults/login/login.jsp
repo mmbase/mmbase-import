@@ -1,6 +1,6 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 <%@include file="/WEB-INF/templates/edit_defaults/sections/globals.jsp"%>
-
+<fmt:setBundle basename="com.finalist.cmsc.portlets.LoginPortlet" scope="request"/>
 <div class="portlet-config-canvas">
 	<form name="<portlet:namespace />form" method="post" target="_parent" action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
 		<table class="editcontent">
