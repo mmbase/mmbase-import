@@ -223,7 +223,7 @@
 				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Send datum</guiname>
+				<guiname xml:lang="nl">Verzenddatum</guiname>
 				<guiname xml:lang="en">Send date</guiname>
 				<guiname xml:lang="zh">发送日期</guiname>
 			</gui>
