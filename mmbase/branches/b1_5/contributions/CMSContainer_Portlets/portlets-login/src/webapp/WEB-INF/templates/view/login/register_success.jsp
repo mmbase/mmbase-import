@@ -1,4 +1,5 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
+<fmt:setBundle basename="com.finalist.cmsc.portlets.LoginPortlet" scope="request"/>
 <c:if test="${empty active}">
    <h3><fmt:message key="register.success" /></h3>
    <p><fmt:message key="register.success.information" /></p>
