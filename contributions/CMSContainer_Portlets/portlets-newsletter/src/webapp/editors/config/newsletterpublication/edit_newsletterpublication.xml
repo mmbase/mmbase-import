@@ -9,8 +9,7 @@
 		<prompt xml:lang="nl">Titel</prompt>
 		<prompt xml:lang="zh">标题</prompt>
 	</field>
-	<field name="urlfragment" dtmaxlength="255"
-		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,253}[a-zA-Z0-9]$">
+	<field name="urlfragment" dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,253}[a-zA-Z0-9]$">
 		<prompt xml:lang="en">URL-fragment</prompt>
 		<prompt xml:lang="nl">URL-fragment</prompt>
 		<prompt xml:lang="zh">URL片段</prompt>
@@ -20,7 +19,7 @@
 		<prompt xml:lang="nl">Omschrijving</prompt>
 		<prompt xml:lang="zh">描述</prompt>
 	</field>
-	<field name="subject" dtmaxlength="40"  dtrequired="true">
+	<field name="subject" dtrequired="true">
 		<prompt xml:lang="en">Subject</prompt>
 		<prompt xml:lang="nl">Onderwerp</prompt>
 		<prompt xml:lang="zh">主题</prompt>
