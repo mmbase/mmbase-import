@@ -102,26 +102,35 @@ function selectElement(element_id, title, url, width, height, description) {
    }
   var imagePosition = document.getElementById("f_align").value
   if ("left" == imagePosition) {
-    if (width && height) {
-     // height = (IMAGE_WIDTH_LEFT / width) * height;
-      document.getElementById("f_width").value = width;
-      document.getElementById("f_height").value = height;
-    }
-  }
-  if ("right" == imagePosition) {
-    if (width && height) {
-      //height = (IMAGE_WIDTH_RIGHT / width) * height;
-      document.getElementById("f_width").value = width;
-      document.getElementById("f_height").value = height;
-    }
-  }
-  if ("" == imagePosition) {
-    if (width && height) {
-      //height = (IMAGE_WIDTH_FULL / width) * height;
-      document.getElementById("f_width").value = width;
-      document.getElementById("f_height").value = height;
-    }
-  }
+      if (width && height) {
+         if (width > IMAGE_WIDTH_LEFT) {
+            height = Math.round((IMAGE_WIDTH_LEFT / width) * height);
+            width = IMAGE_WIDTH_LEFT;
+         }  
+         document.getElementById("f_width").value = width;
+         document.getElementById("f_height").value = height;
+      }
+   }
+   if ("right" == imagePosition) {
+      if (width && height) {
+         if (width > IMAGE_WIDTH_RIGHT) {
+            height = Math.round((IMAGE_WIDTH_RIGHT / width) * height);
+            width = IMAGE_WIDTH_RIGHT;
+         }
+         document.getElementById("f_width").value = IMAGE_WIDTH_RIGHT;
+         document.getElementById("f_height").value = width;
+       }
+   }
+   if ("" == imagePosition) {
+      if (width && height) {
+         if (width > IMAGE_WIDTH_FULL) {
+            height = Math.round((IMAGE_WIDTH_FULL / width) * height);
+            width = IMAGE_WIDTH_FULL;
+         }
+         document.getElementById("f_width").value = width;
+         document.getElementById("f_height").value = height;
+      }
+   }
 
   //Store the original sizes of image for aspect ratio 
   saveOriginalSizes();
