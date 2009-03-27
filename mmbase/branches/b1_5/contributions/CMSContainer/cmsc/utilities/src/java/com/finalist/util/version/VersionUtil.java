@@ -66,9 +66,18 @@ public class VersionUtil {
          int end = path.lastIndexOf("-");
 
          if (start != -1 && end != -1 && end > start) {
+            //Check if the right version part is found
             if (path.charAt(end - 1) >= '0' && path.charAt(end - 1) <= '9') {
-               end = path.lastIndexOf("-", end - 1);
+               int newEnd = path.lastIndexOf("-", end - 1);
+               
+               // Only use the newEnd if it is still valid. Otherwise 'c3p-1.23.3.jar' fails
+               if (newEnd > start) { 
+                  end = newEnd;
+               }
             }
+            
+            //TODO Replace this checking for version number by Pattern matching
+            //A quickly regexp, not tested, should be something as: "[.+- (.\\d .*) \\.jar]"
 
             String lib = path.substring(start, end);
             String version = path.substring(end + 1, path.lastIndexOf("."));
