@@ -414,5 +414,16 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       }
    }
    
-
+   public List<Subscription>  getSubscriptions(String[] allowedLetters, int userId) {
+      List<Subscription> subscriptionList = new ArrayList<Subscription>();
+      if (null != allowedLetters) {
+         for (String allowedLetter : allowedLetters) {
+            Subscription subscription = getSubscription(allowedLetter, Integer.toString(userId));
+            if(subscription.getId() != 0) {
+               subscriptionList.add(subscription);
+            }
+         }
+      }
+      return subscriptionList;
+   } 
 }
