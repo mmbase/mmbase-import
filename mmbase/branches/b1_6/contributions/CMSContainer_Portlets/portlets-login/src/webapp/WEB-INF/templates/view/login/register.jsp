@@ -1,5 +1,5 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
-
+<fmt:setBundle basename="com.finalist.cmsc.portlets.LoginPortlet" scope="request"/>
 <h2><fmt:message key="register.title" /></h2>
 
 <form name="<portlet:namespace />form" 
