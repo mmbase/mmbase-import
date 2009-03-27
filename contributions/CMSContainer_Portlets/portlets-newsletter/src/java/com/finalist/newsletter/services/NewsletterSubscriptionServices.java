@@ -75,4 +75,5 @@ public interface NewsletterSubscriptionServices {
 
    public String getTermsNameList(int authenticationId);
    
+   public List<Subscription>  getSubscriptions(String[] allowedLetters, int userId) ;
 }

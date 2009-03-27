@@ -3,10 +3,16 @@ package com.finalist.portlets.newsletter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import javax.portlet.*;
 
-import org.apache.commons.lang.StringUtils;
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletException;
+import javax.portlet.PortletPreferences;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -14,10 +20,18 @@ import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.JspPortlet;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.domain.Subscription.STATUS;
 import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 
 public class NewsletterSubscriptionPortlet extends JspPortlet {
+   
+   protected  static final String NEWSLETTER_SUBSCRIPTION_INTRODUCTION_JSP = "/newsletter/subscription/introduction.jsp";
+   protected  static final String NEWSLETTER_SUBSCRIPTION_SUBSCRIBE_JSP = "/newsletter/subscription/subscribe.jsp";
+   private  static final String SUBSCRIPTION_LIST = "subscriptionList";
+   private static final String IS_USER_LOGIN = "isUserLogin";
+   private static final String VIEW = "view";
+   private static final String SUBSCRIPTIONS = "subscriptions";
    private static Logger log = Logging.getLoggerInstance(NewsletterSubscriptionPortlet.class.getName());
    private static final String ALLOWED_NEWSLETTERS = "allowednewsletters";
 
@@ -36,63 +50,19 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
       PortletPreferences preferences = request.getPreferences();
       NewsletterSubscriptionServices services = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
-
       int userId = CommunityModuleAdapter.getCurrentUserId();
       String[] newsletters = preferences.getValues(ALLOWED_NEWSLETTERS, null);
 
-      if (!CommunityModuleAdapter.isUserLogin() ||
-               (services.getActiveSubscription(userId).size() < 1 && null == request.getParameter("action"))) {
-         request.setAttribute("isUserLogin", CommunityModuleAdapter.isUserLogin());
-         doInclude("view", "/newsletter/subscription/introduction.jsp", request, response);
+      if (!CommunityModuleAdapter.isUserLogin()) {
+         request.setAttribute(IS_USER_LOGIN, CommunityModuleAdapter.isUserLogin());
+         doInclude(VIEW, NEWSLETTER_SUBSCRIPTION_INTRODUCTION_JSP, request, response);
          return;
       }
-
-      String action = request.getParameter("action");
-      log.debug(String.format("User %s start a subscribe with action %s", userId, action));
-
-      if ("pause".equals(action)) {
-         log.debug("Paused subscriptions ,need confrim");
-
-         List<Subscription> subscriptionsToBePause = getSubscriptionsFromParameter(request, Subscription.STATUS.ACTIVE);
-         request.setAttribute("subscriptionsToBePause", subscriptionsToBePause);
-         doInclude("view", "/newsletter/subscription/pauseform.jsp", request, response);
-         return;
-      } else if ("resume".equals(action)) {
-         log.debug("Resume paused subscriptions ,need confrim");
-
-         List<Subscription> subscriptionsToBeResume = getSubscriptionsFromParameter(request, Subscription.STATUS.PAUSED);
-         request.setAttribute("subscriptionsToBeResume", subscriptionsToBeResume);
-         doInclude("view", "/newsletter/subscription/confirmResume.jsp", request, response);
-         return;
-      } else if ("terminate".equals(action)) {
-         log.debug("Terminate subscriptions ,need confrim");
-
-         List<Subscription> subscriptionsToBeTerminate = getSubscriptionsFromParameter(request, null);
-
-         request.setAttribute("subscriptionsToBeTerminate", subscriptionsToBeTerminate);
-         doInclude("view", "/newsletter/subscription/confirmTerminate.jsp", request, response);
-         return;
-      }
-
+   
       List<Subscription> subscriptionList = services.getSubscriptionList(newsletters, userId);
-      request.setAttribute("subscriptionList", subscriptionList);
-      doInclude("view", "/newsletter/subscription/subscribe.jsp", request, response);
+      request.setAttribute(SUBSCRIPTION_LIST, subscriptionList);
+      doInclude(VIEW, NEWSLETTER_SUBSCRIPTION_SUBSCRIBE_JSP, request, response);
 
-   }
-
-   private List<Subscription> getSubscriptionsFromParameter(RenderRequest request, Subscription.STATUS status) {
-      NewsletterSubscriptionServices services = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
-
-      List<Subscription> subscriptions = new ArrayList<Subscription>();
-      if (null != request.getParameterValues("subscriptions")) {
-         for (String sId : request.getParameterValues("subscriptions")) {
-            Subscription subscription = services.getSubscription(sId);
-            if (null == status || status.equals(subscription.getStatus())) {
-               subscriptions.add(services.getSubscription(sId));
-            }
-         }
-      }
-      return subscriptions;
    }
 
    @Override
@@ -109,77 +79,44 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
    @Override
    public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
-
-      String action = request.getParameter("action");
-      log.debug("Process view action:" + action);
-      if (action != null) {
-         if ("pause".equals(action)) {
-            processPause(request, response);
-         } else if ("terminate".equals(action)) {
-            processTermination(request, response);
-         } else if ("resume".equals(action)) {
-            processResume(request, response);
+      PortletPreferences preferences = request.getPreferences();
+      String[] allNewsletters = preferences.getValues(ALLOWED_NEWSLETTERS, null);
+      String[] newsletters = request.getParameterValues(SUBSCRIPTIONS);
+      NewsletterSubscriptionServices services = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
+      int subscriberId = CommunityModuleAdapter.getCurrentUserId();
+      List<Subscription> allSubscribtions = services.getSubscriptions(allNewsletters, subscriberId);
+      
+      if(newsletters == null) {
+         for (Subscription subscription : allSubscribtions) {
+            services.terminateUserSubscription(Integer.toString(subscription.getId()));
          }
       }
-
-   }
-
-   private void processTermination(ActionRequest request, ActionResponse response) {
-      NewsletterSubscriptionServices services = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
-      String confirmation = request.getParameter("confirm_unsubscribe");
-
-      String[] subscriptionIds = request.getParameterValues("subscriptions");
-      log.debug(String.format("Terminate subscription %s confirm:%s", subscriptionIds, confirmation));
-
-      if (confirmation != null) {
-         for (String id : subscriptionIds) {
-            services.terminateUserSubscription(id);
-         }
-      } else {
-         response.setRenderParameters(request.getParameterMap());
-      }
-   }
-
-   private void processResume(ActionRequest request, ActionResponse response) {
-      NewsletterSubscriptionServices services = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
-      String confirmation = request.getParameter("confirm_resume");
-
-      String[] subscriptionIds = request.getParameterValues("subscriptions");
-      log.debug(String.format("resume subscription %s confirm:%s", subscriptionIds, confirmation));
-
-      if (confirmation != null) {
-         for (String id : subscriptionIds) {
-            services.resume(id);
-         }
-      } else {
-         response.setRenderParameters(request.getParameterMap());
-      }
-   }
-
-   private void processPause(ActionRequest request, ActionResponse response) {
-
-      NewsletterSubscriptionServices services = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
-      String duration = request.getParameter("timeduration");
-      String durationunit = request.getParameter("durationunit");
-      String resumeDate = request.getParameter("resumeDate");
-
-      String confirmation = request.getParameter("confirm_pause");
-
-      String[] subscriptionIds = request.getParameterValues("subscriptions");
-      log.debug(String.format("pause subscription %s confirm:%s", subscriptionIds, confirmation));
-
-      if (confirmation != null) {
-         for (String id : subscriptionIds) {
-            if (StringUtils.isBlank(resumeDate)) {
-               services.pause(id, duration, durationunit);
-            } else {
-               services.pause(id, resumeDate);
+      else {
+         if(allSubscribtions.size() == 0) {
+            for (String newsletterId : newsletters) {
+               services.addNewRecord(subscriberId, Integer.valueOf(newsletterId));
             }
          }
-      } else {
-         response.setRenderParameters(request.getParameterMap());
+         else {
+            List<String> newsletterList = Arrays.asList(newsletters);
+            List<Integer> subscribtions = new ArrayList<Integer>();
+            for(Subscription subscription : allSubscribtions) {
+               if (newsletterList.contains(String.valueOf(subscription.getNewsletter().getId()))) {
+                  if(!STATUS.ACTIVE.equals(subscription.getStatus())){
+                     services.resume(Integer.toString(subscription.getId()));
+                  }
+               }
+               else {
+                  services.terminateUserSubscription(Integer.toString(subscription.getId()));
+               }
+               subscribtions.add(subscription.getNewsletter().getId());
+            }
+            for (String newsletterId : newsletters) {
+               if( !subscribtions.contains(Integer.valueOf(newsletterId))) {
+                  services.addNewRecord(subscriberId, Integer.valueOf(newsletterId));
+               }
+            }
+         }
       }
-
-
    }
 }
