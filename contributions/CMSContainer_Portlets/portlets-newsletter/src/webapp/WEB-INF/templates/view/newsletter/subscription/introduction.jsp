@@ -1,7 +1,5 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 
-<fmt:setBundle basename="portlets-newslettersubscription" scope="request"/>
-
 <form method="POST" name="<portlet:namespace />form_subscribe" action="<cmsc:renderURL/>" target="_self">
    <input name="action" type="hidden" value="subscribe"/>
 

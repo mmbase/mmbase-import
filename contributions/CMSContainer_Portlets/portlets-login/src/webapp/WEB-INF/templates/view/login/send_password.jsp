@@ -1,5 +1,4 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
-<fmt:setBundle basename="com.finalist.cmsc.portlets.LoginPortlet" scope="request"/>
 <h3><fmt:message key="view.account.sendpassword" /></h3>
 
 <form name="<portlet:namespace />form" 

@@ -1,6 +1,5 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 <%@include file="/WEB-INF/templates/edit_defaults/sections/globals.jsp"%>
-<fmt:setBundle basename="com.finalist.cmsc.portlets.LoginPortlet" scope="request"/>
 <script type="text/javascript">
    function selectElement(contentelement, title) {
       document.forms['<portlet:namespace />form'].contentelement.value = contentelement;
