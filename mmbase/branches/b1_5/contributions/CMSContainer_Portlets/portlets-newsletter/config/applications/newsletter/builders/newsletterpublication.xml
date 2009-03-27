@@ -216,5 +216,29 @@
             <type key="false" notnull="false" size="64000" state="persistent">STRING</type>
          </db>
       </field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Send datum</guiname>
+				<guiname xml:lang="en">Send date</guiname>
+				<guiname xml:lang="zh">发送日期</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>6</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>sendtime</name>
+				<type key="false" notnull="false" state="persistent">DATETIME</type>
+			</db>
+		</field>
    </fieldlist>
 </builder>

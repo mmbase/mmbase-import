@@ -16,6 +16,7 @@ public class Publication {
    private String intro;
    private Date lastmodifieddate;
    private Date publishdate;
+   private Date sendtime;
    private int subscriptions;
    private int bounced;
    private String process_status;
@@ -154,6 +155,14 @@ public class Publication {
 
    public void setPublishdate(Date publishdate) {
       this.publishdate = publishdate;
+   }
+   
+   public Date getSendtime() {
+      return sendtime;
+   }
+   
+   public void setSendtime(Date sendtime) {
+      this.sendtime = sendtime;
    }
 
    public int getSubscriptions() {

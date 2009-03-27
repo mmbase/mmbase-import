@@ -1,0 +1,17 @@
+Migration document:
+
+Part: portlets-newsletter
+From version: 1.5.3
+To version: 1.5.4
+
+
+Name: Add a sendtime column in <prefix>_newsletterpublication table
+Goal: Used to save/get sendtime,CMSC-1348
+Type: sql-script
+--- Start script ---
+ALTER TABLE mm_newsletterpublication ADD sendtime datetime;
+ALTER TABLE live_newsletterpublication ADD sendtime datetime;
+--- End script ---
+*
+*
+*

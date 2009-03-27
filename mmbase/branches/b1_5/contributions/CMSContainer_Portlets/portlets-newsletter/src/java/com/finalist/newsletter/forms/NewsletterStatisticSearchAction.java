@@ -170,7 +170,7 @@ public class NewsletterStatisticSearchAction extends DispatchActionSupport {
          result.put("id", publication.getId());
          result.put("title", publication.getTitle());
          result.put("subject", publication.getSubject());
-         result.put("sendtime", publication.getPublishdate());
+         result.put("sendtime", publication.getSendtime());
          result.put("subscriptions", publication.getSubscriptions());
          result.put("sendsuccessful", publication.getSubscriptions() - publication.getBounced());
          result.put("bounced", publication.getBounced());

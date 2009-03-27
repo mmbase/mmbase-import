@@ -102,6 +102,16 @@ Exceptions/errors/other problems and what to do:
 *
 *
 
+Name: Add a sendtime column in <prefix>_newsletterpublication table
+Goal: Used to save/get sendtime,CMSC-1348
+Type: sql-script
+--- Start script ---
+ALTER TABLE mm_newsletterpublication ADD sendtime datetime;
+ALTER TABLE live_newsletterpublication ADD sendtime datetime;
+--- End script ---
+*
+*
+*
 
 Name: The <cmsc:renderURL> uses stricter page parameter input, for resolving of page location
 Goal: better JSP code
