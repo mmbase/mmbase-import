@@ -12,29 +12,62 @@ import org.mmbase.datatypes.processors.Processor;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
+import org.mmbase.util.transformers.*;
+import org.mmbase.util.functions.*;
+import javax.xml.parsers.*;
 
 /**
+ * This set-processor is used for HTML fields. If a valid Document is given, this is supposed to be
+ * HTML. Otherwise the value is converted to a String, and then parsed to SAX compliant XML. (Cross Site)
+ * Scripting tags and attributes are removed using {@link
+ * org.mmbase.util.transformers.TagStripperFactory}. If the XML is not a valid Document (not one,
+ * but more  document element), a surrounding 'div' tag is implicetely added.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HtmlSetString.java,v 1.3 2009-03-04 11:32:09 michiel Exp $
+ * @version $Id: HtmlSetString.java,v 1.4 2009-03-27 14:56:52 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class HtmlSetString implements  Processor {
     private static final Logger log = Logging.getLoggerInstance(HtmlSetString.class);
     private static final long serialVersionUID = 1L;
-    protected static final String PREF = "<p><![CDATA[";
-    protected static final String POST = "]]></p>";
+
+
+    protected static final String PREF = "<div>";
+    protected static final String POST = "</div>";
+
 
     public Object process(Node node, Field field, Object value) {
         if (value instanceof org.w3c.dom.Document) return value;
+        TagStripperFactory factory = new TagStripperFactory();
+        Parameters params = factory.createParameters();
+        params.set(TagStripperFactory.TAGS, "XSS");
+        params.set(TagStripperFactory.ADD_BRS, false);
+        params.set(TagStripperFactory.ESCAPE_AMPS, true);
+        CharTransformer htmlCleaner = factory.createTransformer(params);
+        String cleanHtml = htmlCleaner.transform(Casting.toString(value));
 
+        log.debug("Setting " + field + " from " + node + " as a String to " + cleanHtml, new Exception());
 
-        log.debug("Setting " + field + " from " + node + " as a String");
-        return Casting.toXML(PREF + Casting.toString(value) + POST);
+        try {
+            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+            dfactory.setNamespaceAware(true);
+            DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
+            try {
+                return  documentBuilder.parse(new java.io.ByteArrayInputStream(cleanHtml.getBytes("UTF-8")));
+            } catch (org.xml.sax.SAXException se) {
+                log.warn(se);
+                String reparedHtml = PREF + cleanHtml + POST;
+                return  documentBuilder.parse(new java.io.ByteArrayInputStream(reparedHtml.getBytes("UTF-8")));
+            }
+        } catch (Exception e) {
+            // give it up.
+            log.warn(e);
+            return Casting.toXML(cleanHtml);
+        }
+
     }
-
     public String toString() {
-        return "set_MMXF";
+        return "set_HTML";
     }
 }
