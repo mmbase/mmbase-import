@@ -25,18 +25,23 @@
          <type>mmbase-module</type>
       </dependency>
       <dependency>
-          <groupId>finalist</groupId>
-          <artifactId>cmsc-modules-linkvalidator</artifactId>
-          <version>${cmscmodules.version}</version>
-          <type>mmbase-module</type>
-        </dependency>
-<!-- Community -->
-        <dependency>
-            <groupId>finalist</groupId>
-            <artifactId>cmsc-modules-community</artifactId>
-            <version>${cmscmodules.version}</version>
-            <type>mmbase-module</type>
-        </dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-modules-linkvalidator</artifactId>
+         <version>${cmscmodules.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-modules-community</artifactId>
+         <version>${cmscmodules.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-portlets-preferences</artifactId>
+         <version>${cmscportlets.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
 
 <!-- Login porlet -->
         <dependency>
