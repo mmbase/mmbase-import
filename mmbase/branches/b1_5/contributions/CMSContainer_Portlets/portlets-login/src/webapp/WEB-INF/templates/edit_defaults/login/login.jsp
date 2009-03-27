@@ -1,4 +1,5 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
+<fmt:setBundle basename="com.finalist.cmsc.portlets.LoginPortlet" scope="request"/>
 <div class="portlet-config-canvas">
 <h3><fmt:message key="edit_defaults.title" /></h3>
 <form 
