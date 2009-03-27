@@ -3,7 +3,7 @@
    <fmt:message key="community.module.newsletter" />
 </c:set>
 <c:set var="key1"> 
-   <fmt:message key="community.module.newsletter.key.mimitype" />
+   <fmt:message key="community.module.newsletter.key.mimetype" />
 </c:set>
 <c:set var="value1" value=""/> 
 <c:set var="key2"> 
