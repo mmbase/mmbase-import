@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.13 2008-07-28 16:22:16 michiel Exp $
+ * @version $Id: TagStripperFactory.java,v 1.14 2009-03-27 15:11:27 michiel Exp $
  * @since MMBase-1.8.4
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory<CharTransformer>  {
@@ -240,7 +240,6 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         List<HTML.Tag> stack       = new ArrayList<HTML.Tag>();
 
         public TagStripper(Writer out, List<Tag> t) {
-            //System.out.println("KOLERE");
             this.out = out;
             tags = t;
         }
