@@ -1,0 +1,19 @@
+Migration document:
+
+Part: core
+From version: 1.6
+To version: 1.7
+
+
+Execute the following steps below in the given order:
+
+Name: Add a sendtime column in <prefix>_newsletterpublication table
+Goal: Used to save/get sendtime,CMSC-1348
+Type: sql-script
+--- Start script ---
+ALTER TABLE mm_newsletterpublication ADD sendtime datetime;
+ALTER TABLE live_newsletterpublication ADD sendtime datetime;
+--- End script ---
+*
+*
+*
