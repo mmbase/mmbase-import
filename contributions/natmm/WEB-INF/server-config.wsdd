@@ -31,7 +31,7 @@
     <parameter name="allowedMethods" value="getVersion" />
     <parameter name="className" value="org.apache.axis.Version" />
   </service>
-  <service name="Activiteiten" provider="java:RPC" style="wrapped">
+  <service name="Activiteiten" provider="java:RPC">
     <!-- style="wrapped" generates a more Basic Profile compliant WSDL then without a style, style="document" does not work for String[] as parameter -->
     <documentation>Deze webservice stelt de eventen van de Centrale Activiteiten Database (CAD) van Natuurmonumenten Nederland ter beschikking.</documentation>
     <parameter name="className" value="nl.natuurmonumenten.activiteiten.ActiviteitenService" />
