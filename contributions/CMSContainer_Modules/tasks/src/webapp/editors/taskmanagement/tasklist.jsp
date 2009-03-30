@@ -19,7 +19,7 @@
 
    <mm:cloud jspvar="cloud" loginpage="../login.jsp">
    <mm:cloudinfo type="user" id="cloudusername" write="false" />
-       <c:set var="dashboardTaskTitle">tasks.title</c:set>
+       <c:set var="dashboardTaskTitle"><fmt:message key="tasks.title" /></c:set>
        <%@ include file="tasklist_table.jspf"%> 
    </mm:cloud>
 </body>
