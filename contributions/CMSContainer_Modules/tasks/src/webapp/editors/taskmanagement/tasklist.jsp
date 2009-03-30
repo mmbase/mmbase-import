@@ -18,34 +18,9 @@
    </c:choose>
 
    <mm:cloud jspvar="cloud" loginpage="../login.jsp">
-      <cmscedit:contentblock title="tasks.title" titleClass="content_block_pink" bodyClass="body_table">
-
-         <mm:cloudinfo type="user" id="cloudusername" write="false" />
-         <mm:listnodescontainer type="user">
-            <mm:constraint field="user.username" operator="EQUAL" referid="cloudusername" />
-            <mm:maxnumber value="10" />
-            <p style="font-size:12px; padding-left:10px;">
-               <html:messages id="createSuccess" message="true" bundle="TASKS">
-                  <bean:write name="createSuccess"/>
-               </html:messages>
-            </p>
-            <mm:listnodes>
-               <mm:relatednodescontainer type="task" role="${tmpRole}" searchdirs="source">
-                  <%@ include file="tasklist_table.jspf"%> 
-               </mm:relatednodescontainer>
-            </mm:listnodes>
-         </mm:listnodescontainer>
-
-         <html:form action="/editors/taskmanagement/showTaskAction">
-               <html:select property="taskShowType" value="${requestScope.taskShowType}">
-                  <html:option value="task.showtype.alltasks" bundle="TASKS" key="task.showtype.alltasks"/>
-                  <html:option value="task.showtype.assignedtome" bundle="TASKS" key="task.showtype.assignedtome"/>
-                  <html:option value="task.showtype.createdbyme" bundle="TASKS" key="task.showtype.createdbyme"/>
-               </html:select>&nbsp;&nbsp;
-               <html:submit><bean:message bundle="TASKS" key="task.showtype.submit"/></html:submit>
-         </html:form>
-
-      </cmscedit:contentblock>
+   <mm:cloudinfo type="user" id="cloudusername" write="false" />
+       <c:set var="dashboardTaskTitle">tasks.title</c:set>
+       <%@ include file="tasklist_table.jspf"%> 
    </mm:cloud>
 </body>
 </html:html>
