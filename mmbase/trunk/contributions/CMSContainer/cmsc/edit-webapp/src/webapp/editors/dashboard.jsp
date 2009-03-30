@@ -91,20 +91,9 @@
 
     <mm:haspage page="/editors/taskmanagement/">
        <c:set var="dashboardTaskSize" value="5"/>
-       <c:set var="taskrel" value="assignedrel"/>
+       <c:set var="tmpRole" value="assignedrel"/>
        <c:set var="dashboardTaskTitle"><fmt:message key="task.header"><fmt:param>${dashboardTaskSize}</fmt:param></fmt:message></c:set>
-       <cmscedit:contentblock title="${dashboardTaskTitle}" titleMode="plain"
-           titleClass="content_block_pink" bodyClass="body_table">
-         <mm:listnodescontainer type="user">
-            <mm:constraint field="user.username" operator="EQUAL" referid="cloudusername" />
-            <mm:maxnumber value="10" />
-            <mm:listnodes>
-               <mm:relatednodescontainer type="task" role="${taskrel}" searchdirs="source">
-                  <%@ include file="/editors/taskmanagement/tasklist_table.jspf"%> 
-               </mm:relatednodescontainer>
-            </mm:listnodes>
-         </mm:listnodescontainer>
-      </cmscedit:contentblock>
+       <%@ include file="/editors/taskmanagement/tasklist_table.jspf"%> 
    </mm:haspage>
 
 </mm:cloud>
