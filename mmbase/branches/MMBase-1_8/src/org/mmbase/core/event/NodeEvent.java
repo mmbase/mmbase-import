@@ -7,12 +7,13 @@
  */
 package org.mmbase.core.event;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.*;
 
-import org.mmbase.util.HashCodeUtil;
 import org.mmbase.cache.Cache;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.27.2.5 2008-02-07 16:45:59 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.27.2.6 2009-03-30 12:56:54 ernst Exp $
  */
 public class NodeEvent extends Event {
 
@@ -34,7 +35,7 @@ public class NodeEvent extends Event {
     private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
 
     /**
-     * Event type speicfic for MMBase nodes.
+     * Event type specific for MMBase nodes.
      */
     public static final int TYPE_RELATION_CHANGE = 3;
 
