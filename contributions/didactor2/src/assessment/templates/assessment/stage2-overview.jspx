@@ -8,7 +8,7 @@
   <jsp:output omit-xml-declaration="true" />
 	<mm:import id="currentlesson" from="session" externid="currentlesson_${user}_${education}" />
 		
-  <h2>1. Echt belangrijk in mijn leven is</h2>
+  <h2>4. Echt belangrijk in mijn leven is</h2>
   <div class="goals">
   <mm:node number="$user">
   	<ol>
@@ -71,10 +71,10 @@
 
 	<table cellspacing="0">
 		<tr>
-    	<td class="problemHeaderLeft"><h2>2. Mijn zorgen en problemen</h2>
+    	<td class="problemHeaderLeft"><h2>5. Mijn zorgen en problemen</h2>
     	
     	</td>
-    	<td class="problemHeaderRight" colspan="7"><h2>3. Hoeveel last had ik er van</h2></td>
+    	<td class="problemHeaderRight" colspan="7"><h2>6. Hoeveel last had ik er van</h2></td>
     </tr>
 
     <mm:listnodes orderby="pos" type="problemtypes">
