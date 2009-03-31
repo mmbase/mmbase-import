@@ -364,7 +364,7 @@ Step 4: If you like to use Single Sign On (SSO)
 
 
 Step 5: If you run CMSc applicaiton in the Staging/Live mode.
- 5.1.  add a  DataSource in live context xml file. same to staging
+ 5.1.  add a  DataSource in both Staing and Live context-xml files. same to staging
     <Resource name="jdbc/jforum" auth="Container" type="javax.sql.DataSource"
 		removeAbandoned="true" 
 		removeAbandonedTimeout="60"
@@ -378,5 +378,8 @@ Step 5: If you run CMSc applicaiton in the Staging/Live mode.
 		url="jdbc:mysql://localhost:3306/jforum" />
 5.2 Add a property named "system.stagingpath" in live .the value is the url of staging 
    like http://localhost:8080/cmsc-demo-staging
+5.3 Check the WEB-INF/config/SystemGlobals.properties,be sure that 
+ database.connection.implementation is net.jforum.DataSourceConnection ,not net.jforum.PooledConnection
+5.4 Deploy successfully,it will create a new file jforum-custom.conf under WEB-INF\config
 
 

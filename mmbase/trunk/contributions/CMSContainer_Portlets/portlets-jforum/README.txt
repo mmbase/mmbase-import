@@ -378,5 +378,8 @@ Step 5: If you run CMSc applicaiton in the Staging/Live mode.
 		url="jdbc:mysql://localhost:3306/jforum" />
 5.2 Add a property named "system.stagingpath" in live .the value is the url of staging 
    like http://localhost:8080/cmsc-demo-staging
+5.3 Check the WEB-INF/config/SystemGlobals.properties,be sure that 
+ database.connection.implementation is net.jforum.DataSourceConnection ,not net.jforum.PooledConnection
+5.4 Deploy successfully,it will create a new file jforum-custom.conf under WEB-INF\config
 
 
