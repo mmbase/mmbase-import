@@ -4,9 +4,14 @@ function callEditWizard(objectNumber) {
     document.location.href = url;
 }
 
-function deleteTask(message) {
+function deleteTask(objectNumber) {
+    var url = './DeleteTaskAction.do?objectnumber=' + objectNumber;
+    document.location.href = url;
+}
+
+function massDeleteTask(message) {
 	if (confirm(message)) {
-		document.forms[0].submit();
+		document.forms['taskForm'].submit();
 	}
 }
 

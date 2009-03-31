@@ -30,6 +30,10 @@
 			unknown="false" validate="false">
 			<forward name="success" path="/editors/taskmanagement/tasklist.jsp" redirect="true" />
 		</action>
+      <action path="/editors/taskmanagement/MassDeleteTaskAction" type="com.finalist.cmsc.tasks.forms.MassDeleteTaskAction"
+         unknown="false" validate="false">
+         <forward name="success" path="/editors/taskmanagement/tasklist.jsp" redirect="true" />
+      </action>
 		<action path="/editors/taskmanagement/TaskAction" type="com.finalist.cmsc.tasks.forms.TaskAction"
 			name="TaskForm" scope="session" input="/editors/taskmanagement/task.jsp" unknown="false" validate="true">
          	<set-property property="cancellable" value="true"/>
