@@ -58,19 +58,20 @@
 
 		<p style="font-size: 12px; padding-left: 10px;"><html:messages id="createSuccess" message="true" bundle="TASKS"><bean:write name="createSuccess" /></html:messages></p>
 
-		<form action="DeleteTaskAction.do" name="taskForm">
-        <mm:hasrank minvalue="basic user">
+      <c:url value="/editors/taskmanagement/MassDeleteTaskAction.do" var="taskFormAction" />
+		<form action="${taskFormAction}" name="taskForm">
+      <mm:hasrank minvalue="basic user">
 			<c:if test="${fn:length(resultList)>1}">
-				<input type="submit" class="button" value="<fmt:message key="task.delete.massdelete"/>" onclick="deleteTask('<fmt:message key="task.massdeleteconfirm" />');return false;" />
+				<input type="submit" class="button" value="<fmt:message key="task.delete.massdelete"/>" onclick="massDeleteTask('<fmt:message key="task.massdeleteconfirm" />');return false;" />
 			</c:if>
 		</mm:hasrank> 
 		<%@ include file="tasklist_table.jspf"%> 
-        <mm:hasrank minvalue="basic user">
+      <mm:hasrank minvalue="basic user">
 			<c:if test="${fn:length(resultList)>1}">
-				<input type="submit" class="button" value="<fmt:message key="task.delete.massdelete"/>" onclick="deleteTask('<fmt:message key="task.massdeleteconfirm" />');return false;" />
+				<input type="submit" class="button" value="<fmt:message key="task.delete.massdelete"/>" onclick="massDeleteTask('<fmt:message key="task.massdeleteconfirm" />');return false;" />
 			</c:if>
 		</mm:hasrank>
-        </form>
+      </form>
 
 		<html:form action="/editors/taskmanagement/showTaskAction">
 			<html:select property="taskShowType" onchange="this.form.submit();">

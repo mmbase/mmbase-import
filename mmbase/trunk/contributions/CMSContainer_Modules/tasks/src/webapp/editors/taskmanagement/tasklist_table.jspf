@@ -34,7 +34,7 @@
                  <a href="javascript:window.top.openTasksWithTask('<mm:field name="number" />');"><img src="gfx/icons/edit2.png" align="top" alt="<fmt:message key="task.edit"/>" title="<fmt:message key="task.edit"/>"/></a>
                  </c:if>
                  <c:if test="${empty dashboardTaskSize}">
-                 <a href="javascript:deleteTask('<fmt:message key="task.deleteconfirm"><fmt:param><mm:field name="title"/></fmt:param></fmt:message>');"><img src="../gfx/icons/delete.png" width="16" height="16" title="<fmt:message key="task.delete" />" alt="<fmt:message key="task.delete" />" /></a>
+                 <a href="javascript:deleteTask('<mm:field name="number" />');"><img src="../gfx/icons/delete.png" width="16" height="16" title="<fmt:message key="task.delete" />" alt="<fmt:message key="task.delete" />" /></a>
                  </c:if>
                  </mm:hasrank>
               </td>
