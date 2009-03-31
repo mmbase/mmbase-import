@@ -90,10 +90,24 @@
    </mm:haspage>
 
     <mm:haspage page="/editors/taskmanagement/">
-       <c:set var="dashboardTaskSize" value="5"/>
-       <c:set var="tmpRole" value="assignedrel"/>
-       <c:set var="dashboardTaskTitle"><fmt:message key="task.header"><fmt:param>${dashboardTaskSize}</fmt:param></fmt:message></c:set>
-       <%@ include file="/editors/taskmanagement/tasklist_table.jspf"%> 
+			<c:set var="dashboardTaskSize" value="5" />
+			<c:set var="tmpRole" value="assignedrel" />
+			<c:set var="dashboardTaskTitle"><fmt:message key="task.header"><fmt:param>${dashboardTaskSize}</fmt:param></fmt:message></c:set>
+			<mm:listnodescontainer type="user">
+				<mm:constraint field="user.username" operator="EQUAL" referid="cloudusername" />
+				<mm:maxnumber value="10" />
+				<mm:listnodes>
+					<mm:relatednodescontainer type="task" role="${tmpRole}" searchdirs="source">
+						<mm:constraint field="status" value="task.status.done" operator="EQUAL" inverse="true" />
+						<mm:relatednodes comparator="com.finalist.cmsc.tasks.TaskUrgencyComparator" max="${dashboardTaskSize}" id="resultList" />
+					</mm:relatednodescontainer>
+				</mm:listnodes>
+			</mm:listnodescontainer>
+         <c:if test="${not empty resultList}">
+         <cmscedit:contentblock title="${dashboardTaskTitle}" titleMode="plain" titleClass="content_block_pink" bodyClass="body_table">
+            <%@ include file="/editors/taskmanagement/tasklist_table.jspf"%>
+         </cmscedit:contentblock>
+         </c:if>
    </mm:haspage>
 
 </mm:cloud>
