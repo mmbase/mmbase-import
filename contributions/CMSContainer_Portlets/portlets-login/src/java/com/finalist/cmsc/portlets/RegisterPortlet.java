@@ -239,7 +239,7 @@ public class RegisterPortlet extends AbstractLoginPortlet {
       }
 
       String terms = request.getParameter(ACEGI_SECURITY_FORM_TERMS);
-      if (preferences.getValue(USE_TERMS, "").equalsIgnoreCase("yes") && terms.equalsIgnoreCase("no")) {
+      if (preferences.getValue(USE_TERMS, "").equalsIgnoreCase("yes") && StringUtils.isBlank(terms)) {
          errorMessages.put(ACEGI_SECURITY_FORM_TERMS, "register.terms.agree");
       }
    }

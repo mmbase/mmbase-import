@@ -59,6 +59,11 @@
                <td><a href="<cmsc:link dest='${page}'/>"><fmt:message key="register.terms.title"/></a></td>
                <td><input type="checkbox" name="agreedToTerms"/><fmt:message key="register.terms.agree" /></td>
             </tr>
+            <c:if test="${!empty errormessages['agreedToTerms']}">
+               <tr>
+                  <td colspan="2"><fmt:message key="${errormessages['agreedToTerms']}" /></td>
+               </tr>
+            </c:if>
          </c:if>
          <tr>
           <td></td>
