@@ -30,7 +30,7 @@
 		<prompt xml:lang="nl">MIME-TYPE</prompt>
 		<prompt xml:lang="zh">MIME类型</prompt>
 	</field>
-	<field name="handle" ftype="image">
+	<field name="handle" ftype="image" dtmaxsize="16000000" dtrequired="true">
 		<prompt xml:lang="en">Image</prompt>
 		<prompt xml:lang="nl">Afbeelding</prompt>
 		<prompt xml:lang="zh">图片</prompt>
