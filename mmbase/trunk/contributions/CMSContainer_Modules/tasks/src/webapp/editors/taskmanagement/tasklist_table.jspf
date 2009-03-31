@@ -21,18 +21,27 @@
 <c:if test="${(empty dashboardTaskSize) or (not empty resultList)}">
 <cmscedit:contentblock title="${dashboardTaskTitle}" titleMode="plain" titleClass="content_block_pink" bodyClass="body_table">
 
-   <c:if test="${empty dashboardTaskSize}">
-		<p style="font-size:12px; padding-left:10px;">
-		   <html:messages id="createSuccess" message="true" bundle="TASKS">
-		      <bean:write name="createSuccess"/>
-		   </html:messages>
-		</p>
-   </c:if>
+	<p style="font-size:12px; padding-left:10px;">
+	   <html:messages id="createSuccess" message="true" bundle="TASKS">
+	      <bean:write name="createSuccess"/>
+	   </html:messages>
+	</p>
 
+   <form action="DeleteTaskAction.do" name="taskForm">
+	<mm:hasrank minvalue="basic user">
+      <c:if test="${empty dashboardTaskSize and fn:length(resultList)>1}">
+         <input type="submit" class="button" value="<fmt:message key="task.delete.massdelete"/>" onclick="deleteTask('<fmt:message key="task.massdeleteconfirm" />');return false;"/>
+      </c:if>
+	</mm:hasrank>
 	<table>
 	   <thead>
 	      <tr>
-	        <th><fmt:message key="task.created" /></th>
+           <th><mm:hasrank minvalue="basic user">
+					<c:if test="${empty dashboardTaskSize and fn:length(resultList)>1}">
+						<input type="checkbox" name="selectall" class="checkbox" onclick="selectAll(this.checked, 'taskForm', 'chk_');" value="on" />
+					</c:if>
+           </mm:hasrank></th>
+           <th><fmt:message key="task.created" /></th>
 	        <th><fmt:message key="task.deadline" /></th>
 	        <th><fmt:message key="task.title" /></th>
 	        <th><fmt:message key="task.status" /></th>
@@ -48,6 +57,22 @@
 	         <c:set var="taskId"><mm:field name="number"/></c:set>
 	         <c:if test="${not fn:contains(taskList, taskId)}">
 	         <tr <c:if test="${isSwapClass}">class="swap"</c:if>>
+               <td style="white-space: nowrap;">
+                  <mm:hasrank minvalue="basic user">
+                  <c:if test="${empty dashboardTaskSize and fn:length(resultList)>1}">
+                     <input type="checkbox"  name="chk_<mm:field name="number" />" class="checkbox" value="<mm:field name="number" />" onClick="document.forms['taskForm'].elements.selectall.checked=false;"/>
+                  </c:if>
+                  <c:if test="${empty dashboardTaskSize}">
+                  <a href="javascript:callEditWizard('<mm:field name="number" />');"><img src="../gfx/icons/edit2.png" align="top" alt="<fmt:message key="task.edit"/>" title="<fmt:message key="task.edit"/>"/></a>
+                  </c:if>
+                  <c:if test="${not empty dashboardTaskSize}">
+                  <a href="javascript:window.top.openTasksWithTask('<mm:field name="number" />');"><img src="gfx/icons/edit2.png" align="top" alt="<fmt:message key="task.edit"/>" title="<fmt:message key="task.edit"/>"/></a>
+                  </c:if>
+                  <c:if test="${empty dashboardTaskSize}">
+                  <a href="javascript:deleteTask('<fmt:message key="task.deleteconfirm"><mm:field name="title"/></fmt:message>');"><img src="../gfx/icons/delete.png" width="16" height="16" title="<fmt:message key="task.delete" />" alt="<fmt:message key="task.delete" />" /></a>
+                  </c:if>
+                  </mm:hasrank>
+               </td>
 	            <td><mm:field name="creationdate" id="created"><mm:time time="${created}" format="d/M/yyyy HH:mm" /></mm:field></td>
 	            <td><mm:field name="deadline" id="deadl"><mm:time time="${deadl}" format="d/M/yyyy HH:mm"/></mm:field></td>
 	            <td><mm:field name="title"/></td>
@@ -72,11 +97,7 @@
 	                  <c:otherwise>
 	                     <mm:hasrank minvalue="basic user">
 	                        <c:if test="${empty dashboardTaskSize}">
-	                        <mm:url page="/editors/taskmanagement/tasklist.jsp" id="returnTasklist" write="false" />
-	                        <a href="<mm:url page="../WizardInitAction.do">
-	                           <mm:param name="objectnumber" value="${elementnumber}"/>
-	                           <mm:param name="returnurl" value="${returnTasklist}"/>
-	                           </mm:url>" target="rightpane"><img src="../gfx/icons/edit.png" align="top" alt="<fmt:message key="task.editelement"/>" title="<fmt:message key="task.editelement"/>"/></a> ${elementtitel}
+	                        <a href="javascript:callEditWizard('<mm:write referid="elementnumber"/>');"><img src="../gfx/icons/edit.png" align="top" alt="<fmt:message key="task.editelement"/>" title="<fmt:message key="task.editelement"/>"/></a> ${elementtitel}
 	                        </c:if>
 	                        <c:if test="${not empty dashboardTaskSize}">
 	                        <a href="javascript:window.top.openRepositoryWithContent('<mm:write referid="elementnumber"/>');"><img src="gfx/icons/edit.png" align="top" alt="<fmt:message key="task.editelement"/>" title="<fmt:message key="task.editelement"/>"/></a> ${elementtitel}
@@ -86,22 +107,7 @@
 	               </c:choose>
 	            </td>
 	            <td>${elementtype}</td>
-	            <td>
-	               <mm:hasrank minvalue="basic user">
-	                  <c:set var="tasknumber"><mm:field name="number"/></c:set>
-	                  <c:if test="${empty dashboardTaskSize}">
-	                  <mm:url page="/editors/taskmanagement/tasklist.jsp" id="returnTaskedit" write="false" />
-	                  <a href="<mm:url page="/editors/WizardInitAction.do">
-	                     <mm:param name="objectnumber" value="${tasknumber}"/>
-	                     <mm:param name="contenttype" value="task"/>
-	                     <mm:param name="returnurl" value="${returnTaskedit}"/>
-	                     </mm:url>" target="rightpane"><img src="../gfx/icons/edit2.png" align="top" alt="<fmt:message key="task.edit"/>" title="<fmt:message key="task.edit"/>"/></a> <mm:field name="description" />
-	                  </c:if>
-	                  <c:if test="${not empty dashboardTaskSize}">
-	                  <a href="javascript:window.top.openTasksWithTask('<mm:write referid="tasknumber"/>');"><img src="gfx/icons/edit2.png" align="top" alt="<fmt:message key="task.edit"/>" title="<fmt:message key="task.edit"/>"/></a> <mm:field name="description" />
-	                  </c:if>
-	               </mm:hasrank>
-	            </td>
+	            <td><mm:field name="description" /></td>
 	         </tr>
 	         <c:set var="taskList">${taskList},${taskId}</c:set>
 	         <c:choose>
@@ -112,6 +118,7 @@
          </mm:listnodes>
 	   </tbody>
 	</table>
+   </form>
 
    <c:if test="${empty dashboardTaskSize}">
       <html:form action="/editors/taskmanagement/showTaskAction">
