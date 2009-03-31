@@ -6,16 +6,19 @@
 <cmscedit:head title="tasks.title" />
 <body>
    <c:choose>
-      <c:when test="${requestScope.taskShowType eq 'task.showtype.assignedtome'}">
+      <c:when test="${param.taskShowType eq 'task.showtype.assignedtome'}">
          <c:set var="tmpRole">assignedrel</c:set>
       </c:when>
-      <c:when test="${requestScope.taskShowType eq 'task.showtype.createdbyme'}">
+      <c:when test="${param.taskShowType eq 'task.showtype.createdbyme'}">
          <c:set var="tmpRole">creatorrel</c:set>
       </c:when>
       <c:otherwise>
          <c:set var="tmpRole"></c:set>
       </c:otherwise>
    </c:choose>
+   <c:if test="${param.showFinishedTask eq 'yes'}">
+      <c:set var="status">task.status.done</c:set>
+   </c:if>
 
    <mm:cloud jspvar="cloud" loginpage="../login.jsp">
    <mm:cloudinfo type="user" id="cloudusername" write="false" />

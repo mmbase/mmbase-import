@@ -1,9 +1,19 @@
 <mm:listnodescontainer type="user">
-	<mm:constraint field="user.username" operator="EQUAL" referid="cloudusername" />
+	<mm:constraint field="user.username" operator="EQUAL"
+		referid="cloudusername" />
 	<mm:maxnumber value="10" />
 	<mm:listnodes>
-		<mm:relatednodescontainer type="task" role="${tmpRole}" searchdirs="source">
-			<mm:relatednodes comparator="com.finalist.cmsc.tasks.TaskUrgencyComparator" max="${dashboardTaskSize}" id="resultList" />
+		<mm:relatednodescontainer type="task" role="${tmpRole}"
+			searchdirs="source">
+			<mm:present referid="status">
+				<mm:constraint field="status" value="${status}" operator="EQUAL" />
+			</mm:present>
+			<mm:notpresent referid="status">
+				<mm:constraint field="status" value="task.status.done" operator="EQUAL" inverse="true"/>
+			</mm:notpresent>
+			<mm:relatednodes
+				comparator="com.finalist.cmsc.tasks.TaskUrgencyComparator"
+				max="${dashboardTaskSize}" id="resultList" />
 		</mm:relatednodescontainer>
 	</mm:listnodes>
 </mm:listnodescontainer>
@@ -105,11 +115,12 @@
 
    <c:if test="${empty dashboardTaskSize}">
       <html:form action="/editors/taskmanagement/showTaskAction">
-            <html:select property="taskShowType" value="${requestScope.taskShowType}">
+            <html:select property="taskShowType" >
                <html:option value="task.showtype.alltasks" bundle="TASKS" key="task.showtype.alltasks"/>
                <html:option value="task.showtype.assignedtome" bundle="TASKS" key="task.showtype.assignedtome"/>
                <html:option value="task.showtype.createdbyme" bundle="TASKS" key="task.showtype.createdbyme"/>
-            </html:select>&nbsp;&nbsp;
+            </html:select>
+            <html:checkbox property="showFinishedTask" value="yes"/><fmt:message key="task.show.finished"/>
             <html:submit><bean:message bundle="TASKS" key="task.showtype.submit"/></html:submit>
       </html:form>
    </c:if>
