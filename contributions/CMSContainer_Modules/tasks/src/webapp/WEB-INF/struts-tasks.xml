@@ -28,7 +28,7 @@
 		</action>
 		<action path="/editors/taskmanagement/DeleteTaskAction" type="com.finalist.cmsc.tasks.forms.DeleteTaskAction"
 			unknown="false" validate="false">
-			<forward name="success" path="/editors/dashboard.jsp" redirect="true" />
+			<forward name="success" path="/editors/taskmanagement/tasklist.jsp" redirect="true" />
 		</action>
 		<action path="/editors/taskmanagement/TaskAction" type="com.finalist.cmsc.tasks.forms.TaskAction"
 			name="TaskForm" scope="session" input="/editors/taskmanagement/task.jsp" unknown="false" validate="true">
