@@ -115,13 +115,12 @@
 
    <c:if test="${empty dashboardTaskSize}">
       <html:form action="/editors/taskmanagement/showTaskAction">
-            <html:select property="taskShowType" >
+            <html:select property="taskShowType" onchange="this.form.submit();">
                <html:option value="task.showtype.alltasks" bundle="TASKS" key="task.showtype.alltasks"/>
                <html:option value="task.showtype.assignedtome" bundle="TASKS" key="task.showtype.assignedtome"/>
                <html:option value="task.showtype.createdbyme" bundle="TASKS" key="task.showtype.createdbyme"/>
             </html:select>
-            <html:checkbox property="showFinishedTask" value="yes"/><fmt:message key="task.show.finished"/>
-            <html:submit><bean:message bundle="TASKS" key="task.showtype.submit"/></html:submit>
+            <html:checkbox property="showFinishedTask" value="yes" onclick="this.form.submit();"/><fmt:message key="task.show.finished"/>
       </html:form>
    </c:if>
 
