@@ -39,8 +39,9 @@
 						<% if(!rightAlign){ %><td rowspan="4"><img src="media/spacer.gif" alt="" border="0" width="10" height="1"></td><% } %>
 				  </tr>
 				  <tr><td class="black"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td>
+				  		<%-- NMCMS-639 --%>
 						<td><a href="#" onClick="javascript:launchCenter('<%= requestURL %>slideshow.jsp?r=<%= rubriekId 
-								  %>&p=<%= paginaID %>&i=<mm:field name="images.number" />', 'center', 550, 740,'resizable=1'); setTimeout('newwin.focus();',250); return false;">
+								  %>&p=<%= paginaID %>&i=<mm:field name="images.number" />', 'center', 550, 740,'resizable=yes,scrollbars=yes'); setTimeout('newwin.focus();',250); return false;">
 								  <img src="<%@include file="../includes/imagessource.jsp" %>" alt="" border="0"></a></td>
 						<td class="black"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td></tr>
 				  <tr><td colspan="3" class="black"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td></tr>

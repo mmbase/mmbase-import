@@ -25,13 +25,14 @@ if(!posrel_pos.equals("1")) { // 1 - linker kolom, geschaald op kolom breedte, v
    
    boolean resetLink = false;
    %><mm:node number="<%= images_number %>"><%
-                  
-      if(readmoreURL.equals("")) { 
+      // NMCMS-639            
+      if(readmoreURL.equals("") || true) { 
          %><mm:field name="reageer" jspvar="showpopup" vartype="String" write="false"><%
             if(showpopup.equals("1")) {
                String requestURL = javax.servlet.http.HttpUtils.getRequestURL(request).toString();
                requestURL = requestURL.substring(0,requestURL.lastIndexOf("/")); 
-               readmoreURL = "javascript:launchCenter('" + requestURL + "/" + (isSubDir? "../" : "" ) + "includes/fotopopup.jsp?i="+ images_number + "&rs=" + styleSheet + "','foto',600,600,'location=no,directories=no,status=no,toolbars=no,scrollbars=no,resizable=yes');setTimeout('newwin.focus();',250);";
+               // NMCMS-639
+               readmoreURL = "javascript:launchCenter('" + requestURL + "/" + (isSubDir? "../" : "" ) + "includes/fotopopup.jsp?i="+ images_number + "&rs=" + styleSheet + "','foto',600,600,'location=no,directories=no,status=no,toolbars=no,scrollbars=yes,resizable=yes');setTimeout('newwin.focus();',250);";
                validLink = true;
                resetLink = true;
             } else {

@@ -25,8 +25,7 @@ boolean imagePartOfColumn = (imgFormat.equals("rightcolumn") || imgFormat.equals
 boolean isShortyOrTeaserImage = imgFormat.indexOf("shorty")>-1;
 boolean fitToThirdColumn = imgFormat.indexOf("fittothirdcolumn")>-1;
 
-if(isShortyOrTeaserImage || fitToThirdColumn || imagePartOfColumn) {
-
+// NMCMS-639
 	String imgFloat ="float:none;";
 	String imgParams = "";
 	if(posrel_pos.equals("6")) { posrel_pos = "0"; } 
@@ -82,13 +81,14 @@ if(isShortyOrTeaserImage || fitToThirdColumn || imagePartOfColumn) {
 	} 
 	boolean resetLink = false;
 	%><mm:node number="<%= images_number %>"><%
-						
-			if(readmoreURL.equals("")) { 
+			
+            // NMCMS-639
+			if(readmoreURL.equals("") || true) { 
 				%><mm:field name="reageer" jspvar="showpopup" vartype="String" write="false"><%
-					if(showpopup.equals("1")) {
+					if(showpopup.equals("1") || true) {
 						String requestURL = javax.servlet.http.HttpUtils.getRequestURL(request).toString();
 						requestURL = requestURL.substring(0,requestURL.lastIndexOf("/")); 
-						readmoreURL = "javascript:launchCenter('" + requestURL + "/" + (isSubDir? "../" : "" ) + "includes/fotopopup.jsp?i="+ images_number + "&rs=" + styleSheet + "','foto',600,600,'location=no,directories=no,status=no,toolbars=no,scrollbars=no,resizable=yes');setTimeout('newwin.focus();',250);";
+						readmoreURL = "javascript:launchCenter('" + requestURL + "/" + (isSubDir? "../" : "" ) + "includes/fotopopup.jsp?i="+ images_number + "&rs=" + styleSheet + "','foto',600,600,'location=no,directories=no,status=no,toolbars=no,scrollbars=yes,resizable=yes');setTimeout('newwin.focus();',250);";
 						validLink = true;
 						resetLink = true;
 					} else {
@@ -130,7 +130,7 @@ if(isShortyOrTeaserImage || fitToThirdColumn || imagePartOfColumn) {
 			</table>
 		</mm:node><%
 		if(resetLink) { readmoreURL = ""; validLink = false; }
-} 
+
 %></mm:field
 ></mm:field
 ><mm:remove referid="relatedimagefound" 

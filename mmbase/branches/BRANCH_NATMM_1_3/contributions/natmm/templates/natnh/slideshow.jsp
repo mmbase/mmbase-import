@@ -25,10 +25,13 @@
 	<td class="fotopopuptitel"><img src="media/spacer.gif" width="10" height="10"></td>
 </tr>
 <tr>
-	<td><table width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+	<%-- NMCMS-639 --%>
+	<td><table border="0" align="center" cellpadding="0" cellspacing="0">
 		<tr>
 			<td colspan="2"><a href="#" onClick="window.close()" title="Klik op de foto om het venster te sluiten">
-				<img src="<mm:image template="s(600)" />" width="600" border="0" class="fotopopup"></a></td>
+				<%-- NMCMS-639 --%>
+				<img src="<mm:image />"  border="0" class="fotopopup"></a>
+            </td>
 		</tr>
 		<tr>
 			<td colspan="2"><img src="media/spacer.gif" width="10" height="10" border="0"></td>
@@ -58,7 +61,13 @@
 			<tr>
 			 <td colspan="2">&nbsp;</td>
 			</tr><%
-		} %>		
+		} %>	
+		<%-- NMCMS-639 --%>
+        <tr>
+            <td>
+                <%@include file="includes/image_metadata.jsp" %>
+            </td>
+        </tr>	
 	</table></td>
 </tr>
 </table>

@@ -11,6 +11,9 @@
 <% 
 boolean viewCard = false; 
 String cardID = "-1";
+// NMCMS-639
+String requestURL = javax.servlet.http.HttpUtils.getRequestURL(request).toString();
+requestURL = requestURL.substring(0,requestURL.lastIndexOf("/"));
 %>
 <mm:notpresent referid="actie">
 	<mm:present referid="card">
@@ -134,10 +137,21 @@ String cardID = "-1";
                		<% 
                		 if(!imgID.equals("-1")){%>
                				<mm:node number="<%= imgID %>">
-               					  <% if (isNaardermeer.equals("true")) { %>		
-	               					<img src="<mm:image template="s(416x380)" />" alt="<mm:field name="titel" />" border="0"></td>
+               				      <%-- NMCMS-639 --%>
+               					  <% if (isNaardermeer.equals("true")) { %>
+                                  <a
+                                    href="#"
+                                    onclick="javascript:OpenWindow('<%= requestURL + "/" + (isSubDir? "../" : "" ) %>wallpaper.jsp?i=<%= imgID %>&size=medium','','toolbar=no,menubar=no,location=no,height=600,width=800,scrollbars=yes,resizable=yes');"
+                                    >
+	               					<img src="<mm:image template="s(416x380)" />" alt="<mm:field name="titel" />" border="0">
+                                  </a>
    								  <% } else { %>
-   	               					<img src="<mm:image template="s(500x330)" />" alt="<mm:field name="titel" />" border="0"></td>
+                                  <a
+                                    href="#"
+                                    onclick="javascript:OpenWindow('<%= requestURL + "/" + (isSubDir? "../" : "" ) %>wallpaper.jsp?i=<%= imgID %>&size=medium','','toolbar=no,menubar=no,location=no,height=600,width=800,scrollbars=yes,resizable=yes');"
+                                    >
+   	               					<img src="<mm:image template="s(500x330)" />" alt="<mm:field name="titel" />" border="0">
+                                  </a>
    								  <% } %>
                				</mm:node><%
                		}%>

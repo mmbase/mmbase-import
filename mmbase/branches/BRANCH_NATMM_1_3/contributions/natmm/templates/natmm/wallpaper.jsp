@@ -1,6 +1,7 @@
 <%@include file="includes/top0.jsp" %>
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
+
 <%
 if(imgID.equals("-1")){
    %>
@@ -86,7 +87,8 @@ if(imgID.equals("-1")){
 							<nobr>Klik op een van de resoluties om deze wallpaper te downloaden.</nobr>
 						</td>
 						<td width="105">
-							<input type="submit" value="800 x 600" class="submit_image" style="width:105;align:center;" onclick="javascript:OpenWindow('<%= requestURL + "/" + (isSubDir? "../" : "" ) %>wallpaper.jsp?i=<%= imgID %>&size=medium','','toolbar=no,menubar=no,location=no,height=600,width=800');"/>
+							<%-- NMCMS-639 --%>
+							<input type="submit" value="800 x 600" class="submit_image" style="width:105;align:center;" onclick="javascript:OpenWindow('<%= requestURL + "/" + (isSubDir? "../" : "" ) %>wallpaper.jsp?i=<%= imgID %>&size=medium','','toolbar=no,menubar=no,location=no,height=600,width=800,scrollbars=yes,resizable=yes');"/>
 						</td>
 						<td width="5"></td>
 					</tr>	
@@ -104,7 +106,8 @@ if(imgID.equals("-1")){
 					<tr>
 						<td width="7"></td>
 						<td width="105">
-							<input type="submit" value="1024 x 768" class="submit_image" style="width:105;align:center;" onclick="javascript:OpenWindow('<%= requestURL + "/" + (isSubDir? "../" : "" ) %>wallpaper.jsp?i=<%= imgID %>&size=large','','toolbar=no,menubar=no,location=no,height=768,width=1024');"/>
+							<%-- NMCMS-639 --%>
+							<input type="submit" value="1024 x 768" class="submit_image" style="width:105;align:center;" onclick="javascript:OpenWindow('<%= requestURL + "/" + (isSubDir? "../" : "" ) %>wallpaper.jsp?i=<%= imgID %>&size=large','','toolbar=no,menubar=no,location=no,height=768,width=1024,scrollbars=yes,resizable=yes');"/>
 						</td>
 						<td width="5"></td>
                </tr>
@@ -123,9 +126,10 @@ if(imgID.equals("-1")){
          <body leftmargin=0 topmargin=0 marginwidth="0" marginheight="0" onload="window.opener.close()">
             <div id="overDiv" style="position:absolute; visibility:hide;z-index:1;"></div>
             <script language="javascript" src="scripts/overlib.js"></script>
+               <%-- NMCMS-639 --%>
                <a href="javascript:void(0);" onclick="javascript:window.close()" onMouseOver="overlib('<b>Klik met de rechtermuisknop</b> op de foto en tenslotte op &quot;Als achtergrond gebruiken&quot; om de foto  op uw bureaublad te plaatsen <p><b>Klik met de linkermuisknop</b> om dit venster te sluiten')" onMouseOut="nd()">
-                  <img src="<mm:image template="<%=imgParams%>" />" border="0" alt="<mm:field name="titel" />"></a>
-         
+                  <img src="<mm:image />" border="0" alt="<mm:field name="titel" />"></a>
+            <%@include file="includes/image_metadata.jsp" %>
          </body>
       </html>
    </mm:node><%
