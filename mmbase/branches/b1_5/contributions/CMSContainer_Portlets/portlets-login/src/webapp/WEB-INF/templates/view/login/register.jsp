@@ -12,7 +12,7 @@
       <table class="formcontent">     
          <tr>
             <td class="fieldname"><fmt:message key="register.email" /></td>
-            <td><input type="text" name="email" size='30' /><font color="red">*</font></td>
+            <td><input type="text" name="email" size='30' value="${email}" /><font color="red">*</font></td>
          </tr>
          <c:if test="${!empty errormessages['email']}">
          <tr>
@@ -21,7 +21,7 @@
          </c:if>
          <tr>
             <td class="fieldname"><fmt:message key="register.firstName" /></td>
-            <td><input type="text" name="firstName" size="30" /><font color="red">*</font></td>
+            <td><input type="text" name="firstName" size="30" value="${firstName}" /><font color="red">*</font></td>
          </tr>
          <c:if test="${!empty errormessages['firstname']}">
          <tr>
@@ -30,11 +30,11 @@
          </c:if> 
          <tr>
             <td class="fieldname"><fmt:message key="register.infix" /></td>
-            <td><input type="text" name="infix" size="15" /></td>
+            <td><input type="text" name="infix" size="15" value="${infix}" /></td>
          </tr>         
          <tr>
             <td class="fieldname"><fmt:message key="register.lastname" /></td>
-            <td><input type="text" name="lastName" size='30' /><font color="red">*</font></td>
+            <td><input type="text" name="lastName" size='30' value="${lastName}" /><font color="red">*</font></td>
          </tr>
          <c:if test="${!empty errormessages['lastname']}">
          <tr>

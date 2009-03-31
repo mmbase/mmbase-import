@@ -169,6 +169,10 @@ public class RegisterPortlet extends AbstractLoginPortlet {
 
       if (errorMessages.size() > 0) {
          request.getPortletSession().setAttribute(ERRORMESSAGES, errorMessages);
+         request.getPortletSession().setAttribute(ACEGI_SECURITY_FORM_EMAIL_KEY, emailTo);
+         request.getPortletSession().setAttribute(ACEGI_SECURITY_FORM_FIRSTNAME_KEY, firstName);
+         request.getPortletSession().setAttribute(ACEGI_SECURITY_FORM_INFIX_KEY, infix);
+         request.getPortletSession().setAttribute(ACEGI_SECURITY_FORM_LASTNAME_KEY, lastName);
       }
    }
 
@@ -199,8 +203,20 @@ public class RegisterPortlet extends AbstractLoginPortlet {
       }
 
       if (errorMessages != null && errorMessages.size() > 0) {
+         String emailTo = (String) portletSession.getAttribute(ACEGI_SECURITY_FORM_EMAIL_KEY);
+         String firstName = (String) portletSession.getAttribute(ACEGI_SECURITY_FORM_FIRSTNAME_KEY);
+         String infix = (String) portletSession.getAttribute(ACEGI_SECURITY_FORM_INFIX_KEY);
+         String lastName = (String) portletSession.getAttribute(ACEGI_SECURITY_FORM_LASTNAME_KEY);
          portletSession.removeAttribute(ERRORMESSAGES);
+         portletSession.removeAttribute(ACEGI_SECURITY_FORM_EMAIL_KEY);
+         portletSession.removeAttribute(ACEGI_SECURITY_FORM_FIRSTNAME_KEY);
+         portletSession.removeAttribute(ACEGI_SECURITY_FORM_INFIX_KEY);
+         portletSession.removeAttribute(ACEGI_SECURITY_FORM_LASTNAME_KEY);
          request.setAttribute(ERRORMESSAGES, errorMessages);
+         request.setAttribute(ACEGI_SECURITY_FORM_EMAIL_KEY, emailTo);
+         request.setAttribute(ACEGI_SECURITY_FORM_FIRSTNAME_KEY, firstName);
+         request.setAttribute(ACEGI_SECURITY_FORM_INFIX_KEY, infix);
+         request.setAttribute(ACEGI_SECURITY_FORM_LASTNAME_KEY, lastName);
       }
 
       doInclude("view", template, request, response);
