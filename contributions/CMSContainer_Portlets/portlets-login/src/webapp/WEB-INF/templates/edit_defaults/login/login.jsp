@@ -1,6 +1,15 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 <%@include file="/WEB-INF/templates/edit_defaults/sections/globals.jsp"%>
 <div class="portlet-config-canvas">
+<script type="text/javascript">
+   function selectPage(page, path, positions) {
+      document.forms['<portlet:namespace />form'].page.value = page;
+      document.forms['<portlet:namespace />form'].pagepath.value = path;
+   }
+   function erase(field) {
+      document.forms['<portlet:namespace />form'][field].value = '';
+   }
+</script>
 	<form name="<portlet:namespace />form" method="post" target="_parent" action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
 		<table class="editcontent">
 
@@ -34,9 +43,26 @@
 					<textarea name="emailText" rows="8" cols="25"><c:out value="${emailText}" /></textarea>
 				</td>
 			</tr>
-
+        <tr>
+           <td nowrap><fmt:message key="edit_defaults.login.redirect" />:</td>
+           <td nowrap> 
+               <a href="<c:url value='/editors/site/select/SelectorPage.do?channel=${page}' />"
+                  target="selectpage" onclick="openPopupWindow('selectpage', 340, 400)"> 
+                     <img src="<cmsc:staticurl page='/editors/gfx/icons/select.png'/>" alt="<fmt:message key="edit_defaults.channelselect" />"/></a>
+               <a href="javascript:erase('page');erase('pagepath');eraseList('window')">
+                  <img src="<cmsc:staticurl page='/editors/gfx/icons/erase.png'/>" alt="<fmt:message key="edit_defaults.erase"/>"/></a>
+            </td>
+            <td>
+            <mm:cloud>
+               <mm:node number="${page}" notfound="skip">
+                  <mm:field name="path" id="pagepath" write="false" />
+               </mm:node>
+            </mm:cloud>
+            <input type="hidden" name="page" value="${page}" />
+            <input type="text" name="pagepath" value="${pagepath}" disabled="true" />
+         </tr>
 			<%-- Save button --%>
-			<c:import url="sections/savebutton.jsp" />
+			<c:import url="../sections/savebutton.jsp" />
 			
 		</table>
 	</form>
