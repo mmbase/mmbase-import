@@ -30,6 +30,7 @@ import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.util.HttpUtil;
 
 public abstract class AbstractLoginPortlet extends CmscPortlet{
@@ -39,6 +40,7 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
    protected static final String EMAIL_TEXT = "emailText";
    protected static final String EMAIL_FROMEMAIL = "emailFromEmail";
    protected static final String EMAIL_FROMNAME = "emailFromName";
+   protected static final String PAGE = "page";
    
    public static final String DEFAULT_EMAILREGEX = "^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$";
 
@@ -53,7 +55,13 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
       setAttribute(req, EMAIL_TEXT, preferences.getValue(EMAIL_TEXT,getConfirmationTemplate()));
       setAttribute(req, EMAIL_FROMEMAIL, preferences.getValue(EMAIL_FROMEMAIL,""));
       setAttribute(req, EMAIL_FROMNAME, preferences.getValue(EMAIL_FROMNAME,""));
-      
+      String pageid = preferences.getValue(PAGE, null);
+      if (StringUtils.isNotEmpty(pageid)) {
+         String pagepath = SiteManagement.getPath(Integer.valueOf(pageid), true);
+         if (pagepath != null) {
+            setAttribute(req, "pagepath", pagepath);
+         }
+      }
       super.doEditDefaults(req, res);
    }
    
@@ -62,11 +70,15 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
          ActionResponse response) throws PortletException, IOException {
       PortletPreferences preferences = request.getPreferences();
       String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
-      setPortletParameter(portletId, EMAIL_SUBJECT, request.getParameter(EMAIL_SUBJECT));
-      setPortletParameter(portletId, EMAIL_TEXT, request.getParameter(EMAIL_TEXT));
-      setPortletParameter(portletId, EMAIL_FROMEMAIL, request.getParameter(EMAIL_FROMEMAIL));
-      setPortletParameter(portletId, EMAIL_FROMNAME, request.getParameter(EMAIL_FROMNAME));
 
+      if (portletId != null) {
+         // get the values submitted with the form
+         setPortletNodeParameter(portletId, PAGE, request.getParameter(PAGE));
+         setPortletParameter(portletId, EMAIL_SUBJECT, request.getParameter(EMAIL_SUBJECT));
+         setPortletParameter(portletId, EMAIL_TEXT, request.getParameter(EMAIL_TEXT));
+         setPortletParameter(portletId, EMAIL_FROMEMAIL, request.getParameter(EMAIL_FROMEMAIL));
+         setPortletParameter(portletId, EMAIL_FROMNAME, request.getParameter(EMAIL_FROMNAME));
+      }
       super.processEditDefaults(request, response);
    }
    

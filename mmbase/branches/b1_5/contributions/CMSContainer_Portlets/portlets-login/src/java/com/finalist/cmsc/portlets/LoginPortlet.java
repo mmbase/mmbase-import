@@ -20,12 +20,18 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mmbase.bridge.Cloud;
 
 import com.finalist.cmsc.login.PasswordGenerator;
+import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.Community;
 import com.finalist.cmsc.services.community.person.Person;
@@ -86,6 +92,12 @@ public class LoginPortlet extends AbstractLoginPortlet {
             }
             
             if (Community.isAuthenticated()) {
+               String pageid = preferences.getValue(PAGE, null);
+               if (StringUtils.isNotEmpty(pageid)) {
+                  Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+                  String redirectUrl = NavigationUtil.getNavigationItemUrl((HttpServletRequest)request, (HttpServletResponse)response, cloud.getNode(Integer.valueOf(pageid)));
+                  response.sendRedirect(redirectUrl);
+               }
                log.info(String.format("Login successful for user %s", userName));
             } else {
                
@@ -171,7 +183,6 @@ public class LoginPortlet extends AbstractLoginPortlet {
 
    @Override
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
-      
       String template;
       String error = request.getParameter(ERRORMESSAGE);
       String send_password = request.getParameter(SEND_PASSWORD);
