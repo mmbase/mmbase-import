@@ -62,7 +62,7 @@ function erase(field) {
             <input type="text" name="pagepath" value="${pagepath}" disabled="true" />
          </tr>
 			<%-- Save button --%>
-			<c:import url="sections/savebutton.jsp" />
+			<c:import url="../sections/savebutton.jsp" />
 			
 		</table>
 	</form>
