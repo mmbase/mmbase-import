@@ -4,6 +4,10 @@
 %><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
+<c:set var="treeUrl"><mm:url page="SelectorPage.do"/></c:set>
+<c:if test="${not empty param.type}">
+   <c:set var="treeUrl"><mm:url page="${param.type}.do?method=${param.method}"/></c:set>
+</c:if>
 <cmscedit:head title="selector.title" ajax="true">
 	<link href="../../utils/ajaxtree/addressbar.css" type="text/css" rel="stylesheet" />
 	<link href="../../utils/ajaxtree/ajaxtree.css" type="text/css" rel="stylesheet" />
@@ -13,7 +17,7 @@
 
 	<script type="text/javascript">
 		ajaxTreeConfig.resources = '../../utils/ajaxtree/images/';
-		ajaxTreeConfig.url = '<mm:url page="SelectorPage.do"/>';
+		ajaxTreeConfig.url = '${treeUrl}';
 		ajaxTreeConfig.addressbarId = 'addressbar';
 		
 		treeNumbers = new Array();
@@ -61,7 +65,7 @@
 				<mm:import id="pagepath"></mm:import>
 			</mm:compare>
 	
-			<form action="SelectorPage.do" id="addressBarForm">
+			<form action="${treeUrl}" id="addressBarForm">
 				   <div class="search_form">
 						<input type="text" name="path" value="${channelPath}" id="addressbar" class="width80" />
 					</div>
