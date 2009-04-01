@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"  prefix="mm"
 %><%@include file="page_base_functionality.jsp"
 %><mm:cloud loginpage="login.jsp"  sessionname="$config.session" jspvar="cloud" rank="$rank">
 <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
