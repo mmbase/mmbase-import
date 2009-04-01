@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.81 2008-12-09 15:30:58 michiel Exp $
+ * @version $Id: ImageTag.java,v 1.82 2009-04-01 09:00:20 nklasens Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -293,12 +293,12 @@ public class ImageTag extends FieldTag {
         return url;
     }
 
-    protected Function getServletFunction(Node node) {
+    public Function getServletFunction(Node node) {
         Function servletPathFunction = node.getFunction("servletpath");
         return servletPathFunction;
     }
 
-    protected Parameters getServletArguments(String servletArgument, Function servletPathFunction) throws JspTagException {
+    public Parameters getServletArguments(String servletArgument, Function servletPathFunction) throws JspTagException {
         HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         Parameters args = servletPathFunction.createParameters();
         args.set("context",  makeRelative() ? UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") : req.getContextPath())
@@ -379,7 +379,7 @@ public class ImageTag extends FieldTag {
         return attributes.toString();
     }
 
-    protected Dimension getDimension(Node node, String template) {
+    public Dimension getDimension(Node node, String template) {
         return new LazyDimension(node, template);
     }
 
@@ -392,7 +392,7 @@ public class ImageTag extends FieldTag {
      * @param cropTemplate - crop the image. values are 'begin', 'middle' and 'end'.
      * @return template for image
      */
-    protected String getTemplate(Node node, String t, int widthTemplate, int heightTemplate, String cropTemplate) {
+    public String getTemplate(Node node, String t, int widthTemplate, int heightTemplate, String cropTemplate) {
         if (t == null || t.length() == 0) {
             if ((widthTemplate <= 0) && (heightTemplate <= 0)) {
                 t = "";
