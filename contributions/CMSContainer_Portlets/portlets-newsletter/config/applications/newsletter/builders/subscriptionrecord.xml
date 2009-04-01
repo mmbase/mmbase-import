@@ -66,7 +66,7 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>interval</name>
             <type key="false" notnull="false" state="persistent">DATETIME</type>
@@ -138,7 +138,7 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>pausetill</name>
             <type key="false" notnull="false" state="persistent">DATETIME</type>
@@ -162,7 +162,7 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>count_bounces</name>
             <type key="false" notnull="false" state="persistent">INTEGER</type>
@@ -186,7 +186,7 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>last_sent</name>
             <type key="false" notnull="false" state="persistent">DATETIME</type>
@@ -210,7 +210,7 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>last_bounce</name>
             <type key="false" notnull="false" state="persistent">DATETIME</type>
