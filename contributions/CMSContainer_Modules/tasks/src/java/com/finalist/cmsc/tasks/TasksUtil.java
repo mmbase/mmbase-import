@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.security.Rank;
 import org.mmbase.storage.search.AggregatedField;
 
 import com.finalist.cmsc.mmbase.EmailUtil;
@@ -219,7 +220,10 @@ public final class TasksUtil {
    }
 
    /**
-    * Only the task created by the user or assigned to the user and has been finished is deleteable.
+    * Task is deleteable if and only if it is in one of the situations below:
+    * 1)The task is created by the cloud user.
+    * 2)The task is assigned to the cloud user and has been finished.
+    * 3)The task is assigned to the cloud user and the cloud user has the rank 'siteadmin'.
     * 
     * @param task
     * @param cloud
@@ -230,7 +234,7 @@ public final class TasksUtil {
       Node assignee = getAssignedUser(task);
       Node user = SecurityUtil.getUserNode(cloud);
       String status = task.getStringValue(STATUS);
-      if (user.equals(creator) || (user.equals(assignee) && STATUS_DONE.equals(status))) {
+      if (user.equals(creator) || (user.equals(assignee) && (STATUS_DONE.equals(status) || SecurityUtil.getRank(user).compareTo(Rank.BASICUSER) > 0))) {
          return true;
       }
       return false;
