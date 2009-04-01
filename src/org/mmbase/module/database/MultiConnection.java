@@ -17,7 +17,7 @@ import java.util.*;
  * java 1.5. (See also MMB-1409).
  *
  */
-public interface MultiConnection {
+public interface MultiConnection { // extends java.sql.Wrapper
 
 
     public void setLastSQL(String sql);
