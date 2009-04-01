@@ -17,13 +17,12 @@ import org.mmbase.util.logging.*;
 import java.util.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.text.FieldPosition;
 
 /**
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.77 2008-11-25 13:20:10 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.78 2009-04-01 21:28:39 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -31,8 +30,13 @@ public class BasicSqlHandler implements SqlHandler {
 
     private static final Logger log = Logging.getLoggerInstance(BasicSqlHandler.class);
 
-    private static final SimpleDateFormat dateFormat          = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    private static final FieldPosition dontcareFieldPosition = new FieldPosition(DateFormat.YEAR_FIELD);
+    private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT = new ThreadLocal<SimpleDateFormat>() {
+        protected synchronized SimpleDateFormat  initialValue() {
+                return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            }
+    };
+
+
 
     /**
      * Constructor.
@@ -122,12 +126,13 @@ public class BasicSqlHandler implements SqlHandler {
         Date date = new Date(value.getTime() - timeZoneOffset);
         //Date date = new Date(value.getTime());
         //log.debug("Using offset " + timeZoneOffset + " " + value + " -> " + date);
-        sb.append(dateFormat.format(date, new StringBuffer(), dontcareFieldPosition));
+
+        sb.append(DATE_FORMAT.get().format(date));
     }
 
     /**
      * Represents field value as a string, appending the result to a
-     * stringbuffer.
+     * stringbuilder
      * <p>
      * Depending on the fieldType:
      * <ul>
@@ -371,18 +376,15 @@ public class BasicSqlHandler implements SqlHandler {
             if (appended) {
                 sb.append(',');
             }
+            String fieldAlias = field.getAlias();
             appended = true;
             // fieldname prefixed by table alias.
-            Step step = field.getStep();
-            String fieldName = field.getFieldName();
-            String fieldAlias = field.getAlias();
-
             if (field instanceof AggregatedField) {
                 int aggregationType = ((AggregatedField) field).getAggregationType();
                 if (aggregationType == AggregatedField.AGGREGATION_TYPE_GROUP_BY) {
 
                     // Group by.
-                    appendField(sb, step, fieldName, multipleSteps);
+                    appendField(sb, field, multipleSteps);
 
                     // Append to "GROUP BY"-buffer.
                     if (sbGroups.length() > 0) {
@@ -391,7 +393,7 @@ public class BasicSqlHandler implements SqlHandler {
                     if (fieldAlias != null) {
                         sbGroups.append(getAllowedValue(fieldAlias));
                     } else {
-                        appendField(sbGroups, step, fieldName, multipleSteps);
+                        appendField(sbGroups, field, multipleSteps);
                     }
                 } else {
 
@@ -416,14 +418,14 @@ public class BasicSqlHandler implements SqlHandler {
                     default:
                         throw new IllegalStateException("Invalid aggregationType value: " + aggregationType);
                     }
-                    appendField(sb, step, fieldName, multipleSteps);
+                    appendField(sb, field, multipleSteps);
                     sb.append(')');
                 }
 
             } else {
 
                 // Non-aggregate field.
-                appendField(sb, step, fieldName, multipleSteps);
+                appendField(sb, field, multipleSteps);
             }
 
             // Field alias.
@@ -1065,6 +1067,14 @@ public class BasicSqlHandler implements SqlHandler {
         } else {
             appendField(sb, field.getStep(), field.getFieldName(), includeTablePrefix);
         }
+    }
+
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected void appendField(StringBuilder sb, StepField field, boolean includeTablePrefix) {
+        appendField(sb, field.getStep(), field.getFieldName(), includeTablePrefix);
     }
 
     /**
