@@ -16,6 +16,7 @@ import java.util.MissingResourceException;
 import org.xml.sax.InputSource;
 
 import org.w3c.dom.*;
+
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.dom.DOMSource;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.11 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: DocumentWriter.java,v 1.12 2009-04-01 08:50:45 nklasens Exp $
  */
 abstract public class DocumentWriter extends DocumentReader {
 
@@ -67,11 +68,33 @@ abstract public class DocumentWriter extends DocumentReader {
      * @param systemId the SYSTEm id of the document type
      */
     public DocumentWriter(String qualifiedName, String publicId, String systemId) throws DOMException {
+        this(qualifiedName, publicId, systemId, false);
+    }
+    
+    /**
+     * Constructs the document writer.
+     * The constructor creates a basic document with a root element based on the specified document type parameters.
+     * The document is empty after construction.
+     * It is actually filled with a call to {@link #generateDocument()}, which is in turn called when
+     * the document is first accessed through {@link #getDocument()}.
+     * @param qualifiedName the qualified name of the document's root element
+     * @param publicId the PUBLIC id of the document type
+     * @param systemId the SYSTEm id of the document type
+     * @param schema should the publicId and systemId interpreted as XSD namespace and location
+     */
+    public DocumentWriter(String qualifiedName, String publicId, String systemId, boolean schema) throws DOMException {
         DOMImplementation domImpl = DocumentReader.getDocumentBuilder().getDOMImplementation();
-        this.publicId = publicId;
-        this.systemId = systemId;
-        DocumentType doctype = domImpl.createDocumentType(qualifiedName, this.publicId, this.systemId);
-        document = domImpl.createDocument(null, qualifiedName, doctype);
+        if (schema) {
+            Document document = domImpl.createDocument(publicId, qualifiedName, null);
+            document.getDocumentElement().setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            document.getDocumentElement().setAttribute("xsi:schemaLocation", publicId + " " + systemId);
+        }
+        else {
+            this.publicId = publicId;
+            this.systemId = systemId;
+            DocumentType doctype = domImpl.createDocumentType(qualifiedName, this.publicId, this.systemId);
+            document = domImpl.createDocument(null, qualifiedName, doctype);
+        }
     }
 
 
@@ -329,8 +352,12 @@ abstract public class DocumentWriter extends DocumentReader {
         // xml output configuration
         serializer.setOutputProperty(OutputKeys.INDENT, "yes");
         serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-        serializer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, publicId);
-        serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, systemId);
+        if (publicId != null) {
+            serializer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, publicId);
+        }
+        if (systemId != null) {
+            serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, systemId);
+        }
         serializer.transform(new DOMSource(doc), result);
     }
 }
