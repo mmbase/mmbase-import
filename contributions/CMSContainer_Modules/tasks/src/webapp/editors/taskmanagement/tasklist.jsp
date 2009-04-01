@@ -5,8 +5,15 @@
 <html:html xhtml="true">
 <cmscedit:head title="tasks.title" >
 <script src="../taskmanagement/task.js" language="JavaScript" type="text/javascript"></script>
+<script type="text/javascript">
+function showMessage(message){
+	if(message!=null && message!=""){
+		alert(message);
+	}
+}
+</script>
 </cmscedit:head>
-<body>
+<body onload="showMessage('<html:messages id="actionMessage" message="true" bundle="TASKS"><bean:write name="actionMessage" /></html:messages>')">
    <c:choose>
       <c:when test="${param.taskShowType eq 'task.showtype.assignedtome'}">
          <c:set var="tmpRole">assignedrel</c:set>
@@ -55,8 +62,6 @@
 
    <div class="editor">
    <div class="body">
-
-		<p style="font-size: 12px; padding-left: 10px;"><html:messages id="createSuccess" message="true" bundle="TASKS"><bean:write name="createSuccess" /></html:messages></p>
 
       <c:url value="/editors/taskmanagement/MassDeleteTaskAction.do" var="taskFormAction" />
 		<form action="${taskFormAction}" name="taskForm">
