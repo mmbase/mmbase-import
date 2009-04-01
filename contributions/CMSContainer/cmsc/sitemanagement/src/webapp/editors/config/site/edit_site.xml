@@ -68,6 +68,11 @@
 		<prompt xml:lang="nl">Rechten</prompt>
 		<prompt xml:lang="zh">权限</prompt>
 	</field>
+    <field name="googleanalyticsid" dtmaxlength="150">
+        <prompt xml:lang="en">Google Analytics ID</prompt>
+        <prompt xml:lang="nl">Google Analytics ID</prompt>
+        <prompt xml:lang="zh"></prompt>
+    </field>   
 
 	<list include="config/layout/search_page_layoutrel_layout.xml" />
 	<list include="config/stylesheet/search_page_stylerel_stylesheet.xml" />
