@@ -23,7 +23,7 @@ public class Site extends Page {
    private String publisher;
    private String source;
    private String rights;
-
+   private String googleanalyticsid;
 
    public String getStagingfragment() {
       return stagingfragment;
@@ -88,5 +88,13 @@ public class Site extends Page {
 
    public void setRights(String rights) {
       this.rights = rights;
+   }
+
+   public void setGoogleanalyticsid(String googleanalyticsid) {
+      this.googleanalyticsid = googleanalyticsid;
+   }
+
+   public String getGoogleanalyticsid() {
+      return googleanalyticsid;
    }
 }

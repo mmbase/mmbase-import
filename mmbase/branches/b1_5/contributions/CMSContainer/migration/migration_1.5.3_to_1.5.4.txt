@@ -15,3 +15,13 @@ ALTER TABLE live_newsletterpublication ADD sendtime datetime;
 *
 *
 *
+Name: Add google analytics id
+Goal: Have a google analytics id per site
+ype:  sql-script
+--- Start script ---
+ALTER TABLE mm_site ADD COLUMN googleanalyticsid VARCHAR(150) NULL;
+ALTER TABLE live_site ADD COLUMN googleanalyticsid VARCHAR(150) NULL;
+--- End script ---
+*
+*
+*
