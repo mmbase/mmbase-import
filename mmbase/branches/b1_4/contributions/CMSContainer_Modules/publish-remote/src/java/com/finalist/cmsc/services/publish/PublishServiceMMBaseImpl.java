@@ -12,6 +12,7 @@ package com.finalist.cmsc.services.publish;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
+import org.mmbase.remotepublishing.CloudManager;
 import org.mmbase.remotepublishing.PublishListener;
 import org.mmbase.remotepublishing.PublishManager;
 import org.mmbase.remotepublishing.builders.PublishingQueueBuilder;
@@ -176,4 +177,9 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
         String livePath = PropertiesUtil.getProperty(SYSTEM_LIVEPATH);
         return livePath + appPath;
     }
+   
+   @Override
+   public Cloud getRemoteCloud(Cloud cloud) {
+      return CloudManager.getCloudByAlias(cloud, "cloud.remote");
+   }
 }

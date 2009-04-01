@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.services.publish;
 
+import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 
@@ -63,6 +64,10 @@ public class Publish {
 
    public static String getRemoteUrl(String appPath) {
        return cService.getRemoteUrl(appPath);
+   }
+
+   public static Cloud getRemoteCloud(Cloud cloud) {
+      return cService.getRemoteCloud(cloud);
    }
 
 }

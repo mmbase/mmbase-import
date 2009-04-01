@@ -96,21 +96,36 @@ public abstract class Publisher {
     }
 
     public int getRemoteNumber(Node node) {
-        Map<Integer,Integer> numbers = PublishManager.getPublishedNodeNumbers(node);
-        Iterator<Integer> iter = numbers.values().iterator();
-        if (iter.hasNext()) {
-            return iter.next();
+        if (PublishManager.isPublished(node)) {
+           Map<Integer,Integer> numbers = PublishManager.getPublishedNodeNumbers(node);
+           Iterator<Integer> iter = numbers.values().iterator();
+           if (iter.hasNext()) {
+               return iter.next();
+           }
+        }
+        else {
+           Node remoteNode = getRemoteNode(node);
+           if (remoteNode != null) {
+              return remoteNode.getNumber();
+           }
         }
         return -1;
     }
 
     public Node getRemoteNode(Node node) {
-        Map<Integer,Node> numbers = PublishManager.getPublishedNodes(node);
-        Iterator<Node> iter = numbers.values().iterator();
-        if (iter.hasNext()) {
-            return iter.next();
-        }
-        return null;
+       if (PublishManager.isPublished(node)) {
+          Map<Integer, Node> numbers = PublishManager.getPublishedNodes(node);
+          Iterator<Node> iter = numbers.values().iterator();
+          if (iter.hasNext()) {
+             return iter.next();
+          }
+       }
+       else {
+          if (PublishManager.isImported(node)) {
+             return PublishManager.getSourceNode(node);
+          }
+       }
+       return null;
     }
 
     

@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.services.publish;
 
+import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 
@@ -72,4 +73,10 @@ public class DummyPublishService extends PublishService {
         return null;
     }
 
+
+   @Override
+   public Cloud getRemoteCloud(Cloud cloud) {
+      // TODO Auto-generated method stub
+      return null;
+   }
 }
