@@ -1,0 +1,78 @@
+<portlet-app
+      xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
+      version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
+
+   <portlet>
+      <description>Newsletter Subscription Portlet</description>
+      <portlet-name>newslettersubscriptionportlet</portlet-name>
+      <display-name>Newsletter Subscription Portlet</display-name>
+      <portlet-class>
+         com.finalist.portlets.newsletter.NewsletterSubscriptionPortlet
+      </portlet-class>
+      <init-param>
+         <name>template.edit_defaults</name>
+         <value>newsletter/newslettersubscription.jsp</value>
+      </init-param>
+      <init-param>
+         <name>template.help</name>
+         <value>newsletter/newslettersubscription.jsp</value>
+      </init-param>
+      <init-param>
+         <name>template.options</name>
+         <value>newsletter/subscription/options.jsp</value>
+      </init-param>
+      <init-param>
+         <name>template.subscribe</name>
+         <value>newsletter/subscription/subscribe.jsp</value>
+      </init-param>
+      <supports>
+         <mime-type>text/html</mime-type>
+         <portlet-mode>VIEW</portlet-mode>
+         <portlet-mode>EDIT</portlet-mode>
+         <portlet-mode>HELP</portlet-mode>
+         <portlet-mode>EDIT_DEFAULTS</portlet-mode>
+         <portlet-mode>DELETE</portlet-mode>
+      </supports>
+      <supported-locale>en</supported-locale>
+      <supported-locale>nl</supported-locale>
+      <resource-bundle>portlets-newslettersubscription</resource-bundle>
+      <portlet-info>
+         <title>Newsletter Subscription Portlet</title>
+         <short-title>NewsletterSubscription</short-title>
+         <keywords>NewsletterSubscription</keywords>
+      </portlet-info>
+   </portlet>
+   
+   <portlet>
+      <description>a Newsletter unsubscribe portlet</description>
+      <portlet-name>newsletterunsubscriptionportlet</portlet-name>
+      <display-name>Newsletter unsubscribeportlet</display-name>
+      <portlet-class>
+         com.finalist.portlets.newsletter.UnsubscribePortlet
+      </portlet-class>
+      <init-param>
+         <name>template.edit_defaults</name>
+         <value>unsubscribe/unsubscribe.jsp</value>
+      </init-param>
+      <init-param>
+         <name>template.help</name>
+         <value>unsubscribe/unsubscribe.jsp</value>
+      </init-param>
+      <supports>
+         <mime-type>text/html</mime-type>
+         <portlet-mode>VIEW</portlet-mode>
+         <portlet-mode>HELP</portlet-mode>
+         <portlet-mode>EDIT_DEFAULTS</portlet-mode>
+         <portlet-mode>DELETE</portlet-mode>
+      </supports>
+      <supported-locale>en</supported-locale>
+      <supported-locale>nl</supported-locale>
+      <resource-bundle>portlets-unsubscribe</resource-bundle>
+      <portlet-info>
+         <title>Unsubscribe Portlet</title>
+         <short-title>Unsubscribe</short-title>
+         <keywords>Unsubscribe</keywords>
+      </portlet-info>
+   </portlet>
+</portlet-app>

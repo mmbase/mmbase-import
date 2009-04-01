@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="posrel" destination="attachments" minoccurs="0" maxoccurs="*"
+	orderby="field[@name='pos']" ordertype="number">
+	
+	<title xml:lang="nl">Bijlage</title>
+	<title xml:lang="en">Attachment</title>
+	<title xml:lang="zh">附件</title>
+
+	<item>
+		<field name="title" ftype="data" dtrequired="true">
+			<prompt xml:lang="en">Title</prompt>
+			<prompt xml:lang="nl">Titel</prompt>
+			<prompt xml:lang="zh">标题</prompt>
+		</field>
+		<field name="description" ftype="data" rows="3">
+			<prompt xml:lang="en">Description</prompt>
+			<prompt xml:lang="nl">Omschrijving</prompt>
+			<prompt xml:lang="zh">描述</prompt>
+		</field>
+	<!-- These are not interesting to show
+		<field name="filename">
+			<prompt xml:lang="en">Filename</prompt>
+			<prompt xml:lang="nl">Bestandsnaam</prompt>
+			<prompt xml:lang="zh">文件名</prompt>
+		</field>
+		<field name="mimetype" ftype="data">
+			<prompt xml:lang="en">Mimetype</prompt>
+			<prompt xml:lang="nl">Mimetype</prompt>
+			<prompt xml:lang="zh">Mime类型</prompt>
+		</field>
+		<field name="size" ftype="data">
+			<prompt xml:lang="en">Size</prompt>
+			<prompt xml:lang="nl">Grootte</prompt>
+			<prompt xml:lang="zh">大小</prompt>
+		</field>
+	 -->
+	   <field name="handle" ftype="filedata" dtmaxsize="16000000">
+			<prompt xml:lang="en">Attachment</prompt>
+			<prompt xml:lang="nl">Bijlage</prompt>
+			<prompt xml:lang="zh">附件</prompt>
+		</field>
+	</item>
+
+	<command name="assetsselector" nodepath="attachments" age="-1" fields="title,description">
+		<prompt xml:lang="en">Search attachment</prompt>
+		<prompt xml:lang="nl">Zoek bijlage</prompt>
+		<prompt xml:lang="zh">查找附件</prompt>
+		<search-filter>
+			<name xml:lang="en">Title / Description</name>
+			<name xml:lang="nl">Titel / Omschrijving</name>
+			<name xml:lang="zh">标题包含 / 描述包含</name>
+			<search-fields>[title]|[description]</search-fields>
+		</search-filter>
+		<search-filter>
+			<name xml:lang="en">Title contains</name>
+			<name xml:lang="nl">Titel bevat</name>
+			<name xml:lang="zh">标题包含</name>
+			<search-fields>[title]</search-fields>
+		</search-filter>
+		<search-filter>
+			<name xml:lang="en">Description contains</name>
+			<name xml:lang="nl">Omschrijving bevat</name>
+			<name xml:lang="zh">描述包含</name>
+			<search-fields>[description]</search-fields>
+		</search-filter>
+	</command>
+	
+   <command name="startwizard" inline="true" wizardname="config/attachments/attachments" objectnumber="new">
+		<prompt xml:lang="en">New</prompt>
+		<prompt xml:lang="nl">Nieuw</prompt>
+		<prompt xml:lang="zh">新建</prompt>
+	</command>
+
+	<action type="create">
+		<relation destinationtype="attachments" role="posrel">
+			<field name="pos">{sum(//relation[@role='posrel' and @firstitem='true']/object[@type='attachments']/../field[@name='pos'])-{$pos}}</field>
+		</relation>
+	</action>
+</list>

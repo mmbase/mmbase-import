@@ -1,0 +1,20 @@
+Migration document:
+
+Part: core
+From version: 1.6.0
+To version: 1.6.1
+
+
+Execute the following steps below in the given order:
+
+Name: Add google analytics id
+Goal: Have a google analytics id per site
+ype:  sql-script
+--- Start script ---
+ALTER TABLE mm_site ADD COLUMN googleanalyticsid VARCHAR(40) NULL;
+ALTER TABLE live_site ADD COLUMN googleanalyticsid VARCHAR(40) NULL;
+--- End script ---
+*
+*
+*
+

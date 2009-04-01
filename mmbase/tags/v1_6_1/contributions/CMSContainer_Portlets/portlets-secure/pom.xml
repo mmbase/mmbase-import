@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>finalist</groupId>
+  <artifactId>cmsc-portlets-secure</artifactId>
+  <packaging>war</packaging>
+  <name>Secure Content portlet</name>
+  <parent>
+        <groupId>finalist</groupId>
+        <artifactId>portlets</artifactId>
+        <version>1.7-SNAPSHOT</version>
+  </parent>
+  <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>                
+                    <webResources>
+                        <resource>
+                            <targetPath>WEB-INF/config</targetPath>
+                            <directory>${basedir}/config</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+        </plugins>
+  </build>
+</project>

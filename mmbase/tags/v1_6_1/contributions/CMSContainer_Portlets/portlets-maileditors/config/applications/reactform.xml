@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="reactform" maintainer="finalist.com" version="1" auto-deploy="true">
+   <requirements>
+      <requires name="basecontentelements" maintainer="finalist.com" version="1" type="application"/>
+      <requires name="contentrepository" maintainer="finalist.com" version="3" type="application" />
+   </requirements>
+   
+   <neededbuilderlist>
+      <builder maintainer="finalist.com" version="1">reactform</builder>     
+    </neededbuilderlist>
+
+   <neededreldeflist>
+   </neededreldeflist>
+
+   <allowedrelationlist>      
+   </allowedrelationlist>
+   
+   <datasourcelist>
+      <datasource builder="portletdefinition" path="reactform/portletdefinition.xml"/>
+      <datasource builder="view" path="reactform/view.xml"/>   
+      <datasource builder="editwizards" path="reactform/editwizards.xml" />
+      <datasource builder="properties" path="reactform/properties.xml" />
+      <datasource builder="reactform" path="reactform/reactform.xml" />     
+   </datasourcelist>
+   
+   <relationsourcelist>
+      <relationsource builder="allowrel" path="reactform/allowrel.xml"/>     
+   </relationsourcelist>
+   
+   <contextsourcelist>
+   </contextsourcelist>
+</application>
