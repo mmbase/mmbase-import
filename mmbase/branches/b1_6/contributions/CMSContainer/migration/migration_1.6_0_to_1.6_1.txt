@@ -1,22 +1,12 @@
 Migration document:
 
 Part: core
-From version: 1.6
-To version: 1.7
+From version: 1.6.0
+To version: 1.6.1
 
 
 Execute the following steps below in the given order:
 
-Name: Add a sendtime column in <prefix>_newsletterpublication table
-Goal: Used to save/get sendtime,CMSC-1348
-Type: sql-script
---- Start script ---
-ALTER TABLE mm_newsletterpublication ADD sendtime datetime;
-ALTER TABLE live_newsletterpublication ADD sendtime datetime;
---- End script ---
-*
-*
-*
 Name: Add google analytics id
 Goal: Have a google analytics id per site
 ype:  sql-script
@@ -27,3 +17,5 @@ ALTER TABLE live_site ADD COLUMN googleanalyticsid VARCHAR(150) NULL;
 *
 *
 *
+
+
