@@ -20,11 +20,13 @@ import java.util.*;
  *  The builder also starts the CronDeamon. on startup the list of cronjobs is loaded into memory.
  *  <b>The builder uses the bridge to get a cloud using class security.</b>
  * @author Kees Jongenburger
- * @version $Id: CronJobs.java,v 1.12 2008-12-09 13:38:49 michiel Exp $
+ * @version $Id: CronJobs.java,v 1.13 2009-04-01 09:20:49 michiel Exp $
  */
 public class CronJobs extends MMObjectBuilder  {
 
     private static final Logger log = Logging.getLoggerInstance(CronJobs.class);
+
+    public static String MMSERVERS_REQUIRED = "RelatedMMServersRequired";
 
     /**
      * Adds all the crontEntries to the CronDaemon
