@@ -17,7 +17,7 @@ public class InformixStorageManager extends DatabaseStorageManager {
      * Safely closes the active connection.
      * If a transaction has been started, the connection is not closed.
      */
-    protected void releaseActiveConnection() {
+    @Override protected void releaseActiveConnection() {
         if (!(inTransaction && factory.supportsTransactions()) && activeConnection != null) {
             try {
                 // ensure that future attempts to obtain a connection (i.e.e if it came from a pool)
