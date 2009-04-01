@@ -24,7 +24,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.48 2007-04-09 19:10:27 michiel Exp $
+ * @version $Id: Generator.java,v 1.49 2009-04-01 14:01:22 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -36,7 +36,7 @@ public class Generator {
     private final static String DOCUMENTTYPE_SYSTEM = "http://www.mmbase.org/dtd/objects_1_0.dtd";
 
     private Document document = null;
-    private DocumentBuilder documentBuilder = null;
+    private final DocumentBuilder documentBuilder;
     private Cloud cloud = null;
 
     private boolean namespaceAware = false;
@@ -54,6 +54,7 @@ public class Generator {
      * @see   org.mmbase.util.xml.DocumentReader#getDocumentBuilder()
      */
     public Generator(DocumentBuilder documentBuilder, Cloud cloud) {
+        if (documentBuilder == null) throw new IllegalArgumentException();
         this.documentBuilder = documentBuilder;
         this.cloud = cloud;
 
@@ -64,12 +65,14 @@ public class Generator {
     }
 
     public Generator(Document doc) {
+        if (doc == null) throw new IllegalArgumentException();
         document = doc;
+        documentBuilder = null;
         namespaceAware = document.getDocumentElement().getNamespaceURI() != null;
     }
 
     /**
-     * Returns an estimation on how long it took to construct the document. 
+     * Returns an estimation on how long it took to construct the document.
      * @return a duration in nanoseconds.
      * @since MMBase-1.9
      */
