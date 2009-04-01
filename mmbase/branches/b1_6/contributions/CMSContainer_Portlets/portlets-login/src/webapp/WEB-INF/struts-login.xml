@@ -13,6 +13,12 @@
           <action path="/login/confirm" type="com.finalist.cmsc.login.ConfirmAction"
                 scope="request" unknown="false" validate="false">               
           </action>     
+       <!-- ==== Select page nodes ==== -->
+        <action path="/editors/site/select/SelectorExtPage" type="com.finalist.cmsc.navigation.select.forms.SelectorExtensionAction"
+                unknown="false" className="com.finalist.cmsc.struts.SelectorActionMapping">
+            <set-property property="linkPattern" value="selectedextpage.jsp?page={0}&amp;path={1}"/>
+            <forward name="success" path="/editors/site/select/selectorpopup.jsp" redirect="false"/>
+        </action>
      </action-mappings>
 
      
