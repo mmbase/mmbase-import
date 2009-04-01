@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The step alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStep.java,v 1.13 2008-07-17 12:55:23 michiel Exp $
+ * @version $Id: BasicStep.java,v 1.14 2009-04-01 21:19:55 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {
@@ -55,8 +55,7 @@ public class BasicStep implements Step {
      */
     public BasicStep setAlias(String alias) {
         if (alias != null && alias.trim().length() == 0) {
-            throw new IllegalArgumentException(
-            "Invalid alias value: " + alias);
+            throw new IllegalArgumentException("Invalid alias value: " + alias);
         }
         this.alias = alias;
         return this;
