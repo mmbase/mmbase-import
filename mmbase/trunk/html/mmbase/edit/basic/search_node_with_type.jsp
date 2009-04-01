@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"  prefix="mm"
 %><%@ include file="page_base_functionality.jsp"
 %><mm:import externid="userlogon" from="parameters" />
 <mm:content language="$config.lang" country="$config.country" type="text/html" expires="0">
