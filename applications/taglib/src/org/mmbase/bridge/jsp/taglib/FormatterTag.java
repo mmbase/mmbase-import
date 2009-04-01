@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.79 2008-09-04 12:31:07 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.80 2009-04-01 14:12:52 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -114,8 +114,11 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
         try {
             javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-
-            dfactory.setXIncludeAware(true);
+            try {
+                dfactory.setXIncludeAware(true);
+            } catch (UnsupportedOperationException uoe) {
+                log.warn("DocumentBuilderFactory implementation does not suppoer xinclude: " + dfactory.getClass() + ": " + uoe.getMessage());
+            }
             dfactory.setNamespaceAware(false);
             documentBuilder = dfactory.newDocumentBuilder();
             dfactory.setNamespaceAware(true);
@@ -127,7 +130,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
             documentBuilderNS.setErrorHandler(handler);
             documentBuilderNS.setEntityResolver(resolver);
         }  catch (Exception e) {
-            log.error(e.toString());
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -353,7 +356,6 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                     if (encoding == null) encoding = "UTF-8"; // it _must_ be XML.
                     javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
                     DocumentBuilder db =  namespaceAware.getBoolean(this, true) ? documentBuilderNS : documentBuilder;
-                    log.debug("xinclude " + db.isXIncludeAware());
                     doc = db.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)),
                                    pageContext.getServletContext().getResource(request.getServletPath()).toString()
                                    );
