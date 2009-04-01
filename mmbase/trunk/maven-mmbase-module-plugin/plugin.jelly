@@ -481,6 +481,33 @@
   </goal>
 
   <!--==================================================================-->
+  <!-- generate index files                          -->
+  <!--==================================================================-->    
+  <goal name="mmbase-module:generate-index-files"
+        description="Generate the index files for the jar resources">
+        
+    <util:available file="${maven.build.dest}/org/mmbase/config">
+      <fileScanner var="scanner">
+        <fileset dir="${maven.build.dest}/org/mmbase/config"/>
+      </fileScanner>
+      <j:forEach var="dir" items="${scanner.directories()}">
+        <fileScanner var="filescan">
+          <fileset dir="${dir.path}" >
+            <exclude name="INDEX"/>
+		    		<include name="*"/>
+          </fileset>
+        </fileScanner>
+<!-- ## Generate INDEX file with each filename and directory on a new line ## -->
+<echo file="${dir.path}/INDEX"><j:forEach var="file" items="${filescan.iterator()}">${file.name}
+</j:forEach><j:forEach var="filedir" items="${filescan.directories()}">${filedir.name}/
+</j:forEach></echo>
+    	</j:forEach>
+    	</util:available>
+  </goal>
+
+
+
+  <!--==================================================================-->
   <!-- Install the mmbase-module in the local repository                          -->
   <!--==================================================================-->    
   <goal name="mmbase-module:install"

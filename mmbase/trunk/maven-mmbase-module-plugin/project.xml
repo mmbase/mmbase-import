@@ -1,15 +1,35 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
 <project>
-  <extend>${basedir}/../maven-base/project.xml</extend>
   <pomVersion>3</pomVersion>
   <id>maven-mmbase-module-plugin</id>
   <artifactId>maven-mmbase-module-plugin</artifactId>
   <name>MMBase module plugin</name>
   <groupId>mmapps</groupId>
-  <currentVersion>1.3</currentVersion>
+  <currentVersion>1.4</currentVersion>
   <shortDescription>maven plugin to assemble a mmbase module</shortDescription>
+  <organization>
+    <name>MMBase.org</name>
+    <url>http://www.mmbase.org</url>
+    <logo>http://www.mmbase.org/mmdocs/style/logo.png</logo>
+  </organization>
   <inceptionYear>2004</inceptionYear>
+  <url>http://www.mmbase.org</url>
+  <issueTrackingUrl>http://www.mmbase.org/jira/secure/Dashboard.jspa</issueTrackingUrl>
+  <repository>
+    <connection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:maven-mmbase-module-plugin</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.mmbase.org:/var/cvs:maven-mmbase-module-plugin</developerConnection>
+    <url>http://cvs.mmbase.org/viewcvs/</url>
+  </repository>
   <build>
+    <nagEmailAddress>developers@mmbase.org</nagEmailAddress>
+    <defaultGoal>plugin:repository-install</defaultGoal>
     <sourceDirectory></sourceDirectory>
     <unitTestSourceDirectory></unitTestSourceDirectory>
     <resources>
