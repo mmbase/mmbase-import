@@ -186,6 +186,11 @@ public final class TasksUtil {
    }
 
 
+   public static Node getCreator(Node task) {
+      return SearchUtil.findRelatedNode(task, SecurityUtil.USER, CREATORREL);
+   }
+
+
    public static long getLastTaskCreationTime(Cloud cloud, String type) {
       NodeManager taskManager = cloud.getNodeManager(TASK);
       NodeQuery query = taskManager.createQuery();
@@ -211,6 +216,24 @@ public final class TasksUtil {
       NodeManager manager = contentNode.getCloud().getNodeManager(TASK);
       int count = contentNode.countRelatedNodes(manager, TASKREL, "source");
       return count > 0;
+   }
+
+   /**
+    * Only the task created by the user or assigned to the user and has been finished is deleteable.
+    * 
+    * @param task
+    * @param cloud
+    * @return
+    */
+   public static boolean isDeleteable(Node task, Cloud cloud) {
+      Node creator = getCreator(task);;
+      Node assignee = getAssignedUser(task);
+      Node user = SecurityUtil.getUserNode(cloud);
+      String status = task.getStringValue(STATUS);
+      if (user.equals(creator) || (user.equals(assignee) && STATUS_DONE.equals(status))) {
+         return true;
+      }
+      return false;
    }
 
 }
