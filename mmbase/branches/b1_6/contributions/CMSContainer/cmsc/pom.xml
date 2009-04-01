@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>finalist</groupId>
     <artifactId>maven-base</artifactId>
-    <version>1.6.1-SNAPSHOT</version>
+    <version>1.6.1</version>
     <packaging>pom</packaging>
     <name>maven-base</name>
     <properties>
-        <cmsc.version>1.6.1-SNAPSHOT</cmsc.version>
+        <cmsc.version>1.6.1</cmsc.version>
         <mmbase.version>1.8.7-20090103</mmbase.version>
         <mmbasermmci.version>1.8.2-20061020</mmbasermmci.version>
         <pluto.version>1.0.1</pluto.version>
