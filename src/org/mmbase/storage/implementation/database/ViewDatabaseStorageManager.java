@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  *
- * @version $Id: ViewDatabaseStorageManager.java,v 1.13 2008-10-09 09:51:42 michiel Exp $
+ * @version $Id: ViewDatabaseStorageManager.java,v 1.14 2009-04-01 21:20:16 michiel Exp $
  * @since MMBase-1.8
  */
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {
@@ -40,7 +40,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * @return <code>true</code> if basic storage elements exist
      * @throws StorageException if an error occurred while querying the storage
      */
-    public boolean exists() throws StorageException {
+    @Override public boolean exists() throws StorageException {
         return viewExists(factory.getMMBase().getRootBuilder());
     }
 
@@ -50,7 +50,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * @return <code>true</code> if the storage element exists, false if it doesn't
      * @throws StorageException if an error occurred while querying the storage
      */
-    public boolean exists(MMObjectBuilder builder) throws StorageException {
+    @Override public boolean exists(MMObjectBuilder builder) throws StorageException {
         return viewExists(builder);
     }
 
@@ -58,7 +58,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * Create the basic elements for this storage
      * @throws StorageException if an error occurred during the creation of the object storage
      */
-    public void create() throws StorageException {
+    @Override public void create() throws StorageException {
         if(!viewExists(factory.getMMBase().getRootBuilder())) {
             viewCreate(factory.getMMBase().getRootBuilder());
             createSequence();
@@ -70,13 +70,13 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to create the storage element for
      * @throws StorageException if an error occurred during the creation of the storage element
      */
-    public void create(MMObjectBuilder builder) throws StorageException {
+    @Override public void create(MMObjectBuilder builder) throws StorageException {
         if(!viewExists(builder)){
              viewCreate(builder);
         }
     }
 
-    public void create(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
+    @Override public void create(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
@@ -130,7 +130,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to change the node in
      * @throws StorageException if an error occurred during change
      */
-    public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    @Override public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
@@ -172,7 +172,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to delete the node in
      * @throws StorageException if an error occurred during delete
      */
-    public void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    @Override public void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
@@ -210,7 +210,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         super.delete(node, builder, blobFileField, tablename);
     }
 
-    public String getFieldName(CoreField field) {
+    protected String getFieldName(CoreField field) {
         return (String)factory.getStorageIdentifier(field);
     }
 
@@ -258,7 +258,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * Override the default version. An index should only be created if
      * all the fields are in this builder. Otherwise this will fail horrably.
      */
-    protected void create(Index index) throws StorageException {
+    @Override protected void create(Index index) throws StorageException {
         for (int i=0; i<index.size(); i++) {
             CoreField f = (CoreField)index.get(i);
             if (!isPartOfBuilderDefinition(f)) {
@@ -269,7 +269,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         super.createIndex(index, getTableName(index.getParent()));
     }
 
-    protected boolean exists(Index index) throws StorageException {
+    @Override protected boolean exists(Index index) throws StorageException {
         return super.exists(index, getTableName(index.getParent()));
     }
 
