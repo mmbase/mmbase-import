@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.23 2009-02-05 09:39:58 michiel Exp $
+ * @version $Id: CronEntry.java,v 1.24 2009-04-01 09:19:52 michiel Exp $
  */
 
 public class CronEntry implements java.io.Serializable {
@@ -195,6 +195,7 @@ public class CronEntry implements java.io.Serializable {
     }
 
     /**
+     * Wether a job associated with this cron entry is currently alive on this machine.
      * @since MMBase-1.8
      */
     public boolean isAlive(int i) {
@@ -207,6 +208,7 @@ public class CronEntry implements java.io.Serializable {
     }
 
     /**
+     * Whether this Entry would run. It would not run if it is only scheduled to run on other machines.
      * @since MMBase-1.8.7
      */
     public boolean isActive() {
@@ -217,6 +219,10 @@ public class CronEntry implements java.io.Serializable {
     public boolean isMustBeOne() {
         return type == Type.MUSTBEONE || type == Type.BALANCE_MUSTBEONE;
     }
+    /**
+     * A String indicating on the servers on wich this Job must run. This may be regular expression
+     * and used in the implementation of {@link #isActive}, but this is not required.
+     */
     public String getServers() {
         return servers.pattern();
     }
