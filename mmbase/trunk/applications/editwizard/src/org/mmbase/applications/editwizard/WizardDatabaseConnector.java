@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.60 2008-12-30 12:48:03 nklasens Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.61 2009-04-01 09:01:49 nklasens Exp $
  *
  */
 public class WizardDatabaseConnector implements java.io.Serializable {
@@ -255,17 +255,6 @@ public class WizardDatabaseConnector implements java.io.Serializable {
         } else {
             throw new WizardException("Could not obtain object " + objectnumber + " : " + cmd.getError());
         }
-    }
-
-    /**
-     * This method gets relation information from mmbase.
-     *
-     * @param  targetNode      The targetnode where the results should be appended.
-     * @param  objectnumber    The objectnumber of the parent object from where the relations originate.
-     * @throws WizardException if the relations could not be obtained
-     */
-    private void getRelations(Node targetNode, String objectnumber) throws WizardException {
-        getRelations(targetNode, objectnumber, null);
     }
 
     /**
