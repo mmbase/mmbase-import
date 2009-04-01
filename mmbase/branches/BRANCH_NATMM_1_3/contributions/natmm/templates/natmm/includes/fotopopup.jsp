@@ -45,7 +45,7 @@ boolean bFirst = true;
 </head>
 <body style="padding:0px;margin:0px;overflow:no;text-align:center;" class="footer" onLoad="javascript:resizeDiv()">
 <%-- NMCMS-639 --%>
-<a href="javascript:void(0);" onClick="window.close();" title="Klik op de foto om het venster te sluiten"><img src="<mm:image />" style="margin:0px;" border="0"></a><br/>
+<a href="javascript:void(0);"><img src="<mm:image />" style="margin:0px;" border="0"></a><br/>
 <% if(!bFirst) { 
    %><div style="display:block;overflow:auto;width:600px;height:150px;" id="contentblock">
    <table width="580px;" border="0" cellspacing="0" cellpadding="0">
