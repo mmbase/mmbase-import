@@ -2,7 +2,7 @@
 <%@include file="/WEB-INF/templates/edit_defaults/sections/globals.jsp"%>
 <div class="portlet-config-canvas">
 <script type="text/javascript">
-   function selectPage(page, path, positions) {
+   function selectRedirectPage(page, path) {
       document.forms['<portlet:namespace />form'].page.value = page;
       document.forms['<portlet:namespace />form'].pagepath.value = path;
    }
@@ -46,7 +46,7 @@
         <tr>
            <td nowrap><fmt:message key="edit_defaults.login.redirect" />:</td>
            <td nowrap> 
-               <a href="<c:url value='/editors/site/select/SelectorPage.do?channel=${page}' />"
+               <a href="<c:url value='/editors/site/select/SelectorPage.do?channel=${page}&type=SelectorExtPage&method=selectRedirectPage' />"
                   target="selectpage" onclick="openPopupWindow('selectpage', 340, 400)"> 
                      <img src="<cmsc:staticurl page='/editors/gfx/icons/select.png'/>" alt="<fmt:message key="edit_defaults.channelselect" />"/></a>
                <a href="javascript:erase('page');erase('pagepath');eraseList('window')">
