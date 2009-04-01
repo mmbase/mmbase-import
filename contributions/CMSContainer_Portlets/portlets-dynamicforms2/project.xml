@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <artifactId>cmsc-portlets-dynamicforms2</artifactId>
+    <name>Dynamic forms portlet</name>
+    <shortDescription>Dynamic forms 2 portlet</shortDescription>
+	<dependencies>
+        <dependency>
+            <groupId>poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>2.5.1</version>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>         
+        </dependency>
+      <dependency>
+         <groupId>poi</groupId>
+         <artifactId>poi-scratchpad</artifactId>
+         <version>2.5.1-final-20040804</version>
+         <properties>
+            <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+      </dependency>
+
+	</dependencies>
+</project>
+
