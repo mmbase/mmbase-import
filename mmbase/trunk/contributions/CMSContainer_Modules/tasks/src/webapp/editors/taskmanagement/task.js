@@ -1,6 +1,6 @@
 function callEditWizard(objectNumber) {
     var url = '../WizardInitAction.do?objectnumber=' + objectNumber;
-    url += '&returnurl=' + escape(document.location);
+    url += '&returnurl=/editors/taskmanagement/tasklist.jsp';
     document.location.href = url;
 }
 
