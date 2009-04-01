@@ -169,7 +169,7 @@
          <gui>
             <guiname xml:lang="nl">Google Analytics ID</guiname>
             <guiname xml:lang="en">Google Analytics ID</guiname>
-            <guiname xml:lang="zh"></guiname>
+            <guiname xml:lang="zh">Google Analytics ID</guiname>
          </gui>
          <editor>
             <positions>
@@ -181,7 +181,7 @@
             <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>googleanalyticsid</name>
-            <type key="false" notnull="false" size="150" state="persistent">STRING</type>
+            <type key="false" notnull="false" size="40" state="persistent">STRING</type>
          </db>
       </field>
 </fieldlist>
