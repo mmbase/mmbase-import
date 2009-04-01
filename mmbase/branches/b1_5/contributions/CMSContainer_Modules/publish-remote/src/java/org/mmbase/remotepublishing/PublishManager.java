@@ -866,7 +866,6 @@ public final class PublishManager {
     *         or null if node was not imported
     */
    public static Node getSourceNode(Node localNode) {
-       //TODO: where is this method be used
        CloudInfo localCloudInfo = CloudInfo.getDefaultCloudInfo();
       synchronized (publishLock) {
          Node adminNode = getPublishInfoNode(localCloudInfo, localNode.getNumber(), localCloudInfo);
@@ -886,6 +885,26 @@ public final class PublishManager {
       }
    }
 
+   /**
+    * Get the source node number of this localNode if this localNode is imported
+    *
+    * @param localNode a published node
+    * @return the remoteNode number from which the localNode was published
+    *         or -1 if node was not imported
+    */
+   public static int getSourceNodeNumber(Node localNode) {
+      CloudInfo localCloudInfo = CloudInfo.getDefaultCloudInfo();
+      synchronized (publishLock) {
+         Node adminNode = getPublishInfoNode(localCloudInfo, localNode.getNumber(), localCloudInfo);
+
+         if (adminNode == null) {
+            return -1;
+         }
+         return adminNode.getIntValue(SOURCE_NUMBER);
+      }
+   }
+
+   
    /**
     * Gets the source cloud of this destination node
     * @param destinationCloudInfo destination cloud to which the destination node are published
