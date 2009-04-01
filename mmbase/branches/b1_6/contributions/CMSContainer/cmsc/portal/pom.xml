@@ -7,7 +7,7 @@
     <parent>
         <groupId>finalist</groupId>
         <artifactId>maven-base</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2-SNAPSHOT</version>
     </parent>
     <description>Simple portal that allows usage of Pluto.
         This is not meant to be a fully functional portal as it only meets
