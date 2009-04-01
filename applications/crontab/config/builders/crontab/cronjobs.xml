@@ -14,6 +14,14 @@
     <plural xml:lang="en">Cron jobs</plural>
   </names>
 
+  <properties>
+    <!--
+        If this property is 'false' than the cronjobs will run on _all_ servers if no mmservers objects are related
+    -->
+    <property name="RelatedMMServersRequired">false</property>
+  </properties>
+
+
   <fieldlist>
     <field name="name">
       <descriptions>
