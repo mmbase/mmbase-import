@@ -2,8 +2,8 @@
   Reuseable generic login-page.
   Perhaps this could be placed on a more generic location like /mmbase
 --%>
-<%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,org.mmbase.util.functions.*,java.util.*,org.mmbase.datatypes.*" 
-%><%@  taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+<%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,org.mmbase.util.functions.*,java.util.*,org.mmbase.datatypes.*"
+%><%@  taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"  prefix="mm"
 %><%!
    String getPrompt(String key, Locale locale) {
      try {
@@ -44,8 +44,8 @@
        for (int j = 0; j < params.length ; j++) {
          Parameter param = params[j];
          Class type = param.getTypeAsClass();
-         if (type.isAssignableFrom(String.class) && param.isRequired()) {         
-    %>       
+         if (type.isAssignableFrom(String.class) && param.isRequired()) {
+    %>
     <tr>
       <td><%=param.getLocalizedGUIName().get(locale)%> <mm:write value="<%=param.getLocalizedDescription().get(locale)%>"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>
       </td>

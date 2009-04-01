@@ -1,5 +1,5 @@
-<%@page isErrorPage="true" 
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+<%@page isErrorPage="true"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"  prefix="mm"
 %>
 <mm:content type="text/html"  expires="0">
 <html>
@@ -26,20 +26,20 @@
         e = e.getCause();
      }
      String intro = "" + stack;
-     while (! stack.isEmpty()) { 
+     while (! stack.isEmpty()) {
        Throwable t = (Throwable) stack.pop();
-       %>  
+       %>
   <h2><%= intro + "" + t.getClass().getName() + " : " + t.getMessage() %></h2>
   <pre>
     <%= org.mmbase.util.logging.Logging.stackTrace(t) %>
   </pre>
-  <% 
-     intro = "Wrapped in: ";   
-     } 
+  <%
+     intro = "Wrapped in: ";
+     }
      %>
   <hr />
   Please contact your system administrator about this.
-  
+
 </body>
 </html>
 </mm:content>
