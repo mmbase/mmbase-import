@@ -15,9 +15,11 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * CronEntries defined by nodes of the type 'cronjobs' store several aspects of the cron entries in
+ * fields. {@link #isActive} is implemented using related 'mmservers' objects.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeCronEntry.java,v 1.6 2008-12-09 13:38:10 michiel Exp $
+ * @version $Id: NodeCronEntry.java,v 1.7 2009-04-01 09:20:49 michiel Exp $
  * @since MMBase-1.8.6
  */
 
@@ -58,8 +60,12 @@ public class NodeCronEntry extends CronEntry {
     }
 
     @Override public boolean isActive() {
-        NodeIterator servers = getNode().getRelatedNodes("mmservers").nodeIterator();
-        if (! servers.hasNext()) return true;
+        Node jobNode = getNode();
+        NodeIterator servers = jobNode.getRelatedNodes("mmservers").nodeIterator();
+        if (! servers.hasNext() &&
+            ! "true".equals(jobNode.getNodeManager().getProperty(CronJobs.MMSERVERS_REQUIRED))) {
+            return true;
+        }
 
         String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
         while (servers.hasNext()) {
