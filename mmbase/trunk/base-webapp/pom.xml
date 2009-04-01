@@ -31,6 +31,7 @@
               <excludes>
                 <exclude>index.jsp</exclude>
                 <exclude>mmexamples/**</exclude>
+                <exclude>WEB-INF/web-2.3.xml</exclude>
               </excludes>
             </resource>
           </webResources>
