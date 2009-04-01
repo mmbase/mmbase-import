@@ -20,9 +20,9 @@ import java.io.InputStream;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.8 2008-04-11 15:13:37 nklasens Exp $
+ * @version $Id: StorageManager.java,v 1.9 2009-04-01 21:19:25 michiel Exp $
  */
-public interface StorageManager {
+public interface StorageManager<SMF extends StorageManagerFactory> {
 
     /**
      * Returns the version of this factory implementation.
@@ -30,7 +30,7 @@ public interface StorageManager {
      * that list version requirements.
      * @return the version as an integer
      */
-    public double getVersion();
+    double getVersion();
 
     /**
      * Initializes the manager.
@@ -38,7 +38,7 @@ public interface StorageManager {
      * @param factory the StorageManagerFactory instance that created this storage manager.
      * @throws StorageConfigurationException if the initialization failed
      */
-    public void init(StorageManagerFactory factory) throws StorageException;
+    void init(SMF factory) throws StorageException;
 
     /**
      * Starts a transaction on this StorageManager instance.
@@ -46,14 +46,14 @@ public interface StorageManager {
      * If transactions are not supported by the storage, no actual storage transaction is started, but the code continues as if it has.
      * @throws StorageException if the transaction could not be created
      */
-    public void beginTransaction() throws StorageException;
+    void beginTransaction() throws StorageException;
 
     /**
      * Closes any transaction that was started and commits all changes.
      * If transactions are not supported by the storage, nothing really happens (as changes are allready committed), but the code continues as if it has.
      * @throws StorageException if a transaction is not currently active, or an error occurred while committing
      */
-    public void commit() throws StorageException;
+    void commit() throws StorageException;
 
     /**
      * Cancels any transaction that was started and rollback changes if possible.
@@ -63,14 +63,14 @@ public interface StorageManager {
      * canceled but the storage does not support rollback
      * @throws StorageException if a transaction is not currently active, or an error occurred during rollback
      */
-    public boolean rollback() throws StorageException;
+    boolean rollback() throws StorageException;
 
     /**
      * Gives an unique number for a new node, to be inserted in the storage.
      * This method should work with multiple mmbases
      * @return unique number
      */
-    public int createKey() throws StorageException;
+    int createKey() throws StorageException;
 
     /**
      * Retrieve a large text for a specified object field.
@@ -80,7 +80,7 @@ public interface StorageManager {
      * @return the retrieved text
      * @throws StorageException if an error occurred while retrieving the text value
      */
-    public String getStringValue(MMObjectNode node, CoreField field) throws StorageException;
+    String getStringValue(MMObjectNode node, CoreField field) throws StorageException;
 
     /**
      * Retrieve a large binary object (byte array) for a specified object field.
@@ -90,13 +90,13 @@ public interface StorageManager {
      * @return the retrieved byte array
      * @throws StorageException if an error occurred while retrieving the binary value
      */
-    public byte[] getBinaryValue(MMObjectNode node, CoreField field) throws StorageException;
+    byte[] getBinaryValue(MMObjectNode node, CoreField field) throws StorageException;
 
 
     /**
      * @since MMBase-1.8
      */
-    public InputStream getInputStreamValue(MMObjectNode node, CoreField field) throws StorageException;
+    InputStream getInputStreamValue(MMObjectNode node, CoreField field) throws StorageException;
 
     /**
      * This method creates a new object in the storage, and registers the change.
@@ -105,21 +105,21 @@ public interface StorageManager {
      * @return The (new) number for this node, or -1 if an error occurs.
      * @throws StorageException if an error occurred during insert
      */
-    public int create(MMObjectNode node) throws StorageException;
+    int create(MMObjectNode node) throws StorageException;
 
     /**
      * Commit this node to the specified builder.
      * @param node The node to commit
      * @throws StorageException if an error occurred during commit
      */
-    public void change(MMObjectNode node) throws StorageException;
+    void change(MMObjectNode node) throws StorageException;
 
     /**
      * Delete a node
      * @param node The node to delete
      * @throws StorageException if an error occurred during delete
      */
-    public void delete(MMObjectNode node) throws StorageException;
+    void delete(MMObjectNode node) throws StorageException;
 
     /**
      * Select a node from a specified builder
@@ -128,7 +128,7 @@ public interface StorageManager {
      * @return the MMObjectNode that was found, or null f it doesn't exist
      * @throws StorageException if an error occurred during the get
      */
-    public MMObjectNode getNode(MMObjectBuilder builder, int number) throws StorageException;
+    MMObjectNode getNode(MMObjectBuilder builder, int number) throws StorageException;
 
     /**
      * Returns the nodetype for a specified nodereference
@@ -136,32 +136,32 @@ public interface StorageManager {
      * @return int the object type or -1 if not found
      * @throws StorageException if an error occurred during selection
      */
-    public int getNodeType(int number) throws StorageException;
+    int getNodeType(int number) throws StorageException;
 
     /**
      * Create a storage element to store the specified builder's objects.
      * @param builder the builder to create the storage element for
      * @throws StorageException if an error occurred during the creation of the storage element
      */
-    public void create(MMObjectBuilder builder) throws StorageException;
+    void create(MMObjectBuilder builder) throws StorageException;
 
     /**
      * Create the basic elements for this storage
      * @throws StorageException if an error occurred during the creation of the object storage
      */
-    public void create() throws StorageException;
+    void create() throws StorageException;
 
     /**
      * Changes the storage of a builder to match its new configuration.
      * @param builder the builder whose storage to change
      */
-    public void change(MMObjectBuilder builder) throws StorageException;
+    void change(MMObjectBuilder builder) throws StorageException;
 
     /**
      * Drops the storage of this builder.
      * @param builder the builder whose storage to drop
      */
-    public void delete(MMObjectBuilder builder) throws StorageException;
+    void delete(MMObjectBuilder builder) throws StorageException;
 
     /**
      * Determine if a storage element exists for storing the given builder's objects
@@ -169,7 +169,7 @@ public interface StorageManager {
      * @return <code>true</code> if the storage element exists, false if it doesn't
      * @throws StorageException if an error occurred while querying the storage
      */
-    public boolean exists(MMObjectBuilder builder) throws StorageException;
+    boolean exists(MMObjectBuilder builder) throws StorageException;
 
     /**
      * Determine if the basic storage elements exist
@@ -177,7 +177,7 @@ public interface StorageManager {
      * @return <code>true</code> if basic storage elements exist
      * @throws StorageException if an error occurred while querying the storage
      */
-    public boolean exists() throws StorageException;
+    boolean exists() throws StorageException;
 
     /**
      * Return the number of objects of a builder in the storage
@@ -185,32 +185,32 @@ public interface StorageManager {
      * @return the number of objects the builder has
      * @throws StorageException if the storage element for the builder does not exists
      */
-    public int size(MMObjectBuilder builder) throws StorageException;
+    int size(MMObjectBuilder builder) throws StorageException;
 
     /**
      * Return the total number of objects in the storage
      * @return the number of objects
      * @throws StorageException if the basic storage elements do not exist
      */
-    public int size() throws StorageException;
+    int size() throws StorageException;
 
     /**
      * Creates a field and adds it to the storage of this builder.
      * @param field the CoreField of the field to add
      */
-    public void create(CoreField field) throws StorageException;
+    void create(CoreField field) throws StorageException;
 
     /**
      * Changes a field to the storage of this builder.
      * @param field the CoreField of the field to change
      */
-    public void change(CoreField field) throws StorageException;
+    void change(CoreField field) throws StorageException;
 
     /**
      * Deletes a field from the storage of this builder.
      * @param field the CoreField of the field to delete
      */
-    public void delete(CoreField field) throws StorageException;
+    void delete(CoreField field) throws StorageException;
 
     /**
      * Checks for null values for a field from the storage of this builder.
@@ -219,6 +219,6 @@ public interface StorageManager {
      * @return <code>true</code> when value is null in storage
      * @throws StorageException if an error occurred during the get
      */
-    public boolean isNull(MMObjectNode node, CoreField field) throws StorageException;
+    boolean isNull(MMObjectNode node, CoreField field) throws StorageException;
 
 }
