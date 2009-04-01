@@ -234,7 +234,7 @@ public final class TasksUtil {
       Node assignee = getAssignedUser(task);
       Node user = SecurityUtil.getUserNode(cloud);
       String status = task.getStringValue(STATUS);
-      if (user.equals(creator) || (user.equals(assignee) && (STATUS_DONE.equals(status) || SecurityUtil.getRank(user).compareTo(Rank.BASICUSER) > 0))) {
+      if (user.equals(creator) || (user.equals(assignee) && (STATUS_DONE.equals(status) || cloud.getUser().getRank().compareTo(Rank.BASICUSER) > 0))) {
          return true;
       }
       return false;
