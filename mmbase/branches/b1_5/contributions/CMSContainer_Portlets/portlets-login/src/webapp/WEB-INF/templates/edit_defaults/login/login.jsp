@@ -2,7 +2,7 @@
 <div class="portlet-config-canvas">
 <h3><fmt:message key="edit_defaults.title" /></h3>
 <script type="text/javascript">
-function selectRedirectPage(page, path, positions) {
+function selectRedirectPage(page, path) {
    document.forms['<portlet:namespace />form'].page.value = page;
    document.forms['<portlet:namespace />form'].pagepath.value = path;
 }
