@@ -366,6 +366,7 @@
 					<search>-1</search>
 				</positions>
 			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
 				<name xml:lang="en">path</name>
 				<type key="false" notnull="false" size="4000" state="virtual" readonly="true">STRING</type>
@@ -389,6 +390,7 @@
 					<search>-1</search>
 				</positions>
 			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
 				<name xml:lang="en">oldpath</name>
 				<type key="false" notnull="false" size="4000" state="virtual" readonly="true">STRING</type>
