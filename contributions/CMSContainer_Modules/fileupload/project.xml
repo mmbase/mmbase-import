@@ -26,12 +26,6 @@
 			<version>${cmsc.version}</version>
 			<type>jar</type>
 		</dependency>
-		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-modules-publish-remote</artifactId>
-			<version>${cmsc.version}</version>
-			<type>jar</type>
-		</dependency>
 	</dependencies>
 </project>
 
