@@ -26,6 +26,9 @@
     <td id="Submit" align="right" colspan="2">
       <input type="submit" value="<fmt:message key="view.submit" />" />
       <input type="button" value="<fmt:message key="view.send_password" />" onclick="javascript:this.form['send_password'].value='send';this.form.submit()"/>
+	  <c:if test="${not empty registrationpagepath}">
+		<a href="${registrationpagepath}" ><fmt:message key="view.register" /></a>
+	  </c:if>
     </td>
   </tr>
 </table>
