@@ -9,20 +9,6 @@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"  prefix="mm"
 %><mm:import id="style">
     <link rel="StyleSheet" type="text/css" href="css/<mm:write referid="config.style_sheet" />"/>
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
-  <script type="text/javascript">
-    if (typeof(MMBaseValidator) != "undefined") {
-    var validator = new MMBaseValidator();
-    validator.logEnabled = false;
-    validator.traceEnabled = false;
-    validator.sessionName = '${config.session}';
-    validator.validateHook = function() {
-       var okbutton = document.getElementById('okbutton');
-       if (okbutton != null) okbutton.disabled = this.invalidElements != 0;
-       var savebutton = document.getElementById('savebutton');
-       if (savebutton != null) savebutton.disabled = this.invalidElements != 0;
-    }
-    validator.lang = '${config.lang}';
-    validator.setup(document);
-    }
-  </script>
+    <meta name="MMBase-Language"     content="${config.lang}" />
+    <script type="text/javascript" src="javascript.js"> </script>
 </mm:import>
