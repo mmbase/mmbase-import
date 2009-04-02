@@ -4,9 +4,11 @@
   <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
 <mm:write referid="style" escape="none" />
 <title>Create a node</title>
+<mm:import externid="node_type" required="true" />
+<meta name="MMBase-NodeType"     content="${node_type}" />
 </head>
 <mm:context id="create_node">
-<mm:import externid="node_type" required="true" />
+
 
 
 <body class="basic" onLoad="document.create.elements[3].focus();">

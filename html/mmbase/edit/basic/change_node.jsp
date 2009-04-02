@@ -3,12 +3,12 @@
 <mm:cloud loginpage="login.jsp" sessionname="$config.session" jspvar="cloud" rank="$rank">
   <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
   <mm:param name="org.mmbase.richtext.wiki.show_broken"    value="true" />
-<mm:write referid="style" escape="none" />
-<title><%= m.getString("change_node.change")%></title>
-</head>
-<body class="basic" onLoad="document.change.elements[0].focus();">
+  <mm:write referid="style" escape="none" />
+  <title><%= m.getString("change_node.change")%></title>
 
-<p class="crumbpath"><%= toHtml(urlStack, request) %></p>
+
+
+
 <mm:context id="change_node">
 <mm:import externid="node_number" required="true" from="parameters" escape="trimmer" />
 <!-- We use two forms to avoid uploading stuff when not needed, because we cancel or only delete.-->
@@ -17,8 +17,8 @@
 
 <mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="thisNode">
 
-
 <%
+
    if (urlStack.size() == 0) {
       push(urlStack, "home", "search_node.jsp?node_type=" + thisNode.getNodeManager().getName());
    }
@@ -26,7 +26,10 @@
        push(urlStack, "" + thisNode.getNumber(), "change_node.jsp?node_number=" + thisNode.getNumber());
    }
  %>
-
+  <meta name="MMBase-NodeType"     content="<%=thisNode.getNodeManager().getName()%>" />
+</head>
+<body class="basic" onLoad="document.change.elements[0].focus();">
+<p class="crumbpath"><%= toHtml(urlStack, request) %></p>
 
 <mm:import id="found" />
 
