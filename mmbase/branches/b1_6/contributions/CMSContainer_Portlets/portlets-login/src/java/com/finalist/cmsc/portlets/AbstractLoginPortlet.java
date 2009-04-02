@@ -12,6 +12,7 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -26,6 +27,7 @@ import org.mmbase.bridge.util.SearchUtil;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.mmbase.RelationUtil;
+import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.security.Authentication;
@@ -40,8 +42,9 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
    protected static final String EMAIL_TEXT = "emailText";
    protected static final String EMAIL_FROMEMAIL = "emailFromEmail";
    protected static final String EMAIL_FROMNAME = "emailFromName";
+   protected static final String REGISTRATIONPAGE = "registrationpage";
+   protected static final String REGISTRATIONPAGEPATH = "registrationpagepath";
    protected static final String PAGE = "page";
-
    public static final String DEFAULT_EMAILREGEX = "^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$";
 
    
@@ -73,6 +76,17 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
       if (portletId != null) {
          // get the values submitted with the form
          setPortletNodeParameter(portletId, PAGE, request.getParameter(PAGE));
+         String registrationpage = request.getParameter(REGISTRATIONPAGE);
+         setPortletNodeParameter(portletId, REGISTRATIONPAGE, registrationpage);
+         if(StringUtils.isNotEmpty(registrationpage)){
+            Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+            String registrationpagepath = NavigationUtil.getNavigationItemUrl((HttpServletRequest)request, (HttpServletResponse)response, cloud.getNode(Integer.valueOf(registrationpage)));
+            if(registrationpagepath != null){
+               setPortletParameter(portletId, REGISTRATIONPAGEPATH, registrationpagepath);
+            }
+         } else {
+            setPortletParameter(portletId, REGISTRATIONPAGEPATH, "");
+         }
          setPortletParameter(portletId, EMAIL_SUBJECT, request.getParameter(EMAIL_SUBJECT));
          setPortletParameter(portletId, EMAIL_TEXT, request.getParameter(EMAIL_TEXT));
          setPortletParameter(portletId, EMAIL_FROMEMAIL, request.getParameter(EMAIL_FROMEMAIL));

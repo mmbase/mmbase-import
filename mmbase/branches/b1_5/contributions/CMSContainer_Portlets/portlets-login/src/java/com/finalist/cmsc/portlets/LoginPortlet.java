@@ -183,9 +183,15 @@ public class LoginPortlet extends AbstractLoginPortlet {
 
    @Override
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
+      
       String template;
       String error = request.getParameter(ERRORMESSAGE);
       String send_password = request.getParameter(SEND_PASSWORD);
+      PortletPreferences preferences = request.getPreferences();
+      String registrationpagepath = preferences.getValue(REGISTRATIONPAGEPATH, null);
+      if(StringUtils.isNotEmpty(registrationpagepath)){
+         request.setAttribute(REGISTRATIONPAGEPATH, registrationpagepath);
+      }
       if (StringUtils.isNotBlank(error)) {
          request.setAttribute(ERRORMESSAGE, error);
       }
