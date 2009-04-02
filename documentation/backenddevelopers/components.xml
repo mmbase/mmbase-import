@@ -5,9 +5,10 @@
   <articleinfo>
     <title>The MMBase Component Framework</title>
 
-    <date>2007-02-09</date>
+    <date>2009-04-02</date>
 
-    <edition>$Id: components.xml,v 1.18 2008-08-08 13:40:56 michiel Exp $</edition>
+    <edition>$Id: components.xml,v 1.18 2008/08/08 13:40:56 michiel Exp
+    $</edition>
 
     <authorgroup>
       <author>
@@ -30,6 +31,15 @@
     </authorgroup>
 
     <revhistory>
+      <revision>
+        <revnumber>[0.4]</revnumber>
+
+        <date>[2009-04-02]</date>
+
+        <authorinitials>[AvT]</authorinitials>
+
+        <revremark>[Spellchecking, updates to reflect current situation.]</revremark>
+      </revision>
       <revision>
         <revnumber>[0.3]</revnumber>
 
@@ -88,6 +98,10 @@
     components can be found in the MMBase admin pages. These pages are
     completely rewritten as components and blocks.</para>
 
+    <note>
+      <para>Section 5.2 and further need revision.</para>
+    </note>
+
     <para>To start appreciating component based development, lets turn to an
     example of integrating a poll component into your website. In the MMBase
     releases prior to 1.9 you had to include the poll.jsp into your jsp. The
@@ -121,8 +135,8 @@
     templates.</para>
 
     <para>Components can be accessed from jsp-pages directly or be used in a
-    portlet engine / portal service. For use in jsp-pages MMBase offers tags
-    in the MMBase tag library which put the components into action and render
+    portlet engine/portal service. For use in jsp-pages MMBase offers tags in
+    the MMBase tag library which put the components into action and render
     their content into the pages of a website. When using a portlet engine and
     portal service, like the CMS Container, this engine takes care of
     analyzing the client request, make the selected portlets execute, render
@@ -133,7 +147,7 @@
     <title>"Hello World!" (or rather "Welcome")</title>
 
     <para>Lets start with a simple example. The following configuration file
-    snipet is from the component 'core' and defines one block named "welcome".
+    snippet is from the component 'core' and defines one block named "welcome".
     This block has one renderer that is used in the html &lt;body&gt;
     tag.</para>
 
@@ -174,14 +188,15 @@
 
   <para>A more complicated one is for example one of the blocks of the MMBase
   cache with which you can interact. It enables you to disable, clear or show
-  the several MMBase caches.</para>
+  the several MMBase caches. In 'config/components/core.xml' you will find
+  this block that enables you to configure the cache:</para>
 
   <programlisting>&lt;block name="cache"
        classification="mmbase.tools"
        mimetype="text/html"&gt;
   &lt;title xml:lang="en"&gt;Caches&lt;/title&gt;
   &lt;description xml:lang="en"&gt;This tools hows the performance of the various MMBase
-  caches. You can also (temporary) turn on/off the cache here. For a persistant
+  caches. You can also (temporary) turn on/off the cache here. For a persistent
   change you should change caches.xml.&lt;/description&gt;
   &lt;head&gt;
     &lt;class name="org.mmbase.framework.StringRenderer"&gt;
@@ -198,21 +213,29 @@
   &lt;/body&gt;
 &lt;/block&gt;</programlisting>
 
-  <para>This block contains a css that needs to live in the head of the html
-  page. It also contains several parameters.</para>
+  <para>This block contains an example of a css with some specific classes
+  that are used in this block. The css is automatically included in the head
+  of the html document. Besides it contains several parameters to interact
+  with the block's jsp.</para>
 
   <section id="configuration">
     <title>Configuration of a component</title>
 
     <para>The MMBase Component Frameworks adds a new directory to MMBase's
     configuration. This directory is specified in the mmbaseroot.xml and by
-    default is: '/WEB-INF/config/components'. Note however that after
-    installing MMBase you will not find any files here, because the default
-    config files are stored inside the mmbase.jar.</para>
+    default is: '/WEB-INF/config/components'.</para>
 
-    <para>The core of a component is the component.xml. It specifies the
-    blocks in the component and the renders within each block. The following
-    example provides the ecards.xml for an ecard component.</para>
+    <note>
+      <para>Notice that after installing MMBase you will not find any files
+      here, because the default config files are stored inside the
+      mmbase.jar.</para>
+    </note>
+
+    <para>The core of a component is a component xml which is named after
+    itself, f.e. 'ecards.xml'. It specifies the component's blocks and the
+    renderers within each block. The following is a complete example of a
+    ecards component with three blocks: 'home' (the default block), 'select'
+    and 'done'.</para>
 
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;component
@@ -250,6 +273,11 @@
     available from HttpServletRequest request and HttpServletResponse
     response. Btw. by using request.getSession() the session in which the
     block is rendered can be accessed.</para>
+
+    <para>The jsp files associated with a component should be installed in the
+    directory '/mmbase/components/[name_of_component]'. For example you will
+    find the files that are used by the 'core' components in the directory
+    '/mmbase/components/core'.</para>
   </section>
 
   <section>
@@ -266,23 +294,23 @@
       <programlisting>&lt;mm:component name="core" block="welcome" /&gt;</programlisting>
 
       <para>The default block to be used by &lt;mm:component /&gt; when the
-      block attribute is omitted, can be specified by using the defaultblock
-      attribute of the &lt;component /&gt; tag at the beginning of the
-      component's configuration file. In the "Hello World" example it is
-      defaultblock="welcome". If no defaultblock is specified the first block
-      is considered to be the default block. The default renderer is body. By
-      using the defaults the tag could be rewritten to:</para>
+      block attribute is omitted, can be specified by using the attribute
+      'defaultblock' at the beginning of the component's configuration file.
+      In the "Hello World" example it is 'defaultblock="welcome"'. If no
+      defaultblock is specified the first block is considered to be the
+      default block. The default renderer is body. By using the defaults the
+      tag could be rewritten to:</para>
 
       <programlisting>&lt;mm:component name="core" /&gt;</programlisting>
 
-      <para>When the renderer for a block is not specified, the default block
-      of a component will be returned.</para>
+      <para>When block is not specified in the &lt;mm:component /&gt;, the
+      default block of a component will be returned.</para>
     </section>
 
     <section>
       <title>Render and default css classes</title>
 
-      <para>The renderes that are supported in the present implementation are:
+      <para>The renderers that are supported in the present implementation are:
       head, body, and process.</para>
 
       <para>The process renderer of block is called implicitly, if the head or
@@ -294,14 +322,13 @@
       produce any output.</para>
 
       <para>The renderer for body with mimetype="text/html" by convention
-      should render a &lt;div /&gt; with class="mm_c c_&lt;component
-      name&gt; b_&lt;block name&gt; ${requestScope.className}". The
-      framework will assign a value to request attribute
-      ${requestScope.componentClassName} . For example a framework could
-      render the poll component within the div &lt;class="mm_c c_ecard
-      b_home left"&gt;. The basic implementation of the MMBase framework
-      does not implement ${requestScope.className}, leaving the last part of
-      the class definition empty.</para>
+      should render a &lt;div /&gt; with class="mm_c c_&lt;component name&gt;
+      b_&lt;block name&gt; ${requestScope.className}". The framework will
+      assign a value to request attribute ${requestScope.componentClassName} .
+      For example a framework could render the poll component within the div
+      &lt;class="mm_c c_ecard b_home left"&gt;. The basic implementation of
+      the MMBase framework does not implement ${requestScope.className},
+      leaving the last part of the class definition empty.</para>
 
       <para>The framework also renders an unique id for the &lt;div /&gt;
       containing a component. To summarize each renderer should
@@ -314,38 +341,110 @@
 
       <para>In future the class specification should be extended with classes
       for icons and content images, which would give graphical designers also
-      global control over what happens with icons and content images in a page
-     </para>
-     <para>
-       The following css selectors can be used for general style on produced content.
-       As of 1.9.0, this is only a proposal, mainly copied from classes already used in the 'richtext' application.
-       <ulink
-           url="http://www.mmbase.org/jira/browse/MMB-1388">MMB-1388</ulink>
-     </para>
+      global control over what happens with icons and content images in a
+      page</para>
 
-     <itemizedlist>
-       <listitem><para>img.icon: an image that should be interpreted as some kind of icon.</para></listitem>
-       <listitem><para>img.image-inline: an image that should be rendered inline in the text</para></listitem>
-       <listitem><para>img.image-left: this image can be floated, preferrably to the left</para></listitem>
-       <listitem><para>img.image-right: this image can be floated, preferrable to the right</para></listitem>
-       <listitem><para>img.image-center: this image would like to take up the full width</para></listitem>
-       <listitem><para>div.float.right: a floating div, preferrably to the right</para></listitem>
-       <listitem><para>div.float.left: a floating div, preferrable to the left</para></listitem>
-       <listitem><para>div.note: a div containing a (foot/side)note about the running text.</para></listitem>
-       <listitem><para>div.intermezzo: a div containing a intermezoo on the running text. An elaborated note.</para></listitem>
-       <listitem><para>div.quote: a div containing a quote, illustrating the running text</para></listitem>
-       <listitem><para>div.caption: a div that captures other content, like an image</para></listitem>
-       <listitem><para>table.grid: a table which visible borders</para></listitem>
-       <listitem><para>table.plain: an invisible table</para></listitem>
-       <listitem><para>table.listing: a table that lists a number of similar things</para></listitem>
-       <listitem><para>table.data: a table that contains (numerical) data</para></listitem>
-       <listitem><para>table.wide: a table wanting to take up the full width</para></listitem>
-       <listitem><para>td.align-right:</para></listitem>
-       <listitem><para>td.align-left:</para></listitem>
-       <listitem><para>td.align-center:</para></listitem>
-       <listitem><para>tr.odd:</para></listitem>
-       <listitem><para>tr.even:</para></listitem>
-     </itemizedlist>
+      <para>The following css selectors can be used for general style on
+      produced content. As of 1.9.0, this is only a proposal, mainly copied
+      from classes already used in the 'richtext' application. <ulink
+      url="http://www.mmbase.org/jira/browse/MMB-1388">MMB-1388</ulink></para>
+
+      <itemizedlist>
+        <listitem>
+          <para>img.icon: an image that should be interpreted as some kind of
+          icon.</para>
+        </listitem>
+
+        <listitem>
+          <para>img.image-inline: an image that should be rendered inline in
+          the text</para>
+        </listitem>
+
+        <listitem>
+          <para>img.image-left: this image can be floated, preferrably to the
+          left</para>
+        </listitem>
+
+        <listitem>
+          <para>img.image-right: this image can be floated, preferrable to the
+          right</para>
+        </listitem>
+
+        <listitem>
+          <para>img.image-center: this image would like to take up the full
+          width</para>
+        </listitem>
+
+        <listitem>
+          <para>div.float.right: a floating div, preferrably to the
+          right</para>
+        </listitem>
+
+        <listitem>
+          <para>div.float.left: a floating div, preferrable to the left</para>
+        </listitem>
+
+        <listitem>
+          <para>div.note: a div containing a (foot/side)note about the running
+          text.</para>
+        </listitem>
+
+        <listitem>
+          <para>div.intermezzo: a div containing a intermezoo on the running
+          text. An elaborated note.</para>
+        </listitem>
+
+        <listitem>
+          <para>div.quote: a div containing a quote, illustrating the running
+          text</para>
+        </listitem>
+
+        <listitem>
+          <para>div.caption: a div that captures other content, like an
+          image</para>
+        </listitem>
+
+        <listitem>
+          <para>table.grid: a table which visible borders</para>
+        </listitem>
+
+        <listitem>
+          <para>table.plain: an invisible table</para>
+        </listitem>
+
+        <listitem>
+          <para>table.listing: a table that lists a number of similar
+          things</para>
+        </listitem>
+
+        <listitem>
+          <para>table.data: a table that contains (numerical) data</para>
+        </listitem>
+
+        <listitem>
+          <para>table.wide: a table wanting to take up the full width</para>
+        </listitem>
+
+        <listitem>
+          <para>td.align-right:</para>
+        </listitem>
+
+        <listitem>
+          <para>td.align-left:</para>
+        </listitem>
+
+        <listitem>
+          <para>td.align-center:</para>
+        </listitem>
+
+        <listitem>
+          <para>tr.odd:</para>
+        </listitem>
+
+        <listitem>
+          <para>tr.even:</para>
+        </listitem>
+      </itemizedlist>
 
       <para>On default when no renderer is specified the render 'body' will be
       returned. If there is no body renderer defined in the component the
@@ -359,19 +458,19 @@
 
       <para>The mimetype can be used to indicate that the component is
       rendering special file types like images, attachments, etc. In the
-      example above we could have used mimetype="application/xhtml+xml". Where
-      Firefox interprets this filetype correctly and will check the validity
-      of the page, the present versions of Internet Explorer will prompt the
-      user to download this page. Because of this IE bug it is better to use
-      "text/html".</para>
+      example above we could have used 'mimetype="application/xhtml+xml"'.
+      Where Firefox interprets this filetype correctly and will check the
+      validity of the page, the present versions of Internet Explorer will
+      prompt the user to download this page. Because of this IE bug it is
+      better to use 'text/html'.</para>
 
-      <para>Of course the mime-type of a _component_ does not matter for the
+      <para>Of course the mime-type of a component does not matter for the
       browser. Because you will hardly never send the block unwrapped to a
       client. So, the mimetype of a block only serves as an indication of the
-      type of content it produces. application/xhtml+xml could indicate that
-      besides HTML it is also valid _XML_, and is therefore fit to be used in
-      a page which is application/xhtml+xml itself. Probably the XML can be
-      used just as well in a text/html rendering page. (see also
+      type of content it produces. 'application/xhtml+xml' could indicate that
+      besides HTML it is also valid XML, and is therefore fit to be used in a
+      page which is 'application/xhtml+xml' itself. Probably the XML can be
+      used just as well in a 'text/html' rendering page. (see also
       MMB-1389)</para>
     </section>
 
@@ -443,12 +542,12 @@
       page.</para>
 
       <para>The framework that will be used for rendering the components in an
-      MMBase instance is specified in mmbaseroot.xml, by using the
-      parameter</para>
+      MMBase instance is specified in 'config/modules/mmbaseroot.xml', by
+      using the following parameter:</para>
 
       <programlisting>&lt;property name="framework"&gt; ... &lt;/property&gt;</programlisting>
 
-      <para>If no framework is specified in mmbaseroot.xml the
+      <para>If no framework is specified in 'mmbaseroot.xml' the
       org.mmbase.framework.BasicFramework will be used.</para>
     </section>
 
@@ -456,45 +555,45 @@
       <title>Hello again! and goodbye to &lt;mm:treeinclude /&gt; and
       &lt;mm:treefile /&gt;</title>
 
-      <para>The use of the Framework functionality is shown by the following
-      "Hello again!" example.</para>
+      <para>The use of the MMBase Framework functionality is shown by the
+      following "Hello again!" example. It's component is rather simple and
+      includes just one block which is meant to be rendered in the head of a
+      document:</para>
 
       <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;component
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd"
-    name="helloworld"&gt;
-  &lt;description&gt;Hello Again&lt;/description&gt;
+    name="helloagain"&gt;
+  &lt;description&gt;Hello again! An example component with just one block.&lt;/description&gt;
   &lt;block name="home" mimetype="text/html"&gt;
     &lt;head jsp="hello_head.jsp" /&gt;
   &lt;/block&gt;
 &lt;/component&gt;</programlisting>
 
-      <para>The jsp-include hello_head looks like:</para>
+      <para>That block points to a jsp-include 'hello_head.jsp' with just a
+      title and a css:</para>
 
       <programlisting>&lt;%@page language="java" contentType="text/html;charset=utf-8" session="false"%&gt;
 &lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%&gt;
 &lt;mm:content type="text/html" language="en"&gt;
 &lt;mm:cloud&gt;
-   &lt;title&gt;Hello world&lt;/title&gt;
-   &lt;link rel="stylesheet" type="text/css" href="&lt;mm:url page="css/hello.css" component="hello" /&gt;" /&gt;
+   &lt;title&gt;Hello world!&lt;/title&gt;
+   &lt;mm:link page="hello.css"&gt;&lt;link rel="stylesheet" type="text/css" href="${_}" /&gt;&lt;/mm:link&gt;
 &lt;/mm:cloud&gt;
 &lt;/mm:content&gt;</programlisting>
 
-      <para>The jsp-page that uses this component looks like:</para>
+      <para>A jsp-page that makes use of this component may look like:</para>
 
       <programlisting>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd"&gt;
-&lt;%@page import="org.mmbase.framework.*"%&gt;
-&lt;%@page import="org.mmbase.util.functions.*"%&gt;
 &lt;%@page language="java" contentType="text/html;charset=utf-8" session="false"%&gt;
-&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%&gt;
+&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%&gt;
 &lt;mm:content type="text/html" language="en"&gt;
 &lt;mm:cloud&gt;
-&lt;mm:import externid="component" /&gt;
 &lt;head&gt;
    &lt;!-- parameters are case sensitive -&gt;
-   &lt;mm:component name="hello" block="home" render="head" /&gt;
+   &lt;mm:component name="helloagain" block="home" render="head" /&gt;
 &lt;/head&gt;
 &lt;body&gt;
    &lt;h1&gt;Hello again!&lt;/h1&gt;
@@ -502,9 +601,9 @@
 &lt;/mm:cloud&gt;
 &lt;/mm:content&gt;</programlisting>
 
-      <para>The call to &lt;mm:url page="css/hello.css" component="hello"
-      /&gt; is picked up by the getUrl() method of the framework which is
-      specified for this MMBase instance.</para>
+      <para>The call to &lt;mm:url page="hello.css" /&gt; is picked up by the
+      getUrl() method of the framework which is specified for this MMBase
+      instance.</para>
 
       <para>This method</para>
 
@@ -746,11 +845,11 @@ if (finalpage != null) {
       portlet depends on the objectmodel of the CMS Container it is not
       possible to rewrite it to an MMBase component, that can be reused
       outside the CMS Container. Only portlets that do not depend explicitly
-      on the objectmodel of the CMS Container can be rewritten into components.
-      The present version of the CMS Container in the MMBase CVS does not
-      contain examples of such portlets. But don't get worried: portlets like
-      calender, playlist, etc. which are now being developed will be added as
-      components later.</para>
+      on the objectmodel of the CMS Container can be rewritten into
+      components. The present version of the CMS Container in the MMBase CVS
+      does not contain examples of such portlets. But don't get worried:
+      portlets like calender, playlist, etc. which are now being developed
+      will be added as components later.</para>
     </section>
   </section>
 
@@ -994,7 +1093,7 @@ if (finalpage != null) {
 
                       <itemizedlist>
                         <listitem>
-                          <para>mycomponent.xml</para>
+                          <para>components/mycomponent.xml</para>
                         </listitem>
 
                         <listitem>
