@@ -1,0 +1,8 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_article">
+   <title xml:lang="nl">Nieuwsbrief</title>
+   <title xml:lang="en">Newsletter</title>
+   <title xml:lang="zh">时事通讯</title>
+   <list include="config/newsletter/search_newsletter.xml" />
+</form-schema>

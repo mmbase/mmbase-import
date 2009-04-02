@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder xmlns="http://www.mmbase.org/xmlns/builder"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"
+	extends="object" maintainer="finalist.com" name="dataconversion" version="1">
+	<status>active</status>
+	<searchage>70</searchage>
+	<names>
+		<singular xml:lang="nl">data conversion</singular>
+		<singular xml:lang="en">data conversion</singular>
+		<singular xml:lang="zh">数据迁移</singular>
+      <plural xml:lang="en">data conversion</plural>
+      <plural xml:lang="nl">data conversion</plural>
+      <plural xml:lang="zh">数据迁移</plural>
+	</names>
+	<descriptions>
+		<description xml:lang="nl">data conversion</description>
+		<description xml:lang="en">data conversion</description>
+		<description xml:lang="zh">数据迁移</description>
+	</descriptions>
+	<properties></properties>
+	<fieldlist>
+   	<field>
+			<descriptions>
+				<description xml:lang="nl">uuid</description>
+				<description xml:lang="en">uuid</description>
+				<description xml:lang="zh">uuid</description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">gebruikersID</guiname>
+				<guiname xml:lang="en">uuid</guiname>
+				<guiname xml:lang="zh">uuid</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>6</input>
+					<list>6</list>
+					<search>6</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>id</name>
+				<type key="false" notnull="true" size="36" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl">Database URL</description>
+				<description xml:lang="en">Database URL</description>
+				<description xml:lang="zh">数据库url</description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">URL</guiname>
+				<guiname xml:lang="en">URL</guiname>
+				<guiname xml:lang="zh">数据库URL</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>1</input>
+					<list>1</list>
+					<search>1</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>url</name>
+				<type key="false" notnull="true" size="256" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl">Driver</description>
+				<description xml:lang="en">Driver</description>
+				<description xml:lang="zh">数据库驱动</description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Driver</guiname>
+				<guiname xml:lang="en">Driver</guiname>
+				<guiname xml:lang="zh">数据库驱动</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>2</input>
+					<list>2</list>
+					<search>2</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>driver</name>
+				<type key="false" notnull="false" size="512" state="persistent">STRING</type>
+			</db>
+		</field>
+      <field>
+			<descriptions>
+				<description xml:lang="nl">User</description>
+				<description xml:lang="en">User</description>
+				<description xml:lang="zh">用户名</description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Gebruikersnaam</guiname>
+				<guiname xml:lang="en">User</guiname>
+				<guiname xml:lang="zh">用户名</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>3</input>
+					<list>3</list>
+					<search>3</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>username</name>
+				<type key="false" notnull="false" size="64" state="persistent">STRING</type>
+			</db>
+		</field>
+            <field>
+			<descriptions>
+				<description xml:lang="nl">Password</description>
+				<description xml:lang="en">Password</description>
+				<description xml:lang="zh">密码</description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Wachtwoord</guiname>
+				<guiname xml:lang="en">Password</guiname>
+				<guiname xml:lang="zh">密码</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>4</input>
+					<list>4</list>
+					<search>4</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>password</name>
+				<type key="false" notnull="false" size="32" state="persistent">STRING</type>
+			</db>
+		</field>
+            <field>
+			<descriptions>
+				<description xml:lang="nl">Signal</description>
+				<description xml:lang="en">Signal</description>
+				<description xml:lang="zh">是否完成标记</description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Signal</guiname>
+				<guiname xml:lang="en">Signal</guiname>
+				<guiname xml:lang="zh">Signal</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>5</input>
+					<list>5</list>
+					<search>5</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>signal</name>
+				<type key="false" notnull="false"  state="persistent">INTEGER</type>
+			</db>
+		</field>
+	</fieldlist>
+</builder>

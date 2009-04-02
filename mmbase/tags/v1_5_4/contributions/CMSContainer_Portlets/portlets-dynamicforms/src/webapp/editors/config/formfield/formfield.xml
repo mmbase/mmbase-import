@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="formfield">
+   <title xml:lang="nl">Formulier veld</title>
+   <title xml:lang="en">Form field</title>
+   <title xml:lang="zh">表单框</title>
+   <action include="config/formfield/create_formfield.xml" />
+   <action include="config/formfield/delete_formfield.xml" />
+   <action include="config/formfield/load_formfield.xml" />
+   <lists>
+      <optionlist include="config/option_lists/boolean.xml" />
+      <optionlist include="config/option_lists/inputtypes.xml" />
+   </lists>
+   <steps>
+      <step form-schema="edit_formfield" />
+   </steps>
+   <form-schema id="edit_formfield" extends="config/formfield/edit_formfield.xml" />
+</wizard-schema>

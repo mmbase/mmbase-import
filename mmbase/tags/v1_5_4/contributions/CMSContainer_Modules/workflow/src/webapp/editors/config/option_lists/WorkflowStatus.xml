@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<optionlist name="WorkflowStatus">
+   <option id="draft">
+      <prompt xml:lang="nl">Klad</prompt>
+      <prompt xml:lang="en">Klad</prompt>
+      <prompt xml:lang="zh">草稿</prompt>
+   </option>
+   <option id="finished">
+      <prompt xml:lang="nl">Voltooid</prompt>
+      <prompt xml:lang="en">Voltooid</prompt>
+      <prompt xml:lang="zh">完成</prompt>
+   </option>
+   <option id="approved">
+      <prompt xml:lang="nl">Goedgekeurd</prompt>
+      <prompt xml:lang="en">Goedgekeurd</prompt>
+      <prompt xml:lang="zh">批准</prompt>
+   </option>
+   <option id="published">
+      <prompt xml:lang="nl">Wacht op publicatie</prompt>
+      <prompt xml:lang="en">Wacht op publicatie</prompt>
+      <prompt xml:lang="zh">出版</prompt>
+   </option>
+</optionlist>

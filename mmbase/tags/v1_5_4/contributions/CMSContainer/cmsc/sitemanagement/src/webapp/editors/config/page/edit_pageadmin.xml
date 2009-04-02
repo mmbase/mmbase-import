@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_pageadmin">
+	<title xml:lang="nl">Geavanceerd</title>
+	<title xml:lang="en">Advanced</title>
+	<title xml:lang="zh">高级</title>
+
+	<list include="config/layout/search_page_allowrel_layout.xml" />
+	<list include="config/page/search_page_navrel_page.xml" />
+	<list include="config/portlet/search_page_portletrel_portlet.xml" />
+	<list include="config/stylesheet/search_page_allowrel_stylesheet.xml" />
+	<list include="config/images/search_page_namedrel_images.xml" />
+</form-schema>
