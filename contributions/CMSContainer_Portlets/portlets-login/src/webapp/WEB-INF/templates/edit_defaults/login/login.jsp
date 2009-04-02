@@ -2,6 +2,10 @@
 <%@include file="/WEB-INF/templates/edit_defaults/sections/globals.jsp"%>
 <div class="portlet-config-canvas">
 <script type="text/javascript">
+   function selectRegisterPage(page, path) {
+      document.forms['<portlet:namespace />form'].registrationpage.value = page;
+      document.forms['<portlet:namespace />form'].registrationpagepathuri.value = path;
+   }
    function selectRedirectPage(page, path) {
       document.forms['<portlet:namespace />form'].page.value = page;
       document.forms['<portlet:namespace />form'].pagepath.value = path;
@@ -43,6 +47,24 @@
 					<textarea name="emailText" rows="8" cols="25"><c:out value="${emailText}" /></textarea>
 				</td>
 			</tr>
+        <tr>
+           <td nowrap><fmt:message key="edit_defaults.login.register" />:</td>
+           <td nowrap> 
+               <a href="<c:url value='/editors/site/select/SelectorPage.do?channel=${registrationpage}&type=SelectorExtPage&method=selectRegisterPage' />"
+                  target="selectpage" onclick="openPopupWindow('selectpage', 340, 400)"> 
+                     <img src="<cmsc:staticurl page='/editors/gfx/icons/select.png'/>" alt="<fmt:message key="edit_defaults.channelselect" />"/></a>
+               <a href="javascript:erase('registrationpage');erase('registrationpagepathuri');eraseList('window')">
+                  <img src="<cmsc:staticurl page='/editors/gfx/icons/erase.png'/>" alt="<fmt:message key="edit_defaults.erase"/>"/></a>
+            </td>
+            <td>
+            <mm:cloud>
+               <mm:node number="${registrationpage}" notfound="skip">
+                  <mm:field name="path" id="registrationpagepathuri" write="false" />
+               </mm:node>
+            </mm:cloud>
+            <input type="hidden" name="registrationpage" value="${registrationpage}" />
+            <input type="text" name="registrationpagepathuri" value="${registrationpagepathuri}" disabled="true" />
+         </tr>
         <tr>
            <td nowrap><fmt:message key="edit_defaults.login.redirect" />:</td>
            <td nowrap> 
