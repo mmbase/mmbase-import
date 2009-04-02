@@ -10,6 +10,7 @@ package org.mmbase.applications.crontab.builders;
 import  org.mmbase.applications.crontab.CronEntry;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.SearchUtil;
 import java.util.*;
 
 import org.mmbase.util.logging.*;
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.*;
  * fields. {@link #isActive} is implemented using related 'mmservers' objects.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeCronEntry.java,v 1.7 2009-04-01 09:20:49 michiel Exp $
+ * @version $Id: NodeCronEntry.java,v 1.8 2009-04-02 08:08:57 michiel Exp $
  * @since MMBase-1.8.6
  */
 
@@ -47,8 +48,12 @@ public class NodeCronEntry extends CronEntry {
     }
 
     @Override public String getServers() {
-        NodeIterator servers = getNode().getRelatedNodes("mmservers").nodeIterator();
-        if (! servers.hasNext()) return "";
+        Node jobNode = getNode();
+        NodeIterator servers = jobNode.getRelatedNodes("mmservers").nodeIterator();
+
+        if ((! servers.hasNext()) &&  (! "true".equals(jobNode.getNodeManager().getProperty(CronJobs.MMSERVERS_REQUIRED)))) {
+            servers = SearchUtil.findNodeList(getNode().getCloud(), "mmservers", "state", org.mmbase.module.builders.MMServers.ACTIVE).nodeIterator();
+        }
         StringBuilder bul = new StringBuilder();
         while (servers.hasNext()) {
             Node server = servers.nextNode();
