@@ -55,6 +55,7 @@ function showMessage(message){
 				<mm:notpresent referid="status">
 					<mm:constraint field="status" value="task.status.done" operator="EQUAL" inverse="true" />
 				</mm:notpresent>
+            <mm:distinct />
 				<mm:relatednodes comparator="com.finalist.cmsc.tasks.TaskUrgencyComparator" max="${dashboardTaskSize}" id="resultList" />
 			</mm:relatednodescontainer>
 		</mm:listnodes>
