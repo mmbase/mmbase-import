@@ -9,19 +9,27 @@
  */
 package com.finalist.cmsc.tasks;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.ResourceBundle;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.applications.crontab.AbstractCronJob;
 import org.mmbase.applications.crontab.CronJob;
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.util.HugeNodeListIterator;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.repository.ContentElementUtil;
-import com.finalist.cmsc.security.SecurityUtil;
 
 public class TaskCronJob extends AbstractCronJob implements CronJob {
    private static final Logger log = Logging.getLoggerInstance(TaskCronJob.class.getName());
@@ -72,13 +80,11 @@ public class TaskCronJob extends AbstractCronJob implements CronJob {
       }
 
       if (!usersToNotify.isEmpty()) {
-         Node cloudUserNode = SecurityUtil.getUserNode(cloud);
-
          for (Node user : usersToNotify) {
             NodeQuery taskQuery = SearchUtil.createRelatedNodeListQuery(user, TasksUtil.TASK, TasksUtil.ASSIGNEDREL,
                   TasksUtil.STATUS, TasksUtil.STATUS_INIT, null, null, SearchUtil.SOURCE);
             int numberOfTasks = Queries.count(taskQuery);
-            TasksUtil.sendExpireNotification(user, cloudUserNode, numberOfTasks);
+            TasksUtil.sendExpireNotification(user, null, numberOfTasks);
 
             HugeNodeListIterator taskListIterator = new HugeNodeListIterator(taskQuery);
             while (taskListIterator.hasNext()) {
