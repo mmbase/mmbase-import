@@ -35,7 +35,7 @@
   <filter resource="storage/databases/postgresql.xml">
     <driver-class>org.sourceforge.jxdbcon</driver-class>
   </filter>
-  
+
   <!-- M$ SQL Server -->
   <filter resource="storage/databases/mssql.xml">
     <driver-class>com.microsoft.jdbc.sqlserver</driver-class>
@@ -45,14 +45,24 @@
   <filter resource="storage/databases/oracle.xml">
     <driver-class>oracle.jdbc.driver.OracleDriver</driver-class>
   </filter>
-  
+
   <!-- Informix -->
   <filter resource="storage/databases/informix.xml">
     <driver-class>com.informix.</driver-class>
   </filter>
 
-  <!-- 
-       During boottrap a connection is gotten. If for some reason this must be done with a different URL, 
+  <!-- Derby -->
+  <filter resource="storage/databases/derby.xml">
+    <driver-class>org.apache.derby.</driver-class>
+  </filter>
+
+  <!-- H2 -->
+  <filter resource="storage/databases/h2.xml">
+    <driver-class>org.h2.</driver-class>
+  </filter>
+
+  <!--
+       During boottrap a connection is gotten. If for some reason this must be done with a different URL,
        then this can be configured, based on the driver-class.
   -->
   <url driver-class="org.hsqldb.">jdbc:hsqldb:mem:$DBM;shutdown=true</url>
