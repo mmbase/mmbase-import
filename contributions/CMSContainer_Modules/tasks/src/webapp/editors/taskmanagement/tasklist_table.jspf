@@ -34,7 +34,12 @@
                  <a href="javascript:window.top.openTasksWithTask('<mm:field name="number" />');"><img src="gfx/icons/edit2.png" align="top" alt="<fmt:message key="task.edit"/>" title="<fmt:message key="task.edit"/>"/></a>
                  </c:if>
                  <c:if test="${empty dashboardTaskSize}">
+                 <cmsc-tasks:isdeletable number="${taskId}">
                  <a href="javascript:deleteTask('<mm:field name="number" />');"><img src="../gfx/icons/delete.png" width="16" height="16" title="<fmt:message key="task.delete" />" alt="<fmt:message key="task.delete" />" /></a>
+                 </cmsc-tasks:isdeletable>
+                 <cmsc-tasks:isdeletable number="${taskId}" inverse="true">
+                 <img src="../gfx/icons/delete_gray.gif" width="16" height="16" title="<fmt:message key="task.delete" />" alt="<fmt:message key="task.delete" />" />
+                 </cmsc-tasks:isdeletable>
                  </c:if>
                  </mm:hasrank>
               </td>
