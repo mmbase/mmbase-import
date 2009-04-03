@@ -19,6 +19,12 @@
          <version>${cmsc.version}</version>
          <type>jar</type>
       </dependency>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-portlets-newsletter</artifactId>
+         <version>${cmsc.version}</version>
+         <type>jar</type>
+      </dependency>
      <dependency>
          <groupId>hibernate</groupId>
          <artifactId>ejb3-persistence</artifactId>
