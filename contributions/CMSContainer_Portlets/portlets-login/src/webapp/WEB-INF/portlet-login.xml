@@ -64,4 +64,33 @@
          <keywords>Register</keywords>
       </portlet-info>
    </portlet>
+   <portlet>
+      <description>Unregister Portlet</description>
+      <portlet-name>unregisterportlet</portlet-name>
+      <display-name>UnegisterPortlet</display-name>
+      <portlet-class>com.finalist.cmsc.portlets.UnregisterPortlet</portlet-class>
+        <init-param>
+            <name>template.edit_defaults</name>
+            <value>login/unregister.jsp</value>
+        </init-param>
+        <init-param>
+            <name>template.view</name>
+            <value>login/unregister.jsp</value>
+        </init-param>
+      <supports>
+         <mime-type>text/html</mime-type>
+         <portlet-mode>VIEW</portlet-mode>
+         <portlet-mode>HELP</portlet-mode>
+         <portlet-mode>EDIT_DEFAULTS</portlet-mode>
+         <portlet-mode>DELETE</portlet-mode>
+      </supports>
+      <supported-locale>en</supported-locale>
+      <supported-locale>nl</supported-locale>
+      <resource-bundle>com.finalist.cmsc.portlets.LoginPortlet</resource-bundle>
+      <portlet-info>
+         <title>Unregister Porlet</title>
+         <short-title>Unregister Porlet</short-title>
+         <keywords>unregister</keywords>
+      </portlet-info>
+   </portlet>
 </portlet-app>
