@@ -55,18 +55,7 @@
               </mm:compare>
 
               <mm:compare referid="all_ok" value="true">
-                <mm:import id="all_ok" reset="true">false</mm:import>
-                <mm:node number="$user">
-                  <mm:function name="class" write="false">
-                    <mm:isempty>
-                      <jsp:text>No current classes. Classes are <mm:function name="classes"> </mm:function>
-                      </jsp:text>
-                    </mm:isempty>
-                    <mm:isnotempty>
-                      <mm:import id="all_ok" reset="true">true</mm:import>
-                    </mm:isnotempty>
-                  </mm:function>
-                </mm:node>
+            
 
                 <mm:compare referid="all_ok" value="false">
                   <mm:node number="$user">
