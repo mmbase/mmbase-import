@@ -20,7 +20,6 @@
         <c:set var="isSwapClass" value="true"/>
         <mm:listnodes referid="resultList">
          <c:set var="taskId"><mm:field name="number"/></c:set>
-         <c:if test="${not fn:contains(taskList, taskId)}">
          <tr <c:if test="${isSwapClass}">class="swap"</c:if>>
               <td style="white-space: nowrap;">
                  <mm:hasrank minvalue="basic user">
@@ -84,7 +83,6 @@
             <c:when test="${isSwapClass eq 'false'}"><c:set var="isSwapClass" value="true"/></c:when>
             <c:when test="${isSwapClass eq 'true'}"><c:set var="isSwapClass" value="false"/></c:when>
          </c:choose>
-         </c:if>
         </mm:listnodes>
    </tbody>
 </table>
