@@ -424,6 +424,10 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
          }
       }
       return subscriptionList;
+   }
+
+   public void deleteSubscriptionsByAuthId(Long anthId) {
+      subscriptionCAO.deleteSubscriptionsByAuthId(anthId);
    }  
 
 }

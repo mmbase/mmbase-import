@@ -55,5 +55,7 @@ public interface NewsletterSubscriptionCAO {
    public Set<Node> getTermsByScriptionRecord(int authenticationId);
 
    public int countSubscription(int newsletterId);
+   
+   public void deleteSubscriptionsByAuthId(Long anthId); 
 
 }
