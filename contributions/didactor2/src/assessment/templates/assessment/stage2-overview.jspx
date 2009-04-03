@@ -8,7 +8,7 @@
   <jsp:output omit-xml-declaration="true" />
 	<mm:import id="currentlesson" from="session" externid="currentlesson_${user}_${education}" />
 		
-  <h2>4. Echt belangrijk in mijn leven is</h2>
+  <h2>Echt belangrijk in mijn leven is</h2>
   <div class="goals">
   <mm:node number="$user">
   	<ol>
@@ -71,12 +71,13 @@
 
 	<table cellspacing="0">
 		<tr>
-    	<td class="problemHeaderLeft"><h2>5. Mijn zorgen en problemen</h2>
+    	<td class="problemHeaderLeft"><h2>Mijn zorgen en problemen</h2>
     	
     	</td>
-    	<td class="problemHeaderRight" colspan="7"><h2>6. Hoeveel last had ik er van</h2></td>
+    	<td class="problemHeaderRight" colspan="7"><h2>Hoeveel last had ik er van</h2></td>
     </tr>
-
+	
+		<c:set var="problemCount" value="4" />
     <mm:listnodes orderby="pos" type="problemtypes">
     	<!-- stage2 show edit for solvable problems -->
     	<!-- stage3 show edit for solvable & unimportant problems  -->
@@ -100,12 +101,12 @@
     	</c:if>
     	
       <tr class="problemItems">
-        <td class="problemTypes"><di:translate key="assessment.${_node.key}" /></td>
+        <td class="problemTypes">${problemCount}. <di:translate key="assessment.${_node.key}" /></td>
         <mm:write referid="blocknames" escape="text/plain"/>
       </tr>
       <mm:import externid="sub" />
       <mm:import externid="stage" />
-
+			<c:set var="problemCount" value="${problemCount + 1}" />
       <mm:relatednodescontainer path="related,problems,posrel,people" element="problems">
         <mm:addnode element="people" number="${user}" />
         <mm:sortorder field="posrel.pos" />
