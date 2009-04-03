@@ -77,4 +77,5 @@ public interface NewsletterSubscriptionServices {
 
    public List<Subscription>  getSubscriptions(String[] allowedLetters, int userId) ;
    
+   public void deleteSubscriptionsByAuthId(Long anthId) ;
 }

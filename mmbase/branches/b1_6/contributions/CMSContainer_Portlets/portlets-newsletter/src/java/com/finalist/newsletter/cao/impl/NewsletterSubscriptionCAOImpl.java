@@ -449,4 +449,15 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       }
       return subscribers;
    }
+   
+   public void deleteSubscriptionsByAuthId(Long anthId) {
+      NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
+      Query query = recordManager.createQuery();
+      SearchUtil.addEqualConstraint(query, recordManager.getField("subscriber"), String.valueOf(anthId));
+      List<Node> subscriptions = query.getList();
+      for (Node subscription : subscriptions) {
+         subscription.deleteRelations();
+         subscription.delete();
+      }
+   }
 }
