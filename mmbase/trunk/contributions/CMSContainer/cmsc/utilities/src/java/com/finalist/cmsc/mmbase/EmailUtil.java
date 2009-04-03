@@ -39,10 +39,10 @@ public class EmailUtil {
       }
       
       if (StringUtils.isEmpty(emailFrom)){
-         throw new IllegalStateException("The 'mail.system.email' settings is missing.");
+         throw new IllegalStateException("The 'mail.system.email' setting is missing in the System properties.");
       }      
       if (StringUtils.isEmpty(nameFrom)){
-         throw new IllegalStateException("The 'mail.system.name' settings is missing.");
+         throw new IllegalStateException("The 'mail.system.name' setting is missing in the System properties.");
       }
              
       Node emailNode = cloud.getNodeManager(EMAIL).createNode();
