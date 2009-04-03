@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editcontexts exportsource="mmbase://www.didactor.org/version2.0" timestamp="20050623104506">
+	<node number="522" owner="admin">
+		<name>cursuseditor</name>
+	</node>
+	<node number="523" owner="admin">
+		<name>componenten</name>
+	</node>
+	<node number="524" owner="admin">
+		<name>rollen</name>
+	</node>
+	<node number="525" owner="admin">
+		<name>competentie</name>
+	</node>
+	<node number="526" owner="admin">
+		<name>metadata</name>
+	</node>
+	<node number="527" owner="admin">
+		<name>contentelementen</name>
+	</node>
+	<node number="528" owner="admin">
+		<name>filemanagement</name>
+	</node>
+	<node number="529" owner="admin">
+		<name>toetsen</name>
+	</node>
+	<node number="530" owner="admin">
+		<name>opleidingen</name>
+	</node>
+	<node number="531" owner="admin">
+		<name>docent schermen</name>
+	</node>
+</editcontexts>

@@ -1,0 +1,55 @@
+<mm:content 
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    type="application/xml">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="choseneducation">${education}</mm:import>
+  <mm:import externid="chosenclass" required="true" />
+  <mm:import externid="chosenworkgroup" required="true" />
+  <mm:import externid="chosenstudent" required="true"/>
+  <div>
+    <mm:cloud rank="editor">
+      <mm:node referid="chosenclass">
+        <mm:relatednodes type="mmevents">
+          <mm:field name="start"><mm:time id="starttime" format=":FULL" /></mm:field>
+        </mm:relatednodes>
+      </mm:node>
+      <mm:node id="choseneducation" referid="choseneducation" />
+      <mm:node referid="chosenworkgroup">
+        <mm:nodefunction id="coach" name="coach">
+          <mm:import id="emailcoach"><di:email /></mm:import>
+        </mm:nodefunction>
+      </mm:node>
+      <mm:node id="chosenstudent" referid="chosenstudent" />
+      <mm:url absolute="true" id="site" page="/" />
+      <mm:createnode type="emails" id="email">
+        <mm:setfield name="from"><mm:node referid="user"><di:email /></mm:node></mm:setfield>
+        <mm:setfield name="to"><mm:node referid="chosenstudent"><mm:field name="email" /></mm:node></mm:setfield>
+        <mm:setfield name="subject">
+          <di:translate 
+              arg0="${choseneducation.name}"
+              key="register.welcome_mail_subject" />
+        </mm:setfield>
+        <mm:setfield name="date"><mm:time time="now" /></mm:setfield>
+        <mm:setfield name="mimetype">text/plain</mm:setfield>
+        <mm:setfield name="body">
+          <di:translate 
+              arg0="${choseneducation.name}" 
+              arg1="${site}"
+              arg2="${starttime}"
+              arg3="${chosenstudent.username}"
+              arg4="${emailcoach}"
+              key="register.welcome_mail" />
+        </mm:setfield>
+        <mm:setfield name="type">1</mm:setfield>
+      </mm:createnode>
+      <p>
+        <di:translate 
+            arg0="${chosenstudent.username}"
+            key="register.welcome_mail_wassent" 
+            />
+      </p>
+    </mm:cloud>
+  </div>
+</mm:content>

@@ -1,0 +1,30 @@
+<!-- used in config/metastandard/metastandard.xml -->
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list destination="metastandard" role="related" minoccurs="0" maxoccurs="*" orderby="metastandard.name">
+
+  <title xml:lang="en">Related metastandards</title>
+  <title xml:lang="nl">Bijbehorende metadata standaarden</title>
+  <item>
+    <field name="name" ftype="data">
+      <prompt xml:lang="nl">Naam</prompt>
+      <prompt xml:lang="en">Name</prompt>
+    </field>
+    <field ftype="startwizard" wizardname="config/metastandard/metastandard" />
+  </item>
+
+  <action type="create">
+    <relation destinationtype="metastandard" role="related">
+     </relation>
+  </action>
+
+  <command name="search" nodepath="metastandard" fields="name" age="-1" orderby="number" directions="down" >
+    <prompt xml:lang="nl">Zoeken naar metastandard</prompt>
+    <prompt xml:lang="en">Search for metastandard</prompt>
+    <search-filter>
+      <name xml:lang="nl">Naam bevat</name>
+      <name xml:lang="en">Contains name</name>
+      <search-fields>name</search-fields>
+    </search-filter>
+
+  </command>
+</list>

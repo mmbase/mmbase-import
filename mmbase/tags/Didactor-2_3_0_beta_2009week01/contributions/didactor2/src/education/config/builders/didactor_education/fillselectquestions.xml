@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="fillselectquestions" maintainer="didactor.nl" version="2" extends="questions">
+  <class>nl.didactor.education.builders.MCQuestionBuilder</class>
+  <searchage>31</searchage>
+
+  <names>
+    <singular xml:lang="nl">Fill Select Vraag</singular>
+    <singular xml:lang="en">Fill Select Question</singular>
+    <plural xml:lang="nl">Fill Select Vragen</plural>
+    <plural xml:lang="en">Fill Select Questions</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="nl">Een open vraag, waar de gebruiker zelf een antwoord moet formuleren</description>
+    <description xml:lang="en">An open question, where the user can select his own answer</description>
+  </descriptions>
+
+  <properties>
+    <property name="key:new:name">education.createnewfillselectquestions</property>
+    <property name="key:new:description">education.createnewfillselectquestionsdescription</property>
+  </properties>
+
+
+  <!-- Possible values for the 'layout' field defined in the super-builder:
+     0 = Large field
+     1 = Small field
+  -->
+
+  <fieldlist>
+
+    <field name="textFirst">
+      <descriptions>
+        <description xml:lang="nl">Eerste deel van de zin</description>
+        <description xml:lang="en">Question text</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Eerste deel</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="65535" />
+      </datatype>
+    </field>
+    <field name="textSecond">
+      <gui>
+        <guiname xml:lang="nl">Tweede deel</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="65535" />
+      </datatype>
+    </field>
+    <field name="impos">
+      <gui>
+        <guiname xml:lang="nl">Image position</guiname>
+      </gui>
+      <datatype base="didactor_imageposition" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+    <field name="flashOrText">
+      <descriptions>
+        <description xml:lang="nl">Choose flash file or text</description>
+        <description xml:lang="en">Choose flash file or text</description>
+      </descriptions>
+      <datatype base="didactor_flashortext" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+   </field>
+   <field name="type">
+     <descriptions>
+       <description xml:lang="nl">
+         Type van de Multiple Choice vraag.
+         0 = selecteer 1 antwoord
+         1 = selecteer meerdere antwoorden
+       </description>
+       <description xml:lang="en">
+         Type of the Multiple Choice question.
+         0 = one answers needs to be selected
+         1 = multiple answers need to be selected
+       </description>
+     </descriptions>
+     <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+       <default value="0" />
+       <enumeration>
+         <entry value="0" xml:lang="nl" display="selecteer 1 antwoord" />
+         <entry value="0" xml:lang="en" display="one answer needs to be selected" />
+         <entry value="1" xml:lang="nl" display="selecteer meerder antwoorden" />
+         <entry value="1" xml:lang="en" display="multiple answers need to be selected" />
+       </enumeration>
+     </datatype>
+    </field>
+  </fieldlist>
+</builder>

@@ -1,0 +1,28 @@
+<list destination="metavocabulary" role="related" minoccurs="0" maxoccurs="*" orderby="value" hidecommand="move-up|move-down">
+   <title xml:lang="nl">Bijbehorende metadatawaarde</title>
+   <title xml:lang="en">Related Metavocabulary</title>
+   <item> 
+     <field name="value" ftype="data" dtminlength="1" >
+       <prompt xml:lang="nl">Metadatawaarde</prompt>
+       <prompt xml:lang="en">Metavocabulary</prompt>
+     </field>
+     <field ftype="startwizard" wizardname="config/metavocabulary/metavocabulary" />
+   </item> 
+     
+   <action type="create">
+      <relation destinationtype="metavocabulary" role="related" />
+   </action>
+
+   <command name="startwizard" inline="true" wizardname="config/metavocabulary/metavocabulary" objectnumber="new" />
+         
+   <command name="search" nodepath="metavocabulary" fields="value" age="-1" orderby="value"  directions="up"  >
+      <prompt xml:lang="nl">Zoeken naar metadatawaarde</prompt>
+      <prompt xml:lang="en">Search on metavocabulary</prompt>
+      <search-filter>
+         <name xml:lang="nl">Waarde bevat</name>
+         <name xml:lang="en">Value contains</name>
+         <search-fields>value</search-fields>
+      </search-filter>
+   </command>
+
+</list>

@@ -1,0 +1,38 @@
+<jsp:root
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    version="2.0">
+
+
+  <!--
+      Pure hackery.
+      It is not really very well possible to split up a block in two parts.
+  -->
+  <mm:import externid="_reference" />
+  <mm:import externid="source" />
+  <mm:import externid="self">not</mm:import>
+  <div class="menuItem">
+    <div class="sub">
+      <mm:link page="/c/shoutbox/index" referids="_reference?,source?">
+        <mm:param name="self">not</mm:param>
+        <a href="${_}" class="first ${self eq 'not' ? 'active' : ''}">
+          <jsp:text>Ontvangen</jsp:text>
+        </a>
+      </mm:link>
+      <mm:link page="/c/shoutbox/index" referids="_reference?,source?">
+        <mm:param name="self">only</mm:param>
+        <a href="${_}" class="${self eq 'only' ? 'active' : ''}">
+          <jsp:text>Verzenden &amp;amp; Verzonden</jsp:text>
+        </a>
+      </mm:link>
+      <mm:link page="/c/shoutbox/index" referids="_reference?,source?">
+        <mm:param name="self">both</mm:param>
+        <a href="${_}" class="last ${self eq 'both' ? 'active' : ''}">
+          <jsp:text>Ontvangen &amp;amp; Verzonden</jsp:text>
+        </a>
+      </mm:link>
+    </div>
+  </div>
+</jsp:root>
+

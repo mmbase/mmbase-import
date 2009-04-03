@@ -1,0 +1,76 @@
+<mm:content
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mmstats="http://www.mmbase.org/mmbase-statistics"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    unacceptable="CRIPPLE"
+    postprocessor="none" expires="0" type="application/xhtml+xml">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+    <mm:cloud method="asis">
+
+      <head>
+        <link rel="stylesheet" type="text/css" href="${mm:treelink('/css/base.css', includePath)}" />
+      </head>
+      <body>
+
+
+        <mm:import externid="person" required="true" />
+
+        <mm:node number="$education">
+          <mm:relatednodes id="lessons" type="learnobjects" searchdir="destination" role="posrel" orderby="posrel.pos" />
+          <mm:node referid="person">
+            <h3><di:person /> (<mm:field name="username" />)</h3>
+            <c:set var="totalmean" value="${mmstats:measurement()}" />
+            <mm:listnodes referid="lessons" id="lesson">
+              <mm:tree id="lessonobjects" type="learnobjects" searchdir="destination" role="posrel" />
+              <h4><mm:field name="name" /></h4>
+              <mm:listnodescontainer type="pagestays" id="q">
+                <mm:constraint field="user" value="${person}" />
+                <mm:constraint field="content" operator="in" value="${lessonobjects}" />
+                <mm:listnodes id="pagestays" />
+                <c:set var="sum" value="${mmstats:sum(pagestays, 'duration')}" />
+                <c:choose>
+                  <c:when test="${sum gt 0}">
+                    <mmstats:enter measure="${totalmean}"
+                                   value="${sum}" />
+                    <p><di:translate key="core.pagereports_stayedhere" /> : <fmt:formatNumber value="${sum / 60000}" pattern="0.##" /> min</p>
+                  </c:when>
+                  <c:otherwise>
+                    <p><di:translate key="core.pagereports_notyetvisited" /></p>
+                  </c:otherwise>
+                </c:choose>
+              </mm:listnodescontainer>
+            </mm:listnodes>
+
+            <p>
+              <di:translate key="core.pagereports_average" />
+              <jsp:text>:  ${mmstats:times(totalmean, 1 / 60000)} </jsp:text>
+              <di:translate key="core.pagereports_minperlesson" />
+            </p>
+
+
+            <p>
+            <mm:field name="lastactivity">
+              <mm:fieldinfo type="guiname" />:
+              <mm:time format=":FULL.MEDIUM" />
+            </mm:field>
+            </p>
+            <mm:listnodescontainer type="pagestays">
+              <mm:constraint field="user" value="${person}" />
+              <mm:listnodes id="p" />
+              <p><di:translate key="core.pagereports_total" />: <fmt:formatNumber value="${mmstats:sum(p, 'duration') / 60000}" pattern="0.##" /> min</p>
+            </mm:listnodescontainer>
+
+          </mm:node>
+        </mm:node>
+        <hr />
+        <mm:link page=".">
+          <a href="${_}"><di:translate key="core.back" /></a>
+        </mm:link>
+      </body>
+    </mm:cloud>
+  </html>
+</mm:content>

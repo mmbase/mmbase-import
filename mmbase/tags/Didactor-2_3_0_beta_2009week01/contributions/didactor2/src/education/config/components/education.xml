@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="education"
+    version="1"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
+                        http://www.mmbase.org/xmlns/component.xsd">
+
+
+  <setting name="has_didactor_component">
+    <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  </setting>
+
+  <block name="education_scheams"
+         classification="didactor.wizards.education.schemas"
+         mimetype="application/xml">
+    <body jsp="wizards/education_schemas.jspx" />
+  </block>
+
+  <block name="learnblock_fields"
+         classification="didactor.wizards.learnblocks.fields:0"
+         mimetype="application/xml">
+    <body jsp="wizards/learnblock.fields.jspx" />
+  </block>
+
+  <block name="education_fields"
+         classification="didactor.wizards.educations.fields:0"
+         mimetype="application/xml">
+    <body jsp="wizards/educations.fields.jspx" />
+  </block>
+  <block name="education_lists"
+         classification="didactor.wizards.educations.lists:0"
+         mimetype="application/xml">
+    <body jsp="wizards/educations.lists.jspx" />
+  </block>
+
+  <block name="learnblock_forms_paragraphs"
+         classification="didactor.wizards.learnblocks.forms:10"
+         mimetype="application/xml">
+    <body jsp="wizards/learnblock_paragraphs.form-schema.jspx" />
+  </block>
+
+
+  <block name="learnblock_forms_learnobjects"
+         classification="didactor.wizards.learnblocks.forms:20"
+         mimetype="application/xml">
+    <body jsp="wizards/learnblock_learnobjects.form-schema.jspx" />
+  </block>
+
+
+
+</component>

@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+[
+   <!ENTITY extra_loads SYSTEM "extra_loads.xml">
+   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
+]>
+<wizard-schema id="empty">
+    <title>Open numeral vraag Editor</title>
+
+
+    <action type="create">
+       <object type="opennumeralquestions">
+        <relation destination="$origin" role="posrel" createdir="source"/>
+          <field name="showtitle">1</field>
+          <field name="layout">0</field>
+       </object>
+    </action>
+
+
+    <action type="load">
+        <relation destination="openanswers" role="related" />
+        <relation destination="variables" role="related" />
+        <relation destination="feedback" role="related" />
+        &extra_loads;
+    </action>
+
+    <action type="delete" />
+
+
+    <lists>
+        <optionlist include="config/option_list/boolean.xml" />
+        <optionlist name="layout">
+            <option id="0">Groot veld</option>
+            <option id="1">Klein veld</option>
+        </optionlist>
+    </lists>
+
+
+    <form-schema id="step1">
+        <title>Open numeral vraag invoeren</title>
+        <field name="title" >
+            <prompt>Titel</prompt>
+        </field>
+        <field name="showtitle" ftype="enum">
+           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="en">Show title</prompt>
+           <optionlist select="boolean" />
+        </field>
+
+        <!--  INSERT DESCRIPTION -->
+        <field name="description" rows="8" ftype="html" dtminlength="0">
+            <prompt>Description</prompt>
+        </field>
+        <!-- END INSERT DESCRIPTION -->
+
+        <field name="layout" ftype="enum">
+            <prompt>Layout</prompt>
+            <optionlist select="layout" />
+        </field>
+
+         <!--  INSERT TEXT -->
+        <field name="text" ftype="html" dtminlength="0">
+            <prompt>Tekst</prompt>
+        </field>
+        <!-- END INSERT TEXT -->
+
+
+        <!--  INSERT VARIABLES -->
+
+         <list destination="variables" role="related" ordertype="number" orderby="number">
+            <title>Variables</title>
+            <item>
+                <field name="name" ftype="line">
+                    <prompt>Variable</prompt>
+                    <description>Name of variable</description>
+                </field>
+                <field name="value" ftype="line">
+                    <prompt>Value</prompt>
+                    <description>Value of variable</description>
+                </field>
+            </item>
+
+            <action type="create">
+                <relation role="related">
+                    <object type="variables" />
+                </relation>
+            </action>
+
+            <action type="add">
+                <relation role="related">
+                    <object type="variables" />
+                </relation>
+            </action>
+
+            <command name="search" nodepath="variables" fields="name" age="-1" orderby="number" directions="down">
+                <prompt>Zoeken naar Antwoorden</prompt>
+                <search-filter>
+                    <name>Tekst bevat</name>
+                    <search-fields>name</search-fields>
+                </search-filter>
+            </command>
+
+            <command name="insert" />
+        </list>
+
+ <!-- END INSERT VARIABLES -->
+
+
+
+
+        <!--  INSERT ANSWER -->
+
+         <list destination="openanswers" role="related" ordertype="number" orderby="number">
+            <title>Bijbehorende antwoorden (niet verplicht)</title>
+            <item>
+                <field name="text" ftype="line">
+                    <prompt>Tekst</prompt>
+                    <description>De antwoord tekst</description>
+                </field>
+            </item>
+
+            <action type="create">
+                <relation role="related">
+                    <object type="openanswers" />
+                </relation>
+            </action>
+
+            <action type="add">
+                <relation role="related">
+                    <object type="openanswers" />
+                </relation>
+            </action>
+
+            <command name="search" nodepath="openanswers" fields="text" age="-1" orderby="number" directions="down">
+                <prompt>Zoeken naar Antwoorden</prompt>
+                <search-filter>
+                    <name>Tekst bevat</name>
+                    <search-fields>text</search-fields>
+                </search-filter>
+            </command>
+
+            <command name="insert" />
+        </list>
+
+ <!-- END INSERT ANSWER -->
+
+        <list role="related" extends="config/feedback/feedback-list.xml" />
+    </form-schema>
+
+    &extra_schemas;
+</wizard-schema>

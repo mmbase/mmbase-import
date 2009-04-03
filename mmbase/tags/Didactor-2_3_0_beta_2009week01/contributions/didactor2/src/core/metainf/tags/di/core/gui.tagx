@@ -1,0 +1,15 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:directive.tag description="Displays the 'gui' of a node" />
+
+  <mm:nodeinfo type="gui" write="true">
+    <mm:isempty>
+      <mm:field name="number" />
+    </mm:isempty>
+  </mm:nodeinfo>
+
+</jsp:root>

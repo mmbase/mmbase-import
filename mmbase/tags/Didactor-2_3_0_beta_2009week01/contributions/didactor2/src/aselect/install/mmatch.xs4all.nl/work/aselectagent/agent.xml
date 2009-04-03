@@ -1,0 +1,49 @@
+<xml>
+	<agent>
+		<serviceport>1495</serviceport>
+		<adminport>1946</adminport>
+		<server_communication transferprotocol="raw"/>
+		<admin_gui>false</admin_gui>
+		<truststore>c:\data\aselect\A-Select\1.4.2\work\aselectagent\agent.truststore</truststore>
+		<crypto>
+			<sign_requests>false</sign_requests>
+			<applications_keystore_password>changeit</applications_keystore_password>
+			<signature_algorithm algorithm="SHA1withRSA" provider="Cryptix"/>
+			<providers>
+				<provider id="Cryptix" class="cryptix.jce.provider.CryptixCrypto"/>
+			</providers>
+		</crypto>
+		<logging id="system" target='file'>
+			<level>FINE</level>
+			<target id='file'>
+				<max_file_size>524288</max_file_size>
+				<nr_of_files>4</nr_of_files>
+				<directory>c:\data\aselect\A-Select\1.4.2\log\aselectagent</directory>
+			</target>
+		</logging>
+	</agent>
+	<storagemanager id="session">
+		<expire>600</expire>
+		<interval>10</interval>
+		<max>1000</max>
+		<handler class="org.aselect.system.storagemanager.handler.MemoryStorageHandler" id="memory"/>
+		<storagehandler id="memory"/>
+	</storagemanager>
+	<storagemanager id="ticket">
+		<expire>600</expire>
+		<interval>10</interval>
+		<max>1000</max>
+		<handler class="org.aselect.system.storagemanager.handler.MemoryStorageHandler" id="memory"/>
+		<storagehandler id="memory"/>
+	</storagemanager>
+	<sam>
+		<agent>
+			<resourcegroup id="aselectserver" interval="30">
+				<resource id="as1">
+					<aselect-server-id>aselectserver1</aselect-server-id>
+					<url>http://mmatch.xs4all.nl/aselectserver/server</url>
+				</resource>
+			</resourcegroup>
+		</agent>
+	</sam>
+</xml>

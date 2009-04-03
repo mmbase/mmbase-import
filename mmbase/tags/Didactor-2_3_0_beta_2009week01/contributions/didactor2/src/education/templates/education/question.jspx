@@ -1,0 +1,58 @@
+<mm:content
+    type="application/xml"
+    expires="0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page">
+  <jsp:output omit-xml-declaration="yes" />
+
+  <!--
+      Shows one question.
+
+  -->
+
+  <mm:cloud
+      rank="didactor user">
+
+    <mm:import externid="question"     required="true" />
+    <mm:import externid="learnobject"  required="true" />
+    <mm:node number="${question}">
+      <mm:nodeinfo type="nodemanager" id="nm" write="false" />
+
+      <div class="question ${nm}" id="question_${_node}">
+
+        <!-- make sure there is a 'madetest' object to containe the answers -->
+
+        <mm:import externid="clearmadetest">false</mm:import>
+        <di:copybook><mm:node id="copybookNo" /></di:copybook>
+
+
+        <mm:present referid="copybookNo">
+          <mm:node referid="copybookNo">
+            <mm:nodefunction id="madetest"
+                             name="madetest"
+                             referids="learnobject@test,clearmadetest@clear" />
+          </mm:node>
+
+
+          <mm:include page="${nm}/index.jsp" referids="madetest" />
+
+          <mm:link absolute="server"
+                   page="rate_question.jspx"
+                   referids="question,madetest,learnobject,nm">
+            <a
+                class="answerquestion"
+                href="${_}"
+                >Answer</a>
+          </mm:link>
+        </mm:present>
+        <mm:notpresent referid="copybookNo">
+          <p class="error">No copybook found</p>
+        </mm:notpresent>
+      </div>
+    </mm:node>
+
+  </mm:cloud>
+</mm:content>

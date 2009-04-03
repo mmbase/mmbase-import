@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+[
+   <!ENTITY extra_loads SYSTEM "extra_loads.xml">
+   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
+]>
+<wizard-schema>
+  <title xml:lang="nl">Bestand Invoeren</title>
+  <title xml:lang="en">Enter file</title>
+  
+  <action type="create">
+    <object type="attachments">
+      <field name="showtitle">1</field>
+    </object>
+  </action>
+  
+  <action type="load">
+    <field name="title" />
+    <field name="showtitle" />
+    <field name="description" />
+    <field name="handle" />
+    &extra_loads;
+  </action>
+  
+  <action type="delete" />
+  
+  <lists>
+    <optionlist include="config/option_list/boolean.xml" />
+  </lists>
+  
+  <form-schema id="step1">
+    <title xml:lang="nl">Invoeren bestand</title>
+    <title xml:lang="en">Enter file</title>
+    <field name="title" dtminlength="1" />
+    <field name="showtitle" ftype="enum">
+      <optionlist select="boolean" />
+    </field>
+    <field name="description" rows="8" />
+    
+    <field name="handle" ftype="file" />
+
+  </form-schema>    
+  
+  &extra_schemas;
+</wizard-schema>

@@ -1,0 +1,41 @@
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="descriptionrel" destinationtype="learnblocks"  minoccurs="0" maxoccurs="*" searchdir="both"> 
+  <title xml:lang="nl">Bijbehorende leerblokken</title>
+  <title xml:lang="en">Related learnblocks</title>
+  <item>
+    <field name="name" ftype="data">
+      <prompt xml:lang="nl">Leerblok titel</prompt>
+      <prompt xml:lang="en">Learnblock Name</prompt>
+      <description xml:lang="nl">Naam van het leerblok</description>
+      <description xml:lang="en">Name of the learnblock</description>
+    </field>
+    <field fdatapath="field[@name='description']" rows="8">
+      <prompt xml:lang="nl">Omschrijving van de link</prompt>
+      <prompt xml:lang="en">Description of the link</prompt>
+    </field> 
+    <field wizardname="config/learnblocks/learnblocks" ftype="startwizard" />
+  </item>
+
+  <action type="create">
+    <relation role="descriptionrel" destinationtype="learnblocks" />
+  </action>
+
+  <command name="startwizard" inline="true" wizardname="config/learnblocks/learnblocks" objectnumber="new">
+  </command>
+
+  <command name="search" nodepath="learnobjects,learnblocks" fields="learnobjects.name,learnblocks.intro" age="-1" orderby="learnobjects.number,learnblocks.number" directions="down,down" >
+    <prompt xml:lang="nl">Zoeken naar leerobjecten</prompt>
+    <prompt xml:lang="en">Search for learnobjects</prompt>
+    <search-filter>
+      <name xml:lang="nl">Titel bevat</name>
+      <name xml:lang="en">Name contains</name>
+      <search-fields>learnobjects.name</search-fields>
+    </search-filter>
+    <search-filter>
+      <name xml:lang="nl">Tekst bevat</name>
+      <name xml:lang="en">Text contains</name>
+      <search-fields>learnblocks.intro</search-fields>
+    </search-filter>
+  </command>
+</list>
+

@@ -1,0 +1,48 @@
+<mm:node
+    xmlns:mm-rich="http://www.mmbase.org/tags/mm/rich"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <!--
+      MMBase 'components' will only existing in MMBase &gt; 1.8
+      This tries to do something similar already with mmbase 1.8, just be using a
+      dynamic include (which abuses the 'description' field of the webblock).
+  -->
+  <jsp:output omit-xml-declaration="yes" />
+  <mm:import externid="education" required="true" />
+  <mm:hasnodemanager name="xmlnews">
+    <mm:relatednodescontainer type="xmlnews">
+      <mm:sortorder field="date" direction="down" />
+      <mm:time time="now" id="now" precision="minutes" write="false" />
+      <!--
+      <mm:constraint field="begin" operator="LESS" value="$now" />
+      <mm:constraint field="end"   operator="GREATER" value="$now" />
+      -->
+      <mm:relatednodes>
+        <div class="rich article">
+          <h1><mm:field name="title" /></h1>
+          <h2><mm:field name="subtitle" /></h2>
+          <div class="intro">
+            <p>
+              <span class="date">
+                <mm:field name="date"><mm:time format=":LONG" /></mm:field>
+                <jsp:text> - </jsp:text>
+              </span>
+              <mm:field name="intro" escape="p-ommit-surrounding,links"  />
+            </p>
+          </div>
+          <mm:link referids="_node@article">
+            <mm:param name="col2" value="rich-article" />
+            <mm:param name="col3" value="ignore" />
+            <a class="navigate" href="${_}">&gt;&gt;</a>
+          </mm:link>
+          <hr />
+        </div>
+      </mm:relatednodes>
+    </mm:relatednodescontainer>
+  </mm:hasnodemanager>
+  <mm:hasnodemanager name="xmlnews" inverse="true">
+    <h1>No nodemanager 'xmlnews'</h1>
+  </mm:hasnodemanager>
+</mm:node>

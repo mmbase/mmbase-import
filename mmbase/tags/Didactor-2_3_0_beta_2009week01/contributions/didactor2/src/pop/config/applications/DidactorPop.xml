@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="DidactorPop" maintainer="didactor.nl" version="2" auto-deploy="true">
+    <requirements>
+        <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
+        <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
+        <requires name="DidactorEducation" maintainer="didactor.nl" version="20" />
+        <requires name="DidactorCompetence" maintainer="didactor.nl" version="12" />
+    </requirements>  
+
+    <neededbuilderlist />
+
+    <neededreldeflist />
+
+    <allowedrelationlist />
+
+    <datasourcelist>
+        <datasource builder="components" path="DidactorPop/components.xml" />
+    </datasourcelist>
+
+    <relationsourcelist />
+
+    <contextsourcelist />
+
+    <description></description>
+
+    <install-notice></install-notice>
+
+</application>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<action type="load">
+  <relation destination="people" role="classrel">
+    <object type="people">
+      <field name="firstname" />
+      <field name="lastname" />
+      <relation destinationtype="roles" role="related">
+        <object type="roles"/>
+      </relation>
+    </object>
+    <field name="snumber" />
+  </relation>
+  
+  <relation destination="news" role="related">
+    <object type="news">
+      <field name="title" />
+    </object>
+  </relation>
+  <relation destination="mmevents" role="related" />
+  <relation destination="workgroups" role="related" />
+  <relation destination="educations" role="classrel" />
+</action>

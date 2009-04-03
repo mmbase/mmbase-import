@@ -1,0 +1,140 @@
+<di:html
+    styleClass="assessment"
+    title_key="assessment.assessment_matrix"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    css="/assessment/css/base.css"
+    component="assessmment" >
+
+  <div class="rows">
+
+    <mm:import externid="feedback_n" required="true" />
+    <mm:import externid="student" required="true" />
+    <mm:import externid="coachmode" />
+    <mm:import externid="studentClass">
+      <mm:node referid="student">
+        <mm:relatednodes type="classes" max="1" orderby="number" directions="down">
+          <mm:field name="number" />
+        </mm:relatednodes>
+      </mm:node>
+    </mm:import>
+
+    <di:include page="/assessment/navigation.jspx" />
+
+    <div class="mainContent">
+
+      <div class="contentBodywit">
+        <mm:node number="$feedback_n">
+          <mm:relatednodes type="classrel">
+            <mm:node number="${_node.snumber}" id="owner" />
+            <mm:node number="${_node.dnumber}" id="lesson" />
+          </mm:relatednodes>
+
+          <mm:form page="/assessment/feedback.jspx">
+            <input type="hidden" name="feedback_n" value="${feedback_n}" />
+            <input type="hidden" name="assessment_evaluationtest" value="${assessment_evaluationtest}" />
+            <table>
+              <tr>
+                <td>
+                  <b>
+                    <jsp:text>${lesson.name} </jsp:text>
+                    <di:translate key="assessment.by" />
+                    <jsp:text> </jsp:text>
+                    <mm:node referid="owner">
+                      <di:person />
+                    </mm:node>
+                  </b>
+                </td>
+                <td>
+                  <!-- WTF is this a post? -->
+                  <mm:treefile page="/assessment/index.jsp" objectlist="$includePath" referids="coachmode?,$referids"
+                               write="false" >
+                    <form name="backform" action="${_}" method="post">
+
+                      <input type="submit" class="formbutton" value="${di:translate('assessment.back')}" />
+                    </form>
+                  </mm:treefile>
+                </td>
+              </tr>
+              <c:if test="${_node.status eq -1}">
+                <tr>
+                  <td colspan="2">
+                    <mm:relatednodes type="people" max="1">
+                      <div class="grayBar" style="width:100%;">
+                        <di:translate key="assessment.feedback_by" />
+                        <jsp:text> </jsp:text>
+                        <di:person />
+                      </div>
+                    </mm:relatednodes>
+                    <mm:field name="text"/>
+                  </td>
+                </tr>
+              </c:if>
+
+              <mm:node referid="owner">
+                <di:include page="/assessment/feedback/goals.jspx" />
+              </mm:node>
+
+              <mm:treeinclude page="/assessment/feedback/lesson.jspx" objectlist="$includePath" referids="owner,lesson" />
+
+              <tr>
+                <td colspan="2">
+
+                  <jsp:directive.include file="evaluationtest.jspf" />
+
+                  <mm:present referid="assessment_evaluationtest">
+
+                    <!-- show answers to questions in final test -->
+                    <mm:node referid="assessment_evaluationtest">
+                      <di:copybook student="${owner}" classNumber="${studentClass}">
+                        <mm:node id="copybookNo" />
+                      </di:copybook>
+
+                      <!-- get madetest -->
+                      <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
+                        <mm:constraint field="copybooks.number" referid="copybookNo"/>
+                        <mm:relatednodes max="1">
+                          <mm:node id="madetest" />
+                        </mm:relatednodes>
+                      </mm:relatednodescontainer>
+
+                      <!-- show question -->
+                      <mm:present referid="madetest">
+                        <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
+                          <mm:import id="page" reset="true">/education/<mm:nodeinfo type="type"/>/index.jsp</mm:import>
+                          <mm:treeinclude
+                              debug="html"
+                              page="$page" objectlist="$includePath" referids="$referids">
+                            <mm:param name="question"><mm:field name="number"/></mm:param>
+                            <mm:param name="testnumber"><mm:write referid="assessment_evaluationtest"/></mm:param>
+                            <mm:param name="madetest"><mm:write referid="madetest"/></mm:param>
+                          </mm:treeinclude>
+                        </mm:relatednodes>
+                      </mm:present>
+                    </mm:node>
+                  </mm:present>
+                </td>
+              </tr>
+            </table>
+            <!--
+            <input type="submit" />
+            <mm:valid>
+              VALID
+            </mm:valid>
+            -->
+          </mm:form>
+          <mm:node referid="student">
+              <mm:link page="/c/shoutbox/index/">
+				  <mm:param name="source">${_node}</mm:param>
+				<a href="${_}" name=""><di:translate key="assessment.messages"/></a>
+			  </mm:link>
+          </mm:node>
+
+        </mm:node>
+      </div>
+    </div>
+  </div>
+</di:html>
+

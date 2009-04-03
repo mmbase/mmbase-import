@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="DidactorPoll" maintainer="didactor.nl" version="1" auto-deploy="true">
+  <requirements>
+    <requires name="Poll"   maintainer="mmbase.org"  version="2" />
+  </requirements>
+
+  <neededbuilderlist>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="webblocks"  to="poll"        type="posrel" />
+  </allowedrelationlist>
+
+  <datasourcelist>
+  </datasourcelist>
+
+  <relationsourcelist />
+
+  <contextsourcelist />
+
+  <description></description>
+
+  <install-notice></install-notice>
+</application>

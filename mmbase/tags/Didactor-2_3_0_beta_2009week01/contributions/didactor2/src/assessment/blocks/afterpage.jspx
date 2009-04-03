@@ -1,0 +1,16 @@
+<mm:content
+    type="application/xhtml+xml"
+    language="client" expires="0" postprocessor="none" jspvar="locale"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:relation to="component.assessment">
+    <mm:treefile page="/assessment" objectlist="$includePath" referids="$referids" write="false">
+      <mm:param name="coachmode">false</mm:param>
+      <a href="${_}">
+        <di:translate key="assessment.linktext" />
+      </a>
+    </mm:treefile>
+  </mm:relation>
+</mm:content>

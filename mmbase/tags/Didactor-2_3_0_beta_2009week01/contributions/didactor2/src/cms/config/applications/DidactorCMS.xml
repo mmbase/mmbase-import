@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="DidactorCMS" maintainer="didactor.nl" version="2" auto-deploy="true">
+    <requirements>
+        <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
+        <requires name="DidactorEducation" maintainer="didactor.nl" version="20" />
+    </requirements>  
+
+    <neededbuilderlist>
+  		<builder maintainer="didactor.nl" version="2">pages</builder>
+ 		<builder maintainer="didactor.nl" version="2">providers</builder>
+    </neededbuilderlist>
+
+    <neededreldeflist>
+        <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel" guitargetname="PosRel" builder="posrel" />
+    </neededreldeflist>
+
+    <allowedrelationlist>
+        <relation from="pages" to="pages" type="posrel" />
+        <relation from="providers" to="pages" type="posrel" />
+    </allowedrelationlist>
+
+    <datasourcelist>
+        <datasource builder="components" path="DidactorCMS/components.xml" />
+    </datasourcelist>
+
+    <relationsourcelist />
+
+    <contextsourcelist />
+
+    <description></description>
+
+    <install-notice></install-notice>
+</application>

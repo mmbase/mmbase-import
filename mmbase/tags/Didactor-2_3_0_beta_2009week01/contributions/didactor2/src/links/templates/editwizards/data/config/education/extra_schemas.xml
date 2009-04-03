@@ -1,0 +1,25 @@
+<form-schema id="step_links">
+  <title xml:lang="nl">Links</title>
+  <title xml:lang="en">Links</title>
+
+  <field name="name" ftype="data"/> 
+
+  <list destination="pools" role="posrel" minoccurs="0" maxoccurs="*" ordertype="number"
+        orderby="field[@name='pos']">
+    <title xml:lang="en">Related URL-categories..</title>
+    <title xml:lang="nl">Gerelateerde URL-categorieen...</title>
+    <item>
+      <field name="name" />
+      <field name="description" />
+      <list extends="config/url/urls-posrel.xml" />
+    </item>
+    <command name="insert" />
+    <action type="create">
+      <relation role="posrel">
+        <object type="pools">
+        </object>
+        <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+      </relation>
+    </action>
+  </list>
+</form-schema>

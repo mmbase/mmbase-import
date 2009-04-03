@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    extends="object"
+    name="shouts"
+    maintainer="mmbase.org"
+    version="0"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+
+
+  <searchage>0</searchage>
+  <names>
+    <singular xml:lang="en">Message</singular>
+    <singular xml:lang="nl">Bericht</singular>
+
+    <plural xml:lang="en">Messages</plural>
+    <plural xml:lang="nl">Berichten</plural>
+  </names>
+
+  <fieldlist>
+
+    <field name="from" state="system">
+      <gui>
+        <guiname xml:lang="en">From</guiname>
+        <guiname xml:lang="nl">Van</guiname>
+      </gui>
+      <editor><positions><list>2</list></positions></editor>
+      <datatype base="user" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+      </datatype>
+    </field>
+
+
+    <field name="reference">
+      <gui>
+        <guiname xml:lang="en">Refers</guiname>
+        <guiname xml:lang="nl">Behandelt</guiname>
+      </gui>
+      <descriptions>
+        <description xml:lang="en">A node where this shout is about. This normally only further
+        specifies the 'box' where the shout is in. E.g. we could couple 'shouts' to people, and it
+        serves a simple inbox. But you could also want to talk _about_ another object.</description>
+      </descriptions>
+      <datatype base="shoutbox_references" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="title">
+      <gui>
+        <guiname xml:lang="en">Title</guiname>
+        <guiname xml:lang="nl">Titel</guiname>
+      </gui>
+      <editor><positions><list>3</list></positions></editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+
+    <field name="time" readonly="true">
+      <gui>
+        <guiname xml:lang="en">Time</guiname>
+        <guiname xml:lang="nl">Tijd</guiname>
+      </gui>
+      <editor><positions><list>4</list></positions></editor>
+      <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="body">
+      <gui>
+        <guiname xml:lang="en">Text</guiname>
+        <guiname xml:lang="nl">Tekst</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="65000" />
+      </datatype>
+    </field>
+
+  </fieldlist>
+
+</builder>

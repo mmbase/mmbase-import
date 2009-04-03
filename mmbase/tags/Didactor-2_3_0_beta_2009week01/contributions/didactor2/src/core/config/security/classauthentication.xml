@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE security PUBLIC "-//MMBase//DTD classsecurity config 1.0//EN" "http://www.mmbase.org/dtd/classsecurity_1_0.dtd">
+<security>
+  <authenticate class="nl\.didactor\..*">
+    <property name="rank" value="administrator" />
+  </authenticate>
+  <authenticate class="nl\.redspider\..*">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
+  <authenticate class="uk\.ac\.reload.scormplayer\..*">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
+</security>
+ 

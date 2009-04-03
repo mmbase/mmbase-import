@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <properties>
+    <!--
+        This file contains patterns -> weight, which is used by the Classloader parth of ResourceLoaders
+    -->
+
+    <property name="classloaderpatterns" type="mergingmap">
+      <entry><key>!.*</key><value>100</value></entry>
+    </property>
+  </properties>
+</util>

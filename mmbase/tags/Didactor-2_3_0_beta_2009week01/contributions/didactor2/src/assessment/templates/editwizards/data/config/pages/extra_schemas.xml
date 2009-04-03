@@ -1,0 +1,33 @@
+<form-schema id="step_assessment">
+  <title xml:lang="en">Cross-reference</title>
+  <title xml:lang="nl">Verwijzingen</title>
+  <title xml:lang="fr">Cross-reference</title>
+  <list destination="pages" role="descriptionrel" minoccurs="0" maxoccurs="*"
+    ordertype="string" orderby="name" hidecommand="move-up|move-down" searchdir="destination">
+    <title xml:lang="nl">Paginas waarnaar verwezen wordt</title>
+    <title xml:lang="en">Cross-refered pages</title>
+    <item>
+      <field name="name" ftype="data">
+        <prompt xml:lang="nl">Naam</prompt>
+        <prompt xml:lang="en">Name</prompt>
+        <description xml:lang="nl">Naam van de pagina</description>
+        <description xml:lang="en">Name of the page</description>
+      </field>
+      <field fdatapath="field[@name='description']"  ftype="html" rows="10" />
+      <field wizardname="config/pages/pages" ftype="startwizard" />
+    </item>
+    <action type="create">
+      <relation destinationtype="pages" role="descriptionrel">
+      </relation>
+    </action>
+    <command name="search" nodepath="pages" fields="name" age="-1" orderby="number" directions="down" >
+      <prompt xml:lang="nl">Zoeken naar Paginas</prompt>
+      <prompt xml:lang="en">Search for pages</prompt>
+      <search-filter>
+        <name xml:lang="nl">Naam bevat</name>
+        <name xml:lang="en">Name contains</name>
+        <search-fields>name</search-fields>
+      </search-filter>
+    </command>
+  </list>
+</form-schema>

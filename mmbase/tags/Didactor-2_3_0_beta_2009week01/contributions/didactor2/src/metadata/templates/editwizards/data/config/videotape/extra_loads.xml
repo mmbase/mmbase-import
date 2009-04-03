@@ -1,0 +1,28 @@
+        <relation destination="metadata" role="related">
+          <object type="metadata">
+           <relation destination="metalangstring" role="posrel">
+              <object type="metalangstring">
+                <field name="number"/>
+                <field name="language"/>
+                <field name="value"/>
+              </object>
+            </relation>
+           <relation destination="metadate" role="posrel">
+              <object type="metadate">
+                <field name="number"/>
+                <field name="value"/>
+              </object>
+            </relation>
+           <relation destination="metavocabulary" role="posrel">
+              <object type="metavocabulary">
+                <field name="number"/>
+                <field name="value"/>
+              </object>
+            </relation>
+            <relation destination="metadefinition" role="related">
+              <object type="metadefinition">
+                <relation destination="metavocabulary" role="related"/>
+              </object>
+            </relation>
+            </object>
+        </relation>

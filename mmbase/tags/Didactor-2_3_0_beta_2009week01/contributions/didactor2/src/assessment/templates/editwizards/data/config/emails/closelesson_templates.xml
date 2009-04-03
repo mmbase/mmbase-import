@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title xml:lang="nl">Email-sjabloon voor bij het sluiten van een les.</title>
+  <title xml:lang="en">Email template</title>
+
+  <description xml:lang="nl">{0}: Naam van de les. {1}: Naam van de student.</description>
+  <description xml:lang="en">{0}: Name of the lesson. {1}: Name of the student</description>
+
+  <action type="create">
+    <object type="emails">
+      <field name="type">TYPE_TEMPLATE</field>
+    </object>
+  </action>
+
+  <action type="load">
+
+  </action>
+
+  <action type="delete" />
+
+  <form-schema>
+    <field name="to" />
+    <field name="from" />
+    <field name="subject" />
+    <field name="body" />
+  </form-schema>
+
+
+</wizard-schema>

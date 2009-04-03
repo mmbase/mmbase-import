@@ -1,0 +1,25 @@
+<component
+    xmlns="http://www.mmbase.org/xmlns/didactor-component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/didactor-component http://www.mmbase.org/xmlns/didactor-component.xsd"
+
+    name="assessment" templatepath="assessment" templatebar="provider" barposition="200">
+
+  <scope name="component" referid="component"/>
+
+  <scope name="providers" referid="provider"/>
+
+  <scope name="educations" referid="education">
+    <setting name="relate_learnblocks" type="boolean" default="false" />
+    <setting name="send_email"         type="boolean" default="true" />
+    <setting name="send_student_email"  type="boolean" default="true" />
+    <setting name="needs_feedback_to_close_next_lesson"  type="boolean" default="false" />
+
+
+    <setting name="opens_stage1-goals"     type="string"  default="" />
+    <setting name="opens_stage2-problems"  type="string"  default="" />
+    <setting name="opens_stage3-problems"  type="string"  default="" />
+    <setting name="opens_stage4-problems"  type="string"  default="" />
+  </scope>
+
+</component>

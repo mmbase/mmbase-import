@@ -1,0 +1,60 @@
+<xml>
+   <authspserver>
+      <keystore_password>jelAfeHa</keystore_password>
+      <organization_friendly_name>A-Select 1.4.2 AuthSP Server</organization_friendly_name>
+      <shared_secret>aselect_fan</shared_secret>
+      <crypto>
+      	<signature_algorithm provider="Cryptix" algorithm="SHA1withRSA"/>
+      	<providers>
+      		<provider id="Cryptix" class="cryptix.jce.provider.CryptixCrypto"/>        
+      	</providers>
+      </crypto>
+      <logging id="system" target='file'>
+      	<level>FINE</level>
+      	<target id='file'>
+      		<max_file_size>524288</max_file_size>
+      		<nr_of_files>4</nr_of_files>
+      		<directory>c:/data/aselect/A-Select/1.4.2/log/authspserver/</directory>
+      	</target>
+      </logging>
+      <logging id="authentication" target="file">			
+      	<target id='file'>
+      		<max_file_size>524288</max_file_size>
+      		<nr_of_files>4</nr_of_files>				
+      		<directory>c:/data/aselect/A-Select/1.4.2/log/authspserver/</directory>
+      	</target>
+      </logging>
+   </authspserver>
+
+	<authsp id="Ldap">
+      <failure_handling>aselect</failure_handling>
+      <allowed_retries>3</allowed_retries>
+      <back-end_server realm="@edu.roczeeland.nl">
+         <url>ldap://80.127.88.230:389</url>
+         <!--	Defines the transport layer protocol to the LDAP server.
+         		Specify "simple" or "ssl". -->
+         <method>simple</method>
+         <!--	Defines the LDAP driver. The 
+         		com.sun.jndi.ldap.LdapCtxFactory driver is supplied with
+         		A-Select.	-->
+         <driver>com.sun.jndi.ldap.LdapCtxFactory</driver>
+         
+         <!--	Defines base DN in the LDAP server. Example:
+         		"ou=users,ou=aselect,dc=domain,dc=com". -->
+         <base_dn>o=rocz</base_dn>
+         
+         <!--	Defines the DN for the user. Example: "cn". -->
+         <user_dn>cn</user_dn>
+         
+         <!--	Specifies the DN of the account that you have created for 
+         		the LDAP AuthSP to fetch user attributes. You can use the
+         		same account that the A-Select Server uses.	-->
+         <!-- <security_principal_dn>CN=aselect administrator,CN=Users,DC=domain,DC=com</security_principal_dn> -->
+         <!--	Specifies the password for the LDAP AuthSP account to use.	-->
+         <!-- <security_principal_password>changeit</security_principal_password> -->
+      </back-end_server>
+      <simple_protocolhandler>org.aselect.authspserver.authsp.ldap.LDAPSimpleProtocolHandler</simple_protocolhandler>
+      <ssl_protocolhandler>org.aselect.authspserver.authsp.ldap.LDAPSSLProtocolHandler</ssl_protocolhandler>
+  </authsp>
+	
+</xml>

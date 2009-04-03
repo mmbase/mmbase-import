@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title>Portal Pagina's Map Editor</title>
+
+  <action type="create">
+    <object type="portalpagesnodes">
+      <relation role="childppnn" destinationtype="portalpagesnodes" destination="{$origin}" createdir="source"/>
+    </object>
+  </action>
+
+  <action type="load">
+    <object type="portalpagesnodes"/>
+    <relation destinationtype="simplecontents" role="related"/>
+    <relation destinationtype="portalpagesnodes" role="childppnn"/>
+  </action>
+
+  <action type="delete" />
+
+  <form-schema id="step1">
+    <title xml:lang="nl">Naam</title>
+    <title xml:lang="en">Name</title>
+
+    <field name="name"  />
+    <field name="active" />
+    <field name="body" ftype="html" />
+    <field name="order_number"  />
+    <list role="related" destination="simplecontents" minoccurs="0" maxoccurs="*">
+      <title>Content</title>
+      <!-- Show the 'item' in a list (the object) -->
+      <item>
+        <field name="title" />
+        <field wizardname="config/portalpages/simplecontents" ftype="startwizard" />
+      </item>
+      <command name="startwizard" inline="true" wizardname="config/portalpages/simplecontents" objectnumber="new" />
+      <command name="search" nodepath="simplecontents" fields="title" age="-1">
+        <prompt>Search Content</prompt>
+        <search-filter>
+          <name>titel bevat</name>
+          <search-fields>title</search-fields>
+        </search-filter>
+      </command>
+      <action type="create">
+        <relation destinationtype="simplecontents" role="related" >
+          <object type="simplecontents"/>
+        </relation>
+      </action>
+      <action type="add">
+        <relation destinationtype="simplecontents" role="related" />
+      </action>
+    </list>
+  </form-schema>
+  <form-schema id="step2">
+    <title xml:lang="nl">Alineas invoeren</title>
+    <title xml:lang="en">Enter paragraphs</title>
+
+    <field name="name" ftype="data"/>
+    <list extends="config/paragraphs/add_paragraphs_posrel.xml"/>
+  </form-schema>
+</wizard-schema>

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="DidactorNews" maintainer="didactor.nl" version="4" auto-deploy="true">
+    <requirements>
+        <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
+        <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
+        <requires name="DidactorResources" maintainer="didactor.nl" version="2" />
+        <requires name="DidactorPortalPages" maintainer="didactor.nl" version="2" />
+    </requirements>  
+
+    <neededbuilderlist>
+        <builder maintainer="didactor.nl" version="2">navigationnodes</builder>
+        <builder maintainer="didactor.nl" version="2">newsnodes</builder>        
+	    <builder maintainer="didactor.nl" version="2">newscontainers</builder>
+        <builder maintainer="didactor.nl" version="2">simplecontents</builder>
+        <builder maintainer="didactor.nl" version="2">images</builder>
+        <builder maintainer="didactor.nl" version="2">roles</builder>
+        <builder maintainer="didactor.nl" version="2">educations</builder>
+        <builder maintainer="didactor.nl" version="2">insrel</builder>
+        <builder maintainer="didactor.nl" version="2">posrel</builder>
+        <builder maintainer="didactor.nl" version="2">paragraphs</builder>
+    </neededbuilderlist>
+
+    <neededreldeflist>
+        <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />       
+        <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="PosRel" guitargetname="PosRel" builder="posrel" />
+        <reldef source="pos2rel" target="pos2rel" direction="bidirectional" guisourcename="Pos2Rel" guitargetname="Pos2Rel" builder="pos2rel" />
+    </neededreldeflist>
+
+    <allowedrelationlist>
+        <relation from="newsnodes" to="simplecontents" type="related" />
+        <relation from="simplecontents" to="newsnodes" type="related" />
+        <relation from="newscontainers" to="newsnodes" type="related" />
+        <relation from="newsnodes" to="newscontainers" type="related" />        
+        <relation from="simplecontents" to="images" type="posrel" /> 
+        <relation from="newsnodes" to="educations" type="related" />       
+        <relation from="newsnodes" to="roles" type="related" />
+        
+        <relation from="newsnodes"  to="paragraphs"  type="posrel" />
+        <relation from="paragraphs" to="images"      type="pos2rel" />
+        <relation from="paragraphs" to="attachments" type="posrel" />
+        <relation from="paragraphs" to="urls"        type="posrel" />
+    </allowedrelationlist>
+
+    <datasourcelist>
+        <datasource builder="components" path="DidactorNews/components.xml" />
+    </datasourcelist>
+
+    <relationsourcelist />
+
+    <contextsourcelist />
+
+    <description></description>
+
+    <install-notice></install-notice>
+</application>

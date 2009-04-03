@@ -1,0 +1,43 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:directive.tag 
+      description="Provides an '_component' variable in its body. The component is defined by the name or number attribute, or if both empty, by a surrounding di:component."
+      import="nl.didactor.component.Component" />
+  <jsp:directive.attribute name="name"    /> 
+  <jsp:directive.attribute name="number"    /> 
+  <jsp:directive.variable name-given="_component" variable-class="nl.didactor.component.Component"  />
+
+  <mm:cloud>
+    <c:if test="${! empty number}">
+      <mm:import id="name" reset="true"><mm:node number="${number}"><mm:field name="name" /></mm:node></mm:import>
+    </c:if>
+    <jsp:scriptlet>
+      Object prevValue = request.getAttribute("_component");
+    </jsp:scriptlet>
+    
+    <c:choose>
+      <c:when test="${empty name}">
+        <jsp:scriptlet>jspContext.setAttribute("_component", prevValue);</jsp:scriptlet>
+      </c:when>
+      <c:otherwise>
+        <mm:write referid="name" jspvar="name" vartype="string" write="false">
+          <jsp:scriptlet>
+            Component comp = Component.getComponent(name);
+            jspContext.setAttribute("_component", comp);
+            request.setAttribute("_component", comp);
+          </jsp:scriptlet>
+        </mm:write>
+      </c:otherwise>
+    </c:choose>
+    
+    <jsp:doBody />
+    
+    <jsp:scriptlet>
+      request.setAttribute("_component", prevValue);
+    </jsp:scriptlet>
+  </mm:cloud>
+
+</jsp:root>
