@@ -71,7 +71,7 @@ See http://www.MMBase.org/license
     <jstl.version>1.2</jstl.version>
     <taglib-standard.version>1.1.2</taglib-standard.version>
 
-    <log4j.version>1.2.13</log4j.version>
+    <log4j.version>1.2.14</log4j.version>
 
     <surefire.fork.mode>once</surefire.fork.mode>
     <surefire.format>brief</surefire.format>
@@ -81,7 +81,8 @@ See http://www.MMBase.org/license
 
     <junit.version>4.4</junit.version>
 
-    <mmbase.version>${project.version}</mmbase.version>
+    <mmbase.version>1.9-SNAPSHOT</mmbase.version>
+    <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
 
     <netbeans.hint.deploy.server>gfv3</netbeans.hint.deploy.server>
     <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
@@ -806,5 +807,5 @@ See http://www.MMBase.org/license
       </build>
     </profile>
   </profiles>
- 
+
 </project>
