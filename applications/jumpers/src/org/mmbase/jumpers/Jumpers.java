@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: Jumpers.java,v 1.10 2008-06-30 15:07:27 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.11 2009-04-03 15:20:33 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -275,6 +275,10 @@ public class Jumpers extends MMObjectBuilder {
     private String getJumpByField(String fieldName, String key) {
         NodeSearchQuery query = new NodeSearchQuery(this);
         CoreField field = getField(fieldName); // "name");
+        if (field == null) {
+            log.error("No field " + fieldName + " in jumpers");
+            return null;
+        }
         StepField queryField = query.getField(field);
         StepField numberField = query.getField(getField(FIELD_NUMBER));
         query.addSortOrder(numberField); // use 'oldest' jumper
