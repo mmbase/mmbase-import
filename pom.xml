@@ -74,10 +74,21 @@ See http://www.MMBase.org/license
              <mainClass>org.mmbase.Version</mainClass>
            </manifest>
            <manifestEntries>
-             <mode>development</mode>
              <url>${pom.url}</url>
-             <Build-Date>${timestamp}</Build-Date>
            </manifestEntries>
+           <manifestSections>
+             <manifestSection>
+               <name>org/mmbase</name>
+               <manifestEntries>
+                 <Vendor>MMBase Community</Vendor>
+                 <URL>http://www.mmbase.org</URL>
+                 <Comment>The MMBase Content Management System</Comment>
+                 <Version>${project.version}.${timestamp}</Version>
+                 <Distribution>${project.version}</Distribution>
+                 <Build-Date>${timestamp}</Build-Date>
+               </manifestEntries>
+             </manifestSection>
+           </manifestSections>
          </archive>
        </configuration>
      </plugin>
