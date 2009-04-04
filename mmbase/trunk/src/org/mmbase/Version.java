@@ -10,6 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase;
 
 import java.io.*;
+import java.util.jar.*;
+import java.net.*;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * MMBase version reporter. The only goal of this class is providing the current version of
@@ -17,9 +22,11 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.48 2008-10-29 20:57:14 michiel Exp $
+ * @version $Id: Version.java,v 1.49 2009-04-04 09:44:11 michiel Exp $
  */
 public class Version {
+
+    private static final Logger log = Logging.getLoggerInstance(Version.class);
 
     /**
      * Get Version Control tag
@@ -75,18 +82,12 @@ public class Version {
      */
     public static String getBuildDate() {
         String resource = "";
-        InputStream builddate = Version.class.getResourceAsStream("builddate.properties");
-        if (builddate != null) {
-            try {
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(builddate));
-                resource =  buffer.readLine();
-                buffer.close();
-            } catch (IOException e) {
-                // error
-                resource = "" + e;
-            }
+        Manifest manifest = getManifest();
+        if (manifest != null) {
+            return manifest.getAttributes("org/mmbase").getValue("Build-Date");
+        } else {
+            return "";
         }
-        return resource;
     }
 
     /**
@@ -116,6 +117,7 @@ public class Version {
         return "";
     };
 
+
     /**
      * Returns the version of this MMBase.
      * @return version of this MMBase
@@ -130,6 +132,33 @@ public class Version {
         }
     }
 
+
+    private static final String VERSION_CLASS = "org/mmbase/Version.class";
+    private static Manifest manifest;
+    private static boolean manifestLoaded = false;
+    /**
+     * Returns the Manifest of the jar in which this version is contained. Or <code>null</code> if
+     * it is not in a jar.
+     * @since MMBase-1.9.1
+     */
+    public static Manifest getManifest() {
+        if (! manifestLoaded) {
+            try {
+                URL url = Version.class.getClassLoader().getResource(VERSION_CLASS);
+                String u = url.toString();
+                String[] parts = u.split("!", 2);
+                if (parts.length == 2) {
+                    URL jarUrl = new URL(parts[0] + "!/");
+                    JarURLConnection jarConnection = (JarURLConnection)jarUrl.openConnection();
+                    manifest = jarConnection.getManifest();
+                }
+            } catch (IOException ioe) {
+                log.warn(ioe);
+            }
+            manifestLoaded = true;
+        }
+        return manifest;
+    }
 
     /**
      * Prints the version of this mmbase on stdout.
