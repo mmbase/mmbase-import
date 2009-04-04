@@ -506,7 +506,12 @@ See http://www.MMBase.org/license
             <resolutionIds>Fixed</resolutionIds>
             <statusIds>Resolved, Closed</statusIds>
           </configuration>
-      </plugin>
+        </plugin>
+        <plugin>
+          <groupId>com.keyboardsamurais.maven</groupId>
+          <artifactId>maven-timestamp-plugin</artifactId>
+          <version>1.0</version>
+        </plugin>
 
       </plugins>
 
