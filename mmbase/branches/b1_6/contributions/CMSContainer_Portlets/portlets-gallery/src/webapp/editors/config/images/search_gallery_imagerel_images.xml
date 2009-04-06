@@ -11,11 +11,6 @@
          <prompt xml:lang="nl">Titel</prompt>
          <prompt xml:lang="zh">标题</prompt>
       </field>
-	    <field name="description" ftype="data" rows="4">
-         <prompt xml:lang="en">Description</prompt>
-         <prompt xml:lang="nl">Omschrijving</prompt>
-         <prompt xml:lang="zh">描述</prompt>
-      </field>
 	    <field name="handle" ftype="imagedata">
          <prompt xml:lang="en">Image</prompt>
          <prompt xml:lang="nl">Afbeelding</prompt>
