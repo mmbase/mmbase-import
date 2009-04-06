@@ -11,8 +11,8 @@
       longer that 'service', in which case it will be logged on 'service', and so on.
   -->
   <properties>
-    <property name="debug">1</property>
-    <property name="service">5</property>
+    <property name="debug">50</property>
+    <property name="service">100</property>
     <property name="info">500</property>
     <property name="warn">2000</property>
     <property name="error">5000</property>
@@ -21,7 +21,7 @@
     <!--
         java.text.DecimalFormat pattern used to log a duration (in ms)
     -->
-    <property name="durationFormat">#.00</property>
+    <property name="durationFormat">0.00</property>
 
   </properties>
 </util>
