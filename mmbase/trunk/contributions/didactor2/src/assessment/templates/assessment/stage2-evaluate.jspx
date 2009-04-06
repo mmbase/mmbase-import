@@ -86,10 +86,10 @@
 </div>
 
 	<div class="submitItems">
-		<input type="button" class="educationButton" value="opslaan" onclick="window.location.reload()"/><jsp:text>&amp;nbsp;|&amp;nbsp;</jsp:text>
+		<a href="#" class="formActionLinks" onclick="window.location.reload()">opslaan</a><jsp:text>&amp;nbsp;|&amp;nbsp;</jsp:text>
 		<mm:link page="/homework/">
 			<mm:param name="sub">assessment_overview</mm:param>
-            <input type="button" class="educationButton" value="terug naar problemen aanpakken" onclick="window.location='${_}'" name="" />
+            <a href="#" class="formActionLinks" onclick="window.location='${_}'">terug naar problemen aanpakken</a>
      </mm:link>
 	</div>
 </div>
