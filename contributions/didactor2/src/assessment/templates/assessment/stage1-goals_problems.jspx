@@ -25,7 +25,7 @@
                           role="posrel" orderby="posrel.pos" />
     </mm:treefile>
   </mm:node>
-    <input type="button" class="educationButton" value="opslaan" onclick="window.location.reload()"/>
+    <a href="#" class="formActionLinks" onclick="window.location.reload()">opslaan</a>
   <!-- problems -->
   
   <h2>2. Uw problemen</h2>
@@ -47,7 +47,7 @@
       </mm-sr:relatednodes>
     </mm:treefile>
   </mm:node>  
-  <input type="button" class="educationButton" value="opslaan" onclick="window.location.reload()"/>
+  <a href="#" class="formActionLinks" onclick="window.location.reload()">opslaan</a>
   
   <!-- categorize problems -->
   <h2>3. Soort probleem en hoeveel last heeft u er van</h2>
