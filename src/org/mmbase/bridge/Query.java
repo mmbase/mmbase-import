@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.48 2009-01-12 13:32:33 michiel Exp $
+ * @version $Id: Query.java,v 1.49 2009-04-06 18:45:56 andre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
@@ -187,7 +187,7 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
 
 
     /**
-     * Create a contraint (for use with this Query object). The argument is a string, as also can be
+     * Create a constraint (for use with this Query object). The argument is a string, as also can be
      * used as an argument of the 'non-query' getList. This should be considered legacy.
      * @param s String with LegacyConstraint
      * @return LegacyConstraint
@@ -197,14 +197,14 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
     LegacyConstraint createConstraint(String s);
 
     /**
-     * Create a contraint (for use with this Query object). The given field must be 'null'.
+     * Create a constraint (for use with this Query object). The given field must be 'null'.
      * @param f Stepfield
      * @return FieldNullConstraint
      */
     FieldNullConstraint createConstraint(StepField f);
 
     /**
-     * Create a contraint (for use with this Query object). The given field must equal the given
+     * Create a constraint (for use with this Query object). The given field must equal the given
      * value 'v'.
      * @param f field
      * @param v value
@@ -213,7 +213,7 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
     FieldValueConstraint createConstraint(StepField f, Object v);
 
     /**
-     * Create a contraint (for use with this Query object). The given field and the given
+     * Create a constraint (for use with this Query object). The given field and the given
      * value 'v', combined with given operator must evaluate to true.
      * @param f field
      * @param op operator
@@ -223,7 +223,7 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
     FieldValueConstraint createConstraint(StepField f, int op, Object v);
 
     /**
-     * Create a contraint (for use with this Query object). The given date field and the given
+     * Create a constraint (for use with this Query object). The given date field and the given
      * value 'v', combined with given operator must evaluate to true for the specified date part.
      * @param f field
      * @param op operator
@@ -234,7 +234,7 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
     FieldValueConstraint createConstraint(StepField f, int op, Object v, int part);
 
     /**
-     * Create a contraint (for use with this Query object). The two given fields , combined with
+     * Create a constraint (for use with this Query object). The two given fields , combined with
      * given operator must evaluate to true.
      * @param f field
      * @param op operator
@@ -244,7 +244,7 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
     CompareFieldsConstraint createConstraint(StepField f, int op, StepField  v);
 
     /**
-     * Create a contraint (for use with this Query object). The given field must lie between the
+     * Create a constraint (for use with this Query object). The given field must lie between the
      * two given values.
      * @param f field
      * @param o1 value one
@@ -254,7 +254,7 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
     FieldValueBetweenConstraint createConstraint(StepField f, Object o1, Object o2);
 
     /**
-     * Create a contraint (for use with this Query object). The given field value must be contained
+     * Create a constraint (for use with this Query object). The given field value must be contained
      * by the given set of values. If the given set is empty, a FieldValueInConstraint will be
      * constructed for the number field in stead ('number IN (-1)'), which ensures that also in that
      * case the logical thing will happen. ('<field> IN ()' fails in most databases).
@@ -278,7 +278,7 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
      * Changes the given constraint's 'inverse' (if applicable). Default it is (of course) false.
      * @param c constraint
      * @param i inverse
-     * @return Inversed contraint
+     * @return Inversed constraint
      */
     Constraint setInverse(Constraint c, boolean i);
 
@@ -374,7 +374,7 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
 
     /**
      * Creates an unused aggregate clone of this query. If this query is not itself aggregated, all
-     * fields are removed (but the contraints on them remain), and you can add aggregated fields
+     * fields are removed (but the constraints on them remain), and you can add aggregated fields
      * then.
      * @return Cloned Query
      */
