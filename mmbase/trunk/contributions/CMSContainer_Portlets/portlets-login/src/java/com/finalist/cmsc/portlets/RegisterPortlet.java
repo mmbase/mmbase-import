@@ -42,6 +42,7 @@ public class RegisterPortlet extends AbstractLoginPortlet {
    public static final String ACEGI_SECURITY_FORM_PASSWORDCONF_KEY = "passwordConfirmation";
    public static final String ACEGI_SECURITY_FORM_TERMS = "agreedToTerms";
    public static final String ACEGI_SECURITY_DEFAULT = "defaultmessages";
+   public static final String AUTHENTICATION_ID_KEY = "authenticationId";
    public static final String GROUPNAME = "groupName";
 
    public static final String ALLGROUPNAMES = "allGroupNames";
@@ -94,7 +95,6 @@ public class RegisterPortlet extends AbstractLoginPortlet {
       String infix = request.getParameter(ACEGI_SECURITY_FORM_INFIX_KEY);
       String lastName = request.getParameter(ACEGI_SECURITY_FORM_LASTNAME_KEY);
       String passwordText = request.getParameter(ACEGI_SECURITY_FORM_PASSWORD_KEY);
-      String passwordConfirmation = request.getParameter(ACEGI_SECURITY_FORM_PASSWORDCONF_KEY);
 
       Long authId = null;
 
@@ -104,7 +104,7 @@ public class RegisterPortlet extends AbstractLoginPortlet {
          errorMessages.put(ACEGI_SECURITY_FORM_EMAIL_KEY, "register.email.match");
       }
 
-      validateInputFields(request, errorMessages, preferences, firstName, lastName, passwordText, passwordConfirmation);
+      validateInputFields(request, errorMessages, preferences);
 
       if (errorMessages.isEmpty()) { //Only continue with Community checks, when there are no other errors yet.
       
@@ -148,7 +148,7 @@ public class RegisterPortlet extends AbstractLoginPortlet {
                   errorMessages.put(ACEGI_SECURITY_DEFAULT, "One of the email addresses failed '" + emailFrom + "' or '" + emailTo + "'!"); 
                } catch (MessagingException e) {
                   log.error("Email MessagingException failed", e);
-                  errorMessages.put(ACEGI_SECURITY_DEFAULT, "Sending email failed, from '" + emailFrom + "' or '" + emailTo + "'!");
+                  errorMessages.put(ACEGI_SECURITY_DEFAULT, "Sending email failed, from '" + emailFrom + "' to '" + emailTo + "'!");
                }
                if (errorMessages.isEmpty()) {
                   response.setRenderParameter("email", emailTo);
@@ -173,6 +173,8 @@ public class RegisterPortlet extends AbstractLoginPortlet {
          request.getPortletSession().setAttribute(ACEGI_SECURITY_FORM_FIRSTNAME_KEY, firstName);
          request.getPortletSession().setAttribute(ACEGI_SECURITY_FORM_INFIX_KEY, infix);
          request.getPortletSession().setAttribute(ACEGI_SECURITY_FORM_LASTNAME_KEY, lastName);
+      } else {
+          request.setAttribute(AUTHENTICATION_ID_KEY, authId);
       }
    }
 
@@ -193,12 +195,12 @@ public class RegisterPortlet extends AbstractLoginPortlet {
       
       if (StringUtils.isNotEmpty(active)) {
          request.setAttribute("active", active);
-         template = "login/register_success.jsp";
+         template = getTemplate("register_success");
       } else {
          if (StringUtils.isNotEmpty(email)) {
-            template = "login/register_success.jsp";
+            template = getTemplate("register_success");
          } else {
-            template = "login/register.jsp";
+            template = getTemplate("register");
          }
       }
 
@@ -222,8 +224,11 @@ public class RegisterPortlet extends AbstractLoginPortlet {
       doInclude("view", template, request, response);
    }
 
-   protected void validateInputFields(ActionRequest request, Map<String, String> errorMessages, PortletPreferences preferences, String firstName,
-         String lastName, String passwordText, String passwordConfirmation) {
+   protected void validateInputFields(ActionRequest request, Map<String, String> errorMessages, PortletPreferences preferences) {
+       String firstName = request.getParameter(ACEGI_SECURITY_FORM_FIRSTNAME_KEY);
+       String lastName = request.getParameter(ACEGI_SECURITY_FORM_LASTNAME_KEY);
+       String passwordText = request.getParameter(ACEGI_SECURITY_FORM_PASSWORD_KEY);
+       String passwordConfirmation = request.getParameter(ACEGI_SECURITY_FORM_PASSWORDCONF_KEY);
       if (StringUtils.isBlank(firstName)) {
          errorMessages.put(ACEGI_SECURITY_FORM_FIRSTNAME_KEY, "register.firstname.empty");
       }
@@ -248,4 +253,27 @@ public class RegisterPortlet extends AbstractLoginPortlet {
       AuthorityService authorityService = (AuthorityService) ApplicationContextFactory.getBean("authorityService");
       return new TreeSet<String>(authorityService.getAuthorityNames());
    }
+   
+   /**
+    * Returns jsp template for given key. Can be overridden with a specific view.
+    * 
+    * Currently these keys are used:
+    * <ul>
+    * <li>register_success</li>
+    * <li>register</li>
+    * </ul> 
+    * @param key
+    * @return
+    */
+   protected String getTemplate(String key) {
+       if ("register_success".equals(key)) {
+           return "login/register_success.jsp";
+       }
+       if ("register".equals(key)) {
+           return "login/register.jsp";
+       }
+       throw new IllegalArgumentException("Unknown key: " + key);
+   }
+   
+   
 }

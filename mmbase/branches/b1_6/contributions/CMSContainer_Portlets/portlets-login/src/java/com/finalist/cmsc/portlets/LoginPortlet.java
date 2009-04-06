@@ -59,7 +59,7 @@ public class LoginPortlet extends AbstractLoginPortlet {
    
    protected void doEditDefaults(RenderRequest req, RenderResponse res) throws IOException,
    PortletException {
-      super.DEFAULT_EMAIL_CONFIRM_TEMPLATE_DIR = EMAIL_TEMPLATE_DIR;
+      super.DEFAULT_EMAIL_CONFIRM_TEMPLATE = EMAIL_TEMPLATE_DIR;
       super.doEditDefaults(req, res);
    }
    
@@ -206,7 +206,7 @@ public class LoginPortlet extends AbstractLoginPortlet {
    
    protected String getEmailBody(String emailText,ActionRequest request,
          Authentication authentication, Person person) {
-      super.DEFAULT_EMAIL_CONFIRM_TEMPLATE_DIR = EMAIL_TEMPLATE_DIR;
+      super.DEFAULT_EMAIL_CONFIRM_TEMPLATE = EMAIL_TEMPLATE_DIR;
       return String.format(emailText == null?getConfirmationTemplate():emailText, authentication
             .getUserId(), authentication.getPassword(), person.getFirstName(),
             person.getInfix(), person.getLastName());

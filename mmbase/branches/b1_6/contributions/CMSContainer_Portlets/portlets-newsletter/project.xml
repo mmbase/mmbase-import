@@ -179,6 +179,12 @@
          <version>${cmsc.version}</version>
          <type>jar</type>
       </dependency>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-portlets-login</artifactId>
+         <version>${cmsc.version}</version>
+         <type>jar</type>
+      </dependency>
    </dependencies>
 </project>
 
