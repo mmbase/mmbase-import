@@ -28,7 +28,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.76 2009-01-12 13:32:43 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.77 2009-04-06 18:45:29 andre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -53,7 +53,7 @@ public class BasicQuery implements Query  {
     protected Authorization.QueryCheck queryCheck = null;
 
     /**
-     * If a the contraint was made 'secure', in insecureConstraint the original Constraint is
+     * If a the constraint was made 'secure', in insecureConstraint the original Constraint is
      * stored. This object is null if either the queryCheck object is not yet determined, or the
      * orignal query did not have constraints.
      */
