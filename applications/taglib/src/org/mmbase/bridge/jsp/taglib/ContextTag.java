@@ -45,7 +45,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.87.2.6 2009-03-06 09:51:10 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.87.2.7 2009-04-06 09:27:12 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -173,7 +173,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     if (((PageContextBacking) prevPc.getBacking()).getPageContext() != pageContext) {
                         ServletRequest prevReq = unwrap(((PageContextBacking) prevPc.getBacking()).getPageContext().getRequest());
                         if (prevReq != unwrap(pageContext.getRequest())) {
-                            log.warn("found a pagecontext container for a different request (" + prevReq + " !=  '" + pageContext.getRequest() + "'). Repairing");
+                            log.debug("found a pagecontext container for a different request (" + prevReq + " !=  '" + pageContext.getRequest() + "'). Repairing");
                         } else {
                             log.debug("found a pagecontext container for a different pageContext. Repairing");
                         }
