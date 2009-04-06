@@ -75,4 +75,47 @@
          <keywords>Unsubscribe</keywords>
       </portlet-info>
    </portlet>
+   
+    <portlet>
+      <description>Basic Newsletter Registration Portlet</description>
+      <portlet-name>basicnewsletterregistrationportlet</portlet-name>
+      <display-name>Basic Newsletter Registration Portlet</display-name>
+      <portlet-class>
+         com.finalist.portlets.newsletter.BasicNewsletterRegistrationPortlet
+      </portlet-class>
+      <init-param>
+         <name>template.edit_defaults</name>
+         <value>newsletter/newsletterregistration.jsp</value>
+      </init-param>
+      <init-param>
+         <name>template.help</name>
+         <value>newsletter/newsletterregistration.jsp</value>
+      </init-param>
+      <init-param>
+         <name>template.options</name>
+         <value>newsletter/subscription/options.jsp</value>
+      </init-param>
+      <init-param>
+         <name>template.subscribe</name>
+         <value>newsletter/subscription/subscribe.jsp</value>
+      </init-param>
+      <supports>
+         <mime-type>text/html</mime-type>
+         <portlet-mode>VIEW</portlet-mode>
+         <portlet-mode>EDIT</portlet-mode>
+         <portlet-mode>HELP</portlet-mode>
+         <portlet-mode>EDIT_DEFAULTS</portlet-mode>
+         <portlet-mode>DELETE</portlet-mode>
+      </supports>
+      <supported-locale>en</supported-locale>
+      <supported-locale>nl</supported-locale>
+      <resource-bundle>com.finalist.cmsc.portlets.LoginPortlet</resource-bundle>
+      <portlet-info>
+         <title>Basic Newsletter Registration Portlet</title>
+         <short-title>BasicNewsletterRegistration</short-title>
+         <keywords>BasicNewsletterRegistration</keywords>
+      </portlet-info>
+   </portlet>
+
+
 </portlet-app>
