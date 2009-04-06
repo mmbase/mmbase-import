@@ -37,7 +37,7 @@ import com.finalist.cmsc.util.HttpUtil;
 
 public abstract class AbstractLoginPortlet extends CmscPortlet{
    
-   protected String DEFAULT_EMAIL_CONFIRM_TEMPLATE_DIR = "../templates/view/login/confirmation.txt";
+   protected String DEFAULT_EMAIL_CONFIRM_TEMPLATE = "../templates/view/login/confirmation.txt";
    protected static final String EMAIL_SUBJECT = "emailSubject";
    protected static final String EMAIL_TEXT = "emailText";
    protected static final String EMAIL_FROMEMAIL = "emailFromEmail";
@@ -106,13 +106,17 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
          String confirmUrl = HttpUtil.getWebappUri((HttpServletRequest) request)
                + "login/confirm.do?s=" + authentication.getId() + url;
          
-         return String.format(emailText == null?getConfirmationTemplate():emailText, authentication
-               .getUserId(), authentication.getPassword(), person.getFirstName(),
-               person.getInfix(), person.getLastName(), confirmUrl);
+         return formatConfirmationText(emailText, authentication, person, confirmUrl);
       }
       return null;
    }
-   
+
+   protected String formatConfirmationText(String emailText, Authentication authentication, Person person, String confirmUrl) {
+      return String.format(emailText == null?getConfirmationTemplate():emailText, authentication
+            .getUserId(), authentication.getPassword(), person.getFirstName(),
+            person.getInfix(), person.getLastName(), confirmUrl);
+   }
+
    protected Cloud getCloudForAnonymousUpdate(boolean isRemote) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       if (isRemote) {
@@ -163,7 +167,7 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
    
    protected String getConfirmationTemplate() {
       InputStream is = Thread.currentThread().getContextClassLoader()
-            .getResourceAsStream(DEFAULT_EMAIL_CONFIRM_TEMPLATE_DIR);
+            .getResourceAsStream(getEmailConfirmTemplate());
 
       if (is == null) {
          throw new NullPointerException(
@@ -184,6 +188,10 @@ public abstract class AbstractLoginPortlet extends CmscPortlet{
       }
 
       return sb.toString();
+   }
+   
+   protected String getEmailConfirmTemplate() {
+      return DEFAULT_EMAIL_CONFIRM_TEMPLATE;
    }
    
    protected boolean isEmailAddress(String emailAddress) {
