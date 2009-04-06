@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwisen
  * @since  MMBase-1.9.1
- * @version $Id: DataTypeChanger.java,v 1.1 2009-04-06 15:29:13 michiel Exp $
+ * @version $Id: DataTypeChanger.java,v 1.2 2009-04-06 15:36:35 michiel Exp $
  */
 
 public class DataTypeChanger {
@@ -38,8 +38,9 @@ public class DataTypeChanger {
         dataType = dt.clone();
     }
 
-    public DataTypeChanger(String dt) {
+    public DataTypeChanger(String dt, String guiName) {
         dataType = DataTypes.getDataType(dt).clone();
+        dataType.setGUIName(guiName);
     }
 
 
