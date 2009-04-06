@@ -69,7 +69,7 @@
 			</editor>
 			<db>
 				<name>width</name>
-				<type key="false" notnull="false" size="1024" state="persistent">INTEGER</type>
+				<type key="false" notnull="false" state="persistent">INTEGER</type>
 			</db>
 		</field>
 		<field>
@@ -92,7 +92,7 @@
 			</editor>
 			<db>
 				<name>height</name>
-				<type key="false" notnull="false" size="1024" state="persistent">INTEGER</type>
+				<type key="false" notnull="false" state="persistent">INTEGER</type>
 			</db>
 		</field>
 		<field>
