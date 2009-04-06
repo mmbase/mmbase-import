@@ -26,7 +26,7 @@
   -->
 
  
-  <table cellspacing="0">
+  <table cellspacing="0" width="100%">
 
     <mm:node number="${education}">
       <mm:import id="blocknames" escape="text/plain">
@@ -38,7 +38,7 @@
             <mm:relation to="${user}" role="classrel" searchdir="source" notfound="null">
             
               <td class="learnblockItemsTitle ${empty _node ? '' : 'closed'}">
-              	<jsp:text>|&amp;nbsp;</jsp:text><mm:field name="name" node="learnBlock" /><mm:last><jsp:text> |</jsp:text></mm:last>
+              	<jsp:text>|&amp;nbsp;</jsp:text><mm:field name="name" node="learnBlock" /><mm:last><jsp:text>|</jsp:text></mm:last>
               </td>
             </mm:relation>
         </mm:nodelistfunction>
@@ -48,6 +48,8 @@
 	</table>
 	
 
+		<div class="mmxf">
+    	<div id="" class="float left note">
   	 	<c:forEach items="stage1-goals,stage2-problems,stage3-problems,stage4-problems" var="s">
         	<mm:context>
         	<c:set var="settingname" value="opens_${s}" />
@@ -57,19 +59,18 @@
           		</mm:node>
        				<c:if test="${(currentlesson ge di:setting('assessment', settingname)) || (empty currentlesson)}">
            			<mm:node number="vu_homework_assessment_${settingname}">
-           				<div class="mmxf">
-           					<div id="" class="float left note">
  	 									<p><jsp:text><br/></jsp:text></p>
            					<mm:field name="body" escape="none" />
-           					</div>
-									</div>
            			</mm:node>
            		</c:if>	
        			</c:if>
       	</mm:context>
-    	</c:forEach>		 
+    	</c:forEach>		
+		</div>
+  
 
-	<table cellspacing="0">
+	<div class="problemTable">
+	<table cellspacing="0" class="TDProblem">
 		<tr>
     	<td class="problemHeaderLeft"><h2>Mijn zorgen en problemen</h2>
     	
@@ -125,9 +126,11 @@
     </mm:listnodes>
 
   </table>
-
+</div>
 
 
 <di:include page="/assessment/closelesson.link.jspx" />
+
+  </div> 
 
 </jsp:root>
