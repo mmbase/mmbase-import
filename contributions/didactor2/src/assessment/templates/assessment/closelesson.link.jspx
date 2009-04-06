@@ -31,17 +31,17 @@
   </c:if>
   
   <form name="closelessonform" action="${formAction}"   method="post">
-   	<input type="button" class="educationButton" value="opslaan" onclick="window.location.reload()"/><jsp:text>&amp;nbsp;|&amp;nbsp;</jsp:text>
+   	<a href="#" class="formActionLinks" onclick="window.location.reload()">opslaan</a><jsp:text>&amp;nbsp;|&amp;nbsp;</jsp:text>
 		<input type="hidden" name="coachmode" value="false"  />
     <input type="hidden" name="lesson" value="${currentlesson}"  />
     <c:if test="${empty feedback and ! empty currentlesson}">
     	<di:translate key="assessment.close_and_send_to_coach" arg0="${currentlesson.name}">
     		<mm:import externid="justclosed">false</mm:import>
     		<c:if test="${justclosed}">
-    			<input type="button" class="educationButton" value="je les is verstuurd" /><jsp:text> | </jsp:text>
+    			<a href="#" class="formActionLinks">je les is verstuurd</a><jsp:text> | </jsp:text>
     		</c:if>
       	<c:if test="${!justclosed}">
-      		<input type="submit" class="educationButton" value="${_}" /><jsp:text> | </jsp:text>
+      		<a href="#" onclick="document.closelessonform.sumbit()" class="formActionLinks">${_}</a><jsp:text> | </jsp:text>
       	</c:if>
       	
 			</di:translate>				 
@@ -56,15 +56,16 @@
  			 		<c:set var="learnobject" value="${currentlesson}" />
  			 		<c:set var="target" value="opdrachten" />
  			 			<!-- TODO: find a nicer/proper way to do this -->
- 			 			<mm:relatednodes type="xmlcontent" constraints="lower(name) = 'opdrachten'">
+ 			 			<mm:relatednodes type="learnobjects" constraints="lower(name) = 'opdrachten'">
  			 					<mm:node>
  			 						<c:set var="learnobject" value="${_node}" />
+ 			 						
  			 					</mm:node>
  			 			</mm:relatednodes>
  			 		</mm:node>
  			 		<mm:param name="learnobject">${learnobject}</mm:param>
  			 	</c:if>
- 			   <input type="button" class="educationButton" value="terug naar de ${target}" onclick="window.location='${_}'" name="" />
+ 			   <a href="${_}\#${learnobject}" class="formActionLinks">terug naar de ${target}</a>
  			 </mm:link>
                    
   </form>            
