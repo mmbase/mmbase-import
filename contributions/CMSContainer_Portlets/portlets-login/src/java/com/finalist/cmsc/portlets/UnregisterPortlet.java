@@ -14,6 +14,7 @@ import javax.portlet.RenderResponse;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.finalist.cmsc.community.CommunityManager;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.PersonService;
@@ -66,6 +67,7 @@ public class UnregisterPortlet extends AbstractLoginPortlet {
 //        subscriptionServices.deleteSubscriptionsByAuthId(authId);
         personHibernateService.deletePersonByAuthenticationId(authId);
         authenticationService.deleteAuthentication(authId);
+        CommunityManager.notify(authId);
       }
       else {
          errorMessages.put(EMAIL_REGISTER, USER_ACCOUNT_NOTEXIST);
