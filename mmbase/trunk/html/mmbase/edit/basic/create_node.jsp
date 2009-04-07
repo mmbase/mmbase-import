@@ -6,6 +6,7 @@
 <title>Create a node</title>
 <mm:import externid="node_type" required="true" />
 <meta name="MMBase-NodeType"     content="${node_type}" />
+<meta name="MMBase-SessionName"     content="${config.session}" />
 </head>
 <mm:context id="create_node">
 

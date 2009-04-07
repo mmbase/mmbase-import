@@ -27,6 +27,7 @@
    }
  %>
   <meta name="MMBase-NodeType"     content="<%=thisNode.getNodeManager().getName()%>" />
+  <meta name="MMBase-SessionName"     content="${config.session}" />
 </head>
 <body class="basic" onLoad="document.change.elements[0].focus();">
 <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
