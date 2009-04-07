@@ -6,19 +6,31 @@
 					<input type="checkbox" name="selectall" class="checkbox" onclick="selectAll(this.checked, 'taskForm', 'chk_');" value="on" />
 				</c:if>
           </mm:hasrank></th>
-          <th><fmt:message key="task.created" /></th>
+<c:if test="${empty dashboardTaskSize }">
+        <th><a href="tasklist.jsp?sortBy=created&direction=${direction}&offset=${offset}"><fmt:message key="task.created" /></a></th>
+        <th><a href="tasklist.jsp?sortBy=deadline&direction=${direction}&offset=${offset}"><fmt:message key="task.deadline" /></a></th>
+        <th><a href="tasklist.jsp?sortBy=title&direction=${direction}&offset=${offset}"><fmt:message key="task.title" /></a></th>
+        <th><a href="tasklist.jsp?sortBy=status&direction=${direction}&offset=${offset}"><fmt:message key="task.status" /></a></th>
+        <th><a href="tasklist.jsp?sortBy=contenttitle&direction=${direction}&offset=${offset}"><fmt:message key="task.contenttitle" /></a></th>
+        <th><a href="tasklist.jsp?sortBy=nodetype&direction=${direction}&offset=${offset}"><fmt:message key="task.nodetype" /></a></th>
+        <th><a href="tasklist.jsp?sortBy=description&direction=${direction}&offset=${offset}"><fmt:message key="task.description" /></a></th>
+</c:if>
+<c:if test="${!empty dashboardTaskSize }">
+        <th><fmt:message key="task.created" /></th>
         <th><fmt:message key="task.deadline" /></th>
         <th><fmt:message key="task.title" /></th>
         <th><fmt:message key="task.status" /></th>
         <th><fmt:message key="task.contenttitle" /></th>
         <th><fmt:message key="task.nodetype" /></th>
         <th><fmt:message key="task.description" /></th>
+</c:if>
+
       </tr>
    </thead>
    <tbody class="hover">
         <c:set var="taskList" value="" />
         <c:set var="isSwapClass" value="true"/>
-        <mm:listnodes referid="resultList">
+        <mm:listnodes referid="resultList" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
          <c:set var="taskId"><mm:field name="number"/></c:set>
          <tr <c:if test="${isSwapClass}">class="swap"</c:if>>
               <td style="white-space: nowrap;">
