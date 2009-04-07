@@ -10,18 +10,22 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
+import org.mmbase.storage.search.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * The set- and get- processors implemented in this file can be used to make a virtual field which
- * act as 'related'.
+ * act as a a node field, but actually is a related node.
+ *
+ * In case just one related node is desired, this makes it easy to just create a drop-down for it.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.7
- * @version $Id: Related.java,v 1.1.2.2 2008-11-11 18:32:26 michiel Exp $
+ * @version $Id: Related.java,v 1.1.2.3 2009-04-07 16:09:23 michiel Exp $
  */
 
 public class Related {
@@ -33,6 +37,7 @@ public class Related {
         protected String role = "related";
         protected String type = "object";
         protected String searchDir = "destination";
+        protected final Map relationConstraints = new HashMap();
         public void setRole(String r) {
             role = r;
         }
@@ -41,6 +46,20 @@ public class Related {
         }
         public void setSearchDir(String d) {
             searchDir = d;
+        }
+        public void setRelationConstraints(Map map) {
+            relationConstraints.putAll(map);
+        }
+
+        protected NodeQuery getRelationsQuery(Node node) {
+            Cloud cloud = node.getCloud();
+            NodeQuery nq = Queries.createRelationNodesQuery(node, cloud.getNodeManager(type), role, searchDir);
+            Iterator i =  relationConstraints.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                Queries.addConstraint(nq, Queries.createConstraint(nq, (String) entry.getKey(), FieldCompareConstraint.EQUAL, entry.getValue()));
+            }
+            return nq;
         }
     }
 
@@ -51,32 +70,51 @@ public class Related {
             if (log.isDebugEnabled()) {
                 log.debug("Setting "  + value);
             }
-            RelationList rl = node.getRelations(role, node.getCloud().getNodeManager(type), searchDir);
 
+            NodeQuery relations = getRelationsQuery(node);
+            NodeList rl = relations.getNodeManager().getList(relations);
             if (value != null) {
                 Cloud cloud = node.getCloud();
                 Node dest = Casting.toNode(value, cloud);
-                NodeList nl = node.getRelatedNodes(type, role, searchDir);
-                if (nl.contains(dest)) {
+
+                boolean related = false;
+                if (rl.size() == 1) {
+                    Relation r = rl.getNode(0).toRelation();
+                    if (r.getDestination().getNumber() == dest.getNumber() ||
+                        r.getSource().getNumber() == dest.getNumber()) {
+                        related = true;
+                    }
+                } else if (rl.size() > 1) {
+                    log.warn("More than one correct relations between " + node + " and " + type + " " + rl + ". Will fix this now");
+                }
+                if (related) {
+                    log.debug("" + dest + " already correctly related");
                     // nothing changed
                 } else {
-
-                    RelationIterator ni = rl.relationIterator();
+                    NodeIterator ni = rl.nodeIterator();
                     while (ni.hasNext()) {
-                        Relation r = ni.nextRelation();
+                        Node r = ni.nextNode();
+                        log.debug("Deleting " + r);
                         r.delete();
                     }
                     RelationManager rel = cloud.getRelationManager(node.getNodeManager(),
                                                                    cloud.getNodeManager(type),
-                                                               role);
+                                                                   role);
+                    if (node.isNew()) node.commit(); // Silly, but you cannot make relations to new nodes.
                     Relation newrel = node.createRelation(dest, rel);
+                    Iterator i =  relationConstraints.entrySet().iterator();
+                    while (i.hasNext()) {
+                        Map.Entry entry = (Map.Entry) i.next();
+                        newrel.setStringValue((String) entry.getKey(), (String) entry.getValue());
+                    }
+                    log.debug("Created " + newrel);
                     newrel.commit();
                 }
                 return dest;
             } else {
-                RelationIterator ni = rl.relationIterator();
+                NodeIterator ni = rl.nodeIterator();
                 while (ni.hasNext()) {
-                    Relation r = ni.nextRelation();
+                    Node r = ni.nextNode();
                     r.delete();
                 }
                 return null;
@@ -92,11 +130,21 @@ public class Related {
             if (log.isDebugEnabled()) {
                 log.debug("getting "  + node);
             }
-            NodeList nl = node.getRelatedNodes(type, role, searchDir);
-            if (nl.size() == 0) {
+            if (node.isNew()) {
+                log.debug("The node is new, returning " + field.getDataType().getDefaultValue());
+                return field.getDataType().getDefaultValue();
+            }
+            NodeQuery relations = getRelationsQuery(node);
+            NodeList rl = relations.getNodeManager().getList(relations);
+            if (rl.size() == 0) {
                 return null;
             } else {
-                return nl.getNode(0);
+                Relation relation = rl.getNode(0).toRelation();
+                if (relation.getSource().getNumber() == node.getNumber()) {
+                    return relation.getDestination();
+                } else {
+                    return relation.getSource();
+                }
             }
         }
     }
