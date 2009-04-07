@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.58.2.5 2008-02-25 18:11:48 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.58.2.6 2009-04-07 09:10:30 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -41,6 +41,17 @@ public class StringHandler extends AbstractTypeHandler {
      */
     public StringHandler(FieldInfoTag tag) {
         super(tag);
+    }
+
+
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected int getCols(Field field) {
+        int cols = field.getMaxLength();
+        if (cols > 80) cols = 80;
+        return cols;
     }
 
     /**
@@ -66,7 +77,7 @@ public class StringHandler extends AbstractTypeHandler {
                         // wrap attribute removed, we want to produce valid XHTML, and who is still using netscape < 6?
                         buffer.append("<textarea class=\"big " + getClasses(node, field) + "\" rows=\"10\" cols=\"80\" ");
                     } else {
-                        buffer.append("<textarea class=\"small " + getClasses(node, field) + "\" rows=\"5\" cols=\"80\" ");
+                        buffer.append("<textarea class=\"small " + getClasses(node, field) + "\" rows=\"5\" cols=\"" + getCols(field) + "\" ");
                     }
                     addExtraAttributes(buffer);
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
@@ -95,7 +106,7 @@ public class StringHandler extends AbstractTypeHandler {
                     }
                     buffer.append("</textarea>");
                 } else { // not 'field' perhaps it's 'string'.
-                    buffer.append("<input class=\"small " + getClasses(node, field) + "\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"80\" ");
+                    buffer.append("<input class=\"small " + getClasses(node, field) + "\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"" + getCols(field) + "\" ");
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
                     buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
                     String opt = tag.getOptions();
