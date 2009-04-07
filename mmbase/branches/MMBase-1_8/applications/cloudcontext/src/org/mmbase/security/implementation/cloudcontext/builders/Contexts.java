@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.48.2.6 2008-12-22 15:27:05 michiel Exp $
+ * @version $Id: Contexts.java,v 1.48.2.7 2009-04-07 07:59:25 nklasens Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -116,6 +116,7 @@ public class Contexts extends MMObjectBuilder {
 
     private boolean readAll = false;
     private boolean allContextsPossible = true; // if you want to use security for workflow, then you want this to be false
+    private boolean disableContextChecks = false;
 
 
     private int     maxContextsInQuery = DEFAULT_MAX_CONTEXTS_IN_QUERY;
@@ -135,7 +136,12 @@ public class Contexts extends MMObjectBuilder {
         if (! "".equals(s) && s != null) {
             maxContextsInQuery = Integer.parseInt(s);
         }
-
+        
+        s = (String) getInitParameters().get("disableContextChecks");
+        if (! "".equals(s) && s != null) {
+            disableContextChecks = "true".equals(s);
+        }
+        
         contextCache.putCache();
         allowingContextsCache.putCache();
         operationsCache.putCache();
@@ -234,7 +240,13 @@ public class Contexts extends MMObjectBuilder {
 
         if (node == null) {
             log.warn("node #" + nodeId + " not found");
-            return false;
+            /*
+             * MMBase code to handle transactions is changed and sometimes nodes which are not 
+             * modified are committed. Objects, which are deleted outside the transaction, might be
+             * loaded in the transaction and committed, The transaction code checks if the node 
+             * exists which produces an exception. Read actions are always allowed? 
+             */
+            return readAll;
         }
 
         if (readAll && operation == Operation.READ) {
@@ -351,6 +363,9 @@ public class Contexts extends MMObjectBuilder {
     }
 
     protected boolean mayDo(MMObjectNode user, MMObjectNode contextNode, Operation operation, boolean checkOwnRights) {
+       if (disableContextChecks()) {
+          return true;
+       }
 
         Set groupsAndUsers = getGroupsAndUsers(contextNode, operation);
 
@@ -442,7 +457,7 @@ public class Contexts extends MMObjectBuilder {
         if (userContext.getRank().getInt() >= Rank.ADMIN_INT) {
             return Authorization.COMPLETE_CHECK;
         } else {
-            if (operation == Operation.READ && readAll) {
+            if ((operation == Operation.READ && readAll) || disableContextChecks()) {
                 return Authorization.COMPLETE_CHECK;
             } else if (operation == Operation.READ) {
 
@@ -551,6 +566,13 @@ public class Contexts extends MMObjectBuilder {
         }
     }
 
+    public MMObjectNode getDefaultContextNode() {
+       return getContextNode(DEFAULT_CONTEXT);
+    }
+    
+    protected boolean disableContextChecks() {
+       return disableContextChecks;
+   }
 
     /**
      * @return The MMObjectNode presenting the context of the given node.
