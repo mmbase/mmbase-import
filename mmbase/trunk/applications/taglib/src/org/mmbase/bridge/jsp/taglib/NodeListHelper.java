@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.40 2008-10-21 18:28:53 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.41 2009-04-07 08:25:56 nklasens Exp $
  * @since MMBase-1.7
  */
 
@@ -121,6 +121,7 @@ public class NodeListHelper implements ListProvider {
     /**
      * Set the list maximum
      * @param m the max number of values returned
+     * @throws JspTagException when parsing of attributes fails
      */
     public void setMax(String m) throws JspTagException {
         max = thisTag.getAttribute(m);
@@ -133,6 +134,7 @@ public class NodeListHelper implements ListProvider {
     /**
      * Set the list offset
      * @param o The offset for the List.
+     * @throws JspTagException when parsing of attributes fails
      */
     public void setOffset(String o) throws JspTagException {
         offset = thisTag.getAttribute(o);
