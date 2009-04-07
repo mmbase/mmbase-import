@@ -1512,7 +1512,7 @@ public final class RepositoryUtil {
             continue; //Skip nodes not in the current channel tree. 
          }
          else 
-         {            output.append(" into main ");
+         {         
             //*** Start cloning the node from sourceChild -> destChild
             //If the related node should be cloned, dive into the node and deepcopy it
             Node sourceChild = rel.getDestination();
