@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.55 2009-01-26 16:35:09 michiel Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.56 2009-04-07 08:23:27 nklasens Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
@@ -647,7 +647,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
         return "(localized: " + localized  + "bundles: " + bundles + "fallBack: " + fallBack + ")";
     }
 
-    private static class Bundle<D> implements Serializable, PublicCloneable {
+    private static class Bundle<D> implements Serializable, PublicCloneable<Bundle<D>> {
         private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
         private String      resource;
@@ -687,10 +687,11 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
          */
         Collection<Map.Entry<D, String>> get(Locale loc) throws MissingResourceException {
             try {
-                return  SortedBundle.getResource(resource, loc, classLoader, constantsProvider, wrapper, comparator).entrySet();
+                Map<D, String> resourceMap = SortedBundle.getResource(resource, loc, classLoader, constantsProvider, wrapper, comparator);
+                return resourceMap.entrySet();
             } catch (IllegalArgumentException iae) {
                 log.error(iae);
-                return Collections.emptyList();
+                return Collections.emptySet();
             }
         }
 
@@ -722,7 +723,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             return result;
         }
 
-        public Object clone() {
+        public Bundle<D> clone() {
             log.debug("Cloning bundle " + this);
             try {
                 Bundle clone = (Bundle) super.clone();

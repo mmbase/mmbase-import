@@ -9,9 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.images;
 
-import org.mmbase.util.transformers.*;
 import java.util.*;
 import java.util.regex.*;
+
+import org.mmbase.util.IOUtil;
+import org.mmbase.util.transformers.*;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
@@ -344,11 +346,7 @@ public abstract class Imaging {
             File file = new File(args[0]);
             FileInputStream input = new FileInputStream(file);
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            int b = input.read();
-            while (b != -1) {
-                bytes.write(b);
-                b = input.read();
-            }
+            IOUtil.copy(input, bytes);
             input.close();
             byte[] ba = bytes.toByteArray();
             ImageInformer   informer   = new ImageMagickImageInformer();

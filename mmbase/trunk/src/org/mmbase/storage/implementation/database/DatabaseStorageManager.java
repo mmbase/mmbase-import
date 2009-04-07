@@ -25,6 +25,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.IOUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.transformers.CharTransformer;
@@ -35,7 +36,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.211 2009-03-04 11:48:57 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.212 2009-04-07 08:23:34 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -456,11 +457,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
             try {
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                int c = inStream.read();
-                while (c != -1) {
-                    bytes.write(c);
-                    c = inStream.read();
-                }
+                IOUtil.copy(inStream, bytes);
                 inStream.close();
                 String encoding = factory.getMMBase().getEncoding();
                 if (encoding.equalsIgnoreCase("ISO-8859-1")) {

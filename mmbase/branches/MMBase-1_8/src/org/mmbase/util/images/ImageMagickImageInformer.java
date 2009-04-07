@@ -13,6 +13,7 @@ import java.util.*;
 import java.io.*;
 import java.util.regex.*;
 
+import org.mmbase.util.IOUtil;
 import org.mmbase.util.externalprocess.CommandLauncher;
 import org.mmbase.util.externalprocess.ProcessException;
 
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ImageMagickImageInformer.java,v 1.1 2005-05-09 09:53:07 michiel Exp $
+ * @version $Id: ImageMagickImageInformer.java,v 1.1.2.1 2009-04-07 08:23:12 nklasens Exp $
  */
 public class ImageMagickImageInformer implements ImageInformer {
     
@@ -80,11 +81,7 @@ public class ImageMagickImageInformer implements ImageInformer {
             File file = new File(args[0]);
             FileInputStream input = new FileInputStream(file);
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            int b = input.read();
-            while (b != -1) {
-                bytes.write(b);
-                b = input.read();
-            }
+            IOUtil.copy(input, bytes);
             input.close();
             byte[] ba = bytes.toByteArray();
             ImageInformer imii  = new ImageMagickImageInformer();

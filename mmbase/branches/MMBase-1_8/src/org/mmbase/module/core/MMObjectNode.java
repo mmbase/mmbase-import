@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.193.2.14 2008-09-24 15:25:18 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.193.2.15 2009-04-07 08:23:12 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -819,10 +819,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (value == null) {
             if (!checkFieldExistance(fieldName)) return null;
         }
-
-        if (value instanceof InputStream) {
-            value = useInputStream(fieldName, (InputStream) value);
-        }
+//
+//        if (value instanceof InputStream) {
+//            value = useInputStream(fieldName, (InputStream) value);
+//        }
 
         // return the found object
         return value;

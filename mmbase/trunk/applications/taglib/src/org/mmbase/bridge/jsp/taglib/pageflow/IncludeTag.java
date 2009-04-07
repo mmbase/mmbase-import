@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.88 2008-07-24 14:11:46 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.89 2009-04-07 08:23:34 nklasens Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -396,11 +396,7 @@ public class IncludeTag extends UrlTag {
                 handleResponse(404, "No such resource to cite " + resource, resource);
             } else {
                 StringWriter writer = new StringWriter();
-                while (true) {
-                    int c = reader.read();
-                    if (c == -1) break;
-                    writer.write(c);
-                }
+                IOUtil.copy(reader, writer);
                 handleResponse(200, writer.toString(), resource);
             }
 

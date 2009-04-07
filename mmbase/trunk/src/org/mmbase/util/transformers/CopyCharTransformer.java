@@ -12,6 +12,8 @@ package org.mmbase.util.transformers;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.mmbase.util.IOUtil;
+
 
 /**
  * This is the character transformer which does not actually transform
@@ -19,7 +21,7 @@ import java.io.Writer;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: CopyCharTransformer.java,v 1.6 2005-05-08 13:22:05 michiel Exp $
+ * @version $Id: CopyCharTransformer.java,v 1.7 2009-04-07 08:23:35 nklasens Exp $
  */
 
 public class CopyCharTransformer extends ReaderTransformer implements CharTransformer {
@@ -33,11 +35,7 @@ public class CopyCharTransformer extends ReaderTransformer implements CharTransf
     // implementation, javadoc inherited
     public Writer transform(Reader r, Writer w) {
         try {
-            while (true) {
-                int c = r.read();
-                if (c == -1) break;
-                w.write(c);
-            }
+            IOUtil.copy(r, w);
         } catch (java.io.IOException e) {
             System.out.println("c " + e.toString());
         }

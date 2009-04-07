@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.io.*;
+
+import org.mmbase.util.IOUtil;
 import org.mmbase.util.logging.*;
 
 /**
@@ -48,11 +50,7 @@ public abstract class ByteArrayToCharTransformer implements ByteToCharTransforme
     public Writer transform(InputStream in, Writer w)  {
         try {
             ByteArrayOutputStream sw = new ByteArrayOutputStream();
-            while (true) {
-                int c = in.read();
-                if (c <= -1) break;
-                sw.write(c);
-            }
+            IOUtil.copy(in, sw);
             String result = transform(sw.toByteArray());
             w.write(result);
         } catch (java.io.IOException e) {
@@ -64,11 +62,7 @@ public abstract class ByteArrayToCharTransformer implements ByteToCharTransforme
     public OutputStream transformBack(Reader in, OutputStream out)  {
         try {
             StringWriter sw = new StringWriter();
-            while (true) {
-                int c = in.read();
-                if (c == -1) break;
-                sw.write(c);
-            }
+            IOUtil.copy(in, sw);
             out.write(transformBack(sw.toString()));
         } catch (java.io.IOException e) {
             log.error(e.toString(), e);

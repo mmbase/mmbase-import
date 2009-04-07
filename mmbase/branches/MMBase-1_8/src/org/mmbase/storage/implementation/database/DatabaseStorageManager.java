@@ -22,6 +22,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.IOUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.transformers.CharTransformer;
@@ -32,7 +33,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.169.2.16 2009-02-11 20:42:04 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.17 2009-04-07 08:23:12 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -422,11 +423,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
             try {
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                int c = inStream.read();
-                while (c != -1) {
-                    bytes.write(c);
-                    c = inStream.read();
-                }
+                IOUtil.copy(inStream, bytes);
                 inStream.close();
                 String encoding = factory.getMMBase().getEncoding();
                 if (encoding.equalsIgnoreCase("ISO-8859-1")) {
@@ -787,28 +784,12 @@ public class DatabaseStorageManager implements StorageManager {
                     return;
                 }
             }
-            long size = 0;
-            InputStream in = node.getInputStreamValue(fieldName);
-
+            
             log.service("Storing " + field + " for " + node.getNumber() + " in " + binaryFile);
-            OutputStream out = new BufferedOutputStream(new FileOutputStream(binaryFile));
-            int c = in.read();
-            while (c > -1) {
-                out.write(c);
-                c = in.read();
-                size ++;
-            }
+            InputStream in = node.getInputStreamValue(fieldName);
+            OutputStream out = new FileOutputStream(binaryFile);
+            long size = IOUtil.copy(in, out);
 
-            //log.warn("Storing " + field + " for " + node.getNumber());
-            /*
-x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(binaryFile));
-            byte[] buf = new byte[1024];
-            int b = 0;
-            while ((b = in.read(buf)) != -1) {
-                size += b;
-                out.write(buf, 0, b);
-            }
-            */
             out.close();
             in.close();
             // unload the input-stream, it is of no use any more.
