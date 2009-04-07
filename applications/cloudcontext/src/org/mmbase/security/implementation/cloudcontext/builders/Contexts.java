@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.65 2009-01-05 12:09:24 michiel Exp $
+ * @version $Id: Contexts.java,v 1.66 2009-04-07 07:59:31 nklasens Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -146,7 +146,9 @@ public class Contexts extends MMObjectBuilder {
         return provider.check(userContext, query, operation);
     }
 
-
+    public final MMObjectNode getDefaultContextNode() {
+        return getProvider().getContextNode(DEFAULT_CONTEXT);
+     }
 
     //********************************************************************************
     // EDIT FUNCTIONS
