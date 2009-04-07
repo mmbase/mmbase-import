@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.28 2008-12-09 15:42:31 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.29 2009-04-07 08:23:33 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -254,10 +254,7 @@ public abstract class AbstractNode implements Node {
                     }
                     // well, we must read it to byte-array then, first.
                     ByteArrayOutputStream b = new ByteArrayOutputStream((int) size);
-                    int c;
-                    while((c = value.read()) > -1) {
-                        b.write(c);
-                    }
+                    IOUtil.copy(value, b);
                     byte[] byteArray = b.toByteArray();
                     v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, byteArray);
                 } else {
