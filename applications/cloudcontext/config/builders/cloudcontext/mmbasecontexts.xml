@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <builder
   xmlns="http://www.mmbase.org/xmlns/builder"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -13,13 +13,16 @@
     <singular xml:lang="en">Security Context</singular>
     <singular xml:lang="nl">Security context</singular>
     <singular xml:lang="eo">Sekureca konteksto</singular>
+    <singular xml:lang="zh">安全上下文</singular>
     <plural xml:lang="en">Security Contexts</plural>
     <plural xml:lang="nl">Security Contexten</plural>
     <plural xml:lang="eo">Sekuracaj kontekstoj</plural>
+    <plural xml:lang="zh">安全上下文</plural>
   </names>
   <descriptions>
     <description xml:lang="en">MMBase security contexts</description>
     <description xml:lang="nl">MMBase contexten voor security</description>
+    <description xml:lang="en">MMBase安全上下文</description>
   </descriptions>
   <properties>
     <property name="readall">false</property>
@@ -38,6 +41,11 @@
     one contexts is added to the query) grow. If the query would have to be more complex this is not
     done, but the result is checked.
     -->
+    <property name="disableContextChecks">false</property>
+    <!-- Basically, this turns off the whole idea of the cloudcontext security implementation.
+    The reason to have this option is to use the model of users, groups and be able to
+    use the full implementation when needed. Applications with the same codebase and different
+    security requirements can benefit from this. -->
 
   </properties>
   <fieldlist>
@@ -46,6 +54,7 @@
         <guiname xml:lang="en">Name</guiname>
         <guiname xml:lang="nl">Naam</guiname>
         <guiname xml:lang="eo">Nomo</guiname>
+        <guiname xml:lang="zh">名字</guiname>
       </gui>
       <editor>
         <positions>
@@ -63,6 +72,7 @@
         <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="eo">Priskribo</guiname>
+        <guiname xml:lang="zh">描述</guiname>
       </gui>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
