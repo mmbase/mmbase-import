@@ -43,11 +43,14 @@ public class PageTree {
         rwl.writeLock().lock();
         try {
             PageTreeNode parentNode = getPath(path);
-            PageTreeNode oldNode = parentNode.getChildById(destinationNumber);
-            if (oldNode != null) {
-                remove(oldNode);
+            if(parentNode != null) {
+               PageTreeNode oldNode = parentNode.getChildById(destinationNumber);
+               if (oldNode != null) {
+                  remove(oldNode);
+               }
+               return oldNode;
             }
-            return oldNode;
+            return null;
         }
         finally {
             rwl.writeLock().unlock();    
