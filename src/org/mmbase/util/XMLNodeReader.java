@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.41.2.2 2007-02-03 12:59:17 nklasens Exp $
+ * @version $Id: XMLNodeReader.java,v 1.41.2.3 2009-04-07 08:23:12 nklasens Exp $
  */
 public class XMLNodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -225,11 +225,7 @@ public class XMLNodeReader extends DocumentReader {
     private byte[] readBytesStream(String resourceName) throws IOException {
         InputStream stream = path.getResourceAsStream(resourceName);
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int c = stream.read();
-        while (c != -1) {
-            buffer.write(c);
-            c = stream.read();
-        }
+        IOUtil.copy(stream, buffer);
         return buffer.toByteArray();
     }
 
