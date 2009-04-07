@@ -3,7 +3,7 @@
 <script type="text/javascript">
     //<![CDATA[
    function emailvalidate() {
-      if(confirm('<fmt:message key="${unregister.confirm}" />')) {
+      if(confirm('<fmt:message key="unregister.confirm" />')) {
          document.<portlet:namespace />form.submit();
       }
    }
@@ -15,6 +15,9 @@
       method="post">
     <div>
       <c:choose>
+         <c:when test="${empty errormessages && !empty confirmText}">
+            <p><c:out value="${confirmText}"/></p>   
+         </c:when>
          <c:when test="${empty errormessages && !empty removeSuccess}">
             <p><fmt:message key="${removeSuccess}" /></p>   
          </c:when>
