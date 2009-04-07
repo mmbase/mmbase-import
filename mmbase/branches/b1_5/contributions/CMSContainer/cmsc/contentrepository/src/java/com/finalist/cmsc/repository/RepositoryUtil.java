@@ -709,6 +709,7 @@ public final class RepositoryUtil {
         	}
         }
 
+        query.setDistinct(true);
         SearchUtil.addLimitConstraint(query, offset, maxNumber);
         return query;
     }
