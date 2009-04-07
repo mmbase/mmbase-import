@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="util" tagdir="/WEB-INF/tags/vpro-wizards/util" %>
-
+<%@ taglib prefix="mm" uri="http://www.mmbase.org/mmbase-taglib-1.0"  %>
 <%@ attribute name="nodetype" required="true" %>
 <%@ attribute name="multipart" type="java.lang.Boolean" description="don't set this if you use a fielfield in the body. In that case it's the default" %>
 
