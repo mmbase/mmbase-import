@@ -25,28 +25,23 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 public class SiteEdit extends MMBaseFormlessAction {
 
 	@Override
-	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
+   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-		String action = getParameter(request, "action");
+      String action = getParameter(request, "action");
 
-		if (StringUtils.isBlank(action)) {
-			String objectnumber = getParameter(request, "number", true);
+      if (StringUtils.isBlank(action)) {
+         String objectnumber = getParameter(request, "number", true);
 
-			ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
-					+ mapping.findForward("returnurl").getPath() + URLEncoder.encode("?objectnumber") + "=" + objectnumber);
-			ret.setRedirect(true);
-			return ret;
-		} else {
-			int nodeId = Integer.parseInt(request.getParameter("objectnumber"));
-			SecurityUtil.clearUserRoles(cloud);
-			ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + nodeId);
-			return ret;
-		}
-	}
-
-	@Override
-	public String getRequiredRankStr() {
-		return ADMINISTRATOR;
-	}
+         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
+               + mapping.findForward("returnurl").getPath() + URLEncoder.encode("?objectnumber") + "=" + objectnumber);
+         ret.setRedirect(true);
+         return ret;
+      } else {
+         int nodeId = Integer.parseInt(request.getParameter("objectnumber"));
+         SecurityUtil.clearUserRoles(cloud);
+         ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath() + "?nodeId=" + nodeId);
+         return ret;
+      }
+   }
 
 }
