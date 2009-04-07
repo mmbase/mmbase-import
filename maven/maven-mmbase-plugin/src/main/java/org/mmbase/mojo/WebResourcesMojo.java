@@ -19,7 +19,7 @@ import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
- * Mojo which copies the 'templates' and 'blocks' direcotory (if they exist) to the correct location
+ * Mojo which copies the 'templates' and 'blocks' directory (if they exist) to the correct location
  * in the war. The whole exercise is only necessary, because you can't configure in pom that it
  * should not include a certain web-resource if the source happens to not exist.
  * 
