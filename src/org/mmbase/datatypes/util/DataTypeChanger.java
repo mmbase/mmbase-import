@@ -13,6 +13,7 @@ package org.mmbase.datatypes.util;
 import java.util.*;
 
 import org.mmbase.datatypes.*;
+import org.mmbase.bridge.Field;
 
 import org.mmbase.util.logging.*;
 
@@ -21,12 +22,12 @@ import org.mmbase.util.logging.*;
  *
  * E.g. this code could be used at EO:
  <pre>
-   new FieldType("initials",  new DataTypeChanger("line").setGUIName("Voornaam").setRequired(true).setMaxLength(10).finish(), 1, FieldType.UNCHANGEABLE)
+   new FieldType("initials",  new DataTypeChanger("line", "Voornaam").required(true).maxLength(10).finish(), 1, FieldType.UNCHANGEABLE)
  </pre>
  *
  * @author Michiel Meeuwisen
  * @since  MMBase-1.9.1
- * @version $Id: DataTypeChanger.java,v 1.2 2009-04-06 15:36:35 michiel Exp $
+ * @version $Id: DataTypeChanger.java,v 1.3 2009-04-07 08:06:04 michiel Exp $
  */
 
 public class DataTypeChanger {
@@ -35,28 +36,32 @@ public class DataTypeChanger {
     private final DataType dataType;
 
     public DataTypeChanger(DataType dt) {
-        dataType = dt.clone();
+        dataType = (DataType) dt.clone();
     }
 
     public DataTypeChanger(String dt, String guiName) {
-        dataType = DataTypes.getDataType(dt).clone();
+        dataType = (DataType) DataTypes.getDataType(dt).clone(); // casting for 1.8 compatibility only
         dataType.setGUIName(guiName);
     }
 
+    public DataTypeChanger(Field field) {
+        dataType = (DataType) field.getDataType().clone();
+    }
 
-    public DataTypeChanger setRequired(boolean required) {
+
+    public DataTypeChanger required(boolean required) {
         dataType.setRequired(required);
         return this;
     }
 
-    public DataTypeChanger setMaxLength(long maxLength) {
+    public DataTypeChanger maxLength(long maxLength) {
         if (dataType instanceof LengthDataType) {
             ((LengthDataType) dataType).setMaxLength(maxLength);
         }
         return this;
     }
 
-    public DataTypeChanger setGUIName(String guiName) {
+    public DataTypeChanger guiName(String guiName) {
         dataType.setGUIName(guiName);
         return this;
     }
