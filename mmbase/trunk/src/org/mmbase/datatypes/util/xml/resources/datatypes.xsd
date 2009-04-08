@@ -8,7 +8,7 @@
     attributeFormDefault="unqualified"
     version="1.0">
   <!--
-      Version: $Id: datatypes.xsd,v 1.39 2009-03-17 14:42:02 michiel Exp $
+      Version: $Id: datatypes.xsd,v 1.40 2009-04-08 13:55:22 michiel Exp $
   -->
 
   <xsd:import
@@ -41,6 +41,14 @@
             </xsd:extension>
           </xsd:complexContent>
         </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="styleClass"  maxOccurs="unbounded" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>
+            Style classes are simple strings that can be attributes to a datatype, and which will e.g. appear on the 'class' attribute for an HTML input widget.
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType name="string" />
       </xsd:element>
 
       <xsd:element name="property"  maxOccurs="unbounded" minOccurs="0">

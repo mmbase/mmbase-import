@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.70 2009-03-17 14:42:02 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.71 2009-04-08 13:55:22 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -159,6 +159,7 @@ public class DataTypeDefinition {
         DataTypeXml.getLocalizedDescription("name", dataTypeElement, name, dataType.getName());
         configureConditions(dataTypeElement);
         configureHandlers(dataTypeElement);
+        configureStyleClasses(dataTypeElement);
         return this;
     }
 
@@ -205,6 +206,22 @@ public class DataTypeDefinition {
                             log.error("For mimetype " + mimeType + " " + e.getMessage());
                         }
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected void configureStyleClasses(Element dataTypeElement) {
+        log.debug("Now going to configure style classes for  " + dataType);
+        NodeList childNodes = dataTypeElement.getChildNodes();
+        for (int k = 0; k < childNodes.getLength(); k++) {
+            if (childNodes.item(k) instanceof Element) {
+                Element childElement = (Element) childNodes.item(k);
+                if (childElement.getLocalName().equals("styleClass")) {
+                    dataType.addStyleClass(org.mmbase.util.xml.DocumentReader.getNodeTextValue(childElement, true));
                 }
             }
         }
