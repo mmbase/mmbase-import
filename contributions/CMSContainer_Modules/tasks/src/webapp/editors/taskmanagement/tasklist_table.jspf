@@ -7,12 +7,12 @@
 				</c:if>
           </mm:hasrank></th>
 <c:if test="${empty dashboardTaskSize }">
-        <th><a href="tasklist.jsp?sortBy=created&direction=${direction}&offset=${offset}"><fmt:message key="task.created" /></a></th>
+        <th><a href="tasklist.jsp?sortBy=creationdate&direction=${direction}&offset=${offset}"><fmt:message key="task.created" /></a></th>
         <th><a href="tasklist.jsp?sortBy=deadline&direction=${direction}&offset=${offset}"><fmt:message key="task.deadline" /></a></th>
         <th><a href="tasklist.jsp?sortBy=title&direction=${direction}&offset=${offset}"><fmt:message key="task.title" /></a></th>
-        <th><a href="tasklist.jsp?sortBy=status&direction=${direction}&offset=${offset}"><fmt:message key="task.status" /></a></th>
-        <th><a href="tasklist.jsp?sortBy=contenttitle&direction=${direction}&offset=${offset}"><fmt:message key="task.contenttitle" /></a></th>
-        <th><a href="tasklist.jsp?sortBy=nodetype&direction=${direction}&offset=${offset}"><fmt:message key="task.nodetype" /></a></th>
+        <th><a href="tasklist.jsp?sortBy=status&direction=${direction}&offset=${offset}"><fmt:message key="task.status" /></th>
+        <th><fmt:message key="task.contenttitle" /></th>
+        <th><fmt:message key="task.nodetype" /></th>
         <th><a href="tasklist.jsp?sortBy=description&direction=${direction}&offset=${offset}"><fmt:message key="task.description" /></a></th>
 </c:if>
 <c:if test="${!empty dashboardTaskSize }">
