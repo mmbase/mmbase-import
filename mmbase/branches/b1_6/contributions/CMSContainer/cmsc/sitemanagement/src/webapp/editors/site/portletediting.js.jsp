@@ -121,7 +121,7 @@ function fillIframe(div, left) {
 function writeDocument(doc, div, parentdocument) {
    var javascriptWindow = "<cmsc:staticurl page='/js/window.js' />";
    var cssPortaledit = "<cmsc:staticurl page='/editors/site/portaledit.css' />";
-   html = html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n";
+   var html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n";
    html += "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n";
     html += "<head>\n";
     html += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
