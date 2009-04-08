@@ -1,5 +1,4 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"
-%><%@ page import="com.finalist.cmsc.mmbase.PropertiesUtil"
 %><%@include file="globals.jsp"
 %><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -45,8 +44,8 @@ function showMessage(message){
    </div>
 
 
-<mm:import externid="direction" jspvar="direction">up</mm:import>
-<mm:import externid="sortBy" jspvar="sortBy">title</mm:import>
+<mm:import externid="direction" jspvar="direction">down</mm:import>
+<mm:import externid="sortBy" jspvar="sortBy">status</mm:import>
 <c:set var="direction">
    <c:out value="${direction =='up'?'down':'up' }"/>
 </c:set>
@@ -67,16 +66,13 @@ function showMessage(message){
             <mm:sortorder field="task.${sortBy}" direction="${direction}" />
             <c:set var="listSize"><mm:size/></c:set>
             <c:set var="offset" value="${not empty param.offset ? param.offset : '0'}"/>
-            <mm:relatednodes comparator="com.finalist.cmsc.tasks.TaskUrgencyComparator" max="${dashboardTaskSize}" id="resultList"/>
+            <mm:relatednodes max="${dashboardTaskSize}" id="resultList"/>
          </mm:relatednodescontainer>
       </mm:listnodes>
    </mm:listnodescontainer>
 
    <div class="editor">
    <div class="body">
-      <c:set var="resultsPerPage">
-        <%=PropertiesUtil.getProperty("repository.search.results.per.page")%>
-      </c:set>
 <%@include file="../pages.jsp" %>
       <c:url value="/editors/taskmanagement/MassDeleteTaskAction.do" var="taskFormAction" />
       <form action="${taskFormAction}" name="taskForm">

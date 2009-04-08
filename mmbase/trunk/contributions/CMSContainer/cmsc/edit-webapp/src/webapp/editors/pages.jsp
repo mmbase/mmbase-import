@@ -1,9 +1,12 @@
 <%@ page import="org.apache.commons.lang.RandomStringUtils" 
 %><%@ page import="com.finalist.cmsc.paging.PagingUtils" 
+%><%@ page import="com.finalist.cmsc.mmbase.PropertiesUtil"
 %><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
 %><%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" 
 %><%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
-<!--todo : get default page size from system properties.-->
+<c:set var="resultsPerPage">
+   <%=PropertiesUtil.getProperty("repository.search.results.per.page")%>
+</c:set>
 <c:set var="currentPage" value="${empty param.offset ? 1 : param.offset +1 }"/>
 <c:set var="pagessize" value="${ cmsc:ceil(listSize/resultsPerPage)}"/>
 
