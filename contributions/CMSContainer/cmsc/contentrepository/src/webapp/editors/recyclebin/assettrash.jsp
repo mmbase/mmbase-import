@@ -75,7 +75,6 @@
                               <mm:sortorder field="assetelement.${sortBy}" direction="${direction}" />
             
                               <c:set var="listSize"><mm:size/></c:set>
-                              <c:set var="resultsPerPage" value="50"/>
                               <c:set var="offset" value="${not empty param.offset ? param.offset : '0'}"/>
                               
                               <mm:listnodes jspvar="node" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
