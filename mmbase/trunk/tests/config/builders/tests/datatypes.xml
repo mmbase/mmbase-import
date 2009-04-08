@@ -59,7 +59,7 @@
         <description>Example of String pattern.</description>
       </descriptions>
       <datatype base="emailaddress">
-	<maxLength value="255" />
+        <maxLength value="255" />
       </datatype>
     </field>
     <field name="stringrange">
@@ -479,6 +479,12 @@
     </field>
     <field name="currency">
       <datatype base="currency" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="gender">
+      <datatype base="gender" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <styleClass>mm_widgets_boxes</styleClass>
+      </datatype>
     </field>
 
   </fieldlist>
