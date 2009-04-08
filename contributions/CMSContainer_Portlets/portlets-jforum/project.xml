@@ -34,56 +34,7 @@
             <artifactId>jcaptcha-all</artifactId>
             <version>1.0-RC-2.0.1</version>
             <type>jar</type>
-        </dependency>
-        <!--jboss-->
-        <dependency>
-            <groupId>jboss</groupId>
-            <artifactId>jboss-cache</artifactId>
-            <version>1.2.2</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>jboss</groupId>
-            <artifactId>jboss-common</artifactId>
-            <version>4.0.2</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>jboss</groupId>
-            <artifactId>jboss-j2ee</artifactId>
-            <version>4.0.2</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>jboss</groupId>
-            <artifactId>jboss-jmx</artifactId>
-            <version>4.0.2</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>jboss</groupId>
-            <artifactId>jboss-minimal</artifactId>
-            <version>4.0.2</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>jboss</groupId>
-            <artifactId>jboss-system</artifactId>
-            <version>4.0.2</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>dwr</groupId>
-            <artifactId>dwr</artifactId>
-            <version>1.1.3</version>
-            <type>jar</type>
-        </dependency>
-         <dependency>
-            <groupId>jgroups</groupId>
-            <artifactId>jgroups-all</artifactId>
-            <version>2.2.9.1</version>
-            <type>jar</type>
-        </dependency>
+        </dependency>      
         <dependency>
             <groupId>jforum</groupId>
             <artifactId>jforum</artifactId>
