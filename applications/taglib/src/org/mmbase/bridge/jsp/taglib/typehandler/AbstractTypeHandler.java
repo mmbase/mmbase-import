@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.72 2009-03-03 19:36:41 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.73 2009-04-08 13:57:21 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -131,11 +131,24 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @since MMBase-1.8
      */
     protected String getClasses(Node node, Field field) {
-        if (field instanceof org.mmbase.bridge.util.DataTypeField) {
-            return "mm_validate mm_dt_" + field.getDataType().getName() + (node != null ? " mm_n_" + node.getNumber() : "");
-        } else {
-            return "mm_validate mm_f_" + field.getName() + " mm_nm_" + field.getNodeManager().getName() + (node != null ? " mm_n_" + node.getNumber() : "");
+        StringBuilder buf = new StringBuilder("mm_validate ");
+        for (String styleClass : field.getDataType().getStyleClasses()) {
+            buf.append(styleClass).append(' ');
         }
+        if (field instanceof org.mmbase.bridge.util.DataTypeField) {
+            buf.append("mm_dt_");
+            buf.append(field.getDataType().getName());
+        } else {
+            buf.append("mm_f_");
+            buf.append(field.getName());
+            buf.append(" mm_nm_");
+            buf.append(field.getNodeManager().getName());
+        }
+        if (node != null) {
+            buf.append(" mm_n_");
+            buf.append(node.getNumber());
+        }
+        return buf.toString();
     }
 
     /**

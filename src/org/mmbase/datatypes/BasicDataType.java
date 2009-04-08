@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.105 2009-03-23 17:41:48 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.106 2009-04-08 13:55:21 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -75,6 +75,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     private Map<String, Handler> handlers = new ConcurrentHashMap<String, Handler>();
 
     private Element xml = null;
+
+    private String[] styleClasses;
 
     /**
      * Create a data type object of unspecified class type
@@ -186,6 +188,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         } else {
             setProcessors = origin.setProcessors.clone();
         }
+        styleClasses = origin.styleClasses;
+
     }
 
     /**
@@ -911,6 +915,22 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             if (setProcessors == null) setProcessors = newProcessorsArray();
             setProcessors[processingType] = processor;
         }
+    }
+
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+    public String[] getStyleClasses() {
+        if (styleClasses != null) {
+            return styleClasses;
+        } else {
+            return EMPTY_STRING_ARRAY;
+        }
+    }
+
+    public void addStyleClass(String styleClass) {
+        edit();
+        List<String> list = new ArrayList<String>(Arrays.asList(getStyleClasses()));
+        list.add(styleClass);
+        styleClasses = list.toArray(EMPTY_STRING_ARRAY);
     }
 
 
