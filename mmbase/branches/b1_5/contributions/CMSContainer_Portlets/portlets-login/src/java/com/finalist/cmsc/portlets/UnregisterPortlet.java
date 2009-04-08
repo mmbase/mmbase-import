@@ -19,7 +19,6 @@ import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.community.ApplicationContextFactory;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
-//import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 
 public class UnregisterPortlet extends AbstractLoginPortlet {
    private static final String CONFIRMATION_TEXT = "confirmationText";
