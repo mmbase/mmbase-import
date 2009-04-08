@@ -101,15 +101,14 @@ public class LoginPortlet extends AbstractLoginPortlet {
                PersonService personHibernateService = (PersonService) ApplicationContextFactory.getBean("personService");
                Person person = personHibernateService.getPersonByUserId(userName);
                
-               if (person == null) {
-                  log.info(String.format("Login failed for user %s", userName));
-                  response.setRenderParameter(ERRORMESSAGE, "login.failed");
-               }
-               else if (RegisterStatus.UNCONFIRMED.getName().equalsIgnoreCase(person.getActive())) {
+               if (person != null && RegisterStatus.UNCONFIRMED.getName().equalsIgnoreCase(person.getActive())) {
                   response.setRenderParameter(ERRORMESSAGE, "view.account.unconfirmed");
                }
-               else if (RegisterStatus.BLOCKED.getName().equalsIgnoreCase(person.getActive())) {
+               else if (person != null && RegisterStatus.BLOCKED.getName().equalsIgnoreCase(person.getActive())) {
                   response.setRenderParameter(ERRORMESSAGE, "view.account.blocked");
+               } else {
+                  log.info(String.format("Login failed for user %s", userName));
+                  response.setRenderParameter(ERRORMESSAGE, "login.failed");
                }
             }
          }
