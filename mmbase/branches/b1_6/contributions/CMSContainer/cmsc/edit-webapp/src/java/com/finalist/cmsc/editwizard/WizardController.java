@@ -13,6 +13,8 @@ import java.util.Stack;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.util.LabelValueBean;
 import org.mmbase.applications.editwizard.Config;
@@ -113,8 +115,10 @@ public class WizardController {
             Node node = cloud.getNode(objectnr);
 
             if (PagesUtil.isPageType(node)) {
-               creationNode = RepositoryUtil.getRootNode(cloud);
-               session.setAttribute(SESSION_CREATION, "" + creationNode.getNumber());
+               creationNode = node;
+               Cloud adminCloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
+               Node repositoryRootNode = RepositoryUtil.getRootNode(adminCloud);;
+               session.setAttribute(SESSION_CREATION, "" + repositoryRootNode.getNumber());
             }
             if (ContentElementUtil.isContentType(elementtype) || AssetElementUtil.isAssetType(elementtype)) {
                if (RepositoryUtil.hasCreationChannel(node)) {
