@@ -25,7 +25,7 @@
          <div>
             <label for="timeduration"><fmt:message
                   key="subscription.subscribe.operation.pause.form.timeduration"/></label>
-            <input type="text" name="timeduration" id="timeduration">
+            <input type="text" name="timeduration" id="timeduration"/>
             <select name="durationunit" id="durationunit">
                <option value="d"><fmt:message key="subscription.subscribe.operation.pause.form.day"/></option>
                <option value="w"><fmt:message key="subscription.subscribe.operation.pause.form.week"/></option>
@@ -34,7 +34,7 @@
          </div>
          <div>
             <label for="resumeDate"><fmt:message key="subscription.subscribe.operation.pause.form.resumeDate"/></label>
-            <input type="text" name="resumeDate" id="resumeDate">
+            <input type="text" name="resumeDate" id="resumeDate"/>
          </div>
 
       </fieldset>
