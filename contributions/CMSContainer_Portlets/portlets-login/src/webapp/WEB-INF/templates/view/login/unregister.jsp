@@ -32,9 +32,10 @@
                   <td colspan="2"><fmt:message key="${errormessages['registerEmail']}" /></td>
                </tr>
                </c:if>
-                <td></td>
-                <td id="Submit"><input type="button" onclick="emailvalidate()" value="<fmt:message key="register.submit" />" /></td>
-                </tr>
+               <tr>
+                  <td></td>
+                  <td><input type="button" onclick="emailvalidate()" value="<fmt:message key="register.submit" />" /></td>
+               </tr>
               </table>
          </c:otherwise>
       </c:choose>

@@ -20,8 +20,8 @@
          </tr>
          </c:if>
          <tr>
-          <td></td>
-          <td id="Submit"><input type="submit" value="<fmt:message key="register.submit" />" /></td>
+            <td></td>
+            <td><input type="submit" value="<fmt:message key="register.submit" />" /></td>
           </tr>
         </table>
    </div>
