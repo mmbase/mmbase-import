@@ -2,17 +2,18 @@
 
 <cmsc:portlet-preferences />
 
-<form method="POST" name="<portlet:namespace />form_change" action="<cmsc:renderURL><cmsc:param name="action" value="change"/></cmsc:renderURL>" target="_self">
-<input type="hidden" name="template" value="newsletter/subscription/change.jsp">
+<div class="newsletter_subscription">
+   <form method="post" name="<portlet:namespace />form_change" action="<cmsc:renderURL><cmsc:param name="action" value="change"/></cmsc:renderURL>" target="_self">
+   <fieldset>
+      <input type="hidden" name="template" value="newsletter/subscription/change.jsp">
+   	<h3><fmt:message key="subscription.overview.title" /></h3>
+      
+   	<p><fmt:message key="subscription.subscribe.info" /></p>
 
-<div class="heading">
-	<h3><fmt:message key="subscription.overview.title" /></h3>
+      <input type="submit" value="<fmt:message key="subscription.overview.buttontext" />" >
+      
+   </fieldset>
+   </form>
 </div>
-<div class="content">
-	<p><fmt:message key="subscription.subscribe.info" />
-</div>
-<br>
-<a href="javascript:document.forms['<portlet:namespace />form_change'].submit()" class="button"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" alt=""/> <fmt:message key="subscription.overview.buttontext" /></a>
-
-</form>	
+	
 </mm:cloud>

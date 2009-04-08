@@ -14,7 +14,7 @@
 </edit:ui-tabs>
 <div class="editor">
    <div class="body">
-      <form method="POST" name="form" action="SubscriptionManagement.do">
+      <form method="post" name="form" action="SubscriptionManagement.do">
          <input type="hidden" name="action" value="listSubscription"/>
          <input type="hidden" name="newsletterId" value="${param.newsletterId}"/>
          <table>
@@ -36,38 +36,38 @@
 </div>
 <div class="editor">
    <div class="ruler_green"><div>&nbsp;<fmt:message key="newsletter.publication.result"/>&nbsp;</div></div>
-      <div class="body">
-         <form method="POST" name="operationform" action="SubscriptionImportExportAction.do">
-            <input type="hidden" name="action" value="export"/>
-            <input type="hidden" name="type" id="action" value="person"/>
-            <edit:ui-table items="${results}" var="result" size="${resultCount}" requestURI="/editors/newsletter/SubscriptionManagement.do">
-               <edit:ui-tcolumn title="" width="5%">
-                  <input type="checkbox" name="ids" value="${result.id}"/>
-               </edit:ui-tcolumn>
-               <edit:ui-tcolumn titlekey="subscriptionoverview.username" sort="username" width="15%">
-                  ${result.username}
-               </edit:ui-tcolumn>
-               <edit:ui-tcolumn titlekey="subscriptiondetail.fullname" sort="fullname" width="15%">
-                  ${result.fullname}
-               </edit:ui-tcolumn>
-               <edit:ui-tcolumn titlekey="subscriptiondetail.emailaddress" sort="email" width="65%">
-                  ${result.email}
-               </edit:ui-tcolumn>
-            </edit:ui-table>
-            <c:if test="${resultCount gt 0}">
-            <input type="button" name="submitButton" class="submit" onclick="exportsubscription()"
-                   value="<fmt:message key="subscriptiondetail.link.exportselect"/>"/>
-            <input type="button" name="submitButton" class="submit" onclick="showImportPage()"
-                   value="<fmt:message key="subscriptiondetail.link.importcsv"/>"/>
-            </c:if>
-         </form>
-      </div>
+   <div class="body">
+      <form method="post" name="operationform" action="SubscriptionImportExportAction.do">
+         <input type="hidden" name="action" value="export"/>
+         <input type="hidden" name="type" id="action" value="person"/>
+         <edit:ui-table items="${results}" var="result" size="${resultCount}" requestURI="/editors/newsletter/SubscriptionManagement.do">
+            <edit:ui-tcolumn title="" width="5%">
+               <input type="checkbox" name="ids" value="${result.id}"/>
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="subscriptionoverview.username" sort="username" width="15%">
+               ${result.username}
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="subscriptiondetail.fullname" sort="fullname" width="15%">
+               ${result.fullname}
+            </edit:ui-tcolumn>
+            <edit:ui-tcolumn titlekey="subscriptiondetail.emailaddress" sort="email" width="65%">
+               ${result.email}
+            </edit:ui-tcolumn>
+         </edit:ui-table>
+         <c:if test="${resultCount gt 0}">
+         <input type="button" name="submitButton" class="submit" onclick="exportsubscription()"
+                value="<fmt:message key="subscriptiondetail.link.exportselect"/>"/>
+         <input type="button" name="submitButton" class="submit" onclick="showImportPage()"
+                value="<fmt:message key="subscriptiondetail.link.importcsv"/>"/>
+         </c:if>
+      </form>
    </div>
 </div>
+
 </body>
 </html>
 </mm:content>
-<script>
+<script type="text/javascript">
    function showImportPage(){
       document.operationform.action ="SubscriptionManagement.do?action=showImportPage&importType=importCSV&newsletterId=${param.newsletterId}";
       document.operationform.submit();
