@@ -15,7 +15,7 @@
 
       <div class="editor">
          <div class="body">
-            <form method="POST" name="form" action="SubscriptionManagement.do">
+            <form method="post" name="form" action="SubscriptionManagement.do">
                <input type="hidden" name="action" value="listSubscriptionByPerson"/>
                <input type="hidden" name="subsriberId" value="${requestScope.subsriberId}"/>
                <table border="0">
@@ -45,5 +45,3 @@
    </body>
 </html>
 </mm:content>
-
-

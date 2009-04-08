@@ -13,7 +13,7 @@
 </edit:ui-tabs>
 <div class="editor">
    <div class="body">
-      <form method="POST" name="form" action="SubscriptionManagement.do">
+      <form method="post" name="form" action="SubscriptionManagement.do">
          <input type="hidden" name="action" value="newsletterOverview"/>
          <table border="0">
             <tr>
@@ -31,7 +31,7 @@
 <div class="editor">
    <div class="ruler_green"><div>&nbsp;<fmt:message key="newsletteroverview.title"/>&nbsp;</div></div>
       <div class="body">
-      <form method="POST" name="operationform" action="SubscriptionManagement.do">
+      <form method="post" name="operationform" action="SubscriptionManagement.do">
          <input type="hidden" name="action" />
           <input type="hidden" name="type" value="newsletter"/>
          <edit:ui-table items="${results}" var="result" size="${resultCount}" requestURI="/editors/newsletter/SubscriptionManagement.do">

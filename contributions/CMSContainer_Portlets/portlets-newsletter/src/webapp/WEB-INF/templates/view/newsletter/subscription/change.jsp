@@ -3,7 +3,7 @@
 <cmsc:portlet-preferences />
 
 <mm:cloud>
-	<form method="POST" name="<portlet:namespace />form_change" action="<cmsc:actionURL><cmsc:param name="action" value="change"/></cmsc:actionURL>" target="_parent">
+	<form method="post" name="<portlet:namespace />form_change" action="<cmsc:actionURL><cmsc:param name="action" value="change"/></cmsc:actionURL>" target="_parent">
 	<input type="hidden" name="template" value="newsletter/change/overview.jsp">
 	<div class="heading">
 		<h3><fmt:message key="subscription.change.title" /></h3>
@@ -79,7 +79,7 @@
 	</div>
 	</form>
 	<br>
-	<form method="POST" name="<portlet:namespace />form_terminate" action="<cmsc:actionURL><cmsc:param name="action" value="terminate"/></cmsc:actionURL>" target="_parent">
+	<form method="post" name="<portlet:namespace />form_terminate" action="<cmsc:actionURL><cmsc:param name="action" value="terminate"/></cmsc:actionURL>" target="_parent">
 	<input type="hidden" name="template" value="newsletter/change/overview.jsp">
 		<div>
 			<b><fmt:message key="subscription.terminate.title" /></b>
