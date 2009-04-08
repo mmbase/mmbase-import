@@ -1,7 +1,7 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 
 <fmt:setBundle basename="portlets-newslettersubscription" scope="request"/>
-<form method="POST" name="<portlet:namespace />form_subscribe"
+<form method="post" name="<portlet:namespace />form_subscribe"
       action="<cmsc:actionURL><cmsc:param name="action" value="pause"/></cmsc:actionURL>"
       >
    <div class="content">
@@ -44,6 +44,3 @@
       </a>
    </div>
 </form>
-
-
-

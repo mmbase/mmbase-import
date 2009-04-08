@@ -69,7 +69,7 @@
 
       <div class="editor">
          <div class="body">
-            <html:form method="POST" action="/editors/newsletter/NewsletterStatistic">
+            <html:form method="post" action="/editors/newsletter/NewsletterStatistic">
                <table border="0">
                   <tbody>
                   <tr>
@@ -86,9 +86,8 @@
                      <td> <fmt:message key="newsletterlog.from" /> </td>
                      <td nowrap>
                         <html:text property="startDate" styleId="f_date_b" style="width:150px" />
-                        <img src="<cmsc:staticurl page='/editors/editwizards_new/media/datepicker/calendar.gif'/>" id="f_trigger_b" class="img">
-                           
-                        </input>
+                        <img src="<cmsc:staticurl page='/editors/editwizards_new/media/datepicker/calendar.gif'/>" id="f_trigger_b" class="img"/>
+                        
                         <script type="text/javascript">
                            Calendar.setup({
                               inputField     :    "f_date_b",      // id of the input field
@@ -101,9 +100,8 @@
                      <td> <fmt:message key="newsletterlog.to" /> </td>
                      <td nowrap>
                         <html:text property="endDate" styleId="f_date_be" style="width:150px" />
-                        <img src="<cmsc:staticurl page='/editors/editwizards_new/media/datepicker/calendar.gif'/>" id="f_trigger_be" class="img">
+                        <img src="<cmsc:staticurl page='/editors/editwizards_new/media/datepicker/calendar.gif'/>" id="f_trigger_be" class="img"/>
                            
-                        </input>
                         <script type="text/javascript">
                            Calendar.setup({
                               inputField     :    "f_date_be",      // id of the input field

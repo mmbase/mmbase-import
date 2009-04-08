@@ -1,7 +1,7 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 
 <fmt:setBundle basename="portlets-newslettersubscription" scope="request"/>
-<form method="POST" name="<portlet:namespace />form_subscribe" action="<cmsc:actionURL/>">
+<form method="post" name="<portlet:namespace />form_subscribe" action="<cmsc:actionURL/>">
    <div class="content">
       <c:choose>
       <c:when test="${fn:length(subscriptionsToBeResume) gt 0}">
