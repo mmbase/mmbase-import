@@ -59,12 +59,9 @@ public class UnregisterPortlet extends AbstractLoginPortlet {
       AuthenticationService authenticationService = (AuthenticationService) ApplicationContextFactory
       .getBean("authenticationService");
       PersonService personHibernateService = (PersonService) ApplicationContextFactory.getBean("personService");
-//      This following line should be fixed differently
-//      NewsletterSubscriptionServices subscriptionServices = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
+
       if (authenticationService.authenticationExists(register_email)) {
         Long authId = authenticationService.getAuthenticationIdForUserId(register_email);
-        // personHibernateService.
-//        subscriptionServices.deleteSubscriptionsByAuthId(authId);
         personHibernateService.deletePersonByAuthenticationId(authId);
         authenticationService.deleteAuthentication(authId);
         CommunityManager.notify(authId);
