@@ -1,5 +1,4 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
-<%@include file="/WEB-INF/templates/edit_defaults/sections/globals.jsp"%>
 
 <tr>
 	<td colspan="3"><h4><fmt:message key="edit_defaults.portletset"/></h4></td>
