@@ -121,38 +121,21 @@ function fillIframe(div, left) {
 function writeDocument(doc, div, parentdocument) {
    var javascriptWindow = "<cmsc:staticurl page='/js/window.js' />";
    var cssPortaledit = "<cmsc:staticurl page='/editors/site/portaledit.css' />";
-    html = "<html>\n";
-    html += "<head>\n";
-    html += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
-   html += "<script type='text/javascript' src='" + javascriptWindow + "'></script>"
-   html += "<link rel='stylesheet' type='text/css' href='" + cssPortaledit + "' />";
-    html += "</head>\n";
-    html += "<body>\n";
-    html +=   div.innerHTML;
-    html += "</body>\n";
-    html += "</html>";
+   html = html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n";
+   html += "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n";
+   html += "<head>\n";
+   html += " <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
+   html += " <script type='text/javascript' src='" + javascriptWindow + "'></script>"
+   html += " <link rel='stylesheet' type='text/css' href='" + cssPortaledit + "' />";
+   html += "</head>\n";
+   html += '<body class="portletedit">\n';
+   html +=  div.innerHTML;
+   html += "</body>\n";
+   html += "</html>";
 
    doc.open();
    doc.write(html);
    doc.close();
-   
-   for(count = 0; count < parentdocument.styleSheets.length; count++) {
-      ss = parentdocument.styleSheets[count];
-      createStylesheet( doc, ss.href);
-   }
-}
-
-function createStylesheet(doc, location) {
-   var head = getHeadElement(doc);
-   var stylesheet = doc.createElement("link");
-   stylesheet.setAttribute("href", location);
-   stylesheet.setAttribute("type", "text/css");
-   stylesheet.setAttribute("rel", "stylesheet");
-   head.appendChild(stylesheet);
-}
-
-function getHeadElement(doc) {
-   return doc.getElementsByTagName("head")[0];
 }
 
 function showInfo(id) {
