@@ -1,3 +1,21 @@
+@media screen {
+
+   /***************************************************************************
+    * Edit defaults window
+    ***************************************************************************/
+
+    body.portletedit { color: #000; font: 0.75em/1.5em Arial, Helvetica, sans-serif; margin: 0; padding: 0; text-align: center; }
+    body.portletedit .clear { clear: both; }
+    body.portletedit .hidden { display: none; }
+    body.portletedit a { color: #777; text-decoration: none; }
+    body.portletedit a:hover { text-decoration: underline; }
+    body.portletedit a img { border: 0; }
+    body.portletedit .list .content { display: block; float: left; width: 415px; }
+    body.portletedit .list li { list-style: none; }
+}
+
+/* Specific Portal Editing section */
+
 .portalcontrols {
    position:fixed;
    top: 2px;
@@ -52,7 +70,7 @@
 {
    position: relative;
    height: 300px;
-   width: 350px;
+   width: 360px;
    z-index: 4000;
    border: 1px solid black;
    background-color: white;
