@@ -9,7 +9,7 @@
       xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.28 2008-09-26 13:55:15 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.29 2009-04-09 11:06:58 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -120,7 +120,8 @@
       <c:if test="${createpos eq 'top'}">
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
                  referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
-          <a href="${_}" class="create">
+          <mm:param name="referrer"><mm:url absolute="context" /></mm:param>
+          <a href="${_}"  class="create">
             <mm-sr:button alt="+" type="create" icondir="${icondir}" />
           </a>
         </mm:link>
@@ -143,7 +144,8 @@
       <c:if test="${createpos eq 'bottom'}">
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
                  referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
-          <a href="${_}" class="create">
+          <mm:param name="referrer"><mm:url absolute="context" /></mm:param>
+          <a href="${_}"  class="create">
             <mm-sr:button alt="+" type="create" icondir="${icondir}" />
           </a>
         </mm:link>
