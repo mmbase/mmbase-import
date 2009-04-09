@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.38 2009-04-09 10:04:58 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.39 2009-04-09 15:59:00 michiel Exp $
  */
 
 
@@ -100,12 +100,31 @@ function List(d) {
         });
     this.setTabIndices();
     $(this.div).trigger("mmsrRelatedNodesReady", [self]);
+
+    this.logEnabled = false;
 }
 
 List.prototype.leftPage = false;
 
 
+List.prototype.log = function(msg) {
+    if (this.logEnabled) {
+        var errorTextArea = document.getElementById("logarea");
+        if (errorTextArea) {
+            errorTextArea.value = "LOG: " + msg + "\n" + errorTextArea.value;
+        } else {
+            // firebug console
+	        if (typeof(console) != "undefined") {
+		        console.log(msg);
+	        }
+        }
+    }
+};
+
+
 List.prototype.find = function(clazz, elname, parent) {
+
+    this.log("---------Finding " + clazz + " " + elname + " in " + parent);
     var result = [];
     var self = this;
     if (elname != null) elname = elname.toUpperCase();
@@ -115,11 +134,7 @@ List.prototype.find = function(clazz, elname, parent) {
     var t = parent.firstChild;
     while (t != null) {
         var cn = t.nodeName.toUpperCase();
-        if (cn == "#COMMENT") {
-            t = t.nextSibling;
-            continue;
-        }
-        if (cn == '#TEXT' || (cn == 'DIV' && $(t).hasClass("list"))) {
+        if (cn == '#TEXT' || cn == '#COMMENT' || (cn == 'DIV' && $(t).hasClass("list"))) {
             var c = t.nextSibling;
             while (c == null) {
                 t = t.parentNode;
@@ -129,6 +144,7 @@ List.prototype.find = function(clazz, elname, parent) {
             t = c;
 
         } else {
+            this.log(" - " + cn + " " + elname + " in " + $(t).hasClass(clazz) + " " + t.href);
             if ( (clazz == null || $(t).hasClass(clazz)) &&
                  (elname == null || cn == elname)) {
                 result[result.length] = t;
