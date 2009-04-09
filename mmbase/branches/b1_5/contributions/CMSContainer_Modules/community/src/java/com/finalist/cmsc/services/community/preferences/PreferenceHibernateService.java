@@ -167,14 +167,20 @@ public class PreferenceHibernateService extends HibernateService implements Pref
    public void deletePreference(String module, String userId, String key, String value) {
       Long authenticationId = authenticationService.getAuthenticationIdForUserId(userId);
       Criteria criteria = getSession().createCriteria(Preference.class);
-      criteria.add(Restrictions.eq("module", module));
+      if (module != null) {
+          criteria.add(Restrictions.eq("module", module));
+      }
       criteria.add(Restrictions.eq("authenticationId", authenticationId));
-      criteria.add(Restrictions.eq("key", key));
-      criteria.add(Restrictions.eq("value", value));
+      if (key != null) {
+          criteria.add(Restrictions.eq("key", key));
+      }
+      if (value != null) {
+          criteria.add(Restrictions.eq("value", value));
+      }
       List preferences = criteria.list();
-      if (preferences.size() == 1) {
-         Preference p = (Preference) preferences.get(0);
-         getSession().delete(p);
+      for (Iterator iter = preferences.iterator(); iter.hasNext(); ) {
+          Preference pref = (Preference) iter.next();
+          getSession().delete(pref);
       }
    }
 
