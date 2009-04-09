@@ -30,8 +30,8 @@
     </mm:node>
   </c:if>
   
-  <form name="closelessonform" action="${formAction}"   method="post">
-   	<a href="#" class="formActionLinks" onclick="window.location.reload()">opslaan</a><jsp:text>&amp;nbsp;|&amp;nbsp;</jsp:text>
+  <form name="closelessonform" id="closelessonform2" action="${formAction}"   method="post">
+   	<a href="#" class="formActionLinks">opslaan</a><jsp:text>&amp;nbsp;|&amp;nbsp;</jsp:text>
 		<input type="hidden" name="coachmode" value="false"  />
     <input type="hidden" name="lesson" value="${currentlesson}"  />
     <c:if test="${empty feedback and ! empty currentlesson}">
@@ -41,7 +41,7 @@
     			<a href="#" class="formActionLinks">je les is verstuurd</a><jsp:text> | </jsp:text>
     		</c:if>
       	<c:if test="${!justclosed}">
-      		<a href="#" onclick="document.closelessonform.sumbit()" class="formActionLinks">${_}</a><jsp:text> | </jsp:text>
+      		<a href="#" onclick="document.getElementById('closelessonform2').submit()" class="formActionLinks">${_}</a><jsp:text> | </jsp:text>
       	</c:if>
       	
 			</di:translate>				 
