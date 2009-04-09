@@ -25,7 +25,7 @@
                           role="posrel" orderby="posrel.pos" />
     </mm:treefile>
   </mm:node>
-    <a href="#" class="formActionLinks" onclick="window.location.reload()">opslaan</a>
+    <a href="#" class="formActionLinks">opslaan</a>
   <!-- problems -->
   
   <h2>2. Uw problemen</h2>
@@ -47,7 +47,7 @@
       </mm-sr:relatednodes>
     </mm:treefile>
   </mm:node>  
-  <a href="#" class="formActionLinks" onclick="window.location.reload()">opslaan</a>
+  <a href="#" class="formActionLinks">opslaan</a>
   
   <!-- categorize problems -->
   <h2>3. Soort probleem en hoeveel last heeft u er van</h2>
@@ -61,7 +61,11 @@
 	<div class="problemsListCategorize">
 	<ol>
   <mm:node number="${user}">
+
    <mm:treefile write="false" page="/mmbase/style/images/" objectlist="${includePath}" absolute="context">
+   	
+
+   	
      <mm-sr:relatednodes type="problems" 
      										 role="posrel" 
      										 orderby="posrel.pos"
