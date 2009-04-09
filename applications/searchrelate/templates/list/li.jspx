@@ -7,8 +7,9 @@
     >
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="item" required="true" />
+  <mm:import externid="referrer" />
   <li xmlns="http://www.w3.org/1999/xhtml">
-    <mm:form id="node${_node}">
+    <mm:form id="node${_node}" page="${referrer}">
       <mm:include debug="html" page="${item}" />
     </mm:form>
   </li>
