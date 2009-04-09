@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.37 2008-11-24 12:45:22 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.38 2009-04-09 10:04:58 michiel Exp $
  */
 
 
@@ -115,6 +115,10 @@ List.prototype.find = function(clazz, elname, parent) {
     var t = parent.firstChild;
     while (t != null) {
         var cn = t.nodeName.toUpperCase();
+        if (cn == "#COMMENT") {
+            t = t.nextSibling;
+            continue;
+        }
         if (cn == '#TEXT' || (cn == 'DIV' && $(t).hasClass("list"))) {
             var c = t.nextSibling;
             while (c == null) {
