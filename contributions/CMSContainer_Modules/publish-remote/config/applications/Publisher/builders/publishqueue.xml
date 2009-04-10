@@ -114,7 +114,7 @@
 					<search>4</search>
 				</positions>
 			</editor>
-			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
 				<name>destinationcloud</name>
 				<type state="persistent" notnull="true">INTEGER</type>
@@ -158,7 +158,7 @@
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+			<datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
 				<default value="now" />
 			</datatype>
 			<db>
