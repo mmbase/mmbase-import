@@ -16,8 +16,11 @@
 		<html:hidden property="id" />
 		<div id="user">
 		<table class="formcontent">
+         <tr>
+            <td><fmt:message key="user.notice" /></td>
+         </tr>
 			<tr>
-				<td class="fieldname" width='180'><fmt:message key="user.account" /></td>
+				<td class="fieldname" width='180'><fmt:message key="user.account" />*</td>
 				<td>
 					<logic:equal name="UserForm" property="id" value="-1">
 						<html:text property="username" size='15' maxlength='15' />
@@ -30,43 +33,43 @@
 			</tr>
 			<tr>
 				<td class="fieldname"><fmt:message key="user.firstname" /></td>
-				<td><html:text property="firstname" size='30' /></td>
+				<td><html:text property="firstname" size='30' maxlength='40' />&nbsp;&nbsp;<fmt:message key="user.textlength" /></td>
 			</tr>
 			<tr>
 				<td class="fieldname"><fmt:message key="user.prefix" /></td>
-				<td><html:text property="prefix" size='15' /></td>
+				<td><html:text property="prefix" size='30' maxlength='40' />&nbsp;&nbsp;<fmt:message key="user.textlength" /></td>
 			</tr>
 			<tr>
 				<td class="fieldname"><fmt:message key="user.surname" /></td>
-				<td><html:text property="surname" size='30' /></td>
+				<td><html:text property="surname" size='30' maxlength='40' />&nbsp;&nbsp;<fmt:message key="user.textlength" /></td>
 			</tr>
 			<tr>
-				<td class="fieldname"><fmt:message key="user.email" /></td>
-				<td><html:text property="email" size='30' />
+				<td class="fieldname"><fmt:message key="user.email" />*</td>
+				<td><html:text property="email" size='30' maxlength='255' />
 					<span class="notvalid"><html:errors bundle="SECURITY" property="email" /></span>
 				</td>
 			</tr>
 			<tr>
 				<td class="fieldname"><fmt:message key="user.company" /></td>
-				<td><html:text property="company" size='30' /></td>
+				<td><html:text property="company" size='30' maxlength='40' />&nbsp;&nbsp;<fmt:message key="user.textlength" /></td>
 			</tr>
 			<tr>
 				<td class="fieldname"><fmt:message key="user.department" /></td>
-				<td><html:text property="department" size='30' /></td>
+				<td><html:text property="department" size='30' maxlength='40' />&nbsp;&nbsp;<fmt:message key="user.textlength" /></td>
 			</tr>
 			<tr>
 				<td class="fieldname"><fmt:message key="user.note" /></td>
 				<td><html:textarea property="note" cols='60' rows='5' /></td>
 			</tr>
 			<tr>
-				<td class="fieldname"><fmt:message key="user.password" /></td>
+				<td class="fieldname"><fmt:message key="user.password" />*</td>
 				<td>
 					<html:password property="password1" size='15' maxlength='15' />
 					<span class="notvalid"><html:errors bundle="SECURITY" property="password1" /></span>
 				</td>
 			</tr>
 			<tr>
-				<td class="fieldname" nowrap><fmt:message key="user.confirmpassword" /></td>
+				<td class="fieldname" nowrap><fmt:message key="user.confirmpassword" />*</td>
 				<td>
 					<html:password property="password2" size='15' maxlength='15' />
 					<span class="notvalid"><html:errors bundle="SECURITY" property="password2" /></span>
