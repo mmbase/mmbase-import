@@ -25,3 +25,36 @@ Exceptions/errors/other problems and what to do:
 *
 *
 *
+
+Name:  update the templete jsp
+Goal:  change templates jsp to use intro & body field 
+       fixed the styling, CMSC-1272
+Type:  manual action
+Steps:
+1. update the following
+<div class="kolombestel">
+to 
+<div class="responseform">
+
+2. update the following
+		<mm:field name="description">
+			<mm:isnotempty><p><mm:write escape="none"/></p></mm:isnotempty>
+		</mm:field>				
+to 
+	<mm:field name="intro">
+		<mm:isnotempty><div class="intro"><mm:write escape="none"/></div></mm:isnotempty>
+	</mm:field>
+   
+   <mm:field name="body">
+      <mm:isnotempty><div class="body"><mm:write escape="none"/></div></mm:isnotempty>
+   </mm:field>
+ 
+3. update the following
+<mm:isnotempty><p class="body"><mm:write escape="none"/></p></mm:isnotempty></mm:field>	
+to 
+<mm:isnotempty><div class="confirmation"><mm:write escape="none"/></div></mm:isnotempty></mm:field>
+ 
+Exceptions/errors/other problems and what to do:
+*
+*
+*
