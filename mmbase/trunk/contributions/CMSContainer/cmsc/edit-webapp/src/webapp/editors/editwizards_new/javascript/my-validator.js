@@ -101,7 +101,8 @@ function writeAreaInfo(req, el, err, silent){
     if (areaInfo != "0") {
         err += getToolTipValue(form, 'message_create', "the {0} have been created", v);
     }
-    updateHtml(el, err, silent);
+    //CMSC-663 Message in statusbar.
+    //updateHtml(el, err, silent);
     return err;
 }
 
