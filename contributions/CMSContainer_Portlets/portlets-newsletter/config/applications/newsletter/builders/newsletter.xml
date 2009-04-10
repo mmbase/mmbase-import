@@ -43,7 +43,7 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" ></datatype>
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>subject</name>
             <type key="false" notnull="false" size="100" state="persistent">STRING</type>
@@ -142,7 +142,7 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>pausedstartdate</name>
             <type key="false" required="false" state="persistent">DATETIME</type>
@@ -166,7 +166,7 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>pausedstopdate</name>
             <type key="false" required="false" state="persistent">DATETIME</type>
@@ -320,7 +320,7 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+         <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
          <db>
             <name>lastcreateddate</name>
          <type key="false" notnull="false" state="system">DATETIME</type>
@@ -368,7 +368,7 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>bounce_checking</name>
             <type key="false" notnull="false" size="256" state="persistent">STRING</type>
@@ -392,6 +392,7 @@
                <search>-1</search>
             </positions>
          </editor>
+         <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>max_bounces</name>
             <type key="false" notnull="false" state="persistent">INTEGER</type>

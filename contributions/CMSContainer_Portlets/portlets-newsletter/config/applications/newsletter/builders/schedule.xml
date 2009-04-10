@@ -61,7 +61,7 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" ></datatype>
+         <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes" ></datatype>
          <db>
             <name>createdatetime</name>
               <type key="false"   required="false" state="persistent">LONG</type>
