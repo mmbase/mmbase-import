@@ -93,7 +93,7 @@
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+			<datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
 				<default value="now" />
 			</datatype>
 			<db>
@@ -119,7 +119,7 @@
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+			<datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
 				<default value="today + 100 year" />
 			</datatype>
 			<db>
@@ -305,7 +305,7 @@
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Beveiligd</guiname>
-            <guiname xml:lang="en">Secure</guiname>
+				<guiname xml:lang="en">Secure</guiname>
 				<guiname xml:lang="zh">安全</guiname>
 			</gui>
 			<editor>

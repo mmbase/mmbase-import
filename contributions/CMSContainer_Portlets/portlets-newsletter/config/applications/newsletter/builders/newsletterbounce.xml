@@ -37,7 +37,7 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>bouncedate</name>
             <type key="false" required="false" state="persistent">DATETIME</type>
