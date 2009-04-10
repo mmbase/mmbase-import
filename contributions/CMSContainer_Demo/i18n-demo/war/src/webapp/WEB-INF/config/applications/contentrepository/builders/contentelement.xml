@@ -85,7 +85,7 @@
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+			<datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
 				<default value="now" />
 			</datatype>
 			<db>
@@ -109,7 +109,7 @@
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+			<datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
 				<default value="today + 100 year" />
 			</datatype>
 			<db>
@@ -313,7 +313,7 @@
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+			<datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
 				<commitprocessor>
 					<class name="com.finalist.cmsc.repository.DerivedDateProcessorFactory">
 						<param name="field">expiredate</param>
@@ -342,7 +342,7 @@
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+			<datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
 				<default value="today + 1 month" />
 				<commitprocessor>
 					<class name="com.finalist.cmsc.repository.ValueBetweenProcessorFactory">
