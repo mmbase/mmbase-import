@@ -6,10 +6,15 @@
       <prompt xml:lang="en">Title</prompt>
       <prompt xml:lang="zh">标题</prompt>
    </field>
-   <field name="description" dtmaxlength="64000" ftype="html" rows="10">
-      <prompt xml:lang="nl">Omschrijving</prompt>
-      <prompt xml:lang="en">Description</prompt>
-      <prompt xml:lang="zh">描述</prompt>
+   <field name="intro" dtmaxlength="64000" ftype="html" rows="10">
+      <prompt xml:lang="nl">Introductie</prompt>
+      <prompt xml:lang="en">Intro</prompt>
+      <prompt xml:lang="zh">引言</prompt>
+   </field>
+   <field name="body" dtmaxlength="64000" ftype="html" rows="10">
+      <prompt xml:lang="nl">Tekst</prompt>
+      <prompt xml:lang="en">Body</prompt>
+      <prompt xml:lang="zh">正文</prompt>
    </field>
    <field name="saveanswer" ftype="enum" dtrequired="true">
       <prompt xml:lang="nl">Antwoord opslaan in het systeem</prompt>

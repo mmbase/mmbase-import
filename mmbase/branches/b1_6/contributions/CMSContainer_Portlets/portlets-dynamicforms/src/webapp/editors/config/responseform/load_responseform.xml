@@ -4,6 +4,8 @@
    <field name="name" />
    <field name="title" />
    <field name="description" />
+   <field name="intro" />
+   <field name="body" />
    <field name="saveanswer" />
    <field name="emailaddresses" />
    <field name="emailsubject" />
