@@ -150,7 +150,7 @@ public class PropertiesUtil {
 
 
    private static Node getPropertyNodes(Cloud cloud, String propertyKey) {
-      NodeManager propertiesManager = cloud.getNodeManager("properties");
+      NodeManager propertiesManager = getPropertiesNodeManager(cloud);
       NodeQuery query = propertiesManager.createQuery();
       Field keyField = propertiesManager.getField("key");
       FieldValueConstraint constraint = query.createConstraint((query.getStepField(keyField)),
@@ -163,7 +163,6 @@ public class PropertiesUtil {
       }
       return null;
    }
-
 
    private static boolean isServerInEnv(String machineName, String servers) {
       String[] serversArray = servers.split(",");
@@ -208,7 +207,7 @@ public class PropertiesUtil {
 
 
    public static void setProp(Cloud cloud, String key, String value) {
-      NodeManager propertiesManager = cloud.getNodeManager("properties");
+      NodeManager propertiesManager = getPropertiesNodeManager(cloud);
       Node property = getPropertyNodes(cloud, key);
       if (property == null) {
          property = propertiesManager.createNode();
@@ -224,7 +223,7 @@ public class PropertiesUtil {
    public static Map<String, String> getModuleProperties(String module) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Map<String, String> result = new TreeMap<String, String>();
-      NodeManager propertiesManager = cloud.getNodeManager("properties");
+      NodeManager propertiesManager = getPropertiesNodeManager(cloud);
       NodeQuery query = propertiesManager.createQuery();
       Field keyField = propertiesManager.getField("module");
       FieldValueConstraint constraint = query.createConstraint((query.getStepField(keyField)),
@@ -238,6 +237,13 @@ public class PropertiesUtil {
       }
 
       return result;
+   }
+
+   private static NodeManager getPropertiesNodeManager(Cloud cloud) {
+//      if (cloud.hasNodeManager("systemproperties")) {
+//         return cloud.getNodeManager("systemproperties");
+//      }
+      return cloud.getNodeManager("properties");
    }
 
 }
