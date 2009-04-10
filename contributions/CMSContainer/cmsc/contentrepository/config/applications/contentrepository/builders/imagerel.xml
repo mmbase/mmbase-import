@@ -140,9 +140,10 @@
 					<search>-1</search>
 				</positions>
 			</editor>
+			<datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
 				<name>width</name>
-				<type key="false" notnull="false" size="1024" state="persistent">INTEGER</type>
+				<type key="false" notnull="false" state="persistent">INTEGER</type>
 			</db>
 		</field>
 		<field>
@@ -163,9 +164,10 @@
 					<search>-1</search>
 				</positions>
 			</editor>
+			<datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
 				<name>height</name>
-				<type key="false" notnull="false" size="1024" state="persistent">INTEGER</type>
+				<type key="false" notnull="false" state="persistent">INTEGER</type>
 			</db>
 		</field>
 		<field>
