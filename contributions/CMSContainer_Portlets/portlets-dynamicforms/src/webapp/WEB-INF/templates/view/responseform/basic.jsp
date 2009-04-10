@@ -1,17 +1,23 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
-<div class="kolombestel">
+<div class="responseform">
 <mm:cloud method="asis">
 	<mm:import externid="elementId" required="true" from="request" />		
 	<mm:node number="${elementId}" notfound="skip">	
 	
 	<cmsc:portletmode name="edit">
-      	<%@include file="/WEB-INF/templates/edit/itemheader.jsp" %>
-   	</cmsc:portletmode>
+      <%@include file="/WEB-INF/templates/edit/itemheader.jsp" %>
+	</cmsc:portletmode>
    		
 	<h2><mm:field name="title"/></h2>
-		<mm:field name="description">
-			<mm:isnotempty><p><mm:write escape="none"/></p></mm:isnotempty>
-		</mm:field>				
+   
+	<mm:field name="intro">
+		<mm:isnotempty><div class="intro"><mm:write escape="none"/></div></mm:isnotempty>
+	</mm:field>
+   
+   <mm:field name="body">
+      <mm:isnotempty><div class="body"><mm:write escape="none"/></div></mm:isnotempty>
+   </mm:field>
+   
 	</mm:node>	
 	<c:set var="isConfirmPage">
 		<c:out value="${confirm}"/>
@@ -207,7 +213,7 @@
 			%>
 			<mm:node number="${elementId}" notfound="skip">
 				<mm:field name="confirmation">
-				<mm:isnotempty><p class="body"><mm:write escape="none"/></p></mm:isnotempty></mm:field>	
+				<mm:isnotempty><div class="confirmation"><mm:write escape="none"/></div></mm:isnotempty></mm:field>	
 			</mm:node>		
 			${tkHtml}
 		</c:otherwise>
@@ -215,9 +221,7 @@
 	
 	<cmsc:portletmode name="edit">
     	<%@include file="/WEB-INF/templates/edit/itemfooter.jsp" %>
-    </cmsc:portletmode>	
+   </cmsc:portletmode>	
     
 </mm:cloud>
 </div>
-
-
