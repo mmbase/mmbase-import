@@ -675,14 +675,7 @@ public final class RepositoryUtil {
             }
          }
 
-         NodeManager nm = cloud.getNodeManager(CONTENTELEMENT);
-         RelationManager rm = cloud.getRelationManager(CONTENTREL);
-
-         int childCount = channelNode.countRelatedNodes(nm, CONTENTREL, DESTINATION);
-
-         Relation relation = channelNode.createRelation(content, rm);
-         relation.setIntValue(TreeUtil.RELATION_POS_FIELD, childCount + 1);
-         relation.commit();
+           RelationUtil.createCountedRelation(channelNode, content, CONTENTREL, TreeUtil.RELATION_POS_FIELD);
 
          if (isOrphan) {
             addCreationChannel(content, channelNode);
