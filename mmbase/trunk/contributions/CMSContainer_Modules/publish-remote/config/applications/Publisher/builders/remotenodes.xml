@@ -70,7 +70,7 @@
                <search>3</search>
             </positions>
          </editor>
-		<datatype xmlns="http://www.mmbase.org/xmlns/datatypes" />
+		<datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
          <db>
             <name>sourcecloud</name>
             <type state="persistent" notnull="true">INTEGER</type>
