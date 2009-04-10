@@ -124,10 +124,10 @@
 					<search>10</search>
 				</positions>
 			</editor>
-			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
 				<name>clicks</name>
-				<type key="false" notnull="true" size="512" state="system">INTEGER</type>
+				<type key="false" notnull="true" state="system">INTEGER</type>
 			</db>
 		</field>
                 <field>
@@ -149,7 +149,7 @@
             <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
             <db>
                 <name>removed</name>
-                <type key="false" notnull="true" size="512" state="persistent">BOOLEAN</type>
+                <type key="false" notnull="true" state="persistent">BOOLEAN</type>
             </db>
         </field>
         
