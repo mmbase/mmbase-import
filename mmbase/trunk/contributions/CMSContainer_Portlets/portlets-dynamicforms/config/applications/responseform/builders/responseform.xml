@@ -39,6 +39,54 @@
    </properties>
 
    <fieldlist>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Introductie</guiname>
+				<guiname xml:lang="en">Intro</guiname>
+				<guiname xml:lang="zh">引言</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>5</input>
+					<list>5</list>
+					<search>5</search>
+				</positions>
+			</editor>
+			<datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>intro</name>
+				<type key="false" notnull="false" size="64000" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Tekst</guiname>
+				<guiname xml:lang="en">Body</guiname>
+				<guiname xml:lang="zh">正文</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>6</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>body</name>
+				<type key="false" notnull="false" size="512000" state="persistent">STRING</type>
+			</db>
+		</field>
       <field>
          <!-- Descriptions.
                They are useful for GUI editors to provide helptexts.
