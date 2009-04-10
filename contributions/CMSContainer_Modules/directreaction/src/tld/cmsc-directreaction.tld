@@ -7,7 +7,7 @@
 	<display-name>CMS Container direct reaction tags</display-name>
 	<tlib-version>1.0</tlib-version>
 	<short-name>cmsc-directreaction</short-name>
-	<uri>http://finalist.com/csmc-directreaction</uri>
+	<uri>http://finalist.com/cmsc-directreaction</uri>
    <tag>
       <description>Gets a specific the reaction</description>
       <name>getreaction</name>
