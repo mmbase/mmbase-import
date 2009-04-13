@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<module>
+	<status>active</status>
+	<classfile>com.finalist.cmsc.directreaction.DirectreactionModule</classfile>
+	<properties>
+		<!-- Set this property 'true' if you don't want to clean the reactions whose related 
+      content element is deleted.
+		<property name="disable-listeners">true</property>
+		-->
+	</properties>
+</module>
