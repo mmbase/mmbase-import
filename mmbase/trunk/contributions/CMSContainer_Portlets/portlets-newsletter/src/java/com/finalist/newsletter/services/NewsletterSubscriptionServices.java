@@ -78,4 +78,9 @@ public interface NewsletterSubscriptionServices {
    public List<Subscription>  getSubscriptions(String[] allowedLetters, int userId) ;
 
    public void deleteSubscriptionsByAuthId(Long anthId) ;
+   
+   public List<Object[]> getSubscribersRelatedInfo(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging);
+   
+   public int getSubscribersRelatedInfoCount(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging);
+
 }

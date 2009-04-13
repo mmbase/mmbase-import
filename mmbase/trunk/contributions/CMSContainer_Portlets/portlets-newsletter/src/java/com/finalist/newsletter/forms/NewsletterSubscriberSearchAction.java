@@ -24,7 +24,6 @@ import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
-import com.finalist.newsletter.services.SubscriptionHibernateService;
 
 /**
  * using for searching Newsletter Subscriber
@@ -40,7 +39,6 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
    private NewsletterSubscriptionServices subscriptionService;
    private AuthenticationService authenticationService;
    private NewsletterService newsletterService;
-   private SubscriptionHibernateService subscriptionHService;
 
    /**
     * Initialize service object: publicationService , personService, subscriptionService, authenticationService,
@@ -53,8 +51,6 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
       subscriptionService = (NewsletterSubscriptionServices) getWebApplicationContext().getBean("subscriptionServices");
       authenticationService = (AuthenticationService) getWebApplicationContext().getBean("authenticationService");
       newsletterService = (NewsletterService) getWebApplicationContext().getBean("newsletterServices");
-      subscriptionHService = (SubscriptionHibernateService) getWebApplicationContext().getBean("subscriptionHService");
-
    }
 
    /**
@@ -158,7 +154,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
       List<Map<Object, Object>> results = new ArrayList<Map<Object, Object>>();
 
       authenticationIds = subscriptionService.getAuthenticationIdsByTerms(newsletterId, terms);
-      List<Object[]> qResults = subscriptionHService.getSubscribersRelatedInfo(authenticationIds, fullName, userName,
+      List<Object[]> qResults = subscriptionService.getSubscribersRelatedInfo(authenticationIds, fullName, userName,
                email, true);
       for (Object[] result : qResults) {
 
@@ -194,7 +190,7 @@ public class NewsletterSubscriberSearchAction extends DispatchActionSupport {
 
       authenticationIds = subscriptionService.getAuthenticationIdsByTerms(newsletterId, terms);
       if (authenticationIds.size() > 0) {
-         resultCount = subscriptionHService.getSubscribersRelatedInfoCount(authenticationIds, fullName, userName, email, false);
+         resultCount = subscriptionService.getSubscribersRelatedInfoCount(authenticationIds, fullName, userName, email, false);
       }
       return resultCount;
    }

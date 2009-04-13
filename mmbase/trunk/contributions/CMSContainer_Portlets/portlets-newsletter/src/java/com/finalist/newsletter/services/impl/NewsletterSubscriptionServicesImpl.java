@@ -1,6 +1,11 @@
 package com.finalist.newsletter.services.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -8,13 +13,20 @@ import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.cmsc.services.community.person.PersonHibernateService;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.util.DateUtil;
-import com.finalist.newsletter.cao.*;
-import com.finalist.newsletter.domain.*;
+import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
+import com.finalist.newsletter.cao.NewsletterCAO;
+import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
+import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 import com.finalist.newsletter.domain.Subscription.STATUS;
-import com.finalist.newsletter.services.*;
+import com.finalist.newsletter.services.CommunityModuleAdapter;
+import com.finalist.newsletter.services.NewsletterService;
+import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 
 public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptionServices {
@@ -25,6 +37,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    NewsletterCAO newsletterCAO;
    NewsletterService newsletterService;
    PersonService personService;
+   PersonHibernateService personHibernateService;
 
    public void setStatisticCAO(NewsLetterStatisticCAO statisticCAO) {
       this.statisticCAO = statisticCAO;
@@ -430,4 +443,13 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    public void deleteSubscriptionsByAuthId(Long anthId) {
       subscriptionCAO.deleteSubscriptionsByAuthId(anthId);
    } 
+   
+   public List<Object[]> getSubscribersRelatedInfo(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging) {
+      return personHibernateService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email, paging);
+   }
+   
+   public int getSubscribersRelatedInfoCount(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging) {
+      return personHibernateService.getSubscribersRelatedInfoCount(authenticationIds, fullName, userName, email, paging);
+   }
+ 
 }
