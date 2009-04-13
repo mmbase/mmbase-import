@@ -14,6 +14,9 @@ import org.mmbase.bridge.Relation;
 
 public class ReactionUtil {
 
+   private static final String REACTION = "reaction";
+
+
    /**
     * Warning, this method is untested
     * 
@@ -57,5 +60,16 @@ public class ReactionUtil {
       Node element = cloud.getNode(number);
       Relation posrel = element.createRelation(message, cloud.getRelationManager("posrel"));
       posrel.commit();
+   }
+
+
+   public static boolean isReaction(String node) {
+      Node reacion = CloudProviderFactory.getCloudProvider().getCloud().getNode(node);
+      return isReaction(reacion);
+   }
+
+
+   public static boolean isReaction(Node node) {
+      return REACTION.equals(node.getNodeManager().getName());
    }
 }
