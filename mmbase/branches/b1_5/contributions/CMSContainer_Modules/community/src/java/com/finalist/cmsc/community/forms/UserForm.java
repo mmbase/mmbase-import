@@ -124,7 +124,7 @@ public class UserForm extends ActionForm {
       if (email.equals("")) {
          actionErrors.add("email", new ActionMessage("userform.email.empty"));
       }
-      if (!email.equals("") && !email.matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*")) {
+      if (!email.equals("") && !email.matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*") && !email.equalsIgnoreCase("admin")) {
          actionErrors.add("email", new ActionMessage("userform.email.not.regular"));
       }
       if (this.getAction().equalsIgnoreCase(ACTION_ADD)) {
