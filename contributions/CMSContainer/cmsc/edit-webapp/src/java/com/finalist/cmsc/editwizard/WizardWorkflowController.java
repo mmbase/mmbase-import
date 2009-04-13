@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.mmbase.applications.editwizard.Config;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.security.Rank;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -112,6 +113,12 @@ public class WizardWorkflowController extends WizardController {
          log.debug("activity " + activity);
          params.put("ACTIVITY", activity);
       }
+      else if (isMainWizard(ewconfig, config) && elementtype != null && !"".equals(elementtype)
+            && !Workflow.isWorkflowType(elementtype)) {
+         if(cloud.getUser().getRank() != Rank.ADMIN) {
+            params.put("WORKFLOW", OFF);
+         }
+      }
       else {
          if (elementtype != null && !"".equals(elementtype) && Workflow.isWorkflowType(elementtype)) {
             params.put("WORKFLOW", FALSE);
@@ -203,9 +210,12 @@ public class WizardWorkflowController extends WizardController {
          if (editNode != null && !Workflow.isWorkflowType(elementtype)) {
 
             String workflowCommand = request.getParameter(WORKFLOWCOMMAND);
-            if (PUBLISH.equals(workflowCommand)) {
-               // update only nodes in live clouds.
-               // PublishUtil.PublishOrUpdateNode(editNode);
+            if(isMainWizard(ewconfig, wizardConfig) && cloud.getUser().getRank() == Rank.ADMIN) {
+               if (PUBLISH.equals(workflowCommand)) {
+                  // update only nodes in live clouds.
+                  // PublishUtil.PublishOrUpdateNode(editNode);
+                  Publish.publish(editNode); 
+               }
             }
 
             if (!CANCEL.equals(workflowCommand)) {
