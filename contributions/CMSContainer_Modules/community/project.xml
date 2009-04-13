@@ -65,33 +65,6 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
-      <version>3.3.1.GA</version>
-      <type>jar</type>
-      <properties>
-        <war.bundle>${war.bundle}</war.bundle>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-      <version>3.3.0.GA</version>
-      <type>jar</type>
-      <properties>
-        <war.bundle>${war.bundle}</war.bundle>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>hibernate</groupId>
-      <artifactId>hibernate-commons-annotations</artifactId>
-      <version>3.0.0.GA</version>
-      <type>jar</type>
-      <properties>
-        <war.bundle>${war.bundle}</war.bundle>
-      </properties>
-    </dependency>
-    <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
       <version>1.0.1B</version>
