@@ -8,6 +8,7 @@
  */
 package com.finalist.cmsc.services.community.person;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -490,16 +491,91 @@ public class PersonHibernateService extends HibernateService implements PersonSe
       }
      
    }
+   
    @Transactional
    public void changeStateByAuthenticationId(Long authenticationId, String active) {
       Person per=getPersonByAuthenticationId(authenticationId);
       per.setActive(active);
       updatePerson(per);      
    }
+   
    @Transactional
    public List<Authority> getAllAuthorities() {
       Criteria criteria = getSession().createCriteria(Authority.class);
       criteria = criteria.setResultTransformer(criteria.DISTINCT_ROOT_ENTITY); 
       return criteria.list();
    }
+   
+   @Transactional
+   public List<Object[]> getSubscribersRelatedInfo(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging) {
+
+      Query query = executeSubscribersSearch(authenticationIds, fullName, userName, email, paging, false);
+
+      //Execute query
+      return query.list();
+   }
+   
+   @Transactional
+   public int getSubscribersRelatedInfoCount(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging) {
+      Query query = executeSubscribersSearch(authenticationIds, fullName, userName, email, paging, true);
+      return ((BigInteger)(query.uniqueResult())).intValue();
+   }
+ 
+   @Transactional
+   private Query executeSubscribersSearch(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging,
+          boolean onlyCount) {
+      PagingStatusHolder pagingHolder = PagingUtils.getStatusHolder();
+      StringBuilder strb = new StringBuilder();
+      if (onlyCount) {
+         strb.append("select count(*)");
+      }
+      else { 
+         strb.append("select person.firstName, person.infix, person.lastName, person.email, person.authenticationId, authentication1.userId");
+      }
+      strb.append(" from people person, authentication authentication1 " + "where person.authenticationId = authentication1.id");
+      if (StringUtils.isNotBlank(fullName)) {
+         String[] names = fullName.split(" ");
+         if (names.length >= 2) {
+            strb.append(" and (person.firstName like '%" + names[0] + "%' or person.firstName like '%" + fullName + "%')"
+                  + " and (person.lastName like '%" + names[1] + "%' or person.lastName like '%" + fullName + "%')");
+         } else if (names.length == 1) {
+            strb.append(" and (person.firstName like '%" + names[0] + "%')");
+         }
+      }
+      if (StringUtils.isNotBlank(email)) {
+         strb.append(" and person.email like '%" + email.trim() + "%'");
+      }
+      if (StringUtils.isNotBlank(userName)) {
+         strb.append(" and authentication1.userId like '%" + userName.trim() + "%'");
+      }
+      if (authenticationIds.size() > 0) {
+         StringBuffer idStr = new StringBuffer(" and authentication1.id in (");
+         for (Long authentication : authenticationIds) {
+            idStr.append(authentication + ",");
+         }
+         idStr.delete(idStr.length() - 1, idStr.length());
+         idStr.append(")");
+         strb.append(idStr);
+      }
+      String order = pagingHolder.getSort();
+
+      if ("fullname".equals(order)) {
+         strb.append(" order by person.firstName");
+      } else if ("username".equals(order)) {
+         strb.append(" order by authentication1.userId");
+      } else if ("email".equals(order)) {
+         strb.append(" order by person.email");
+      } else {
+         strb.append(" order by person.id");
+      }
+      strb.append(" " + pagingHolder.getDir());
+
+      Query query = getSession().createSQLQuery(strb.toString());
+      if (paging) {
+         query.setFirstResult(pagingHolder.getOffset());
+         query.setMaxResults(pagingHolder.getPageSize());
+      }
+      return query;
+   }
+
 }
