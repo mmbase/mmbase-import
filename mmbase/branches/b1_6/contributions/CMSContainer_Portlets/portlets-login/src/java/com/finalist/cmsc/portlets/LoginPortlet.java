@@ -74,7 +74,6 @@ public class LoginPortlet extends AbstractLoginPortlet {
          String send_password =  request.getParameter(SEND_PASSWORD);
          
          if (StringUtils.isEmpty(send_password)) {
-            request.getPortletSession().setAttribute("username", userName, PortletSession.APPLICATION_SCOPE);
             
             if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
                Community.login(userName, password);
@@ -89,6 +88,7 @@ public class LoginPortlet extends AbstractLoginPortlet {
             }
             
             if (Community.isAuthenticated()) {
+               request.getPortletSession().setAttribute("username", userName, PortletSession.APPLICATION_SCOPE);
                String pageid = preferences.getValue(PAGE, null);
                if (StringUtils.isNotEmpty(pageid)) {
                   Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
