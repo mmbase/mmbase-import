@@ -43,6 +43,7 @@
       <property name="statisticCAO" ref="statisticCAO"/>
       <property name="newsletterService" ref="newsletterServices"/>
       <property name="personService" ref="personService"/>
+      <property name="personHibernateService" ref="personHibernateService"/>
    </bean>
 
    <bean id="newsletterServices"
@@ -81,5 +82,5 @@
       </list>
     </property>
   </bean>
-   <bean name="subscriptionHService" class="com.finalist.newsletter.services.impl.NewsletterSubscriptionHibernateService" />
+   <bean id="personHibernateService" class="com.finalist.cmsc.services.community.person.PersonHibernateService"/>
 </beans>
