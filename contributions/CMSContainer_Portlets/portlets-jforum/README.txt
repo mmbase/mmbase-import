@@ -398,4 +398,4 @@ Step 5: If you run CMSc application in the Staging/Live mode.
  
 5.4 Deploy it. If successful, it will create a new file jforum-custom.conf in WEB-INF/config
  It should have read/write access to that directory.
-
+5.5 Add super user admin/admin in Community modlue.so as to manage the forum.
