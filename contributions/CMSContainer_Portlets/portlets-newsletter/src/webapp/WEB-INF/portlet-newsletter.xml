@@ -45,30 +45,25 @@
    </portlet>
    
    <portlet>
-      <description>a Newsletter unsubscribe portlet</description>
-      <portlet-name>newsletterunsubscriptionportlet</portlet-name>
+      <description>Newsletter unsubscribe portlet</description>
+      <portlet-name>newsletterunsubscribeportlet</portlet-name>
       <display-name>Newsletter unsubscribeportlet</display-name>
       <portlet-class>
          com.finalist.portlets.newsletter.UnsubscribePortlet
       </portlet-class>
       <init-param>
          <name>template.edit_defaults</name>
-         <value>unsubscribe/unsubscribe.jsp</value>
-      </init-param>
-      <init-param>
-         <name>template.help</name>
-         <value>unsubscribe/unsubscribe.jsp</value>
+         <value>newsletter/newsletterunsubscribe.jsp</value>
       </init-param>
       <supports>
          <mime-type>text/html</mime-type>
          <portlet-mode>VIEW</portlet-mode>
-         <portlet-mode>HELP</portlet-mode>
          <portlet-mode>EDIT_DEFAULTS</portlet-mode>
          <portlet-mode>DELETE</portlet-mode>
       </supports>
       <supported-locale>en</supported-locale>
       <supported-locale>nl</supported-locale>
-      <resource-bundle>portlets-unsubscribe</resource-bundle>
+      <resource-bundle>portlets-newsletterunsubscribe</resource-bundle>
       <portlet-info>
          <title>Unsubscribe Portlet</title>
          <short-title>Unsubscribe</short-title>
@@ -116,6 +111,4 @@
          <keywords>BasicNewsletterRegistration</keywords>
       </portlet-info>
    </portlet>
-
-
 </portlet-app>
