@@ -8,7 +8,7 @@
     attributeFormDefault="unqualified"
     version="1.0">
   <!--
-      Version: $Id: datatypes.xsd,v 1.41 2009-04-14 11:52:35 michiel Exp $
+      Version: $Id: datatypes.xsd,v 1.42 2009-04-14 12:55:32 michiel Exp $
   -->
 
   <xsd:import
@@ -49,7 +49,11 @@
           </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
-          <xsd:attribute name="name"  type="xsd:string" />
+          <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+              <xsd:attribute name="name"  type="xsd:string" />
+            </xsd:extension>
+          </xsd:simpleContent>
         </xsd:complexType>
       </xsd:element>
 
