@@ -38,10 +38,11 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.230 2009-04-07 08:23:34 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.231 2009-04-14 13:14:43 michiel Exp $
  */
 
-public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable { // Comparable<MMObjectNode>  {
+public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable, org.mmbase.util.PublicCloneable<MMObjectNode> { // Comparable<MMObjectNode>  {
+
     private static final Logger log = Logging.getLoggerInstance(MMObjectNode.class);
 
 
@@ -448,7 +449,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
         if (!getBuilder().hasField(fieldName)) {
             if (MMBase.getMMBase().inDevelopment()) {
-                throw new IllegalArgumentException("You cannot use non-existing field '" + fieldName + "' of node '" + getNumber() + "' existing fields of '" + getBuilder().getTableName() + "' are " + getBuilder().getFieldNames());
+                throw new IllegalArgumentException("You cannot use non-existing field '" + fieldName + "' of node '" + getNumber() + "' existing fields of '" +
+                                                   getBuilder().getTableName() + "' are " + getBuilder().getFieldNames());
             } else {
                 log.warn("Tried to use non-existing field '" + fieldName + "' of node '" + getNumber() + "' from " + getBuilder().getTableName());
                 log.warn(Logging.applicationStacktrace());
@@ -465,6 +467,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.9
      */
     protected final Object checkSerializable(String fieldName, Object fieldValue) {
+        if (fieldValue instanceof org.mmbase.util.SortedBundle.ValueWrapper) {
+            // TODO, I don't think that this is the correct spot to do this, but it solves some
+            // test-cases failures for now
+            fieldValue = ((org.mmbase.util.SortedBundle.ValueWrapper) fieldValue).getKey();
+        }
         if (fieldValue != null && (! (fieldValue instanceof Serializable))) {
             log.warn("Value for " + fieldName + " is not serializable: " + fieldValue.getClass() + " " + fieldValue, new Exception());
         }
@@ -1859,5 +1866,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
     public int compareTo(MMObjectNode n) {
         return getNumber() - n.getNumber();
+    }
+
+    public MMObjectNode clone() {
+        try {
+            return (MMObjectNode) super.clone();
+        } catch (CloneNotSupportedException cnse) {
+            log.error("Java sucks");
+            return null;
+        }
     }
 }
