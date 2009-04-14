@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="staticdownload"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">Statische download</singular>
+        <singular xml:lang="en">Static download</singular>
+        <plural xml:lang="nl">Statische downloads</plural>
+        <plural xml:lang="en">Static downloads</plural>
+    </names>
+    <fieldlist>
+        <field name="report">
+            <gui>
+                <guiname xml:lang="nl">Rapport</guiname>
+                <guiname xml:lang="en">Report</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="10000"/>
+            </datatype>
+        </field>
+        <field name="error">
+            <gui>
+                <guiname xml:lang="nl">Foutmelding</guiname>
+                <guiname xml:lang="en">Error</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>2</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="10000"/>
+            </datatype>
+        </field>
+        <field name="started" state="system">
+            <gui>
+                <guiname xml:lang="nl">Gestart</guiname>
+                <guiname xml:lang="en">Started</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>3</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="completed" state="system">
+            <gui>
+                <guiname xml:lang="nl">Klaar</guiname>
+                <guiname xml:lang="en">Completed</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="filename">
+            <gui>
+                <guiname xml:lang="nl">Bestandsnaam</guiname>
+                <guiname xml:lang="en">File name</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="512"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

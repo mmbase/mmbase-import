@@ -1,16 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>finalist</groupId>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.cmscontainer.modules</groupId>
+        <artifactId>cmsc-modules</artifactId>
+        <version>1.7-SNAPSHOT</version>
+    </parent>
+
   <artifactId>cmsc-modules-community</artifactId>
   <packaging>war</packaging>
-  <name>Community module</name>
+  <name>CMS Container Community module</name>
   <description>Remember users and roles.</description>
-  <parent>
-        <groupId>finalist</groupId>
-        <artifactId>modules</artifactId>
-        <version>1.7-SNAPSHOT</version>
-  </parent>
+
   <dependencies>
+  
+<!-- Hibernate dependencies -->
     <dependency>
       <groupId>asm</groupId>
       <artifactId>asm</artifactId>
@@ -61,6 +67,17 @@
       <artifactId>jta</artifactId>
       <version>1.0.1B</version>
     </dependency>
+	<dependency>
+      <groupId>supercsv</groupId>
+      <artifactId>SuperCSV</artifactId>
+      <version>1.52</version>
+    </dependency>
+	<dependency>
+      <groupId>spiffyframework</groupId>
+      <artifactId>spiffy-with_source-all</artifactId>
+      <version>0.05</version>
+    </dependency>
+<!-- Spring dependencies -->
     <dependency>
       <groupId>springframework</groupId>
       <artifactId>spring</artifactId>
@@ -76,15 +93,12 @@
       <artifactId>spring-webmvc-struts</artifactId>
       <version>2.5.1</version>
     </dependency>
+    
+<!-- Ageci Security -->
     <dependency>
       <groupId>acegisecurity</groupId>
       <artifactId>acegi-security</artifactId>
       <version>1.0.6</version>
-    </dependency>
-    <dependency>
-      <groupId>finalist</groupId>
-      <artifactId>cmsc-edit-webapp</artifactId>
-      <version>${cmsc.version}</version>
     </dependency>
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
@@ -92,38 +106,12 @@
       <version>1.2</version>
     </dependency>
   </dependencies>
-  <build>
-        <resources>
-            <resource>
-                <targetPath>META-INF</targetPath>
-                <directory>${basedir}/src/tld</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>native2ascii-maven-plugin</artifactId>
-                <version>1.0-alpha-1</version>
-                <configuration>
-                    <dest>${basedir}/target/classes</dest>
-                    <src>${basedir}/resources</src>
-                </configuration>
-                <executions>
-                    <execution>
-                    <id>native2ascii-utf8</id>
-                        <goals>
-                            <goal>native2ascii</goal>
-                        </goals>
-                        <configuration>
-                             <encoding>UTF-8</encoding>
-                             <includes>**/*.properties</includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>native2ascii-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="glossary" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">glossary</singular>
+        <singular xml:lang="en">glossary</singular>
+        <singular xml:lang="zh">术语表</singular>
+        <plural xml:lang="nl">glossaries</plural>
+        <plural xml:lang="en">glossaries</plural>
+        <plural xml:lang="zh">术语表</plural>
+    </names>
+    <fieldlist>
+        <field name="definition">
+            <gui>
+                <guiname xml:lang="nl">Definitie</guiname>
+                <guiname xml:lang="en">Definition</guiname>
+                <guiname xml:lang="zh">定义</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="term">
+            <gui>
+                <guiname xml:lang="nl">Woord</guiname>
+                <guiname xml:lang="en">Term</guiname>
+                <guiname xml:lang="zh">术语名</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="editor_note">
+            <gui>
+                <guiname xml:lang="nl">Bewerkers notitie</guiname>
+                <guiname xml:lang="en">Editor note</guiname>
+                <guiname xml:lang="zh">编辑注解</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="lastmodifieddate" state="system">
+            <gui>
+                <guiname xml:lang="nl">Gewijzigd</guiname>
+                <guiname xml:lang="en">Last modified date</guiname>
+                <guiname xml:lang="zh">最后修改时间</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>7</input>
+                </positions>
+            </editor>
+            <datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="creationdate" state="system">
+            <gui>
+                <guiname xml:lang="nl">Aangemaakt</guiname>
+                <guiname xml:lang="en">Creation date</guiname>
+                <guiname xml:lang="zh">创建时间</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>8</input>
+                </positions>
+            </editor>
+            <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="lastmodifier" state="system">
+            <gui>
+                <guiname xml:lang="nl">Gewijzigd door</guiname>
+                <guiname xml:lang="en">Last modifier</guiname>
+                <guiname xml:lang="zh">最后修改人</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="creator" state="system">
+            <gui>
+                <guiname xml:lang="nl">Aangemaakt door</guiname>
+                <guiname xml:lang="en">Creator</guiname>
+                <guiname xml:lang="zh">创建者</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                </positions>
+            </editor>
+            <datatype base="creator" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

@@ -1,0 +1,839 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.cmscontainer</groupId>
+  <artifactId>cmsc-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>CMS Container Parent</name>
+  <version>1.7-SNAPSHOT</version>
+
+  <description>
+    CMS Container is an open source Content Management System.
+  </description>
+  <url>http://www.cmscontainer.org</url>
+	<inceptionYear>2005</inceptionYear>
+	
+	<organization>
+		<name>Finalist IT Group</name>
+		<url>http://www.finalist.com</url>
+	</organization>
+
+  <licenses>
+    <license>
+      <name>Mozilla Public License 1.0 (MPL)</name>
+      <url>http://www.mmbase.org/license</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:cvs:pserver:guest:guest@cvs.mmbase.org:/var/cvs:contributions/CMSContainer</connection>
+    <developerConnection>scm:cvs:ext:cvs.mmbase.org:/var/cvs:contributions/CMSContainer</developerConnection>
+    <url>http://cvs.mmbase.org/viewcvs/contributions/CMSContainer</url>
+  </scm>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://jira.finalist.com/browse/CMSC</url>
+  </issueManagement>
+
+  <ciManagement>
+    <notifiers>
+      <notifier>
+        <configuration>
+          <address>developers@mmbase.org</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+
+  <prerequisites>
+    <maven>2.0.9</maven>
+  </prerequisites>
+
+  <properties>
+    <compiler.fork>false</compiler.fork>
+
+    <servlet.version>2.4</servlet.version>
+    <jsp.version>2.0</jsp.version>
+    <jstl.version>1.1.2</jstl.version>
+    <taglib-standard.version>1.1.2</taglib-standard.version>
+
+    <log4j.version>1.2.13</log4j.version>
+
+    <surefire.fork.mode>once</surefire.fork.mode>
+    <surefire.format>brief</surefire.format>
+    <surefire.usefile>false</surefire.usefile>
+    <surefire.fork.vmargs>-ea</surefire.fork.vmargs>
+    <compile.flags>-Xlint:unchecked,deprecation,fallthrough,finally</compile.flags>
+
+    <junit.version>4.4</junit.version>
+
+    <pluto.version>1.0.1</pluto.version>
+    <mmbase.version>1.9-SNAPSHOT</mmbase.version>
+  </properties>
+
+	<developers>
+		<developer>
+			<name>Nico Klasens</name>
+			<id>nklasens</id>
+			<email>nico@finalist.com</email>
+			<organization>Finalist IT Group</organization>
+			<url>http://www.finalist.com</url>
+			<timezone>1</timezone>
+		</developer>
+		<developer>
+			<name>Freek Punt</name>
+			<id>fpunt</id>
+			<email>freek@finalist.com</email>
+			<organization>Finalist IT Group</organization>
+			<url>http://www.finalist.com</url>
+			<timezone>1</timezone>
+		</developer>
+	</developers>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+    <sourceDirectory>src/java</sourceDirectory>
+    <testSourceDirectory>src/test</testSourceDirectory>
+
+	<resources>
+		<resource>
+			<directory>${basedir}/resources</directory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</resource>
+		<resource>
+			<targetPath>META-INF</targetPath>
+			<directory>${basedir}/src/tld</directory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</resource>
+		<resource>
+			<targetPath>org/mmbase/config</targetPath>
+			<directory>${basedir}/config</directory>
+			<excludes>
+				<exclude>**/applications/**/builders/*.xml</exclude>
+			</excludes>
+		</resource>
+	</resources>
+
+	<plugins>
+      <plugin>
+        <groupId>org.mmbase.maven</groupId>
+        <artifactId>maven-mmbase-plugin</artifactId>
+        <version>1.9-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>create-index-files</id>
+            <goals>
+              <goal>create-index-files</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+	</plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+            <maxmem>256M</maxmem>
+            <fork>${compiler.fork}</fork>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>2.1-alpha-2</version>
+          <configuration>
+            <warSourceDirectory>${basedir}/src/webapp</warSourceDirectory>
+            <archiveClasses>true</archiveClasses>
+            <attachClasses>true</attachClasses>
+            <failOnMissingWebXml>false</failOnMissingWebXml>
+          </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>native2ascii-maven-plugin</artifactId>
+            <version>1.0-alpha-1</version>
+            <configuration>
+                <dest>${basedir}/target/classes</dest>
+                <src>${basedir}/resources</src>
+                <encoding>UTF-8</encoding>
+                <includes>**/*.properties</includes>
+            </configuration>
+            <executions>
+                <execution>
+                <id>native2ascii-utf8</id>
+                    <goals>
+                        <goal>native2ascii</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>2.4</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.mmbase.maven</groupId>
+              <artifactId>codestandards</artifactId>
+              <version>${mmbase.version}</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <rulesets>
+              <ruleset>mmbase-pmd-ruleset.xml</ruleset>
+              <ruleset>mmbase-pmd-custom.xml</ruleset>
+            </rulesets>
+            <sourceEncoding>UTF-8</sourceEncoding>
+            <targetJdk>1.5</targetJdk>
+            <linkXRef>false</linkXRef>
+            <includeTests>true</includeTests>
+            <verbose>true</verbose>
+            <excludeRoots>
+              <excludeRoot>${basedir}/src/main/generated</excludeRoot>
+            </excludeRoots>
+          </configuration>
+          <executions>
+            <execution>
+              <id>validate</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <includes>
+              <include>**/*Test.java</include>
+              <include>**/*TestCase.java</include>
+              <include>**/*TestCases.java</include>
+            </includes>
+            <!-- do not exclude **/Abstract*Test.java **/Abstract*TestCase.java -->
+            <excludes>
+              <exclude>**/*$*</exclude>
+            </excludes>
+            <reportFormat>${surefire.format}</reportFormat>
+            <useFile>${surefire.usefile}</useFile>
+            <forkMode>${surefire.fork.mode}</forkMode>
+            <childDelegation>false</childDelegation>
+            <argLine>${surefire.fork.vmargs}</argLine>
+            <systemProperties>
+              <property>
+                <name>java.awt.headless</name>
+                <value>${java.awt.headless}</value>
+              </property>
+              <property>
+                <name>java.util.logging.config.file</name>
+                <value>${basedir}/target/test-classes/logging.properties</value>
+              </property>
+              <property>
+                <name>surefire.fork.vmargs</name>
+                <value>${surefire.fork.vmargs}</value>
+              </property>
+            </systemProperties>
+            <check>
+              <branchRate>80</branchRate>
+              <lineRate>80</lineRate>
+              <haltOnFailure>true</haltOnFailure>
+              <totalBranchRate>80</totalBranchRate>
+              <totalLineRate>80</totalLineRate>
+              <packageLineRate>80</packageLineRate>
+              <packageBranchRate>80</packageBranchRate>
+            </check>
+          </configuration>
+        </plugin>
+<!-- 
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <tagBase>svn://[username[:password]@]cvs.mmbase.org/tags</tagBase>
+            <useReleaseProfile>false</useReleaseProfile>
+            <preparationGoals>clean install</preparationGoals>
+            <goals>deploy</goals>
+            <arguments>-Prelease,deploy</arguments>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+ -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <attach>true</attach>
+            <quiet>true</quiet>
+            <bottom>CMSContainer.org</bottom>
+            <links>
+              <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+              <link>http://java.sun.com/javaee/5/docs/api/</link>
+            </links>
+            <source>1.5</source>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-changes-plugin</artifactId>
+          <configuration>
+            <resolutionIds>Fixed</resolutionIds>
+            <statusIds>Resolved, Closed</statusIds>
+          </configuration>
+      </plugin>
+
+      </plugins>
+
+    </pluginManagement>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase</artifactId>
+			<version>${mmbase.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-cloudcontext</artifactId>
+			<version>${mmbase.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-cloudcontext</artifactId>
+			<version>${mmbase.version}</version>
+			<classifier>classes</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-crontab</artifactId>
+			<version>${mmbase.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-crontab</artifactId>
+			<version>${mmbase.version}</version>
+			<classifier>classes</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-dove</artifactId>
+			<version>${mmbase.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-editwizard</artifactId>
+			<version>${mmbase.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-editwizard</artifactId>
+			<version>${mmbase.version}</version>
+			<classifier>classes</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-email</artifactId>
+			<version>${mmbase.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-email</artifactId>
+			<version>${mmbase.version}</version>
+			<classifier>classes</classifier>
+		</dependency>
+      <dependency>
+         <groupId>org.mmbase</groupId>
+         <artifactId>mmbase-rmmci</artifactId>
+         <version>${mmbase.version}</version>
+      </dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-resources</artifactId>
+			<version>${mmbase.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-resources</artifactId>
+			<version>${mmbase.version}</version>
+			<classifier>classes</classifier>
+		</dependency>
+      <dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-taglib</artifactId>
+			<version>${mmbase.version}</version>
+			<type>war</type>
+		</dependency>
+      <dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-taglib</artifactId>
+			<version>${mmbase.version}</version>
+			<classifier>classes</classifier>
+		</dependency>
+
+        <!-- MMApps.sourceforge.net -->
+        <dependency>
+            <groupId>mmapps</groupId>
+            <artifactId>cloudprovider</artifactId>
+            <version>1.2</version>            
+        </dependency>
+        <dependency>
+            <groupId>mmapps</groupId>
+            <artifactId>mmcommons</artifactId>
+            <version>1.4.3</version>            
+        </dependency>
+    
+		<!-- Source code uses org.apache.xpath.XPathAPI -->
+		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>xalan</artifactId>
+			<version>2.7.1</version>
+		</dependency>
+    
+    <!-- Servlet/JSP -->
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>${servlet.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jsp-api</artifactId>
+        <version>${jsp.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <!-- jsp taglibs, jstl -->
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+        <version>${jstl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>taglibs</groupId>
+        <artifactId>standard</artifactId>
+        <version>${taglib-standard.version}</version>
+      </dependency>
+        <!-- Pager taglib -->
+        <dependency>
+            <groupId>jsptags.com</groupId>
+            <artifactId>pager-taglib</artifactId>
+            <version>2.0.2</version>            
+        </dependency>
+        
+        <!-- Apache portals - pluto -->
+        <dependency>
+            <groupId>org.apache.pluto</groupId>
+            <artifactId>pluto</artifactId>
+            <version>${pluto.version}</version>            
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.pluto</groupId>
+            <artifactId>pluto-descriptors</artifactId>
+            <version>${pluto.version}</version>            
+        </dependency>
+
+        <dependency>
+            <groupId>portlet-api</groupId>
+            <artifactId>portlet-api</artifactId>
+            <version>1.0</version>            
+        </dependency>
+
+        <!-- Struts.apache.org -->
+        <dependency>
+            <groupId>struts</groupId>
+            <artifactId>struts</artifactId>
+            <version>1.2.9</version>            
+        </dependency>
+
+	<!-- MMBase third-party dependencies -->
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+
+        <!-- Jakarta Commons -->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.8.0</version>            
+        </dependency>
+        <dependency>
+            <groupId>commons-chain</groupId>
+            <artifactId>commons-chain</artifactId>
+            <version>1.2</version>            
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.2</version>            
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+            <version>2.0</version>
+        </dependency>
+      <dependency>
+        <groupId>commons-fileupload</groupId>
+        <artifactId>commons-fileupload</artifactId>
+        <version>1.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <version>3.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.4</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.1.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>logkit</groupId>
+            <artifactId>logkit</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>avalon-framework</groupId>
+            <artifactId>avalon-framework</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+
+        <!-- Struts third-party dependencies -->
+        <dependency>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>2.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>oro</groupId>
+            <artifactId>oro</artifactId>
+            <version>2.0.8</version>
+        </dependency>
+
+        <!-- EHcache used for cmsc sitemanagement -->
+        <dependency>
+            <groupId>ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>ehcache</groupId>
+            <artifactId>ehcache-constructs</artifactId>
+            <version>0.6</version>
+        </dependency>
+
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>2.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+			<version>2.5.1-final-20040804</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jsp-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+      </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+    
+    <repository>
+      <id>cmsc</id>
+      <name>CMS Container repository</name>
+      <url>http://www.cmscontainer.org/files/maven/</url>
+      <layout>legacy</layout>
+    </repository>
+    
+<!--    <repository>-->
+<!--      <id>jboss</id>-->
+<!--      <name>JBoss maven 2 repository</name>-->
+<!--      <url>http://repository.jboss.com/maven2</url>-->
+<!--    </repository>-->
+
+  </repositories>
+
+  <profiles>
+    <profile>
+      <id>fastinstall</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <maven.test.skip>true</maven.test.skip>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>sourcecheck</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+              <compilerArgument>${compile.flags}</compilerArgument>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>metrics</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>coverage</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>cobertura-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>clean</goal>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <inherited>true</inherited>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.4</version>
+            <configuration>
+              <updateReleaseInfo>true</updateReleaseInfo>
+            </configuration>
+          </plugin>
+          <!-- We want to sign the artifact, the POM, and all attached artifacts -->
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <configuration>
+              <passphrase>${gpg.passphrase}</passphrase>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+              <id>enforce-no-snapshots</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <requireReleaseVersion>
+                    <message>No Snapshots Allowed!</message>
+                  </requireReleaseVersion>
+                </rules>
+                <fail>true</fail>
+              </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>deploy</id>
+      <build>
+        <defaultGoal>deploy</defaultGoal>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+ 
+</project>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="task" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">task</singular>
+        <singular xml:lang="en">task</singular>
+        <singular xml:lang="zh">任务</singular>
+        <plural xml:lang="nl">task</plural>
+        <plural xml:lang="en">task</plural>
+        <plural xml:lang="zh">任务</plural>
+    </names>
+    <fieldlist>
+        <field name="creationdate" state="system">
+            <gui>
+                <guiname xml:lang="nl">Creatiedatum</guiname>
+                <guiname xml:lang="en">creationdate</guiname>
+                <guiname xml:lang="zh">创建时间</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                </positions>
+            </editor>
+            <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="deadline">
+            <gui>
+                <guiname xml:lang="nl">Deadline</guiname>
+                <guiname xml:lang="en">deadline</guiname>
+                <guiname xml:lang="zh">最后期限</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="today + 1 week"/>
+            </datatype>
+        </field>
+        <field name="type">
+            <gui>
+                <guiname xml:lang="nl">Type</guiname>
+                <guiname xml:lang="en">type</guiname>
+                <guiname xml:lang="zh">类型</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="status">
+            <gui>
+                <guiname xml:lang="nl">Status</guiname>
+                <guiname xml:lang="en">status</guiname>
+                <guiname xml:lang="zh">状态</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>7</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="title">
+            <gui>
+                <guiname xml:lang="nl">Titel</guiname>
+                <guiname xml:lang="en">title</guiname>
+                <guiname xml:lang="zh">标题</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>8</input>
+                </positions>
+            </editor>
+            <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="description">
+            <gui>
+                <guiname xml:lang="nl">Omschrijving</guiname>
+                <guiname xml:lang="en">description</guiname>
+                <guiname xml:lang="zh">描述</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+        <field name="nodetype">
+            <gui>
+                <guiname xml:lang="nl">Node type</guiname>
+                <guiname xml:lang="en">nodetype</guiname>
+                <guiname xml:lang="zh">结点类型</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

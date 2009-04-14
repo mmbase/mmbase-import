@@ -11,16 +11,17 @@ package com.finalist.cmsc.security;
 
 import java.util.*;
 
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.security.implementation.cloudcontext.builders.Contexts;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.TreePathComparator;
 import com.finalist.cmsc.mmbase.TreeUtil;
-import com.finalist.cmsc.security.builders.Contexts;
 import com.finalist.cmsc.util.NameUtil;
 
 
@@ -465,7 +466,7 @@ public final class SecurityUtil {
     }
 
     public static Node getContext(Cloud cloud) {
-        int newContext = ((Contexts) Contexts.getBuilder()).getDefaultContextNode().getNumber();
+        int newContext = Contexts.getBuilder().getDefaultContextNode().getNumber();
         Node newContextNode = cloud.getNode(newContext);
         return newContextNode;
     }

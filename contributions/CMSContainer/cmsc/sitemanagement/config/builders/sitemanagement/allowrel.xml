@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="insrel" maintainer="finalist.com" name="allowrel" version="0"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">allowrel</singular>
+        <singular xml:lang="en">allowrel</singular>
+        <singular xml:lang="zh">allowrel</singular>
+        <plural xml:lang="nl">allowrel</plural>
+        <plural xml:lang="en">allowrel</plural>
+        <plural xml:lang="zh">allowrel</plural>
+    </names>
+    <fieldlist>
+        <field name="allow">
+            <gui>
+                <guiname xml:lang="nl">Toestaan</guiname>
+                <guiname xml:lang="en">allow</guiname>
+                <guiname xml:lang="zh">允许</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                </positions>
+            </editor>
+            <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

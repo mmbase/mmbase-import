@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="page" maintainer="finalist.com" name="newsletter" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <class>com.finalist.newsletter.builder.NewsletterBuilder</class>
+    <names>
+        <singular xml:lang="nl">Nieuwsbrief</singular>
+        <singular xml:lang="en">Newsletter</singular>
+        <singular xml:lang="zh">时事通讯</singular>
+        <plural xml:lang="nl">Nieuwsbrieven</plural>
+        <plural xml:lang="en">Newsletters</plural>
+        <plural xml:lang="zh">时事通讯</plural>
+    </names>
+    <fieldlist>
+        <field name="subject">
+            <gui>
+                <guiname xml:lang="nl">Onderwerp</guiname>
+                <guiname xml:lang="en">Subject</guiname>
+                <guiname xml:lang="zh">主题</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="100"/>
+            </datatype>
+        </field>
+        <field name="intro">
+            <gui>
+                <guiname xml:lang="nl">Introductie</guiname>
+                <guiname xml:lang="en">Intro</guiname>
+                <guiname xml:lang="zh">简介</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                    <list>5</list>
+                    <search>5</search>
+                </positions>
+            </editor>
+            <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+        <field name="lastpublicationnumber">
+            <gui>
+                <guiname xml:lang="en">Last publication number</guiname>
+                <guiname xml:lang="nl">Laatste publicatie nummer</guiname>
+                <guiname xml:lang="zh">最后出版号</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>7</input>
+                </positions>
+            </editor>
+            <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="0"/>
+            </datatype>
+        </field>
+        <field name="paused">
+            <gui>
+                <guiname xml:lang="nl">Gepauseerd</guiname>
+                <guiname xml:lang="en">Paused</guiname>
+                <guiname xml:lang="zh">暂停</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+            </datatype>
+        </field>
+        <field name="pausedstartdate">
+            <gui>
+                <guiname xml:lang="nl">Pauze start datum</guiname>
+                <guiname xml:lang="en">Pause start date</guiname>
+                <guiname xml:lang="zh">暂停起始日期</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="pausedstopdate">
+            <gui>
+                <guiname xml:lang="nl">Pauze stop datum</guiname>
+                <guiname xml:lang="en">Pause stop date</guiname>
+                <guiname xml:lang="zh">暂停终止日期</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="from_mail">
+            <gui>
+                <guiname xml:lang="nl">Afzender e-mail</guiname>
+                <guiname xml:lang="en">Sender e-mail</guiname>
+                <guiname xml:lang="zh">Email发送者</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="100"/>
+            </datatype>
+        </field>
+        <field name="from_name">
+            <gui>
+                <guiname xml:lang="nl">Antwoord naam</guiname>
+                <guiname xml:lang="en">Reply name</guiname>
+                <guiname xml:lang="zh">答复名称</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="100"/>
+            </datatype>
+        </field>
+        <field name="replyto_mail">
+            <gui>
+                <guiname xml:lang="nl">Antwoord e-mail</guiname>
+                <guiname xml:lang="en">Reply e-mail</guiname>
+                <guiname xml:lang="zh">答复e-mail</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="100"/>
+            </datatype>
+        </field>
+        <field name="replyto_name">
+            <gui>
+                <guiname xml:lang="nl">Antwoord naam</guiname>
+                <guiname xml:lang="en">Reply name</guiname>
+                <guiname xml:lang="zh">答复名称</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="100"/>
+            </datatype>
+        </field>
+        <field name="inmenu">
+            <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="false"/>
+            </datatype>
+        </field>
+        <field name="secure">
+            <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="false"/>
+            </datatype>
+        </field>
+        <field name="schedule">
+            <gui>
+                <guiname xml:lang="nl">Verzendplan</guiname>
+                <guiname xml:lang="en">Schedule</guiname>
+                <guiname xml:lang="zh">调度</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="100"/>
+            </datatype>
+        </field>
+        <field name="lastcreateddate" state="system">
+            <gui>
+                <guiname xml:lang="nl">Laatste creatiedatum</guiname>
+                <guiname xml:lang="en">last create date</guiname>
+                <guiname xml:lang="zh">最后创建日期</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="scheduledescription">
+            <descriptions>
+                <description xml:lang="nl">Schedule Description</description>
+                <description xml:lang="en">Schedule Description</description>
+                <description xml:lang="zh">调度描述</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="nl">ScheduleDescription</guiname>
+                <guiname xml:lang="en">ScheduleDescription</guiname>
+                <guiname xml:lang="zh">调度描述</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="256"/>
+            </datatype>
+        </field>
+        <field name="bounce_checking">
+            <descriptions>
+                <description xml:lang="nl">Bounce Checking</description>
+                <description xml:lang="en">Bounce Checking</description>
+                <description xml:lang="zh">退信检查</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="nl">Bounce Checking</guiname>
+                <guiname xml:lang="en">Bounce Checking</guiname>
+                <guiname xml:lang="zh">退信检查</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="256"/>
+            </datatype>
+        </field>
+        <field name="max_bounces">
+            <descriptions>
+                <description xml:lang="nl">Max Bounces</description>
+                <description xml:lang="en">Max Bounces</description>
+                <description xml:lang="zh">最大退信数</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="nl">Max Bounces</guiname>
+                <guiname xml:lang="en">Max Bounces</guiname>
+                <guiname xml:lang="zh">最大退信数</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="server">
+            <descriptions>
+                <description xml:lang="nl">Server name or ip address</description>
+                <description xml:lang="en">Server name or ip address</description>
+                <description xml:lang="zh">服务器名称/ip地址</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="nl">Server</guiname>
+                <guiname xml:lang="en">Server</guiname>
+                <guiname xml:lang="zh">服务器</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="256"/>
+            </datatype>
+        </field>
+        <field name="user_name">
+            <descriptions>
+                <description xml:lang="nl">User Name</description>
+                <description xml:lang="en">User Name</description>
+                <description xml:lang="zh">用户姓名</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="nl">User Name</guiname>
+                <guiname xml:lang="en">User Name</guiname>
+                <guiname xml:lang="zh">用户姓名</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="256"/>
+            </datatype>
+        </field>
+        <field name="password">
+            <descriptions>
+                <description xml:lang="nl">Password</description>
+                <description xml:lang="en">Password</description>
+                <description xml:lang="zh">密码</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="nl">Password</guiname>
+                <guiname xml:lang="en">Password</guiname>
+                <guiname xml:lang="zh">密码</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="256"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

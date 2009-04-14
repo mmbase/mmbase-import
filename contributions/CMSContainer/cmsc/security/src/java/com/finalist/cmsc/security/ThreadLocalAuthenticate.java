@@ -1,9 +1,9 @@
 package com.finalist.cmsc.security;
 
 import org.mmbase.security.implementation.cloudcontext.Authenticate;
+
 import org.mmbase.security.implementation.cloudcontext.User;
 import org.mmbase.security.implementation.cloudcontext.builders.Users;
-import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.Logger;
@@ -21,7 +21,7 @@ public class ThreadLocalAuthenticate extends Authenticate {
 
 
    @Override
-   public UserContext login(String moduleName, Map loginInfo, Object[] parameters)
+   public User login(String moduleName, Map loginInfo, Object[] parameters)
          throws org.mmbase.security.SecurityException {
       MMObjectNode node = null;
       Users users = Users.getBuilder();
@@ -39,7 +39,7 @@ public class ThreadLocalAuthenticate extends Authenticate {
          return node == null ? null : new User(node, getKey(), moduleName);
       }
 
-      return super.login(moduleName, loginInfo, parameters);
+      return (User) super.login(moduleName, loginInfo, parameters);
    }
 
 

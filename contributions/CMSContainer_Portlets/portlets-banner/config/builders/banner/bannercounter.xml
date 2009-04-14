@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="bannercounter"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">Banner statistieken</singular>
+        <singular xml:lang="en">Banner statistics</singular>
+        <plural xml:lang="nl">Banner statistieken</plural>
+        <plural xml:lang="en">Banner statistics</plural>
+    </names>
+    <fieldlist>
+        <field name="startdate">
+            <gui>
+                <guiname xml:lang="nl">Start datum</guiname>
+                <guiname xml:lang="en">Start date</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                </positions>
+            </editor>
+            <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+            </datatype>
+        </field>
+        <field name="enddate" state="system">
+            <gui>
+                <guiname xml:lang="nl">Eind datum</guiname>
+                <guiname xml:lang="en">End date</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>7</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="page">
+            <gui>
+                <guiname xml:lang="nl">Pagina</guiname>
+                <guiname xml:lang="en">Page</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                    <list>10</list>
+                    <search>10</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="512"/>
+            </datatype>
+        </field>
+        <field name="position">
+            <gui>
+                <guiname xml:lang="nl">Positie</guiname>
+                <guiname xml:lang="en">Position</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                    <list>10</list>
+                    <search>10</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="512"/>
+            </datatype>
+        </field>
+        <field name="clicks" state="system">
+            <gui>
+                <guiname xml:lang="nl">Klikken</guiname>
+                <guiname xml:lang="en">Clicks</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                    <list>10</list>
+                    <search>10</search>
+                </positions>
+            </editor>
+            <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+            </datatype>
+        </field>
+        <field name="removed">
+            <gui>
+                <guiname xml:lang="nl">Verwijderd</guiname>
+                <guiname xml:lang="en">Removed</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                    <list>10</list>
+                    <search>10</search>
+                </positions>
+            </editor>
+            <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

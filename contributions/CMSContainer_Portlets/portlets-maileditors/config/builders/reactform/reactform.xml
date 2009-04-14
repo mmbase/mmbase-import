@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="contentelement" maintainer="finalist.com" name="reactform"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">Mail de redactie</singular>
+        <singular xml:lang="en">Mail the editors</singular>
+        <singular xml:lang="zh">给管理员发信</singular>
+        <plural xml:lang="nl">Mail de redactie</plural>
+        <plural xml:lang="en">Mail the editors</plural>
+        <plural xml:lang="zh">给管理员发信</plural>
+    </names>
+    <fieldlist>
+        <field name="intro">
+            <gui>
+                <guiname xml:lang="nl">Introductie</guiname>
+                <guiname xml:lang="en">Intro</guiname>
+                <guiname xml:lang="zh">简介</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+        <field name="confirmation">
+            <gui>
+                <guiname xml:lang="nl">Bevestigings bericht</guiname>
+                <guiname xml:lang="en">Confirmation message</guiname>
+                <guiname xml:lang="zh">确认信息 to</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+        <field name="emailto">
+            <gui>
+                <guiname xml:lang="nl">Redactie email</guiname>
+                <guiname xml:lang="en">Email to</guiname>
+                <guiname xml:lang="zh">发信给</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>8</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

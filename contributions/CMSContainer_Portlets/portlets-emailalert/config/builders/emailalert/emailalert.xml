@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="contentelement" maintainer="finalist.com" name="emailalert"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">Wijzigings alert</singular>
+        <singular xml:lang="en">Email alert</singular>
+        <plural xml:lang="nl">Wijzigings alerts</plural>
+        <plural xml:lang="en">Email alerts</plural>
+    </names>
+    <fieldlist>
+        <field name="intro">
+            <gui>
+                <guiname xml:lang="nl">Introductie</guiname>
+                <guiname xml:lang="en">Intro</guiname>
+                <guiname xml:lang="zh">简介</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+        <field name="alertemailsubject">
+            <gui>
+                <guiname xml:lang="nl">Alert email onderwerp</guiname>
+                <guiname xml:lang="en">Alert email subject</guiname>
+                <guiname xml:lang="zh">邮件主题警告</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="alertemailbody">
+            <gui>
+                <guiname xml:lang="nl">Alert email tekst</guiname>
+                <guiname xml:lang="en">Alert email body</guiname>
+                <guiname xml:lang="zh">邮件主体警告</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="confirmationemailsubject">
+            <gui>
+                <guiname xml:lang="nl">Bevestigings email onderwerp</guiname>
+                <guiname xml:lang="en">Confirmation email subject</guiname>
+                <guiname xml:lang="zh">邮件主题确认</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="confirmationemailbody">
+            <gui>
+                <guiname xml:lang="nl">Bevestigings email tekst</guiname>
+                <guiname xml:lang="en">Confirmation email body</guiname>
+                <guiname xml:lang="zh">邮件主体确认</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="sendername">
+            <gui>
+                <guiname xml:lang="nl">Afzender naam</guiname>
+                <guiname xml:lang="en">Sender name</guiname>
+                <guiname xml:lang="zh">发送人</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>8</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="senderemailaddress">
+            <gui>
+                <guiname xml:lang="nl">Afzender email</guiname>
+                <guiname xml:lang="en">Sender email</guiname>
+                <guiname xml:lang="zh">发送邮件</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>8</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="confirmation">
+            <gui>
+                <guiname xml:lang="nl">Bevestigings bericht</guiname>
+                <guiname xml:lang="en">Confirmation message</guiname>
+                <guiname xml:lang="zh">确认信息</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

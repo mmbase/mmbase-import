@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="page" maintainer="finalist.com" name="site" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <class>com.finalist.cmsc.navigation.builder.SiteBuilder</class>
+    <names>
+        <singular xml:lang="nl">site</singular>
+        <singular xml:lang="en">site</singular>
+        <singular xml:lang="zh">站点</singular>
+        <plural xml:lang="nl">site</plural>
+        <plural xml:lang="en">site</plural>
+        <plural xml:lang="zh">站点</plural>
+    </names>
+    <fieldlist>
+        <field name="stagingfragment">
+            <gui>
+                <guiname xml:lang="nl">Staging domein</guiname>
+                <guiname xml:lang="en">Staging domain</guiname>
+                <guiname xml:lang="zh">Staging域</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="creator">
+            <gui>
+                <guiname xml:lang="nl">Auteur</guiname>
+                <guiname xml:lang="en">Creator</guiname>
+                <guiname xml:lang="zh">创建者</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="150"/>
+            </datatype>
+        </field>
+        <field name="language">
+            <gui>
+                <guiname xml:lang="nl">Taal</guiname>
+                <guiname xml:lang="en">Language</guiname>
+                <guiname xml:lang="zh">语言</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="2"/>
+            </datatype>
+        </field>
+        <field name="publisher">
+            <gui>
+                <guiname xml:lang="nl">Publicist</guiname>
+                <guiname xml:lang="en">Publisher</guiname>
+                <guiname xml:lang="zh">发布服务器</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>7</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="150"/>
+            </datatype>
+        </field>
+        <field name="source">
+            <gui>
+                <guiname xml:lang="nl">Bronvermelding</guiname>
+                <guiname xml:lang="en">Source</guiname>
+                <guiname xml:lang="zh">源</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>8</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="150"/>
+            </datatype>
+        </field>
+        <field name="rights">
+            <gui>
+                <guiname xml:lang="nl">Rechten</guiname>
+                <guiname xml:lang="en">Rights</guiname>
+                <guiname xml:lang="zh">权限</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="150"/>
+            </datatype>
+        </field>
+        <field name="googleanalyticsid">
+            <gui>
+                <guiname xml:lang="nl">Google Analytics ID</guiname>
+                <guiname xml:lang="en">Google Analytics ID</guiname>
+                <guiname xml:lang="zh">Google Analytics ID</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>8</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

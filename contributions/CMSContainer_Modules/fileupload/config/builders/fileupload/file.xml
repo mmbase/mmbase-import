@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="file" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">Bestand</singular>
+        <singular xml:lang="en">File</singular>
+        <plural xml:lang="nl">Filmpjes</plural>
+        <plural xml:lang="en">Bestanden</plural>
+    </names>
+    <fieldlist>
+        <field name="title">
+            <descriptions>
+                <description xml:lang="en">Title of the file</description>
+                <description xml:lang="nl">Titel van het filmpje</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="en">Title</guiname>
+                <guiname xml:lang="fr">Titre</guiname>
+                <guiname xml:lang="nl">Titel</guiname>
+                <guiname xml:lang="eo">Titolo</guiname>
+                <guiname xml:lang="it">Titolo</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <list>1</list>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="description">
+            <descriptions>
+                <description xml:lang="en">Description of the file</description>
+                <description xml:lang="nl">Omschrijving van het filmpje</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="en">Description</guiname>
+                <guiname xml:lang="fr">Description</guiname>
+                <guiname xml:lang="nl">Omschrijving</guiname>
+                <guiname xml:lang="eo">Priskribo</guiname>
+                <guiname xml:lang="it">Descrizione</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <list>2</list>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="2048"/>
+            </datatype>
+        </field>
+        <field name="filename">
+            <descriptions>
+                <description xml:lang="nl">Naam van het bronbestand van het filmpje.</description>
+                <description xml:lang="en">Name of the file of the file.</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="nl">Bestandsnaam</guiname>
+                <guiname xml:lang="en">Filename</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>3</input>
+                    <list>3</list>
+                    <search>3</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="512"/>
+            </datatype>
+        </field>
+        <field name="creationdate">
+            <descriptions>
+                <description xml:lang="nl">Datum waarop het bestand is aangemaakt.</description>
+                <description xml:lang="en">Date when this file was created.</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="nl">Aangemaakt</guiname>
+                <guiname xml:lang="en">Creationdate</guiname>
+                <guiname xml:lang="zh">创建时间</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="now"/>
+                <required value="true"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

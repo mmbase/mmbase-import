@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="portlets-banner/target/classes" path="portlets-banner/src/java"/>
-	<classpathentry kind="src" output="portlets-tagcloud/target/classes" path="portlets-tagcloud/src/java"/>
-	<classpathentry kind="src" output="portlets-randomcontent/target/classes" path="portlets-randomcontent/src/java"/>
-	<classpathentry kind="src" output="portlets-jforum/target/classes" path="portlets-jforum/src/java"/>
-	<classpathentry kind="src" output="portlets-secure/target/classes" path="portlets-secure/src/java"/>
-	<classpathentry kind="src" output="portlets-dynamicforms/target/classes" path="portlets-dynamicforms/src/java"/>
-	<classpathentry kind="src" output="portlets-ecard/target/classes" path="portlets-ecard/src/java"/>
-	<classpathentry kind="src" output="portlets-emailalert/target/classes" path="portlets-emailalert/src/java"/>
-	<classpathentry kind="src" output="portlets-googlemap/target/classes" path="portlets-googlemap/src/java"/>
-	<classpathentry kind="src" output="portlets-guestbook/target/classes" path="portlets-guestbook/src/java"/>
-	<classpathentry kind="src" output="portlets-maileditors/target/classes" path="portlets-maileditors/src/java"/>
-	<classpathentry kind="src" output="portlets-mailfriend/target/classes" path="portlets-mailfriend/src/java"/>
-	<classpathentry kind="src" output="portlets-login/target/classes" path="portlets-login/src/java"/>
-	<classpathentry kind="src" output="portlets-playlist/target/classes" path="portlets-playlist/src/java"/>
-	<classpathentry kind="src" output="portlets-poll/target/classes" path="portlets-poll/src/java"/>
-	<classpathentry kind="src" output="portlets-print/target/classes" path="portlets-print/src/java"/>
-	<classpathentry kind="src" output="portlets-search/target/classes" path="portlets-search/src/java"/>
-	<classpathentry kind="src" output="portlets-newsletter/target/classes" path="portlets-newsletter/src/java"/>
-	<classpathentry kind="src" output="portlets-preferences/target/classes" path="portlets-preferences/src/java"/>
+	<classpathentry kind="src" path="portlets-banner/src/java"/>
+	<classpathentry kind="src" path="portlets-tagcloud/src/java"/>
+	<classpathentry kind="src" path="portlets-randomcontent/src/java"/>
+	<classpathentry kind="src" path="portlets-jforum/src/java"/>
+	<classpathentry kind="src" path="portlets-secure/src/java"/>
+	<classpathentry kind="src" path="portlets-dynamicforms/src/java"/>
+	<classpathentry kind="src" path="portlets-ecard/src/java"/>
+	<classpathentry kind="src" path="portlets-emailalert/src/java"/>
+	<classpathentry kind="src" path="portlets-googlemap/src/java"/>
+	<classpathentry kind="src" path="portlets-guestbook/src/java"/>
+	<classpathentry kind="src" path="portlets-maileditors/src/java"/>
+	<classpathentry kind="src" path="portlets-mailfriend/src/java"/>
+	<classpathentry kind="src" path="portlets-login/src/java"/>
+	<classpathentry kind="src" path="portlets-playlist/src/java"/>
+	<classpathentry kind="src" path="portlets-poll/src/java"/>
+	<classpathentry kind="src" path="portlets-print/src/java"/>
+	<classpathentry kind="src" path="portlets-search/src/java"/>
+	<classpathentry kind="src" path="portlets-newsletter/src/java"/>
+	<classpathentry kind="src" path="portlets-preferences/src/java"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer_Modules-1_7"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer-1_7"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar">
@@ -89,7 +89,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-descriptors-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
@@ -99,27 +99,27 @@
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>

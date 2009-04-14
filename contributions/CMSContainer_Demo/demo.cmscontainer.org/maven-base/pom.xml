@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.cmscontainer.demos</groupId>
+        <artifactId>cmsc-demo</artifactId>
+        <version>1.7-SNAPSHOT</version>
+    </parent>
+    
+    <groupId>org.cmscontainer.demos</groupId>
+    <artifactId>cmsc-demo-base</artifactId>
+    <name>CMS Container demo base</name>
+    <packaging>pom</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.cmscontainer.portlets</groupId>
+			<artifactId>cmsc-portlets-teaser</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.cmscontainer.portlets</groupId>
+			<artifactId>cmsc-portlets-gallery</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.cmscontainer.portlets</groupId>
+			<artifactId>cmsc-portlets-dynamicforms</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.cmscontainer.portlets</groupId>-->
+<!--			<artifactId>cmsc-portlets-jforum</artifactId>-->
+<!--			<version>${project.version}</version>-->
+<!--			<type>war</type>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.cmscontainer.portlets</groupId>
+			<artifactId>cmsc-portlets-google</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.cmscontainer.modules</groupId>
+			<artifactId>cmsc-modules-alias</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.cmscontainer.modules</groupId>
+			<artifactId>cmsc-modules-directreaction</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.cmscontainer.modules</groupId>
+			<artifactId>cmsc-modules-linkvalidator</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.cmscontainer.modules</groupId>
+			<artifactId>cmsc-modules-rssfeed</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.cmscontainer.modules</groupId>
+			<artifactId>cmsc-modules-subsite</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.cmscontainer.modules</groupId>
+			<artifactId>cmsc-modules-staticdownload</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.cmscontainer.modules</groupId>
+			<artifactId>cmsc-modules-tasks</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.cmscontainer.modules</groupId>
+			<artifactId>cmsc-modules-versioning</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>poi</groupId>
+			<artifactId>poi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>
