@@ -1,0 +1,7 @@
+The following e-mail address has been successfully unsubscribed from our newsletter(s):
+
+----------------------------
+
+Email: %s 
+
+----------------------------
