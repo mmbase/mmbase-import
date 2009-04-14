@@ -12,7 +12,7 @@
   <storagemanagerfactory classname="org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory" version="0.1" />
 
   <!-- use the manager for relational databases -->
-  <storagemanager classname="org.mmbase.storage.implementation.database.RelationalDatabaseStorageManager" version="0.1" />
+  <storagemanager classname="org.mmbase.storage.implementation.database.ViewDatabaseStorageManager" version="0.1" />
 
   <searchqueryhandler classname="org.mmbase.storage.search.implementation.database.HSqlSqlHandler" />
 
