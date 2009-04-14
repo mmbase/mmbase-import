@@ -34,6 +34,7 @@ See http://www.MMBase.org/license
           <excludes>
             <exclude>vpro-wizards/**</exclude> <!-- much too complicated for now -->
             <exclude>framework/**</exclude> <!-- unfinished -->
+            <exclude>target/**</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -73,6 +74,12 @@ See http://www.MMBase.org/license
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-cloudcontext</artifactId>
+      <version>${project.version}</version>
+      <classifier>classes</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-richtext</artifactId>
       <version>${project.version}</version>
       <classifier>classes</classifier>
     </dependency>
