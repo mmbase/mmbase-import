@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="layout" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">layout</singular>
+        <singular xml:lang="en">layout</singular>
+        <singular xml:lang="zh">布局</singular>
+        <plural xml:lang="nl">layout</plural>
+        <plural xml:lang="en">layout</plural>
+        <plural xml:lang="zh">布局</plural>
+    </names>
+    <fieldlist>
+        <field name="title">
+            <gui>
+                <guiname xml:lang="nl">Titel</guiname>
+                <guiname xml:lang="en">Title</guiname>
+                <guiname xml:lang="zh">标题</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                    <list>4</list>
+                    <search>4</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="description">
+            <gui>
+                <guiname xml:lang="nl">Omschrijving</guiname>
+                <guiname xml:lang="en">Description</guiname>
+                <guiname xml:lang="zh">描述</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                </positions>
+            </editor>
+            <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="resource">
+            <gui>
+                <guiname xml:lang="nl">Template</guiname>
+                <guiname xml:lang="en">Resource</guiname>
+                <guiname xml:lang="zh">资源</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

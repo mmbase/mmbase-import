@@ -1,66 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.cmscontainer.core</groupId>
+        <artifactId>cmsc-core</artifactId>
+        <version>1.7-SNAPSHOT</version>
+    </parent>
+
     <artifactId>cmsc-taglib</artifactId>
     <packaging>war</packaging>
     <name>CMS Container taglib</name>
-    <parent>
-        <groupId>finalist</groupId>
-        <artifactId>maven-base</artifactId>
-        <version>1.7-SNAPSHOT</version>
-    </parent>
+
     <dependencies>
         <dependency>
-            <groupId>finalist</groupId>
+            <groupId>org.cmscontainer.core</groupId>
             <artifactId>cmsc-contentrepository</artifactId>
-            <version>${cmsc.version}</version>
+            <version>${project.version}</version>
+            <classifier>classes</classifier>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>finalist</groupId>
+            <groupId>org.cmscontainer.core</groupId>
             <artifactId>cmsc-portal</artifactId>
-            <version>${cmsc.version}</version>
+            <version>${project.version}</version>
+            <classifier>classes</classifier>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>finalist</groupId>
+            <groupId>org.cmscontainer.core</groupId>
             <artifactId>cmsc-sitemanagement</artifactId>
-            <version>${cmsc.version}</version>
+            <version>${project.version}</version>
+            <classifier>classes</classifier>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>finalist</groupId>
+            <groupId>org.cmscontainer.core</groupId>
             <artifactId>cmsc-utilities</artifactId>
-            <version>${cmsc.version}</version>
+            <version>${project.version}</version>
+            <classifier>classes</classifier>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>finalist</groupId>
+            <groupId>org.cmscontainer.core</groupId>
             <artifactId>cmsc-security</artifactId>
-            <version>${cmsc.version}</version>
+            <version>${project.version}</version>
+            <classifier>classes</classifier>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>finalist</groupId>
+            <groupId>org.cmscontainer.core</groupId>
             <artifactId>cmsc-servicemanagement</artifactId>
-            <version>${cmsc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>mmbase</groupId>
-            <artifactId>mmbase</artifactId>
-            <version>${mmbase.version}</version>
+            <version>${project.version}</version>
+            <classifier>classes</classifier>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
-    <build>
-        <resources>
-            <resource>
-                <directory>${basedir}/resources</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-            <resource>
-                <targetPath>META-INF</targetPath>
-                <directory>${basedir}/src/tld</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
-    </build>
 </project>

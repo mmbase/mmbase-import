@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="editwizards"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">editwizards</singular>
+        <singular xml:lang="en">editwizards</singular>
+        <singular xml:lang="zh">编辑向导</singular>
+        <plural xml:lang="nl">editwizards</plural>
+        <plural xml:lang="en">editwizards</plural>
+        <plural xml:lang="zh">编辑向导</plural>
+    </names>
+    <fieldlist>
+        <field name="name">
+            <gui>
+                <guiname xml:lang="nl">Naam</guiname>
+                <guiname xml:lang="en">Name</guiname>
+                <guiname xml:lang="zh">名称</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                    <list>4</list>
+                    <search>4</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="description">
+            <gui>
+                <guiname xml:lang="nl">Omschrijving</guiname>
+                <guiname xml:lang="en">Description</guiname>
+                <guiname xml:lang="zh">描述</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                </positions>
+            </editor>
+            <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="type">
+            <gui>
+                <guiname xml:lang="nl">Type</guiname>
+                <guiname xml:lang="en">Type</guiname>
+                <guiname xml:lang="zh">类型</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="wizard">
+            <gui>
+                <guiname xml:lang="nl">Wizard</guiname>
+                <guiname xml:lang="en">Wizard</guiname>
+                <guiname xml:lang="zh">向导</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>7</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="objectnumber">
+            <gui>
+                <guiname xml:lang="nl">Objectnummer</guiname>
+                <guiname xml:lang="en">Objectnumber</guiname>
+                <guiname xml:lang="zh">编号</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>8</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="nodepath">
+            <gui>
+                <guiname xml:lang="nl">Node pad</guiname>
+                <guiname xml:lang="en">Nodepath</guiname>
+                <guiname xml:lang="zh">结点路径</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="fields">
+            <gui>
+                <guiname xml:lang="nl">Velden</guiname>
+                <guiname xml:lang="en">Fields</guiname>
+                <guiname xml:lang="zh">框</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="constraints">
+            <gui>
+                <guiname xml:lang="nl">Beperking</guiname>
+                <guiname xml:lang="en">Constraints</guiname>
+                <guiname xml:lang="zh">约束</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>11</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="age">
+            <gui>
+                <guiname xml:lang="nl">Leeftijd</guiname>
+                <guiname xml:lang="en">Age</guiname>
+                <guiname xml:lang="zh">生命期</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>12</input>
+                </positions>
+            </editor>
+            <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="distinctlist">
+            <gui>
+                <guiname xml:lang="nl">Distinct</guiname>
+                <guiname xml:lang="en">Distinct</guiname>
+                <guiname xml:lang="zh">特征</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>13</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="searchdir">
+            <gui>
+                <guiname xml:lang="nl">Zoekrichting</guiname>
+                <guiname xml:lang="en">Searchdir</guiname>
+                <guiname xml:lang="zh">查找路径</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>14</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="orderby">
+            <gui>
+                <guiname xml:lang="nl">Orderby</guiname>
+                <guiname xml:lang="en">Orderby</guiname>
+                <guiname xml:lang="zh">排序</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>15</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="directions">
+            <gui>
+                <guiname xml:lang="nl">Richting</guiname>
+                <guiname xml:lang="en">Directions</guiname>
+                <guiname xml:lang="zh">方向</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>16</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="pagelength">
+            <gui>
+                <guiname xml:lang="nl">Pagina lengte</guiname>
+                <guiname xml:lang="en">Pagelength</guiname>
+                <guiname xml:lang="zh">页面长度</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>17</input>
+                </positions>
+            </editor>
+            <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="maxpagecount">
+            <gui>
+                <guiname xml:lang="nl">Maximaal pagina's</guiname>
+                <guiname xml:lang="en">Maximum pages</guiname>
+                <guiname xml:lang="zh">最大页面数</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>18</input>
+                </positions>
+            </editor>
+            <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="maxupload">
+            <gui>
+                <guiname xml:lang="nl">Maximale upload</guiname>
+                <guiname xml:lang="en">Maximum upload</guiname>
+                <guiname xml:lang="zh">最大上载量</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>19</input>
+                </positions>
+            </editor>
+            <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="searchfields">
+            <gui>
+                <guiname xml:lang="nl">Zoekvelden</guiname>
+                <guiname xml:lang="en">Searchfields</guiname>
+                <guiname xml:lang="zh">查找框</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>20</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="searchtype">
+            <gui>
+                <guiname xml:lang="nl">Zoektype</guiname>
+                <guiname xml:lang="en">Searchtype</guiname>
+                <guiname xml:lang="zh">查找类型</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>21</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="searchvalue">
+            <gui>
+                <guiname xml:lang="nl">Zoekwaarde</guiname>
+                <guiname xml:lang="en">Searchvalue</guiname>
+                <guiname xml:lang="zh">查找值</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>22</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="search">
+            <gui>
+                <guiname xml:lang="nl">Zoeken</guiname>
+                <guiname xml:lang="en">Search</guiname>
+                <guiname xml:lang="zh">查找</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>23</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="origin">
+            <gui>
+                <guiname xml:lang="nl">Bron</guiname>
+                <guiname xml:lang="en">Origin</guiname>
+                <guiname xml:lang="zh">起源</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>24</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="title">
+            <gui>
+                <guiname xml:lang="nl">Titel</guiname>
+                <guiname xml:lang="en">Title</guiname>
+                <guiname xml:lang="zh">标题</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>25</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

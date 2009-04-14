@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="page" maintainer="finalist.com" name="subsite" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <class>com.finalist.cmsc.subsite.builder.SubSiteBuilder</class>
+    <names>
+        <singular xml:lang="nl">Subsite</singular>
+        <singular xml:lang="en">Sub Site</singular>
+        <plural xml:lang="nl">Subsites</plural>
+        <plural xml:lang="en">Sub Sites</plural>
+    </names>
+    <fieldlist/>
+</builder>

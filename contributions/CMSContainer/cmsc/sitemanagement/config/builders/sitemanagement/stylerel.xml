@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="insrel" maintainer="finalist.com" name="stylerel" version="0"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">stylerel</singular>
+        <singular xml:lang="en">stylerel</singular>
+        <singular xml:lang="zh">stylerel</singular>
+        <plural xml:lang="nl">stylerel</plural>
+        <plural xml:lang="en">stylerel</plural>
+        <plural xml:lang="zh">stylerel</plural>
+    </names>
+    <fieldlist>
+        <field name="pos">
+            <gui>
+                <guiname xml:lang="nl">Positie</guiname>
+                <guiname xml:lang="en">pos</guiname>
+                <guiname xml:lang="zh">位置</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                    <list>4</list>
+                    <search>4</search>
+                </positions>
+            </editor>
+            <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+    </fieldlist>
+</builder>

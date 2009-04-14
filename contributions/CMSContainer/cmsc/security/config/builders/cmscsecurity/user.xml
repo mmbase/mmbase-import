@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="mmbaseusers" maintainer="finalist.com" name="user" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">user</singular>
+        <singular xml:lang="en">user</singular>
+        <singular xml:lang="zh">用户</singular>
+        <plural xml:lang="nl">user</plural>
+        <plural xml:lang="en">user</plural>
+        <plural xml:lang="zh">用户</plural>
+    </names>
+    <properties>
+        <property name="userNameCaseSensitive">true</property>
+    </properties>
+    <fieldlist>
+        <field name="surname">
+            <gui>
+                <guiname xml:lang="nl">Achternaam</guiname>
+                <guiname xml:lang="en">surname</guiname>
+                <guiname xml:lang="zh">姓</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                    <list>4</list>
+                    <search>4</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="firstname">
+            <gui>
+                <guiname xml:lang="nl">Voornaam</guiname>
+                <guiname xml:lang="en">firstname</guiname>
+                <guiname xml:lang="zh">名</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                    <list>5</list>
+                    <search>5</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="prefix">
+            <gui>
+                <guiname xml:lang="nl">tussenvoegsel</guiname>
+                <guiname xml:lang="en">prefix</guiname>
+                <guiname xml:lang="zh">前缀</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                    <list>6</list>
+                    <search>6</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="emailaddress">
+            <gui>
+                <guiname xml:lang="nl">email</guiname>
+                <guiname xml:lang="en">Emailaddress</guiname>
+                <guiname xml:lang="zh">Email地址</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>7</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="company">
+            <gui>
+                <guiname xml:lang="nl">Bedrijf</guiname>
+                <guiname xml:lang="en">company</guiname>
+                <guiname xml:lang="zh">公司</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>8</input>
+                    <list>8</list>
+                    <search>8</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="department">
+            <gui>
+                <guiname xml:lang="nl">Afdeling</guiname>
+                <guiname xml:lang="en">department</guiname>
+                <guiname xml:lang="zh">部门</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="function">
+            <gui>
+                <guiname xml:lang="nl">Functie</guiname>
+                <guiname xml:lang="en">function</guiname>
+                <guiname xml:lang="zh">功能</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="note">
+            <gui>
+                <guiname xml:lang="nl">Opmerking</guiname>
+                <guiname xml:lang="en">note</guiname>
+                <guiname xml:lang="zh">备注</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>11</input>
+                </positions>
+            </editor>
+            <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="website">
+            <gui>
+                <guiname xml:lang="nl">Website</guiname>
+                <guiname xml:lang="en">website</guiname>
+                <guiname xml:lang="zh">网站</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>12</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="emailsignal">
+            <gui>
+                <guiname xml:lang="nl">email signalering</guiname>
+                <guiname xml:lang="en">Emailsignal</guiname>
+                <guiname xml:lang="zh">Email签名</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>13</input>
+                </positions>
+            </editor>
+            <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+            </datatype>
+        </field>
+        <field name="language">
+            <gui>
+                <guiname xml:lang="nl">Taal</guiname>
+                <guiname xml:lang="en">Language</guiname>
+                <guiname xml:lang="zh">语言</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>14</input>
+                    <list>14</list>
+                    <search>14</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="2"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

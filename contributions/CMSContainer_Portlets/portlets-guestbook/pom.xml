@@ -1,70 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>finalist</groupId>
-  <artifactId>cmsc-portlets-guestbook</artifactId>
-  <packaging>war</packaging>
-  <name>Guestbook portlet</name>
-  <parent>
-        <groupId>finalist</groupId>
-        <artifactId>portlets</artifactId>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.cmscontainer.portlets</groupId>
+        <artifactId>cmsc-portlets</artifactId>
         <version>1.7-SNAPSHOT</version>
-  </parent>
-  <dependencies>
-    <dependency>
-      <groupId>com.octo.captcha</groupId>
-      <artifactId>jcaptcha-all</artifactId>
-      <version>1.0-RC6</version>
-    </dependency>    
-  </dependencies>
-  <build>
-        <plugins>
-            <!-- The plugin config is process the Compilation failure about com.sun.image.codec package-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <compilerArguments>
-                        <verbose/>
-                        <bootclasspath>${java.home}\lib\rt.jar</bootclasspath>
-                        <nowarn/>
-                    </compilerArguments>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>native2ascii-maven-plugin</artifactId>
-                <version>1.0-alpha-1</version>
-                <configuration>
-                    <dest>${basedir}/target/classes</dest>
-                    <src>${basedir}/resources</src>
-                </configuration>
-                <executions>
-                    <execution>
-                    <id>native2ascii-utf8</id>
-                        <goals>
-                            <goal>native2ascii</goal>
-                        </goals>
-                        <configuration>
-                             <encoding>UTF-8</encoding>
-                             <includes>**/*.properties</includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>                
-                    <webResources>
-                        <resource>
-                            <targetPath>WEB-INF/config</targetPath>
-                            <directory>${basedir}/config</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                        </resource>
-                    </webResources>
-                </configuration>
-            </plugin>
-        </plugins>
-  </build>
+    </parent>
+
+	<artifactId>cmsc-portlets-guestbook</artifactId>
+	<packaging>war</packaging>
+	<name>CMS Container Guestbook portlet</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.octo.captcha</groupId>
+			<artifactId>jcaptcha-all</artifactId>
+			<version>1.0-RC6</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- The plugin config is process the Compilation failure about com.sun.image.codec package-->
+			<!--            <plugin>-->
+			<!--                <groupId>org.apache.maven.plugins</groupId>-->
+			<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+			<!--                <configuration>-->
+			<!--                    <compilerArguments>-->
+			<!--                        <verbose/>-->
+			<!--                        <bootclasspath>${java.home}\lib\rt.jar</bootclasspath>-->
+			<!--                        <nowarn/>-->
+			<!--                    </compilerArguments>-->
+			<!--                </configuration>-->
+			<!--            </plugin>-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>native2ascii-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

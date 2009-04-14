@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="tag" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <class>com.finalist.cmsc.richtext.builders.RichTextBuilder</class>
+    <names>
+        <singular xml:lang="nl">term</singular>
+        <singular xml:lang="en">term</singular>
+        <singular xml:lang="zh">项</singular>
+        <plural xml:lang="nl">termen</plural>
+        <plural xml:lang="en">terms</plural>
+        <plural xml:lang="zh">项</plural>
+    </names>
+    <fieldlist>
+        <field name="name">
+            <gui>
+                <guiname xml:lang="nl">Naam</guiname>
+                <guiname xml:lang="en">Name</guiname>
+                <guiname xml:lang="zh">名称</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                    <list>4</list>
+                    <search>4</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="subject">
+            <gui>
+                <guiname xml:lang="nl">Onderwerp</guiname>
+                <guiname xml:lang="en">Subject</guiname>
+                <guiname xml:lang="zh">主题</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="100"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="cmsc/contentrepository/target/classes" path="cmsc/contentrepository/src/java"/>
-	<classpathentry kind="src" output="cmsc/edit-webapp/target/classes" path="cmsc/edit-webapp/src/java"/>
-	<classpathentry kind="src" output="cmsc/maintenance/target/classes" path="cmsc/maintenance/src/java"/>
-	<classpathentry kind="src" output="cmsc/portal/target/classes" path="cmsc/portal/src/java"/>
-	<classpathentry kind="src" output="cmsc/portlets/target/classes" path="cmsc/portlets/src/java"/>
-	<classpathentry kind="src" output="cmsc/richtext/target/classes" path="cmsc/richtext/src/java"/>
-	<classpathentry kind="src" output="cmsc/richtext/target/test-classes" path="cmsc/richtext/src/tests"/>
-	<classpathentry kind="src" output="cmsc/richtext/target/classes" path="cmsc/richtext/resources"/>
-	<classpathentry kind="src" output="cmsc/search/target/classes" path="cmsc/search/src/java"/>
-	<classpathentry kind="src" output="cmsc/security/target/classes" path="cmsc/security/src/java"/>
-	<classpathentry kind="src" output="cmsc/servicemanagement/target/classes" path="cmsc/servicemanagement/src/java"/>
-	<classpathentry kind="src" output="cmsc/sitemanagement/target/classes" path="cmsc/sitemanagement/src/java"/>
-	<classpathentry kind="src" output="cmsc/taglib/target/classes" path="cmsc/taglib/src/java"/>
-	<classpathentry kind="src" output="cmsc/utilities/target/classes" path="cmsc/utilities/src/java"/>
-	<classpathentry kind="src" output="thirdparty/pager-taglib/target/classes" path="thirdparty/pager-taglib/src/java"/>
-	<classpathentry kind="src" output="overview_generator/target/classes" path="overview_generator/src/java"/>
+	<classpathentry kind="src" path="cmsc/contentrepository/src/java"/>
+	<classpathentry kind="src" path="cmsc/edit-webapp/src/java"/>
+	<classpathentry kind="src" path="cmsc/maintenance/src/java"/>
+	<classpathentry kind="src" path="cmsc/portal/src/java"/>
+	<classpathentry kind="src" path="cmsc/portlets/src/java"/>
+	<classpathentry kind="src" path="cmsc/richtext/src/java"/>
+	<classpathentry kind="src" path="cmsc/richtext/src/tests"/>
+	<classpathentry kind="src" path="cmsc/richtext/resources"/>
+	<classpathentry kind="src" path="cmsc/search/src/java"/>
+	<classpathentry kind="src" path="cmsc/security/src/java"/>
+	<classpathentry kind="src" path="cmsc/servicemanagement/src/java"/>
+	<classpathentry kind="src" path="cmsc/sitemanagement/src/java"/>
+	<classpathentry kind="src" path="cmsc/taglib/src/java"/>
+	<classpathentry kind="src" path="cmsc/utilities/src/java"/>
+	<classpathentry kind="src" path="thirdparty/pager-taglib/src/java"/>
+	<classpathentry kind="src" path="overview_generator/src/java"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://commons.apache.org/beanutils/apidocs/"/>
@@ -89,7 +89,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-descriptors-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
@@ -99,32 +99,32 @@
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.cmscontainer.templates</groupId>
+        <artifactId>cmsc-templates</artifactId>
+        <version>1.7-SNAPSHOT</version>
+    </parent>
+    
+    <groupId>org.cmscontainer.templates</groupId>
+    <artifactId>cmsc-single</artifactId>
+    <name>CMS Container single templates</name>
+    <packaging>pom</packaging>
+
+	<modules>
+		<module>war</module>
+	</modules>
+	
+	<dependencies>
+<!-- MMBase -->	
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-cloudcontext</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-crontab</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-dove</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-editwizard</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-email</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-resources</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-taglib</artifactId>
+			<classifier>classes</classifier>
+		</dependency>
+
+<!-- MMApps.sourceforge.net -->	
+		<dependency>
+			<groupId>mmapps</groupId>
+			<artifactId>cloudprovider</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mmapps</groupId>
+			<artifactId>mmcommons</artifactId>
+		</dependency>
+
+<!-- Apache portals - pluto -->	
+		<dependency>
+			<artifactId>pluto</artifactId>
+			<groupId>org.apache.pluto</groupId>
+		</dependency>
+
+		<dependency>
+			<artifactId>pluto-descriptors</artifactId>
+			<groupId>org.apache.pluto</groupId>
+		</dependency>
+
+		<dependency>
+			<artifactId>portlet-api</artifactId>
+			<groupId>portlet-api</groupId>
+		</dependency>
+
+<!-- Struts.apache.org -->
+		<dependency>
+			<groupId>struts</groupId>
+			<artifactId>struts</artifactId>
+		</dependency>
+
+<!-- MMBase third-party dependencies -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+
+<!-- Servlet/JSP -->
+		<dependency>
+	        <groupId>javax.servlet</groupId>
+	        <artifactId>servlet-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+		</dependency>
+		<!-- jsp taglibs, jstl -->
+  		<dependency>
+  			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+  		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+		</dependency>
+		
+<!-- Pager taglib -->
+		<dependency>
+			<groupId>jsptags.com</groupId>
+			<artifactId>pager-taglib</artifactId>
+		</dependency>
+		
+<!-- Jakarta Commons -->
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-chain</groupId>
+			<artifactId>commons-chain</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+		</dependency>
+
+<!-- Struts third-party dependencies -->
+		<dependency>
+			<groupId>antlr</groupId>
+			<artifactId>antlr</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>oro</groupId>
+			<artifactId>oro</artifactId>
+		</dependency>
+		
+<!-- EHcache used for cmsc sitemanagement -->		
+   		<dependency>
+			<groupId>ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+		</dependency>
+   		<dependency>
+			<groupId>ehcache</groupId>
+			<artifactId>ehcache-constructs</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>

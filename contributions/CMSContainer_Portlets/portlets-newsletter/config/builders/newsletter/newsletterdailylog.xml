@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="newsletterdailylog"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">Dagelijkse log</singular>
+        <singular xml:lang="en">Daily Log</singular>
+        <singular xml:lang="zh">日志</singular>
+        <plural xml:lang="nl">Dagelijkse Logs</plural>
+        <plural xml:lang="en">Daily Logs</plural>
+        <plural xml:lang="zh">日志</plural>
+    </names>
+    <fieldlist>
+        <field name="post">
+            <gui>
+                <guiname xml:lang="nl">post</guiname>
+                <guiname xml:lang="en">post</guiname>
+                <guiname xml:lang="zh">投寄</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="bounches">
+            <gui>
+                <guiname xml:lang="nl">bounches</guiname>
+                <guiname xml:lang="en">bounches</guiname>
+                <guiname xml:lang="zh">绑定</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="subscribe">
+            <gui>
+                <guiname xml:lang="nl">subscribe</guiname>
+                <guiname xml:lang="en">subscribe</guiname>
+                <guiname xml:lang="zh">订阅</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="unsubscribe">
+            <gui>
+                <guiname xml:lang="nl">unsubscribe</guiname>
+                <guiname xml:lang="en">unsubscribe</guiname>
+                <guiname xml:lang="zh">退订</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="removed">
+            <gui>
+                <guiname xml:lang="nl">verwijderd</guiname>
+                <guiname xml:lang="en">removed</guiname>
+                <guiname xml:lang="zh">删除</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="logdate">
+            <gui>
+                <guiname xml:lang="nl">logdatum</guiname>
+                <guiname xml:lang="en">log date</guiname>
+                <guiname xml:lang="zh">日志日期</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="newsletter">
+            <gui>
+                <guiname xml:lang="nl">nieuwsbrief</guiname>
+                <guiname xml:lang="en">newsletter</guiname>
+                <guiname xml:lang="zh">时事通讯</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="userid">
+            <gui>
+                <guiname xml:lang="nl">Gebruikers-ID</guiname>
+                <guiname xml:lang="en">UserId</guiname>
+                <guiname xml:lang="zh">用户Id</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+    </fieldlist>
+</builder>
