@@ -33,12 +33,9 @@
     <scheme name="create-index-scheme" >ALTER TABLE {1} ADD INDEX {3} ({2})</scheme>
     <scheme name="delete-index-scheme" >ALTER TABLE {1} DROP INDEX {2}</scheme>
 
-    <!--
-        MM: would it be a good idea to add this?
-
     <scheme name="create-table-scheme">CREATE TABLE {1} ({2} {3} {5}) character set utf8</scheme>
     <scheme name="create-object-table-scheme">CREATE TABLE {1} ({2} {3} {5}) character set utf8</scheme>
-    -->
+
   </attributes>
 
   <!-- List of MMBase objects where the binary data should not be stored in the database but as a
