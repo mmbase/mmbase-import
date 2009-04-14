@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.cmscontainer</groupId>
+		<artifactId>cmsc-parent</artifactId>
+		<version>1.7-SNAPSHOT</version>
+		<relativePath>maven-base/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>cmsc-project</artifactId>
+	<name>CMS Container Project</name>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>maven-base</module>
+		<module>cmsc</module>
+		<module>../CMSContainer_Modules</module>
+		<module>../CMSContainer_Portlets</module>
+		<module>../CMSContainer_Templates</module>
+		<module>../CMSContainer_Demo/demo.cmscontainer.org</module>
+	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-cloudcontext</artifactId>
+			<classifier>classes</classifier>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-crontab</artifactId>
+			<classifier>classes</classifier>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-dove</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-editwizard</artifactId>
+			<classifier>classes</classifier>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-email</artifactId>
+			<classifier>classes</classifier>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-rmmci</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-resources</artifactId>
+			<classifier>classes</classifier>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mmbase</groupId>
+			<artifactId>mmbase-taglib</artifactId>
+			<classifier>classes</classifier>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>jsptags.com</groupId>
+			<artifactId>pager-taglib</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Apache portals - pluto -->
+		<dependency>
+			<groupId>portlet-api</groupId>
+			<artifactId>portlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.pluto</groupId>
+			<artifactId>pluto</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.pluto</groupId>
+			<artifactId>pluto-descriptors</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Struts.apache.org -->
+		<dependency>
+			<groupId>struts</groupId>
+			<artifactId>struts</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Jakarta Commons -->
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- MMApps.sourceforge.net -->
+		<dependency>
+			<groupId>mmapps</groupId>
+			<artifactId>cloudprovider</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>mmapps</groupId>
+			<artifactId>mmcommons</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>ehcache</groupId>
+			<artifactId>ehcache-constructs</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>

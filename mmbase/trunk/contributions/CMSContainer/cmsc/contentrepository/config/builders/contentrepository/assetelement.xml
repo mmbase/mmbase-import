@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="assetelement"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">assetelement</singular>
+        <singular xml:lang="en">assetelement</singular>
+        <singular xml:lang="zh">资产元素</singular>
+        <plural xml:lang="nl">assetelement</plural>
+        <plural xml:lang="en">assetelement</plural>
+        <plural xml:lang="zh">资产元素</plural>
+    </names>
+    <properties>
+        <property name="downloadImages">true</property>
+    </properties>
+    <fieldlist>
+        <field name="creationdate" state="system">
+            <gui>
+                <guiname xml:lang="nl">Aangemaakt</guiname>
+                <guiname xml:lang="en">Creationdate</guiname>
+                <guiname xml:lang="zh">创建日期</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                </positions>
+            </editor>
+            <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="lastmodifieddate" state="system">
+            <gui>
+                <guiname xml:lang="nl">Gewijzigd</guiname>
+                <guiname xml:lang="en">Lastmodifieddate</guiname>
+                <guiname xml:lang="zh">最后修改日期</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                </positions>
+            </editor>
+            <datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="publishdate">
+            <gui>
+                <guiname xml:lang="nl">Publicatie datum</guiname>
+                <guiname xml:lang="en">Publishdate</guiname>
+                <guiname xml:lang="zh">发布时间</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="now"/>
+            </datatype>
+        </field>
+        <field name="expiredate">
+            <gui>
+                <guiname xml:lang="nl">Verloopdatum</guiname>
+                <guiname xml:lang="en">Expiredate</guiname>
+                <guiname xml:lang="zh">过期时间</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>7</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="today + 100 year"/>
+            </datatype>
+        </field>
+        <field name="lastmodifier" state="system">
+            <gui>
+                <guiname xml:lang="nl">Gewijzigd door</guiname>
+                <guiname xml:lang="en">Lastmodifier</guiname>
+                <guiname xml:lang="zh">最后修改者</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>8</input>
+                </positions>
+            </editor>
+            <datatype base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="creator" state="system">
+            <gui>
+                <guiname xml:lang="nl">Aangemaakt door</guiname>
+                <guiname xml:lang="en">Creator</guiname>
+                <guiname xml:lang="zh">创建者</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="creator" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="use_expirydate">
+            <gui>
+                <guiname xml:lang="nl">Gebruik verloop datum</guiname>
+                <guiname xml:lang="en">Use expirydate</guiname>
+                <guiname xml:lang="zh">使用过期</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                </positions>
+            </editor>
+            <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+            </datatype>
+        </field>
+        <field name="title">
+            <gui>
+                <guiname xml:lang="nl">Titel</guiname>
+                <guiname xml:lang="en">Title</guiname>
+                <guiname xml:lang="zh">标题</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>11</input>
+                    <list>11</list>
+                    <search>11</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="512"/>
+            </datatype>
+        </field>
+        <field name="description">
+            <gui>
+                <guiname xml:lang="nl">Omschrijving</guiname>
+                <guiname xml:lang="en">Description</guiname>
+                <guiname xml:lang="zh">描述</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>12</input>
+                    <list>12</list>
+                    <search>12</search>
+                </positions>
+            </editor>
+            <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+        <field name="status">
+            <gui>
+                <guiname xml:lang="nl">Status</guiname>
+                <guiname xml:lang="en">Status</guiname>
+                <guiname xml:lang="zh">状态</guiname>
+            </gui>
+            <editor>
+                <positions/>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="new"/>
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

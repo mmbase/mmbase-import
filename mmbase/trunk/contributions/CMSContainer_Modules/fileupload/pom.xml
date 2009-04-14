@@ -1,58 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>finalist</groupId>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.cmscontainer.modules</groupId>
+        <artifactId>cmsc-modules</artifactId>
+        <version>1.7-SNAPSHOT</version>
+    </parent>
+
   <artifactId>cmsc-modules-fileupload</artifactId>
   <packaging>war</packaging>
-  <name>File upload module</name>
+  <name>CMS Container File upload module</name>
   <description>File upload module. Provides the option to create file objects based on an uploaded file.</description>
-  <parent>
-        <groupId>finalist</groupId>
-        <artifactId>modules</artifactId>
-        <version>1.7-SNAPSHOT</version>
-  </parent>
-  <dependencies>
-    <dependency>
-      <groupId>mmapps</groupId>
-      <artifactId>remotepublishing</artifactId>
-      <version>1.0.15</version>
-    </dependency>
-  </dependencies>
+
   <build>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>native2ascii-maven-plugin</artifactId>
-                <version>1.0-alpha-1</version>
-                <configuration>
-                    <dest>${basedir}/target/classes</dest>
-                    <src>${basedir}/resources</src>
-                </configuration>
-                <executions>
-                    <execution>
-                    <id>native2ascii-utf8</id>
-                        <goals>
-                            <goal>native2ascii</goal>
-                        </goals>
-                        <configuration>
-                             <encoding>UTF-8</encoding>
-                             <includes>**/*.properties</includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>                
-                    <webResources>
-                        <resource>
-                            <targetPath>WEB-INF/config</targetPath>
-                            <directory>${basedir}/config</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                        </resource>
-                    </webResources>
-                </configuration>
             </plugin>
         </plugins>
   </build>

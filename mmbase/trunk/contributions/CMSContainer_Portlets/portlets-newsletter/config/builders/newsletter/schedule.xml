@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="tag" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">Schedule</singular>
+        <singular xml:lang="en">Schedule</singular>
+        <singular xml:lang="zh">调度</singular>
+    </names>
+    <descriptions>
+        <description xml:lang="nl">Newsletter Schedule</description>
+        <description xml:lang="en">Newsletter Schedule</description>
+        <description xml:lang="zh">时事通讯调度</description>
+    </descriptions>
+    <fieldlist>
+        <field name="expression">
+            <descriptions>
+                <description xml:lang="nl">Expression</description>
+                <description xml:lang="en">Expression</description>
+                <description xml:lang="zh">表达式</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="nl">Expression</guiname>
+                <guiname xml:lang="en">Expression</guiname>
+                <guiname xml:lang="zh">表达式</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="100"/>
+            </datatype>
+        </field>
+        <field name="createdatetime">
+            <descriptions>
+                <description xml:lang="nl">Create Datetime</description>
+                <description xml:lang="en">Create Datetime</description>
+                <description xml:lang="zh">创建日期</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="nl">Create Datetime</guiname>
+                <guiname xml:lang="en">Create Datetime</guiname>
+                <guiname xml:lang="zh">创建日期</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+    </fieldlist>
+</builder>

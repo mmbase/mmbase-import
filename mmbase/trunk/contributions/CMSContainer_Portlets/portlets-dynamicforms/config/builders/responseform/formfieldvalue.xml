@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="formfieldvalue"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">Formulier veldwaarden</singular>
+        <singular xml:lang="en">Form Field Value</singular>
+        <singular xml:lang="zh">表单框值</singular>
+        <plural xml:lang="nl">Formulier veldwaarden</plural>
+        <plural xml:lang="en">Form field values</plural>
+        <plural xml:lang="zh">表单框值</plural>
+    </names>
+    <fieldlist>
+        <field name="value">
+            <gui>
+                <guiname xml:lang="nl">Waarde</guiname>
+                <guiname xml:lang="en">Value</guiname>
+                <guiname xml:lang="zh">值</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="text">
+            <gui>
+                <guiname xml:lang="nl">Tekst</guiname>
+                <guiname xml:lang="en">Text</guiname>
+                <guiname xml:lang="zh">文本框</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="standard">
+            <gui>
+                <guiname xml:lang="nl">Standaard waarde</guiname>
+                <guiname xml:lang="en">Default value</guiname>
+                <guiname xml:lang="zh">默认值</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+    </fieldlist>
+</builder>

@@ -1,65 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.cmscontainer.core</groupId>
+        <artifactId>cmsc-core</artifactId>
+        <version>1.7-SNAPSHOT</version>
+    </parent>
+
     <artifactId>cmsc-utilities</artifactId>
     <packaging>war</packaging>
     <name>CMS Container utilities</name>
-    <parent>
-        <groupId>finalist</groupId>
-        <artifactId>maven-base</artifactId>
-        <version>1.7-SNAPSHOT</version>
-    </parent>
-    <dependencies>
-        <dependency>
-            <groupId>mmbase</groupId>
-            <artifactId>mmbase</artifactId>
-            <version>${mmbase.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.0</version>
-        </dependency>
-    </dependencies>
+
     <build>
         <testSourceDirectory>src/tests</testSourceDirectory>
         <plugins>
             <plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>native2ascii-maven-plugin</artifactId>
-			<version>1.0-alpha-1</version>
-			<configuration>
-				<dest>${basedir}/target/classes</dest>
-				<src>${basedir}/resources</src>
-			</configuration>
-			<executions>
-				<execution>
-				<id>native2ascii-utf8</id>
-					<goals>
-						<goal>native2ascii</goal>
-					</goals>
-					<configuration>
-							<encoding>UTF-8</encoding>
-							<includes>**/*.properties</includes>
-					</configuration>
-				</execution>
-			</executions>
-		</plugin>
-		<plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <webResources>
-                        <resource>
-                            <targetPath>WEB-INF/config</targetPath>
-                            <directory>${basedir}/config</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                        </resource>
-                    </webResources>
-                </configuration>
-            </plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>native2ascii-maven-plugin</artifactId>
+			</plugin>
         </plugins>
     </build>
 </project>

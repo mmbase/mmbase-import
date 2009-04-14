@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="pagealias" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <class>com.finalist.cmsc.navigation.builder.DeepCopyBuilder</class>
+    <names>
+        <singular xml:lang="nl">Site copy</singular>
+        <singular xml:lang="en">Site copy</singular>
+        <plural xml:lang="nl">Site copy</plural>
+        <plural xml:lang="en">Site copy</plural>
+    </names>
+    <fieldlist/>
+</builder>

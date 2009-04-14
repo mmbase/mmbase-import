@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="view" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">view</singular>
+        <singular xml:lang="en">view</singular>
+        <singular xml:lang="zh">视图</singular>
+        <plural xml:lang="nl">view</plural>
+        <plural xml:lang="en">view</plural>
+        <plural xml:lang="zh">视图</plural>
+    </names>
+    <fieldlist>
+        <field name="title">
+            <gui>
+                <guiname xml:lang="nl">Titel</guiname>
+                <guiname xml:lang="en">Title</guiname>
+                <guiname xml:lang="zh">标题</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                    <list>4</list>
+                    <search>4</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+        <field name="description">
+            <gui>
+                <guiname xml:lang="nl">Omschrijving</guiname>
+                <guiname xml:lang="en">Description</guiname>
+                <guiname xml:lang="zh">描述</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="1024"/>
+            </datatype>
+        </field>
+        <field name="resource">
+            <gui>
+                <guiname xml:lang="nl">Template</guiname>
+                <guiname xml:lang="en">Resource</guiname>
+                <guiname xml:lang="zh">资源</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                    <list>6</list>
+                    <search>6</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="detailsupport">
+            <gui>
+                <guiname xml:lang="nl">Detailweergave</guiname>
+                <guiname xml:lang="en">Detail available</guiname>
+                <guiname xml:lang="zh">可用细节</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>14</input>
+                </positions>
+            </editor>
+            <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="true"/>
+                <required value="true"/>
+            </datatype>
+        </field>
+        <field name="expirationcache">
+            <gui>
+                <guiname xml:lang="nl">Cache verlooptijd</guiname>
+                <guiname xml:lang="en">Cache Expiration time</guiname>
+                <guiname xml:lang="zh">缓存失效时间</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>15</input>
+                </positions>
+            </editor>
+            <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="-1"/>
+                <minInclusive value="-1"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

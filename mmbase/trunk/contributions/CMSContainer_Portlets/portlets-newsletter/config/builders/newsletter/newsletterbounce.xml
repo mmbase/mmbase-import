@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="newsletterbounce"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">Newsletter bounces</singular>
+        <singular xml:lang="en">Newsletter bounces</singular>
+        <singular xml:lang="zh">时事通讯退信</singular>
+    </names>
+    <fieldlist>
+        <field name="bouncedate">
+            <gui>
+                <guiname xml:lang="nl">Bounce Datetime</guiname>
+                <guiname xml:lang="en">Bounce Datetime</guiname>
+                <guiname xml:lang="zh">退信日期</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>9</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="newsletter">
+            <gui>
+                <guiname xml:lang="nl">newsletter id</guiname>
+                <guiname xml:lang="en">newsletter id</guiname>
+                <guiname xml:lang="zh">时事通讯id</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="userid">
+            <gui>
+                <guiname xml:lang="nl">Gebruikers-ID</guiname>
+                <guiname xml:lang="en">UserId</guiname>
+                <guiname xml:lang="zh">用户Id</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="content">
+            <gui>
+                <guiname xml:lang="nl">bounce newsletter content</guiname>
+                <guiname xml:lang="en">bounce newsletter content</guiname>
+                <guiname xml:lang="zh">退信内容</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                    <list>5</list>
+                    <search>5</search>
+                </positions>
+            </editor>
+            <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

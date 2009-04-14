@@ -1,40 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>finalist</groupId>
-  <artifactId>cmsc-modules-rating</artifactId>
-  <packaging>war</packaging>
-  <name>Rating module</name>
-  <description>The rating is a whole number. Which numbers are used, depends on the project.</description>
-  <parent>
-        <groupId>finalist</groupId>
-        <artifactId>modules</artifactId>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.cmscontainer.modules</groupId>
+        <artifactId>cmsc-modules</artifactId>
         <version>1.7-SNAPSHOT</version>
-  </parent>
-  <build>
-        <resources>
-            <resource>
-                <targetPath>META-INF</targetPath>
-                <directory>${basedir}/src/tld</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>                
-                    <webResources>
-                        <resource>
-                            <targetPath>WEB-INF/config</targetPath>
-                            <directory>${basedir}/config</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                        </resource>
-                    </webResources>
-                </configuration>
-            </plugin>
-        </plugins>
-  </build>
+    </parent>
+
+	<artifactId>cmsc-modules-rating</artifactId>
+	<packaging>war</packaging>
+	<name>CMS Container Rating module</name>
+	<description>The rating is a whole number. Which numbers are used, depends on the project.</description>
+
 </project>

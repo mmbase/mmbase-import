@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="insrel" maintainer="finalist.com" name="layoutrel" version="1"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">layoutrel</singular>
+        <singular xml:lang="en">layoutrel</singular>
+        <singular xml:lang="zh">layoutrel</singular>
+        <plural xml:lang="nl">layoutrel</plural>
+        <plural xml:lang="en">layoutrel</plural>
+        <plural xml:lang="zh">layoutrel</plural>
+    </names>
+    <fieldlist/>
+</builder>

@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="alias/target/classes" path="alias/src/java"/>
+	<classpathentry kind="src" path="alias/src/java"/>
 	<classpathentry kind="src" path="dataconversion/src/java"/>
-	<classpathentry kind="src" output="openofficeintegration/target/classes" path="openofficeintegration/src/java"/>
-	<classpathentry kind="src" output="community/target/classes" path="community/src/java"/>
-	<classpathentry kind="src" output="directreaction/target/classes" path="directreaction/src/java"/>
-	<classpathentry kind="src" output="egemmail/target/classes" path="egemmail/src/java"/>
-	<classpathentry kind="src" output="favorites/target/classes" path="favorites/src/java"/>
-	<classpathentry kind="src" output="glossary/target/classes" path="glossary/src/java"/>
-	<classpathentry kind="src" output="glossary/target/test-classes" path="glossary/src/test"/>
-	<classpathentry kind="src" output="import-excelmenu/target/classes" path="import-excelmenu/src/java"/>
-	<classpathentry kind="src" output="knownvisitor/target/classes" path="knownvisitor/src/java"/>
-	<classpathentry kind="src" output="knownvisitor-ntlm/target/classes" path="knownvisitor-ntlm/src/java"/>
-	<classpathentry kind="src" output="language-redirect/target/classes" path="language-redirect/src/java"/>
-	<classpathentry kind="src" output="linkvalidator/target/classes" path="linkvalidator/src/java"/>
-	<classpathentry kind="src" output="luceus/target/classes" path="luceus/src/java"/>
-	<classpathentry kind="src" output="pagewizard/target/classes" path="pagewizard/src/java"/>
-	<classpathentry kind="src" output="publish-cleaner/target/classes" path="publish-cleaner/src/java"/>
-	<classpathentry kind="src" output="publish-remote/target/classes" path="publish-remote/src/java"/>
-	<classpathentry kind="src" output="rating/target/classes" path="rating/src/java"/>
-	<classpathentry kind="src" output="rss/target/classes" path="rss/src/java"/>
-	<classpathentry kind="src" output="rssfeed/target/classes" path="rssfeed/src/java"/>
-	<classpathentry kind="src" output="staticdownload/target/classes" path="staticdownload/src/java"/>
-	<classpathentry kind="src" output="staticdownload/target/test-classes" path="staticdownload/src/test"/>
-	<classpathentry kind="src" output="subsite/target/classes" path="subsite/src/java"/>
-	<classpathentry kind="src" output="tasks/target/classes" path="tasks/src/java"/>
-	<classpathentry kind="src" output="versioning/target/classes" path="versioning/src/java"/>
-	<classpathentry kind="src" output="workflow/target/classes" path="workflow/src/java"/>
+	<classpathentry kind="src" path="openofficeintegration/src/java"/>
+	<classpathentry kind="src" path="community/src/java"/>
+	<classpathentry kind="src" path="directreaction/src/java"/>
+	<classpathentry kind="src" path="egemmail/src/java"/>
+	<classpathentry kind="src" path="favorites/src/java"/>
+	<classpathentry kind="src" path="glossary/src/java"/>
+	<classpathentry kind="src" path="glossary/src/test"/>
+	<classpathentry kind="src" path="import-excelmenu/src/java"/>
+	<classpathentry kind="src" path="knownvisitor/src/java"/>
+	<classpathentry kind="src" path="knownvisitor-ntlm/src/java"/>
+	<classpathentry kind="src" path="language-redirect/src/java"/>
+	<classpathentry kind="src" path="linkvalidator/src/java"/>
+	<classpathentry kind="src" path="luceus/src/java"/>
+	<classpathentry kind="src" path="pagewizard/src/java"/>
+	<classpathentry kind="src" path="publish-cleaner/src/java"/>
+	<classpathentry kind="src" path="publish-remote/src/java"/>
+	<classpathentry kind="src" path="rating/src/java"/>
+	<classpathentry kind="src" path="rss/src/java"/>
+	<classpathentry kind="src" path="rssfeed/src/java"/>
+	<classpathentry kind="src" path="staticdownload/src/java"/>
+	<classpathentry kind="src" path="staticdownload/src/test"/>
+	<classpathentry kind="src" path="subsite/src/java"/>
+	<classpathentry kind="src" path="tasks/src/java"/>
+	<classpathentry kind="src" path="versioning/src/java"/>
+	<classpathentry kind="src" path="workflow/src/java"/>
+	<classpathentry kind="src" path="fileupload/src/java"/>
    <classpathentry combineaccessrules="false" kind="src" path="/CMSContainer-1_7"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar">
 		<attributes>
@@ -101,7 +102,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-descriptors-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
@@ -111,27 +112,27 @@
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.7-20090103.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.7-20090402.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>

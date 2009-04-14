@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="pollchoice"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">Keus</singular>
+        <singular xml:lang="en">Choice</singular>
+        <singular xml:lang="zh">选票结果</singular>
+        <plural xml:lang="nl">Keuzen</plural>
+        <plural xml:lang="en">Choices</plural>
+        <plural xml:lang="zh">选票结果</plural>
+    </names>
+    <fieldlist>
+        <field name="title">
+            <gui>
+                <guiname xml:lang="nl">Titel</guiname>
+                <guiname xml:lang="en">Title</guiname>
+                <guiname xml:lang="zh">标题</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                    <list>10</list>
+                    <search>10</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <required value="true"/>
+                <maxLength value="512"/>
+            </datatype>
+        </field>
+        <field name="answer">
+            <gui>
+                <guiname xml:lang="nl">Antwoord</guiname>
+                <guiname xml:lang="en">Answer</guiname>
+                <guiname xml:lang="zh">回答</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="512000"/>
+            </datatype>
+        </field>
+        <field name="counter">
+            <gui>
+                <guiname xml:lang="nl">Teller</guiname>
+                <guiname xml:lang="en">Counter</guiname>
+                <guiname xml:lang="zh">计数</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                </positions>
+            </editor>
+            <datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="0"/>
+                <required value="true"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

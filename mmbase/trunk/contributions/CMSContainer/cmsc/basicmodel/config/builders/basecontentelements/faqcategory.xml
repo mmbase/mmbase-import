@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="object" maintainer="finalist.com" name="faqcategory"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">FAQ categorie</singular>
+        <singular xml:lang="en">FAQ category</singular>
+        <singular xml:lang="zh">FAQ分类</singular>
+        <plural xml:lang="nl">FAQ categorïen</plural>
+        <plural xml:lang="en">FAQ categories</plural>
+        <plural xml:lang="zh">FAQ分类</plural>
+    </names>
+    <fieldlist>
+        <field name="name">
+            <gui>
+                <guiname xml:lang="nl">Naam</guiname>
+                <guiname xml:lang="en">Name</guiname>
+                <guiname xml:lang="zh">名称</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                    <list>4</list>
+                    <search>4</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="40"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

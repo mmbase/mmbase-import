@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="insrel" maintainer="finalist.com" name="subscriberel"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">susbcriberel</singular>
+        <singular xml:lang="en">subscriberel</singular>
+        <singular xml:lang="zh">订阅链接</singular>
+        <plural xml:lang="nl">subscriberel</plural>
+        <plural xml:lang="en">订阅链接</plural>
+    </names>
+    <fieldlist/>
+</builder>

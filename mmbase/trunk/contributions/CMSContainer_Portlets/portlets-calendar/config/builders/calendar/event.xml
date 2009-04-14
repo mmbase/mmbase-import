@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="contentelement" maintainer="finalist.com" name="event"
+    version="1" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">Evenement</singular>
+        <singular xml:lang="en">Event</singular>
+        <singular xml:lang="zh">事件</singular>
+        <plural xml:lang="nl">Evenementen</plural>
+        <plural xml:lang="en">Events</plural>
+        <plural xml:lang="zh">事件</plural>
+    </names>
+    <fieldlist>
+        <field name="intro">
+            <gui>
+                <guiname xml:lang="nl">Introductie</guiname>
+                <guiname xml:lang="en">Introduction</guiname>
+                <guiname xml:lang="zh">介绍</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>99</input>
+                    <list>99</list>
+                    <search>99</search>
+                </positions>
+            </editor>
+            <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+        <field name="starttime">
+            <gui>
+                <guiname xml:lang="nl">Starttijd</guiname>
+                <guiname xml:lang="en">Starttime</guiname>
+                <guiname xml:lang="zh">开始时间</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>99</input>
+                    <list>99</list>
+                    <search>99</search>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="now"/>
+            </datatype>
+        </field>
+        <field name="endtime">
+            <gui>
+                <guiname xml:lang="nl">Eindtijd</guiname>
+                <guiname xml:lang="en">Endtime</guiname>
+                <guiname xml:lang="zh">终止时间</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>99</input>
+                    <list>99</list>
+                    <search>99</search>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="now"/>
+            </datatype>
+        </field>
+        <field name="body">
+            <gui>
+                <guiname xml:lang="nl">Tekst</guiname>
+                <guiname xml:lang="en">Body</guiname>
+                <guiname xml:lang="zh">主体</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>99</input>
+                    <list>99</list>
+                    <search>99</search>
+                </positions>
+            </editor>
+            <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="512000"/>
+            </datatype>
+        </field>
+        <field name="location">
+            <gui>
+                <guiname xml:lang="nl">Locatie</guiname>
+                <guiname xml:lang="en">Location</guiname>
+                <guiname xml:lang="zh">位置</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>99</input>
+                    <list>99</list>
+                    <search>99</search>
+                </positions>
+            </editor>
+            <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+        <field name="organizer">
+            <gui>
+                <guiname xml:lang="nl">Organisator</guiname>
+                <guiname xml:lang="en">Organizer</guiname>
+                <guiname xml:lang="zh">创始人</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>99</input>
+                    <list>99</list>
+                    <search>99</search>
+                </positions>
+            </editor>
+            <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>

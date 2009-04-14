@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="page" maintainer="finalist.com" name="newsletterpublication"
+    version="2" xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <class>com.finalist.newsletter.builder.NewsletterPublicationBuilder</class>
+    <names>
+        <singular xml:lang="nl">Nieuwsbrief Editie</singular>
+        <singular xml:lang="en">Newsletter Edition</singular>
+        <singular xml:lang="zh">邮件发布</singular>
+        <plural xml:lang="nl">Nieuwsbrief edities</plural>
+        <plural xml:lang="en">Newsletter Editions</plural>
+        <plural xml:lang="zh">邮件发布</plural>
+    </names>
+    <fieldlist>
+        <field name="subject">
+            <gui>
+                <guiname xml:lang="nl">Onderwerp</guiname>
+                <guiname xml:lang="en">Subject</guiname>
+                <guiname xml:lang="zh">主题</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="100"/>
+            </datatype>
+        </field>
+        <field name="intro">
+            <gui>
+                <guiname xml:lang="nl">Introductie</guiname>
+                <guiname xml:lang="en">Intro</guiname>
+                <guiname xml:lang="zh">简介</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                    <list>5</list>
+                    <search>5</search>
+                </positions>
+            </editor>
+            <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+        <field name="status">
+            <gui>
+                <guiname xml:lang="nl">Status</guiname>
+                <guiname xml:lang="en">Status</guiname>
+                <guiname xml:lang="zh">状态</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                    <list>5</list>
+                    <search>5</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="subscriptions">
+            <gui>
+                <guiname xml:lang="nl">Subscriptions</guiname>
+                <guiname xml:lang="en">Subscriptions</guiname>
+                <guiname xml:lang="zh">订阅</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="bounced">
+            <gui>
+                <guiname xml:lang="nl">Bounced</guiname>
+                <guiname xml:lang="en">Bounced</guiname>
+                <guiname xml:lang="zh">退信</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>7</input>
+                </positions>
+            </editor>
+            <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+        <field name="process_status">
+            <gui>
+                <guiname xml:lang="nl">Process Status</guiname>
+                <guiname xml:lang="en">Process Status</guiname>
+                <guiname xml:lang="zh">过程状态</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>10</input>
+                    <list>10</list>
+                    <search>10</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <default value="concept edition"/>
+                <required value="true"/>
+                <maxLength value="50"/>
+            </datatype>
+        </field>
+        <field name="approved_by">
+            <gui>
+                <guiname xml:lang="nl">Goedgekeurd door</guiname>
+                <guiname xml:lang="en">Approved By</guiname>
+                <guiname xml:lang="zh">审核用户</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>12</input>
+                    <list>12</list>
+                    <search>12</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="255"/>
+            </datatype>
+        </field>
+        <field name="static_html">
+            <gui>
+                <guiname xml:lang="nl">statische html</guiname>
+                <guiname xml:lang="en">static html</guiname>
+                <guiname xml:lang="zh">静态html</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>11</input>
+                    <list>11</list>
+                    <search>11</search>
+                </positions>
+            </editor>
+            <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+        <field name="sendtime">
+            <gui>
+                <guiname xml:lang="nl">Verzenddatum</guiname>
+                <guiname xml:lang="en">Send date</guiname>
+                <guiname xml:lang="zh">发送日期</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+        </field>
+    </fieldlist>
+</builder>

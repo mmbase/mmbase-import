@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder extends="contentelement" maintainer="finalist.com"
+    name="subsitearticle" version="3"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+    <names>
+        <singular xml:lang="nl">Subsite Artikel</singular>
+        <singular xml:lang="en">SubSite Article</singular>
+        <singular xml:lang="zh">子站点文章</singular>
+        <plural xml:lang="nl">Subsite Artikelen</plural>
+        <plural xml:lang="en">SubSite Articles</plural>
+        <plural xml:lang="zh">子站点文章</plural>
+    </names>
+    <fieldlist>
+        <field name="subtitle">
+            <gui>
+                <guiname xml:lang="nl">Ondertitel</guiname>
+                <guiname xml:lang="en">Subtitle</guiname>
+                <guiname xml:lang="zh">副标题</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                    <list>4</list>
+                    <search>4</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="512"/>
+            </datatype>
+        </field>
+        <field name="intro">
+            <gui>
+                <guiname xml:lang="nl">Introductie</guiname>
+                <guiname xml:lang="en">Intro</guiname>
+                <guiname xml:lang="zh">引言</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                    <list>5</list>
+                    <search>5</search>
+                </positions>
+            </editor>
+            <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="64000"/>
+            </datatype>
+        </field>
+        <field name="body">
+            <gui>
+                <guiname xml:lang="nl">Tekst</guiname>
+                <guiname xml:lang="en">Body</guiname>
+                <guiname xml:lang="zh">正文</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                </positions>
+            </editor>
+            <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="512000"/>
+            </datatype>
+        </field>
+        <field name="subsitestatus">
+            <descriptions>
+                <description xml:lang="nl">Status</description>
+                <description xml:lang="en">Status</description>
+                <description xml:lang="zh">状态</description>
+            </descriptions>
+            <gui>
+                <guiname xml:lang="nl">Status</guiname>
+                <guiname xml:lang="en">Status</guiname>
+                <guiname xml:lang="zh">状态</guiname>
+            </gui>
+            <editor>
+                <positions>
+                    <input>5</input>
+                    <list>5</list>
+                    <search>5</search>
+                </positions>
+            </editor>
+            <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+                <maxLength value="32"/>
+                <enumeration>
+                    <entry basename="com.finalist.cmsc.subsite.resources.personalpagestatus"/>
+                </enumeration>
+            </datatype>
+        </field>
+    </fieldlist>
+</builder>
