@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.124 2009-01-05 10:30:43 michiel Exp $
+ * @version $Id: Casting.java,v 1.125 2009-04-14 09:20:14 michiel Exp $
  */
 
 import java.util.*;
@@ -585,7 +585,9 @@ public class Casting {
                 int tot;
                 do {
                     tot = in.read(buf, 0, 1024);
-                    out.write(buf, 0, tot);
+                    if (tot > 0) {
+                        out.write(buf, 0, tot);
+                    }
                 } while (tot > 0);
             } catch (IOException ioe) {
                 log.error(ioe);
