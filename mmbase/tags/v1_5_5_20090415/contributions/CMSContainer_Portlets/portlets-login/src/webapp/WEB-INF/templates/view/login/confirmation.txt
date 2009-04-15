@@ -1,0 +1,23 @@
+Please keep this email for your records. Your account information is as follows:
+
+----------------------------
+
+Email: %s 
+
+Password: %s
+
+Firstname: %s
+
+Infix: %s
+
+Lastname: %s
+
+----------------------------
+
+Your account is currently inactive. You cannot use it until you visit the following link: 
+
+%s 
+
+If you did not register for membership on our site, no further action is required. 
+
+Regards,

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder xmlns="http://www.mmbase.org/xmlns/builder"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.mmbase.org/xmlns/builder  http://www.mmbase.org/xmlns/builder.xsd"
+         extends="object"
+         maintainer="finalist.com"
+         name="newsletterdailylog"
+         version="1">
+
+   <status>active</status>
+   <searchage>70</searchage>
+   <names>
+      <singular xml:lang="nl">Dagelijkse log</singular>
+      <singular xml:lang="en">Daily Log</singular>
+      <singular xml:lang="zh">日志</singular>
+      <plural xml:lang="nl">Dagelijkse Logs</plural>
+      <plural xml:lang="en">Daily Logs</plural>
+      <plural xml:lang="zh">日志</plural>
+   </names>
+   <descriptions>
+      <description xml:lang="nl"></description>
+      <description xml:lang="en"></description>
+     <description xml:lang="zh"></description>
+   </descriptions>
+   <properties></properties>
+   <fieldlist>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">post</guiname>
+            <guiname xml:lang="en">post</guiname>
+            <guiname xml:lang="zh">投寄</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>1</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <db>
+            <name>post</name>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">bounches</guiname>
+            <guiname xml:lang="en">bounches</guiname>
+            <guiname xml:lang="zh">绑定</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>1</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <db>
+            <name>bounches</name>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">subscribe</guiname>
+            <guiname xml:lang="en">subscribe</guiname>
+            <guiname xml:lang="zh">订阅</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>1</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <db>
+            <name>subscribe</name>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">unsubscribe</guiname>
+            <guiname xml:lang="en">unsubscribe</guiname>
+            <guiname xml:lang="zh">退订</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>1</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <db>
+            <name>unsubscribe</name>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">verwijderd</guiname>
+            <guiname xml:lang="en">removed</guiname>
+            <guiname xml:lang="zh">删除</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>1</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <db>
+            <name>removed</name>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">logdatum</guiname>
+            <guiname xml:lang="en">log date</guiname>
+            <guiname xml:lang="zh">日志日期</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>1</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <db>
+            <name>logdate</name>
+              <type key="false" required="false" state="persistent">DATETIME</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">nieuwsbrief</guiname>
+            <guiname xml:lang="en">newsletter</guiname>
+            <guiname xml:lang="zh">时事通讯</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>1</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <db>
+            <name>newsletter</name>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
+         </db>
+      </field>
+      <field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+            <description xml:lang="zh"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Gebruikers-ID</guiname>
+            <guiname xml:lang="en">UserId</guiname>
+            <guiname xml:lang="zh">用户Id</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>1</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <db>
+            <name>userid</name>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
+         </db>
+      </field>
+   </fieldlist>
+</builder>
