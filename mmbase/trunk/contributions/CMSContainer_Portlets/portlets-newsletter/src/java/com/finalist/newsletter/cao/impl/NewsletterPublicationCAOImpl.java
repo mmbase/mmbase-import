@@ -50,8 +50,8 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       query.setNodeStep(theStep);
 
       Field field = pubManager.getField("status");
-      Constraint titleConstraint = SearchUtil.createEqualConstraint(query, field, Publication.STATUS.READY.toString());
-      SearchUtil.addConstraint(query, titleConstraint);
+      Constraint statusConstraint = SearchUtil.createEqualConstraint(query, field, Publication.STATUS.READY.toString());
+      SearchUtil.addConstraint(query, statusConstraint);
 
       List<Node> pubNodes = query.getList();
 

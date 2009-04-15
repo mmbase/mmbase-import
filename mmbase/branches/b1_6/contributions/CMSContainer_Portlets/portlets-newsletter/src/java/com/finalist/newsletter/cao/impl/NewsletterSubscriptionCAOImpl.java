@@ -32,7 +32,9 @@ import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.paging.PagingStatusHolder;
 import com.finalist.cmsc.paging.PagingUtils;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.util.DateUtil;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.newsletter.cao.AbstractCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.domain.Newsletter;
@@ -86,6 +88,11 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       Node newsletternode = cloud.getNode(nodeNumber);
       RelationManager insrel = cloud.getRelationManager("subscriptionrecord", "newsletter", "newslettered");
       subscriptionrecordNode.createRelation(newsletternode, insrel).commit();
+      
+      if (ServerUtil.isLive()) {
+          Publish.publish(subscriptionrecordNode);
+      }
+      
       subscription.setId(subscriptionrecordNode.getNumber());
    }
 
@@ -449,15 +456,17 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       }
       return subscribers;
    }
-   
+
    public void deleteSubscriptionsByAuthId(Long anthId) {
       NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
       Query query = recordManager.createQuery();
       SearchUtil.addEqualConstraint(query, recordManager.getField("subscriber"), String.valueOf(anthId));
       List<Node> subscriptions = query.getList();
-      for (Node subscription : subscriptions) {
-         subscription.deleteRelations();
-         subscription.delete();
+      for (Node subscription : subscriptions) {         
+         if (ServerUtil.isLive()) {
+             Publish.unpublish(subscription);
+         }
+         subscription.delete(true);       
       }
    }
 }
