@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" 
+		xmlns:ant="jelly:ant" xmlns:artifact="artifact">
+
+	<!--
+		===========================================================================
+		ALL:CLEAN Performs a Maven 'clean' on all projects.
+		It doesn't use Maven's builtin 'clean' goal to prevent it from breaking
+		when it can't resolve a new dependency.
+		===========================================================================
+	-->
+	<goal name="all:clean" description="Clean ALL Subprojects">
+		<maven:reactor basedir="${maven.multiproject.basedir}" banner="Gathering project list"
+			includes="${maven.multiproject.includes}" excludes="${maven.multiproject.excludes}" postProcessing="true"
+			ignoreFailures="${maven.multiproject.ignoreFailures}" collectOnly="true" />
+
+		<j:forEach var="reactorProject" items="${reactorProjects}">
+			<!-- this list of things to delete is lifted from
+				clean:clean -->
+			<ant:delete dir="${reactorProject.context.getVariable('maven.build.dest')}" />
+			<ant:delete dir="${reactorProject.context.getVariable('maven.build.dir')}" />
+			<ant:delete file="${reactorProject.context.getVariable('basedir')}/velocity.log" quiet="true"
+				failonerror="false" />
+		</j:forEach>
+	</goal>
+
+	<goal name="gen:single" description="Automatic generation of available portlets or modules ">
+	   <attainGoal name="java:compile"/>
+      <j:forEach var="lib" items="${pom.artifacts}">
+         <j:set var="dep" value="${lib.dependency}"/>     
+         <j:if test="${dep.getProperty('jar.manifest.classpath')=='true'}">
+            <j:if test="${dep.type =='jar'}"> 
+              <unzip src="${lib.path}" dest="${maven.build.dest}"/>
+            </j:if> 
+         </j:if>  
+      </j:forEach> 
+		<attainGoal name="jar"/>
+	</goal>
+
+   <goal name="gen:multi" description="Automatic generation of available portlets or modules ">
+		<attainGoal name="jar"/>
+      <j:forEach var="lib" items="${pom.artifacts}">
+         <j:set var="dep" value="${lib.dependency}"/>     
+         <j:if test="${dep.getProperty('jar.manifest.classpath')=='true'}">
+            <j:if test="${dep.type =='jar'}"> 
+              <ant:copy todir="${maven.build.dir}" file="${lib.path}"/>  
+            </j:if> 
+         </j:if>  
+    </j:forEach> 
+	</goal>
+   <goal name="gen:mavenrun" description="Automatic generation of available portlets or modules ">
+		<attainGoal name="jar"/>
+		
+		<echo>generator configuation file -- ${context.getVariable('maven.overview_generator.src')}</echo>
+		<echo>output directory -- ${context.getVariable('maven.overview_generator.dest')}</echo>
+      <ant:echo>Building WAR ${pom.artifactId}</ant:echo>
+
+        <ant:java classname="com.finalist.cmsc.tools.generator.GeneratorReport" fork="true">
+          <ant:arg value="${context.getVariable('maven.overview_generator.src')}"/>   
+	       <ant:arg value="${context.getVariable('maven.overview_generator.dest')}"/> 
+		    <ant:arg value="${context.getVariable('maven.overview_generator.reportFileLocation')}"/> 
+          <ant:classpath>
+              <ant:path refid="maven.dependency.classpath"/>
+              <ant:pathelement location="${tools.jar}"/>
+		      <ant:pathelement location="target/classes"/>
+          </ant:classpath>
+        </ant:java>
+	</goal>
+</project>

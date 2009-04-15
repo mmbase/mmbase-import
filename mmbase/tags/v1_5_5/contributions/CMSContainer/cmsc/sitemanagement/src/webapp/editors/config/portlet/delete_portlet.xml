@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<action type="delete">
+	<prompt xml:lang="nl">Weet u zeker dat u deze Portlet wilt verwijderen ?</prompt>
+	<prompt xml:lang="en">Are you sure to remove this Portlet?</prompt>
+	<prompt xml:lang="zh">您确定删除当前Portlet吗?</prompt>
+	<description xml:lang="nl">Klik hier om deze Portlet te verwijderen.</description>
+	<description xml:lang="en">Click here to remove this Portlet.</description>
+	<description xml:lang="zh">点击删除当前Portlet.</description>
+</action>

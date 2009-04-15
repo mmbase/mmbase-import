@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portletdefinition exportsource="jdbc:mysql://localhost/banner" timestamp="20050919142139">
+	<node number="44823" owner="default">
+		<title>Tagcloud Portlet</title>
+		<definition>tagcloudportlet</definition>
+		<type>multiple</type>
+	</node>
+	<node number="44824" owner="default">
+		<title>Tag Portlet</title>
+		<definition>tagportlet</definition>
+		<type>multiple</type>
+	</node>
+	<node number="44825" owner="default">
+		<title>Tag Related Portlet</title>
+		<definition>tagrelatedportlet</definition>
+		<type>multiple</type>
+	</node>
+</portletdefinition>

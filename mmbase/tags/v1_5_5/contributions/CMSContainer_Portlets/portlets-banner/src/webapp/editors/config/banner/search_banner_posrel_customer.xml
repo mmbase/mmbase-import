@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="posrel" destination="customer" minoccurs="1" maxoccurs="1" orderby="field[@name='pos']" ordertype="number">
+   <title xml:lang="nl">Klant</title>
+   <title xml:lang="en">Customer</title>
+   <title xml:lang="zh">用户</title>
+
+   <item>
+      <field name="name">
+         <prompt xml:lang="en">Name</prompt>
+         <prompt xml:lang="nl">Naam</prompt>
+         <prompt xml:lang="zh">姓名</prompt>
+      </field>
+   </item>
+
+   <command name="search" nodepath="customer" age="-1" fields="name">
+      <prompt xml:lang="en">Search customer</prompt>
+      <prompt xml:lang="nl">Zoek klant</prompt>
+      <prompt xml:lang="zh">用户搜索</prompt>
+      <search-filter>
+         <name xml:lang="en">Name contains</name>
+         <name xml:lang="nl">Naam bevat</name>
+         <name xml:lang="zh">姓名包含</name>
+         <search-fields>[name]</search-fields>
+      </search-filter>
+   </command>
+
+   <command name="insert" objectnumber="new">
+      <prompt xml:lang="en">New</prompt>
+      <prompt xml:lang="nl">Nieuw</prompt>
+      <prompt xml:lang="zh">新建</prompt>
+   </command>
+
+   <action type="create">
+      <relation destinationtype="customer" role="posrel">
+         <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/object[@type='customer']/../field[@name='pos'])+{$pos}}</field>
+         <object type="customer" />
+      </relation>
+   </action>
+</list>

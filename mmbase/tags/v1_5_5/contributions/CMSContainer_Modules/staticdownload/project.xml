@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <artifactId>cmsc-modules-staticdownload</artifactId>
+    <name>Static download module</name>
+    <shortDescription>Download the site as static html</shortDescription>
+    <description>
+    	This module offers the download to html function to users.
+    </description>
+    <dependencies>
+	</dependencies>
+</project>
+
