@@ -41,4 +41,12 @@ public abstract class VersioningService extends Service {
     *           The node where all versions need to be removed.
     */
    public abstract void removeVersions(Node node);
+   
+   /**
+    * set publish mark to the current version.
+    * 
+    * @param node
+    *           
+    */
+   public abstract void setPublishVersion(Node node);
 }
