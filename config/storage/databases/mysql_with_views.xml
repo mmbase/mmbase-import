@@ -39,7 +39,6 @@
 
     <scheme name="create-view-scheme">CREATE VIEW {1} ({3}) AS SELECT {4} FROM {2} JOIN {6} USING ({5})</scheme>
   </attributes>
-  -->
 
   <!-- MySQL type mappings    -->
   <type-mappings>
