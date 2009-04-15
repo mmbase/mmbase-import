@@ -187,7 +187,7 @@ public class VersioningServiceMMBaseImpl extends VersioningService {
          }
       }
    }
-   public void setPublishVersion(Node node) throws VersioningException {
+   public void setPublishVersion(Node node) {
       Cloud cloud = node.getCloud();
       try {
          String data = xmlController.toXml(node, false);
@@ -212,7 +212,6 @@ public class VersioningServiceMMBaseImpl extends VersioningService {
       }
       catch (Exception e) {
          log.error("Exception while set publish mark on  a version for node " + node.getNumber(), e);
-         throw new VersioningException("", e);
       }  
    }
 }
