@@ -97,7 +97,7 @@
    <tr>
       <td><fmt:message key="edit_defaults.register.termspage" />:</td>
       <td align="right">
-         <a href="<c:url value='/editors/site/select/SelectorPage.do?channel=${page}' />"
+         <a href="<c:url value='/editors/site/select/SelectorPage.do?channel=${termsPage}' />"
             target="selectpage" onclick="openPopupWindow('selectpage', 340, 400)"> 
                <img src="<cmsc:staticurl page='/editors/gfx/icons/select.png'/>" alt="<fmt:message key="edit_defaults.pageselect" />"/></a>
          <a href="javascript:erase('page');erase('pagepath');eraseList('window')">
@@ -105,11 +105,11 @@
       </td>
       <td>
       <mm:cloud>
-         <mm:node number="${page}" notfound="skip">
+         <mm:node number="${termsPage}" notfound="skip">
             <mm:field name="path" id="pagepath" write="false" />
          </mm:node>
       </mm:cloud>
-      <input type="hidden" name="page" value="${page}" />
+      <input type="hidden" name="termsPage" value="${termsPage}" />
       <input type="text" name="pagepath" value="${pagepath}" disabled="true" />
    </tr>
    <tr>

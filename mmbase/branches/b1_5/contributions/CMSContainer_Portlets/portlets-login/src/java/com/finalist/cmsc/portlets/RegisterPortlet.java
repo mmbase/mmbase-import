@@ -53,7 +53,7 @@ public class RegisterPortlet extends AbstractLoginPortlet {
    protected static final String ERRORMESSAGES = "errormessages";
 
    public static final String USE_TERMS = "useterms";
-   public static final String TERMS_PAGE = "page";
+   public static final String TERMS_PAGE = "termsPage";
 
    private static final Log log = LogFactory.getLog(RegisterPortlet.class);
 
@@ -82,7 +82,7 @@ public class RegisterPortlet extends AbstractLoginPortlet {
       String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
       setPortletParameter(portletId, GROUPNAME, request.getParameter(GROUPNAME));
       setPortletParameter(portletId, USE_TERMS, request.getParameter(USE_TERMS));
-      setPortletParameter(portletId, TERMS_PAGE, request.getParameter(TERMS_PAGE));
+      setPortletNodeParameter(portletId, TERMS_PAGE, request.getParameter(TERMS_PAGE));
 
       super.processEditDefaults(request, response);
    }
