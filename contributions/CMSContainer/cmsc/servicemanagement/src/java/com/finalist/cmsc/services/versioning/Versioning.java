@@ -24,4 +24,8 @@ public class Versioning {
    public static void removeVersions(Node node) {
       cService.removeVersions(node);
    }
+   
+   public static void setPublishVersion(Node node) {
+      cService.setPublishVersion(node);
+   }
 }

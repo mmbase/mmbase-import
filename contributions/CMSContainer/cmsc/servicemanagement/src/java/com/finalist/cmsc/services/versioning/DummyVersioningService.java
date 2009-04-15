@@ -23,4 +23,9 @@ public class DummyVersioningService extends VersioningService {
    public void removeVersions(Node node) {
       // nothing
    }
+   
+   @Override
+   public void setPublishVersion(Node node) {
+      
+   }
 }
