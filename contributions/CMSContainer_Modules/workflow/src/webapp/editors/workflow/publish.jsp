@@ -4,7 +4,7 @@
 <c:set var="mass" value="${param.mass == 'true'}"/>
 <c:set var="resourceName" value="${mass?'masspublish':'publish'}"/>
 <c:set var="isConfirmed" value="${!empty param.confirm}"/>
-<c:set var="showConfirm" value="${mass && !isConfirmed}"/>
+<c:set var="showConfirm" value="${!isConfirmed}"/>
 
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
@@ -41,7 +41,7 @@
 						</fmt:message>
 						<ul class="shortcuts">
 						   <li class="masspublish"> 
-								<a href="?number=${param.number}&mass=true&confirm=yes"><fmt:message key="${resourceName}.publish"/></a>
+								<a href="?number=${param.number}&mass=${mass}&confirm=yes"><fmt:message key="${resourceName}.publish"/></a>
 							</li>
 						</ul>
 					</p>
