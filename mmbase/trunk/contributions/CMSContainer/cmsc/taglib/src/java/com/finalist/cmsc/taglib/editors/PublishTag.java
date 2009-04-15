@@ -82,6 +82,12 @@ public class PublishTag extends NodeReferrerTag {
                publishNumbers.add(child.getNumber());
                toPublishNodes.add(child);
             }
+            NodeList asset = RepositoryUtil.getCreatedAssetElements(node);
+            for (Iterator<Node> iter = asset.iterator(); iter.hasNext();) {
+               Node child = iter.next();
+               publishNumbers.add(child.getNumber());
+               toPublishNodes.add(child);
+            }
 
             NodeList channels = RepositoryUtil.getChildren(node);
             for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
@@ -131,6 +137,11 @@ public class PublishTag extends NodeReferrerTag {
       else if (RepositoryUtil.isContentChannel(node)) {
          NodeList content = RepositoryUtil.getLinkedElements(node);
          for (Iterator<Node> iter = content.iterator(); iter.hasNext();) {
+            Node child = iter.next();
+            toPublishNodes.add(child);
+         }
+         NodeList asset = RepositoryUtil.getCreatedAssetElements(node);
+         for (Iterator<Node> iter = asset.iterator(); iter.hasNext();) {
             Node child = iter.next();
             toPublishNodes.add(child);
          }
