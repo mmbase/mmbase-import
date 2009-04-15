@@ -20,6 +20,7 @@ import org.mmbase.remotepublishing.util.PublishUtil;
 
 import com.finalist.cmsc.repository.AssetElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.services.versioning.Versioning;
 import com.finalist.cmsc.services.workflow.Workflow;
 
 
@@ -52,6 +53,7 @@ public class AssetPublisher extends Publisher {
             for (Integer cloudNumber : clouds) {
                 PublishUtil.publishOrUpdateNode(cloud, node.getNumber(), cloudNumber, publishDate);
             }
+            Versioning.setPublishVersion(node);
         }
         else {
             Workflow.complete(node);

@@ -187,4 +187,32 @@ public class VersioningServiceMMBaseImpl extends VersioningService {
          }
       }
    }
+   public void setPublishVersion(Node node) throws VersioningException {
+      Cloud cloud = node.getCloud();
+      try {
+         String data = xmlController.toXml(node, false);
+
+         NodeManager manager = cloud.getNodeManager(ARCHIVE);
+         NodeQuery query = manager.createQuery();
+         SearchUtil.addEqualConstraint(query, manager, ORIGINAL_NODE, node.getNumber());
+         SearchUtil.addSortOrder(query, manager, DATE, "UP");
+         org.mmbase.bridge.NodeList archiveNodeList = manager.getList(query);
+         String formerArchiveXml = null;
+         for (int i = 0 ; i < archiveNodeList.size() ; i++) {
+            Node versionNode = archiveNodeList.getNode(i);
+            formerArchiveXml = new String(versionNode.getByteValue(NODE_DATA), "UTF-8");
+            if (data.equals(formerArchiveXml)) {
+               versionNode.setBooleanValue("publish", true);
+            }
+            else {
+               versionNode.setBooleanValue("publish", false); 
+            }
+            versionNode.commit();
+         }
+      }
+      catch (Exception e) {
+         log.error("Exception while set publish mark on  a version for node " + node.getNumber(), e);
+         throw new VersioningException("", e);
+      }  
+   }
 }
