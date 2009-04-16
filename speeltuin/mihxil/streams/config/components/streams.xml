@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="streams"
+    version="1"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <title xml:lang="nl">Streams</title>
+  <title xml:lang="en">Streams</title>
+
+  <dependency component="media" version="1" />
+
+  <block name="recent"
+         classification="mmbase.examples:90 strams"
+         mimetype="text/html">
+    <title xml:lang="en">Recent </title>
+    <title xml:lang="nl">Recente resources</title>
+    <description xml:lang="en">Displays recent streams in MMBase</description>
+    <description xml:lang="nl">Toont recent in MMBase ingevoerde streams</description>
+    <head jsp="head.jspx" />
+    <body jsp="recent.jspx">
+      <param name="nodetypes" />
+    </body>
+  </block>
+
+</component>
