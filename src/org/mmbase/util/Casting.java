@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.125 2009-04-14 09:20:14 michiel Exp $
+ * @version $Id: Casting.java,v 1.126 2009-04-16 13:46:35 michiel Exp $
  */
 
 import java.util.*;
@@ -36,6 +36,8 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.XMLWriter;
 
 import org.w3c.dom.*;
+
+import org.apache.commons.fileupload.FileItem;
 
 public class Casting {
 
@@ -187,6 +189,8 @@ public class Casting {
                 return (C) res;
             } else if (type.equals(byte[].class)) {
                 return (C) toByte(value);
+            } else if (type.equals(SerializableInputStream.class)) {
+                return (C) toSerializableInputStream(value);
             } else if (type.equals(String.class)) {
                 return (C) toString(value);
             } else if (type.equals(Date.class)) {
@@ -573,22 +577,21 @@ public class Casting {
         if (obj == null) {
             return new byte[] {};
         } else if (obj instanceof byte[]) {
+            log.debug("Already byte array " + obj);
             // was allready unmapped so return the value
             return (byte[])obj;
-        } else if (obj instanceof org.apache.commons.fileupload.FileItem) {
-            return ((org.apache.commons.fileupload.FileItem) obj).get();
+        } else if (obj instanceof FileItem) {
+            return ((FileItem) obj).get();
         } else if (obj instanceof InputStream) {
+            log.debug("IS " + obj);
             InputStream in = (InputStream) obj;
             ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
             byte[] buf = new byte[1024];
             try {
                 int tot;
-                do {
-                    tot = in.read(buf, 0, 1024);
-                    if (tot > 0) {
-                        out.write(buf, 0, tot);
-                    }
-                } while (tot > 0);
+                while ((tot = in.read(buf, 0, 1024)) != -1 ) {
+                    out.write(buf, 0, tot);
+                }
             } catch (IOException ioe) {
                 log.error(ioe);
             } finally {
@@ -596,6 +599,7 @@ public class Casting {
             }
             return out.toByteArray();
         } else {
+            log.debug("S " + obj.getClass() + " " + obj, new Exception());
             return toString(obj).getBytes();
         }
     }
@@ -603,9 +607,33 @@ public class Casting {
     static public InputStream toInputStream(Object obj) {
         if (obj instanceof InputStream) {
             return (InputStream) obj;
+        } else if (obj instanceof FileItem) {
+            try {
+                return ((FileItem) obj).getInputStream();
+            } catch (IOException ioe) {
+                log.error(ioe);
+                return null;
+            }
         } else {
             byte[] bytes = toByte(obj);
             return new ByteArrayInputStream(bytes, 0, bytes.length);
+        }
+    }
+    static public SerializableInputStream toSerializableInputStream(Object obj) {
+        if (obj instanceof SerializableInputStream) {
+            return (SerializableInputStream) obj;
+        } else if (obj instanceof byte[]) {
+            return new SerializableInputStream((byte[]) obj);
+        } else if (obj instanceof FileItem) {
+            try {
+                FileItem fi = (FileItem) obj;
+                return new SerializableInputStream(fi.getInputStream(), fi.getSize());
+            } catch (IOException ioe) {
+                log.error(ioe);
+                return new SerializableInputStream(new byte[0]);
+            }
+        } else  {
+            return new SerializableInputStream(toByte(obj));
         }
     }
 
