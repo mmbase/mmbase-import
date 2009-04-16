@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 
 package org.mmbase.applications.media.urlcomposers;
@@ -30,7 +30,7 @@ import java.util.*;
  * @since MMBase-1.7
  */
 public class MarkupURLComposer extends FragmentURLComposer {
-    
+
     /**
      * Typical for a 'MarkupURLComposer' is that it should have a
      * 'template'. It could have been called a 'TemplateURLComposer',
@@ -39,7 +39,7 @@ public class MarkupURLComposer extends FragmentURLComposer {
     protected MMObjectNode getTemplate() {
         return (MMObjectNode) getInfo().get("template");
     }
-    
+
     /**
      * This composer can only do something if it has a template. The
      * URLComposerFactory arranges this, but if somewhy it doesn't, it still works.
@@ -49,7 +49,7 @@ public class MarkupURLComposer extends FragmentURLComposer {
      * that the source-format must be Real, if the templates language
      * is SMIL (this is perhaps too limited).
      */
-    
+    @Override
     public boolean canCompose() {
         MMObjectNode template = getTemplate();
         if (template == null) return false;
@@ -57,7 +57,7 @@ public class MarkupURLComposer extends FragmentURLComposer {
         if (getFormat() == Format.SMIL && !( sourceFormat == Format.RM || sourceFormat == Format.RA)) return false;
         return true;
     }
-    
+    @Override
     protected StringBuffer  getURLBuffer() {
         MMObjectNode template = getTemplate();
         if (template != null) {
@@ -73,15 +73,17 @@ public class MarkupURLComposer extends FragmentURLComposer {
         } else {
             return new StringBuffer("[Could not compose]"); // should not happen
         }
-        
+
     }
+
+    @Override
     public String getGUIIndicator(Map<String,Locale> options) {
         Locale locale = options.get("locale");
         Format sourceFormat = Format.get(source.getIntValue("format"));
         return super.getGUIIndicator(options) + " (" + sourceFormat.getGUIIndicator(locale) + ")";
     }
-    
-    
+
+    @Override
     public String getDescription(Map<String,Locale> options) {
         Locale locale = options.get("locale");
         ResourceBundle m = ResourceBundle.getBundle("org.mmbase.applications.media.urlcomposers.resources.markupurlcomposer", locale);
@@ -93,12 +95,12 @@ public class MarkupURLComposer extends FragmentURLComposer {
             return template.getStringValue("name") + "<br />" + template.getStringValue("description");
         }
     }
-    
-    
+
+
     /**
      * Depends on mimetype of the template to return the format of this urlcomposer.
      */
-    
+    @Override
     public Format  getFormat()   {
         MMObjectNode template = getTemplate();
         if (template == null) return Format.HTML;

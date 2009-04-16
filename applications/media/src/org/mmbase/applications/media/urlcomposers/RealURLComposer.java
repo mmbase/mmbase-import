@@ -1,11 +1,11 @@
 /*
-  
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-  
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-  
+
 */
 
 package org.mmbase.applications.media.urlcomposers;
@@ -22,6 +22,7 @@ import java.util.*;
 
 public class RealURLComposer extends FragmentURLComposer  {
 
+    @Override
     protected StringBuffer getURLBuffer() {
         StringBuffer buff = super.getURLBuffer();
         if (getFormat().equals(Format.RM)) {
@@ -49,10 +50,10 @@ public class RealURLComposer extends FragmentURLComposer  {
             String title = fragment.getStringValue("title").replaceAll(",","");
             args.append(sep).append("title=").append(makeRealCompatible(title));
 
-        } 
+        }
         return args;
     }
-    
+
 
     /**
      * Script accept times that look like dd:hh:mm:ss.th, where t is tenths of seconds.
@@ -99,10 +100,10 @@ public class RealURLComposer extends FragmentURLComposer  {
             if (centis < 10) buf.append('0');
             buf.append(centis);
         }
-        
+
         return buf;
     }
-    
+
     /**
      * Removes RealPlayer incompatible characters from the string.
      * <code>'#' characters are replaced by space characters.
@@ -116,7 +117,7 @@ public class RealURLComposer extends FragmentURLComposer  {
         if (s != null) {
             char[] sArray = s.replace('#',' ').toCharArray();
             char[] dArray = new char[sArray.length];
-            
+
             int j = 0;
             for (char element : sArray) {
                 if (Character.isLetterOrDigit(element) ||(element==' ')||(element=='.')||(element=='-')||(element=='_')) {
@@ -127,8 +128,8 @@ public class RealURLComposer extends FragmentURLComposer  {
             return (new String(dArray)).substring(0,j);
         }
         return "";
-        
+
     }
-    
+
 
 }
