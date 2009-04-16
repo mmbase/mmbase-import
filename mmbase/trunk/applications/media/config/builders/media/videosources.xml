@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="videosources" maintainer="mediaproject.mmbase.org" version="0" extends="mediasources">
-  <status>active</status>
-
-  <classfile>org.mmbase.applications.media.builders.MediaSources</classfile>
-
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="videosources" maintainer="mediaproject.mmbase.org" version="0" extends="mediasources">
   <names>
     <singular xml:lang="en">Video source</singular>
     <singular xml:lang="nl">Videobron</singular>
@@ -19,7 +19,7 @@
   </descriptions>
 
   <fieldlist>
-    <field>
+    <field name="fps">
       <descriptions>
         <description xml:lang="en">Frames per second</description>
         <description xml:lang="nl">Frames per seconde</description>
@@ -27,21 +27,17 @@
       <gui>
         <guiname xml:lang="en">FPS</guiname>
         <guiname xml:lang="nl">FPS</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
-        <positions>
-          <list>10</list>
-        </positions>
+        <positions><list>10</list></positions>
       </editor>
-      <db>
-        <name>fps</name>
-        <type state="persistent" notnull="false">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="0" />
+      </datatype>
     </field>
 
 
-    <field>
+    <field name="height">
       <descriptions>
         <description xml:lang="en">Height in pixels</description>
         <description xml:lang="nl">Hoogte in pixel</description>
@@ -49,20 +45,18 @@
       <gui>
         <guiname xml:lang="en">Height</guiname>
         <guiname xml:lang="nl">Hoogte</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
           <list>11</list>
         </positions>
       </editor>
-      <db>
-        <name>height</name>
-        <type state="persistent" notnull="false">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="0" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="width">
       <descriptions>
         <description xml:lang="en">Width in pixels</description>
         <description xml:lang="nl">Breedte in pixel</description>
@@ -70,17 +64,15 @@
       <gui>
         <guiname xml:lang="en">Width</guiname>
         <guiname xml:lang="nl">Breedte</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
           <list>12</list>
         </positions>
       </editor>
-      <db>
-        <name>width</name>
-        <type state="persistent" notnull="false">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="0" />
+      </datatype>
     </field>
   </fieldlist>
 </builder>

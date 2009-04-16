@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="mediafragments"  maintainer="mediaproject.mmbase.org" version="0" extends="object">
-
-  <status>active</status>
-
-  <classfile>org.mmbase.applications.media.builders.MediaFragments</classfile>
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="mediafragments"  maintainer="mediaproject.mmbase.org" version="0" extends="object">
 
   <names>
     <singular xml:lang="nl">Mediafragment</singular>
@@ -21,7 +21,7 @@
 
 
   <fieldlist>
-    <field>
+    <field name="title">
       <descriptions>
        <description xml:lang="nl">Een beschrijvende titel voor dit fragment</description>
        <description xml:lang="en">A descriptive title</description>
@@ -31,73 +31,47 @@
         <guiname xml:lang="en">Title</guiname>
         <guitype>string</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>1</input><list>1</list><search>1</search>
-        </positions>
-      </editor>
-      <db>
-        <name>title</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <editor><positions><list>1</list></positions></editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" enforce="never"/>
+      </datatype>
     </field>
 
-    <field>
+    <field name="subtitle">
       <gui>
         <guiname xml:lang="nl">Ondertitel</guiname>
         <guiname xml:lang="en">Subtitle</guiname>
-        <guitype>string</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>2</input><list>2</list><search>2</search>
-        </positions>
-      </editor>
-      <db>
-        <name>subtitle</name>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
+      <editor><positions><list>2</list></positions></editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" enforce="never"/>
+      </datatype>
     </field>
 
 
-    <!-- <field> 'intro'  -->
-    <field>
+    <field name="intro">
       <gui>
         <guiname xml:lang="nl">Introduktie</guiname>
         <guiname xml:lang="en">Introduction</guiname>
-        <guitype>field</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>3</input><list>-1</list><search>3</search>
-        </positions>
-      </editor>
-      <db>
-        <name>intro</name>
-        <type state="persistent" size="2048" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="2048" enforce="never"/>
+      </datatype>
     </field>
-    
-    <!-- <field> 'body'  -->
-    <field>
+
+    <field name="body">
       <gui>
         <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="en">Body text</guiname>
         <guitype>field</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>4</input><list>-1</list><search>4</search>
-        </positions>
-      </editor>
-      <db>
-        <name>body</name>
-        <type state="persistent" size="64000" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="64000" enforce="never"/>
+      </datatype>
     </field>
 
-    <!-- <field> 'start'  -->
-    <field>
+
+    <field name="start">
        <descriptions>
          <description xml:lang="nl">Starttijd (in millisecondes na het begin van de 'bron' stream)</description>
          <description xml:lang="en">Start time (in milliseconds after the start of the 'source' stream)</description>
@@ -105,21 +79,14 @@
       <gui>
         <guiname xml:lang="nl">Start</guiname>
         <guiname xml:lang="en">Start</guiname>
-        <guitype>relativetime</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>5</input><list>-1</list><search>-1</search>
-        </positions>
-      </editor>
-      <db>
-        <name>start</name>
-        <type state="persistent" notnull="false" key="false">LONG</type>
-      </db>
+      <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
+        <minInclusive value="0" />
+      </datatype>
     </field>
 
-    <!-- <field> 'stop'  -->
-    <field>
+    <field name="stop">
        <descriptions>
          <description xml:lang="nl">Stoptijd (in millisecondes na het eind van de 'bron' stream)</description>
          <description xml:lang="en">Stop time (in milliseconds after the end of the 'source' stream)</description>
@@ -127,21 +94,13 @@
       <gui>
         <guiname xml:lang="nl">Stop</guiname>
         <guiname xml:lang="en">Stop</guiname>
-        <guitype>relativetime</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>6</input><list>-1</list><search>-1</search>
-        </positions>
-      </editor>
-      <db>
-        <name>stop</name>
-        <type state="persistent" notnull="false" key="false">LONG</type>
-      </db>
+      <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="0" />
+      </datatype>
     </field>
 
-    <!-- <field> 'length'  -->
-    <field>
+    <field name="length">
        <descriptions>
          <description xml:lang="nl">Duur van dit clipje (ms)</description>
          <description xml:lang="en">Duration of this fragment (ms)</description>
@@ -149,17 +108,10 @@
       <gui>
         <guiname xml:lang="nl">Lengte</guiname>
         <guiname xml:lang="en">Length</guiname>
-        <guitype>long</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>-1</input><list>7</list><search>-1</search>
-        </positions>
-      </editor>
-      <db>
-        <name>length</name>
-        <type state="persistent" notnull="false" key="false">LONG</type>
-      </db>
+      <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="0" />
+      </datatype>
     </field>
 
     <!-- <field> 'class'  -->
