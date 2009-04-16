@@ -99,7 +99,8 @@ public class URLComposer  {
      *
      */
     protected StringBuffer getURLBuffer() {
-        StringBuffer buff = new StringBuffer(provider.getStringValue("protocol") + "://" + provider.getStringValue("host") + provider.getStringValue("rootpath") + source.getStringValue("url"));
+        StringBuffer buff = new StringBuffer(provider.getFunctionValue("url", null).toString());
+        buff.append(source.getStringValue("url"));
         return buff;
     }
     /**
@@ -117,6 +118,7 @@ public class URLComposer  {
         return providerAvailable && sourceAvailable;
     }
 
+    @Override
     public String toString() {
         // for verboseness:
         String className = getClass().getName().substring(getClass().getName().lastIndexOf(".") + 1);
@@ -130,6 +132,7 @@ public class URLComposer  {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
         if (o == this) return true;
         if (o == null) return false;
@@ -147,6 +150,7 @@ public class URLComposer  {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         int result = 0;
         result = HashCodeUtil.hashCode(result, source == null ? 0 : source.getNumber());
