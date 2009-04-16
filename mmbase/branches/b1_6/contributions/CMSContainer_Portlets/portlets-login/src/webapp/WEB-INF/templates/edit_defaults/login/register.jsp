@@ -98,11 +98,11 @@
             </td>
             <td>
             <mm:cloud>
-               <mm:node number="${page}" notfound="skip">
+               <mm:node number="${termsPage}" notfound="skip">
                   <mm:field name="path" id="pagepath" write="false" />
                </mm:node>
             </mm:cloud>
-            <input type="hidden" name="page" value="${page}" />
+            <input type="hidden" name="termsPage" value="${termsPage}" />
             <input type="text" name="pagepath" value="${pagepath}" disabled="true" />
          </tr>
 
