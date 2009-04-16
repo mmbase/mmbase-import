@@ -18,13 +18,19 @@ import org.mmbase.util.logging.*;
  * another InputStream.
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: SerializableInputStream.java,v 1.1 2008-07-08 07:36:48 michiel Exp $
+ * @version $Id: SerializableInputStream.java,v 1.2 2009-04-16 13:46:11 michiel Exp $
  * @todo IllegalStateException or so, if the inputstreas is used (already).
  */
 
 public class SerializableInputStream  extends InputStream implements Serializable {
 
+    private static final long serialVersionUID = 1;
+
     private static final Logger log = Logging.getLoggerInstance(SerializableInputStream.class);
+
+    private final long size;
+
+    private boolean used = false;
 
     public static byte[] toByteArray(InputStream stream) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -40,12 +46,32 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         return bos.toByteArray();
     }
 
+    private void use() {
+        if (! used) {
+            if (log.isTraceEnabled()) {
+                log.trace("Using " + this + " because ", new Exception());
+            }
+            used = true;
+        }
+    }
+
+
     private InputStream wrapped;
 
-    public SerializableInputStream(InputStream wrapped) {
+    public SerializableInputStream(InputStream wrapped, long s) {
         this.wrapped = wrapped;
+        this.size = s;
     }
-    
+
+    public SerializableInputStream(byte[] array) {
+        this.wrapped = new ByteArrayInputStream(array);
+        this.size = array.length;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         wrapped.reset();
         out.writeObject(toByteArray(wrapped));
@@ -57,9 +83,13 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     public int available() throws IOException { return wrapped.available(); }
     public void mark(int readlimit) {  wrapped.mark(readlimit); }
     public boolean markSupported() { return wrapped.markSupported(); }
-    public int read() throws IOException { return wrapped.read(); }
-    public int read(byte[] b) throws IOException { return wrapped.read(b); }
-    public int read(byte[] b, int off, int len) throws IOException { return wrapped.read(b, off, len); }
+    public int read() throws IOException { use(); return wrapped.read(); }
+    public int read(byte[] b) throws IOException { use(); return wrapped.read(b); }
+    public int read(byte[] b, int off, int len) throws IOException { use(); return wrapped.read(b, off, len); }
     public void reset() throws IOException { wrapped.reset() ; }
     public long skip(long n) throws IOException { return wrapped.skip(n); }
+
+    public String toString() {
+        return "SERIALIZABLE " + wrapped + (used ? " (used)" :  "");
+    }
 }
