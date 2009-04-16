@@ -47,7 +47,12 @@
       </mm-sr:relatednodes>
     </mm:treefile>
   </mm:node>  
-  <a href="#" onclick="window.location.reload()" class="formActionLinks" >opslaan</a>
+ 	<mm:link>
+ 		<c:if test="${!empty sub}">
+ 			<mm:param name="sub" referid="sub"/>
+ 		</c:if>
+  	<a href="${_}" class="formActionLinks">opslaan</a>
+ 	</mm:link>
   
   <!-- categorize problems -->
   <h2>3. Soort probleem en hoeveel last heeft u er van</h2>
