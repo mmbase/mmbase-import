@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 
 package org.mmbase.applications.media.urlcomposers;
@@ -38,14 +38,14 @@ public class URLComposer  {
     protected Map<String, Object>           info;
 
     protected int preference = 0;
-    
+
     public void init(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
         if(cacheExpireObjects!=null) {
             cacheExpireObjects.add(provider);
             cacheExpireObjects.add(source);
-            
+
         }
-        
+
         if (source   == null) throw new RuntimeException("Source may not be null in a URLComposer object");
         if (provider == null) throw new RuntimeException("Provider may not be null in a URLComposer object");
         this.provider = provider;
@@ -53,11 +53,11 @@ public class URLComposer  {
         this.info     = info;
         if (this.info == null) this.info = new java.util.Hashtable<String, Object>();
     }
-    
+
     public MMObjectNode getSource()   { return source;  }
     public MMObjectNode getProvider() { return provider;}
     public Map<String, Object>          getInfo()     { return info; }
-    
+
     /**
      * The format of the produced URL. This is not necessarily the format of the source.
      * (Though it normally would be)
@@ -74,17 +74,17 @@ public class URLComposer  {
         return getFormat().getMimeType();
     }
 
-    
-    
+
+
     public String getGUIIndicator(Map<String,Locale> options) {
         Locale locale = options.get("locale");
         return getFormat().getGUIIndicator(locale);
     }
-    
+
     public String getDescription(Map<String,Locale> options) {
         return null; // no informative description
     }
-    
+
     /**
      * Returns true. This can be overridden if the URLComposer not
      * always can do it's job. It then returns false if it is (can be?)
@@ -93,7 +93,7 @@ public class URLComposer  {
     public boolean canCompose() {
         return true;
     }
-    
+
     /**
      * Extension will normally create URL's differently. They override this function.
      *
@@ -106,17 +106,17 @@ public class URLComposer  {
      * Returns the URL as a String. To encourage efficient coding,
      * this method is final. Override getURLBuffer instead.
      */
-    
+
     public final String  getURL() {
         return getURLBuffer().toString();
     }
-    
+
     public boolean      isAvailable() {
         boolean sourceAvailable    = (source != null && source.getIntValue("state") == MediaSources.STATE_DONE);
         boolean providerAvailable  = (provider.getIntValue("state") == MediaProviders.STATE_ON);
         return providerAvailable && sourceAvailable;
     }
-    
+
     public String toString() {
         // for verboseness:
         String className = getClass().getName().substring(getClass().getName().lastIndexOf(".") + 1);
@@ -126,7 +126,7 @@ public class URLComposer  {
             return "{" + className + "/" +  getFormat() + ": " + getURL() + "}";
         }
     }
-    
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
@@ -142,8 +142,8 @@ public class URLComposer  {
         }
         return false;
     }
-    
-    
+
+
     /**
      * @see java.lang.Object#hashCode()
      */
