@@ -4,7 +4,7 @@
 
   <!--
       Queries are logged with the logger with name 'org.mmbase.QUERIES'.
-      the level of logging is determinged by the following duration thresholds (in ms, but it is measured in ns, so you can use decimals).
+      the level of logging is determined by the following duration thresholds (in ms, but it is measured in ns, so you can use decimals).
 
       If a query took shorter than 'debug' it will be logged on level 'trace'.
       If a query took longer than that, it will be logged on 'debug', unless it took even
