@@ -1,8 +1,8 @@
  /*
-  
+
  This software is OSI Certified Open Source Software.
  OSI Certified is a certification mark of the Open Source Initiative.
- 
+
  The license (Mozilla version 1.0) can be read at the MMBase site.
  See http://www.MMBase.org/license
  */
@@ -18,7 +18,7 @@ import java.util.*;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Codec.java,v 1.4 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: Codec.java,v 1.5 2009-04-16 13:27:29 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -27,22 +27,22 @@ public final class Codec {   // final class!!
 
     public final static String RESOURCE = "org.mmbase.applications.media.resources.codecs";
     // in case you want i18ed format strings.
-    
+
     private static List<Codec> codecs = new ArrayList<Codec>(); // to make possible to get the Codec object by int.
-    private int    number; // for storage     
+    private int    number; // for storage
     private String id;     // for toString(), and as identifier in config file etc.
                            // Also sync with common extension?
                            // perhaps this could as well be used for storage
-    
-    
+
+
     private Codec(int n, String i) { // private constructor!!
-        number = n; id = i; 
+        number = n; id = i;
         if (n >= 0) {
             while (codecs.size() <= number) codecs.add(null);
             codecs.set(number, this);
         }
-    }         
-    
+    }
+
 
     // Codecs
     public final static Codec UNKNOWN = new Codec(0, "unknown");
@@ -60,7 +60,7 @@ public final class Codec {   // final class!!
     // to state the number explicitely, because those numbers will
     // appear in the database, so never may change (so don't
     // determin the number automaticly
-    
+
 
     public int toInt()    { return number; }
     public String toString() { return id;     }
@@ -83,7 +83,7 @@ public final class Codec {   // final class!!
         log.error("Cannot convert codec (" + id + ") to number");
         return UNKNOWN;
     }
-    
+
     public String getGUIIndicator(Locale locale) {
         try {
             ResourceBundle m = ResourceBundle.getBundle(RESOURCE, locale);
@@ -100,8 +100,8 @@ public final class Codec {   // final class!!
         }
         return false;
     }
-    
-    
+
+
     /**
      * @see java.lang.Object#hashCode()
      */
@@ -109,4 +109,4 @@ public final class Codec {   // final class!!
         return number;
     }
 }
-    
+
