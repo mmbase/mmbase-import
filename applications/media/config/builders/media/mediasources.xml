@@ -1,20 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="mediasources"   maintainer="mediaproject.mmbase.org" version="0" extends="object">
-  <status>active</status>
-  
-  <classfile>org.mmbase.applications.media.builders.MediaSources</classfile>
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="mediasources"   maintainer="mediaproject.mmbase.org" version="0" extends="object">
+
+  <class>org.mmbase.applications.media.builders.MediaSources</class>
 
   <searchage>14</searchage>
-  
+
   <names>
     <singular xml:lang="en">Media source</singular>
     <singular xml:lang="nl">Mediabron</singular>
-    
+
     <plural xml:lang="en">Media sources</plural>
     <plural xml:lang="nl">Mediabronnen</plural>
   </names>
-  
+
   <descriptions>
     <description xml:lang="en">Descriptions of the physical media file</description>
     <description xml:lang="nl">Beschrijving van het daadwerkelijke media bestand</description>
@@ -23,12 +26,12 @@
 	<properties>
     <!--
     If no provider objects are related to a media-source, an URL can be generated with the 'default' provider, if one is specified here.
-    -->    
+    -->
 		<property name="default.provider.alias">default.provider</property>
 	</properties>
-  
+
   <fieldlist>
-    <field>
+    <field name="format">
       <descriptions>
         <description xml:lang="en">
           The format/mimetype of this source.  This is an integer
@@ -39,24 +42,20 @@
           Formaat van deze bron (mime-type).
         </description>
       </descriptions>
-      
+
       <gui>
         <guiname xml:lang="en">Format</guiname>
         <guiname xml:lang="nl">Formaat</guiname>
-        <guitype>org.mmbase.applications.media.resources.formats</guitype>
       </gui>
-      <editor>
-        <positions>
-          <list>1</list>
-        </positions>
-      </editor>
-      <db>
-        <name>format</name>
-        <type state="persistent" notnull="false">INTEGER</type>
-      </db>
+      <editor><positions><list>1</list></positions></editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry basename="org.mmbase.applications.media.resources.formats" />
+        </enumeration>
+      </datatype>
     </field>
-    
-    <field>     
+
+    <field name="codec">
       <descriptions>
         <description xml:lang="en">
           Codec stands for Coder/Decoder. Basically it is a piece of software or a driver that adds
@@ -68,16 +67,16 @@
       <gui>
         <guiname xml:lang="en">Codec</guiname>
         <guiname xml:lang="nl">Codec</guiname>
-        <guitype>org.mmbase.applications.media.resources.codecs</guitype>
       </gui>
-      <db>
-        <name>codec</name>
-        <type state="persistent" notnull="false">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry basename="org.mmbase.applications.media.resources.codecs" />
+        </enumeration>
+      </datatype>
     </field>
 
 
-    <field>
+    <field name="bitrate">
       <descriptions>
         <description xml:lang="en">
           Defines how much physical space one second of audio or video takes in bits.
@@ -89,33 +88,30 @@
       <gui>
         <guiname xml:lang="en">Bitrate</guiname>
         <guiname xml:lang="nl">Bitrate</guiname>
-        <guitype>integer</guitype>
       </gui>
-      <db>
-        <name>bitrate</name>
-        <type state="persistent" notnull="false">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minExclusive value="0" />
+      </datatype>
     </field>
-    
-    <field>
+
+    <field name="channesl">
       <descriptions>
         <description xml:lang="en">
           Number of channels in this stream.
         </description>
       </descriptions>
-
       <gui>
         <guiname xml:lang="en">Channels</guiname>
         <guiname xml:lang="nl">Kanalen</guiname>
-        <guitype>org.mmbase.applications.media.builders.resources.channels</guitype>
       </gui>
-      <db>
-        <name>channels</name>
-        <type state="persistent" notnull="false">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry basename="org.mmbase.applications.media.builders.resources.channels" />
+        </enumeration>
+      </datatype>
     </field>
 
-    <field>
+    <field name="url">
       <descriptions>
         <description xml:lang="en">
           Relative URL of the stream on the server. The url of the
@@ -128,20 +124,15 @@
       <gui>
         <guiname xml:lang="en">Url</guiname>
         <guiname xml:lang="nl">Url</guiname>
-        <guitype>string</guitype>
       </gui>
-      <editor>
-        <positions>
-          <list>7</list>
-        </positions>
-      </editor>
-      <db>
-        <name>url</name>
-        <type state="persistent" key="true" size="255" notnull="true">STRING</type>
-      </db>
+      <editor><positions><list>7</list></positions></editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <maxLength value="255" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="state">
       <descriptions>
         <description xml:lang="en">
           A source stream can be in several states, indicating e.g. that it is not immediately available.
@@ -150,21 +141,17 @@
       <gui>
         <guiname xml:lang="en">State</guiname>
         <guiname xml:lang="nl">Toestand</guiname>
-        <guitype>org.mmbase.applications.media.builders.resources.states</guitype>
       </gui>
-      <editor>
-        <positions>
-          <list>8</list>
-        </positions>
-      </editor>
-      <db>
-        <name>state</name>
-        <type state="persistent" notnull="true">INTEGER</type>
-      </db>
+      <editor><positions><list>8</list></positions></editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry basename="org.mmbase.applications.media.builders.resources.states" />
+        </enumeration>
+      </datatype>
     </field>
 
 
-    <field>
+    <field name="filesize" state="system">
       <descriptions>
         <description xml:lang="en">
           The size of the file which is backing the stream.
@@ -173,20 +160,16 @@
       <gui>
         <guiname xml:lang="en">Filesize</guiname>
         <guiname xml:lang="nl">Bestandsgrootte</guiname>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
-          <input>-1</input><list>9</list><search>-1</search>
+          <list>9</list>
         </positions>
       </editor>
-      <db>
-        <name>filesize</name>
-        <type state="persistent" notnull="false">LONG</type>
-      </db>
+      <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
-    <field>
+    <field name="filelastmodified" state="system">
       <descriptions>
         <description xml:lang="en">
           Last modified time-stamp of the file which is backing the stream.
@@ -195,17 +178,13 @@
       <gui>
         <guiname xml:lang="en">File's timestamp</guiname>
         <guiname xml:lang="nl">Laatste wijziging van het bestand</guiname>
-        <guitype>eventtime</guitype>
       </gui>
       <editor>
         <positions>
           <input>-1</input><list>9</list><search>-1</search>
         </positions>
       </editor>
-      <db>
-        <name>filelastmodified</name>
-        <type key="true" state="persistent" notnull="false">LONG</type>
-      </db>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
   </fieldlist>
 </builder>
