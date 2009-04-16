@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.231 2009-04-14 13:14:43 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.232 2009-04-16 13:48:09 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable, org.mmbase.util.PublicCloneable<MMObjectNode> { // Comparable<MMObjectNode>  {
@@ -493,8 +493,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             // This is just a hack to make app1 import/export working, withough exposing the values map.
             values.remove(fieldName);
         }
-        if (fieldValue != null && (fieldValue instanceof InputStream)) {
-            fieldValue = new SerializableInputStream((InputStream) fieldValue);
+        if (fieldValue != null && (fieldValue instanceof InputStream && (! (fieldValue instanceof Serializable)))) {
+            log.info("Wrapping " + fieldValue + " for " + fieldName + " because ", new Exception());
+            fieldValue = new SerializableInputStream((InputStream) fieldValue, getSize(fieldName));
         }
         fieldValue = checkSerializable(fieldName, fieldValue);
         if (checkFieldExistance(fieldName)) {
@@ -610,6 +611,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (fieldValue instanceof byte[]) {
             setSize(fieldName, ((byte[]) fieldValue).length);
             log.debug("Setting length to " + ((byte[]) fieldValue).length);
+        } else if (fieldValue instanceof org.apache.commons.fileupload.FileItem) {
+            org.apache.commons.fileupload.FileItem fi = (org.apache.commons.fileupload.FileItem) fieldValue;
+            setSize(fieldName, fi.getSize());
         }
 
         // process the changed value (?)
@@ -775,10 +779,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (value == null) {
             if (!checkFieldExistance(fieldName)) return null;
         }
-//
-//        if (value instanceof InputStream) {
-//            value = useInputStream(fieldName, (InputStream) value);
-//        }
+
+        /*
+        if (value instanceof InputStream) {
+            value = useInputStream(fieldName, (InputStream) value);
+        }
+        */
 
         // return the found object
         return value;
@@ -919,7 +925,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (VALUE_SHORTED.equals(value)) {
             BlobCache blobs = parent.getBlobCache(fieldName);
             String key = blobs.getKey(getNumber(), fieldName);
-           byte[] v;
+            byte[] v;
             if (! blobs.containsKey(key)) {
                 if (getSize(fieldName) < blobs.getMaxEntrySize()) {
                     v = parent.mmb.getStorageManager().getBinaryValue(this, parent.getField(fieldName));
