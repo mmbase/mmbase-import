@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE urlcomposers SYSTEM "http://www.mmbase.org/dtd/urlcomposers_1_0.dtd">
 <!-- configuration for org.mmbase.applications.media.urlcomposers.URLComposerFactory -->
-<urlcomposers>  
+<urlcomposers>
   <!-- This configuration file is used by the Media application example
        It contains Omroep specific stuff. Look at urlcomposers.simple.xml for a more generic example
    -->
 
- 
+
   <default>org.mmbase.applications.media.urlcomposers.URLComposer</default>
 
   <urlcomposer format="*" >org.mmbase.applications.media.urlcomposers.MarkupURLComposer</urlcomposer>
@@ -33,6 +33,7 @@
   <urlcomposer format="wmd" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.CgiURLComposer</urlcomposer>
 
 
+  <!--
   <urlcomposer format="ra"  protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
   <urlcomposer format="rm"  protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
   <urlcomposer format="asf" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
@@ -41,7 +42,7 @@
   <urlcomposer format="wax" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
   <urlcomposer format="wmx" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
   <urlcomposer format="wmd" protocol="http">org.mmbase.applications.media.urlcomposers.omroep.EmbeddedCgiURLComposer</urlcomposer>
-
+  -->
 
 
   <urlcomposer format="ra"  protocol="http">org.mmbase.applications.media.urlcomposers.omroep.RealSbURLComposer</urlcomposer>
