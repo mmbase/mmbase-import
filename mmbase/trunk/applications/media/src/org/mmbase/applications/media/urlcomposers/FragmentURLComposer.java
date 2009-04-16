@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 
 package org.mmbase.applications.media.urlcomposers;
@@ -27,19 +27,24 @@ import java.util.*;
  */
 public class FragmentURLComposer extends URLComposer  {
     protected MMObjectNode fragment;
-    
+
+
+    @Override
     public void init(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
         super.init(provider, source, fragment, info, cacheExpireObjects);
-        
+
         if (cacheExpireObjects != null) {
             cacheExpireObjects.add(fragment);
         }
-        
+
         this.fragment = fragment;
     }
-    
-    public MMObjectNode getFragment()   { return fragment; }
-    
+
+    public MMObjectNode getFragment()   {
+        return fragment;
+    }
+
+    @Override
     public boolean      isAvailable() {
         Boolean fragmentAvailable;
         if (fragment != null) {
@@ -49,10 +54,11 @@ public class FragmentURLComposer extends URLComposer  {
         }
         return fragmentAvailable.booleanValue() &&  super.isAvailable();
     }
-    
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
         if (super.equals(o)) {
             FragmentURLComposer r = (FragmentURLComposer) o;
@@ -60,11 +66,12 @@ public class FragmentURLComposer extends URLComposer  {
         }
         return false;
     }
-    
-    
+
+
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return HashCodeUtil.hashCode(super.hashCode(), fragment);
     }

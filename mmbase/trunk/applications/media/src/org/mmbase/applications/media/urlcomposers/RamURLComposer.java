@@ -1,11 +1,11 @@
 /*
-  
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-  
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-  
+
 */
 
 package org.mmbase.applications.media.urlcomposers;
@@ -32,14 +32,16 @@ import java.util.*;
  */
 public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
     private static final Logger log = Logging.getLoggerInstance(RamURLComposer.class);
-    
+
     protected  Format          format;
-    
+
+    @Override
     public void init(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
         super.init(provider, source, fragment, info, cacheExpireObjects);
         format = Format.get(source.getIntValue("format"));
     }
-    
+
+    @Override
     protected StringBuffer  getURLBuffer() {
         List<String> servlets = MMBaseServlet.getServletMappings("media-" + format);
         String servlet;
@@ -51,15 +53,15 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
             root = root.substring(0, root.length() - 1);
             servlet = root  + servlets.get(0);
         }
-        
+
         return new StringBuffer("http://" + Config.host + servlet + "?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()) + "&source=" + (source == null ? "" : "" + source.getNumber()));
 
     }
-
-    public Format  getFormat()   { 
-        if (format == Format.RM)  return Format.RAM; 
-        if (format == Format.ASF) return Format.WMP; 
+    @Override
+    public Format  getFormat()   {
+        if (format == Format.RM)  return Format.RAM;
+        if (format == Format.ASF) return Format.WMP;
         return format;
-    } 
+    }
 
 }

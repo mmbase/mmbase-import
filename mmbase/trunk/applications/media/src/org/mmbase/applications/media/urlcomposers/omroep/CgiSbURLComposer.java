@@ -20,7 +20,7 @@ import java.util.*;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiSbURLComposer.java,v 1.5 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: CgiSbURLComposer.java,v 1.6 2009-04-16 10:28:07 michiel Exp $
  * @since MMBase-1.7
  */
 public class CgiSbURLComposer extends RamURLComposer {
@@ -32,6 +32,7 @@ public class CgiSbURLComposer extends RamURLComposer {
     protected String getBand() {
         return "smalband";
     }
+    @Override
     public String getGUIIndicator(Map<String,Locale> options) {
         return super.getGUIIndicator(options) + " (" + getBand() +")";
     }
@@ -40,6 +41,7 @@ public class CgiSbURLComposer extends RamURLComposer {
     /**
      * These scripts actually wrap the source in a ram or wmp
      */
+    @Override
     public Format getFormat() {
         Format format = super.getFormat();
         if (format == Format.RM)  return Format.RAM;
@@ -51,11 +53,12 @@ public class CgiSbURLComposer extends RamURLComposer {
     /**
      * Host must be cgi.omroep.nl script.
      */
+    @Override
     public boolean canCompose() {
         return provider.getStringValue("host").equals("cgi.omroep.nl")  && provider.getStringValue("rootpath").charAt(0) == '%';
     }
 
-
+    @Override
     protected StringBuffer getURLBuffer() {
         String rootPath = provider.getStringValue("rootpath").substring(1);
         StringBuffer buff = new StringBuffer(provider.getStringValue("protocol") + "://cgi.omroep.nl" + rootPath);

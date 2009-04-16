@@ -1,11 +1,11 @@
 /*
-  
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-  
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-  
+
 */
 
 package org.mmbase.applications.media.urlcomposers.omroep;
@@ -18,11 +18,12 @@ import java.util.Map;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealSbURLComposer.java,v 1.9 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: RealSbURLComposer.java,v 1.10 2009-04-16 10:28:07 michiel Exp $
  * @since MMBase-1.7
  */
 public class RealSbURLComposer extends RealURLComposer {
 
+    @Override
     public boolean canCompose() {
         return provider.getStringValue("host").equals("cgi.omroep.nl") && provider.getStringValue("rootpath").charAt(0) == '%';
     }
@@ -37,22 +38,22 @@ public class RealSbURLComposer extends RealURLComposer {
         int lastSlash = length + url.lastIndexOf('/');
         String existingPrefix = buf.substring(lastSlash + 1, lastSlash + 4);
         if (existingPrefix.equals("sb.") || existingPrefix.equals("bb.")) { // remove existing prefix, if there is one.
-            buf.delete(lastSlash + 1, lastSlash + 4); 
+            buf.delete(lastSlash + 1, lastSlash + 4);
         }
         return lastSlash;
     }
-
-    
     protected String getBandPrefix() {
         return "sb.";
     }
     protected String getBand() {
         return "smalband";
     }
+    @Override
     public String getGUIIndicator(Map<String,Locale> options) {
         return super.getGUIIndicator(options) + " (" + getBand() +")";
     }
 
+    @Override
     protected StringBuffer getURLBuffer() {
         StringBuffer buff = new StringBuffer("rtsp://streams.omroep.nl");
         int lastSlash = addURL(buff, source.getStringValue("url"));
