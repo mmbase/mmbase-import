@@ -1,11 +1,10 @@
-./media/audiosources.xml
+./media/mediasources.xml
 ./media/audiofragments.xml
+./media/audiosources.xml
 ./media/lookup.xml
 ./media/mediafragments.xml
 ./media/mediaproviders.xml
-./media/mediasources.xml
-./media/posrel.xml
-./media/templates.xml
 ./media/undefsources.xml
-./media/videofragments.xml
+./media/templates.xml
 ./media/videosources.xml
+./media/videofragments.xml
