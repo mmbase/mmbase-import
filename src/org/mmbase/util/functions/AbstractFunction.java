@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.20 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: AbstractFunction.java,v 1.21 2009-04-17 19:36:50 michiel Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
@@ -56,7 +56,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     public AbstractFunction(String name, Parameter<?>... def) {
         this(name, def, null);
         // what would be nice:
-        // this(name, def, ReturnType.getReturnType(R.class)); 
+        // this(name, def, ReturnType.getReturnType(R.class));
         // but java sucks.
 
         autoReturnType = true;
@@ -97,12 +97,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
              return getFunctionValue(new Parameters(parameterDefinition, parameters));
          }
      }
-     /**
-      * @since MMBase-1.9
-      */
-     public final R getFunctionValue(Object... parameters) {
-         return getFunctionValue(new Parameters(parameterDefinition, parameters));
-     }
+
     /**
      * For documentational  purposes a function object needs a description too.
      */
@@ -159,7 +154,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
         }
         return returnType;
     }
-    
+
     /**
      * Sets the ReturnType for this function if not set already.
      * @param type A ReturnType object. For void functions that could be {@link ReturnType#VOID}.
