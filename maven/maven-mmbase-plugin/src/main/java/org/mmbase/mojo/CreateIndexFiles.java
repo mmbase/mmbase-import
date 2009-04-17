@@ -34,11 +34,11 @@ public class CreateIndexFiles extends AbstractMojo {
          return new File(dir, name).isDirectory();
       }
    };
-   
+
    public void execute() {
       if (classesDirectory != null && classesDirectory.exists()) {
          File configDir = new File(classesDirectory, File.separator + "org" + File.separator
-               + "mmbase" + File.separator + "config");
+                                   + "mmbase" + File.separator + "config");
          if (configDir.exists()) {
             createIndex(configDir);
          }
@@ -52,7 +52,7 @@ public class CreateIndexFiles extends AbstractMojo {
             index.delete();
          }
          writeIndex(dir, index);
-         
+
          String subdirs[] = dir.list(dirs);
          for (int i = 0; i < subdirs.length; i++) {
             createIndex(new File(dir, subdirs[i]));
@@ -74,23 +74,18 @@ public class CreateIndexFiles extends AbstractMojo {
             }
             w.newLine();
          }
-      }
-      catch (UnsupportedEncodingException e) {
+      } catch (UnsupportedEncodingException e) {
          getLog().error(e);
-      }
-      catch (FileNotFoundException e) {
+      } catch (FileNotFoundException e) {
          getLog().error(e);
-      }
-      catch (IOException e) {
+      } catch (IOException e) {
          getLog().error(e);
-      }
-      finally {
+      } finally {
          try {
-            if (w != null) {
+             if (w != null) {
                w.close();
             }
-         }
-         catch (IOException e) {
+         } catch (IOException e) {
             getLog().debug("" + e.getMessage(), e);
          }
       }
