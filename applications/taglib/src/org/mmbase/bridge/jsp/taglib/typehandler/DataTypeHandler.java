@@ -18,8 +18,10 @@ import org.mmbase.datatypes.handlers.AbstractRequest;
 import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.bridge.jsp.taglib.edit.FormTag;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.functions.Parameter;
 
 /**
  * The DataType of the field can also itself specify how the input widgets must look like. This
@@ -31,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwisssen
  * @since  MMBase-1.9.1
- * @version $Id: DataTypeHandler.java,v 1.1 2009-04-17 15:44:35 michiel Exp $
+ * @version $Id: DataTypeHandler.java,v 1.2 2009-04-17 16:05:42 michiel Exp $
  */
 
 public class DataTypeHandler implements TypeHandler {
@@ -43,7 +45,7 @@ public class DataTypeHandler implements TypeHandler {
 
     public DataTypeHandler(Handler<String> h, final FieldInfoTag tag) {
         handler = h;
-        request = new AbstractRequest() {
+        request = new Request() {
                 public Cloud getCloud() {
                     try {
                         return tag.getCloudVar();
@@ -51,16 +53,36 @@ public class DataTypeHandler implements TypeHandler {
                         throw new RuntimeException(te);
                     }
                 }
+                public java.util.Locale getLocale() {
+                    try {
+                        return tag.getLocale();
+                    } catch (JspTagException te) {
+                        throw new RuntimeException(te);
+                    }
+                }
 
                 public void invalidate() {
-                    FormTag form = tag.getFormTag(false, null);
-                    if (form != null &&  ! field.isReadOnly()) {
-                        form.setValid(false);
+                    try {
+                        FormTag form = tag.getFormTag(false, null);
+                        if (form != null) {
+                            form.setValid(false);
+                        }
+                    } catch (JspTagException te) {
+                        throw new RuntimeException(te);
                     }
                 }
 
                 public boolean isValid() {
-                    return valid;
+                    try {
+                        FormTag form = tag.getFormTag(false, null);
+                        if (form != null) {
+                            return form.isValid();
+                        } else {
+                            return true;
+                        }
+                    } catch (JspTagException te) {
+                        throw new RuntimeException(te);
+                    }
                 }
                 protected String prefix(String s) throws JspTagException {
                     return tag.getPrefix() + "_" + s;
@@ -89,6 +111,15 @@ public class DataTypeHandler implements TypeHandler {
                     } catch (JspTagException te) {
                         throw new RuntimeException(te);
                     }
+                }
+
+                public <C> C setProperty(Parameter<C> name, C value) {
+                    C prev = getProperty(name);
+                    tag.getPageContext().setAttribute(name.getName(), value);
+                    return prev;
+                }
+                public <C> C getProperty(Parameter<C> name) {
+                    return (C) tag.getPageContext().getAttribute(name.getName());
                 }
 
             };
