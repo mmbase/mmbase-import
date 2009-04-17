@@ -15,9 +15,10 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
 
 /**
+ * This is a texthandler that produces multiline input form entries (textarea's).
  *
  * @author Michiel Meeuwissen
- * @version $Id: AreaHandler.java,v 1.2 2009-04-17 16:54:49 michiel Exp $
+ * @version $Id: AreaHandler.java,v 1.3 2009-04-17 17:38:13 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -41,18 +42,14 @@ public class AreaHandler extends TextHandler {
         return rows == -1 ? (field.getMaxLength() > 2048 ? 10 : 5) : rows;
     }
 
-    protected void appendClasses(StringBuilder buf, Node node, Field field) {
-        buf.append(field.getMaxLength() > 2048 ? "big " : "small ");
-        super.appendClasses(buf, node, field);
-    }
-
-
+    @Override
     public String input(Request request, Node node, Field field, boolean search) {
         if (search) {
             return super.input(request, node, field, search);
         } else {
             StringBuilder buffer =  new StringBuilder();
-            buffer.append("<textarea class=\"big");
+            buffer.append("<textarea class=\"");
+            buffer.append(field.getMaxLength() > 2048 ? "big " : "small ");
             appendClasses(buffer, node, field);
             buffer.append("\" ");
             appendNameId(buffer, request, field);

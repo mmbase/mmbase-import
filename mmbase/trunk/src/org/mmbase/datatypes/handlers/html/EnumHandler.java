@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: EnumHandler.java,v 1.2 2009-04-17 16:54:49 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.3 2009-04-17 17:38:13 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -38,6 +38,7 @@ public class EnumHandler extends HtmlHandler {
         return dataType.getEnumerationValues(request.getLocale(), request.getCloud(), node, field);
     }
 
+    @Override
     public String input(Request request, Node node, Field field, boolean search) {
         StringBuilder buffer = new StringBuilder();
         String fieldName = field.getName();
