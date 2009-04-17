@@ -45,7 +45,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.95 2009-03-06 09:51:27 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.96 2009-04-17 15:42:13 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -172,7 +172,9 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     throw new JspTagException("Found context var '" + o + "' is not of type Context but of '" + o.getClass().getName());
                 }
                 container = (ContextContainer)  o;
-                log.debug("Resetting parent of " + container + " to " + getContextProvider().getContextContainer());
+                if (log.isDebugEnabled()) {
+                    log.debug("Resetting parent of " + container + " to " + getContextProvider().getContextContainer());
+                }
                 prevParent = container.getParent();
                 if (prevParent instanceof PageContextContainer) {
                     // if for some reason, the parent in the container is from a different
