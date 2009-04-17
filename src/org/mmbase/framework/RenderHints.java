@@ -17,7 +17,7 @@ import org.mmbase.util.functions.*;
  * implementation some instructions about how to render excactly, since it may vary a bit in that.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RenderHints.java,v 1.3 2009-03-25 21:55:25 michiel Exp $
+ * @version $Id: RenderHints.java,v 1.4 2009-04-17 19:35:06 michiel Exp $
  * @since MMBase-1.9
  */
 public class RenderHints {
@@ -28,12 +28,20 @@ public class RenderHints {
     private final String id;
     private final String clazz;
     private final Renderer renderer;
+    private final Mode mode;
 
-    public RenderHints(Renderer renderer, WindowState state, String id, String clazz) {
+
+    public enum Mode {
+        NORMAL,
+        AJAX;
+    }
+
+    public RenderHints(Renderer renderer, WindowState state, String id, String clazz, Mode mode) {
         this.renderer = renderer;
-        this.state = state;
-        this.id = id;
-        this.clazz = clazz;
+        this.state    = state;
+        this.id       = id;
+        this.clazz    = clazz;
+        this.mode     = mode;
     }
 
     /**
@@ -65,5 +73,8 @@ public class RenderHints {
         return clazz;
     }
 
+    public Mode getMode() {
+        return mode;
+    }
 
 }
