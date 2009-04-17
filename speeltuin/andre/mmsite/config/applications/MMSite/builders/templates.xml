@@ -83,6 +83,22 @@
         <type state="persistent" size="255" notnull="true" key="false">STRING</type>
       </db>
     </field>
+	
+	<field name="mimetype">
+      <gui>
+          <guiname xml:lang="nl">Mime-type</guiname>
+          <guiname xml:lang="en">Mime-type</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>3</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+      </db>
+	</field>
 
 
   </fieldlist>

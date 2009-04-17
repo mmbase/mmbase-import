@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<insrel exportsource="mmbase://grgrijze.toly.net/null/v2" timestamp="20090210213553">
-	<node number="72" owner="default" snumber="71" dnumber="70" rtype="related" dir="bidirectional">
+<insrel exportsource="mmbase://grgrijze.toly.net/null/mm" timestamp="20090417205734">
+	<node number="382" owner="default" snumber="375" dnumber="380" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="74" owner="default" snumber="71" dnumber="73" rtype="related" dir="bidirectional">
+	<node number="390" owner="default" snumber="375" dnumber="387" rtype="related" dir="bidirectional">
 	</node>
 
 </insrel>
