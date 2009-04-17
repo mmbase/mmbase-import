@@ -108,6 +108,10 @@
     <servlet-name>files</servlet-name>
     <servlet-class>org.mmbase.servlet.FileServlet</servlet-class>
     <load-on-startup>3</load-on-startup>
+    <init-param>
+      <param-name>listings</param-name>
+      <param-value>true</param-value>
+    </init-param>
   </servlet>
 
 
