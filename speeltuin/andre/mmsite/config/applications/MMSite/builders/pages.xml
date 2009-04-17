@@ -127,8 +127,5 @@
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
-
-    
   </fieldlist>
-
 </builder>
