@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * post and things like that.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractHandler.java,v 1.1 2008-07-28 16:47:31 michiel Exp $
+ * @version $Id: AbstractHandler.java,v 1.2 2009-04-17 15:43:39 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -129,8 +129,10 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
             return null;
         }
 
+    }
 
-
+    protected void setValue(Node node, String fieldName, Object value) {
+        node.setValue(fieldName, value);
     }
 
     public C check(Request request, Node node, Field field, boolean errors) {
@@ -139,9 +141,22 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
 
 
     public boolean set(Request request, Node node, Field field) {
-        throw new UnsupportedOperationException();
+        String fieldName = field.getName();
+        Object fieldValue = getFieldValue(request, node, field, false);
+        if (interpretEmptyAsNull(field) && "".equals(fieldValue)) fieldValue = null;
+        Object oldValue = node.getValue(fieldName);
+        if (fieldValue == null ? oldValue == null : fieldValue.equals(oldValue)) {
+            return false;
+        }  else {
+            if ("".equals(fieldValue) && interpretEmptyAsNull(field)) {
+                setValue(node, fieldName,  null);
+            } else {
+                setValue(node, fieldName,  fieldValue);
+            }
+            return true;
+        }
     }
-    
+
 
 
 }

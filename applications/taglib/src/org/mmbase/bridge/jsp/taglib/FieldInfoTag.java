@@ -20,6 +20,7 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.datatypes.*;
+import org.mmbase.datatypes.handlers.Handler;
 import org.mmbase.util.Casting;
 
 import org.mmbase.util.logging.Logger;
@@ -31,6 +32,7 @@ import org.mmbase.core.util.Fields;
 
 
 import org.mmbase.bridge.jsp.taglib.typehandler.TypeHandler;
+import org.mmbase.bridge.jsp.taglib.typehandler.DataTypeHandler;
 import org.mmbase.bridge.jsp.taglib.typehandler.DefaultTypeHandler;
 import org.xml.sax.InputSource;
 import org.w3c.dom.Element;
@@ -43,7 +45,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.119 2008-11-19 18:33:54 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.120 2009-04-17 15:44:35 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -210,38 +212,45 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      */
     protected TypeHandler getTypeHandler(Field field) {
         DataType<?> dataType = field.getDataType();
-        Class<? extends DataType> dataTypeClass = dataType.getClass();
-        Class<? extends TypeHandler> handler = handlers.get(dataTypeClass);
-        log.debug("Looking for typehandler for " + dataTypeClass);
-        while (handler == null) {
-            log.debug("No handler found for " + dataTypeClass);
-            dataTypeClass = (Class<? extends DataType>) dataTypeClass.getSuperclass();
-            if(dataTypeClass == null) break;
-            handler = handlers.get(dataTypeClass);
-        }
 
-        if (handler == null) {
-            log.warn("Could not find typehandler for type " + dataType + " of " + field.getNodeManager().getName() + "." + field.getName() + " using default for type.");
-            String t = Fields.getTypeDescription(field.getType());
-            if (t != null) {
-                DataType dt = DataTypes.getDataType(t);
-                if (dt != null) {
-                    handler = handlers.get(dt.getClass()); // getTypeAsClass?
+        String ct = pageContext.getResponse().getContentType().split(";")[0];
+        Handler<String> h = dataType.getHandler(ct);
+        if (h !=  null) {
+            return new DataTypeHandler(h, this);
+        } else {
+            Class<? extends DataType> dataTypeClass = dataType.getClass();
+            Class<? extends TypeHandler> handler = handlers.get(dataTypeClass);
+            log.debug("Looking for typehandler for " + dataTypeClass);
+            while (handler == null) {
+                log.debug("No handler found for " + dataTypeClass);
+                dataTypeClass = (Class<? extends DataType>) dataTypeClass.getSuperclass();
+                if(dataTypeClass == null) break;
+                handler = handlers.get(dataTypeClass);
+            }
+
+            if (handler == null) {
+                log.warn("Could not find typehandler for type " + dataType + " of " + field.getNodeManager().getName() + "." + field.getName() + " using default for type.");
+                String t = Fields.getTypeDescription(field.getType());
+                if (t != null) {
+                    DataType dt = DataTypes.getDataType(t);
+                    if (dt != null) {
+                        handler = handlers.get(dt.getClass()); // getTypeAsClass?
+                    }
                 }
             }
-        }
-        if (handler == null) {
-            log.error("Could not even find typehandler for type " + Fields.getTypeDescription(field.getType()) + " using default.");
-            handler = getDefaultTypeHandler();
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("using handler " + handler);
-        }
-        try {
-            return handler.getConstructor(FieldInfoTag.class).newInstance(this);
-        } catch (Exception e) {
-            log.warn("Could not find typehandler for type " + type + " using default. Reason: " + e.toString() );
-            return new DefaultTypeHandler(this);
+            if (handler == null) {
+                log.error("Could not even find typehandler for type " + Fields.getTypeDescription(field.getType()) + " using default.");
+                handler = getDefaultTypeHandler();
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("using handler " + handler);
+            }
+            try {
+                return handler.getConstructor(FieldInfoTag.class).newInstance(this);
+            } catch (Exception e) {
+                log.warn("Could not find typehandler for type " + type + " using default. Reason: " + e.toString() );
+                return new DefaultTypeHandler(this);
+            }
         }
     }
 

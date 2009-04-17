@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * This generalizes  one rendition of a form.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Request.java,v 1.3 2008-07-28 16:47:31 michiel Exp $
+ * @version $Id: Request.java,v 1.4 2009-04-17 15:43:39 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -35,6 +35,7 @@ public interface Request {
     Cloud getCloud();
 
     java.util.Locale getLocale();
+
     /**
      *
      */
