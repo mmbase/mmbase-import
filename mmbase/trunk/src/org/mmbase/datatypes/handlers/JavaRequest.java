@@ -14,9 +14,10 @@ import org.mmbase.bridge.*;
 import java.util.*;
 
 /**
+ * A request completely contained in java objects, so no actual connections and stuff. E.g. for testing purposes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JavaRequest.java,v 1.1 2008-07-28 16:47:31 michiel Exp $
+ * @version $Id: JavaRequest.java,v 1.2 2009-04-17 16:54:48 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -50,7 +51,7 @@ public class JavaRequest extends  AbstractRequest {
         return values.get(field.getName() + "_" + part);
     }
 
-    
+
 
 
 }
