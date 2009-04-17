@@ -26,7 +26,7 @@ import org.mmbase.bridge.*;
  * be online/offline.
  *
 * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.16 2009-04-16 13:28:21 michiel Exp $
+ * @version $Id: MediaProviders.java,v 1.17 2009-04-17 19:45:18 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {
@@ -37,20 +37,32 @@ public class MediaProviders extends MMObjectBuilder {
 
 
     {
-        addFunction(new NodeFunction<String>("url", new Parameter[] { Parameter.REQUEST, Parameter.CLOUD }) {
-                {
-                    setDescription("");
+        final NodeFunction urlFunction = new NodeFunction<String>("url", new Parameter[] { Parameter.REQUEST, Parameter.CLOUD }) {
+            {
+                setDescription("");
+            }
+            @Override
+            public String getFunctionValue(Node node, Parameters parameters) {
+                String protocol = node.getStringValue("protocol");
+                String host = node.getStringValue("host");
+                //String rootpath = node.getStringValue("rootpath").replace("${CONTEXT}", MMBaseContext.getServletContext().getContextPath());  // servlet >= 2.5
+                String rootpath = node.getStringValue("rootpath").replace("${CONTEXT}", MMBaseContext.getHtmlRootUrlPath());  // servlet < 2.5
+                if ("".equals(host)) {
+                    return rootpath;
+                } else {
+                    return protocol + "://" + host + rootpath;
                 }
+            }
+        };
+        addFunction(urlFunction);
+
+
+        addFunction(new GuiFunction() {
+                @Override
                 public String getFunctionValue(Node node, Parameters parameters) {
-                    String protocol = node.getStringValue("protocol");
-                    String host = node.getStringValue("host");
-                    //String rootpath = node.getStringValue("rootpath").replace("${CONTEXT}", MMBaseContext.getServletContext().getContextPath());  // servlet >= 2.5
-                    String rootpath = node.getStringValue("rootpath").replace("${CONTEXT}", MMBaseContext.getHtmlRootUrlPath());  // servlet < 2.5
-                    if ("".equals(host)) {
-                        return rootpath;
-                    } else {
-                        return protocol + "://" + host + rootpath;
-                    }
+                    Parameters urlParams = urlFunction.createParameters();
+                    urlParams.setAllIfDefined(parameters);
+                    return node.getStringValue("name") + " " + urlFunction.getFunctionValue(urlParams);
                 }
             });
     }
@@ -89,9 +101,5 @@ public class MediaProviders extends MMObjectBuilder {
     }
 
 
-    @Override
-    protected String getNodeGUIIndicator(MMObjectNode node, org.mmbase.util.functions.Parameters params) {
-        return node.getStringValue("name") + " " + node.getStringValue("protocol") + "://" + node.getStringValue("host") + node.getStringValue("rootpath");
-    }
 
 }
