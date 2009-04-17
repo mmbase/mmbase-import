@@ -11,8 +11,8 @@
   <mm:import externid="to"    from="request">webmaster@localhost</mm:import>
   <mm:import externid="title" from="request">Mail to ${to}</mm:import>
   <mm:import externid="image" from="request" />
-  <div 
-      class="mm_c mm_c_resources mm_c_b_mail ${requestScope.componentClassName}"
+  <div
+      class="mm_c c_resources b_mail ${requestScope.componentClassName}"
       id="${requestScope.componentId}"
       xmlns="http://www.w3.org/1999/xhtml">
     <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
@@ -61,7 +61,7 @@
           </mm:fieldlist>
         </mm:createnode>
         <input type="submit" name="send" value="Send mail" />
-  
+
         <!-- here we handle the mail. Should perhaps move to the 'head' renderer? -->
         <mm:import externid="send" />
         <mm:present referid="send">
