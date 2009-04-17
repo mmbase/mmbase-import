@@ -18,6 +18,10 @@ import java.util.jar.JarFile;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 
+
+/**
+ * @javadoc
+ */
 public class ArchiveScanner extends DirectoryScanner {
 
    public static void main(String[] args) {
@@ -26,7 +30,7 @@ public class ArchiveScanner extends DirectoryScanner {
          scanner.jarfile = new JarFile("C:\\projects\\.m2\\org\\mmbase\\mmbase\\1.9-SNAPSHOT\\mmbase-1.9-SNAPSHOT.jar");
          scanner.setExcludes(new String[] {"**/*.xml"});
          scanner.scan();
-         
+
          String[] filesIncluded = scanner.getIncludedFiles();
          for (int i = 0; i < filesIncluded.length; i++) {
             String string = filesIncluded[i];
@@ -40,21 +44,19 @@ public class ArchiveScanner extends DirectoryScanner {
          e.printStackTrace();
       }
    }
-   
+
    JarFile jarfile;
-   
+
    public void scan() throws IllegalStateException {
-      if ( includes == null )
-      {
+      if ( includes == null ) {
           // No includes supplied, so set it to 'matches all'
           includes = new String[1];
           includes[0] = "**";
       }
-      if ( excludes == null )
-      {
+      if ( excludes == null ) {
           excludes = new String[0];
       }
-      
+
       filesIncluded = new Vector<String>();
       filesNotIncluded = new Vector<String>();
       filesExcluded = new Vector<String>();
@@ -90,8 +92,7 @@ public class ArchiveScanner extends DirectoryScanner {
                everythingIncluded = false;
                dirsNotIncluded.addElement(name);
             }
-         }
-         else {
+         } else {
             if (isIncluded(name)) {
                if (!isExcluded(name)) {
                   filesIncluded.addElement(name);
@@ -108,11 +109,11 @@ public class ArchiveScanner extends DirectoryScanner {
          }
       }
    }
-   
+
    protected void slowScan() {
       scan();
    }
-   
+
    public String[] getIncludedFiles() {
       return convertScanEntries(super.getIncludedFiles());
    }
@@ -128,7 +129,7 @@ public class ArchiveScanner extends DirectoryScanner {
    public String[] getExcludedDirectories() {
       return convertScanEntries(super.getExcludedDirectories());
    }
-   
+
    private String[] convertScanEntries(String[] entries) {
       for (int i = 0; i < entries.length; i++) {
          String name = entries[i];
@@ -136,9 +137,9 @@ public class ArchiveScanner extends DirectoryScanner {
       }
       return entries;
    }
-   
+
    public void setJarfile(JarFile jarfile) {
       this.jarfile = jarfile;
    }
-   
+
 }
