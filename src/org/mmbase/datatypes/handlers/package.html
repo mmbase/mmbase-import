@@ -14,20 +14,20 @@
     </p>
     <p>
       Handlers can be defined in the datatype xmls like so:
-      <pre><![CDATA[
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
-         <handler mimetype="text/html,application/xml+xhtml"
-                      name="org.mmbase.datatypes.handlers.html.BinaryHandler" />
-]]>
+      <pre>
+      &lt;datatype xmlns="http://www.mmbase.org/xmlns/datatypes"&gt;
+         &lt;handler mimetype="text/html,application/xml+xhtml"
+                      name="org.mmbase.datatypes.handlers.html.BinaryHandler" /&gt;
+
       </pre>
       So, you define per list of mime types (in this case the most usual case: HTML and XHTML), the
-      {@link #Handler}.
+      <a href="Handler.html">Handler</a>
     </p>
     <p>
       In the body of the handler tag, 'param' tags can be used to set properties on the handler
       instance (which uses reflection to find corresponding setter-methods).
     </p>
-    <!-- version of package description $Id: package.html,v 1.4 2009-04-17 20:04:07 michiel Exp $-->
+    <!-- version of package description $Id: package.html,v 1.5 2009-04-17 22:16:40 michiel Exp $-->
     @since   MMBase-1.9.1
   </body>
 </html>
