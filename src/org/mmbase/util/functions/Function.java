@@ -22,7 +22,7 @@ import java.util.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Function.java,v 1.10 2006-09-27 20:42:21 michiel Exp $
+ * @version $Id: Function.java,v 1.11 2009-04-17 19:36:50 michiel Exp $
  * @since MMBase-1.7
  * @see Parameter
  * @see Parameters
@@ -51,11 +51,6 @@ public interface Function<R> {
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
     public R getFunctionValueWithList(List<?> parameters);
-
-    /**
-     * @since MMBase-1.9
-     */
-    public R getFunctionValue(Object... parameters);
 
     /**
      * For documentational  purposes a function object needs a description too.
