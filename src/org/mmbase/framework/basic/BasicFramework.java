@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.46 2009-03-25 21:55:25 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.47 2009-04-17 19:34:27 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -208,6 +208,7 @@ public class BasicFramework extends Framework {
         return "mm_fw_basic";
     }
 
+
     /**
      * Basic Framework implicitely also processes, i'm not sure if we should require any framework
      * to do that (perhaps we could say, that the render method must process, if that is necessary,
@@ -215,7 +216,9 @@ public class BasicFramework extends Framework {
      */
     public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, WindowState windowState) throws FrameworkException {
         ServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        if (request == null) throw new IllegalArgumentException("No request object given");
+        if (request == null) {
+            throw new IllegalArgumentException("No request object given");
+        }
 
         State state = State.getState(request);
         if (state.isRendering()) { // mm:component used during rending of a component, that's fine, but use a new State.
@@ -226,13 +229,12 @@ public class BasicFramework extends Framework {
         try {
 
             request.setAttribute(COMPONENT_CLASS_KEY, getComponentClass());
-
             request.setAttribute(COMPONENT_CURRENTUSER_KEY, getUserNode(frameworkParameters));
 
             Renderer actualRenderer = state.startBlock(frameworkParameters, renderer);
             if (! actualRenderer.equals(renderer)) {
                 Parameters newBlockParameters = actualRenderer.getBlock().createParameters();
-                newBlockParameters.setAllIfDefinied(blockParameters);
+                newBlockParameters.setAllIfDefined(blockParameters);
                 blockParameters = newBlockParameters;
 
             }
@@ -251,7 +253,7 @@ public class BasicFramework extends Framework {
 
             setBlockParametersForRender(state, blockParameters);
 
-            RenderHints hints = new RenderHints(actualRenderer, windowState, state.getId(), getComponentClass());
+            RenderHints hints = new RenderHints(actualRenderer, windowState, state.getId(), getComponentClass(), RenderHints.Mode.NORMAL);
             request.setAttribute(RenderHints.KEY, hints);
             actualRenderer.render(blockParameters, w, hints);
             request.setAttribute("org.mmbase.framework.hints", hints);
@@ -259,7 +261,7 @@ public class BasicFramework extends Framework {
             log.debug(fe);
             URI uri = renderer.getUri();
             Renderer error = new ErrorRenderer(renderer.getType(), renderer.getBlock(), (uri != null) ? uri.toString() : null, 500, fe);
-            RenderHints hints = new RenderHints(error, windowState, state.getId(), getComponentClass());
+            RenderHints hints = new RenderHints(error, windowState, state.getId(), getComponentClass(), RenderHints.Mode.NORMAL);
             error.render(blockParameters, w, hints);
         } finally {
             request.setAttribute(RenderHints.KEY, prevHints);
@@ -268,7 +270,7 @@ public class BasicFramework extends Framework {
     }
 
     /**
-     * Think in the basic framework this method is never called explicitely, because processing is
+     * I think in the basic framework this method is never called explicitely, because processing is
      * done implicitely by the render
      */
     public void process(Processor processor, Parameters blockParameters, Parameters frameworkParameters) throws FrameworkException {
