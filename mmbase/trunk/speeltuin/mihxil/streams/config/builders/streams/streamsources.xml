@@ -1,0 +1,65 @@
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="streamsources" maintainer="mmbase.org" version="1" extends="mediasources">
+
+  <searchage>31</searchage>
+  <names>
+  </names>
+
+
+  <descriptions>
+  </descriptions>
+
+
+
+  <properties>
+  </properties>
+
+  <fieldlist>
+
+    <field name="url">
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <unique value="true" />
+        <setprocessor type="binary">
+          <class name="org.mmbase.streams.BinaryFile$Setter">
+          </class>
+        </setprocessor>
+        <getprocessor type="binary">
+          <class name="org.mmbase.streams.BinaryFile$Getter" />
+        </getprocessor>
+      </datatype>
+    </field>
+
+
+    <field name="mediaprovider" state="virtual">
+      <gui>
+        <guiname xml:lang="nl">Provider</guiname>
+        <guiname xml:lang="en">Provider</guiname>
+      </gui>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <default value="mediaprovider_localhost" />
+        <enumeration enforce="never">
+          <query type="mediaproviders"  xmlns="http://www.mmbase.org/xmlns/searchquery">
+            <sortorder field="name" />
+          </query>
+        </enumeration>
+        <setprocessor>
+          <class name="org.mmbase.datatypes.processors.Related$Setter">
+            <param name="type">mediaproviders</param>
+          </class>
+        </setprocessor>
+        <getprocessor>
+          <class name="org.mmbase.datatypes.processors.Related$Getter">
+            <param name="type">mediaproviders</param>
+          </class>
+        </getprocessor>
+      </datatype>
+    </field>
+
+  </fieldlist>
+
+</builder>
