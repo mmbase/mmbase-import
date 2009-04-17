@@ -8,7 +8,6 @@
 
   <neededbuilderlist>
     <builder maintainer="toly.nl" version="1">articles</builder>
-    
     <!-- site structure -->
     <builder maintainer="toly.nl" version="1">templates</builder>
     <builder maintainer="toly.nl" version="1">pages</builder>
@@ -37,7 +36,7 @@
 
   <allowedrelationlist>
     <relation from="pools"   to="templates" type="related" /><!-- for export -->
-    <relation from="pools"   to="pages"     type="related" /><!-- for export -->
+    <relation from="pools"   to="pages"     type="posrel" /><!-- export and site structure -->
     <!-- <relation from="pools"   to="properties" type="related" /> -->
     
     <relation from="pages"    to="pages"     type="posrel" />
@@ -59,10 +58,10 @@
     <datasource builder="attachments"  path="MMSite/attachments.xml" />
     <datasource builder="images"       path="MMSite/images.xml" />
  -->
-    <datasource builder="pools"        path="MMSite/pools.xml" />
+    <datasource builder="pools"      path="MMSite/pools.xml" />
 
-<!--     <datasource builder="articles"   path="MMSite/articles.xml" /> -->
-    <datasource builder="pages"       path="MMSite/pages.xml" />
+    <datasource builder="articles"   path="MMSite/articles.xml" />
+    <datasource builder="pages"      path="MMSite/pages.xml" />
     <datasource builder="pools"      path="MMSite/pools.xml" />
     <datasource builder="templates"  path="MMSite/templates.xml" />
   </datasourcelist>

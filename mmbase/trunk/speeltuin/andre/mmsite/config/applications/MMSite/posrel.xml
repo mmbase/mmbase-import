@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<posrel exportsource="mmbase://grgrijze.toly.net/null/v2" timestamp="20090210213553">
-	<node number="76" owner="default" snumber="73" dnumber="75" rtype="posrel" dir="bidirectional">
+<posrel exportsource="mmbase://grgrijze.toly.net/null/mm" timestamp="20090417205734">
+	<node number="395" owner="default" snumber="375" dnumber="386" rtype="posrel" dir="bidirectional">
+		<pos>1</pos>
+	</node>
+
+	<node number="396" owner="default" snumber="375" dnumber="378" rtype="posrel" dir="bidirectional">
+		<pos>2</pos>
+	</node>
+
+	<node number="404" owner="admin" snumber="386" dnumber="392" rtype="posrel" dir="bidirectional">
 		<pos>1</pos>
 	</node>
 
