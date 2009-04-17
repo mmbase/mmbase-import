@@ -36,9 +36,9 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.212 2009-04-07 08:23:34 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.213 2009-04-17 13:29:37 michiel Exp $
  */
-public class DatabaseStorageManager implements StorageManager {
+public class DatabaseStorageManager implements StorageManager<DatabaseStorageManagerFactory> {
 
     /** Max size of the object type cache */
     public static final int OBJ2TYPE_MAX_SIZE = 20000;
@@ -153,8 +153,8 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     // javadoc is inherited
-    public void init(StorageManagerFactory factory) throws StorageException {
-        this.factory = (DatabaseStorageManagerFactory)factory;
+    public void init(DatabaseStorageManagerFactory factory) throws StorageException {
+        this.factory = factory;
         if (factory.supportsTransactions()) {
             transactionIsolation = ((Integer)factory.getAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL)).intValue();
         }
@@ -512,8 +512,8 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
      */
-     protected Object getXMLValue(ResultSet result, int index, CoreField field, boolean mayShorten) throws StorageException, SQLException {
-         return getStringValue(result, index, field, mayShorten);
+     protected org.w3c.dom.Document getXMLValue(ResultSet result, int index, CoreField field, boolean mayShorten) throws StorageException, SQLException {
+         return Casting.toXML(getStringValue(result, index, field, mayShorten));
      }
 
 
@@ -727,6 +727,28 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
+
+    /**
+     * Appends subdirectories to the beginning of the given StringBuilder. This is based on the
+     * given (node) number.
+     * This ensures that there are never too many files in one directory.
+     *
+     * @since MMBase-1.9.1
+     */
+    public static StringBuilder appendDirectory(final StringBuilder pathBuffer, int number, final String separator) {
+        number /=  1000;
+        while (number > 0) {
+            int num = number % 100;
+            pathBuffer.insert(0, num);
+            if (num < 10) {
+                pathBuffer.insert(0, 0);
+            }
+            pathBuffer.insert(0, separator);
+            number /= 100;
+        }
+        return pathBuffer;
+    }
+
     /**
      * Defines how binary (blob) data files must look like.
      * @param node the node the binary data belongs to
@@ -736,16 +758,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected File getBinaryFile(MMObjectNode node, String fieldName) {
         File basePath = factory.getBinaryFileBasePath();
         StringBuilder pathBuffer = new StringBuilder();
-        int number = node.getNumber() / 1000;
-        while (number > 0) {
-            int num = number % 100;
-            pathBuffer.insert(0, num);
-            if (num < 10) {
-                pathBuffer.insert(0, 0);
-            }
-            pathBuffer.insert(0, File.separator);
-            number /= 100;
-        }
+        appendDirectory(pathBuffer, node.getNumber(), File.separator);
 
         /*
          * This method is sometimes called with a node which has a supertype builder
@@ -976,6 +989,16 @@ public class DatabaseStorageManager implements StorageManager {
         create(node, createFields, tablename);
     }
 
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected void appendField(StringBuilder fieldNames, StringBuilder fieldValues, CoreField field) {
+        String fieldName = (String)factory.getStorageIdentifier(field);
+        fieldNames.append(fieldName);
+        fieldValues.append('?');
+    }
+
     protected void create(MMObjectNode node, List<CoreField> createFields, String tablename) {
         // Create a String that represents the fields and values to be used in the insert.
         StringBuilder fieldNames = null;
@@ -990,14 +1013,14 @@ public class DatabaseStorageManager implements StorageManager {
             } else {
                 // store the fieldname and the value parameter
                 fields.add(field);
-                String fieldName = (String)factory.getStorageIdentifier(field);
                 if (fieldNames == null) {
-                    fieldNames = new StringBuilder(fieldName);
-                    fieldValues = new StringBuilder("?");
+                    fieldNames = new StringBuilder();
+                    fieldValues = new StringBuilder();
                 } else {
-                    fieldNames.append(',').append(fieldName);
-                    fieldValues.append(",?");
+                    fieldNames.append(',');
+                    fieldValues.append(',');
                 }
+                appendField(fieldNames, fieldValues, field);
             }
         }
         if (log.isDebugEnabled()) {
@@ -1005,12 +1028,12 @@ public class DatabaseStorageManager implements StorageManager {
         }
         if (fields.size() > 0) {
             Scheme scheme = factory.getScheme(Schemes.INSERT_NODE, Schemes.INSERT_NODE_DEFAULT);
+            String query = scheme.format(this, tablename, fieldNames.toString(), fieldValues.toString());
             try {
-                String query = scheme.format(this, tablename, fieldNames.toString(), fieldValues.toString());
                 getActiveConnection();
                 executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
-                throw new StorageException(se.getMessage() + " during creation of " + UNICODE_ESCAPER.transform(node.toString()), se);
+                throw new StorageException(se.getMessage() + " during creation of " + UNICODE_ESCAPER.transform(node.toString()) + " using query " + query, se);
             } finally {
                 releaseActiveConnection();
             }
@@ -1089,7 +1112,7 @@ public class DatabaseStorageManager implements StorageManager {
             CoreField field = fields.get(fieldNumber);
             try {
                 setValue(ps, fieldNumber + 1, node, field);
-            } catch (Exception e) {
+            } catch (StorageException e) {
                 SQLException sqle = new SQLException(node.toString() + "/" + field + " " + e.getMessage());
                 sqle.initCause(e);
                 throw sqle;
@@ -2557,7 +2580,7 @@ public class DatabaseStorageManager implements StorageManager {
                     log.debug("VERIFY: determining super tables failed, skipping inheritance consistency tests for " + tableName);
                 }
             }
-            Map<String, Map<String, Object>> columns = new HashMap<String, Map<String, Object>>();
+            final Map<String, Map<String, Object>> columns = new HashMap<String, Map<String, Object>>();
             ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
             try {
                 // get column information
@@ -2623,8 +2646,8 @@ public class DatabaseStorageManager implements StorageManager {
                             }
                         }
                         // compare size
-                        int databaseSize = ((Integer)colInfo.get("COLUMN_SIZE")).intValue();
-                        int builderFieldSize = field.getMaxLength();
+                        final int databaseSize = (Integer) colInfo.get("COLUMN_SIZE");
+                        final int builderFieldSize = field.getMaxLength();
                         // ignore the size difference for large fields (generally blobs or memo texts)
                         // since most databases do not return accurate sizes for these fields
                         boolean isBuilderFieldSizeDefined = builderFieldSize != -1;
