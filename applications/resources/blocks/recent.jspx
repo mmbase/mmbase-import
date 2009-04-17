@@ -1,5 +1,5 @@
 <div
-    class="mm_c mm_c_resources mm_c_b_recent ${requestScope.componentClassName}"
+    class="mm_c c_resources b_recent ${requestScope.componentClassName}"
     id="${requestScope.componentId}"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
