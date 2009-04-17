@@ -17,7 +17,7 @@ import org.mmbase.util.Casting;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: AreaHandler.java,v 1.1 2008-07-28 16:47:31 michiel Exp $
+ * @version $Id: AreaHandler.java,v 1.2 2009-04-17 16:54:49 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -57,7 +57,7 @@ public class AreaHandler extends TextHandler {
             buffer.append("\" ");
             appendNameId(buffer, request, field);
             buffer.append(">");
-            Object value = request.getValue(field);
+            Object value = getFieldValue(request, node, field, ! search);
             if ("".equals(value)) {
                 // This can be needed because:
                 // If included, e.g. with xmlhttprequest,
