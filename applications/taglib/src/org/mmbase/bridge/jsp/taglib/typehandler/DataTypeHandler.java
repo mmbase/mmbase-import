@@ -15,6 +15,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.datatypes.handlers.Handler;
 import org.mmbase.datatypes.handlers.Request;
 import org.mmbase.datatypes.handlers.AbstractRequest;
+import org.mmbase.datatypes.handlers.html.HtmlHandler;
 import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
@@ -33,7 +34,7 @@ import org.mmbase.util.functions.Parameter;
  *
  * @author Michiel Meeuwisssen
  * @since  MMBase-1.9.1
- * @version $Id: DataTypeHandler.java,v 1.2 2009-04-17 16:05:42 michiel Exp $
+ * @version $Id: DataTypeHandler.java,v 1.3 2009-04-17 17:02:38 michiel Exp $
  */
 
 public class DataTypeHandler implements TypeHandler {
@@ -46,6 +47,18 @@ public class DataTypeHandler implements TypeHandler {
     public DataTypeHandler(Handler<String> h, final FieldInfoTag tag) {
         handler = h;
         request = new Request() {
+                {
+                    setProperty(HtmlHandler.SESSIONNAME, tag.getSessionName());
+                    try {
+                        javax.servlet.jsp.PageContext pc = tag.getContextTag().getPageContext();
+                        setProperty(Parameter.REQUEST, (javax.servlet.http.HttpServletRequest) pc.getRequest());
+                        setProperty(Parameter.RESPONSE, (javax.servlet.http.HttpServletResponse) pc.getResponse());
+                    } catch (JspTagException te) {
+                        throw new RuntimeException(te);
+                    }
+                }
+
+
                 public Cloud getCloud() {
                     try {
                         return tag.getCloudVar();
