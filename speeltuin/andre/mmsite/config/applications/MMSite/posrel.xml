@@ -8,7 +8,7 @@
 		<pos>2</pos>
 	</node>
 
-	<node number="404" owner="admin" snumber="386" dnumber="392" rtype="posrel" dir="bidirectional">
+	<node number="404" owner="default" snumber="386" dnumber="392" rtype="posrel" dir="bidirectional">
 		<pos>1</pos>
 	</node>
 
