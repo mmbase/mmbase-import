@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * It is also assumed that the niceness of the URL's is basicly about one block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DirectoryUrlConverter.java,v 1.20 2009-01-16 22:21:13 michiel Exp $
+ * @version $Id: DirectoryUrlConverter.java,v 1.21 2009-04-17 19:35:55 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
@@ -67,6 +67,15 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
         return new BasicUrl(this, b.toString());
     }
 
+
+    protected List<String> getPath(String pa) {
+        List<String> path = new ArrayList<String>();
+        for (String p: pa.split("/")) {
+            path.add(p);
+        }
+        return path;
+    }
+
     /**
      * This is the method you must implement. Append the nice URL to b. b already ends with &lt;directory&gt;/
      */
@@ -84,10 +93,7 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
 
 
     @Override final public Url getFilteredInternalUrl(String pa, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
-        List<String> path = new ArrayList<String>();
-        for (String p: pa.split("/")) {
-            path.add(p);
-        }
+        List<String> path = getPath(pa);
         if (path.size() < 2) {
             log.debug("pa " + pa + " -> " + path + " (Not long enough for " + this + ")");
             return Url.NOT;
