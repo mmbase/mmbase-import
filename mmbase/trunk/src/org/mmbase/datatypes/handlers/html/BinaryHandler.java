@@ -15,17 +15,30 @@ import org.mmbase.datatypes.handlers.Request;
 import org.mmbase.storage.search.Constraint;
 import org.apache.commons.fileupload.FileItem;
 import org.mmbase.util.functions.*;
+import org.mmbase.util.*;
 
 /**
  * The most straight forward implementation in HTML for an input widget for a binary field is a
  * 'input' tag with type 'file'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BinaryHandler.java,v 1.2 2009-04-17 17:37:54 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.3 2009-04-17 20:31:08 michiel Exp $
  * @since MMBase-1.9.1
  */
 
 public class BinaryHandler extends HtmlHandler {
+
+    private boolean useSpecificSetter = false;
+
+    /**
+     * IF this is set it true the value is not set with {@link Node#setValue} but with {@link
+     * Node#setInputStreamValue}.  The effect of this is that the method {@link DataType#cast} is
+     * avoided. This may be useful if the set-processor expects an InputStream, and not a
+     * byte-array.
+     */
+    public void setUseSpecificSetter(boolean s) {
+        useSpecificSetter = s;
+    }
 
 
     @Override
@@ -52,6 +65,16 @@ public class BinaryHandler extends HtmlHandler {
 
     }
 
+
+    @Override
+    protected void setValue(Node node, String fieldName, Object value) {
+        if (value == null || ! useSpecificSetter) {
+            node.setValue(fieldName, value);
+        } else {
+            SerializableInputStream sis = Casting.toSerializableInputStream(value);
+            node.setInputStreamValue(fieldName, sis, sis.getSize());
+        }
+    }
 
     /**
      * Returns the field value as specified by the client's post.
