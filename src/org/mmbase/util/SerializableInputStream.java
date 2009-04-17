@@ -12,13 +12,15 @@ package org.mmbase.util;
 
 import java.io.*;
 import org.mmbase.util.logging.*;
+import org.apache.commons.fileupload.FileItem;
 
 /**
  * Sometimes you need an InputStream to be Serializable. This wraps
- * another InputStream.
+ * another InputStream, or some other representation of a 'binary'.
+ *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: SerializableInputStream.java,v 1.2 2009-04-16 13:46:11 michiel Exp $
+ * @version $Id: SerializableInputStream.java,v 1.3 2009-04-17 20:17:27 michiel Exp $
  * @todo IllegalStateException or so, if the inputstreas is used (already).
  */
 
@@ -57,19 +59,30 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
 
     private InputStream wrapped;
+    private String name;
 
     public SerializableInputStream(InputStream wrapped, long s) {
         this.wrapped = wrapped;
         this.size = s;
+        this.name = null;
     }
 
     public SerializableInputStream(byte[] array) {
         this.wrapped = new ByteArrayInputStream(array);
         this.size = array.length;
+        this.name = null;
+    }
+    public SerializableInputStream(FileItem fi) throws IOException {
+        this.wrapped = fi.getInputStream();
+        this.size = fi.getSize();
+        this.name = fi.getName();
     }
 
     public long getSize() {
         return size;
+    }
+    public String getName() {
+        return name;
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {

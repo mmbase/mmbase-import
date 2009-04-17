@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.126 2009-04-16 13:46:35 michiel Exp $
+ * @version $Id: Casting.java,v 1.127 2009-04-17 20:19:42 michiel Exp $
  */
 
 import java.util.*;
@@ -626,8 +626,7 @@ public class Casting {
             return new SerializableInputStream((byte[]) obj);
         } else if (obj instanceof FileItem) {
             try {
-                FileItem fi = (FileItem) obj;
-                return new SerializableInputStream(fi.getInputStream(), fi.getSize());
+                return new SerializableInputStream((FileItem) obj);
             } catch (IOException ioe) {
                 log.error(ioe);
                 return new SerializableInputStream(new byte[0]);
