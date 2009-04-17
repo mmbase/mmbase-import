@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.12 2009-01-16 08:24:47 michiel Exp $
+ * @version $Id: ConnectionRenderer.java,v 1.13 2009-04-17 19:35:55 michiel Exp $
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {
@@ -146,7 +146,7 @@ public class ConnectionRenderer extends AbstractRenderer {
 
 
     @Override public String toString() {
-        return getUri(new Parameters(getParameters()), new RenderHints(this, WindowState.NORMAL, null, null)).toString();
+        return getUri(new Parameters(getParameters()), new RenderHints(this, WindowState.NORMAL, null, null, RenderHints.Mode.NORMAL)).toString();
     }
 
     @Override public URI getUri(Parameters blockParameter, RenderHints hints) {

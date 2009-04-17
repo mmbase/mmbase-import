@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResourceRenderer.java,v 1.12 2009-01-16 15:21:54 michiel Exp $
+ * @version $Id: ResourceRenderer.java,v 1.13 2009-04-17 19:35:55 michiel Exp $
  * @since MMBase-1.9
  */
 public class ResourceRenderer extends AbstractRenderer {
@@ -83,7 +83,7 @@ public class ResourceRenderer extends AbstractRenderer {
         ResourceLoader loader = ResourceLoader.Type.valueOf(type.toUpperCase()).get();
         try {
             InputStream is = loader.getResourceAsStream(name);
-            if (is == null) throw new FrameworkException("No such resource " +  ResourceLoader.Type.valueOf(type.toUpperCase()).get().getResource(name));
+            if (is == null) throw new FrameworkException("No such resource " +  loader.getResource(name) + " in " + loader);
             if (xsl == null) {
                 Reader r = loader.getReader(is, name);
                 char[] buf = new char[1000];
