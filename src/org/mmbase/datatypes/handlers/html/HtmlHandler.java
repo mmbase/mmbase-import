@@ -17,6 +17,7 @@ import org.mmbase.util.transformers.Xml;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.Parameter;
 
 import java.util.*;
 
@@ -26,12 +27,15 @@ import java.util.*;
  * post and things like that.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractHtmlHandler.java,v 1.2 2009-04-17 15:43:39 michiel Exp $
+ * @version $Id: HtmlHandler.java,v 1.1 2009-04-17 16:54:49 michiel Exp $
  * @since MMBase-1.9.1
  */
 
-public abstract class AbstractHtmlHandler  extends AbstractHandler<String> {
-    private static final Logger log = Logging.getLoggerInstance(AbstractHtmlHandler.class);
+public abstract class HtmlHandler  extends AbstractHandler<String> {
+    private static final Logger log = Logging.getLoggerInstance(HtmlHandler.class);
+
+
+    public static final Parameter<String> SESSIONNAME = new Parameter<String>(HtmlHandler.class.getName() + ".SESSIONNAME", String.class);
 
     protected static final CharTransformer XML = new Xml(Xml.ESCAPE);
 
@@ -50,11 +54,12 @@ public abstract class AbstractHtmlHandler  extends AbstractHandler<String> {
         buf.append("id=\"").append(id(request.getName(field))).append("\" ");
     }
 
-    protected String prefixError(String s)  {
-        String prefix = "_";
-        return "mm_check_" + prefix + (prefix.length() != 0 ? "_" : "") + s;
+    protected String prefixError(Request request, Field f)  {
+        String name = request.getName(f);
+        return "mm_check" + (name.startsWith("_") ? name : ("_" + name));
     }
 
+    @Override
     public String check(Request request, Node node, Field field, boolean errors) {
         Object fieldValue = request.getValue(field);
         final DataType<Object> dt = field.getDataType();
@@ -95,12 +100,14 @@ public abstract class AbstractHtmlHandler  extends AbstractHandler<String> {
                 }
             }
             if (errors && ! field.isReadOnly()) {
-                return "<div id=\"" + prefixError(field.getName()) + "\" class=\"mm_check_noerror\"> </div>";
+                return "<div id=\"" + prefixError(request, field) + "\" class=\"mm_check_noerror\"> </div>";
             } else {
                 return "";
             }
         } else {
-            request.invalidate();
+            if (!field.isReadOnly()) {
+                request.invalidate();
+            }
             if (errors && ! field.isReadOnly()) {
                 StringBuilder show = new StringBuilder("<div id=\"");
                 show.append(request.getName(field));

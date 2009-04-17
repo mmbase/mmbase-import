@@ -17,15 +17,16 @@ import org.mmbase.util.Casting;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: TextHandler.java,v 1.1 2008-07-28 16:47:31 michiel Exp $
+ * @version $Id: TextHandler.java,v 1.2 2009-04-17 16:54:49 michiel Exp $
  * @since MMBase-1.9.1
  */
 
-public class TextHandler extends AbstractHtmlHandler  {
+public class TextHandler extends HtmlHandler  {
 
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
+    @Override
     public String input(Request request, Node node, Field field, boolean search)  {
         StringBuilder show =  new StringBuilder("<input type=\"text\" class=\"small ");
         appendClasses(show, node, field);

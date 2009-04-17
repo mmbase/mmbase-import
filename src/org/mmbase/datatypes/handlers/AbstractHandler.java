@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * post and things like that.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractHandler.java,v 1.2 2009-04-17 15:43:39 michiel Exp $
+ * @version $Id: AbstractHandler.java,v 1.3 2009-04-17 16:54:47 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -58,16 +58,16 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
      * Returns the field value as specified by the client's post.
      * @param node This parameter could be used if the client does not fully specify the field's value (possible e.g. with Date fields). The existing specification could be used then.
      */
-    protected C getFieldValue(Request request, Node node, Field field) {
+    protected Object getFieldValue(Request request, Node node, Field field) {
         Object found = request.getValue(field);
         if (interpretEmptyAsNull(field) && "".equals(found)) found = null;
-        return (C) found;
+        return  found;
     }
     /**
      * Returns the field value to be used in the page.
      */
     protected Object getFieldValue(Request request, Node node, Field field, boolean useDefault) {
-        Object value = getFieldValue(request, node, field);
+        Object  value = getFieldValue(request, node, field);
         if (value == null) {
             String fieldName = field.getName();
             if (node != null) {
@@ -135,16 +135,16 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
         node.setValue(fieldName, value);
     }
 
-    public C check(Request request, Node node, Field field, boolean errors) {
-        throw new UnsupportedOperationException();
-    }
-
+    abstract public C check(Request request, Node node, Field field, boolean errors);
 
     public boolean set(Request request, Node node, Field field) {
         String fieldName = field.getName();
         Object fieldValue = getFieldValue(request, node, field, false);
-        if (interpretEmptyAsNull(field) && "".equals(fieldValue)) fieldValue = null;
+        if (interpretEmptyAsNull(field) && "".equals(fieldValue)) {
+            fieldValue = null;
+        }
         Object oldValue = node.getValue(fieldName);
+
         if (fieldValue == null ? oldValue == null : fieldValue.equals(oldValue)) {
             return false;
         }  else {
@@ -156,6 +156,8 @@ public abstract class AbstractHandler<C>  implements Handler<C> {
             return true;
         }
     }
+
+    abstract public C input(Request request, Node node, Field field, boolean search);
 
 
 
