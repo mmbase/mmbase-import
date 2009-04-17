@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.14 2008-10-09 09:51:42 michiel Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.15 2009-04-17 13:30:46 michiel Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 
@@ -32,12 +32,32 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
     }
 
     // javadoc is inherited
-    public double getVersion() {
+    @Override public double getVersion() {
         return 1.0;
     }
 
-    protected boolean tablesInheritFields() {
+    @Override protected boolean tablesInheritFields() {
         return false;
+    }
+
+
+    /**
+     * Actual implementation of {@link #create(MMObjectNode, MMObjectBuilder)} which wraps this in a
+     * transction only, now.
+     * @since MMBase-1.9.1
+     */
+    protected void simpleCreate(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
+       // insert in parent tables (from parents to childs) (especially because foreign keys on object's number may exist)
+        for (MMObjectBuilder b : builder.getAncestors()) {
+            for (CoreField f : b.getFields()) {
+                if (f.getType() == Field.TYPE_BINARY) {
+                    // if the value is an inputstream at the moment, convert it to a byte-array, because it must be stored again..
+                    node.storeValue(f.getName(), org.mmbase.util.Casting.toByte(node.retrieveValue(f.getName())));
+                }
+            }
+            super.create(node, b);
+        }
+        super.create(node, builder);
     }
 
     /**
@@ -46,23 +66,13 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to store the node
      * @throws StorageException if an error occurred during creation
      */
-    public void create(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
+    @Override public void create(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
         }
         try {
-            // insert in parent tables (from parents to childs) (especially because foreign keys on object's number may exist)
-            for (MMObjectBuilder b : builder.getAncestors()) {
-                for (CoreField f : b.getFields()) {
-                    if (f.getType() == Field.TYPE_BINARY) {
-                        // if the value is an inputstream at the moment, convert it to a byte-array, because it must be stored again..
-                        node.storeValue(f.getName(), org.mmbase.util.Casting.toByte(node.retrieveValue(f.getName())));
-                    }
-                }
-                super.create(node, b);
-            }
-            super.create(node, builder);
+            simpleCreate(node, builder);
             if (localTransaction) commit();
         } catch (StorageException se) {
             if (localTransaction && inTransaction) rollback();
@@ -76,7 +86,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to change the node in
      * @throws StorageException if an error occurred during change
      */
-    public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    @Override public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
@@ -99,7 +109,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to delete the node in
      * @throws StorageException if an error occurred during delete
      */
-    public void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    @Override public void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
