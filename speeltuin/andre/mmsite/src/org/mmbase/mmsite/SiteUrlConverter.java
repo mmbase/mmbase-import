@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * It presumes (pages) nodes with the fields 'path' and 'template'.
  *
  * @author Andre van Toly
- * @version $Id: SiteUrlConverter.java,v 1.1 2009-02-11 21:06:13 andre Exp $
+ * @version $Id: SiteUrlConverter.java,v 1.2 2009-04-17 12:16:57 andre Exp $
  * @since MMBase-1.9
  */
 public class SiteUrlConverter extends DirectoryUrlConverter {
@@ -33,7 +33,6 @@ public class SiteUrlConverter extends DirectoryUrlConverter {
  	protected static ArrayList<String> excludedPaths = new ArrayList(Arrays.asList(
  	    "mmbase"
  	));
-    protected static String homepage = "/index.jsp";
     protected static String extension = "";
     protected static boolean useExtension = false;
 
@@ -51,23 +50,20 @@ public class SiteUrlConverter extends DirectoryUrlConverter {
         extension = e;
     }
 
-    public void setHomepage(String s) {
-        homepage = s;
-    }
-
     @Override public int getDefaultWeight() {
         int q = super.getDefaultWeight();
         return Math.max(q, q + 2000);
     }
 
     /**
-     * Generates a nice url linking to a template for a 'pages' node. 
+     * Generates a nice url linking to a template for a ('pages') node. 
      */
     @Override protected void getNiceDirectoryUrl(StringBuilder b, Block block, Parameters parameters, Parameters frameworkParameters,  boolean action) throws FrameworkException {
         if (log.isDebugEnabled()) {
             if (log.isDebugEnabled()) log.debug("" + parameters + frameworkParameters);
             if (log.isDebugEnabled()) log.debug("Found 'page' block: " + block);
         }
+        int b_len = b.length();
         
         if (block.getName().equals("page")) {
             Node n = parameters.get(Framework.N);
@@ -78,8 +74,10 @@ public class SiteUrlConverter extends DirectoryUrlConverter {
 			if (path.endsWith("/")) path = path.substring(0, path.length() - 1);
 			b.append(path);
 			
-			if (log.isDebugEnabled()) log.debug("b: " + b.toString());
         }
+
+        if (useExtension && b.length() > b_len) b.append(extension);
+        if (log.isDebugEnabled()) log.debug("b: " + b.toString());
     }
 
 
@@ -99,21 +97,23 @@ public class SiteUrlConverter extends DirectoryUrlConverter {
 		String path = sb.toString();
 		//if (log.isDebugEnabled()) log.debug("path: " + path);
         
-        if (pa.size() == 0) {
-            result.append(homepage);
-			if (log.isDebugEnabled()) log.debug("Returning: " + result.toString());
-            return new BasicUrl(this, result.toString());
+        if (useExtension && path.indexOf(extension) > -1) {
+            path = path.substring(0, path.lastIndexOf(extension));
+            //pa.set(pa.size() - 1, id);
+        }
+        
             
-		} else if (excludedPaths.contains(pa.get(0))) {
+	    if (excludedPaths.contains(pa.get(0))) {
 			if (log.isDebugEnabled()) log.debug("Returning null, path in excludepaths: " + path);
 		    return Url.NOT;
 		    
         } else {
-			Node page = UrlUtils.getPagebyPath(cloud, path);
-            if (page != null) {
-				String template = page.getNodeValue("template").getStringValue("url");
+            // find the node with this path
+			Node node = UrlUtils.getPagebyPath(cloud, path);
+            if (node != null) {
+				String template = node.getNodeValue("template").getStringValue("url");
 				if (!template.startsWith("/")) result.append("/");
-				result.append(template).append("?n=" + page.getNumber());
+				result.append(template).append("?n=" + node.getNumber());
 				
             } else {
 				return Url.NOT;
