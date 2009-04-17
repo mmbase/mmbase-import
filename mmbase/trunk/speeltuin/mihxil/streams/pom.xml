@@ -30,17 +30,26 @@
       <type>war</type>
     </dependency>
 
+
+    <!--
+        JMF is horribly complex, and it's quite hard to make a PlugIn.
+        There is some experimental code depending on it, but since that will not be actually used
+        the scope of the dependencies is 'provided'.
+    -->
     <dependency>
       <groupId>javax.media</groupId>
       <artifactId>jmf</artifactId>
       <version>2.1.1e</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>net.sf.fmj</groupId>
       <artifactId>fmj-nojmf</artifactId>
       <version>2009-04-16</version>
+      <scope>provided</scope>
     </dependency>
+
   </dependencies>
 
   <repositories>
