@@ -13,6 +13,7 @@
 	<p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
     
     <mm:listnodescontainer type="pages">
+      <mm:maxnumber value="99" />
       <ol>
       <mm:listnodes>
         <li>
