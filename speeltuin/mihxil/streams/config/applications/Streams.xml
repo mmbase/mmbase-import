@@ -15,6 +15,7 @@
   </neededreldeflist>
 
   <allowedrelationlist>
+    <relation from="mediafragments"  to="streamssources"    type="related" />
   </allowedrelationlist>
 
   <datasourcelist>
