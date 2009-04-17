@@ -6,7 +6,7 @@
     <state>1</state>
     <name>Local FileServlet</name>
     <description>FileServlet</description>
-    <rootpath>${CONTEXT}/files/</rootpath>
+    <rootpath>${CONTEXT}files/</rootpath>
     <protocol></protocol>
   </node>
 
