@@ -17,10 +17,10 @@
     <title xml:lang="en">Page</title>
     <title xml:lang="nl">Pagina</title>
     <description xml:lang="en">
-     Some page (or article) in the site with a certain path.
+      A block displaying pages and their url's.
     </description>
     <description xml:lang="nl">
-      Een pagina (page) of artikel in de site met een bepaald pad.
+      Een blok met alleen een lijst met pagina's en de links daarvan.
     </description>
     <body jsp="page.jspx">
       <param name="n" type="org.mmbase.bridge.Node" />

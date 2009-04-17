@@ -36,11 +36,11 @@
  </neededreldeflist>
 
   <allowedrelationlist>
-    <relation from="pools"   to="templates" type="related" />
-    <relation from="pools"   to="pages"      type="related" />
+    <relation from="pools"   to="templates" type="related" /><!-- for export -->
+    <relation from="pools"   to="pages"     type="related" /><!-- for export -->
     <!-- <relation from="pools"   to="properties" type="related" /> -->
     
-    <relation from="pages"    to="pages"      type="posrel" />
+    <relation from="pages"    to="pages"     type="posrel" />
     <relation from="pages"    to="articles"  type="posrel" />
     
 <!-- 
