@@ -22,7 +22,7 @@ import org.codehaus.plexus.util.FileUtils;
  * Mojo which copies the 'templates' and 'blocks' directory (if they exist) to the correct location
  * in the war. The whole exercise is only necessary, because you can't configure in pom that it
  * should not include a certain web-resource if the source happens to not exist.
- * 
+ *
  * @phase process-resources
  * @goal install-resources
  * @requiresProject
@@ -42,7 +42,7 @@ public class WebResourcesMojo extends AbstractMojo {
 
    /**
     * The directory where the webapp is built.
-    * 
+    *
     * @parameter expression="${project.build.directory}/${project.build.finalName}"
     */
    private File webappDirectory;
@@ -66,14 +66,15 @@ public class WebResourcesMojo extends AbstractMojo {
             if (blocks.isDirectory()) {
                String blocksTarget = (String) project.getProperties().get("blocksTarget");
                if (blocksTarget == null) {
-                  blocksTarget = "mmbase" + File.separator + "blocks" + File.separator
-                        + project.getArtifactId().substring("mmbase-".length());
+                   blocksTarget =
+                       "mmbase" + File.separator + "components" + File.separator
+                       + project.getArtifactId().substring("mmbase-".length());
                }
                blocksTarget = blocksTarget.replace('/', File.separatorChar);
                File target = new File(webappDirectory, blocksTarget);
                copyDirectory(blocks, target);
             }
-            
+
             File mmbase = new File(project.getBasedir(), "mmbase");
             if (mmbase.isDirectory()) {
                 File target = new File(webappDirectory, "mmbase");
