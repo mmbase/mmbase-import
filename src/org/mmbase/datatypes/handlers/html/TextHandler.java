@@ -15,9 +15,10 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
 
 /**
+ * The most basic HtmlHandler simply produces an input tag with the type 'text'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TextHandler.java,v 1.2 2009-04-17 16:54:49 michiel Exp $
+ * @version $Id: TextHandler.java,v 1.3 2009-04-17 17:38:13 michiel Exp $
  * @since MMBase-1.9.1
  */
 
