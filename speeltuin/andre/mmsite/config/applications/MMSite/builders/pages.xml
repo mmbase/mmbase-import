@@ -63,7 +63,7 @@
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="true">
-          <description xml:lang="nl">Dit is een verplicht veld</description>
+          <description xml:lang="nl">Pad is een verplicht veld</description>
           <description xml:lang="en">A path is required field</description>
         </required>
         <maxLength value="255" />
@@ -92,7 +92,7 @@
 
     <field name="description">
       <descriptions>
-        <description xml:lang="en">Sort description of the page.</description>
+        <description xml:lang="en">Short description of the page.</description>
         <description xml:lang="nl">Korte beschrijving van de pagina.</description>
       </descriptions>
       <gui>
@@ -121,8 +121,8 @@
       </gui>
       <editor>
         <positions>
-          <input>5</input>
-          <search>5</search>
+          <input>9</input>
+          <search>9</search>
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
