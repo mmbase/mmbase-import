@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.80 2009-03-24 10:07:59 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.81 2009-04-17 15:13:17 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -44,7 +44,6 @@
         Principally, HTML could be valid XML.
       </description>
       <setprocessor type="string">
-
         <class name="org.mmbase.datatypes.processors.xml.HtmlSetString" />
       </setprocessor>
       <getprocessor type="string">
@@ -73,7 +72,9 @@
       String fields contain text.
     </description>
     <class name="org.mmbase.datatypes.StringDataType" />
+    <!--
     <handler mimetype="text/html,application/xml+xhtml" name="org.mmbase.datatypes.handlers.html.StringHandler" />
+    -->
 
     <specialization id="lastmodifier">
       <description xml:lang="en">
@@ -185,7 +186,9 @@
       <description xml:lang="en">
         Mainly supplied for backwards compatibility. A String without further restrications. Practicly this will result in textarea form entries.
       </description>
+      <!--
       <handler mimetype="text/html,application/xml+xhtml" name="org.mmbase.datatypes.handlers.html.AreaHandler" />
+      -->
       <pattern value="(?s)\A.*\z" />
     </specialization>
 
@@ -589,7 +592,9 @@
       Not so very big integer numbers. Common base for all kind of enumerations.
     </description>
     <class name="org.mmbase.datatypes.IntegerDataType" />
+    <!--
     <handler mimetype="text/html,application/xml+xhtml" name="org.mmbase.datatypes.handlers.html.IntegerHandler" />
+    -->
 
     <specialization id="dirs">
       <description xml:lang="en">
