@@ -4,7 +4,7 @@
           >
   <jsp:output omit-xml-declaration="true" />
   <div
-      class="mm_c c_mmexamples b_index ${requestScope['org.mmbase.componentClassName']}"
+      class="mm_c c_mmsite b_page ${requestScope['org.mmbase.componentClassName']}"
       id="${requestScope['org.mmbase.componentId']}">
     
     <mm:import externid="n" />
