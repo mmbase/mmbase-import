@@ -17,9 +17,11 @@ import org.apache.commons.fileupload.FileItem;
 import org.mmbase.util.functions.*;
 
 /**
+ * The most straight forward implementation in HTML for an input widget for a binary field is a
+ * 'input' tag with type 'file'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BinaryHandler.java,v 1.1 2009-04-17 16:54:49 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.2 2009-04-17 17:37:54 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -56,16 +58,13 @@ public class BinaryHandler extends HtmlHandler {
      */
     @Override
     protected Object getFieldValue(Request request, Node node, Field field)  {
-        /*
-        if (MultiPart.isMultipart(tag.getPageContext())) {
-            //ContextTag ct = tag.getContextTag();
-            FileItem bytes = ct.getFileItem(prefix(field.getName()));
+        if (MultiPart.isMultipart(request.getProperty(Parameter.REQUEST))) {
+            FileItem bytes = MultiPart.getMultipartRequest(request.getProperty(Parameter.REQUEST),
+                                                           request.getProperty(Parameter.RESPONSE)).getFileItem(request.getName(field));
             return bytes;
         } else {
             return null;
         }
-        */
-        return super.getFieldValue(request, node, field);
     }
 
 
