@@ -94,7 +94,7 @@
       </datatype>
     </field>
 
-    <field name="channesl">
+    <field name="channels">
       <descriptions>
         <description xml:lang="en">
           Number of channels in this stream.
@@ -186,5 +186,7 @@
       </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
+
+
   </fieldlist>
 </builder>
