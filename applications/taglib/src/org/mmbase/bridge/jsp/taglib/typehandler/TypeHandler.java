@@ -21,7 +21,7 @@ import org.mmbase.storage.search.Constraint;
  *
  * @author Gerard van de Looi
  * @since  MMBase-1.6
- * @version $Id: TypeHandler.java,v 1.11 2008-11-19 18:33:54 michiel Exp $
+ * @version $Id: TypeHandler.java,v 1.12 2009-04-17 15:47:56 michiel Exp $
  */
 
 public interface TypeHandler {
@@ -29,12 +29,12 @@ public interface TypeHandler {
      * Produces an form input field for the given Node, and Field.
      * @param search if true, then a search field is produced.
      */
-    public String htmlInput(Node node, Field field, boolean search) throws JspTagException;
+    String htmlInput(Node node, Field field, boolean search) throws JspTagException;
 
     /**
      * @since MMBase-1.9.1
      */
-    public String htmlInputId(Node node, Field field) throws JspTagException;
+    String htmlInputId(Node node, Field field) throws JspTagException;
 
 
     /**
@@ -42,34 +42,34 @@ public interface TypeHandler {
      * @param errors Whether to output the error messages (otherwises only invalidates form)
      * @since MMBase-1.8
      */
-    public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException;
+    String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException;
 
     /**
      * returns true if setValue happened.
      */
 
-    public boolean useHtmlInput(Node node, Field field) throws JspTagException;
+    boolean useHtmlInput(Node node, Field field) throws JspTagException;
 
 
     /**
      * @return Piece of SQL. null if no constraint.
      *
      */
-    public String whereHtmlInput(Field field) throws JspTagException;
+    String whereHtmlInput(Field field) throws JspTagException;
 
     /**
      * @since MMBase-1.7
      */
-    public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException;
+    void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException;
 
     /**
      * @since MMBase-1.7
      */
-    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException;
+    Constraint whereHtmlInput(Field field, Query query) throws JspTagException;
 
     /**
      * @since MMBase-1.8
      */
-    public void init();
+    void init();
 
 }
