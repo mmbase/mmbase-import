@@ -22,10 +22,10 @@ import org.mmbase.util.logging.*;
 
 /**
  * A block url converter is an url converter which encoded in the URL precisely one block. Most
- * URLConverters would probably like this, and can extend from this.
+ * URLConverters would probably be like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BlockUrlConverter.java,v 1.18 2009-01-31 07:46:27 michiel Exp $
+ * @version $Id: BlockUrlConverter.java,v 1.19 2009-04-17 19:35:55 michiel Exp $
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */
