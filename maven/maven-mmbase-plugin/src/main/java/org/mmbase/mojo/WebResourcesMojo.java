@@ -31,86 +31,95 @@ import org.codehaus.plexus.util.FileUtils;
 
 public class WebResourcesMojo extends AbstractMojo {
 
-   private static final String[] DEFAULT_INCLUDES = { "**/**" };
+    private static final String[] DEFAULT_INCLUDES = { "**/**" };
 
-   /**
-    * @parameter default-value="${project}"
-    * @required
-    * @readonly
-    */
-   private MavenProject project;
+    /**
+     * @parameter default-value="${project}"
+     * @required
+     * @readonly
+     */
+    private MavenProject project;
 
-   /**
-    * The directory where the webapp is built.
-    *
-    * @parameter expression="${project.build.directory}/${project.build.finalName}"
-    */
-   private File webappDirectory;
+    /**
+     *
+     * @parameter expression=true
+     * @required
+     */
+    private boolean useDefaultExcludes;
 
-   public void execute() throws MojoExecutionException {
-      String packaging = project.getPackaging();
-      if (packaging.equals("war")) {
-         try {
-            File templates = new File(project.getBasedir(), "templates");
-            if (templates.isDirectory()) {
-               String templatesTarget = (String) project.getProperties().get("templatesTarget");
-               if (templatesTarget == null) {
-                  templatesTarget = "mmbase/"
-                        + project.getArtifactId().substring("mmbase-".length());
-               }
-               templatesTarget = templatesTarget.replace('/', File.separatorChar);
-               File target = new File(webappDirectory, templatesTarget);
-               copyDirectory(templates, target);
+
+    /**
+     * The directory where the webapp is built.
+     *
+     * @parameter expression="${project.build.directory}/${project.build.finalName}"
+     */
+    private File webappDirectory;
+
+    public void execute() throws MojoExecutionException {
+        String packaging = project.getPackaging();
+        if (packaging.equals("war")) {
+            try {
+                File templates = new File(project.getBasedir(), "templates");
+                if (templates.isDirectory()) {
+                    String templatesTarget = (String) project.getProperties().get("templatesTarget");
+                    if (templatesTarget == null) {
+                        templatesTarget = "mmbase/"
+                            + project.getArtifactId().substring("mmbase-".length());
+                    }
+                    templatesTarget = templatesTarget.replace('/', File.separatorChar);
+                    File target = new File(webappDirectory, templatesTarget);
+                    copyDirectory(templates, target);
+                }
+                File blocks = new File(project.getBasedir(), "blocks");
+                if (blocks.isDirectory()) {
+                    String blocksTarget = (String) project.getProperties().get("blocksTarget");
+                    if (blocksTarget == null) {
+                        blocksTarget =
+                            "mmbase" + File.separator + "components" + File.separator
+                            + project.getArtifactId().substring("mmbase-".length());
+                    }
+                    blocksTarget = blocksTarget.replace('/', File.separatorChar);
+                    File target = new File(webappDirectory, blocksTarget);
+                    copyDirectory(blocks, target);
+                }
+
+                File mmbase = new File(project.getBasedir(), "mmbase");
+                if (mmbase.isDirectory()) {
+                    File target = new File(webappDirectory, "mmbase");
+                    copyDirectory(mmbase, target);
+                }
+            } catch (IOException ioe) {
+                throw new MojoExecutionException(ioe.getMessage(), ioe);
             }
-            File blocks = new File(project.getBasedir(), "blocks");
-            if (blocks.isDirectory()) {
-               String blocksTarget = (String) project.getProperties().get("blocksTarget");
-               if (blocksTarget == null) {
-                   blocksTarget =
-                       "mmbase" + File.separator + "components" + File.separator
-                       + project.getArtifactId().substring("mmbase-".length());
-               }
-               blocksTarget = blocksTarget.replace('/', File.separatorChar);
-               File target = new File(webappDirectory, blocksTarget);
-               copyDirectory(blocks, target);
+        }
+    }
+
+    private void copyDirectory(File srcPath, File dstPath) throws IOException {
+        DirectoryScanner scanner = new DirectoryScanner();
+
+        scanner.setBasedir(srcPath);
+        scanner.setIncludes(DEFAULT_INCLUDES);
+        if (useDefaultExcludes) {
+            scanner.addDefaultExcludes();
+        }
+        scanner.scan();
+
+        List<String> includedFiles = Arrays.asList(scanner.getIncludedFiles());
+
+        getLog().info("Copying " + +includedFiles.size() + " resource"
+                      + (includedFiles.size() != 1 ? "s" : "")
+                      + (dstPath == null ? "" : " to " + dstPath));
+
+        for (Iterator<String> j = includedFiles.iterator(); j.hasNext();) {
+            String name = j.next();
+
+            File source = new File(srcPath, name);
+            File destinationFile = new File(dstPath, name);
+            if (!destinationFile.getParentFile().exists()) {
+                destinationFile.getParentFile().mkdirs();
             }
-
-            File mmbase = new File(project.getBasedir(), "mmbase");
-            if (mmbase.isDirectory()) {
-                File target = new File(webappDirectory, "mmbase");
-                copyDirectory(mmbase, target);
-            }
-         }
-         catch (IOException ioe) {
-            throw new MojoExecutionException(ioe.getMessage(), ioe);
-         }
-      }
-   }
-
-   private void copyDirectory(File srcPath, File dstPath) throws IOException {
-      DirectoryScanner scanner = new DirectoryScanner();
-
-      scanner.setBasedir(srcPath);
-      scanner.setIncludes(DEFAULT_INCLUDES);
-      scanner.addDefaultExcludes();
-      scanner.scan();
-
-      List<String> includedFiles = Arrays.asList(scanner.getIncludedFiles());
-
-      getLog().info("Copying " + +includedFiles.size() + " resource"
-                  + (includedFiles.size() != 1 ? "s" : "")
-                  + (dstPath == null ? "" : " to " + dstPath));
-
-      for (Iterator<String> j = includedFiles.iterator(); j.hasNext();) {
-         String name = j.next();
-
-         File source = new File(srcPath, name);
-         File destinationFile = new File(dstPath, name);
-         if (!destinationFile.getParentFile().exists()) {
-            destinationFile.getParentFile().mkdirs();
-         }
-         FileUtils.copyFile(source, destinationFile, null, null);
-      }
-   }
+            FileUtils.copyFile(source, destinationFile, null, null);
+        }
+    }
 
 }
