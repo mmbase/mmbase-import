@@ -17,6 +17,21 @@
 
   <build>
     <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <groupId>org.mmbase.maven</groupId>
+        <artifactId>maven-mmbase-plugin</artifactId>
+        <version>1.9-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>include-default-excludes</id>
+            <goals>
+              <goal>include-default-excludes</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
@@ -52,5 +67,18 @@
     </repository>
 
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </pluginRepository>
+  </pluginRepositories>
+
 
 </project>
