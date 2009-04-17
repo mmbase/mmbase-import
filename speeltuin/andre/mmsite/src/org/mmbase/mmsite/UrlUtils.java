@@ -37,9 +37,9 @@ public final class UrlUtils {
 	}
 	
 	/**
-	 * Nodes from here to root.
+	 * Nodes starting form this node to the root, these require a field 'path'.
 	 *
-	 * @param  node	A node of soem type with a field 'path'
+	 * @param  node	A node of some type with a field 'path'
 	 * @return list with all the nodes leading to the homepage excluding this node.
 	 */
 	public static NodeList listNodes2Root(Node node) {
@@ -48,7 +48,7 @@ public final class UrlUtils {
 	}
 
 	/**
-	 * Retrieve a pages node by the content of its path field.
+	 * Retrieve a pages node with a certain path.
 	 *
 	 * @param   cloud   MMBase cloud
 	 * @param   path    Value of field path, f.e. '/news/new'
@@ -65,11 +65,11 @@ public final class UrlUtils {
 	}
 	
 	/**
-	 * Nodes from here to the root. It examines the field 'path'.
+	 * Nodes from here to the root while examining the field 'path'.
 	 * The parent of a node with '/news/article/some is the one 
 	 * with path '/news/article' etc.
 	 *
-	 * @param  node	A node of some type with a field 'path'
+	 * @param  node	A node of some type with 'path' like '/news/article'
 	 * @return nodes leading to homepage/root of the site
 	 */
 	protected static NodeList listNodes2Root(Node node, NodeManager nm) {
@@ -104,7 +104,7 @@ public final class UrlUtils {
 	}
 
 	/**
-	 * Is the link to an external site or not.
+	 * Does this url link to an external site or not.
 	 *
 	 * @param  req HttpServletRequest
 	 * @param  url Some link
