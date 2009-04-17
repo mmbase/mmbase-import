@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRequest.java,v 1.1 2008-07-28 16:47:31 michiel Exp $
+ * @version $Id: AbstractRequest.java,v 1.2 2009-04-17 15:43:39 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -25,7 +25,7 @@ public abstract class AbstractRequest implements Request {
 
     private boolean valid = true;
     private final Map<Parameter<?>, Object> properties = new HashMap<Parameter<?>, Object>();
-    
+
     public AbstractRequest() {
     }
 
