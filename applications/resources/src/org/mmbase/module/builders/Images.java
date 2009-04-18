@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.12 2008-09-23 07:42:48 michiel Exp $
+ * @version $Id: Images.java,v 1.13 2009-04-18 08:55:39 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -40,10 +40,13 @@ public class Images extends AbstractImages {
 
     // This cache connects templates (or ckeys, if that occurs), with node numbers,
     // to avoid querying icaches.
-    private CKeyCache templateCacheNumberCache = new CKeyCache(500) {
-        public String getName()        { return "CkeyNumberCache"; }
-        public String getDescription() { return "Connection between image conversion templates and icache node numbers"; }
+    private static CKeyCache templateCacheNumberCache = new CKeyCache(500) {
+            public String getName()        { return "CkeyNumberCache"; }
+            public String getDescription() { return "Connection between image conversion templates and icache node numbers"; }
         };
+    static {
+        templateCacheNumberCache.putCache();
+    }
 
     public final static Parameter[] CACHE_PARAMETERS = {
         new Parameter("template",  String.class)
@@ -62,9 +65,6 @@ public class Images extends AbstractImages {
     };
 
 
-    public Images() {
-        templateCacheNumberCache.putCache();
-    }
 
     /**
      * Supposed image type if not could be determined (configurable)
@@ -77,6 +77,7 @@ public class Images extends AbstractImages {
      * Read configurations (imageConvertClass, maxConcurrentRequest),
      * checks for 'icaches', inits the request-processor-pool.
      */
+    @Override
     public boolean init() {
         if (oType != -1) return true; // inited already
 
@@ -105,6 +106,11 @@ public class Images extends AbstractImages {
         return true;
     }
 
+    @Override
+    public void shutdown() {
+        templateCacheNumberCache.clear();
+    }
+
     /**
      * The executeFunction of this builder adds the 'cache' function.
      * The cache function accepts a conversion template as argument and returns the cached image
@@ -112,6 +118,7 @@ public class Images extends AbstractImages {
      *
      * @since MMBase-1.6
      */
+    @Override
     protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (log.isDebugEnabled()) {
             log.debug("executeFunction " + function + "(" + args + ") of images builder on node " + node.getNumber());
@@ -234,6 +241,7 @@ public class Images extends AbstractImages {
      * The GUI-indicator of an image-node also needs a res/req object.
      * @since MMBase-1.6
      */
+    @Override
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String alt, Parameters args) {
         log.debug("gui for image");
         int num = node.getNumber();
@@ -345,18 +353,19 @@ public class Images extends AbstractImages {
             "\"" + title + " /></a>";
     }
 
-    // javadoc inherited
+    @Override
     protected String getSGUIIndicatorForNode(MMObjectNode node, Parameters args) {
         return getGUIIndicatorWithAlt(node, node.getStringValue("title"), args);
     }
 
 
-    // javadoc inherited
+    @Override
     public String getDefaultImageType() {
         return defaultImageType;
     }
 
-    // javadoc inherited
+
+    @Override
     public boolean commit(MMObjectNode node) {
         Collection<String> changed = node.getChanged();
         // look if we need to invalidate the image cache...
@@ -379,6 +388,7 @@ public class Images extends AbstractImages {
      * Remove a node from the cloud.
      * @param node The node to remove.
      */
+    @Override
     public void removeNode(MMObjectNode node) {
         invalidateImageCache(node);
         templateCacheNumberCache.remove(node.getNumber());
@@ -390,6 +400,7 @@ public class Images extends AbstractImages {
     /* (non-Javadoc)
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
+    @Override
     public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
             log.debug("Changed " + event.getMachine() + " " + event.getNodeNumber() +
