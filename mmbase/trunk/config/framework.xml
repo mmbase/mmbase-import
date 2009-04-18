@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/framework
                         http://www.mmbase.org/xmlns/framework.xsd">
   <!--
-      version: $Id: framework.xml,v 1.15 2008-10-30 09:55:09 michiel Exp $
+      version: $Id: framework.xml,v 1.16 2009-04-18 07:04:48 michiel Exp $
   -->
   <!--
       An MMBase framework provides the context in which components are rendered.
@@ -26,16 +26,6 @@
   <description xml:lang="en">
     Short description of this framework. This is the BasicFramework.
   </description>
-
-  <urlconverter class="org.mmbase.mynews.MyNewsUrlConverter">
-    <description xml:lang="en">
-      The urlconverter that belongs to the MyNews example. It makes the example
-      magazine available at '/magazine' or another directory specified below.
-    </description>
-    <param name="directory">magazine</param>
-    <param name="useTitle">true</param>
-    <param name="dateDepth">2</param>
-  </urlconverter>
 
   <urlconverter class="org.mmbase.framework.basic.MMBaseUrlConverter">
     <description xml:lang="en">
