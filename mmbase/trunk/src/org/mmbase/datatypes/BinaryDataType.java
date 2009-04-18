@@ -10,6 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 import org.mmbase.util.logging.*;
+import org.mmbase.util.SerializableInputStream;
+import org.mmbase.bridge.*;
+import java.io.InputStream;
 import java.util.regex.Pattern;
 import org.apache.commons.fileupload.FileItem;
 
@@ -17,14 +20,14 @@ import org.apache.commons.fileupload.FileItem;
  * The datatype associated with byte arrays ('blobs').
  *
  * @author Pierre van Rooden
- * @version $Id: BinaryDataType.java,v 1.15 2008-09-01 17:39:44 michiel Exp $
+ * @version $Id: BinaryDataType.java,v 1.16 2009-04-18 07:15:40 michiel Exp $
  * @since MMBase-1.8
  */
-public class BinaryDataType extends AbstractLengthDataType<byte[]> {
+public class BinaryDataType extends AbstractLengthDataType<InputStream> {
 
     private static final Logger log = Logging.getLoggerInstance(BinaryDataType.class);
 
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L;
 
     protected Pattern validMimeTypes = Pattern.compile(".*");
 
@@ -33,9 +36,18 @@ public class BinaryDataType extends AbstractLengthDataType<byte[]> {
      * @param name the name of the data type
      */
     public BinaryDataType(String name) {
-        super(name, byte[].class);
+        super(name, InputStream.class);
     }
 
+
+    @Override
+    protected InputStream cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
+        Object preCast = preCast(value, cloud, node, field);
+        if (preCast == null) return null;
+        return org.mmbase.util.Casting.toSerializableInputStream(preCast);
+    }
+
+    @Override
     protected void inheritProperties(BasicDataType origin) {
         super.inheritProperties(origin);
         if (origin instanceof BinaryDataType) {
@@ -43,7 +55,7 @@ public class BinaryDataType extends AbstractLengthDataType<byte[]> {
         }
     }
 
-    //
+    @Override
     public long getLength(Object value) {
         if (value == null) return 0;
         if (value instanceof byte[]) {
@@ -63,10 +75,15 @@ public class BinaryDataType extends AbstractLengthDataType<byte[]> {
         } else if (value instanceof FileItem) {
             FileItem fi = (FileItem) value;
             return fi.getSize();
+        } else if (value instanceof SerializableInputStream) {
+            SerializableInputStream sis = (SerializableInputStream) value;
+            return sis.getSize();
         } else {
             throw new RuntimeException("Value " + value + " of " + getName() + " is not a byte array but" + (value == null ? "null" : value.getClass().getName()));
         }
     }
+
+
 
     /**
      * Returns a regular expression which describes wich mime-types are valid for blobs with this
