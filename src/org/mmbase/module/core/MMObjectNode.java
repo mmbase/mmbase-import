@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.232 2009-04-16 13:48:09 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.233 2009-04-18 07:20:20 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable, org.mmbase.util.PublicCloneable<MMObjectNode> { // Comparable<MMObjectNode>  {
@@ -781,6 +781,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
 
         /*
+          MMB-1808
         if (value instanceof InputStream) {
             value = useInputStream(fieldName, (InputStream) value);
         }
@@ -918,7 +919,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             // cannot return it directly, it would kill the inputstream, and perhaps it cannot be saved in db anymore then.
             // Sad, we have a buffer always now.
             // XXX think of something that the buffer is only needed if actually used a second time
-            //     help-file, i think
+            //      May be we don't have to do this if the InputStream#markSupported()
+            //      We could #reset() then if needed
             return new ByteArrayInputStream(useInputStream(fieldName, (InputStream) value));
         }
 
