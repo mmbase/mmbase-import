@@ -60,7 +60,7 @@ public class FilledNodeTest extends NodeTest {
         node = cloud.getNodeManager(getNodeManager()).createNode();
         Node typedefNode = cloud.getNodeManager("bb");
         assertTrue(typedefNode != null);
-        byte[] bytes = { 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33 };
+        byte[] bytes = { 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33 }; // 'Hello World!'
         node.setValue("binaryfield", bytes);
         node.setValue("doublefield", new Double(Double.MAX_VALUE));
         node.setValue("floatfield", new Float(Float.MAX_VALUE));
@@ -85,7 +85,6 @@ public class FilledNodeTest extends NodeTest {
     }
 
     public void tearDown() {
-        // Remove test node.
         node.delete();
     }
 
@@ -95,7 +94,7 @@ public class FilledNodeTest extends NodeTest {
             if (element.equals("binary")) {
                 byte[] bytes = (byte[])object;
                 assertTrue("getValue on byte field should give 'Hello World!' but gave '" + new String(bytes) + "'",
-                    "Hello world!".equals(new String(bytes)));
+                           "Hello world!".equals(new String(bytes)));
             } else if (element.equals("double")) {
                 assertTrue("getValue on double field should give " +  Double.MAX_VALUE + " but gave " + object,
                     new Double(Double.MAX_VALUE).compareTo((Double)object) == 0);
@@ -140,7 +139,7 @@ public class FilledNodeTest extends NodeTest {
             }
         }
     }
-
+    @Override
     public void testGetBinaryValue() {
         for (String element : fieldTypes) {
             byte[] bytes = node.getByteValue(element + "field");
@@ -497,5 +496,4 @@ public class FilledNodeTest extends NodeTest {
             }
        }
     }
-
 }
