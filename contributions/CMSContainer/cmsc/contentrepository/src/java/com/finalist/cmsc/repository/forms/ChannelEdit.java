@@ -37,7 +37,8 @@ public class ChannelEdit extends MMBaseFormlessAction {
       }
       else {
          SecurityUtil.clearUserRoles(cloud);
-         ActionForward ret = mapping.findForward(SUCCESS);
+         String ewnodelastedited = getParameter(request, "ewnodelastedited");
+         ActionForward ret = new ActionForward(mapping.findForward(SUCCESS).getPath()+"?parentchannel="+ewnodelastedited+"&direction=down&refreshchannel=true");
          return ret;
       }
    }
