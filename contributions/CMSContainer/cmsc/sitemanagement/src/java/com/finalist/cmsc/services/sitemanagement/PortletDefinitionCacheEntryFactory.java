@@ -9,10 +9,11 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.services.sitemanagement;
 
-import java.io.Serializable;
 import java.util.List;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeIterator;
+import org.mmbase.bridge.NodeList;
 
 import com.finalist.cmsc.beans.MMBaseNodeMapper;
 import com.finalist.cmsc.beans.om.PortletDefinition;
@@ -26,7 +27,7 @@ public class PortletDefinitionCacheEntryFactory extends MMBaseCacheEntryFactory 
 
 
    @Override
-   protected Serializable loadEntry(Serializable key) throws Exception {
+   protected Object loadEntry(Object key) throws Exception {
       Node definitionNode = getNode(key);
       if (definitionNode == null || !PortletUtil.isDefinition(definitionNode)) {
          return null;
