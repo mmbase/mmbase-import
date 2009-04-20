@@ -16,18 +16,6 @@
     <return type="org.mmbase.bridge.NodeList" /> 
   </function>
 
-  <function name="crumbspages">
-	<description>
-      Returns a NodeList containing page (!) nodes travelling the path to the 'root' node (homepage).
-      Can be used to create a crumbpath. Does not include the original node.
-	</description>
-	<type>class</type>
-	<class>org.mmbase.mmsite.UrlUtils</class>
-	<method>listPages2Root</method>
-	<param name="node" type="Node" description="A node f.e. of type page" />
-    <return type="org.mmbase.bridge.NodeList" /> 
-  </function>
-
   <function name="externallink">
 	<description>
       Returns true when the url entered is a link to an external website, 
