@@ -20,7 +20,7 @@ import org.apache.commons.fileupload.FileItem;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: SerializableInputStream.java,v 1.3 2009-04-17 20:17:27 michiel Exp $
+ * @version $Id: SerializableInputStream.java,v 1.4 2009-04-20 11:22:29 michiel Exp $
  * @todo IllegalStateException or so, if the inputstreas is used (already).
  */
 
@@ -83,6 +83,17 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     }
     public String getName() {
         return name;
+    }
+    public byte[] toByteArray() throws IOException {
+        if (wrapped.markSupported()) {
+            byte[] b =  toByteArray(wrapped);
+            wrapped.reset();
+            return b;
+        } else {
+            byte[] b =  toByteArray(wrapped);
+            wrapped = new ByteArrayInputStream(b);
+            return b;
+        }
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
