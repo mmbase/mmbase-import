@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.127 2009-04-17 20:19:42 michiel Exp $
+ * @version $Id: Casting.java,v 1.128 2009-04-20 11:22:29 michiel Exp $
  */
 
 import java.util.*;
@@ -407,6 +407,8 @@ public class Casting {
             return escape(escaper, (String) o);
         } else if (o instanceof CharSequence) {
             return new StringWrapper((CharSequence) o, escaper);
+        } else if (o instanceof InputStream) {
+            return escape(escaper, new String(toSerializableInputStream(o).toByteArray()));
         } else {
             return o;
         }
