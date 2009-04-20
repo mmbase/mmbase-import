@@ -48,6 +48,12 @@ See http://www.MMBase.org/license
           <include>INDEX</include>
         </includes>
       </resource>
+      <resource>
+        <directory>convertimage</directory>
+        <includes>
+          <include>**/*.jpg</include>
+        </includes>
+      </resource>
     </resources>
     <plugins>
       <plugin>
