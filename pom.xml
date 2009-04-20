@@ -165,7 +165,7 @@ See http://www.MMBase.org/license
       <artifactId>servlet-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
+      <groupId>${jsp.groupId}</groupId>
       <artifactId>jsp-api</artifactId>
     </dependency>
     <dependency>
