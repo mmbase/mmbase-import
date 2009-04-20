@@ -23,18 +23,6 @@ import org.mmbase.util.transformers.Identifier;
  */
 public final class UrlUtils {
 	private static final Logger log = Logging.getLoggerInstance(UrlUtils.class);
- 
-	/**
-	 * Nodes from this page to the root page (homepage).
-	 *
-	 * @param  node	A node of type 'page' with field 'path'
-	 * @return list with all the nodes leading to the homepage, excluding this node.
-	 */
-	public static NodeList listPages2Root(Node node) {
-		Cloud cloud = node.getCloud();
-		NodeManager nm = cloud.getNodeManager("pages");
-		return listNodes2Root(node, nm);
-	}
 	
 	/**
 	 * Nodes starting form this node to the root, these require a field 'path'.
@@ -66,10 +54,10 @@ public final class UrlUtils {
 	
 	/**
 	 * Nodes from here to the root while examining the field 'path'.
-	 * The parent of a node with '/news/article/some is the one 
-	 * with path '/news/article' etc.
+	 * The parent of a node with path '/news/article/some' is the one 
+	 * with '/news/article', then '/news' and last the homepage '/'.
 	 *
-	 * @param  node	A node of some type with 'path' like '/news/article'
+	 * @param  node	A node of certain type with field path
 	 * @return nodes leading to homepage/root of the site
 	 */
 	protected static NodeList listNodes2Root(Node node, NodeManager nm) {
