@@ -36,13 +36,13 @@
          unknown="false" validate="false">
          <forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false" />
          <forward name="returnurl" path="/editors/repository/ChannelCreate.do" redirect="false" />
-         <forward name="success" path="/editors/repository/refreshchannels.jsp" redirect="false" />
+         <forward name="success" path="/editors/repository/Content.do" redirect="false" />
       </action>
       <action path="/editors/repository/ChannelEdit" type="com.finalist.cmsc.repository.forms.ChannelEdit"
          unknown="false" validate="false">
          <forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false" />
          <forward name="returnurl" path="/editors/repository/ChannelEdit.do" redirect="false" />
-         <forward name="success" path="/editors/repository/refreshchannels.jsp" redirect="false" />
+         <forward name="success" path="/editors/repository/Content.do" redirect="false" />
       </action>
       <action path="/editors/repository/ChannelDelete" type="com.finalist.cmsc.repository.forms.ChannelDelete"
          unknown="false" validate="false">
