@@ -33,12 +33,12 @@
 		<div class="searchresult" id="searchresult" style="height: 340px;">
 			<!-- IE is too stupid to understand div.searchresult table -->
 			<table class="searchresult" cellspacing="0">	
-			  <c:forEach var="typedef" items="${typeList}" varStatus="status">
-				<tr id="item_${typedef.number}" number="${typedef.number}" onClick="doclick_search(this);" class="<c:if test='${(status.index mod 2) == 0}'>odd</c:if><c:if test='${(status.index mod 2) != 0}'>even</c:if>">
+			  <c:forEach var="contentType" items="${contentTypes}" varStatus="status">
+				<tr id="item_${contentType.id}" number="${contentType.id}" onClick="doclick_search(this);" class="<c:if test='${(status.index mod 2) == 0}'>odd</c:if><c:if test='${(status.index mod 2) != 0}'>even</c:if>">
 					<td style="display: none;">
-						<input id="cb_${typedef.number}" did="${typedef.number}" name="${typedef.number}" style="visibility: hidden;" type="checkbox">
+						<input id="cb_${contentType.id}" did="${contentType.id}" name="${contentType.id}" style="visibility: hidden;" type="checkbox">
 					</td>
-					<td>${typedef.name}</td>
+					<td>${contentType.name}</td>
 				</tr>
 			  </c:forEach>
 			</table>
