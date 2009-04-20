@@ -66,10 +66,23 @@ See http://www.MMBase.org/license
   <properties>
     <compiler.fork>false</compiler.fork>
 
+
     <servlet.version>2.4</servlet.version>
     <jsp.version>2.0</jsp.version>
-    <jstl.version>1.2</jstl.version>
+    <jsp.groupId>javax.servlet</jsp.groupId>
+    <jstl.version>1.1.2</jstl.version>
     <taglib-standard.version>1.1.2</taglib-standard.version>
+
+
+    <!-- MMBase 2.0?
+         -->
+    <!--
+    <servlet.version>2.5</servlet.version>
+    <jsp.version>2.1</jsp.version>
+    <jsp.groupId>javax.servlet.jsp</jsp.groupId>
+    <jstl.version>1.2</jstl.version>
+    -->
+
 
     <log4j.version>1.2.14</log4j.version>
 
@@ -535,7 +548,7 @@ See http://www.MMBase.org/license
       </dependency>
 
       <dependency>
-        <groupId>javax.servlet</groupId>
+        <groupId>${jsp.groupId}</groupId>
         <artifactId>jsp-api</artifactId>
         <version>${jsp.version}</version>
       </dependency>
@@ -617,7 +630,7 @@ See http://www.MMBase.org/license
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
+      <groupId>${jsp.groupId}</groupId>
       <artifactId>jsp-api</artifactId>
       <scope>provided</scope>
     </dependency>
