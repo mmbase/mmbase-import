@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * &lt;/urlconverter&gt;
  * 
  * @author Andr&eacute; van Toly
- * @version $Id: SiteUrlConverter.java,v 1.3 2009-04-17 13:48:59 andre Exp $
+ * @version $Id: SiteUrlConverter.java,v 1.4 2009-04-20 11:49:34 andre Exp $
  * @since MMBase-1.9
  */
 public class SiteUrlConverter extends DirectoryUrlConverter {
@@ -134,7 +134,5 @@ public class SiteUrlConverter extends DirectoryUrlConverter {
         }
         
     }
-
-	
 
 }
