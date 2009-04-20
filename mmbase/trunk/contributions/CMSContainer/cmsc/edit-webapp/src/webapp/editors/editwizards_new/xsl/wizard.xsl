@@ -474,6 +474,51 @@
           </tr>
         </table>
       </xsl:for-each>
+      <xsl:for-each select="command[@name=&apos;mysearch&apos;]">
+        <script type="text/javascript">
+        function searchtypedef(){
+            window.open('../../../../editors/typedef/TypedefAction.do?cmd=<xsl:value-of select="../command[@name=&apos;add-item&apos;]/@cmd" />&amp;objectnumber=<xsl:value-of select="../@number" />&amp;searchvalue=' + form[&quot;searchvalue&quot;].value, 'pageselector', 'width=401,height=401,status=yes,toolbar=no,titlebar=no,scrollbars=no,resizable=yes,menubar=no');
+        }
+        </script>
+        <table class="searchcontent">
+          <tr>
+            <xsl:if test="prompt">
+              <td class="searchprompt"><xsl:call-template name="prompt"/></td>
+            </xsl:if>
+            <td>
+              <xsl:call-template name="listsearch-age"/>
+            </td>
+            <td>
+              <xsl:call-template name="listsearch-fields"/>
+            </td>
+            <td>
+              <input type="text" name="searchterm_{../command[@name=&apos;add-item&apos;]/@cmd}" value="{search-filter[1]/default}" class="search" onChange="var s = form[&apos;searchfields_{../command[@name=&apos;add-item&apos;]/@cmd}&apos;]; s[s.selectedIndex].setAttribute(&apos;default&apos;, this.value); form[&apos;searchvalue&apos;].value = this.value; " />
+              <!-- on change the current value is copied back to the option's default, because of that, the user's search is stored between different types of search-actions -->
+              <input type="hidden" name="searchvalue" />
+            </td>
+            <td>
+              <a href="#" title="{$tooltip_search}" class="button">
+                <xsl:for-each select="@*">
+                  <xsl:copy/>
+                </xsl:for-each>
+                <xsl:attribute name="relationOriginNode"><xsl:value-of select="../@number" /></xsl:attribute>
+                <xsl:attribute name="onclick">javascript:searchtypedef();</xsl:attribute>
+                <xsl:choose>
+                  <xsl:when test="../action[@type=&apos;add&apos;]/relation/@role">
+                    <xsl:attribute name="relationRole"><xsl:value-of select="../action[@type=&apos;add&apos;]/relation/@role" /></xsl:attribute>
+                    <xsl:attribute name="relationCreateDir"><xsl:value-of select="../action[@type=&apos;add&apos;]/relation/@createdir" /></xsl:attribute>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:attribute name="relationRole"><xsl:value-of select="../action[@type=&apos;create&apos;]/relation/@role" /></xsl:attribute>
+                    <xsl:attribute name="relationCreateDir"><xsl:value-of select="../action[@type=&apos;create&apos;]/relation/@createdir" /></xsl:attribute>
+                  </xsl:otherwise>
+                </xsl:choose>
+                <xsl:call-template name="prompt_search"/>
+              </a>
+            </td>
+          </tr>
+        </table>
+      </xsl:for-each>
       <xsl:for-each select="command[@name=&apos;assetsselector&apos;]">
         <table class="searchcontent">
           <tr>
@@ -677,6 +722,10 @@
   </xsl:template>
 
   <xsl:template match="command[@name=&apos;search&apos;]" mode="listnewbuttons">
+     <!-- Search is handled by the listsearch template -->
+  </xsl:template>
+  
+  <xsl:template match="command[@name=&apos;mysearch&apos;]" mode="listnewbuttons">
      <!-- Search is handled by the listsearch template -->
   </xsl:template>
   
