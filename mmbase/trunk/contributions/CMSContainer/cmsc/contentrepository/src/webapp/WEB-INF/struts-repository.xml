@@ -282,6 +282,13 @@
          <forward name="dosearch" path="/editors/repository/AssetSearchAction.do" redirect="false" />
          <forward name="insertAsset" path="/editors/resources/attachmentsearch.jsp" redirect="false" />
       </action>
+
+      <!-- ==== Typedef ==== -->
+      <action path="/editors/contenttype/ContentTypeAction"
+              type="com.finalist.cmsc.contenttype.forms.ContentTypeAction" scope="session"
+              unknown="false" validate="false">
+          <forward name="success" path="/editors/typedef/typelist.jsp" redirect="false"/>
+      </action>
    </action-mappings>
 
    <message-resources parameter="cmsc-repository" key="REPOSITORY" />
