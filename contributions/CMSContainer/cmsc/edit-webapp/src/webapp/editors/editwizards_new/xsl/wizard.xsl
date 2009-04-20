@@ -474,10 +474,10 @@
           </tr>
         </table>
       </xsl:for-each>
-      <xsl:for-each select="command[@name=&apos;mysearch&apos;]">
+      <xsl:for-each select="command[@name=&apos;contenttypeselector&apos;]">
         <script type="text/javascript">
         function searchtypedef(){
-            window.open('../../../../editors/typedef/TypedefAction.do?cmd=<xsl:value-of select="../command[@name=&apos;add-item&apos;]/@cmd" />&amp;objectnumber=<xsl:value-of select="../@number" />&amp;searchvalue=' + form[&quot;searchvalue&quot;].value, 'pageselector', 'width=401,height=401,status=yes,toolbar=no,titlebar=no,scrollbars=no,resizable=yes,menubar=no');
+            window.open('../../../../editors/contenttype/ContentTypeAction.do?cmd=<xsl:value-of select="../command[@name=&apos;add-item&apos;]/@cmd" />&amp;objectnumber=<xsl:value-of select="../@number" />&amp;searchvalue=' + form[&quot;searchvalue&quot;].value, 'pageselector', 'width=401,height=401,status=yes,toolbar=no,titlebar=no,scrollbars=no,resizable=yes,menubar=no');
         }
         </script>
         <table class="searchcontent">
@@ -725,7 +725,7 @@
      <!-- Search is handled by the listsearch template -->
   </xsl:template>
   
-  <xsl:template match="command[@name=&apos;mysearch&apos;]" mode="listnewbuttons">
+  <xsl:template match="command[@name=&apos;contenttypeselector&apos;]" mode="listnewbuttons">
      <!-- Search is handled by the listsearch template -->
   </xsl:template>
   

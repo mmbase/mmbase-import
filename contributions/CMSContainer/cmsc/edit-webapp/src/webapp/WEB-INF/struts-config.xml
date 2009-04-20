@@ -13,14 +13,6 @@
 	<!-- ========== Global Forward Definitions =================================== -->
 	<!-- ========== Action Mapping Definitions =================================== -->
 	<action-mappings>
-
-        <!-- ==== Typedef ==== -->
-
-        <action path="/editors/typedef/TypedefAction"
-                type="com.finalist.cmsc.typedef.forms.TypedefAction" scope="session"
-                unknown="false" validate="false">
-            <forward name="success" path="/editors/typedef/typelist.jsp" redirect="false"/>
-        </action>
 	</action-mappings>
 
 	<message-resources parameter="cmsc" key="CMSC" />
