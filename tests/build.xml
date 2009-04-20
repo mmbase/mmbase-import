@@ -11,32 +11,15 @@
   <!-- Read customized values if available -->
   <property file="build.properties" />
 
-  <!-- Default values for properties that can be customized -->
-  <property name="mmbase.source.dir" value=".." />
-  <property name="source.dir"   location="${mmbase.source.dir}" />
 
-  <property file="${source.dir}/build.properties" />
-
-  <property name="target.dir"    value="${source.dir}/target" />
-  <property name="download.dir" value="${source.dir}/build/download" />
-  <property name="expand.dir"   value="${download.dir}/expanded" />
-
-  <!-- use the build.properties.default from mmbase to define where
-  jars are located -->
-    <property file="${mmbase.source.dir}/build.properties.default"/>
-
-  <property name="tests.source.dir"   location="." />
-  <property name="tests.build.dir" value="${tests.source.dir}/build" />
-  <property name="tests.work.dir"    value="${tests.source.dir}/work" />
+  <property name="target.dir"            location="target" />
+  <property name="tests.source.dir"        location="." />
+  <property name="tests.work.dir"           location="work" />
   <property name="tests.database.dir"    value="${tests.work.dir}/data" />
+  <property name="version"                value="1.9-SNAPSHOT" />
 
-  <property name="lib"             location="lib" />
-  <property name="jardest"         value="${lib}" />
-  <property name="tests.lib"       value="${tests.build.dir}/lib" />
-  <property name="mmbasetest.jar"  value="${tests.lib}/mmbase-test.jar" />
   <property name="ui.class" value="junit.textui.TestRunner" />
 
-  <import file="../install-dependency.xml" />
 
   <target name="clean.database">
     <mkdir dir="${tests.database.dir}"/>
@@ -52,7 +35,7 @@
       <arg value="-dbname.0" />
       <arg value="test" />
       <classpath>
-        <fileset dir="${lib}">
+        <fileset dir="target/dependency">
           <include name="hsqldb*.jar" />
         </fileset>
       </classpath>
@@ -70,27 +53,6 @@
   </target>
 
 
-  <target name="local.download" unless="no">
-    <antcall target="mmbase.jar" />
-    <antcall target="install.jar">
-      <param name="name" value="mmbase-resources" />
-    </antcall>
-    <antcall target="install.jar">
-      <param name="name" value="mmbase-rmmci" />
-    </antcall>
-    <antcall target="rmmci-client" />
-    <antcall target="install.jar">
-      <param name="name" value="mmbase-clustering" />
-    </antcall>
-    <antcall target="install.jar">
-      <param name="name" value="mmbase-cloudcontext" />
-    </antcall>
-    <antcall target="install.jar">
-      <param name="name" value="mmbase-richtext" />
-    </antcall>
-    <antcall target="vpro-wizards"/>
-  </target>
-
 
   <target name="vpro-wizards">
     <mkdir dir="__temp"/> <!-- wtf ? -->
@@ -106,97 +68,65 @@
 
 
 
-  <target name="download" unless="no" depends="local.download">
-    <echo message="downloading" />
-    <mkdir dir="${lib}" />
-    <antcall target="junit" />
-    <antcall target="servletapi" />
-    <antcall target="hsqldb" />
-    <antcall target="commons-fileupload" />
-    <antcall target="log4j" />
-    <property name="no" value="yes" />
-  </target>
 
   <target name="init">
-    <antcall target="download" inheritRefs="true"/>
+    <echo message="Initing. Testing mmbase with java ${java.version}" />
+    <path id="run.classpath">
+      <fileset dir="target">
+        <include name="mmbase-tests-1.jar" />
+      </fileset>
+      <fileset dir="target/dependency">
+        <include name="junit*.jar" />
+        <include name="hsqldb*.jar" />
+        <include name="log4j*.jar" />
+        <include name="servlet-api*.jar" />
+        <include name="commons-fileupload*.jar" />
+        <include name="mmbase-resources*.jar" />
+        <include name="mmbase-richtext*.jar" />
+        <include name="mmbase-${version}.jar" />
+      </fileset>
+    </path>
+    <path id="run.classpath.vpro-wizards">
+      <path refid="run.classpath" />
+      <fileset dir="target/dependency">
+        <include name="mmbase-vpro-wizards*.jar" />
+        <include name="spring*.jar" />
+        <include name="servletapi*.jar" />
+        <include name="commons-*.jar" />
+        <include name="collections-generic*.jar" />
+      </fileset>
+    </path>
+    <path id="run.classpath.rmmci">
+      <path refid="run.classpath"/>
+      <fileset dir="target/dependency">
+        <include name="mmbase-rmmci-${version}.jar" />
+      </fileset>
+    </path>
+    <path id="run.classpath.clustering">
+      <path refid="run.classpath.rmmci"/>
+      <fileset dir="target/dependency">
+        <include name="mmbase-clustering-*.jar" />
+      </fileset>
+    </path>
+    <path id="run.classpath.cloudcontext">
+      <path refid="run.classpath"/>
+      <fileset dir="target/dependency">
+        <include name="mmbase-cloudcontext-*.jar" />
+      </fileset>
+    </path>
+    <path id="run.rmmci.client">
+      <fileset dir="target">
+        <include name="mmbase-tests-1.jar" />
+      </fileset>
+      <fileset dir="target/dependency">
+        <include name="junit*.jar" />
+        <include name="log4j*.jar" />
+        <include name="servletapi*.jar" />
+        <include name="commons-fileupload*.jar" />
+        <include name="mmbase-rmmci-${version}-client.jar" />
+      </fileset>
+    </path>
 
-    <mkdir dir="${tests.lib}" />
-    <mkdir dir="${tests.work.dir}"/>
-
-    <echo message="Initing. Testing mmbase version ${version} with java ${java.version}" />
-
-    <available property="dummy" classname="dummy">
-      <classpath id="compile.classpath">
-        <fileset dir="${lib}">
-          <include name="mmbase-vpro-wizards*.jar" />
-          <include name="spring*.jar" />
-          <include name="commons-*.jar" />
-          <include name="servletapi*.jar" />
-          <include name="junit*.jar"/>
-          <include name="mmbase-${version}.jar"/>
-          <include name="mmbase-cloudcontext-${version}.jar"/>
-          <include name="mmbase-resources-${version}.jar"/>
-          <include name="hsqldb-*.jar"/>
-        </fileset>
-      </classpath>
-      <classpath id="run.classpath">
-        <pathelement location="classes" />
-        <fileset dir="${lib}">
-          <include name="junit*.jar" />
-          <include name="hsqldb*.jar" />
-          <include name="log4j*.jar" />
-          <include name="servletapi*.jar" />
-          <include name="commons-fileupload*.jar" />
-          <include name="mmbase-resources*.jar" />
-          <include name="mmbase-richtext*.jar" />
-          <include name="mmbase-${version}.jar" />
-        </fileset>
-        <fileset dir="${tests.lib}">
-          <include name="mmbase-test.jar" />
-        </fileset>
-      </classpath>
-      <classpath id="run.classpath.vpro-wizards">
-        <path refid="run.classpath" />
-        <fileset dir="${lib}">
-          <include name="mmbase-vpro-wizards*.jar" />
-          <include name="spring*.jar" />
-          <include name="servletapi*.jar" />
-          <include name="commons-*.jar" />
-          <include name="collections-generic*.jar" />
-        </fileset>
-      </classpath>
-      <classpath id="run.classpath.rmmci">
-        <path refid="run.classpath"/>
-        <fileset dir="${lib}">
-          <include name="mmbase-rmmci-${version}.jar" />
-        </fileset>
-      </classpath>
-      <classpath id="run.classpath.clustering">
-        <path refid="run.classpath.rmmci"/>
-        <fileset dir="${lib}">
-          <include name="mmbase-clustering-*.jar" />
-        </fileset>
-      </classpath>
-      <classpath id="run.classpath.cloudcontext">
-        <path refid="run.classpath"/>
-        <fileset dir="${lib}">
-          <include name="mmbase-cloudcontext-*.jar" />
-        </fileset>
-      </classpath>
-      <classpath id="run.rmmci.client">
-        <fileset dir="${lib}">
-          <include name="junit*.jar" />
-          <include name="log4j*.jar" />
-          <include name="servletapi*.jar" />
-          <include name="commons-fileupload*.jar" />
-          <include name="mmbase-rmmci-client-*.jar" />
-        </fileset>
-        <fileset dir="${tests.lib}">
-          <include name="mmbase-test.jar" />
-        </fileset>
-      </classpath>
-    </available>
-    <echo level="debug" message="${run.classpath}" />
   </target>
 
 
@@ -204,180 +134,12 @@
   <!-- Clean the JUnit test environment                                    -->
   <!-- =================================================================== -->
   <target name="clean" description="Clean the test environment">
-    <delete dir="${tests.build.dir}"/>
     <delete dir="${tests.work.dir}"/>
   </target>
 
 
 
-
-  <target name="compile" description="Compile the source directory" depends="init" unless="compiled">
-
-
-    <mkdir dir="${tests.build.dir}/classes"/>
-
-    <echo level="debug" message="copying" />
-
-    <copy todir="${tests.build.dir}/classes" includeEmptyDirs="false" preservelastmodified="true">
-      <fileset dir="${tests.source.dir}/common">
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-      </fileset>
-      <fileset dir="${tests.source.dir}/vpro-wizards">
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-        <include name="**/*.jpg"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-        <exclude name="core"/>
-      </fileset>
-      <fileset dir="${tests.source.dir}/dbsq" >
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-        <include name="**/*.jpg"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-        <exclude name="core"/>
-      </fileset>
-      <fileset dir="${tests.source.dir}/convertimage" >
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-        <include name="**/*.jpg"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-        <exclude name="core"/>
-      </fileset>
-      <fileset dir="${tests.source.dir}/taglib" >
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-        <include name="**/*.jpg"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-        <exclude name="core"/>
-      </fileset>
-      <fileset dir="${tests.source.dir}/typerel" >
-        <include name="**/*.properties"/>
-        <include name="**/LICENSE"/>
-        <include name="**/*.dtd"/>
-        <include name="**/*.xml"/>
-        <include name="**/*.jpg"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-        <exclude name="core"/>
-      </fileset>
-      <fileset dir="${tests.source.dir}/bridge" >
-        <include name="**/*.xml"/>
-        <exclude name="**/*.java"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-        <exclude name="core"/>
-      </fileset>
-      <fileset dir="${tests.source.dir}/util" >
-        <include name="**/*.xml"/>
-        <exclude name="**/*.java"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-        <exclude name="core"/>
-      </fileset>
-      <!--
-      <fileset dir="${tests.source.dir}/transactions" >
-        <include name="**/*.xml"/>
-        <exclude name="**/*.java"/>
-        <exclude name="build/**"/>
-        <exclude name="build*"/>
-      </fileset>
-      -->
-    </copy>
-
-    <echo level="debug" message="compiling" />
-
-    <javac destdir="${tests.build.dir}/classes"
-           debug="true"
-           optimize="false"
-           source="1.5"
-           classpathref="compile.classpath"
-           deprecation="false" >
-      <src path="${tests.source.dir}/bridge"/>
-      <src path="${tests.source.dir}/typerel"/>
-      <src path="${tests.source.dir}/convertimage"/>
-      <src path="${tests.source.dir}/dbsq"/>
-      <src path="${tests.source.dir}/common"/>
-      <src path="${tests.source.dir}/util"/>
-      <src path="${tests.source.dir}/clustering"/>
-      <src path="${tests.source.dir}/releasestrategy"/>
-      <src path="${tests.source.dir}/vpro-wizards" />
-      <src path="${tests.source.dir}/richtext" />
-      <src path="${tests.source.dir}/cloudcontext" />
-      <!--
-      <src path="${tests.source.dir}/transactions" />
-      -->
-      <include name="**/*.java"/>
-    </javac>
-    <property name="compiled" value="yes" />
-  </target>
-
-
-  <target name="jar.uptodatecheck">
-    <uptodate property="jar.uptodate" targetfile="${mmbasetest.jar}" >
-      <srcfiles dir="${tests.source.dir}" includes="**/*" excludes="build/**,work/**,lib/**,build.xml" />
-    </uptodate>
-    <echo level="debug" message="up to date: ${jar.uptodate}" />
-  </target>
-
-  <target name="jar.check" depends="jar.uptodatecheck" if="jar.uptodate">
-    <echo level="debug" message="${mmbasetest.jar} is up-to-date" />
-  </target>
-
-
-  <target name="jar" description="Create the MMBase testjar file"
-          depends="jar.check" unless="jar.uptodate">
-    <echo message="compiling" />
-    <antcall target="compile" inheritAll="true" inheritRefs="true" />
-
-    <echo file="${tests.build.dir}/manifest.mf">
-Name: org/mmbase
-Vendor: MMBase Community
-URL: http://www.mmbase.org
-Comment: The MMBase Content Managment System Tests
-Build-by: ${ant.version}
-Build-java-version: ${ant.java.version}
-Build-compiler: ${build.compiler}
-</echo>
-    <jar jarfile="${mmbasetest.jar}"
-         basedir="${tests.build.dir}/classes"
-       includes="**"
-       update="false"
-       manifest="${tests.build.dir}/manifest.mf" >
-    </jar>
-
-    <delete file="${tests.build.dir}/manifest.mf" />
-  </target>
-
-  <target name="run.vpro.wizards" depends="init,jar" description="VPRO MMBase wizards tests">
-    <antcall target="clean.database" inheritRefs="true" />
-    <java classname="${ui.class}" fork="true" classpathref="run.classpath.vpro-wizards">
-      <arg value="org.mmbase.applications.vprowizards.AllTests" />
-      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-      <jvmarg value="-Duser.dir=${tests.work.dir}" />
-      <assertions>
-        <enable />
-      </assertions>
-    </java>
-  </target>
-
-  <target name="run.typerel" depends="jar,init" description="Allowed Relations tests">
+  <target name="run.typerel" depends="init" description="Allowed Relations tests">
     <antcall target="clean.database" inheritRefs="true" />
     <java
         classname="${ui.class}"
@@ -391,7 +153,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.releasestrategy" depends="jar,init" description="Query Result Release Strategy tests">
+  <target name="run.releasestrategy" depends="init" description="Query Result Release Strategy tests">
     <antcall target="clean.database" />
     <java
         classname="${ui.class}"
@@ -406,9 +168,10 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.bridge" depends="init,jar" description="Bridge tests">
+  <target name="run.bridge" depends="init" description="Bridge tests">
     <antcall target="clean.database" />
-    <echo message="Starting ${ui.class}: " />
+    <property name="myclasspath" refid="run.classpath"/>
+    <echo message="Starting ${ui.class}:  with ${myclasspath}" />
     <java
         classname="${ui.class}"
         fork="true"
@@ -421,7 +184,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.bridge.rmmci" depends="init,jar,clean.database" description="Bridge tests (through RMMCI)">
+  <target name="run.bridge.rmmci" depends="init,clean.database" description="Bridge tests (through RMMCI)">
     <parallel>
       <daemons>
         <echo message="starting mmbase server" />
@@ -455,7 +218,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.convertimage" depends="jar,init" description="Image conversion tests">
+  <target name="run.convertimage" depends="init" description="Image conversion tests">
     <antcall target="clean.database" />
     <java
         classname="${ui.class}"
@@ -471,7 +234,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="run.dbsq" depends="jar,init" description="SearchQuery tests">
+  <target name="run.dbsq" depends="init" description="SearchQuery tests">
     <antcall target="clean.database" inheritRefs="true"/>
     <java
         classname="${ui.class}"
@@ -486,7 +249,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.util" depends="init,jar" description="Various tests on utitilies (org.mmbase.util)">
+  <target name="run.util" depends="init" description="Various tests on utitilies (org.mmbase.util)">
     <java
         classname="${ui.class}"
         fork="true"
@@ -499,7 +262,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.richtext" depends="init,jar" description="Richtext tests">
+  <target name="run.richtext" depends="init" description="Richtext tests">
     <antcall target="clean.database" />
     <echo message="Starting ${ui.class}: " />
     <java
@@ -514,7 +277,7 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
-  <target name="run.clustering" depends="jar,init" description="Clustering test-cases (Starts 2 mmbases, communicates with RMMCI)">
+  <target name="run.clustering" depends="init" description="Clustering test-cases (Starts 2 mmbases, communicates with RMMCI)">
     <antcall target="clean.database" inheritRefs="true"/>
     <parallel>
       <echo message="${tests.source.dir}/config" />
@@ -569,7 +332,7 @@ Build-compiler: ${build.compiler}
     </parallel>
   </target>
 
-  <target name="run.cloudcontext" depends="jar,init" description="Cloudcontext test-cases">
+  <target name="run.cloudcontext" depends="init" description="Cloudcontext test-cases">
     <antcall target="clean.database" />
     <echo message="Starting ${ui.class}: " />
     <java
@@ -584,10 +347,25 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
+  <target name="run.transactions" depends="init" description="Transactions test-cases">
+    <antcall target="clean.database" />
+    <echo message="Starting ${ui.class}: " />
+    <java
+        classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath"
+        >
+      <arg value="org.mmbase.module.core.AllTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
+    </java>
+  </target>
+
 
   <!-- ================================================================== -->
 
-  <target name="standalone" depends="jar,init" description="Start a stand-alone MMBase instantion">
+  <target name="standalone" depends="init" description="Start a stand-alone MMBase instantion">
     <java
         classname="org.mmbase.tests.MMBaseTest"
         fork="true"
