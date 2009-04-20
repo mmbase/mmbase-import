@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.128 2009-04-20 11:22:29 michiel Exp $
+ * @version $Id: Casting.java,v 1.129 2009-04-20 11:35:42 michiel Exp $
  */
 
 import java.util.*;
@@ -296,7 +296,7 @@ public class Casting {
         }
         try {
             toWriter(new StringBufferWriter(buffer), o);
-        } catch (java.io.IOException e) {}
+        } catch (IOException e) {}
         return buffer;
     }
 
@@ -313,7 +313,7 @@ public class Casting {
         }
         try {
             toWriter(new StringBuilderWriter(buffer), o);
-        } catch (java.io.IOException e) {}
+        } catch (IOException e) {}
         return buffer;
     }
 
@@ -408,7 +408,11 @@ public class Casting {
         } else if (o instanceof CharSequence) {
             return new StringWrapper((CharSequence) o, escaper);
         } else if (o instanceof InputStream) {
-            return escape(escaper, new String(toSerializableInputStream(o).toByteArray()));
+            try {
+                return escape(escaper, new String(toSerializableInputStream(o).toByteArray()));
+            } catch (IOException ioe) {
+                throw new RuntimeException(ioe);
+            }
         } else {
             return o;
         }
@@ -1114,7 +1118,7 @@ public class Casting {
                 DOCUMENTBUILDER.setErrorHandler(errorHandler);
                 // ByteArrayInputStream?
                 // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
-                doc = DOCUMENTBUILDER.parse(new java.io.ByteArrayInputStream(value.getBytes("UTF-8")));
+                doc = DOCUMENTBUILDER.parse(new ByteArrayInputStream(value.getBytes("UTF-8")));
             }
             if (log.isTraceEnabled()) {
                 log.trace("parsed: " + XMLWriter.write(doc, false, true));
@@ -1128,7 +1132,7 @@ public class Casting {
                 log.debug("[sax] not well formed xml: " + se.toString() + "(" + se.getMessage() + ")\n" + Logging.stackTrace(se));
             }
             return convertStringToXML("<p>" + Encode.encode("ESCAPE_XML", value) + "</p>"); // Should _always_ be sax-compliant.
-        } catch (java.io.IOException ioe) {
+        } catch (IOException ioe) {
             String msg = "[io] not well formed xml: " + ioe.toString() + "\n" + Logging.stackTrace(ioe);
             throw new IllegalArgumentException(msg);
         }
