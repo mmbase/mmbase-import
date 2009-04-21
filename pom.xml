@@ -168,10 +168,15 @@ See http://www.MMBase.org/license
       <groupId>${jsp.groupId}</groupId>
       <artifactId>jsp-api</artifactId>
     </dependency>
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-      <scope>compile</scope>
+    </dependency>
+    <!-- the dependency on standard taglibs can be dropped when going to jstl 1.2 -->
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
     </dependency>
     <!--
     <dependency>
