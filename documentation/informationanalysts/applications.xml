@@ -55,9 +55,12 @@
 
         <authorinitials>PvR</authorinitials>
       </revision>
+
       <revision>
         <revnumber>0.5.1</revnumber>
+
         <date>2009-04-21</date>
+
         <authorinitials>AvT</authorinitials>
       </revision>
     </revhistory>
@@ -94,8 +97,8 @@
 
         <itemizedlist>
           <listitem>
-            <para>an application xml, a description of all nodetypes and
-            relations in the cloud;</para>
+            <para>an application xml with a description of nodetypes used and
+            relations between them;</para>
           </listitem>
 
           <listitem>
@@ -131,7 +134,7 @@
   </section>
 
   <section>
-    <title>Example: the MyNews Application</title>
+    <title>Example: the MyNews application</title>
 
     <para>A number of demo applications are included in the MMBase release,
     like MyNews (an example of a magazine with news articles) and MyYahoo (an
@@ -144,7 +147,7 @@
   </section>
 
   <section>
-    <title>The Application Configuration Files</title>
+    <title>The application configuration files</title>
 
     <para>All configuration files of the applications present in your MMBase
     installation are located in the directory /WEB-INF/config/applications. If
@@ -154,7 +157,7 @@
     directory with the name of the application.</para>
 
     <section>
-      <title>The Application Description File</title>
+      <title>Application description file</title>
 
       <para>The XML-file with the name of the application contains the
       description of the cloud-structure used by that application. We will
