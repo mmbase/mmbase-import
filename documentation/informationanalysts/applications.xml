@@ -88,7 +88,7 @@
       </listitem>
     </itemizedlist>
 
-    <para>An MMBase application consists of:</para>
+    <para>A MMBase application consists of:</para>
 
     <itemizedlist>
       <listitem>
@@ -176,23 +176,22 @@
   &lt;neededbuilderlist&gt;
     &lt;builder maintainer="mmbase.org" version="1"&gt;mags&lt;/builder&gt;
     &lt;builder maintainer="mmbase.org" version="1"&gt;urls&lt;/builder&gt;
-    ...      
+    &lt;!-- ... snip ... --&gt;
   &lt;/neededbuilderlist&gt;
   &lt;neededreldeflist&gt;
     &lt;reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" /&gt;
     &lt;reldef source="posrel"  target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" /&gt;
     &lt;reldef source="sorted"  target="sorted" direction="bidirectional" guisourcename="Sorted" guitargetname="Sorted" builder="posrel" /&gt;
-    &lt;!-- sorted is used for tests where the role-name not equals builder name --&gt;
   &lt;/neededreldeflist&gt;
   &lt;allowedrelationlist&gt;
     &lt;relation from="mags"   to="news"     type="posrel" /&gt;
     &lt;relation from="news"   to="urls"     type="posrel" /&gt;
-    ...
+    &lt;!-- ... snip ... --&gt;
   &lt;/allowedrelationlist&gt;
   &lt;datasourcelist&gt;
     &lt;datasource builder="mags"     path="MyNews/mags.xml" /&gt;
     &lt;datasource builder="news"     path="MyNews/news.xml" /&gt;
-    ...
+    &lt;!-- ... snip ... --&gt;
   &lt;/datasourcelist&gt;
   &lt;relationsourcelist&gt;
     &lt;relationsource builder="insrel" path="MyNews/insrel.xml" /&gt;
@@ -392,15 +391,19 @@
       <sgmltag class="attribute">path</sgmltag> attribute. For MyNews we saw
       that this is "MyNews/backup.xml".</para>
 
+      <programlisting>&lt;contextdepth&gt;
+  &lt;startnode&gt;
+    &lt;builder&gt;mags&lt;/builder&gt;
+      &lt;where&gt;title=='MyNews magazine'&lt;/where&gt;
+  &lt;/startnode&gt;
+  &lt;depth&gt;3&lt;/depth&gt;
+&lt;/contextdepth&gt;      </programlisting>
+
       <para>Most applications come with a 'backup.xml' file that describes the
       startpoint for exporting data (as described below). It is not necessary
       to specify a file - i.e. if an application is only meant to be installed
-      and not exported. You can also use other filenames (though 'backup.xml'
-      is the convention) or specify multiple contextsources. In the latter
-      case, the administration pages require the user to choose the
-      contextsource with which to make the export, using the freeform <sgmltag
-      class="attribute">goal</sgmltag> attribute to give user-feedback on the
-      intention of the contextsource.</para>
+      and not exported. You can also use other filenames, though 'backup.xml'
+      is the convention.</para>
 
       <note>
         <para>While we speak about "backup" here, the system can also be used
@@ -476,11 +479,11 @@
         </listitem>
 
         <listitem>
-          <para><sgmltag>&lt;depth&gt;5&lt;/depth&gt;</sgmltag></para>
+          <para><sgmltag>&lt;depth&gt;3&lt;/depth&gt;</sgmltag></para>
 
-          <para>Specifies the depth of the search (the maximum number of
-          nested searches) used in the backup algorithm (in the example this
-          is 5 levels deep).</para>
+          <para>Specifies the depth of the search - the maximum number of
+          nested searches - used in the backup algorithm. In the above example
+          it is 3 levels deep.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -576,7 +579,7 @@
   </section>
 
   <section>
-    <title>How to install a MMBase application</title>
+    <title>How to install an MMBase application</title>
 
     <note>
       <para>Instead of installing an MMBase application the term "restoring"
@@ -584,7 +587,7 @@
       used.</para>
     </note>
 
-    <para>You can install (or restore) a MMBase application as follows:
+    <para>You can install (or restore) an MMBase application as follows:
     <orderedlist>
         <listitem>
           <simpara>Put the application configuration files in the
