@@ -214,3 +214,14 @@ Type: add dependency to maven-base/project.xml
 *
 *
 *
+
+Name: Add google analytics id
+Goal: Have a google analytics id per site
+ype:  sql-script
+--- Start script ---
+ALTER TABLE mm_site ADD COLUMN googleanalyticsid VARCHAR(40) NULL;
+ALTER TABLE live_site ADD COLUMN googleanalyticsid VARCHAR(40) NULL;
+--- End script ---
+*
+*
+*
