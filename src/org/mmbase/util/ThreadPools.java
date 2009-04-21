@@ -18,7 +18,7 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meeuwissen
- * @version $Id: ThreadPools.java,v 1.27 2009-01-12 10:34:23 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.28 2009-04-21 12:36:27 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
@@ -97,7 +97,7 @@ public abstract class ThreadPools {
      * job of this type.
      *
      */
-    public static final ThreadPoolExecutor jobsExecutor = new ThreadPoolExecutor(2, 10, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(200), new ThreadFactory() {
+    public static final ThreadPoolExecutor jobsExecutor = new ThreadPoolExecutor(2, 200, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(300), new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
                 return ThreadPools.newThread(r, "JobsThread-" + (jobsSeq++));
