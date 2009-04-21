@@ -233,12 +233,26 @@ Know Issues and Problems:
 Requirements:
 ============
 
-MMBase needs an servlet engine which supports the servlet api 2.3 and
-jsp api 1.2. Furthermore it needs a database and a jdbc-driver.
+MMBase versions need the following implementation versions of the servlet specification
+(http://java.sun.com/products/servlet/) and Java. The shipped templates need implementations of the jsp specification
+(http://java.sun.com/products/jsp/) and JSTL (http://java.sun.com/products/jsp/jstl/).
 
-Some pages require servlet api 2.4 (using EL, Jspx).
+A complete J2EE implementation is not necessary.
 
-The 'bin' distro does include a hsqldb database and driver.
+Tomcat is an example servlet/jsp implementation, which many people use.
+
+
+MMBase   Java   Servlet   JSP     JSTL   Tomcat  Orion
+-----------------------------------------------------
+1.8      1.4     2.3      1.2     1.1     4      2
+1.9      5       2.4      2.0     1.1     5
+2.0?     6       2.5      2.1     1.2     6
+
+
+Furthermore MMBase needs a database and a jdbc-driver, or alternatively, a datasource resource
+provided by the container.
+
+The 'example webapp' includes an hsqldb database configuration and driver.
 
 
 =========
