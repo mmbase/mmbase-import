@@ -73,16 +73,20 @@ public class IncludeDefaultExcludesMojo extends AbstractMojo {
 
     private int copyExcludes(File src, File dst) throws IOException {
         int tot = 0;
-        for (File sub : src.listFiles()) {
-            if (sub.isDirectory()) {
-                File subDest = new File(dst, sub.getName());
-                if (DEFAULTEXCLUDES.matcher(sub.getName()).matches()) {
-                    tot += copyDirectory(sub, subDest);
+        if (src == null) {
+            getLog().info("Source dir is null");
+        } else {
+            for (File sub : src.listFiles()) {
+                if (sub.isDirectory()) {
+                    File subDest = new File(dst, sub.getName());
+                    if (DEFAULTEXCLUDES.matcher(sub.getName()).matches()) {
+                        tot += copyDirectory(sub, subDest);
+                    } else {
+                        tot += copyExcludes(sub, subDest);
+                    }
                 } else {
-                    tot += copyExcludes(sub, subDest);
+                    //ignore files
                 }
-            } else {
-                //ignore files
             }
         }
         return tot;
