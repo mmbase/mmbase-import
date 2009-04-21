@@ -153,11 +153,6 @@ See http://www.MMBase.org/license
 			<artifactId>ehcache</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>ehcache</groupId>
-			<artifactId>ehcache-constructs</artifactId>
-			<scope>provided</scope>
-		</dependency>
 		
 		<dependency>
 			<groupId>javax.mail</groupId>
