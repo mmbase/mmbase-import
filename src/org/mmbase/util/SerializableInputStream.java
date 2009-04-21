@@ -20,7 +20,7 @@ import org.apache.commons.fileupload.FileItem;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: SerializableInputStream.java,v 1.4 2009-04-20 11:22:29 michiel Exp $
+ * @version $Id: SerializableInputStream.java,v 1.5 2009-04-21 12:37:01 michiel Exp $
  * @todo IllegalStateException or so, if the inputstreas is used (already).
  */
 
@@ -114,6 +114,6 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     public long skip(long n) throws IOException { return wrapped.skip(n); }
 
     public String toString() {
-        return "SERIALIZABLE " + wrapped + (used ? " (used)" :  "");
+        return "SERIALIZABLE " + wrapped + (used ? " (used)" :  "") + "(" + size + " byte)";
     }
 }
