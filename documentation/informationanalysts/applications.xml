@@ -22,6 +22,12 @@
 
         <surname>van Rooden</surname>
       </author>
+
+      <author>
+        <firstname>André</firstname>
+
+        <surname>van Toly</surname>
+      </author>
     </authorgroup>
 
     <legalnotice>
@@ -49,28 +55,33 @@
 
         <authorinitials>PvR</authorinitials>
       </revision>
+      <revision>
+        <revnumber>0.5.1</revnumber>
+        <date>2009-04-21</date>
+        <authorinitials>AvT</authorinitials>
+      </revision>
     </revhistory>
   </articleinfo>
 
   <section>
     <title>Introduction</title>
 
-    <para>MMBase provides functionality to package an entire website build on
-    top of MMBase. To package an entire website can be necessary. For
+    <para>MMBase provides functionality to package an entire website,
+    including its data. To package an entire website can be necessary. For
     instance, if you need to:</para>
 
     <itemizedlist>
       <listitem>
-        <para>migrate your website from one database to another,</para>
+        <para>migrate your website from one database to another;</para>
       </listitem>
 
       <listitem>
-        <para>migrate your website from one MMBase version to another,</para>
+        <para>merge two sites from different installations into one;</para>
       </listitem>
 
       <listitem>
-        <para>want to clean-up your object-cloud during or at the end of
-        implementing a website in MMBase.</para>
+        <para>want to clean-up your cloud during or at the end of implementing
+        a website in MMBase.</para>
       </listitem>
     </itemizedlist>
 
@@ -78,30 +89,44 @@
 
     <itemizedlist>
       <listitem>
-        <para>configuration files: description of the cloud-structure,
-        builders used in the cloud and the backup/export scenario,</para>
+        <para>its applications files, often refered to as the 'mmapps1'
+        files:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>an application xml, a description of all nodetypes and
+            relations in the cloud;</para>
+          </listitem>
+
+          <listitem>
+            <para>builder xml's, containing the nodetypes descriptions;
+            and</para>
+          </listitem>
+
+          <listitem>
+            <para>xml files containing the sites data. These data xml's can be
+            acompanied by a directory with binary data, f.e. images.</para>
+          </listitem>
+        </itemizedlist>
       </listitem>
 
       <listitem>
-        <para>the website's content exported in XML-format,</para>
-      </listitem>
-
-      <listitem>
-        <para>necessary Java functionality contained in MMBase modules,</para>
+        <para>necessary Java functionality contained in MMBase components or
+        modules;</para>
       </listitem>
 
       <listitem>
         <para>the frontend of your website: a set of JSP-templates, XSLT,
-        flash-animations, etc.</para>
+        flash-animations etc.</para>
       </listitem>
     </itemizedlist>
 
     <note>
       <para>The term "application" is often only used for the configuration
-      files and the website's content. Since a website is not complete without
-      its templates and the necessary modules, this documentation also
-      describes how you take care that templates and modules are also added to
-      the package.</para>
+      files and the website's content, the so called 'mmapps1' files. Since a
+      website is not complete without its templates and the necessary modules,
+      this documentation also describes how you take care that templates and
+      modules are also added to the package.</para>
     </note>
   </section>
 
@@ -133,7 +158,54 @@
 
       <para>The XML-file with the name of the application contains the
       description of the cloud-structure used by that application. We will
-      have a closer look at MyNews.xml to see the different parts:</para>
+      have a closer look at MyNews.xml to see the different parts.</para>
+
+      <para>This example can be found in '/config/applications' on your system
+      or in about the same location when you unpack the
+      mmbase-mynews.jar.</para>
+
+      <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd"&gt;
+&lt;application name="MyNews" maintainer="mmbase.org" version="2" auto-deploy="true"&gt;
+  &lt;requirements&gt;
+    &lt;requires name="Resources" maintainer="mmbase.org" version="1" /&gt;
+  &lt;/requirements&gt;
+  &lt;neededbuilderlist&gt;
+    &lt;builder maintainer="mmbase.org" version="1"&gt;mags&lt;/builder&gt;
+    &lt;builder maintainer="mmbase.org" version="1"&gt;urls&lt;/builder&gt;
+    ...      
+  &lt;/neededbuilderlist&gt;
+  &lt;neededreldeflist&gt;
+    &lt;reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" /&gt;
+    &lt;reldef source="posrel"  target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" /&gt;
+    &lt;reldef source="sorted"  target="sorted" direction="bidirectional" guisourcename="Sorted" guitargetname="Sorted" builder="posrel" /&gt;
+    &lt;!-- sorted is used for tests where the role-name not equals builder name --&gt;
+  &lt;/neededreldeflist&gt;
+  &lt;allowedrelationlist&gt;
+    &lt;relation from="mags"   to="news"     type="posrel" /&gt;
+    &lt;relation from="news"   to="urls"     type="posrel" /&gt;
+    ...
+  &lt;/allowedrelationlist&gt;
+  &lt;datasourcelist&gt;
+    &lt;datasource builder="mags"     path="MyNews/mags.xml" /&gt;
+    &lt;datasource builder="news"     path="MyNews/news.xml" /&gt;
+    ...
+  &lt;/datasourcelist&gt;
+  &lt;relationsourcelist&gt;
+    &lt;relationsource builder="insrel" path="MyNews/insrel.xml" /&gt;
+    &lt;relationsource builder="posrel" path="MyNews/posrel.xml" /&gt;
+  &lt;/relationsourcelist&gt;
+  &lt;contextsourcelist&gt;
+    &lt;contextsource path="MyNews/backup.xml" type="depth" goal="backup"/&gt;
+  &lt;/contextsourcelist&gt;
+  &lt;description&gt;
+    &lt;![CDATA[MyNews is an example of a magazine with news articles. It depends on the Resources application.]]&gt;
+  &lt;/description&gt;
+  &lt;install-notice&gt;
+    &lt;![CDATA[The MyNews application is installed. Look at the MMBase demo page for the magazine.]]&gt;
+  &lt;/install-notice&gt;
+&lt;/application&gt;
+</programlisting>
 
       <itemizedlist>
         <listitem>
@@ -300,7 +372,7 @@
     </section>
 
     <section>
-      <title>Builders Used by the Application</title>
+      <title>Builders used by the application</title>
 
       <para>The builders specified in the <sgmltag>neededbuilderlist</sgmltag>
       can be found in the application folder under
@@ -310,7 +382,7 @@
     </section>
 
     <section>
-      <title>The Backup Scenario: backup.xml</title>
+      <title>The backup scenario: backup.xml</title>
 
       <para>The <sgmltag>contextsource</sgmltag> specifies where the file with
       the backup scenario for this application is located - specified in its
@@ -447,7 +519,7 @@
           <para>MMBase renumbers the objects in the application when restoring
           the application. This means that for example the node with alias
           "default.mags" is very likely to have a different node number than
-          "8495". This is another reason to not use numbers of objects in your
+          "8495". This is another reason to not use object numbers in your
           templates.</para>
         </note>
       </listitem>
@@ -455,48 +527,40 @@
   </section>
 
   <section>
-    <title>How to Backup an MMBase Application</title>
+    <title>How to backup an MMBase application</title>
 
     <para>Ones you finished the [application].xml of your MMBase application,
     you can use it to make a backup of the content in your website in XML. To
     this end: <orderedlist>
         <listitem>
-          <simpara>go the admin-interface on /mmadmin/jsp/</simpara>
+          <simpara>Go the MMBase admin-interface on
+          <filename>/mmbase</filename>.</simpara>
         </listitem>
 
         <listitem>
-          <simpara>click on "admin" and log on (in a fresh MMBase install the
-          loginname is admin and the password is admin2k)</simpara>
+          <simpara>Click on "Admin pages" and log on (in a fresh MMBase
+          install the username is 'admin' and the password is
+          'admin2k').</simpara>
         </listitem>
 
         <listitem>
-          <simpara>click on "applications"</simpara>
+          <simpara>Go to on "Admin" (or the one matching that description in
+          your local) and furter "Applications".</simpara>
         </listitem>
 
         <listitem>
-          <simpara>select your application by clicking one of the triangles at
-          the right side of the table</simpara>
+          <simpara>Select your application in the shown list with
+          applications.</simpara>
         </listitem>
 
         <listitem>
-          <simpara>find the "Save [application]" action in the middle of the
-          page</simpara>
+          <simpara>Specify in the "Save [application]" form the location where
+          you want the backup to be stored.</simpara>
         </listitem>
 
         <listitem>
-          <simpara>specify the location where you want the backup to be
-          stored</simpara>
-        </listitem>
-
-        <listitem>
-          <simpara>select the goal of the backup in the combobox. This goals
-          selects the contextsource to use for the backup - most of the time
-          you will have only one choice, which will be preselected.</simpara>
-        </listitem>
-
-        <listitem>
-          <simpara>click on "Yes" to make a backup of the
-          application</simpara>
+          <simpara>Click "Confirm" and wait for the process of saving your
+          application to complete.</simpara>
         </listitem>
       </orderedlist></para>
 
@@ -509,7 +573,7 @@
   </section>
 
   <section>
-    <title>How to Install a MMBase application</title>
+    <title>How to install a MMBase application</title>
 
     <note>
       <para>Instead of installing an MMBase application the term "restoring"
@@ -520,53 +584,42 @@
     <para>You can install (or restore) a MMBase application as follows:
     <orderedlist>
         <listitem>
-          <simpara>put the application configuration files in the
+          <simpara>Put the application configuration files in the
           <filename>/WEB-INF/config/applications/</filename>
           directory</simpara>
         </listitem>
 
         <listitem>
-          <simpara>put the XML content files in the
+          <simpara>The XML content files should be installed in the
           <filename>/WEB-INF/config/applications/[applicationname]</filename>
-          directory</simpara>
+          directory.</simpara>
         </listitem>
 
         <listitem>
-          <simpara>place the builders of the application in
+          <simpara>Place the builders of the application in
           <filename>/WEB-INF/config/builders/</filename> or one of its
-          subdirectories. You can also place the builders in the
+          subdirectories.</simpara>
+
+          <simpara>You can also place the builders in the
           <filename>/WEB-INF/config/applications/[applicationname]/builders</filename>
           directory, and let the application install your builders. Note that
-          this requires that MMBase has the right to write in the
-          configuration directory</simpara>
+          this requires MMBase to have the right to write in the configuration
+          directory.</simpara>
         </listitem>
 
         <listitem>
-          <simpara>go the admin-interface on /mmadmin/jsp/</simpara>
+          <simpara>Go to the MMBase admin "Applications" pages, typically
+          <filename>http://[yourhost]/mmbase/admin/core/applications</filename>.</simpara>
         </listitem>
 
         <listitem>
-          <simpara>click on "admin" and log on (in a fresh MMBase install the
-          loginname is admin and the password is admin2k)</simpara>
+          <simpara>Select your application from the list.</simpara>
         </listitem>
 
         <listitem>
-          <simpara>click on "applications"</simpara>
-        </listitem>
-
-        <listitem>
-          <simpara>select your application by clicking one of the triangles at
-          the right side of the table</simpara>
-        </listitem>
-
-        <listitem>
-          <simpara>find the action "Install [application] " at the top of the
-          page and click on "Yes"</simpara>
-        </listitem>
-
-        <listitem>
-          <simpara>MMBase will respond with the install-notice as specified in
-          the [applicationname].xml</simpara>
+          <simpara>Click "Install [application] " and wait for the process to
+          complete. MMBase will respond with the install-notice as specified
+          in the <filename>[applicationname].xml</filename>.</simpara>
         </listitem>
       </orderedlist></para>
 
@@ -576,18 +629,16 @@
   </section>
 
   <section>
-    <title>Necessary Java Functionality</title>
+    <title>Necessary Java functionality</title>
 
     <para>Some MMBase applications need additional functionality contained in
     one of the MMBase modules. For instance, it might be possible that your
-    application requires the MMBase sendmail module to send email or that it
-    is using the communityprc module for the forum. When packaging your
-    application be sure to notice all necessary modules in the install
-    instructions.</para>
+    application requires the MMBase sendmail module to send email. Java
+    functionality is typically packaged in JAR files.</para>
   </section>
 
   <section>
-    <title>Including The Frontend</title>
+    <title>Including the frontend</title>
 
     <para>The frontend of your website (a set of JSP-templates, XSLT,
     flash-animations, etc.) will be located in the default-web-app directory
