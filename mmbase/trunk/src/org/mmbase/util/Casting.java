@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.129 2009-04-20 11:35:42 michiel Exp $
+ * @version $Id: Casting.java,v 1.130 2009-04-21 12:37:01 michiel Exp $
  */
 
 import java.util.*;
@@ -581,9 +581,12 @@ public class Casting {
      */
     static public byte[] toByte(Object obj) {
         if (obj == null) {
+            log.debug("Converted null to empty byte array", new Exception());
             return new byte[] {};
         } else if (obj instanceof byte[]) {
-            log.debug("Already byte array " + obj);
+            if (log.isDebugEnabled()) {
+                log.debug("Already byte array " + obj + " l:" + ((byte[]) obj).length, new Exception());
+            }
             // was allready unmapped so return the value
             return (byte[])obj;
         } else if (obj instanceof FileItem) {
@@ -613,16 +616,8 @@ public class Casting {
     static public InputStream toInputStream(Object obj) {
         if (obj instanceof InputStream) {
             return (InputStream) obj;
-        } else if (obj instanceof FileItem) {
-            try {
-                return ((FileItem) obj).getInputStream();
-            } catch (IOException ioe) {
-                log.error(ioe);
-                return null;
-            }
         } else {
-            byte[] bytes = toByte(obj);
-            return new ByteArrayInputStream(bytes, 0, bytes.length);
+            return toSerializableInputStream(obj);
         }
     }
     static public SerializableInputStream toSerializableInputStream(Object obj) {
