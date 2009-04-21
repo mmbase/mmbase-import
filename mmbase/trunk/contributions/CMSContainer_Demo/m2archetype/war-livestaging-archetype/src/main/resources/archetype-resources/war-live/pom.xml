@@ -382,18 +382,13 @@
       <version>1.2</version>
     </dependency>
     <dependency>
-      <groupId>ehcache</groupId>
-      <artifactId>ehcache</artifactId>
-      <version>1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>ehcache</groupId>
-      <artifactId>ehcache-constructs</artifactId>
-      <version>0.6</version>
+		<groupId>net.sf.ehcache</groupId>
+		<artifactId>ehcache</artifactId>
+		<version>1.5.0</version>
     </dependency>
   </dependencies>
   <build>
-        <plugins>		
+        <plugins>
 			<plugin>
                 <groupId>finalist.maven.plugins</groupId>
                 <artifactId>maven-mmbase-plugin</artifactId>
