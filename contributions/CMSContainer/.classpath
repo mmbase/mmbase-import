@@ -139,14 +139,9 @@
 			<attribute name="javadoc_location" value="http://struts.apache.org/1.x/apidocs/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-1.1.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/net.sf.ehcache/jars/ehcache-1.5.0.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://ehcache.sourceforge.net/javadoc/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-constructs-0.6.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://ehcache.sourceforge.net/ehcache-constructs/documentation/javadoc/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-scratchpad-2.5.1-final-20040804.jar"/>
