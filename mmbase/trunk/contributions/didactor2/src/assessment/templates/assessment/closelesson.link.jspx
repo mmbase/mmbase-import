@@ -47,7 +47,7 @@
     			<a href="#" class="formActionLinks">je les is verstuurd</a><jsp:text> | </jsp:text>
     		</c:if>
       	<c:if test="${!justclosed}">
-      		<a href="#" onclick="document.closelessonform.sumbit()" class="formActionLinks">${_}</a><jsp:text> | </jsp:text>
+      		<a href="#" onclick="document.closelessonform.submit()" class="formActionLinks">${_}</a><jsp:text> | </jsp:text>
       	</c:if>
       	
 			</di:translate>				 
@@ -60,14 +60,16 @@
  			 	<c:if test="${!empty currentlesson}">
  			 		<mm:node number="${currentlesson}">
  			 		<c:set var="learnobject" value="${currentlesson}" />
- 			 		<c:set var="target" value="opdrachten" />
+ 			 		
+ 			 		<c:if test="${!justclosed}">
+ 			 			<c:set var="target" value="opdrachten" />
  			 			<!-- TODO: find a nicer/proper way to do this -->
  			 			<mm:relatednodes type="learnobjects" constraints="lower(name) = 'opdrachten'">
  			 					<mm:node>
- 			 						<c:set var="learnobject" value="${_node}" />
- 			 						
+ 			 						<c:set var="learnobject" value="${_node}" />			
  			 					</mm:node>
  			 			</mm:relatednodes>
+ 			 		</c:if>	
  			 		</mm:node>
  			 		<mm:param name="learnobject">${learnobject}</mm:param>
  			 	</c:if>
