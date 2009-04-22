@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.13 2009-04-18 08:55:39 michiel Exp $
+ * @version $Id: Images.java,v 1.14 2009-04-22 06:58:52 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -101,7 +101,11 @@ public class Images extends AbstractImages {
         Map<String, String> map = getInitParameters("mmbase/imaging");
         map.put("configfile", getConfigResource());
 
-        Factory.init(map);
+        if (! Factory.isInited()) {
+            Factory.init(map);
+        } else {
+            log.warn("Image conversion factory is already inited. Ignoring " + map + " of " + getTableName());
+        }
 
         return true;
     }
