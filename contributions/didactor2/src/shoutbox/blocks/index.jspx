@@ -82,12 +82,15 @@
             
           </mm:hasnodemanager>
 
+
+					<c:if test="${self ne 'only'}">
           <h2>
             <fmt:message key="title">
               <fmt:param><mm:nodeinfo type="gui" /></fmt:param>
             </fmt:message>
           </h2>
-
+					</c:if>
+					
           <form action="index">
             <c:if test="${! empty source}">
               <input type="hidden" name="source" value="${source}" />
