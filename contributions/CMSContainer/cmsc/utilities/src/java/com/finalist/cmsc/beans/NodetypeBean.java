@@ -9,13 +9,12 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.beans;
 
-import com.finalist.cmsc.beans.NodeBean;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
-public class NodetypeBean extends NodeBean {
+public class NodetypeBean extends NodeBean implements Comparable {
 
     private static final long serialVersionUID = -4892877864883371932L;
 
@@ -28,4 +27,10 @@ public class NodetypeBean extends NodeBean {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+   public int compareTo(Object obj) {
+      NodetypeBean another = (NodetypeBean) obj;
+      return name.compareTo(another.name);
+   }
+
 }
