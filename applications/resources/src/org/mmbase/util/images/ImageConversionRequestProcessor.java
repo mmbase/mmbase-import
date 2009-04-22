@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequestProcessor.java,v 1.4 2009-04-22 06:57:43 michiel Exp $
+ * @version $Id: ImageConversionRequestProcessor.java,v 1.5 2009-04-22 08:03:34 michiel Exp $
  * @see    ImageConversionRequest
  */
 public class ImageConversionRequestProcessor implements Runnable {
@@ -34,6 +34,7 @@ public class ImageConversionRequestProcessor implements Runnable {
     private static int idCounter =0;
     private final int processorId;
     private Thread thread;
+    private boolean shutdown = false;
 
     private ImageConverter convert;
     private final BlockingQueue<ImageConversionRequest> queue;
@@ -50,24 +51,20 @@ public class ImageConversionRequestProcessor implements Runnable {
         this.queue = queue;
         this.table = table;
         processorId = idCounter++;
-        start();
-    }
-
-    /**
-     * Starts the thread for this ImageRequestProcessor.
-     */
-    protected void start() {
         thread = MMBaseContext.startThread(this, "ImageConvert[" + processorId +"]");
     }
+
+
     protected void shutdown() {
+        shutdown = true;
         thread.interrupt();
-        thread = null;
     }
 
     // javadoc inherited (from Runnable)
     public void run() {
         MMBase mmbase = MMBase.getMMBase();
-        while (!mmbase.isShutdown() && thread != null) {
+        log.debug("Started request processor");
+        while (!mmbase.isShutdown() && !shutdown) {
             try {
                 log.debug("Waiting for request");
                 ImageConversionRequest req = queue.take();
@@ -82,6 +79,7 @@ public class ImageConversionRequestProcessor implements Runnable {
                 log.error(e.getMessage(), e);
             }
         }
+        log.debug("Finished request processor " + this + " " + thread);
     }
 
     /**
@@ -105,8 +103,10 @@ public class ImageConversionRequestProcessor implements Runnable {
 
                 List<String> params = req.getParams();
                 try {
+                    OutputStream out = rec.getOutputStream();
+                    int length = convert.convertImage(inputPicture, req.getInputFormat(), out, params);
 
-                    int length = convert.convertImage(inputPicture, req.getInputFormat(), rec.getOutputStream(), params);
+
                     if (length > 0) {
                         rec.setSize(length);
                         if (rec.wantsDimension()) {
