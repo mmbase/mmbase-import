@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * you left the value empty on commit.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PosrelCommitProcessor.java,v 1.1.2.1 2008-02-29 14:45:19 michiel Exp $
+ * @version $Id: PosrelCommitProcessor.java,v 1.1.2.2 2009-04-22 06:33:21 nklasens Exp $
  * @since MMBase-1.8.6
  */
 
@@ -36,16 +36,18 @@ public class PosrelCommitProcessor implements CommitProcessor {
         }
         if (node.getValue(field.getName()) == null || "".equals(node.getStringValue(field.getName()))) {
             Node source      = node.getNodeValue("snumber");
-            NodeQuery q = Queries.createNodeQuery(source);
-            String role = node.getNodeValue("rnumber").getStringValue("sname");
-            Step relationStep = q.addRelationStep(node.getCloud().getNodeManager("object"),
-                                                  role,
-                                                  "destination");
-            q.setNodeStep(relationStep);
-            Integer max = (Integer) Queries.max(q, q.getStepField(q.getNodeManager().getField(field.getName())));
-            log.debug("max now " + max);
-            if (max == null) max = new Integer(0);
-            node.setValueWithoutProcess(field.getName(), new Integer(max.intValue() + 1));
+            if (source != null) {
+               NodeQuery q = Queries.createNodeQuery(source);
+               String role = node.getNodeValue("rnumber").getStringValue("sname");
+               Step relationStep = q.addRelationStep(node.getCloud().getNodeManager("object"),
+                                                     role,
+                                                     "destination");
+               q.setNodeStep(relationStep);
+               Integer max = (Integer) Queries.max(q, q.getStepField(q.getNodeManager().getField(field.getName())));
+               log.debug("max now " + max);
+               if (max == null) max = new Integer(0);
+               node.setValueWithoutProcess(field.getName(), new Integer(max.intValue() + 1));
+            }
         }
     }
 
