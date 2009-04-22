@@ -6,7 +6,7 @@
                         http://www.mmbase.org/xmlns/blocktypes.xsd">
 
   <blocktype name="mmbase.security"   weight="50">
-    <title xml:lang="nl">Veiligheid</title>
+    <title xml:lang="nl">Beveiliging</title>
     <title xml:lang="en">Security</title>
   </blocktype>
 
