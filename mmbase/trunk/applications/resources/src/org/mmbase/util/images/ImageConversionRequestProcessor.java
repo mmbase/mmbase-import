@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequestProcessor.java,v 1.5 2009-04-22 08:03:34 michiel Exp $
+ * @version $Id: ImageConversionRequestProcessor.java,v 1.6 2009-04-22 08:20:05 michiel Exp $
  * @see    ImageConversionRequest
  */
 public class ImageConversionRequestProcessor implements Runnable {
@@ -113,18 +113,12 @@ public class ImageConversionRequestProcessor implements Runnable {
                             Dimension dim = Factory.getImageInformer().getDimension(rec.getInputStream());
                             rec.setDimension(dim);
                         }
+                        rec.ready();
                     } else {
                         log.warn("processRequest(): Convert problem params : " + params);
                     }
                 } catch (java.io.IOException ioe) {
                     log.error(ioe);
-                } finally {
-                    try {
-                        rec.ready();
-                    } catch (java.io.IOException ioe) {
-                        log.error(ioe);
-                    }
-
                 }
             }
         } finally {
