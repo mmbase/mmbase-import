@@ -6,7 +6,7 @@
  * One global variable 'didactor' is automaticly created, which can be be referenced (as long as the di:head tag is used).
  * @since Didactor 2.3.0
  * @author Michiel Meeuwissen
- * @version $Id: Didactor.js,v 1.24 2009-03-06 17:57:10 michiel Exp $
+ * @version $Id: Didactor.js,v 1.25 2009-04-22 10:25:11 jelle Exp $
  */
 
 
@@ -75,7 +75,7 @@ function Didactor() {
         $(document).bind("didactorContentBeforeUnload",  function(ev, el) {
             self.saveQuestions();
         });
-        $(document).bind("beforeunload", function() {
+        $(window).bind("beforeunload", function() {
             self.saveQuestions();
         });
         // if this is a staticly loaded piece of html, there may be some questions already
