@@ -19,7 +19,7 @@ import org.mmbase.module.core.MMObjectNode;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequest.java,v 1.1 2006-10-25 14:10:55 michiel Exp $
+ * @version $Id: ImageConversionRequest.java,v 1.2 2009-04-22 06:56:51 michiel Exp $
  */
 public class ImageConversionRequest {
 
@@ -106,6 +106,8 @@ public class ImageConversionRequest {
             try {
                 wait();
             } catch (InterruptedException e) {
+                log.info("Interrupted wait");
+                return;
             }
             log.service("Ready " + toString());
         }
