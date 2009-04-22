@@ -18,7 +18,7 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeManager;
 
 import com.finalist.cmsc.beans.MMBaseNodeMapper;
-import com.finalist.cmsc.beans.SortedNodetypeBean;
+import com.finalist.cmsc.beans.NodetypeBean;
 import com.finalist.cmsc.repository.AssetElementUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.struts.MMBaseAction;
@@ -30,14 +30,14 @@ import com.finalist.cmsc.struts.MMBaseAction;
  */
 public class ContentTypeAction extends MMBaseAction {
    
-   public List<SortedNodetypeBean> getContentTypes(Cloud cloud, String searchword) {
-      List<SortedNodetypeBean> result = new ArrayList<SortedNodetypeBean>();
+   public List<NodetypeBean> getContentTypes(Cloud cloud, String searchword) {
+      List<NodetypeBean> result = new ArrayList<NodetypeBean>();
       
       List<NodeManager> contentTypes = ContentElementUtil.getContentTypes(cloud);
       List<String> hiddenTypes = ContentElementUtil.getHiddenTypes();
       for (NodeManager nm : contentTypes) {
          if(isAsked(hiddenTypes, nm.getName(), searchword)){
-            SortedNodetypeBean ct = MMBaseNodeMapper.copyNode(nm, SortedNodetypeBean.class);
+            NodetypeBean ct = MMBaseNodeMapper.copyNode(nm, NodetypeBean.class);
             result.add(ct);
          }
       }
@@ -46,7 +46,7 @@ public class ContentTypeAction extends MMBaseAction {
       List<String> hiddenAssetTypes = AssetElementUtil.getHiddenAssetTypes();
       for (NodeManager nm : assetTypes) {
          if(isAsked(hiddenAssetTypes, nm.getName(), searchword)) {
-            SortedNodetypeBean ct = MMBaseNodeMapper.copyNode(nm, SortedNodetypeBean.class);
+            NodetypeBean ct = MMBaseNodeMapper.copyNode(nm, NodetypeBean.class);
             result.add(ct);
          }
       }
@@ -76,7 +76,7 @@ public class ContentTypeAction extends MMBaseAction {
       String relationOriginNode = request.getParameter("objectnumber");
       String searchword = request.getParameter("searchvalue");
       
-      List<SortedNodetypeBean> contentTypes = getContentTypes(cloud, searchword);
+      List<NodetypeBean> contentTypes = getContentTypes(cloud, searchword);
       
       Collections.sort(contentTypes);
       addToRequest(request, "cmd", cmd);
