@@ -13,6 +13,11 @@
   <name>MMBase Editwizard</name>
   <packaging>war</packaging>
 
+  <description>
+    The Editwizards allow you to write task-based wizards for data entry. This application provides
+    the required tools and software, and some example wizards.
+  </description>
+
   <properties>
     <templatesTarget>mmbase/edit/wizard</templatesTarget>
   </properties>

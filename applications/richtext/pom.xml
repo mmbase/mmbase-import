@@ -13,6 +13,10 @@
   <name>MMBase Richtext</name>
   <packaging>war</packaging>
 
+  <description>
+    Richtext provides utilities to use rich content in MMBase, with embedded links etc.
+  </description>
+
   <dependencies>
     <dependency>
       <groupId>org.oscom</groupId>

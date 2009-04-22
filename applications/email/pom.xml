@@ -13,6 +13,13 @@
   <name>MMBase Email</name>
   <packaging>war</packaging>
 
+  <description>
+    The email application provides builders and functions to enable MMBase to send (and receive)
+    email. You can create 'email' objects which you can fill with information that needs to be send,
+    and use some code to send this email to the user. It also includes MIME support that enables you
+    to send out multipart emails including attachments.
+  </description>
+
   <dependencies>
     <dependency>
       <groupId>javax.mail</groupId>
