@@ -23,7 +23,7 @@ import junit.framework.TestCase;
  * </ul>
  *
  * @author Kees Jongenburger
- * @verion $Id: ResourceLoaderTest.java,v 1.8 2008-11-12 15:56:41 michiel Exp $
+ * @verion $Id: ResourceLoaderTest.java,v 1.9 2009-04-22 08:21:21 michiel Exp $
  */
 public class ResourceLoaderTest extends TestCase {
 
@@ -78,7 +78,7 @@ public class ResourceLoaderTest extends TestCase {
 
     public void testWeightConfiguration() throws java.io.IOException {
         URL u  = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders").getResource("core/object.xml");
-        assertTrue(u.toString(), u.toString().endsWith("/mmbase-test.jar!/org/mmbase/config/builders/core/object.xml"));
+        assertTrue(u.toString(), u.toString().endsWith("/mmbase-tests-1.jar!/org/mmbase/config/builders/core/object.xml"));
     }
 
 }
