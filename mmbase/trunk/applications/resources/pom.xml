@@ -9,9 +9,16 @@
     <version>1.9-SNAPSHOT</version>
   </parent>
 
+  <description>
+    This contains images, attachments, flashobjects, urls node types, and the associated code to deal
+    with them. This application would be installed nearly always.
+  </description>
+
   <artifactId>mmbase-resources</artifactId>
   <name>MMBase Resources</name>
   <packaging>war</packaging>
+
+
 
   <dependencies>
     <dependency>
