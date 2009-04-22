@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/framework
                         http://www.mmbase.org/xmlns/framework.xsd">
   <!--
-      version: $Id: framework.xml,v 1.16 2009-04-18 07:04:48 michiel Exp $
+      version: $Id: framework.xml,v 1.17 2009-04-22 15:08:27 andre Exp $
   -->
   <!--
       An MMBase framework provides the context in which components are rendered.
@@ -24,7 +24,7 @@
       in which they are to be chained.
   -->
   <description xml:lang="en">
-    Short description of this framework. This is the BasicFramework.
+    This is the BasicFramework, change my settings in 'config/framework.xml'.
   </description>
 
   <urlconverter class="org.mmbase.framework.basic.MMBaseUrlConverter">
