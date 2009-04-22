@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.18 2008-10-01 20:15:49 michiel Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.19 2009-04-22 15:09:15 michiel Exp $
  */
 class ApplicationInstaller {
 
@@ -81,6 +81,7 @@ class ApplicationInstaller {
         ApplicationReader reader = getApplicationReader(applicationName);
         if (reader != null) {
             Versions ver = (Versions) mmb.getBuilder("versions");
+            if (ver == null) throw new IllegalStateException("No versions builder");
             // test autodeploy
             if (autoDeploy) {
                 if (!reader.hasAutoDeploy()) {
@@ -231,7 +232,7 @@ class ApplicationInstaller {
         for (Iterator<MMObjectNode> n = nodeReader.getNodes(mmb).iterator(); n.hasNext();) {
             try {
                 MMObjectNode newNode = n.next();
-                nodeReader.loadBinairyFields(newNode);
+                nodeReader.loadBinaryFields(newNode);
 
                 int exportnumber = newNode.getIntValue("number");
                 if (existsSyncnode(syncbul, exportsource, exportnumber)) {
