@@ -363,6 +363,19 @@
   </target>
 
 
+  <target name="run.vpro.wizards" depends="init" description="VPRO MMBase wizards tests">
+     <antcall target="clean.database" inheritRefs="true" />
+     <java classname="${ui.class}" fork="true" classpathref="run.classpath.vpro-wizards">
+       <arg value="org.mmbase.applications.vprowizards.AllTests" />
+       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+       <jvmarg value="-Duser.dir=${tests.work.dir}" />
+       <assertions>
+         <enable />
+       </assertions>
+     </java>
+   </target>
+
+
   <!-- ================================================================== -->
 
   <target name="standalone" depends="init" description="Start a stand-alone MMBase instantion">
