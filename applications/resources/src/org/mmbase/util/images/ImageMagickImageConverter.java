@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.14 2009-03-16 15:52:02 rico Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.15 2009-04-22 06:57:43 michiel Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -78,7 +78,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 launcher.execute(converterPath, cmd.toArray(EMPTY));
                 launcher.waitAndRead(outputStream, errorStream);
             } catch (ProcessException e) {
-                log.error("Convert test failed. " + converterPath + " (" + e.getMessage() + ")");
+                log.error("Convert test failed. " + converterPath + " (" + e.getMessage() + ")", new Exception());
             }
             break;
         }
@@ -261,9 +261,9 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 log.error(nfe.getMessage());
             }
         } else {
-            log.debug(
-            "ModulateScaleBase property not found, ignoring the modulateScaleBase.");
+            log.debug("ModulateScaleBase property not found, ignoring the modulateScaleBase.");
         }
+        log.info("Using " + converterPath +  " " + this);
     }
 
     private static class ParseResult {
@@ -617,6 +617,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         cmd.add(format+ ":-");
         String command = cmd.toString(); // only for debugging.
 
+        log.info("" + this + " executing " + command);
 
         String[] env;
         if (cwd != null) {
@@ -653,7 +654,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             } else {
                 // print some info and return....
                 if (log.isServiceEnabled()) {
-                    log.service("converted ('" + command + "')");
+                    log.service("converted ('" + command + "') usign " + this);
                 }
             }
         } catch (Exception e) {
@@ -756,6 +757,10 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             throw ioe;
         }
 
+    }
+
+    public String toString() {
+        return super.toString() + " " + converterPath;
     }
 
     public static void main(String[] args) throws Exception {

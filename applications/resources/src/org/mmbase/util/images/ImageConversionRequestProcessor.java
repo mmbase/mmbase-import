@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequestProcessor.java,v 1.3 2008-09-23 07:38:51 michiel Exp $
+ * @version $Id: ImageConversionRequestProcessor.java,v 1.4 2009-04-22 06:57:43 michiel Exp $
  * @see    ImageConversionRequest
  */
 public class ImageConversionRequestProcessor implements Runnable {
@@ -35,7 +35,7 @@ public class ImageConversionRequestProcessor implements Runnable {
     private final int processorId;
     private Thread thread;
 
-    private final ImageConverter convert;
+    private ImageConverter convert;
     private final BlockingQueue<ImageConversionRequest> queue;
     private final Map<ImageConversionReceiver, ImageConversionRequest> table;
 
@@ -43,7 +43,8 @@ public class ImageConversionRequestProcessor implements Runnable {
     /**
      * @javadoc
      */
-    public ImageConversionRequestProcessor(ImageConverter convert, BlockingQueue<ImageConversionRequest> queue,
+    public ImageConversionRequestProcessor(ImageConverter convert,
+                                           BlockingQueue<ImageConversionRequest> queue,
                                            Map<ImageConversionReceiver, ImageConversionRequest> table) {
         this.convert = convert;
         this.queue = queue;
@@ -60,20 +61,22 @@ public class ImageConversionRequestProcessor implements Runnable {
     }
     protected void shutdown() {
         thread.interrupt();
+        thread = null;
     }
 
     // javadoc inherited (from Runnable)
     public void run() {
         MMBase mmbase = MMBase.getMMBase();
-        while (!mmbase.isShutdown()) {
+        while (!mmbase.isShutdown() && thread != null) {
             try {
                 log.debug("Waiting for request");
                 ImageConversionRequest req = queue.take();
-                log.debug("Starting request");
+                log.debug("Starting request " + this);
                 processRequest(req);
                 log.debug("Done with request");
             } catch (InterruptedException ie) {
-                log.debug(Thread.currentThread().getName() +" was interrupted.");
+                log.debug(Thread.currentThread().getName() +" was interrupted for " + this);
+                convert = null;
                 break;
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
@@ -90,6 +93,7 @@ public class ImageConversionRequestProcessor implements Runnable {
         InputStream inputPicture = req.getInput();
         ImageConversionReceiver rec = req.getReceiver();
 
+        log.debug("Processing " + req);
         try {
             if (inputPicture == null) {
                 if (log.isDebugEnabled()) log.debug("processRequest : input is empty : " + req);
@@ -109,15 +113,22 @@ public class ImageConversionRequestProcessor implements Runnable {
                             Dimension dim = Factory.getImageInformer().getDimension(rec.getInputStream());
                             rec.setDimension(dim);
                         }
-                        rec.ready();
                     } else {
                         log.warn("processRequest(): Convert problem params : " + params);
                     }
                 } catch (java.io.IOException ioe) {
                     log.error(ioe);
+                } finally {
+                    try {
+                        rec.ready();
+                    } catch (java.io.IOException ioe) {
+                        log.error(ioe);
+                    }
+
                 }
             }
         } finally {
+            log.debug("Ready processing request");
             synchronized (table){
                 if (log.isDebugEnabled()) {
                     log.debug("Setting output " + req + " (" + req.count() + " times requested now)");
@@ -126,5 +137,9 @@ public class ImageConversionRequestProcessor implements Runnable {
                 table.remove(rec);
             }
         }
+    }
+
+    public String toString() {
+        return super.toString() + " converter: " + convert;
     }
 }
