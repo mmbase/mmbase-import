@@ -1,4 +1,6 @@
+
 export JAVA_HOME=/opt/jdk15
+
 ant=ant -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib lib:. -Dnoconnection=true
 #ant=ant -lib lib:. -Dnoconnection=true
 
@@ -7,11 +9,11 @@ all:
 	$(ant) run.all
 
 #failures
-bridge:
+bridge: dependencies
 	$(ant) run.bridge | tee work/bridge.log
 
 
-#
+#failures (at least bridge must succeed first)
 rmmci:
 	$(ant) run.bridge.rmmci | tee work/rmmci.log
 
@@ -35,8 +37,8 @@ clustering:
 cloudcontext:
 	$(ant) run.cloudcontext | tee work/cloudcontext.log
 
-#failures
-convert:
+#ok
+convert: dependencies
 	$(ant) run.convertimage | tee work/convertimage.log
 
 #ok
@@ -48,3 +50,9 @@ transactions:
 	$(ant) run.transactions | tee work/transactions.log
 
 
+dependencies:
+	mvn dependency:copy-dependencies
+
+.PHONY: compile
+compile:
+	mvn compile jar:jar
