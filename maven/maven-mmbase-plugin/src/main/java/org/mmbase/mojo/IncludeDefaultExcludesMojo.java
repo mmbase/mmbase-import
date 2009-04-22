@@ -101,6 +101,7 @@ public class IncludeDefaultExcludesMojo extends AbstractMojo {
                 tot += copyDirectory(sub, subDest);
             } else {
                 if (! subDest.exists() || sub.lastModified() > subDest.lastModified()) {
+                    subDest.setWritable(true);
                     FileUtils.copyFile(sub, subDest);
                     tot++;
                 }
