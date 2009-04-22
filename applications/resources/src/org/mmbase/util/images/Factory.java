@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: Factory.java,v 1.6 2008-09-24 05:54:30 michiel Exp $
+ * @version $Id: Factory.java,v 1.7 2009-04-22 06:55:15 michiel Exp $
  */
 
 public class Factory {
@@ -41,10 +41,10 @@ public class Factory {
     protected static int maxConcurrentRequests = 2;
 
     protected static final int maxRequests = 32;
-    protected static BlockingQueue<ImageConversionRequest> imageRequestQueue = new ArrayBlockingQueue<ImageConversionRequest>(maxRequests);
-    protected static Map<ImageConversionReceiver, ImageConversionRequest> imageRequestTable
+    private static final BlockingQueue<ImageConversionRequest> imageRequestQueue = new ArrayBlockingQueue<ImageConversionRequest>(maxRequests);
+    private static final Map<ImageConversionReceiver, ImageConversionRequest> imageRequestTable
         = new ConcurrentHashMap<ImageConversionReceiver, ImageConversionRequest>(maxRequests);
-    protected static ImageConversionRequestProcessor ireqprocessors[];
+    private static ImageConversionRequestProcessor ireqprocessors[];
 
     /**
      * The default image format.
@@ -52,6 +52,10 @@ public class Factory {
     protected static String defaultImageFormat = "jpeg";
 
     public static void init(Map<String, String> properties) {
+        if (isInited()) {
+            log.warn("Initing while not shut down!", new Exception());
+            shutdown();
+        }
         params.clear();
         params.putAll(properties);
 
@@ -84,6 +88,14 @@ public class Factory {
         }
     }
 
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public static boolean isInited() {
+        return ireqprocessors != null;
+    }
+
     /**
      * @since MMBase-1.9
      */
@@ -92,6 +104,7 @@ public class Factory {
             log.service("Shutting down " + icrp);
             icrp.shutdown();
         }
+        ireqprocessors = null;
     }
 
     /**
@@ -126,7 +139,7 @@ public class Factory {
         try {
             Class<?> cl = Class.forName(className);
             ici = (ImageConverter) cl.newInstance();
-            log.service("loaded '" + className+"' for image Factory");
+            log.service("loaded '" + className+"' " + ici + " for image Factory");
         } catch (ClassNotFoundException e) {
             log.error("is classname in " + params.get("configfile") + " correct? ('not found class " + className + "')", e);
         } catch (InstantiationException e) {
@@ -204,5 +217,6 @@ public class Factory {
     public static Imaging.CKey getCKey(int nodeNumber, String template) {
         return new Imaging.CKey(nodeNumber, template);
     }
+
 
 }
