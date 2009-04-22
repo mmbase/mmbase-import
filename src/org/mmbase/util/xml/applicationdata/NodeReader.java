@@ -27,7 +27,7 @@ import org.xml.sax.InputSource;
  * @application Applications
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: NodeReader.java,v 1.1 2008-09-03 23:17:25 michiel Exp $
+ * @version $Id: NodeReader.java,v 1.2 2009-04-22 15:08:45 michiel Exp $
  */
 public class NodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(NodeReader.class);
@@ -41,6 +41,7 @@ public class NodeReader extends DocumentReader {
      */
     public NodeReader(InputSource is, ResourceLoader path) {
         super(is, false);
+        if (path == null) throw new NullPointerException();
         this.path = path;
     }
 
@@ -226,25 +227,26 @@ public class NodeReader extends DocumentReader {
 
     private byte[] readBytesStream(String resourceName) throws IOException {
         InputStream stream = path.getResourceAsStream(resourceName);
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int c = stream.read();
-        while (c != -1) {
-            buffer.write(c);
-            c = stream.read();
+        if (stream == null) {
+            log.error("The resource '" + resourceName + "' could not be found");
+            return null;
+        } else {
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            IOUtil.copy(stream, buffer);
+            return buffer.toByteArray();
         }
-        return buffer.toByteArray();
     }
 
-    public void loadBinairyFields(MMObjectNode newNode) {
+    public void loadBinaryFields(MMObjectNode newNode) {
         Set<String> fieldNames = newNode.getBuilder().getFieldNames();
         if(fieldNames!=null && fieldNames.size()>0){
             for (String fieldName : fieldNames) {
                 int fieldDBType = newNode.getBuilder().getDBType(fieldName);
                 if(fieldDBType == Field.TYPE_BINARY){
-                    try{
+                    try {
                         String resource = newNode.getStringValue(fieldName);
                         newNode.setValue(fieldName, readBytesStream(resource));
-                    }catch(Exception setValueEx){
+                    } catch (Exception setValueEx){
                         log.error(setValueEx);
                     }
                 }
