@@ -13,4 +13,9 @@
   <name>MMBase XML Importer</name>
   <packaging>war</packaging>
 
+  <description>
+    The XML importer allows you to import large quantities of data into MMBase objects.
+    Currently this code still depends on the SCAN application which is deprecated.
+  </description>
+
 </project>

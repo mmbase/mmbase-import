@@ -13,4 +13,9 @@
   <name>MMBase Jumpers</name>
   <packaging>war</packaging>
 
+  <description>
+    The jumpers application could be used to make short urls which
+    redirects to a long one.
+  </description>
+
 </project>

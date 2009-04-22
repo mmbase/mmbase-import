@@ -9,6 +9,8 @@
     <version>1.9-SNAPSHOT</version>
   </parent>
 
+  <description>Dove is an mmbase module and servlet, that allows to do remote editing. It is mainly used by the editwizards</description>
+
   <artifactId>mmbase-dove</artifactId>
   <name>MMBase Dove</name>
   <packaging>jar</packaging>

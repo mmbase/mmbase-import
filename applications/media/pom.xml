@@ -13,4 +13,12 @@
   <name>MMBase Media</name>
   <packaging>war</packaging>
 
+  <description>
+    The MMBase media project provides you with builders and code to manage videofragments and
+    audiofragments. It is currently written towards facilitating content stored on the servers of
+    the dutch public broadcasting organisations (NPO), but can be used for other video material
+    also. By specifying media metadata like bitrate etc, you can easily create links for broadband /
+    smallband users using MMBase functions.
+  </description>
+
 </project>
