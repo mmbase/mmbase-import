@@ -135,8 +135,8 @@
     <module>cloudsecurity</module>
 
     <module>mynews</module>
-
     <module>vpro-wizards</module>
+    <module>scan</module>
 
   </modules>
 </project>
