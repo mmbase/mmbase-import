@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.15 2009-04-22 06:57:43 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.16 2009-04-22 08:03:58 michiel Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -78,7 +78,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 launcher.execute(converterPath, cmd.toArray(EMPTY));
                 launcher.waitAndRead(outputStream, errorStream);
             } catch (ProcessException e) {
-                log.error("Convert test failed. " + converterPath + " (" + e.getMessage() + ")", new Exception());
+                log.error("Convert test failed. " + converterPath + " (" + e.getMessage() + ")");
             }
             break;
         }
