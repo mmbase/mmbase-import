@@ -1345,8 +1345,8 @@ public final class RepositoryUtil {
       return SecurityUtil.getRole(channel, rightsInherited, channelsWithRole);
    }
 
-   public static void setGroupRights(Cloud cloud, Node user, Map<Integer, UserRole> rights) {
-      SecurityUtil.setGroupRights(cloud, user, rights, TreeUtil.convertToList(treeManagers));
+   public static void setGroupRights(Cloud cloud, Node group, Map<Integer, UserRole> rights) {
+      SecurityUtil.setGroupRights(cloud, group, rights, TreeUtil.convertToList(treeManagers));
    }
 
    public static List<Node> getUsersWithRights(Node channel, Role requiredRole) {
