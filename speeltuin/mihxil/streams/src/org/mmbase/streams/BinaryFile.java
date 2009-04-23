@@ -13,7 +13,11 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.*;
 import org.mmbase.datatypes.processors.*;
 import java.util.*;
+import java.io.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.servlet.FileServlet;
+
+import org.apache.commons.fileupload.FileItem;
 
 /**
  * This class constains Setter and Getter method for 'binary' file fields. In such field you can set
@@ -32,9 +36,23 @@ public class BinaryFile {
         private static final long serialVersionUID = 1L;
 
         public Object process(Node node, Field field, Object value) {
-
-            SerializableInputStream is = Casting.toSerializableInputStream(value);
-            return value;
+            ///SerializableInputStream is = Casting.toSerializableInputStream(value);
+            StringBuilder buf = new StringBuilder();
+            org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, node.getNumber(), "/");
+            buf.append("/").append(node.getNumber()).append(".");
+            if (value instanceof FileItem) {
+                FileItem fi = (FileItem) value;
+                buf.append(fi.getName());
+                File f = new File(FileServlet.getDirectory(), buf.toString().replace("/", File.separator));
+                try {
+                    fi.write(f);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                buf.append(field.getName());
+            }
+            return buf.toString();
         }
     }
 
