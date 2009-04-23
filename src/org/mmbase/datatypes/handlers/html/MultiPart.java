@@ -14,11 +14,13 @@ import javax.servlet.http.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.apache.commons.fileupload.*;
+import org.apache.commons.fileupload.disk.*;
+import org.apache.commons.fileupload.servlet.*;
 
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.1 2009-04-17 17:37:54 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.2 2009-04-23 15:27:06 michiel Exp $
  **/
 
 public class MultiPart {
@@ -80,7 +82,8 @@ public class MultiPart {
 
         MMultipartRequest(HttpServletRequest req, String c) {
             try {
-                DiskFileUpload fu =  new DiskFileUpload();
+                FileItemFactory factory = new DiskFileItemFactory();
+                ServletFileUpload fu = new ServletFileUpload(factory);
                 fu.setHeaderEncoding("ISO-8859-1"); // if incorrect, it will be fixed later.
                 List fileItems = fu.parseRequest(req);
                 for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
