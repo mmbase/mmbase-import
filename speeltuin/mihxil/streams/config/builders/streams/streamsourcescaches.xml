@@ -1,0 +1,31 @@
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="streamsourcescaches" maintainer="mmbase.org" version="1" extends="mediasources">
+
+  <names>
+  </names>
+
+
+  <descriptions>
+  </descriptions>
+
+
+  <properties>
+  </properties>
+
+  <fieldlist>
+
+    <field name="url">
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <getprocessor type="binary">
+          <class name="org.mmbase.streams.BinaryFile$Getter" />
+        </getprocessor>
+      </datatype>
+    </field>
+
+  </fieldlist>
+
+</builder>
