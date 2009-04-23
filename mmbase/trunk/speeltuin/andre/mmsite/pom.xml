@@ -10,8 +10,9 @@
   <artifactId>mmbase-mmsite</artifactId>
   <packaging>war</packaging>
   <name>MMBase MMSite webapp</name>
+
   <build>
-    <defaultGoal>package</defaultGoal>
+    <defaultGoal>install</defaultGoal>
   </build>
   <dependencies>
 
