@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * &lt;/urlconverter&gt;
  * 
  * @author Andr&eacute; van Toly
- * @version $Id: SiteUrlConverter.java,v 1.4 2009-04-20 11:49:34 andre Exp $
+ * @version $Id: SiteUrlConverter.java,v 1.5 2009-04-23 12:12:36 andre Exp $
  * @since MMBase-1.9
  */
 public class SiteUrlConverter extends DirectoryUrlConverter {
@@ -70,8 +70,8 @@ public class SiteUrlConverter extends DirectoryUrlConverter {
      */
     @Override protected void getNiceDirectoryUrl(StringBuilder b, Block block, Parameters parameters, Parameters frameworkParameters,  boolean action) throws FrameworkException {
         if (log.isDebugEnabled()) {
-            if (log.isDebugEnabled()) log.debug("" + parameters + frameworkParameters);
-            if (log.isDebugEnabled()) log.debug("Found 'page' block: " + block);
+            log.debug("" + parameters + frameworkParameters);
+            log.debug("Found 'page' block: " + block);
         }
         int b_len = b.length();
         
@@ -98,6 +98,11 @@ public class SiteUrlConverter extends DirectoryUrlConverter {
 		StringBuilder result = new StringBuilder();
 		Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
 		if (log.isDebugEnabled()) log.debug("path pieces: " + pa + ", path size: " + pa.size()); 
+
+	    if (excludedPaths.contains(pa.get(0))) {
+			if (log.isDebugEnabled()) log.debug("Returning null, path in excludepaths: " + pa.get(0));
+		    return Url.NOT;
+		}
 		
 		StringBuilder sb = new StringBuilder();
 		for (String piece: pa) {
@@ -112,26 +117,18 @@ public class SiteUrlConverter extends DirectoryUrlConverter {
             //pa.set(pa.size() - 1, id);
         }
         
+        Node node = UrlUtils.getPagebyPath(cloud, path);
+        if (node != null) {
+            String template = node.getNodeValue("template").getStringValue("url");
+            if (!template.startsWith("/")) result.append("/");
+            result.append(template).append("?n=" + node.getNumber());
             
-	    if (excludedPaths.contains(pa.get(0))) {
-			if (log.isDebugEnabled()) log.debug("Returning null, path in excludepaths: " + path);
-		    return Url.NOT;
-		    
         } else {
-            // find the node with this path
-			Node node = UrlUtils.getPagebyPath(cloud, path);
-            if (node != null) {
-				String template = node.getNodeValue("template").getStringValue("url");
-				if (!template.startsWith("/")) result.append("/");
-				result.append(template).append("?n=" + node.getNumber());
-				
-            } else {
-				return Url.NOT;
-			}
-			
-			if (log.isDebugEnabled()) log.debug("Returning: " + result.toString());
-            return new BasicUrl(this, result.toString());
+            return Url.NOT;
         }
+        
+        if (log.isDebugEnabled()) log.debug("Returning: " + result.toString());
+        return new BasicUrl(this, result.toString());
         
     }
 
