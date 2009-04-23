@@ -22,7 +22,7 @@ samples/Kort-stormpje.mov:
 .PHONY:
 test.theora: samples/mahnamahna.mpg
 	mkdir -p results
-	java org.mmbase.streams.transcoders.FFMpeg2TheoraTranscoder samples/mahnamahna.mpg  results/mahnamahna.ogv
+	java -cp $(CLASSPATH) org.mmbase.streams.transcoders.FFMpeg2TheoraTranscoder samples/mahnamahna.mpg  results/mahnamahna.ogv
 
 test.avi: samples/mahnamahna.mpg
 	mkdir -p results
