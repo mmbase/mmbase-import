@@ -21,15 +21,8 @@
   <fieldlist>
 
     <field name="url">
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base="file" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <unique value="true" />
-        <setprocessor type="binary">
-          <class name="org.mmbase.streams.BinaryFile$Setter">
-          </class>
-        </setprocessor>
-        <getprocessor type="binary">
-          <class name="org.mmbase.streams.BinaryFile$Getter" />
-        </getprocessor>
       </datatype>
     </field>
 
