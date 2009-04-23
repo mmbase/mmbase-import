@@ -107,6 +107,14 @@ See http://www.MMBase.org/license
 
 	<resources>
 		<resource>
+			<directory>${basedir}/src/java/</directory>
+			<includes>
+				<include>**/*.xml</include>
+				<include>**/*.dtd</include>
+				<include>**/*.properties</include>
+			</includes>
+		</resource>
+		<resource>
 			<directory>${basedir}/resources</directory>
 			<includes>
 				<include>**/*</include>
