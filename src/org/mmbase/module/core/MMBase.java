@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.261 2008-11-25 15:05:41 michiel Exp $
+ * @version $Id: MMBase.java,v 1.262 2009-04-24 15:09:38 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1156,8 +1156,7 @@ public class MMBase extends ProcessorModule {
             // print information about storage
             log.info("Using class: '" + storageManagerFactory.getClass().getName() + "'.");
         } catch (StorageException se) {
-            log.error(se.getMessage());
-            throw new StorageError();
+            throw new StorageError(se.getMessage());
         }
     }
 
