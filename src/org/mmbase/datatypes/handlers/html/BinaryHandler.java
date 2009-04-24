@@ -22,7 +22,7 @@ import org.mmbase.util.*;
  * 'input' tag with type 'file'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BinaryHandler.java,v 1.4 2009-04-17 22:09:35 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.5 2009-04-24 15:10:10 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -68,11 +68,19 @@ public class BinaryHandler extends HtmlHandler {
 
     @Override
     protected void setValue(Node node, String fieldName, Object value) {
-        if (value == null || ! useSpecificSetter) {
+        if (value == null) {
             node.setValue(fieldName, value);
         } else {
             SerializableInputStream sis = Casting.toSerializableInputStream(value);
-            node.setInputStreamValue(fieldName, sis, sis.getSize());
+            if ("".equals(sis.getName())) {
+                // notching changed.
+            } else {
+                if (useSpecificSetter) {
+                    node.setInputStreamValue(fieldName, sis, sis.getSize());
+                } else {
+                    node.setValue(fieldName, sis);
+                }
+            }
         }
     }
 
@@ -82,8 +90,8 @@ public class BinaryHandler extends HtmlHandler {
     @Override
     protected Object getFieldValue(Request request, Node node, Field field)  {
         if (MultiPart.isMultipart(request.getProperty(Parameter.REQUEST))) {
-            FileItem bytes = MultiPart.getMultipartRequest(request.getProperty(Parameter.REQUEST),
-                                                           request.getProperty(Parameter.RESPONSE)).getFileItem(request.getName(field));
+            SerializableInputStream bytes = MultiPart.getMultipartRequest(request.getProperty(Parameter.REQUEST),
+                                                           request.getProperty(Parameter.RESPONSE)).getInputStream(request.getName(field));
             return bytes;
         } else {
             return null;

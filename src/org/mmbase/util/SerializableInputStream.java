@@ -13,6 +13,7 @@ package org.mmbase.util;
 import java.io.*;
 import org.mmbase.util.logging.*;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
 
 /**
  * Sometimes you need an InputStream to be Serializable. This wraps
@@ -20,11 +21,11 @@ import org.apache.commons.fileupload.FileItem;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: SerializableInputStream.java,v 1.5 2009-04-21 12:37:01 michiel Exp $
+ * @version $Id: SerializableInputStream.java,v 1.6 2009-04-24 15:08:51 michiel Exp $
  * @todo IllegalStateException or so, if the inputstreas is used (already).
  */
 
-public class SerializableInputStream  extends InputStream implements Serializable {
+public class SerializableInputStream  extends InputStream implements Serializable  {
 
     private static final long serialVersionUID = 1;
 
@@ -59,7 +60,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
 
     private InputStream wrapped;
+    private File file = null;
     private String name;
+    private String contentType;
 
     public SerializableInputStream(InputStream wrapped, long s) {
         this.wrapped = wrapped;
@@ -72,11 +75,22 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         this.size = array.length;
         this.name = null;
     }
+
     public SerializableInputStream(FileItem fi) throws IOException {
-        this.wrapped = fi.getInputStream();
         this.size = fi.getSize();
         this.name = fi.getName();
+        this.contentType = fi.getContentType();
+        file = File.createTempFile(getClass().getName(), this.name);
+        try {
+            fi.write(file);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+        this.wrapped = new FileInputStream(file);
+
+
     }
+
 
     public long getSize() {
         return size;
@@ -84,7 +98,11 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     public String getName() {
         return name;
     }
-    public byte[] toByteArray() throws IOException {
+
+    public String getContentType() {
+        return contentType;
+    }
+    public byte[] get() throws IOException {
         if (wrapped.markSupported()) {
             byte[] b =  toByteArray(wrapped);
             wrapped.reset();
@@ -96,6 +114,36 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         }
     }
 
+    public void moveTo(File f) {
+        if (name == null) {
+            name = f.getName();
+        }
+        if (file != null) {
+            if (file.equals(f)) {
+                log.debug("File is already there " + f);
+                return;
+            } else if (file.renameTo(f)) {
+                log.debug("Renamed " + file + " to " + f);
+                file = f;
+                return;
+            } else {
+                log.debug("Could not rename " + file + " to " + f + " will copy/delete in stead");
+            }
+        }
+        try {
+            FileOutputStream os = new FileOutputStream(f);
+            IOUtil.copy(wrapped, os);
+            os.close();
+            wrapped = new FileInputStream(f);
+            if (file != null) {
+                file.delete();
+            }
+            file = f;
+        } catch (IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
+    }
+
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         wrapped.reset();
         out.writeObject(toByteArray(wrapped));
@@ -104,16 +152,50 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         byte[] b = (byte[]) in.readObject();
         wrapped = new ByteArrayInputStream(b);
     }
-    public int available() throws IOException { return wrapped.available(); }
-    public void mark(int readlimit) {  wrapped.mark(readlimit); }
-    public boolean markSupported() { return wrapped.markSupported(); }
+    public int available() throws IOException {
+        return wrapped.available();
+    }
+    private void supportMark() {
+        try {
+            if (file == null) {
+                file = File.createTempFile(getClass().getName(), this.name);
+                FileOutputStream os = new FileOutputStream(file);
+                IOUtil.copy(wrapped, os);
+                os.close();
+            }
+            wrapped = new FileInputStream(file);
+        } catch (IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
+    }
+
+    public void mark(int readlimit) {
+        if (wrapped.markSupported()) {
+            wrapped.mark(readlimit);
+        } else {
+            supportMark();
+            wrapped.mark(readlimit);
+        }
+    }
+    public boolean markSupported() {
+        return true;
+    }
     public int read() throws IOException { use(); return wrapped.read(); }
     public int read(byte[] b) throws IOException { use(); return wrapped.read(b); }
     public int read(byte[] b, int off, int len) throws IOException { use(); return wrapped.read(b, off, len); }
-    public void reset() throws IOException { wrapped.reset() ; }
-    public long skip(long n) throws IOException { return wrapped.skip(n); }
+
+    public void reset() throws IOException {
+        if (wrapped.markSupported()) {
+            wrapped.reset() ;
+        } else {
+            supportMark();
+        }
+    }
+    public long skip(long n) throws IOException {
+        return wrapped.skip(n);
+    }
 
     public String toString() {
-        return "SERIALIZABLE " + wrapped + (used ? " (used)" :  "") + "(" + size + " byte)";
+        return "SERIALIZABLE " + wrapped + (used ? " (used)" :  "") + " (" + size + " byte, " + ( name == null ? "[no name]" : name) + ")";
     }
 }
