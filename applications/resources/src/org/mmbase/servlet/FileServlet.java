@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * Straight-forward filter which can serve files from one directory (the directory 'files' in the
  * mmbase 'datadir') outside the web application root.
  *
- * @version $Id: FileServlet.java,v 1.11 2008-12-17 08:55:18 michiel Exp $
+ * @version $Id: FileServlet.java,v 1.12 2009-04-24 08:58:30 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
  * @see    AttachmentServlet
@@ -40,20 +40,22 @@ public class FileServlet extends BridgeServlet {
 
     //private static final Properties properties= new Properties();
 
+    @Override
     public void init() throws ServletException {
         super.init();
         String ig = getInitParameter("ignore");
         if (ig != null && ig.length() > 0) {
             ignore = Pattern.compile(ig);
         }
-        log = Logging.getLoggerInstance(FileServlet.class);
     }
 
-    public static void init(HttpServletResponse res) {
+    @Override
+    public void setMMBase(MMBase mmb) {
+        super.setMMBase(mmb);
+        if (log == null) {
+            log = Logging.getLoggerInstance(FileServlet.class);
+        }
         if (files == null) {
-            if (log == null) {
-                log = Logging.getLoggerInstance(FileServlet.class);
-            }
             File dataDir = MMBase.getMMBase().getDataDir();
 
             files = new File(dataDir, "files");
@@ -65,30 +67,16 @@ public class FileServlet extends BridgeServlet {
                 }
             }
             log.info("Using datadir " + files);
-
         }
-
     }
 
 
-    protected boolean checkInited(HttpServletResponse res) throws ServletException, IOException  {
-        boolean inited = super.checkInited(res);
-        if (inited) {
-            init(res);
-            /*
-            try {
-                properties.load(new FileInputStream(new File(files, ".mmbaseowners")));
-            } catch (Exception e) {
-                log.warn(e);
-            }
-            */
-        }
-        return inited;
-    }
+    @Override
     public String getServletInfo()  {
         return "Serves files from <MMBase data directory>/files";
     }
 
+    @Override
     protected Map<String, Integer> getAssociations() {
         Map<String, Integer> a = super.getAssociations();
         a.put("files",      50);
@@ -100,7 +88,6 @@ public class FileServlet extends BridgeServlet {
     }
 
     public static File getFile(String pathInfo, ServletResponse res) {
-        if (res != null) init((HttpServletResponse) res);
         if (pathInfo == null) {
             return files;
         } else {
@@ -117,6 +104,7 @@ public class FileServlet extends BridgeServlet {
         return pi != null && (ignore.matcher(pi).matches());
     }
 
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pi = req.getPathInfo();
         if (ignores(pi)) {
@@ -223,6 +211,7 @@ public class FileServlet extends BridgeServlet {
         }
     }
 
+    @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         File file = getFile(req.getPathInfo(), resp);
         if (file.exists()) {
@@ -248,6 +237,7 @@ public class FileServlet extends BridgeServlet {
         out.close();
     }
 
+    @Override
     protected long getLastModified(HttpServletRequest req) {
         return getFile(req.getPathInfo(), null).lastModified();
     }
