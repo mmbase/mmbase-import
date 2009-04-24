@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.4 2007-08-02 11:00:23 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.5 2009-04-24 15:08:12 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -195,7 +195,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * @since MMBase-1.8.1
      */
     protected Dimension getDimensionForEmptyHandle(MMObjectNode node) {
-        log.warn("Cannot get dimension of node with no 'handle' " + node + " (stores " + storesDimension() + ")");
+        log.warn("Cannot get dimension of node with no 'handle' " + node + " (stores " + storesDimension() + ") "  + node.getValue(Imaging.FIELD_HANDLE));
         return Dimension.UNDETERMINED;
     }
     /**
@@ -371,9 +371,9 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         } else if (function.equals("format")) {
             return getImageFormat(node);
         } else if ("width".equals(function)) {
-            return new Integer(getDimension(node).getWidth());
+            return Integer.valueOf(getDimension(node).getWidth());
         } else if ("height".equals(function)) {
-            return new Integer(getDimension(node).getHeight());
+            return Integer.valueOf(getDimension(node).getHeight());
         } else if ("dimension".equals(function)) {
             return getDimension(node);
         } else {
