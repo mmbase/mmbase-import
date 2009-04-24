@@ -285,7 +285,7 @@ See http://www.MMBase.org/license
             <target>1.5</target>
             <maxmem>256M</maxmem>
             <fork>${compiler.fork}</fork>
-            <showDeprecation>true</showDeprecation>
+            <showDeprecation>false</showDeprecation>
           </configuration>
         </plugin>
         <plugin>
@@ -572,17 +572,20 @@ See http://www.MMBase.org/license
         <groupId>javax.servlet</groupId>
         <artifactId>jstl</artifactId>
         <version>${jstl.version}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>taglibs</groupId>
         <artifactId>standard</artifactId>
         <version>${taglib-standard.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>${log4j.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -618,6 +621,7 @@ See http://www.MMBase.org/license
             <artifactId>servlet-api</artifactId>
           </exclusion>
         </exclusions>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>commons-lang</groupId>
@@ -628,6 +632,7 @@ See http://www.MMBase.org/license
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
         <version>1.1</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
