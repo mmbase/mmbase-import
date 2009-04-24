@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.130 2009-04-21 12:37:01 michiel Exp $
+ * @version $Id: Casting.java,v 1.131 2009-04-24 15:08:51 michiel Exp $
  */
 
 import java.util.*;
@@ -407,9 +407,11 @@ public class Casting {
             return escape(escaper, (String) o);
         } else if (o instanceof CharSequence) {
             return new StringWrapper((CharSequence) o, escaper);
+        } else if (o instanceof SerializableInputStream) {
+            return escape(escaper, ((SerializableInputStream) o).getName());
         } else if (o instanceof InputStream) {
             try {
-                return escape(escaper, new String(toSerializableInputStream(o).toByteArray()));
+                return escape(escaper, new String(toSerializableInputStream(o).get()));
             } catch (IOException ioe) {
                 throw new RuntimeException(ioe);
             }
@@ -591,16 +593,20 @@ public class Casting {
             return (byte[])obj;
         } else if (obj instanceof FileItem) {
             return ((FileItem) obj).get();
+        } else if (obj instanceof SerializableInputStream) {
+            try {
+                SerializableInputStream is = (SerializableInputStream) obj;
+                return is.get();
+            } catch (IOException ioe) {
+                log.error(ioe);
+                return new byte[0];
+            }
         } else if (obj instanceof InputStream) {
             log.debug("IS " + obj);
             InputStream in = (InputStream) obj;
             ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
-            byte[] buf = new byte[1024];
             try {
-                int tot;
-                while ((tot = in.read(buf, 0, 1024)) != -1 ) {
-                    out.write(buf, 0, tot);
-                }
+                IOUtil.copy(in, out);
             } catch (IOException ioe) {
                 log.error(ioe);
             } finally {
@@ -629,7 +635,7 @@ public class Casting {
             try {
                 return new SerializableInputStream((FileItem) obj);
             } catch (IOException ioe) {
-                log.error(ioe);
+                log.error(ioe.getMessage(), ioe);
                 return new SerializableInputStream(new byte[0]);
             }
         } else  {
