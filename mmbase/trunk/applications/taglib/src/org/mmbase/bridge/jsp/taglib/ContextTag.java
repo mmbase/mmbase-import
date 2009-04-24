@@ -45,7 +45,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.96 2009-04-17 15:42:13 michiel Exp $
+ * @version $Id: ContextTag.java,v 1.97 2009-04-24 19:58:44 michiel Exp $
  * @see ImportTag
  * @see WriteTag
  */
@@ -182,7 +182,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     PageContextContainer prevPc = (PageContextContainer) prevParent;
                     if (((PageContextBacking) prevPc.getBacking()).getPageContext() != pageContext) {
                         ServletRequest prevReq = unwrap(((PageContextBacking) prevPc.getBacking()).getPageContext().getRequest());
-                        if (prevReq != unwrap(pageContext.getRequest())) {
+                        if (prevReq != null && prevReq != unwrap(pageContext.getRequest())) {
                             log.warn("found a pagecontext container for a different request (" + prevReq + " !=  '" + pageContext.getRequest() + "'). Repairing");
                         } else {
                             log.debug("found a pagecontext container for a different pageContext. Repairing");
@@ -330,17 +330,10 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
 
     }
 
-    /**
-     * hmm.. This kind of stuf must move to ImportTag, I think.
-     */
 
-    public byte[] getBytes(String key) throws JspTagException {
-        return MultiPart.getMultipartRequest(pageContext).getBytes(key);
 
-    }
-
-    public  org.apache.commons.fileupload.FileItem getFileItem(String key) throws JspTagException {
-        return MultiPart.getMultipartRequest(pageContext).getFileItem(key);
+    public  org.mmbase.util.SerializableInputStream getInputStream(String key) throws JspTagException {
+        return MultiPart.getMultipartRequest(pageContext).getInputStream(key);
 
     }
 
