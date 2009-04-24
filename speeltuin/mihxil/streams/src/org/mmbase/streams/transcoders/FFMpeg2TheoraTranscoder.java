@@ -12,6 +12,9 @@ package org.mmbase.streams.transcoders;
 
 import java.net.*;
 import java.io.*;
+import org.mmbase.util.logging.*;
+
+
 
 /**
  * A trancoder base on an external command, like <code>ffmpeg</code> or <code>ffmpeg2theora</code>
@@ -34,11 +37,16 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
 
         return new String[] { "-o", outFile.toString(), inFile.toString() };
     }
+    @Override
+    protected Level getErrorLevel() {
+        return Level.SERVICE;
+    }
 
 
     public static void main(String[] argv) throws Exception {
-
-        Transcoder transcoder = new FFMpeg2TheoraTranscoder();
+        CommandTranscoder transcoder = new FFMpeg2TheoraTranscoder();
+        Logging.getLoggerInstance("FFMPEG2THEORA").setLevel(Level.SERVICE);
+        transcoder.addLogger(Logging.getLoggerInstance("FFMPEG2THEORA"));
         transcoder.transcode(new File(argv[0]).toURI(), new File(argv[1]).toURI());
     }
 }
