@@ -33,8 +33,8 @@
         <guiname xml:lang="en">Provider</guiname>
       </gui>
       <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="true" />
         <default value="mediaprovider_localhost" />
+        <required value="true" />
         <enumeration enforce="never">
           <query type="mediaproviders"  xmlns="http://www.mmbase.org/xmlns/searchquery">
             <sortorder field="name" />
