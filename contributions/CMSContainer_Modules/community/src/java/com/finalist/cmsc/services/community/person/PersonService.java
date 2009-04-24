@@ -89,4 +89,8 @@ public interface PersonService {
 
    public List<Authority> getAllAuthorities();
    
+   public List<Object[]> getSubscribersRelatedInfo(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging);
+   
+   public int getSubscribersRelatedInfoCount(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging);
+
 }
