@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.4 2008-12-09 15:59:54 michiel Exp $
+ * @version $Id: HandleServlet.java,v 1.5 2009-04-24 06:26:34 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -43,6 +43,7 @@ public class HandleServlet extends BridgeServlet {
 
     private static Cache<Integer, Integer> jpegSizes = null;
 
+    @Override
     protected Map<String, Integer> getAssociations() {
         Map a = super.getAssociations();
         // Can do the following:
@@ -56,6 +57,7 @@ public class HandleServlet extends BridgeServlet {
      * Takes care of the 'expire' init-parameter.
      * {@inheritDoc}
      */
+    @Override
     public void init() throws ServletException {
         super.init();
         log = Logging.getLoggerInstance(HandleServlet.class);
@@ -78,7 +80,7 @@ public class HandleServlet extends BridgeServlet {
                     return "JPEGSizes";
                 }
                 public String getDescription() {
-                    return "HandleServlet may ditch some bytes from Jpeg-steams to please IE";
+                    return "HandleServlet may ditch some bytes from Jpeg-streams to please IE";
                 }
 
             };
@@ -220,7 +222,7 @@ public class HandleServlet extends BridgeServlet {
     /**
      * Serves a node with a byte[] handle field as an attachment.
      */
-
+    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         QueryParts query = readQuery(req, res);
         Node queryNode = getNode(query);
