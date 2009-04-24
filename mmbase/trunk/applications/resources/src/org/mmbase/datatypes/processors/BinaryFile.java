@@ -54,27 +54,30 @@ public class BinaryFile {
         private static final long serialVersionUID = 1L;
 
         public Object process(final Node node, final Field field, final Object value) {
-
-
             SerializableInputStream is = Casting.toSerializableInputStream(value);
-
             String name = is.getName();
             if (name != null) {
-                name = field.getName();
-            }
-            File f = getFile(node, field, name);
+                String existing = (String) node.getValue(field.getName());
+                if (existing != null) {
+                    File ef = new File(getDirectory(), existing);
+                    if (ef.exists()) {
+                        log.debug("Removing existing field " + ef);
+                        ef.delete();
+                    } else {
+                        log.warn("Could not fined " + ef + " so could not delete it");
+                    }
+                }
+                File f = getFile(node, field, name);
 
-            if (log.isDebugEnabled()) {
-                log.debug("" + value + " -> " + is + " -> " + f, new Exception());
+                if (log.isDebugEnabled()) {
+                    log.debug("" + value + " -> " + is + " -> " + f + " " + Logging.applicationStacktrace());
+                }
+                is.moveTo(f);
+                return f.getName();
+            } else {
+                log.debug("No name given, ignoring this processor (not an upload)");
+                return value;
             }
-
-            try {
-                FileOutputStream dest = new FileOutputStream(f);
-                IOUtil.copy(is, dest);
-            } catch (IOException ioe) {
-                throw new RuntimeException(ioe);
-            }
-            return f.getName();
         }
     }
 
