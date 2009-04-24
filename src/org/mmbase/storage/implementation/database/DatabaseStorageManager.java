@@ -36,7 +36,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.214 2009-04-24 15:10:41 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.215 2009-04-24 15:11:50 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager<DatabaseStorageManagerFactory> {
 
@@ -859,7 +859,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             //log.warn("Storing " + field + " for " + node.getNumber());
             InputStream in = node.getInputStreamValue(fieldName);
             OutputStream out = new FileOutputStream(binaryFile);
-            IOUtil.copy(in, out);
+            size += IOUtil.copy(in, out);
             out.close();
             in.close();
             // unload the input-stream, it is of no use any more.
