@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.234 2009-03-23 17:43:20 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.235 2009-04-24 15:13:27 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -494,7 +494,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
         Object prev = getCloud().getProperty(CLOUD_COMMITNODE_KEY);
         try {
-            getCloud().setProperty(CLOUD_COMMITNODE_KEY, new Integer(getNumber())); // Validation code want to know that we are commiting right now.
+            getCloud().setProperty(CLOUD_COMMITNODE_KEY, Integer.valueOf(getNumber())); // Validation code wants to know that we are commiting right now.
             Collection<String> errors = validate();
             if (errors.size() > 0) {
                 String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
@@ -509,7 +509,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
         processCommit();
         if (log.isDebugEnabled()) {
-            log.debug("committing " + noderef.getChanged());
+            log.debug("committing " + noderef.getChanged() + " " + noderef.getValues());
         }
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) { // sigh sigh sigh.
