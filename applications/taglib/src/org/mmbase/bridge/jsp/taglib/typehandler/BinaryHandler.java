@@ -25,7 +25,7 @@ import org.mmbase.util.transformers.Xml;
 import org.mmbase.datatypes.*;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.http.*;
-import org.apache.commons.fileupload.FileItem;
+
 
 /**
  * @javadoc
@@ -33,7 +33,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.15 2009-01-12 12:48:20 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.16 2009-04-24 19:58:44 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
@@ -74,11 +74,11 @@ public class BinaryHandler extends AbstractTypeHandler {
     /**
      * Returns the field value as specified by the client's post.
      */
-    @Override protected Object getFieldValue(Node node, Field field) throws JspTagException {
+    @Override
+    protected Object getFieldValue(Node node, Field field) throws JspTagException {
         if (MultiPart.isMultipart(tag.getPageContext())) {
             ContextTag ct = tag.getContextTag();
-            FileItem bytes = ct.getFileItem(prefix(field.getName()));
-            return bytes;
+            return ct.getInputStream(prefix(field.getName()));
         } else {
             return null;
         }
@@ -94,7 +94,7 @@ public class BinaryHandler extends AbstractTypeHandler {
                 // do actually set the field, because some datatypes need cross-field checking
                 // also in an mm:form, you can simply commit.
                 if (node != null && ! field.isReadOnly()) {
-                    setValue(node, field.getName(), (FileItem) fieldValue);
+                    setValue(node, field.getName(), (SerializableInputStream) fieldValue);
                 }
                 if (errors) {
                     return "<div id=\"" + prefixError(field.getName()) + "\" class=\"mm_check_noerror\"> </div>";
@@ -134,12 +134,16 @@ public class BinaryHandler extends AbstractTypeHandler {
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
     @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
-        FileItem bytes = (FileItem) getFieldValue(node, field);
-        if (bytes == null){
+        SerializableInputStream bytes = (SerializableInputStream) getFieldValue(node, field);
+        if (bytes == null) {
             throw new BridgeException("getBytes(" + prefix(field.getName()) + ") returned null (node= " +  node.getNumber() +") field=(" + field + ") (Was your form  enctype='multipart/form-data' ?");
         }
-        node.setValue(field.getName(), bytes);
-        return true;
+        if ("".equals(bytes.getName())) {
+            return false;
+        } else {
+            node.setValue(field.getName(), bytes);
+            return true;
+        }
     }
 
     /**
