@@ -11,7 +11,12 @@ package org.mmbase.streams.transcoders;
 
 
 import java.net.*;
+import java.io.*;
 import org.mmbase.util.externalprocess.*;
+import org.mmbase.util.WriterOutputStream;
+
+import org.mmbase.util.logging.*;
+
 
 /**
  * A trancoder base on an external command, like <code>ffmpeg</code> or <code>ffmpeg2theora</code>
@@ -19,7 +24,13 @@ import org.mmbase.util.externalprocess.*;
  * @author Michiel Meeuwissen
  */
 
-public abstract class CommandTranscoder implements Transcoder {
+public abstract class CommandTranscoder implements Transcoder, LoggerAccepter {
+
+    private final ChainedLogger log = new ChainedLogger();
+
+    public void addLogger(Logger l) {
+        log.addLogger(l);
+    }
 
     protected abstract String getCommand();
 
@@ -28,10 +39,19 @@ public abstract class CommandTranscoder implements Transcoder {
     }
     protected abstract String[] getArguments(URI in, URI out);
 
+    protected Level getOutputLevel() {
+        return Level.SERVICE;
+    }
+    protected Level getErrorLevel() {
+        return Level.ERROR;
+    }
+
     public void transcode(final URI in, final URI out) throws Exception {
         CommandLauncher cl = new CommandLauncher("Transcoding " + in + " to " + out);
         cl.execute(getCommand(), getArguments(in, out), getEnvironment());
-        cl.waitAndRead(System.out, System.err);
+        OutputStream outStream = new WriterOutputStream(new LoggerWriter(log, getOutputLevel()), System.getProperty("file.encoding"));
+        OutputStream errStream = new WriterOutputStream(new LoggerWriter(log, getErrorLevel()), System.getProperty("file.encoding"));
+        cl.waitAndRead(outStream, errStream);
     }
 
 }
