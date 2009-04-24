@@ -15,7 +15,7 @@
   </descriptions>
 
   <fieldlist>
-    
+
     <field name="title">
       <descriptions>
         <description xml:lang="en">Title or name of the template</description>
@@ -58,7 +58,7 @@
         <maxLength value="1024" />
       </datatype>
     </field>
-    
+
     <field name="url">
       <descriptions>
         <description xml:lang="en">Location of the template on the filesystem</description>
@@ -79,7 +79,7 @@
         <maxLength value="255" />
       </datatype>
     </field>
-	
+
 	<field name="mimetype">
       <gui>
           <guiname xml:lang="nl">Mime-type</guiname>
