@@ -151,6 +151,8 @@ public class Fields {
             return Field.TYPE_UNKNOWN;
         } else if (classType.isArray() && classType.getComponentType() == Byte.TYPE) {
             return Field.TYPE_BINARY;
+        } else if (java.io.InputStream.class.isAssignableFrom(classType)) {
+            return Field.TYPE_BINARY;
         } else if (classType == Integer.class || classType == Integer.TYPE) {
             return Field.TYPE_INTEGER;
         } else if (classType == Long.class || classType == Long.TYPE) {
