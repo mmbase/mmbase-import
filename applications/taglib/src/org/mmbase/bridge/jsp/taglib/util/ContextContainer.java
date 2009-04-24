@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.66 2009-04-17 17:38:51 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.67 2009-04-24 19:58:44 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap<String, Object> implements Map<String, Object> {
@@ -580,7 +580,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
                 }
                 MultiPart.MMultipartRequest mp = MultiPart.getMultipartRequest(pageContext);
                 if (mp.isFile(referId)) {
-                    result = mp.getFileItem(referId);
+                    result = mp.getInputStream(referId);
                 } else {
                     try {
                         result = fixEncoding(mp.getParameterValues(referId), pageContext);
