@@ -129,10 +129,31 @@
       </datatype>
     </field>
 
+	<field name="show">
+	  <descriptions>
+		<description xml:lang="nl">Tonen of niet tonen. Dat is de vraag.</description>
+		<description xml:lang="en">To show or not to show. That is the question.</description>
+	  </descriptions>
+	  <gui>
+		<guiname xml:lang="nl">Tonen</guiname>
+		<guiname xml:lang="en">Show</guiname>
+	  </gui>
+	  <editor>
+		<positions>
+		  <input>92</input>
+		  <list>92</list>
+		  <search>92</search>
+		</positions>
+	  </editor>
+	  <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="onoff">
+        <default value="true" />
+	  </datatype>
+	</field>
+
     <field name="online">
       <descriptions>
-        <description xml:lang="nl">Datum en tijd waarop de content getoond moet worden</description>
-        <description xml:lang="en">Date and time to display this content</description>
+        <description xml:lang="nl">Datum en tijd waarop dit getoond moet worden</description>
+        <description xml:lang="en">Date and time to display this item</description>
       </descriptions>
       <gui>
         <guiname xml:lang="nl">On-line op</guiname>
@@ -152,10 +173,33 @@
       </datatype>
     </field>
 
+    <field name="offline">
+      <descriptions>
+        <description xml:lang="nl">Datum en tijd waarop dit niet meer getoond moet worden</description>
+        <description xml:lang="en">Date and time to end displaying this item</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Off-line op</guiname>
+        <guiname xml:lang="en">Offline on</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>93</input>
+          <list>93</list>
+          <search>93</search>
+        </positions>
+      </editor>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="today" />
+        <minInclusive enforce="never" value="today - 10 year" />
+        <maxInclusive enforce="never" value="today + 99 year" />
+      </datatype>
+    </field>
+
     <!-- created -->
     <field name="created" readonly="true">
       <descriptions>
-        <description xml:lang="en">Creation date of the item</description>
+        <description xml:lang="en">Creation date of this item</description>
         <description xml:lang="nl">Creatiedatum van het item</description>
       </descriptions>
       <gui>
