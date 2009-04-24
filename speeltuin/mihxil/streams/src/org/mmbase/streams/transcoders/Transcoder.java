@@ -11,16 +11,21 @@ package org.mmbase.streams.transcoders;
 
 
 import java.net.*;
+
+import org.mmbase.util.logging.*;
 /**
  * @author Michiel Meeuwissen
  */
 
-public interface Transcoder {
+public interface Transcoder  {
 
+    String getKey();
+
+    String getExtension();
 
     /**
      *
      */
-    public void transcode(URI in, URI out) throws Exception;
+    void transcode(URI in, URI out, Logger logger) throws Exception;
 
 }

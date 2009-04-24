@@ -24,10 +24,13 @@ import org.mmbase.util.logging.*;
 
 public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
 
+    @Override
     protected  String getCommand() {
         return "ffmpeg2theora";
     }
 
+
+    @Override
     protected String[] getArguments(URI in, URI out) {
         if (! in.getScheme().equals("file")) throw new UnsupportedOperationException();
         if (! out.getScheme().equals("file")) throw new UnsupportedOperationException();
@@ -42,11 +45,15 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
         return Level.SERVICE;
     }
 
+    @Override
+    public String getExtension() {
+        return "ogv";
+    }
 
     public static void main(String[] argv) throws Exception {
         CommandTranscoder transcoder = new FFMpeg2TheoraTranscoder();
-        Logging.getLoggerInstance("FFMPEG2THEORA").setLevel(Level.SERVICE);
-        transcoder.addLogger(Logging.getLoggerInstance("FFMPEG2THEORA"));
-        transcoder.transcode(new File(argv[0]).toURI(), new File(argv[1]).toURI());
+        Logger logger = Logging.getLoggerInstance("FFMPEG2THEORA");
+        logger.setLevel(Level.SERVICE);
+        transcoder.transcode(new File(argv[0]).toURI(), new File(argv[1]).toURI(), logger);
     }
 }

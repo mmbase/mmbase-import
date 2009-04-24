@@ -24,13 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  */
 
-public abstract class CommandTranscoder implements Transcoder, LoggerAccepter {
-
-    private final ChainedLogger log = new ChainedLogger();
-
-    public void addLogger(Logger l) {
-        log.addLogger(l);
-    }
+public abstract class CommandTranscoder implements Transcoder {
 
     protected abstract String getCommand();
 
@@ -46,7 +40,11 @@ public abstract class CommandTranscoder implements Transcoder, LoggerAccepter {
         return Level.ERROR;
     }
 
-    public void transcode(final URI in, final URI out) throws Exception {
+    public String getKey() {
+        return getClass().getName();
+    }
+
+    public void transcode(final URI in, final URI out, Logger log) throws Exception {
         CommandLauncher cl = new CommandLauncher("Transcoding " + in + " to " + out);
         cl.execute(getCommand(), getArguments(in, out), getEnvironment());
         OutputStream outStream = new WriterOutputStream(new LoggerWriter(log, getOutputLevel()), System.getProperty("file.encoding"));
