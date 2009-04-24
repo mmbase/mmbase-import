@@ -12,6 +12,8 @@ package org.mmbase.streams.transcoders;
 
 import java.net.*;
 import java.io.*;
+import org.mmbase.util.logging.*;
+
 
 /**
  *
@@ -20,10 +22,12 @@ import java.io.*;
 
 public class FFMpegTranscoder extends CommandTranscoder {
 
+    @Override
     protected  String getCommand() {
         return "ffmpeg";
     }
 
+    @Override
     protected String[] getArguments(URI in, URI out) {
         if (! in.getScheme().equals("file")) throw new UnsupportedOperationException();
         if (! out.getScheme().equals("file")) throw new UnsupportedOperationException();
@@ -34,9 +38,16 @@ public class FFMpegTranscoder extends CommandTranscoder {
         return new String[] { "-i", inFile.toString(), outFile.toString() };
     }
 
+    @Override
+    public String  getExtension() {
+        return "avi";
+    }
+
 
     public static void main(String[] argv) throws Exception {
-        Transcoder transcoder = new FFMpegTranscoder();
-        transcoder.transcode(new File(argv[0]).toURI(), new File(argv[1]).toURI());
+        CommandTranscoder transcoder = new FFMpeg2TheoraTranscoder();
+        Logger logger = Logging.getLoggerInstance("FFMPEGTHEORA");
+        logger.setLevel(Level.SERVICE);
+        transcoder.transcode(new File(argv[0]).toURI(), new File(argv[1]).toURI(), logger);
     }
 }

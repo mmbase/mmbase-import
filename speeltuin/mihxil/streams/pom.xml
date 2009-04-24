@@ -40,6 +40,14 @@
       <type>war</type>
     </dependency>
 
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-media</artifactId>
+      <version>${project.version}</version>
+      <classifier>classes</classifier>
+      <scope>provided</scope>
+    </dependency>
+
 
     <!--
         JMF is horribly complex, and it's quite hard to make a PlugIn.
