@@ -19,7 +19,7 @@ import org.mmbase.util.SerializableInputStream;
  * 'filesize' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BinaryCommitProcessor.java,v 1.1 2009-04-24 14:30:31 michiel Exp $
+ * @version $Id: BinaryCommitProcessor.java,v 1.2 2009-04-24 15:05:24 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -31,7 +31,9 @@ public class BinaryCommitProcessor implements CommitProcessor {
 
     private String filenameField = "filename";
     private String filesizeField = "filesize";
+    private String contenttypeField = "mimetype";
     private String mimetypeField = "mimetype";
+    private boolean itypeField = false;
 
     public void setFilenameField(String fn) {
         filenameField = fn;
@@ -39,9 +41,15 @@ public class BinaryCommitProcessor implements CommitProcessor {
     public void setFilesizeField(String fs) {
         filesizeField = fs;
     }
-    public void setMimetypeField(String fs) {
-        mimetypeField = fs;
+    public void setContenttypeField(String fs) {
+        contenttypeField = fs;
     }
+
+    public void setItype(boolean i) {
+        itypeField = i;
+    }
+
+
 
     private String getFileName(Object o) {
         if (o == null) {
@@ -54,7 +62,7 @@ public class BinaryCommitProcessor implements CommitProcessor {
         return null;
 
     }
-    private String getMimeType(Object o) {
+    private String getContentType(Object o) {
         if (o instanceof SerializableInputStream) {
             return ((SerializableInputStream)o).getContentType();
         } else if (o instanceof FileItem) {
@@ -85,12 +93,18 @@ public class BinaryCommitProcessor implements CommitProcessor {
                     node.setValue(filenameField, fn);
                 }
             }
-            if (node.getNodeManager().hasField(mimetypeField) &&
-                (! node.isChanged(mimetypeField) || node.isNull(mimetypeField))) {
+            if (node.getNodeManager().hasField(contenttypeField) &&
+                (! node.isChanged(contenttypeField) || node.isNull(contenttypeField))) {
 
-                String fn = getMimeType(value);
+                String fn = getContentType(value);
                 if (fn != null) {
-                    node.setValue(mimetypeField, fn);
+                    if (itypeField) {
+                        int slash = fn.indexOf('/');
+                        if (slash > -1)  {
+                            fn = fn.substring(slash + 1);
+                        }
+                    }
+                    node.setValue(contenttypeField, fn);
                 }
             }
         }
