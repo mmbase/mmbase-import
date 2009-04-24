@@ -20,7 +20,7 @@ import java.util.Collection;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.35 2009-01-03 10:17:47 michiel Exp $
+ * @version $Id: BasicField.java,v 1.36 2009-04-24 15:13:49 michiel Exp $
  */
 public class BasicField extends AbstractField<Object> implements Field {
 
@@ -80,6 +80,7 @@ public class BasicField extends AbstractField<Object> implements Field {
 
     // deprecated methods
     @Override
+    @Deprecated
     public String getGUIType() {
         return coreField.getGUIType();
     }
