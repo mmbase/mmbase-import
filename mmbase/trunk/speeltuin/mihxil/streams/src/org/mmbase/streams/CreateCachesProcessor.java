@@ -15,6 +15,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.util.*;
 import org.mmbase.datatypes.processors.*;
+import org.mmbase.applications.media.State;
 import java.util.*;
 import java.io.*;
 import java.net.*;
@@ -57,6 +58,7 @@ public class CreateCachesProcessor implements CommitProcessor {
             resultNode = caches.createNode();
             resultNode.setNodeValue("id", node);
             resultNode.setStringValue("key", t.getKey());
+            resultNode.setIntValue("state", State.REQUEST.ordinal());
             logger.service("Created " + resultNode);
         }
         return resultNode;
@@ -91,9 +93,13 @@ public class CreateCachesProcessor implements CommitProcessor {
                             buf.append(ResourceLoader.getName(inFile.getName())).append(".").append(t.getExtension());
                             File outFile = new File(FileServlet.getDirectory(), buf.toString().replace("/", File.separator));
                             try {
+                                cacheNode.setIntValue("state", State.BUSY.ordinal());
+                                cacheNode.commit();
                                 t.transcode(in, outFile.toURI(), logger);
                                 cacheNode.setStringValue("url", buf.toString());
+                                cacheNode.setIntValue("state", State.DONE.ordinal());
                                 cacheNode.commit();
+
                             } catch (Exception e) {
                                 logger.error(e.getMessage());
                             }
