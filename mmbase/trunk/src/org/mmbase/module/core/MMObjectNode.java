@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.233 2009-04-18 07:20:20 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.234 2009-04-24 15:09:08 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable, org.mmbase.util.PublicCloneable<MMObjectNode> { // Comparable<MMObjectNode>  {
@@ -567,7 +567,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      *  @param fieldValue the value to assign
      *  @return <code>true</code> When the field was changed, false otherwise.
      */
-    public boolean setValue(String fieldName, Object fieldValue) {
+    public boolean setValue(final String fieldName, Object fieldValue) {
         // check the value also when the parent thing is null
         Object originalValue = values.get(fieldName);
 
@@ -614,6 +614,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         } else if (fieldValue instanceof org.apache.commons.fileupload.FileItem) {
             org.apache.commons.fileupload.FileItem fi = (org.apache.commons.fileupload.FileItem) fieldValue;
             setSize(fieldName, fi.getSize());
+        } else if (fieldValue instanceof SerializableInputStream) {
+            SerializableInputStream si = (SerializableInputStream) fieldValue;
+            setSize(fieldName, si.getSize());
         }
 
         // process the changed value (?)
@@ -626,6 +629,17 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             log.error("parent was null for node with number" + getNumber());
         }
         setUpdate(fieldName);
+
+        if (fieldValue instanceof SerializableInputStream) {
+            // in case this is alled from a transaction, it must be possible to do it again on
+            // actual commit
+            try {
+                SerializableInputStream si = (SerializableInputStream) fieldValue;
+                si.reset();
+            } catch (IOException ioe) {
+                log.error(ioe);
+            }
+        }
         log.debug("" + sequence + getChanged());
         return true;
     }
@@ -886,6 +900,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         } else if (obj instanceof byte[]) {
             // was already unmapped so return the value
             return (byte[]) obj;
+        } else if (obj instanceof SerializableInputStream) {
+            try {
+                return ((SerializableInputStream) obj).get();
+            } catch (IOException ioe) {
+                log.warn(ioe);
+                return new byte[0];
+            }
         } else {
             byte[] b;
             if (getDBType(fieldName) == Field.TYPE_STRING) {

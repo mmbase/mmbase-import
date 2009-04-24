@@ -13,6 +13,7 @@ import java.util.*;
 import javax.servlet.http.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.SerializableInputStream;
 import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.*;
 import org.apache.commons.fileupload.servlet.*;
@@ -20,7 +21,7 @@ import org.apache.commons.fileupload.servlet.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.2 2009-04-23 15:27:06 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.3 2009-04-24 15:10:10 michiel Exp $
  **/
 
 public class MultiPart {
@@ -88,6 +89,7 @@ public class MultiPart {
                 List fileItems = fu.parseRequest(req);
                 for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
                     FileItem fi = (FileItem)i.next();
+                    log.debug("Found " + fi);
                     if (fi.isFormField()) {
                         String value;
                         try {
@@ -111,36 +113,24 @@ public class MultiPart {
                             parametersMap.put(fi.getFieldName(), values);
                         }
                     } else {
-                        parametersMap.put(fi.getFieldName(), fi);
+                        // This is an actual file-upload
+                        parametersMap.put(fi.getFieldName(), new SerializableInputStream(fi));
                     }
                 }
             } catch (FileUploadException e) {
-                log.error(e.getMessage(), e);
                 throw new RuntimeException(e);
+            } catch (java.io.IOException ioe) {
+                throw new RuntimeException(ioe);
             }
             coding = c;
             log.debug("Created with encoding: " + coding);
         }
 
-        /**
-         * Method to retrieve the bytes of an uploaded file.
-         * @param param The name of the parameter
-         * @return <code>null</code> if parameter not found, otherwise the bytes from the parameter
-         */
-        public byte[] getBytes(String param) {
-            log.debug("Getting bytes for " + param);
+        public SerializableInputStream getInputStream(String param)  {
+            log.debug("Getting inputtream for " + param);
             Object value = parametersMap.get(param);
-            if (value instanceof FileItem) {
-                return ((FileItem)value).get();
-            } else {
-                return null;
-            }
-        }
-        public FileItem getFileItem(String param)  {
-            log.debug("Getting outputstream for " + param);
-            Object value = parametersMap.get(param);
-            if (value instanceof FileItem) {
-                return (FileItem)value;
+            if (value instanceof SerializableInputStream) {
+                return (SerializableInputStream) value;
             } else {
                 return null;
             }
@@ -183,7 +173,7 @@ public class MultiPart {
          */
         public boolean isFile(String param) {
             Object value = parametersMap.get(param);
-            return value instanceof FileItem;
+            return value instanceof SerializableInputStream;
         }
 
         /**
@@ -198,8 +188,12 @@ public class MultiPart {
             Object value = parametersMap.get(param);
             //log.debug("Got param " + param + " " + (value == null ? "NULL" : value.getClass().getName()) + " " + value);
 
-            if (value instanceof FileItem) {
-                return encodeBytesAsString(((FileItem)value).get());
+            if (value instanceof SerializableInputStream) {
+                try {
+                    return encodeBytesAsString(((SerializableInputStream)value).get());
+                } catch (java.io.IOException ioe) {
+                    return ioe.getMessage();
+                }
             } else {
                 return value;
             }

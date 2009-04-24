@@ -25,7 +25,7 @@ import java.util.*;
  * This is the base handler for the mime type text/html and application/xml+xhtml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HtmlHandler.java,v 1.2 2009-04-17 17:38:13 michiel Exp $
+ * @version $Id: HtmlHandler.java,v 1.3 2009-04-24 15:10:10 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -35,6 +35,14 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
 
     public static final Parameter<String> SESSIONNAME = new Parameter<String>(HtmlHandler.class.getName() + ".SESSIONNAME", String.class);
     protected static final CharTransformer XML = new Xml(Xml.ESCAPE);
+
+
+    private boolean setIfNotChanged = false;
+
+
+    public void setSetIfNotChanged(boolean b) {
+        setIfNotChanged = b;
+    }
 
     protected void appendClasses(StringBuilder buf, Node node, Field field) {
         buf.append("mm_validate");
@@ -76,8 +84,8 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
             // also in an mm:form, you can simply commit.
             if (node != null && ! field.isReadOnly()) {
                 String fieldName = field.getName();
-                Object oldValue = node.getValue(fieldName);
-                if (fieldValue == null ? oldValue != null : ! fieldValue.equals(oldValue)) {
+                Object oldValue = setIfNotChanged ? /* irrelevant */ null : node.getValue(fieldName);
+                if (setIfNotChanged || (fieldValue == null ? oldValue != null : ! fieldValue.equals(oldValue))) {
                     try {
                         if(log.isDebugEnabled()) {
                             log.debug("Setting " + fieldName + " to " + (fieldValue == null ? "" : fieldValue.getClass().getName()) + " " + fieldValue);
