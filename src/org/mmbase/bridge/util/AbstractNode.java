@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.29 2009-04-07 08:23:33 nklasens Exp $
+ * @version $Id: AbstractNode.java,v 1.30 2009-04-24 15:12:47 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -83,7 +83,24 @@ public abstract class AbstractNode implements Node {
             setValueWithoutProcess(fieldName, value);
         } else {
             DataType dt = field.getDataType();
+
+
             value = dt.cast(value, this, field);
+
+            // All this stuff with setSize is pretty horrible
+            // we need to come up with something clearer than this.
+            if (value instanceof org.apache.commons.fileupload.FileItem) {
+                org.apache.commons.fileupload.FileItem fi = (org.apache.commons.fileupload.FileItem) value;
+                setSize(fieldName, fi.getSize());
+            } else if (value instanceof SerializableInputStream) {
+                SerializableInputStream si = (SerializableInputStream) value;
+                setSize(fieldName, si.getSize());
+                log.info("Setting size to " + si.getSize());
+            }
+
+            log.info("Size " + getSize(fieldName));
+            log.info("Found " + value);
+
             if (value == null && dt instanceof org.mmbase.datatypes.NumberDataType) {
                 // null would otherwise be converted to -1, which makes little sense.
                 // but must happen because set<Numeric>Value methods cannot accept null.
@@ -97,7 +114,7 @@ public abstract class AbstractNode implements Node {
                 break;
             case Field.TYPE_BINARY:    {
                 long length = getSize(fieldName);
-                setInputStreamValue(fieldName, Casting.toInputStream(value), length);
+                setInputStreamValue(fieldName, Casting.toSerializableInputStream(value), length);
                 break;
             }
             case Field.TYPE_FLOAT:
@@ -233,6 +250,7 @@ public abstract class AbstractNode implements Node {
     private static final int readLimit = 10 * 1024 * 1024;
 
     public final void setInputStreamValue(String fieldName, final InputStream value, long size) {
+        log.info("Setting " + size + " + bytes (" + value + ")");
         setSize(fieldName, size);
         Field field = getNodeManager().getField(fieldName);
         if (log.isDebugEnabled()) {
@@ -240,31 +258,30 @@ public abstract class AbstractNode implements Node {
         }
         Object v = value;
         try {
-            if (value.markSupported() && size < readLimit) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Mark supported and using " + field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY));
-                }
-                value.mark(readLimit);
-                v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, value);
-                value.reset();
-            } else {
-                if (field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY) != null) {
+            if (field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY) != null) {
+                if (value.markSupported() && size < readLimit) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Mark supported and using " + field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY));
+                    }
+                    value.mark(readLimit);
+                    v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, value);
+                    value.reset();
+                } else {
+
                     if (log.isDebugEnabled()) {
                         log.debug("Mark not supported but using " + field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY));
                     }
-                    // well, we must read it to byte-array then, first.
-                    ByteArrayOutputStream b = new ByteArrayOutputStream((int) size);
-                    IOUtil.copy(value, b);
-                    byte[] byteArray = b.toByteArray();
-                    v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, byteArray);
-                } else {
-                    log.debug("Mark not support but no need for processing");
-                    v = value;
+                    org.mmbase.util.SerializableInputStream si = Casting.toSerializableInputStream(value);
+                    v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, si);
                 }
+            } else {
+                log.debug("No need for processing");
+                v = value;
             }
         } catch (IOException ioe) {
-            log.error(ioe);
+            log.error(ioe.getMessage(), ioe);
         }
+        log.debug("Setting " + v);
         setValueWithoutProcess(fieldName, v);
     }
 
