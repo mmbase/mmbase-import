@@ -13,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.services.community.person.Person;
-import com.finalist.cmsc.services.community.person.PersonHibernateService;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.util.DateUtil;
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
@@ -37,7 +36,6 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    NewsletterCAO newsletterCAO;
    NewsletterService newsletterService;
    PersonService personService;
-   PersonHibernateService personHibernateService;
 
    public void setStatisticCAO(NewsLetterStatisticCAO statisticCAO) {
       this.statisticCAO = statisticCAO;
@@ -445,11 +443,11 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    } 
    
    public List<Object[]> getSubscribersRelatedInfo(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging) {
-      return personHibernateService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email, paging);
+      return personService.getSubscribersRelatedInfo(authenticationIds, fullName, userName, email, paging);
    }
    
    public int getSubscribersRelatedInfoCount(Set<Long> authenticationIds, String fullName, String userName, String email, boolean paging) {
-      return personHibernateService.getSubscribersRelatedInfoCount(authenticationIds, fullName, userName, email, paging);
+      return personService.getSubscribersRelatedInfoCount(authenticationIds, fullName, userName, email, paging);
    }
  
 }
