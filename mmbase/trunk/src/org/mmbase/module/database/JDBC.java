@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.65 2008-08-28 11:46:49 michiel Exp $
+ * @version $Id: JDBC.java,v 1.66 2009-04-24 15:19:46 michiel Exp $
  */
 public class JDBC extends ProcessorModule {
 
@@ -60,8 +60,8 @@ public class JDBC extends ProcessorModule {
     }
 
     public void onload() {
-        getProps();
         if (Module.getModule(MMBase.class, false).getDataSource() == null) {
+            getProps();
             getDriver();
             loadSupport();
             poolHandler = new MultiPoolHandler(databaseSupport, maxConnections, maxQueries);
@@ -197,7 +197,7 @@ public class JDBC extends ProcessorModule {
         if (tmp != null) {
             try {
                 probeTime = Float.valueOf(tmp).longValue() * 1000;
-                log.info("Set jdbc-probeTime to " + probeTime + " ms");
+                log.service("Set jdbc-probeTime to " + probeTime + " ms");
             } catch (NumberFormatException e) {
                 log.warn("Specified probetime is not a invalid float :" + e + "(using default " + (probeTime / 1000) + " s)");
             }
