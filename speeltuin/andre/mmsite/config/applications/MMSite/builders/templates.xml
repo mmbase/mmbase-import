@@ -15,7 +15,8 @@
   </descriptions>
 
   <fieldlist>
-    <field>
+    
+    <field name="title">
       <descriptions>
         <description xml:lang="en">Title or name of the template</description>
         <description xml:lang="nl">Titel of naam van de template</description>
@@ -31,14 +32,13 @@
           <search>1</search>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>title</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="line">
+        <required value="true"/>
+        <maxLength value="255"/>
+      </datatype>
     </field>
 
-    <field>
+    <field name="description">
       <descriptions>
         <description xml:lang="en">Description of the template</description>
         <description xml:lang="nl">Beschrijving van de template</description>
@@ -54,14 +54,12 @@
           <search>3</search>
         </positions>
       </editor>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>description</name>
-        <type state="persistent" size="1024" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="field">
+        <maxLength value="1024" />
+      </datatype>
     </field>
     
-    <field>
+    <field name="url">
       <descriptions>
         <description xml:lang="en">Location of the template on the filesystem</description>
         <description xml:lang="nl">Lokatie van de template op het filesysteem</description>
@@ -77,11 +75,9 @@
           <search>4</search>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>url</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="line">
+        <maxLength value="255" />
+      </datatype>
     </field>
 	
 	<field name="mimetype">
