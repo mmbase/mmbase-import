@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.57 2009-03-10 17:51:30 michiel Exp $;
+ * @version $Id: Url.java,v 1.58 2009-04-24 19:57:33 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -358,8 +358,8 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     }
 
     void doEndTag() {
-        // The page CharSequence may be some thing dependent on member of the UrlTag extension
-        // This convert it to a String, which is certainly not dynamic any more.
+        // The page CharSequence may be dependent on members of the UrlTag extension
+        // This converts it to a String, which is certainly not dynamic any more.
         page = page.toString();
     }
     /**
