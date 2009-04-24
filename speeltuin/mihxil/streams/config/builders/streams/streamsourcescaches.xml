@@ -18,6 +18,35 @@
 
   <fieldlist>
 
+    <field name="key">
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+
+    <field name="id">
+      <descriptions>
+        <description xml:lang="en">Reference to the original stream</description>
+        <description xml:lang="nl">Referentie naar de originel stream</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">ID</guiname>
+        <guiname xml:lang="nl">ID</guiname>
+        <guiname xml:lang="fr">ID</guiname>
+        <guiname xml:lang="eo">ID</guiname>
+        <guiname xml:lang="it">ID</guiname>
+      </gui>
+      <editor>
+        <positions><list>3</list></positions>
+      </editor>
+      <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" enforce="never" />
+        <enumeration>
+          <query type="streamsources" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+        </enumeration>
+      </datatype>
+    </field>
+
+
     <field name="url">
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <getprocessor type="binary">
