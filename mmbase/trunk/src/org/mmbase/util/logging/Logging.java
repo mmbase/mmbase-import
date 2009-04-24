@@ -59,7 +59,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.49 2009-02-04 12:31:51 michiel Exp $
+ * @version $Id: Logging.java,v 1.50 2009-04-24 11:16:34 michiel Exp $
  */
 
 
@@ -365,7 +365,8 @@ public class Logging {
     public static String stackTrace(Throwable e, int max) {
         StackTraceElement[] stackTrace = e.getStackTrace();
         String message = e.getMessage();
-        StringBuffer buf = new StringBuffer(e.getClass().getName() + ": ");
+        StringBuilder buf = new StringBuilder(e.getClass().getName());
+        buf.append(": ");
         if (message == null) {
 
         }  else {
@@ -394,7 +395,7 @@ public class Logging {
      * @since MMBase-1.8
      */
     public static String applicationStacktrace(Throwable e) {
-        StringBuffer buf = new StringBuffer("Application stacktrace");
+        StringBuilder buf = new StringBuilder("Application stacktrace");
 
         // Get the stack trace
         StackTraceElement stackTrace[] = e.getStackTrace();
