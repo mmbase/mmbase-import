@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.14 2009-04-22 06:58:52 michiel Exp $
+ * @version $Id: Images.java,v 1.15 2009-04-24 07:30:21 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -98,7 +98,8 @@ public class Images extends AbstractImages {
             log.warn("Builder with name 'icaches' wasn't loaded. Cannot do image-conversions.");
         }
 
-        Map<String, String> map = getInitParameters("mmbase/imaging");
+        Map<String, String> map = getInitParameters("mmbase/imaging"); // TODO, this would conflict
+                                                                       // with module with name 'imaging'?
         map.put("configfile", getConfigResource());
 
         if (! Factory.isInited()) {
