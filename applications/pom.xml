@@ -136,6 +136,10 @@
 
     <module>mynews</module>
     <module>vpro-wizards</module>
+
+
+    <!-- deprecated-->
+    <module>vwms</module>
     <module>scan</module>
 
   </modules>
