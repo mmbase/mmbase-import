@@ -1,6 +1,6 @@
-<taglib xmlns="http://java.sun.com/xml/ns/j2ee" 
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
         version="2.0"
-        xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance"
         ns0:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
   <tlib-version>1.0</tlib-version>
   <short-name>mm-res</short-name>
@@ -36,4 +36,4 @@
     <path>/META-INF/tags/mm/resources/turn-table.tagx</path>
   </tag-file>
 
-</taglib> 
+</taglib>
