@@ -20,6 +20,17 @@
 
   <fieldlist>
 
+    <field name="state" state="system">
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="SOURCE" />
+        <enumeration>
+          <entry
+              javaconstants="org.mmbase.applications.media.State"
+              basename="org.mmbase.applications.media.builders.resources.states" />
+        </enumeration>
+      </datatype>
+    </field>
+
     <field name="url">
       <datatype base="file" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <unique value="true" />
