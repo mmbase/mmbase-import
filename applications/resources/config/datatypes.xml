@@ -9,6 +9,7 @@
     <specialization id="file">
       <description>
       </description>
+      <class name="org.mmbase.datatypes.BinaryStringDataType" />
       <handler
           mimetype="text/html,application/xml+xhtml"
           name="org.mmbase.datatypes.handlers.html.BinaryHandler">
