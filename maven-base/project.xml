@@ -251,7 +251,7 @@ See http://www.MMBase.org/license
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.0</version>
+      <version>1.1</version>
       <type>jar</type>
       <properties>
         <war.bundle>${war.bundle}</war.bundle>
@@ -309,7 +309,7 @@ See http://www.MMBase.org/license
         <type>plugin</type>
         <url>http://maven-plugins.sourceforge.net</url>
     </dependency>
-    
+
     <dependency>
       <groupId>docbook</groupId>
       <artifactId>docbook-xsl</artifactId>
