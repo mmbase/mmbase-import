@@ -228,6 +228,7 @@ public class NewsletterCronJob extends AbstractCronJob {
 
    @Override
    public void init() {
+      log.info("Start Newsletter CronJob");
       NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
       BounceChecker checker = new BounceChecker(newsletterService);
       if (!checker.isRunning() && (ServerUtil.isStaging() || ServerUtil.isSingle())) {
@@ -244,7 +245,7 @@ public class NewsletterCronJob extends AbstractCronJob {
             newsletterNode.setDateValue("lastcreateddate", new Date());
             newsletterNode.commit();
             int newsletterNumber = newsletterNode.getNumber();
-            log.info("Running Newsletter CronJob for newsletter " + newsletterNumber);
+            log.debug("Running Newsletter CronJob for newsletter " + newsletterNumber);
             //NewsletterPublicationUtil.createPublication(newsletterNumber, true);
             Node publicationNode = NewsletterPublicationUtil.createPublication(newsletterNumber, true);
             NewsletterUtil.addNewsletterCreationChannel(newsletterNode.getNumber(),publicationNode.getNumber());
