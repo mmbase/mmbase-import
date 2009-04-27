@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.32 2008-12-01 17:24:34 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.33 2009-04-27 15:22:19 michiel Exp $
  */
 
 public class DataTypes {
@@ -51,7 +51,7 @@ public class DataTypes {
 
     public static void initialize() {
         // read the XML
-        // Watching will ptobably not work properly,
+        // Watching will probably not work properly,
         // as datatypes depend one ach other, and are are referred
         // throughout the system.
         // For the moment turn watching off.
