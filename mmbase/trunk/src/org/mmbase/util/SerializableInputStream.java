@@ -13,7 +13,6 @@ package org.mmbase.util;
 import java.io.*;
 import org.mmbase.util.logging.*;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItem;
 
 /**
  * Sometimes you need an InputStream to be Serializable. This wraps
@@ -21,7 +20,7 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: SerializableInputStream.java,v 1.6 2009-04-24 15:08:51 michiel Exp $
+ * @version $Id: SerializableInputStream.java,v 1.7 2009-04-27 12:04:30 michiel Exp $
  * @todo IllegalStateException or so, if the inputstreas is used (already).
  */
 
