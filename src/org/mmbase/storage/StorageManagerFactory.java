@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.38 2009-04-27 12:06:01 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.39 2009-04-27 17:45:22 michiel Exp $
  */
 public abstract class StorageManagerFactory<SM extends StorageManager> {
 
@@ -487,7 +487,11 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         Scheme scheme = (Scheme) getAttribute(key);
         if (scheme == null && defaultPattern != null) {
             if (attributes.containsKey(key)) return null;
-            scheme = new Scheme(this, defaultPattern);
+            try {
+                scheme = new Scheme(this, defaultPattern);
+            } catch (IllegalArgumentException iae) {
+                throw new IllegalArgumentException("pattern: " + defaultPattern  + " " + iae.getMessage(), iae);
+            }
             setAttribute(key, scheme);
         }
         return scheme;
