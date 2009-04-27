@@ -34,6 +34,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.util.ServerUtil;
 import com.finalist.newsletter.NewsletterSendFailException;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
@@ -94,7 +95,9 @@ public class NewsletterPublisher {
          // setBody(publication, subscription, message);
          setTitle(message, newsletter.getTitle());
          // setMIME(message, subscription.getMimeType());
-         Transport.send(message);
+         if(ServerUtil.isProduction()){
+            Transport.send(message);
+         }
 
          log.debug(String.format("mail send! publication %s to %s in %s format", publication.getId(), subscription
                .getId(), subscription.getMimeType()));
