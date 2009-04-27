@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.48 2008-10-21 17:24:41 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.49 2009-04-27 16:05:35 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType<String> implements LengthDataType<String> {
@@ -284,6 +284,11 @@ public class StringDataType extends ComparableDataType<String> implements Length
             //log.info("VALIDATING " + v + " with " + getPattern() + " -> " + res);
             return res;
         }
+    }
+
+    @Override public StringDataType clone(String name) {
+        StringDataType clone = (StringDataType) super.clone(name);
+        return clone;
     }
 
     public static void main(String [] argv) {
