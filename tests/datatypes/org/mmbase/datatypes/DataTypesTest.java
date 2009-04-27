@@ -12,6 +12,7 @@ package org.mmbase.datatypes;
 
 import java.util.Locale;
 import org.mmbase.bridge.Field;
+import org.mmbase.util.LocalizedString;
 import junit.framework.*;
 
 /**
@@ -114,6 +115,11 @@ public class DataTypesTest extends TestCase {
 
         try {
             getString().setRequired(true);
+            fail();
+        } catch (IllegalStateException ise) {
+        }
+        try {
+            getString().getLocalizedGUIName().set("bla", new Locale("nl"));
             fail();
         } catch (IllegalStateException ise) {
         }
