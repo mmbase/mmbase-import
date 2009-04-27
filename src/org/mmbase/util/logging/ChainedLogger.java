@@ -12,17 +12,18 @@ package org.mmbase.util.logging;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Straight forward implemented which simply delegated every log-statement to a list of other other loggers.
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.9.1
- * @version $Id: ChainedLogger.java,v 1.1 2009-02-10 09:28:22 michiel Exp $
+ * @version $Id: ChainedLogger.java,v 1.2 2009-04-27 12:03:59 michiel Exp $
  */
 public class ChainedLogger implements Logger {
 
-    private final List<Logger> loggers = new ArrayList<Logger>();
+    private final List<Logger> loggers = new CopyOnWriteArrayList<Logger>();
     public ChainedLogger(Logger... ls) {
         for (Logger l : ls) {
             addLogger(l);
@@ -32,6 +33,22 @@ public class ChainedLogger implements Logger {
     public ChainedLogger addLogger(Logger l) {
         loggers.add(l);
         return this;
+    }
+
+    public boolean containsLogger(Logger l) {
+        return loggers.contains(l);
+    }
+
+    public boolean removeLogger(Logger l) {
+        Iterator<Logger> i =  loggers.iterator();
+        while (i.hasNext()) {
+            Logger log = i.next();
+            if (log.equals(l)) {
+                i.remove();
+                return true;
+            }
+        }
+        return false;
     }
 
 
