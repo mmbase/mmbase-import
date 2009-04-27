@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  *
- * @version $Id: ViewDatabaseStorageManager.java,v 1.14 2009-04-01 21:20:16 michiel Exp $
+ * @version $Id: ViewDatabaseStorageManager.java,v 1.15 2009-04-27 17:37:34 michiel Exp $
  * @since MMBase-1.8
  */
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {
@@ -351,8 +351,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
         }
 
         StringBuilder createTableFields = new StringBuilder();
-        Vector<String> myFieldNames = new Vector<String>();
-        Vector<String> parentFieldNames = new Vector<String>();
+        List<String> myFieldNames     = new ArrayList<String>();
+        List<String> parentFieldNames = new ArrayList<String>();
 
         for (CoreField field : fields) {
             if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
