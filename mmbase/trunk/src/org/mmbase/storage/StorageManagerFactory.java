@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.37 2009-01-30 22:02:14 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.38 2009-04-27 12:06:01 michiel Exp $
  */
 public abstract class StorageManagerFactory<SM extends StorageManager> {
 
@@ -179,7 +179,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         int loadTries = 0;
 
 
-        while(true) {
+        while(! mmbase.isShutdown()) { // keep tryin
             try {
                 log.debug("loading Storage Manager factory " + this.getClass().getName());
                 loadTries++;
