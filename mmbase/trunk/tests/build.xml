@@ -272,6 +272,7 @@
       <arg value="org.mmbase.datatypes.DataTypesTest" />
       <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
       <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <jvmarg value="-Dnostartmmbase=" />
       <assertions><enable /></assertions>
     </java>
   </target>
@@ -418,6 +419,8 @@
     <sleep seconds="10" />
     <echo message="========================================UTIL========================================" />
     <antcall target="run.util" inheritRefs="true"/>
+    <echo message="========================================DATATYPES========================================" />
+    <antcall target="run.datatypes" inheritRefs="true"/>
     <sleep seconds="10" />
     <echo message="========================================CLUSTERING========================================" />
     <antcall target="run.clustering" inheritRefs="true"/>

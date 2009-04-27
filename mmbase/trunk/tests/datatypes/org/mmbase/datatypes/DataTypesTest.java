@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.datatypes;
 
+import org.mmbase.bridge.Field;
 import junit.framework.*;
 
 /**
@@ -19,34 +20,131 @@ import junit.framework.*;
  */
 public class DataTypesTest extends TestCase {
 
+    private static boolean setup = false;
     public void setUp() throws Exception {
-        DataTypes.initialize();
+        if (! setup) {
+            DataTypes.initialize();
+            setup = true;
+        }
     }
 
-    public void testString() {
-
+    private StringDataType getString() {
         DataType<?> dt = DataTypes.getDataType("string");
 
         assertTrue("" + dt.getClass(), dt instanceof StringDataType);
 
-        StringDataType sdt = (StringDataType) dt;
+        return (StringDataType) dt;
+    }
 
-        assertEquals("string", sdt.getName());
+    private StringDataType getStringClone() {
+        return getString().clone("clone");
+    }
 
-        assertTrue(sdt.isFinished());
+    public void testName() {
+        assertEquals("string", getString().getName());
+        assertEquals("clone", getStringClone().getName());
+    }
 
-        assertFalse (sdt.isRequired());
+    public void testOrigin() {
+        assertNull(getString().getOrigin());
+        assertEquals(getString(), getStringClone().getOrigin());
+    }
 
-        assertNull(sdt.getDefaultValue());
+    public void testBaseTypeIdentifier() {
+        assertEquals("string", getString().getBaseTypeIdentifier());
+        assertEquals("string", getStringClone().getBaseTypeIdentifier());
+    }
 
+    public void testBaseType() {
+        assertEquals(Field.TYPE_STRING, getString().getBaseType());
+        assertEquals(Field.TYPE_STRING, getStringClone().getBaseType());
+    }
+
+
+    public void testGetTypeAsClass() {
+        assertEquals(String.class, getString().getTypeAsClass());
+        assertEquals(String.class, getStringClone().getTypeAsClass());
+    }
+
+    public void testCheckType() {
         try {
-            sdt.setRequired(true);
-        } catch (IllegalStateException ise) {
+            getString().checkType(Integer.valueOf(1));
+            fail();
+        } catch (IllegalArgumentException iae) {
         }
+        try {
+            getStringClone().checkType(Integer.valueOf(1));
+            fail();
+        } catch (IllegalArgumentException iae) {
+        }
+        getString().checkType("foo");
+        getStringClone().checkType("foo");
+    }
 
-        assertEquals("foo", sdt.cast("foo", null, null));
+    public void testCast() {
+        assertEquals("foo", getString().cast("foo", null, null));
+        assertEquals("foo", getStringClone().cast("foo", null, null));
+        assertEquals("1", getString().cast(new Integer(1), null, null));
+        assertEquals("1", getStringClone().cast(new Integer(1), null, null));
 
     }
+
+    public void testPreCast() {
+        assertEquals("foo", getString().preCast("foo", null, null));
+        assertEquals("foo", getStringClone().preCast("foo", null, null));
+
+    }
+
+    public void testDefaultValue() {
+        assertNull(getString().getDefaultValue());
+        assertNull(getStringClone().getDefaultValue());
+    }
+
+
+    public void testFinished() {
+        assertTrue(getString().isFinished());
+        assertFalse(getStringClone().isFinished());
+
+        try {
+            getString().setRequired(true);
+            fail();
+        } catch (IllegalStateException ise) {
+        }
+        getStringClone().setRequired(true);
+    }
+
+    public void testRequired() {
+        assertFalse(getString().isRequired());
+        assertFalse(getStringClone().isRequired());
+        StringDataType clone = getStringClone();
+        clone.setRequired(true);
+        assertTrue(clone.isRequired());
+    }
+
+
+    public void testEnumerationValues() {
+        assertNull(getString().getEnumerationValues(null, null, null, null));
+        assertNull(getStringClone().getEnumerationValues(null, null, null, null));
+    }
+
+    public void testEnumerationValue() {
+        assertNull(getString().getEnumerationValue(null, null, null, null, "foo"));
+        assertNull(getStringClone().getEnumerationValue(null, null, null, null, "foo"));
+    }
+
+    public void testEnumerationFactory() {
+        assertNotNull(getString().getEnumerationFactory());
+        assertNotNull(getStringClone().getEnumerationFactory());
+    }
+    public void testEnumerationRestriction() {
+        assertNotNull(getString().getEnumerationRestriction());
+        assertNotNull(getStringClone().getEnumerationRestriction());
+    }
+
+    public void testGetProcessor() {
+        // TODO
+    }
+
 
 
 
