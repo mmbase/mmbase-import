@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.34 2008-08-27 17:07:34 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.35 2009-04-27 14:43:35 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, PublicCloneable<LocalizedString> {
@@ -80,7 +80,7 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
 
     private String key;
 
-    private Map<Locale, String> values = null;
+    private transient Map<Locale, String> values = null;
     private String bundle = null;
 
     // just for the contract of Serializable
@@ -414,7 +414,6 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
             return clone;
         } catch (CloneNotSupportedException cnse) {
             // should not happen
-            log.error("Cannot clone this LocalizedString");
             throw new RuntimeException("Cannot clone this LocalizedString", cnse);
         }
     }
