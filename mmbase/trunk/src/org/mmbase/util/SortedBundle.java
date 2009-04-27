@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.37 2008-09-06 14:05:59 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.38 2009-04-27 12:02:59 michiel Exp $
  */
 public class SortedBundle {
 
@@ -50,13 +50,15 @@ public class SortedBundle {
 
     // cache of maps.
     private static final Cache<String, SortedMap<?, String>> knownResources = new Cache<String, SortedMap<?, String>>(100) {
-            public String getName() {
-                return "ConstantBundles";
-            }
-            public String getDescription() {
-                return "A cache for constant bundles, to avoid a lot of reflection.";
-            }
-        };
+        @Override
+        public String getName() {
+            return "ConstantBundles";
+        }
+        @Override
+        public String getDescription() {
+            return "A cache for constant bundles, to avoid a lot of reflection.";
+        }
+    };
 
     static {
         try {
@@ -94,6 +96,7 @@ public class SortedBundle {
                 return 0;
             }
         }
+        @Override
         public boolean equals(Object o) {
             if (o == this) return true;
             if (o == null) return false;
@@ -112,6 +115,7 @@ public class SortedBundle {
         /**
          * @see java.lang.Object#hashCode()
          */
+        @Override
         public int hashCode() {
             int result = 0;
             result = HashCodeUtil.hashCode(result, key);
@@ -140,6 +144,7 @@ public class SortedBundle {
      */
     public static <C> SortedMap<C, String> getResource(final String baseName,  Locale locale, final ClassLoader loader, final Map<String, Object> constantsProvider, final Class<?> wrapper, Comparator<? super Object> comparator) {
         String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : "" + constantsProvider.hashCode()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
+        @SuppressWarnings("unchecked")
         SortedMap<C, String> m = (SortedMap<C, String>) knownResources.get(resourceKey);
         if (locale == null) locale = LocalizedString.getDefault();
 
