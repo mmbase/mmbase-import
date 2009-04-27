@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.72 2009-04-14 12:55:32 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.73 2009-04-27 16:14:18 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -153,17 +153,20 @@ public class DataTypeDefinition {
 
         baseDataType = requestBaseDataType;
         getImplementation(dataTypeElement, id);
+
         LocalizedString description = dataType.getLocalizedDescription();
         DataTypeXml.getLocalizedDescription("description", dataTypeElement, description, dataType.getName());
+
         LocalizedString name = dataType.getLocalizedGUIName();
         DataTypeXml.getLocalizedDescription("name", dataTypeElement, name, dataType.getName());
+
         configureConditions(dataTypeElement);
         configureHandlers(dataTypeElement);
         configureStyleClasses(dataTypeElement);
         return this;
     }
 
-    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class|description|handler|styleClass");
+    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class|name|description|handler|styleClass");
 
     /**
      * Configures the conditions of a datatype definition, using data from a DOM element
