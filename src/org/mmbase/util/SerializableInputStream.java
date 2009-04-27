@@ -20,7 +20,7 @@ import org.apache.commons.fileupload.FileItem;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: SerializableInputStream.java,v 1.8 2009-04-27 12:19:14 michiel Exp $
+ * @version $Id: SerializableInputStream.java,v 1.9 2009-04-27 14:15:17 michiel Exp $
  * @todo IllegalStateException or so, if the inputstreas is used (already).
  */
 
@@ -153,6 +153,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         byte[] b = (byte[]) in.readObject();
         wrapped = new ByteArrayInputStream(b);
     }
+    @Override
     public int available() throws IOException {
         return wrapped.available();
     }
@@ -170,6 +171,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         }
     }
 
+    @Override
     public void mark(int readlimit) {
         if (wrapped.markSupported()) {
             wrapped.mark(readlimit);
@@ -178,13 +180,18 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             wrapped.mark(readlimit);
         }
     }
+    @Override
     public boolean markSupported() {
         return true;
     }
+    @Override
     public int read() throws IOException { use(); return wrapped.read(); }
+    @Override
     public int read(byte[] b) throws IOException { use(); return wrapped.read(b); }
+    @Override
     public int read(byte[] b, int off, int len) throws IOException { use(); return wrapped.read(b, off, len); }
 
+    @Override
     public void reset() throws IOException {
         if (wrapped.markSupported()) {
             wrapped.reset() ;
@@ -192,10 +199,12 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             supportMark();
         }
     }
+    @Override
     public long skip(long n) throws IOException {
         return wrapped.skip(n);
     }
 
+    @Override
     public String toString() {
         return "SERIALIZABLE " + wrapped + (used ? " (used)" :  "") + " (" + size + " byte, " + ( name == null ? "[no name]" : name) + ")";
     }
