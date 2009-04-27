@@ -37,6 +37,7 @@ public class UtilTests {
         suite.addTestSuite(org.mmbase.util.transformers.SpaceReducerTest.class);
         suite.addTestSuite(org.mmbase.util.transformers.TagStripperTest.class);
         suite.addTestSuite(LocalizedEntryListFactoryTest.class);
+        suite.addTestSuite(LocalizedStringTest.class);
         suite.addTestSuite(org.mmbase.util.xml.DocumentReaderTest.class);
         suite.addTestSuite(org.mmbase.util.functions.ParametersTest.class);
         return suite;
