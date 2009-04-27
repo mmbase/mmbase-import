@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.70 2008-09-12 23:56:12 michiel Exp $
+ * @version $Id: Cloud.java,v 1.71 2009-04-27 11:59:38 michiel Exp $
  */
 public interface Cloud {
 
@@ -695,7 +695,14 @@ public interface Cloud {
      */
     public StringList getPossibleContexts();
 
-    //public Cloud getNonTransactionalCloud();
+
+
+    /**
+     * Returns a cloud which is not a Transaction.
+     * @return This cloud or a parent cloud if this cloud is a {@link Transaction}
+     * @since MMBase-1.9.1
+     */
+    public Cloud getNonTransactionalCloud();
 
 
     /**
