@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.21 2006-04-06 17:40:20 pierre Exp $
+ * @version $Id: Schemes.java,v 1.22 2009-04-27 17:50:04 michiel Exp $
  */
 public final class Schemes {
 
@@ -552,8 +552,8 @@ public final class Schemes {
      *  </ul>
      */
     public static final String CREATE_VIEW = "create-view-scheme";
-    public static final String CREATE_VIEW_DEFAULT = "CREATE OR REPLACE VIEW {1} {{3}} AS " +
-                                                        "SELECT {4} FROM {2} WHERE {2}.{5} = {6}.{5}";
+
+    public static final String CREATE_VIEW_DEFAULT = "CREATE OR REPLACE VIEW {1} ({3}) AS SELECT {4} FROM {2} WHERE {2}.{5} = {6}.{5}";
 
     /**
      *  Name of the scheme for creating an 'insert' trigger for a view.
