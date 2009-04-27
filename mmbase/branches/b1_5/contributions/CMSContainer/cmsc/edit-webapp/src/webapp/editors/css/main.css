@@ -262,7 +262,8 @@ div.side_block ul.shortcuts li,
 div.side_block_gray ul.shortcuts li,
 div.side_block_green ul.shortcuts li
 {
-	height: 20px;	
+	height: 20px;
+	line-height: 20px;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 25px;
@@ -274,6 +275,13 @@ div.side_block_green ul.shortcuts li
 	text-decoration: underline;
 	margin: 0px 2px 0px 0px;
 	white-space: nowrap;
+}
+
+div.editor div.body ul.shortcuts li form
+{
+	padding: 0px;
+	display: inline;
+	text-decoration: none
 }
 
 ul.shortcuts li.images				{	background-image: url('../gfx/icons/images.png');}
@@ -886,6 +894,7 @@ div.editor div.body ul.shortcuts
 div.editor div.body ul.shortcuts li
 {
 	height: 20px;
+	line-height: 20px;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 25px;
