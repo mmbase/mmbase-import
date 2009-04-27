@@ -516,15 +516,31 @@ AjaxTreeAbstractNode.prototype.doExpand = function() {
 }
 
 AjaxTreeAbstractNode.prototype.openTreeItem = function() {
-		if (ajaxTreeHandler.behavior == 'classic') { document.getElementById(this.id + '-icon').src = this.openIcon; }
-		if (this.childNodes.length) {  document.getElementById(this.id + '-cont').style.display = 'block'; }
-		this.open = true;
+	if (ajaxTreeHandler.behavior == 'classic') { document.getElementById(this.id + '-icon').src = this.openIcon; }
+	if (this.childNodes.length) {  document.getElementById(this.id + '-cont').style.display = 'block'; }
+	this.open = true;
+	try {
+		alphaImages();
+	}
+	catch(e2) {
+		// ignore
+	}
 }
 
-AjaxTreeAbstractNode.prototype.doCollapse = function() {
+AjaxTreeAbstractNode.prototype.closeTreeItem = function() {
 	if (ajaxTreeHandler.behavior == 'classic') { document.getElementById(this.id + '-icon').src = this.icon; }
 	if (this.childNodes.length) { document.getElementById(this.id + '-cont').style.display = 'none'; }
 	this.open = false;
+	try {
+		alphaImages();
+	}
+	catch(e2) {
+		// ignore
+	}
+}
+
+AjaxTreeAbstractNode.prototype.doCollapse = function() {
+	this.closeTreeItem();
 	if (ajaxTreeConfig.usePersistence) {
 		ajaxTreeLoader.collapse(this);
 	}
