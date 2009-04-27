@@ -13,6 +13,7 @@ package org.mmbase.datatypes;
 import java.util.*;
 import org.mmbase.datatypes.util.xml.DataTypeDefinition;
 import org.mmbase.util.logging.*;
+import java.util.concurrent.*;
 
 /**
  * A DataTypeCollector is a collection of named DataTypes. So, you can add and request DataType
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.16 2008-08-28 11:42:44 michiel Exp $
+ * @version $Id: DataTypeCollector.java,v 1.17 2009-04-27 15:21:55 michiel Exp $
  */
 
 public final class DataTypeCollector {
@@ -33,15 +34,15 @@ public final class DataTypeCollector {
     private static final Logger log = Logging.getLoggerInstance(DataTypeCollector.class);
 
     // Map of datatypes local to this collector
-    private Map<String,BasicDataType<?>> dataTypes = new HashMap<String,BasicDataType<?>>(); // String -> BasicDataType
-    private Map<String,Set<DataType<?>>> specializations = new HashMap<String,Set<DataType<?>>>(); // String -> Set
-    private Set<DataType<?>> roots = new HashSet<DataType<?>>(); // All datatypes which did't inherit from another datatype (this should normally be (a subset of) the 'database types' of mmbase)
+    private Map<String,BasicDataType<?>> dataTypes = new ConcurrentHashMap<String,BasicDataType<?>>(); // String -> BasicDataType
+    private Map<String,Set<DataType<?>>> specializations = new ConcurrentHashMap<String,Set<DataType<?>>>(); // String -> Set
+    private Map<DataType<?>, Object> roots = new ConcurrentHashMap<DataType<?>, Object>(); // All datatypes which did't inherit from another datatype (this should normally be (a subset of) the 'database types' of mmbase)
 
     // the object to finish datatypes with
     private Object signature = null;
 
     // dependent collectors
-    private List<DataTypeCollector> collectors = new ArrayList<DataTypeCollector>();
+    private List<DataTypeCollector> collectors = new CopyOnWriteArrayList<DataTypeCollector>();
 
     // the DataTypeCollector used to store datatypes accessible throughout the application
     private static DataTypeCollector systemDataTypeCollector;
@@ -134,10 +135,10 @@ public final class DataTypeCollector {
                     }
                     spec.add(dataType);
                 } else {
-                    roots.add(dataType);
+                    roots.put(dataType, new Object());
                 }
             } else {
-                roots.add(dataType);
+                roots.put(dataType, new Object());
             }
             BasicDataType<?> old = dataTypes.put(name, dataType);
             if (old != null && old != dataType) {
@@ -202,7 +203,7 @@ public final class DataTypeCollector {
      */
     public Set<DataType<?>> getRoots() {
         // TODO: see in addDataType
-        return Collections.unmodifiableSet(roots);
+        return Collections.unmodifiableSet(roots.keySet());
     }
 
     /**
