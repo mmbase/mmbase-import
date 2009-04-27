@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.107 2009-04-27 12:13:44 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.108 2009-04-27 17:19:20 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -72,7 +72,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     private Processor[]     getProcessors;
     private Processor[]     setProcessors;
 
-    private Map<String, Handler> handlers = new ConcurrentHashMap<String, Handler>();
+    private Map<String, Handler<?>> handlers = new ConcurrentHashMap<String, Handler<?>>();
 
     private Element xml = null;
 
@@ -145,7 +145,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         commitProcessor       = (CommitProcessor) in.readObject();
         getProcessors         = (Processor[]) in.readObject();
         setProcessors         = (Processor[]) in.readObject();
-        handlers              = (Map<String, Handler>) in.readObject();
+        handlers              = (Map<String, Handler<?>>) in.readObject();
         //restrictions          = (Collection<Restriction<?>>) in.readObject();
         //unmodifiableRestrictions = Collections.unmodifiableCollection(restrictions);
     }
@@ -480,10 +480,12 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * {@inheritDoc}
      */
     public void finish(Object owner) {
-        this.owner = owner;
         if (! isFinished()) {
             handlers = Collections.unmodifiableMap(handlers);
+            description  = new ReadonlyLocalizedString(description);
+            guiName      = new ReadonlyLocalizedString(guiName);
         }
+        this.owner = owner;
     }
 
     /**
@@ -494,7 +496,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             if (this.owner != owner) {
                 throw new IllegalArgumentException("Cannot rewrite this datatype - specified owner is not correct");
             }
-            handlers = new ConcurrentHashMap<String, Handler>(handlers);
+            handlers     = new ConcurrentHashMap<String, Handler<?>>(handlers);
+            guiName     = guiName.clone();
+            description = description.clone();
             this.owner = null;
         }
         return this;
@@ -745,11 +749,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
     }
 
-    public Handler getHandler(String mimeType) {
+    public Handler<?> getHandler(String mimeType) {
         return handlers.get(mimeType);
     }
 
-    public Map<String, Handler> getHandlers() {
+    public Map<String, Handler<?>> getHandlers() {
         return handlers;
     }
     public Collection<Restriction<?>> getRestrictions() {
