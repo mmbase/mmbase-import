@@ -9,13 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
-import java.util.*;
-
 
 /**
  * See http://java.sun.com/docs/books/tutorial/jmx/mbeans/standard.html
  * @author Michiel Meeuwissen
- * @version $Id: CacheMBean.java,v 1.2 2008-07-18 09:47:52 michiel Exp $
+ * @version $Id: CacheMBean.java,v 1.3 2009-04-27 12:01:46 michiel Exp $
  * @since MMBase-1.9
  */
 public interface CacheMBean {
