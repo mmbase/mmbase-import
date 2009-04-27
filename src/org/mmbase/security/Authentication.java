@@ -12,7 +12,6 @@ package org.mmbase.security;
 import java.util.Map;
 
 import org.mmbase.util.functions.*;
-import org.mmbase.bridge.Node;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.47 2009-03-13 13:33:35 michiel Exp $
+ * @version $Id: Authentication.java,v 1.48 2009-04-27 12:05:14 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
