@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * This tags produces request scoped new datatypes. (To be used in conjuction with mm:fieldinfo datatype='')
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeTag.java,v 1.1.2.4 2008-11-26 14:08:02 michiel Exp $
+ * @version $Id: DataTypeTag.java,v 1.1.2.5 2009-04-27 08:33:12 michiel Exp $
  * @since MMBase-1.8.7
  */
 public class DataTypeTag extends CloudReferrerTag {
@@ -95,7 +95,9 @@ public class DataTypeTag extends CloudReferrerTag {
             if ("".equals(fn)) throw new JspTagException("Attribute 'field' is required when using 'nodemanager' attribute");
             return (BasicDataType) getCloudVar().getNodeManager(nm).getField(fn).getDataType();
         } else {
-            return collector.getDataType(base.getString(this));
+            BasicDataType dt = collector.getDataType(base.getString(this), true);
+            if (dt == null) throw new JspTagException("No datatype with id '" + base.getString(this) + "' found");
+            return dt;
         }
     }
 
