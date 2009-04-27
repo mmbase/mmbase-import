@@ -23,7 +23,7 @@
 		editwizards. The big difference is that editors
 		are
 		created with jsp's
-		using tag libraries, and 'action' java
+		using tag file libraries, and 'action' java
 		beans for
 		performing tasks.
 		Action beans are provided for the
@@ -32,8 +32,10 @@
 		creating, deleting and updating nods and
 		relations,
 		as
-		well as sorting
-		lists of related nodes.
+		well as sortinging
+		lists of related nodes. It is trvial to extend the
+		system
+		with your custom actions.
   </description>
 	<repositories>
 	</repositories>
@@ -93,6 +95,14 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>${basedir}/resources</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -106,7 +116,7 @@
 						-->
 						<phase>generate-sources</phase>
 						<configuration>
-							<tasks name="merge the vpro-wizards with this project">
+							<tasks name="merge the fck editors with this project">
 								<property name="webapp.dir" value="${pom.artifactId}-${pom.version}" />
 								<property name="remote.download.url"
 									value="http://surfnet.dl.sourceforge.net/sourceforge/fckeditor/FCKeditor_2.6.4.zip" />
