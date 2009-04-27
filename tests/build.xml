@@ -262,6 +262,20 @@
     </java>
   </target>
 
+
+  <target name="run.datatypes" depends="init" description="Various tests on org.mmbase.datatypes">
+    <java
+        classname="${ui.class}"
+        fork="true"
+        timeout="300000"
+        classpathref="run.classpath">
+      <arg value="org.mmbase.datatypes.DataTypesTest" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
+    </java>
+  </target>
+
   <target name="run.richtext" depends="init" description="Richtext tests">
     <antcall target="clean.database" />
     <echo message="Starting ${ui.class}: " />
