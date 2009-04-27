@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.437 2008-12-16 16:40:23 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.438 2009-04-27 12:07:53 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -124,15 +124,18 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * Default output when no data is available to determine a node's GUI description
      */
-    public static final String GUI_INDICATOR = "no info";
+  public static final String GUI_INDICATOR = "no info";
 
-    /**
+  /**
      * The cache for all blobs.
      * @since 1.8.0
      */
-    protected static BlobCache genericBlobCache = new BlobCache(200) {
-            public String getName()        { return "GenericBlobCache"; }
-        };
+  protected static final BlobCache genericBlobCache = new BlobCache(200) {
+      @Override
+      public String getName() {
+        return "GenericBlobCache";
+      }
+  };
 
     static {
         genericBlobCache.putCache();
@@ -141,7 +144,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * The cache that contains the X last requested nodes
      */
-    protected static org.mmbase.cache.NodeCache nodeCache = org.mmbase.cache.NodeCache.getCache();
+    protected static final org.mmbase.cache.NodeCache nodeCache = org.mmbase.cache.NodeCache.getCache();
 
     /**
      * Determines whether the cache is locked.
@@ -186,7 +189,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Default value is 31. Can be changed with the &lt;searchage&gt; tag in the xml builder file.
      * @scope protected
      */
-    public String searchAge="31";
+    public String searchAge = "31";
 
     /**
      * Determines whether changes to this builder need be broadcast to other known mmbase servers.
@@ -262,7 +265,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             public String getFunctionValue(Node node, Parameters parameters) {
                 String val = node.getStringValue(parameters.getString(Parameter.FIELD));
                 Number wrappos = (Number) parameters.get("length");
-                return MMObjectBuilder.this.wrap(val, wrappos.intValue());
+                return MMObjectBuilder.wrap(val, wrappos.intValue());
             }
         };
     {
@@ -454,14 +457,16 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     } catch (Exception e) {
                         owner = SYSTEM_OWNER;
                     }
-                    
+
 
                     MMObjectNode node = typeDef.getNewNode(owner);
-        
+
                     node.storeValue("name", tableName);
 
                     // This sucks:
-                    if (description == null) description = "not defined in this language";
+                    if (description == null) {
+                      description = "not defined in this language";
+                    }
 
                     node.storeValue("description", description);
 
@@ -1961,7 +1966,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * and makes this function pluggable on all builders. See also  MMB-1449.
      *
      */
-    public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
+    final public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
         if (log.isDebugEnabled()) {
             log.debug("Getting smartpath for " + documentRoot + " /" + path + "/" + nodeNumber + "/" + version);
         }
@@ -2552,7 +2557,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             def.setNotNull(true);
             for (CoreField field : f) {
                 int pos = field.getStoragePosition();
-                if (pos > 1) field.setStoragePosition(pos + 1);
+                if (pos > 1) {
+                  field.setStoragePosition(pos + 1);
+                }
             }
             def.setParent(this);
             def.finish();
@@ -2796,7 +2803,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      *
      * @since MMBase-1.6.2
      */
-
+     @Override
     public String toString() {
         return getSingularName();
     }
@@ -2929,7 +2936,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
     protected boolean isNull(String fieldName, MMObjectNode node) {
-        if (node.getNumber() < 0) return true; // capture calls from temporary nodes
+        if (node.getNumber() < 0) {
+          return true; // capture calls from temporary nodes
+        }
         try {
             return mmb.getStorageManager().isNull(node, getField(fieldName));
         } catch (StorageException se) {
