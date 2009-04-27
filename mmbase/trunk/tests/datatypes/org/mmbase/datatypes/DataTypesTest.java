@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.datatypes;
 
+import java.util.Locale;
 import org.mmbase.bridge.Field;
 import junit.framework.*;
 
@@ -43,6 +44,12 @@ public class DataTypesTest extends TestCase {
     public void testName() {
         assertEquals("string", getString().getName());
         assertEquals("clone", getStringClone().getName());
+    }
+    public void testGUIName() {
+        assertEquals("Tekst", getString().getGUIName(new Locale("nl")));
+        assertEquals("Text", getString().getGUIName(new Locale("en")));
+        assertEquals("Tekst", getStringClone().getGUIName(new Locale("nl")));
+        assertEquals("Text", getStringClone().getGUIName(new Locale("en")));
     }
 
     public void testOrigin() {
