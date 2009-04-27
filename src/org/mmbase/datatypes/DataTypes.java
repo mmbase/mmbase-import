@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.33 2009-04-27 15:22:19 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.34 2009-04-27 15:50:43 michiel Exp $
  */
 
 public class DataTypes {
@@ -49,32 +49,41 @@ public class DataTypes {
     // the datatype collector containing named DataTypes for use throughout the application
     private static final DataTypeCollector dataTypeCollector = DataTypeCollector.createSystemDataTypeCollector();
 
+    private static boolean initialized = false;
     public static void initialize() {
-        // read the XML
-        // Watching will probably not work properly,
-        // as datatypes depend one ach other, and are are referred
-        // throughout the system.
-        // For the moment turn watching off.
-        // Not sure if it is needed anyway - it won't actually happen that often
         log.trace("" + Constants.class); // make sure its static init is called, otherwise it goes horribly wrong.
 
-        log.debug("Reading datatypes " + dataTypeCollector);
-        readDataTypes(ResourceLoader.getConfigurationRoot(), "datatypes.xml");
+        synchronized(DataTypes.class) {
+            if (! initialized) {
+                // read the XML
+                // Watching will probably not work properly,
+                // as datatypes depend one ach other, and are are referred
+                // throughout the system.
+                // For the moment turn watching off.
+                // Not sure if it is needed anyway - it won't actually happen that often
 
-        /*
-        try {
-            ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot()) {
-                    public void onChange(String resource) {
-                        readDataTypes(getResourceLoader(), resource);
-                    }
-                };
-            watcher.add("datatypes.xml");
-            watcher.start();
-            watcher.onChange("datatypes.xml");
-        } catch (Throwable t) {
-            log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
+                log.debug("Reading datatypes " + dataTypeCollector);
+                readDataTypes(ResourceLoader.getConfigurationRoot(), "datatypes.xml");
+
+                /*
+                  try {
+                  ResourceWatcher watcher = new ResourceWatcher(ResourceLoader.getConfigurationRoot()) {
+                  public void onChange(String resource) {
+                  readDataTypes(getResourceLoader(), resource);
+                  }
+                  };
+                  watcher.add("datatypes.xml");
+                  watcher.start();
+                  watcher.onChange("datatypes.xml");
+                  } catch (Throwable t) {
+                  log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
+                  }
+                */
+                initialized = true;
+            } else {
+                log.warn("Already initalized");
+            }
         }
-        */
 
     }
 
@@ -224,7 +233,7 @@ public class DataTypes {
      * @param name the name of the DataType to look for
      * @return A DataType instance or <code>null</code> if none can be found
      */
-    public static synchronized BasicDataType getDataType(String name) {
+    public static BasicDataType getDataType(String name) {
         return  dataTypeCollector.getDataType(name);
     }
 
@@ -239,7 +248,7 @@ public class DataTypes {
      * @param baseDataType the dataType to match against. Can be <code>null</code>.
      * @return A DataType instance or <code>null</code> if none can be instantiated
      */
-    public static synchronized BasicDataType getDataTypeInstance(String name, BasicDataType baseDataType) {
+    public static BasicDataType getDataTypeInstance(String name, BasicDataType baseDataType) {
         return dataTypeCollector.getDataTypeInstance(name, baseDataType);
     }
 
@@ -253,7 +262,7 @@ public class DataTypes {
      * @param type the base type to use for a default datatype instance
      * @return A DataType instance
      */
-    public static synchronized BasicDataType getDataTypeInstance(String name, int type) {
+    public static BasicDataType getDataTypeInstance(String name, int type) {
         return getDataTypeInstance(name, getDataType(type));
     }
 
@@ -268,7 +277,7 @@ public class DataTypes {
      *        (this type determines the type of the list elements)
      * @return A ListDataType instance
      */
-    public static synchronized ListDataType getListDataTypeInstance(String name, int listItemType) {
+    public static ListDataType getListDataTypeInstance(String name, int listItemType) {
         return (ListDataType)getDataTypeInstance(name, getListDataType(listItemType));
     }
 
@@ -280,7 +289,7 @@ public class DataTypes {
      * @param type the base type whose DataType to return
      * @return the DataType instance
      */
-    public static synchronized BasicDataType getDataType(int type) {
+    public static BasicDataType getDataType(int type) {
         String name = Fields.getTypeDescription(type).toLowerCase();
         BasicDataType dataType = getDataType(name);
         if (dataType == null) {
