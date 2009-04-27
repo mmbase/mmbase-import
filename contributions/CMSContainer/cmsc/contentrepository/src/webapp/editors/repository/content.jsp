@@ -22,14 +22,15 @@
 <% UserRole role = RepositoryUtil.getRole(cloud, parentchannelnode, false); %>
 <% if (role != null && SecurityUtil.isWriter(role)) { %>
 <ul class="shortcuts">
-    <li class="new" style="text-decoration: none;"><fmt:message key="content.new"/>
-        <form name="initForm" action="../WizardInitAction.do" method="post" style="display:inline;text-decoration:none">
+    <li class="new">
+        <form name="initForm" action="../WizardInitAction.do" method="post">
             <input type="hidden" name="action" value="create"/>
             <input type="hidden" name="creation" value="<mm:write referid="parentchannel" />"/>
             <input type="hidden" name="returnurl" value="<%= returnurl %>"/>
             <input type="hidden" name="order" value="${orderby}" />
             <input type="hidden" name="direction" value="${direction}"/>
             <input type="hidden" name="offset" value="${param.offset}"/>
+            <fmt:message key="content.new"/>
             <select name="contenttype">
                 <c:forEach var="type" items="${typesList}">
                     <option value="${type.value}">${type.label}</option>
