@@ -63,7 +63,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
     * deliver all READY publications in the system
     */
    public void deliverAllPublications() {
-      log.info("starting deliver all publications in READY status");
+      log.debug("starting deliver all publications in READY status");
 
       List<Integer> publications = publicationCAO.getIntimePublicationIds();
 
