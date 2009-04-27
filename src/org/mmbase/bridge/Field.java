@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.39 2008-12-01 17:29:01 michiel Exp $
+ * @version $Id: Field.java,v 1.40 2009-04-27 12:00:39 michiel Exp $
  */
 public interface Field extends Descriptor, Comparable<Field> {
 
@@ -104,7 +104,7 @@ public interface Field extends Descriptor, Comparable<Field> {
      * @return  a <code>DataType</code>  object describing the constraints on this field.
      * @since MMBase-1.8
      */
-    public DataType getDataType();
+    public DataType<?> getDataType();
 
     /**
      * Returns whether this field is part of a unique key (a set of fields whose combined content should
