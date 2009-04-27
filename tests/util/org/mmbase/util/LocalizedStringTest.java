@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: LocalizedStringTest.java,v 1.2 2009-04-27 16:41:55 michiel Exp $
+ * @verion $Id: LocalizedStringTest.java,v 1.3 2009-04-27 17:20:02 michiel Exp $
  */
 public class LocalizedStringTest extends TestCase {
 
@@ -49,11 +49,21 @@ public class LocalizedStringTest extends TestCase {
     }
 
     public void testClone() {
-        LocalizedString fun = getInstance().clone();
-        assertEquals(fun.get(null), "funny");
-        assertEquals(fun.get(EO), "amuza");
-        assertEquals(fun.get(BE_VAR), "plezant");
-        assertEquals(fun.get(NL), "leuk");
+        LocalizedString fun = getInstance();
+        LocalizedString clone = fun.clone();
+
+        assertEquals(fun, clone);
+
+        assertEquals(clone.get(null), "funny");
+        assertEquals(clone.get(EO), "amuza");
+        assertEquals(clone.get(BE_VAR), "plezant");
+        assertEquals(clone.get(NL), "leuk");
+
+        fun.set("plezzant", BE_VAR);
+
+        assertFalse(fun.equals(clone));
+
+
 
     }
 
@@ -75,6 +85,24 @@ public class LocalizedStringTest extends TestCase {
         LocalizedString dl  =  (LocalizedString) ois.readObject();
 
         assertEquals(l, dl);
+    }
+
+    public void testMakeReadOnly() {
+        LocalizedString l = getInstance();
+        LocalizedString rol = new ReadonlyLocalizedString(l);
+
+        assertEquals(l, rol);
+
+        l.set("plezant", BE_VAR);
+
+        assertEquals(l, rol);
+
+        try {
+            rol.set("plezzant", BE_VAR);
+            fail();
+        } catch (IllegalStateException ise) {
+        }
+        assertEquals(l, rol);
     }
 
 
