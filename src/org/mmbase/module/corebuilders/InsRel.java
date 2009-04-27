@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: InsRel.java,v 1.60 2008-08-14 11:40:09 michiel Exp $
+ * @version $Id: InsRel.java,v 1.61 2009-04-27 12:07:07 michiel Exp $
  */
 public class InsRel extends MMObjectBuilder {
 
@@ -74,7 +74,7 @@ public class InsRel extends MMObjectBuilder {
      * @todo Is this cache still used?
      */
 
-    private Cache<Integer, Vector<MMObjectNode>> relatedCache = new Cache<Integer, Vector<MMObjectNode>>(25) {
+    private final Cache<Integer, Vector<MMObjectNode>> relatedCache = new Cache<Integer, Vector<MMObjectNode>>(25) {
         public String getName()        { return "RelatedCache_" + InsRel.this.getTableName(); }
         public String getDescription() { return "Cache for Related Nodes of builder " + InsRel.this.getTableName(); }
         };
@@ -94,6 +94,7 @@ public class InsRel extends MMObjectBuilder {
     public InsRel() {
     }
 
+    @Override
     public void setTableName(String tableName) {
         super.setTableName(tableName);
         relatedCache.putCache();
@@ -109,6 +110,7 @@ public class InsRel extends MMObjectBuilder {
      *         caught and logged.
      * @see #usesdir
      */
+    @Override
     public boolean init() {
         CoreField dirField = getField(FIELD_DIRECTIONALITY);
         boolean hasDirField = dirField != null && dirField.inStorage();
@@ -190,6 +192,7 @@ public class InsRel extends MMObjectBuilder {
      * @param node Relation node to add
      * @return A <code>integer</code> value identifying the newly inserted relation
      */
+     @Override
     public int insert(String owner, MMObjectNode node) {
         int result = -1;
         int source = node.getIntValue(FIELD_SOURCE);
@@ -228,6 +231,7 @@ public class InsRel extends MMObjectBuilder {
      * Remove a node from the cloud.
      * @param node The node to remove.
      */
+    @Override
     public void removeNode(MMObjectNode node) {
         int source = node.getIntValue(FIELD_SOURCE);
         int destination = node.getIntValue(FIELD_DESTINATION);
@@ -299,9 +303,9 @@ public class InsRel extends MMObjectBuilder {
                 if (nodenr == source) {
                     nodenr = node.getIntValue(FIELD_DESTINATION);
                 }
-                String tableName = typedef.getValue(getNodeType(nodenr));
-                if (tableName != null) {
-                    MMObjectBuilder nodeBuilder = mmb.getBuilder(tableName);
+                String tn = typedef.getValue(getNodeType(nodenr));
+                if (tn != null) {
+                    MMObjectBuilder nodeBuilder = mmb.getBuilder(tn);
                     if (nodeBuilder != null && (nodeBuilder.equals(wantedBuilder) || nodeBuilder.isExtensionOf(wantedBuilder))) {
                         list.add(node);
                     }
