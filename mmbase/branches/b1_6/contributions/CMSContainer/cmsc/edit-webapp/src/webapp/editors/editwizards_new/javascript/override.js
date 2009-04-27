@@ -97,6 +97,22 @@ function updateErrormesg(el, err, silent) {
     }
 }
 
+function updatePrompt(el, err, silent) {
+    var prompt = document.getElementById("prompt_" + el.name);
+    if (prompt && !silent) {
+        var orgprompt = prompt.getAttribute("prompt");
+        var description = prompt.getAttribute("description");
+        if (err.length > 0) {
+            prompt.title = description+" \n\n"+getToolTipValue(form,"message_thisnotvalid",
+                                  "This field is not valid")+":\n "+err;
+            prompt.className = "notvalid";
+        } else {
+            prompt.className = "valid";
+            prompt.title = description;
+        }
+    }
+}
+
 function updateButtons(allvalid) {
     var savebut = document.getElementById("bottombutton-save");
     var saveonlybut = document.getElementById("bottombutton-saveonly");
