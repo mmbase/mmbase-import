@@ -42,7 +42,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.58 2009-03-06 22:10:05 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.59 2009-04-27 12:06:32 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -338,6 +338,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
                 } else {
                     databaseResourcePath = "storage/databases/" + databaseName + ".xml";
                 }
+                log.service("Using " + databaseResourcePath + " as database configuration file");
             } else {
                 // WTF to configure storage, we need a connection already?!
 
@@ -360,10 +361,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
                         try { con.close(); } catch (SQLException sqle) {}
                     }
                 }
+                log.service("Using " + databaseResourcePath + " as database configuration file (from lookup.xml)");
             }
             // get configuration
             java.net.URL url = ResourceLoader.getConfigurationRoot().getResource(databaseResourcePath);
-            log.service("Configuration used for database storage: " + url);
+            log.info("Configuration used for database storage: " + url);
             try {
                 InputSource in = ResourceLoader.getInputSource(url);
                 reader = new StorageReader(this, in);
