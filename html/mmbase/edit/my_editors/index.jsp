@@ -23,7 +23,7 @@
     </tr>
     </thead>
     <tbody>
-      
+
       <%-- all nodetypes --%>
       <mm:import vartype="List" jspvar="typelist" id="typelist" />
       <mm:listnodescontainer type="typedef">
@@ -31,23 +31,24 @@
         <mm:listnodes jspvar="n">
           <mm:import id="name" jspvar="name" reset="true"><mm:field name="name" /></mm:import>
           <mm:import id="dnumber" reset="true">no</mm:import>
-          <mm:fieldlist type="create" nodetype="$name">
-            <mm:fieldinfo type="name" id="fldname" write="false" />
-            <mm:compare referid="fldname" value="dnumber"><%-- test for fieldname dnumber (TODO: makes no sense, should be a more general setting) --%>
+          <mm:hasnodemanager name="${name}">
+            <mm:fieldlist type="create" nodetype="$name">
+              <mm:fieldinfo type="name" id="fldname" write="false" />
+              <mm:compare referid="fldname" value="dnumber"><%-- test for fieldname dnumber (TODO: makes no sense, should be a more general setting) --%>
               <mm:import id="dnumber" reset="true">yes</mm:import>
+              </mm:compare>
+            </mm:fieldlist>
+            <%-- import typedefs --%>
+            <mm:compare referid="list" value="all" inverse="true">
+              <mm:compare referid="dnumber" value="no"><% typelist.add(n); %></mm:compare>
             </mm:compare>
-          </mm:fieldlist>
-          <%-- import typedefs --%>
-          <% if (cloud.hasNodeManager(name)) { // check if it is active %>
-			<mm:compare referid="list" value="all" inverse="true">
-			  <mm:compare referid="dnumber" value="no"><% typelist.add(n); %></mm:compare>
-			</mm:compare>
-			<mm:compare referid="list" value="all"><% typelist.add(n); %></mm:compare>
-          <% } %>
+            <mm:compare referid="list" value="all"><% typelist.add(n); %></mm:compare>
+          </mm:hasnodemanager>
+
         </mm:listnodes>
       </mm:listnodescontainer>
 
-      <mm:listnodes referid="typelist"> 
+      <mm:listnodes referid="typelist">
         <mm:import id="name" reset="true"><mm:field name="name" /></mm:import>
         <tr <mm:odd>class="odd"</mm:odd><mm:even>class="even"</mm:even>>
           <td class="right"><mm:write referid="name" /></td>
