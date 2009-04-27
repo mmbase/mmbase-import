@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReplacingLocalizedString.java,v 1.8 2008-11-14 10:07:37 michiel Exp $
+ * @version $Id: ReplacingLocalizedString.java,v 1.9 2009-04-27 17:47:24 michiel Exp $
  * @since MMBase-1.8
  */
 public class ReplacingLocalizedString extends WrappedLocalizedString {
@@ -30,12 +30,6 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
     private static final Logger log = Logging.getLoggerInstance(ReplacingLocalizedString.class);
 
     private List<Map.Entry<String, String>> replacements = new ArrayList<Map.Entry<String, String>>();
-
-
-    // just for the contract of Serializable
-    protected ReplacingLocalizedString() {
-
-    }
 
     /**
      * @param s The wrapped LocalizedString.
