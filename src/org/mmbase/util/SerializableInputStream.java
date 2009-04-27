@@ -20,7 +20,7 @@ import org.apache.commons.fileupload.FileItem;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: SerializableInputStream.java,v 1.7 2009-04-27 12:04:30 michiel Exp $
+ * @version $Id: SerializableInputStream.java,v 1.8 2009-04-27 12:19:14 michiel Exp $
  * @todo IllegalStateException or so, if the inputstreas is used (already).
  */
 
@@ -83,7 +83,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         try {
             fi.write(file);
         } catch (Exception e) {
-            throw new IOException(e);
+            IOException ioe = new IOException();
+            ioe.initCause(e);
+            throw ioe;
         }
         this.wrapped = new FileInputStream(file);
 
