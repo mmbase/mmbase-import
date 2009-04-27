@@ -4,17 +4,17 @@ export JAVA_HOME=/opt/jdk15
 ant=ant -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib lib:. -Dnoconnection=true
 #ant=ant -lib lib:. -Dnoconnection=true
 
-.PHONY: all bridge rmmci dbsq util clustering convert typerel richtext cloudcontext transactions
+.PHONY: all bridge rmmci dbsq util datatypes clustering convert typerel richtext cloudcontext transactions
 all:
 	$(ant) run.all
 
-#failures
+#ok
 bridge: dependencies
 	$(ant) run.bridge | tee work/bridge.log
 
 
-#failures (at least bridge must succeed first)
-rmmci:
+#many failures. rmmci sucks / is unmaintainable
+rmmci:  dependencies
 	$(ant) run.bridge.rmmci | tee work/rmmci.log
 
 #ok
@@ -29,7 +29,11 @@ dbsq:
 util:
 	$(ant) run.util | tee work/util.log
 
+#ok
+datatypes: dependencies
+	$(ant) run.datatypes | tee work/datatypes.log
 
+#
 clustering:
 	$(ant) run.clustering | tee work/clustering.log
 
