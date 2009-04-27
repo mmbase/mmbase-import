@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.60 2008-12-09 15:56:31 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.61 2009-04-27 12:04:52 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -117,6 +117,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     /**
      * Read 'externalUrlField' property
      */
+    @Override
     public boolean init() {
         String property = getInitParameter(PROPERTY_EXTERNAL_URL_FIELD);
         if (property != null) {
