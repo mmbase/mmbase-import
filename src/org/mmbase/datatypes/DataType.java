@@ -33,7 +33,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.72 2009-04-08 13:55:22 michiel Exp $
+ * @version $Id: DataType.java,v 1.73 2009-04-27 17:15:45 michiel Exp $
  * @param <C> Class this DataType
  */
 
@@ -290,7 +290,7 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
 
     /**
      * Returns a (gui) value from a list of restricted enumerated values, or
-     * <code>null</code> if no enumeration restrictions apply or teh value cannot be found.
+     * <code>null</code> if no enumeration restrictions apply or the value cannot be found.
      *
      * @param locale for which to produce
      * @param cloud  Possibly the possible values depend on a cloud (security)
@@ -395,11 +395,11 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * @todo EXPERIMENTAL
      * @since MMBase-1.9.1
      */
-    public Handler getHandler(String mimeType);
+    public Handler<?> getHandler(String mimeType);
     /**
      * @since MMBase-1.9.1
      */
-    public Map<String, Handler> getHandlers();
+    public Map<String, Handler<?>> getHandlers();
 
 
     /**
