@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.36 2009-04-27 16:41:24 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.37 2009-04-27 17:14:00 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, PublicCloneable<LocalizedString> {
@@ -206,6 +206,14 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
     public Map<Locale, String> asMap() {
         if (values == null) return Collections.emptyMap();
         return Collections.unmodifiableMap(values);
+    }
+
+    protected Map<Locale, String> getValues() {
+        return values;
+    }
+
+    protected  String getBundle() {
+        return bundle;
     }
 
     /**
@@ -422,9 +430,9 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
         if (o instanceof LocalizedString) {
             LocalizedString os = (LocalizedString) o;
             return
-                key.equals(os.key) &&
-                (values == null ? os.values == null : values.equals(os.values)) &&
-                (bundle == null ? os.bundle == null : bundle.equals(os.bundle))
+                key.equals(os.getKey()) &&
+                (values == null ? os.getValues() == null : values.equals(os.getValues())) &&
+                (bundle == null ? os.getBundle() == null : bundle.equals(os.getBundle()))
                 ;
         } else {
             return false;
