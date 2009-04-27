@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * Extends and wraps LocalizedString.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WrappedLocalizedString.java,v 1.2 2008-08-23 18:56:31 michiel Exp $
+ * @version $Id: WrappedLocalizedString.java,v 1.3 2009-04-27 17:14:00 michiel Exp $
  * @since MMBase-1.9
  */
 public class WrappedLocalizedString extends LocalizedString {
@@ -26,11 +26,6 @@ public class WrappedLocalizedString extends LocalizedString {
 
     protected LocalizedString wrapped;
     private Locale defaultLocale = null;
-
-    // just for the contract of Serializable
-    protected WrappedLocalizedString() {
-
-    }
 
     /**
      * @param s The wrapped LocalizedString.
@@ -46,32 +41,47 @@ public class WrappedLocalizedString extends LocalizedString {
         return prev;
     }
 
-    //javadoc inherited
+
+    @Override
     public String getKey() {
         return wrapped.getKey();
     }
 
-    //javadoc inherited
+    @Override
     public void setKey(String key) {
         wrapped.setKey(key);
     }
 
-    // javadoc inherited
+    @Override
     public String get(Locale locale) {
         if (locale == null) locale = defaultLocale;
         return wrapped.get(locale);
     }
 
-    //javadoc inherited
+    @Override
     public void set(String value, Locale locale) {
         wrapped.set(value, locale);
     }
 
+    @Override
+    public Map<Locale, String> asMap() {
+        return wrapped.asMap();
+    }
 
-    // javadoc inherited
+    @Override
     public void setBundle(String b) {
         wrapped.setBundle(b);
     }
+
+    @Override
+    protected String getBundle() {
+        return wrapped.getBundle();
+    }
+    @Override
+    protected Map<Locale, String>getValues() {
+        return wrapped.getValues();
+    }
+
 
 
 }
