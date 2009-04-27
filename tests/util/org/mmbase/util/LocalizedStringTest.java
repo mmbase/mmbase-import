@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: LocalizedStringTest.java,v 1.1 2009-04-27 14:45:09 michiel Exp $
+ * @verion $Id: LocalizedStringTest.java,v 1.2 2009-04-27 16:41:55 michiel Exp $
  */
 public class LocalizedStringTest extends TestCase {
 
@@ -57,6 +57,25 @@ public class LocalizedStringTest extends TestCase {
 
     }
 
+
+
+    public void testSerializable() throws IOException, java.lang.ClassNotFoundException {
+        LocalizedString l = getInstance();
+
+        // serialize
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(out);
+        oos.writeObject(l);
+        oos.close();
+
+
+         //deserialize
+        InputStream in = new ByteArrayInputStream(out.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(in);
+        LocalizedString dl  =  (LocalizedString) ois.readObject();
+
+        assertEquals(l, dl);
+    }
 
 
 
