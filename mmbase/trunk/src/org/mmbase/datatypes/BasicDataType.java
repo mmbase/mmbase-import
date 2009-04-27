@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.106 2009-04-08 13:55:21 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.107 2009-04-27 12:13:44 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -369,6 +369,13 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
 
     /**
+     * If the value must be shown, e.g. in error message, it passed through this method.
+     * @since MMBase-1.9.1
+     */
+    protected String castToPresent(Object value, Node node, Field field) {
+        return Casting.toString(value);
+    }
+    /**
      * {@inheritDoc}
      */
     public final C getDefaultValue() {
@@ -540,7 +547,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             return errors;
         }
 
-        errors = requiredRestriction.validate(errors, value, node, field);
+        errors = validateRequired(errors, castValue, value, node, field);
 
         errors = validateCastValueOrNull(errors, castValue, value, node, field);
 
@@ -569,6 +576,12 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     protected Collection<LocalizedString> validateCastValueOrNull(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
         return errors;
+    }
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected Collection<LocalizedString> validateRequired(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
+        return requiredRestriction.validate(errors, value, node, field);
     }
 
     protected StringBuilder toStringBuilder() {
@@ -1062,7 +1075,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             error.replaceAll("\\$\\{NAME\\}",       ReplacingLocalizedString.makeLiteral(getName()));
             error.replaceAll("\\$\\{CONSTRAINT\\}", ReplacingLocalizedString.makeLiteral(toString(node, field)));
             error.replaceAll("\\$\\{CONSTRAINTVALUE\\}", ReplacingLocalizedString.makeLiteral(valueString(node, field)));
-            error.replaceAll("\\$\\{VALUE\\}",      ReplacingLocalizedString.makeLiteral(Casting.toString(v)));
+            error.replaceAll("\\$\\{VALUE\\}",      ReplacingLocalizedString.makeLiteral(parent.castToPresent(v, node, field)));
             errors.add(error);
             return errors;
         }
@@ -1202,7 +1215,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             return Boolean.TRUE.equals(value);
         }
 
-        protected boolean simpleValid(Object v, Node node, Field field) {
+        protected boolean simpleValid(final Object v, final Node node, final Field field) {
             if (! isUnique()) {
                 log.debug("Not unique");
                 return true;
