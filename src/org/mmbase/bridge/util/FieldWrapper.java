@@ -22,7 +22,7 @@ import org.mmbase.datatypes.DataType;
  * implementation on a existing <code>Field</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: FieldWrapper.java,v 1.5 2008-04-25 15:41:10 nklasens Exp $
+ * @version $Id: FieldWrapper.java,v 1.6 2009-04-27 14:24:51 michiel Exp $
  * @since   MMBase-1.8.1
  */
 
@@ -36,7 +36,7 @@ public abstract class FieldWrapper implements Field {
 
     public int getState() { return Field.STATE_VIRTUAL; }
 
-    public DataType<Object> getDataType() { return field.getDataType(); }
+    public DataType<?> getDataType() { return field.getDataType(); }
     public boolean isUnique() { return field.isUnique(); }
     public boolean hasIndex() { return field.hasIndex(); }
     public int getType() {  return field.getType(); }
@@ -54,7 +54,7 @@ public abstract class FieldWrapper implements Field {
     public String getName() { return field.getName(); }
     public String getGUIName() { return field.getGUIName(); }
     public String getGUIName(Locale locale) { return field.getGUIName(locale); }
-    public LocalizedString getLocalizedGUIName() { return field.getLocalizedGUIName(); } 
+    public LocalizedString getLocalizedGUIName() { return field.getLocalizedGUIName(); }
     public void setGUIName(String g, Locale locale) { throw new UnsupportedOperationException(); }
     public void setGUIName(String g) { throw new UnsupportedOperationException(); }
     public LocalizedString getLocalizedDescription() { return field.getLocalizedDescription(); }
