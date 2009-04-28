@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.41 2009-02-17 11:07:37 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.42 2009-04-28 08:48:08 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -79,7 +79,8 @@ public class NodeHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    @Override
+    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
         // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
         if(useLegacy(node, field) &&

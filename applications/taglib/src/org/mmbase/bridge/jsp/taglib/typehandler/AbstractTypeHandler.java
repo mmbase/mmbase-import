@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.73 2009-04-08 13:57:21 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.74 2009-04-28 08:48:08 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -56,7 +56,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     protected EnumHandler getEnumHandler(Node node, Field field) throws JspTagException {
         if (gotEnumHandler) return eh;
         gotEnumHandler = true;
-        DataType dt = field.getDataType();
+        DataType<?> dt = field.getDataType();
 
         if (dt.getEnumerationValues(tag.getLocale(), tag.getCloudVar(), node, field) != null) {
             return new EnumHandler(tag, node, field);
@@ -70,8 +70,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             final int max = idt.getMax() - (idt.isMaxInclusive() ? 0 : 1);
             if ((long) max - min < 200L) {
                 return new EnumHandler(tag, node, field) {
-                        int i = min;
-                        protected Iterator<Entry<Integer, Integer>> getIterator(Node node, Field field) {
+                    int i = min;
+                    @Override
+                    protected Iterator<Entry<Integer, Integer>> getIterator(Node node, Field field) {
                             return new Iterator<Entry<Integer, Integer>>() {
                                     public boolean hasNext() {
                                         return i <= max;
@@ -95,6 +96,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             if ((double) max - min < 200.0) {
                 return new EnumHandler(tag, node, field) {
                         long i = min;
+                        @Override
                         protected Iterator<Entry<Long, Long>> getIterator(Node node, Field field) {
                             return new Iterator<Entry<Long, Long>>() {
                                     public boolean hasNext() {
@@ -223,7 +225,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             return eh.checkHtmlInput(node, field, errors);
         }
         Object fieldValue = getFieldValue(node, field);
-        final DataType<Object> dt = field.getDataType();
+        final DataType<?> dt = field.getDataType();
         if (fieldValue == null) {
             log.debug("Field value not found in context, using existing value ");
             fieldValue = getFieldValue(node, field, node == null);
@@ -234,7 +236,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (log.isDebugEnabled()) {
             log.debug("Value for field " + field + ": " + fieldValue + " and node " + node);
         }
-        Collection<LocalizedString> col = dt.validate(fieldValue, node, field);
+        Collection<LocalizedString> col = dt.castAndValidate(fieldValue, node, field);
         if (col.size() == 0) {
             // do actually set the field, because some datatypes need cross-field checking
             // also in an mm:form, you can simply commit.
