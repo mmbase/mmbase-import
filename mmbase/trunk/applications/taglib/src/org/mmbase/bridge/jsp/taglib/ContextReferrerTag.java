@@ -16,7 +16,6 @@ import javax.servlet.jsp.jstl.core.*;
 
 import java.io.*;
 
-import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.edit.FormTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
@@ -36,7 +35,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.113 2009-02-03 13:11:14 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.114 2009-04-28 08:44:46 michiel Exp $
  * @see ContextTag
  */
 
@@ -386,7 +385,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      **/
 
     protected Boolean getAttributeBoolean(String b) throws JspTagException {
-        String r = getAttributeValue(b).toLowerCase();
+        String r = getAttribute(b).getString(this).toLowerCase();
         if ("true".equals(r)) {
             return Boolean.TRUE;
         } else if ("false".equals(r)) {
@@ -408,7 +407,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     }
     protected Integer getAttributeInteger(String i, int def) throws JspTagException {
         try {
-            i = getAttributeValue(i);
+            i = getAttribute(i).getString(this);
             if (i.length() == 0) return def;
             return Integer.parseInt(i);
         } catch (NumberFormatException e) { // try first if it was a float
@@ -807,7 +806,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         FormTag formTag;
         if (form == null || form == Attribute.NULL) {
             formTag = (FormTag) pageContext.getAttribute(FormTag.KEY, FormTag.SCOPE);
-            if (formTag == null && excpetion) throw new JspTagException("No form-tag found (" + FormTag.KEY + ")");
+            if (formTag == null && excpetion) {
+              throw new JspTagException("No form-tag found (" + FormTag.KEY + ")");
+            }
         } else {
             formTag = findParentTag(FormTag.class, form != null ? (String) form.getValue(this) : null, true);
         }
