@@ -26,7 +26,7 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
  * @author Michiel Meeuwissen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: RelatedTag.java,v 1.34 2008-06-20 13:22:53 michiel Exp $
+ * @version $Id: RelatedTag.java,v 1.35 2009-04-28 08:46:59 michiel Exp $
  */
 public class RelatedTag extends ListTag {
     // private static final Logger log = Logging.getLoggerInstance(RelatedTag.class);
@@ -43,11 +43,12 @@ public class RelatedTag extends ListTag {
 
 
     // overridden since 1.8.2
+    @Override
     public Cloud getCloudVar() throws JspTagException {
         return getBaseNode().getCloud();
 
     }
-
+    @Override
     protected String getSearchNodes() throws JspTagException {
         return (nodes == Attribute.NULL || nodes.getString(this).length() == 0) ? "" + getNode().getNumber() : nodes.getString(this);
     }
@@ -56,10 +57,12 @@ public class RelatedTag extends ListTag {
      * Obtain the list path. Adds the related basenode's type (extended with a '0' postfix to distinguis it from
      * other types in the path) to the front of the path.
      */
+    @Override
     protected String getPath() throws JspTagException {
         return getBaseNode().getNodeManager().getName() + "0," + path.getString(this);
     }
 
+    @Override
     protected QueryContainer getListContainer() throws JspTagException {
         return findParentTag(RelatedContainerTag.class, (String) container.getValue(this), false);
     }
