@@ -12,6 +12,7 @@
   <artifactId>mmbase-editwizard</artifactId>
   <name>MMBase Editwizard</name>
   <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     The Editwizards allow you to write task-based wizards for data entry. This application provides

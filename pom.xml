@@ -30,6 +30,7 @@ See http://www.MMBase.org/license
   <groupId>org.mmbase</groupId>
   <artifactId>mmbase</artifactId>
   <packaging>jar</packaging>
+  <version>${mmbase.version}</version>
   <name>MMBase Core</name>
 
   <build>
@@ -95,6 +96,9 @@ See http://www.MMBase.org/license
 
 
 
+     <!--
+         Generate a timestamp property, which is used in the Manifest of the jar
+     -->
      <plugin>
        <groupId>com.keyboardsamurais.maven</groupId>
        <artifactId>maven-timestamp-plugin</artifactId>
@@ -189,6 +193,11 @@ See http://www.MMBase.org/license
       <version>2.0</version>
     </dependency>
     -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+    </dependency>
   </dependencies>
 
   <reporting>

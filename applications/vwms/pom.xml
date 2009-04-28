@@ -12,6 +12,7 @@
   <artifactId>mmbase-vwms</artifactId>
   <name>MMBase VWMS</name>
   <packaging>jar</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     VWMS ('virtual webmasters') are  legacy. Don't use it.

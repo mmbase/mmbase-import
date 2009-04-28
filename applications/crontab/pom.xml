@@ -12,6 +12,7 @@
   <artifactId>mmbase-crontab</artifactId>
   <name>MMBase Crontab</name>
   <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     With the Crontab application you can create scheduled tasks in MMBase, that need to run on

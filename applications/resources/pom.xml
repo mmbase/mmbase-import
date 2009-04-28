@@ -17,7 +17,7 @@
   <artifactId>mmbase-resources</artifactId>
   <name>MMBase Resources</name>
   <packaging>war</packaging>
-
+  <version>${mmbase.version}</version>
 
 
   <dependencies>
