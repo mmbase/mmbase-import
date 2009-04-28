@@ -22,9 +22,11 @@ import org.mmbase.cache.CachePolicy;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.19 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id: ListContainerTag.java,v 1.20 2009-04-28 08:45:52 michiel Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
+
+    private static final long serialVersionUID = 0L;
 
     private Query   query        = null;
     protected Object prevQuery   = null;
@@ -33,8 +35,8 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
     private Attribute searchDirs = Attribute.NULL;
     private Attribute fields     = Attribute.NULL;
     protected  Attribute   nodes       = Attribute.NULL;
+   
     protected String jspVar = null;
-
     public void setCachepolicy(String t) throws JspTagException {
         cachePolicy = getAttribute(t);
     }
@@ -61,23 +63,27 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
     /**
      * @since MMBase-1.8.1
      */
+    @Override
     public void setJspvar(String jv) {
         jspVar = jv;
     }
 
 
+    @Override
     public Query getQuery() {
-        if (query.isUsed()) query = (Query) query.clone();
+        if (query.isUsed()) query = query.clone();
         return query;
     }
 
-    // overridden from CloudReferrer.
+    // overridden from CloudReferrer
+    @Override
     public Cloud getCloudVar() throws JspTagException {
         if (query == null) return super.getCloudVar(); // I think that this does not happen.
         return query.getCloud();
     }
 
 
+    @Override
     public int doStartTag() throws JspTagException {
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
