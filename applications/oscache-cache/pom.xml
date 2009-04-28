@@ -12,6 +12,7 @@
   <artifactId>mmbase-oscache-cache</artifactId>
   <name>MMBase OSCache-Cache</name>
   <packaging>jar</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     MMBase contains a pluggable architecture for it's caches, where you can write your own cache

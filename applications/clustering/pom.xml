@@ -12,6 +12,7 @@
   <artifactId>mmbase-clustering</artifactId>
   <name>MMBase Clustering</name>
   <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     The clustering libraries allow you to run MMBase in a clustered environment: where multiple

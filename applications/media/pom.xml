@@ -12,6 +12,7 @@
   <artifactId>mmbase-media</artifactId>
   <name>MMBase Media</name>
   <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     The MMBase media project provides you with builders and code to manage videofragments and

@@ -12,6 +12,7 @@
   <artifactId>mmbase-scan</artifactId>
   <name>MMBase Scan</name>
   <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     SCAN is the legacy template language of MMBase. Don't use it.

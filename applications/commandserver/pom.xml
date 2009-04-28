@@ -12,6 +12,7 @@
   <artifactId>mmbase-commandserver</artifactId>
   <name>MMBase Command Server</name>
   <packaging>jar</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     Very small java application that allows you to execute command-line applications from a seperate

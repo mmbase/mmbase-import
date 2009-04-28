@@ -11,6 +11,7 @@
   <artifactId>mmbase-mynews</artifactId>
   <name>MMBase MyNews</name>
   <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     The MyNews application is one of the oldest MMBase examples that still exists. It shows you a very simple
