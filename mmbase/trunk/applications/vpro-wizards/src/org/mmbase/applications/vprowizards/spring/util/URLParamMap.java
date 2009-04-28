@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/ 
+*/
 package org.mmbase.applications.vprowizards.spring.util;
 
 import java.util.LinkedHashMap;
@@ -14,6 +14,11 @@ import java.util.LinkedHashMap;
 import org.apache.commons.lang.StringUtils;
 
 
+/**
+ * @javadoc
+ * @version $Id: URLParamMap.java,v 1.2 2009-04-28 15:23:56 michiel Exp $
+ * @author Ernst Bunders
+ */
 
 public class URLParamMap extends LinkedHashMap<String, String> {
 
@@ -42,14 +47,13 @@ public class URLParamMap extends LinkedHashMap<String, String> {
 
     /**
      * Adds a param to the existing params
-     * 
+     *
      * @param name
      *            the parameter name
      * @param value
      *            the parameter value
      * @param override
      *            should an existing parameter by this name be overridden?
-     * @return
      */
     public URLParamMap addParam(String name, String value, boolean override) {
         if ((get(name) != null && override) || get(name) == null) {
