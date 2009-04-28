@@ -36,7 +36,7 @@ if [ 1 == 1 ] ; then
 
     echo ==================================MAVEN 2 EXPERIMENTAL============== |  tee -a ${builddir}/messages.log
     cd ${BUILD_HOME}/nightly-build/cvs/mmbase
-    (cd maven; ${MAVEN2} clean source:jar deploy) | tee -a ${builddir}/messages.log
+    (cd maven; ${MAVEN2} -P deploy clean deploy) | tee -a ${builddir}/messages.log
 fi
 
 if [ 1 == 1 ] ; then
