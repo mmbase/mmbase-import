@@ -45,7 +45,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.120 2009-04-17 15:44:35 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.121 2009-04-28 08:45:15 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -214,7 +214,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         DataType<?> dataType = field.getDataType();
 
         String ct = pageContext.getResponse().getContentType().split(";")[0];
-        Handler<String> h = dataType.getHandler(ct);
+        Handler<String> h = (Handler<String>) dataType.getHandler(ct);
         if (h !=  null) {
             return new DataTypeHandler(h, this);
         } else {
