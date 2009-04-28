@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.14 2008-08-14 13:58:54 michiel Exp $
+ * @version $Id: TreeContainerTag.java,v 1.15 2009-04-28 08:50:54 michiel Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
 
@@ -101,7 +101,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
     void addBranch(NodeManager nodeManager, String r, String sd) {
         tree.grow(nodeManager, r, sd);
     }
-
+    @Override
     public int doStartTag() throws JspTagException {
         initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
@@ -136,7 +136,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         pageContext.setAttribute(QueryContainer.KEY, getNodeQuery(), QueryContainer.SCOPE);
         return EVAL_BODY;
     }
-
+    @Override
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
@@ -149,6 +149,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         }
         return SKIP_BODY;
     }
+    @Override
     public int doEndTag() throws JspTagException {
         tree = null;
         return super.doEndTag();
