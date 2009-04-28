@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: LocalizedStringTest.java,v 1.3 2009-04-27 17:20:02 michiel Exp $
+ * @verion $Id: LocalizedStringTest.java,v 1.4 2009-04-28 06:30:32 michiel Exp $
  */
 public class LocalizedStringTest extends TestCase {
 
@@ -68,7 +68,6 @@ public class LocalizedStringTest extends TestCase {
     }
 
 
-
     public void testSerializable() throws IOException, java.lang.ClassNotFoundException {
         LocalizedString l = getInstance();
 
@@ -85,6 +84,22 @@ public class LocalizedStringTest extends TestCase {
         LocalizedString dl  =  (LocalizedString) ois.readObject();
 
         assertEquals(l, dl);
+    }
+    public void testReadonlySerializable() throws IOException, java.lang.ClassNotFoundException {
+        LocalizedString rol = new ReadonlyLocalizedString(getInstance());
+        // serialize
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(out);
+        oos.writeObject(rol);
+        oos.close();
+
+
+         //deserialize
+        InputStream in = new ByteArrayInputStream(out.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(in);
+        LocalizedString drol  =  (LocalizedString) ois.readObject();
+
+        assertEquals(rol, drol);
     }
 
     public void testMakeReadOnly() {
@@ -103,6 +118,27 @@ public class LocalizedStringTest extends TestCase {
         } catch (IllegalStateException ise) {
         }
         assertEquals(l, rol);
+    }
+
+    public void testMakeReadOnlyClone() {
+        LocalizedString rol = new ReadonlyLocalizedString(getInstance());
+        LocalizedString clone = rol.clone();
+
+        assertEquals(rol, clone);
+
+        try {
+            rol.set("plezzant", BE_VAR);
+            fail();
+        } catch (IllegalStateException ise) {
+        }
+        assertEquals(rol, clone);
+        assertEquals(clone, rol);
+
+        // a clone is not read only any more
+        clone.set("plezzant", BE_VAR);
+
+        assertFalse(rol.equals(clone));
+        assertFalse(clone.equals(rol));
     }
 
 
