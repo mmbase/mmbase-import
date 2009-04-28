@@ -11,7 +11,6 @@ package org.mmbase.security.implementation.cloudcontext;
 
 import java.util.*;
 import java.io.*;
-import org.mmbase.security.implementation.cloudcontext.builders.*;
 import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.security.SecurityException;
@@ -31,7 +30,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.35 2009-03-10 08:58:19 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.36 2009-04-28 08:35:09 michiel Exp $
  */
 public class Authenticate extends CloudContextAuthentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -65,7 +64,8 @@ public class Authenticate extends CloudContextAuthentication {
     /**
      * {@inheritDoc}
      */
-    @Override protected void load() throws SecurityException {
+    @Override
+    protected void load() throws SecurityException {
         attributes.put(STORES_CONTEXT_IN_OWNER, Boolean.TRUE);
         UserProvider users = getUserProvider();
         if (users == null) {
@@ -114,16 +114,15 @@ public class Authenticate extends CloudContextAuthentication {
        <tr><td>encoded</td><th>plain</td><td>name/encodedpassword</td><td></td></tr>
      </table>
      */
-    @Override public User login(String type, Map<String, ?> map, Object aobj[]) throws SecurityException  {
+    @Override
+    public User login(String type, Map<String, ?> map, Object[] parameters) throws SecurityException {
         if (log.isTraceEnabled()) {
             log.trace("login-module: '" + type + "'");
         }
         MMObjectNode node = null;
         UserProvider users = getUserProvider();
         if (users == null) {
-            String msg = "builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported)";
-            log.fatal(msg);
-            throw new SecurityException(msg);
+            throw new SecurityException("builders for security not installed, if you are trying to install the application belonging to this security, please restart the application after all data has been imported");
         }
         allowEncodedPassword = org.mmbase.util.Casting.toBoolean(users.getUserBuilder().getInitParameter("allowencodedpassword"));
         if ("anonymous".equals(type)) {
@@ -136,8 +135,8 @@ public class Authenticate extends CloudContextAuthentication {
                 return new LocalAdmin("anonymous", type, Rank.getRank("anonymous"));
             }
         } else if ("name/password".equals(type)) {
-            String userName = (String)map.get("username");
-            String password = (String)map.get("password");
+            String userName = (String) map.get("username");
+            String password = (String) map.get("password");
             if(userName == null || password == null) {
                 throw new SecurityException("Expected the property 'username' and 'password' with login. But received " + map);
             }

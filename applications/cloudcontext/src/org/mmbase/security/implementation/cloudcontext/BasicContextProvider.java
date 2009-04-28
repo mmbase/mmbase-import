@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link ContextProvider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicContextProvider.java,v 1.10 2009-03-02 17:28:35 michiel Exp $
+ * @version $Id: BasicContextProvider.java,v 1.11 2009-04-28 08:35:09 michiel Exp $
  * @since  MMBase-1.9.1
  */
 public  class BasicContextProvider implements ContextProvider {
@@ -343,8 +343,8 @@ public  class BasicContextProvider implements ContextProvider {
             MMObjectNode source      = getNode(node.getIntValue("snumber"));
             MMObjectNode destination = getNode(node.getIntValue("dnumber"));
 
-            if (Authenticate.getInstance().getUserBuilder().getClass().isInstance(source.getBuilder())  && destination.getBuilder() instanceof Ranks) {
-
+            if (Authenticate.getInstance().getUserBuilder().getClass().isInstance(source.getBuilder())
+                    && Ranks.class.isInstance(destination.getBuilder())) {
                 // forbid hackery
                 if (operation == Operation.WRITE || operation == Operation.CHANGE_RELATION) {
                     return false;
