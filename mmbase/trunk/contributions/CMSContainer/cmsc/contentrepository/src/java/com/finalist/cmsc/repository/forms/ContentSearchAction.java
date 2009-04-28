@@ -186,9 +186,17 @@ public class ContentSearchAction extends PagerAction {
             String paramName = nodeManager.getName() + "." + field.getName();
             String paramValue = request.getParameter(paramName);
             if (StringUtils.isNotEmpty(paramValue)) {
-               SearchUtil.addLikeConstraint(query, field, paramValue.trim());
+               //CMSC-1116 advanced search for dynamic form save answer gives 500 error
+               //The following if to deal with INTEGER field
+               if(field.getType() == Field.TYPE_INTEGER){
+                  FieldValueConstraint fvc = SearchUtil.createEqualConstraint(query, nodeManager, field.getName(), Integer.parseInt(paramValue));
+                  SearchUtil.addConstraint(query, fvc);
+               }
+               else{
+                  SearchUtil.addLikeConstraint(query, field, paramValue.trim());
+                  queryStringComposer.addParameter(paramName, paramValue);
+               }
             }
-            queryStringComposer.addParameter(paramName, paramValue);
          }
       }
 
