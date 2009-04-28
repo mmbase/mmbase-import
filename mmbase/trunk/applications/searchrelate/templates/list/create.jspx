@@ -15,22 +15,23 @@
   <mm:import externid="fields" />
   <mm:import externid="item" />
   <mm:import externid="precreate" />
-
-  <mm:cloud method="asis">
-    <mm:node id="source" referid="source" />
-    <mm:createnode type="${type}" id="d" >
-      <c:if test="${! empty precreate}">
-        <mm:include page="${precreate}" />
-      </c:if>
-    </mm:createnode>
-
-    <mm:node referid="d" jspvar="d">
-      <jsp:scriptlet>org.mmbase.bridge.util.Queries.addToResult(query, d);</jsp:scriptlet>
-    </mm:node>
-    <mm:node referid="d">
-      <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="source,fields,item">
-        <mm:param name="new">true</mm:param>
-      </mm:include>
-    </mm:node>
-  </mm:cloud>
+  <mm:content expires="0" type="application/xml">
+    <mm:cloud method="asis">
+      <mm:node id="source" referid="source" />
+      <mm:createnode type="${type}" id="d" >
+        <c:if test="${! empty precreate}">
+          <mm:include page="${precreate}" />
+        </c:if>
+      </mm:createnode>
+      
+      <mm:node referid="d" jspvar="d">
+        <jsp:scriptlet>org.mmbase.bridge.util.Queries.addToResult(query, d);</jsp:scriptlet>
+      </mm:node>
+      <mm:node referid="d">
+        <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="source,fields,item">
+          <mm:param name="new">true</mm:param>
+        </mm:include>
+      </mm:node>
+    </mm:cloud>
+  </mm:content>
 </jsp:root>
