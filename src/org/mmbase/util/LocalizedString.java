@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.37 2009-04-27 17:14:00 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.38 2009-04-28 06:31:22 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, PublicCloneable<LocalizedString> {
@@ -426,6 +426,7 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
         }
     }
 
+    @Overrde
     public boolean equals(Object o) {
         if (o instanceof LocalizedString) {
             LocalizedString os = (LocalizedString) o;
@@ -438,7 +439,7 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
             return false;
         }
     }
-
+    @Override
     public int hashCode() {
         int result = 0;
         result = HashCodeUtil.hashCode(result, key);
