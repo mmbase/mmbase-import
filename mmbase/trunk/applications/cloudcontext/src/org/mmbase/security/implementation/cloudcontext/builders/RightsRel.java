@@ -21,7 +21,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.17 2008-12-23 17:30:42 michiel Exp $
+ * @version $Id: RightsRel.java,v 1.18 2009-04-28 08:35:09 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
@@ -41,6 +41,7 @@ public class RightsRel extends InsRel {
     }
 
     // inherited
+    @Override
     public String getGUIIndicator(MMObjectNode node) {
         return node.getStringValue(OPERATION_FIELD) + " " + super.getGUIIndicator(node);
     }
@@ -48,13 +49,12 @@ public class RightsRel extends InsRel {
     /**
      * Operation defaults to 'read'.
      */
+    @Override
     public void setDefaults(MMObjectNode node) {
         // default -> read
         node.setValue(OPERATION_FIELD, Operation.READ.toString());
         super.setDefaults(node);
     }
-
-
 
     public MMObjectNode getNewNode(String owner, int snumber, int dnumber, Operation operation) {
         MMObjectNode rel = getNewNode(owner);
@@ -65,7 +65,7 @@ public class RightsRel extends InsRel {
         return rel;
     }
 
-
+    @Override
     public int insert(String owner, MMObjectNode node) {
 
         if(node.getStringValue("operation").equals("all")) {
@@ -82,6 +82,7 @@ public class RightsRel extends InsRel {
     /**
      * Check on possible values for operation.
      */
+    @Override
     public boolean setValue(MMObjectNode node, String fieldName) {
         // most situations, handle in inherited class
         if (!fieldName.equals(OPERATION_FIELD)) super.setValue(node, fieldName);

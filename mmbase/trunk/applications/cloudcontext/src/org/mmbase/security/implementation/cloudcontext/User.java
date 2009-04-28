@@ -28,10 +28,10 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.27 2009-03-10 17:11:20 michiel Exp $
+ * @version $Id: User.java,v 1.28 2009-04-28 08:35:09 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
-public class User extends BasicUser implements WeakNodeEventListener  {
+public class User extends BasicUser implements UserContext, WeakNodeEventListener  {
     private static final Logger log = Logging.getLoggerInstance(User.class);
 
     private static final long serialVersionUID = 1L;
