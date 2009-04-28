@@ -9,7 +9,7 @@
 	  <div class="newssubtitle">
 		<mm:related path="mmevents" 
 			fields="mmevents.start"
-			max="1"><span class="newssubL"><mm:field name="mmevents.start"><mm:time format="dd MMMM yyyy hh:mm" /></mm:field></span>
+			max="1"><span class="newssubL"><mm:field name="mmevents.start"><mm:time format="dd MMMM yyyy HH:mm" /></mm:field></span>
 		</mm:related>
 		<mm:related path="posrel,persons" 
 			fields="persons.firstname,persons.suffix,persons.lastname"
