@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: LocalizedStringTest.java,v 1.4 2009-04-28 06:30:32 michiel Exp $
+ * @verion $Id: LocalizedStringTest.java,v 1.5 2009-04-28 06:52:50 michiel Exp $
  */
 public class LocalizedStringTest extends TestCase {
 
@@ -139,6 +139,54 @@ public class LocalizedStringTest extends TestCase {
 
         assertFalse(rol.equals(clone));
         assertFalse(clone.equals(rol));
+    }
+
+    public void testSetKey() {
+        LocalizedString l = getInstance();
+        LocalizedString rol = new ReadonlyLocalizedString(l);
+        LocalizedString clone = l.clone();
+
+        assertEquals("funny", l.getKey());
+        assertEquals("funny", rol.getKey());
+        assertEquals("funny", clone.getKey());
+
+        clone.setKey("fun");
+        assertEquals("funny", l.getKey());
+        assertEquals("funny", rol.getKey());
+        assertEquals("fun", clone.getKey());
+        assertEquals("funny", l.get(DK));
+        assertEquals("funny", l.get(null));
+        assertEquals("funny", rol.get(DK));
+        assertEquals("funny", rol.get(null));
+        assertEquals("fun", clone.get(DK));
+        assertEquals("fun", clone.get(null));
+
+        try {
+            rol.setKey("nuf");
+            fail();
+        } catch (IllegalStateException ise) {
+        }
+        assertEquals("funny", l.getKey());
+        assertEquals("funny", rol.getKey());
+        assertEquals("fun", clone.getKey());
+        assertEquals("funny", l.get(DK));
+        assertEquals("funny", l.get(null));
+        assertEquals("funny", rol.get(DK));
+        assertEquals("funny", rol.get(null));
+        assertEquals("fun", clone.get(DK));
+        assertEquals("fun", clone.get(null));
+
+        l.setKey("nuf");
+
+        assertEquals("nuf", l.getKey());
+        assertEquals("nuf", rol.getKey());
+        assertEquals("fun", clone.getKey());
+        assertEquals("nuf", l.get(DK));
+        assertEquals("nuf", l.get(null));
+        assertEquals("nuf", rol.get(DK));
+        assertEquals("nuf", rol.get(null));
+        assertEquals("fun", clone.get(DK));
+        assertEquals("fun", clone.get(null));
     }
 
 
