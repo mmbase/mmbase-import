@@ -255,4 +255,18 @@ public class NatMMConfig {
          return false;
       }
    }
+
+   public static String getAllowedIPRanges() {
+      try {
+         InitialContext context = new InitialContext();
+         Context env = (Context) context.lookup("java:comp/env");
+         String allowedIPRanges = (String) env.lookup("natmmconfig.webservice.ip.ranges.allowed");
+         return allowedIPRanges;
+      }
+      catch (NamingException ne) {
+         log.info("Context not found: " + ne.toString());
+         return null;
+      }
+   }   
+   
 }

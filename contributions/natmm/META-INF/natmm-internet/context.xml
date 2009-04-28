@@ -21,6 +21,8 @@
    <Environment name="natmmconf.incomingDir" value="@natmmconf.incomingDir@" type="java.lang.String" />
    <Environment name="natmmconfig.is.production" value="@natmmconfig.is.production@" type="java.lang.String" />
    
+   <Environment name="natmmconfig.webservice.ip.ranges.allowed" value="@natmmconfig.webservice.ip.ranges.allowed@" type="java.lang.String" />   
+   
    <Environment name="nmintraconf.fromEmailAddress" value="@nmintraconf.fromEmailAddress@" type="java.lang.String" />
    <Environment name="nmintraconf.defaultPZAddress" value="@nmintraconf.defaultPZAddress@" type="java.lang.String" />
    <Environment name="nmintraconf.defaultFZAddress" value="@nmintraconf.defaultFZAddress@" type="java.lang.String" />
