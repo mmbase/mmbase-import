@@ -33,6 +33,11 @@
      <filter-class>nl.leocms.servlets.UrlInterceptor</filter-class>
   </filter>
 
+  <filter>
+     <filter-name>Webservice IP Filter</filter-name>
+     <filter-class>nl.leocms.servlets.IPFilter</filter-class>
+  </filter>
+
   <filter-mapping>
     <filter-name>Jumpers Filter</filter-name>
     <url-pattern>/*</url-pattern>
@@ -46,6 +51,11 @@
   <filter-mapping>
      <filter-name>Filter Out FrontUrls</filter-name>
      <url-pattern>*.htm</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+     <filter-name>Webservice IP Filter</filter-name>
+     <url-pattern>/services/*</url-pattern>
   </filter-mapping>
 
   <servlet>
