@@ -9,7 +9,7 @@
  *                              then call validator.setup(el).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.60 2009-04-15 15:59:19 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.61 2009-04-28 14:44:06 michiel Exp $
  */
 
 
@@ -327,6 +327,11 @@ MMBaseValidator.prototype.isBinary = function(el) {
     el.mm_isbinary = this.hasJavaClass(el, "org\.mmbase\.datatypes\.BinaryDataType");
     return el.isbinary;
 }
+MMBaseValidator.prototype.isCheckEquality = function(el) {
+    if (el.mm_ischeckequality != null) return el.mm_ischeckequality;
+    el.mm_ischeckequality = this.hasJavaClass(el, "org\.mmbase\.datatypes\.CheckEqualityDataType");
+    return el.ischeckequality;
+}
 
 MMBaseValidator.prototype.isXml = function(el) {
     if (el.mm_isxml != null) return el.mm_isxml;
@@ -640,6 +645,9 @@ MMBaseValidator.prototype.valid = function(el) {
     if (this.isBinary(el)) {
         return true; // not yet supported
     }
+    if (this.isCheckEquality(el)) {
+        return true; // not yet supported
+    }
 
     if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
         if (value == "") {
@@ -674,7 +682,11 @@ MMBaseValidator.prototype.serverValidation = function(el) {
     try {
         if (this.isBinary(el)) {
 		    el.serverValidated = true;
-            return $("<result valid='true' />")[0];
+            return $("<result valid='true' class='implicit_binary' />")[0];
+        }
+        if (this.isCheckEquality(el)) { // Not yet supported
+		    el.serverValidated = true;
+            return $("<result valid='true' class='implicit_checkequality' />")[0];
         }
 
 
@@ -770,7 +782,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
 		        errorDiv.className = valid ? "mm_check_noerror" : "mm_check_error";
 		        if (errorDiv) {
                     $(errorDiv).empty();
-                    var errors = serverXml.documentElement.childNodes;
+                    var errors = serverXml.documentElement ? serverXml.documentElement.childNodes : [];
                     this.log("errors for " + element.id + " " +  serverXml + " " + errors.length);
 
 
