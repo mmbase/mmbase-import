@@ -16,16 +16,16 @@ import org.mmbase.util.logging.*;
  * Extends and wraps LocalizedString.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WrappedLocalizedString.java,v 1.3 2009-04-27 17:14:00 michiel Exp $
+ * @version $Id: WrappedLocalizedString.java,v 1.4 2009-04-28 06:31:22 michiel Exp $
  * @since MMBase-1.9
  */
 public class WrappedLocalizedString extends LocalizedString {
 
     private static final Logger log = Logging.getLoggerInstance(WrappedLocalizedString.class);
 
-
-    protected LocalizedString wrapped;
+    protected final LocalizedString wrapped;
     private Locale defaultLocale = null;
+
 
     /**
      * @param s The wrapped LocalizedString.
@@ -34,6 +34,7 @@ public class WrappedLocalizedString extends LocalizedString {
         if (s == null) s = new LocalizedString("NULL");
         wrapped = s;
     }
+
 
     public Locale setLocale(Locale loc) {
         Locale prev = defaultLocale;
@@ -80,6 +81,10 @@ public class WrappedLocalizedString extends LocalizedString {
     @Override
     protected Map<Locale, String>getValues() {
         return wrapped.getValues();
+    }
+    @Override
+    public boolean equals(Object o) {
+        return wrapped.equals(o);
     }
 
 
