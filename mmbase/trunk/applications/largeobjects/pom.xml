@@ -12,6 +12,7 @@
   <artifactId>mmbase-largeobjects</artifactId>
   <name>MMBase LargeObjects</name>
   <packaging>jar</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     Adds support for the database 'postgresql-relational-largeobjects'

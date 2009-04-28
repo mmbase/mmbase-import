@@ -12,6 +12,7 @@
   <artifactId>mmbase-taglib</artifactId>
   <name>MMBase Taglib</name>
   <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
   <properties>
     <projectName>taglib</projectName>

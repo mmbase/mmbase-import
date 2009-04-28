@@ -12,6 +12,7 @@
   <artifactId>mmbase-richtext</artifactId>
   <name>MMBase Richtext</name>
   <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     Richtext provides utilities to use rich content in MMBase, with embedded links etc.

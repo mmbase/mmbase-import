@@ -12,6 +12,7 @@
   <artifactId>mmbase-email</artifactId>
   <name>MMBase Email</name>
   <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
   <description>
     The email application provides builders and functions to enable MMBase to send (and receive)
