@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.servlet.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.3 2009-04-24 15:10:10 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.4 2009-04-28 16:07:57 michiel Exp $
  **/
 
 public class MultiPart {
@@ -115,6 +115,7 @@ public class MultiPart {
                     } else {
                         // This is an actual file-upload
                         parametersMap.put(fi.getFieldName(), new SerializableInputStream(fi));
+                        parametersMap.put("org.mmbase.datatypes.handlers.html.FILEITEM."  + fi.getFieldName(), fi);
                     }
                 }
             } catch (FileUploadException e) {
