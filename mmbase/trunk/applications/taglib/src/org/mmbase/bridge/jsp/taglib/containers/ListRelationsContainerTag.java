@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.containers;
 
-import java.util.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -18,14 +17,13 @@ import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.cache.CachePolicy;
-import org.mmbase.storage.search.*;
 
 
 /**
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.24 2008-12-30 16:19:54 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.25 2009-04-28 08:46:23 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
@@ -70,7 +68,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         return getNode();
     }
 
-
+    @Override
     public int doStartTag() throws JspException {
         initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
@@ -98,7 +96,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
         return EVAL_BODY;
     }
-
+    @Override
     public int doAfterBody() throws JspTagException {
         if(EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
@@ -111,6 +109,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         }
         return SKIP_BODY;
     }
+    @Override
     public int doEndTag() throws JspTagException {
         pageContext.setAttribute(KEY, prevQuery, SCOPE);
         prevQuery = null;
