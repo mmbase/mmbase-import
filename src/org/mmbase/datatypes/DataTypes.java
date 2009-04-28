@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.34 2009-04-27 15:50:43 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.35 2009-04-28 08:42:37 michiel Exp $
  */
 
 public class DataTypes {
@@ -129,7 +129,11 @@ public class DataTypes {
                     Document doc = db.parse(dataTypesSource);
                     Element dataTypesElement = doc.getDocumentElement(); // fieldtypedefinitons or datatypes element
                     List<DependencyException> f = DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector);
-                    log.service("Failed " + f);
+                    if (f.size() > 0) {
+                        log.service("Failed " + f);
+                    } else {
+                        log.debug("Failed " + f + " (nothing)");
+                    }
                     failed.addAll(f);
                 } else {
                     log.debug("Not reading, because not existing " + u);
