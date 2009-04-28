@@ -28,7 +28,8 @@ public class IPFilter implements Filter {
 
    private FilterConfig config;
    
-   private List allowedIPRanges;  
+   private List allowedIPList; 
+   private boolean IPFilterEnabled;
    
    private static Logger log;
 
@@ -40,16 +41,17 @@ public class IPFilter implements Filter {
     */
    public void init(FilterConfig filterConfig) throws ServletException {
       this.config = filterConfig;
-      this.allowedIPRanges = new ArrayList();
+      this.allowedIPList = new ArrayList();
+      this.IPFilterEnabled = NatMMConfig.isIPFilterEnabled();
       
-      String allowedIPRangesProperty = NatMMConfig.getAllowedIPRanges();
-      StringTokenizer token = new StringTokenizer(allowedIPRangesProperty, ",");
+      String allowedIPProperty = NatMMConfig.getAllowedIP();
+      StringTokenizer token = new StringTokenizer(allowedIPProperty, ",");
 
       while (token.hasMoreTokens()) {
-         allowedIPRanges.add(token.nextToken());
+         allowedIPList.add(token.nextToken());
       }      
 
-      log = Logging.getLoggerInstance(UrlInterceptor.class.getName());
+      log = Logging.getLoggerInstance(IPFilter.class.getName());
       log.debug("IPFilter initialized");
    }
 
@@ -64,44 +66,29 @@ public class IPFilter implements Filter {
     * @throws IOException thrown when an exception occurs
     */
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-      String ip = request.getRemoteAddr();
-
-      log.debug("Incoming ip, ip = " + ip);
       
-      HttpServletResponse httpResp = null;
-
-      if (response instanceof HttpServletResponse) {
-         httpResp = (HttpServletResponse) response;         
-      }
-
-      StringTokenizer toke = new StringTokenizer(ip, ".");
-      int dots = 0;
-      String byte1 = "";
-      String byte2 = "";
-      String client = "";
-
-      while (toke.hasMoreTokens()) {
-         ++dots;
-
-         // if we've reached the second dot, break and check out the index value
-         if (dots == 1)  {
-            byte1 = toke.nextToken();
-         } else {
-            byte2 = toke.nextToken();
-            break;
-         }
-      }
-      
-      // Piece together half of the client IP address so it can be compared
-      // with the forbidden range represented by IPFilter.IP_RANGE
-      client = byte1 + "." + byte2;
-
-      if (allowedIPRanges.contains(client)) {
-         log.debug("Ip " + ip + " allowed.");
+      // skip IPFiltering if disabled
+      if (!IPFilterEnabled) {
+         log.debug("Ip filtering disabled.");
          chain.doFilter(request, response);
-      } else {
-         log.debug("Ip " + ip + " not allowed.");
-         httpResp.sendError(HttpServletResponse.SC_FORBIDDEN, "That means goodbye forever!");
+         
+      } else {     
+         String ip = request.getRemoteAddr();
+         log.debug("Incoming ip, ip = " + ip);
+         
+         HttpServletResponse httpResp = null;
+         
+         if (response instanceof HttpServletResponse) {
+            httpResp = (HttpServletResponse) response;         
+         }
+   
+         if (allowedIPList.contains(ip)) {
+            log.debug("Ip " + ip + " allowed.");
+            chain.doFilter(request, response);
+         } else {
+            log.debug("Ip " + ip + " not allowed.");
+            httpResp.sendError(HttpServletResponse.SC_FORBIDDEN, "That means goodbye forever!");
+         }
       }
    }
 
