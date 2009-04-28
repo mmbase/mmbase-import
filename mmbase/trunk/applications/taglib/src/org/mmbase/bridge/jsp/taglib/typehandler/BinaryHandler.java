@@ -33,7 +33,7 @@ import javax.servlet.http.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.16 2009-04-24 19:58:44 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.17 2009-04-28 08:48:08 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
@@ -52,7 +52,7 @@ public class BinaryHandler extends AbstractTypeHandler {
     @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         StringBuilder show = new StringBuilder();
         if (node != null) {
-            Function gui = node.getFunction("gui");
+            Function<?> gui = node.getFunction("gui");
             Parameters args = gui.createParameters();
             args.set("field", field.getName());
             args.set(Parameter.LANGUAGE, tag.getLocale().getLanguage());

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.72 2009-04-07 09:09:04 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.73 2009-04-28 08:48:08 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -119,7 +119,7 @@ public class StringHandler extends AbstractTypeHandler {
                     buffer.append("\" />");
                 }
             } catch (ClassCastException cce) {
-                DataType<Object> dt = field.getDataType();
+                DataType<?> dt = field.getDataType();
                 log.error("Expected StringDataType for field " + field + " but found " + dt.getClass().getName() + ":"+ dt);
                 throw cce;
             }
@@ -143,12 +143,13 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
     @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+        @SuppressWarnings("deprecation")
         String guiType = field.getGUIType();
 
         if (guiType.indexOf('.') > 0) {
-            EnumHandler eh = new EnumHandler(tag, node, field);
-            if (eh.isAvailable()) {
-                return eh.useHtmlInput(node, field);
+            EnumHandler e = new EnumHandler(tag, node, field);
+            if (e.isAvailable()) {
+                return e.useHtmlInput(node, field);
             }
         }
         String fieldValue = (String) getFieldValue(node, field);
@@ -189,9 +190,9 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     @Override public String whereHtmlInput(Field field) throws JspTagException {
-        EnumHandler eh = getEnumHandler(null, field);
-        if (eh != null) {
-            return eh.whereHtmlInput(field);
+        EnumHandler e = getEnumHandler(null, field);
+        if (e != null) {
+            return e.whereHtmlInput(field);
         }
         String search =  findString(field);
         if (search == null) return null;
@@ -211,9 +212,9 @@ public class StringHandler extends AbstractTypeHandler {
 
 
     @Override public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
-        EnumHandler eh = getEnumHandler(null, field);
-        if (eh != null) {
-            return eh.whereHtmlInput(field, query);
+        EnumHandler e = getEnumHandler(null, field);
+        if (e != null) {
+            return e.whereHtmlInput(field, query);
         }
        Constraint cons =  super.whereHtmlInput(field, query);
 
