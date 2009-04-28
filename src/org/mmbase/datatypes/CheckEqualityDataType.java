@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Sander de Boer
- * @version  $Id: CheckEqualityDataType.java,v 1.2 2009-04-28 13:59:11 michiel Exp $
+ * @version  $Id: CheckEqualityDataType.java,v 1.3 2009-04-28 14:07:13 michiel Exp $
  * @since MMBase-1.8
  */
 public class CheckEqualityDataType extends StringDataType {
@@ -97,19 +97,26 @@ public class CheckEqualityDataType extends StringDataType {
 
         @Override
         protected boolean simpleValid(final Object v, final Node node, final Field field) {
-            if (node != null && field != null && v != null) {
+            if (node != null && field != null && v != null) { // if v == null, it was not changed.
                 if (! node.isChanged(getField())) return true;
 
-                Field checkField = node.getNodeManager().getField(getField());
-                Processor setProcessor = checkField.getDataType().getProcessor(PROCESS_SET);
-                Object processedValue = setProcessor.process(node, field, v);
-                String fieldValue = (String) node.getObjectValue(getField());
+                final String otherFieldName = getField();
+                final Field otherField = node.getNodeManager().getField(otherFieldName);
+                final Processor setProcessor = otherField.getDataType().getProcessor(PROCESS_SET);
+                final Object processedValue = setProcessor.process(node, field, v);
+                final String otherValue = (String) node.getObjectValue(otherFieldName);
+
                 if (log.isDebugEnabled()) {
-                    log.debug("Field checking " + (node.isNew() ? "new" : "existing") + " node. Field " + checkField + " set-processor " + setProcessor);
-                    log.debug("Offered value '" + v + "' --> '" + processedValue);
-                    log.debug("Comparing '" + fieldValue + "' with '" + processedValue + "'(" + v + ")");
+                    log.debug("Field '" + getName() + "' checking " + (node.isNew() ? "new" : "existing") + " node. Comparing with field " + otherField + " (using its set-processor " + setProcessor + ")");
+                    log.debug("Offered value '" + v + "' -processed-> '" + processedValue);
+                    log.debug("Comparing value of other field '" + otherValue + "' with supplied value '" + processedValue + "'(" + v + ")");
                 }
-                return fieldValue.equals(v) || fieldValue.equals(processedValue);
+
+                return
+                    otherValue.equals(processedValue)
+                    ||
+                    otherValue.equals(v) // if for some reason the client supplied the  processedValue, then find that ok too.
+                    ;
             } else {
                 return true;
             }
