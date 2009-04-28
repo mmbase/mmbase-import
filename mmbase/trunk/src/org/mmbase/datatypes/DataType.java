@@ -33,7 +33,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.73 2009-04-27 17:15:45 michiel Exp $
+ * @version $Id: DataType.java,v 1.74 2009-04-28 08:44:00 michiel Exp $
  * @param <C> Class this DataType
  */
 
@@ -226,6 +226,13 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * DataType#VALID})if the value is valid.
      */
     public Collection<LocalizedString> validate(C value, Node node, Field field);
+
+    /**
+     * Validates a value without knowing its type yet.
+     *
+     * @since MMBase-1.9.1
+     */
+    public Collection<LocalizedString> castAndValidate(Object value, Node node, Field field);
 
     /**
      * Returns whether this field is required (may not be <code>null</code>, or otherwise empty).

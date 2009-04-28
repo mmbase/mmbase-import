@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.108 2009-04-27 17:19:20 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.109 2009-04-28 08:44:00 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -564,6 +564,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         errors = uniqueRestriction.validate(errors, castValue, node, field);
         errors = validateCastValue(errors, castValue, value, node, field);
         return errors;
+    }
+
+    public final Collection<LocalizedString> castAndValidate(final Object value, final Node node, final Field field) {
+        return validate(cast(value, node, field), node, field);
     }
 
     public int getEnforceStrength() {
