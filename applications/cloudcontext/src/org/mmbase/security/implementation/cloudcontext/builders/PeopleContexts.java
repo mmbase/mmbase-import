@@ -21,13 +21,14 @@ import org.mmbase.core.CoreField;
  * to the mmbaseusers node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PeopleContexts.java,v 1.8 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: PeopleContexts.java,v 1.9 2009-04-28 08:35:09 michiel Exp $
  */
 public class PeopleContexts extends Contexts {
 
 
 
     protected String peopleBuilder = "people";
+    @Override
     public boolean init() {
         String s = getInitParameters().get("peoplebuilder");
         if (s != null) {
