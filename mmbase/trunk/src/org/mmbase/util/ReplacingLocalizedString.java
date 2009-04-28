@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReplacingLocalizedString.java,v 1.9 2009-04-27 17:47:24 michiel Exp $
+ * @version $Id: ReplacingLocalizedString.java,v 1.10 2009-04-28 06:31:22 michiel Exp $
  * @since MMBase-1.8
  */
 public class ReplacingLocalizedString extends WrappedLocalizedString {
@@ -31,12 +31,14 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
 
     private List<Map.Entry<String, String>> replacements = new ArrayList<Map.Entry<String, String>>();
 
+
     /**
      * @param s The wrapped LocalizedString.
      */
     public ReplacingLocalizedString(LocalizedString s) {
         super(s);
     }
+
 
     public void replaceAll(String regexp, String replacement) {
         replacements.add(new Entry<String, String>(regexp, replacement));
@@ -54,7 +56,7 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
         return output;
     }
 
-    // javadoc inherited
+    @Override
     public String get(Locale locale) {
         return replace(super.get(locale));
     }
@@ -64,6 +66,7 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
      *
      * Also takes into account the replacements in the values (but only 'lazily', when actually requested).
      */
+    @Override
     public Map<Locale, String> asMap() {
         final Map<Locale, String> map = super.asMap();
         return new AbstractMap<Locale, String>() {
@@ -104,6 +107,7 @@ public class ReplacingLocalizedString extends WrappedLocalizedString {
 
 
     @SuppressWarnings("unchecked")
+    @Override
     public ReplacingLocalizedString clone() {
         ReplacingLocalizedString clone = (ReplacingLocalizedString) super.clone();
         clone.replacements = (List)((ArrayList)replacements).clone();
