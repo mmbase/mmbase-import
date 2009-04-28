@@ -13,7 +13,7 @@ maven -Dmaven.test.skip=true jar:install
 If e.g. mmbase.org is unreachable, add 'maven.offline=true' to maven-base/build.properties.
 Sadly it is impossible to find out how to configure a timeout setting for that.
 
-The equivalent for 'ant clean' is 'maven all:clean' to clean all applications, and 'maven clean' to 
+The equivalent for 'ant clean' is 'maven all:clean' to clean all applications, and 'maven clean' to
 only clean the present one.
 
 
@@ -21,28 +21,31 @@ only clean the present one.
 HOWTO MAVEN2
 --------------------------------------------------------------------------------
 
-How to compile everything:
 
-1. Clean, build and install the mmbase.jar in the local repository:
+- Clean, build and install the mmbase.jar in the local repository:
 
    mvn clean install
 
    [compare with: ant clean; ant jar]
 
-2. Build and install all mmbase 'applications' in the local repository
+- Build and install all mmbase 'applications' in the local repository
 
    (cd applications; mvn clean install)
 
    [compare with: (cd application; ant clean; ant jars]
 
-3. Build a simple war from the justly created artifacts.
+-  Build a simple war from the justly created artifacts.
 
    (cd example-webapp; mvn clean install)
 
    [compare with: ant bindist]
 
-   This is 'the' distro. A simple and clean war. It's pom can serve as an example to create your 
+   This is 'the' distro. A simple and clean war. It's pom can serve as an example to create your
    own webapp.
+
+
+- How to build everything
+  (cd maven ; mvn clean install)
 
 
 But normally you can just type 'mvn' in the directory of interest. It will use artifacts of
@@ -52,7 +55,7 @@ mmbase.org/snapshots if you didn't build them.
 
 - If you have access to mmbase.org, you can also do
 
-  mvn clean source:jar deploy ; (cd applications; mvn clean source:jar deploy) ; (cd example-webapp; mvn clean deploy)
+  (cd maven ;  mvn -Pdeploy clean deploy)
 
   which will clean and deploy pretty much everything for a release, including source-jars.
 
