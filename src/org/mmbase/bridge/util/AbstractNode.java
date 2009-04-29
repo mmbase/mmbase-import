@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.30 2009-04-24 15:12:47 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.31 2009-04-29 07:36:08 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -97,9 +97,6 @@ public abstract class AbstractNode implements Node {
                 setSize(fieldName, si.getSize());
                 log.info("Setting size to " + si.getSize());
             }
-
-            log.info("Size " + getSize(fieldName));
-            log.info("Found " + value);
 
             if (value == null && dt instanceof org.mmbase.datatypes.NumberDataType) {
                 // null would otherwise be converted to -1, which makes little sense.
