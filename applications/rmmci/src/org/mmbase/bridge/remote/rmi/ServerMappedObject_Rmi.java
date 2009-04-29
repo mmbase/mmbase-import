@@ -18,6 +18,9 @@ import org.mmbase.bridge.remote.util.ObjectWrapper;
 import org.mmbase.bridge.remote.util.StubToLocalMapper;
 
 
+/**
+ * @javadoc
+ */
 public abstract class ServerMappedObject_Rmi<O> extends UnicastRemoteObject implements ServerMappedObject, Unreferenced {
 
     //original object
@@ -39,14 +42,14 @@ public abstract class ServerMappedObject_Rmi<O> extends UnicastRemoteObject impl
     protected O getOriginalObject() {
         return originalObject;
     }
-    
+
     //clean up StubToLocalMapper when the class is unreferenced
     public void unreferenced() {
        if (StubToLocalMapper.remove(mapperCode)){
           mapperCode = null;
        }
     }
-    
+
 
     public java.lang.String wrapped_toString() {
         java.lang.String retval = getOriginalObject().toString();
