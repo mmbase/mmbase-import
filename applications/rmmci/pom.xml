@@ -24,14 +24,13 @@
           <dependency>
             <groupId>org.mmbase</groupId>
             <artifactId>mmbase</artifactId>
-            <version>${project.version}</version>
-            <!-- <classifier>classes</classifier> -->
+            <version>${mmbase.version}</version>
           </dependency>
-        <dependency>
-          <groupId>javax.servlet</groupId>
-          <artifactId>servlet-api</artifactId>
-          <version>${servlet.version}</version>
-        </dependency>
+          <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${servlet.version}</version>
+          </dependency>
         </dependencies>
         <configuration>
           <includes>
@@ -95,4 +94,6 @@
 
     </plugins>
   </build>
+
+
 </project>
