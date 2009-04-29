@@ -144,8 +144,11 @@
       </gui>
       <editor><positions><list>8</list></positions></editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <enumeration>
-          <entry basename="org.mmbase.applications.media.builders.resources.states" />
+        <default value="UNDEFINED" />
+        <enumeration enforce="onchange">
+          <entry
+              javaconstants="org.mmbase.applications.media.State"
+              basename="org.mmbase.applications.media.builders.resources.states" />
         </enumeration>
       </datatype>
     </field>
