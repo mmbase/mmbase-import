@@ -25,10 +25,8 @@
 
     <module>..</module>
     <module>../applications</module>
-    <!--
     <module>../base-webapp</module>
     <module>../example-webapp</module>
-    -->
   </modules>
 
   <build>
