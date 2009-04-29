@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * (configuration files, classes, resourcebundles).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Resources.java,v 1.1 2006-11-24 09:37:25 pierre Exp $
+ * @version $Id: Resources.java,v 1.2 2009-04-29 07:17:28 michiel Exp $
  * @since   MMBase-1.8
  */
 public class Resources extends Attachments {
@@ -29,6 +29,7 @@ public class Resources extends Attachments {
      * Registers this builder in the ResourceLoader.
      * {@inheritDoc}
      */
+    @Override
     public boolean init() {
         boolean res = super.init();
         if (res) {
@@ -62,6 +63,7 @@ public class Resources extends Attachments {
      * Implements virtual filename field.
      * {@inheritDoc}
      */
+    @Override
     public Object getValue(MMObjectNode node, String field) {
         if (field.equals(ResourceLoader.FILENAME_FIELD)) {
             String s = node.getStringValue(ResourceLoader.RESOURCENAME_FIELD);
