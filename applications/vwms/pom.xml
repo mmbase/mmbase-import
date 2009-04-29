@@ -18,4 +18,14 @@
     VWMS ('virtual webmasters') are  legacy. Don't use it.
   </description>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-email</artifactId>
+      <version>${mmbase.version}</version>
+      <classifier>classes</classifier>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
 </project>
