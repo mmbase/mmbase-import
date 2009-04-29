@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.38 2009-04-28 06:31:22 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.39 2009-04-29 07:39:08 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, PublicCloneable<LocalizedString> {
@@ -231,10 +231,14 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
      *
      * For LocalizedString this returns the String for the default Locale (see {@link #getDefault}).
      */
+    @Override
     public String toString() {
         return get((Locale) null);
     }
 
+    public String getDebugString() {
+        return "k: " + getKey() + " values: " + getValues() + " b:" + getBundle();
+    }
 
     /**
      * This utility takes care of reading the xml:lang attribute from an element
@@ -426,7 +430,7 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
         }
     }
 
-    @Overrde
+    @Override
     public boolean equals(Object o) {
         if (o instanceof LocalizedString) {
             LocalizedString os = (LocalizedString) o;

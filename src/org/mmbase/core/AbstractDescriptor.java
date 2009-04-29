@@ -20,7 +20,7 @@ import org.mmbase.util.LocalizedString;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.13 2008-08-27 17:09:39 michiel Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.14 2009-04-29 07:39:07 michiel Exp $
  */
 
 abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<AbstractDescriptor> {
@@ -161,8 +161,8 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
             clone.guiName = guiName.clone();
             if (name != null) {
                 clone.key = name;
-            clone.description.setKey(name);
-            clone.guiName.setKey(name);
+                clone.description.setKey(name);
+                clone.guiName.setKey(name);
             }
             return clone;
         } catch (CloneNotSupportedException cnse) {

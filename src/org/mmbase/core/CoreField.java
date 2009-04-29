@@ -296,7 +296,7 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
 
     /**
      * Finishes this encapsulated DataType with current field.
-     * @throw IllegalStateException If the datatype is already finished
+     * @throws IllegalStateException If the datatype is already finished
      */
     public void finish() {
         if (dataType.isFinished()) throw new IllegalStateException("The datatype " + dataType + " is already finished");

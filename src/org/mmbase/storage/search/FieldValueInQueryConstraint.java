@@ -18,7 +18,7 @@ import java.util.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldValueInQueryConstraint.java,v 1.1 2008-11-25 12:52:18 michiel Exp $
+ * @version $Id: FieldValueInQueryConstraint.java,v 1.2 2009-04-29 07:39:07 michiel Exp $
  * @since MMBase-1.9.1
  */
 public interface FieldValueInQueryConstraint extends FieldConstraint {
@@ -39,7 +39,7 @@ public interface FieldValueInQueryConstraint extends FieldConstraint {
      * <li><em>&lt;casesensitive&gt;</em> is the value returned by
      *     {@link FieldConstraint#isCaseSensitive isCaseSensitive()}
      * <li><em>&lt;values&gt;</em> is the values returned by
-     *     {@link #getValues getValues()}
+     *     {@link #getInQuery toString()}
      * </ul>
      *
      * @return A string representation of this FieldValueInConstraint.
