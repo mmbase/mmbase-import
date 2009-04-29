@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.71 2007-11-28 17:10:04 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.72 2009-04-29 07:39:07 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -553,7 +553,6 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * Increase the reference count of the servlet (for debugging)
      * and send running servlets to log once every 32 requests
      * @param req The HttpServletRequest.
-     * @scope private
      * @bad-constant  31 should be configurable.
      */
 

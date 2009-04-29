@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Test-cases?
  *
  * @author Andr\U00e9 vanToly &lt;andre@toly.nl&gt;
- * @version $Id: CSVReader.java,v 1.4 2009-01-13 10:20:26 michiel Exp $
+ * @version $Id: CSVReader.java,v 1.5 2009-04-29 07:39:08 michiel Exp $
  */
 public class CSVReader {
 
@@ -110,8 +110,8 @@ public class CSVReader {
 
     /**
      * Returns the element at the given row and column.
-     * @param row the element row
-     * @param col the element column
+     * @param r the element row
+     * @param c the element column
      * @return the element as a String.
      */
     public String getElement(int r, int c) {

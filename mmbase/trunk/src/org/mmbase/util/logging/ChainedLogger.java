@@ -15,11 +15,11 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * Straight forward implemented which simply delegated every log-statement to a list of other other loggers.
+ * Straight forward implemented which simply delegates every log-statement to a list of other other loggers.
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.9.1
- * @version $Id: ChainedLogger.java,v 1.2 2009-04-27 12:03:59 michiel Exp $
+ * @version $Id: ChainedLogger.java,v 1.3 2009-04-29 07:39:08 michiel Exp $
  */
 public class ChainedLogger implements Logger {
 

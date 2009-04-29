@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: DecimalDataType.java,v 1.6 2009-03-04 17:45:21 michiel Exp $
+ * @version $Id: DecimalDataType.java,v 1.7 2009-04-29 07:39:07 michiel Exp $
  * @since MMBase-1.9.1
  */
 public class DecimalDataType extends NumberDataType<BigDecimal> implements LengthDataType<BigDecimal> {
@@ -50,9 +50,7 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
 
     private RoundingMode roundingMode = RoundingMode.UNNECESSARY;
 
-    /**
-     * @param primitive indicate if a primitive type should be used
-     */
+
     public DecimalDataType(String name) {
         super(name, BigDecimal.class);
         setMin(null, false);

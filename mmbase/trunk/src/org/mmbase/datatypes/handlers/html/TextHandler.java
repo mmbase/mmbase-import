@@ -18,15 +18,13 @@ import org.mmbase.util.Casting;
  * The most basic HtmlHandler simply produces an input tag with the type 'text'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TextHandler.java,v 1.3 2009-04-17 17:38:13 michiel Exp $
+ * @version $Id: TextHandler.java,v 1.4 2009-04-29 07:39:07 michiel Exp $
  * @since MMBase-1.9.1
  */
 
 public class TextHandler extends HtmlHandler  {
 
-    /**
-     * @see TypeHandler#htmlInput(Node, Field, boolean)
-     */
+
     @Override
     public String input(Request request, Node node, Field field, boolean search)  {
         StringBuilder show =  new StringBuilder("<input type=\"text\" class=\"small ");
