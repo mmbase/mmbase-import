@@ -153,39 +153,32 @@ See http://www.MMBase.org/license
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>${jsp.groupId}</groupId>
       <artifactId>jsp-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-      <scope>compile</scope>
     </dependency>
-    <!-- the dependency on standard taglibs can be dropped when going to jstl 1.2 -->
     <dependency>
       <groupId>taglibs</groupId>
       <artifactId>standard</artifactId>
-      <scope>compile</scope>
     </dependency>
+
     <!--
     <dependency>
       <groupId>javax.portlet</groupId>
