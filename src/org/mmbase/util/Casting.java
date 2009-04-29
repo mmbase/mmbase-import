@@ -10,15 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util;
 
-/**
- * Collects MMBase specific 'cast' information, as static to... functions. This is used (and used to
- * be implemented) in MMObjectNode. But this functionality is more generic to MMbase.
- *
- * @author Michiel Meeuwissen
- * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.132 2009-04-25 06:50:53 michiel Exp $
- */
-
 import java.util.*;
 import java.text.*;
 import java.io.*;
@@ -38,6 +29,17 @@ import org.mmbase.util.xml.XMLWriter;
 import org.w3c.dom.*;
 
 import org.apache.commons.fileupload.FileItem;
+
+
+/**
+ * Collects MMBase specific 'cast' information, as static to... functions. This is used (and used to
+ * be implemented) in MMObjectNode. But this functionality is more generic to MMbase.
+ *
+ * @author Michiel Meeuwissen
+ * @since  MMBase-1.6
+ * @version $Id: Casting.java,v 1.133 2009-04-29 09:58:07 michiel Exp $
+ */
+
 
 public class Casting {
 
