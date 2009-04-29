@@ -27,14 +27,14 @@ import java.text.MessageFormat;
  * (using the minSize/maxSize properties).
  *
  * @author Pierre van Rooden
- * @version $Id: TypeMapping.java,v 1.12 2008-12-01 17:27:16 michiel Exp $
+ * @version $Id: TypeMapping.java,v 1.13 2009-04-29 07:39:07 michiel Exp $
  * @since MMBase-1.7
  */
 public class TypeMapping implements Comparable<TypeMapping> {
 
     /**
      * The expression this type should translate to.
-     * You can access this property directly, but you can use {@link #getType(long)} to obtain an expanded expression.
+     * You can access this property directly, but you can use {@link #getType(Object...)} to obtain an expanded expression.
      */
     public String type;
     /**
@@ -120,7 +120,8 @@ public class TypeMapping implements Comparable<TypeMapping> {
 
     /**
      * Returns the mappings type.
-     * @param size Size  of type
+     * @param messageFormatArguments Argument to use as arugment for the used {@link
+     * MessageFormat#format(String, Object...)}.
      * @return mappings type
      */
     public String getType(Object... messageFormatArguments) {

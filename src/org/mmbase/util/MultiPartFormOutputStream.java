@@ -8,7 +8,7 @@ import java.net.*;
  * "multipart/form-data" to a <code>java.net.URLConnection</code> for
  * POSTing.  This is primarily for file uploading to HTTP servers.
 
- * Taken from  {@link http://forums.sun.com/thread.jspa?threadID=451245&forumID=31}
+ * Taken from <a href="http://forums.sun.com/thread.jspa?threadID=451245forumID=31">http://forums.sun.com/thread.jspa?threadID=451245&forumID=31</a>
 
  * @since MMBase-1.9.1
  */

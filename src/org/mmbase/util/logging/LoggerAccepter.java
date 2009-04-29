@@ -14,14 +14,14 @@ import java.io.*;
 import java.util.*;
 
 /**
- * A LoggerAccepter is a class with a public 'addLogger' method. The class can log things to that
- * which may be of interest to the caller of that method.
+ * A LoggerAccepter is a class with a public 'addLogger' method. The class can log things to the as
+ * such provided {@link Logger}'s which may be of interest to the caller of that method.
 
- * It may well be implemented using {@ling ChainedLogger}.
+ * It may well be implemented using {@link ChainedLogger}.
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.9.1
- * @version $Id: LoggerAccepter.java,v 1.2 2009-04-27 12:03:59 michiel Exp $
+ * @version $Id: LoggerAccepter.java,v 1.3 2009-04-29 07:39:08 michiel Exp $
  */
 public interface LoggerAccepter {
 

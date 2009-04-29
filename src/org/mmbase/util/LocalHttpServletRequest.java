@@ -16,11 +16,11 @@ import java.io.*;
 
 
 /**
- * This class (and ({@link LocalHttpServletResponse}, and super classes)) can be use to do requests on
- * the current MMBase without having an actual client, which can be usefull in cronjobs or so.
+ * This class (and {@link LocalHttpServletResponse}, and super classes) can be used to do requests on
+ * the current MMBase without having an actual client, which can be useful in cronjobs or so.
  *
  * This is possible because the {@link javax.servlet.ServetContext} is known via {@link
- * org.mmbase.module.core.MMBaseContext#getServletContext}.
+ * org.mmbase.module.core.MMBaseContext#getServletContext()}.
  * For example
  <pre>
      ServletContext sx = MMBaseContext.getServletContext();
@@ -34,7 +34,7 @@ import java.io.*;
  </pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalHttpServletRequest.java,v 1.2 2009-01-27 18:16:55 michiel Exp $
+ * @version $Id: LocalHttpServletRequest.java,v 1.3 2009-04-29 07:39:08 michiel Exp $
  * @since MMBase-1.9.1
  */
 public class LocalHttpServletRequest extends LocalServletRequest implements HttpServletRequest {
@@ -47,7 +47,7 @@ public class LocalHttpServletRequest extends LocalServletRequest implements Http
     private final String path;
 
     /**
-     * @param s The servlet context. Try {@link MMBaseContext.getServletContext()}
+     * @param s The servlet context. Try {@link org.mmbase.module.core.MMBaseContext#getServletContext()}
      * @param r The body of the request. Normally an empty string
      * @param path The ServletPath the do the request on
      */

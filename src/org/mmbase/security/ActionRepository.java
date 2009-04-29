@@ -13,12 +13,12 @@ import java.util.*;
 /**
  * The defined 'actions' are maintained by the 'action' repository. The security implementation can
  * decide how to persist actions and how to connect rights to it. Every action is identified by two
- * string; a <em>namespace</em> (which may be <code>null</code>and its name. Namespaces are likely to correspond with {@link
+ * strings: a <em>namespace</em> (which may be <code>null</code>) and it's name. Namespaces are likely to correspond with {@link
  * org.mmbase.framework.Component}s.
  *
  * @see Action
  * @author Michiel Meeuwissen
- * @version $Id: ActionRepository.java,v 1.10 2008-10-01 16:57:21 michiel Exp $
+ * @version $Id: ActionRepository.java,v 1.11 2009-04-29 07:39:07 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class ActionRepository extends Configurable {

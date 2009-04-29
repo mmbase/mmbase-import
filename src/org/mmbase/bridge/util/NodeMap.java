@@ -15,13 +15,13 @@ import java.util.*;
 import org.mmbase.bridge.*;
 
 /**
- * A {@link java.util.Map} representing a Node. This class can be used if you need a bridge {@org.mmbase.bridge.Node} object to look like a
+ * A {@link java.util.Map} representing a Node. This class can be used if you need a bridge {@link org.mmbase.bridge.Node} object to look like a
  * {@link java.util.Map} (where the keys are the fields). Don't confuse this with {@link MapNode}.
  *
  * This object is also still a Node object.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeMap.java,v 1.5 2008-09-04 06:54:27 michiel Exp $
+ * @version $Id: NodeMap.java,v 1.6 2009-04-29 07:39:07 michiel Exp $
  * @since   MMBase-1.8
  */
 

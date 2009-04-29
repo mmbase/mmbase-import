@@ -17,12 +17,12 @@ import org.mmbase.util.logging.*;
  * A Filtering Reader based on CharTransformers.
 <pre>
 
-  _________   ____  
- /          \/    \  
+  _________   ____
+ /          \/    \
  | R --> PW - this |
  |    T     |  PR  |
  \_________/ \____/
-  
+
 
   PW: piped writer, this PR: this reader, T: transformer
 
@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * This reader can be instantiated with another Reader and a CharTransformer. All reading from this
  * reader will be transformed output from reading on the given Reader.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @since MMBase-1.8
  * @see   ChainedCharTransformer
  * @see   TransformingWriter
@@ -47,7 +47,7 @@ public class TransformingReader extends PipedReader {
         super();
         this.in = in;
         PipedWriter w = new PipedWriter();
-        try {            
+        try {
             connect(w);
         } catch (IOException ioe) {
             log.error(ioe.getMessage(), ioe);
@@ -57,13 +57,14 @@ public class TransformingReader extends PipedReader {
         // this works:
         //Thread t = new Thread(link);
         //t.start();
-        
+
         // this too, but main does not finish immediately. I suppose that is ok though:
         // Costed me some time to realise this....
-        org.mmbase.util.ThreadPools.filterExecutor.execute(link);          
+        org.mmbase.util.ThreadPools.filterExecutor.execute(link);
 
     }
-    
+
+    @Override
     public synchronized int read() throws IOException {
         int result =  super.read();
         if (result == -1) { // nothing to read any more, wait until transformation is ready.
@@ -73,6 +74,7 @@ public class TransformingReader extends PipedReader {
         return result;
     }
 
+    @Override
     public synchronized int read(char cbuf[], int off, int len)  throws IOException {
         int result = super.read(cbuf, off, len);
         if (result == -1) {
@@ -87,7 +89,7 @@ public class TransformingReader extends PipedReader {
      */
     protected void waitReady() {
         try {
-            while (! link.ready()) {                
+            while (! link.ready()) {
                 synchronized(link) { // make sure we have the lock
                     link.wait();
                 }
@@ -101,14 +103,15 @@ public class TransformingReader extends PipedReader {
 
     /**
      * {@inheritDoc}
-     * ALso closes the wrapped Reader.
-     */   
-    public void close() throws IOException {   
+     * Also closes the wrapped Reader.
+     */
+    @Override
+    public void close() throws IOException {
         super.close();
         in.close();
     }
-   
-   
+
+
     // main for testing purposes
     public static void main(String[] args) {
 
@@ -117,7 +120,7 @@ public class TransformingReader extends PipedReader {
         if (args.length > 0) {
             testString = args[0];
         }
- 
+
 
         BufferedReader reader = new BufferedReader(new TransformingReader(new StringReader(testString), new UnicodeEscaper()));
 
@@ -131,7 +134,7 @@ public class TransformingReader extends PipedReader {
             log.error(e + Logging.stackTrace(e));
         }
 
-        
+
         ChainedCharTransformer t = new ChainedCharTransformer();
         t.add(new UnicodeEscaper());
         t.add(new UpperCaser());
@@ -140,7 +143,7 @@ public class TransformingReader extends PipedReader {
         */
         {
             BufferedReader reader = new BufferedReader(new TransformingReader(new InputStreamReader(System.in), new UpperCaser()));
-            
+
             try {
                 while(true) {
                     String line = reader.readLine();

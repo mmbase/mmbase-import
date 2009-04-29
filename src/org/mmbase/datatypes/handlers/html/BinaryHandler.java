@@ -22,7 +22,7 @@ import org.mmbase.util.*;
  * 'input' tag with type 'file'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BinaryHandler.java,v 1.5 2009-04-24 15:10:10 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.6 2009-04-29 07:39:07 michiel Exp $
  * @since MMBase-1.9.1
  */
 
@@ -32,7 +32,7 @@ public class BinaryHandler extends HtmlHandler {
 
     /**
      * IF this is set it true the value is not set with {@link Node#setValue} but with {@link
-     * Node#setInputStreamValue}.  The effect of this is that the method {@link DataType#cast} is
+     * Node#setInputStreamValue}.  The effect of this is that the method {@link org.mmbase.datatypes.DataType#cast} is
      * avoided. This may be useful if the set-processor expects an InputStream, and not a
      * byte-array (or another type if this Handler is used on a non-binary field).
      */
