@@ -23,25 +23,24 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
-      <version>${project.version}</version>
+      <version>${mmbase.version}</version>
       <scope>provided</scope>
     </dependency>
-
-
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
-      <version>${project.version}</version>
+      <version>${mmbase.version}</version>
       <classifier>javadoc</classifier>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
-      <version>${project.version}</version>
+      <version>${mmbase.version}</version>
       <classifier>sources</classifier>
       <scope>provided</scope>
     </dependency>
+
   </dependencies>
 
   <build>
@@ -143,4 +142,6 @@
     <module>scan</module>
 
   </modules>
+
+
 </project>
