@@ -21,6 +21,20 @@
 		}
 	}
 
+   function selectRelatedpage(relatedPage, relatedPagepath, positions) {
+      document.forms['<portlet:namespace />form'].relatedPage.value = relatedPage;
+      document.forms['<portlet:namespace />form'].relatedPagepath.value = relatedPagepath;
+      
+      var selectWindow = document.forms['<portlet:namespace />form'].relatedWindow;
+      for (var i = selectWindow.options.length -1 ; i >=0 ; i--) {
+         selectWindow.options[i] = null;
+      }
+      for (var i = 0 ; i < positions.length ; i++) {
+         var position = positions[i];
+         selectWindow.options[selectWindow.options.length] = new Option(position, position);
+      }
+   }
+
 	function erase(field) {
 		document.forms['<portlet:namespace />form'][field].value = '';
 	}
