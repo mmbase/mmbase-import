@@ -15,7 +15,9 @@ import java.util.ListIterator;
 import org.mmbase.bridge.remote.RemoteIterator;
 import org.mmbase.bridge.remote.util.ObjectWrapper;
 
-
+/**
+ * @javadoc Why is this implemented?
+ */
 public class RemoteIterator_Rmi<R, L> extends ServerMappedObject_Rmi<ListIterator<L>> implements RemoteIterator<R> {
 
     public RemoteIterator_Rmi(ListIterator<L> originalObject) throws RemoteException {

@@ -15,6 +15,9 @@ import java.util.List;
 import org.mmbase.bridge.remote.RemoteList;
 import org.mmbase.bridge.remote.util.ObjectWrapper;
 
+/**
+ * @javadoc Why is this implemented?
+ */
 public class RemoteList_Rmi<R, L> extends ServerMappedObject_Rmi<List<L>> implements RemoteList<R> {
 
     public RemoteList_Rmi(List<L> originalObject) throws RemoteException {
