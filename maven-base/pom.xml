@@ -552,7 +552,6 @@ See http://www.MMBase.org/license
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
         <version>${servlet.version}</version>
-        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -566,27 +565,23 @@ See http://www.MMBase.org/license
         <groupId>${jsp.groupId}</groupId>
         <artifactId>jsp-api</artifactId>
         <version>${jsp.version}</version>
-        <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>jstl</artifactId>
         <version>${jstl.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>taglibs</groupId>
         <artifactId>standard</artifactId>
         <version>${taglib-standard.version}</version>
-        <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>${log4j.version}</version>
-        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -622,7 +617,6 @@ See http://www.MMBase.org/license
             <artifactId>servlet-api</artifactId>
           </exclusion>
         </exclusions>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>commons-lang</groupId>
@@ -633,7 +627,6 @@ See http://www.MMBase.org/license
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
         <version>1.1</version>
-        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -645,19 +638,6 @@ See http://www.MMBase.org/license
     </dependencies>
   </dependencyManagement>
 
-  <dependencies>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${jsp.groupId}</groupId>
-      <artifactId>jsp-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-  </dependencies>
 
   <distributionManagement>
     <repository>
@@ -867,6 +847,23 @@ See http://www.MMBase.org/license
           <url>${my.repository.url}</url>
         </repository>
       </distributionManagement>
+    </profile>
+
+    <profile>
+      <id>servlet25</id>
+      <properties>
+        <servlet.version>2.5</servlet.version>
+        <jsp.version>2.1</jsp.version>
+        <jsp.groupId>javax.servlet.jsp</jsp.groupId>
+        <jstl.version>1.2</jstl.version>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>taglibs</groupId>
+          <artifactId>standard</artifactId>
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
     </profile>
   </profiles>
 
