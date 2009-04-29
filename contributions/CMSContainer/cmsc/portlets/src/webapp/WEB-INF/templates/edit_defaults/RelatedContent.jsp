@@ -11,16 +11,8 @@
 			<%-- View selector --%>
 			<c:import url="sections/viewselector.jsp" />
 			
-			<tr>
-				<td colspan="2"><fmt:message key="edit_defaults.window" />:</td>
-				<td>
-					<cmsc:select var="window">
-						<c:forEach var="position" items="${pagepositions}">
-							<cmsc:option value="${position}" />
-						</c:forEach>
-					</cmsc:select>
-				</td>
-			</tr>
+			<%-- Relate to portlet options --%>
+			<c:import url="sections/relatetoportlet.jsp" />
 		
 			<%-- Save button --%>
 			<c:import url="sections/savebutton.jsp" />

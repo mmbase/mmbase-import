@@ -12,9 +12,6 @@ import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.pluto.core.impl.PortletRequestImpl;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.beans.om.Page;
@@ -28,14 +25,13 @@ import com.finalist.portlets.tagcloud.util.TagCloudUtil;
 
 public class TagRelatedPortlet extends RelatedContentPortlet {
 
-	protected static final String RELATED_WINDOW = "relatedWindow";
-
 	@Override
 	protected void doView(RenderRequest req, RenderResponse res)
 			throws PortletException, IOException {
 
-		String window = req.getPreferences().getValue(RELATED_WINDOW, null);
-		String elementId = getRelatedElementId(req, window);
+		String relatedPage = req.getPreferences().getValue(RELATED_PAGE, null);
+		String relatedWindow = req.getPreferences().getValue(RELATED_WINDOW, null);
+		String elementId = getRelatedElementId(req, relatedPage, relatedWindow);
 
 		if (elementId != null) {
 			req.setAttribute("elementId", elementId);
@@ -44,7 +40,7 @@ public class TagRelatedPortlet extends RelatedContentPortlet {
 				req.setAttribute("tags", tags);
 			}
 		} else {
-			String channelId = getIdFromScreen(req, window, "contentchannel");
+			String channelId = getIdFromScreen(req, relatedPage, relatedWindow, "contentchannel");
 			if (channelId != null) {
 				req.setAttribute("channelId", channelId);
 				if(req.getAttribute("loadTags") == null || req.getAttribute("loadTags").equals("true")) {
@@ -52,10 +48,7 @@ public class TagRelatedPortlet extends RelatedContentPortlet {
 					req.setAttribute("tags", tags);
 				}
 			} else {
-				String tag = getIdFromScreen(req, window, "tag");
-				if (tag == null) {
-					tag = getTagFromRequestParameters(req, window);
-				}
+				String tag = getIdFromScreen(req, relatedPage, relatedWindow, "tag");
 				if(tag != null) {
 					tag = tag.replaceAll("0x8", " ");
 					req.setAttribute("tag", tag);
@@ -70,33 +63,12 @@ public class TagRelatedPortlet extends RelatedContentPortlet {
 		super.doView(req, res);
 	}
 
-	private HttpServletRequest getServletRequest(RenderRequest req) {
-		return (HttpServletRequest) ((PortletRequestImpl) req).getRequest();
-	}
-
-	private String getTagFromRequestParameters(RenderRequest req, String window) {
-		String requestURL = getServletRequest(req).getRequestURL().toString();
-		String paramName = "/_rp_" + window + "_tag/1_";
-		int startIndex = requestURL.indexOf(paramName);
-		if (startIndex != -1) {
-			String elementId = requestURL.substring(startIndex
-					+ paramName.length());
-			int endIndex = elementId.indexOf("/");
-			if (endIndex != -1) {
-				elementId = elementId.substring(0, endIndex);
-			}
-			return elementId;
-		}
-
-		return null;
-	}
-
-	private String getIdFromScreen(RenderRequest req, String window, String var) {
-		Integer pageId = getCurrentPageId(req);
+	private String getIdFromScreen(RenderRequest req, String relatedPage, String relatedWindow, String var) {
+		Integer pageId = Integer.valueOf(relatedPage);
 		NavigationItem item = SiteManagement.getNavigationItem(pageId);
 		if (item instanceof Page) {
 			Page page = (Page) item;
-			int portletId = page.getPortlet(window);
+			int portletId = page.getPortlet(relatedWindow);
 			Portlet portlet = SiteManagement.getPortlet(portletId);
 			if (portlet != null) {
 				return portlet.getParameterValue(var);
@@ -108,7 +80,8 @@ public class TagRelatedPortlet extends RelatedContentPortlet {
 	@Override
 	protected void doEditDefaults(RenderRequest req, RenderResponse res)
 			throws IOException, PortletException {
-		Integer pageid = getCurrentPageId(req);
+		String relatedPage = req.getPreferences().getValue(RELATED_PAGE, null);
+		Integer pageid = Integer.valueOf(relatedPage);
 		String pagepath = SiteManagement.getPath(pageid, true);
 
 		if (pagepath != null) {
@@ -148,9 +121,4 @@ public class TagRelatedPortlet extends RelatedContentPortlet {
 		super.processEditDefaults(request, response);
 	}
 
-	private Integer getCurrentPageId(RenderRequest req) {
-		String pageId = (String) req
-				.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
-		return Integer.valueOf(pageId);
-	}
 }

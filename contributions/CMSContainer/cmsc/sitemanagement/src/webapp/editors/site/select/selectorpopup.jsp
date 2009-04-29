@@ -5,6 +5,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <c:set var="treeUrl"><mm:url page="SelectorPage.do"/></c:set>
+<c:if test="${param.related eq true}">
+   <c:set var="treeUrl"><mm:url page="SelectorRelatedpage.do"/></c:set>
+</c:if>
 <c:if test="${not empty param.type}">
    <c:set var="treeUrl"><mm:url page="${param.type}.do?method=${param.method}"/></c:set>
 </c:if>

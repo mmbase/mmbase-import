@@ -13,6 +13,12 @@
 	</p>
 	
 	<p>
+		<b><fmt:message key="edit_defaults.page" />:</b>
+		<br />
+		<fmt:message key="help.page" />
+	</p>
+	
+	<p>
 		<b><fmt:message key="edit_defaults.window" />:</b>
 		<br />
 		<fmt:message key="help.window" />
