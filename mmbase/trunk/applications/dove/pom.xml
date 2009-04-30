@@ -16,11 +16,5 @@
   <packaging>jar</packaging>
   <version>${mmbase.version}</version>
 
-  <dependencies>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
+
 </project>
