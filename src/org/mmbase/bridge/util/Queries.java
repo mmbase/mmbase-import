@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.114 2008-11-25 13:22:40 michiel Exp $
+ * @version $Id: Queries.java,v 1.115 2009-04-30 14:43:36 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -470,21 +470,7 @@ abstract public class Queries {
                 }
             }
             if (operator != OPERATOR_IN) { // should the elements of the collection then not be cast?
-
-                if (fieldType == Field.TYPE_XML) {
-                    // XML's are treated as String in the query-handler so, let's anticipate that here...
-                    // a bit of a hack, perhaps we need something like a 'searchCast' or so.
-                    value = Casting.toString(value);
-                } else {
-                    Object castedValue = field.getDataType().cast(value, null, field);
-                    if (castedValue == null && value != null && fieldType == Field.TYPE_NODE) {
-                        // non existing node-number, like e.g. -1 are csated to null,
-                        // but that is incorrect when e..g the operator is GREATER
-                        castedValue = Casting.toInteger(value);
-                    }
-                    value = castedValue;
-
-                }
+                value = field.getDataType().castForSearch(value, null, field);
             }
 
             Object compareValue = getCompareValue(fieldType, operator, value, datePart, cloud);
