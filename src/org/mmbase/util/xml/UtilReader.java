@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.41 2008-12-30 11:02:34 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.42 2009-04-30 09:36:40 michiel Exp $
  */
 public class UtilReader {
 
@@ -170,8 +170,8 @@ public class UtilReader {
      * Get the properties of this utility.
      * @since MMBase-1.8.6
      */
-    public PropertiesMap<Collection<Map.Entry<String,String>>> getMaps() {
-        return new PropertiesMap<Collection<Map.Entry<String,String>>>(maps);
+    public PropertiesMap<Collection<Map.Entry<String, String>>> getMaps() {
+        return new PropertiesMap<Collection<Map.Entry<String, String>>>(maps);
     }
 
 
