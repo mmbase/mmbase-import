@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * Extends and wraps LocalizedString.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WrappedLocalizedString.java,v 1.4 2009-04-28 06:31:22 michiel Exp $
+ * @version $Id: WrappedLocalizedString.java,v 1.5 2009-04-30 19:54:03 michiel Exp $
  * @since MMBase-1.9
  */
 public class WrappedLocalizedString extends LocalizedString {
@@ -31,6 +31,7 @@ public class WrappedLocalizedString extends LocalizedString {
      * @param s The wrapped LocalizedString.
      */
     public WrappedLocalizedString(LocalizedString s) {
+        super("WRAPPED");
         if (s == null) s = new LocalizedString("NULL");
         wrapped = s;
     }
