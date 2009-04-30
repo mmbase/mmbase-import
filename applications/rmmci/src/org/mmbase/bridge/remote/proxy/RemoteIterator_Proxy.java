@@ -17,10 +17,13 @@ import org.mmbase.bridge.remote.RemoteIterator;
 import org.mmbase.bridge.remote.util.ObjectWrapper;
 
 
+/**
+ * @javadoc
+ */
 public class RemoteIterator_Proxy<L, R> extends MappedObject_Proxy<RemoteIterator<R>> implements ListIterator<L> {
 
     ListIterator<L> local;
-    
+
     public RemoteIterator_Proxy(ListIterator<L> listIterator) {
       super(null);
       this.local = listIterator;

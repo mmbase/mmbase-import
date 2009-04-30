@@ -17,6 +17,10 @@ import org.mmbase.bridge.BridgeException;
 import org.mmbase.bridge.remote.*;
 import org.mmbase.bridge.remote.util.ObjectWrapper;
 
+
+/**
+ * @javadoc
+ */
 public class RemoteList_Proxy<L, R> extends AbstractList<L> implements List<L>, MappedObject {
 
     // remote object
@@ -167,7 +171,7 @@ public class RemoteList_Proxy<L, R> extends AbstractList<L> implements List<L>, 
             throw new BridgeException(e.getMessage(), e);
         }
     }
-    
+
     @Override
     public boolean equals(Object o) {
         // ?? is it possible to check equality on remote objects?
