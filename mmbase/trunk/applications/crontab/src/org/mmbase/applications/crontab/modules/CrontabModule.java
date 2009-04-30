@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.20 2008-12-09 13:38:49 michiel Exp $
+ * @version $Id: CrontabModule.java,v 1.21 2009-04-30 09:25:36 michiel Exp $
  */
 public class CrontabModule extends WatchedReloadableModule {
 
@@ -85,7 +85,7 @@ public class CrontabModule extends WatchedReloadableModule {
         cronDaemon.stop();
     }
 
-    protected void addJob(Map.Entry<String,String> entry) {
+    protected void addJob(Map.Entry<String, String> entry) {
         String value = entry.getValue();
         String[] tokens = value.trim().split("[\n|]");
         String times;
@@ -156,15 +156,12 @@ public class CrontabModule extends WatchedReloadableModule {
         init();
     }
 
-    /**
-     * @since MMBase-1.8
-     */
-    private Map<String,String> utilProperties = new UtilReader("crontab.xml", new Runnable() { public void run() { reload();}}).getProperties();
+    private UtilReader reader = new UtilReader("crontab.xml", new Runnable() { public void run() { reload();}});
+    private Map<String, String> utilProperties = reader.getProperties();
+    private Map<String, Collection<Map.Entry<String, String>>> utilMaps = reader.getMaps();
 
     public void readMoreJobs() {
-        Iterator<Map.Entry<String,String>> i = utilProperties.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry<String,String> entry = i.next();
+        for (Map.Entry<String, String> entry : utilProperties.entrySet()) {
             addJob(entry);
         }
 
