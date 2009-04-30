@@ -33,6 +33,7 @@ public class FilledNodeTest extends NodeTest {
     protected Date TEST_DATE = new Date(TEST_TIME);
     protected BigDecimal TEST_DECIMAL = new BigDecimal("123123123.123456789");
     protected Long TEST_LONG = Long.MAX_VALUE - 10;
+    protected Double TEST_DOUBLE = new Double(Double.MAX_VALUE);
 
     public FilledNodeTest(String name) {
         super(name);
@@ -62,7 +63,7 @@ public class FilledNodeTest extends NodeTest {
         assertTrue(typedefNode != null);
         byte[] bytes = { 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33 }; // 'Hello World!'
         node.setValue("binaryfield", bytes);
-        node.setValue("doublefield", new Double(Double.MAX_VALUE));
+        node.setValue("doublefield", TEST_DOUBLE);
         node.setValue("floatfield", new Float(Float.MAX_VALUE));
         node.setValue("intfield", new Integer(Integer.MAX_VALUE));
         node.setValue("longfield", TEST_LONG);
@@ -96,8 +97,8 @@ public class FilledNodeTest extends NodeTest {
                 assertTrue("getValue on byte field should give 'Hello World!' but gave '" + new String(bytes) + "'",
                            "Hello world!".equals(new String(bytes)));
             } else if (element.equals("double")) {
-                assertTrue("getValue on double field should give " +  Double.MAX_VALUE + " but gave " + object,
-                    new Double(Double.MAX_VALUE).compareTo((Double)object) == 0);
+                assertTrue("getValue on double field should give " +  TEST_DOUBLE + " but gave " + object,
+                    TEST_DOUBLE.compareTo((Double)object) == 0);
             } else if (element.equals("float")) {
                 assertTrue("getValue on float field should give " +  Float.MAX_VALUE + " but gave " + object,
                     new Float(Float.MAX_VALUE).compareTo((Float)object) == 0);
@@ -182,7 +183,7 @@ public class FilledNodeTest extends NodeTest {
             if (element.equals("binary")) {
                 assertTrue(d == -1);
             } else if (element.equals("double")) {
-                assertTrue(d == Double.MAX_VALUE);
+                assertTrue(d == TEST_DOUBLE);
             } else if (element.equals("float")) {
                 assertTrue(d == Float.MAX_VALUE);
             } else if (element.equals("int")) {
@@ -319,8 +320,8 @@ public class FilledNodeTest extends NodeTest {
             if (element.equals("binary")) {
                 assertTrue(element + "field queried as string did not return \"Hello world!\" but " + string, "Hello world!".equals(string));
             } else if (element.equals("double")) {
-                assertTrue(element + "field queried as string did not return " + Double.MAX_VALUE + " but " + string,
-                    String.valueOf(Double.MAX_VALUE).equals(string));
+                assertTrue(element + "field queried as string did not return " + TEST_DOUBLE + " but " + string,
+                    String.valueOf(TEST_DOUBLE).equals(string));
             } else if (element.equals("float")) {
                 // SQLDB causes some problems when rounding floats, which it stores internally as Doubles.
                 // so compare the resulting string to both Float.MAX_VALUE and Double(Float.MAX_VALUE )
@@ -400,7 +401,7 @@ public class FilledNodeTest extends NodeTest {
     }
 
     public void testGetDateTimeValue() {
-        for (String element : fieldTypes) {
+        for (final String element : fieldTypes) {
             Date value = null;
             if (element.equals("node")) {
                 value = node.getDateValue(element + "field");
@@ -412,14 +413,14 @@ public class FilledNodeTest extends NodeTest {
                             value.getTime()==TEST_TIME);
             } else if (element.equals("double")) {
                 value = node.getDateValue(element + "field");
-                long time = new Double(Double.MAX_VALUE).longValue() * 1000;
-                assertTrue(element + " field queried as datetime did not return "+new Date(time)+", but " + value,
-                            value.getTime()==time);
+                Date time = Casting.toDate(TEST_DOUBLE);
+                assertTrue(element + " field queried as datetime did not return " + time + ", but " + value,
+                           value.getTime() == time.getTime());
             } else if (element.equals("float")) {
                 value = node.getDateValue(element + "field");
-                long time = new Float(Float.MAX_VALUE).longValue() * 1000;
-                assertTrue(element + " field queried as datetime did not return "+new Date(time)+", but " + value,
-                            value.getTime()==time);
+                Date time = Casting.toDate(Float.MAX_VALUE);
+                assertTrue(element + " field queried as datetime did not return "+ time +", but " + value,
+                           value.getTime() == time.getTime());
             } else if (element.equals("int")) {
                 value = node.getDateValue(element + "field");
                 long time = new Integer(Integer.MAX_VALUE).longValue()*1000;
@@ -427,9 +428,9 @@ public class FilledNodeTest extends NodeTest {
                             value.getTime()==time);
             } else if (element.equals("long")) {
                 value = node.getDateValue(element + "field");
-                long time = Long.MAX_VALUE * 1000; // oddd..
-                assertTrue(element + " field queried as datetime did not return "+new Date(time) + ", but " + value,
-                            value.getTime()==time);
+                Date time = Casting.toDate(Long.MAX_VALUE);
+                assertTrue(element + " field queried as datetime did not return "+ time + ", but " + value,
+                           value.getTime() == time.getTime());
             } else if (element.equals("decimal")) {
                 value = node.getDateValue(element + "field");
                 long time = TEST_DECIMAL.longValue() * 1000;
@@ -440,11 +441,12 @@ public class FilledNodeTest extends NodeTest {
                     value = node.getDateValue(element + "field");
                     fail(element + " field 's value '" + node.getStringValue(element + "field") + "' cannot be queried as a date, should have thrown exception");
                 } catch (Throwable e) {
-                    return;
+                    continue;
                 }
             }
             assertTrue(element + " field queried as datetime returned null", value != null);
-       }
+        }
+
     }
 
     public void testGetDecimalValue() {
@@ -453,7 +455,7 @@ public class FilledNodeTest extends NodeTest {
             if (element.equals("binary")) {
                 assertTrue(new BigDecimal(-1).compareTo(l) == 0);
             } else if (element.equals("double")) {
-                assertTrue("" + l + " != " + Double.MAX_VALUE, new BigDecimal(Double.MAX_VALUE).compareTo(l) == 0);
+                assertTrue("" + l + " != " + TEST_DOUBLE, new BigDecimal(TEST_DOUBLE).compareTo(l) == 0);
             } else if (element.equals("float")) {
                 assertTrue(new BigDecimal(Float.MAX_VALUE).compareTo(l) == 0);
             } else if (element.equals("int")) {

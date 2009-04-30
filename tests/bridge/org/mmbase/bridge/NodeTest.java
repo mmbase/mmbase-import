@@ -23,7 +23,7 @@ import org.mmbase.security.AuthenticationData;
  */
 public abstract class NodeTest extends BridgeTest {
     protected Node node;
-    protected static String[] fieldTypes = {"binary", "double", "float", "int", "long", "string", "xml", "node", "datetime", "boolean", "decimal"}; //, "list"};
+    protected final static String[] fieldTypes = {"float", "int", "long", "string", "xml", "node", "datetime", "boolean", "decimal", "double", "binary"}; //, "list"};
     //protected static String[] fieldTypes = {"datetime"};
 
     public NodeTest(String name) {

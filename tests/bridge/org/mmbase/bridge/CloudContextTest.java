@@ -18,7 +18,7 @@ import junit.framework.*;
  * Test class <code>CloudContext</code> from the bridge package.
  *
  * @author Jaco de Groot
- * @version $Id: CloudContextTest.java,v 1.6 2008-12-02 08:07:45 michiel Exp $
+ * @version $Id: CloudContextTest.java,v 1.7 2009-04-30 22:36:13 michiel Exp $
  */
 public class CloudContextTest extends BridgeTest {
 
@@ -43,9 +43,9 @@ public class CloudContextTest extends BridgeTest {
         CloudContext cloudContext = getCloudContext();
         // System.out.println(cloudContext.getClass() + " " + cloudContext.getUri());
 
-
-        // temporary removed, because failing
-        assertEquals(cloudContext.getUri(), cloudContext.getCloud("mmbase").getCloudContext().getUri());
+        Cloud cloud = cloudContext.getCloud("mmbase");
+        assertEquals("" + cloud.getCloudContext().getClass() + " " + cloudContext.getClass(),
+                     cloudContext.getUri(), cloud.getCloudContext().getUri()); // FAILS
 
     }
 
