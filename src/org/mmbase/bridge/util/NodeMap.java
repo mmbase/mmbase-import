@@ -21,7 +21,7 @@ import org.mmbase.bridge.*;
  * This object is also still a Node object.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeMap.java,v 1.6 2009-04-29 07:39:07 michiel Exp $
+ * @version $Id: NodeMap.java,v 1.7 2009-04-30 14:39:01 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -100,6 +100,9 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
                                             NodeMap.this.setValue(field.getName(), value);
                                             return r;
                                         }
+                                        public String toString() {
+                                            return getKey() + "=" + NodeMap.this.getValueWithoutProcess(field.getName());
+                                        }
                                     };
                             }
                             public void remove() {
@@ -172,26 +175,32 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
         }
     }
 
-    // javadoc inherited
+    @Override
     public Object put(String key, Object value) {
         Object r = getValue(key);
         setValue(key, value);
         return r;
     }
 
-    // javadoc inherited
+    @Override
     public Object get(Object key) {
         return getValue((String) key);
     }
 
-    // javadoc inherited
+    @Override
     public boolean isEmpty() {
         return false;
     }
 
-    // javadoc inherited
+    @Override
     public int size() {
         return getNodeManager().getFields().size();
     }
+
+    @Override
+    public String toString() {
+        return entrySet().toString();
+    }
+
 }
 
