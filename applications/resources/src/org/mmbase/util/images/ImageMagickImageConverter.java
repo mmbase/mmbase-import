@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Jaco de Groot
- * @version $Id: ImageMagickImageConverter.java,v 1.16 2009-04-22 08:03:58 michiel Exp $
+ * @version $Id: ImageMagickImageConverter.java,v 1.17 2009-04-30 09:29:52 michiel Exp $
  */
 public class ImageMagickImageConverter extends AbstractImageConverter implements ImageConverter {
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageConverter.class);
@@ -67,18 +67,18 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         switch (method) {
         case METHOD_LAUNCHER: {
+            log.debug("Starting convert");
+            List<String> cmd = new ArrayList<String>();
+            for (String arg : args) {
+                cmd.add(arg);
+            }
             try {
 
                 CommandLauncher launcher = new CommandLauncher("ConvertImage");
-                log.debug("Starting convert");
-                List<String> cmd = new ArrayList<String>();
-                for (String arg : args) {
-                    cmd.add(arg);
-                }
                 launcher.execute(converterPath, cmd.toArray(EMPTY));
                 launcher.waitAndRead(outputStream, errorStream);
             } catch (ProcessException e) {
-                log.error("Convert test failed. " + converterPath + " (" + e.getMessage() + ")");
+                log.error("Convert test failed. " + converterPath + cmd + " (" + e.getMessage() + ")");
             }
             break;
         }
@@ -190,7 +190,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             // now check if the specified ImageConvert.converterRoot does exist and is a directory
             File checkConvDir = new File(converterRoot).getAbsoluteFile();
             if (!checkConvDir.exists()) {
-                log.error( "ImageConvert.ConverterRoot " + converterRoot + " in " + configFile + " does not exist");
+                log.error( "ImageConvert.ConverterRoot " + converterRoot + " in " + configFile + " does not exist (using any way)");
             } else if (!checkConvDir.isDirectory()) {
                 log.error( "ImageConvert.ConverterRoot " + converterRoot + " in " + configFile + " is not a directory");
             } else {
