@@ -21,7 +21,7 @@ import org.mmbase.util.LocalizedString;
  * @since MMBase-1.9
  * @author Pierre van Rooden
  *
- * @version $Id: DescribedFunctionProvider.java,v 1.2 2007-06-19 14:00:11 michiel Exp $
+ * @version $Id: DescribedFunctionProvider.java,v 1.3 2009-04-30 19:55:20 michiel Exp $
  */
 public abstract class DescribedFunctionProvider extends FunctionProvider implements Descriptor {
 
@@ -44,7 +44,7 @@ public abstract class DescribedFunctionProvider extends FunctionProvider impleme
         super();
         setDescription("");
     }
-    
+
     /**
      * Create a described function provider
      * @param name the name of the function provider
@@ -55,7 +55,7 @@ public abstract class DescribedFunctionProvider extends FunctionProvider impleme
         setGUIName(name);
         setDescription("");
     }
-  
+
 
     /**
      * Returns the name or 'key' of this descriptor.
@@ -83,7 +83,7 @@ public abstract class DescribedFunctionProvider extends FunctionProvider impleme
      * @since MMBase-1.8.1
      */
     protected Locale getDefaultLocale() {
-        return null;
+        return LocalizedString.getDefault();
     }
 
     public String getDescription(Locale locale) {
