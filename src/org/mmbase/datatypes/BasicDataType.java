@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.110 2009-04-30 10:15:46 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.111 2009-04-30 14:42:08 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -69,6 +69,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     protected C defaultValue;
 
     private CommitProcessor commitProcessor = EmptyCommitProcessor.getInstance();
+    private CommitProcessor deleteProcessor = EmptyCommitProcessor.getInstance();
     private Processor[]     getProcessors;
     private Processor[]     setProcessors;
 
@@ -886,6 +887,13 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
     public void setCommitProcessor(CommitProcessor cp) {
         commitProcessor = cp;
+    }
+
+    public CommitProcessor getDeleteProcessor() {
+        return deleteProcessor == null ? EmptyCommitProcessor.getInstance() : deleteProcessor;
+    }
+    public void setDeleteProcessor(CommitProcessor cp) {
+        deleteProcessor = cp;
     }
 
     /**
