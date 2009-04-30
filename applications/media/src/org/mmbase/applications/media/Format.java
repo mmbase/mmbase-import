@@ -9,7 +9,6 @@
 
 package org.mmbase.applications.media;
 
-import java.io.File;
 import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.DocumentReader;
@@ -25,7 +24,7 @@ import org.w3c.dom.Element;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.23 2008-09-03 21:27:20 michiel Exp $
+ * @version $Id: Format.java,v 1.24 2009-04-30 09:26:38 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -42,7 +41,7 @@ public final class Format {   // final class!!
     private static Map<String,String> mimeMapping = null;
     static {
 
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_MIMEMAPPING_1_0, DTD_MIMEMAPPING_1_0, Format.class);
+        org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_MIMEMAPPING_1_0, DTD_MIMEMAPPING_1_0, Format.class);
 
         String mimeMappingFile = "media/mimemapping.xml";
         readMimeMapping(mimeMappingFile);
