@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * Straight-forward filter which can serve files from one directory (the directory 'files' in the
  * mmbase 'datadir') outside the web application root.
  *
- * @version $Id: FileServlet.java,v 1.12 2009-04-24 08:58:30 michiel Exp $
+ * @version $Id: FileServlet.java,v 1.13 2009-04-30 09:28:11 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
  * @see    AttachmentServlet
@@ -218,13 +218,11 @@ public class FileServlet extends BridgeServlet {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "The file '" + req.getPathInfo() + "' already exists");
             return;
         }
-        /*
-        Cloud cloud = getCloud(readQuery(req.getQueryString()));
-        if (cloud.getUser().getRank() == Rank.ANONYMOUS) {
+        org.mmbase.bridge.Cloud cloud = getCloud(readQuery(req.getQueryString()));
+        if (cloud.getUser().getRank() == org.mmbase.security.Rank.ANONYMOUS) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "The file '" + req.getPathInfo() + "' already exists");
             return;
         }
-        */
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
         BufferedInputStream in = new BufferedInputStream(req.getInputStream());
         byte[] buf = new byte[1024];
