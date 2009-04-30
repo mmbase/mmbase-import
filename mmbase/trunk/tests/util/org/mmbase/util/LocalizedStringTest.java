@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: LocalizedStringTest.java,v 1.5 2009-04-28 06:52:50 michiel Exp $
+ * @verion $Id: LocalizedStringTest.java,v 1.6 2009-04-30 19:56:25 michiel Exp $
  */
 public class LocalizedStringTest extends TestCase {
 
@@ -39,12 +39,28 @@ public class LocalizedStringTest extends TestCase {
         return fun;
     }
 
+    protected LocalizedString getInstanceWithDefaultFilled() {
+        LocalizedString.setDefault(DK);
+        LocalizedString fun = new LocalizedString("funny");
+        fun.set("leuk", NL);
+        fun.set("plezant", BE);
+        fun.set("amuza", EO);
+        fun.set("morsom", DK);
+        return fun;
+    }
+
     public void testBasic() {
         LocalizedString fun = getInstance();
-        assertEquals(fun.get(null), "funny");
-        assertEquals(fun.get(EO), "amuza");
-        assertEquals(fun.get(BE_VAR), "plezant");
-        assertEquals(fun.get(NL), "leuk");
+        assertEquals("funny", fun.get(null));
+        assertEquals("amuza", fun.get(EO));
+        assertEquals("plezant", fun.get(BE_VAR));
+        assertEquals("leuk", fun.get(NL));
+
+        LocalizedString fun2 = getInstanceWithDefaultFilled();
+        assertEquals("morsom", fun2.get(DK));
+        assertEquals("" + fun2.getDebugString(), "morsom", fun2.get(null));
+        assertEquals("funny", fun2.get(Locale.CHINESE));
+
 
     }
 
