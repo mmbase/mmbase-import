@@ -58,7 +58,7 @@
       <descriptions>
         <description>Example of String pattern.</description>
       </descriptions>
-      <datatype base="emailaddress">
+      <datatype base="emailaddress" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="255" />
       </datatype>
     </field>
@@ -141,18 +141,15 @@
     </field>
 
     <field name="range">
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="6" />
         <minInclusive value="1" />
         <maxExclusive value="10" />
       </datatype>
-      <db>
-        <type  state="persistent">INTEGER</type>
-      </db>
     </field>
 
     <field name="enumeration">
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="6" />
         <enumeration>
           <entry value="2" />
@@ -161,12 +158,9 @@
           <entry value="8" />
         </enumeration>
       </datatype>
-      <db>
-        <type  state="persistent">INTEGER</type>
-      </db>
     </field>
-    <field>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <field name="localized_weak_enumeration">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="6" />
         <enumeration enforce="onchange">
           <entry value="2" xml:lang="en" display="two" />
@@ -178,13 +172,9 @@
           <entry value="8" xml:lang="en" display="eight" />
         </enumeration>
       </datatype>
-      <db>
-        <name>localized_weak_enumeration</name>
-        <type  state="persistent">INTEGER</type>
-      </db>
     </field>
-    <field>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <field name="weakest_enumeraton">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="6" />
         <enumeration enforce="never">
           <entry value="2" />
@@ -193,25 +183,19 @@
           <entry value="8" />
         </enumeration>
       </datatype>
-      <db>
-        <name>weakest_enumeration</name>
-        <type  state="persistent">INTEGER</type>
-      </db>
+
     </field>
 
-    <field>
+    <field name="restricted_ordinals">
       <datatype base="ordinals" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <minInclusive value="2" />
         <maxExclusive value="10" />
       </datatype>
-      <db>
-        <name>restricted_ordinals</name>
-        <type  state="persistent">INTEGER</type>
-      </db>
     </field>
 
-    <field>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <field name="mmbase_state_enumeration">
+      <datatype base="integer"
+                xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="ERROR" />
         <enumeration >
           <entry basename="org.mmbase.datatypes.resources.states"
@@ -219,53 +203,28 @@
                  />
         </enumeration>
       </datatype>
-      <db>
-        <name>mmbase_state_enumeration</name>
-        <type  state="persistent">INTEGER</type>
-      </db>
     </field>
 
 
-    <field>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="ERROR" />
-        <enumeration >
-          <entry basename="org.mmbase.datatypes.resources.states"
-                 javaconstants="org.mmbase.datatypes.resources.StateConstants"
-                 />
-        </enumeration>
-      </datatype>
-      <db>
-        <name>mmbase_state_enumeration</name>
-        <type  state="persistent">INTEGER</type>
-      </db>
+    <field name="float">
+      <datatype base="float"
+                xmlns="http://www.mmbase.org/xmlns/datatypes" />
+
     </field>
 
-
-    <field>
-      <db>
-        <name>float</name>
-        <type  state="persistent">FLOAT</type>
-      </db>
+    <field name="datetime">
+      <datatype base="datetime"
+                xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
-    <field>
-      <db>
-        <name>datetime</name>
-        <type  state="persistent">DATETIME</type>
-      </db>
-    </field>
-
-    <field>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <field name="period">
+      <datatype
+          base="datetime"
+          xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="2005-10-05" />
         <minInclusive value="2005-01-01" />
         <maxExclusive value="2050-01-01" />
       </datatype>
-      <db>
-        <name>period</name>
-        <type  state="persistent">DATETIME</type>
-      </db>
     </field>
 
     <field>
@@ -300,30 +259,21 @@
       </db>
     </field>
 
-    <field>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <field name="handle">
+      <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <minLength value="3" />
         <maxLength value="10000" />
       </datatype>
-      <db>
-        <name>handle</name>
-        <type  size="100000"   state="persistent">BINARY</type>
-      </db>
     </field>
 
-    <field>
-      <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>checksum</name>
-        <type state="system" size="255" unique="true">STRING</type>
-      </db>
+    <field name="checksum">
+      <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <unique value="true" />
+      </datatype>
     </field>
 
-    <field>
-      <db>
-        <name>boolean</name>
-        <type state="persistent">BOOLEAN</type>
-      </db>
+    <field name="boolean">
+      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field>
@@ -443,7 +393,7 @@
 
     <field name="lastmodifier">
       <datatype  base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes">
-	<maxLength value="255" />
+        <maxLength value="255" />
       </datatype>
     </field>
 
