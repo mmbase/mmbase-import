@@ -49,6 +49,16 @@ See http://www.MMBase.org/license
         </includes>
       </resource>
       <resource>
+        <directory>bridge</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.dtd</include>
+          <include>**/*.xsd</include>
+          <include>**/*.properties</include>
+          <include>INDEX</include>
+        </includes>
+      </resource>
+      <resource>
         <directory>convertimage</directory>
         <includes>
           <include>**/*.jpg</include>
