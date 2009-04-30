@@ -114,9 +114,10 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
+      <groupId>${jsp.groupId}</groupId>
+      <artifactId>jsp-api</artifactId>
       <scope>provided</scope>
     </dependency>
+
   </dependencies>
 </project>
