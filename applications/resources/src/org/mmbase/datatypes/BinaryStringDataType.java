@@ -12,6 +12,7 @@ package org.mmbase.datatypes;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import java.util.*;
 
 
 /**
@@ -43,5 +44,20 @@ public class BinaryStringDataType extends StringDataType {
         return Casting.toSerializableInputStream(value);
     }
 
+    @Override
+    protected String castToPresent(Object value, Node node, Field field) {
+        return Casting.toSerializableInputStream(value).getName();
+    }
+    @Override
+    protected Collection<LocalizedString> validateRequired(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
+        String v = org.mmbase.datatypes.processors.BinaryFile.getFileName(node, field, ((SerializableInputStream) castValue).getName());
+        return requiredRestriction.validate(errors, v, node, field);
+
+    }
+
+    @Override
+    public String castForSearch(final Object value, final Node node, final Field field) {
+        return Casting.toSerializableInputStream(value).getName();
+    }
 
 }

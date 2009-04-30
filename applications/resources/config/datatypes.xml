@@ -23,9 +23,9 @@
       <getprocessor type="binary">
         <class name="org.mmbase.datatypes.processors.BinaryFile$Getter" />
       </getprocessor>
-      <commitprocessor>
-        <class name="org.mmbase.datatypes.processors.BinaryCommitProcessor" />
-      </commitprocessor>
+      <deleteprocessor>
+        <class name="org.mmbase.datatypes.processors.BinaryFile$Delete" />
+      </deleteprocessor>
     </specialization>
   </datatype>
 
