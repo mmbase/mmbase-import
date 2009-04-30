@@ -8,7 +8,7 @@
     attributeFormDefault="unqualified"
     version="1.0">
   <!--
-      Version: $Id: datatypes.xsd,v 1.42 2009-04-14 12:55:32 michiel Exp $
+      Version: $Id: datatypes.xsd,v 1.43 2009-04-30 14:42:08 michiel Exp $
   -->
 
   <xsd:import
@@ -118,6 +118,7 @@
       <xsd:element name="setprocessor"    type="Processor" maxOccurs="unbounded" minOccurs="0" />
       <xsd:element name="getprocessor"    type="Processor" maxOccurs="unbounded" minOccurs="0" />
       <xsd:element name="commitprocessor" type="Processor" maxOccurs="unbounded" minOccurs="0" />
+      <xsd:element name="deleteprocessor" type="Processor" maxOccurs="unbounded" minOccurs="0" />
 
       <xsd:element ref="specialization" maxOccurs="unbounded" minOccurs="0" />
 

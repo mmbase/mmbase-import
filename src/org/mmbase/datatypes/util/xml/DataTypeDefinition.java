@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.73 2009-04-27 16:14:18 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.74 2009-04-30 14:42:08 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -236,48 +236,51 @@ public class DataTypeDefinition {
      * @return whether successfully read the element.
      */
     protected boolean addCondition(Element childElement) {
-        boolean ret = false;
         String childTag = childElement.getLocalName();
         if ("property".equals(childTag)) {
-            ret = setProperty(childElement);
+            setProperty(childElement);
+            return true;
         } else if ("required".equals(childTag)) {
             boolean value = DataTypeXml.getBooleanValue(childElement, false);
             dataType.setRequired(value);
             setRestrictionData(dataType.getRequiredRestriction(), childElement);
-            ret = true;
+            return true;
         } else if ("unique".equals(childTag)) {
             boolean value = DataTypeXml.getBooleanValue(childElement, false);
             dataType.setUnique(value);
             setRestrictionData(dataType.getUniqueRestriction(), childElement);
-            ret = true;
+            return true;
         } else if ("getprocessor".equals(childTag)) {
             addProcessor(DataType.PROCESS_GET, childElement);
-            ret = true;
+            return true;
         } else if ("setprocessor".equals(childTag)) {
             addProcessor(DataType.PROCESS_SET, childElement);
-            ret = true;
+            return true;
         } else if ("commitprocessor".equals(childTag)) {
             addCommitProcessor(childElement);
-            ret = true;
+            return true;
+        } else if ("deleteprocessor".equals(childTag)) {
+            addDeleteProcessor(childElement);
+            return true;
         } else if ("enumeration".equals(childTag)) {
             addEnumeration(childElement);
-            ret = true;
+            return true;
         } else if ("default".equals(childTag)) {
             String value = DataTypeXml.getAttribute(childElement, "value");
             dataType.setDefaultValue(value);
-            ret = true;
+            return true;
         } else if (addPatternCondition(childElement)) {
-            ret = true;
+            return true;
         } else if (addPasswordProperty(childElement)) {
-            ret = true;
+            return true;
         } else if (addDecimalCondition(childElement)) {
-            ret = true;
+            return true;
         } else if (addLengthDataCondition(childElement)) {
-            ret =  true;
+            return  true;
         } else if (addComparableCondition(childElement)) {
-            ret = true;
+            return true;
         }
-        return ret;
+        return false;
     }
 
 
@@ -313,6 +316,12 @@ public class DataTypeDefinition {
         CommitProcessor oldProcessor = dataType.getCommitProcessor();
         newProcessor = DataTypeXml.chainProcessors(oldProcessor, newProcessor);
         dataType.setCommitProcessor(newProcessor);
+    }
+    protected void addDeleteProcessor(Element processorElement) {
+        CommitProcessor newProcessor = DataTypeXml.createCommitProcessor(processorElement);
+        CommitProcessor oldProcessor = dataType.getDeleteProcessor();
+        newProcessor = DataTypeXml.chainProcessors(oldProcessor, newProcessor);
+        dataType.setDeleteProcessor(newProcessor);
     }
 
     protected void setRestrictionData(DataType.Restriction restriction, Element element) {

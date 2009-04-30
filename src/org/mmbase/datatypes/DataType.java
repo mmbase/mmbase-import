@@ -33,7 +33,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.76 2009-04-30 10:15:46 michiel Exp $
+ * @version $Id: DataType.java,v 1.77 2009-04-30 14:42:08 michiel Exp $
  * @param <C> Class this DataType
  */
 
@@ -340,6 +340,14 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * @param cp Commit processor
      */
     public void setCommitProcessor(CommitProcessor cp);
+
+
+    /**
+     * Return the Delete processor of this datatype
+     * @return A commitprocessor that will be called if the Node is deleted.
+     * @since MMBase-1.9.1
+     */
+    public CommitProcessor getDeleteProcessor();
 
     /**
      * Returns the default processor for this action
