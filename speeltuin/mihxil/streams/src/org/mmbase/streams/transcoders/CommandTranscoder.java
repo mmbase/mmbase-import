@@ -33,11 +33,11 @@ public abstract class CommandTranscoder implements Transcoder {
     }
     protected abstract String[] getArguments(URI in, URI out);
 
-    protected Level getOutputLevel() {
-        return Level.SERVICE;
+    protected LoggerWriter getOutputWriter(Logger log) {
+        return new LoggerWriter(log, Level.SERVICE);
     }
-    protected Level getErrorLevel() {
-        return Level.ERROR;
+    protected LoggerWriter getErrorWriter(Logger log) {
+        return new LoggerWriter(log, Level.ERROR);
     }
 
     public String getKey() {
@@ -47,8 +47,8 @@ public abstract class CommandTranscoder implements Transcoder {
     public void transcode(final URI in, final URI out, Logger log) throws Exception {
         CommandLauncher cl = new CommandLauncher("Transcoding " + in + " to " + out);
         cl.execute(getCommand(), getArguments(in, out), getEnvironment());
-        OutputStream outStream = new WriterOutputStream(new LoggerWriter(log, getOutputLevel()), System.getProperty("file.encoding"));
-        OutputStream errStream = new WriterOutputStream(new LoggerWriter(log, getErrorLevel()), System.getProperty("file.encoding"));
+        OutputStream outStream = new WriterOutputStream(getOutputWriter(log), System.getProperty("file.encoding"));
+        OutputStream errStream = new WriterOutputStream(getErrorWriter(log), System.getProperty("file.encoding"));
         cl.waitAndRead(outStream, errStream);
     }
 

@@ -3,6 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
     name="streamsources" maintainer="mmbase.org" version="1" extends="mediasources">
 
   <searchage>31</searchage>
@@ -23,11 +24,6 @@
     <field name="state" state="system">
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="SOURCE" />
-        <enumeration>
-          <entry
-              javaconstants="org.mmbase.applications.media.State"
-              basename="org.mmbase.applications.media.builders.resources.states" />
-        </enumeration>
       </datatype>
     </field>
 
@@ -41,32 +37,8 @@
       </datatype>
     </field>
 
+    <xi:include href="mediaprovider.field.xml" />
 
-    <field name="mediaprovider" state="virtual">
-      <gui>
-        <guiname xml:lang="nl">Provider</guiname>
-        <guiname xml:lang="en">Provider</guiname>
-      </gui>
-      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <default value="mediaprovider_localhost" />
-        <required value="true" />
-        <enumeration enforce="never">
-          <query type="mediaproviders"  xmlns="http://www.mmbase.org/xmlns/searchquery">
-            <sortorder field="name" />
-          </query>
-        </enumeration>
-        <setprocessor>
-          <class name="org.mmbase.datatypes.processors.Related$Setter">
-            <param name="type">mediaproviders</param>
-          </class>
-        </setprocessor>
-        <getprocessor>
-          <class name="org.mmbase.datatypes.processors.Related$Getter">
-            <param name="type">mediaproviders</param>
-          </class>
-        </getprocessor>
-      </datatype>
-    </field>
 
   </fieldlist>
 

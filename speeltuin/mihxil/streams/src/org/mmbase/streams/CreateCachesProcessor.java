@@ -54,11 +54,17 @@ public class CreateCachesProcessor implements CommitProcessor {
         Node resultNode;
         if (nodes.size() > 0) {
             resultNode = nodes.get(0);
+            resultNode.setIntValue("state", State.REQUEST.getValue());
         } else {
             resultNode = caches.createNode();
-            resultNode.setNodeValue("id", node);
+            resultNode.setIntValue("state", State.REQUEST.getValue());
             resultNode.setStringValue("key", t.getKey());
-            resultNode.setIntValue("state", State.REQUEST.ordinal());
+            resultNode.setNodeValue("id", node);
+            resultNode.commit();
+
+            // virtual field actually creates relation
+            resultNode.setNodeValue("mediaprovider", node.getNodeValue("mediaprovider"));
+
             logger.service("Created " + resultNode);
         }
         return resultNode;
@@ -66,21 +72,28 @@ public class CreateCachesProcessor implements CommitProcessor {
 
 
 
+
     public void commit(final Node node, final Field field) {
-        if (node.isChanged(field.getName())) {
+        if (node.getNumber() > 0) {
             LOG.info("Field '" + field + " was changed. Triggering caches.");
             final ChainedLogger logger = new ChainedLogger();
             logger.addLogger(Logging.getLoggerInstance("CACHES." + node.getCloud().getUser().getIdentifier()));
             logger.addLogger(LOG);
 
-            for (Transcoder t : list) {
-                Node cacheNode = getCacheNode(node, t, logger);
-                if (cacheNode.isNew()) {
-                    cacheNode.commit();
-                }
-            }
             ThreadPools.jobsExecutor.execute(new Runnable() {
+
                     public void run() {
+                        try {
+                            for (Transcoder t : list) {
+                                Node cacheNode = getCacheNode(node, t, logger);
+                                if (cacheNode.isNew() || cacheNode.isChanged()) {
+                                    cacheNode.commit();
+                                }
+                            }
+                        } catch (Exception e) {
+                            logger.error(e.getMessage());
+                        }
+
                         for (Transcoder t : list) {
                             logger.service("Creating with " + t);
                             Node cacheNode = CreateCachesProcessor.this.getCacheNode(node, t, logger);
@@ -93,11 +106,11 @@ public class CreateCachesProcessor implements CommitProcessor {
                             buf.append(ResourceLoader.getName(inFile.getName())).append(".").append(t.getExtension());
                             File outFile = new File(FileServlet.getDirectory(), buf.toString().replace("/", File.separator));
                             try {
-                                cacheNode.setIntValue("state", State.BUSY.ordinal());
+                                cacheNode.setIntValue("state", State.BUSY.getValue());
                                 cacheNode.commit();
                                 t.transcode(in, outFile.toURI(), logger);
                                 cacheNode.setStringValue("url", buf.toString());
-                                cacheNode.setIntValue("state", State.DONE.ordinal());
+                                cacheNode.setIntValue("state", State.DONE.getValue());
                                 cacheNode.commit();
 
                             } catch (Exception e) {
@@ -108,7 +121,9 @@ public class CreateCachesProcessor implements CommitProcessor {
                         }
                     }
                 });
-
+        } else {
+            LOG.info("Cannot execute processor, because node has not yet a real number " + node);
         }
     }
+
 }
