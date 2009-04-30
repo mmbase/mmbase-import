@@ -262,6 +262,19 @@
     </java>
   </target>
 
+  <target name="run.rmmciutil" depends="init" description="Various tests on utitilies (org.mmbase.util)">
+    <java
+        classname="${ui.class}"
+        fork="true"
+        timeout="300000"
+        classpathref="run.rmmci.client">
+      <arg value="org.mmbase.util.RmmciUtilTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
+    </java>
+  </target>
+
 
   <target name="run.datatypes" depends="init" description="Various tests on org.mmbase.datatypes">
     <java
@@ -411,14 +424,19 @@
   <target name="run.all" description="Run all tests">
     <echo message="========================================DBSQ========================================" />
     <antcall target="run.dbsq" inheritRefs="true"/>
+    <echo message="sleeping.." />
     <sleep seconds="10" />
     <echo message="========================================TYPEREL========================================" />
     <antcall target="run.typerel" inheritRefs="true"/>
+    <echo message="sleeping.." />
     <sleep seconds="10" />
     <antcall target="run.all.bridge" inheritRefs="true"/>
+    <echo message="sleeping.." />
     <sleep seconds="10" />
     <echo message="========================================UTIL========================================" />
     <antcall target="run.util" inheritRefs="true"/>
+    <echo message="========================================RMMCI UTIL========================================" />
+    <antcall target="run.rmmciutil" inheritRefs="true"/>
     <echo message="========================================DATATYPES========================================" />
     <antcall target="run.datatypes" inheritRefs="true"/>
     <sleep seconds="10" />
@@ -437,6 +455,7 @@
   <target name="run.all.bridge">
     <echo message="========================================BRIDGE========================================" />
     <antcall target="run.bridge" inheritRefs="true" />
+    <echo message="sleeping.." />
     <sleep seconds="10" />
     <echo message="========================================RMMCI========================================" />
     <antcall target="run.bridge.rmmci" inheritRefs="true" />
@@ -446,6 +465,7 @@
     <echo message="========================================RMMCI========================================" />
     <antcall target="run.bridge.rmmci" inheritRefs="true"/>
     <echo message="========================================CLUSTERING========================================" />
+    <echo message="sleeping.." />
     <sleep seconds="10" />
     <antcall target="run.clustering" inheritRefs="true"/>
   </target>
