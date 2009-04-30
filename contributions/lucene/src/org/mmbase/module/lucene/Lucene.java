@@ -17,7 +17,6 @@ import java.net.URL;
 import javax.sql.DataSource;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
 import org.mmbase.cache.*;
 import org.mmbase.module.ReloadableModule;
@@ -31,12 +30,9 @@ import org.mmbase.util.xml.XMLWriter;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
-import org.mmbase.storage.StorageManagerFactory;
 
 import java.util.concurrent.*;
 
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.analysis.StopAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.queryParser.ParseException;
@@ -48,7 +44,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.131 2009-03-04 18:02:46 sdeboer Exp $
+ * @version $Id: Lucene.java,v 1.132 2009-04-30 10:07:34 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener, AssignmentEvents.Listener {
 
