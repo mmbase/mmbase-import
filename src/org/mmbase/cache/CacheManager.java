@@ -32,7 +32,7 @@ import javax.management.*;
  * static any more.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.44 2008-11-15 19:15:10 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.45 2009-04-30 18:49:07 michiel Exp $
  */
 public class CacheManager implements CacheManagerMBean {
 
@@ -51,6 +51,18 @@ public class CacheManager implements CacheManagerMBean {
         // singleton
     }
 
+    private static String getMachineName() {
+        String machineName;
+        try {
+            org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
+            machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
+        } catch (NoClassDefFoundError ncfde) {
+            //happens when RMMCI
+            machineName = "localhost";
+        }
+        return machineName;
+    }
+
     /**
      * @since MMBase-1.9.1
      */
@@ -64,10 +76,9 @@ public class CacheManager implements CacheManagerMBean {
                         final Hashtable<String, String> props = new Hashtable<String, String>();
 
                         try {
-                            org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
-
                             props.put("type", "Caches");
-                            String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
+                            String machineName = getMachineName();
+
                             if (machineName != null) {
                                 props.put("type", machineName);
                             }
@@ -162,7 +173,6 @@ public class CacheManager implements CacheManagerMBean {
         }
         Runnable run = new Runnable() {
                 public void run() {
-                    org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
                     ObjectName name = getObjectName(cache);
                     try {
                         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
@@ -192,7 +202,7 @@ public class CacheManager implements CacheManagerMBean {
         try {
             props.put("type", "Caches");
             org.mmbase.util.transformers.CharTransformer identifier = new org.mmbase.util.transformers.Identifier();
-            String machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
+            String machineName = getMachineName();
             if (machineName != null) {
                 props.put("mmb", machineName);
             } else {
