@@ -12,5 +12,6 @@
 #
 # comment lines begin with '#'
 
-xmlvalidate.pl  No XML-validation script could be found 
-log/cvsmail     No mails script could be found 
+xmlvalidate.pl  No XML-validation script could be found
+deny.pl         Deny every check in
+log/cvsmail     No mails script could be found
