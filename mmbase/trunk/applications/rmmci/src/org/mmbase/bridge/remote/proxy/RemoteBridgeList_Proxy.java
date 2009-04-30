@@ -17,6 +17,10 @@ import org.mmbase.bridge.remote.*;
 
 import org.mmbase.bridge.remote.util.*;
 
+/**
+ * @javadoc
+ */
+
 public class RemoteBridgeList_Proxy<L extends Comparable<? super L>,E> extends RemoteList_Proxy<L,E> implements BridgeList<L>, MappedObject  {
 
   public RemoteBridgeList_Proxy(RemoteBridgeList<E> remoteObject) {
