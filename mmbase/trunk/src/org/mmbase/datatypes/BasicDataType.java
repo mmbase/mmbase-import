@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.109 2009-04-28 08:44:00 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.110 2009-04-30 10:15:46 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Comparable<DataType<C>>, Descriptor {
@@ -590,6 +590,13 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     protected Collection<LocalizedString> validateRequired(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
         return requiredRestriction.validate(errors, value, node, field);
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public Object castForSearch(final Object value, final Node node, final Field field) {
+        return cast(value, node, field);
     }
 
     protected StringBuilder toStringBuilder() {
@@ -1248,7 +1255,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                     }
                 }
 
-                log.debug("Checking '" + value + "'");
+                if (log.isDebugEnabled()) {
+                    log.debug("Checking '" + value + "'");
+                }
                 NodeManager nodeManager = field.getNodeManager();
                 Cloud cloud = nodeManager.getCloud();
                 if (cloud.getUser().getRank().getInt() < Rank.ADMIN_INT) {

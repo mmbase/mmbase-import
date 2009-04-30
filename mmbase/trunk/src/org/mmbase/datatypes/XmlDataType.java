@@ -8,13 +8,14 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.datatypes;
+import org.mmbase.bridge.*;
 
 /**
  * The data associated with 'XML' values ({@link org.w3c.dom.Document}). At the moment this class is
  * empty, but of course we forsee the possibility for  restrictions on doc-type.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlDataType.java,v 1.6 2007-04-07 17:11:56 nklasens Exp $
+ * @version $Id: XmlDataType.java,v 1.7 2009-04-30 10:15:46 michiel Exp $
  * @since MMBase-1.8
  */
 public class XmlDataType extends AbstractLengthDataType<org.w3c.dom.Document> {
@@ -22,7 +23,9 @@ public class XmlDataType extends AbstractLengthDataType<org.w3c.dom.Document> {
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
 
+    @Override
     public long getLength(Object value) {
+        // TODO, depends on storage layer
         // this is how Storage would serialize it:
         return org.mmbase.util.xml.XMLWriter.write((org.w3c.dom.Document) value, false, true).length();
     }
@@ -33,6 +36,12 @@ public class XmlDataType extends AbstractLengthDataType<org.w3c.dom.Document> {
      */
     public XmlDataType(String name) {
         super(name, org.w3c.dom.Document.class);
+    }
+
+    @Override
+    public String castForSearch(final Object value, final Node node, final Field field) {
+        // TODO, depends on storage layer
+        return org.mmbase.util.Casting.toString(value);
     }
 
 }

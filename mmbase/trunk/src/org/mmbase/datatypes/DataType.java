@@ -33,7 +33,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.75 2009-04-30 09:33:00 michiel Exp $
+ * @version $Id: DataType.java,v 1.76 2009-04-30 10:15:46 michiel Exp $
  * @param <C> Class this DataType
  */
 
@@ -163,6 +163,15 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      */
     public <D> D preCast(D value, Node node, Field field);
     //public Object preCast(Object value, Node node, Field field);
+
+
+    /**
+     * Sometimes the the representation of the value is a bit different in the database, or has a
+     * different type. So when constraining a search on the value, casting is done by this. This may
+     * default to {@link cast(Object, Node, Field}.
+     * @since MMBase-1.9.1
+     */
+    public Object castForSearch(Object value, Node node, Field field);
 
     /**
      * Returns the default value of this data type.

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.34 2009-01-07 17:54:19 michiel Exp $
+ * @version $Id: NodeDataType.java,v 1.35 2009-04-30 10:15:46 michiel Exp $
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType<Node> {
@@ -68,6 +68,12 @@ public class NodeDataType extends BasicDataType<Node> {
                 return res;
             }
         }
+    }
+
+    @Override
+    public Integer castForSearch(final Object value, final Node node, final Field field) {
+        if (value == null) return -1;
+        return org.mmbase.util.Casting.toInteger(value);
     }
 
     /**
