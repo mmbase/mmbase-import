@@ -16,7 +16,7 @@ import org.mmbase.bridge.util.xml.Generator;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import org.mmbase.richtext.transformers.XmlField;
-import org.mmbase.util.xml.XMLWriter;
+import org.mmbase.util.xml.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.parsers.*;
@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.17 2008-10-29 20:46:37 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.18 2009-04-30 09:30:23 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -50,9 +50,9 @@ public class MmxfGetString implements  Processor {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
             dfactory.setNamespaceAware(true);
             DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
-            org.xml.sax.ErrorHandler handler = new XMLErrorHandler();
+            org.xml.sax.ErrorHandler handler = new ErrorHandler();
             documentBuilder.setErrorHandler(handler);
-            documentBuilder.setEntityResolver( new XMLEntityResolver());
+            documentBuilder.setEntityResolver( new EntityResolver());
             return documentBuilder;
         } catch (ParserConfigurationException pce) {
             throw new RuntimeException(pce.getMessage(), pce);

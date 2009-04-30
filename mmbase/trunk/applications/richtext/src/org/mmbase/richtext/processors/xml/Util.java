@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
 /**
  * Utility functions, used by various classes in the package.
  * @author Michiel Meeuwissen
- * @version $Id: Util.java,v 1.4 2008-09-25 10:17:28 michiel Exp $
+ * @version $Id: Util.java,v 1.5 2009-04-30 09:30:41 michiel Exp $
  */
 
 public abstract class Util {
@@ -66,10 +66,10 @@ public abstract class Util {
         dfactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
         // dont log errors, and try to process as much as possible...
-        XMLErrorHandler errorHandler = new XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
+        org.mmbase.util.xml.ErrorHandler errorHandler = new org.mmbase.util.xml.ErrorHandler(false, org.mmbase.util.xml.ErrorHandler.NEVER);
         documentBuilder.setErrorHandler(errorHandler);
 
-        documentBuilder.setEntityResolver(new XMLEntityResolver(false));
+        documentBuilder.setEntityResolver(new org.mmbase.util.xml.EntityResolver(false));
         Document doc = documentBuilder.parse(value);
         if (! errorHandler.foundNothing()) {
             throw new IllegalArgumentException("xml invalid:\n" + errorHandler.getMessageBuffer() + "for xml:\n" + value);
