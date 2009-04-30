@@ -18,10 +18,12 @@ import org.mmbase.util.xml.UtilReader;
  *
  * @since MMBase 1.8
  * @author Michiel Meeuwissen
- * @version $Id: ThreadPools.java,v 1.28 2009-04-21 12:36:27 michiel Exp $
+ * @version $Id: ThreadPools.java,v 1.29 2009-04-30 18:48:43 michiel Exp $
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);
+
+    public static final ThreadGroup threadGroup =  new ThreadGroup("MMBase Thread Pool");
 
     private static Map<Future, String> identifiers =
         Collections.synchronizedMap(new WeakHashMap<Future, String>());
@@ -70,7 +72,7 @@ public abstract class ThreadPools {
 
     private static Thread newThread(Runnable r, final String id) {
         boolean isUp = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp();
-        Thread t = new Thread(org.mmbase.module.core.MMBaseContext.getThreadGroup(), r,
+        Thread t = new Thread(threadGroup, r,
                               isUp ? org.mmbase.module.core.MMBaseContext.getMachineName() + ":" + id : id) {
                 /**
                  * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
@@ -107,11 +109,18 @@ public abstract class ThreadPools {
     static {
         jobsExecutor.execute(new Runnable() {
                 public void run() {
-                    org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
-                    for (Thread t : nameLess) {
-                        t.setName(org.mmbase.module.core.MMBaseContext.getMachineName() + ":" + t.getName());
+                    String machineName;
+                    try {
+                        org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
+                        machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
+                    } catch (NoClassDefFoundError cnfe) {
+                        // happens if no MMBaseContext, because this is used with the
+                        // rmmci-client jar.
+                        machineName = "localhost";
                     }
-                    nameLess = null;
+                    for (Thread t : nameLess) {
+                        t.setName(machineName + ":" + t.getName());
+                    }
                 }
             });
     }
