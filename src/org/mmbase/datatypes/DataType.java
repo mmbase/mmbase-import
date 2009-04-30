@@ -33,7 +33,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.74 2009-04-28 08:44:00 michiel Exp $
+ * @version $Id: DataType.java,v 1.75 2009-04-30 09:33:00 michiel Exp $
  * @param <C> Class this DataType
  */
 
@@ -408,6 +408,11 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      */
     public Map<String, Handler<?>> getHandlers();
 
+    /**
+     * @since MMBase-1.9
+     */
+    //public Collection<Restriction<?>> getRestrictions();
+
 
     /**
      * @since MMBase-1.9.1
@@ -482,6 +487,8 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
          * @param v value of {@link DataType#ENFORCE_ALWAYS}, {@link DataType#ENFORCE_ONCHANGE}, {@link DataType#ENFORCE_NEVER}.
          */
         public void setEnforceStrength(int v);
+
+
 
     }
 
