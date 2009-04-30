@@ -33,7 +33,7 @@
   1.5). Run the sequence also with cookies disabled please, or perhaps
   even better in that case start <a href="cloud.html">here</a> (with
   cookies disabled, and url not encoded, cloud-tag will detect that
-  from 1.6 on). http://www.mmbase.org
+  from 1.6 on).
   </mm:import>
   <mm:link page="cloud.jsp" />
   <mm:write referid="text" escape="links,censor" />
@@ -79,6 +79,6 @@
 <p>
   An alternative <a href="<mm:url page="caches.jsp" />">Caches overview</a>
 </p>
-<a href="mailto:mihxil@komputilo.org">Michiel Meeuwissen</a>
+<a href="mailto:taglib@meeuw.org">Michiel Meeuwissen</a>
 </body>
 </html>
