@@ -67,7 +67,7 @@ public class DataTypesTest extends TestCase {
 
         assertEquals("Tekst", getLine().getGUIName(new Locale("nl")));
         assertEquals("Text", getLine().getGUIName(new Locale("en")));
-        assertEquals("eline", getStringClone().getGUIName());
+        assertEquals("eline", getLine().getGUIName());
 
     }
 
