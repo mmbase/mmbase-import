@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * Testing wether the processors of datatypes behave as expected.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProcessorTest.java,v 1.7 2009-04-30 19:07:43 michiel Exp $
+ * @version $Id: ProcessorTest.java,v 1.8 2009-04-30 22:36:13 michiel Exp $
  * @since MMBase-1.9.1
   */
 public class ProcessorTest extends BridgeTest {
@@ -119,7 +119,7 @@ public class ProcessorTest extends BridgeTest {
 
     // Creates an commits a node, and checks if that increased the commit count
     protected void testCommitCount(Cloud c) {
-        if (c.getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) { // only test on local
+        if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) { // only test on local
             NodeManager nm = c.getNodeManager("datatypes");
             int ccbefore = CountCommitProcessor.count;
             Node n = nm.createNode();
