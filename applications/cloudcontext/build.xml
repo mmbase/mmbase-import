@@ -4,6 +4,7 @@
 >
 
 <project name="cloudcontext" default="jar" basedir=".">
+  <property name="java.source.version" value="1.5" />
   <property name="project.name"      value="cloudcontextsecurity" />
   <property name="project.package"   value="org/mmbase/security/implementation/cloudcontext" />
   <property name="project.target.templates.dir"   value="security" />
