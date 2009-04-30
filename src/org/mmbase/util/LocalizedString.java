@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.39 2009-04-29 07:39:08 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.40 2009-04-30 19:53:46 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, PublicCloneable<LocalizedString> {
@@ -47,16 +47,13 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
      * Sets a default locale for this JVM or web-app. When not using it, the locale is the system
      * default. Several web-apps do run in one JVM however and it is very imaginable that you want a
      * different default for the Locale.
-     *
-     * So, this function can be called only once. Calling it the second time will not do
-     * anything. It returns the already set default locale then, which should probably prompt you to log an error
-     * or throw an exception or so. Otherwise it returns <code>null</code> indicating that the
-     * default locale is now what you just set.
+     * @return The previously set default locale. Should normally be <code>null</code> since it is
+     * odd to call this more than once.
      */
     public static Locale setDefault(Locale locale) {
-        if (defaultLocale != null) return defaultLocale;
+        Locale prev = defaultLocale;
         defaultLocale = locale;
-        return null;
+        return prev;
     }
     /**
      * Returns the default locale if set, or otherwise the system default ({@link java.util.Locale#getDefault}).
@@ -82,10 +79,6 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
 
     private Map<Locale, String> values = null;
     private String bundle = null;
-
-    // just for the contract of Serializable
-    protected LocalizedString() {
-    }
 
     /**
      * @param k The key of this String, if k == <code>null</code> then the first set will define it.
@@ -113,7 +106,7 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
      */
     public String get(Locale locale) {
         if (locale == null) {
-            locale = defaultLocale == null ? Locale.getDefault() : defaultLocale;
+            locale = getDefault();
         }
         if (values != null) {
             String result = values.get(locale);
@@ -140,12 +133,14 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
             // This code 'fixes' that reference.
             // It's not nice, but as a proper fix likely requires a total rewrite of Module.java and
             // MMBase.java, this will have to do for the moment.
-            if (locale.equals(defaultLocale)) {
+            Locale def = getDefault();
+            if (locale.equals(def)) {
                 result = values.get(null);
                 if (result != null) {
                     values.put(locale, result);
                     return result;
                 }
+
             }
         }
 
@@ -175,10 +170,11 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
         }
 
         if (locale == null) {
-            locale = defaultLocale;
+            locale = getDefault();
         }
 
         values.put(locale, value);
+
 
         if (locale != null) {
             String variant  = locale.getVariant();
@@ -237,7 +233,7 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
     }
 
     public String getDebugString() {
-        return "k: " + getKey() + " values: " + getValues() + " b:" + getBundle();
+        return "k: " + getKey() + " values: " + getValues() + " b:" + getBundle() + " dl: " + defaultLocale;
     }
 
     /**
