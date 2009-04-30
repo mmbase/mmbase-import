@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * Testing wether the processors of datatypes behave as expected.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProcessorTest.java,v 1.6 2009-04-30 14:16:08 michiel Exp $
+ * @version $Id: ProcessorTest.java,v 1.7 2009-04-30 19:07:43 michiel Exp $
  * @since MMBase-1.9.1
   */
 public class ProcessorTest extends BridgeTest {
@@ -154,7 +154,7 @@ public class ProcessorTest extends BridgeTest {
         nn = n.getNumber();
         if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) { // only test on local
             // commit processor must have been called.
-            assertEquals(ccbefore + 1, CountCommitProcessor.count); // FAILS
+            assertEquals(ccbefore + 1, CountCommitProcessor.count);
         }
     }
 
