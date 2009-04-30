@@ -13,6 +13,10 @@ import org.mmbase.bridge.BridgeException;
 import org.mmbase.bridge.remote.*;
 import org.mmbase.bridge.remote.util.ObjectWrapper;
 
+
+/**
+ * @javadoc
+ */
 public class MappedObject_Proxy<O extends ServerMappedObject> implements MappedObject {
 
     private O remoteObject;

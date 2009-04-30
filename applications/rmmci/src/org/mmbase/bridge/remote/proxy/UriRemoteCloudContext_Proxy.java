@@ -11,6 +11,13 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.remote.proxy;
 
 import org.mmbase.bridge.remote.*;
+
+/**
+ * Effort to try to fix that RemoteCloudContext.getCloud().getCloudContext() does not return a
+ * eremote cloud context.
+ * Not working, not used, afaik..
+ * @version $Id: UriRemoteCloudContext_Proxy.java,v 1.2 2009-04-30 20:46:13 michiel Exp $
+ */
 public class UriRemoteCloudContext_Proxy extends RemoteCloudContext_Proxy {
 
     private final String uri;
