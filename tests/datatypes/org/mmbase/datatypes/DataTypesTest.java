@@ -16,14 +16,16 @@ import org.mmbase.util.LocalizedString;
 import junit.framework.*;
 
 /**
+ * Test cases for DataTypes which can be done stand alone, with usage of an actually running MMBase.
  *
  * @author Michiel Meeuwissen
- * @since MMBase-1.8
+ * @since MMBase-1.9
  */
 public class DataTypesTest extends TestCase {
 
     private static boolean setup = false;
     public void setUp() throws Exception {
+        LocalizedString.setDefault(new Locale("dk"));
         if (! setup) {
             DataTypes.initialize();
             setup = true;
@@ -32,9 +34,12 @@ public class DataTypesTest extends TestCase {
 
     private StringDataType getString() {
         DataType<?> dt = DataTypes.getDataType("string");
-
         assertTrue("" + dt.getClass(), dt instanceof StringDataType);
-
+        return (StringDataType) dt;
+    }
+    private StringDataType getLine() {
+        DataType<?> dt = DataTypes.getDataType("eline");
+        assertTrue("" + dt.getClass(), dt instanceof StringDataType);
         return (StringDataType) dt;
     }
 
@@ -45,33 +50,50 @@ public class DataTypesTest extends TestCase {
     public void testName() {
         assertEquals("string", getString().getName());
         assertEquals("clone", getStringClone().getName());
+        assertEquals("eline", getLine().getName());
     }
     public void testGUIName() {
         assertEquals("Tekst", getString().getGUIName(new Locale("nl")));
         assertEquals("Text", getString().getGUIName(new Locale("en")));
-        assertEquals("Tekst", getStringClone().getGUIName(new Locale("nl")));
-        assertEquals("Text", getStringClone().getGUIName(new Locale("en")));
+        assertEquals("string", getString().getGUIName());
+
+        StringDataType clone = getStringClone();
+        assertEquals("Tekst", clone.getGUIName(new Locale("nl")));
+        assertEquals("Text", clone.getGUIName(new Locale("en")));
+        assertEquals("clone", clone.getLocalizedGUIName().getKey());
+        assertEquals(clone.getLocalizedGUIName().getDebugString(), "clone", clone.getLocalizedGUIName().get(null));
+        assertEquals("clone", getStringClone().getGUIName(null));
+        assertEquals("clone", getStringClone().getGUIName());
+
+        assertEquals("Tekst", getLine().getGUIName(new Locale("nl")));
+        assertEquals("Text", getLine().getGUIName(new Locale("en")));
+        assertEquals("eline", getStringClone().getGUIName());
+
     }
 
     public void testOrigin() {
         assertNull(getString().getOrigin());
         assertEquals(getString(), getStringClone().getOrigin());
+        assertEquals(getString(), getLine().getOrigin());
     }
 
     public void testBaseTypeIdentifier() {
         assertEquals("string", getString().getBaseTypeIdentifier());
         assertEquals("string", getStringClone().getBaseTypeIdentifier());
+        assertEquals("string", getLine().getBaseTypeIdentifier());
     }
 
     public void testBaseType() {
         assertEquals(Field.TYPE_STRING, getString().getBaseType());
         assertEquals(Field.TYPE_STRING, getStringClone().getBaseType());
+        assertEquals(Field.TYPE_STRING, getLine().getBaseType());
     }
 
 
     public void testGetTypeAsClass() {
         assertEquals(String.class, getString().getTypeAsClass());
         assertEquals(String.class, getStringClone().getTypeAsClass());
+        assertEquals(String.class, getLine().getTypeAsClass());
     }
 
     public void testCheckType() {
@@ -85,8 +107,14 @@ public class DataTypesTest extends TestCase {
             fail();
         } catch (IllegalArgumentException iae) {
         }
+        try {
+            getLine().checkType(Integer.valueOf(1));
+            fail();
+        } catch (IllegalArgumentException iae) {
+        }
         getString().checkType("foo");
         getStringClone().checkType("foo");
+        getLine().checkType("foo");
     }
 
     public void testCast() {
@@ -94,6 +122,7 @@ public class DataTypesTest extends TestCase {
         assertEquals("foo", getStringClone().cast("foo", null, null));
         assertEquals("1", getString().cast(new Integer(1), null, null));
         assertEquals("1", getStringClone().cast(new Integer(1), null, null));
+        assertEquals("1", getLine().cast(new Integer(1), null, null));
 
     }
 
@@ -106,6 +135,7 @@ public class DataTypesTest extends TestCase {
     public void testDefaultValue() {
         assertNull(getString().getDefaultValue());
         assertNull(getStringClone().getDefaultValue());
+        assertNull(getLine().getDefaultValue());
     }
 
 
