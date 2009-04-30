@@ -18,20 +18,20 @@
   <fieldlist>
     <field name="string">
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
-	<maxLength value="255" />
+        <maxLength value="255" />
       </datatype>
     </field>
-    <field name="mustbechanged1" type="virtual">
+    <field name="mustbechanged1" state="virtual">
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
-	<maxLength value="255" />
+        <maxLength value="255" />
         <commitprocessor>
           <class name="org.mmbase.datatypes.processors.AssertChangedCommitProcessor" />
         </commitprocessor>
       </datatype>
     </field>
-    <field name="mustbechanged2" type="virtual">
+    <field name="mustbechanged2" state="virtual">
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
-	<maxLength value="255" />
+        <maxLength value="255" />
         <commitprocessor>
           <class name="org.mmbase.datatypes.processors.AssertChangedCommitProcessor" />
         </commitprocessor>
