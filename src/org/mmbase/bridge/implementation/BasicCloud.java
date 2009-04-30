@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.196 2008-11-25 13:25:44 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.197 2009-04-30 14:46:39 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -849,6 +849,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         return resultNodeList;
     }
 
+
     //javadoc inherited
     public NodeList getList(
         String startNodes,
@@ -1153,4 +1154,34 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
             throw new java.lang.SecurityException("You (' " + userContext + "') are now allowed to shutdown mmbase (" + action + ")");
         }
     }
+
+    /**
+     * Calls the delete processor for every field.
+     * @since MMBase-1.9.1
+     */
+    protected void processDeleteProcessors(Node n) {
+        if (log.isDebugEnabled()) {
+            log.debug("Calling delete processors on " + n);
+        }
+        for (Field field : n.getNodeManager().getFields()) {
+            field.getDataType().getDeleteProcessor().commit(n, field);
+        }
+    }
+    /**
+     * Calls the commit processor for every field.
+     * @since MMBase-1.9.1
+     */
+    protected  void processCommitProcessors(Node n) {
+        if (log.isDebugEnabled()) {
+            log.debug("Calling commit processors on " + n);
+        }
+        for (Field field : n.getNodeManager().getFields()) {
+            field.getDataType().getCommitProcessor().commit(n, field);
+        }
+    }
+
+    protected void setValue(BasicNode node, String fieldName, Object value) {
+        node.getNode().setValue(fieldName, value);
+    }
+
 }
