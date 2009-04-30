@@ -34,5 +34,11 @@
     </body>
   </block>
 
+  <block name="relations">
+    <body jsp="/mmbase/components/richtext/wiki/relations.jspx">
+      <param name="n"    />
+    </body>
+  </block>
+
 
 </component>
