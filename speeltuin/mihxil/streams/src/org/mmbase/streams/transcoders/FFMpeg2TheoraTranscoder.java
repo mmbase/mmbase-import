@@ -12,6 +12,8 @@ package org.mmbase.streams.transcoders;
 
 import java.net.*;
 import java.io.*;
+import java.util.regex.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 
@@ -40,9 +42,21 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
 
         return new String[] { "-o", outFile.toString(), inFile.toString() };
     }
+
+    private static final Pattern PROGRESS = Pattern.compile(".*time elapsed.*");
     @Override
-    protected Level getErrorLevel() {
-        return Level.SERVICE;
+    protected LoggerWriter getErrorWriter(Logger log) {
+        LoggerWriter w = new LoggerWriter(log, Level.SERVICE) {
+                @Override
+                public Level getLevel(String line) {
+                    if (PROGRESS.matcher(line).matches()) {
+                        return Level.DEBUG;
+                    }
+                    return null;
+                }
+            };
+
+        return w;
     }
 
     @Override
