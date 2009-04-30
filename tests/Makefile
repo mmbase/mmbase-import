@@ -1,12 +1,12 @@
 
-export JAVA_HOME=/opt/jdk15
+export JAVA_HOME=/opt/jdk16
 
 ant=ant -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib lib:. -Dnoconnection=true
 #ant=ant -lib lib:. -Dnoconnection=true
 
 .PHONY: all bridge rmmci dbsq util datatypes clustering convert typerel richtext cloudcontext transactions
 all:
-	$(ant) run.all
+	$(ant) run.all | tee work/all.log
 
 #ok
 bridge: dependencies
@@ -26,8 +26,12 @@ dbsq:
 	$(ant) run.dbsq | tee work/dbsq.log
 
 #ok
-util:
+util: dependencies
 	$(ant) run.util | tee work/util.log
+
+
+rmmciutil: dependencies
+	$(ant) run.rmmciutil | tee work/rmmciutil.log
 
 #ok
 datatypes: dependencies
