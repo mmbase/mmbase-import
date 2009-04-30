@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.63 2009-02-12 12:34:11 michiel Exp $
+ * @version $Id: Indexer.java,v 1.64 2009-04-30 10:07:34 michiel Exp $
  **/
 public class Indexer {
 
@@ -43,7 +43,7 @@ public class Indexer {
     /**
      *  An empty index definition that can be used to obtain nodes from the cloud.
      */
-    protected static final MMBaseIndexDefinition nodeLoader = new MMBaseIndexDefinition();
+    static final MMBaseIndexDefinition nodeLoader = new MMBaseIndexDefinition();
 
     /**
      * @since MMBase-1.9
@@ -58,7 +58,9 @@ public class Indexer {
      * @since MMBase-1.9
      */
     public static void addField(Document document, Field field, Multiple multiple) {
-        if (multiple == null) multiple = Multiple.ADD;
+        if (multiple == null) { 
+          multiple = Multiple.ADD;
+        }
         switch(multiple) {
         case FIRST:
             if (document.get(field.name()) == null) {
@@ -184,7 +186,9 @@ public class Indexer {
     public Node getNode(Cloud userCloud, Document doc) {
         for (IndexDefinition id : queries) {
             Node n = id.getNode(userCloud, doc);
-            if (n != null) return n;
+            if (n != null) {
+              return n;
+            }
         }
         return nodeLoader.getNode(userCloud, doc);
     }
@@ -377,7 +381,13 @@ public class Indexer {
                     addError(ioe.getMessage());
                     log.error(ioe);
                 } finally {
-                    if (reader != null) try {reader.close(); } catch (IOException ioe) { log.error(ioe);}
+                    if (reader != null) {
+                      try {
+                        reader.close();
+                      } catch  (IOException ioe) {
+                        log.error(ioe);
+                      }
+                  }
                 }
                 if (mains.size() > 0) {
                     log.debug("Found lucene documents " + mains + " for node " + number + " which must be updated now");
