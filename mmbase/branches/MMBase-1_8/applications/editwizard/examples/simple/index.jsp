@@ -21,7 +21,7 @@
     <table>
       <mm:import id="referrer"><%=new  java.io.File(request.getServletPath())%></mm:import>
       <tr><td>
-      <a href='<mm:url referids="referrer" page="$jsps/list.jsp">                                                               
+      <a href='<mm:url referids="referrer" page="$jsps/list.jsp">
         <mm:param name="wizard">../samples/people</mm:param>
         <mm:param name="nodepath">people</mm:param>
         <mm:param name="fields">firstname,lastname,owner</mm:param></mm:url>' >Person-Test</a>
@@ -37,6 +37,28 @@
       <a href="<mm:url referids="referrer" page="$jsps/list.jsp?wizard=../samples/news&nodepath=news&fields=title,date,owner&search=yes" />" >News</a>
       </td><td>
       An editor for news articles. In the one step you can create or add a news article and relate people and images to it.
+    </td></tr>
+    <tr><td>
+      <mm:link referids="referrer" page="$jsps/list.jsp">
+        <mm:param name="wizard">../samples/news_origin</mm:param>
+        <mm:param name="startnodes">default.mags</mm:param>
+        <mm:param name="origin">default.mags</mm:param>
+        <mm:param name="relationRole">posrel</mm:param>
+        <mm:param name="relationOriginNode">default.mags</mm:param>
+        <mm:param name="nodepath">mags,posrel,news</mm:param>
+        <mm:param name="orderby">posrel.pos</mm:param>
+        <mm:param name="directions">down</mm:param>
+        <mm:param name="search">yes</mm:param>
+        <a href="${_}">News (with origin = default.mags)</a>
+      </mm:link>
+
+      <mm:link referids="referrer" page="$jsps/wizard.jsp">
+        <mm:param name="wizard">../samples/news_origin</mm:param>
+        <mm:param name="origin">default.mags</mm:param>
+        <mm:param name="objectnumber">new</mm:param>
+        <a href="${_}">NEW</a>
+      </mm:link>
+
       </td></tr>
     </table>
     <hr />
