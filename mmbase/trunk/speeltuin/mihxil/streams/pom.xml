@@ -9,11 +9,13 @@
     <version>1.9-SNAPSHOT</version>
   </parent>
 
+
   <artifactId>mmbase-streams</artifactId>
   <name>MMBase Streams</name>
   <packaging>war</packaging>
 
   <description>
+    Support for maintenance of media files in MMBase itself. Uploaded, transcoding, and serving.
   </description>
 
 

@@ -3,6 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
     name="streamsourcescaches" maintainer="mmbase.org" version="1" extends="mediasources">
 
   <names>
@@ -47,13 +48,15 @@
     </field>
 
 
-    <field name="url">
+    <field name="url" readonly="true">
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <getprocessor type="binary">
-          <class name="org.mmbase.streams.BinaryFile$Getter" />
+          <class name="org.mmbase.datatypes.processors.BinaryFile$Getter" />
         </getprocessor>
       </datatype>
     </field>
+
+    <xi:include href="mediaprovider.field.xml" />
 
   </fieldlist>
 
