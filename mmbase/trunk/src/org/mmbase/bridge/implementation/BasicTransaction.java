@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * which means that changes are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.45 2009-04-27 12:00:05 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.46 2009-04-30 14:46:39 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -39,6 +39,9 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
 
     protected BasicCloud parentCloud; // not final because of deserialization
+
+    private final Set<String> commitProcessed = new HashSet<String>();
+    private final Set<String> deleteProcessed = new HashSet<String>();
 
     /**
      * @since MMBase 1.9
@@ -128,44 +131,57 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             try {
                 assert BasicCloudContext.transactionManager.getTransaction(transactionName).size() == getNodes().size();
 
-
-                //log.info("Commiting " + getNodes());
-
                 if (log.isDebugEnabled()) {
-                    log.debug("Resolving " + getNodes().size() + " nodes");
+                    log.debug("Resolving transaction '" + transactionName + "' with " + getCoreNodes().size() + " nodes");
                 }
 
                 BasicCloudContext.transactionManager.resolve(transactionName);
 
-                if (log.isDebugEnabled()) {
-                    log.debug("Committing " + getNodes().size() + " nodes");
-                }
-
-                BasicCloudContext.transactionManager.commit(userContext, transactionName);
+                List<Node> nodes = getNodes();
 
                 if (log.isDebugEnabled()) {
-                    log.debug("Commitprocessing " + getNodes().size() + " nodes");
+                    log.debug("Committing " + nodes.size() + " nodes");
                 }
 
-                // This is a hack to call the commitprocessors which are only available in the
-                // bridge.
 
-                for (Node n : getNodes()) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Commitprocessing " + nodes.size() + " nodes");
+                }
+
+                // Now calling commit processors. They have real nodes numbers now.
+
+                for (Node n : nodes) {
                     if (n == null) {
                         log.warn("Found null in transaction");
                         continue;
                     }
                     if (! n.isChanged() && ! n.isNew()) {
-                        log.debug("Ignored because not changed " + n.isChanged() + "/" + n.isNew());
+                        log.debug("Node not changed, not calling commit processors");
                         continue;
                     }
                     if (TransactionManager.EXISTS_NOLONGER.equals(n.getStringValue("_exists"))) {
-                        log.debug("Ignored because exists no longer.");
-                        continue;
+                        log.debug("Deleted");
+                        processDeleteProcessors(n);
+                    } else {
+                        log.debug("Committing");
+                        processCommitProcessors(n);
                     }
-                    log.debug("Calling commit on " + n);
-                    n.commit();
                 }
+
+                if (log.isDebugEnabled()) {
+                    log.debug("Resolving transaction '" + transactionName + "' again with " + getCoreNodes().size() + " nodes");
+                }
+
+                BasicCloudContext.transactionManager.resolve(transactionName);
+
+
+                if (log.isDebugEnabled()) {
+                    log.debug("Commit transaction '" + transactionName + "' with " + getCoreNodes().size() + " nodes");
+                }
+
+
+                BasicCloudContext.transactionManager.commit(userContext, transactionName);
+
 
 
 
@@ -378,6 +394,35 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     public Cloud getNonTransactionalCloud() {
         return parentCloud.getNonTransactionalCloud();
+    }
+
+
+    @Override
+    protected void processDeleteProcessors(Node n) {
+        String tempId = n.getStringValue("_number");
+        if (! deleteProcessed.contains(tempId)) {
+            super.processDeleteProcessors(n);
+            deleteProcessed.add(tempId);
+        } else {
+        }
+    }
+
+    @Override
+    protected  void processCommitProcessors(Node n) {
+        String tempId = n.getStringValue("_number");
+        if (! commitProcessed.contains(tempId)) {
+            super.processCommitProcessors(n);
+            commitProcessed.add(tempId);
+        } else {
+            log.debug("Not commit processing " + n + " because that happend already (Call to commit?");
+        }
+    }
+    @Override
+    protected void setValue(BasicNode node, String fieldName, Object value) {
+        super.setValue(node, fieldName, value);
+        // changed, so commit processor _must_ be called again
+        String tempId = node.getStringValue("_number");
+        commitProcessed.remove(tempId);
     }
 }
 

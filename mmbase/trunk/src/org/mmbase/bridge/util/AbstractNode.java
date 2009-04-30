@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.31 2009-04-29 07:36:08 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.32 2009-04-30 14:46:39 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -129,7 +129,7 @@ public abstract class AbstractNode implements Node {
             case Field.TYPE_BOOLEAN: setBooleanValue(fieldName, Casting.toBoolean(value)); break;
             case Field.TYPE_DECIMAL: setDecimalValue(fieldName, Casting.toDecimal(value)); break;
             case Field.TYPE_LIST:    setListValue(fieldName, (List) value); break;
-                default:                 setObjectValue(fieldName, value);
+            default:                 setObjectValue(fieldName, value);
             }
         }
     }
@@ -502,13 +502,7 @@ public abstract class AbstractNode implements Node {
         return (Element)tree.importNode(doc.getDocumentElement(), true);
     }
 
-    public final void processCommit() {
-        FieldIterator fi = getNodeManager().getFields().fieldIterator();
-        while (fi.hasNext()) {
-            Field field = fi.nextField();
-            field.getDataType().getCommitProcessor().commit(this, field);
-        }
-    }
+
 
     public Collection<String> validate() {
         List<String> errors = new ArrayList<String>();

@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.235 2009-04-24 15:13:27 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.236 2009-04-30 14:46:39 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -279,14 +279,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      */
     @Override
     protected void setValueWithoutChecks(String fieldName, Object value) {
-        String result = BasicCloudContext.tmpObjectManager.setObjectField(account, "" + temporaryNodeId, fieldName, value);
-        if (TemporaryNodeManager.UNKNOWN == result) {
-            throw new BridgeException("Can't change unknown field '" + fieldName + "', of node " + getNumber() +
-                                      " of nodeManager '" + getNodeManager().getName() +"'");
-        } else if (TemporaryNodeManager.INVALID_VALUE == result) {
-            log.debug("Storing value");
-            getNode().setValue(fieldName, value); // commit() will throw that invalid.
-        }
+        cloud.setValue(this, fieldName, value);
     }
     @Override
     protected Integer toNodeNumber(Object v) {
@@ -507,7 +500,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             getCloud().setProperty(CLOUD_COMMITNODE_KEY, prev);
         }
 
-        processCommit();
+        cloud.processCommitProcessors(this);
         if (log.isDebugEnabled()) {
             log.debug("committing " + noderef.getChanged() + " " + noderef.getValues());
         }
@@ -552,6 +545,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     @Override
     public void delete(boolean deleteRelations) {
         checkDelete();
+        cloud.processDeleteProcessors(this);
         if (isNew()) {
             // remove from the Transaction
             // note that the node is immediately destroyed !
@@ -586,6 +580,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
                 if (temporaryNodeId != -1) {
                     BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
                 }
+
                 MMObjectNode node = getNode();
                 //node.getBuilder().removeNode(node);
                 node.remove(cloud.getUser());
