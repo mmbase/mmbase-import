@@ -20,13 +20,14 @@ import org.mmbase.util.LocalizedString;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.14 2009-04-29 07:39:07 michiel Exp $
+ * @version $Id: AbstractDescriptor.java,v 1.15 2009-04-30 19:54:39 michiel Exp $
  */
 
 abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<AbstractDescriptor> {
 
-    protected String key;
-    protected LocalizedString description;
+    protected String key; // clone sucks
+
+    protected LocalizedString description; // clone sucks. so it cannot be final
     protected LocalizedString guiName;
 
     protected AbstractDescriptor() {}
@@ -37,8 +38,8 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
      */
     protected AbstractDescriptor(String name) {
         key = name;
-        setGUIName(name);
-        setDescription("");
+        guiName = new LocalizedString(key);
+        description = new LocalizedString(key);
     }
 
     /**
@@ -64,13 +65,13 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
 
     /**
      * The locale which must be used if no locale is specified.
-     * The default implementation returns <code>null</code>.
+     * The default implementation returns {@link LocalizedString#getDefault}
      * This method can be overriden if another more logical default is
      * available. E.g. in BasicField the locale of the current cloud is returned.
      * @since MMBase-1.8.1
      */
     protected Locale getDefaultLocale() {
-        return null;
+        return LocalizedString.getDefault();
     }
 
     /**
@@ -82,7 +83,6 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
     }
 
     public String getDescription(Locale locale) {
-        if (description == null) description = new LocalizedString(key);
         return description.get(locale == null ? getDefaultLocale() : locale);
     }
 
@@ -93,13 +93,15 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
     public LocalizedString getLocalizedDescription() {
         return description;
     }
-
     protected void setLocalizedDescription(LocalizedString description) {
         this.description = description;
     }
+    protected void setLocalizedGUIName(LocalizedString value) {
+        guiName = value;
+    }
+
 
     public void setDescription(String desc, Locale locale) {
-        if (description == null) description = new LocalizedString(key);
         description.set(desc, locale);
     }
 
@@ -115,7 +117,6 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
      * @return the GUI Name
      */
     public String getGUIName(Locale locale) {
-        if (guiName == null) guiName = new LocalizedString(key);
         return guiName.get(locale == null ? getDefaultLocale() : locale);
     }
 
@@ -130,7 +131,6 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
     }
 
     public void setGUIName(String g, Locale locale) {
-        if (guiName == null) guiName = new LocalizedString(key);
         guiName.set(g, locale);
     }
 
@@ -140,10 +140,6 @@ abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<
 
     public LocalizedString getLocalizedGUIName() {
         return guiName;
-    }
-
-    protected void setLocalizedGUIName(LocalizedString value) {
-        guiName = value;
     }
 
     public String toString() {
