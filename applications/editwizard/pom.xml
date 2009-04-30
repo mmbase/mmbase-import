@@ -27,7 +27,7 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-dove</artifactId>
-      <version>${project.version}</version>
+      <version>${mmbase.version}</version>
     </dependency>
   </dependencies>
 
