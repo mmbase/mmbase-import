@@ -12,7 +12,6 @@ package org.mmbase.bridge.util;
 
 import java.util.*;
 import java.util.concurrent.*;
-import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
@@ -22,7 +21,7 @@ import org.mmbase.util.logging.*;
  * matter of convience in e.g. JSPs using {@link #getValue} with a field name starting with "annotation:".
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AnnotatedNode.java,v 1.1 2008-07-21 14:23:23 michiel Exp $
+ * @version $Id: AnnotatedNode.java,v 1.2 2009-04-30 10:06:12 michiel Exp $
  * @since   MMBase-1.9
  */
 
