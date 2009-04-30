@@ -16,9 +16,9 @@ import java.util.*;
 import junit.framework.TestCase;
 
 /**
- * 
+ *
  * @author Michiel Meeuwissen
- * @verion $Id: LocalizedEntryListFactoryTest.java,v 1.3 2007-06-21 15:50:20 nklasens Exp $
+ * @verion $Id: LocalizedEntryListFactoryTest.java,v 1.4 2009-04-30 18:59:25 michiel Exp $
  */
 public class LocalizedEntryListFactoryTest extends TestCase {
 
@@ -44,9 +44,9 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         }
         {
             List<Object> col  = Arrays.asList(new Object[] { new Entry("a", "hallo"), new Entry("b", "saluut")});
-            assertEquals(col, fact.get(BE));  
-            assertEquals(col, fact.get(BE_VAR));  
-            
+            assertEquals(col, fact.get(BE));
+            assertEquals(col, fact.get(BE_VAR));
+
         }
         {
             Collection<Object> col  = Arrays.asList(new Object[] { new Entry("a", "hello"), new Entry("b", "hi")});
@@ -92,16 +92,16 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         assertEquals("0",     fact.castKey("0"));
         assertEquals("true",  fact.castKey("true"));
         assertEquals("1",     fact.castKey("1"));
-        assertEquals("xxxx",  fact.castKey("xxxx")); 
+        assertEquals("xxxx",  fact.castKey("xxxx"));
     }
 
     public void testReadXml() throws org.xml.sax.SAXException, java.io.IOException {
         LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
         String config =
-            "<enumeration>" + 
-            "  <entry value='' display='unfilled' />" + 
-            "  <entry value='1' display='one' />" + 
-            "  <entry value='2' display='two' />" + 
+            "<enumeration>" +
+            "  <entry value='' display='unfilled' />" +
+            "  <entry value='1' display='one' />" +
+            "  <entry value='2' display='two' />" +
             "</enumeration>";
         Document doc = DocumentReader.getDocumentBuilder(false).parse(new InputSource(new StringReader(config)));
         fact.fillFromXml(doc.getDocumentElement(), null);
@@ -115,8 +115,8 @@ public class LocalizedEntryListFactoryTest extends TestCase {
     public void testReadXml2() throws org.xml.sax.SAXException, java.io.IOException {
         LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
         String config =
-            "<enumeration>" + 
-            "  <entry basename='org.mmbase.datatypes.resources.boolean.truefalse' />" + 
+            "<enumeration>" +
+            "  <entry basename='org.mmbase.datatypes.resources.boolean.truefalse' />" +
             "</enumeration>";
         Document doc = DocumentReader.getDocumentBuilder(false).parse(new InputSource(new StringReader(config)));
         fact.fillFromXml(doc.getDocumentElement(), Boolean.class);
@@ -125,7 +125,7 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         assertEquals(Boolean.FALSE, fact.castKey("0"));
         assertEquals(Boolean.TRUE,  fact.castKey("true"));
         assertEquals(Boolean.TRUE,  fact.castKey("1"));
-        assertEquals("xxxx"       , fact.castKey("xxxx")); 
+        assertEquals("xxxx"       , fact.castKey("xxxx"));
 
         // now change wrap type
 
@@ -136,16 +136,16 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         assertEquals("0",     fact.castKey("0"));
         assertEquals("true",  fact.castKey("true"));
         assertEquals("1",     fact.castKey("1"));
-        assertEquals("xxxx",  fact.castKey("xxxx")); 
+        assertEquals("xxxx",  fact.castKey("xxxx"));
 
     }
     public void testReadXml3() throws org.xml.sax.SAXException, java.io.IOException {
         LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
         String config =
-            "<enumeration>" + 
-            "<entry basename='org.mmbase.datatypes.resources.states'" + 
-            "       javaconstants='org.mmbase.module.builders.MMServers'" + 
-            "       />" + 
+            "<enumeration>" +
+            "<entry basename='org.mmbase.datatypes.resources.states'" +
+            "       javaconstants='org.mmbase.datatypes.resources.StateConstants'" +
+            "       />" +
             "</enumeration>";
         Document doc = DocumentReader.getDocumentBuilder(false).parse(new InputSource(new StringReader(config)));
         fact.fillFromXml(doc.getDocumentElement(), Integer.class);
