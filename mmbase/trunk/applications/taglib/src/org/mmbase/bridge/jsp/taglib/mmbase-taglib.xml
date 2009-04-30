@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.452 2009-03-09 18:05:49 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.453 2009-04-30 09:31:34 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -94,6 +94,7 @@ version: $Id: mmbase-taglib.xml,v 1.452 2009-03-09 18:05:49 michiel Exp $
     <description>
       Performs taglib-escaping.
     </description>
+    <see tag="write" attribute="escape" />
     <name>escape</name>
     <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
     <function-signature>java.lang.String escape(java.lang.String, java.lang.Object)</function-signature>
@@ -958,7 +959,7 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <info>
         Override the default escape behaviour determined by the surrounding Content-tag.
         <document file="resources/taglibcontent.xml" mode="escapers" />
-    <p>The value can also refer to the id of an escaper tag</p>
+        <p>The value can also refer to the id of an escaper tag</p>
       </info>
       <see tag="content" />
       <see tag="escaper" />
@@ -9102,6 +9103,9 @@ The 0 is just counter, which starts at 0 on every page.
     <name>selectnode</name>
     <path>/META-INF/tags/mm/u/selectnode.tagx</path>
     <since>MMBase-1.9</since>
+    <info>
+      Selects a node directly by the value of one of its fields.
+    </info>
   </tag-file>
   <tag-file>
     <type>mmbase.basic</type>
