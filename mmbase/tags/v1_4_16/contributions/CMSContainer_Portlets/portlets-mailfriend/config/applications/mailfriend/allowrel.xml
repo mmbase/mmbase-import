@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<allowrel exportsource="jdbc:mysql://localhost/mailfriend" timestamp="20060906000000">
-   <node number="804" owner="default" snumber="44005" dnumber="44050" rtype="allowrel" dir="bidirectional">
-      <allow>yes</allow>
-   </node>
-</allowrel>
