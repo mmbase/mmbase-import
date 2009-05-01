@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<action type="delete">
-   <prompt xml:lang="nl">Weet u zeker dat u dit gastenboek wilt verwijderen ?</prompt>
-   <prompt xml:lang="zh">您确定删除此吗用户联系手册?</prompt>
-   <description xml:lang="nl">Klik hier om dit gastenboek te verwijderen.</description>
-   <description xml:lang="zh">电机删除用户联系手册.</description>
-</action>

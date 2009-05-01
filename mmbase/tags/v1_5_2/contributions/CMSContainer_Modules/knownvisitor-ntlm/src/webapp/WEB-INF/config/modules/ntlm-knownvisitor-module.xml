@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
-<module>
-	<status>active</status>
-	<classfile>com.finalist.cmsc.knownvisitor.ntlm.NtlmKnownVisitorModule</classfile>
-	<properties>
-	</properties>
-</module>
