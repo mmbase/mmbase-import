@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<form-schema id="edit_extra_info">
-   <!-- field name="naam" ftype="line"><prompt>naam</prompt></field -->
-   <field name="omschrijving" ftype="html" rows="20"  ><prompt>omschrijving</prompt></field>
-   <!--      <list include="config/evenement/zoek_extra_info_readmore_evenement.xml" /> -->
-   <list include="config/natuurgebieden/zoek_extra_info_readmore_natuurgebieden.xml" />
-   <list include="config/routebeschrijvingen/zoek_extra_info_readmore_routebeschrijvingen.xml" />
-</form-schema>
