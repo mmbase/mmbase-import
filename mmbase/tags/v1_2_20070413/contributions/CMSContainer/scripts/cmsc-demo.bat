@@ -1,1 +1,0 @@
-build cleanbuild cmsc cmscImpl && build deploy-tomcat cmscImpl
