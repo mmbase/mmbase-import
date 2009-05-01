@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE functionsets PUBLIC "//MMBase - functionsets//" "http://www.mmbase.org/dtd/functionsets_1_0.dtd">
-<functionsets>
-    <functionset name="thememanager" file="sets/thememanager_functionset.xml" />
-    <functionset name="mmbob" file="sets/mmbob_functionset.xml" />
-</functionsets>

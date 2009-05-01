@@ -1,8 +1,0 @@
-<component name="workspace" templatepath="workspace" templatebar="education" barposition="70">
-  <scope name="component" referid="component">
-  </scope>
-  <scope name="providers" referid="provider">
-  </scope>
-  <scope name="educations" referid="education">
-  </scope>
-</component>
