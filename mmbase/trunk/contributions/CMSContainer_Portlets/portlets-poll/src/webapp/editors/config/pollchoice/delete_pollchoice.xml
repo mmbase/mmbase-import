@@ -1,8 +1,0 @@
-<?xml version="1.0" ?>
-<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<action type="delete">
-   <prompt xml:lang="nl">Weet u zeker dat u deze poll optie wilt verwijderen ?</prompt>
-   <prompt xml:lang="zh">你确定删除此投票选项吗?</prompt>
-   <description xml:lang="nl">Klik hier om deze poll optie te verwijderen.</description>
-   <description xml:lang="zh">点击删除此投票选项.</description>
-</action>
