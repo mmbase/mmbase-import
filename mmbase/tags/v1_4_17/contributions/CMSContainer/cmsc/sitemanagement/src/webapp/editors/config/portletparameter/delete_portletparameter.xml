@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<action type="delete">
-	<prompt xml:lang="nl">Weet u zeker dat u deze Portlet Parameter wilt verwijderen?</prompt>
-	<prompt xml:lang="en">Are you sure to remove this Portlet Parameter?</prompt>
-	<description xml:lang="nl">Klik hier om deze Portlet Parameter te verwijderen.</description>
-	<description xml:lang="en">Click here to remove this Portlet Parameter.</description> 
-</action>
