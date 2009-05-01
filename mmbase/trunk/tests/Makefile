@@ -5,7 +5,7 @@ ant=ant -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib target
 #ant=ant -lib lib:. -Dnoconnection=true
 
 .PHONY: all bridge rmmci dbsq util datatypes clustering convert typerel richtext cloudcontext transactions
-all:
+all: compile dependencies
 	$(ant) run.all | tee work/all.log
 
 #ok
