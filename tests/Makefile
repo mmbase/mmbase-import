@@ -1,7 +1,7 @@
 
 export JAVA_HOME=/opt/jdk16
 
-ant=ant -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib lib:. -Dnoconnection=true
+ant=ant -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib target/dependency:. -Dnoconnection=true
 #ant=ant -lib lib:. -Dnoconnection=true
 
 .PHONY: all bridge rmmci dbsq util datatypes clustering convert typerel richtext cloudcontext transactions
@@ -13,16 +13,16 @@ bridge: dependencies
 	$(ant) run.bridge | tee work/bridge.log
 
 
-#many failures. rmmci sucks / is unmaintainable
+#1 or 2 failures
 rmmci:  dependencies
 	$(ant) run.bridge.rmmci | tee work/rmmci.log
 
 #ok
-richtext:
+richtext: dependencies
 	$(ant) run.richtext | tee work/richtext.log
 
 #ok
-dbsq:
+dbsq: dependencies
 	$(ant) run.dbsq | tee work/dbsq.log
 
 #ok
@@ -38,11 +38,11 @@ datatypes: dependencies
 	$(ant) run.datatypes | tee work/datatypes.log
 
 #
-clustering:
+clustering:  dependencies
 	$(ant) run.clustering | tee work/clustering.log
 
 #ok
-cloudcontext:
+cloudcontext: dependencies
 	$(ant) run.cloudcontext | tee work/cloudcontext.log
 
 #ok
@@ -50,7 +50,7 @@ convert: dependencies
 	$(ant) run.convertimage | tee work/convertimage.log
 
 #ok
-typerel:
+typerel: dependencies
 	$(ant) run.typerel | tee work/typerel.log
 
 # not yet checked in
@@ -59,6 +59,7 @@ transactions:
 
 
 dependencies:
+	mkdir -p work
 	mvn dependency:copy-dependencies
 
 .PHONY: compile
