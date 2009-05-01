@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="locales">
-   <option id="eng">English</option>
-   <option id="fra">Francais</option>
-   <option id="de">Deutsch</option>
-   <option id="nl">Nederlands</option>
-</optionlist>
