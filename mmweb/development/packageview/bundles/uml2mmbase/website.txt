@@ -1,4 +1,0 @@
-<tr>
-	<th>Website</th>
-	<td><a href="http://uml2mmbase.finalist.com/"><img src="images/arrow-right.gif"></a></td>
-</tr>

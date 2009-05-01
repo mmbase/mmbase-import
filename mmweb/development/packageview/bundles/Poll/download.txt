@@ -1,4 +1,0 @@
-<tr>
-	<th>Download</th>
-	<td><a href="http://www.mmbase.org/mmbase/attachments/19646/poll.zip"><img src="images/arrow-right.gif"></a></td>
-</tr>
