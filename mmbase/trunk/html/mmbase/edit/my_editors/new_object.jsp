@@ -62,10 +62,19 @@
 <mm:import externid="save" />
 <mm:import externid="new_alias" />
   
-  <div class="firstrow">
-    <a href="<mm:url referids="ntype,nr?,rkind?,dir?" />"><img src="img/mmbase-new.png" alt="new" width="21" height="20" /></a>
-    <h2>New node of type <mm:nodeinfo nodetype="$ntype" type="guinodemanager" /> (<mm:nodeinfo nodetype="$ntype" type="type" />)</h2>
-  </div>
+  <mm:notpresent referid="save">
+    <div class="firstrow">
+      <a href="<mm:url referids="ntype,nr?,rkind?,dir?" />"><img src="img/mmbase-new.png" alt="new" width="21" height="20" /></a>
+      <mm:present referid="rnr">
+        <mm:node referid="rnr">
+          <mm:link page="edit_object.jsp" referids="rnr@nr">
+            <a href="${_}" title="edit this new node"><img src="img/mmbase-edit.png" alt="edit" width="21" height="20" /></a>
+          </mm:link>
+        </mm:node>
+      </mm:present>
+      <h2>New node of type <mm:nodeinfo nodetype="$ntype" type="guinodemanager" /> (<mm:nodeinfo nodetype="$ntype" type="type" />)</h2>
+    </div>
+  </mm:notpresent>
 
   <%-- save the new node & show it --%>
   <mm:present referid="save">
@@ -77,23 +86,35 @@
       <mm:present referid="new_alias">
         <mm:createalias name="$new_alias" />
       </mm:present>
+      <mm:notpresent referid="rnr">   <%-- rnr is the new created node --%>
+        <mm:import id="rnr" reset="true"><mm:field name="number" /></mm:import>
+      </mm:notpresent>
+
+      <div class="firstrow">
+        <a href="<mm:url referids="ntype,nr?,rkind?,dir?" />"><img src="img/mmbase-new.png" alt="new" width="21" height="20" /></a>
+        <mm:present referid="rnr">
+          <mm:node referid="rnr">
+            <mm:link page="edit_object.jsp" referids="rnr@nr">
+              <a href="${_}" title="edit this new node"><img src="img/mmbase-edit.png" alt="edit" width="21" height="20" /></a>
+            </mm:link>
+          </mm:node>
+        </mm:present>
+        <h2>New node of type <mm:nodeinfo nodetype="$ntype" type="guinodemanager" /> (<mm:nodeinfo nodetype="$ntype" type="type" />)</h2>
+      </div>
       <div class="message">    
         <h4>
-          <mm:link page="edit_object.jsp">
-            <mm:param name="nr"><mm:field name="number" /></mm:param>
+          <mm:link page="edit_object.jsp" referids="_@nr">
             Your new node <a href="${_}" title="edit this new node"><mm:function name="gui" /></a> (<mm:field name="number" />) is saved
-            <a href="${_}" title="edit this new node"><img src="img/mmbase-edit.png" alt="edit" width="21" height="20" /></a>
           </mm:link>
         </h4>
         <mm:present referid="new_alias"><mm:compare referid="new_alias" value="" inverse="true"><p>With alias '<mm:write referid="new_alias" />'</p></mm:compare></mm:present>
       </div>
-      <mm:notpresent referid="rnr">   <%-- rnr is the new created node --%>
-        <mm:import id="rnr" reset="true"><mm:field name="number" /></mm:import>
-      </mm:notpresent>
     </mm:node>
-    
-    <%-- display new node --%>
-    <mm:node referid="new_node">
+  </mm:present>  <%-- /save --%>
+
+  <%-- display new node --%>
+  <mm:present referid="rnr">
+    <mm:node referid="rnr">
       <div id="newnode">
         <mm:fieldlist type="list">
           <div class="row">
@@ -109,46 +130,47 @@
         <div class="lastrow">&nbsp;</div>
       </div>
     </mm:node>
-  </mm:present>  <%-- /save --%>
+  </mm:present>
     
   <%-- are we also relating ? --%>
   <%@ include file="inc/relating.jsp" %>
 
+
   <%-- ### not saved: form ### --%>
   <mm:notpresent referid="save">
-  <mm:notpresent referid="the_relation"><%-- in case a relation has been created --%>
-    <form enctype="multipart/form-data" method="post" action="<mm:url referids="ntype,nr?,rkind?,dir?" />">
-    <fieldset>
-    <mm:fieldlist nodetype="$ntype" type="edit">
-      <div class="row">
-        <label for="mm_<mm:fieldinfo type="name" />">
-          <strong><mm:fieldinfo type="guiname" /></strong>
-          <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
-          <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
-        </label>
-        <span class="content"><mm:fieldinfo type="input" /></span>
-        <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
-      </div>
-    </mm:fieldlist>
-   
-    <%-- aliases --%>
-    <div class="row">
-      <label for="new_alias">
-        <strong>Alias</strong>
-        <a onmouseover="showBox('descr_alias',event);return false;" onmouseout="showBox('descr_alias',event);return false;">alias</a>
-      </label>
-      <input type="text" id="new_alias" name="new_alias" size="80" maxlength="255" class="small" /><br />
-      <div style="display: none;" class="description" id="descr_alias"><mm:nodeinfo type="description" nodetype="oalias" /></div>
-    </div>
-    <%-- /aliasses --%>
-    
-    <%-- button --%>
-    <div class="lastrow">
-      <input type="submit" name="save" value="Save" />
-    </div>
-    </fieldset>
-    </form>
-  </mm:notpresent><%-- /save --%>
+    <mm:notpresent referid="the_relation"><%-- in case a relation has been created --%>
+      <form enctype="multipart/form-data" method="post" action="<mm:url referids="ntype,nr?,rkind?,dir?" />">
+        <fieldset>
+          <mm:fieldlist nodetype="$ntype" type="edit">
+            <div class="row">
+              <label for="mm_<mm:fieldinfo type="name" />">
+                <strong><mm:fieldinfo type="guiname" /></strong>
+                <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
+                <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
+              </label>
+              <span class="content"><mm:fieldinfo type="input" /></span>
+              <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
+            </div>
+          </mm:fieldlist>
+       
+          <%-- aliases --%>
+          <div class="row">
+            <label for="new_alias">
+              <strong>Alias</strong>
+              <a onmouseover="showBox('descr_alias',event);return false;" onmouseout="showBox('descr_alias',event);return false;">alias</a>
+            </label>
+            <input type="text" id="new_alias" name="new_alias" size="80" maxlength="255" class="small" /><br />
+            <div style="display: none;" class="description" id="descr_alias"><mm:nodeinfo type="description" nodetype="oalias" /></div>
+          </div>
+          <%-- /aliasses --%>
+          
+          <%-- button --%>
+          <div class="lastrow">
+            <input type="submit" name="save" value="Save" />
+          </div>
+        </fieldset>
+      </form>
+    </mm:notpresent><%-- /save --%>
   </mm:notpresent><%-- /the_relation --%>
 </div><!-- / #node -->
   
