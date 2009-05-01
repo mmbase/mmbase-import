@@ -1,6 +1,0 @@
-<component name="search" templatepath="search" templatebar="provider" barposition="10">
-  <scope name="component" referid="component">
-  </scope>
-  <scope name="providers" referid="provider">
-  </scope>
-</component>

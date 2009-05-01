@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<action type="delete">
-	<prompt xml:lang="nl">Weet u zeker dat u deze alinea wilt verwijderen ?</prompt>
-	<prompt xml:lang="en">Are you sure you want to delete this paragraph ?</prompt>
-	<description></description>
-</action>
