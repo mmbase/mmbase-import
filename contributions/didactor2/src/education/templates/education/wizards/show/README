@@ -1,5 +1,0 @@
-This directory contains files of this form:
-
-<node type>.jspx
-
-They must generate a link to edit a object of given type.

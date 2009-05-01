@@ -1,6 +1,0 @@
-<project name="didactor2_pdfs" default="install" basedir=".">
-
-  <import file="../../install-dependency.xml" />
-  <target name="install" depends="itextxml" />
-
-</project>
