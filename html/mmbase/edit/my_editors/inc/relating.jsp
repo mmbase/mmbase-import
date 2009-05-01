@@ -60,9 +60,11 @@
         <div class="row">        
           <label for="mm_<mm:fieldinfo type="name" />">
             <strong><mm:fieldinfo type="guiname" /></strong>
-            <a onmouseover="toggle('descr_<mm:fieldinfo type="name" />');return false;" onmouseout="toggle('descr_<mm:fieldinfo type="name" />');return false;"><mm:fieldinfo type="name" /></a>
+            <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
+            <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
           </label>
-          <mm:fieldinfo type="input" />
+          <span class="content"><mm:fieldinfo type="input" /></span>
+          <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
         </div>
       </mm:fieldlist>
       <div class="lastrow">
