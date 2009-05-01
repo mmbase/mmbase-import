@@ -1,1 +1,0 @@
-<div class="landingpagenewscolumn" id="landingpagenewscolumn0${elementIndex + 1}">
