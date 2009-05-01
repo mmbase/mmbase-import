@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.12 2008-09-04 05:56:22 michiel Exp $
+ * @version $Id$
  */
 public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
 

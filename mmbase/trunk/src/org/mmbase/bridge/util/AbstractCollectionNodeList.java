@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * implicitely {@link #convert}ed when necessary.
  *
  * @since MMBase-1.8
- * @version $Id: AbstractCollectionNodeList.java,v 1.8 2008-09-04 09:34:51 michiel Exp $
+ * @version $Id$
  * @author Nico Klasens
  */
 

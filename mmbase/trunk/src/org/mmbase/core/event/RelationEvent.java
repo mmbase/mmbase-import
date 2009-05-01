@@ -17,7 +17,7 @@ import org.mmbase.util.HashCodeUtil;
  * 
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.21 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id$
  */
 public class RelationEvent extends Event implements Serializable, Cloneable {
 

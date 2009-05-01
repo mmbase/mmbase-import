@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 
  * @see FieldSetString
  * @author Michiel Meeuwissen
- * @version $Id: FieldGetString.java,v 1.4 2008-12-18 15:21:39 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

@@ -14,7 +14,7 @@ package org.mmbase.cache;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: CacheConfigurationException.java,v 1.4 2008-03-19 16:21:25 michiel Exp $
+ * @version $Id$
  */
 public class CacheConfigurationException extends Exception {
 

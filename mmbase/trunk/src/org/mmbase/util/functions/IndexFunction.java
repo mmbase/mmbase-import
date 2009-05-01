@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.15 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {

@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionCacheNode.java,v 1.9 2008-08-27 17:29:52 michiel Exp $
+ * @version $Id$
  */
 class VersionCacheNode {
 

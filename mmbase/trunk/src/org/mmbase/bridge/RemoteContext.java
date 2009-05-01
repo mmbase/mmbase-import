@@ -20,7 +20,7 @@ import java.net.MalformedURLException;
  * This, despite its name, is not actually a CloudContext, it only provides the static method to obtain one.
  *
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.14 2008-07-29 06:52:25 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.5
  */
 public final class RemoteContext {

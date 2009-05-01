@@ -8,7 +8,7 @@
       @todo: This JSP must accept a 'language' attribute, and all restriction error message must be included.
              That way, also those can be used in javascript.
 
-      $Id: datatypes.jspx,v 1.2 2007-09-12 23:29:45 michiel Exp $
+      $Id$
       author: Michiel Meeuwissen
   -->
   <mm:import externid="nodemanager" required="true" />

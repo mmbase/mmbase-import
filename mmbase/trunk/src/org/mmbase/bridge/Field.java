@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.41 2009-04-27 14:24:24 michiel Exp $
+ * @version $Id$
  */
 public interface Field extends Descriptor, Comparable<Field> {
 

@@ -14,7 +14,7 @@ import org.mmbase.util.Casting;
  * DataType associated with {@link java.lang.Integer}, a NumberDataType, but provides getMin and getMax as int.
  *
  * @author Pierre van Rooden
- * @version $Id: IntegerDataType.java,v 1.11 2006-12-15 13:38:01 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class IntegerDataType extends NumberDataType<Integer> {

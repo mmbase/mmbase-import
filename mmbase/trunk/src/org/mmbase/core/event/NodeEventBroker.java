@@ -12,7 +12,7 @@ package org.mmbase.core.event;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: NodeEventBroker.java,v 1.16 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id$
  */
 public class NodeEventBroker extends AbstractEventBroker {
 

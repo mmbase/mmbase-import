@@ -12,7 +12,7 @@ package org.mmbase.bridge;
 /**
  * This exception gets thrown when an object is not found in the bridge.
  * @author Michiel Meeuwissen
- * @version $Id: NotFoundException.java,v 1.4 2003-08-29 09:36:50 pierre Exp $
+ * @version $Id$
  */
 public class NotFoundException extends BridgeException {
 

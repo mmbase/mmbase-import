@@ -13,7 +13,7 @@ package org.mmbase.security;
  * This class is a kind of enumeration (introduced before java 1.5 enumerations) of the operations
  * possible within the security authorization.
  * @author Eduard Witteveen
- * @version $Id: Operation.java,v 1.14 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id$
  * @see Authorization
  */
 public final class Operation {

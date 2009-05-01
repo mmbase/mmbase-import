@@ -18,7 +18,7 @@ import org.mmbase.util.functions.*;
  * #getUrl}) with a 'quality' of this string.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Url.java,v 1.7 2008-10-29 19:42:42 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 

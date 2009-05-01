@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRequest.java,v 1.2 2009-04-17 15:43:39 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

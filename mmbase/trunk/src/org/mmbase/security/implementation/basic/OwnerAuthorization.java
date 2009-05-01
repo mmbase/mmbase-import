@@ -32,7 +32,7 @@ import java.io.IOException;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: OwnerAuthorization.java,v 1.14 2007-02-11 19:45:04 nklasens Exp $
+ * @version $Id$
  */
 public class OwnerAuthorization extends Authorization {
 

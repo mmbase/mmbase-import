@@ -20,7 +20,7 @@ import org.mmbase.util.LocalizedString;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.15 2009-04-30 19:54:39 michiel Exp $
+ * @version $Id$
  */
 
 abstract public class AbstractDescriptor implements Descriptor, PublicCloneable<AbstractDescriptor> {

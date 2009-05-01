@@ -15,7 +15,7 @@ import java.util.ListIterator;
  * An iterator for a list of strings
  *
  * @author Pierre van Rooden
- * @version $Id: StringIterator.java,v 1.8 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id$
  */
 public interface StringIterator extends ListIterator<String> {
 

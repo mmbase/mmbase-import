@@ -13,7 +13,7 @@ package org.mmbase.cache;
 /**
  * See http://java.sun.com/docs/books/tutorial/jmx/mbeans/standard.html
  * @author Michiel Meeuwissen
- * @version $Id: CacheMBean.java,v 1.3 2009-04-27 12:01:46 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public interface CacheMBean {

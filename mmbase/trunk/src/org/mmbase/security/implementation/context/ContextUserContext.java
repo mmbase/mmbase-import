@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: ContextUserContext.java,v 1.12 2008-11-03 17:35:00 michiel Exp $
+ * @version $Id$
  */
 public class ContextUserContext extends BasicUser implements java.io.Serializable {
     private static final Logger   log = Logging.getLoggerInstance(ContextUserContext.class);

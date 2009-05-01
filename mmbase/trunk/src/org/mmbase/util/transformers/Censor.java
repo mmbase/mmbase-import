@@ -19,7 +19,7 @@ import org.mmbase.util.Entry;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Censor.java,v 1.7 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id$
  */
 
 public class Censor extends RegexpReplacer {

@@ -38,7 +38,7 @@ michiel@mitulo:~/mmbase/head$
  *
  * @author  Rico Jansen (in org.mmbase.util.LRUHashtable)
  * @author  Michiel Meeuwissen
- * @version $Id: Test.java,v 1.2 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id$
  * @see    org.mmbase.cache.Cache
  * @since MMBase-1.9
  */

@@ -19,7 +19,7 @@ import org.mmbase.util.functions.*;
  * block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedRenderer.java,v 1.7 2008-08-26 07:48:38 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 

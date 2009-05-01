@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.22 2008-11-06 17:00:27 michiel Exp $
+ * @version $Id$
  */
 public class StorageConnector {
 

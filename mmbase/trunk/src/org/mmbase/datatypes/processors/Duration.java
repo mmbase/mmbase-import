@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * Formats a long with hour:minutes:seconds. Ready for setting and getting, and also casting.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Duration.java,v 1.6 2008-09-12 11:15:41 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 

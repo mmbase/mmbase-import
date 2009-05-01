@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: WordWrapperFactory.java,v 1.5 2007-08-04 07:45:52 michiel Exp $
+ * @version $Id$
  */
 
 public class WordWrapperFactory implements ParameterizedTransformerFactory<CharTransformer> {

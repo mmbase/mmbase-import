@@ -23,7 +23,7 @@ import org.mmbase.util.*;
  * This class contains static methods related to creating a Query object using a (fragment of an) XML.
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.20 2008-09-04 05:56:22 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  **/
 public abstract class QueryReader {

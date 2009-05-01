@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * query 'cluster nodes' and even more generally 'result nodes' too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeQuery.java,v 1.9 2008-07-29 09:22:34 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface NodeQuery extends Query {

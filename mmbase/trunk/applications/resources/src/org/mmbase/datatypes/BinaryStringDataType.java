@@ -31,11 +31,9 @@ public class BinaryStringDataType extends StringDataType {
     @Override
     public long getLength(Object value) {
         if (value == null) return 0;
-        if (value instanceof SerializableInputStream) {
-            return ((SerializableInputStream) value).getSize();
-        } else {
-            return super.getLength(value);
-        }
+        String v = castForSearch(value, null,null);
+        if (v == null) return 0;
+        return v.length();
     }
 
 
@@ -50,7 +48,7 @@ public class BinaryStringDataType extends StringDataType {
     }
     @Override
     protected Collection<LocalizedString> validateRequired(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
-        String v = org.mmbase.datatypes.processors.BinaryFile.getFileName(node, field, ((SerializableInputStream) castValue).getName());
+        String v = castValue == null ? null : ((SerializableInputStream) castValue).getName();
         return requiredRestriction.validate(errors, v, node, field);
 
     }

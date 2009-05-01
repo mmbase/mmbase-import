@@ -52,7 +52,7 @@ import org.mmbase.util.logging.Logging;
 ]]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: CachedRenderer.java,v 1.8 2009-01-14 09:09:51 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
 
  */

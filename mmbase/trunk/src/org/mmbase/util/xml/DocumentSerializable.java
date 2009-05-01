@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * DocumentSerializable member in stead, and use {@link #getDocument}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DocumentSerializable.java,v 1.6 2007-08-02 10:00:54 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class DocumentSerializable implements Serializable, org.mmbase.util.PublicCloneable {

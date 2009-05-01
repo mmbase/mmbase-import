@@ -23,6 +23,9 @@
       <getprocessor type="binary">
         <class name="org.mmbase.datatypes.processors.BinaryFile$Getter" />
       </getprocessor>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.BinaryFile$StringGetter" />
+      </getprocessor>
       <deleteprocessor>
         <class name="org.mmbase.datatypes.processors.BinaryFile$Delete" />
       </deleteprocessor>

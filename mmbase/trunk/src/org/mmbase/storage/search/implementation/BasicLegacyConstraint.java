@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * eventually be phased out.</em>
  *
  * @author  Rob van Maris
- * @version $Id: BasicLegacyConstraint.java,v 1.8 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class BasicLegacyConstraint extends BasicConstraint

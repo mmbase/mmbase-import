@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 /**
  * Various utils to consisely and efficiently deal with streams
  * @since MMBase-1.9.1
- * @version $Id: IOUtil.java,v 1.4 2009-04-24 14:31:13 michiel Exp $
+ * @version $Id$
  */
 
 public final class IOUtil {

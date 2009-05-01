@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Kees Jongenburger
- * @version $Id: MMBaseLoggingFactory.java,v 1.2 2008-09-04 21:20:30 michiel Exp $
+ * @version $Id$
  */
 public class MMBaseLoggingFactory extends LogFactory {
 

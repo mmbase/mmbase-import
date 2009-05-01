@@ -17,7 +17,7 @@ package org.mmbase.cache;
  * fields of one of the steps (the 'node step').
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListCache.java,v 1.8 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id$
  * @see   org.mmbase.module.core.MMObjectBuilder#getNodes
  * @since MMBase-1.7
  */

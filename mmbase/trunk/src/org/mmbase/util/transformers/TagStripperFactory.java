@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.14 2009-03-27 15:11:27 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.4
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory<CharTransformer>  {

@@ -13,7 +13,7 @@ package org.mmbase.core.event;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: EventListener.java,v 1.5 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id$
  */
 public interface EventListener {
 

@@ -21,7 +21,7 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.50 2008-12-03 12:21:36 andre Exp $
+ * @version $Id$
  */
 public class TransactionManager {
 

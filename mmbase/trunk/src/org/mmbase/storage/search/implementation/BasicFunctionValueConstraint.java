@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Marcel Maatkamp
- * @version $Id: BasicFunctionValueConstraint.java,v 1.3 2007-06-12 12:32:47 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.5
  */
 public class BasicFunctionValueConstraint extends BasicFieldValueConstraint implements FunctionValueConstraint {

@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * needed. So, be careful 'chaining' it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MD5.java,v 1.9 2008-10-18 10:23:14 michiel Exp $
+ * @version $Id$
  */
 
 public class MD5 extends StringTransformer implements CharTransformer {

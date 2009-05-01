@@ -20,7 +20,7 @@ import java.util.HashMap;
  *
  * @since MMBase 1.8
  * @author Pierre van Rooden
- * @version $Id: CachePolicy.java,v 1.4 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id$
  */
 abstract public class CachePolicy implements Serializable {
 

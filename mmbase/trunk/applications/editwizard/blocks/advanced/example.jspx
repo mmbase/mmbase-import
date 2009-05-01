@@ -12,7 +12,7 @@
 
        @since    MMBase-1.6
        @author   Michiel Meeuwissen
-       @version  $Id: example.jspx,v 1.1 2008-08-06 16:17:13 michiel Exp $
+       @version  $Id$
 
        Showing:
        - use of taglib in this entrance page

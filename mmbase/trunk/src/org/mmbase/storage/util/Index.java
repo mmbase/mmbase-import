@@ -19,7 +19,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  *
  * @since  MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: Index.java,v 1.3 2008-12-01 09:16:56 michiel Exp $
+ * @version $Id$
  */
 public class Index extends ArrayList<Field> {
 

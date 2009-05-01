@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Processor implementation based on a jsp in the /mmbase/components/ directory.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspProcessor.java,v 1.16 2009-01-12 21:12:10 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class JspProcessor extends AbstractProcessor {

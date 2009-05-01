@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @since MMBase 1.8
  * @author Pierre van Rooden
- * @version $Id: PageInfo.java,v 1.3 2005-11-04 23:28:02 michiel Exp $
+ * @version $Id$
  */
 public class PageInfo {
     /**

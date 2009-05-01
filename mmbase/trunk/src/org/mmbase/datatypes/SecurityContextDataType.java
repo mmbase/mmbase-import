@@ -17,7 +17,7 @@ import org.mmbase.util.*;
  * A StringDataType with all security contexts strings as possible value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SecurityContextDataType.java,v 1.7 2008-04-14 17:14:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class SecurityContextDataType extends StringDataType {

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.22 2008-08-04 09:45:23 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  * @see   FunctionSets
  */

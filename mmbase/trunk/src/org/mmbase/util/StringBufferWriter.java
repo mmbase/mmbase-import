@@ -18,7 +18,7 @@ import java.io.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.7
- * @version $Id: StringBufferWriter.java,v 1.4 2005-10-05 10:09:05 michiel Exp $
+ * @version $Id$
  */
 public class StringBufferWriter extends Writer {
 

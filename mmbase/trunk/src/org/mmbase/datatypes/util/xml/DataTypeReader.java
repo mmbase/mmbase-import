@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.24 2008-09-04 05:56:22 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  **/
 public class DataTypeReader {

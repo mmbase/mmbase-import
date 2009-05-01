@@ -15,7 +15,7 @@ import org.mmbase.module.core.*;
  * A cache for MMObjectNodes. 
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeCache.java,v 1.7 2006-09-04 12:53:51 michiel Exp $
+ * @version $Id$
  */
 public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEventListener { 
     private static final int CACHE_SIZE = 4 * 1024;

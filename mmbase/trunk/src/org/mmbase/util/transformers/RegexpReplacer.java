@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: RegexpReplacer.java,v 1.28 2008-10-17 14:08:35 michiel Exp $
+ * @version $Id$
  */
 
 public class RegexpReplacer extends ChunkedTransformer<Pattern> {

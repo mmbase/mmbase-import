@@ -18,7 +18,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AbstractBridgeList.java,v 1.5 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 

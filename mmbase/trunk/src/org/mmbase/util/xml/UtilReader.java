@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.42 2009-04-30 09:36:40 michiel Exp $
+ * @version $Id$
  */
 public class UtilReader {
 

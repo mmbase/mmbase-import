@@ -19,7 +19,7 @@ import org.mmbase.util.ReaderInputStream;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ByteCharTransformer.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id$
  */
 
 public class ByteCharTransformer extends ReaderTransformer implements CharTransformer {

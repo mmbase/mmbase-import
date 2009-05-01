@@ -17,7 +17,7 @@ import java.util.Map;
  * user with the rank {@link Rank#ANONYMOUS}.
  *
  * @author Eduard Witteveen
- * @version $Id: AnonymousLogin.java,v 1.8 2008-09-24 10:48:15 michiel Exp $
+ * @version $Id$
  */
 public class AnonymousLogin extends ContextLoginModule {
     public ContextUserContext login(Map<String, ?> userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {

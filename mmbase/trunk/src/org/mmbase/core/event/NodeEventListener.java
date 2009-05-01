@@ -11,7 +11,7 @@ package org.mmbase.core.event;
  * 
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: NodeEventListener.java,v 1.4 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id$
  */
 public interface NodeEventListener extends EventListener {
     public void notify(NodeEvent event);

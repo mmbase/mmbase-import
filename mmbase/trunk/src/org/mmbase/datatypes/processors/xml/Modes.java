@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * datatypes.xml), but some modes could also set/get XMLValue.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Modes.java,v 1.4 2006-04-11 23:46:06 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

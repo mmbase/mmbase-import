@@ -16,7 +16,7 @@ import org.mmbase.util.HashCodeUtil;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: TypedNodeEventListenerWrapper.java,v 1.15 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id$
  */
 public class TypedNodeEventListenerWrapper implements NodeEventListener {
 

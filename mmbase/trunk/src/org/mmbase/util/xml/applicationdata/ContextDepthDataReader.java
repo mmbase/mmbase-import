@@ -22,7 +22,7 @@ import org.w3c.dom.*;
  * @application Applications
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
- * @version $Id: ContextDepthDataReader.java,v 1.1 2008-09-03 23:17:25 michiel Exp $
+ * @version $Id$
  */
 public class ContextDepthDataReader {
 

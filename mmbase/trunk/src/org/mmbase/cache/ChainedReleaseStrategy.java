@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.27 2008-03-21 12:19:53 michiel Exp $
+ * @version $Id$
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<ReleaseStrategy> {
 

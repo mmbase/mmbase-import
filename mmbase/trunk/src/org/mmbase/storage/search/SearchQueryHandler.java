@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * Defines methods for an object that handles search query requests.
  *
  * @author Rob van Maris
- * @version $Id: SearchQueryHandler.java,v 1.7 2007-11-06 17:12:38 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface SearchQueryHandler {

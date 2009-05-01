@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.25 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id$
  */
 public class VirtualBuilder extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(VirtualBuilder.class);

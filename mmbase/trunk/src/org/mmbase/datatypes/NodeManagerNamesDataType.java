@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * nodemanager will be used as the actual node manager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeManagerNamesDataType.java,v 1.2 2008-09-04 12:19:35 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class NodeManagerNamesDataType extends StringDataType {

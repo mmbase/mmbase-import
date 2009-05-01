@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @license uses the GNU license, should be moved external
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PasswordGenerator.java,v 1.14 2008-08-01 21:44:43 michiel Exp $
+ * @version $Id$
  */
 
 public class PasswordGenerator {

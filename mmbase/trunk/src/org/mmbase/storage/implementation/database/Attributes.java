@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.14 2005-02-03 09:21:38 michiel Exp $
+ * @version $Id$
  */
 public final class Attributes {
 

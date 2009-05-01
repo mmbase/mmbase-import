@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: Instantiator.java,v 1.8 2009-02-08 10:01:30 michiel Exp $
+ * @version $Id$
  */
 public abstract class Instantiator {
 

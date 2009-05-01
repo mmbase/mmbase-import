@@ -36,7 +36,7 @@ import org.mmbase.module.corebuilders.TypeRel;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.34 2008-11-25 13:20:53 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {

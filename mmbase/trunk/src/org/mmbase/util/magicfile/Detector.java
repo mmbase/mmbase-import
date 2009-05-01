@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br />
  * Not supported by magic file:<br />
  * - StarOffice<br />
- * @version $Id: Detector.java,v 1.13 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id$
  */
 
 public class Detector {

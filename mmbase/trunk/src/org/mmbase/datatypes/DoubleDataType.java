@@ -14,7 +14,7 @@ package org.mmbase.datatypes;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DoubleDataType.java,v 1.9 2007-08-28 10:05:04 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

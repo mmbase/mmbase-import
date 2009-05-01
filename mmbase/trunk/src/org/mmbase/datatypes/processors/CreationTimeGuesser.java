@@ -17,7 +17,7 @@ import java.util.Date;
  * Get-processor for 'created' field. Using day-markers to fill the field.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreationTimeGuesser.java,v 1.3 2006-06-28 14:28:51 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.12 2009-01-06 15:37:26 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class State {

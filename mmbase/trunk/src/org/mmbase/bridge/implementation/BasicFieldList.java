@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.23 2007-02-23 16:26:48 michiel Exp $
+ * @version $Id$
  */
 public class BasicFieldList extends BasicList<Field> implements FieldList {
 

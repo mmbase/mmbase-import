@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.52 2009-01-05 17:51:39 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {

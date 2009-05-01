@@ -4,7 +4,7 @@
  * Routines for NewFromList
  * 
  * @since    MMBase-1.9
- * @version  $Id: newfromlist.jsp,v 1.5 2008-04-25 16:55:45 andre Exp $
+ * @version  $Id$
  */
 
 function doMySearch(el) {

@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.5
- * @version $Id: WeakEventBroker.java,v 1.2 2007-07-26 14:08:53 michiel Exp $
+ * @version $Id$
  */
 public abstract class WeakEventBroker extends EventBroker {
 

@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.33 2009-03-11 11:44:19 michiel Exp $
+ * @version $Id$
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {

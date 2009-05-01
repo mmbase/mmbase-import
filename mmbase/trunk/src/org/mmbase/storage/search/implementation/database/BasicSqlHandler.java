@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.78 2009-04-01 21:28:39 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 

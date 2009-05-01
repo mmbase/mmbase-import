@@ -11,6 +11,8 @@ package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
 import java.text.*;
+import java.util.regex.*;
+import java.math.*;
 
 /**
  * A processor that gets a number as a file-size, that is, rounded with kbytes and Mb's and so on.
@@ -21,7 +23,7 @@ import java.text.*;
  * @todo Why not apply this to floats too. Also support SI prefixes below k then (c, m, micro, n, etc).
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormatQuantity.java,v 1.2 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 
@@ -122,7 +124,7 @@ public class FormatQuantity implements Processor {
     }
 
 
-    public final Object process(Node node, Field field, Object value) {
+    public  Object process(Node node, Field field, Object value) {
         if (value == null) return null;
 
         double v = org.mmbase.util.Casting.toDouble(value);
@@ -145,7 +147,7 @@ public class FormatQuantity implements Processor {
         }
 
         NumberFormat nf = NumberFormat.getInstance(node == null ?
-                                                   ContextProvider.getDefaultCloudContext().getDefaultLocale() :
+                                                   org.mmbase.util.LocalizedString.getDefault() :
                                                    node.getCloud().getLocale());
 
         if (power > 0) {
@@ -171,6 +173,80 @@ public class FormatQuantity implements Processor {
 
     public String toString() {
         return "[" + unit + "]";
+    }
+
+    public static class Parser extends FormatQuantity {
+
+        Pattern parse = Pattern.compile("(.*?)" + PREFIX_PATTERN);
+        public final Object process(Node node, Field field, Object value) {
+            if (value == null) return null;
+            String string = (String) value;
+            if (string.endsWith(unit)) {
+                string = string.substring(0, string.length() - unit.length());
+            }
+            Matcher matcher = parse.matcher(string);
+            String number;
+            double factor = 1;
+            if (matcher.matches()) {
+                number = matcher.group(1).trim();
+                String prefix = matcher.group(2).trim();
+                int bi_pow = 1;
+                for (int i = 0 ; i < IEEE_BI.length; i++) {
+                    if (IEEE_BI[i].equals(prefix)) {
+                        for (int j = 0; j <= i; j++) {
+                            bi_pow *= 1024;
+                        }
+                        break;
+                    }
+                }
+                if (bi_pow != 1) {
+                    factor *= bi_pow;
+                } else {
+                    int si_pow = 1;
+                    for (int i = 0 ; i < SI.length; i++) {
+                        if (SI[i].equals(prefix)) {
+                            for (int j = 0; j <= i; j++) {
+                                si_pow *= 1000;
+                            }
+                            break;
+                        }
+                    }
+                    if (si_pow != 1) {
+                        factor *= si_pow;
+                    } else {
+                        int si_neg = 1;
+                        for (int i = 0 ; i < SI_NEGATIVE.length; i++) {
+                            if (SI_NEGATIVE[i].equals(prefix)) {
+                                for (int j = 0; j <= i; j++) {
+                                    si_neg *= 1000;
+                                }
+                                break;
+                            }
+                        }
+                        if (si_neg != 1) {
+                            factor /= si_neg;
+                        }
+
+                    }
+                }
+            } else {
+                number = string.trim();
+            }
+            BigDecimal dec = new BigDecimal(number).multiply(new BigDecimal(factor));
+            return dec;
+
+
+
+        }
+    }
+
+
+    public static void main(String[] argv) {
+        FormatQuantity format = new FormatQuantity();
+        FormatQuantity parser = new FormatQuantity.Parser();
+        String formatted = "" + format.process(null, null, argv[0]);
+        String parsed = "" + parser.process(null, null, formatted);
+        System.out.println("" + argv[0] + " -> '" + formatted + "' -> " + parsed);
     }
 }
 

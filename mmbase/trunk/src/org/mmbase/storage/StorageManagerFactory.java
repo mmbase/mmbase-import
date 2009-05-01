@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.39 2009-04-27 17:45:22 michiel Exp $
+ * @version $Id$
  */
 public abstract class StorageManagerFactory<SM extends StorageManager> {
 

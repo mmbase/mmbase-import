@@ -16,7 +16,7 @@ package org.mmbase.storage.search;
  * This corresponds to a prefixed fieldname in a SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: StepField.java,v 1.6 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface StepField {

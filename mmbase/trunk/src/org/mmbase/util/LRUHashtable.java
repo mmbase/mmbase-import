@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.31 2008-06-24 10:01:05 michiel Exp $
+ * @version $Id$
  * @see    org.mmbase.cache.Cache
  * @deprecated use org.mmbase.cache.implementation.LRUCache
  */

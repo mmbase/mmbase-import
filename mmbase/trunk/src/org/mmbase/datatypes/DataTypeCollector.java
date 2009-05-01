@@ -26,7 +26,7 @@ import java.util.concurrent.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.17 2009-04-27 15:21:55 michiel Exp $
+ * @version $Id$
  */
 
 public final class DataTypeCollector {

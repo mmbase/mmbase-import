@@ -24,7 +24,7 @@ import org.mmbase.util.functions.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ResourceBundleReplacerFactory.java,v 1.8 2008-07-23 22:21:04 michiel Exp $
+ * @version $Id$
  */
 
 public class ResourceBundleReplacerFactory implements ParameterizedTransformerFactory<CharTransformer> {

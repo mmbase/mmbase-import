@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author David van Zeventer
- * @version $Id: AnnotRel.java,v 1.22 2005-10-06 17:46:39 michiel Exp $
+ * @version $Id$
  */
 public class AnnotRel extends InsRel {
 

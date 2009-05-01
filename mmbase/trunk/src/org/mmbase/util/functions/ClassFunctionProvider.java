@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: ClassFunctionProvider.java,v 1.4 2008-08-02 15:14:40 michiel Exp $
+ * @version $Id$
  */
 public class ClassFunctionProvider extends FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(ClassFunctionProvider.class);

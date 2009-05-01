@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: DaemonThread.java,v 1.5 2008-09-16 16:42:17 michiel Exp $
+ * @version $Id$
  * @deprecated  This class copies functionality present in
  * e.g. java.util.concurrent.ScheduledThreadPoolExecutor (a thread pool which can be used is
  * e.g. {@link org.mmbase.util.ThreadPools#scheduler}). If scheduling is not used, then only the

@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  * This is a texthandler that produces multiline input form entries (textarea's).
  *
  * @author Michiel Meeuwissen
- * @version $Id: AreaHandler.java,v 1.3 2009-04-17 17:38:13 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

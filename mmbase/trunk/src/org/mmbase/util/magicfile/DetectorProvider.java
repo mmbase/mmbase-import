@@ -13,7 +13,7 @@ package org.mmbase.util.magicfile;
 /**
  * DetectorProvider classes are meant to provide a list of Detectors,
  * which can be used by MagicFile.
- * @version $Id: DetectorProvider.java,v 1.2 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id$
  * @author Michiel Meeuwissen
  */
 

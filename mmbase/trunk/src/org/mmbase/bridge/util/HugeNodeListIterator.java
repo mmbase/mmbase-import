@@ -24,7 +24,7 @@ import java.util.*;
  * are marked with {@link CachePolicy#NEVER}.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: HugeNodeListIterator.java,v 1.6 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 

@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.53 2007-03-30 13:08:37 michiel Exp $
+ * @version $Id$
  */
 public class BasicNodeList extends AbstractNodeList<Node> implements NodeList  {
 

@@ -66,7 +66,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: SizeOf.java,v 1.20 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id$
  * @todo   We need to know how well this actually works...
  */
 public class SizeOf {

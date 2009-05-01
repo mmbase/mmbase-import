@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * Extends and wraps LocalizedString, to make it readonly
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReadonlyLocalizedString.java,v 1.1 2009-04-27 17:14:00 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 public class ReadonlyLocalizedString extends WrappedLocalizedString {

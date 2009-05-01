@@ -17,7 +17,7 @@ import org.mmbase.util.functions.*;
  * 'lastmodified', but it also the only parameter of this processor factory.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModifiedProcessorFactory.java,v 1.3 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

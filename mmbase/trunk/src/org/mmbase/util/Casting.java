@@ -37,7 +37,7 @@ import org.apache.commons.fileupload.FileItem;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.133 2009-04-29 09:58:07 michiel Exp $
+ * @version $Id$
  */
 
 

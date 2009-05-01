@@ -18,7 +18,7 @@ import org.w3c.dom.Document;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: DocumentConverter.java,v 1.4 2005-01-30 16:46:36 nico Exp $
+ * @version $Id$
  */
 public  class DocumentConverter {
     

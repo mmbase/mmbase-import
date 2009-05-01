@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * contains {@link org.mmbase.bridge.Node}s.
  *
  * @since MMBase-1.9
- * @version $Id: AbstractNodeList.java,v 1.13 2008-09-04 06:54:41 michiel Exp $
+ * @version $Id$
  * @author Nico Klasens
  */
 public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {

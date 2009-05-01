@@ -103,7 +103,32 @@ public class BinaryFile {
         private static final long serialVersionUID = 1L;
 
         public Object process(Node node, Field field, Object value) {
+
             return value;
+        }
+    }
+
+    /**
+     * A bit of a hack, used if the file was originally saved in a transaction, and hence as a
+     * negative number prefix. If possible this processor corrects that.
+     */
+    public static class StringGetter implements Processor {
+        private static final long serialVersionUID = 1L;
+
+        public Object process(final Node node, final Field field, final Object value) {
+            String fileName = (String) value;
+            if (fileName.startsWith("-") && node.getNumber() > 0) {
+                String[] parts = fileName.split("\\.", 2);
+                File file = new File(getDirectory(), fileName);
+                File to = getFile(node, field, parts[1]);
+                to.getParentFile().mkdirs();
+                file.renameTo(to);
+                fileName = to.getName();
+                node.setStringValue(field.getName(), fileName);
+                node.commit();
+            }
+
+            return fileName;
         }
     }
 

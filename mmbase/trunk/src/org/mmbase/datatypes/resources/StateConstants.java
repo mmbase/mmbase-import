@@ -16,7 +16,7 @@ package org.mmbase.datatypes.resources;
  * builders. Used in test-cases too.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: StateConstants.java,v 1.2 2008-09-06 10:42:31 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8.1
  */
 public interface StateConstants {

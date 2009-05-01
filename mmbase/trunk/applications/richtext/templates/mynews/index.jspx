@@ -3,7 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en"
     lang="en">
-  <jsp:text>&lt;!-- MyNews in RichText and JSPX. $Id: index.jspx,v 1.10 2006-07-11 18:49:40 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- MyNews in RichText and JSPX. $Id$ --&gt;</jsp:text>
   <jsp:directive.page session="false" />
   <jsp:directive.include file="vars.jspx" />
   <mm:cloud method="asis">

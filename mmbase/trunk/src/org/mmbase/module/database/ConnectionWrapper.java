@@ -16,7 +16,7 @@ import java.util.*;
  * Wraps  a java.sql.Connection object. Extending this makes it possible to intercept calls.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionWrapper.java,v 1.4 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public abstract class ConnectionWrapper { //implements Connection {

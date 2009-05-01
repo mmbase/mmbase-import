@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @see Action
  * @author Michiel Meeuwissen
- * @version $Id: ActionRepository.java,v 1.11 2009-04-29 07:39:07 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public abstract class ActionRepository extends Configurable {

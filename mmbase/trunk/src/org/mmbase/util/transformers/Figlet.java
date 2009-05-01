@@ -16,7 +16,7 @@ package org.mmbase.util.transformers;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Figlet.java,v 1.3 2003-06-05 09:32:29 michiel Exp $
+ * @version $Id$
  * @todo   no way to specify commandline arguments on the fly.
  */
 

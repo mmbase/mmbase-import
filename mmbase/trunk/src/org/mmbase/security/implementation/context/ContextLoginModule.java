@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.24 2008-11-03 18:42:49 michiel Exp $
+ * @version $Id$
  */
 
 public abstract class ContextLoginModule {

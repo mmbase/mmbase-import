@@ -17,7 +17,7 @@ import java.util.*;
  * restricted maximal size ('Least Recently Used' cache algorithm).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: LRUCache.java,v 1.7 2008-08-23 19:01:08 michiel Exp $
+ * @version $Id$
  * @see    org.mmbase.cache.Cache
  * @since MMBase-1.8.6
  */

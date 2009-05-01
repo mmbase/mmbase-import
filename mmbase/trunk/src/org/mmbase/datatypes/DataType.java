@@ -33,7 +33,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.77 2009-04-30 14:42:08 michiel Exp $
+ * @version $Id$
  * @param <C> Class this DataType
  */
 

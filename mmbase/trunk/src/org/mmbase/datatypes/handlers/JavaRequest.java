@@ -17,7 +17,7 @@ import java.util.*;
  * A request completely contained in java objects, so no actual connections and stuff. E.g. for testing purposes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JavaRequest.java,v 1.2 2009-04-17 16:54:48 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

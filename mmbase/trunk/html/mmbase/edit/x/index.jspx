@@ -13,7 +13,7 @@
         xmlns="http://www.w3.org/1999/xhtml">
     <!-- 
          Produces a search-tool, and the search result with links to create and change MMBase nodes.
-         $Id: index.jspx,v 1.20 2007-07-12 08:54:40 michiel Exp $
+         $Id$
     -->
     <mm:cloud rank="basic user">
       

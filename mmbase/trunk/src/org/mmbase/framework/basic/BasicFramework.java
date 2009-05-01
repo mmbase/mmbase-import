@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.47 2009-04-17 19:34:27 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {

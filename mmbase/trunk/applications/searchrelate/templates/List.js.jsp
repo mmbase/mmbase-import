@@ -17,7 +17,7 @@
  * -  mmsrCreated
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.39 2009-04-09 15:59:00 michiel Exp $
+ * @version $Id$
  */
 
 

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * post and things like that.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractHandler.java,v 1.3 2009-04-17 16:54:47 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

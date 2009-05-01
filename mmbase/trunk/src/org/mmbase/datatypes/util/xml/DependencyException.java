@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * This exception get thrown if parsing of a datatype element (temporary) fails.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DependencyException.java,v 1.2 2008-07-11 19:06:19 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.6
  **/
 public class DependencyException extends Exception {

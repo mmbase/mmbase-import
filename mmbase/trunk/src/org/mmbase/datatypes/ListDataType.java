@@ -19,7 +19,7 @@ import org.mmbase.util.LocalizedString;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ListDataType.java,v 1.24 2007-09-16 17:55:28 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class ListDataType extends AbstractLengthDataType<List> {

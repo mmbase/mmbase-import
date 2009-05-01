@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * This class will search for the mmbaseroot machinename in the value of the "mmservers" property
  * @since MMBase-1.9
  * @author Nico Klasens
- * @version $Id: SystemProperties.java,v 1.3 2008-11-24 13:09:49 michiel Exp $
+ * @version $Id$
  */
 public class SystemProperties {
 

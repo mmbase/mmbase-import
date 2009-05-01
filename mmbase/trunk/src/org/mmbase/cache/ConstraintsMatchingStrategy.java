@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.36 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id$
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {

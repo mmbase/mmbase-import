@@ -19,7 +19,7 @@ import java.io.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.9
- * @version $Id: StringBuilderWriter.java,v 1.1 2006-10-14 21:57:20 michiel Exp $
+ * @version $Id$
  */
 public class StringBuilderWriter extends Writer {
 

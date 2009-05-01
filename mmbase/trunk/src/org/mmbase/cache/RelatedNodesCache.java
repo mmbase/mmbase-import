@@ -20,7 +20,7 @@ import org.mmbase.module.core.MMObjectNode;
  * removed from the Node Cache itself.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodesCache.java,v 1.11 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id$
  * @see   org.mmbase.module.core.MMObjectNode#getRelatedNodes
  * @since MMBase-1.7
  */

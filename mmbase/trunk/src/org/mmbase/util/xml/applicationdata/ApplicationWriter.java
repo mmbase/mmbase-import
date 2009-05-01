@@ -25,7 +25,7 @@ import org.mmbase.util.ResourceLoader;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: ApplicationWriter.java,v 1.2 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id$
  */
 public class ApplicationWriter extends org.mmbase.util.xml.DocumentWriter  {
 

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: OAlias.java,v 1.23 2007-04-05 14:04:18 pierre Exp $
+ * @version $Id$
  */
 
 public class OAlias extends MMObjectBuilder {

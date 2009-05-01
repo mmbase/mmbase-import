@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * An utility to work with clouds on the session or as a ThreadLocal
  * @since MMBase-1.9
- * @version $Id: CloudUtil.java,v 1.4 2008-09-23 16:31:20 michiel Exp $
+ * @version $Id$
  */
 public class CloudUtil {
 

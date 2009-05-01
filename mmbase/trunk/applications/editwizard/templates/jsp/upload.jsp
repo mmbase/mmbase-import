@@ -5,7 +5,7 @@
      * upload.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: upload.jsp,v 1.11 2007-01-03 19:36:18 nklasens Exp $
+     * @version  $Id$
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen

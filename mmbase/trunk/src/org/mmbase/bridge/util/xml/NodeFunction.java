@@ -51,7 +51,7 @@ import javax.xml.xpath.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.22 2008-07-29 09:19:10 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.6
  */
 

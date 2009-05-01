@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * begins (writeNonBlocking)
  *
  * @author Nico Klasens (Finalist IT Group)
- * @version $Id: ProcessClosure.java,v 1.4 2006-04-18 13:11:06 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.6
  */
 public class ProcessClosure {

@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFieldValueInQueryConstraint.java,v 1.1 2008-11-25 12:52:18 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 public class BasicFieldValueInQueryConstraint extends BasicFieldConstraint implements FieldValueInQueryConstraint {

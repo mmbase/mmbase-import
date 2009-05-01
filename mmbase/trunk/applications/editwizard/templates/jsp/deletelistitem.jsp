@@ -10,7 +10,7 @@
      * deletelistitem.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: deletelistitem.jsp,v 1.14 2008-10-23 14:11:40 michiel Exp $
+     * @version  $Id$
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
      */

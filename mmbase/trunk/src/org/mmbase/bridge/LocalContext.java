@@ -22,7 +22,7 @@ import org.mmbase.bridge.implementation.BasicCloudContext;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: LocalContext.java,v 1.8 2008-07-17 17:15:27 michiel Exp $
+ * @version $Id$
  */
 public final class LocalContext extends BasicCloudContext {
 

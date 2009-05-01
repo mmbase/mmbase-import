@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FullBackupDataWriter.java,v 1.9 2008-09-03 23:17:25 michiel Exp $
+ * @version $Id$
  */
 public class FullBackupDataWriter {
 

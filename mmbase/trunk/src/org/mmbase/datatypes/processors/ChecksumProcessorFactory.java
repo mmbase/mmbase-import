@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Checksum 'processor', and the field for which this field is a checksum.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumProcessorFactory.java,v 1.9 2009-04-30 14:40:59 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 
