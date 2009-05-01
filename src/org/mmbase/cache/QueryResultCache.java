@@ -32,7 +32,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.47 2008-12-08 15:34:26 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  * @todo Perhaps we could put the 'typeCounter' stuff in a sub-class.

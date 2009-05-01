@@ -33,7 +33,7 @@ package org.mmbase.util.externalprocess;
  * </p>
  *
  * @author Nico Klasens (Finalist IT Group)
- * @version $Id: IProgressMonitor.java,v 1.3 2003-05-12 13:10:48 kees Exp $
+ * @version $Id$
  * @since MMBase-1.6
  */
 public interface IProgressMonitor {

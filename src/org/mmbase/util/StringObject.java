@@ -53,7 +53,7 @@ package org.mmbase.util;
  * @author Daniel Ockeloen 
  * @author Johannes Verelst (bugfix)
  * @author  Arthur van Hoff
- * @version $Id: StringObject.java,v 1.11 2006-06-26 18:16:01 johannes Exp $
+ * @version $Id$
  */
 
 public final class StringObject {

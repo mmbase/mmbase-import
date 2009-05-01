@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.45 2008-09-12 14:28:34 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class DocumentReader  {

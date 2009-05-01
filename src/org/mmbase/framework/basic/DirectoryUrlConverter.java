@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * It is also assumed that the niceness of the URL's is basicly about one block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DirectoryUrlConverter.java,v 1.21 2009-04-17 19:35:55 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */

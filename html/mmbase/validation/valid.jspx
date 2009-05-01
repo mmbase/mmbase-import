@@ -11,7 +11,7 @@
 
       @todo: accept also node argument
 
-      $Id: valid.jspx,v 1.7 2008-08-12 19:11:02 michiel Exp $
+      $Id$
       author: Michiel Meeuwissen
   -->
   <jsp:directive.page

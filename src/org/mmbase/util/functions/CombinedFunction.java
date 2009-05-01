@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * are provided, the better it is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CombinedFunction.java,v 1.9 2008-08-02 15:14:40 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class CombinedFunction<R> implements Function<R> {

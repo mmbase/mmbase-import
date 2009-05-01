@@ -15,7 +15,7 @@ import java.lang.annotation.*;
  * method has with this annotated parameters, the name will be used for the parameter.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Name.java,v 1.1 2006-09-15 14:55:51 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -20,7 +20,7 @@ import org.mmbase.util.LocalizedString;
  * Actions are checked using {@link Authorization#check(UserContext, Action, Parameters)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Action.java,v 1.8 2008-08-27 07:20:42 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class Action implements java.io.Serializable {

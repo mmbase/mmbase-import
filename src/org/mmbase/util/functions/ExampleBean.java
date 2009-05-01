@@ -12,7 +12,7 @@ import org.mmbase.util.logging.Logging;
  * A bean can be accessed through the function framework.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBean.java,v 1.12 2008-06-13 09:29:42 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public final class ExampleBean {

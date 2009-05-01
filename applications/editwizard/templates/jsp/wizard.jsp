@@ -9,7 +9,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.28 2008-09-05 08:54:13 michiel Exp $
+     * @version  $Id$
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden

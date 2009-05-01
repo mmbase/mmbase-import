@@ -16,7 +16,7 @@ import org.w3c.dom.Element;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: FieldDefinition.java,v 1.9 2007-08-06 10:02:58 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  * @javadoc
  **/

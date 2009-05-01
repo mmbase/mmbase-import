@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Nico Klasens
  * @author Andr&eacute; van Toly
- * @version $Id: Framework.java,v 1.64 2009-01-16 22:21:13 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public abstract class Framework {

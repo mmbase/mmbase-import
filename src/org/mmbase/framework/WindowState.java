@@ -15,7 +15,7 @@ import org.mmbase.util.functions.*;
 /**
  * Every block can be in a certain window state, which could be considered during rendering.
  * @author Michiel Meeuwissen
- * @version $Id: WindowState.java,v 1.1 2008-08-26 06:45:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public enum WindowState {

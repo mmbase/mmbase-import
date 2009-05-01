@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * A list of node managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManagerList.java,v 1.17 2007-02-23 16:26:48 michiel Exp $
+ * @version $Id$
  */
 public class BasicNodeManagerList extends AbstractNodeList<NodeManager> implements NodeManagerList {
     

@@ -15,7 +15,7 @@ import org.mmbase.bridge.*;
  * This is the basic implementation of the Field Value interface.
  *
  * @author   Pierre van Rooden
- * @version $Id: BasicFieldValue.java,v 1.12 2007-02-16 20:04:39 michiel Exp $
+ * @version $Id$
  * @since    MMBase-1.6
  */
 public class BasicFieldValue implements FieldValue {

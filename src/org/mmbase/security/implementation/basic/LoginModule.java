@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: LoginModule.java,v 1.6 2008-09-23 16:29:07 michiel Exp $
+ * @version $Id$
  */
 public interface LoginModule {
     public void load(Map<String, Object> properties);

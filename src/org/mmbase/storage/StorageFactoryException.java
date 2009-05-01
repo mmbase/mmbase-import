@@ -14,7 +14,7 @@ package org.mmbase.storage;
  *
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageFactoryException.java,v 1.3 2005-10-02 16:16:42 michiel Exp $
+ * @version $Id$
  */
 public class StorageFactoryException extends StorageException {
 

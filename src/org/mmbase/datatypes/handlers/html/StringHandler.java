@@ -16,7 +16,7 @@ import org.mmbase.storage.search.Constraint;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringHandler.java,v 1.1 2008-07-28 16:47:31 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

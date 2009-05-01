@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  * its <em>successor</em>, i.e. the next handler in the chain.
  *
  * @author  Rob van Maris
- * @version $Id: ChainedSqlHandler.java,v 1.6 2007-06-12 10:59:41 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.database.SqlHandler
  */

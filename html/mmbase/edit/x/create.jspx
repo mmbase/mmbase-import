@@ -14,7 +14,7 @@
     <!-- 
          Offers a form for one new MMBase node.
          Also handles the form, and then redirects to change.jspx, because the node is existng then.
-         $Id: create.jspx,v 1.15 2007-07-12 08:54:40 michiel Exp $
+         $Id$
     -->
     <mm:include page="head.jspx" />
     <body>

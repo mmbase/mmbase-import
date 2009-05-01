@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: LoggerWrapper.java,v 1.9 2008-02-11 16:11:02 michiel Exp $
+ * @version $Id$
  **/
 
 public class LoggerWrapper implements Logger {

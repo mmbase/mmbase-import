@@ -18,7 +18,7 @@ import org.mmbase.module.core.MMObjectNode;
  * Used in MMObjectNode.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelationsCache.java,v 1.4 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id$
  * @see   org.mmbase.module.core.MMObjectNode#getRelations
  * @see   org.mmbase.module.core.MMObjectNode#getRelationNodes
  * @since MMBase-1.7

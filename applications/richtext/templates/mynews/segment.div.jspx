@@ -1,7 +1,7 @@
 <!--
    Displays one full segment, plus a crumb-path, and overview of sub-segments.
    dynamic include
-   $Id: segment.div.jspx,v 1.3 2006-04-25 21:40:20 michiel Exp $
+   $Id$
 -->
 <div class="segment"
      xmlns:jsp="http://java.sun.com/JSP/Page"

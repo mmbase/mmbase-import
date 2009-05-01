@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicList.java,v 1.38 2009-02-06 15:56:34 michiel Exp $
+ * @version $Id$
  */
 public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> implements BridgeList<E>, java.io.Serializable, RandomAccess  {
 

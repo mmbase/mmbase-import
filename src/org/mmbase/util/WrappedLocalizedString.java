@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * Extends and wraps LocalizedString.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WrappedLocalizedString.java,v 1.5 2009-04-30 19:54:03 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class WrappedLocalizedString extends LocalizedString {

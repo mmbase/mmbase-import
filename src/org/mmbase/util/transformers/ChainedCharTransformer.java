@@ -44,7 +44,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.26 2007-06-13 07:51:41 michiel Exp $
+ * @version $Id$
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {

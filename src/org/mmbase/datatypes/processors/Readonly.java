@@ -19,7 +19,7 @@ import org.mmbase.bridge.*;
  * that this field should not be presented editable. 
  *
  * @author Nico Klasens
- * @version $Id: Readonly.java,v 1.3 2008-06-25 06:20:31 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class Readonly implements Processor {

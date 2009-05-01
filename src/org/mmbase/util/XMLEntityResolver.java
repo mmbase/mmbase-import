@@ -14,7 +14,7 @@ package org.mmbase.util;
  * @deprecated Use {@link org.mmbase.util.xml.EntityResolver}
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.73 2008-10-18 10:25:06 michiel Exp $
+ * @version $Id$
  */
 public class XMLEntityResolver extends org.mmbase.util.xml.EntityResolver {
 

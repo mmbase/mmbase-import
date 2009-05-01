@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.74 2009-04-30 14:42:08 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {

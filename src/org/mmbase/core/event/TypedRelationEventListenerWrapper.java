@@ -16,7 +16,7 @@ import org.mmbase.storage.search.RelationStep;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: TypedRelationEventListenerWrapper.java,v 1.11 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id$
  */
 public class TypedRelationEventListenerWrapper implements RelationEventListener {
 

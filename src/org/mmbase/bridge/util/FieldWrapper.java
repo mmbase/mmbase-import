@@ -22,7 +22,7 @@ import org.mmbase.datatypes.DataType;
  * implementation on a existing <code>Field</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: FieldWrapper.java,v 1.6 2009-04-27 14:24:51 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8.1
  */
 

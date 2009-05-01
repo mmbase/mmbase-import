@@ -16,7 +16,7 @@ package org.mmbase.storage.search;
  * This corresponds to the use of "between ... and ..." in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: FieldValueBetweenConstraint.java,v 1.6 2004-12-23 17:31:05 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface FieldValueBetweenConstraint extends FieldConstraint {

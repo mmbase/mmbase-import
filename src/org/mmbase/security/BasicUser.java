@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.9 2008-11-12 13:42:10 michiel Exp $
+ * @version $Id$
  */
 public class BasicUser implements UserContext, Comparable<Object> {
     private static final Logger log = Logging.getLoggerInstance(BasicUser.class);

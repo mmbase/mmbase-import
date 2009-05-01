@@ -19,7 +19,7 @@ import org.mmbase.security.Action;
  * A Component bundles {@link Block}s, {@link Action}s and {@link Setting}s.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.23 2008-09-08 19:50:47 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public interface Component {

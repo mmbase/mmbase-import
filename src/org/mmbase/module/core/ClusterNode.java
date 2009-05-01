@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.29 2007-07-23 13:51:02 michiel Exp $
+ * @version $Id$
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {

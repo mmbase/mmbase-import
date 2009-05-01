@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageLookup.java,v 1.9 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id$
  */
 public class DatabaseStorageLookup extends DocumentReader {
 

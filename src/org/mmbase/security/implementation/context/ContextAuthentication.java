@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.31 2008-09-23 16:29:07 michiel Exp $
+ * @version $Id$
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {

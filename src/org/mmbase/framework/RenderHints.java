@@ -17,7 +17,7 @@ import org.mmbase.util.functions.*;
  * implementation some instructions about how to render excactly, since it may vary a bit in that.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RenderHints.java,v 1.4 2009-04-17 19:35:06 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class RenderHints {

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Test-cases?
  *
  * @author Andr\U00e9 vanToly &lt;andre@toly.nl&gt;
- * @version $Id: CSVReader.java,v 1.5 2009-04-29 07:39:08 michiel Exp $
+ * @version $Id$
  */
 public class CSVReader {
 

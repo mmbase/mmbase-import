@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ReleaseStrategy.java,v 1.25 2008-08-19 17:22:54 michiel Exp $
+ * @version $Id$
  */
 
 public abstract class ReleaseStrategy {

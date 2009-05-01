@@ -27,7 +27,7 @@ import org.mmbase.module.core.*;
  * {@link ResultBuilder ResultBuilder}, that contains info on the node's fields.
  *
  * @author  Rob van Maris
- * @version $Id: ResultNode.java,v 1.7 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class ResultNode extends VirtualNode {

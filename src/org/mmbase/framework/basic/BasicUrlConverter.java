@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.24 2009-01-16 22:21:13 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {

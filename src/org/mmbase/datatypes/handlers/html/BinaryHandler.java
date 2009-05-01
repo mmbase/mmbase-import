@@ -22,7 +22,7 @@ import org.mmbase.util.*;
  * 'input' tag with type 'file'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BinaryHandler.java,v 1.6 2009-04-29 07:39:07 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunctionProvider.java,v 1.3 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id$
  * @see org.mmbase.util.functions.BeanFunction
  * @since MMBase-1.9
  */

@@ -22,7 +22,7 @@ import java.io.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: EncodingDetectingOutputStreamWriter.java,v 1.4 2008-08-27 17:07:34 michiel Exp $
+ * @version $Id$
  */
 public class EncodingDetectingOutputStreamWriter extends Writer {
 

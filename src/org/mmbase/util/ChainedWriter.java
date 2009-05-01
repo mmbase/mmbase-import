@@ -20,7 +20,7 @@ import java.util.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.9
- * @version $Id: ChainedWriter.java,v 1.1 2008-10-02 12:09:41 michiel Exp $
+ * @version $Id$
  */
 public class ChainedWriter extends Writer {
 

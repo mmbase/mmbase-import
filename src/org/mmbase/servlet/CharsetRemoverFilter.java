@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * <contenttype>=<supposed charset> properties.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharsetRemoverFilter.java,v 1.7 2007-06-26 15:14:37 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7.4
  */
 

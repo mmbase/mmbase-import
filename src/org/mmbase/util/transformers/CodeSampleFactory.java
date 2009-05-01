@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Andr&eacute; van Toly
  * @since MMBase 1.8.0
- * @version $Id: CodeSampleFactory.java,v 1.6 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id$
  */
 
 public class CodeSampleFactory implements ParameterizedTransformerFactory<CharTransformer> {

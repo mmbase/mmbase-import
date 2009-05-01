@@ -21,7 +21,7 @@ import org.mmbase.util.functions.*;
  * mm:field tags. Don't confuse this with {@link NodeMap}.
 
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.13 2009-01-31 07:43:12 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 

@@ -19,7 +19,7 @@ import org.mmbase.util.SerializableInputStream;
  * 'filesize' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BinaryCommitProcessor.java,v 1.2 2009-04-24 15:05:24 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

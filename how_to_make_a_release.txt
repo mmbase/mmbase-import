@@ -1,4 +1,4 @@
-$Id: how_to_make_a_release.txt,v 1.2 2008-11-03 20:21:27 michiel Exp $
+$Id$
 
 
 - Make sure all automated test-cases succeed. Check the nightly build, or run 'make all' in tests.

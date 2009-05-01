@@ -21,7 +21,7 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.21 2009-01-07 20:59:38 michiel Exp $
+ * @version $Id$
  */
 public interface Module extends Descriptor, Comparable<Module> {
 

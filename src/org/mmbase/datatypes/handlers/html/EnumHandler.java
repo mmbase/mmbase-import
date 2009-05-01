@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: EnumHandler.java,v 1.3 2009-04-17 17:38:13 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

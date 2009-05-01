@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  *
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: EntityResolver.java,v 1.2 2009-01-05 16:33:07 michiel Exp $
+ * @version $Id$
  */
 public class EntityResolver implements org.xml.sax.EntityResolver {
 

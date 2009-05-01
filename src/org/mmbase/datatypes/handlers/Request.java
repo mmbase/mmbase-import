@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * This generalizes  one rendition of a form.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Request.java,v 1.4 2009-04-17 15:43:39 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

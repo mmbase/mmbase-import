@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * on commit of the Node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CommitProcessor.java,v 1.4 2005-12-10 14:32:53 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

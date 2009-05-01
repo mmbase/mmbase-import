@@ -26,7 +26,7 @@ import java.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Rank.java,v 1.18 2008-01-21 15:25:28 michiel Exp $
+ * @version $Id$
  */
 public final class Rank implements Comparable<Rank>, java.io.Serializable {
 

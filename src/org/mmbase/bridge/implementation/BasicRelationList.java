@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.22 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id$
  */
 public class BasicRelationList extends AbstractNodeList<Relation> implements RelationList {
 

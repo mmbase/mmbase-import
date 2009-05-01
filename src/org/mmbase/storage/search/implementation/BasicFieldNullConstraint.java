@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldNullConstraint.java,v 1.5 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class BasicFieldNullConstraint extends BasicFieldConstraint

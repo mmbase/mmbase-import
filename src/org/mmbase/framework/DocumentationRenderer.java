@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * render the documenation from the xml's in a/the jar.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DocumentationRenderer.java,v 1.4 2009-01-16 21:17:58 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
 
  */

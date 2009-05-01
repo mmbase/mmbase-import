@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * Framework functions for use in XSLT.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.1 2009-01-16 22:20:33 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 public class Functions {

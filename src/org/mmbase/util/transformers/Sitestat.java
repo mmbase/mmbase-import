@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * 
  * @author Andre van Toly
  * @since MMBase-1.7
- * @version $Id: Sitestat.java,v 1.3 2007-08-15 14:43:12 andre Exp $
+ * @version $Id$
  */
 
 public class Sitestat extends ReaderTransformer implements CharTransformer {

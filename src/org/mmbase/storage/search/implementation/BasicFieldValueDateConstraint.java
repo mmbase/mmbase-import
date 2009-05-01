@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * A constraint on a 'part' of a DateTime field. E.g. where extract(YEAR, lastmodified) = 2004.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFieldValueDateConstraint.java,v 1.6 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class BasicFieldValueDateConstraint extends BasicFieldValueConstraint implements FieldValueDateConstraint {

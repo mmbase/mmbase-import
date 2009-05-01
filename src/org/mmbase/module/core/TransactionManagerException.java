@@ -13,7 +13,7 @@ package org.mmbase.module.core;
  * This Exception is thrown when something goes wrong the MMBase transaction manager.
  *
  * @author John Balder, 3MPS
- * @version $Id: TransactionManagerException.java,v 1.6 2003-09-04 11:05:33 pierre Exp $
+ * @version $Id$
  */
 public class TransactionManagerException extends Exception {
 

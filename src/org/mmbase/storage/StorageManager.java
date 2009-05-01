@@ -20,7 +20,7 @@ import java.io.InputStream;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.9 2009-04-01 21:19:25 michiel Exp $
+ * @version $Id$
  */
 public interface StorageManager<SMF extends StorageManagerFactory> {
 

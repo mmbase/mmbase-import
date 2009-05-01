@@ -16,7 +16,7 @@ import org.mmbase.storage.search.Constraint;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: IntegerHandler.java,v 1.2 2009-04-17 17:38:13 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

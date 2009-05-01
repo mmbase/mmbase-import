@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.26 2008-12-09 14:06:46 michiel Exp $
+ * @version  $Id$
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */

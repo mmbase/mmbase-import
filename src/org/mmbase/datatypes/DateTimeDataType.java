@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.40 2008-08-27 17:09:16 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {

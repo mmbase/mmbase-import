@@ -16,7 +16,7 @@ import org.mmbase.bridge.*;
  * to the current user id when this field is not yet set.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Creator.java,v 1.2 2008-07-15 10:11:43 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  * @see   LastModifier
  */

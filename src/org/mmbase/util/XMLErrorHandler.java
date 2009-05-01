@@ -13,7 +13,7 @@ package org.mmbase.util;
  *
  * @deprecated Use {@link org.mmbase.util.xml.ErrorHandler}
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.22 2008-10-18 10:25:06 michiel Exp $
+ * @version $Id$
  */
 
 public class XMLErrorHandler extends org.mmbase.util.xml.ErrorHandler {

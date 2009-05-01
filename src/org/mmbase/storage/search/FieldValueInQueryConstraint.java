@@ -18,7 +18,7 @@ import java.util.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldValueInQueryConstraint.java,v 1.2 2009-04-29 07:39:07 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 public interface FieldValueInQueryConstraint extends FieldConstraint {

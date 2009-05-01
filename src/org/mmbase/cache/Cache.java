@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.53 2008-07-11 12:46:44 michiel Exp $
+ * @version $Id$
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBean {
 

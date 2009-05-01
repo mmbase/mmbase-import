@@ -17,7 +17,7 @@ import java.util.Map;
  * UserContext object. So every attempt to log in will succeed.
  *
  * @author Eduard Witteveen
- * @version $Id: NoAuthentication.java,v 1.11 2008-03-17 15:37:59 michiel Exp $
+ * @version $Id$
  * @see UserContext
  */
 final public class NoAuthentication extends Authentication {

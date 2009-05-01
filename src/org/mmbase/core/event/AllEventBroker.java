@@ -15,7 +15,7 @@ package org.mmbase.core.event;
  *
  * @author Ernst Bunders
  * @since 1.8
- * @version $Id: AllEventBroker.java,v 1.4 2008-09-04 21:21:41 michiel Exp $
+ * @version $Id$
  * @see  AllEventListener
  *
  */

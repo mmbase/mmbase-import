@@ -14,7 +14,7 @@ import java.util.Calendar;
 /**
  * @javadoc
  * @author Michiel Meeuwissen
- * @version $Id: FieldValueDateConstraint.java,v 1.5 2005-08-16 14:05:38 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public interface FieldValueDateConstraint extends FieldValueConstraint {

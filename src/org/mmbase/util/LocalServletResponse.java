@@ -17,7 +17,7 @@ import java.io.*;
 /**
  * @see LocalHttpServletRequest
  * @author Michiel Meeuwissen
- * @version $Id: LocalServletResponse.java,v 1.2 2009-02-02 15:27:00 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 public class LocalServletResponse implements ServletResponse {

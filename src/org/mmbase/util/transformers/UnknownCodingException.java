@@ -15,7 +15,7 @@ package org.mmbase.util.transformers;
  * @javadoc
  *
  * @author Michiel Meeuwissen
- * @version $Id: UnknownCodingException.java,v 1.7 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id$
  */
 public class UnknownCodingException extends RuntimeException {
 

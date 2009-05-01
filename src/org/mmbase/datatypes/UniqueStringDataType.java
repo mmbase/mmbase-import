@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * namely, ensuring that it is unique already.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UniqueStringDataType.java,v 1.2 2008-06-09 10:20:35 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.6
  */
 public class UniqueStringDataType extends StringDataType {

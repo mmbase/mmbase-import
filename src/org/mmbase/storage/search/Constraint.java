@@ -15,7 +15,7 @@ package org.mmbase.storage.search;
  * This corresponds to constraints in a WHERE-clause in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: Constraint.java,v 1.3 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface Constraint {

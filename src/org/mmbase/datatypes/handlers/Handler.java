@@ -19,7 +19,7 @@ import org.mmbase.storage.search.Constraint;
  * post and things like that.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Handler.java,v 1.4 2009-04-29 07:39:07 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  * @see org.mmbase.datatypes.handlers
  */

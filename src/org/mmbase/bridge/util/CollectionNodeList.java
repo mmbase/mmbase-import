@@ -20,7 +20,7 @@ import org.mmbase.bridge.*;
  * one.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionNodeList.java,v 1.11 2007-02-16 20:06:58 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class CollectionNodeList extends AbstractCollectionNodeList<Node> implements NodeList {

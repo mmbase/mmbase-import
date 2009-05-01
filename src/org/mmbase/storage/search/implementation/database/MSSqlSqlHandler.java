@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: MSSqlSqlHandler.java,v 1.5 2007-06-12 10:59:41 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class MSSqlSqlHandler extends BasicSqlHandler implements SqlHandler {

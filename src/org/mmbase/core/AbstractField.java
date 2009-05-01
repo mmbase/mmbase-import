@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.21 2009-01-03 10:16:56 michiel Exp $
+ * @version $Id$
  */
 
 abstract public class AbstractField<D> extends AbstractDescriptor implements Field {

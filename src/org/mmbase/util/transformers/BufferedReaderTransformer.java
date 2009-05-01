@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: BufferedReaderTransformer.java,v 1.8 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id$
  */
 
 public abstract class BufferedReaderTransformer extends ReaderTransformer implements CharTransformer {

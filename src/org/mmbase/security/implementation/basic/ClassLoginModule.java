@@ -18,7 +18,7 @@ import org.mmbase.security.Rank;
  * Support for authentication method 'class' for 'basic' authentication.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ClassLoginModule.java,v 1.9 2008-10-01 16:57:34 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 public class ClassLoginModule implements LoginModule {

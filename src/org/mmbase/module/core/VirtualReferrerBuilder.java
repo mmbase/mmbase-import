@@ -13,7 +13,7 @@ package org.mmbase.module.core;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualReferrerBuilder.java,v 1.7 2008-08-27 17:33:59 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class VirtualReferrerBuilder extends VirtualBuilder {

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Nico Klasens
  * @since MMBase 1.8.1
- * @version $Id: ApplicationContextReader.java,v 1.7 2008-08-23 18:56:31 michiel Exp $
+ * @version $Id$
  */
 public class ApplicationContextReader {
 

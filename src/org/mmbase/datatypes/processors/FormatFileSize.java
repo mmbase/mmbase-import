@@ -18,7 +18,7 @@ package org.mmbase.datatypes.processors;
  * @todo Why not apply this to floats too. Also support SI prefixes below k then (c, m, micro, n, etc).
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormatFileSize.java,v 1.8 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

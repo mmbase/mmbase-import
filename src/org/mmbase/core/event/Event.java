@@ -15,7 +15,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: Event.java,v 1.16 2009-03-25 00:35:54 michiel Exp $
+ * @version $Id$
  */
 public abstract class Event implements Serializable, org.mmbase.util.PublicCloneable<Event> {
 

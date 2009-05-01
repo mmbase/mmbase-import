@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * org.mmbase.bridge.Node#isChanged(String)}. If that returns true (and the node is not new), the old value is used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IgnoreIfChangedProcessor.java,v 1.4 2007-03-21 07:08:51 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.1
  */
 

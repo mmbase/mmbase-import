@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  * A list of relation managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManagerList.java,v 1.16 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id$
  */
 public class BasicRelationManagerList extends AbstractNodeList<RelationManager> implements RelationManagerList {
 

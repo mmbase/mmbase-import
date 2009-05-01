@@ -16,7 +16,7 @@ import org.mmbase.util.functions.*;
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrl.java,v 1.1 2008-10-27 17:27:37 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 

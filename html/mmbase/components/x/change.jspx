@@ -14,7 +14,7 @@
 
          TODO: Some way to edit relations? NODE-field editor?
 
-         $Id: change.jspx,v 1.9 2008-08-19 20:30:48 michiel Exp $
+         $Id$
     -->
     <mm:import externid="ok" from="request">init</mm:import>
     <mm:import externid="submitted"><mm:write referid="ok" /></mm:import>

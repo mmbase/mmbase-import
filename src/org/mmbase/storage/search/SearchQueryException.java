@@ -13,7 +13,7 @@ package org.mmbase.storage.search;
  * Exception thrown by the methods that process search queries.
  *
  * @author Rob van Maris
- * @version $Id: SearchQueryException.java,v 1.5 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class SearchQueryException extends Exception {

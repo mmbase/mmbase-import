@@ -4,7 +4,7 @@ THIS FILE IS DEPRECATED. WE USE MAVEN NOW. PLEASE READ 'README'.
 
 
 MMBase Build File
-$Id: build.xml,v 1.179 2009-04-30 09:36:08 michiel Exp $
+$Id$
 =================
 
 This build file can be used to build the following from CVS or from the source

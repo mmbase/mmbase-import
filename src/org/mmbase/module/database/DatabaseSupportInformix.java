@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * This class sets the 'lock mode' to 30.
  * @author vpro
- * @version $Id: DatabaseSupportInformix.java,v 1.7 2007-11-02 11:34:42 michiel Exp $
+ * @version $Id$
  * @deprecated Use ;IFX_LOCK_MODE_WAIT=31  on the connection string in jdbc.xml in stead
  */
 public class DatabaseSupportInformix implements DatabaseSupport {

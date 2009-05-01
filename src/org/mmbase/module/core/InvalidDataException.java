@@ -14,7 +14,7 @@ package org.mmbase.module.core;
  * This exception gets thrown when a node contains invalid data.
  *
  * @author Pierre van Rooden
- * @version $Id: InvalidDataException.java,v 1.8 2005-10-05 10:00:54 michiel Exp $
+ * @version $Id$
  */
 public class InvalidDataException extends Exception {
 

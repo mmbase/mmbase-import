@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.13 2009-04-17 19:35:55 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {

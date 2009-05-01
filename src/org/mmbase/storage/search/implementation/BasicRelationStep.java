@@ -20,7 +20,7 @@ import org.mmbase.storage.search.*;
  * The directionality property defaults to DIRECTIONS_BOTH.
  *
  * @author Rob van Maris
- * @version $Id: BasicRelationStep.java,v 1.13 2008-07-17 12:55:23 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class BasicRelationStep extends BasicStep implements RelationStep {

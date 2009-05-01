@@ -8,7 +8,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * you will see exactly which line of code (or which JSP) generated the
  * exception.
  * @author Johannes Verelst
- * @version $Id: StacktraceLoggingPatternLayout.java,v 1.5 2008-02-03 17:33:58 nklasens Exp $
+ * @version $Id$
  */
 public class StacktraceLoggingPatternLayout extends MMPatternLayout {
 

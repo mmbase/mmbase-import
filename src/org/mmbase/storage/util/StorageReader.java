@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.17 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class StorageReader<SM extends StorageManager> extends DocumentReader  {

@@ -15,7 +15,7 @@ import java.lang.annotation.*;
  * the corresponding {@link BeanFunction} required.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Required.java,v 1.4 2008-12-04 15:23:50 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 @Retention(RetentionPolicy.RUNTIME)

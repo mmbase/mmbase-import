@@ -20,7 +20,7 @@ import java.util.Collection;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.36 2009-04-24 15:13:49 michiel Exp $
+ * @version $Id$
  */
 public class BasicField extends AbstractField<Object> implements Field {
 

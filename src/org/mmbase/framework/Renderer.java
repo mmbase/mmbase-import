@@ -21,7 +21,7 @@ import org.mmbase.util.functions.*;
  * A Renderer is stateless.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.24 2009-01-13 08:24:21 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public interface Renderer {

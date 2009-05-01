@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * but /img.db). Normally this is no problem, because the alias is resolved by the image-tag. But if
  * for some reason you need aliases to be working on the URL, you must map to URL's with a question mark.
  *
- * @version $Id: BridgeServlet.java,v 1.34 2008-04-03 13:57:49 nklasens Exp $
+ * @version $Id$
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */

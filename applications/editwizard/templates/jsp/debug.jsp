@@ -13,7 +13,7 @@
      * debug.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: debug.jsp,v 1.13 2007-11-09 15:41:51 michiel Exp $
+     * @version  $Id$
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */

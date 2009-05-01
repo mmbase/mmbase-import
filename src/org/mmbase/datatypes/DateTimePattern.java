@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.16 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id$
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {

@@ -13,7 +13,7 @@ package org.mmbase.datatypes;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: CastException.java,v 1.1 2006-04-10 15:23:55 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class CastException extends Exception {

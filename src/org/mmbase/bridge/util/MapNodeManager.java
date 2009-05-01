@@ -22,7 +22,7 @@ import org.mmbase.bridge.*;
  * This happens lazily.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MapNodeManager.java,v 1.3 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id$
  * @since   MMBase-1.9
  */
 

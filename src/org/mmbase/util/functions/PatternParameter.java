@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
- * @version $Id: PatternParameter.java,v 1.1 2008-08-20 08:03:22 michiel Exp $
+ * @version $Id$
  */
 
 public class PatternParameter<C> extends Parameter<C> {

@@ -31,5 +31,5 @@ How to install.
   want to go for placing the whole lot in /mmapps/editwizard.
 
 
-$Id: README.txt,v 1.2 2004-05-24 13:21:11 michiel Exp $
+$Id$
  

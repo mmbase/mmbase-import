@@ -21,7 +21,7 @@ import org.mmbase.util.LocalizedString;
  * @since MMBase-1.9
  * @author Pierre van Rooden
  *
- * @version $Id: DescribedFunctionProvider.java,v 1.3 2009-04-30 19:55:20 michiel Exp $
+ * @version $Id$
  */
 public abstract class DescribedFunctionProvider extends FunctionProvider implements Descriptor {
 

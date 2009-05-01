@@ -20,7 +20,7 @@ import org.apache.commons.fileupload.FileItem;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: SerializableInputStream.java,v 1.9 2009-04-27 14:15:17 michiel Exp $
+ * @version $Id$
  * @todo IllegalStateException or so, if the inputstreas is used (already).
  */
 

@@ -24,7 +24,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.49 2009-04-01 14:01:22 michiel Exp $
+ * @version $Id$
  * @since  MMBase-1.6
  */
 public class Generator {

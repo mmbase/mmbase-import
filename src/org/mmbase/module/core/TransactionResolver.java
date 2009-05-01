@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.31 2008-12-02 16:32:23 michiel Exp $
+ * @version $Id$
  */
 class TransactionResolver {
     private static final Logger log = Logging.getLoggerInstance(TransactionResolver.class);

@@ -36,7 +36,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.215 2009-04-24 15:11:50 michiel Exp $
+ * @version $Id$
  */
 public class DatabaseStorageManager implements StorageManager<DatabaseStorageManagerFactory> {
 

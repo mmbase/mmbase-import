@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.41 2008-12-22 17:02:53 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType<E extends java.io.Serializable & Comparable<E>> extends BasicDataType<E> {

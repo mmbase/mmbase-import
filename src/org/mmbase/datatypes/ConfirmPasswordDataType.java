@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * only sense as a field of a node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConfirmPasswordDataType.java,v 1.15 2009-04-28 14:06:54 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class ConfirmPasswordDataType extends CheckEqualityDataType {

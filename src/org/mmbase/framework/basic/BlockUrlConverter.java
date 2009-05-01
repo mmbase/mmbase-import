@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * URLConverters would probably be like this, and can extend from this.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BlockUrlConverter.java,v 1.19 2009-04-17 19:35:55 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */

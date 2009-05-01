@@ -18,7 +18,7 @@ import org.mmbase.cache.Cacheable;
  * This corresponds to a SELECT query in SQL syntax.
  *
  * @author Rob van Maris
- * @version $Id: SearchQuery.java,v 1.6 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface SearchQuery extends Cacheable {

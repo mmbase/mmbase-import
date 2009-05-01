@@ -21,7 +21,7 @@ import java.util.Vector;
  * @todo more OS support
  *
  * @author Nico Klasens (Finalist IT Group)
- * @version $Id: EnvironmentReader.java,v 1.6 2007-03-02 21:05:15 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.6
  */
 public class EnvironmentReader {

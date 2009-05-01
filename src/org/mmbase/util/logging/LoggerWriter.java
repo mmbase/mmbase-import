@@ -15,7 +15,7 @@ import java.util.*;
  * A Writer that logs every line to a certain logger.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: LoggerWriter.java,v 1.2 2009-04-30 16:36:01 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.9.1
  */
 

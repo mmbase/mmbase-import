@@ -34,7 +34,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online.
  *
  * @author Rob van Maris
- * @version $Id: EtxIndexCreator.java,v 1.6 2007-03-02 21:03:05 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class EtxIndexCreator {
