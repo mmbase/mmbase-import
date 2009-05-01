@@ -1,4 +1,0 @@
-        <relation destination="competencies" role="needcomp" />
-        <relation destination="competencies" role="developcomp" />
-        <relation destination="preassessments" role="related" />
-        <relation destination="postassessments" role="related" />
