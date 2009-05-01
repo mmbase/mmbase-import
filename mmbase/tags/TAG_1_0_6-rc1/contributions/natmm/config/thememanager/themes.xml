@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE themes PUBLIC "//MMBase - themes //" "http://www.mmbase.org/dtd/themes_1_0.dtd">
-<themes>
-        <theme id="MMBaseWebsite" file="themes/MMBaseWebsite/theme.xml" />
-        <theme id="MMBaseTools" file="themes/MMBaseTools/theme.xml" />
-        <theme id="StarField" file="themes/StarField/theme.xml" />
-</themes>
