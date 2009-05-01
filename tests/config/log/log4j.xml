@@ -15,7 +15,11 @@
   </appender>
 
   <logger name="STDERR">
-    <level class="&mmlevel;" value ="fatal" />	
+    <level class="&mmlevel;" value ="fatal" />
+  </logger>
+
+  <logger name="org.mmbase.util.SerializableInputStream">
+    <level class="&mmlevel;" value ="service" />
   </logger>
 
   <root>
