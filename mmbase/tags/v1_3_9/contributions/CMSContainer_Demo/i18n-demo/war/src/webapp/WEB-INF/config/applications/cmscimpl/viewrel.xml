@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<viewrel exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
-   <node number="700" owner="default" snumber="44100" dnumber="319" rtype="viewrel" dir="bidirectional">
-   </node>
-</viewrel>
