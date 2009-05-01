@@ -1,7 +1,0 @@
-<div class="contentHeader"
-     xmlns:jsp="http://java.sun.com/JSP/Page"
-     >
-  <jsp:output omit-xml-declaration="yes" />
-  
-  <jsp:text> </jsp:text>
-</div>
