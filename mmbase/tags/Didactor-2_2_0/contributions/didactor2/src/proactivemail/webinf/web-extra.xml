@@ -1,5 +1,0 @@
-    <!-- Base taglibs for Didactor Reports-->
-    <servlet>
-        <servlet-name>proactivemailinit</servlet-name>
-        <servlet-class>nl.didactor.component.proactivemail.InitComponent</servlet-class>        <load-on-startup>1</load-on-startup>
-    </servlet>
