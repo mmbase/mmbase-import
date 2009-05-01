@@ -29,15 +29,26 @@ Applications build file
 
   <target name="init">
     <mkdir dir="${applications.build.dir}" />
+    <available file="rmmci/build.xml" property="rmmci.exists"/>
+    <available file="resources/build.xml" property="resources.exists"/>
+    <available file="mynews/build.xml" property="mynews.exists"/>
+    <available file="vpro-wizards/build.xml" property="vpro-wizards.exists"/>
     <available file="jumpers/build.xml" property="jumpers.exists"/>
+  	<available file="myyahoo/build.xml" property="myyahoo.exists"/>
     <available file="notifications/build.xml" property="notifications.exists"/>
+    <available file="commandserver/build.xml" property="commandserver.exists"/>
   </target>
 
+  <target name="all.not.compiling" depends="" />
   <target name="all16" depends="init,media,bugtracker,email" />
-  <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community" />
-  <target name="all18" depends="init,all17,rmmci,crontab,vwms,scan,packaging,clustering,oscache-cache,largeobjects,jumpers,notifications" />
+  <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter" />
+  <target name="all18" depends="init,all17,crontab,clustering,richtext,oscache-cache,commandserver,resources,mynews,jumpers,myyahoo,resources,largeobjects,notifications" />
+  <target name="all19" depends="init,all18,vpro-wizards" />
 
-  <target name="all"   depends="init,all18" />
+  <target name="all18_14" depends="init,taglib,dove,editwizard,crontab,cloudcontext,vwms,scan,clustering,oscache-cache,media,packaging,community,largeobjects" />
+  <target name="all18_15" depends="init,email,richtext,jumpers,commandserver,notifications" />
+
+  <target name="all"   depends="init,all19" />
 
 
   <target name="jars" depends="all">
@@ -65,7 +76,7 @@ Applications build file
   </target>
 
   <target name="scan" depends="mmbase">
-     <ant dir="scan"      target="dependent.package" inheritAll="false">
+     <ant dir="scan"      target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
@@ -97,7 +108,7 @@ Applications build file
      </ant>
   </target>
 
-  <target name="rmmci" depends="mmbase">
+  <target name="rmmci" depends="mmbase" if="rmmci.exists">
      <ant dir="rmmci" target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
@@ -112,7 +123,6 @@ Applications build file
        <property name="download.dir"        value="${download.dir}" />
      </ant>
   </target>
-
 
   <target name="dove" depends="mmbase">
      <ant dir="dove" target="package" inheritAll="false">
@@ -131,7 +141,7 @@ Applications build file
   </target>
 
   <target name="community" depends="mmbase,taglib">
-     <ant dir="community"  target="dependent.package" inheritAll="false">
+     <ant dir="community"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
@@ -193,6 +203,13 @@ Applications build file
        <property name="download.dir"        value="${download.dir}" />
      </ant>
   </target>
+  <target name="commandserver" if="commandserver.exists">
+     <ant dir="commandserver"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
 
   <target name="largeobjects" depends="mmbase">
      <ant dir="largeobjects"  target="package" inheritAll="false">
@@ -201,13 +218,63 @@ Applications build file
        <property name="download.dir"        value="${download.dir}" />
      </ant>
   </target>
-  <target name="jumpers" depends="mmbase" if="jumpers.exists">
+
+  <target name="cloudsecurity">
+     <ant dir="cloudsecurity"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="mycompany">
+     <ant dir="mycompany"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="mynews" depends="init" if="mynews.exists">
+     <ant dir="mynews"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+	
+	<target name="vpro-wizards" depends="init" if="vpro-wizards.exists">
+	     <ant dir="vpro-wizards"  target="package" inheritAll="false">
+	       <property name="project.zip.dir"        value="${applications.build.dir}" />
+	       <property name="build.dir"        value="${build.dir}" />
+	       <property name="download.dir"        value="${download.dir}" />
+	     </ant>
+	  </target>
+
+  <target name="jumpers" if="init,jumpers.exists">
      <ant dir="jumpers"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
      </ant>
   </target>
+
+  <target name="myyahoo" if="init,myyahoo.exists">
+     <ant dir="myyahoo"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="resources" depends="mmbase" if="resources.exists">
+    <ant dir="resources"  target="package" inheritAll="false">
+      <property name="project.zip.dir"        value="${applications.build.dir}" />
+      <property name="build.dir"        value="${build.dir}" />
+      <property name="download.dir"        value="${download.dir}" />
+    </ant>
+  </target>
+
 
   <target name="notifications" depends="mmbase" if="notifications.exists">
     <ant dir="notifications"  target="package" inheritAll="false">
@@ -217,25 +284,66 @@ Applications build file
     </ant>
   </target>
 
-  <target name="install">
+  <target name="minimalistic.install">
     <ant dir="taglib"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
+  </target>
+
+  <target name="install.rmmci" if="rmmci.exists">
+    <ant dir="rmmci"         target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+
+  <target name="install.mynews" if="mynews.exists">
+    <ant dir="mynews"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+
+  <target name="install.resources" if="resources.exists">
+    <ant dir="resources"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+
+  <target name="install.jumpers" if="jumpers.exists">
+    <ant dir="jumpers"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+  <target name="install.myyahoo" if="myyahoo.exists">
+    <ant dir="myyahoo"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
+
+  <target name="install" depends="init,minimalistic.install,install.rmmci,install.mynews,install.resources">
+
     <ant dir="editwizard"    target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="dove"          target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="rmmci"         target="install" inheritAll="false">
+    <!--
+    <ant dir="mycompany"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="oscache-cache"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
+    -->
+
+
+
+
   </target>
 
   <target name="fullinstall" depends="install">
+
+    <ant dir="oscache-cache"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+
     <ant dir="packaging"         target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
@@ -260,7 +368,7 @@ Applications build file
     <ant dir="vwms"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="scan"        target="dependent.install" inheritAll="false">
+    <ant dir="scan"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="xmlimporter"    target="dependent.install" inheritAll="false">
@@ -272,7 +380,6 @@ Applications build file
     <ant dir="richtext"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-
     <ant dir="largeobjects"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
@@ -296,7 +403,15 @@ Applications build file
      <ant dir="clustering"      target="clean" inheritAll="false" />
      <ant dir="richtext"      target="clean" inheritAll="false" />
      <ant dir="oscache-cache"      target="clean" inheritAll="false" />
+     <ant dir="commandserver"      target="clean" inheritAll="false" />
      <ant dir="largeobjects"      target="clean" inheritAll="false" />
+
+     <ant dir="cloudsecurity"      target="clean" inheritAll="false" />
+     <ant dir="mycompany"      target="clean" inheritAll="false" />
+     <ant dir="mynews"      target="clean" inheritAll="false" />
+     <ant dir="jumpers"      target="clean" inheritAll="false" />
+     <ant dir="myyahoo"      target="clean" inheritAll="false" />
+     <ant dir="resources"      target="clean" inheritAll="false" />
 
      <delete dir="${applications.build.dir}" />
   </target>
