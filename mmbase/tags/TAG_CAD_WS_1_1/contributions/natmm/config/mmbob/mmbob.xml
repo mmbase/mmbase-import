@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mmbobconfig PUBLIC "-//MMBase/DTD mmbob config 1.0//EN" "http://www.mmbase.org/dtd/mmbobconfig_1_0.dtd">
-<mmbobconfig>
- <forum id="default" account="admin" password="admin2k">
-    <generatedata role="body" file="generate/body.txt" tokenizer=",!? " />
-    <generatedata role="smileys" file="generate/smileys.txt" tokenizer=" \n\r" />
-    <generatedata role="punctuation" file="generate/punctuation.txt" tokenizer=" \n\r" />
- </forum>
-</mmbobconfig>
