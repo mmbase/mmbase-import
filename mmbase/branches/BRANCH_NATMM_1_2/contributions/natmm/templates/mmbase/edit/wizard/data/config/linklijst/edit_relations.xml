@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<form-schema id="edit_relations">
-   <field name="naam" ftype="line"><prompt>naam</prompt></field>
-   <list include="config/link/zoek_linklijst_lijstcontentrel_link.xml" />
-   <list include="config/artikel/zoek_media_posrel_artikel.xml" />
-</form-schema>
