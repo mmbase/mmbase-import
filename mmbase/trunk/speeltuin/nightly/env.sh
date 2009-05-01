@@ -10,6 +10,7 @@ export JAVAC=${JAVA_HOME}/bin/javac
 
 export MAVEN_OPTS="-Xmx700m -XX:MaxPermSize=128m"
 export MAVEN="/home/nightly/maven/bin/maven --nobanner --quiet"
+export MAVEN2="/home/nightly/maven2/bin/mvn"
 export CVS="/usr/bin/cvs -d :pserver:guest@cvs.mmbase.org:/var/cvs"
 export ANT_HOME=/home/nightly/apache-ant
 antcommand="$ANT_HOME/bin/ant"
