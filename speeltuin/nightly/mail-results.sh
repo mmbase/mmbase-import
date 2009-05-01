@@ -3,8 +3,8 @@
 source $HOME/bin/env.sh
 source $HOME/bin/version.sh
 
-export MAILADDRESS="developers@lists.mmbase.org"
-#export MAILADDRESS="michiel.meeuwissen@gmail.com"
+#export MAILADDRESS="developers@lists.mmbase.org"
+export MAILADDRESS="michiel.meeuwissen@gmail.com"
 export BUILD_MAILADDRESS=$MAILADDRESS
 
  # Using one thread for all mail about failures
