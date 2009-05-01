@@ -1,9 +1,0 @@
-#Create ReloadableModule and WatchedReloadableModule here, if you want to build this app for 1.7.
-
-#You should not have the newest version, because those use 'ResourceLoader'.
-
-#This should to the trick:
-
-
-cvs checkout -p -r1.1 src/org/mmbase/module/WatchedReloadableModule.java  > WatchedReloadableModule.java
-cvs checkout -p -r1.2 src/org/mmbase/module/ReloadableModule.java         > ReloadableModule.java
