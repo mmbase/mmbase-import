@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="team_types">
-    <option id="team">team</option>
-    <option id="eenheid">eenheid</option>
-    <option id="bezoekerscentrum">bezoekerscentrum</option>
-    <option id="steunpunt">steunpunt</option>
-    <option id="beheerder_algemene_dienst">beheerder algemene dienst</option>
-</optionlist>
