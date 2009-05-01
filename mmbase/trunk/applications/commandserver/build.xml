@@ -8,6 +8,8 @@
   <property name="debug"          value="off" />
   <property name="deprecation"    value="on" />
 
+  <property name="java.source.version" value="1.5" />
+
   <import file="../buildbase-include.xml" />
 
 </project>
