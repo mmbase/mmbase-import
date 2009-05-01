@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<!-- 
-OVERRIDE THIS LANGUAGES FILE IF YOU WANT MORE OR OTHER LANGUAGES IN YOUR PROJECT
---> 
-<optionlist name="languages">
-   <option id="en">English (en)</option>
-   <option id="nl">Dutch (nl)</option>
-</optionlist>
