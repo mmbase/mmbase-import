@@ -1,8 +1,0 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html" %>
-
-<a href="<%=request.getContextPath()%>${link}page=${count-1}"
-   class="${count == page +1 ? 'page_list_navfalse':'page_list_navtrue'}">
-   ${count}
-</a>

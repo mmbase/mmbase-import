@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<contentchannel exportsource="mmbase://127.0.0.1/contentrepository" timestamp="20080103100000">
-	<node number="202" owner="admin" alias="repository.subsite">
-		<name>SubSite</name>
-		<pathfragment>SubSite</pathfragment>
-	</node>
-</contentchannel>
