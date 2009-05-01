@@ -1,6 +1,0 @@
-<component name="pop" templatepath="pop" templatebar="provider" barposition="20">
-  <scope name="component" referid="component">
-  </scope>
-  <scope name="providers" referid="provider">
-  </scope>
-</component>
