@@ -175,24 +175,20 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
         }
     }
 
-    @Override
     public Object put(String key, Object value) {
         Object r = getValue(key);
         setValue(key, value);
         return r;
     }
 
-    @Override
     public Object get(Object key) {
         return getValue((String) key);
     }
 
-    @Override
     public boolean isEmpty() {
         return false;
     }
 
-    @Override
     public int size() {
         return getNodeManager().getFields().size();
     }
