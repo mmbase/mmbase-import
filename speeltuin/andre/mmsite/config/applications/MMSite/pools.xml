@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<pools exportsource="mmbase://grgrijze.toly.net/null/mm" timestamp="20090417205734">
-	<node number="375" owner="default" alias="pool_website">
-		<description></description>
-		<name>Website</name>
-	</node>
-
-</pools>
