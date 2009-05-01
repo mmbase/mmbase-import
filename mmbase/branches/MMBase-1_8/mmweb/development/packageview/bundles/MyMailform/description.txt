@@ -1,1 +1,0 @@
-MyMailform is a package that shows how to create a mailform by using the editwizards. The template included in the MyMailform package is a general purpose mailform, by which you can create pages with questions of different types like: checkboxes, radio buttons, textlines, textareas and dates. The user can group questions into items and can change the layout of the questions. 
