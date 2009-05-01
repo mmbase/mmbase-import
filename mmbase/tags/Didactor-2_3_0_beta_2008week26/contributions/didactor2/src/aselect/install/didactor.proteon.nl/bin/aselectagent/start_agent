@@ -1,2 +1,0 @@
-#JAVA_HOME=/usr/local/java-1.5; export JAVA_HOME
-nohup java -jar org.aselect.agent.jar &
