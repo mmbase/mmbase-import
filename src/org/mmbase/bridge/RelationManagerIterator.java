@@ -16,7 +16,7 @@ import java.util.ListIterator;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: RelationManagerIterator.java,v 1.8 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id$
  */
 public interface RelationManagerIterator extends ListIterator<RelationManager> {
 

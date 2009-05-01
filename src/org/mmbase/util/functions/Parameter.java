@@ -27,7 +27,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.48 2008-08-23 18:56:31 michiel Exp $
+ * @version $Id$
  * @see Parameters
  */
 

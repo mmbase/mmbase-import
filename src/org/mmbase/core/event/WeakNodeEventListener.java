@@ -13,7 +13,7 @@ package org.mmbase.core.event;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.5
- * @version $Id: WeakNodeEventListener.java,v 1.1 2007-07-26 12:38:44 michiel Exp $
+ * @version $Id$
  */
 public interface WeakNodeEventListener extends EventListener {
     public void notify(NodeEvent event);

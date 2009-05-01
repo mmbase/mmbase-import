@@ -7,7 +7,7 @@ import java.util.*;
  * 
  * @since MMBase-1.9.1
  * @author Michiel Meeuwissen
- * @version $Id: Iso1.java,v 1.1 2009-04-30 09:57:24 michiel Exp $
+ * @version $Id$
  */
 
 class Iso1 {

@@ -12,7 +12,7 @@
       @todo: This JSP must accept a 'language' attribute, and all restriction error message must be included.
              That way, also those can be used in javascript.
 
-      $Id: datatype.jspx,v 1.10 2007-09-16 17:58:36 michiel Exp $
+      $Id$
       author: Michiel Meeuwissen
   -->
   <jsp:output omit-xml-declaration="true" />

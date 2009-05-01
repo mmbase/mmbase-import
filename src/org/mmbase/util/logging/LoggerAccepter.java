@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.9.1
- * @version $Id: LoggerAccepter.java,v 1.3 2009-04-29 07:39:08 michiel Exp $
+ * @version $Id$
  */
 public interface LoggerAccepter {
 

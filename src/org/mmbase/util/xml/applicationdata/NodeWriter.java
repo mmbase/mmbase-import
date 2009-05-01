@@ -26,7 +26,7 @@ import org.mmbase.util.Encode;
  * @author Daniel Ockeleon
  * @author Jaco de Groot
  * @author Pierre van Rooden
- * @version $Id: NodeWriter.java,v 1.5 2007-04-05 14:04:18 pierre Exp $
+ * @version $Id$
  */
 public class NodeWriter {
 

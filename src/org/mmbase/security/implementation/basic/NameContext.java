@@ -19,7 +19,7 @@ import org.mmbase.security.SecurityException;
  * user.
  * 
  * @author Eduard Witteveen
- * @version $Id: NameContext.java,v 1.6 2005-03-01 14:08:33 michiel Exp $
+ * @version $Id$
  */
 public class NameContext extends BasicUser {
 

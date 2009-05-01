@@ -18,7 +18,7 @@ package org.mmbase.security;
  * certain that you will receive the same User object back !
  *
  * @author Eduard Witteveen
- * @version $Id: UserContext.java,v 1.17 2006-01-09 12:18:49 johannes Exp $
+ * @version $Id$
  */
 public interface UserContext extends java.io.Serializable {
     /**

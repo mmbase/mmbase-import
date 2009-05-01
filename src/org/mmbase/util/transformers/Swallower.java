@@ -18,7 +18,7 @@ import java.io.Writer;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Swallower.java,v 1.1 2003-05-11 10:12:56 michiel Exp $
+ * @version $Id$
  */
 
 public class Swallower extends ReaderTransformer implements CharTransformer {

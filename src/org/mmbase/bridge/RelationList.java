@@ -14,7 +14,7 @@ package org.mmbase.bridge;
  * A list of Relations
  *
  * @author Pierre van Rooden
- * @version $Id: RelationList.java,v 1.7 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id$
  */
 public interface RelationList extends BridgeList<Relation> {
 

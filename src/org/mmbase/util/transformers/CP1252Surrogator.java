@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7.2
- * @version $Id: CP1252Surrogator.java,v 1.6 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id$
  */
 
 public class CP1252Surrogator extends ConfigurableReaderTransformer implements CharTransformer {

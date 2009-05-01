@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnectionImplementation.java,v 1.3 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.9 (as 'MultiConnection' in < 1.9)
  */
 public class MultiConnectionImplementation extends ConnectionWrapper implements MultiConnection {

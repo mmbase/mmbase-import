@@ -23,7 +23,7 @@ import java.io.Writer;
  * @author Michiel Meeuwissen
  * @author Andr&eacute; van Toly
  * @since MMBase-1.8
- * @version $Id: SubstringFactory.java,v 1.9 2007-08-04 07:45:52 michiel Exp $
+ * @version $Id$
  */
 
 public class SubstringFactory implements ParameterizedTransformerFactory<CharTransformer> {

@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
  * Component}. See {@link Component#getUnsatisfiedDependencies}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualComponent.java,v 1.8 2008-10-21 18:11:11 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class VirtualComponent {

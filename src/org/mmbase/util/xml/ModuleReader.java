@@ -22,7 +22,7 @@ import org.mmbase.util.xml.EntityResolver;
  * @since MMBase-1.8
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: ModuleReader.java,v 1.9 2008-09-04 05:56:23 michiel Exp $
+ * @version $Id$
  */
 public class ModuleReader extends DocumentReader {
 

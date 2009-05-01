@@ -11,7 +11,7 @@ package org.mmbase.core.event;
 /**
  * @author Ernst Bunders
  * @since 1.8
- * @version $Id: UnsupportedEventException.java,v 1.3 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id$
  *
  */
 public class UnsupportedEventException extends Exception {

@@ -11,7 +11,7 @@ package org.mmbase.core.event;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: IdEventBroker.java,v 1.3 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id$
  */
 public class IdEventBroker extends AbstractEventBroker {
 

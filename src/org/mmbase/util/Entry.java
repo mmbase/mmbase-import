@@ -15,7 +15,7 @@ import java.util.Map;
  * {@link java.util.Map.Entry}, and can be used as a utility for Map implementations. 
  *
  * @since MMBase-1.8
- * @version $Id: Entry.java,v 1.9 2008-08-27 17:07:34 michiel Exp $
+ * @version $Id$
  * @author Michiel Meeuwissen
  */
 public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable<Entry<K, V>>, java.io.Serializable {

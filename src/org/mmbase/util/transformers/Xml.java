@@ -16,7 +16,7 @@ import java.util.Map;
  * Transformations related to escaping in XML.
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: Xml.java,v 1.23 2008-07-28 20:26:19 michiel Exp $
+ * @version $Id$
  */
 
 public class Xml extends ConfigurableStringTransformer implements CharTransformer {

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: ContextDepthDataWriter.java,v 1.6 2008-09-03 23:17:25 michiel Exp $
+ * @version $Id$
  */
 public class ContextDepthDataWriter  {
     private static final Logger log = Logging.getLoggerInstance(ContextDepthDataWriter.class);

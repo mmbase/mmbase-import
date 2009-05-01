@@ -17,7 +17,7 @@ import org.mmbase.util.*;
  * A StringDataType with the names of all installed components.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentNamesDataType.java,v 1.2 2008-07-04 16:33:57 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class ComponentNamesDataType extends StringDataType {

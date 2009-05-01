@@ -19,7 +19,7 @@ import org.apache.commons.fileupload.FileItem;
  * it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FileNameProcessor.java,v 1.1 2005-12-21 08:23:39 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

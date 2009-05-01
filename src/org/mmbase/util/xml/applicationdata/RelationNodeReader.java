@@ -26,7 +26,7 @@ import org.xml.sax.InputSource;
  * @application Applications
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: RelationNodeReader.java,v 1.1 2008-09-03 23:17:25 michiel Exp $
+ * @version $Id$
  */
 public class RelationNodeReader extends NodeReader {
 

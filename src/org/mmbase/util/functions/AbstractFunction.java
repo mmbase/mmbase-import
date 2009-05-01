@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.21 2009-04-17 19:36:50 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters

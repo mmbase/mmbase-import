@@ -29,7 +29,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.58 2008-12-04 16:40:57 michiel Exp $
+ * @version $Id$
  */
 public class TemporaryNodeManager {
 

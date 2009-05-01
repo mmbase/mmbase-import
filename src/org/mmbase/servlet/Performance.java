@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * It also does a very basic test to measure how fast the JVM is.
  *
  * @author  vpro
- * @version $Id: Performance.java,v 1.2 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id$
  */
 public class Performance extends BridgeServlet {
 

@@ -14,7 +14,7 @@ import org.mmbase.bridge.*;
 /**
  * Currently is like FieldGetString.
  * @author Michiel Meeuwissen
- * @version $Id: HtmlGetString.java,v 1.2 2005-12-10 14:33:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

@@ -15,7 +15,7 @@ import org.mmbase.bridge.*;
  * If value is a node, returns it's number (as a String)
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeNumber.java,v 1.2 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

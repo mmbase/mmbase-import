@@ -13,7 +13,7 @@ package org.mmbase.bridge;
  * This exception gets thrown when something goes wrong on the MMCI.
  *
  * @author Pierre van Rooden
- * @version $Id: BridgeException.java,v 1.15 2009-03-25 00:40:21 michiel Exp $
+ * @version $Id$
  */
 public class BridgeException extends RuntimeException {
 

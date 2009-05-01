@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
  * @since MMBase-1.7
- * @version $Id: SpaceReducer.java,v 1.23 2008-11-15 10:40:48 michiel Exp $
+ * @version $Id$
  */
 
 public class SpaceReducer extends BufferedReaderTransformer implements CharTransformer {

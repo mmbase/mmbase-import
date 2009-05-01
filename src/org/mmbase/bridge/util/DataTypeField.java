@@ -27,7 +27,7 @@ import org.mmbase.datatypes.LengthDataType;
  * as the essence of being a {@link org.mmbase.bridge.Field}).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.12 2009-04-29 07:39:07 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8.7
  */
 

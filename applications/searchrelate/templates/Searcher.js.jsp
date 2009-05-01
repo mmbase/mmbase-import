@@ -20,7 +20,7 @@
  * - mmsrCommitted         (use   $("div.mm_related").bind("mmsrCommitted", function (e, submitter, status, relater, relatedNumbers, unrelatedNumbers) ) )
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.61 2009-02-06 12:31:23 andre Exp $
+ * @version $Id$
  */
 
 

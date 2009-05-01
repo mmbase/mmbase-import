@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * An iterator which may need closing (e.g. when wrapping a ResultSet).
  *
- * @version $Id: CloseableIterator.java,v 1.1 2006-09-06 13:47:01 michiel Exp $
+ * @version $Id$
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
  **/

@@ -17,7 +17,7 @@ import org.mmbase.util.transformers.CharTransformer;
  * string transformations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharTransformerProcessor.java,v 1.2 2005-12-10 14:33:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  * @see org.mmbase.util.transformers.CharTransformer
  */

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * depends on the actual implementation of authentication if this is possible and hence not null.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UserNodeDataType.java,v 1.1 2008-08-08 12:42:44 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class UserNodeDataType extends NodeDataType {

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.15 2009-04-17 13:30:46 michiel Exp $
+ * @version $Id$
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 

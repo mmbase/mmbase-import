@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * share code.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.18 2008-10-02 12:09:41 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 

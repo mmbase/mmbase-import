@@ -16,7 +16,7 @@ import java.sql.*;
  * for the JDBC module
  *
  * @author vpro
- * @version $Id: DatabaseSupportShim.java,v 1.6 2008-07-28 16:24:26 michiel Exp $
+ * @version $Id$
  */
 public class DatabaseSupportShim implements DatabaseSupport {
 

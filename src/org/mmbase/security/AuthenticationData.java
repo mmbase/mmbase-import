@@ -16,7 +16,7 @@ import org.mmbase.bridge.Node;
  * type of {@link org.mmbase.bridge.CloudContext#getAuthentication}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AuthenticationData.java,v 1.13 2008-11-13 15:12:33 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public interface AuthenticationData {

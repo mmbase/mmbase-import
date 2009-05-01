@@ -70,7 +70,7 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: StringSearchConstraint.java,v 1.5 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface StringSearchConstraint extends FieldConstraint {

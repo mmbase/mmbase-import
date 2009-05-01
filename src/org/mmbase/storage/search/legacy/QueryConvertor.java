@@ -38,7 +38,7 @@ import org.mmbase.storage.search.implementation.BasicStep;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.1 2008-09-03 21:56:15 michiel Exp $
+ * @version $Id$
  */
 public class QueryConvertor {
 

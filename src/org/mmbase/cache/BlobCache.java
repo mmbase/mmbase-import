@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * replacement for the 'handle cache' which was present in MMBase <1.8.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BlobCache.java,v 1.5 2006-09-04 12:53:51 michiel Exp $
+ * @version $Id$
  * @since MMBase 1.8
  */
 public abstract class BlobCache extends Cache<String, Object> {

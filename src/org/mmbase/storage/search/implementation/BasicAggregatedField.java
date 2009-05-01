@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The step alias is equal to the field name, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicAggregatedField.java,v 1.9 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class BasicAggregatedField extends BasicStepField implements AggregatedField {

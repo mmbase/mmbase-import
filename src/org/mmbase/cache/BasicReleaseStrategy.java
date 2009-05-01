@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.17 2008-02-12 16:27:11 michiel Exp $
+ * @version $Id$
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 

@@ -17,7 +17,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * An SQL handle also recognizing 'FunctionValueConstraint's.
  *
  * @author Marcel Maatkamp
- * @version $Id: FunctionSqlHandler.java,v 1.7 2007-06-22 15:02:45 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.5
  */
 // TODO RvM: (later) add javadoc, elaborate on overwritten methods.

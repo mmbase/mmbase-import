@@ -27,7 +27,7 @@ import org.xml.sax.InputSource;
  * @application Applications
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: NodeReader.java,v 1.2 2009-04-22 15:08:45 michiel Exp $
+ * @version $Id$
  */
 public class NodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(NodeReader.class);

@@ -32,7 +32,7 @@ import javax.management.*;
  * static any more.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.45 2009-04-30 18:49:07 michiel Exp $
+ * @version $Id$
  */
 public class CacheManager implements CacheManagerMBean {
 

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.7
- * @version $Id: Related.java,v 1.7 2009-04-07 16:03:13 michiel Exp $
+ * @version $Id$
  */
 
 public class Related {

@@ -14,7 +14,7 @@ package org.mmbase.bridge;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeList.java,v 1.13 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id$
  */
 public interface NodeList extends BridgeList<Node> {
 

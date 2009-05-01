@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * xml. There must be some way to persistify them. There should also be a editor in the admin pages.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Setting.java,v 1.10 2008-07-11 19:06:46 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class Setting<C> {

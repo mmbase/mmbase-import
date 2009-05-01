@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: DecimalDataType.java,v 1.7 2009-04-29 07:39:07 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 public class DecimalDataType extends NumberDataType<BigDecimal> implements LengthDataType<BigDecimal> {

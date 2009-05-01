@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Contains the status after installing an MMBase 'application'. I.e. whether is was successful, and
  * a newline separated message String containing the reason(s).
- * @version $Id: ApplicationResult.java,v 1.4 2007-10-02 12:15:14 michiel Exp $
+ * @version $Id$
  */
 class ApplicationResult {
 

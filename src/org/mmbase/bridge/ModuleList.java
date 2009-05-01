@@ -14,7 +14,7 @@ package org.mmbase.bridge;
  * A list of modules
  *
  * @author Pierre van Rooden
- * @version $Id: ModuleList.java,v 1.8 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id$
  */
 public interface ModuleList extends BridgeList<Module> {
 

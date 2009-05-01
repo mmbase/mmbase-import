@@ -18,7 +18,7 @@ import org.mmbase.util.xml.EntityResolver;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ApplicationReader.java,v 1.3 2009-01-05 16:34:12 michiel Exp $
+ * @version $Id$
  */
 public class ApplicationReader extends org.mmbase.util.xml.DocumentReader {
 

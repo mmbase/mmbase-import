@@ -12,7 +12,7 @@ package org.mmbase.bridge;
 /**
  * This exception gets thrown when an attempt is made to create a transaction with a name that already exists
  * @author Pierre van Rooden
- * @version $Id: AlreadyExistsException.java,v 1.3 2003-08-29 09:36:50 pierre Exp $
+ * @version $Id$
  * @since  MMBase-1.6
  */
 public class AlreadyExistsException extends BridgeException {

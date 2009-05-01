@@ -22,7 +22,7 @@ import java.util.concurrent.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.28 2008-08-02 15:35:46 michiel Exp $
+ * @version $Id$
  */
 public class MMEvents extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(MMEvents.class);

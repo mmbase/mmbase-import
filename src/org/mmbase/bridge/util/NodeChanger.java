@@ -20,7 +20,7 @@ import org.mmbase.bridge.*;
  * other thread. In that case you can first wrap your Node in a NodeChanger object.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeChanger.java,v 1.4 2008-09-04 06:54:27 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 

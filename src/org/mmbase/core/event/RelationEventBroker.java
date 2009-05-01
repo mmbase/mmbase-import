@@ -12,7 +12,7 @@ package org.mmbase.core.event;
  * @author Ernst Bunders
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: RelationEventBroker.java,v 1.13 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id$
  */
 public class RelationEventBroker extends AbstractEventBroker {
 

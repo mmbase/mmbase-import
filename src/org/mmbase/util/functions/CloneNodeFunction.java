@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * A function on nodes to clone them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloneNodeFunction.java,v 1.1 2008-11-27 15:15:23 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 public class CloneNodeFunction extends NodeFunction<Node> {

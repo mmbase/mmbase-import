@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * parameter 'wraps' which you can point to another block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WrappedRenderer.java,v 1.4 2009-01-13 08:24:21 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 public abstract class WrappedRenderer extends AbstractRenderer {

@@ -23,7 +23,7 @@ import org.mmbase.util.functions.*;
  * chained one after another.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.16 2009-01-31 07:46:27 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  * @todo EXPERIMENTAL
  */

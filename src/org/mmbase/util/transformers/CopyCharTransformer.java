@@ -21,7 +21,7 @@ import org.mmbase.util.IOUtil;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: CopyCharTransformer.java,v 1.7 2009-04-07 08:23:35 nklasens Exp $
+ * @version $Id$
  */
 
 public class CopyCharTransformer extends ReaderTransformer implements CharTransformer {

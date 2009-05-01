@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.35 2009-04-28 08:42:37 michiel Exp $
+ * @version $Id$
  */
 
 public class DataTypes {

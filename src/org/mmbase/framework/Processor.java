@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  * rendered, but at most one of them has its Processor executed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Processor.java,v 1.11 2008-08-26 07:48:38 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public interface Processor {

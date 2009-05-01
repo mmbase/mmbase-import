@@ -20,7 +20,7 @@ package org.mmbase.bridge;
  * back by calling the transaction's cancel method.
  *
  * @author Pierre van Rooden
- * @version $Id: Transaction.java,v 1.7 2008-07-29 09:21:24 michiel Exp $
+ * @version $Id$
  */
 public interface Transaction extends Cloud {
 

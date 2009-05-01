@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.28 2008-09-04 05:56:22 michiel Exp $
+ * @version $Id$
  */
 public class EventManager {
 

@@ -17,7 +17,7 @@ import java.util.Date;
  * to the current time when the node is committed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModified.java,v 1.6 2008-11-04 16:47:59 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  * @see   LastModifier
  */

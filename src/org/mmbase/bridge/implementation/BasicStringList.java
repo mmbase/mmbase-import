@@ -18,7 +18,7 @@ import org.mmbase.bridge.StringIterator;
  * A list of Strings
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringList.java,v 1.13 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id$
  */
 public class BasicStringList extends BasicList<String> implements StringList {
 

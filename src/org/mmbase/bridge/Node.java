@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.83 2009-03-23 17:42:11 michiel Exp $
+ * @version $Id$
  */
 public interface Node extends Comparable<Node> {
 

@@ -15,7 +15,7 @@ import org.mmbase.bridge.*;
  * empty, but of course we forsee the possibility for  restrictions on doc-type.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlDataType.java,v 1.7 2009-04-30 10:15:46 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class XmlDataType extends AbstractLengthDataType<org.w3c.dom.Document> {

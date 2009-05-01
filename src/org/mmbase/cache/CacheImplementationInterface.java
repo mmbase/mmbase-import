@@ -17,7 +17,7 @@ import java.util.*;
  * An implementation of this interface has to be thread-safe to guarantee correctness.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheImplementationInterface.java,v 1.10 2008-06-24 09:54:44 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public interface CacheImplementationInterface<K, V> extends Map<K, V> {

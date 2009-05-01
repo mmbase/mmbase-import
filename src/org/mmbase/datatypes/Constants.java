@@ -17,7 +17,7 @@ import org.mmbase.bridge.Field;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: Constants.java,v 1.4 2005-10-27 13:05:01 michiel Exp $
+ * @version $Id$
  */
 
 public class Constants {

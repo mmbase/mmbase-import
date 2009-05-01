@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.42 2009-01-05 17:51:39 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class Block {

@@ -15,7 +15,7 @@ package org.mmbase.util.functions;
  * @see    FunctionSets
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: FunctionSet.java,v 1.10 2009-01-06 15:16:49 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class FunctionSet extends FunctionProvider {

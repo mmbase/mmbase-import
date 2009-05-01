@@ -15,7 +15,7 @@ package org.mmbase.cache;
  * The code that handles the caching should verify this for a cacheable object.
  *
  * @author Pierre van Rooden
- * @version $Id: Cacheable.java,v 1.1 2007-03-31 17:12:58 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8
  * @see org.mmbase.cache.CachePolicy
  */

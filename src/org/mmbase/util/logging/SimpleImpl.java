@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * configure string).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: SimpleImpl.java,v 1.13 2009-02-04 12:31:51 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.4
  */
 

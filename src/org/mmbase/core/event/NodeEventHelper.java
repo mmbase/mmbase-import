@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * but we need a little help for easy instantiation.
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: NodeEventHelper.java,v 1.13 2008-07-03 15:29:40 michiel Exp $
+ * @version $Id$
 
  */
 public class NodeEventHelper {

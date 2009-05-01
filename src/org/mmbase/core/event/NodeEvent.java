@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.38 2008-08-08 12:28:54 michiel Exp $
+ * @version $Id$
  */
 public class NodeEvent extends Event {
     private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);

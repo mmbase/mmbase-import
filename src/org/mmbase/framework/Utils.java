@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * Static utilitiy methods which are related to (combine functionality of)  other classes in the packages.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Utils.java,v 1.11 2009-01-16 22:20:33 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public abstract class Utils {

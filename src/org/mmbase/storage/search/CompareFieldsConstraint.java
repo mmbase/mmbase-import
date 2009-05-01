@@ -13,7 +13,7 @@ package org.mmbase.storage.search;
  * A constraint that compares the value of two stepfields.
  *
  * @author Rob van Maris
- * @version $Id: CompareFieldsConstraint.java,v 1.3 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface CompareFieldsConstraint extends FieldCompareConstraint {

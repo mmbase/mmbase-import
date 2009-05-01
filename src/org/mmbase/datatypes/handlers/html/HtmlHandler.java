@@ -25,7 +25,7 @@ import java.util.*;
  * This is the base handler for the mime type text/html and application/xml+xhtml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HtmlHandler.java,v 1.3 2009-04-24 15:10:10 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

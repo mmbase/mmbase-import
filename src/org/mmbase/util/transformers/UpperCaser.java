@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: UpperCaser.java,v 1.4 2003-05-12 11:15:35 michiel Exp $
+ * @version $Id$
  */
 
 public class UpperCaser extends ReaderTransformer implements CharTransformer {

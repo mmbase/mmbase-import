@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * this repository on startup.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MemoryActionRepository.java,v 1.9 2008-09-16 16:36:59 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class MemoryActionRepository extends ActionRepository {

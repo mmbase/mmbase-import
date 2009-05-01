@@ -17,7 +17,7 @@ import java.util.*;
  * This corresponds to a table name and alias in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: Step.java,v 1.6 2008-07-17 12:55:23 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface Step {

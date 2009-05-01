@@ -33,7 +33,7 @@ And be implemented like so:
 </pre>
 
  * @author Michiel Meeuwissen
- * @version $Id: MethodFunction.java,v 1.13 2009-01-31 07:54:53 michiel Exp $
+ * @version $Id$
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction

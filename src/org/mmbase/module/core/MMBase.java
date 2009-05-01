@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.262 2009-04-24 15:09:38 michiel Exp $
+ * @version $Id$
  */
 public class MMBase extends ProcessorModule {
 

@@ -13,7 +13,7 @@ import org.mmbase.module.core.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Dummy.java,v 1.5 2003-03-10 11:50:18 pierre Exp $
+ * @version $Id$
  */
 public class Dummy extends MMObjectBuilder {
 

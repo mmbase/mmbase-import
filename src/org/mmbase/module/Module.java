@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.104 2009-01-08 00:18:57 michiel Exp $
+ * @version $Id$
  */
 public abstract class Module extends DescribedFunctionProvider {
 

@@ -6,7 +6,7 @@
     xml:lang="en"
     lang="en">
   <jsp:directive.page import="org.mmbase.datatypes.*,java.util.*" />
-  <jsp:text>&lt;!-- $Id: index.jspx,v 1.7 2008-06-24 12:28:49 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- $Id$ --&gt;</jsp:text>
   <mm:content
       expires="600"
       unacceptable="CRIPPLE"

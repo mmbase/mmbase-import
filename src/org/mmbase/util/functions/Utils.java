@@ -7,7 +7,7 @@ import org.mmbase.util.logging.Logging;
  * Several utility methods.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Utils.java,v 1.1 2007-06-20 14:14:47 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public final class Utils {

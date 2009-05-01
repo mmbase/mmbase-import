@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Sander de Boer
- * @version  $Id: CheckEqualityDataType.java,v 1.3 2009-04-28 14:07:13 michiel Exp $
+ * @version  $Id$
  * @since MMBase-1.8
  */
 public class CheckEqualityDataType extends StringDataType {

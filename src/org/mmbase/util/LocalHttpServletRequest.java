@@ -34,7 +34,7 @@ import java.io.*;
  </pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalHttpServletRequest.java,v 1.3 2009-04-29 07:39:08 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 public class LocalHttpServletRequest extends LocalServletRequest implements HttpServletRequest {

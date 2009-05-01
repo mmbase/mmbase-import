@@ -19,7 +19,7 @@ import java.util.concurrent.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.9.1
- * @version $Id: ChainedLogger.java,v 1.3 2009-04-29 07:39:08 michiel Exp $
+ * @version $Id$
  */
 public class ChainedLogger implements Logger {
 

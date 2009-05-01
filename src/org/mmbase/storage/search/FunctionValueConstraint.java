@@ -53,7 +53,7 @@ utility classes in cinema-importers -> importer -> CreateProcedure
 README.txt (END)
  *
  * @author Marcel Maatkamp
- * @version $Id: FunctionValueConstraint.java,v 1.5 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.5
  */
 public interface FunctionValueConstraint extends FieldCompareConstraint {

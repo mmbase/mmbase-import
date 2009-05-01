@@ -14,7 +14,7 @@ package org.mmbase.bridge;
  * A list of node managers
  *
  * @author Pierre van Rooden
- * @version $Id: NodeManagerList.java,v 1.9 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id$
  */
 public interface NodeManagerList extends BridgeList<NodeManager> {
 

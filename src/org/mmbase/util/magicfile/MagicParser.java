@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * This Parser translates the configuration file of UNIX's file to a
  * list of Detectors (and to a magic.xml)
  *
- * @version $Id: MagicParser.java,v 1.14 2008-10-31 10:26:49 michiel Exp $
+ * @version $Id$
  */
 public class MagicParser implements DetectorProvider {
     /**

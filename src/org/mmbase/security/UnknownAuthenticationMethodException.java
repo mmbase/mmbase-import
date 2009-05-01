@@ -14,7 +14,7 @@ package org.mmbase.security;
  * 'method/application'.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: UnknownAuthenticationMethodException.java,v 1.1 2004-04-19 16:35:28 michiel Exp $
+ * @version $Id$
  * @since  MMBase-1.8
  */
 public class UnknownAuthenticationMethodException extends org.mmbase.security.SecurityException {

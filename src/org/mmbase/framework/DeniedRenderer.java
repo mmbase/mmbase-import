@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Andr&eacute; van Toly
- * @version $Id: DeniedRenderer.java,v 1.8 2008-08-26 07:48:38 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 

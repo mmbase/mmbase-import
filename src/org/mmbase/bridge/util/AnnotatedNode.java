@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * matter of convience in e.g. JSPs using {@link #getValue} with a field name starting with "annotation:".
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AnnotatedNode.java,v 1.1 2008-07-21 14:23:49 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.9
  */
 

@@ -17,7 +17,7 @@ import java.util.*;
  * This corresponds to the use of "in (...)" in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: FieldValueInConstraint.java,v 1.7 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface FieldValueInConstraint extends FieldConstraint {

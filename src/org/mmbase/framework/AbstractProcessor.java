@@ -15,7 +15,7 @@ import org.mmbase.util.functions.*;
  * Abstract view implementation which implements getType and the specific parameters.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractProcessor.java,v 1.8 2008-08-26 07:48:38 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 abstract public class AbstractProcessor implements Processor {

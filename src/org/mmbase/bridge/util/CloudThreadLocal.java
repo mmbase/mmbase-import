@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * ThreadLocal to store an MMBase Bridge Cloud
  * @since MMBase-1.9
- * @version $Id: CloudThreadLocal.java,v 1.4 2008-08-12 19:48:55 michiel Exp $
+ * @version $Id$
  */
 public class CloudThreadLocal {
 

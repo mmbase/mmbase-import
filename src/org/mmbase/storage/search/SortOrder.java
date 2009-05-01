@@ -15,7 +15,7 @@ package org.mmbase.storage.search;
  * This corresponds to use of ORDER BY in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: SortOrder.java,v 1.5 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface SortOrder {

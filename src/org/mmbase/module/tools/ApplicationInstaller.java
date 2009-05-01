@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.19 2009-04-22 15:09:15 michiel Exp $
+ * @version $Id$
  */
 class ApplicationInstaller {
 

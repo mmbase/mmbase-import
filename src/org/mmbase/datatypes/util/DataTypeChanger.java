@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwisen
  * @since  MMBase-1.9.1
- * @version $Id: DataTypeChanger.java,v 1.3 2009-04-07 08:06:04 michiel Exp $
+ * @version $Id$
  */
 
 public class DataTypeChanger {

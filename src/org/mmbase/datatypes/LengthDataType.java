@@ -16,7 +16,7 @@ package org.mmbase.datatypes;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LengthDataType.java,v 1.8 2008-09-01 17:39:44 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public interface LengthDataType<E> extends DataType<E> {

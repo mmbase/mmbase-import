@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.35 2009-04-30 10:15:46 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class NodeDataType extends BasicDataType<Node> {

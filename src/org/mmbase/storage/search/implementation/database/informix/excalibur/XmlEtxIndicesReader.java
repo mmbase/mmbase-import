@@ -17,7 +17,7 @@ import org.xml.sax.*;
 /**
  *
  * @author Rob van Maris
- * @version $Id: XmlEtxIndicesReader.java,v 1.5 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class XmlEtxIndicesReader extends DocumentReader {

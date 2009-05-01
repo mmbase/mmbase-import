@@ -21,7 +21,7 @@
     <!--
          Offers a form for one new MMBase node.
          Also handles the form, and then redirects to change.jspx, because the node is existng then.
-         $Id: create.jspx,v 1.8 2008-08-09 11:29:47 michiel Exp $
+         $Id$
     -->
     <mm:import id="referids" from="request">nodemanager,only?</mm:import>
     <mm:cloud rank="basic user">

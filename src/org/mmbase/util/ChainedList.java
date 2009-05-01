@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.9
- * @version $Id: ChainedList.java,v 1.4 2009-01-04 18:51:56 nklasens Exp $
+ * @version $Id$
  * @see ChainedIterator
  */
 public class ChainedList<E> extends AbstractList<E> {

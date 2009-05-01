@@ -15,7 +15,7 @@ import java.sql.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.1
- * @version $Id: ResultSetReader.java,v 1.1 2009-01-30 20:07:33 michiel Exp $
+ * @version $Id$
  */
 public interface ResultSetReader {
 

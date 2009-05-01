@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * 'fieldName') parameter.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionValueIfEmptyCommitProcessor.java,v 1.4 2008-04-02 12:37:17 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.5
  */
 

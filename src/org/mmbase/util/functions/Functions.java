@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.20 2009-01-06 15:16:49 michiel Exp $
+ * @version $Id$
  */
 public class Functions {
 

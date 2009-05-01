@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.438 2009-04-27 12:07:53 michiel Exp $
+ * @version $Id$
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
