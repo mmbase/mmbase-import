@@ -1,9 +1,0 @@
-Subject: $(DATA) Simple text/html mail $(CURRENTDATE)
-Content-Type: text/html
-X-Header-Test: test
-From: ppuk@m.meeuw.org
-
-ab      
-<em>cd</em>
-ef              
-www.mmbase.org
