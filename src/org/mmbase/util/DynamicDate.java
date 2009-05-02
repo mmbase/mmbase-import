@@ -41,7 +41,7 @@ import java.util.*;
  */
 public class DynamicDate extends Date {
 
-
+    private final static long serialVersionUID = 0L;
     /**
      * Parses a format string and returns Date instance, possibly a 'dynamic one'. Not necessary a new one, which
      * does not matter, because these objects are unmodifiable anyway.
@@ -125,14 +125,17 @@ public class DynamicDate extends Date {
 
     // all methods of Date itself are simply wrapped..
 
+    @Override
     public boolean after(Date when) {
         return evalDate().after(when);
     }
 
+    @Override
     public boolean  before(Date when) {
         return evalDate().before(when);
     }
 
+    @Override
     public Object clone() {
         try {
             return getInstance(date);
@@ -140,10 +143,12 @@ public class DynamicDate extends Date {
             return new Date();
         }
     }
+    @Override
     public int  compareTo(Date anotherDate) {
         return evalDate().compareTo(anotherDate);
     }
 
+    @Override
     public boolean  equals(Object obj) {
         if (obj instanceof DynamicDate) {
             return date.equals(((DynamicDate)obj).date);
@@ -151,66 +156,86 @@ public class DynamicDate extends Date {
             return false;
         }
     }
-    @Deprecated public int  getDate() {
+    @Deprecated@Override
+    public int getDate() {
         return evalDate().getDate();
     }
-    @Deprecated public int  getDay() {
+    @Deprecated@Override
+    public int getDay() {
         return evalDate().getDay();
     }
-    @Deprecated public int getHours() {
+    @Deprecated@Override
+    public int getHours() {
         return evalDate().getHours();
     }
-    @Deprecated public int getMinutes() {
+    @Deprecated@Override
+    public int getMinutes() {
         return evalDate().getMinutes();
     }
-    @Deprecated public int  getMonth() {
+    @Deprecated@Override
+    public int getMonth() {
         return evalDate().getMonth();
     }
 
-    @Deprecated public int  getSeconds() {
+    @Deprecated@Override
+    public int getSeconds() {
         return evalDate().getSeconds();
     }
+    @Override
     public long  getTime() {
         return evalDate().getTime();
     }
-    @Deprecated public int  getTimezoneOffset() {
+    @Deprecated@Override
+    public int getTimezoneOffset() {
         return evalDate().getTimezoneOffset();
     }
-    @Deprecated public int  getYear() {
+    @Deprecated@Override
+    public int getYear() {
         return evalDate().getYear();
     }
+    @Override
     public  int  hashCode() {
         return date.hashCode();
     }
-    @Deprecated public void  setDate(int date) {
+    @Deprecated@Override
+    public void setDate(int date) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    @Deprecated public void  setHours(int hours) {
+    @Deprecated@Override
+    public void setHours(int hours) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    @Deprecated public void  setMinutes(int minutes) {
+    @Deprecated@Override
+    public void setMinutes(int minutes) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    @Deprecated public void  setMonth(int month) {
+    @Deprecated@Override
+    public void setMonth(int month) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
 
-    @Deprecated public void  setSeconds(int seconds) {
+    @Deprecated@Override
+    public void setSeconds(int seconds) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    @Deprecated public  void  setTime(long time) {
+    @Deprecated@Override
+    public void setTime(long time) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    @Deprecated public void  setYear(int year) {
+    @Deprecated@Override
+    public void setYear(int year) {
         throw new UnsupportedOperationException("Cannot set date in dynamic date");
     }
-    @Deprecated public String  toGMTString() {
+    @Deprecated@Override
+    public String toGMTString() {
         return evalDate().toGMTString();
     }
-    @Deprecated public String  toLocaleString() {
+    @Deprecated@Override
+    public String toLocaleString() {
         return evalDate().toLocaleString();
     }
 
+    @Override
     public String  toString() {
         return date + ": " + evalDate().toString();
     }
@@ -262,9 +287,15 @@ public class DynamicDate extends Date {
             System.out.println("Also try with different values for -Duser.timezone=");
         } else {
             Date d1 = getInstance(argv[0]);
+            if (argv.length > 1) {
+                java.text.DateFormat my = new java.text.SimpleDateFormat(argv[1]);
+                System.out.println(my.format(d1));
+            } else {
+                System.out.println(formatter.format(d1) + " " + d1.getTime());
+            }
             //Date d2 = Casting.ISO_8601_UTC.parse(argv[0]);
             //Date d3 = new Date(Long.MIN_VALUE);
-            System.out.println(formatter.format(d1) + " " + d1.getTime());
+
             //System.out.println("" + d2 + " " + d2.getTime());
             //System.out.println("" + d3 + " " + d3.getTime());
         }
