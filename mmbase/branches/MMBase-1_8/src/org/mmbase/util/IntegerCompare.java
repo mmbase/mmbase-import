@@ -16,7 +16,7 @@ package org.mmbase.util;
  * @deprecated Should implement java.util.Comparator, or should not exist, because this is java.lang.Integer's 'natural' order.
  *
  * @author Rico Jansen
- * @version $Id: IntegerCompare.java,v 1.6 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id$
  */
 public class IntegerCompare implements CompareInterface {
 

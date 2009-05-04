@@ -18,7 +18,7 @@ import org.mmbase.core.CoreField;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.18 2006-07-11 09:30:26 michiel Exp $
+ * @version $Id$
  */
 public class BasicFieldList extends BasicList implements FieldList {
 

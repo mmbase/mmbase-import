@@ -12,7 +12,7 @@ package org.mmbase.module.builders;
 /**
  * @javadoc
  * @application Tools
- * @version $Id: MMEventsProbe.java,v 1.7.2.2 2007-08-02 13:25:56 michiel Exp $
+ * @version $Id$
  * @author Daniel Ockeloen
  */
 public class MMEventsProbe implements Runnable {

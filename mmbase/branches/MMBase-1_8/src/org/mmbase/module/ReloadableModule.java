@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.9.2.3 2008-08-12 08:17:45 michiel Exp $
+ * @version $Id$
  */
 public abstract class ReloadableModule extends Module {
 

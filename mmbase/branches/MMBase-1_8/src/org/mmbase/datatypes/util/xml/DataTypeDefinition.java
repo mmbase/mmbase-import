@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.55.2.6 2009-03-17 14:45:55 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {

@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.68.2.4 2008-02-08 10:39:28 michiel Exp $
+ * @version $Id$
  */
 public class TypeDef extends MMObjectBuilder {
 

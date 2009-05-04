@@ -18,7 +18,7 @@ import java.lang.reflect.*;
  * method-function can come in handy on JSP's.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MethodFunction.java,v 1.4 2005-10-01 20:17:36 michiel Exp $
+ * @version $Id$
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction

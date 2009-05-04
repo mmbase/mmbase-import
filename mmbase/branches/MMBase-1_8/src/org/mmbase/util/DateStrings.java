@@ -16,7 +16,7 @@ import java.util.Locale;
  * The DateString class provides constant text strings for the weekday, month etc.
  *
  * @deprecated FIX dutch days
- * @version $Id: DateStrings.java,v 1.10 2005-08-31 11:46:55 nklasens Exp $
+ * @version $Id$
  */
 public class DateStrings {
 

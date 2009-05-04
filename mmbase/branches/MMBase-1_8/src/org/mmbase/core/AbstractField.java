@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.14 2006-07-18 12:40:39 michiel Exp $
+ * @version $Id$
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {

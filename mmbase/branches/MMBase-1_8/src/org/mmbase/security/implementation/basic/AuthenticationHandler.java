@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @todo MM: I think it should be possible for admin to login with name/password to, how else could
  * you use HTTP authentication (e.g. admin pages).
  * @author Eduard Witteveen
- * @version $Id: AuthenticationHandler.java,v 1.10 2005-07-09 15:29:12 nklasens Exp $
+ * @version $Id$
  */
 public class AuthenticationHandler extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(AuthenticationHandler.class);

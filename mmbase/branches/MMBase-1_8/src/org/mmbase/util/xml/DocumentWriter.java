@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.10 2006-04-18 13:11:41 michiel Exp $
+ * @version $Id$
  */
 abstract public class DocumentWriter extends DocumentReader {
 

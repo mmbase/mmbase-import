@@ -15,7 +15,7 @@ package org.mmbase.storage.search;
  * This corresponds with comparison operators <, =, > and LIKE in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: FieldCompareConstraint.java,v 1.4 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface FieldCompareConstraint extends FieldConstraint {

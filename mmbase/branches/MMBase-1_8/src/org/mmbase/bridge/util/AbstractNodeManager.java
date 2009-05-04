@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  * org.mmbase.bridge.implementation.VirtualNodeManager}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNodeManager.java,v 1.2.2.1 2007-08-02 10:07:17 michiel Exp $
+ * @version $Id$
  * @see org.mmbase.bridge.NodeManager
  * @since MMBase-1.8
  */

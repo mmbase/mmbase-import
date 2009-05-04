@@ -26,7 +26,7 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLRelationNodeReader.java,v 1.28 2006-03-08 12:51:58 nklasens Exp $
+ * @version $Id$
  */
 public class XMLRelationNodeReader extends XMLNodeReader {
 

@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * Defines a daemon thread that runs in the threadgroup belonging to this MMBase context.
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: DaemonThread.java,v 1.2 2005-12-10 11:45:02 michiel Exp $
+ * @version $Id$
  */
 public class DaemonThread extends Thread implements DaemonTask  {
 

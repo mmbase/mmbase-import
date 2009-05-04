@@ -13,7 +13,7 @@ package org.mmbase.module.core;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManagerInterface.java,v 1.15 2005-10-07 18:28:52 michiel Exp $
+ * @version $Id$
  */
 public interface TemporaryNodeManagerInterface {
     public String createTmpNode(String type, String owner, String key);

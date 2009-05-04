@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  *
  * @author Pierre van Rooden
  * @since MMBase 1.6
- * @version $Id: FieldValue.java,v 1.11 2005-05-02 17:23:06 michiel Exp $
+ * @version $Id$
  */
 public interface FieldValue {
 

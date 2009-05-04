@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * use a localized String as customized in datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormatDateTime.java,v 1.3.2.3 2007-11-26 17:53:25 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

@@ -18,7 +18,7 @@ package org.mmbase.storage.search;
  * This corresponds to an aggregated field in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: AggregatedField.java,v 1.4 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface AggregatedField extends StepField {

@@ -14,7 +14,7 @@ package org.mmbase.bridge;
  * A list of Strings
  *
  * @author Pierre van Rooden
- * @version $Id: StringList.java,v 1.6 2004-10-09 09:39:31 nico Exp $
+ * @version $Id$
  */
 public interface StringList extends BridgeList {
 

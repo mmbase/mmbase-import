@@ -13,7 +13,7 @@ package org.mmbase.cache;
  * Cache for queries like  SELECT COUNT(number) AS number FROM mm_news news.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AggregatedResultCache.java,v 1.3 2005-01-30 16:46:37 nico Exp $
+ * @version $Id$
  * @see   org.mmbase.bridge.implementation.BasicCloud#getList
  * @todo  It is odd that this query cache is called in the bridge implementation and not in the core.
  * @since MMBase-1.7

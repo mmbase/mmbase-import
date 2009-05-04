@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: Query.java,v 1.40.2.2 2008-06-28 11:57:10 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @application Admin, Application
  * @author Daniel Ockeloen
- * @version $Id: MMAdminProbe.java,v 1.10.2.1 2007-10-02 12:15:34 michiel Exp $
+ * @version $Id$
  */
 public class MMAdminProbe implements Runnable {
 

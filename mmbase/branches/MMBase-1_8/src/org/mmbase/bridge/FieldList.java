@@ -14,7 +14,7 @@ package org.mmbase.bridge;
  * A list of field types
  *
  * @author Pierre van Rooden
- * @version $Id: FieldList.java,v 1.6 2004-10-09 09:40:10 nico Exp $
+ * @version $Id$
  */
 public interface FieldList extends BridgeList {
 

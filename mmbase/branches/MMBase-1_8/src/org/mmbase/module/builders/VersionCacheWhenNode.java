@@ -15,7 +15,7 @@ import java.util.*;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionCacheWhenNode.java,v 1.4 2004-10-08 13:03:44 pierre Exp $
+ * @version $Id$
  */
 public class VersionCacheWhenNode extends Object {
 

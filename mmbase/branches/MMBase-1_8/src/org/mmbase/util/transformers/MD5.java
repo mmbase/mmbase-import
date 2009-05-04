@@ -15,7 +15,7 @@ package org.mmbase.util.transformers;
  * needed. So, be careful 'chaining' it.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: MD5.java,v 1.7 2003-05-12 14:33:00 kees Exp $
+ * @version $Id$
  */
 
 public class MD5 extends StringTransformer implements CharTransformer {

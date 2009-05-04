@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * one.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CollectionNodeList.java,v 1.3 2005-12-30 10:38:10 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class CollectionNodeList extends AbstractBridgeList implements NodeList {

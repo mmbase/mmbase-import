@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: DependencyException.java,v 1.1.2.3 2008-02-04 10:46:15 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.6
  **/
 public class DependencyException extends Exception {

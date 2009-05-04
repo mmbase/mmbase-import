@@ -16,7 +16,7 @@ import java.util.*;
  * Chains a bunch of other processors into one new processor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedProcessor.java,v 1.3 2005-12-10 14:33:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 

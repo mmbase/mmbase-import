@@ -17,7 +17,7 @@ package org.mmbase.storage.search;
  * Note that tables can also be joined using FieldCompareConstraints.
  *
  * @author Rob van Maris
- * @version $Id: RelationStep.java,v 1.9 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface RelationStep extends Step {

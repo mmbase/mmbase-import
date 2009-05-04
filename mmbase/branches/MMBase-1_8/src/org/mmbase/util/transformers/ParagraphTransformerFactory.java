@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Use this for fields that contain HTML, but for which you are unsure if they have paragraph tags already
  * @author Pierre van Rooden
  * @since MMBase-1.9
- * @version $Id: ParagraphTransformerFactory.java,v 1.1.2.1 2008-03-18 15:14:42 pierre Exp $
+ * @version $Id$
  */
 
 public class ParagraphTransformerFactory implements ParameterizedTransformerFactory {

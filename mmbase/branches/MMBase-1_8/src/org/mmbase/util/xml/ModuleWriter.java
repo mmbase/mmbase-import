@@ -17,7 +17,7 @@ import org.w3c.dom.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: ModuleWriter.java,v 1.8 2005-09-12 14:07:39 pierre Exp $
+ * @version $Id$
  */
 public class ModuleWriter extends DocumentWriter  {
 

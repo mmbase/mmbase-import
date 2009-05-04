@@ -29,7 +29,7 @@ package org.mmbase.util;
  *</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: SizeMeasurable.java,v 1.4 2005-05-20 09:02:54 michiel Exp $
+ * @version $Id$
  */
 public interface SizeMeasurable {
     /**

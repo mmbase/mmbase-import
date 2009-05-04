@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiStatement.java,v 1.18.2.1 2008-03-07 14:39:29 michiel Exp $
+ * @version $Id$
  */
 public class MultiStatement implements Statement {
     private static final Logger log = Logging.getLoggerInstance(MultiStatement.class);

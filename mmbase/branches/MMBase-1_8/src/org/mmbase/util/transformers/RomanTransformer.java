@@ -17,7 +17,7 @@ import java.util.regex.*;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.8
- * @version $Id: RomanTransformer.java,v 1.4 2005-11-01 23:36:02 michiel Exp $
+ * @version $Id$
  */
 
 public class RomanTransformer extends StringTransformer {

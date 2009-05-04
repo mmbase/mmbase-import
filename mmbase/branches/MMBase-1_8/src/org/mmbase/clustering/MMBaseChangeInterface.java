@@ -17,7 +17,7 @@ import org.mmbase.module.core.MMObjectNode;
 /**
  * Builds a Thread to receive from and send changes to other MMBase Servers.
  *
- * @version $Id: MMBaseChangeInterface.java,v 1.5 2005-11-18 22:45:55 nklasens Exp $
+ * @version $Id$
  * @author Daniel Ockeloen
  */
 public interface MMBaseChangeInterface {

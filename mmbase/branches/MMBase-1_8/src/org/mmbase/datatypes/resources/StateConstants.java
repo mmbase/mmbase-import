@@ -13,7 +13,7 @@ package org.mmbase.datatypes.resources;
 
 /**
  * @author  Michiel Meeuwissen
- * @version $Id: StateConstants.java,v 1.1 2006-07-03 14:22:42 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8.1
  */
 public interface StateConstants {

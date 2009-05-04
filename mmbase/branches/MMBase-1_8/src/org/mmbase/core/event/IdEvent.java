@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: IdEvent.java,v 1.1 2006-04-18 13:03:30 michiel Exp $
+ * @version $Id$
  */
 public class IdEvent extends Event  {
 

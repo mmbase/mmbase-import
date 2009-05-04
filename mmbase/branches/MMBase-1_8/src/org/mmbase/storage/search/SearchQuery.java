@@ -18,7 +18,7 @@ import org.mmbase.bridge.Cacheable;
  * This corresponds to a SELECT query in SQL syntax.
  *
  * @author Rob van Maris
- * @version $Id: SearchQuery.java,v 1.3.4.1 2008-06-28 11:57:10 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface SearchQuery extends Cacheable {

@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.8
- * @version $Id: ChainedIterator.java,v 1.2 2005-11-04 23:30:01 michiel Exp $
+ * @version $Id$
  */
 public class ChainedIterator implements Iterator {
 

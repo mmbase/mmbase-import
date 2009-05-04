@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * Adapted from <CODE>StringInputStream</CODE>.
  *
  * @since	MMBase-1.8.2
- * @version $Id: ReaderInputStream.java,v 1.1.2.1 2006-10-02 14:36:12 michiel Exp $
+ * @version $Id$
  */
 
 

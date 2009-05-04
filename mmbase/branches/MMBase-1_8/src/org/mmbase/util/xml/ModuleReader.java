@@ -21,7 +21,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @since MMBase-1.8
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: ModuleReader.java,v 1.3 2005-10-13 12:06:58 michiel Exp $
+ * @version $Id$
  */
 public class ModuleReader extends DocumentReader {
 

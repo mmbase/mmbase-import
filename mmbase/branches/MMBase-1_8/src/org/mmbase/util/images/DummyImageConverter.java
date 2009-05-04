@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @since MMBase 1.6.3
  * @author Gerard van de Looi
- * @version $Id: DummyImageConverter.java,v 1.4 2005-10-05 10:02:55 michiel Exp $
+ * @version $Id$
  */
 public class DummyImageConverter implements ImageConverter {
 

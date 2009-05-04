@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.8.2.4 2008-08-18 11:07:48 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  **/
 public class QueryReader {

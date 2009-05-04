@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @since mmbase 1.6
  * @author Gerard van Enk
  * @author Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.8 2006-07-18 12:25:42 michiel Exp $
+ * @version $Id$
  */
 public class BuilderList {
     // logger not used at the moment

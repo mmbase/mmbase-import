@@ -20,7 +20,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.49 2006-07-06 11:24:44 michiel Exp $
+ * @version $Id$
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 

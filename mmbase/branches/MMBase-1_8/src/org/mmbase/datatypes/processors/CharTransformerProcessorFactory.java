@@ -18,7 +18,7 @@ import org.mmbase.util.transformers.*;
  * CharTransformer), to be a ParameterizedProcessorFactory. Of course based on {@link CharTransformerProcessor}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharTransformerProcessorFactory.java,v 1.2 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

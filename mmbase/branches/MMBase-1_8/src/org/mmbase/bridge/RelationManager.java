@@ -24,7 +24,7 @@ package org.mmbase.bridge;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: RelationManager.java,v 1.8 2004-10-09 09:39:32 nico Exp $
+ * @version $Id$
  */
 public interface RelationManager extends NodeManager {
     /**

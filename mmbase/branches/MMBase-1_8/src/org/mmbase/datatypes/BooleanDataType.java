@@ -13,7 +13,7 @@ import org.mmbase.bridge.*;
  * The DataType associated with a boolean value.
  *
  * @author Pierre van Rooden
- * @version $Id: BooleanDataType.java,v 1.10.2.1 2007-02-07 09:50:58 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class BooleanDataType extends BasicDataType {

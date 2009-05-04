@@ -25,7 +25,7 @@ import org.mmbase.storage.util.Index;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.56 2005-12-10 13:10:08 michiel Exp $
+ * @version $Id$
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */

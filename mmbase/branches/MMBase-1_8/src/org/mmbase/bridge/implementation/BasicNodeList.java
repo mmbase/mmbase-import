@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.47.2.3 2008-02-11 14:57:23 michiel Exp $
+ * @version $Id$
  */
 public class BasicNodeList extends BasicList implements NodeList {
 

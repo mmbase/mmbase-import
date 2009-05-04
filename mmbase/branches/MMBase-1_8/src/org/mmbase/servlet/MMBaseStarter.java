@@ -15,7 +15,7 @@ import javax.servlet.ServletException;
 /**
  * Used in combo with MMBaseStartThread, which uses the methods of this interface to inform its starter about the results.
  * 
- * @version $Id: MMBaseStarter.java,v 1.2 2005-02-11 12:36:05 michiel Exp $
+ * @version $Id$
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
  */

@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.14 2005-07-28 17:07:55 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class ReturnType extends Parameter implements java.io.Serializable {

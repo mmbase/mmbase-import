@@ -32,7 +32,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.34.2.6 2008-12-08 15:33:51 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */

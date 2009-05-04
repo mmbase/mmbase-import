@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.14.2.6 2009-04-07 08:23:12 nklasens Exp $
+ * @version $Id$
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */

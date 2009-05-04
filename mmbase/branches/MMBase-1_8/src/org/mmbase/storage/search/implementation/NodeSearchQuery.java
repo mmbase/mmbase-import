@@ -35,7 +35,7 @@ import org.mmbase.storage.search.*;
  * </ul>
  *
  * @author  Rob van Maris
- * @version $Id: NodeSearchQuery.java,v 1.13 2006-02-09 12:04:19 johannes Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {

@@ -26,7 +26,7 @@ import org.w3c.dom.*;
  * @rename ContextDepthReader
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
- * @version $Id: XMLContextDepthReader.java,v 1.9.2.1 2008-01-10 16:14:34 michiel Exp $
+ * @version $Id$
  */
 public class XMLContextDepthReader {
 

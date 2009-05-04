@@ -21,7 +21,7 @@ import java.util.*;
  * @code-conventions Some methods (Values, Value etc) have wrong names (and are duplicating Map methods btw)
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: StringTagger.java,v 1.17 2005-01-30 16:46:35 nico Exp $
+ * @version $Id$
  */
 public class StringTagger implements Map {
 

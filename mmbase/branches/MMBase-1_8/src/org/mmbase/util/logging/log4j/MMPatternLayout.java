@@ -16,7 +16,7 @@ import org.apache.log4j.helpers.PatternParser;
  * @see MMPatternParser
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: MMPatternLayout.java,v 1.3 2006-01-02 13:27:52 michiel Exp $
+ * @version $Id$
 */
 public class MMPatternLayout extends PatternLayout {
   public MMPatternLayout() {

@@ -15,7 +15,7 @@ import java.util.*;
  * This class is used when no authorization is configured. Everything is allowed.
  *
  * @author Eduard Witteveen
- * @version $Id: NoAuthorization.java,v 1.11 2005-01-30 16:46:34 nico Exp $
+ * @version $Id$
  */
 final public class NoAuthorization extends Authorization {
 

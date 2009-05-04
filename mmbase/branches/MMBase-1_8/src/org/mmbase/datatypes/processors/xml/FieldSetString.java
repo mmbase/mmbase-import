@@ -22,7 +22,7 @@ import org.mmbase.util.*;
  * noticing it too much.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldSetString.java,v 1.2 2005-12-10 14:33:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

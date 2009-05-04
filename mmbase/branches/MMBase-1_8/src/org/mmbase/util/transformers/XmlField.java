@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.46.2.7 2008-06-17 10:18:58 michiel Exp $
+ * @version $Id$
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 

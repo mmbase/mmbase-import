@@ -39,7 +39,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.53.2.9 2008-02-18 14:56:03 michiel Exp $
+ * @version $Id$
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */

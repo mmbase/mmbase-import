@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The step alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStep.java,v 1.8 2005-10-30 19:08:56 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class BasicStep implements Step {

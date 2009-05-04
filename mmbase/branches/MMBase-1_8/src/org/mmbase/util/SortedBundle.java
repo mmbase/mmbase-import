@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.24.2.3 2007-12-27 12:48:33 michiel Exp $
+ * @version $Id$
  */
 public class SortedBundle {
 

@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.29 2006-07-25 20:05:46 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */

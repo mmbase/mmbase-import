@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @move consider moving to org.mmbase.cache
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.24.2.2 2008-06-24 09:57:30 michiel Exp $
+ * @version $Id$
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable, CacheImplementationInterface, SizeMeasurable {

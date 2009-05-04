@@ -20,7 +20,7 @@ import java.io.InputStream;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.7.2.1 2008-04-11 15:18:30 nklasens Exp $
+ * @version $Id$
  */
 public interface StorageManager {
 

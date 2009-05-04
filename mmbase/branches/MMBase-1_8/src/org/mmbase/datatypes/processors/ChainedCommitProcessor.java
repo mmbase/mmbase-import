@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * Chains a bunch of other processors into one new processor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedCommitProcessor.java,v 1.2.2.1 2007-03-26 12:51:14 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 

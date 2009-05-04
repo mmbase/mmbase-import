@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.62.2.11 2008-09-22 14:05:10 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 

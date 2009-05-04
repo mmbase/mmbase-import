@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * This factory produces commit-processors which simply the copy the value of another field of the
  * same node, to the field to which this CommitProcessor was associated.
  * @author Michiel Meeuwissen
- * @version $Id: CopyFieldCommitProcessorFactory.java,v 1.1.2.1 2008-06-19 14:24:10 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.6
  */
 

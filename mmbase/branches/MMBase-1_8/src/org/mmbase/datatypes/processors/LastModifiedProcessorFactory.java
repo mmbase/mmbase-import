@@ -19,7 +19,7 @@ import java.io.StringWriter;
  * 'lastmodified', but it also the only parameter of this processor factory.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModifiedProcessorFactory.java,v 1.2 2006-04-18 14:17:24 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

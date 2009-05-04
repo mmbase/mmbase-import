@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Configurable.java,v 1.11 2005-09-09 15:07:50 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public abstract class Configurable {

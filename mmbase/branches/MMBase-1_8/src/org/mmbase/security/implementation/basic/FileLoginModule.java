@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * Simple implemetation, to provide authentication from files...
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: FileLoginModule.java,v 1.4.2.1 2006-09-22 14:40:59 andre Exp $
+ * @version $Id$
  */
 public class FileLoginModule implements LoginModule {
     private static Logger log=Logging.getLoggerInstance(FileLoginModule.class.getName());

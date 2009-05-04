@@ -18,7 +18,7 @@ package org.mmbase.storage.search;
  * eventually be phased out.</em>
  *
  * @author  Rob van Maris
- * @version $Id: LegacyConstraint.java,v 1.2 2003-03-10 11:50:48 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public interface LegacyConstraint extends Constraint {

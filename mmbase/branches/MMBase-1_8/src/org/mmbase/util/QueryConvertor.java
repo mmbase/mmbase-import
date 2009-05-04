@@ -45,7 +45,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * @move org.mmbase.storage.search.util
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.30 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id$
  */
 public class QueryConvertor {
 

@@ -14,7 +14,7 @@ import org.mmbase.module.core.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: ImageAliases.java,v 1.6 2003-03-10 11:50:19 pierre Exp $
+ * @version $Id$
  */
 public class ImageAliases extends MMObjectBuilder {
 

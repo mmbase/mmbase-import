@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ImageMagickImageInformer.java,v 1.1.2.1 2009-04-07 08:23:12 nklasens Exp $
+ * @version $Id$
  */
 public class ImageMagickImageInformer implements ImageInformer {
     

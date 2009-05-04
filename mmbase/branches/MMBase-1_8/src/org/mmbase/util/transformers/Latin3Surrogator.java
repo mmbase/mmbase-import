@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: Latin3Surrogator.java,v 1.3 2003-05-12 11:15:35 michiel Exp $
+ * @version $Id$
  */
 public class Latin3Surrogator extends ConfigurableReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(Latin3Surrogator.class);

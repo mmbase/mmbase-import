@@ -14,7 +14,7 @@ package org.mmbase.bridge;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeManagerIterator.java,v 1.8 2004-10-09 09:39:32 nico Exp $
+ * @version $Id$
  */
 public interface NodeManagerIterator extends NodeIterator {
 

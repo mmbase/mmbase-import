@@ -16,7 +16,7 @@ package org.mmbase.storage;
  * are missing.
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageConfigurationException.java,v 1.3 2003-11-18 14:58:33 michiel Exp $
+ * @version $Id$
  */
 public class StorageConfigurationException extends StorageException {
 

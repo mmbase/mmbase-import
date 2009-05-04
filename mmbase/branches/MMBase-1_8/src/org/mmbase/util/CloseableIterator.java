@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * An iterator which may need closing (e.g. when wrapping a ResultSet).
  *
- * @version $Id: CloseableIterator.java,v 1.1.2.1 2007-09-17 09:20:07 michiel Exp $
+ * @version $Id$
  * @author Michiel Meeuwissen
  **/
 public interface CloseableIterator extends Iterator {

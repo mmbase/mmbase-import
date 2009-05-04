@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.9 2006-08-30 17:48:52 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {

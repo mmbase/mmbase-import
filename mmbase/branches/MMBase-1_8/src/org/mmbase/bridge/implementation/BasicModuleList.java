@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * A list of Modules
  *
  * @author Pierre van Rooden
- * @version $Id: BasicModuleList.java,v 1.12 2005-01-30 16:46:36 nico Exp $
+ * @version $Id$
  */
 public class BasicModuleList extends BasicList implements ModuleList {
 

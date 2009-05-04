@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN or Tools (INFO, AnnotRel builder)
  * @author David V van Zeventer
- * @version $Id: RelativeTime.java,v 1.9 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id$
  */
 public class RelativeTime {
 

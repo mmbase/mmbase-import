@@ -22,7 +22,7 @@ import java.util.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Function.java,v 1.6 2005-07-08 12:23:46 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  * @see Parameter
  * @see Parameters

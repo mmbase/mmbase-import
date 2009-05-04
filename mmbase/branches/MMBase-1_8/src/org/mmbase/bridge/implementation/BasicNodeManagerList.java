@@ -18,7 +18,7 @@ import org.mmbase.module.core.*;
  * A list of node managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManagerList.java,v 1.15 2005-10-12 00:37:05 michiel Exp $
+ * @version $Id$
  */
 public class BasicNodeManagerList extends BasicNodeList implements NodeManagerList {
 

@@ -31,7 +31,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.46.2.1 2008-12-02 16:16:08 michiel Exp $
+ * @version $Id$
  */
 public class XMLBasicReader extends DocumentReader {
 

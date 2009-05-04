@@ -12,7 +12,7 @@ package org.mmbase.bridge;
 /**
  * Main class to aquire CloudContexts
  * @author Kees Jongenburger
- * @version $Id: ContextProvider.java,v 1.10 2005-11-04 23:20:25 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.5
  */
 public class ContextProvider {

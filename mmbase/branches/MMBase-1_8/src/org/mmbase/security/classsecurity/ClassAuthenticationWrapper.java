@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
  * can be linked to classes in this XML configuration file.
  *
  * @author   Michiel Meeuwissen
- * @version $Id: ClassAuthenticationWrapper.java,v 1.7 2005-01-30 16:46:39 nico Exp $
+ * @version $Id$
  * @since    MMBase-1.8
  */
 public class ClassAuthenticationWrapper extends Authentication {

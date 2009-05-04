@@ -20,7 +20,7 @@ import org.mmbase.module.core.MMBase;
  * 
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.18 2006-06-20 21:23:57 michiel Exp $
+ * @version $Id$
  */
 public class RelationEvent extends Event implements Serializable, Cloneable {
 

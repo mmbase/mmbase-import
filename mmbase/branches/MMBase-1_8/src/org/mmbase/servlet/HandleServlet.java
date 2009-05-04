@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.29.2.3 2008-12-09 16:02:22 michiel Exp $
+ * @version $Id$
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet

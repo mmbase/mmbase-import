@@ -27,7 +27,7 @@ import org.mmbase.util.transformers.*;
  * Static methods used for parsing of datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeXml.java,v 1.5.2.3 2007-11-01 09:43:35 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  **/
 public abstract class DataTypeXml {

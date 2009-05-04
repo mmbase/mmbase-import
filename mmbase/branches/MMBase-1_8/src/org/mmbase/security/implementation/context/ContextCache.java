@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextCache.java,v 1.9 2006-07-18 12:46:50 michiel Exp $
+ * @version $Id$
  */
 public class ContextCache  {
     private static Logger log = Logging.getLoggerInstance(ContextCache.class.getName());

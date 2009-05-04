@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ChecksumFactory.java,v 1.8 2006-04-18 14:10:38 michiel Exp $
+ * @version $Id$
  */
 
 public class ChecksumFactory implements ParameterizedTransformerFactory  {

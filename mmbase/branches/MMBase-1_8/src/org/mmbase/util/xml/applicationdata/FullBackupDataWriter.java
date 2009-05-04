@@ -26,7 +26,7 @@ import org.mmbase.util.xml.ApplicationReader;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FullBackupDataWriter.java,v 1.3.2.1 2007-02-03 12:59:17 nklasens Exp $
+ * @version $Id$
  */
 public class FullBackupDataWriter {
 

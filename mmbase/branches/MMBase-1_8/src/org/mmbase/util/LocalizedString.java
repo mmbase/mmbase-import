@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.25.2.3 2007-11-19 15:22:17 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {

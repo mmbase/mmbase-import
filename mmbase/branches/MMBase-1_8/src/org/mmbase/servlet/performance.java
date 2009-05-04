@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @rename  Performance
  * @author  vpro
- * @version $Id: performance.java,v 1.15 2005-05-14 14:04:44 nico Exp $
+ * @version $Id$
  */
 public class performance extends BridgeServlet {
 

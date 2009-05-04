@@ -21,7 +21,7 @@ import org.xml.sax.SAXParseException;
  * @move org.mmbase.util.xml
  * @rename ErrorHandler
  * @author Gerard van Enk
- * @version $Id: XMLErrorHandler.java,v 1.17 2005-08-29 08:54:15 michiel Exp $
+ * @version $Id$
  */
 
 public class XMLErrorHandler implements ErrorHandler {

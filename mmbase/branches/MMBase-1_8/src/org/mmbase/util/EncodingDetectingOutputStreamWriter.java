@@ -22,7 +22,7 @@ import java.io.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: EncodingDetectingOutputStreamWriter.java,v 1.2 2005-01-30 16:46:35 nico Exp $
+ * @version $Id$
  * @todo  Is it named correctly?
  */
 public class EncodingDetectingOutputStreamWriter extends Writer {

@@ -28,7 +28,7 @@ import org.mmbase.util.*;
  * @javadoc
  * @deprecation-used Can use Xerces functionality to write an XML, isn't it? Should at least use StringBuffer.
  * @author DAniel Ockeloen
- * @version $Id: ApplicationWriter.java,v 1.4.2.1 2008-01-10 16:14:37 michiel Exp $
+ * @version $Id$
  */
 public class ApplicationWriter extends DocumentWriter  {
 

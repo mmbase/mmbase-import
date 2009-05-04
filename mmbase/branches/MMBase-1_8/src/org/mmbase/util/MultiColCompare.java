@@ -15,7 +15,7 @@ import java.util.*;
  * MultiColCompare compares two Vectors on a given list of column numbers
  * @application SCAN
  * @author vpro
- * @version $Id: MultiColCompare.java,v 1.5 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id$
  */
 public class MultiColCompare implements CompareInterface {
 

@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase 1.8
  * @author Michiel Meewissen
- * @version $Id: ThreadPools.java,v 1.5.2.7 2008-12-15 13:59:52 michiel Exp $
+ * @version $Id$
  */
 public abstract class ThreadPools {
     private static final Logger log = Logging.getLoggerInstance(ThreadPools.class);

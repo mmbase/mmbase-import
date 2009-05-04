@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Martijn Houtman
  * @author Michiel Meeuwissen
- * @version $Id: DateFormat.java,v 1.14 2005-10-07 18:47:41 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.7
  */
 public class DateFormat {

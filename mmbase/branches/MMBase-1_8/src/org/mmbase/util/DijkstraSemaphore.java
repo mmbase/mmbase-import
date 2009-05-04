@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Karthik Rangaraju
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: DijkstraSemaphore.java,v 1.8 2005-03-16 19:06:44 michiel Exp $
+ * @version $Id$
  */
 public class DijkstraSemaphore {
 

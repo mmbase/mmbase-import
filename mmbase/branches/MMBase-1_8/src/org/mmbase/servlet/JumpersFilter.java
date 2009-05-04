@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @application Tools, Jumpers
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.16 2006-06-27 14:36:58 johannes Exp $
+ * @version $Id$
  */
 public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);

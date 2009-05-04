@@ -17,7 +17,7 @@ package org.mmbase.storage;
  *
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageError.java,v 1.4 2003-11-18 14:58:33 michiel Exp $
+ * @version $Id$
  */
 public class StorageError extends Error {
 

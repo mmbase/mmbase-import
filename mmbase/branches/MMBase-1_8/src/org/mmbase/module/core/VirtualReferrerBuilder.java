@@ -18,7 +18,7 @@ import java.util.*;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualReferrerBuilder.java,v 1.5 2005-10-06 17:46:39 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class VirtualReferrerBuilder extends VirtualBuilder {

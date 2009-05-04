@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.23 2006-06-16 09:08:42 michiel Exp $
+ * @version $Id$
  */
 public abstract class MMTable extends FunctionProvider {
 

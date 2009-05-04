@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * The gui function of MMObjectBuilder
  *
  * @author Michiel Meeuwissen
- * @version $Id: GuiFunction.java,v 1.6.2.1 2008-11-12 16:55:29 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.6
  */
 public class GuiFunction extends NodeFunction {

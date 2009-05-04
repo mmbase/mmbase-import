@@ -26,7 +26,7 @@ import org.mmbase.storage.StorageException;
  * This builder contains info on the fields of the resultnodes.
  *
  * @author  Rob van Maris
- * @version $Id: ResultBuilder.java,v 1.8.2.1 2008-06-28 11:57:10 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class ResultBuilder extends VirtualBuilder {

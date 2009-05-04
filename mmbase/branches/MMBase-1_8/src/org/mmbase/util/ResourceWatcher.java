@@ -26,7 +26,7 @@ import org.mmbase.bridge.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.13.2.2 2007-06-29 10:28:57 michiel Exp $
+ * @version $Id$
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */

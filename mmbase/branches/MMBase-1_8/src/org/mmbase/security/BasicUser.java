@@ -21,7 +21,7 @@ package org.mmbase.security;
  * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.2.2.3 2008-11-12 13:41:56 michiel Exp $
+ * @version $Id$
  */
 public class BasicUser implements UserContext {
 

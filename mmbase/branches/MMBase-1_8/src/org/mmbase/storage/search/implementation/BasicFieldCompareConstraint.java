@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldCompareConstraint.java,v 1.11 2005-10-02 16:18:15 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class BasicFieldCompareConstraint extends BasicFieldConstraint implements FieldCompareConstraint {

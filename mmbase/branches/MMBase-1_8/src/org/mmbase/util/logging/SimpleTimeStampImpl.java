@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
  * Like SimpleImpl, but also adds timestamps.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: SimpleTimeStampImpl.java,v 1.3 2005-10-02 16:42:15 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.7
  */
 

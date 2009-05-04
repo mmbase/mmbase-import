@@ -30,7 +30,7 @@ import org.mmbase.util.LocalizedString;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.45 2006-07-18 13:50:51 michiel Exp $
+ * @version $Id$
  */
 public class VirtualNodeManager extends AbstractNodeManager implements NodeManager {
     private static final  Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);

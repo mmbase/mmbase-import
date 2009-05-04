@@ -28,7 +28,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.18.2.2 2008-03-19 16:13:35 michiel Exp $
+ * @version $Id$
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
     private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);

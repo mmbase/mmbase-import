@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
- * @version $Id: ModuleProbe.java,v 1.11 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id$
  */
 public class ModuleProbe extends DaemonThread {
 

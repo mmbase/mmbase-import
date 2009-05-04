@@ -21,7 +21,7 @@ import org.mmbase.util.xml.DocumentReader;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.28.2.1 2008-06-09 09:44:50 michiel Exp $
+ * @version $Id$
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);

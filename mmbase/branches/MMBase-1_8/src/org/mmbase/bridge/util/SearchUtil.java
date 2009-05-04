@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  * search query api.
  *
  * @author Nico Klasens
- * @version $Id: SearchUtil.java,v 1.5.2.8 2007-12-12 18:08:00 michiel Exp $
+ * @version $Id$
  */
 public class SearchUtil {
 

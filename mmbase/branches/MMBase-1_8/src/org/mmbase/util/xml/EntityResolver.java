@@ -15,7 +15,7 @@ package org.mmbase.util.xml;
  *
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: EntityResolver.java,v 1.2 2009-01-05 16:33:07 michiel Exp $
+ * @version $Id$
  */
 public class EntityResolver extends org.mmbase.util.XMLEntityResolver {
     public EntityResolver() {

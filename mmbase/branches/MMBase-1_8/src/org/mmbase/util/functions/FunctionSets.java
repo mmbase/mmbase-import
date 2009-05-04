@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.22.2.5 2007-11-01 13:38:34 sdeboer Exp $
+ * @version $Id$
  */
 public class FunctionSets {
 

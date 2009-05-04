@@ -20,7 +20,7 @@ import org.mmbase.bridge.*;
  * This object is also still a Node object.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeMap.java,v 1.1 2005-12-27 21:50:50 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 
