@@ -156,6 +156,13 @@ See http://www.MMBase.org/license
     </dependency>
 
     <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-clustering</artifactId>
+      <version>${mmbase.version}</version>
+      <classifier>classes</classifier>
+    </dependency>
+
+    <dependency>
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <version>1.8.0.7</version>
