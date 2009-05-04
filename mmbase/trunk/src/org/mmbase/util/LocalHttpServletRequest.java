@@ -12,7 +12,6 @@ package org.mmbase.util;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.util.*;
-import java.io.*;
 
 
 /**
@@ -45,6 +44,8 @@ public class LocalHttpServletRequest extends LocalServletRequest implements Http
     private final Map<String, String> headers = new HashMap<String, String>(); // TODO headers cannot be presented in a map.
 
     private final String path;
+
+    private HttpSession httpSession;
 
     /**
      * @param s The servlet context. Try {@link org.mmbase.module.core.MMBaseContext#getServletContext()}
@@ -119,70 +120,72 @@ public class LocalHttpServletRequest extends LocalServletRequest implements Http
     public HttpSession  getSession() {
         return getSession(true);
     }
-    public HttpSession  getSession(boolean create) {
-        // TODO check for existing sessions
-        if (create)  {
-            return new HttpSession() {
-                private final Map<String, Object> attributes = new HashMap<String, Object>();
-                private final long creationTime = System.currentTimeMillis();
-                private final String id = "" + (sessionId ++);
-                private int interval = 10000;
-                public Object  getAttribute(String name) {
-                    return attributes.get(name);
-                }
-                public Enumeration  getAttributeNames() {
-                    return Collections.enumeration(attributes.keySet());
-                }
-                public long  getCreationTime() {
-                    return creationTime;
-                }
-                public String  getId() {
-                    return id;
-                }
-                public long  getLastAccessedTime() {
-                    return System.currentTimeMillis();
-                }
-                public int  getMaxInactiveInterval() {
-                    return interval;
-                }
-                public ServletContext  getServletContext() {
-                    return LocalHttpServletRequest.this.sx;
-                }
-                @Deprecated public @SuppressWarnings("deprecation") HttpSessionContext  getSessionContext() {
-                    return null;
-                }
-                @Deprecated public Object  getValue(String name) {
-                    return getAttribute(name);
-                }
-                @Deprecated public String[]  getValueNames() {
-                    return null;
-                }
-                public void  invalidate() {
-                    attributes.clear();
-                }
-                public boolean  isNew() {
-                    return true;
-                }
-                @Deprecated public void  putValue(String name, Object value) {
-                    setAttribute(name, value);
-                }
-                public void  removeAttribute(String name) {
-                    attributes.remove(name);
-                }
+    public HttpSession  getSession(final boolean create) {
+        if (httpSession == null && create) {
 
-                @Deprecated public void  removeValue(String name)  {
-                    removeAttribute(name);
-                }
-                public void  setAttribute(String name, Object value) {
-                    attributes.put(name, value);
-                }
-                public void  setMaxInactiveInterval(int interval) {
-                    this.interval = interval;
-                }
-            };
-        } else {
-            return null;
+            // TODO remember session longer that duration of request.
+            httpSession =
+                new HttpSession() {
+                    private final Map<String, Object> attributes = new HashMap<String, Object>();
+                    private final long creationTime = System.currentTimeMillis();
+                    private final String id = "" + (sessionId ++);
+                    private int interval = 10000;
+                    public Object  getAttribute(String name) {
+                        return attributes.get(name);
+                    }
+                    public Enumeration  getAttributeNames() {
+                        return Collections.enumeration(attributes.keySet());
+                    }
+                    public long  getCreationTime() {
+                        return creationTime;
+                    }
+                    public String  getId() {
+                        return id;
+                    }
+                    public long  getLastAccessedTime() {
+                        return System.currentTimeMillis();
+                    }
+                    public int  getMaxInactiveInterval() {
+                        return interval;
+                    }
+                    public ServletContext  getServletContext() {
+                        return LocalHttpServletRequest.this.sx;
+                    }
+                    @Deprecated@SuppressWarnings({"deprecation"})
+                    public HttpSessionContext  getSessionContext() {
+                        return null;
+                    }
+                    @Deprecated public Object  getValue(String name) {
+                        return getAttribute(name);
+                    }
+                    @Deprecated public String[]  getValueNames() {
+                        return null;
+                    }
+                    public void  invalidate() {
+                        attributes.clear();
+                    }
+                    public boolean  isNew() {
+                        return true;
+                    }
+                    @Deprecated public void  putValue(String name, Object value) {
+                        setAttribute(name, value);
+                    }
+                    public void  removeAttribute(String name) {
+                        attributes.remove(name);
+                    }
+
+                    @Deprecated public void  removeValue(String name)  {
+                        removeAttribute(name);
+                    }
+                    public void  setAttribute(String name, Object value) {
+                        attributes.put(name, value);
+                    }
+                    public void  setMaxInactiveInterval(int interval) {
+                        this.interval = interval;
+                    }
+                };
         }
+        return httpSession;
     }
     public java.security.Principal  getUserPrincipal() {
         return null;
