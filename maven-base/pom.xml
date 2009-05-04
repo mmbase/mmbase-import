@@ -43,7 +43,7 @@ See http://www.MMBase.org/license
 
   <scm>
     <connection>scm:svn:https://scm.mmbase.org/mmbase/trunk</connection>
-    <developerConnection>scm:svn:http://scm.mmbase.org/mmbase/trunk</developerConnection>
+    <developerConnection>scm:svn:https://scm.mmbase.org/mmbase/trunk</developerConnection>
     <url>https://scm.mmbase.org/mmbase/trunk</url>
   </scm>
 
