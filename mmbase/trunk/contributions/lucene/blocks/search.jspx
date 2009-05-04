@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <div
     class="mm_c c_lucene b_search ${requestScope.componentClassName}"
     id="${requestScope.componentId}"
@@ -86,7 +85,8 @@
               </mm:fieldlist>
               <th>
                 <jsp:text>Search on '${value}'</jsp:text><br />
-                <mm:size /> <jsp:text>hits</jsp:text>
+                <mm:size />
+                <jsp:text> hits</jsp:text>
                 <mm:compare referid="count" value="on">
                   <jsp:text> of total </jsp:text>
                   <mm:function module="lucene" name="searchsize" referids="value,index,extraconstraints,fields,analyzer,filter" />
