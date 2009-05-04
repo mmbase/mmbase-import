@@ -12,7 +12,6 @@
 
   <groupId>org.mmbase.maven</groupId>
   <artifactId>mmbase-maven</artifactId>
-  <version>${mmbase.version}</version>
   <packaging>pom</packaging>
   <name>MMBase Maven Parent</name>
 
