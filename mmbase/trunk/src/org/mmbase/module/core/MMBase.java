@@ -18,7 +18,6 @@ import javax.sql.DataSource;
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.DataTypes;
 import org.mmbase.module.ProcessorModule;
-import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.MMBaseCop;
@@ -163,7 +162,7 @@ public class MMBase extends ProcessorModule {
     /**
      * The storage manager factory to use. Retrieve using getStorageManagerFactory();
      */
-    private StorageManagerFactory storageManagerFactory = null;
+    private StorageManagerFactory<?> storageManagerFactory = null;
 
     /**
      * Reference to the Root builder (the most basic builder, aka 'object').
@@ -254,6 +253,7 @@ public class MMBase extends ProcessorModule {
      * Initalizes the MMBase module. Evaluates the parameters loaded from the configuration file.
      * Sets parameters (authorisation, language), loads the builders, and starts MultiCasting.
      */
+    @Override
     public void init() {
         //synchronized(MMBase.class) {
         if (mmbaseState >= STATE_STARTED_INIT) {
@@ -416,8 +416,8 @@ public class MMBase extends ProcessorModule {
         if (writerpath != null && !writerpath.equals("")) {
             for (MMObjectBuilder builder : getBuilders()) {
                 if (!builder.isVirtual()) {
-                    String name = builder.getTableName();
-                    log.debug("WRITING BUILDER FILE =" + writerpath + File.separator + name);
+                    String builderName = builder.getTableName();
+                    log.debug("WRITING BUILDER FILE =" + writerpath + File.separator + builderName);
                     try {
                         BuilderWriter builderOut = new BuilderWriter(builder);
                         builderOut.setIncludeComments(false);
@@ -458,6 +458,7 @@ public class MMBase extends ProcessorModule {
     /**
      * @see org.mmbase.module.Module#shutdown()
      */
+    @Override
     public void shutdown() {
         mmbaseState = STATE_SHUT_DOWN;
 
@@ -1165,7 +1166,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.7
      * @return a StorageManagerFactory class, or <code>null</code> if not configured
      */
-    public StorageManagerFactory getStorageManagerFactory() {
+    public StorageManagerFactory<?> getStorageManagerFactory() {
         return  storageManagerFactory;
     }
 
@@ -1175,7 +1176,7 @@ public class MMBase extends ProcessorModule {
      * @return a StorageManager class
      * @throws StorageException if no storage manager could be instantiated
      */
-    public StorageManager getStorageManager() throws StorageException {
+    public StorageManager<?> getStorageManager() throws StorageException {
         if (storageManagerFactory == null) {
             throw new StorageConfigurationException("Storage manager factory not configured.");
         } else {

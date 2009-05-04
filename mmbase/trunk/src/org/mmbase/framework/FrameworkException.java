@@ -19,7 +19,7 @@ package org.mmbase.framework;
  * @todo i18n?
  */
 public class FrameworkException extends Exception {
-
+    private static final long serialVersionUID = 0L;
     //javadoc is inherited
     public FrameworkException() {
         super();

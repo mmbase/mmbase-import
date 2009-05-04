@@ -28,6 +28,7 @@ public class HtmlGetString implements  Processor {
         return processor.process(node, field, value);
     }
 
+    @Override
     public String toString() {
         return "get_HTML";
     }

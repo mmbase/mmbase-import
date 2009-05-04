@@ -171,6 +171,7 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
         return name.compareTo(fun.getName());
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o == this) return true;
         if (o == null) return false;
@@ -181,10 +182,12 @@ abstract public class AbstractFunction<R> implements Function<R>, Comparable<Fun
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return name.hashCode();
     }
 
+    @Override
     public String toString() {
         return "" + getReturnType() + " " + getName() + Arrays.asList(parameterDefinition);
     }

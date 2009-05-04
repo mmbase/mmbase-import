@@ -42,8 +42,8 @@ public class JspRenderer extends AbstractRenderer {
         return path.charAt(0) == '/' ? path : JSP_ROOT + getBlock().getComponent().getName() + '/' + path;
     }
 
-    @Override public  Parameter[] getParameters() {
-        return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
+    @Override public  Parameter<?>[] getParameters() {
+        return new Parameter<?>[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
 
     private static class Status {
@@ -59,17 +59,20 @@ public class JspRenderer extends AbstractRenderer {
             }
             final Status status = new Status();
             GenericResponseWrapper respw = new GenericResponseWrapper(response) {
-                    public void setStatus(int s) {
-                        status.code = s;
-                    }
-                    public void sendError(int s) throws IOException {
-                        status.code = s;
-                    }
-                    public void sendError(int s, String m) throws IOException {
-                        status.code = s;
-                        status.mesg = m;
-                    }
-                };
+                @Override
+                public void setStatus(int s) {
+                    status.code = s;
+                }
+                @Override
+                public void sendError(int s) throws IOException {
+                    status.code = s;
+                }
+                @Override
+                public void sendError(int s, String m) throws IOException {
+                    status.code = s;
+                    status.mesg = m;
+                }
+            };
             //String url = getFramework().getInternalUrl(getPath(), this, getBlock().getComponent(), blockParameters, frameworkParameters).toString();
 
             String url = getPath();

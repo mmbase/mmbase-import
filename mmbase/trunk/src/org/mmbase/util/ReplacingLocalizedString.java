@@ -26,6 +26,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.8
  */
 public class ReplacingLocalizedString extends WrappedLocalizedString {
+    private static final long serialVersionUID = 0L;
 
     private static final Logger log = Logging.getLoggerInstance(ReplacingLocalizedString.class);
 

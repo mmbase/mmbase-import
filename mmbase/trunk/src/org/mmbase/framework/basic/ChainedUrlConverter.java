@@ -32,11 +32,12 @@ import org.mmbase.util.logging.Logging;
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
-
+    private static final long serialVersionUID = 0L;
     private static final Logger log = Logging.getLoggerInstance(ChainedUrlConverter.class);
 
 
     public static Parameter<Class> URLCONVERTER_PARAM = new Parameter<Class>("urlconverter", new org.mmbase.datatypes.BasicDataType<Class>("class", Class.class) {
+        @Override
             protected Class cast(Object value, Cloud cloud, Node node, Field field) throws org.mmbase.datatypes.CastException {
                 try {
                     Object preCast = preCast(value, cloud, node, field);
@@ -55,7 +56,7 @@ public class ChainedUrlConverter implements UrlConverter {
      * List containing the UrlConverters found in the framework configuration.
      */
     private final List<UrlConverter> uclist = new ArrayList<UrlConverter>();
-    private final List<Parameter>   parameterDefinition = new ArrayList<Parameter>();
+    private final List<Parameter<?>>   parameterDefinition = new ArrayList<Parameter<?>>();
     {
         parameterDefinition.add(URLCONVERTER_PARAM);
     }
@@ -65,7 +66,7 @@ public class ChainedUrlConverter implements UrlConverter {
      */
     public void add(UrlConverter u) {
         uclist.add(u);
-        for (Parameter p : u.getParameterDefinition()) {
+        for (Parameter<?> p : u.getParameterDefinition()) {
             if (! parameterDefinition.contains(p)) {
                 parameterDefinition.add(p);
             }
@@ -75,7 +76,7 @@ public class ChainedUrlConverter implements UrlConverter {
         return uclist.contains(u);
     }
 
-    public Parameter[] getParameterDefinition() {
+    public Parameter<?>[] getParameterDefinition() {
         return parameterDefinition.toArray(Parameter.EMPTY);
     }
 
@@ -117,7 +118,7 @@ public class ChainedUrlConverter implements UrlConverter {
     protected Url getProposal(Url u, Parameters frameworkParameters) {
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         UrlConverter current  = (UrlConverter) request.getAttribute(URLCONVERTER);
-        Class preferred       = frameworkParameters.get(URLCONVERTER_PARAM);
+        Class<?> preferred       = frameworkParameters.get(URLCONVERTER_PARAM);
         Url b = u;
         if (preferred != null && ! preferred.isInstance(u.getUrlConverter())) {
             int q = b.getWeight();
@@ -186,6 +187,7 @@ public class ChainedUrlConverter implements UrlConverter {
         return result;
     }
 
+    @Override
     public String toString() {
         return "ChainedUrlConverter" + uclist;
     }

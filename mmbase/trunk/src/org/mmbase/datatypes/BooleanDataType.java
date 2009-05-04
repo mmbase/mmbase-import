@@ -30,6 +30,7 @@ public class BooleanDataType extends BasicDataType<Boolean> {
         super(name, primitive ? Boolean.TYPE : Boolean.class);
     }
 
+    @Override
     protected <D> D preCast(D value, Cloud cloud, Node node, Field field) {
         if (value == null) return null;
         if (value instanceof String) {
@@ -46,6 +47,7 @@ public class BooleanDataType extends BasicDataType<Boolean> {
      * Cast a bit more conservatively, because Casting aggressively casts everything to boolean,
      * which would make nearly every value valid.
      */
+    @Override
     protected final Boolean cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
         Object preCast = preCast(value, cloud, node, field);
         if (preCast == null) return null;

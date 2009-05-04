@@ -61,8 +61,14 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
     static {
         constraintWrapperCache =  new Cache<SearchQuery,AbstractConstraintMatcher>(1000) {
-                public String getName(){      return "ConstraintMatcherCache";}
-                public String getDescription() {return "Caches query constraint wrappers used by ConstraintsMatchingStrategy";}
+            @Override
+            public String getName() {
+                return "ConstraintMatcherCache";
+            }
+            @Override
+            public String getDescription() {
+                return "Caches query constraint wrappers used by ConstraintsMatchingStrategy";
+            }
         };
         CacheManager.putCache(constraintWrapperCache);
     }
@@ -267,7 +273,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
     }
 
-    private static abstract class AbstractConstraintMatcher {
+    static abstract class AbstractConstraintMatcher {
 
         /**
          * @param valuesToMatch the field values that the constraint value will have to be matched against.

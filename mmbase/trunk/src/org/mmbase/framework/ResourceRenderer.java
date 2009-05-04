@@ -9,10 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 
-import java.util.*;
 import java.net.*;
 import java.io.*;
-import javax.servlet.http.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.*;
 
@@ -33,7 +31,7 @@ public class ResourceRenderer extends AbstractRenderer {
 
 
     protected String resource;
-    protected String type = "web";
+    protected String resourceType = "web";
     protected String xsl = null;
     protected boolean decorate = false;
 
@@ -48,7 +46,7 @@ public class ResourceRenderer extends AbstractRenderer {
 
 
     public void setType(String t) {
-        type = t;
+        resourceType = t;
     }
 
     public void setXslt(String x) throws MalformedURLException {
@@ -61,7 +59,7 @@ public class ResourceRenderer extends AbstractRenderer {
 
 
     private String getResource() {
-        if (type.equals("web")) {
+        if (resourceType.equals("web")) {
             return resource.charAt(0) == '/' ? resource : JspRenderer.JSP_ROOT + getBlock().getComponent().getName() + '/' + resource;
         } else {
             return resource;
@@ -80,7 +78,7 @@ public class ResourceRenderer extends AbstractRenderer {
             }
         }
         String name = getResource();
-        ResourceLoader loader = ResourceLoader.Type.valueOf(type.toUpperCase()).get();
+        ResourceLoader loader = ResourceLoader.Type.valueOf(resourceType.toUpperCase()).get();
         try {
             InputStream is = loader.getResourceAsStream(name);
             if (is == null) throw new FrameworkException("No such resource " +  loader.getResource(name) + " in " + loader);
@@ -115,13 +113,15 @@ public class ResourceRenderer extends AbstractRenderer {
     }
 
 
+    @Override
     public String toString() {
         return resource;
     }
 
-    @Override public URI getUri() {
+    @Override
+    public URI getUri() {
         try {
-            ResourceLoader loader = ResourceLoader.Type.valueOf(type.toUpperCase()).get();
+            ResourceLoader loader = ResourceLoader.Type.valueOf(resourceType.toUpperCase()).get();
             return loader.getResource(getResource()).toURI();
         } catch (URISyntaxException use) {
             log.warn(use);

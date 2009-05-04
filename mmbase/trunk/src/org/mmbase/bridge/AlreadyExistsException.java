@@ -17,6 +17,7 @@ package org.mmbase.bridge;
  */
 public class AlreadyExistsException extends BridgeException {
 
+    private static final long serialVersionUID = 0L;
     //javadoc is inherited
     public AlreadyExistsException() {
         super();

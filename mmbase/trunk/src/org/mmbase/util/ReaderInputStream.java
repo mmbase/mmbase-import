@@ -113,6 +113,7 @@ public class ReaderInputStream extends InputStream {
      *         the end of the stream
      * @exception IOException if an error occurs
      */
+    @Override
     public synchronized int read(byte[] b, int off, int len)
         throws IOException {
         if (in == null) {

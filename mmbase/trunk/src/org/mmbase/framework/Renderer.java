@@ -52,9 +52,11 @@ public interface Renderer {
                 public void render(Parameters parameters, Writer w, RenderHints hints) { };
                 public Parameter[] getParameters() { return Parameter.emptyArray(); };
                 public Block getBlock() { return block ; };
+                @Override
                 public String toString() { return "EMPTY Renderer"; }
                 public URI getUri() { try {return new URI("mmbase:/renderer/" + Type.this + "/empty");} catch (Exception e) { return null;} }
                 public URI getUri(Parameters blockParameters, RenderHints hints) { return getUri(); }
+                @Override
                 public boolean equals(Object o) {
                     if (o instanceof Renderer) {
                         Renderer r = (Renderer) o;
@@ -62,6 +64,12 @@ public interface Renderer {
                     } else {
                         return false;
                     }
+                }
+
+                @Override
+                public int hashCode() {
+                    int hash = 7;
+                    return hash;
                 }
             };
         }
@@ -81,7 +89,7 @@ public interface Renderer {
      * A renderer may need certain parameters. These are added to the block-parameters. This method
      * is called on instantation of the renderer.
      */
-    Parameter[] getParameters();
+    Parameter<?>[] getParameters();
 
     /**
      * Renders to a writer. In case of e.g. a JSPView, the parameters must also contain

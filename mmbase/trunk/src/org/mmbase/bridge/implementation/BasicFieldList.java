@@ -20,7 +20,7 @@ import org.mmbase.bridge.*;
  * @version $Id$
  */
 public class BasicFieldList extends BasicList<Field> implements FieldList {
-
+    private static final long serialVersionUID = 0L;
     NodeManager nodemanager = null;
 
     BasicFieldList() {

@@ -81,10 +81,9 @@ public class Version {
      * @since MMBase-1.6
      */
     public static String getBuildDate() {
-        String resource = "";
-        Manifest manifest = getManifest();
-        if (manifest != null) {
-            return manifest.getAttributes("org/mmbase").getValue("Build-Date");
+        Manifest man = getManifest();
+        if (man != null) {
+            return man.getAttributes("org/mmbase").getValue("Build-Date");
         } else {
             return "";
         }
@@ -169,6 +168,9 @@ public class Version {
      */
     public static void main(String args[]) {
         System.out.println(get());
+    }
+
+    private Version() {
     }
 
 }

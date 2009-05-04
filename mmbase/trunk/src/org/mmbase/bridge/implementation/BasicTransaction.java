@@ -97,6 +97,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     /**
      */
+    @Override
     String getAccount() {
         // should be something different than for normal clouds, so use the transaction-name
         return transactionName;
@@ -342,6 +343,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     public boolean isCommitted() {
         return committed;
     }
+    @Override
     public Object getProperty(Object key) {
         Object value = super.getProperty(key);
         if (value == null) {
@@ -350,6 +352,8 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             return value;
         }
     }
+    @Override
+    @SuppressWarnings("unchecked")
     public Map getProperties() {
         Map ret = new HashMap();
         ret.putAll(parentCloud.getProperties());
@@ -387,11 +391,13 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     }
 
 
+    @Override
     public String toString() {
         UserContext uc = getUser();
         return  "BasicTransaction " + count +  "'" + getName() + "' of " + (uc != null ? uc.getIdentifier() : "NO USER YET") + " @" + Integer.toHexString(hashCode());
     }
 
+    @Override
     public Cloud getNonTransactionalCloud() {
         return parentCloud.getNonTransactionalCloud();
     }

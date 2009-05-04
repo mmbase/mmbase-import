@@ -85,6 +85,7 @@ public class SortedBundle {
             value = v;
             com   = c;
         }
+        @SuppressWarnings({"unchecked"})
         public  int compareTo(ValueWrapper other) {
             int result =
                 com != null ? com.compare(value, other.value) :
@@ -106,6 +107,7 @@ public class SortedBundle {
             }
             return false;
         }
+        @Override
         public String toString() {
             return Casting.toString(key);
         }
@@ -315,5 +317,8 @@ public class SortedBundle {
             }
             clazz = clazz.getSuperclass();
         }
+    }
+
+    private SortedBundle() {
     }
 }

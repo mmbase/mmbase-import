@@ -20,6 +20,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.9.1
  */
 public class ReadonlyLocalizedString extends WrappedLocalizedString {
+    private static final long serialVersionUID = 0L;
 
     private static final Logger log = Logging.getLoggerInstance(WrappedLocalizedString.class);
 

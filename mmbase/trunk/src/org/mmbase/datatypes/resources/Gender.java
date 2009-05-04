@@ -17,4 +17,7 @@ package org.mmbase.datatypes.resources;
 public abstract class Gender {
     public static final int M = 0;
     public static final int F = 1;
+
+    private Gender() {
+    }
 }

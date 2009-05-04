@@ -105,4 +105,7 @@ public class XMLWriter {
         }
         return null;
     }
+
+    private XMLWriter() {
+    }
 }

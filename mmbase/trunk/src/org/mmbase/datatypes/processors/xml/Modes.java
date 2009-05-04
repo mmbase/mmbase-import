@@ -95,4 +95,7 @@ public abstract class Modes {
             return XML;
         }
     }
+
+    private Modes() {
+    }
 }

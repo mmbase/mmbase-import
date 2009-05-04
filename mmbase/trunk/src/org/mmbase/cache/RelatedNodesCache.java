@@ -39,9 +39,11 @@ public class RelatedNodesCache extends QueryResultCache {
         relatedNodesCache.putCache();
     }
 
+    @Override
     public String getName() {
         return "RelatedNodesCache";
     }
+    @Override
     public String getDescription() {
         return "Caches related nodes of a certain node";
     }
@@ -53,6 +55,7 @@ public class RelatedNodesCache extends QueryResultCache {
     private Map<Integer, Set<SearchQuery>> numberToKeys = new HashMap<Integer, Set<SearchQuery>>();
 
 
+    @Override
     public synchronized List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
         // test cache policy before caching
         if (!checkCachePolicy(query)) return null;
@@ -67,6 +70,7 @@ public class RelatedNodesCache extends QueryResultCache {
     }
 
 
+    @Override
     public synchronized List<MMObjectNode> remove(Object key) {
         SearchQuery query = (SearchQuery) key;
         Integer number = (query.getSteps().get(0)).getNodes().first();
@@ -96,6 +100,7 @@ public class RelatedNodesCache extends QueryResultCache {
         super(size);
     }
 
+    @Override
     public void clear(){
         super.clear();
         numberToKeys.clear();

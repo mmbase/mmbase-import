@@ -13,7 +13,6 @@ import java.util.*;
 import java.io.*;
 import org.w3c.dom.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.Node;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.util.xml.DocumentSerializable;

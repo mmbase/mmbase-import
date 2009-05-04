@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.framework.basic;
 import org.mmbase.framework.*;
 import java.util.*;
-import javax.servlet.http.HttpServletRequest;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -24,6 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter extends DirectoryUrlConverter {
+    private final static long serialVersionUID = 0L;
 
     private static final Logger log = Logging.getLoggerInstance(MMBaseUrlConverter.class);
 
@@ -50,8 +50,8 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
         renderJsp = j;
     }
 
-    @Override public Parameter[] getParameterDefinition() {
-        return new Parameter[] {Parameter.REQUEST, CATEGORY, Framework.COMPONENT, Framework.BLOCK};
+    @Override public Parameter<?>[] getParameterDefinition() {
+        return new Parameter<?>[] {Parameter.REQUEST, CATEGORY, Framework.COMPONENT, Framework.BLOCK};
     }
 
     @Override public Block getBlock(String path, Parameters frameworkParameters) throws FrameworkException {

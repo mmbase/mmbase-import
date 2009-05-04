@@ -10,12 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.datatypes.util;
 
-import java.util.*;
 
 import org.mmbase.datatypes.*;
 import org.mmbase.bridge.Field;
 
-import org.mmbase.util.logging.*;
 
 /**
  * This utility class makes it easy to configure a DataType on the fly in java.
@@ -33,19 +31,19 @@ import org.mmbase.util.logging.*;
 public class DataTypeChanger {
 
 
-    private final DataType dataType;
+    private final DataType<?> dataType;
 
-    public DataTypeChanger(DataType dt) {
-        dataType = (DataType) dt.clone();
+    public DataTypeChanger(DataType<?> dt) {
+        dataType = (DataType<?>) dt.clone();
     }
 
     public DataTypeChanger(String dt, String guiName) {
-        dataType = (DataType) DataTypes.getDataType(dt).clone(); // casting for 1.8 compatibility only
+        dataType = (DataType<?>) DataTypes.getDataType(dt).clone(); // casting for 1.8 compatibility only
         dataType.setGUIName(guiName);
     }
 
     public DataTypeChanger(Field field) {
-        dataType = (DataType) field.getDataType().clone();
+        dataType = (DataType<?>) field.getDataType().clone();
     }
 
 
@@ -55,8 +53,8 @@ public class DataTypeChanger {
     }
 
     public DataTypeChanger maxLength(long maxLength) {
-        if (dataType instanceof LengthDataType) {
-            ((LengthDataType) dataType).setMaxLength(maxLength);
+        if (dataType instanceof LengthDataType<?>) {
+            ((LengthDataType<?>) dataType).setMaxLength(maxLength);
         }
         return this;
     }
@@ -66,7 +64,7 @@ public class DataTypeChanger {
         return this;
     }
 
-    public DataType finish() {
+    public DataType<?> finish() {
         dataType.finish(this);
         return dataType;
     }

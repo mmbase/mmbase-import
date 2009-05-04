@@ -34,11 +34,12 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
         maxSize = size;
         // caches can typically be accessed/modified by multipible thread, so we need to synchronize
         backing = Collections.synchronizedMap(new LinkedHashMap<K, V>(size, 0.75f, true) {
-                @Override
-                protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-                    return size() > LRUCache.this.maxSize;
-                }
-            });
+            private static final long serialVersionUID = 0L;
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+                return size() > LRUCache.this.maxSize;
+            }
+        });
     }
 
     public int getCount(K key) {
@@ -72,6 +73,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
     /**
      * Returns size, maxSize.
      */
+    @Override
     public String toString() {
         return "Size=" + size() + ", Max=" + maxSize;
     }
