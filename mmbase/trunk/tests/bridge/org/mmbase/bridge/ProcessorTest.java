@@ -30,6 +30,8 @@ import org.mmbase.util.logging.Logging;
 public class ProcessorTest extends BridgeTest {
     private static final Logger log = Logging.getLoggerInstance(TransactionTest.class);
 
+    static long counter = 0;
+
     public ProcessorTest(String name) {
         super(name);
     }
@@ -173,7 +175,7 @@ public class ProcessorTest extends BridgeTest {
         int ccbefore = CountCommitProcessor.count;
         int changedbefore = CountCommitProcessor.changed;
         Node n = c.getNode(nn);
-        n.setStringValue("string", "foobar" + ccbefore);
+        n.setStringValue("string", "foobar" + (counter++));
         assertTrue("Node is changed, but it reports that it isn't. Values" + new NodeMap(n) + " changed fields " + n.getChanged(), n.isChanged());
         n.commit();
         if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) {
