@@ -32,9 +32,11 @@ public class AggregatedResultCache extends QueryResultCache {
         cache.putCache();
     }
 
+    @Override
     public String getName() {
         return "AggregatedResultCache";
     }
+    @Override
     public String getDescription() {
         return "Aggregating Query Results";
     }

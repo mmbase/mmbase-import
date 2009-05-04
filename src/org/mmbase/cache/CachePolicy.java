@@ -36,6 +36,7 @@ abstract public class CachePolicy implements Serializable {
             return false;
         }
 
+        @Override
         public String getDescription() {
             return "CACHE NEVER";
         }
@@ -50,6 +51,7 @@ abstract public class CachePolicy implements Serializable {
             return true;
         }
 
+        @Override
         public String getDescription() {
             return "CACHE ALWAYS";
         }

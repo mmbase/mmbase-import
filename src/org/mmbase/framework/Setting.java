@@ -77,13 +77,16 @@ public class Setting<C> {
         return dataType;
     }
 
+    @Override
     public String toString() {
         return "Setting_" + getName() + " " + getDataType();
     }
 
+    @Override
     public int hashCode() {
         return 13 * parent.hashCode() + dataType.hashCode();
     }
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Setting) {
             Setting s = (Setting) o;
@@ -106,6 +109,7 @@ public class Setting<C> {
             super(name);
         }
 
+        @Override
         public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
 
             final Iterator<Setting<?>> iterator;

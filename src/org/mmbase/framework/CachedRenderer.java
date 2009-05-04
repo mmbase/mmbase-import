@@ -14,7 +14,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.regex.*;
-import java.util.concurrent.*;
 
 
 import org.mmbase.util.functions.*;

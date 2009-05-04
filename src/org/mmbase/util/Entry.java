@@ -19,7 +19,7 @@ import java.util.Map;
  * @author Michiel Meeuwissen
  */
 public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable<Entry<K, V>>, java.io.Serializable {
-
+    private static final long serialVersionUID = 0L;
     private final K key; 
     private V value;
 
@@ -53,15 +53,19 @@ public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable<Entry
         return r;
     }
 
+    @Override
     public Entry<K, V> clone() {
         return new Entry<K, V>(key, value); // can do this, because this class is final
     }
 
+    @Override
     public int hashCode() {
         return (key == null ? 0 : key.hashCode()) ^ (value == null ? 0 : value.hashCode());
     }
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Map.Entry) {
+            @SuppressWarnings("unchecked")
             Map.Entry<K, V> entry = (Map.Entry<K, V>) o;
             return
                 (key == null ? entry.getKey() == null : key.equals(entry.getKey())) &&
@@ -73,6 +77,7 @@ public final class Entry<K, V> implements Map.Entry<K, V>, PublicCloneable<Entry
     /**
      * A sensible toString, for debugging purposes ('&lt;key&gt;=&lt;value&gt;').
      */
+    @Override
     public String toString() {
         return key + "=" + value;
     }

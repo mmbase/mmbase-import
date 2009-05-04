@@ -8,10 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.framework.basic;
-import java.util.*;
-
-import org.mmbase.framework.*;
-import org.mmbase.util.functions.*;
 
 /**
  * An Url object is the result of {@link UrlConverter}s. It basicly bundles a String ({@link
@@ -46,6 +42,7 @@ public abstract class Url {
     }
 
 
+    @Override
     public String toString() {
         String url = getUrl();
         return getClass() + " " + getUrlConverter() + " " + (url  == null ? "NULL" : url) + ":" + getWeight();

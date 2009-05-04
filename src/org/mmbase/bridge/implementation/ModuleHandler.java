@@ -45,21 +45,21 @@ public class ModuleHandler implements Module, InvocationHandler {
     }
 
     public synchronized static Module getModule(org.mmbase.module.Module mod, CloudContext cloudcontext) {
-        Class[] objClasses = mod.getClass().getInterfaces();
+        Class<?>[] objClasses = mod.getClass().getInterfaces();
         // check for allowable interface class
         // Package bridge = Package.getPackage("org.mmbase.bridge");
-        Class otherintf = null;
-        for (Class element : objClasses) {
+        Class<?> otherintf = null;
+        for (Class<?> element : objClasses) {
             if (element.getName().startsWith("org.mmbase.bridge")) {
                 otherintf=element;
             }
         }
-        Class[] useintf;
+        Class<?>[] useintf;
         if (otherintf!=null) {
             log.debug("alternateintf =" + otherintf.getName());
-            useintf = new Class[] {Module.class, otherintf};
+            useintf = new Class<?>[] {Module.class, otherintf};
         } else {
-            useintf = new Class[] {Module.class};
+            useintf = new Class<?>[] {Module.class};
         }
         log.debug("creating proxy for : " + mod.getName() + " = " + useintf);
 
@@ -100,7 +100,7 @@ public class ModuleHandler implements Module, InvocationHandler {
         return mmbaseModule.getInitParameter(name);
     }
 
-    public Map getProperties() {
+    public Map<String, String> getProperties() {
         return new HashMap<String, String>(mmbaseModule.getInitParameters());
     }
 
@@ -267,14 +267,22 @@ public class ModuleHandler implements Module, InvocationHandler {
         return (o instanceof Module) &&
                getName().equals(((Module)o).getName()) &&
                cloudContext.equals(((Module)o).getCloudContext());
-    };
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + (this.cloudContext != null ? this.cloudContext.hashCode() : 0);
+        return hash;
+    }
+;
 
     public Collection<Function<?>> getFunctions() {
         return  mmbaseModule.getFunctions();
     }
 
-    public Function getFunction(String functionName) {
-        Function function = mmbaseModule.getFunction(functionName);
+    public Function<?> getFunction(String functionName) {
+        Function<?> function = mmbaseModule.getFunction(functionName);
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist.");
         }

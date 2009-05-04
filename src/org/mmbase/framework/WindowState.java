@@ -8,9 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.framework;
-import java.io.*;
-import java.net.URI;
-import org.mmbase.util.functions.*;
 
 /**
  * Every block can be in a certain window state, which could be considered during rendering.

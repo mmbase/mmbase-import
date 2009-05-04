@@ -1018,7 +1018,7 @@ public class ResourceLoader extends ClassLoader {
                     } else {
                         if (file.exists()) {
                             try {
-                                return file.toURL(); // f is shadowed!
+                                return file.toURI().toURL(); // f is shadowed!
                             } catch (MalformedURLException mfue) {
                                 assert false : mfue;
                             }
@@ -1033,7 +1033,7 @@ public class ResourceLoader extends ClassLoader {
             } else {
                 if (file.exists()) {
                     try {
-                        return file.toURL(); // f is shadowed!
+                        return file.toURI().toURL(); // f is shadowed!
                     } catch (MalformedURLException mfue) {
                         assert false : mfue;
                     }
@@ -1219,6 +1219,13 @@ public class ResourceLoader extends ClassLoader {
         @Override public String toString() {
             return fileRoot.toString();
         }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 71 * hash + (this.fileRoot != null ? this.fileRoot.hashCode() : 0);
+            return hash;
+        }
         @Override public boolean equals(Object o) {
             if (o instanceof FileURLStreamHandler) {
                 FileURLStreamHandler of = (FileURLStreamHandler) o;
@@ -1296,20 +1303,23 @@ public class ResourceLoader extends ClassLoader {
             if (file.isDirectory()) {
                 final File directory = file;
                 return new OutputStream() {
-                        public void write(byte[] b) throws IOException {
-                            if (b == null) {
-                                directory.delete();
-                            } else {
-                                super.write(b);
-                            }
+                    @Override
+                    public void write(byte[] b) throws IOException {
+                        if (b == null) {
+                            directory.delete();
+                        } else {
+                            super.write(b);
                         }
-                        public void write(int b) throws IOException {
-                            throw new UnsupportedOperationException("Cannot write bytes to a directory outputstream");
-                        }
-                    };
+                    }
+                    @Override
+                    public void write(int b) throws IOException {
+                        throw new UnsupportedOperationException("Cannot write bytes to a directory outputstream");
+                    }
+                };
 
             } else {
                 return new FileOutputStream(file) {
+                    @Override
                     public void write(byte[] b) throws IOException {
                         if (b == null) {
                             file.delete();
@@ -1382,7 +1392,7 @@ public class ResourceLoader extends ClassLoader {
                 try {
                     File file = getFileFromString(entry.getValue());
                     if (file != null) {
-                        if (file.toURL().sameFile(u)) {
+                        if (file.toURI().toURL().sameFile(u)) {
                             return entry.getKey();
                         }
                     }
@@ -1587,6 +1597,7 @@ public class ResourceLoader extends ClassLoader {
                 @Override public void write(int b) {
                     bytes.write(b);
                 }
+                @Override
                 public void write(byte[] b) throws IOException {
                     if (b == null) {
                         node.delete();
@@ -1810,8 +1821,15 @@ public class ResourceLoader extends ClassLoader {
                     return r == 0 ? u1.toString().compareTo(u2.toString()) : r;
 
                 }
+                @Override
                 public boolean equals(Object o) {
                     return o == this;
+                }
+
+                @Override
+                public int hashCode() {
+                    int hash = 7;
+                    return hash;
                 }
             };
         }
@@ -1885,7 +1903,7 @@ public class ResourceLoader extends ClassLoader {
                 throw ioe;
             } catch (Throwable t) {
                 log.warn(t.getMessage(), t);
-                return Collections.enumeration( Collections.EMPTY_LIST);
+                return Collections.enumeration(Collections.EMPTY_LIST);
             }
         }
         @Override final public URLConnection openConnection(String name) {
@@ -2075,7 +2093,7 @@ public class ResourceLoader extends ClassLoader {
      */
 
     private class MMURLStreamHandler extends URLStreamHandler implements java.io.Serializable {
-
+        private static final long serialVersionUID = 0L;
         MMURLStreamHandler() {
             super();
         }

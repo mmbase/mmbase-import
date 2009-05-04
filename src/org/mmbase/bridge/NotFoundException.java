@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  * @version $Id$
  */
 public class NotFoundException extends BridgeException {
-
+    private static final long serialVersionUID = 0L;
     //javadoc is inherited
     public NotFoundException() {
         super();

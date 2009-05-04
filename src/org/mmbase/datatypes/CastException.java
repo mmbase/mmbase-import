@@ -18,7 +18,7 @@ package org.mmbase.datatypes;
  */
 public class CastException extends Exception {
 
-
+    private static final long serialVersionUID = 0L;
     //javadoc is inherited
     public CastException() {
         super();

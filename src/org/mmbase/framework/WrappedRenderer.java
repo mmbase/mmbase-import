@@ -45,7 +45,7 @@ public abstract class WrappedRenderer extends AbstractRenderer {
         return wrapped;
     }
 
-    @Override public  Parameter[] getParameters() {
+    @Override public  Parameter<?>[] getParameters() {
         return getWraps().getParameters();
     }
 

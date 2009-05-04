@@ -168,7 +168,7 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
     /**
      * Sometimes the the representation of the value is a bit different in the database, or has a
      * different type. So when constraining a search on the value, casting is done by this. This may
-     * default to {@link cast(Object, Node, Field}.
+     * default to {@link cast(Object, Node, Field}).
      * @since MMBase-1.9.1
      */
     public Object castForSearch(Object value, Node node, Field field);

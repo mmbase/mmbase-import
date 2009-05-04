@@ -35,7 +35,7 @@ public interface UrlConverter extends Serializable {
      * defined in the Framework, the framework will of course ignore the one requested to be defined
      * by this UrlConverter.
      */
-    Parameter[] getParameterDefinition();
+    Parameter<?>[] getParameterDefinition();
 
 
     /**

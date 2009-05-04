@@ -606,6 +606,7 @@ public interface Node extends Comparable<Node> {
      * Converts the node to a string
      * @return string representation of a node
      */
+    @Override
     String toString();
 
     /**

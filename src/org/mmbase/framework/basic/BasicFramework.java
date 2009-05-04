@@ -21,7 +21,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.core.util.SystemProperties;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
@@ -163,8 +162,8 @@ public class BasicFramework extends Framework {
 
     /**
      */
-    public Parameter[] getParameterDefinition() {
-        return new Parameter[] {ACTION, Parameter.REQUEST, Parameter.CLOUD, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
+    public Parameter<?>[] getParameterDefinition() {
+        return new Parameter<?>[] {ACTION, Parameter.REQUEST, Parameter.CLOUD, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
     }
 
     public Parameters createParameters() {
@@ -176,6 +175,7 @@ public class BasicFramework extends Framework {
     }
 
 
+    @SuppressWarnings("unchecked")
     protected void setBlockParametersForRender(State state, Parameters blockParameters) {
         ServletRequest request = state.getRequest();
         String prefix = getPrefix(state);
@@ -335,6 +335,7 @@ public class BasicFramework extends Framework {
         };
     }
 
+    @Override
     public String toString() {
         return getName() + ": " + description + ": " + urlConverter.toString();
     }
@@ -348,6 +349,7 @@ public class BasicFramework extends Framework {
         return "org.mmbase.framework." + setting.getComponent().getName() + "." + setting.getName();
     }
 
+    @SuppressWarnings("unchecked")
     public <C> C getSettingValue(Setting<C> setting, Parameters parameters) {
         boolean useSession = parameters != null && parameters.get(USE_REQ);
         if (useSession) {
@@ -371,6 +373,7 @@ public class BasicFramework extends Framework {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <C> C setSettingValue(Setting<C> setting, Parameters parameters, C value) {
         if (parameters == null) throw new SecurityException("You should provide Cloud and request parameters");
         boolean useSession = parameters.get(USE_REQ);

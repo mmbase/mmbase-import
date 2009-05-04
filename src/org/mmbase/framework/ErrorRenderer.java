@@ -53,8 +53,8 @@ public class ErrorRenderer extends AbstractRenderer {
     }
 
     @Override
-    public  Parameter[] getParameters() {
-        return new Parameter[] {Parameter.RESPONSE};
+    public  Parameter<?>[] getParameters() {
+        return new Parameter<?>[] {Parameter.RESPONSE};
     }
 
 
@@ -84,10 +84,12 @@ public class ErrorRenderer extends AbstractRenderer {
         default:
         }
     }
+    @Override
     public String toString() {
         return "ERROR " + error;
     }
 
+    @Override
     public java.net.URI getUri() {
         try {
             return new java.net.URL(url).toURI();
@@ -130,12 +132,12 @@ public class ErrorRenderer extends AbstractRenderer {
 
         protected String getTitle(Throwable t) {
             String message = t.getMessage();
-            String title = message;
-            if (title == null) {
+            String tit = message;
+            if (tit == null) {
                 StackTraceElement el = t.getStackTrace()[0];
-                title = t.getClass().getName().substring(t.getClass().getPackage().getName().length() + 1) + " " + el.getFileName() + ":" + el.getLineNumber();
+                tit = t.getClass().getName().substring(t.getClass().getPackage().getName().length() + 1) + " " + el.getFileName() + ":" + el.getLineNumber();
             }
-            return title;
+            return tit;
         }
 
         public String getTitle() {

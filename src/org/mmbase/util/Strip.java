@@ -164,4 +164,7 @@ public class Strip {
         log.info("Single " + Strip.singleQuote("'single'", Strip.BOTH));
         log.info("White |" + Strip.whitespace("   white         \n", Strip.BOTH) + "|");
     }
+
+    private Strip() {
+    }
 }

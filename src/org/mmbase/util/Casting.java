@@ -59,6 +59,7 @@ public class Casting {
      */
     public final static ThreadLocal<DateFormat> ISO_8601_LOOSE =
         new ThreadLocal<DateFormat>() {
+        @Override
         protected synchronized DateFormat initialValue() {
                 return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
             }
@@ -74,6 +75,7 @@ public class Casting {
      */
     public final static ThreadLocal<DateFormat> ISO_8601_UTC =
         new ThreadLocal<DateFormat>() {
+        @Override
         protected synchronized DateFormat initialValue() {
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
                 try {
@@ -87,12 +89,14 @@ public class Casting {
 
     public final static ThreadLocal<DateFormat> ISO_8601_DATE =
         new ThreadLocal<DateFormat>() {
+        @Override
         protected synchronized DateFormat initialValue() {
                 return new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             }
     };
     public final static ThreadLocal<DateFormat> ISO_8601_TIME =
         new ThreadLocal<DateFormat>() {
+        @Override
         protected synchronized DateFormat initialValue() {
                 return new SimpleDateFormat("HH:mm:ss", Locale.US);
             }
@@ -152,6 +156,7 @@ public class Casting {
      * @return value the converted value
      * @since MMBase-1.8
      */
+    @SuppressWarnings("unchecked")
     public static <C> C toType(Class<C> type, Cloud cloud, Object value) {
         if (value != null && isType(type, value))  {
             return (C) value;
@@ -254,7 +259,7 @@ public class Casting {
      * For collection types also the entries of the collection must be string representable.
      * @since MMBase-1.8
      */
-    public static boolean isStringRepresentable(Class type) {
+    public static boolean isStringRepresentable(Class<?> type) {
         return
             CharSequence.class.isAssignableFrom(type) ||
             Number.class.isAssignableFrom(type) ||
@@ -361,39 +366,47 @@ public class Casting {
         } else if (o instanceof Node) {
             return new NodeMap((Node)o) {
 
-                    public Object getValue(String fieldName) {
-                        NodeManager nm = getNodeManager();
-                        if (nm.hasField(fieldName)) {
-                            switch(nm.getField(fieldName).getType()) {
-                            case org.mmbase.bridge.Field.TYPE_NODE:
-                                // I don't understand why, but the 'number' field is of type NODE,
-                                // which makes no sense whatsoever.
-                                if (! "number".equals(fieldName)) {
-                                    return wrap(getNodeValue(fieldName), escaper);
-                                } else {
-                                    return super.getStringValue(fieldName);
-                                }
-                            case org.mmbase.bridge.Field.TYPE_DATETIME: return wrap(getDateValue(fieldName), escaper);
-                            case org.mmbase.bridge.Field.TYPE_XML:      return wrap(getXMLValue(fieldName), escaper);
-                            case org.mmbase.bridge.Field.TYPE_UNKNOWN:  return wrap(super.getValue(fieldName), escaper);
-                            default: return escape(escaper, super.getStringValue(fieldName));
+                @Override
+                public Object getValue(String fieldName) {
+                    NodeManager nm = getNodeManager();
+                    if (nm.hasField(fieldName)) {
+                        switch (nm.getField(fieldName).getType()) {
+                        case org.mmbase.bridge.Field.TYPE_NODE:
+                            // I don't understand why, but the 'number' field is of type NODE,
+                            // which makes no sense whatsoever.
+                            if (!"number".equals(fieldName)) {
+                                return wrap(getNodeValue(fieldName), escaper);
+                            } else {
+                                return super.getStringValue(fieldName);
                             }
-                        } else {
+                        case org.mmbase.bridge.Field.TYPE_DATETIME:
+                            return wrap(getDateValue(fieldName), escaper);
+                        case org.mmbase.bridge.Field.TYPE_XML:
+                            return wrap(getXMLValue(fieldName), escaper);
+                        case org.mmbase.bridge.Field.TYPE_UNKNOWN:
+                            return wrap(super.getValue(fieldName), escaper);
+                        default:
                             return escape(escaper, super.getStringValue(fieldName));
                         }
+                    } else {
+                        return escape(escaper, super.getStringValue(fieldName));
                     }
-                    public String toString() {
-                        return escape(escaper, "" + node.getNumber());
-                    }
-                };
+                }
+                @Override
+                public String toString() {
+                    return escape(escaper, "" + node.getNumber());
+                }
+            };
         } else if (o instanceof Date) {
             return new java.util.Date(((Date)o).getTime()) {
-                    private static final long serialVersionUID = 1L; // increase this if object chages.
-                    public String toString() {
-                        long time = getTime();
-                        return time == -1 ? "-1" : ("" + time / 1000);
-                    }
-                };
+                private static final long serialVersionUID = 1L; // increase this if object chages.
+
+                @Override
+                public String toString() {
+                    long time = getTime();
+                    return time == -1 ? "-1" : ("" + time / 1000);
+                }
+            };
         } else if (o instanceof org.w3c.dom.Node) {
             // don't know how to wrap
             return escape(escaper, XMLWriter.write((org.w3c.dom.Node) o, false, true));
@@ -666,7 +679,7 @@ public class Casting {
             if (nodenumber != -1) {
                 res = cloud.getNode(nodenumber);
             }
-        } else if (i instanceof Map) {
+        } else if (i instanceof Map<?, ?>) {
             res = new MapNode((Map)i, cloud);
         } else if (i != null && !i.equals("")) {
             res = cloud.getNode(toString(i));
@@ -1009,9 +1022,9 @@ public class Casting {
     /**
      * @since MMBase-1.9.1
      */
-    static public DataType toDataType(Object o) {
-        if (o instanceof DataType) {
-            return (DataType) o;
+    static public DataType<?> toDataType(Object o) {
+        if (o instanceof DataType<?>) {
+            return (DataType<?>) o;
         } else {
             return DataTypes.getDataType(toString(o));
         }
@@ -1044,7 +1057,7 @@ public class Casting {
                     dateInSeconds = -1;
                 } else if (d instanceof Boolean) {
                     dateInSeconds = -1;
-                } else if (d instanceof Collection) {
+                } else if (d instanceof Collection<?>) {
                     // impossible
                     dateInSeconds = -1;
                 } else if (d instanceof Node) {
@@ -1234,6 +1247,7 @@ public class Casting {
             return escaped.subSequence(start, end);
         }
 
+        @Override
         public String toString() {
             if (escaped == null) escaped = escape(escaper, string);
             return escaped;
@@ -1261,6 +1275,9 @@ public class Casting {
         } else {
             return o1.equals(o2);
         }
+    }
+
+    private Casting() {
     }
 
 }

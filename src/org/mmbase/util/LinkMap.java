@@ -126,9 +126,11 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
             }
         };
     }
+    @Override
     public int size() {
         return map1.size();
     }
+    @Override
     public V get(Object key) {
         if (map2.containsKey(key)) {
             return map2.get(key);
@@ -136,6 +138,7 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
             return map1.get(key);
         }
     }
+    @Override
     public V put(K key, V v) {
         V r = get(key);
         switch(changes) {
@@ -147,6 +150,7 @@ public class LinkMap<K, V> extends AbstractMap<K,V> {
         }
         return r;
     }
+    @Override
     public boolean containsKey(Object key) {
         return map1.containsKey(key);
     }

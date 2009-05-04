@@ -29,6 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
+    private static final long serialVersionUID = 0l;
     private static final Logger log = Logging.getLoggerInstance(BasicUrlConverter.class);
 
     private static final CharTransformer PARAM_ESCAPER= new org.mmbase.util.transformers.Url(org.mmbase.util.transformers.Url.ESCAPE);
@@ -134,8 +135,8 @@ public final class BasicUrlConverter implements UrlConverter {
      * @todo Actually these parameters are only added here, because this urlconverter is always in
      * BasicFramework. Actually BasicFramework should add them itself.
      */
-    public Parameter[] getParameterDefinition() {
-        return new Parameter[] {Parameter.REQUEST};
+    public Parameter<?>[] getParameterDefinition() {
+        return new Parameter<?>[] {Parameter.REQUEST};
     }
 
     /**
@@ -224,9 +225,18 @@ public final class BasicUrlConverter implements UrlConverter {
         return new BasicUrl(this, BasicUrlConverter.getUrl(page, params, request, false));
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + (this.framework != null ? this.framework.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
     public boolean equals(Object o) {
         return o instanceof BasicUrlConverter && ((BasicUrlConverter) o).framework.equals(framework);
     }
+    @Override
     public String toString() {
         return "COPY";
     }

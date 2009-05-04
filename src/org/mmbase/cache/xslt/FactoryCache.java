@@ -45,9 +45,11 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
         cache.putCache();
     }
 
+    @Override
     public String getName() {
         return "XSLFactories";
     }
+    @Override
     public String getDescription() {
         return "XSL Transformer Factories";
     }

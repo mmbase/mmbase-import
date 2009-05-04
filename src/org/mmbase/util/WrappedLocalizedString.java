@@ -84,8 +84,16 @@ public class WrappedLocalizedString extends LocalizedString {
         return wrapped.getValues();
     }
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         return wrapped.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 47 * hash + (this.wrapped != null ? this.wrapped.hashCode() : 0);
+        return hash;
     }
 
 

@@ -71,4 +71,7 @@ public class Age {
         }
     }
 
+    private Age() {
+    }
+
 }

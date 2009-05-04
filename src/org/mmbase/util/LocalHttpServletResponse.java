@@ -17,7 +17,7 @@ import java.io.*;
 
 public class LocalHttpServletResponse extends LocalServletResponse implements HttpServletResponse {
 
-    private Map<String, String> headers = new HashMap<String, String>(); // TODO a map propbably
+    private Map<String, String> headers = new HashMap<String, String>(); // TODO a map probably
                                                                          // does not suffice
     private int status;
 
