@@ -819,10 +819,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (value == null) {
             if (!checkFieldExistance(fieldName)) return null;
         }
-//
-//        if (value instanceof InputStream) {
-//            value = useInputStream(fieldName, (InputStream) value);
-//        }
+
+
+        // This may cause buffering of the entire blob (see also MMB-1810, it is fixed in trunk).
+        // Bug if this does not happen, than e.g. binary upload do not work any more correctly in the
+        // editiwizards, because the 'size' fields remain unfilled.
+        if (value instanceof InputStream) {
+            value = useInputStream(fieldName, (InputStream) value);
+        }
 
         // return the found object
         return value;
