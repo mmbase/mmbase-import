@@ -26,11 +26,11 @@ import org.apache.commons.fileupload.FileItem;
 
 public class SerializableInputStream  extends InputStream implements Serializable  {
 
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2L;
 
     private static final Logger log = Logging.getLoggerInstance(SerializableInputStream.class);
 
-    private final long size;
+    private long size;
 
     private boolean used = false;
 
@@ -146,12 +146,18 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-        wrapped.reset();
-        out.writeObject(toByteArray(wrapped));
+        out.writeObject(get());
+        out.writeObject(name);
+        out.writeObject(contentType);
     }
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
         byte[] b = (byte[]) in.readObject();
         wrapped = new ByteArrayInputStream(b);
+        size = b.length;
+        used = true;
+        name = (String) in.readObject();
+        contentType = (String) in.readObject();
+
     }
     @Override
     public int available() throws IOException {
@@ -206,6 +212,40 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
     @Override
     public String toString() {
-        return "SERIALIZABLE " + wrapped + (used ? " (used)" :  "") + " (" + size + " byte, " + ( name == null ? "[no name]" : name) + ")";
+        return "SERIALIZABLE " + wrapped + (used ? " (used)" :  "") + " (" + size + " byte, " +
+            ( name == null ? "[no name]" : name) +
+            ( contentType == null ? "[no contenttype]" : contentType)
+            + ")";
+    }
+
+    public static boolean byteArraysEquals(byte[] array1, byte[] array2) {
+        if (array1.length != array2.length) {
+            return false;
+        }
+        for (int i = 0;  i < array1.length; i++) {
+            if (array1[i] != array2[i]) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof SerializableInputStream) {
+            SerializableInputStream s = (SerializableInputStream) o;
+            try {
+                return
+                    (getSize() == s.getSize()) &&
+                    (getName() == null ? s.getName() == null : getName().equals(s.getName())) &&
+                    (getContentType() == null ? s.getContentType() == null : getContentType().equals(s.getContentType())) &&
+                    byteArraysEquals(get(), s.get());
+
+            } catch (IOException ioe) {
+                log.error(ioe);
+                return false;
+            }
+        } else {
+            return false;
+        }
+
     }
 }
