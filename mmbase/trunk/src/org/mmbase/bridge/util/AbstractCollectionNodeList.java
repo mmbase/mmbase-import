@@ -75,7 +75,7 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
 
     @Override
     public E remove(int index) {
-        return super.remove(index);
+        return (E) wrappedCollection.remove(index);
     }
 
     public Collection<Node> getCollection() {
