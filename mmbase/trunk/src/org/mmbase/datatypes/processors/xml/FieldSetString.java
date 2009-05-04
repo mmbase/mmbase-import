@@ -35,7 +35,8 @@ public class FieldSetString implements  Processor {
     public Object process(Node node, Field field, Object value) {
         if (value instanceof org.w3c.dom.Document) return value;
         log.debug("Getting " + field + " from " + node + " as a String");
-        return Casting.toXML(PREF + Casting.toString(value) + POST);
+        return Casting.toXML(Casting.toString(value));
+//        return Casting.toXML(PREF + Casting.toString(value) + POST);
     }
 
 }

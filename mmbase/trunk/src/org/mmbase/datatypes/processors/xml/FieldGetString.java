@@ -18,7 +18,6 @@ import org.mmbase.util.logging.*;
 
 
 /**
-
  * @see FieldSetString
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -31,7 +30,7 @@ public class FieldGetString implements  Processor {
 
     public Object process(Node node, Field field, Object value) {
 
-        Object realValue =  node.getObjectValue(field.getName());
+        Object realValue =  node.getValueWithoutProcess(field.getName());
         if (realValue == null || value == null) return "";
 
 
@@ -47,7 +46,12 @@ public class FieldGetString implements  Processor {
         } else {
             // requested something else, String, probably
             try {
-                switch(Modes.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
+                int mode = Modes.XML;
+                Object modeProperty = node.getCloud().getProperty(Cloud.PROP_XMLMODE);
+                if (modeProperty != null) {
+                  mode = Modes.getMode("" + node.getCloud().getProperty(Cloud.PROP_XMLMODE));
+                }
+                switch(mode) {
                 case Modes.WIKI:
                 case Modes.KUPU:
                 case Modes.FLAT: {
