@@ -469,7 +469,7 @@ abstract public class Queries {
 
                 }
             }
-            if (operator != OPERATOR_IN) { // should the elements of the collection then not be cast?
+            if (operator != OPERATOR_IN && datePart == -1) { // should the elements of the collection then not be cast?
                 value = field.getDataType().castForSearch(value, null, field);
             }
 
