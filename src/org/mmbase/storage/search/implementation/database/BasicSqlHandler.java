@@ -821,6 +821,9 @@ public class BasicSqlHandler implements SqlHandler {
                 if (fieldConstraint instanceof FieldValueDateConstraint) {
                     int part = ((FieldValueDateConstraint)fieldConstraint).getPart();
                     appendDateField(sb, step, fieldName, multipleSteps, part);
+                    if (part > -1) {
+                        fieldType = Field.TYPE_INTEGER;
+                    }
                 } else if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive and database needs it
                     appendLowerField(sb, step, fieldName, multipleSteps);
