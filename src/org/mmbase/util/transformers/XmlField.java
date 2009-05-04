@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 
-import java.util.regex.*;
 
 import org.mmbase.util.StringObject;
 import org.mmbase.util.ResourceLoader;

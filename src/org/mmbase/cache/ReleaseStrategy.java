@@ -158,14 +158,17 @@ public abstract class ReleaseStrategy {
         totalEvaluationNanoTime = 0;
     }
 
+    @Override
     public boolean equals(Object ob){
         return ob instanceof ReleaseStrategy && this.getName().equals(((ReleaseStrategy)ob).getName());
     }
 
+    @Override
     public int hashCode(){
         return getName().hashCode();
     }
 
+    @Override
     public String toString() {
         return getName();
     }

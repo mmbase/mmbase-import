@@ -40,8 +40,8 @@ public class JspProcessor extends AbstractProcessor {
         return path.charAt(0) == '/' ? path : JspRenderer.JSP_ROOT + getBlock().getComponent().getName() + '/' + path;
     }
 
-    public Parameter[] getParameters() {
-        return new Parameter[] {Parameter.RESPONSE, Parameter.REQUEST};
+    public Parameter<?>[] getParameters() {
+        return new Parameter<?>[] {Parameter.RESPONSE, Parameter.REQUEST};
     }
 
 
@@ -67,10 +67,12 @@ public class JspProcessor extends AbstractProcessor {
         }
     }
 
+    @Override
     public String toString() {
         return getPath() + '?' + Arrays.asList(getParameters());
     }
 
+    @Override
     public java.net.URI getUri() {
         try {
             return org.mmbase.util.ResourceLoader.getWebRoot().getResource(getPath()).toURI();

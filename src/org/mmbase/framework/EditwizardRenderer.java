@@ -11,7 +11,6 @@ package org.mmbase.framework;
 
 import java.util.*;
 import javax.servlet.http.*;
-import java.io.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -55,8 +54,9 @@ public class EditwizardRenderer extends IFrameRenderer {
         wizard = w;
     }
 
-    public Parameter[] getParameters() {
-        return new Parameter[] {new Parameter.Wrapper(super.getParameters()), Parameter.LOCALE};
+    @Override
+    public Parameter<?>[] getParameters() {
+        return new Parameter<?>[] {new Parameter.Wrapper(super.getParameters()), Parameter.LOCALE};
     }
 
     /**
@@ -80,6 +80,7 @@ public class EditwizardRenderer extends IFrameRenderer {
 
         return org.mmbase.framework.basic.BasicUrlConverter.getUrl(url, props, request, true);
     }
+    @Override
     public String toString() {
         return "EW " + (list != null ? ("list.jsp?wizard=" + list) : ("wizard.jsp?wizard=" + wizard)) + "&" + properties;
     }

@@ -38,7 +38,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * is set to null, and not used any more (also used in ResourceLoader).
      *
      */
-    static  Set<ResourceWatcher> resourceWatchers = Collections.synchronizedSet(new HashSet<ResourceWatcher>());
+    static Set<ResourceWatcher> resourceWatchers = Collections.synchronizedSet(new HashSet<ResourceWatcher>());
 
     /**
      * Considers all resource-watchers. Perhaps onChange must be called, because there is a node for this resource available now.

@@ -8,10 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.framework.basic;
-import java.util.*;
-
-import org.mmbase.framework.*;
-import org.mmbase.util.functions.*;
 
 /**
 

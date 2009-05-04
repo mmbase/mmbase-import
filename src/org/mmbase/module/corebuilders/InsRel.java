@@ -75,7 +75,9 @@ public class InsRel extends MMObjectBuilder {
      */
 
     private final Cache<Integer, Vector<MMObjectNode>> relatedCache = new Cache<Integer, Vector<MMObjectNode>>(25) {
+        @Override
         public String getName()        { return "RelatedCache_" + InsRel.this.getTableName(); }
+        @Override
         public String getDescription() { return "Cache for Related Nodes of builder " + InsRel.this.getTableName(); }
         };
 
@@ -674,6 +676,7 @@ public class InsRel extends MMObjectBuilder {
         return results;
     }
 
+    @Override
     public String getGUIIndicator(MMObjectNode node) {
         return node.getStringValue(FIELD_SOURCE) + "->" + node.getStringValue(FIELD_DESTINATION);
     }
@@ -688,6 +691,7 @@ public class InsRel extends MMObjectBuilder {
     * @param node Node containing the field data.
     * @return A <code>String</code> describing the requested field's content
     **/
+    @Override
     public String getGUIIndicator(String field, MMObjectNode node) {
         try {
             if (field.equals(FIELD_DIRECTIONALITY)) {
@@ -775,6 +779,7 @@ public class InsRel extends MMObjectBuilder {
     * Uses the table-mapping system, and should be replaced.
     * @param node The node whose defaults to set.
     */
+    @Override
     public void setDefaults(MMObjectNode node) {
         super.setDefaults(node);
         if (tableName.equals(INSREL_BUILDER)) return;

@@ -13,9 +13,11 @@ package org.mmbase.bridge.implementation;
 import java.util.List;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.BridgeCollections;
 import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.logging.*;
 
 /**
@@ -188,16 +190,22 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     }
 
     public RelationList getRelations(Node node) {
-        // XXX: no caching is done here?
-        InsRel insRel = (InsRel) builder;
-        List<MMObjectNode> result = insRel.getRelationsVector(node.getNumber());
-        return new BasicRelationList(result, this);
+        try {
+            // XXX: no caching is done here?
+            InsRel insRel = (InsRel) builder;
+            List<MMObjectNode> result = insRel.getRelationNodes(node.getNumber());
+            return new BasicRelationList(result, this);
+        } catch (SearchQueryException ex) {
+            log.error(ex);
+            return BridgeCollections.EMPTY_RELATIONLIST;
+        }
     }
 
     public boolean mayCreateRelation(Node sourceNode, Node destinationNode) {
         return cloud.check(Operation.CREATE, builder.getNumber(),
                            sourceNode.getNumber(), destinationNode.getNumber());
     }
+    @Override
     public String toString() {
         return "RelationManager " +
             (typeRelNode != null ? getSourceManager().getName() : "???") +

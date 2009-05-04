@@ -132,7 +132,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
     /**
      * @since MMBase-1.8.6
      */
-    public Class getImplementation() {
+    public Class<?> getImplementation() {
         return implementation.getClass();
     }
 
@@ -276,6 +276,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
         // another option would be to override also the 'contains' methods (which you problable should not use any way)
     }
 
+    @Override
     public String toString() {
         return "Cache " + getName() + ", Ratio: " + getRatio() + " " + implementation;
     }
@@ -354,6 +355,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
     /**
      * @see java.util.Map#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
         // odd, but this is accordinding to javadoc of Map.
         if (o == this)
@@ -371,6 +373,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
     /**
      * @see java.util.Map#hashCode()
      */
+    @Override
     public int hashCode() {
         int hash = getName().hashCode();
         hash = HashCodeUtil.hashCode(hash, implementation.hashCode());

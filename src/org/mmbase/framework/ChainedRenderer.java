@@ -52,10 +52,12 @@ public class ChainedRenderer extends AbstractRenderer {
         }
     }
 
+    @Override
     public String toString() {
         return chain.toString();
     }
 
+    @Override
     public java.net.URI getUri() {
         if (chain.size() > 0) {
             return chain.get(0).getUri();

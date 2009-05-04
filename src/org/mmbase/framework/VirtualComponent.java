@@ -38,6 +38,7 @@ public class VirtualComponent {
         return version;
     }
 
+    @Override
     public String toString() {
         return getName() + " v." + getVersion();
     }

@@ -83,6 +83,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * Create a data type object of unspecified class type
      * @param name the name of the data types
      */
+    @SuppressWarnings("unchecked")
     public BasicDataType(String name) {
         this(name, (Class<C>) Object.class);
     }
@@ -127,6 +128,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         //out.writeObject(restrictions);
     }
     // implementation of serializable
+    @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         key                    = in.readUTF();
         description            = (LocalizedString) in.readObject();
@@ -448,10 +450,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         }
     }
 
-    protected  Element addRestriction(Element parent,  String name, String path, Restriction restriction) {
+    protected  Element addRestriction(Element parent,  String name, String path, Restriction<?> restriction) {
         return addRestriction(parent, name, name, path, restriction);
     }
-    protected  Element addRestriction(Element parent, String pattern, String name, String path, Restriction restriction) {
+    protected  Element addRestriction(Element parent, String pattern, String name, String path, Restriction<?> restriction) {
         Element el = addErrorDescription(getElement(parent, pattern, name,   path), restriction);
         xmlValue(el, restriction.getValue());
         el.setAttribute("enforce", getEnforceString(restriction.getEnforceStrength()));
@@ -459,7 +461,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
 
 
-    protected Element addErrorDescription(Element el, Restriction r)  {
+    protected Element addErrorDescription(Element el, Restriction<?> r)  {
         r.getErrorDescription().toXml("description", DataType.XMLNS, el, "");
         return el;
     }
@@ -626,6 +628,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         return buf;
 
     }
+    @Override
     public final String toString() {
         StringBuilder buf = toStringBuilder();
         if (isFinished()) {
@@ -651,6 +654,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * #cloneRestrictions(BasicDataType)}. A clone is not finished. See {@link #isFinished()}.
      */
     @Override public BasicDataType<C> clone(String name) {
+        @SuppressWarnings("unchecked")
         BasicDataType<C> clone = (BasicDataType<C>) super.clone(name);
         // reset owner if it was set, so this datatype can be changed
         clone.rewrite(clone.owner);
@@ -671,6 +675,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         return xml;
     }
 
+    @SuppressWarnings("fallthrough")
     public void setXml(Element element) {
         xml = DocumentReader.toDocument(element).getDocumentElement();
         if (origin != null) {
@@ -782,14 +787,16 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * required properties are only 'utilities'.
      * @return true if o is a DataType of which key and type equal to this' key and type.
      */
+    @Override
     public boolean equals(Object o) {
-        if (o instanceof DataType) {
+        if (o instanceof DataType<?>) {
             DataType<?> a = (DataType<?>) o;
             return getName().equals(a.getName()) && getTypeAsClass().equals(a.getTypeAsClass());
         }
         return false;
     }
 
+    @Override
     public int hashCode() {
         return getName().hashCode() * 13 + getTypeAsClass().hashCode();
     }
@@ -980,7 +987,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * Abstract inner class Restriction. Based on static StaticAbstractRestriction
      */
     protected abstract class AbstractRestriction<D extends Serializable>  extends StaticAbstractRestriction<D> {
-        protected AbstractRestriction(AbstractRestriction source) {
+        protected AbstractRestriction(AbstractRestriction<?> source) {
             super(BasicDataType.this, source);
         }
         protected AbstractRestriction(String name, D value) {
@@ -999,7 +1006,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     protected static abstract class StaticAbstractRestriction<D extends Serializable>  implements DataType.Restriction<D> {
         protected final String name;
-        protected final BasicDataType parent;
+        protected final BasicDataType<?> parent;
         protected LocalizedString errorDescription;
         protected D value;
         protected boolean fixed = false;
@@ -1011,14 +1018,14 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
          * surrounding DataType is clone of DataType in which the same restriction is marked with
          * {@link DataType#ENFORCE_ABSOLUTE}.
          */
-        protected StaticAbstractRestriction absoluteParent = null;
+        protected StaticAbstractRestriction<?> absoluteParent = null;
 
         /**
          * Instantaties new restriction for a clone of the parent DataType. If the source
          * restriction is 'absolute' it will remain to be enforced even if the clone gets a new
          * value.
          */
-        protected StaticAbstractRestriction(BasicDataType parent, StaticAbstractRestriction source) {
+        protected StaticAbstractRestriction(BasicDataType<?> parent, StaticAbstractRestriction<?> source) {
             this.name = source.getName();
             this.parent = parent;
             if (source.enforceStrength == DataType.ENFORCE_ABSOLUTE) {
@@ -1036,7 +1043,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
         }
 
-        protected StaticAbstractRestriction(BasicDataType parent, String name, D value) {
+        protected StaticAbstractRestriction(BasicDataType<?> parent, String name, D value) {
             this.name = name;
             this.parent = parent;
             this.value = value;
@@ -1113,6 +1120,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         /**
          * Whether {@link #validate} must enforce this condition
          */
+        @SuppressWarnings("fallthrough")
         protected final boolean enforce(Object v, Node node, Field field) {
             switch(enforceStrength) {
             case DataType.ENFORCE_ABSOLUTE:
@@ -1168,16 +1176,22 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
         protected abstract boolean simpleValid(Object v, Node node, Field field);
 
-        protected final void inherit(StaticAbstractRestriction<D> source, boolean cast) {
+        @SuppressWarnings("unchecked")
+        protected final void inherit(StaticAbstractRestriction<?> source, boolean cast) {
             // perhaps this value must be cloned?, but how?? Cloneable has no public methods....
-            D inheritedValue = source.getValue();
-            if (cast) inheritedValue = (D) parent.cast(inheritedValue, null, null);
-            setValue(inheritedValue);
+            Object inheritedValue = source.getValue();
+            D correctedValue;
+            if (cast) {
+                correctedValue = (D) parent.cast(inheritedValue, null, null);
+            } else {
+                correctedValue = (D) inheritedValue;
+            }
+            setValue(correctedValue);
             enforceStrength = source.getEnforceStrength();
-            errorDescription = (LocalizedString) source.getErrorDescription().clone();
+            errorDescription = source.getErrorDescription().clone();
         }
 
-        protected final void inherit(StaticAbstractRestriction source) {
+        protected final void inherit(StaticAbstractRestriction<?> source) {
             inherit(source, false);
         }
 
@@ -1189,6 +1203,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             enforceStrength = e;
         }
 
+        @Override
         public final String toString() {
             return toString(null, null);
         }
@@ -1403,6 +1418,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             return false;
         }
 
+        @Override
         protected String valueString(Node node, Field field) {
             Collection<Map.Entry<C, String>> col = getEnumeration(null, null, node, field);
             if(col.size() == 0) return "";
@@ -1494,6 +1510,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             throw new UnsupportedOperationException("Cannot remove entries from " + getClass());
         }
 
+        @Override
         public String toString() {
             return "restricted iterator(" + enumerationRestriction + ")";
         }

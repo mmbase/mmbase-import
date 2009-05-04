@@ -44,8 +44,8 @@ public class StringRenderer extends AbstractRenderer {
      * @todo should consider the string
      */
     @Override
-    public  Parameter[] getParameters() {
-        return new Parameter[] {Parameter.REQUEST};
+    public  Parameter<?>[] getParameters() {
+        return new Parameter<?>[] {Parameter.REQUEST};
     }
 
     public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
@@ -61,6 +61,7 @@ public class StringRenderer extends AbstractRenderer {
         }
     }
 
+    @Override
     public String toString() {
         return string;
     }

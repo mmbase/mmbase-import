@@ -105,6 +105,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         return true;
     }
 
+    @Override
     public void sendRedirect(String location) throws IOException  {
         redirected = location;
         getHttpServletResponse().sendRedirect(location);
@@ -117,14 +118,17 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     }
 
 
+    @Override
     public void setStatus(int s) {
         getHttpServletResponse().setStatus(s);
     }
 
+    @Override
     public void addCookie(Cookie c) {
         getHttpServletResponse().addCookie(c);
     }
 
+    @Override
     public void setHeader(String header, String value) {
         if (mayAddHeader(header)) {
             getHttpServletResponse().setHeader(header,value);
@@ -134,6 +138,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     /**
      * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
      */
+    @Override
     public void addDateHeader(String arg0, long arg1) {
         if (mayAddHeader(arg0)) {
             getHttpServletResponse().addDateHeader(arg0, arg1);
@@ -143,6 +148,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     /**
      * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
      */
+    @Override
     public void addHeader(String arg0, String arg1) {
         if (mayAddHeader(arg0)) {
             getHttpServletResponse().addHeader(arg0, arg1);
@@ -152,6 +158,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     /**
      * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
      */
+    @Override
     public void addIntHeader(String arg0, int arg1) {
         if (mayAddHeader(arg0)) {
             getHttpServletResponse().addIntHeader(arg0, arg1);
@@ -160,42 +167,49 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     /**
      * @see javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)
      */
+    @Override
     public boolean containsHeader(String arg0) {
         return getHttpServletResponse().containsHeader(arg0);
     }
     /**
      * @see javax.servlet.http.HttpServletResponse#encodeRedirectURL(java.lang.String)
      */
+    @Override
     public String encodeRedirectURL(String arg0) {
         return getHttpServletResponse().encodeRedirectURL(arg0);
     }
     /**
      * @see javax.servlet.http.HttpServletResponse#encodeURL(java.lang.String)
      */
+    @Override
     public String encodeURL(String arg0) {
         return getHttpServletResponse().encodeURL(arg0);
     }
     /**
      * @see javax.servlet.ServletResponse#getLocale()
      */
+    @Override
     public Locale getLocale() {
         return getHttpServletResponse().getLocale();
     }
     /**
      * @see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
      */
+    @Override
     public void sendError(int arg0, String arg1) throws IOException {
         getHttpServletResponse().sendError(arg0, arg1);
     }
     /**
      * @see javax.servlet.http.HttpServletResponse#sendError(int)
      */
+    @Override
     public void sendError(int arg0) throws IOException {
         getHttpServletResponse().sendError(arg0);
     }
     /**
      * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
      */
+    @Override
     public void setDateHeader(String arg0, long arg1) {
         if (mayAddHeader(arg0)) {
             getHttpServletResponse().setDateHeader(arg0, arg1);
@@ -204,6 +218,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     /**
      * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
      */
+    @Override
     public void setIntHeader(String arg0, int arg1) {
         if (mayAddHeader(arg0)) {
             getHttpServletResponse().setIntHeader(arg0, arg1);
@@ -212,6 +227,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     /**
      * @see javax.servlet.ServletResponse#setLocale(java.util.Locale)
      */
+    @Override
     public void setLocale(Locale arg0) {
         getHttpServletResponse().setLocale(arg0);
     }
@@ -219,6 +235,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     /**
      * Return the OutputStream. This is a 'MyServletOutputStream'.
      */
+    @Override
     public ServletOutputStream getOutputStream() throws IOException {
         if (outputStream != null) return outputStream;
 
@@ -237,6 +254,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     /**
      * Return the PrintWriter
      */
+    @Override
     public PrintWriter getWriter() throws IOException {
         if (writer != null) return writer;
 
@@ -258,6 +276,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * encoding used, for example, text/html; charset=ISO-8859-4.  If
      * obtaining a PrintWriter, this method should be called first.
      */
+    @Override
     public void setContentType(String ct) {
         if (ct == null) {
             contentType = DEFAULT_CONTENTTYPE;
@@ -280,6 +299,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * See <a href="http://www.ietf.org/rfc/rfc2047.txt">RFC 2047</a> for more information about character encoding and MIME.
      * returns the encoding
      */
+    @Override
     public String getCharacterEncoding() {
         log.debug(characterEncoding);
         /*
@@ -300,6 +320,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     /**
      * Return all data that has been written to the PrintWriter.
      */
+    @Override
     public String toString() {
         if (string != null) {
             return string.toString();
@@ -412,10 +433,12 @@ class MyServletOutputStream extends ServletOutputStream {
         stream.write(b);
     }
 
+    @Override
     public void write(byte[] b) throws IOException {
         stream.write(b);
     }
 
+    @Override
     public void write(byte[] b, int off, int len) throws IOException {
         stream.write(b, off, len);
     }

@@ -10,9 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.datatypes.handlers;
 
-import java.util.*;
-
-
 import org.mmbase.util.Casting;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;

@@ -10,16 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.framework;
 
 
-import java.io.*;
 import java.net.*;
-import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.*;
 
 
 import org.mmbase.util.functions.*;
-import org.mmbase.util.*;
-import org.mmbase.module.core.MMBase;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -50,8 +44,9 @@ public class DocumentationRenderer extends CachedRenderer {
     public void setRepository(String r) {
         repository = r;
     }
-    public Parameter[] getParameters() {
-        return new Parameter[] {new Parameter<String>("docbook", String.class)};
+    @Override
+    public Parameter<?>[] getParameters() {
+        return new Parameter<?>[] {new Parameter<String>("docbook", String.class)};
     }
 
 

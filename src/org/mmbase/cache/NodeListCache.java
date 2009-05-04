@@ -35,9 +35,11 @@ public class NodeListCache extends QueryResultCache {
         nodeListCache.putCache();
     }
 
+    @Override
     public String getName() {
         return "NodeListCache";
     }
+    @Override
     public String getDescription() {
         return "List Results";
     }

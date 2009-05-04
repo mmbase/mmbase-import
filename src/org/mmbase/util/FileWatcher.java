@@ -81,7 +81,7 @@ public abstract class FileWatcher {
     static public long THREAD_DELAY = 10000;
 
 
-    static ScheduledFuture future;
+    static ScheduledFuture<?> future;
     static FileWatcherRunner fileWatchers = new FileWatcherRunner();
     static {
 
@@ -245,6 +245,7 @@ public abstract class FileWatcher {
     /**
      * Shows the 'contents' of the filewatcher. It shows a list of files/last modified timestamps.
      */
+    @Override
     public String toString() {
         return files.toString();
     }
@@ -311,6 +312,7 @@ public abstract class FileWatcher {
         }
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o == this) return true;
         if (o == null) return false;
@@ -325,6 +327,7 @@ public abstract class FileWatcher {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return files == null ? 0 : files.hashCode();
     }
@@ -426,6 +429,7 @@ public abstract class FileWatcher {
             // do something..
             i++;
         }
+        @Override
         protected void finalize() {
             System.out.println(this.toString() + ":" + i);
         }
@@ -526,10 +530,12 @@ public abstract class FileWatcher {
             return file;
         }
 
+        @Override
         public String toString() {
             return file.toString() + ":" + lastModified;
         }
 
+        @Override
         public boolean equals(Object o) {
             if (o instanceof FileEntry) {
                 FileEntry fe = (FileEntry)o;
@@ -540,6 +546,7 @@ public abstract class FileWatcher {
             return false;
         }
 
+        @Override
         public int hashCode() {
             return file.hashCode();
         }
@@ -557,6 +564,7 @@ public abstract class FileWatcher {
         public  Iterator<File> iterator() {
             return new FileIterator();
         }
+        @Override
         public boolean add(File o) {
             int s = size();
             FileWatcher.this.add(o);

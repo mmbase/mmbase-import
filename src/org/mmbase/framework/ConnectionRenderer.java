@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 
-import java.util.*;
 import java.net.*;
 import java.io.*;
 
@@ -89,8 +88,8 @@ public class ConnectionRenderer extends AbstractRenderer {
             if (decorate) {
                 decorateIntro(hints, w, null);
             }
-            URL url = getUri(blockParameters, hints).toURL();
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            URL u = getUri(blockParameters, hints).toURL();
+            HttpURLConnection connection = (HttpURLConnection) u.openConnection();
             connection.setConnectTimeout(timeOut);
             connection.setReadTimeout(timeOut);
             int responseCode = connection.getResponseCode();
@@ -108,7 +107,7 @@ public class ConnectionRenderer extends AbstractRenderer {
                     }
                 } else {
                     URL x = ResourceLoader.getConfigurationRoot().getResource(xsl);
-                    Utils.xslTransform(blockParameters, url, inputStream, w, x);
+                    Utils.xslTransform(blockParameters, u, inputStream, w, x);
                 }
 
 

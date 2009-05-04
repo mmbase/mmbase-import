@@ -38,4 +38,7 @@ public class Escape {
         }
         return sb.toString();
     }
+
+    private Escape() {
+    }
 }

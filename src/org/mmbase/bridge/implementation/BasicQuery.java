@@ -192,10 +192,11 @@ public class BasicQuery implements Query  {
 
     }
 
-    @Override public BasicQuery clone() { // also works for descendants (NodeQuery)
+    @Override@SuppressWarnings("unchecked")
+    public BasicQuery clone() { // also works for descendants (NodeQuery)
         try {
             BasicQuery clone = (BasicQuery) super.clone();
-            clone.query = (BasicSearchQuery) query.clone();
+            clone.query = query.clone();
             clone.aliasSequences = (HashMap<String, Integer>) aliasSequences.clone();
             removeSecurityConstraintFromClone(clone.query);
             clone.insecureConstraint = null;

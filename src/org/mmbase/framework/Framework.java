@@ -12,7 +12,6 @@ package org.mmbase.framework;
 import java.io.*;
 import java.util.*;
 import org.mmbase.bridge.Node;
-import org.mmbase.util.*;
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.xml.Instantiator;
 import org.mmbase.util.functions.*;
@@ -259,7 +258,7 @@ public abstract class Framework {
 
 
 
-    public abstract Parameter[] getParameterDefinition();
+    public abstract Parameter<?>[] getParameterDefinition();
 
     /**
      * Return a (possibly modified) URL for a given path.

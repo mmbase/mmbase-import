@@ -88,4 +88,7 @@ public class ContextProvider {
         }
     }
 
+    private ContextProvider() {
+    }
+
 }

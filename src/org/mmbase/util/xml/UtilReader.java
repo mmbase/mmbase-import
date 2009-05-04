@@ -155,6 +155,7 @@ public class UtilReader {
             );
     }
 
+    @Override
     public void finalize() {
         if (watcher != null) watcher.exit();
     }
@@ -217,7 +218,7 @@ public class UtilReader {
                 DocumentReader reader = new DocumentReader(is, UtilReader.class);
                 Element e = reader.getElementByPath("util.properties");
                 if (e != null) {
-                    for (Element p : reader.getChildElements(e, "property")) {
+                    for (Element p : DocumentReader.getChildElements(e, "property")) {
                         String name = reader.getElementAttributeValue(p, "name");
                         String type = reader.getElementAttributeValue(p, "type");
                         if (type.equals("mergingmap") ||
@@ -231,15 +232,15 @@ public class UtilReader {
                                 entryList = new ArrayList<Map.Entry<String,String>>();
                             }
 
-                            for (Element entry : reader.getChildElements(p, "entry")) {
+                            for (Element entry : DocumentReader.getChildElements(p, "entry")) {
                                 String key = null;
                                 String value = null;
 
-                                for (Element keyorvalue : reader.getChildElements(entry, "*")) {
+                                for (Element keyorvalue : DocumentReader.getChildElements(entry, "*")) {
                                     if (keyorvalue.getTagName().equals("key")) {
-                                        key = reader.getElementValue(keyorvalue);
+                                        key = DocumentReader.getElementValue(keyorvalue);
                                     } else {
-                                        value = reader.getNodeTextValue(keyorvalue, false);
+                                        value = DocumentReader.getNodeTextValue(keyorvalue, false);
                                     }
                                 }
                                 if (key != null) {
@@ -252,7 +253,7 @@ public class UtilReader {
                                 maps.put(name, entryList);
                             }
                         } else {
-                            String value = reader.getElementValue(p);
+                            String value = DocumentReader.getElementValue(p);
                             Map.Entry<String, String> entry = getEntry(reader, name, value);
                             if (properties.containsKey(entry.getKey())) {
                                 log.debug("Property '" + entry.getKey() + "' ('" + entry.getValue() + "') of " + url + " is shadowed");

@@ -29,6 +29,7 @@ abstract public class AbstractProcessor implements Processor {
             public Block getBlock() { return b; }
             public Parameter[] getParameters() { return Parameter.emptyArray(); }
             public void process(Parameters blockParameters) { }
+            @Override
             public String toString() { return "EMPTY Processor"; }
             public URI getUri() { try {return new URI("mmbase:/processor/empty");} catch (Exception e) { return null;} }
         };

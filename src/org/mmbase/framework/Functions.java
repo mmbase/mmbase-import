@@ -13,7 +13,6 @@ import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.StringSplitter;
 
 import java.util.*;
-import javax.servlet.http.HttpServletRequest;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 

@@ -123,7 +123,7 @@ public  class NodeFunction {
         try {
             Node node = cloud.getNode(number);
             Generator gen = new Generator(destination.item(0).getOwnerDocument());
-            java.util.List args = org.mmbase.util.StringSplitter.splitFunctions(arguments);
+            java.util.List<String> args = org.mmbase.util.StringSplitter.splitFunctions(arguments);
             if (log.isDebugEnabled()) {
                 log.debug("Executing " + function+ " " + args + " on " + node.getNumber());
             }
@@ -163,10 +163,10 @@ public  class NodeFunction {
         try {
             node = cloud.getNode(number);
 
-            Function func = null;
+            Function<?> func = null;
             Parameters params = null;
             if (function.indexOf("(") > -1) {
-                List args = new ArrayList();
+                List<String> args = new ArrayList<String>();
                 String functionName = org.mmbase.util.functions.NodeFunction.getFunctionNameAndFillArgs(function, args);
                 func = node.getFunction(functionName);
                 params = func.createParameters();
@@ -208,6 +208,9 @@ public  class NodeFunction {
      */
     public static String guiName(Cloud cloud,  String node) {
         return cloud.getNode(node).getNodeManager().getGUIName();
+    }
+
+    private NodeFunction() {
     }
 
 }
