@@ -488,13 +488,14 @@ public class FilledNodeTest extends NodeTest {
     public void testGetListValue() {
         for (String element : fieldTypes) {
             List value = node.getListValue(element + "field");
-            assertTrue(element + " field queried as list returned null", value!=null);
+            assertTrue(element + " field queried as list returned null", value != null);
             if (element.equals("list")) {
                 assertTrue(element + " field queried as list did not return [TRUE,TRUE], but " + value,
                     value.size()==2 && value.get(0).equals(Boolean.TRUE) && value.get(1).equals(Boolean.TRUE));
            } else {
                 assertTrue(element + " field queried as list did not return [<node>], but " + value,
-                            value.size() == 1);
+                           value.size() == 1);
+
             }
        }
     }
