@@ -68,9 +68,14 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
     }
 
     @Override
-    public boolean add(E o) {
+    public void add(int index, E o) {
         if (o == null) throw new IllegalArgumentException();
-        return super.add(o);
+        wrappedCollection.add(index, o);
+    }
+
+    @Override
+    public E remove(int index) {
+        return super.remove(index);
     }
 
     public Collection<Node> getCollection() {
