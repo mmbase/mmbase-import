@@ -18,10 +18,6 @@
     <level class="&mmlevel;" value ="fatal" />
   </logger>
 
-  <logger name="org.mmbase.util.SerializableInputStream">
-    <level class="&mmlevel;" value ="service" />
-  </logger>
-
   <root>
     <level class="&mmlevel;" value ="warn" />
     <appender-ref ref="logfile" />
