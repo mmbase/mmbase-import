@@ -16,7 +16,7 @@ import org.mmbase.bridge.*;
  * Interface for doing field processing.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Processor.java,v 1.1 2005-10-25 12:30:26 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 

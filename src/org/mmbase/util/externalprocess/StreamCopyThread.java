@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * to an output stream which is immediately flushed afterwards.
  *
  * @author Nico Klasens (Finalist IT Group)
- * @version $Id: StreamCopyThread.java,v 1.4 2005-01-30 16:46:39 nico Exp $
+ * @version $Id$
  * @since MMBase-1.6
  */
 class StreamCopyThread extends Thread {

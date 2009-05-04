@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74.2.13 2008-03-12 15:19:28 michiel Exp $
+ * @version $Id$
  */
 public class BuilderReader extends DocumentReader {
 

@@ -22,7 +22,7 @@ import java.io.*;
  *
  * @since MMBase 1.7
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: IECompatibleJpegInputStream.java,v 1.8 2006-06-27 14:36:38 johannes Exp $
+ * @version $Id$
  */
 public class IECompatibleJpegInputStream extends FilterInputStream implements Runnable {
 

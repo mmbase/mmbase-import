@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use Calendar and java.util.DateFormat
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.26 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id$
  */
 public class DateSupport {
 

@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompositeConstraint.java,v 1.7 2005-05-02 13:02:09 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class BasicCompositeConstraint extends BasicConstraint implements CompositeConstraint {

@@ -86,7 +86,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens (Finalist IT Group)
  *
  * @since  MMBase-1.6
- * @version $Id: CharacterEncodingFilter.java,v 1.3 2003-09-01 13:29:45 pierre Exp $
+ * @version $Id$
  */
 public class CharacterEncodingFilter implements Filter {
 

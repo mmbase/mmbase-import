@@ -17,7 +17,7 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.39.2.17 2008-07-24 16:37:16 michiel Exp $
+ * @version $Id$
  */
 public class Version {
 

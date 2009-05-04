@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * (configuration files, classes, resourcebundles).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Resources.java,v 1.4 2006-02-20 17:39:25 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 public class Resources extends Attachments {

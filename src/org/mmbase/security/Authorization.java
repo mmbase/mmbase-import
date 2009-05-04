@@ -21,7 +21,7 @@ import org.mmbase.storage.search.Constraint;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.23.2.1 2006-09-07 12:46:22 pierre Exp $
+ * @version $Id$
  */
 public abstract class Authorization extends Configurable {
 

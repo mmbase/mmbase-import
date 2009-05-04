@@ -13,7 +13,7 @@ package org.mmbase.storage;
  * This exception gets thrown if a query resulted nothing, in contrary to the expectation (for example in 'getNode').
  * @since  MMBase-1.8
  * @author Michiel Meeuwissen
- * @version $Id: StorageNotFoundException.java,v 1.1 2005-10-04 18:43:30 michiel Exp $
+ * @version $Id$
  */
 public class StorageNotFoundException extends StorageException {
 

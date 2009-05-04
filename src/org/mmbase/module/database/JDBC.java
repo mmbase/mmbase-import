@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.47.2.5 2008-02-20 10:32:46 michiel Exp $
+ * @version $Id$
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 

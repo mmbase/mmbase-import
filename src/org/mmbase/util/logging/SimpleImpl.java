@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
  * configure string).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: SimpleImpl.java,v 1.12 2005-10-02 16:42:15 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.4
  */
 

@@ -14,7 +14,7 @@ package org.mmbase.datatypes;
  * empty, but of course we forsee the possibility for  restrictions on doc-type.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlDataType.java,v 1.5 2006-04-04 21:35:28 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class XmlDataType extends AbstractLengthDataType {

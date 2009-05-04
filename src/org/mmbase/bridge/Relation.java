@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Relation.java,v 1.4 2004-06-08 08:45:17 michiel Exp $
+ * @version $Id$
  */
 public interface Relation extends Node {
 

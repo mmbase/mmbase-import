@@ -12,7 +12,7 @@ package org.mmbase.util.externalprocess;
 /** This excpetion is thrown when an external process failed.
  * 
  * @author Nico Klasens (Finalist IT Group)
- * @version $Id: ProcessException.java,v 1.3 2003-05-12 13:10:47 kees Exp $
+ * @version $Id$
  * @since MMBase-1.6
  */
 public class ProcessException extends Exception {

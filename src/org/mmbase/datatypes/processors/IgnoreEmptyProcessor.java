@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * previous value will remain intact).
  *
  * @author Michiel Meeuwissen
- * @version $Id: IgnoreEmptyProcessor.java,v 1.1.2.1 2007-03-20 16:14:23 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8.1
  */
 

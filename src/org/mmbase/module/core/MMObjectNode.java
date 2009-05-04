@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.193.2.15 2009-04-07 08:23:12 nklasens Exp $
+ * @version $Id$
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {

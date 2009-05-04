@@ -22,7 +22,7 @@ import org.mmbase.datatypes.LengthDataType;
  * (itself). This also associates a Cloud object with the DataType.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.1.2.5 2008-12-08 09:14:02 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8.7
  */
 

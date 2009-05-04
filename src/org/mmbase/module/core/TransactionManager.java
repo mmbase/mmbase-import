@@ -19,7 +19,7 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.34.2.3 2008-11-18 23:23:15 michiel Exp $
+ * @version $Id$
  */
 public class TransactionManager implements TransactionManagerInterface {
 

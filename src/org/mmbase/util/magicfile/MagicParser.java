@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * list of Detectors (and to a magic.xml) Perhaps it's easier to
  * rewrite this stuff to perl or something like that.
  *
- * @version $Id: MagicParser.java,v 1.10 2005-10-07 18:41:29 michiel Exp $
+ * @version $Id$
  * @todo NOT TESTED YET
  */
 

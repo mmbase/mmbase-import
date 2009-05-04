@@ -19,7 +19,7 @@ import java.util.*;
  * access, such as obtaining relations or determining age of a node.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualNode.java,v 1.12.2.1 2006-11-28 13:48:45 johannes Exp $
+ * @version $Id$
  */
 public class VirtualNode extends MMObjectNode {
 

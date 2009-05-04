@@ -17,7 +17,7 @@ import java.util.*;
  * @see    FunctionSets
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: FunctionSet.java,v 1.8 2005-12-10 11:47:41 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class FunctionSet extends FunctionProvider {

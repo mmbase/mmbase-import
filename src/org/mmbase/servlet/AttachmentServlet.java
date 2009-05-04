@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * 'handle'.  Also the fields 'filename', 'mimetype' and 'title' can be taken into consideration by
  * this servlet and preferably the node has also those fields.
   *
- * @version $Id: AttachmentServlet.java,v 1.10 2006-06-13 07:29:54 andre Exp $
+ * @version $Id$
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see HandleServlet

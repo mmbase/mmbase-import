@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Trimmer.java,v 1.2 2005-01-30 16:46:37 nico Exp $
+ * @version $Id$
  */
 
 public class Trimmer extends ReaderTransformer implements CharTransformer {

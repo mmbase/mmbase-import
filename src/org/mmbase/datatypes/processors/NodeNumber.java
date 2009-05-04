@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * If value is a node, returns it's number (as a String)
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeNumber.java,v 1.1 2006-04-10 17:30:46 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

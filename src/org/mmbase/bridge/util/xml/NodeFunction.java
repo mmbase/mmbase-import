@@ -51,7 +51,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.16.2.1 2006-12-12 21:15:17 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.6
  */
 

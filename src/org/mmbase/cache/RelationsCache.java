@@ -14,7 +14,7 @@ package org.mmbase.cache;
  * Used in MMObjectNode.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelationsCache.java,v 1.3 2005-01-30 16:46:37 nico Exp $
+ * @version $Id$
  * @see   org.mmbase.module.core.MMObjectNode#getRelations
  * @see   org.mmbase.module.core.MMObjectNode#getRelationNodes
  * @since MMBase-1.7

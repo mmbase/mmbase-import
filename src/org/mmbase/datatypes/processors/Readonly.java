@@ -16,7 +16,7 @@ import org.mmbase.bridge.*;
  * If the field is set an exception is thrown (in other words, the field is read only).
  *
  * @author Nico Klasens
- * @version $Id: Readonly.java,v 1.2 2005-12-10 14:33:36 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class Readonly implements Processor {

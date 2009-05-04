@@ -18,7 +18,7 @@ import org.mmbase.module.core.MMObjectNode;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequest.java,v 1.3 2005-10-03 17:33:39 michiel Exp $
+ * @version $Id$
  */
 public class ImageConversionRequest {
 

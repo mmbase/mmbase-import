@@ -15,7 +15,7 @@ import java.util.*;
  * The comparator which sorts Comparable on the inverse natural order.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReverseComparator.java,v 1.1.2.1 2007-10-26 11:18:24 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.5
  */
 public class ReverseComparator implements Comparator {

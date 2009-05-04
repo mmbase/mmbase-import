@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.9.2.1 2006-10-09 14:44:50 pierre Exp $
+ * @version $Id$
  */
 public abstract class WrappedFunction implements Function {
 

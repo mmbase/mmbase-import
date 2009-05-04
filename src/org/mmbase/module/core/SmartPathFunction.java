@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * This class can be overriden to make an even smarter search possible.
  *
  * @since MMBase-1.8.5
- * @version $Id: SmartPathFunction.java,v 1.4.2.4 2007-06-22 14:59:02 michiel Exp $
+ * @version $Id$
  */
 public class SmartPathFunction {
     private static final Logger log = Logging.getLoggerInstance(SmartPathFunction.class);

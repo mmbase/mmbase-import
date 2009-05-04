@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.24.2.2 2007-12-07 14:41:17 ernst Exp $
+ * @version $Id$
  */
 public class BetterStrategy extends ReleaseStrategy {
 

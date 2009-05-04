@@ -20,7 +20,7 @@ import org.mmbase.module.core.*;
  *
  * @application Tools
  * @author Pierre van Rooden
- * @version $Id: NodeComparator.java,v 1.6 2004-10-12 11:17:44 pierre Exp $
+ * @version $Id$
  */
 public class NodeComparator implements Comparator {
 

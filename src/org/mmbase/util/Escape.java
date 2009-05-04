@@ -14,7 +14,7 @@ package org.mmbase.util;
  * included in a SQL statement.
  *
  * @deprecated Use org.mmbase.util.Encode
- * @version $Id: Escape.java,v 1.7 2004-09-29 14:29:23 pierre Exp $
+ * @version $Id$
  */
 public class Escape {
 

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ImageConversionRequestProcessor.java,v 1.5.2.1 2007-05-04 16:20:36 nklasens Exp $
+ * @version $Id$
  * @see    ImageConversionRequest
  */
 public class ImageConversionRequestProcessor implements Runnable {

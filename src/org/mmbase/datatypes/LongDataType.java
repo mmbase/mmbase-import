@@ -15,7 +15,7 @@ import org.mmbase.util.Casting;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LongDataType.java,v 1.9 2006-04-29 19:41:09 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class LongDataType extends NumberDataType {

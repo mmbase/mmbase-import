@@ -16,7 +16,7 @@ import org.mmbase.core.event.RelationEvent;
  * clusternodes)
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListCache.java,v 1.4.2.2 2007-07-19 15:17:40 michiel Exp $
+ * @version $Id$
  * @see   org.mmbase.module.core.MMObjectBuilder#getNodes
  * @since MMBase-1.7
  */

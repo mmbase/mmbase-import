@@ -15,7 +15,7 @@ package org.mmbase.util.transformers;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Perl.java,v 1.1 2003-05-12 21:09:52 michiel Exp $
+ * @version $Id$
  */
 
 public class Perl extends AbstractCommandStringTransformer implements CharTransformer {

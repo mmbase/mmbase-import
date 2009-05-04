@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: WeekdaysDataType.java,v 1.1.2.3 2008-09-08 08:43:03 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.6
  */
 public class WeekdaysDataType extends IntegerDataType {

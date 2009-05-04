@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: UriParser.java,v 1.3 2004-09-30 17:19:50 pierre Exp $
+ * @version $Id$
  */
 public class UriParser {
 

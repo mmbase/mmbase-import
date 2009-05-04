@@ -33,7 +33,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.23 2006-04-10 15:29:43 michiel Exp $
+ * @version $Id$
  */
 public class BuilderWriter extends DocumentWriter  {
 

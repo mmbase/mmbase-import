@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.72.2.3 2008-07-18 04:10:39 michiel Exp $
+ * @version $Id$
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase

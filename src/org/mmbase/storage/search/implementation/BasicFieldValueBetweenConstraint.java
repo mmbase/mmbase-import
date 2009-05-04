@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldValueBetweenConstraint.java,v 1.8 2005-04-25 14:56:57 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class BasicFieldValueBetweenConstraint extends BasicFieldConstraint

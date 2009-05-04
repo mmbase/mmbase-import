@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.35.2.5 2008-09-08 09:01:10 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {

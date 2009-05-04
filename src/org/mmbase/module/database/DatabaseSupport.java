@@ -18,7 +18,7 @@ import java.sql.*;
  * @duplicate make this a class instead of an interface, and let {@link DatabaseSupportInformix} extend
  *            from it instead of implementing the interface.
  * @author vpro
- * @version $Id: DatabaseSupport.java,v 1.5 2004-10-07 17:22:34 pierre Exp $
+ * @version $Id$
  */
 public interface DatabaseSupport {
 

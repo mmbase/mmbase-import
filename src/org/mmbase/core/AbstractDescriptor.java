@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: AbstractDescriptor.java,v 1.8.2.1 2006-10-12 11:35:59 pierre Exp $
+ * @version $Id$
  */
 
 abstract public class AbstractDescriptor implements Descriptor, Cloneable {

@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.36 2006-04-18 13:13:12 michiel Exp $
+ * @version $Id$
  */
 public interface Field extends Descriptor {
 

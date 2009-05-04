@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.42.2.2 2008-07-09 13:49:54 michiel Exp $
+ * @version $Id$
  */
 public class DayMarkers extends MMObjectBuilder {
 

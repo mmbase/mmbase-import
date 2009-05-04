@@ -21,7 +21,7 @@ import org.mmbase.storage.search.*;
  * XXX What's the difference between a Query and a QueryDefinition?
  *
  * @author Pierre van Rooden
- * @version $Id: QueryDefinition.java,v 1.7 2006-04-10 15:25:43 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  **/
 public class QueryDefinition {

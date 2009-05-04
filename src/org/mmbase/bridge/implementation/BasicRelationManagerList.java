@@ -18,7 +18,7 @@ import org.mmbase.module.core.*;
  * A list of relation managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManagerList.java,v 1.15 2005-10-12 00:37:05 michiel Exp $
+ * @version $Id$
  */
 public class BasicRelationManagerList extends BasicNodeManagerList implements RelationManagerList {
 

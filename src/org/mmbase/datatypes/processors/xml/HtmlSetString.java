@@ -24,7 +24,7 @@ import javax.xml.parsers.*;
  * but more  document element), a surrounding 'div' tag is implicetely added.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HtmlSetString.java,v 1.2.2.1 2009-03-27 15:21:12 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

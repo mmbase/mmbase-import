@@ -18,7 +18,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: AbstractSequentialBridgeList.java,v 1.1 2003-12-17 08:49:20 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.7
  */
 

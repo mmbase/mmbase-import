@@ -27,7 +27,7 @@ import org.mmbase.util.functions.*;
  * binary resource on another server using an url. 
  *
  * @author Pierre van Rooden
- * @version $Id: ReferredAttachments.java,v 1.1.2.2 2008-07-29 08:21:00 pierre Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 public class ReferredAttachments extends Attachments {

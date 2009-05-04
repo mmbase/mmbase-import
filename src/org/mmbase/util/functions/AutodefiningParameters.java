@@ -16,7 +16,7 @@ package org.mmbase.util.functions;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.9.2.1 2006-10-18 10:01:03 michiel Exp $
+ * @version $Id$
  * @see Parameter
  */
 

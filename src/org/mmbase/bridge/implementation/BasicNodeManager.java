@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.121.2.9 2008-07-03 15:55:50 michiel Exp $
+ * @version $Id$
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {

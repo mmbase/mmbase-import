@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.11 2006-05-16 18:07:20 michiel Exp $
+ * @version $Id$
  */
 
 public class Authenticate extends Authentication {

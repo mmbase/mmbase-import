@@ -17,7 +17,7 @@ import org.apache.commons.fileupload.FileItem;
  * The datatype associated with byte arrays ('blobs').
  *
  * @author Pierre van Rooden
- * @version $Id: BinaryDataType.java,v 1.10.2.2 2009-01-07 15:28:46 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class BinaryDataType extends AbstractLengthDataType {

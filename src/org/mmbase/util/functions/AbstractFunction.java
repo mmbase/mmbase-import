@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.11 2006-02-14 22:52:33 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters

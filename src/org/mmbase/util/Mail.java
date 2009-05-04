@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @application Mail
  * @author Rob Vermeulen
- * @version $Id: Mail.java,v 1.9 2005-09-02 12:28:46 pierre Exp $
+ * @version $Id$
  */
 public class Mail {
 

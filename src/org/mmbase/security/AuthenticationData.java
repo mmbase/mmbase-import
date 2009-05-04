@@ -15,7 +15,7 @@ import org.mmbase.util.functions.*;
  * This interface represents information about the authentication implemtentation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AuthenticationData.java,v 1.6 2005-10-12 19:07:31 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public interface  AuthenticationData {

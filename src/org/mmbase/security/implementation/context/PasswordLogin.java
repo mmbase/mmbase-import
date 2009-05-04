@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: PasswordLogin.java,v 1.8 2005-10-04 11:15:24 michiel Exp $
+ * @version $Id$
  */
 
 public class PasswordLogin extends ContextLoginModule {

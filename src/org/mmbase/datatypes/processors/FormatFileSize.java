@@ -15,7 +15,7 @@ import org.mmbase.bridge.*;
  * A processor that gets a number as a file-size, that is, rounded with kbytes and Mb's and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormatFileSize.java,v 1.1 2005-12-07 19:44:49 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

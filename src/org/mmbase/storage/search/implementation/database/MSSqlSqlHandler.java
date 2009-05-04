@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: MSSqlSqlHandler.java,v 1.1.2.1 2007-04-20 12:12:36 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class MSSqlSqlHandler extends BasicSqlHandler implements SqlHandler {

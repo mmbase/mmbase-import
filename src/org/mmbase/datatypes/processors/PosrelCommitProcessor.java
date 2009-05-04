@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * you left the value empty on commit.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PosrelCommitProcessor.java,v 1.1.2.2 2009-04-22 06:33:21 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8.6
  */
 

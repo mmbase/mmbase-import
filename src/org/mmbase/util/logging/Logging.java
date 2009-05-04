@@ -58,7 +58,7 @@ import org.mmbase.util.xml.DocumentReader;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.40.2.1 2007-06-21 12:34:22 michiel Exp $
+ * @version $Id$
  */
 
 

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  *
- * @version $Id: ViewDatabaseStorageManager.java,v 1.7 2005-12-09 14:25:32 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class ViewDatabaseStorageManager extends DatabaseStorageManager {

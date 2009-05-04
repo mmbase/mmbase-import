@@ -16,7 +16,7 @@ import org.mmbase.bridge.*;
  * to the current user id when the node is committed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModifier.java,v 1.4.2.3 2008-11-18 23:21:37 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  * @see   LastModified
  * @see   Creator

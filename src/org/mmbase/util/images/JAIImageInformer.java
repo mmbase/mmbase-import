@@ -19,7 +19,7 @@ import com.sun.media.jai.codec.ByteArraySeekableStream;
  * Informs about a image using JAI.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JAIImageInformer.java,v 1.1 2005-05-09 09:53:07 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class JAIImageInformer implements ImageInformer {

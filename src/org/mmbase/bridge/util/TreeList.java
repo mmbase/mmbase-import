@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.21.2.3 2008-02-28 12:23:27 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.7
  */
 

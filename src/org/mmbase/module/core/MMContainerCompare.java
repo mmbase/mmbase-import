@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * @see org.mmbase.util.CompareInterface
  *
  * @author Rico Jansen
- * @version $Id: MMContainerCompare.java,v 1.7 2005-05-14 14:04:45 nico Exp $
+ * @version $Id$
  * @todo   Should implement java.util.Comparator. Perhaps should be named MMObjectNodeComparator. Btw, this class is not used.
  * 
  */

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.31.2.1 2007-08-02 10:05:25 michiel Exp $
+ * @version $Id$
  */
 public class ModuleHandler implements Module, Comparable, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);

@@ -14,7 +14,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Schemes.java,v 1.21 2006-04-06 17:40:20 pierre Exp $
+ * @version $Id$
  */
 public final class Schemes {
 

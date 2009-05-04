@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * there load and info from the config module).
  *
  * @sql
- * @version $Id: PropertiesProbe.java,v 1.11 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id$
  * @author Daniel Ockeloen
  */
 public class PropertiesProbe implements Runnable {

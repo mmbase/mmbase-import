@@ -33,7 +33,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.52.2.1 2007-10-22 08:42:47 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {

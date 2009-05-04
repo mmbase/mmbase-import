@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * This is a flexible Properties version, it can handle saving of Properties with
  * the comments that will stay in your file.
  * @author Jan van Oosterom
- * @version $Id: ExtendedProperties.java,v 1.9 2005-11-30 15:58:04 pierre Exp $
+ * @version $Id$
  */
 public class ExtendedProperties extends Properties {
     // logger

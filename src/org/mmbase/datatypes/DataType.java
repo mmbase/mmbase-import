@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.54.2.3 2009-03-23 16:00:03 michiel Exp $
+ * @version $Id$
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {

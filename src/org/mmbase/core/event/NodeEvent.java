@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.27.2.6 2009-03-30 12:56:54 ernst Exp $
+ * @version $Id$
  */
 public class NodeEvent extends Event {
 

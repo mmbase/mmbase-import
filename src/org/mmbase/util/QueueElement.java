@@ -13,7 +13,7 @@ package org.mmbase.util;
  * Element in a {@link Queue}.
  *
  * @author vpro
- * @version $Id: QueueElement.java,v 1.5 2004-09-30 14:07:12 pierre Exp $
+ * @version $Id$
  */
 public class QueueElement {
 

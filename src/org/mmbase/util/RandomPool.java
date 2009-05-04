@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: RandomPool.java,v 1.8 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id$
  */
 public class RandomPool {
 

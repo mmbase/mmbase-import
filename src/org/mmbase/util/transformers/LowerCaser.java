@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: LowerCaser.java,v 1.2 2004-04-15 14:10:07 michiel Exp $
+ * @version $Id$
  */
 
 public class LowerCaser extends ReaderTransformer implements CharTransformer {

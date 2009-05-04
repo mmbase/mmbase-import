@@ -14,7 +14,7 @@ import java.io.Writer;
  * java.io.StringWriter} if you want to create one String.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: WriterLogger.java,v 1.3.2.1 2009-03-16 17:18:07 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 

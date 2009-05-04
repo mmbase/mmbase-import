@@ -20,7 +20,7 @@ import java.io.FilenameFilter;
  *
  * @todo move this code to a SmartPathFunction class?
  * @author Wilbert Hengst
- * @version $Id: SPartFileFilter.java,v 1.6 2004-09-30 17:19:49 pierre Exp $
+ * @version $Id$
  */
 public class SPartFileFilter implements FilenameFilter {
 

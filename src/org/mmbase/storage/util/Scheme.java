@@ -20,7 +20,7 @@ import org.mmbase.storage.*;
  * Schemes are used by the storage to create configurable storage instructions (specifically database SQL code).
  *
  * @author Pierre van Rooden
- * @version $Id: Scheme.java,v 1.5 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public final class Scheme extends MessageFormat {

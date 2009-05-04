@@ -17,7 +17,7 @@ import org.mmbase.bridge.*;
  * Wraps another Node, and adds 'isChangedByThis'.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeChanger.java,v 1.1 2006-02-10 18:01:44 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 

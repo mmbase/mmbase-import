@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.40 2006-07-05 15:16:34 pierre Exp $
+ * @version $Id$
  */
 public class RelDef extends MMObjectBuilder {
 

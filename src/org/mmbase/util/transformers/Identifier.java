@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Identifier.java,v 1.3 2004-07-09 20:38:42 michiel Exp $
+ * @version $Id$
  */
 
 public class Identifier extends ReaderTransformer implements CharTransformer {

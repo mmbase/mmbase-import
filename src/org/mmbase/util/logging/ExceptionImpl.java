@@ -25,7 +25,7 @@ import org.apache.log4j.spi.LocationInfo;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ExceptionImpl.java,v 1.6 2005-10-02 16:42:15 michiel Exp $
+ * @version $Id$
  */
 
 public class ExceptionImpl extends AbstractSimpleImpl implements Logger {

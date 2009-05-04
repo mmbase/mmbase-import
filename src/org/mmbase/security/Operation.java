@@ -14,7 +14,7 @@ package org.mmbase.security;
  * the security context
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Operation.java,v 1.11 2004-03-08 17:46:32 michiel Exp $
+ * @version $Id$
  */
 public final class Operation {
     /** int value for the read Operation*/

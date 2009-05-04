@@ -19,7 +19,7 @@ import java.io.IOException;
  * Runtime.exec();
  *
  * @author Nico Klasens (Finalist IT Group)
- * @version $Id: ProcessFactory.java,v 1.3 2003-05-12 13:10:47 kees Exp $
+ * @version $Id$
  * @since MMBase-1.6
  */
 public class ProcessFactory {

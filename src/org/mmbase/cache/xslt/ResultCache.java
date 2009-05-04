@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * entry). See TemplatesCache (which uses a FileWatcher).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ResultCache.java,v 1.9 2005-01-30 16:46:38 nico Exp $
+ * @version $Id$
  * @since   MMBase-1.6
  */
 public class ResultCache extends Cache {

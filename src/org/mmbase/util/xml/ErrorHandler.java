@@ -13,7 +13,7 @@ package org.mmbase.util.xml;
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Id: ErrorHandler.java,v 1.1 2008-09-03 23:41:47 michiel Exp $
+ * @version $Id$
  */
 
 public class ErrorHandler extends org.mmbase.util.XMLErrorHandler {

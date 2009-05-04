@@ -15,7 +15,7 @@ package org.mmbase.cache;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCache.java,v 1.7 2005-01-30 16:46:37 nico Exp $
+ * @version $Id$
  * @see   org.mmbase.bridge.implementation.BasicCloud#getList
  * @todo  It is odd that this one query cache is called in the bridge implementation and not in the core.
  * @since MMBase-1.7

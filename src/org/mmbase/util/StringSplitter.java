@@ -16,7 +16,7 @@ import java.util.*;
  *
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: StringSplitter.java,v 1.7.2.1 2009-02-04 15:25:24 michiel Exp $
+ * @version $Id$
  */
 public class StringSplitter {
 

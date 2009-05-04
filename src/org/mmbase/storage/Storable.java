@@ -17,7 +17,7 @@ package org.mmbase.storage;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Storable.java,v 1.6 2005-06-28 14:01:41 pierre Exp $
+ * @version $Id$
  */
 public interface Storable {
 

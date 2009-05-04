@@ -39,7 +39,7 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.25.2.4 2007-09-18 11:40:59 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {

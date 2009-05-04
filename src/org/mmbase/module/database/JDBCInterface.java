@@ -19,7 +19,7 @@ import java.sql.*;
  *            references to JDBC will be removed from most of the core (only the storagemanagerfactory
  *            will reference the JDBC module directly)
  * @author vpro
- * @version $Id: JDBCInterface.java,v 1.7 2004-10-07 17:22:35 pierre Exp $
+ * @version $Id$
  */
 public interface JDBCInterface {
 

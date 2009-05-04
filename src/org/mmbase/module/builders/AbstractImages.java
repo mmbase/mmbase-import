@@ -22,7 +22,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.47.2.1 2007-08-02 10:15:29 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {

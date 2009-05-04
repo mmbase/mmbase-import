@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.77.2.14 2009-02-18 09:58:19 pierre Exp $
+ * @version $Id$
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */

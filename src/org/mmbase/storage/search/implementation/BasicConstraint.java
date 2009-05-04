@@ -15,7 +15,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicConstraint.java,v 1.5 2005-10-02 16:18:15 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 

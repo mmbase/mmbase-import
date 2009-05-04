@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.16.2.5 2008-09-08 09:01:10 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType extends BasicDataType implements LengthDataType {

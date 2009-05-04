@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * value, which can come in handy sometimes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionValueIfEmptyGetter.java,v 1.1.2.2 2008-04-16 15:36:40 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.6
  */
 

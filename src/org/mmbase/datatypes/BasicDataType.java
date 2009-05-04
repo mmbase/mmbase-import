@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.61.2.13 2009-03-23 17:44:25 michiel Exp $
+ * @version $Id$
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {

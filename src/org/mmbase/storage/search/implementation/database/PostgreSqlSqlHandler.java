@@ -36,7 +36,7 @@ import org.mmbase.module.core.MMObjectNode;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.24.2.2 2007-04-20 12:12:36 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {

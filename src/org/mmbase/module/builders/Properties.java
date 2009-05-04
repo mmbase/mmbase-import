@@ -41,7 +41,7 @@ import org.mmbase.bridge.util.Queries;
       &lt;/mm:cloud&gt;
   </pre>
  *
- * @version $Id: Properties.java,v 1.15.2.2 2008-06-12 12:05:13 michiel Exp $
+ * @version $Id$
  */
 public class Properties extends MMObjectBuilder {
 

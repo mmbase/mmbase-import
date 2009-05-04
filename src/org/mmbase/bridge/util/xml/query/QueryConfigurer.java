@@ -15,7 +15,7 @@ package org.mmbase.bridge.util.xml.query;
  * and {@link FieldDefinition}s (wrappers around StepFields).
  *
  * @author Pierre van Rooden
- * @version $Id: QueryConfigurer.java,v 1.6 2005-12-27 15:48:21 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  **/
 public class QueryConfigurer {

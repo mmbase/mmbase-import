@@ -21,7 +21,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.12 2006-03-31 19:09:04 michiel Exp $
+ * @version $Id$
  * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {

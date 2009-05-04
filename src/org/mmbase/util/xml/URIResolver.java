@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.27.2.1 2008-04-23 13:21:38 michiel Exp $
+ * @version $Id$
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable, Serializable {

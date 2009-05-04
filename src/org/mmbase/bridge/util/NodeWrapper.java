@@ -22,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.15 2006-07-18 13:03:19 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 

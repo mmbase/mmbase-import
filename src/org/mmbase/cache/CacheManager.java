@@ -25,7 +25,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.6.2.3 2008-07-28 15:06:54 michiel Exp $
+ * @version $Id$
  */
 public class CacheManager {
 

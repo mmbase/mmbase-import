@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.15.2.1 2007-09-17 11:38:10 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {

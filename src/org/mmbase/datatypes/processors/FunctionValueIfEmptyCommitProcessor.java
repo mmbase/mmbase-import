@@ -21,7 +21,7 @@ import java.util.Date;
  * 'fieldName') parameter.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionValueIfEmptyCommitProcessor.java,v 1.1.2.3 2008-04-02 12:33:53 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.5
  */
 

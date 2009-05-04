@@ -30,7 +30,7 @@ import org.mmbase.util.xml.ApplicationReader;
  * @author Daniel Ockeloen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: ContextDepthDataWriter.java,v 1.2 2005-10-07 18:42:49 michiel Exp $
+ * @version $Id$
  */
 public class ContextDepthDataWriter  {
 

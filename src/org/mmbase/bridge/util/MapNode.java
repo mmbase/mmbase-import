@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
  * MMBase Node. E.g. because then it can be accessed in MMBase taglib using mm:field tags.
 
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.6 2006-06-20 20:05:32 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 

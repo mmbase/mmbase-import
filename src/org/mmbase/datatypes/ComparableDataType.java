@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.21.2.5 2008-09-08 09:01:10 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {

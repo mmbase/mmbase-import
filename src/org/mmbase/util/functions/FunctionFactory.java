@@ -24,7 +24,7 @@ import org.mmbase.bridge.*;
  * {@link Module}, or {@link Node}) or to simply instantiate the Function object (e.g. {@link BeanFunction})
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionFactory.java,v 1.8 2005-12-10 11:47:41 michiel Exp $
+ * @version $Id$
  * @since  MMBase-1.7
  */
 public class FunctionFactory {

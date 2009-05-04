@@ -26,7 +26,7 @@ import org.apache.log4j.spi.LoggingEvent;
  </table>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: MMPatternParser.java,v 1.9 2006-01-03 10:49:35 michiel Exp $
+ * @version $Id$
  */
 public class MMPatternParser extends PatternParser {
 

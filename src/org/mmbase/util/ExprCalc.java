@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * &lt;fact&gt;   -&gt; &lt;nmeral&gt; | '(' &lt;expr&gt; ')' <br />
  *
  * @author Arnold Beck
- * @version $Id: ExprCalc.java,v 1.12 2004-09-29 14:29:24 pierre Exp $
+ * @version $Id$
  */
 public class ExprCalc {
     private static final int MC_SYMB=1;

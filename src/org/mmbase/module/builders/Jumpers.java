@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.36.2.2 2008-06-30 15:06:32 michiel Exp $
+ * @version $Id$
  */
 public class Jumpers extends MMObjectBuilder {
 

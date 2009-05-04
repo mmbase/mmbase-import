@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.52.2.2 2008-08-07 08:52:56 michiel Exp $
+ * @version $Id$
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);

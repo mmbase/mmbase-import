@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @since MMBase-1.8
  * @author Michiel Meeuwissen
- * @version $Id: PublicCloneable.java,v 1.2 2006-04-19 21:10:58 michiel Exp $
+ * @version $Id$
  */
 public interface PublicCloneable extends Cloneable {
     public Object clone();

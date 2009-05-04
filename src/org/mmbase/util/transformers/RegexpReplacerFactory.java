@@ -23,7 +23,7 @@ import org.mmbase.util.functions.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: RegexpReplacerFactory.java,v 1.11.2.2 2008-07-24 16:16:08 michiel Exp $
+ * @version $Id$
  */
 
 public class RegexpReplacerFactory implements ParameterizedTransformerFactory{

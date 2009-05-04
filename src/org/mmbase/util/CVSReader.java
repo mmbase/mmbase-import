@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @deprecated not used. maybe move to 'tools' application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: CVSReader.java,v 1.11 2005-10-05 10:44:00 michiel Exp $
+ * @version $Id$
  */
 public class CVSReader {
 

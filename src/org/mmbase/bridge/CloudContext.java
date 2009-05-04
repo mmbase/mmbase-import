@@ -18,7 +18,7 @@ import org.mmbase.security.AuthenticationData;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.28 2006-02-14 22:28:06 michiel Exp $
+ * @version $Id$
  */
 public interface CloudContext {
 

@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.23.2.2 2007-08-08 09:51:42 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {

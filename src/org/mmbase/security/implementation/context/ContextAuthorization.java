@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.40 2005-10-17 15:29:19 michiel Exp $
+ * @version $Id$
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {

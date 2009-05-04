@@ -27,7 +27,7 @@ import java.io.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.30 2006-06-20 20:13:55 michiel Exp $
+ * @version $Id$
  * @see Parameters
  */
 

@@ -48,7 +48,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.27 2006-07-19 11:07:17 johannes Exp $
+ * @version $Id$
  **/
 public class Encode {
 

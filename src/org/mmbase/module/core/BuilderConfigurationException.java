@@ -17,7 +17,7 @@ package org.mmbase.module.core;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderConfigurationException.java,v 1.3 2003-08-29 09:36:53 pierre Exp $
+ * @version $Id$
  */
 public class BuilderConfigurationException extends RuntimeException {
 

@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * removed from the Node Cache itself.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodesCache.java,v 1.7 2006-06-23 14:17:39 johannes Exp $
+ * @version $Id$
  * @see   org.mmbase.module.core.MMObjectNode#getRelatedNodes
  * @since MMBase-1.7
  */

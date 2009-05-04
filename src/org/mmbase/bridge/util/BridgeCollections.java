@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BridgeCollections.java,v 1.4 2006-01-19 17:00:14 pierre Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 

@@ -26,7 +26,7 @@ import org.mmbase.util.magicfile.MagicFile;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.43 2006-07-10 16:34:59 michiel Exp $
+ * @version $Id$
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);

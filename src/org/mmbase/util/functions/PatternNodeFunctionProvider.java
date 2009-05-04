@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * xml).
  *
  * @author Michiel Meeuwissen
- * @version $Id: PatternNodeFunctionProvider.java,v 1.9.2.1 2008-12-09 10:04:49 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class PatternNodeFunctionProvider extends FunctionProvider {

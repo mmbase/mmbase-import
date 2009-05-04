@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.23.2.2 2008-10-27 17:00:41 michiel Exp $
+ * @version $Id$
  * @see Parameter
  * @see #Parameters(Parameter[])
  */

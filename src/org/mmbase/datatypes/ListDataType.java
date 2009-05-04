@@ -18,7 +18,7 @@ import org.mmbase.util.Casting;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ListDataType.java,v 1.20 2006-07-17 07:32:29 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class ListDataType extends AbstractLengthDataType {

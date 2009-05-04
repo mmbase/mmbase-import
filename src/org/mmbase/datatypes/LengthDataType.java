@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: LengthDataType.java,v 1.4 2005-11-23 12:11:25 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public interface LengthDataType extends DataType {

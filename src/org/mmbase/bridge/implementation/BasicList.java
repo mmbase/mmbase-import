@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.18 2005-12-29 19:23:54 michiel Exp $
+ * @version $Id$
  */
 public class BasicList extends ArrayList implements BridgeList  {
 
