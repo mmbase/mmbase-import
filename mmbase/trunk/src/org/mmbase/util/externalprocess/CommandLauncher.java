@@ -175,14 +175,14 @@ public class CommandLauncher {
         try {
             process = ProcessFactory.getFactory().exec(commandArgs, env);
         } catch (IOException e) {
-            throw new ProcessException("An I/O error occured: " + e.getMessage());
+            throw new ProcessException("An I/O error occured: " + e.getMessage(), e);
         } catch (SecurityException e) {
-            throw new ProcessException(
-                "A security manager exists and its checkExec method " + "doesn't allow creation of a subprocess.");
+            throw new ProcessException("A security manager exists and its checkExec method " +
+                                       "doesn't allow creation of a subprocess.", e);
         } catch (NullPointerException e) {
-            throw new ProcessException("Command is null.");
+            throw new ProcessException("Command is null.", e);
         } catch (IllegalArgumentException e) {
-            throw new ProcessException("Command is empty.");
+            throw new ProcessException("Command is empty.", e);
         }
     }
 
