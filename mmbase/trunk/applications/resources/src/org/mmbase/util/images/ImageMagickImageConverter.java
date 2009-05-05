@@ -658,7 +658,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 }
             }
         } catch (Exception e) {
-            log.error("converting image with command: '" + command + "' failed  with reason: '" + e.getMessage() + "'"  + errorStream.toString(), e);
+            log.error("converting image with command: '" + command + "' failed  with reason: '" + e.getMessage() + "'"  + errorStream.toString());
         } finally {
             try {
                 if (originalStream != null) {
