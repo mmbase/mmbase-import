@@ -61,7 +61,7 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>base-webapp</artifactId>
-      <version>${project.version}</version>
+      <version>${base.version}</version>
       <type>war</type>
     </dependency>
     <dependency>
@@ -124,4 +124,12 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
+  <profiles>
+    <profile>
+      <id>servlet25</id>
+      <properties>
+        <base.version>${mmbase.version}-servlet25</base.version>
+      </properties>
+    </profile>
+  </profiles>
 </project>
