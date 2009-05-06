@@ -130,9 +130,15 @@ public abstract class MMBaseTest extends TestCase {
         try {
             startMMBase();
             while(!mmb.isShutdown()) {
-
+                System.out.print(";");
+                Thread.sleep(1000);
             }
+            System.out.println("MMBase was shut down");
+            System.exit(0);
+
         } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.exit(-1);
         }
     }
 
