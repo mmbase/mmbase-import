@@ -11,6 +11,7 @@ package org.mmbase;
 
 import java.io.*;
 import java.util.jar.*;
+import java.util.regex.*;
 import java.net.*;
 
 import org.mmbase.util.logging.Logger;
@@ -28,14 +29,21 @@ public class Version {
 
     private static final Logger log = Logging.getLoggerInstance(Version.class);
 
+    private static final Pattern SCM = Pattern.compile("$URL: https://scm.mmbase.org/mmbase/(.*)");
     /**
      * Get Version Control tag
      * @return version Control tag
      * @since MMBase-1.9
      */
     public static String getTag() {
-        String cvsTag = "$Name: not supported by cvs2svn $";
-        return cvsTag.substring(6, cvsTag.length() - 1).trim();
+        String url = "$Url: $";
+        Matcher matcher = SCM.matcher(url);
+        if (matcher.matches()) {
+            String[] group = matcher.group(1).split("/", 2);
+            return group[0];
+        } else {
+            return "trunk?";
+        }
     }
 
     /**
@@ -104,7 +112,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static boolean isRelease() {
-        return false;
+        return true;
     };
 
     /**
@@ -113,7 +121,7 @@ public class Version {
      * @since MMBase-1.7
      */
     public static String getReleaseStatus() {
-        return "";
+        return "rc1";
     };
 
 
