@@ -172,11 +172,13 @@ See http://www.MMBase.org/license
 
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
     </dependency>
+
     <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>standard</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
     </dependency>
 
     <!--
@@ -220,6 +222,18 @@ See http://www.MMBase.org/license
       </plugin>
     </plugins>
   </reporting>
+
+  <profiles>
+    <profile>
+      <id>servlet24</id>
+      <dependencies>
+        <dependency>
+          <groupId>taglibs</groupId>
+          <artifactId>standard</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
   <!--
        If your local repository is still empty, and still want to start with this pom
