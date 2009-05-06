@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE contextconfig PUBLIC "-//MMBase//DTD context config 1.2//EN" "http://www.mmbase.org/dtd/securitycontextconfig_1_2.dtd">
+<contextconfig>
+  <global>
+    <allowed operation="read" />
+  </global>
+
+  <loginmodules>
+    <module name="anonymous" class="org.mmbase.security.implementation.context.AnonymousLogin" />
+    <module name="name/password" class="org.mmbase.security.implementation.context.PasswordLogin" />
+    <module name="class" class="org.mmbase.security.implementation.context.ClassLogin" />
+  </loginmodules>
+
+  <accounts>
+    <user name="anonymous" context="default" />
+    <user name="admin" context="admin"><identify type="name/password" rank="administrator">admin2k</identify></user>
+    <user name="foo" context="default" ><identify type="name/password" rank="basic user">bar</identify></user>
+  </accounts>
+
+  <groups>
+    <!-- every group has its own name -->
+    <group name="everyone">
+      <!-- other groups or users can get the rights of a certain group -->
+      <contains type="group" named="users" />
+      <contains type="user" named="anonymous" />
+    </group>
+    <group name="users">
+      <contains type="user" named="foo" />
+      <contains type="group" named="administrators" />
+    </group>
+    <group name="administrators">
+      <contains type="user" named="admin" />
+    </group>
+  </groups>
+
+  <contexts default="default">
+    <context name="admin">
+      <!-- for every operation, groups can be granted the rights -->
+      <!-- this may be one or more groups -->
+      <operation type="read">          <grant group="everyone" />     </operation>
+      <operation type="write">         <grant group="administrators" />        </operation>
+      <operation type="link">          <grant group="users" />        </operation>
+      <operation type="delete">        <grant group="administrators" />        </operation>
+      <operation type="change context"><grant group="administrators" /></operation>
+      <operation type="create"><grant group="administrators" /></operation>
+      <!--
+      When the rights change of the object of this context,
+      it can get the following rights..
+      This way somekind of  workflow can be provided
+      -->
+      <possible context="admin"  />
+      <possible context="default"  />
+      <possible context="imagesmodule"  />
+      <possible context="system"  />
+      <possible context="non_default"  />
+      <possible context="everyones"  />
+    </context>
+    <context name="default">
+      <operation type="create">        <grant group="users" />        </operation>
+      <operation type="read">          <grant group="everyone" />     </operation>
+      <operation type="write">         <grant group="users" />        </operation>
+      <operation type="link">          <grant group="users" />        </operation>
+      <operation type="delete">        <grant group="users" />        </operation>
+      <operation type="change context"><grant group="administrators" /></operation>
+      <possible context="admin"  />
+      <possible context="default"  />
+      <possible context="non_default"  />
+      <possible context="everyones"  />
+    </context>
+    <context name="system">
+      <operation type="create">        <grant group="users" />        </operation>
+      <operation type="read">          <grant group="everyone" />     </operation>
+      <operation type="write">         <grant group="administrators" />        </operation>
+      <operation type="link">          <grant group="users" />        </operation>
+      <operation type="delete">        <grant group="administrators" /></operation>
+      <operation type="change context"><grant group="administrators" /></operation>
+      <possible context="admin"  />
+      <possible context="system"  />
+      <possible context="everyones"  />
+    </context>
+    <context name="imagesmodule">
+      <operation type="read">          <grant group="everyone" />     </operation>
+      <operation type="write"/>
+      <operation type="link"/>
+      <operation type="delete">        <grant group="users" />        </operation>
+      <operation type="change context"><grant group="administrators" /></operation>
+      <possible context="admin"  />
+      <possible context="imagesmodule"  />
+    </context>
+    <context name="import">
+      <operation type="read">          <grant group="everyone" />     </operation>
+      <operation type="write"/>
+      <operation type="link"/>
+      <operation type="delete">        <grant group="administrators" />        </operation>
+      <operation type="change context"><grant group="administrators" /></operation>
+      <possible context="admin"  />
+      <possible context="import"  />
+    </context>
+    <context name="non_default">
+      <operation type="read">          <grant group="everyone" />     </operation>
+      <operation type="write"/>
+      <operation type="link"/>
+      <operation type="delete">        <grant group="administrators" />        </operation>
+      <operation type="change context"><grant group="administrators" /></operation>
+      <possible context="admin"  />
+      <possible context="import"  />
+      <possible context="everyones"  />
+    </context>
+
+    <context name="everyones">
+      <operation type="read">          <grant group="everyone" />     </operation>
+      <operation type="write">          <grant group="everyone" />     </operation>
+      <operation type="delete">        <grant group="everyone" />        </operation>
+      <operation type="change context"><grant group="everyone" /></operation>
+      <possible context="admin"  />
+      <possible context="import"  />
+      <possible context="default"  />
+    </context>
+  </contexts>
+</contextconfig>

@@ -1,0 +1,6 @@
+<test:C  xmlns:test="http://www.mmbase.org/test"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         >
+  <test:value>test1.xml (XInclude)</test:value>
+  <xi:include href="test2.xml" />
+</test:C>

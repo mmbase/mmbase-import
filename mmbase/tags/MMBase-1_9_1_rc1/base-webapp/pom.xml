@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+    <relativePath>../maven-base/pom.xml</relativePath>
+  </parent>
+
+  <artifactId>base-webapp</artifactId>
+  <packaging>war</packaging>
+  <name>MMBase Base webapp</name>
+  <version>${base.version}</version>
+
+  <properties>
+    <base.version>${mmbase.version}</base.version>
+  </properties>
+
+  <description>
+    This is a minimalistic war containing the essentials for an MMBase web applications. This can be used as initial war overlay for your own project.
+  </description>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webXml>${basedir}/../html/WEB-INF/web.xml</webXml>
+          <webResources>
+            <resource>
+              <directory>${basedir}/../html/</directory>
+              <excludes>
+                <exclude>index.jsp</exclude>
+                <exclude>mmexamples/**</exclude>
+                <exclude>WEB-INF/web-2.3.xml</exclude>
+              </excludes>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${mmbase.version}</version>
+    </dependency>
+
+    <!--
+         admin pages, generic editors templates use mmbase taglib
+         So it is more or less essential.
+    -->
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-taglib</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
+
+  </dependencies>
+  <profiles>
+    <profile>
+      <id>servlet25</id>
+      <properties>
+        <base.version>${mmbase.version}-servlet25</base.version>
+      </properties>
+    </profile>
+  </profiles>
+</project>

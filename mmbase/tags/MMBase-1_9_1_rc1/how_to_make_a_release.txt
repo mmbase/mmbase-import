@@ -1,0 +1,29 @@
+$Id$
+
+
+- Make sure all automated test-cases succeed. Check the nightly build, or run 'make all' in tests.
+- Manually test. Build or download an example war. Deploy it on recent tomcat version.
+    - No warnings, errors in the log
+    - No easily found problems in the example webapp
+    - run test jsps? tests/taglib?  All pages under /mmbase/admin/tests?
+
+
+- Check out 'minimall'.
+
+- Change
+  - src/org/mmbase/Version.java
+  - maven-base/project.properties
+
+- Check those changes in.
+
+- Tag everything. With something like MMBase-1_9_0_beta (use existing tags as an example)
+
+- Change above files again, undo changes, and increase minor version, if this was a final release.
+
+- Check those changes in
+
+- on nightly@cvs.mmbaes.org
+  - change bin/build.sh to use the created tag
+  - trigger build, or wait a night
+  - undo changes in bin/build.sh
+

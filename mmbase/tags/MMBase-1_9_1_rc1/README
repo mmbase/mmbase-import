@@ -1,0 +1,71 @@
+The prefered build method currently is Maven 1.1. 
+You will find a HOWTO Maven 2 further below in this document.
+
+
+HOWTO Maven 1.1 (for people who used to use the 'ant' build)
+--------------------------------------------------------------------------------
+
+Use Apache Maven 1.1 (_not_ 1.0, _not_ 2)
+
+- ant jar -> maven jar, maven jar:install
+maven -Dmaven.test.skip=true jar:install
+
+- ant     -> maven
+
+- ant bindist -> maven all:install, cd example-webapp; maven war:install
+
+
+If e.g. mmbase.org is unreachable, add 'maven.offline=true' to maven-base/build.properties.
+Sadly it is impossible to find out how to configure a timeout setting for that.
+
+The equivalent for 'ant clean' is 'maven all:clean' to clean all applications, and 'maven clean' to
+only clean the present one.
+
+
+HOWTO Maven 2 (Apache Maven 2.0.6 and up)
+--------------------------------------------------------------------------------
+
+- Clean, build and install the mmbase.jar in the local repository:
+
+   mvn clean install
+
+   [compare with: ant clean; ant jar]
+
+- Build and install all mmbase 'applications' in the local repository
+
+   (cd applications; mvn clean install)
+
+   [compare with: (cd application; ant clean; ant jars]
+
+-  Build a simple war from the justly created artifacts.
+
+   (cd example-webapp; mvn clean install)
+
+   [compare with: ant bindist]
+
+   This is 'the' distro. A simple and clean war. It's pom can serve as an example to create your
+   own webapp.
+
+
+- How to build everything
+  (cd maven ; mvn clean install)
+
+
+But normally you can just type 'mvn' in the directory of interest. It will use artifacts of
+mmbase.org/snapshots if you didn't build them.
+
+
+
+- If you have access to mmbase.org, you can also do
+
+  (cd maven ;  mvn -Pdeploy clean deploy)
+
+  which will clean and deploy pretty much everything for a release, including source-jars.
+
+  (use a ~/.m2/settings.xml containing this:
+  <servers>
+    <server>
+      <id>mmbase</id>
+       <username>mmweb</username>
+     </server>
+   </servers>

@@ -1,0 +1,61 @@
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c c_taglib b_test_vars ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
+  <h2>vars</h2>
+
+  <mm:import id="a">AAA</mm:import>
+
+  <mm:import id="list" vartype="list">1,2,3,4</mm:import>
+
+  <mm:context>
+    <mm:import externid="a" from="parent" required="true"/>
+  </mm:context>
+
+  <p>Should print AAA, AAA: <mm:write referid="a" />, ${a}</p>
+
+  <mm:context>
+    <mm:stringlist referid="list">
+      <mm:first>
+        <mm:import externid="a" from="parent" required="true"/>
+      </mm:first>
+    </mm:stringlist>
+  </mm:context>
+
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1556">MMB-1556</a></h3>
+  <mm:import id="list2" vartype="list">a,b</mm:import>
+  <mm:stringlist referid="list2">
+    <mm:stringlist referid="list2">
+      <mm:first>
+        <mm:write id="first" write="false" />
+      </mm:first>
+      <p><mm:write referid="first"/>/ ${first} / ${_}</p>
+    </mm:stringlist>
+  </mm:stringlist>
+  should look like:
+  <p>a / a / a</p>
+  <p>a / a / b</p>
+  <p>a / a / a</p>
+  <p>a / a / b</p>
+
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1760">Reuse of context (MMB-1760)</a></h3>
+  <mm:context id="r" scope="request">
+    <mm:import id="x">XXXX</mm:import>
+    <p>x: ${x} (should be XXXX)</p>
+  </mm:context>
+
+ <p>x: ${x} (should be empty)</p>
+
+  <mm:context referid="r">
+    <p>x: ${x} (should be XXXX)</p>
+  </mm:context>
+
+  <mm:include page="vars-include.jspx" />
+
+
+
+</div>

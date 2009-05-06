@@ -1,0 +1,225 @@
+<PROCESSOR MMADMIN>
+<SECURE>
+<html>
+<head>
+   <title>MMAdmin tools</title>
+</head>
+
+<body background="beeld/back.gif" text="#42bdad" bgcolor="#00425b" link="#000000" alink="#555555" vlink="#555555">
+<br />
+<IF $MOD-INFO-USER-name^=Nadmin>
+  <table width="90%" cellspacing="1" cellpadding="3" border="0">
+    <tr>
+      <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+      <td bgcolor="44BDAD" width="700">
+        <font color="000000" face="helvetica,arial,geneva" size="2">
+          <strong>MMBase access error</strong>
+        </font>
+      </td>
+    </tr>
+    <tr>
+      <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+      <td bgcolor="#00425A">
+        You are not allowed to access these pages, only admin can use these.
+      </td>
+    </tr>
+  </table>
+<ELSE>
+  <table width="90%" cellspacing="1" cellpadding="3" border="0">
+    <tr>
+      <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+      <td bgcolor="44BDAD" width="700">
+        <font color="000000" face="helvetica,arial,geneva" size="2">
+          <strong>Add field to $PARAM1 </strong>
+        </font>
+      </td>
+    </tr>
+    <tr>
+      <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+      <td bgcolor="#00425A" colspan=3>
+        <br />
+        ** WARNING **, this page allows you to add fields to your this object, make sure that you have a backup and know what you are doing. Some of this might not be tested on your database so use at your own risk.
+        <br />
+        <br />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <br />
+      </td>
+    </tr>
+    <form action="builders_actions.shtml?$PARAM1" method="post">
+    <tr>
+      <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+      <td bgcolor="#44BDAD" >
+        <font color="000000" face="helvetica,arial,geneva" size="2">
+          <strong>Builder Field</strong>
+        </font>
+      </td>
+      <td bgcolor="#44BDAD">
+        <font color="000000" face="helvetica,arial,geneva" size="2">
+          <strong>Value</strong>
+        </font>
+      </td>
+      <td bgcolor="#44BDAD">
+        <font color="000000" face="helvetica,arial,geneva" size="2">
+          <strong>Description</strong>
+        </font>
+      </td>
+    </tr>
+    <tr>
+      <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+      <td bgcolor="#00425A" >
+              dbname
+      </td>
+      <td bgcolor="#00425A" >
+              <input name="PRC-VAR-dbname" size="20" />
+      </td>
+      <td bgcolor="#00425A" >
+              database field name
+      </td>
+</tr>
+<tr>
+      <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+      <td bgcolor="#00425A" >
+              mmbasetype
+      </td>
+      <td bgcolor="#00425A" >
+            <select name="PRC-VAR-mmbasetype">
+            <option>STRING</option>
+            <option>INTEGER</option>
+            <option>BYTE</option>
+            <option>FLOAT</option>
+            <option>DOUBLE</option>
+            <option>LONG</option>
+            </select>
+      </td>
+      <td bgcolor="#00425A" >
+              MMBase Field Type
+      </td>
+</tr>
+
+
+<tr>
+      <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+      <td bgcolor="#00425A" >
+              guitype
+      </td>
+      <td bgcolor="#00425A" >
+            <select name="PRC-VAR-guitype">
+            <option>string</option>
+            <option>field</option>
+            <option>integer</option>
+            <option>eventtime</option>
+            </select>
+      </td>
+      <td bgcolor="#00425A" >
+              MMBase Gui Type (editor type used in the editors)
+      </td>
+</tr>
+
+<tr>
+      <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+      <td bgcolor="#00425A" >
+              dbstate
+      </td>
+      <td bgcolor="#00425A" >
+            <select name="PRC-VAR-dbstate">
+            <option>persistent</option>
+            <option>virtual</option>
+            <option>system</option>
+            </select>
+      </td>
+      <td bgcolor="#00425A" >
+              MMBase field State
+      </td>
+</tr>
+
+<tr>
+      <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+      <td bgcolor="#00425A" >
+              notnull
+      </td>
+      <td bgcolor="#00425A" >
+            <select name="PRC-VAR-dbnotnull">
+            <option>true</option>
+            <option>false</option>
+            </select>
+      </td>
+      <td bgcolor="#00425A" >
+              MMBase field not null flag
+      </td>
+</tr>
+
+
+<tr>
+      <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+      <td bgcolor="#00425A" >
+              iskey
+      </td>
+      <td bgcolor="#00425A" >
+            <select name="PRC-VAR-dbkey">
+            <option>false</option>
+            <option>true</option>
+            </select>
+      </td>
+      <td bgcolor="#00425A" >
+              MMBase field part of the object key
+      </td>
+</tr>
+<tr>
+      <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+      <td bgcolor="#00425A" >
+              size
+      </td>
+      <td bgcolor="#00425A" >
+              <input name="PRC-VAR-dbsize" size="20">
+      </td>
+      <td bgcolor="#00425A" >
+              size of the mmbase type (if mmbasetype doesn't need it it will be ignored)
+      </td>
+</tr>
+
+<tr>
+        <td>
+        <br />
+        </td>
+</tr>
+
+<tr>
+      <td><img src="beeld/trans.gif" width="50" height="1"></td>
+      <td bgcolor="#00425A" colspan=2>
+              Make sure all the settings are valid
+              and what you want before updating the object
+      </td>
+      <td bgcolor="#00425A" >
+              <input type="hidden" name="SECURE" value="BASIC">
+              <input type="hidden" name="PRC-VAR-PROCESSOR" value="MMADMIN">
+              <input type="hidden" name="PRC-VAR-BUILDER" value="$PARAM1">
+              <input type="hidden" name="PRC-CMD-BUILDER-ADDFIELD">
+              <inoput type="submit" value="ADD FIELD TO OBJECT">
+      </td>
+</tr>
+
+<tr>
+        <td>
+        <br />
+        </td>
+</tr>
+
+<tr>
+      <td><img src="beeld/trans.gif" width="50" height="1"></td>
+      <td bgcolor="#44BDAD">
+              <A HREF="builders.shtml"><img src="beeld/pijl2.gif" border="0" align="left" /></A>
+      </td>
+      <td bgcolor="#00425A" colspan="4">
+      &nbsp;
+      </td>
+</tr>
+
+</table>
+</FORM>
+</IF>
+
+</body>
+</html>

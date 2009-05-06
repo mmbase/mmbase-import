@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<project name="cloudcontext" default="jar" basedir=".">
+  <property name="project.name"      value="cloudcontextsecurity" />
+  <property name="project.package"   value="org/mmbase/security/implementation/cloudcontext" />
+
+  <property name="project.target.templates.dir"   value="security" />
+
+  <import file="../buildbase-include.xml" />
+</project>

@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="notifications" maintainer="mmbase.org" version="1" extends="insrel">
+
+  <searchage>31</searchage>
+
+  <fieldlist>
+
+    <field name="type">
+      <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="false" />
+
+        <maxLength value="1024" />
+
+        <enumeration enforce="oncreate">
+          <entry value="org.mmbase.notifications.EmailNotification"                 xml:lang="nl" display="email" />
+          <entry value="org.mmbase.notifications.EmailNotification"                 xml:lang="en" display="email" />
+          <entry value="org.mmbase.notifications.SMSNotification"                   xml:lang="nl" display="sms"   />
+          <entry value="org.mmbase.notifications.SMSNotification"                   xml:lang="en" display="sms"   />
+        </enumeration>
+          <!-- Set new nodes to status 'unconfirmed' initially -->
+          <!--
+          <commitprocessor>
+            <class name="org.mmbase.notifications.cmtelecom.CommitProcessor" />
+          </commitprocessor>
+          -->
+      </datatype>
+    </field>
+
+    <field name="status">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <default value="1" />
+        <enumeration>
+
+          <entry value="0"      xml:lang="nl" display="aangemeld" />
+          <entry value="1"      xml:lang="nl" display="bevestigd" />
+          <entry value="100"    xml:lang="nl" display="fout" />
+
+          <entry value="0"      xml:lang="en" display="subscribed" />
+          <entry value="1"      xml:lang="en" display="confirmed" />
+          <entry value="100"    xml:lang="en" display="error" />
+
+        </enumeration>
+      </datatype>
+    </field>
+
+    <field name="offset">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="false" />
+        <enumeration enforce="oncreate">
+          <entry
+              sorterclass="org.mmbase.util.ReverseComparator"
+              basename="org.mmbase.notifications.resources.offset" />
+        </enumeration>
+      </datatype>
+    </field>
+
+  </fieldlist>
+
+</builder>

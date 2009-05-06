@@ -1,0 +1,18 @@
+<HTML>
+<SECURE>
+<HEAD>
+   <TITLE>Editors</TITLE>
+</HEAD>
+<FRAMESET rows="23,*" BORDER=0 FRAMEBORDER=0 FRAMESPACING=0>
+<NOFRAMES><BODY>
+<P>This page is designed to be viewed by a browser which supports
+Netscape's Frames extension. This text will be shown by browsers
+which do not support the Frames extension.
+</BODY>
+</NOFRAMES>
+<FRAME SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/EditNav.shtml" name="Navigator" NORESIZE SCROLLING="no" MARGINHEIGHT="0" MARGINWIDTH="0">
+<FRAMESET cols="220,*" BORDER=0 FRAMEBORDER=0 FRAMESPACING=0>
+<FRAME SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/EditList.shtml?$PARAM1" name="Chooser" NORESIZE MARGINHEIGHT="0" MARGINWIDTH="0">
+<FRAME SRC="$MOD-INFO-SERVERCONTEXT^/mmeditors/Work/empty.shtml" name="Work" NORESIZE SCROLLING="auto" MARGINHEIGHT="0" MARGINWIDTH="0">      
+</FRAMESET>
+</FRAMESET>

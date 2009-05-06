@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE storage PUBLIC "-//MMBase//DTD storage config 1.0//EN" "http://www.mmbase.org/dtd/storage_1_0.dtd" >
+<storage>
+  <!-- Postgresql configuration resource	-->
+  <storagemanagerfactory classname="org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory" version="0.1" />
+
+  <storagemanager classname="org.mmbase.storage.implementation.database.ViewDatabaseStorageManager" version="0.1" />
+
+  <searchqueryhandler classname="org.mmbase.storage.search.implementation.database.PostgreSqlSqlHandler" />
+
+  <attributes>
+    <!-- No file path, then use webdir -->
+    <attribute name="database-binary-file-path" ></attribute>
+
+    <!-- Postgresql is a hell when is comes to blobs, so store as file instead of in the database-->
+    <option name="database-stores-binary-as-file" />
+
+    <!-- Postgresql change field scheme -->
+    <scheme name="change-field-scheme" >ALTER TABLE {1} ALTER COLUMN {2} TYPE {3}</scheme>
+
+    <!-- Foreignkeys don't work well under postgresql -->
+    <scheme name="create-foreign-key-scheme">FOREIGN KEY ({2}) REFERENCES {3}</scheme>
+
+    <!-- Postgresql extends tables -->
+    <scheme name="create-object-table-scheme">CREATE TABLE {1} ({4} {5})</scheme>
+    <scheme name="create-table-scheme">CREATE TABLE {1} ({4} {5})</scheme>
+
+    <!-- Postgresql sequences (work differently) -->
+    <scheme name="create-sequence-scheme" />
+    <scheme name="init-sequence-scheme" >CREATE SEQUENCE {0}_autoincrement INCREMENT {3} START {2}</scheme>
+    <scheme name="update-sequence-scheme" />
+    <scheme name="read-sequence-scheme">SELECT NEXTVAL (''{0}_autoincrement'')</scheme>
+
+    <scheme name="create-index-scheme">CREATE INDEX {3} ON {1} ({2})</scheme>
+    <scheme name="delete-index-scheme">DROP INDEX {3}</scheme>
+
+    <scheme name="create-view-scheme">CREATE VIEW {1} ({3}) AS SELECT {4} FROM {2} JOIN {6} USING ({5})</scheme>
+  </attributes>
+
+  <!-- Postgresql type mappings -->
+  <type-mappings>
+    <type-mapping name="FLOAT" type="REAL" />
+    <type-mapping name="DOUBLE" type="DOUBLE PRECISION" />
+    <type-mapping name="LONG" type="BIGINT" />
+    <type-mapping name="INTEGER" type="INTEGER" />
+    <type-mapping name="NODE" type="INTEGER" />
+    <type-mapping name="STRING" type="TEXT" />
+    <type-mapping name="XML" type="TEXT" />
+    <type-mapping name="DATETIME" type="TIMESTAMP" />
+    <type-mapping name="BOOLEAN" type="BOOLEAN" />
+    <type-mapping name="DECIMAL"       type="NUMERIC({0}, {1})" />
+
+    <type-mapping name="LIST[FLOAT]"   type="FLOAT[]" />
+    <type-mapping name="LIST[DOUBLE]"  type="DOUBLE PRECISION[]" />
+    <type-mapping name="LIST[LONG]"    type="BIGINT[]" />
+    <type-mapping name="LIST[INTEGER]" type="INTEGER[]" />
+    <type-mapping name="LIST[NODE]"    type="INTEGER[]" />
+    <type-mapping name="LIST[STRING]"  type="TEXT[]" />
+    <type-mapping name="LIST[XML]"     type="TEXT[]" />
+    <type-mapping name="LIST[DATETIME]"  type="TIMESTAMP[]" />
+    <type-mapping name="LIST[BOOLEAN]"   type="BOOLEAN[]" />
+  </type-mappings>
+
+  <!-- Postgresql disallowed -->
+  <disallowed-fields >
+    <disallowed-field name="abort" replacement="m_abort"/>
+    <disallowed-field name="acl" replacement="m_acl"/>
+    <disallowed-field name="add" replacement="m_add"/> <!-- standard SQL keyword -->
+    <disallowed-field name="aggregate" replacement="m_aggregate"/>
+    <disallowed-field name="append" replacement="m_append"/>
+    <disallowed-field name="arch_store" replacement="m_arch_store"/>
+    <disallowed-field name="archive" replacement="m_archive"/>
+    <disallowed-field name="backward" replacement="m_backward"/>
+    <disallowed-field name="binary" replacement="m_binary"/>
+    <disallowed-field name="change" replacement="m_change"/>
+    <disallowed-field name="cluster" replacement="m_cluster"/>
+    <disallowed-field name="comment" replacement="m_comment" />
+    <disallowed-field name="copy" replacement="m_copy"/>
+    <disallowed-field name="create" replacement="m_create"/> <!-- standard SQL keyword -->
+    <disallowed-field name="data" replacement="m_data" />
+    <disallowed-field name="database" replacement="m_database"/>
+    <disallowed-field name="day" replacement="m_day" /> <!-- standard SQL keyword -->
+    <disallowed-field name="default" replacement="m_default"/> <!-- standard SQL keyword -->
+    <disallowed-field name="delimiters" replacement="m_delimiters"/>
+    <disallowed-field name="do" replacement="m_do"/>
+    <disallowed-field name="end" replacement="m_end" /> <!-- standard SQL keyword -->
+    <disallowed-field name="explain" replacement="m_explain"/>
+    <disallowed-field name="extend" replacement="m_extend"/>
+    <disallowed-field name="forward" replacement="m_forward"/>
+    <disallowed-field name="from" replacement="m_from" /> <!-- standard SQL keyword -->
+    <disallowed-field name="global" replacement="m_global" /> <!-- standard SQL keyword -->
+    <disallowed-field name="group" replacement="m_group" /> <!-- standard SQL keyword -->
+    <disallowed-field name="heavy" replacement="m_heavy"/>
+    <disallowed-field name="hosts" replacement="m_hosts" />
+    <disallowed-field name="hour" replacement="m_hour" /> <!-- standard SQL keyword -->
+    <disallowed-field name="index" replacement="m_index"/>
+    <disallowed-field name="inherits" replacement="m_inherits"/>
+    <disallowed-field name="isnull" replacement="m_isnull"/>
+    <disallowed-field name="key" replacement="m_key" /> <!-- standard SQL keyword -->
+    <disallowed-field name="keys" replacement="m_keys" />
+    <disallowed-field name="light" replacement="m_light"/>
+    <disallowed-field name="listen" replacement="m_listen"/>
+    <disallowed-field name="load" replacement="m_load"/>
+    <disallowed-field name="local" replacement="m_local" /> <!-- standard SQL keyword -->
+    <disallowed-field name="left" replacement="m_left"/>
+    <disallowed-field name="merge" replacement="m_merge"/>
+    <disallowed-field name="month" replacement="m_month" />
+    <disallowed-field name="nothing" replacement="m_nothing"/>
+    <disallowed-field name="notify" replacement="m_notify"/>
+    <disallowed-field name="notnull" replacement="m_notnull"/>
+    <disallowed-field name="oids" replacement="m_oids"/>
+    <disallowed-field name="order" replacement="m_order"/> <!-- standard SQL keyword -->
+    <disallowed-field name="parent" replacement="m_parent" />
+    <disallowed-field name="purge" replacement="m_purge"/>
+    <disallowed-field name="recipe" replacement="m_recipe"/>
+    <disallowed-field name="rename" replacement="m_rename"/>
+    <disallowed-field name="replace" replacement="m_replace"/>
+    <disallowed-field name="retrieve" replacement="m_retrieve"/>
+    <disallowed-field name="returns" replacement="m_returns"/>
+    <disallowed-field name="rule" replacement="m_rule"/>
+    <disallowed-field name="second" replacement="m_second" /> <!-- standard SQL keyword -->
+    <disallowed-field name="setof" replacement="m_setof"/>
+    <disallowed-field name="status" replacement="m_status" />
+    <disallowed-field name="stdin" replacement="m_stdin"/>
+    <disallowed-field name="stdout" replacement="m_stdout"/>
+    <disallowed-field name="store" replacement="m_store"/>
+    <disallowed-field name="time" replacement="m_time" /> <!-- standard SQL keyword -->
+    <disallowed-field name="to" replacement="m_to" /> <!-- standard SQL keyword -->
+    <disallowed-field name="type" replacement="m_type" />
+    <disallowed-field name="use" replacement="m_use" />
+    <disallowed-field name="user" replacement="m_user"/>
+    <disallowed-field name="vacuum" replacement="m_vacuum"/>
+    <disallowed-field name="verbose" replacement="m_verbose"/>
+    <disallowed-field name="version" replacement="m_version"/>
+  </disallowed-fields>
+
+</storage>

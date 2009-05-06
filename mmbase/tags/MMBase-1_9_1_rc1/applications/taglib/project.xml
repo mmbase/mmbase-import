@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+  <extend>${basedir}/../app-base/project.xml</extend>
+  <artifactId>mmbase-taglib</artifactId>
+  <package>org.mmbase.bridge.jsp.taglib</package>
+  <name>JSP taglib for MMBase</name>
+  <shortDescription>JSP taglib for MMBase</shortDescription>
+  <description>
+    The MMBase JSP Taglib is the main technology used to create dynamic pages that display content from MMBase. You will probably always use this component.
+  </description>
+  <properties>
+    <type>library</type>
+    <status>stable</status>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>mmbase</groupId>
+      <artifactId>mmbase-resources</artifactId>
+      <version>${mmbase.version}</version>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+  <build>
+    <resources>
+      <resource>
+	<directory>${maven.build.dir}/generated-tld/</directory>
+	<targetPath>META-INF</targetPath>
+	<includes>
+	  <include>**/*.tld</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/src</directory>
+	<includes>
+          <include>**/*.xml</include>
+          <include>**/*.dtd</include>
+          <include>**/*.properties</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/META-INF</directory>
+        <targetPath>META-INF</targetPath>
+        <includes>
+	  <include>**/*.*</include>
+	</includes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+	<directory>${basedir}/config</directory>
+        <targetPath>org/mmbase/config</targetPath>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
+  </build>
+</project>

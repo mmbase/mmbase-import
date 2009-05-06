@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="core"
+    defaultblock="welcome"
+    version="9"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
+                        http://www.mmbase.org/xmlns/component.xsd">
+
+  <description xml:lang="en">MMBase core components</description>
+  <description xml:lang="nl">MMBase core-componenten</description>
+
+  <!-- This bundle provides translations for the mmbase 'core' component -->
+  <bundle name="org.mmbase.framework.resources.core" />
+
+
+  <action name="view_source" rank="administrator">
+    <description xml:lang="en">Whether the source code of templates may be seen</description>
+  </action>
+
+  <action name="shutdown" rank="administrator">
+    <description xml:lang="en">Whether you may shutdown MMBase</description>
+  </action>
+
+
+  <!-- about etc. -->
+  <block name="welcome"
+         classification="mmbase.about:10"
+         mimetype="text/html">
+    <title xml:lang="en">Welcome</title>
+    <title xml:lang="nl">Welkom</title>
+    <description xml:lang="en">Shows welcome page for MMBase admin pages</description>
+    <description xml:lang="nl">Welkompagina voor de MMBase admin pagina's</description>
+    <body jsp="about.jspx" />
+  </block>
+
+  <block name="license"
+         classification="mmbase.about:20"
+         mimetype="text/html">
+    <title xml:lang="nl">Licentie</title>
+    <title xml:lang="en">Licence</title>
+    <description xml:lang="en">Shows the MMBase licence</description>
+    <description xml:lang="nl">De licentie waaronder MMBase verspreid wordt</description>
+    <body jsp="mpl-1.0.jspx" />
+  </block>
+
+  <!-- admin -->
+  <block name="servers"
+         classification="mmbase.admin:10"
+         mimetype="text/html">
+    <title xml:lang="en">Servers</title>
+    <title xml:lang="nl">Servers</title>
+    <description xml:lang="en">MMBase servers on this system</description>
+    <description xml:lang="nl">MMBase servers op dit systeem</description>
+    <body jsp="servers.jspx">
+      <param name="server" type="String" />
+    </body>
+  </block>
+
+  <block name="databases"
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <title xml:lang="en">Databases</title>
+    <title xml:lang="nl">Databases</title>
+    <description xml:lang="en">
+      Information about the database and its connections.
+      This overview lists all database systems supported by this system, as well as
+      all connection pools - which administrate the actual database connections.
+    </description>
+    <description xml:lang="nl">
+      Informatie over de database en database connections.
+      Dit overzicht toont de databases die door dit systeem worden ondersteunt, evenals
+      de connections pools die de feitelijke database connecties onderhouden.
+    </description>
+    <body jsp="databases.jsp" />
+  </block>
+
+  <block name="databases-connections"
+         mimetype="text/html">
+    <title xml:lang="en">Database connections</title>
+    <title xml:lang="nl">Database connecties</title>
+    <description xml:lang="en">View of the database connections</description>
+    <description xml:lang="nl">Overzicht van de database connecties</description>
+    <body jsp="databases-connections.jsp" />
+  </block>
+
+  <block name="modules"
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <title xml:lang="en">Modules</title>
+    <title xml:lang="nl">Modules</title>
+    <description xml:lang="en">Information about the installed MMBase modules</description>
+    <description xml:lang="nl">Informatie over geïnstalleerde MMBase modules</description>
+    <body jsp="modules.jsp" />
+  </block>
+
+  <block name="jobs"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Jobs</title>
+    <title xml:lang="nl">Jobs</title>
+    <description xml:lang="en">
+      An overview of the several ThreadPools which are used in MMBase, and which
+      are collected in org.mmbase.util.ThreadPools.
+    </description>
+    <description xml:lang="nl">
+      Overzicht van de verschillende ThreadPools die worden gebruikt in MMBase
+      en worden verzameld in org.mmbase.util.ThreadPools.
+    </description>
+    <body jsp="jobs.jspx" />
+  </block>
+
+  <block name="functions"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Functions</title>
+    <title xml:lang="nl">Functies</title>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/style/css/xmlverbatim.css" type="text/css" />]]></param>
+      </class>
+    </head>
+    <body jsp="functions.jspx">
+      <param name="type" />
+    </body>
+  </block>
+
+  <block name="datatypes"
+         classification="mmbase.tools mmbase.examples"
+         mimetype="text/html">
+    <title xml:lang="en">Data Types</title>
+    <title xml:lang="nl">Datatypes</title>
+    <description xml:lang="en">
+      Overview of datatypes
+    </description>
+    <description xml:lang="nl">
+      Overzicht van datatypes
+    </description>
+    <body jsp="datatypes.jspx">
+      <param name="nodemanager"      type="String" />
+      <param name="field"   type="String" />
+    </body>
+  </block>
+
+
+  <block name="datatype"
+         mimetype="text/html">
+    <title xml:lang="en">Data Type</title>
+    <title xml:lang="nl">Datatype</title>
+    <body jsp="datatype.jspx">
+      <param name="datatype"   type="String" />
+      <param name="nodemanager"      type="String" />
+      <param name="field"   type="String" />
+    </body>
+  </block>
+
+  <block name="modules-actions"
+         mimetype="text/html">
+    <title xml:lang="en">Actions on modules</title>
+    <title xml:lang="nl">Bewerkingen op modules</title>
+    <description xml:lang="en">View, edit or add module properties</description>
+    <description xml:lang="nl">View, edit of add module properties</description>
+    <body jsp="modules-actions.jsp">
+      <param name="module"   type="String" />
+      <param name="cmd"      type="String" />
+      <param name="action"   type="String" />
+      <param name="property" type="String" />
+      <param name="value"    type="String" />
+      <param name="path"     type="String" />
+    </body>
+  </block>
+
+  <block name="applications"
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <title xml:lang="en">Applications</title>
+    <title xml:lang="nl">Applicaties</title>
+    <description xml:lang="en">Shows an overview of all MMBase apps1 applications</description>
+    <description xml:lang="nl">Overzicht van MMBase apps1 applicaties</description>
+    <body jsp="applications.jspx">
+      <param name="application" type="String" />
+    </body>
+  </block>
+
+  <block name="applications-actions"
+         mimetype="text/html">
+    <title xml:lang="nl">Resultaat van een applicatie actie</title>
+    <title xml:lang="en">Result of an application backup or install</title>
+    <description xml:lang="en">
+      This is the follow-up for the application installation page and shows the
+      results of an application backup or install.
+    </description>
+    <body jsp="applications-actions.jspx">
+      <param name="application" type="String" />
+      <param name="app" type="String" />
+      <param name="cmd" type="String" />
+      <param name="path" type="String" />
+    </body>
+  </block>
+
+
+  <block name="builders"
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <title xml:lang="en">Builders</title>
+    <title xml:lang="nl">Builders</title>
+    <description xml:lang="en">
+      Shows an overview of all builders present in this MMBase installation.
+	  The first list contains all builders that are currently 'active' (accessible through MMBase).
+	  The second list (if available) lists all builders for which the definition is known, but which are currently inactive
+	  (and thus inaccessible).
+    </description>
+    <description xml:lang="nl">
+      Overzicht van actieve en inactieve builders in deze MMBase installatie.
+      De eerste lijst toont alle actieve builders, die toegankelijk zijn via MMBase.
+      De tweede lijst toont alle inactieve builders waarvan de definitie bekend is, maar die inactief zijn en
+      daarom ontoegankelijk.
+    </description>
+    <body jsp="builders.jspx">
+      <param name="builder" type="String" />
+    </body>
+  </block>
+
+  <block name="builders-actions"
+         mimetype="text/html">
+    <title xml:lang="en">Builder fields</title>
+    <title xml:lang="nl">Builder velden</title>
+    <description xml:lang="en">
+      Folow-up for the first builders block, shows a builders class and fields.
+    </description>
+    <description xml:lang="nl">
+      Uitgebreide builder beschrijving: builder class en velden inclusief veld attributen.
+    </description>
+    <body jsp="builders-actions.jspx">
+      <param name="builder" type="String" />
+      <param name="cmd"     type="String" />
+      <param name="path"    type="String" />
+    </body>
+  </block>
+
+  <block name="builders-field"
+         mimetype="text/html">
+    <title xml:lang="en">Builder field attributes</title>
+    <title xml:lang="nl">Builder veld attributen</title>
+    <description xml:lang="en">
+      The various attributes of a field.
+    </description>
+    <description xml:lang="nl">
+      Verschillende attributen en overige specificaties van een builder veld.
+    </description>
+    <body jsp="builders-field.jspx">
+      <param name="builder" type="String" />
+      <param name="field"   type="String" />
+    </body>
+  </block>
+
+  <block name="security"
+         classification="mmbase.admin"
+         mimetype="text/html">
+    <title xml:lang="en">Security</title>
+    <title xml:lang="nl">Security</title>
+    <description xml:lang="en">Shows details of the current security configuration.</description>
+    <description xml:lang="nl">Een overzicht van de details van de gebruikte security configuratie.</description>
+    <body jsp="security.jspx" />
+  </block>
+
+  <block name="transactions"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Transactions</title>
+    <title xml:lang="nl">Transacties</title>
+    <description xml:lang="en">Shows an overview of all open MMBase transactions</description>
+    <description xml:lang="nl">Een overzicht van alle open MMBase transacties</description>
+    <body jsp="transactions.jspx">
+      <param name="transaction" type="String" />
+    </body>
+  </block>
+
+  <!-- tools -->
+  <block name="cache"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Caches</title>
+    <title xml:lang="nl">Caches</title>
+    <description xml:lang="en">This tools hows the performance of the various MMBase
+    caches. You can also (temporary) turn on/off the cache here. For a persistant
+    change you should change caches.xml.</description>
+    <description xml:lang="nl">Deze pagina toont de performance van de verschillende MMBase
+    caches. Het is hier mogelijk om caches tijdelijk uit en in te schakelen. Voor
+    persitente wijzigingen dient het configuratiebestand 'caches.xml' aangepast te worden</description>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/components/core/cache/style.css" type="text/css" />]]></param>
+      </class>
+    </head>
+    <body jsp="cache/index.jspx">
+      <param name="active" type="String" />
+      <param name="cache"  type="String" />
+      <param name="clear"  type="String" />
+      <param name="regexp"  type="String" />
+      <param name="rs_active" type="String" />
+      <param name="rs_show"   type="String" />
+      <param name="rs_name"   type="String" />
+    </body>
+  </block>
+  <block name="showcache"
+         mimetype="text/html">
+    <body jsp="cache/show.jspx">
+      <param name="cache"        type="String" required="true" />
+      <param name="deleteentry"  type="String" />
+      <param name="deletekey"    type="String" />
+      <param name="key"          type="String" />
+      <param name="value"        type="String" />
+    </body>
+  </block>
+
+  <block name="blobs"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Blobs</title>
+    <title xml:lang="nl">Blobs</title>
+    <description xml:lang="en">This page provides a tool to convert blobs to
+    the filesystem. Per default blobs live in the database.</description>
+    <description xml:lang="nl">Via deze pagina is het mogelijk om blobs naar het
+    filesystem te converteren. Per default staan blobs in de database.</description>
+    <body jsp="blobs.jspx">
+    </body>
+  </block>
+
+  <block name="resourceedit"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Resource editor</title>
+    <title xml:lang="nl">Resource editor</title>
+    <description xml:lang="en">Tool to on-line edit MMBase resources.</description>
+    <description xml:lang="en">Maakt het mogelijk om on-line MMBase resources te editen.</description>
+    <body jsp="resourceedit.jsp">
+      <param name="resource" type="String" />
+      <param name="root"     type="String" />
+      <param name="dirs"     type="String" />
+      <param name="search"   type="String" />
+      <param name="keepsearch" type="String" />
+      <param name="recursive" type="String" />
+      <param name="xml"      type="String" />
+      <param name="wasxml"   type="String" />
+      <param name="save"     type="String" />
+      <param name="text"     type="String" />
+    </body>
+  </block>
+
+<!--
+  <block name="sqltool"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <description xml:lang="en">A tool to directly edit your SQL database.
+     We prefer you don't use this so it is disabled by default. Better to use your own database tools.</description>
+    <body jsp="/mmbase/admin/tools/querytool.jsp">
+
+    </body>
+  </block>
+ -->
+
+  <block name="request"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <description xml:lang="en">Shows the request headers as issued by the client</description>
+    <body jsp="request.jspx">
+
+    </body>
+  </block>
+
+  <block name="events"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Events</title>
+    <title xml:lang="nl">Events</title>
+    <description xml:lang="en">A tool to directly send events into your MMBase system.</description>
+    <description xml:lang="nl">Een tool om rechtstreeks events naar MMBase te sturen.</description>
+    <body jsp="events.jspx">
+      <param name="id" type="String" />
+      <param name="type" type="Integer" />
+    </body>
+  </block>
+
+
+  <block name="mrtg"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Monitoring</title>
+    <title xml:lang="nl">Monitoring</title>
+    <body jsp="mrtg.jspx" />
+  </block>
+
+  <block name="entities"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Entities</title>
+    <description xml:lang="en">A tool to view all 'mmbase entities' which are avaiable in config-files.</description>
+    <body jsp="/mmbase/admin/entities.div.jspx" />
+  </block>
+
+  <block name="components"
+         classification="mmbase.admin,mmbase.components:10"
+         mimetype="text/html">
+    <title xml:lang="en">Components</title>
+    <title xml:lang="nl">Componenten</title>
+    <description xml:lang="en">
+      Shows an overview of all available components in the current MMBase.
+    </description>
+    <description xml:lang="nl">
+      Een overzicht van alle beschikbare componenten in deze MMBase installatie.
+    </description>
+    <body jsp="components/list.jspx">
+      <param name="component" type="String" />
+      <param name="view" type="String" /> <!-- hmm, should not be done like this -->
+    </body>
+  </block>
+
+  <block name="component-block-tree"
+         classification="mmbase.components:20"
+         mimetype="text/html">
+    <title xml:lang="en">Components tree</title>
+    <title xml:lang="nl">Componentenboom</title>
+    <description xml:lang="en">
+      Hierarchical tree view of the available components and blocks. A block
+      can get a classification which determines its position in the admin menu.
+    </description>
+    <description xml:lang="nl">
+       Hierarchisch overzicht van de beschikbare componenten en blocken.
+       Een block kan een classificatie meekrijgen die o.a. aangeeft
+       op welke plek in het admin menu een block getoond moet worden.
+    </description>
+    <body jsp="components/tree.jspx">
+    </body>
+  </block>
+
+  <block name="login"
+         classification=""
+         mimetype="text/html">
+    <description xml:lang="en">Generic mmbase login box</description>
+    <body jsp="login.jspx">
+    </body>
+  </block>
+
+  <block name="mmbase_news_uncached"
+         mimetype="text/html">
+    <body>
+      <class name="org.mmbase.framework.ConnectionRenderer">
+        <param name="url">http://www.mmbase.org/rss</param>
+        <param name="xslt">xslt/rss.xslt</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="mmbase_news"
+         classification="mmbase.about:100">
+    <title xml:lang="nl">Nieuws</title>
+    <title xml:lang="en">News</title>
+    <description xml:lang="en">Shows latest news from www.mmbase.org</description>
+    <description xml:lang="nl">Toont het laatste nieuws van www.mmbase.org</description>
+    <body>
+      <class name="org.mmbase.framework.CachedRenderer">
+        <param name="wrapsBlock">mmbase_news_uncached</param>
+      </class>
+    </body>
+  </block>
+
+
+  <block name="releasenotes_uncached"
+         mimetype="text/html">
+    <body>
+      <class name="org.mmbase.framework.ConnectionRenderer">
+        <param name="url">http://www.mmbase.org/jira/IssueNavigator.jspa?view=rss&amp;&amp;pid=10000&amp;fixfor=10170&amp;version=-3&amp;status=5&amp;status=6&amp;sorter/field=updated&amp;sorter/order=DESC&amp;tempMax=25&amp;reset=true&amp;decorator=none</param>
+        <param name="xslt">xslt/rss.xslt</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="releasenotes"
+         classification="mmbase.about:11"
+         mimetype="text/html">
+    <title xml:lang="nl">Releasenotes</title>
+    <title xml:lang="en">Release notes</title>
+    <description xml:lang="en">Shows the release notes straight from the bugtracker on www.mmbase.org.</description>
+    <description xml:lang="nl">Toont de release notes rechtstreeks uit de bugtracker op www.mmbase.org.</description>
+    <body>
+      <class name="org.mmbase.framework.CachedRenderer">
+        <param name="wrapsBlock">releasenotes_uncached</param>
+      </class>
+    </body>
+  </block>
+
+
+  <block name="view_source"
+         mimetype="text/html">
+    <title xml:lang="nl">Sourcecode-viewer</title>
+    <title xml:lang="en">Source code displayer</title>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/style/css/xmlverbatim.css" type="text/css" />]]></param>
+      </class>
+    </head>
+    <body jsp="cite.jspx">
+      <param name="page" />
+      <param name="xml" />
+    </body>
+  </block>
+
+  <block name="basic"
+         classification="mmbase.edit:0"
+         mimetype="text/html">
+    <title xml:lang="nl">Generieke editors</title>
+    <title xml:lang="en">Basic generic editors</title>
+    <body>
+      <class name="org.mmbase.framework.IFrameRenderer">
+        <param name="url">/mmbase/edit/basic/</param>
+      </class>
+    </body>
+  </block>
+  
+  <block name="my_editors"
+         classification="mmbase.edit:1"
+         mimetype="text/html">
+    <title xml:lang="nl">my_editors</title>
+    <title xml:lang="en">my_editors</title>
+    <description xml:lang="en">Alternative generic editors</description>
+    <description xml:lang="nl">Alternatieve generieke editors</description>
+    <body>
+      <class name="org.mmbase.framework.IFrameRenderer">
+        <param name="url">/mmbase/edit/my_editors/</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="documentation"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <title xml:lang="nl">Documentatie</title>
+    <title xml:lang="en">Documentation</title>
+    <description xml:lang="en">Renderering of our docbook documentation (expiremental)</description>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="docbook">index.xml</param>
+        <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="docbook"
+         mimetype="text/html">
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
+</component>

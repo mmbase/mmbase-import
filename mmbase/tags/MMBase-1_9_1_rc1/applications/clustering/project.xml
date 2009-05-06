@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+  <extend>${basedir}/../app-base/project.xml</extend>
+  <artifactId>mmbase-clustering</artifactId>
+  <name>Clustering</name>
+  <shortDescription>MMBase Clustering support</shortDescription>
+  <description>
+    The clustering libraries allow you to run MMBase in a clustered environment: where multiple MMBase machines serve content from a shared database. In order to keep these machiens in sync (for instance when an object changes on one machine and the other machines needs to flush it's cache), this code must be activated. This component provides several different implementations for communication between machines, including one which depends on the 'jgroups' software.
+  </description>
+  <properties>
+    <type>library</type>
+    <status>stable</status>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>jgroups</groupId>
+      <artifactId>jgroups-all</artifactId>
+      <version>2.2.7</version>
+      <url>http://java.sun.com/products/javabeans/jaf/</url>
+      <properties>
+        <scope>compile</scope>
+      </properties>
+    </dependency>
+  </dependencies>
+</project>

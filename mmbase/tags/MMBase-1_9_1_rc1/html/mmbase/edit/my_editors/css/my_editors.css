@@ -1,0 +1,635 @@
+/* css for my_editors v2 */
+body
+{
+    margin: 4px;
+    font-family: "Lucida Grande", Helvetica, sans-serif;
+    font-size: 70%;
+    background-color: #fff;
+}
+
+img { border: 0; }
+
+h1, h2, h3, h4, h5, h6
+{
+    font-family: "Lucida Grande", Helvetica, sans-serif;
+    font-weight: bold;
+    color: #002828;
+    text-align: left;
+    padding: 5px;
+    margin: 2px;
+    padding-right: 0;
+}
+
+h1 { font-size: 2em; }
+h2 { font-size: 1.4em; }
+h3 { font-size: 1.2em; }
+h4 { font-size: 1em; }
+h5 { font-size: 0.9em; }
+h6 { font-size: 0.8em; }
+
+strong
+{
+    font-weight: bold;
+    color: #002828;
+}
+
+a:link { color: #900; }
+a:visited { color: #002828; }
+a:hover { color: #708A23; }
+a:active { color: #D6E44B; }
+
+/* ### page lay-out ### */
+#frame
+{
+    border: 1px solid #c8cfd9;
+    max-width: 1400px;
+    min-width: 670px;
+}
+
+#header
+{
+    border-bottom: 1px solid #c8cfd9;
+    font-size: 0.9em;
+    padding: 6px 0 12px 0;
+    min-height: 36px;
+}
+
+#crumbpath
+{
+    background-color: #d4d4d4;
+    font-size: 0.9em;
+    padding: 1px 0 4px 12px;
+    border-bottom: 1px solid #c8cfd9;
+}
+
+#content
+{
+    float: right;
+    width: 70%;
+    min-width: 420px;
+    z-index: 9;
+}
+
+#sidebar
+{
+    float: left;
+    width: 30%;
+    min-width: 240px;
+    z-index: 8;
+}
+
+/* to create space between columns */
+/*.padder { padding: 0.5em; }*/
+.padsidebar
+{
+    padding: 0;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+    background-color: #fff;
+    overflow: auto;
+}
+
+.padcontent
+{
+    margin: 0;
+    padding: 0 0 0 10px;
+    background-image: url(../img/shadow.png);
+    background-repeat: repeat-y;
+    background-position: 0 0;
+    background-color: #fff;
+}
+
+.padfoot
+{
+    background-image: url(../img/shadow-foot.png);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    height: 12px;
+}
+
+#footer
+{
+    padding: 0;
+    margin: 0;
+    height: 32px;
+    background-color: #e8e8e8;
+    border-top: 1px solid #c8cfd9;
+    font-size: 0.9em;
+    clear: both;
+}
+
+.message
+{
+    font-family: "Lucida Grande", Helvetica, sans-serif;
+    border: 1px solid #002828;
+    background-color: #d6e44b;
+    width: 75%;
+    text-align: center;
+}
+
+div.message
+{
+    margin: 2em auto 2em auto;
+    padding: 0.7em;
+}
+
+p.message { margin: 2em auto 2em auto; }
+
+strong.message
+{
+    width: auto;
+    display: block;
+    padding: 2px;
+    border-width: 2px 2px 0 2px;
+    border-color: #FC0;
+    border-style: solid;
+}
+
+caption
+{
+    background: #e8e8e8;
+    padding: 4px 4px 0 4px;
+    border-bottom: 1px solid #c8cfd9;
+    min-height: 20px;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+/* ### form stuff ### */
+fieldset
+{
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+legend
+{
+    font-size: 1.2em;
+    font-family: "Lucida Grande", Helvetica, sans-serif;
+    font-weight: bold;
+    color: #002828;
+    padding-left: 5.8em;
+}
+
+label
+{
+    float: left;
+    width: 12%;
+    text-align: right;
+    padding-right: 6px;
+}
+
+input
+{
+    background: #FFFFFF;
+    border: 1px solid #c8cfd9;
+    padding: 2px;
+}
+
+select
+{
+    background: #FFFFFF;
+    border: 1px solid #c8cfd9;
+}
+
+textarea
+{
+    background: #FFFFFF;
+    border: 1px solid #c8cfd9;
+    padding: 2px;
+}
+
+.small
+{
+    font-family: Monaco, "Courier New", Courier, monospace;
+    font-size: 1em;
+    width: 85%;
+}
+
+.big
+{
+    font-family: Monaco, "Courier New", Courier, monospace;
+    font-size: 1em;
+    width: 85%;
+}
+
+/*
+.form-button
+{
+    font-family: "Lucida Grande", Helvetica, sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #000;
+}
+*/
+
+/* rows general */
+.firstrow
+{
+    padding: 4px 0 4px 0;
+    clear: both;
+    background-color: #e8e8e8;
+    border-bottom: 1px solid #c8cfd9;
+}
+
+.firstrow strong
+{
+    float: left;
+    font-size: 1.1em;
+    padding-left: 10px;
+}
+
+.firstrow h2
+{
+    margin: 0;
+    padding: 0 0 0 13%;
+    min-height: 20px;
+}
+
+.firstrow img
+{
+    float: right;
+    padding-right: 1%;
+}
+
+.row
+{
+    padding-top: 6px;
+    clear: both;
+}
+
+.lastrow
+{
+    clear: both;
+    padding: 12px 6px 12px 13%;
+}
+
+.name
+{
+    font-weight: bold;
+    color: #002828;
+}
+
+.left { float: left; }
+.right { float: right; }
+
+#footer a:link, #footer a:visited
+{
+    color: #000;
+    text-decoration: none;
+}
+
+#footer a:hover
+{
+    color: #708A23;
+    text-decoration: underline;
+}
+
+#footer a:active
+{
+    color: #D6E44B;
+    text-decoration: underline;
+}
+#footer ul
+{
+    padding: 0 0 0 1em;
+    margin: 0;
+}
+
+
+#footer li
+{
+    float: left;
+    margin: 0;
+    padding: 1em 1em 0 0;
+    list-style: none;
+}
+
+#header img
+{
+    float: left;
+    margin: 0 8px 0 8px;
+    border: 0;
+}
+
+#header form { float: right; }
+
+#header fieldset
+{
+    border: 1px solid #c8cfd9;
+    background-color: #E6E9DD;
+    padding: 2px 4px 2px 4px;
+    margin: 0 12px 0 12px;
+    text-align: center;
+    width: 80px;
+}
+
+#header label
+{
+    width: auto;
+    float: none;
+    text-align: center;
+    padding: 0;
+    display: block;
+    color: #002828;
+    white-space: nowrap;
+}
+
+#header input
+{
+    width: 80px;
+    font-family: Monaco, "Courier New", Courier, monospace;
+}
+
+#header h1
+{
+    padding: 0;
+    margin: 0;
+}
+
+#header ul
+{
+    list-style: none;
+    padding: 0;
+    margin: 0 0 8px 0;
+}
+
+#header li
+{
+    float: left;
+    margin: 0 2px 0 2px;
+}
+
+/* table with nodetypes */
+#nodetypes
+{
+    width: 100%;
+    background-color: #fff;
+}
+
+#nodetypes th, #nodetypes td
+{
+    margin: 0;
+    padding: 2px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+#nodetypes th { font-weight: normal; }
+
+#nodetypes .right
+{
+    color: #002828;
+    float: none;
+    text-align: right;
+    font-weight: bold;
+}
+
+#results
+{
+    width: 100%;
+    border-bottom: 1px solid #c8cfd9;
+    background-color: #fff;
+}
+
+#results th { border-bottom: 1px solid #c8cfd9; }
+
+#results th, #results td
+{
+    margin: 0;
+    padding: 4px;
+    text-align: left;
+    vertical-align: top;
+}
+
+#results .icon
+{
+    white-space: nowrap;
+    text-align: right;
+}
+
+#results .relicon { text-align: center; }
+#results p { text-align: center; }
+#results h3 { text-align: center; }
+.batches { border-top: 1px solid #c8cfd9; }
+.batches p { word-spacing: 0.5em; }
+.even { background: #E6E9DD; }
+.odd { background: #fff; }
+tr.odd:hover { background-color: #e0f0e0; }
+tr.even:hover { background-color: #d8e8d8; }
+
+/* ### ### ### ### edit object ### ### ### ### ### ### */
+#node
+{
+    /*background-color: #e6e9dd;*/
+    border-bottom: 1px solid #c8cfd9;
+}
+
+#node p
+{
+    padding-left: 12%;
+    margin-top: 0;
+}
+
+#node label strong { display: block; }
+#node .aliasses, #node .properties { padding-left: 13%; }
+#node .aliasses img, #node .properties img { vertical-align: middle; }
+
+/* edit node relations */
+#relationssource, #relationsdestination { width: 100%; }
+#relationssource caption
+{
+    border-bottom: 0;
+    text-align: left;
+    padding-left: 32px;
+}
+#relationsdestination caption
+{
+    border-top: 1px solid #c8cfd9;
+    border-bottom: 0;
+    text-align: left;
+    padding-left: 32px;
+}
+
+#relationssource td, #relationsdestination td
+{
+    margin: 0;
+    border-top: 1px solid #c8cfd9;
+    text-align: left;
+}
+
+#relationssource th, #relationsdestination th { display: none; }
+
+#relationssource .pager, #relationsdestination .pager
+{
+    padding: 2px;
+    margin: 0;
+    text-align: center;
+    background-color: #e6e6e6;
+}
+
+.pageleft
+{
+    float: left;
+    margin-left: 32px;
+    color: #c00;
+}
+
+.pageright
+{
+    float: right;
+    margin-right: 32px;
+    color: #c00;
+}
+
+#relationssource td.left, #relationsdestination td.left
+{
+    width: 24px;
+    text-align: center;
+    float: none;
+}
+
+#relationssource .buttons, #relationsdestination .buttons
+{
+    text-align: right;
+    white-space: nowrap;
+}
+
+/*
+.editrelation
+{
+    margin: 0;
+    padding: 0 0 6px 0;
+}
+*/
+
+.editrelation fieldset
+{
+    border: 2px solid #FC0;
+    background-color: #FFC;
+    padding: 4px;
+}
+
+.editrelation label { width: 20%; }
+
+#relationssource .small, #relationsdestination .small
+{
+    width: 180px;
+    min-width: 100px;
+}
+
+#back
+{
+    width: 100%;
+    /*margin: 0 2px 2px 2px;*/
+}
+
+#back th { text-align: left; }
+
+#back .name
+{
+    text-align: right;
+    padding-right: 4px;
+    color: #002828;
+    width: 24px;
+}
+
+#relate .firstrow { border-top: 1px solid #c8cfd9; }
+#relate h3 { margin-left: 12%; }
+#relate label strong { display: block; }
+
+#relate p
+{
+    padding-left: 7px;
+    margin-left: 12%;
+}
+
+
+#search label { font-weight: bold; }
+#search
+{
+    border-bottom: 1px solid #c8cfd9;
+    margin: 0;
+}
+
+/* trick with label help */
+label a:hover { cursor: help; }
+.description { display: none; }
+
+.shown
+{
+    padding: 4px 4px 4px 6px;
+    color: #fff;
+    width: 24em;
+    font-weight: bold;
+    background-color: #aaa;
+    /* Mozilla proprietary */
+    -moz-border-radius: 14px;
+}
+
+.config .padsidebar
+{
+    border: 0;
+    padding-top: 4px;
+}
+
+.config h2
+{
+    margin: 0;
+    padding: 4px;
+}
+
+.config p
+{
+    margin: 0;
+    padding: 4px;
+}
+
+.config legend { display: none; }
+
+#config { padding: 1em; }
+#helpbox
+{
+    margin: 0 auto 5px auto;
+    width: 220px;
+    border: 1px solid #c8cfd9;
+    padding: 0;
+}
+
+#helpbox h3
+{
+    background: #ccc;
+    margin: 0;
+}
+
+#helpbox dl
+{
+    width: 180px;
+    float: left;
+    padding: 4px;
+    margin: 0;
+    display: inline; /* fixes some IE/Win bug */
+}
+#helpbox dt
+{
+    float: right;
+    width: 150px;
+    margin: 0;
+    padding: 0;
+    font-size: 1.1em;
+}
+#helpbox dd
+{
+    margin: 0 6px 0 0;
+    width: 24px;
+    padding: 0;
+    float: left;
+}
+#helpbox dd img { float: right; }
+#helpbox .stopfloat
+{
+    clear: both;
+    height: 1px;
+}

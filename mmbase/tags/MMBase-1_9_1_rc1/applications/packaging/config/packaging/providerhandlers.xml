@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE providerhandlers PUBLIC "-//MMBase/DTD providerhandlers config 1.0//EN" "http://www.mmbase.org/dtd/providerhandlers_1_0.dtd">
+<providerhandlers>
+  <providerhandler active="true" method="disk" class="org.mmbase.applications.packaging.providerhandlers.DiskProvider" basescore="5000">
+    <description>Handles providers from diskbased devices</description>
+  </providerhandler>
+  <providerhandler active="true" method="http" class="org.mmbase.applications.packaging.providerhandlers.HttpProvider" basescore="2000">
+    <description>Handles providers from websites using http</description>
+  </providerhandler>
+</providerhandlers>

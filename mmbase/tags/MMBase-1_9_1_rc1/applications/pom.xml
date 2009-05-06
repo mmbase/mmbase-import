@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+    <relativePath>../maven-base/pom.xml</relativePath>
+  </parent>
+
+  <artifactId>mmbase-application-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>MMBase Applications</name>
+  <version>${mmbase.version}</version>
+
+  <description>
+    Applications are war overlays then can plug in some functionality into an existing MMBase installation.
+    This would normally contain at least a 'component', but it can e.g. also be only a security implementation.
+   </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${mmbase.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${mmbase.version}</version>
+      <classifier>javadoc</classifier>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${mmbase.version}</version>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${jsp.groupId}</groupId>
+      <artifactId>jsp-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>${basedir}/src</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.dtd</include>
+          <include>**/*.xsd</include>
+          <include>**/*.properties</include>
+          <include>INDEX</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${basedir}/target/generated-resources/xml/xslt/</directory>
+        <includes>
+          <include>**/*.tld</include>
+        </includes>
+      </resource>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${basedir}/META-INF</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </resource>
+      <resource>
+        <targetPath>org/mmbase/config</targetPath>
+        <directory>${basedir}/config</directory>
+      </resource>
+      <resource>
+        <directory>${basedir}/target/generated-resources</directory>
+        <includes>
+          <include>org/**</include>
+        </includes>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.mmbase.maven</groupId>
+        <artifactId>maven-mmbase-plugin</artifactId>
+        <version>1.9-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>create-index-files</id>
+            <goals>
+              <goal>create-index-files</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>copy-web-resources</id>
+            <goals>
+              <goal>install-resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <modules>
+    <module>resources</module>
+    <module>taglib</module>
+    <module>cloudcontext</module>
+    <module>crontab</module>
+    <module>dove</module>
+    <module>editwizard</module>
+    <module>email</module>
+    <module>media</module>
+    <module>notifications</module>
+    <module>searchrelate</module>
+    <module>richtext</module>
+    <module>rmmci</module>
+
+    <module>jumpers</module>
+    <module>xmlimporter</module>
+    <module>largeobjects</module>
+    <module>oscache-cache</module>
+    <module>clustering</module>
+    <module>commandserver</module>
+    <module>cloudsecurity</module>
+
+    <module>mynews</module>
+    <module>vpro-wizards</module>
+
+
+    <!-- deprecated-->
+    <module>vwms</module>
+    <module>scan</module>
+
+  </modules>
+
+
+</project>

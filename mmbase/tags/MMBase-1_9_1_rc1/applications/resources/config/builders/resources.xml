@@ -1,0 +1,178 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="resources" maintainer="mmbase.org" version="0" extends="object">
+
+  <!--
+      The `resources' builder.
+      Most MMBase configuration can also be stored in nodes of this type, if at least you make
+      this builder active.
+      There is a specialized 'resource editor' available in /mmbase/admin.
+
+       @since MMBase-1.8
+       @version $Id: resources.xml,v 1.1 2006-11-24 09:37:25 pierre Exp $
+    -->
+  <status>inactive</status>
+  <class>org.mmbase.module.builders.Resources</class>
+  <searchage>31</searchage>
+  <names>
+    <singular xml:lang="en">Resource</singular>
+    <singular xml:lang="nl">Resource</singular>
+
+    <plural xml:lang="en">Resources</plural>
+    <plural xml:lang="nl">Resources</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">Resources for the ResourceLoader</description>
+    <description xml:lang="nl">Resources voor de ResourceLoader</description>
+  </descriptions>
+
+  <properties />
+
+  <fieldlist>
+
+    <field name="name">
+      <descriptions>
+        <description xml:lang="en">Name</description>
+        <description xml:lang="nl">Naam</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Name</guiname>
+        <guiname xml:lang="nl">Naam</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+    <field name="filename" state="virtual">
+      <descriptions>
+        <description xml:lang="en">File Name</description>
+        <description xml:lang="nl">Bestandsnaam</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">File Name</guiname>
+        <guiname xml:lang="nl">Bestandsnaam</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" enforce="never" />
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+    <field name="type">
+      <descriptions>
+        <description xml:lang="en">Type</description>
+        <description xml:lang="nl">Type</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Type</guiname>
+        <guiname xml:lang="nl">Type</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" enforce="never" />
+        <enumeration>
+          <entry value="0"  display="configuration" />
+          <entry value="1"   display="web" />
+        </enumeration>
+      </datatype>
+    </field>
+
+    <field name="handle">
+      <descriptions>
+        <description xml:lang="en">The resource itself (binary data)</description>
+        <description xml:lang="nl">De resource zelf (binaire data)</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Resource</guiname>
+        <guiname xml:lang="nl">Resource</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>3</list>
+        </positions>
+      </editor>
+      <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" enforce="never" />
+        <maxLength value="16777215" />
+      </datatype>
+    </field>
+
+    <field name="mimetype">
+      <descriptions>
+        <description xml:lang="en">Mimetype of the resource</description>
+        <description xml:lang="nl">Mimetype van de resource</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">MimeType</guiname>
+        <guiname xml:lang="nl">MimeType</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>4</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" enforce="never" />
+        <maxLength value="32" />
+      </datatype>
+    </field>
+
+    <field name="size" state="system">
+      <descriptions>
+        <description xml:lang="en">Size of the attachment in bytes</description>
+        <description xml:lang="nl">Grootte van de bijlage in bytes</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Size</guiname>
+        <guiname xml:lang="nl">Grootte</guiname>
+        <guiname xml:lang="eo">Grando</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>4</list>
+          <search>-1</search>
+        </positions>
+      </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" enforce="never" />
+      </datatype>
+    </field>
+
+    <field name="lastmodified">
+      <descriptions>
+        <description xml:lang="en">Last modified on</description>
+        <description xml:lang="nl">Laatst veranderd op</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Last modified time</guiname>
+        <guiname xml:lang="nl">Laatste verandering</guiname>
+        <guiname xml:lang="eo">Lasta ŝanĝo</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input>
+          <list>99</list>
+        </positions>
+      </editor>
+      <datatype base="lastmodified" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+  </fieldlist>
+
+</builder>

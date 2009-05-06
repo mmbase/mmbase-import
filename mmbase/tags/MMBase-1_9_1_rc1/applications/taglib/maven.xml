@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project xmlns:ant="jelly:ant">
+
+  <!-- after the prepare-bin-filesystem also copy libs and config  -->
+  <preGoal name="java:jar-resources">
+    <ant:echo>C R E A T I N G   T L D</ant:echo>
+    <!-- 1.5 TransformerFactory class -->
+     ${systemScope.setProperty('javax.xml.transform.TransformerFactory','com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
+
+    <!-- 1.4 TransformerFactory class
+    ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')} 
+    -->
+    <ant:mkdir dir="${maven.build.dir}/generated-tld"/> 
+
+    <ant:xslt in="${basedir}/src/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"
+        out="${maven.build.dir}/generated-tld/taglib.tld" 
+        style="${basedir}/../share/xslt/xml2tld.xslt"
+        processor="trax">
+    </ant:xslt>
+
+    <ant:xslt in="${basedir}/src/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"
+        out="${maven.build.dir}/generated-tld/taglib-2.0.tld" 
+        style="${basedir}/../share/xslt/xml2tld.xslt"
+        processor="trax">
+      <param name="version" expression="2.0"/>
+      <param name="uri" expression="http://www.mmbase.org/mmbase-taglib-2.0"/>
+    </ant:xslt>
+  </preGoal>
+  
+  <postGoal name="sdocbook:generate-html">
+	<!-- Stylesheet uses a class as extension function -->
+	<attainGoal name="java:compile"/>
+
+    <!-- 1.5 TransformerFactory class -->
+     ${systemScope.setProperty('javax.xml.transform.TransformerFactory','com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
+
+	<mkdir dir="${maven.sdocbook.target.dir}/frontenddevelopers/taglib/reference"/>
+    <ant:xslt in="${basedir}/src/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml"
+        out="${maven.sdocbook.target.dir}/frontenddevelopers/taglib/reference.html" 
+        style="${basedir}/../share/xslt/xml2html.xslt"
+        basedir="${basedir}/src/org/mmbase/bridge/jsp/taglib/"
+        processor="trax">
+      <param name="exampledir" expression="${basedir}/examples/"/>
+      <param name="basedir" expression="${maven.sdocbook.target.dir}/frontenddevelopers/taglib"/>
+      <classpath>
+         <path refid="maven.dependency.classpath"/>
+         <pathelement path="${maven.build.dest}"/>
+      </classpath>
+    </ant:xslt>
+
+  </postGoal>
+</project>

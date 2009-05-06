@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<builder 
+  xmlns="http://www.mmbase.org/xmlns/builder"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                      http://www.mmbase.org/xmlns/builder.xsd"                        
+  name="mmbaseranks" maintainer="www.mmbase.org" version="0" extends="object"
+  defaultcontextintypedef="security"
+  >
+  <class>org.mmbase.security.implementation.cloudcontext.builders.Ranks</class>
+  <names>
+    <singular xml:lang="en">Security Rank</singular>
+    <singular xml:lang="nl">Security rang</singular>
+    <singular xml:lang="eo">MMBase-rango</singular>
+    <plural xml:lang="en">MMBase Ranks</plural>
+    <plural xml:lang="nl">MMBase Rangen</plural>
+    <plural xml:lang="eo">MMBase-rangoj</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="en">
+      Ranks used by cloud context security implementation
+    </description>
+    <description xml:lang="nl">
+    </description>
+  </descriptions>
+  <fieldlist>
+    <field name="rank">
+      <gui>
+        <guiname xml:lang="nl">Rang</guiname>
+        <guiname xml:lang="eo">Rango</guiname>
+        <guiname xml:lang="en">Rank</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+    <field name="name">
+      <gui>
+        <guiname xml:lang="nl">Naam</guiname>
+        <guiname xml:lang="eo">Nomo</guiname>
+        <guiname xml:lang="en">Name</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <unique value="true" />
+        <required value="true" enforce="never" />
+        <maxLength value="32" />
+      </datatype>
+    </field>
+    <field name="description">
+      <gui>
+        <guiname xml:lang="en">Description</guiname>
+        <guiname xml:lang="nl">Omschrijving</guiname>
+        <guiname xml:lang="eo">Priskribo</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="1024" enforce="never"/>
+      </datatype>
+    </field>
+  </fieldlist>
+  <indexlist>
+    <index name="rank"><indexfield name="rank" /></index>
+    <index name="name"><indexfield name="name" /></index>
+  </indexlist>
+</builder>

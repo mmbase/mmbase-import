@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
+[]>
+<article>
+  <articleinfo>
+    <title>Cloud Context Security</title>
+    <date>2003-09-12</date>
+    <edition>$Id: cloudcontextsecurity.xml,v 1.6 2008-12-15 15:22:50 michiel Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+        <affiliation>
+          <orgname>Publieke Omroep</orgname>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>
+        This software is OSI Certified Open Source Software. OSI
+        Certified is a certification mark of the Open Source
+        Initiative.
+      </para>
+      <para>
+        The license (Mozilla version 1.0) can
+        be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+      </para>
+    </legalnotice>
+  </articleinfo>
+  <section id="intro">
+    <title>Introduction</title>
+    <para>
+      MMBase has a pluggable security system. This means the object level security can be
+      implemented on several ways. This document describes the 'cloud context' implementation for
+      MMBase security.
+    </para>
+    <para>
+      The default security implementation for several MMBase releases was the normal 'context'
+      security. This security implementation defines users, groups and so-called 'security
+      contexts' in an XML. See also the documentation for 'context security configuration'.
+    </para>
+    <para>
+      Often it is desirable to have a more dynamic security implementation which is more readily
+      configurable than by opening an XML file on the server in your text editor. It would be nice
+      if the concepts and relations described in this XML file could be modeled using MMBase
+      objects and relation. Then security could be administrated in the same way MMBase nodes can be
+      edited.
+    </para>
+  </section>
+  <section id="object_model">
+    <title>Object model</title>
+    <para>
+      Because of the nature of this security implementation, the object model of your MMBase
+      installation must be enriched with several new object types and relations types. This section
+      describes the object model needed for this security implementation.
+      <figure>
+        <title>The Cloud Context Security Object Model</title>
+        <graphic fileref="Security.jpg"/>
+      </figure>
+    </para>
+    <section id="contexts">
+      <title>Contexts</title>
+      <para>
+        All security contexts are represented in the 'mmbase-contexts' node manager. A certain context
+        can grant the several security operations ('create', 'read', 'write', 'delete', 'change
+        context') to groups or directly to users. This goes by the role 'grant' between mmbase-context
+        and mmbase-users and mmbase-groups.
+      </para>
+      <para>
+        To which other security contexts a context of a certain node may be changed is fixed by the
+        'allowed' relation between contexts objects (this feature it turned off on default).
+      </para>
+    </section>
+    <section id="groups">
+      <title>Groups</title>
+      <para>
+        Security contexts can grant rights to groups, modeled by the 'mmbase-groups' node
+        manager. Groups can contain other groups (with the 'contains' relations). Such 'contained'
+        groups inherit all rights.
+      </para>
+      <para>
+        Groups of course also can contain actual users. And users of course inherit their rights
+        from the groups they are in.
+      </para>
+    </section>
+    <section id="users">
+      <title>Users</title>
+      <para>
+        Users are represented by 'mmbase-users' objects. Users authorize themselves with
+        user name/password combinations which are fields of this node manager (the password is stored
+        md5 encrypted in the database).
+      </para>
+      <para>
+        Security contexts can also attribute rights directly to users.
+      </para>
+      <para>
+        User objects can have several statuses. A user can be 'active', 'new' or 'blocked'.
+      </para>
+    </section>
+    <section id="ranks">
+      <title>Ranks</title>
+      <para>
+        Besides the default ranks of the security frame-work, more ranks can be defined. This can be
+        used to block low ranked users to certain parts of your site.
+      </para>
+    </section>
+    <section id="buildernaming">
+      <title>Naming</title>
+      <para>
+        The builders are for legacy reasons called 'mmbase-users', 'mmbase-groups', 'mmbase-contexts',
+        'mmbase-ranks'. But because these things are essentially related to
+        security (rather then to 'mmbase' which is a bit of a non-statement in this context..) the
+        gui names of these builders will start with 'security' rather then with
+        'mmbase'. So in generic editors you will see them listed under 's' rather then under 'm'.
+      </para>
+    </section>
+  </section>
+  <section id="editors">
+    <title>Security editors</title>
+    <para>
+      If you know the object model sufficiently well, security can now be administrated by using
+      'generic' editors. Cloud context security is however shipped with specialized editors.
+    </para>
+    <para>
+      <figure>
+        <title>The Cloud Context Security Editors embedded in another editor</title>
+        <screenshot>
+          <graphic fileref="editors.png"/>
+        </screenshot>
+      </figure>
+      <figure>
+        <title>The group editor</title>
+        <screenshot>
+          <graphic fileref="groupeditor.png"/>
+        </screenshot>
+      </figure>
+      These editors are implemented as 'pieces of
+      html', which makes it possible to include the entire editors into other
+      editors (I use this to integrate them in the editors for a certain site),
+      and you can configure extra links for users (e.g. make a link to a 'people'
+      editwizard to relate people objects to accounts). There is an index.jsp
+      available to use them stand-alone.
+    </para>
+    <para>
+      When defining a new 'context' object with the security editors, it might be convenient to
+      allow read rights on it to most or all users. To facilitate this, this editors looks for a group with
+      alias 'mayreadallgroup' when creating a context object, and if it exists the read operation is
+      automaticly link to it immediately.
+    </para>
+    <para>
+      Often you would want to associate a context with every 'group' of users, so on the creation of
+      one of those, you get the option to create to other one in one go.
+    </para>
+    <para>
+      It is suggested that these security editors are installed in /mmbase/security (as the
+      `install' target of the cloud context security application would do).
+    </para>
+  </section>
+  <section id="extraadmins">
+    <title>'Extra' administration accounts</title>
+    <para>
+      Normally the cloud context security should be configured completely in itself. But it is
+      e.g. possible to forget the admin password or so, and then you could not do certain things any
+      more. You could fix it by temporary disabling security in security.xml and then reset the
+      admin password.
+    </para>
+    <para>
+      This would however temporary let anybody in your web site, and it would be very
+      vulnerable, in that time. When you switch it on then again, then all user have to login again,
+      which is also a (however small) disadvantage. Therefore we have provided an extra feature, which we
+      could refer to as 'extra administrators', which works by use of a property file
+      'admins.properties' in &lt;config dir&gt;/security/admins.properties. This property file contains name/password combinations of
+      'extra' administrators. The file is dynamically loaded and checked (you can change it, place
+      it, remove it), so you can add and remove such administrators on a running MMBase (without affecting 'normal' users).  So as long as you
+      have access to the file system, you can in this way always administrate you site running Cloud
+      Context Security, in a reasonably secure way.
+    </para>
+  </section>
+  <section id="otheroptions">
+    <title>Other configuration</title>
+    <para>
+      Some other things can be configured in cloud context security. These setting are available as 'properties' in the builder xml of mmbase-contexts.
+      <variablelist>
+        <varlistentry>
+          <term>readall</term>
+          <listitem>
+            <para>
+              If you don't care for read protection, you can considerably simplify configuration
+              by setting this property to 'true'. Every object may always be read by every
+              user. This should also have a positive effect on the performance impact of
+              security.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>allcontextspossible</term>
+          <listitem>
+            <para>
+              Setting this to false, would make it possible to implement a simple kind of work flow
+              using security, because then you must explicitly indicate which context may be changed to
+              which other contexts explicitly. Unpublished nodes can then be owned by a security
+              context which does not allow reading by everybody. You can arrange then that the
+              context can only be changed in one direction (to publish). The security editors do currently
+              not support this (no way to link to next context)
+            </para>
+            <para>
+              If this property is true (the default), then you may change any object (on which you
+              have the 'change context' right, to any other context (which you can see).
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>maxcontextsinquery</term>
+          <listitem>
+            <para>
+              When checking read rights, in the query things like 'WHERE owner in (&lt;list of contexts&gt;)' can
+              appear. This property is an indication for how much the query may (expressed in the number of times
+              one contexts is added to the query) grow. If the query would have to be more complex this is not
+              done, but the result would need checking. This means also that the result of a 'count'
+              on a query might not be exactly right any more, because it might have counted some
+              objects which you are not allowed to actually read.
+            </para>
+            <para>
+              Warnings will be issued in the log when this number is too small (a postprocessing of
+              query-results is needed), which you can solve in several ways. Firstly you can
+              increase this property. You can also simply the used query (perhaps it has
+              an extraordinary lot of steps), and lastly you could also make sure that there is for
+              any user only a limited number of contexts which he can see or a limited number of
+              contexts which he can not see (the query must contain for every step either contain a
+              list of all 'invisible' contexts or all 'visible' contexts).
+            </para>
+            <para>
+              This property defaults to 50.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </para>
+    <section id="otherbuilders">
+      <title>Using different builders</title>
+      <para>
+        Cloud context security provides the builder mmbaseuser, mmbasegroups, and mmbasecontexts to
+        store authentication and authorization information in. In some cases, e.g. when trying to
+        deploy cloud context security on an environment which used to have a different security
+        implementation, it may be desired to use other builders to store users and context in.
+      </para>
+      <section id="other_users">
+        <title>Using another builder to store users in</title>
+        <para>If you want to store the user in a different builder, then you have to do the
+        following</para>
+        <orderedlist>
+          <listitem>
+            <para>Choose your builder</para>
+          </listitem>
+          <listitem>
+            <para>You can define a 'security_editor_fields' property in this builder, to defined
+            which fields must be edited in the the security editors.</para>
+          </listitem>
+          <listitem>
+            <para>Extend
+            <classname>org.mmbase.security.implementation.cloudcontext.Authenticate</classname> and
+            override the method getUserProvider. Implement your own <classname>Provider</classname>, it can e.g. be the
+            class of your own users builder, and implement in your
+            <classname>Authenticate</classname> how it should be obtained. The method
+            <function>getUserBuilder</function> should return the builder (<constant>this</constant>
+            in case the <classname>Provider</classname> <emphasis>is</emphasis> the builder).
+            </para>
+          </listitem>
+          <listitem>
+            <para>Make sure the relations &lt;your builder&gt; to mmbaseranks with role 'rank',
+            from mmbasegroups to &lt;your builder&gt; with role 'contains' and mmbasecontext to
+            &lt;your builder &gt; with role 'grants' are possible.
+            </para>
+          </listitem>
+        </orderedlist>
+      </section>
+      <section id="other_context">
+        <title>Using another builder to store possible contexts</title>
+        <para>
+        </para>
+      </section>
+    </section>
+  </section>
+  <section id="conversion">
+    <title>Conversion from `XML' context security</title>
+    <para>
+      A conversion tool which read the XML file from the old style context security is
+      available.
+    </para>
+    <para>
+      This tool reads all users, groups and contexts from this file and matches them with
+      the existing users, groups and contexts (by username, name and name). All non existing ones
+      are created. After that also the `group structure' (which groups and users are contains by
+      which groups) is copied (That might result in 'double' links, but that does not matter). And
+      finally also the rights relations are created which are defined in the XML.
+    </para>
+    <para>
+      The tool is available in the 'admin' directory of the security editors (there is no link, you
+      need to make up the URL yourself, it might probably be /mmbase/security/admin, depending on
+      where you put the editors).
+    </para>
+    <para>
+      The inverse operation; writing back the security configuration to an XML which can be read by
+      the `XML' context security implementation is not yet available (and it is a bit tricky because
+      the passwords are plain text in the XML, but are md5 encrypted in the cloud).
+    </para>
+  </section>
+</article>

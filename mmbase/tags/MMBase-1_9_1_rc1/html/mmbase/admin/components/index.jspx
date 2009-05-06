@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page" 
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <mm:import externid="component">core</mm:import>
+  <mm:import externid="block">components</mm:import>
+  <head>
+    <title>Component ${component} - ${block}</title>
+    <mm:link page="/mmbase/style/css/mmbase.css">
+      <link rel="stylesheet" href="${_}" type="text/css" />
+    </mm:link>
+    <mm:link page="/mmbase/style/images/favicon.ico">
+      <link rel="icon" href="${_}" type="image/x-icon" />
+      <link rel="shortcut icon" href="${_}" type="image/x-icon" />
+    </mm:link>
+    <mm:component name="${component}" block="${block}" render="head" />
+  </head>
+  <mm:content type="text/html" language="en" expires="0">
+    <body class="basic">
+      <mm:component name="${component}" block="${block}" />
+    </body>
+  </mm:content>
+</html>
