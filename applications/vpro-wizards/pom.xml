@@ -1,163 +1,164 @@
 <?xml version="1.0"?>
 <project>
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.mmbase</groupId>
-		<artifactId>mmbase-application-parent</artifactId>
-		<version>1.9-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-application-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>mmbase-vpro-wizards</artifactId>
-	<name>MMBase VPRO Wizards</name>
-	<packaging>war</packaging>
+  <artifactId>mmbase-vpro-wizards</artifactId>
+  <name>MMBase VPRO Wizards</name>
+  <packaging>war</packaging>
+  <version>${mmbase.version}</version>
 
-	<properties>
+  <properties>
 
-	</properties>
+  </properties>
 
-	<description>
-		This toolkit provides an easy way to create task-oriented
-		editors like the
-		editwizards. The big difference is that editors
-		are
-		created with jsp's
-		using tag file libraries, and 'action' java
-		beans for
-		performing tasks.
-		Action beans are provided for the
-		common mmbase
-		editing tasks, like
-		creating, deleting and updating nods and
-		relations,
-		as
-		well as sortinging
-		lists of related nodes. It is trvial to extend the
-		system
-		with your custom actions.
+  <description>
+    This toolkit provides an easy way to create task-oriented
+    editors like the
+    editwizards. The big difference is that editors
+    are
+    created with jsp's
+    using tag file libraries, and 'action' java
+    beans for
+    performing tasks.
+    Action beans are provided for the
+    common mmbase
+    editing tasks, like
+    creating, deleting and updating nods and
+    relations,
+    as
+    well as sortinging
+    lists of related nodes. It is trvial to extend the
+    system
+    with your custom actions.
   </description>
-	<repositories>
-	</repositories>
+  <repositories>
+  </repositories>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>2.5.6</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-mock</artifactId>
-			<version>1.2-rc2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>2.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-			<version>2.4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>nekohtml</groupId>
-			<artifactId>nekohtml</artifactId>
-			<version>0.9.5</version>
-		</dependency>
-		<dependency>
-			<groupId>opensymphony</groupId>
-			<artifactId>oscache</artifactId>
-			<version>2.4</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.3</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.collections
-			</groupId>
-			<artifactId>collections-generic</artifactId>
-			<version>4.01</version>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>2.5.6</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-mock</artifactId>
+      <version>1.2-rc2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>2.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>nekohtml</groupId>
+      <artifactId>nekohtml</artifactId>
+      <version>0.9.5</version>
+    </dependency>
+    <dependency>
+      <groupId>opensymphony</groupId>
+      <artifactId>oscache</artifactId>
+      <version>2.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.collections
+      </groupId>
+      <artifactId>collections-generic</artifactId>
+      <version>4.01</version>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>${basedir}/resources</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<!--
-							weird to have to assign this action to phase 'test'. but
-							prepare-package (the more logical phase) is not available in
-							older versions of maven, and the war:war task is bound to the
-							lifecycle first, so you can not get before that
-						-->
-						<phase>generate-sources</phase>
-						<configuration>
-							<tasks name="merge the fck editors with this project">
-								<property name="webapp.dir" value="${pom.artifactId}-${pom.version}" />
-								<property name="remote.download.url"
-									value="http://surfnet.dl.sourceforge.net/sourceforge/fckeditor/FCKeditor_2.6.4.zip" />
-								<property name="local.file" value="fckeditor.zip" />
-								<property name="deploy.sources" value="fckeditor" />
-								<property name="deploy.destination"
-									value="mmbase/vpro-wizards/system/javascript/fckeditor" />
+  <build>
+    <resources>
+      <resource>
+        <directory>${basedir}/resources</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <!--
+              weird to have to assign this action to phase 'test'. but
+              prepare-package (the more logical phase) is not available in
+              older versions of maven, and the war:war task is bound to the
+              lifecycle first, so you can not get before that
+            -->
+            <phase>generate-sources</phase>
+            <configuration>
+              <tasks name="merge the fck editors with this project">
+                <property name="webapp.dir" value="${pom.artifactId}-${pom.version}" />
+                <property name="remote.download.url"
+                  value="http://surfnet.dl.sourceforge.net/sourceforge/fckeditor/FCKeditor_2.6.4.zip" />
+                <property name="local.file" value="fckeditor.zip" />
+                <property name="deploy.sources" value="fckeditor" />
+                <property name="deploy.destination"
+                  value="mmbase/vpro-wizards/system/javascript/fckeditor" />
 
-								<ant antfile="${basedir}/antsupport-fck.xml" inheritRefs="true">
-									<target name="doit" />
-								</ant>
+                <ant antfile="${basedir}/antsupport-fck.xml" inheritRefs="true">
+                  <target name="doit" />
+                </ant>
 
-								<copy file="${basedir}/ext/fckconfig.js"
-									todir="${basedir}/target/${webapp.dir}/mmbase/vpro-wizards/system/javascript/fckeditor" />
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+                <copy file="${basedir}/ext/fckconfig.js"
+                  todir="${basedir}/target/${webapp.dir}/mmbase/vpro-wizards/system/javascript/fckeditor" />
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>examples-assembly.xml
-								</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>examples-assembly.xml
+                </descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
