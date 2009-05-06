@@ -148,7 +148,7 @@ taglibs-standard-standard.jar=${expand.dir}/${taglibs-standard.version}/lib/stan
 
 # ----- 1.5 backport --
 #http://www.mathcs.emory.edu/dcl/util/backport-util-concurrent/dist/backport-util-concurrent-1.0/
-backport-util-concurrent.version=backport-util-concurrent-2.1
+backport-util-concurrent.version=backport-util-concurrent-3.1
 backport-util-concurrent.file=${backport-util-concurrent.version}.tar.gz
 backport-util-concurrent.dest=${download.dir}/${backport-util-concurrent.file}
 backport-util-concurrent.loc=http://www.mmbase.org/download/${backport-util-concurrent.file}
