@@ -28,14 +28,25 @@ public class Version {
 
     private static final Logger log = Logging.getLoggerInstance(Version.class);
 
+    private static final Pattern SCM = Pattern.compile("\\$URL: https://scm.mmbase.org/mmbase/(.*)");
     /**
      * Get Version Control tag
      * @return version Control tag
      * @since MMBase-1.9
      */
     public static String getTag() {
-        String cvsTag = "$Name: not supported by cvs2svn $";
-        return cvsTag.substring(6, cvsTag.length() - 1).trim();
+        String url = "$URL$";
+        Matcher matcher = SCM.matcher(url);
+        if (matcher.matches()) {
+            String[] group = matcher.group(1).split("/", 3);
+            if (group[0].equals("tags") || group[0].equals("branches")) {
+                return group[1];
+            } else {
+                return group[0];
+            }
+        } else {
+            return "trunk?";
+        }
     }
 
     /**
