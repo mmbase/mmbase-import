@@ -12,6 +12,7 @@
   <artifactId>maven-mmbase-plugin</artifactId>
   <name>MMBase Maven Plugin</name>
   <packaging>maven-plugin</packaging>
+  <version>${mmbase.version}</version>
 
   <dependencies>
     <dependency>
