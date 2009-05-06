@@ -14,6 +14,7 @@
   <artifactId>mmbase-maven</artifactId>
   <packaging>pom</packaging>
   <name>MMBase Maven Parent</name>
+  <version>${mmbase.version}</version>
 
   <modules>
     <module>../maven-base</module>
