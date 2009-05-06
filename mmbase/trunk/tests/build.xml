@@ -430,13 +430,16 @@
     <antcall target="run.typerel" inheritRefs="true"/>
     <echo message="sleeping.." />
     <sleep seconds="10" />
+
     <antcall target="run.all.bridge" inheritRefs="true"/>
     <echo message="sleeping.." />
     <sleep seconds="10" />
+
     <echo message="========================================UTIL========================================" />
     <antcall target="run.util" inheritRefs="true"/>
     <echo message="========================================RMMCI UTIL========================================" />
     <antcall target="run.rmmciutil" inheritRefs="true"/>
+
     <echo message="========================================DATATYPES========================================" />
     <antcall target="run.datatypes" inheritRefs="true"/>
     <sleep seconds="10" />
