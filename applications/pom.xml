@@ -13,6 +13,7 @@
   <artifactId>mmbase-application-parent</artifactId>
   <packaging>pom</packaging>
   <name>MMBase Applications</name>
+  <version>${mmbase.version}</version>
 
   <description>
     Applications are war overlays then can plug in some functionality into an existing MMBase installation.
