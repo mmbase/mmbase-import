@@ -96,19 +96,25 @@ public class RemoteGenerator extends AbstractMojo {
    public ClassLoader getClassLoader(Set<Artifact> artifacts) throws MojoExecutionException {
       try {
          ClassWorld world = new ClassWorld();
-         ClassRealm realm = world.newRealm("plugin.mmbase.remote.genrator", Thread.currentThread()
+         ClassRealm realm = world.newRealm("plugin.mmbase.remote.generator", Thread.currentThread()
                .getContextClassLoader());
-         ClassRealm remoteGenRealm = realm.createChildRealm("mmbaseRemoteGenrator");
+         ClassRealm remoteGenRealm = realm.createChildRealm("mmbaseRemoteGenerator");
          Iterator<Artifact> itor = artifacts.iterator();
+         getLog().info("Remote Gen Realm " + remoteGenRealm);
          while (itor.hasNext()) {
-            remoteGenRealm.addConstituent(itor.next().getFile().toURL());
+             Artifact artifact = itor.next();
+             File f = artifact.getFile();
+             if (f != null) {
+                 getLog().info("Adding constituent " + f);
+                 remoteGenRealm.addConstituent(f.toURL());
+             } else {
+                 getLog().error("Artifact " +  artifact + " has no file");
+             }
          }
          return remoteGenRealm.getClassLoader();
-      }
-      catch (DuplicateRealmException e) {
+      } catch (DuplicateRealmException e) {
         throw new MojoExecutionException(e.getMessage(), e);
-      }
-      catch (MalformedURLException e) {
+      } catch (MalformedURLException e) {
          throw new MojoExecutionException(e.getMessage(), e);
       }
    }
