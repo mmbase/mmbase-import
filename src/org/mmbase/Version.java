@@ -29,7 +29,7 @@ public class Version {
 
     private static final Logger log = Logging.getLoggerInstance(Version.class);
 
-    private static final Pattern SCM = Pattern.compile("$URL: https://scm.mmbase.org/mmbase/(.*)");
+    private static final Pattern SCM = Pattern.compile("\\$URL: https://scm.mmbase.org/mmbase/(.*)");
     /**
      * Get Version Control tag
      * @return version Control tag
@@ -39,8 +39,12 @@ public class Version {
         String url = "$URL$";
         Matcher matcher = SCM.matcher(url);
         if (matcher.matches()) {
-            String[] group = matcher.group(1).split("/", 2);
-            return group[0];
+            String[] group = matcher.group(1).split("/", 3);
+            if (group[0].equals("tags") || group[0].equals("branches")) {
+                return group[1];
+            } else {
+                return group[0];
+            }
         } else {
             return "trunk?";
         }
