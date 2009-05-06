@@ -15,6 +15,10 @@
   <name>MMBase Example webapp</name>
   <version>${mmbase.version}</version>
 
+  <properties>
+    <base.version>${mmbase.version}</base.version>
+  </properties>
+
   <build>
     <defaultGoal>install</defaultGoal>
     <plugins>
