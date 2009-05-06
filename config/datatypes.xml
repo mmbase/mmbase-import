@@ -133,6 +133,15 @@
       </setprocessor>
     </specialization>
 
+    <specialization id="checkequality">
+      <description xml:lang="en">
+        This is a field datatype that of which the value is only valid, if it is equal to the value
+        of another field in this node. The other field's name is default empty but it can be
+        changed by overriding the property 'field'.
+      </description>
+      <class name="org.mmbase.datatypes.CheckEqualityDataType" />
+    </specialization>
+
     <specialization id="confirmpassword">
       <description xml:lang="en">
         This is a field datatype that of which the value is only valid, if it is equal to the value
