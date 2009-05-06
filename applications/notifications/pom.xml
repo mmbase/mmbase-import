@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>mmbase-notifications</artifactId>
-  <name>MMBase Notification</name>
+  <name>MMBase Notifications</name>
   <packaging>war</packaging>
   <version>${mmbase.version}</version>
 
