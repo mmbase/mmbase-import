@@ -17,7 +17,7 @@ See http://www.MMBase.org/license
   <packaging>pom</packaging>
   <name>MMBase</name>
 
-  <version>1.9-SNAPSHOT</version>
+  <version>${mmbase.version}</version>
 
   <description>
     MMBase is a Web Content Management System with strong multi media features. MMBase has a large
