@@ -36,7 +36,7 @@ public class Version {
      * @since MMBase-1.9
      */
     public static String getTag() {
-        String url = "$Url: $";
+        String url = "$Url$";
         Matcher matcher = SCM.matcher(url);
         if (matcher.matches()) {
             String[] group = matcher.group(1).split("/", 2);
