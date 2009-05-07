@@ -66,6 +66,18 @@
   </dependencies>
   <profiles>
     <profile>
+      <id>servlet24</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>taglibs</groupId>
+          <artifactId>standard</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>servlet25</id>
       <properties>
         <base.version>${mmbase.version}-servlet25</base.version>
