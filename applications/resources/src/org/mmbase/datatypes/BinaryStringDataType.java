@@ -46,6 +46,21 @@ public class BinaryStringDataType extends StringDataType {
     protected String castToPresent(Object value, Node node, Field field) {
         return Casting.toSerializableInputStream(value).getName();
     }
+
+    @Override
+    protected String castForPattern(Object v, Node node, Field field) {
+        if (v == null) return null;
+        return Casting.toSerializableInputStream(v).getName();
+    }
+
+    @Override
+    protected String cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
+        Object preCast = preCast(value, cloud, node, field);
+        if (preCast == null) return null;
+        String cast = Casting.toSerializableInputStream(value).getName();
+        return cast;
+    }
+
     @Override
     protected Collection<LocalizedString> validateRequired(Collection<LocalizedString> errors, Object castValue, Object value, Node  node, Field field) {
         String v = castValue == null ? null : ((SerializableInputStream) castValue).getName();
