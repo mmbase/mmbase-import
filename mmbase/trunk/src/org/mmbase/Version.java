@@ -11,6 +11,7 @@ package org.mmbase;
 
 import java.io.*;
 import java.util.jar.*;
+import java.util.regex.*;
 import java.net.*;
 
 import org.mmbase.util.logging.Logger;
