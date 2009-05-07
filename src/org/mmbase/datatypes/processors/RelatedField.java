@@ -92,6 +92,7 @@ public class RelatedField {
                 Node otherNode = rl.getNode(0);
                 String fieldName = otherField == null ? field.getName() : otherField;
                 otherNode.setValue(fieldName, value);
+                otherNode.commit();
                 return value;
             } else {
                 log.warn("No related node");
