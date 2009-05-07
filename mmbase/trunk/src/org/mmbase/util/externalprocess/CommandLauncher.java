@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class CommandLauncher {
 
-    /** MMBase logging system */
+
     private static final Logger log = Logging.getLoggerInstance(CommandLauncher.class);
 
     /**
@@ -385,11 +385,14 @@ public class CommandLauncher {
                     output.write(buffer, 0, nbytes);
                     output.flush();
                 }
-            } catch (IOException e) {}
+            } catch (IOException e) {
+            }
             if (nbytes == 0) {
                 try {
                     Thread.sleep(DELAY);
-                } catch (InterruptedException ie) {}
+                } catch (InterruptedException ie) {
+                    break;
+                }
             } else {
                 monitor.worked();
             }
@@ -404,8 +407,8 @@ public class CommandLauncher {
         try {
             process.waitFor();
         } catch (InterruptedException e) {
-            //System.err.println("reader exception " +e);
-            //e.printStackTrace();
+            monitor.setCanceled(true);
+            log.service("Interrupted");
         }
 
         // Drain the pipes.
@@ -444,12 +447,19 @@ public class CommandLauncher {
      * @param commandArgs array of comand and args
      */
     public void printCommandLine(String[] commandArgs) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (String element : commandArgs) {
             buf.append(element);
             buf.append(' ');
         }
         buf.append(lineSeparator);
         log.debug(buf.toString());
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public Process getProcess() {
+        return process;
     }
 }
