@@ -268,6 +268,13 @@ public class StringDataType extends ComparableDataType<String> implements Length
         return buf;
     }
 
+    /**
+     * @since MMBase-1.9.1
+     */
+    protected String castForPattern(Object v, Node node, Field field) {
+        return Casting.toString(v);
+    }
+
     protected class PatternRestriction extends AbstractRestriction<Pattern> {
         PatternRestriction(PatternRestriction source) {
             super(source);
@@ -279,9 +286,11 @@ public class StringDataType extends ComparableDataType<String> implements Length
             return value;
         }
         protected boolean simpleValid(Object v, Node node, Field field) {
-            String s = Casting.toString(v);
-            boolean res =  value == null ? true : value.matcher(s).matches();
-            //log.info("VALIDATING " + v + " with " + getPattern() + " -> " + res);
+            String s = StringDataType.this.castForPattern(v, node, field);
+            boolean res = value == null || s == null ? true : value.matcher(s).matches();
+            if (log.isDebugEnabled()) {
+                log.debug("VALIDATING " + v + "->" + s + " with " + getPattern() + " -> " + res);
+            }
             return res;
         }
     }
