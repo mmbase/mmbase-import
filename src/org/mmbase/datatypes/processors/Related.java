@@ -51,6 +51,20 @@ public class Related {
             relationConstraints.putAll(map);
         }
 
+        protected RelationManager getRelationManager(Node node) {
+            Cloud cloud = node.getCloud();
+            if (searchDir.equals("source")) {
+                return cloud.getRelationManager(cloud.getNodeManager(type),
+                                                node.getNodeManager(),
+                                                role);
+
+            } else {
+                return cloud.getRelationManager(node.getNodeManager(),
+                                                cloud.getNodeManager(type),
+                                                role);
+            }
+        }
+
         protected NodeQuery getRelationsQuery(Node node) {
             Cloud cloud = node.getCloud();
             NodeQuery nq = Queries.createRelationNodesQuery(node, cloud.getNodeManager(type), role, searchDir);
@@ -93,9 +107,7 @@ public class Related {
                         log.debug("Deleting " + r);
                         r.delete();
                     }
-                    RelationManager rel = cloud.getRelationManager(node.getNodeManager(),
-                                                                   cloud.getNodeManager(type),
-                                                                   role);
+                    RelationManager rel = getRelationManager(node);
                     if (node.isNew()) node.commit(); // Silly, but you cannot make relations to new nodes.
                     Relation newrel = node.createRelation(dest, rel);
                     for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
