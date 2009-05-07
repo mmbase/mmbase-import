@@ -226,6 +226,9 @@ See http://www.MMBase.org/license
   <profiles>
     <profile>
       <id>servlet24</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <dependencies>
         <dependency>
           <groupId>taglibs</groupId>
