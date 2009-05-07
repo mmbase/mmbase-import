@@ -70,7 +70,7 @@ public abstract class ThreadPools {
 
     private static List<Thread> nameLess = new CopyOnWriteArrayList<Thread>();
 
-    private static Thread newThread(Runnable r, final String id) {
+    public static Thread newThread(Runnable r, final String id) {
         boolean isUp = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp();
         Thread t = new Thread(threadGroup, r,
                               isUp ? getMachineName() + ":" + id : id) {
