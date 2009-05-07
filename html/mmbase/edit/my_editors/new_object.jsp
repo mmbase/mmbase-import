@@ -103,7 +103,7 @@
       </div>
       <div class="message">    
         <h4>
-          <mm:link page="edit_object.jsp" referids="_@nr">
+          <mm:link page="edit_object.jsp" referids="rnr@nr">
             Your new node <a href="${_}" title="edit this new node"><mm:function name="gui" /></a> (<mm:field name="number" />) is saved
           </mm:link>
         </h4>
