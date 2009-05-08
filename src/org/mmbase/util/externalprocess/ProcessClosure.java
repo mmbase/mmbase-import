@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * process. A reader can block the calling thread until it is finished reading
  * (readBlocking). Or the reader can immidiately return when reading of the
  * stdout and stderr begins (readNonBlocking).
- * 
+ *
  * ProcessClosure handles the writing of the stdin of a external process. A
  * writer can block the calling thread until it is finished writing to the stdin
  * and reading the stdout and stderr (writeBlocking). Or the writer can
@@ -104,7 +104,7 @@ public class ProcessClosure {
         ThreadGroup group = new ThreadGroup(name + " ThreadGroup");
 
         //Reading both stdout and stderr is required to prevent deadlocks from
-        //the external process.  
+        //the external process.
 
         //External process Streams are seen from the point of view of the java process
         InputStream stdout = process.getInputStream();
@@ -187,7 +187,8 @@ public class ProcessClosure {
             try {
                 process.waitFor();
             } catch (InterruptedException e) {
-                //System.err.println("exception " +e);
+                log.service("Interrupted");
+                return;
             }
             try {
                 process.exitValue();
