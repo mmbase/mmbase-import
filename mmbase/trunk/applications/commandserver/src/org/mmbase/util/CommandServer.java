@@ -13,7 +13,8 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
-//import java.util.concurrent.*;
+import java.text.*;
+
 
 /**
  * <p>
@@ -35,7 +36,7 @@ Started ServerSocket[addr=michiel.omroep.nl/145.58.67.10,port=0,localport=1679]
  <pre>
 commandserver 1679/tcp
  </pre>
- * In /etc/services. And 
+ * In /etc/services. And
  <pre>
 commandserver	stream	tcp		nowait	nobody	/usr/bin/java java -jar /home/michiel/mmbase/head/applications/commandserver/build/mmbase-commandserver.jar
  </pre>
@@ -45,6 +46,8 @@ commandserver	stream	tcp		nowait	nobody	/usr/bin/java java -jar /home/michiel/mm
  * The input for this server are 2 serialized String[] arrays (which will be the arguments for
  * {@link Runtime#exec(String[], String[])}), followed by the stdin for the command. It will return stdout of the process.
  * </p>
+ *
+ * You can use {@link org.mmbase.util.externalcommands.CommandExector} to connecto to the commandserver.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.2
@@ -134,14 +137,18 @@ public class CommandServer {
 
     }
 
+    private static long seq = 1;
     public static class Command implements Runnable {
         private final InputStream input;
         private final OutputStream output;
+        private final OutputStream errors;
         private final String desc;
         private final Runnable close;
-        public Command(InputStream in, OutputStream out, String d, Runnable c) {
+        protected final long number = seq++;
+        public Command(InputStream in, OutputStream out, OutputStream err, String d, Runnable c) {
             input = in;
             output = out;
+            errors = err;
             desc   = d;
             close = c;
 
@@ -152,28 +159,38 @@ public class CommandServer {
                 ObjectInputStream stream = new ObjectInputStream(input);
                 String[] params = (String[]) stream.readObject();
                 String[] env    = (String[]) stream.readObject();
-                debug("Found " + params);
+                System.out.println(number + " Executing " + Arrays.asList(params));
                 Process p = Runtime.getRuntime().exec(params, env);
-                PipedInputStream pi = new PipedInputStream();
+                PipedInputStream pi  = new PipedInputStream();
                 PipedOutputStream po = new PipedOutputStream(pi);
 
                 Copier connector = new Copier(input, po, ".input -> piped output");
                 threads.execute(connector);
 
-
                 Copier connector2 = new Copier(pi, p.getOutputStream(), ",piped input -> process input");
                 threads.execute(connector2);
+
 
                 PipedInputStream pi2 = new PipedInputStream();
                 PipedOutputStream po2 = new PipedOutputStream(pi2);
 
-                InputStream inputStream = p.getInputStream();
+                InputStream  inputStream = p.getInputStream();
                 OutputStream outputStream = p.getOutputStream();
                 Copier connector3 = new Copier(inputStream, po2, ";process output -> piped output 2");
                 threads.execute(connector3);
 
+
+                PipedInputStream piErr = new PipedInputStream();
+                PipedOutputStream poErr = new PipedOutputStream(piErr);
+                InputStream  errorStream = p.getErrorStream();
+                Copier connectorErr = new Copier(errorStream, poErr, ";process err -> piped err");
+                threads.execute(connectorErr);
+
                 Copier connector4 = new Copier(pi2, output, ";piped input2 -> output");
                 threads.execute(connector4);
+
+                Copier connectorErr2 = new Copier(piErr, errors, ";piped err -> errors");
+                threads.execute(connectorErr2);
 
 
                 connector.waitFor();
@@ -195,11 +212,15 @@ public class CommandServer {
                 debug("Closing");
                 connector4.waitFor();
                 output.close();
+                if (errors != output) {
+                    errors.close();
+                }
+                System.out.println(number + " ready: " + p.exitValue());
 
 
 
             } catch (Exception ie) {
-                System.err.println(ie.getClass().getName() + " " + ie.getMessage() + " for " + desc + " " + Arrays.asList(ie.getStackTrace()));
+                System.err.println("" + number + " " + ie.getClass().getName() + " " + ie.getMessage() + " for " + desc + " " + Arrays.asList(ie.getStackTrace()));
             } finally {
                 debug("End");
             }
@@ -214,7 +235,7 @@ public class CommandServer {
     public static void main(String[] args) throws IOException, InterruptedException {
         if (args.length == 0) {
             debug = false;
-            Runnable run = new Command(System.in, System.out, "stdin/stdout", null);
+            Runnable run = new Command(System.in, System.out, System.err, "stdin/stdout", null);
             run.run();
 
         } else {
@@ -232,13 +253,27 @@ public class CommandServer {
             SocketAddress address = new InetSocketAddress(host, port);
             server.bind(address);
             System.out.println("Started " + server);
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             while (true) {
+
                 final Socket accept = server.accept();
                 accept.setSoTimeout(0);
                 accept.setKeepAlive(true);
                 accept.setReceiveBufferSize(1024);
-                System.out.println("Connection " + accept);
-                socketThreads.execute(new Command(accept.getInputStream(), accept.getOutputStream(), accept.toString(), new Runnable() {public void run() { try {accept.shutdownInput();} catch (Exception e) {} } }));
+                Command command = new Command(accept.getInputStream(),
+                                              accept.getOutputStream(),
+                                              accept.getOutputStream(),
+                                              accept.toString(),
+                                              new Runnable() {
+                                                  public void run() {
+                                                      try {
+                                                          accept.shutdownInput();
+                                                      } catch (Exception e) {
+                                                      }
+                                                  }
+                                              });
+                System.out.println(command.number + " " + format.format(new Date()) + " " + " Connection " + accept);
+                socketThreads.execute(command);
             }
         }
 
