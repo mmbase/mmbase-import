@@ -28,8 +28,7 @@ import org.mmbase.util.logging.Logging;
  */
 class StreamCopyThread extends Thread {
 
-    /** MMBase logging system */
-    private static Logger log = Logging.getLoggerInstance(StreamCopyThread.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(StreamCopyThread.class);
 
     /**
      * The number of milliseconds to wait before writing
@@ -63,7 +62,7 @@ class StreamCopyThread extends Thread {
 
     /**
      * Create a thread to copy bytes fro one strea to the other
-     * 
+     *
      * @param name the name of the new thread
      * @param in the stream from which to pipe the data
      * @param out the stream to pipe the data to
@@ -75,7 +74,7 @@ class StreamCopyThread extends Thread {
 
     /**
      * Create a thread to copy bytes fro one stream to the other
-     * 
+     *
      * @param group ThreadGroup where this thread belongs to
      * @param name the name of the new thread
      * @param in the stream from which to pipe the data
@@ -116,7 +115,8 @@ class StreamCopyThread extends Thread {
             try {
                 Thread.sleep(WAIT_DELAY);
             } catch (InterruptedException e) {
-                // we only wanted a delay
+                log.info("Interrupted");
+                return;
             }
 
             int size = 0;
@@ -142,7 +142,7 @@ class StreamCopyThread extends Thread {
              This way , the external process knows that we are finished writing.
              Closing the stdout and sterr is not critical, but it is still nice
              to close all the resources
-             This thread is not responsible for closing the stream of the java process. 
+             This thread is not responsible for closing the stream of the java process.
             */
             if (processInput) {
                 try {
