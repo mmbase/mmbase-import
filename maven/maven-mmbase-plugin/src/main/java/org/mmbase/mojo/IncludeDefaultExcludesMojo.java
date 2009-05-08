@@ -100,7 +100,24 @@ public class IncludeDefaultExcludesMojo extends AbstractMojo {
             if (sub.isDirectory()) {
                 tot += copyDirectory(sub, subDest);
             } else {
-                if (FileUtils.copyFileIfModified(sub, subDest)) tot++;
+                if (! subDest.exists() || sub.lastModified() > subDest.lastModified()) {
+                    if (subDest.exists() && (! subDest.canWrite())) {
+                        try {
+                            java.lang.reflect.Method setWritable = File.class.getMethod("setWritable", Boolean.TYPE);
+                            setWritable.invoke(subDest, Boolean.TRUE);
+                        } catch (NoSuchMethodException nsme) {
+                            getLog().warn(nsme + ". Please use java 6 for this.");
+                        } catch (SecurityException se) {
+                            getLog().warn(se);
+                        } catch (IllegalAccessException iae) {
+                            getLog().warn(iae);
+                        } catch (java.lang.reflect.InvocationTargetException ite) {
+                            getLog().warn(ite);
+                        }
+                    }
+                    FileUtils.copyFile(sub, subDest);
+                    tot++;
+                }
             }
         }
         return tot;
