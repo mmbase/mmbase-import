@@ -184,7 +184,7 @@ public class DocumentReader  {
                 dfactory.setXIncludeAware(true);
             } catch(Exception e) {
                 if (! warnedXinclude) {
-                    log.info(e + " Your current document builder factory does not support xi:include.");
+                    log.warn(e + " Your current document builder factory does not support xi:include.");
                     warnedXinclude = true;
                 }
             }
