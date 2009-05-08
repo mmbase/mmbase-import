@@ -42,13 +42,13 @@ public interface IProgressMonitor {
      * Notifies that the processing is beginning.  This must only be called once
      * on a given progress monitor instance.
      */
-    public void begin();
+    void begin();
 
     /**
      * Notifies that the work is done; that is, either the external process is
      * completed or the user canceled it.
      */
-    public void done();
+    void done();
 
     /**
      * Returns whether cancelation of current operation has been requested.
@@ -59,21 +59,21 @@ public interface IProgressMonitor {
      *    and <code>false</code> otherwise
      * @see #setCanceled
      */
-    public boolean isCanceled();
+    boolean isCanceled();
 
     /**
      * Sets the cancel state to the given value.
-     * 
+     *
      * @param value <code>true</code> indicates that cancelation has
      *     been requested (but not necessarily acknowledged);
      *     <code>false</code> clears this flag
      *
      * @see #isCanceled
      */
-    public void setCanceled(boolean value);
+    void setCanceled(boolean value);
 
     /**
      * Notifies that some work of the external process has been completed.
      */
-    public void worked();
+    void worked();
 }
