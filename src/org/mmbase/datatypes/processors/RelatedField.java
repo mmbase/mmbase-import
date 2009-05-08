@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * The set- and get- processors implemented in this file can be used to make a virtual field which
- * act as a field of a related node.
+ * acts as a field of a related node.
  *
  *
  * @author Michiel Meeuwissen
