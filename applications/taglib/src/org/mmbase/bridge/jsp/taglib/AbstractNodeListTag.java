@@ -220,8 +220,17 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         listHelper.doStartTagHelper();
 
         if (getReferid() != null) {
-            Object o =  getObject(getReferid());
-            if (o instanceof Collection) {
+            Object o =  org.mmbase.util.Casting.unWrap(getObject(getReferid()));
+            if (o instanceof NodeList) {
+                // ok
+            } else if (o instanceof BridgeList) {
+                BridgeList<?> bl = (BridgeList<?>) o;
+                NodeList nl = new CollectionNodeList(bl, getCloudVar());
+                for (Map.Entry<Object, Object> entry : bl.getProperties().entrySet()) {
+                    nl.setProperty(entry.getKey(), entry.getValue());
+                }
+                o = nl;
+            } else if (o instanceof Collection) {
                 o  = new CollectionNodeList((Collection) o, getCloudVar());
             } else {
                 throw new JspTagException("Context variable " + getReferid() + " is not a NodeList (or some other Collection of Nodes), but " + (o == null ? "NULL" : "a " + o.getClass()));

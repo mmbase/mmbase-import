@@ -33,11 +33,12 @@ public class ListRelationsTag extends AbstractNodeListTag {
 
     private NodeManager nm;
     private Node     relatedFromNode;
+    private static final String RELATED_FROM = "relatedFromNode";
 
 
     Node getRelatedfromNode() {
         BridgeList<Node> returnList = getReturnList();
-        return returnList == null ? null : (Node) returnList.getProperty("relatedFromNode");
+        return returnList == null ? null : (Node) returnList.getProperty(RELATED_FROM);
     }
 
 
@@ -78,7 +79,10 @@ public class ListRelationsTag extends AbstractNodeListTag {
     public int doStartTag() throws JspTagException{
         int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
-            relatedFromNode = (Node)      listHelper.getReturnList().getProperty("relatedFromNode");
+            relatedFromNode = (Node)      listHelper.getReturnList().getProperty(RELATED_FROM);
+            if (relatedFromNode == null) {
+                throw new IllegalStateException("No 'relatedFromProperty' found in list " + listHelper.getReturnList().getClass() + " " + listHelper.getReturnList());
+            }
             return superresult;
         }
 
@@ -111,7 +115,10 @@ public class ListRelationsTag extends AbstractNodeListTag {
         Queries.sortUniquely(query);
 
         NodesAndTrim result = getNodesAndTrim(query);
-        result.nodeList.setProperty("relatedFromNode", relatedFromNode); // used to be used by mm:relatednode but not any more.
+        assert relatedFromNode != null;
+        result.nodeList.setProperty(RELATED_FROM, relatedFromNode); // used to be used by mm:relatednode but not any more.
+        assert result.nodeList.getProperty(RELATED_FROM) != null;
+
 
         return setReturnValues(result.nodeList, result.needsTrim);
     }
