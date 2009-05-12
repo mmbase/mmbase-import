@@ -64,6 +64,8 @@ public class WriterHelper {
     static final int TYPE_CHARSEQUENCE  = 26;
     static final int TYPE_FILEITEM      = 27;
 
+    private boolean use_Stack = true;
+
 
     static final int stringToType(String tt) {
         String t = tt.toLowerCase();
@@ -150,6 +152,12 @@ public class WriterHelper {
         thisTag = tag;
     }
 
+    /**
+     * @since MMBase-1.9.1
+     */
+    public void setUse_Stack(boolean b) {
+        use_Stack = b;
+    }
     /**
      * Reset to initial values
      */
@@ -442,27 +450,31 @@ public class WriterHelper {
 
         PageContext pageContext = thisTag.getPageContext();
 
-        _Stack = (LinkedList<StackEntry>) pageContext.getAttribute(STACK_ATTRIBUTE);
-        if (_Stack == null) {
-            _Stack = new LinkedList<StackEntry>();
-            pushed = false;
-            pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
-        }
-
-        setJspvar();
-        if (pushed && _Stack.size() > 0) {
-            if (log.isDebugEnabled()) {
-                log.debug("Value was already pushed by this tag");
+        if (use_Stack) {
+            _Stack = (LinkedList<StackEntry>) pageContext.getAttribute(STACK_ATTRIBUTE);
+            if (_Stack == null) {
+                _Stack = new LinkedList<StackEntry>();
+                pushed = false;
+                pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
             }
-            _Stack.set(0, new StackEntry(value, getEscaper()));
-        } else {
-            _Stack.addFirst(new StackEntry(value, getEscaper()));
-            pushed = true;
+
         }
-        pageContext.setAttribute("_", Casting.wrap(value, getEscaper()));
-        if (log.isDebugEnabled()) {
-            log.debug("pushed  on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
-            log.debug("Escaper: " + getEscaper());
+        setJspvar();
+        if (use_Stack) {
+            if (pushed && _Stack.size() > 0) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Value was already pushed by this tag");
+                }
+                _Stack.set(0, new StackEntry(value, getEscaper()));
+            } else {
+                _Stack.addFirst(new StackEntry(value, getEscaper()));
+                pushed = true;
+            }
+            pageContext.setAttribute("_", Casting.wrap(value, getEscaper()));
+            if (log.isDebugEnabled()) {
+                log.debug("pushed  on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
+                log.debug("Escaper: " + getEscaper());
+            }
         }
     }
 
@@ -612,8 +624,10 @@ public class WriterHelper {
         } catch (IOException ioe){
             throw new TaglibException(ioe);
         }
-        pop_Stack();
-        _Stack = null;
+        if (use_Stack) {
+            pop_Stack();
+            _Stack = null;
+        }
         pushed = false;
         bodyContent = null;
         value = null;
