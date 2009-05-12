@@ -40,7 +40,9 @@ class TransactionResolver {
             Integer num = numberEntry.getValue();
             if (num == null || num.intValue() == -1) {
                 int newNumber = mmbase.getStorageManager().createKey();
-                log.info("" + numberEntry.getKey() + " -> " + newNumber);
+                if (log.isDebugEnabled()) {
+                    log.debug("" + numberEntry.getKey() + " -> " + newNumber);
+                }
                 numberEntry.setValue(newNumber);
             }
         }
