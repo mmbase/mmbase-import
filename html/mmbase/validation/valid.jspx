@@ -11,7 +11,7 @@
 
       @todo: accept also node argument
 
-      $Id: valid.jspx,v 1.3.2.3 2007-09-24 16:35:03 michiel Exp $
+      $Id: valid.jspx 35067 2009-05-12 07:25:49Z michiel $
       author: Michiel Meeuwissen
   -->
   <jsp:directive.page
@@ -19,6 +19,7 @@
       session="false" />
   <jsp:directive.include file="get.datatype.jspxf" />
   <mm:import externid="value" required="true" vartype="string" jspvar="value"/>
+  <mm:cloud><!-- cloud to provide locale -->
   <jsp:scriptlet>
     if ("".equals(value)) {
       value = null;
@@ -33,7 +34,7 @@
           }
        };
     }
-    Collection errors = dataType.validate(value, node, field);
+    Collection errors = dataType == null ? new ArrayList() : dataType.validate(value, node, field);
     pageContext.setAttribute("errors", errors);
     pageContext.setAttribute("node", node);
     pageContext.setAttribute("field", field);
@@ -52,4 +53,5 @@
       }
     </jsp:scriptlet>
   </result>
+  </mm:cloud>
 </mm:content>
