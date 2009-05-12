@@ -27,6 +27,11 @@
       <version>${mmbase.version}</version>
       <scope>provided</scope>
     </dependency>
+
+    <!--
+        Such dependencies may help IDE?
+        But don't make much sense otherwise, and the build may fail if not using deploy profile
+
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
@@ -41,6 +46,7 @@
       <classifier>sources</classifier>
       <scope>provided</scope>
     </dependency>
+    -->
 
     <dependency>
       <groupId>${jsp.groupId}</groupId>
