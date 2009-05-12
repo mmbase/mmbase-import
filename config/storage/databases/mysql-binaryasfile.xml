@@ -64,11 +64,13 @@
     <type-mapping name="STRING" min-size="13" max-size="255" type="varchar({0})" />
     <type-mapping name="STRING" min-size="256" max-size="65535" type="text" />
     <type-mapping name="STRING" min-size="65536" max-size="16777216" type="mediumtext" />
+    <type-mapping name="STRING" min-size="16777217" max-size="4294967296" type="longtext" />
     <type-mapping name="XML" min-size="1" max-size="255" type="varchar({0})" />
     <type-mapping name="XML" min-size="256" max-size="65535" type="text" />
     <type-mapping name="XML" min-size="65536" max-size="16777216" type="mediumtext" />
     <type-mapping name="BINARY" min-size="1" max-size="65535" type="blob" />
     <type-mapping name="BINARY" min-size="65536" max-size="16777216" type="mediumblob" />
+    <type-mapping name="BINARY" min-size="16777217" max-size="4294967296" type="longblob" />
     <type-mapping name="DATETIME" type="DATETIME" />
     <type-mapping name="BOOLEAN"  type="BIT" />
     <type-mapping name="DECIMAL"  type="DECIMAL({0}, {1})" />
