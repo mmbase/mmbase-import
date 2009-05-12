@@ -673,6 +673,12 @@
       <description xml:lang="en">
         Integer interpreted as a filesize. Results in a 'string' representation postfixed by 'KiB' etc.
       </description>
+      <setprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity$Parser">
+          <param name="unit">B</param>
+          <param name="binaryPrefixes">true</param>
+        </class>
+      </setprocessor>
       <getprocessor type="string">
         <class name="org.mmbase.datatypes.processors.FormatFileSize"/>
       </getprocessor>
@@ -875,8 +881,7 @@
     </specialization>
 
     <specialization id="user">
-      <description xml:lang="en">
-        Only nodes associated with users are possible. Default value is current user.
+      <description xml:lang="en">Only nodes associated with users are possible. Default value is current user.
       </description>
       <class name="org.mmbase.datatypes.UserNodeDataType" />
     </specialization>
