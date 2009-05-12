@@ -191,7 +191,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     protected Object getFieldValue(Node node, Field field) throws JspTagException {
         Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
-        log.debug("found fv " + found);
+        log.debug("found " + field.getName() + " " +  found);
         return found;
     }
 
@@ -210,10 +210,15 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         Object value = getFieldValue(node, field);
         if (value == null) {
             String fieldName = field.getName();
+            log.debug("No value found in context for " + fieldName);
             if (node != null) {
                 value = node.isNull(fieldName) ? null : getValue(node, fieldName);
+                log.debug("Value found in node " + value);
             } else if (useDefault) {
                 value = field.getDataType().getDefaultValue(tag.getLocale(), tag.getCloudVar(), field);
+                log.debug("No Node, defaultvalue found in field " + value);
+            } else {
+                log.debug("Using null");
             }
         }
         return value;
@@ -227,7 +232,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         Object fieldValue = getFieldValue(node, field);
         final DataType<?> dt = field.getDataType();
         if (fieldValue == null) {
-            log.debug("Field value not found in context, using existing value ");
+            log.debug("Field value '" + field.getName() + "' not found in context, using existing value ");
             fieldValue = getFieldValue(node, field, node == null);
         } else if (fieldValue.equals("") && ! field.isRequired()) {
             log.debug("Field value found in context is empty, interpreting as null");
@@ -302,6 +307,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     protected Object getValue(Node node, String fieldName) {
         Object v = node.getValue(fieldName);
+        if (log.isDebugEnabled()) {
+            log.debug("Value for " + fieldName + ": " + v + " of " + node.getClass() + " " + node.getNodeManager().getField(fieldName));
+        }
         return v;
     }
     /**
