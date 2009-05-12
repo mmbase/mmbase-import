@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
 []>
-  <article>
+  <article id="general_documentation">
 	 <articleinfo>
 		<title>About MMBase Documentation</title>
 		<date>2002-12-05</date>
@@ -63,7 +63,7 @@
 				</listitem>
 				<listitem>
 					<para>
-						An edition tag with a  &dollar;Id:&dollar; content, for versioning of
+						An edition tag with a  $Id$ content, for versioning of
 						the data.
 					</para>
 				</listitem>

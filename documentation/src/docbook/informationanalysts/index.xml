@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
  ]>
-<article>
+<article id="informationanalists">
   <articleinfo>
     <title>Information Analists</title>
 
@@ -18,9 +18,34 @@
     </legalnotice>
   </articleinfo>
 
-  <section id="informationanalists">
-    <title>Information Analists</title>
-    <para>This folder contains information on how to setup and maintain the MMBase object cloud.</para>
+  <section id="informationanalysts">
+    <title>Information Analysts</title>
+
+    <para>Documentation about structuring information and content and how to
+    package an entire website including data in an MMBase application.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><ulink url="informationanalysts/builders.html">MMBase Builder
+        Configuration</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="informationanalysts/datatypes.html">Datatypes in
+        MMBase</ulink>, How to configure new ones, plus a summary of all datatypes and their specializations which are predefined</para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="informationanalysts/relations.html">Relations in
+        MMBase</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="informationanalysts/applications.html">MMBase
+        Applications</ulink>, how-to create a shipable package containing data, objectmodel (builders, relations) etc.</para>
+      </listitem>
+    </itemizedlist>
   </section>
+
 
 </article>
