@@ -236,6 +236,15 @@ See http://www.MMBase.org/license
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
+    </profile>
   </profiles>
 
   <!--
