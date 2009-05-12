@@ -102,6 +102,20 @@ public class Version {
     }
 
     /**
+     * Returns the SubVersion version from which the current jar was built.
+     *
+     * @since MMBase-1.9.1
+     */
+    public static String getSCMRevision() {
+        Manifest man = getManifest();
+        if (man != null) {
+            return man.getAttributes("org/mmbase").getValue("SCM-Revision");
+        } else {
+            return "?";
+        }
+    }
+
+    /**
      * Returns the version number of this MMBase.
      * @return version number
      * @since MMBase-1.6
@@ -137,9 +151,9 @@ public class Version {
     public static String get() {
         String tag = getTag();
         if (tag.startsWith("MMBase")) {
-            return tag + " " + getBuildDate();
+            return tag + " " + getBuildDate() + " (r" + getSCMRevision() + ")";
         } else {
-            return getName() + " " + getNumber();
+            return getName() + " " + getNumber() + " (r" + getSCMRevision() + ")";
         }
     }
 
