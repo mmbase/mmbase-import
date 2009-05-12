@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
 <!--
-     @version $Id: mailhandlers.xml,v 1.3 2007-11-09 18:26:40 michiel Exp $
+     @version $Id$
      @author Michiel Meeuwissen
 -->
 <util>

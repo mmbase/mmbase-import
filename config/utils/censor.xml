@@ -3,7 +3,7 @@
 <!-- Censor is a 'transformer' (org.mmbase.util.transformers.Censor).
      and can e.g. be used as 'escaper' in Taglib.
      @since MMBase-1.8
-     @version $Id: censor.xml,v 1.1 2004-07-13 12:11:58 michiel Exp $
+     @version $Id$
      @author Michiel Meeuwissen
 -->
 <util>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="addresses" maintainer="eo.nl" version="0" extends="object">
-	<!-- @version $Id: addresses.xml,v 1.1 2006-10-13 17:11:09 nklasens Exp $ -->
+	<!-- @version $Id$ -->
 	<!-- <status>
 		what is the status of this builder options : active or inactive
 -->

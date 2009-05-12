@@ -1,7 +1,7 @@
 <!--
   This "enhanced" tld file will be converted to a "normal" tld and a html file.
 
-  version: $Id: mmcommunity-taglib.xml,v 1.9 2004-01-08 12:47:01 keesj Exp $
+  version: $Id$
   see: ../mmbase-taglib.xml
 -->
 <taglib>

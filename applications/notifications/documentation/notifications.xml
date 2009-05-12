@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Notifications</title>
     <date>2007-11-12</date>
-    <edition>$Id: notifications.xml,v 1.4 2007-12-07 13:35:13 michiel Exp $</edition>
+    <edition>$Id$</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -91,7 +91,7 @@ import java.util.*;
  * issued.
  *
  * @author Michiel Meeuwissen
- * @version $Id: notifications.xml,v 1.4 2007-12-07 13:35:13 michiel Exp $
+ * @version $Id$
  **/
 public class ProgrammeDates  {
 
