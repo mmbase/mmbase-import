@@ -21,9 +21,11 @@
      <plugin>
        <groupId>org.codehaus.mojo</groupId>
        <artifactId>docbook-maven-plugin</artifactId>
+       <!--
        <configuration>
          <stylesheetLocation>${basedir}/style/</stylesheetLocation>
        </configuration>
+       -->
      </plugin>
     </plugins>
 

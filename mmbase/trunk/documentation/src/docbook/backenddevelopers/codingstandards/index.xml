@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
-<article>
+<article id="backenddevelopers_codingstandards">
   <articleinfo>
     <title>Summary of Coding Standards</title>
     <date>2003-02-14</date>
@@ -336,7 +336,7 @@
       <para>
         MMBase has the following logging levels, from low to high.
       </para>
-      <itemizedlist>        
+      <itemizedlist>
         <listitem>
           <formalpara>
             <title>trace</title>

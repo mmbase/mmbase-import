@@ -121,7 +121,7 @@
 	property specifying the storagefactory classname to the
 	mmbaseroot.xml configuration file (found in the modules
 	configuration directory) :
-	<programlisting format="linespecific"><![CDATA[<property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>]]></programlisting>	
+	<programlisting format="linespecific"><![CDATA[<property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>]]></programlisting>
 	This prompts MMBase to call the
 	<classname>JDBC2NodeWrapper</classname> class, a special
 	implementation of the JDBC2NodeInterface that wraps the storage
@@ -137,8 +137,8 @@
       <para>
 	The first, and obviously easiest way for older systems, is to
 	use the JDBC module. If you use this method, you do not need
-	to change anything in your setup. See the <ulink
-	url="configuration.html">configuration document</ulink> for
+	to change anything in your setup. See the <olink
+	targetdoc="backenddevelopers_storage_configuration">configuration document</olink> for
 	how to configure the JDBC module.
       </para>
       <para>
@@ -151,8 +151,8 @@
 	requires some knowledge of how to set up an application server's
 	data-sources (a class that provides a database
 	connection). Information on setting up data sources can be found
-	in the documentation of your application server. See the <ulink
-	url="configuration.html">configuration document</ulink> for an
+	in the documentation of your application server. See the <olink
+	targetdoc="backenddevelopers_storage_configuration">configuration document</olink> for an
 	example.
       </para>
       <para>
@@ -245,14 +245,14 @@
       1.7. See the configuration document for details on the
       parameters you can change.
     </para>
-    <para>See : <ulink url="configuration.html">The Configuration Document</ulink></para>
+    <para>See : <olink targetdoc="backenddevelopers_storage_configuration">The Configuration Document</olink></para>
   </section>
   <section id="conversion">
     <title>Conversions</title>
     <para>
       How to on how to convert between databases, and field-types.
     </para>
-    <para>See : <ulink url="conversions.html">The database conversion document</ulink></para>
+    <para>See : <olink targetdoc="backendevelopers_storage_conversions">The database conversion document</olink></para>
   </section>
 
   <section id="howto">

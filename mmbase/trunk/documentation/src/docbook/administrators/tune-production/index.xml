@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
-<article class="specification">
+<article class="specification" id="administrators_tune-production">
   <articleinfo>
     <title>How to tune MMBase for production</title>
 
@@ -163,7 +163,7 @@
     debug level on the Sqlhandlers. The log configuration is default in the
     log4j.xml in the mmbase.jar or /WEB-INF/config/log/ directory.</para>
 
-    <para><programlisting format="linespecific">&lt;logger name="org.mmbase.storage.implementation.database.DatabaseStorageManager" 
+    <para><programlisting format="linespecific">&lt;logger name="org.mmbase.storage.implementation.database.DatabaseStorageManager"
         additivity="false"&gt; &lt;level class="&amp;mmlevel;" value ="debug" /&gt;
   &lt;appender-ref ref="sqllog" /&gt;
 &lt;/logger&gt;
@@ -471,15 +471,15 @@
       instantly promote live objects to the old generation. This means less
       pollution of the old generation.</para>
 
-      <para><programlisting format="linespecific">Default setup with 1G 
-Old generation 682mb (client mode: 910) 
-New geneartion 341mb (client mode: 113) 
-eden 315 (client mode: 104) 
+      <para><programlisting format="linespecific">Default setup with 1G
+Old generation 682mb (client mode: 910)
+New geneartion 341mb (client mode: 113)
+eden 315 (client mode: 104)
 Survivors 12 (client mode:4)</programlisting></para>
 
-      <para><programlisting format="linespecific">Setup with 1G and -server -XX:NewRatio=2 -XX:SurvivorRatio=6 
-Old generation 682mb 
-New geneartion 341mb 
+      <para><programlisting format="linespecific">Setup with 1G and -server -XX:NewRatio=2 -XX:SurvivorRatio=6
+Old generation 682mb
+New geneartion 341mb
 eden 255
 Survivors 42</programlisting></para>
 

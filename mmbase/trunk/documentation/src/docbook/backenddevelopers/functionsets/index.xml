@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
-<article>
+<article id="backenddevelopers_functionsets">
   <articleinfo>
     <title>The MMBase Function Framework</title>
 
@@ -186,7 +186,7 @@
     <para>It is also possible to add parameters using MMBase referids, this
     can come in handy when a variable is already present in your page and you
     want to access it. <programlisting>  &lt;mm:import externid="template"&gt;AASSHHM&lt;/mm:param&gt;
-  Your random new password might be:  
+  Your random new password might be:
   &lt;mm:function name="getPassword" referid="template" /&gt;         </programlisting></para>
   </section>
 
@@ -272,20 +272,20 @@
     MMBase. Defining sets is done in a two xml files. The first in
     'config/functions/functionsets.xml' defines what sets there are:
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE functionsets 
-  PUBLIC "-//MMBase//DTD functionsets config 1.0//EN" 
+&lt;!DOCTYPE functionsets
+  PUBLIC "-//MMBase//DTD functionsets config 1.0//EN"
   "http://www.mmbase.org/dtd/functionsets_1_0.dtd"&gt;
 &lt;functionsets&gt;
   &lt;functionset name="utils"      resource="utils.xml" /&gt;
 &lt;/functionsets&gt; </programlisting> The set itself (in this case
     'config/functions/utils.xml') defines the mapping, names, classes and
     methods to be called: <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE functionset PUBLIC 
+&lt;!DOCTYPE functionset PUBLIC
   "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd"&gt;
 &lt;functionset&gt;
 
   &lt;description&gt;
-   Some util functions from org.mmbase.util, made accessible through 
+   Some util functions from org.mmbase.util, made accessible through
    the function-framework.
   &lt;/description&gt;
 
@@ -357,7 +357,7 @@
 
       <para>The most important methods of the function object are
       'createParameters' and 'getFunctionValue(Parameters)'. You'd normally
-      start with calling 'createParameters': <programlisting>  
+      start with calling 'createParameters': <programlisting>
         Function nodeFunction = node.getFunction("myfunction");
         Parameters parameters = nodeFunction.createParameters();
       </programlisting> And then you have to set the parameters:
