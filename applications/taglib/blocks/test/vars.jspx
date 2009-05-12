@@ -56,6 +56,12 @@
 
   <mm:include page="vars-include.jspx" />
 
+  <h3>More tests</h3>
 
+  <mm:write value="123">
+    <mm:import id="onetwothree">${_}</mm:import>
+
+    <p>onetwothree: ${onetwothree} (should be 123)</p>
+  </mm:write>
 
 </div>
