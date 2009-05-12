@@ -1196,13 +1196,18 @@ public class Casting {
     /**
      * @since MMBase-1.9
      */
-    public static class NodeListWrapper extends org.mmbase.bridge.util.CollectionNodeList {
+    public static class NodeListWrapper extends org.mmbase.bridge.util.CollectionNodeList implements Unwrappable {
         private final CharTransformer escaper;
         NodeListWrapper(org.mmbase.bridge.NodeList list, CharTransformer e) {
             super(list);
+            for (Map.Entry<Object, Object> entry : list.getProperties().entrySet()) {
+                setProperty(entry.getKey(), entry.getValue());
+            }
             escaper = e;
         }
-        public Node get(int index) { return (Node) Casting.wrap(super.get(index), escaper); }
+        public Node get(int index) {
+            return (Node) Casting.wrap(super.get(index), escaper);
+        }
         public String toString() {
             StringBuilder buf = new StringBuilder();
             Iterator<Node> i = iterator();
@@ -1258,7 +1263,7 @@ public class Casting {
     }
 
     /**
-     * Clases implementint this will not be wrapped by {@link #wrap}, even if the e.g. are CharSequence.
+     * Clases implementing this will not be wrapped by {@link #wrap}, even if the e.g. are CharSequence.
      * @since MMBase-1.9
      */
     public static interface Unwrappable {
