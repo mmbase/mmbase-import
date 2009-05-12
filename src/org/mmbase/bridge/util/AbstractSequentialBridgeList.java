@@ -37,6 +37,10 @@ abstract public  class AbstractSequentialBridgeList<E extends Comparable<? super
         properties.put(key, value);
     }
 
+    public Map<Object, Object> getProperties() {
+        return Collections.unmodifiableMap(properties);
+    }
+
     // javadoc inherited
     public void sort() {
         Collections.sort(this);

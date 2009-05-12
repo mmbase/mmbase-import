@@ -186,6 +186,10 @@ public abstract class BridgeCollections {
             if (parent != null) return parent.getProperty(key);
             return ((BridgeList<E>) c).getProperty(key);
         }
+        public Map<Object, Object> getProperties() {
+            if (parent != null) return parent.getProperties();
+            return ((BridgeList<E>) c).getProperties();
+        }
 
         public void setProperty(Object key, Object value) { throw new UnsupportedOperationException(); }
         public void sort() { throw new UnsupportedOperationException(); }
@@ -297,6 +301,7 @@ public abstract class BridgeCollections {
         public boolean contains(Object obj) {return false;}
 
         public Object getProperty(Object key) { return null; }
+        public Map<Object, Object> getProperties() { return Collections.emptyMap(); }
         public BridgeList<E> subList(int fromIndex, int toIndex) { throw new IndexOutOfBoundsException(); }
         public void setProperty(Object key, Object value) { throw new UnsupportedOperationException(); }
         public void sort() { throw new UnsupportedOperationException(); }
