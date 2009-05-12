@@ -447,12 +447,13 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             String appserver = System.getProperty("catalina.base"); // to do: similar arrangment for
                                                                     // other ap-servers.
             String root = "" + getServletContext().getResource("/");
+            String rootRealPath = "" + getServletContext().getRealPath("/");
             pw.print("\n" + getServletContext().getServerInfo() + " " + System.getProperty("java.version") +
                      " (" + System.getProperty("java.vendor") + ") " +
                      (appserver == null ? "" : appserver) +
                      "@" + java.net.InetAddress.getLocalHost().getCanonicalHostName() + " " +
                      System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch")  +
-                     "\n" + root);
+                     "\n" + root + (rootRealPath != null ? ("\n" + rootRealPath) : ""));
 
         }
         pw.close();
