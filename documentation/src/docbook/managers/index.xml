@@ -23,7 +23,7 @@
     <para>This folder contains information on whether and how to use MMBase in an organisation.</para>
     <itemizedlist>
       <listitem>
-        <para><ulink url="mmbase4managers.html">MMBase for Manager</ulink></para>
+        <para><olink targetdoc="mmbase4managers" /></para>
       </listitem>
     </itemizedlist>
   </section>

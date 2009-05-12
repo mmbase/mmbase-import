@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
   "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
-<article>
+<article id="backenddevelopers_custombuilderclass">
   <articleinfo>
     <title>HOW TO: Add a custom function to a nodebuilder</title>
     <date>2004-04-15</date>

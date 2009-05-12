@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
-<article class="specification">
+<article class="specification" id="backenddevelopers_storage_conversions">
   <articleinfo>
     <title>Storage Conversions</title>
 
@@ -119,7 +119,7 @@
       <programlisting>
           create table mm_programs2 (broadcasttime timestamp) inherits  mm_texts;
           insert into mm_programs2 (number,otype,owner,begin,m_end,visible,title,body,broadcasttime,lastmodifiedby,lastmodified) select number,otype,owner,begin,m_end,visible,title,body,  '1970-01-01'::date + CAST(broadcasttime ||'s' AS interval),lastmodifiedby,lastmodified from mm_programs;
-          alter table mm_programs rename to mm_programs_orig; alter table mm_programs2 rename to mm_programs;          
+          alter table mm_programs rename to mm_programs_orig; alter table mm_programs2 rename to mm_programs;
         </programlisting> And then check if everthing is ok, and you can drop
       mm_programs_orig;</para>
     </section>
@@ -131,10 +131,10 @@
       DATETIME field. This was used and tested on MySQL 4.</para>
 
       <programlisting>
-  mysql&gt; ALTER TABLE intr_employees ADD birthdate DATETIME;  
+  mysql&gt; ALTER TABLE intr_employees ADD birthdate DATETIME;
   mysql&gt; UPDATE intr_employees SET birthdate = from_unixtime(dateofbirth);
-  mysql&gt; ALTER TABLE intr_employees DROP COLUMN dateofbirth;  
-  mysql&gt; ALTER TABLE intr_employees CHANGE birthdate dateofbirth DATETIME; 
+  mysql&gt; ALTER TABLE intr_employees DROP COLUMN dateofbirth;
+  mysql&gt; ALTER TABLE intr_employees CHANGE birthdate dateofbirth DATETIME;
         </programlisting>
     </section>
 

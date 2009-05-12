@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article id="administrators">
+  <articleinfo >
+    <title>Administrators documentation</title>
+    <edition>$Id: index.xml 35124 2009-05-12 21:53:36Z michiel $</edition>
+  </articleinfo>
+  <section id="toc">
+    <title>Table of contents</title>
+    <para>
+      <olink targetdoc="administrators_cloud_security" />
+      <olink targetdoc="cloud_security" />
+    </para>
+  </section >
+</article >
+
