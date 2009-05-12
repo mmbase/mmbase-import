@@ -77,6 +77,7 @@ public class ImportTag extends ContextReferrerTag {
 
     public int doStartTag() throws JspTagException {
         value = null;
+        helper.setUse_Stack(false);
         helper.overrideWrite(false);
         log.trace("dostarttag of import");
         findWriter(false);
