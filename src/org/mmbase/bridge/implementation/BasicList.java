@@ -52,6 +52,9 @@ public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> 
     public void setProperty(Object key, Object value) {
         properties.put(key, value);
     }
+    public Map<Object, Object> getProperties() {
+        return Collections.unmodifiableMap(properties);
+    }
 
     /**
      * converts the object in the list to the excpected format

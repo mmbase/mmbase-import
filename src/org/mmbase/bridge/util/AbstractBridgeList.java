@@ -24,7 +24,7 @@ import java.util.*;
 
 abstract public class AbstractBridgeList<E extends Comparable<? super E>> extends AbstractList<E> implements BridgeList<E> {
 
-    private Map<Object,Object> properties = new HashMap<Object,Object>();
+    private Map<Object, Object> properties = new HashMap<Object, Object>();
 
     // javadoc inherited
     public Object getProperty(Object key) {
@@ -34,6 +34,10 @@ abstract public class AbstractBridgeList<E extends Comparable<? super E>> extend
     // javadoc inherited
     public void setProperty(Object key, Object value) {
         properties.put(key, value);
+    }
+
+    public Map<Object, Object> getProperties() {
+        return Collections.unmodifiableMap(properties);
     }
 
     // javadoc inherited
