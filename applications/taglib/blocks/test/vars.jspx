@@ -56,7 +56,7 @@
 
   <mm:include page="vars-include.jspx" />
 
-  <h3>More tests</h3>
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1817">mm:import and $_ (MMB-1817).</a></h3>
 
   <mm:write value="123">
     <mm:import id="onetwothree">${_}</mm:import>
