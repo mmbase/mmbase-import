@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
 public class DocumentationRenderer extends CachedRenderer {
     private static final Logger log = Logging.getLoggerInstance(DocumentationRenderer.class);
 
-    private String repository  = "http://cvs.mmbase.org/viewcvs/*checkout*/";
+    private String repository  = "https://scm.mmbase.org/mmbase/trunk/";
     private String module      = "documentation";
 
     private String docbook     = null;
