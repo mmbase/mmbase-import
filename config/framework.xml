@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/framework
                         http://www.mmbase.org/xmlns/framework.xsd">
   <!--
-      version: $Id: framework.xml,v 1.17 2009-04-22 15:08:27 andre Exp $
+      version: $Id$
   -->
   <!--
       An MMBase framework provides the context in which components are rendered.

@@ -3,7 +3,7 @@
 <!-- 
 Example security.xml to switch on Cloud Context Security. No other configuration needed (Cloud Context Security
 is configured in the cloud)
-@version $Id: security.xml,v 1.2 2006-01-17 21:40:52 michiel Exp $   
+@version $Id$   
 -->
 <security active="true">
   <key>1234</key>

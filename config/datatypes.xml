@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.83 2009-04-27 16:15:25 michiel Exp $ -->
+  <!-- @version $Id$ -->
 
   <!--
   schematic syntax of one datatype entry:
