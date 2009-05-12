@@ -30,6 +30,11 @@ public class ChainedLogger implements Logger {
         }
     }
 
+    public List<Logger> getLoggers() {
+        return Collections.unmodifiableList(loggers);
+    }
+
+
     public ChainedLogger addLogger(Logger l) {
         loggers.add(l);
         return this;
