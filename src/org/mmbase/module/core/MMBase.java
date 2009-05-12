@@ -1383,7 +1383,13 @@ public class MMBase extends ProcessorModule {
             log.warn("Datadir " + dataDir + " is not readable");
         }
         if (! dataDir.canWrite()) {
-            log.warn("Datadir " + dataDir + " is not writable");
+            File proposal = sc != null ? (File) sc.getAttribute("javax.servlet.context.tempdir") : new File(System.getProperty("tmp.dir"));
+            if (proposal.canWrite()) {
+                log.warn("Datadir " + dataDir + " is not writable. Falling back to " + proposal);
+                dataDir = proposal;
+            } else {
+                log.warn("Datadir " + dataDir + " is not writable.");
+            }
         }
 
         log.info("MMBase data dir: " + dataDir);
