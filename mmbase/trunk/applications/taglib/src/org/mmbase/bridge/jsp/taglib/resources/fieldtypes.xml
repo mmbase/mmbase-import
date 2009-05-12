@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE fieldtypes PUBLIC "-//MMBase//DTD fieldtypes 1.0//EN" "http://www.mmbase.org/dtd/fieldtypes_1_0.dtd">
-<!-- version: $Id: fieldtypes.xml,v 1.9 2008-12-29 16:41:31 michiel Exp $-->
+<!-- version: $Id$-->
 <fieldtypes>
   <fieldtype id="string">
     <class>org.mmbase.bridge.jsp.taglib.typehandler.StringHandler</class>

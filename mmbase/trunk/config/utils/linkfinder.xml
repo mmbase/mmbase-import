@@ -3,7 +3,7 @@
 <!-- LinkFinder is a 'transformer' (org.mmbase.util.transformers.LinkFinder)
      and can e.g. be used as 'escaper' in Taglib.
      @since MMBase-1.8
-     @version $Id: linkfinder.xml,v 1.3 2008-07-30 10:58:26 michiel Exp $
+     @version $Id$
      @author Michiel Meeuwissen
 -->
 <util>

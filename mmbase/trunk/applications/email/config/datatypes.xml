@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.9 2008-11-27 12:26:37 michiel Exp $ -->
+  <!-- @version $Id$ -->
 
 
   <datatype base="string" id="internetaddress">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="authrel" maintainer="mmbase.org" version="0" extends="insrel">
-<!-- @version $Id: authrel.xml,v 1.2 2003-04-10 15:18:10 pierre Exp $ -->
+<!-- @version $Id$ -->
 <!-- <status>
 		what is the status of this builder options : active or inactive
 -->

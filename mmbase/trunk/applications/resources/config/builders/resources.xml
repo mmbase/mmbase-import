@@ -13,7 +13,7 @@
       There is a specialized 'resource editor' available in /mmbase/admin.
 
        @since MMBase-1.8
-       @version $Id: resources.xml,v 1.1 2006-11-24 09:37:25 pierre Exp $
+       @version $Id$
     -->
   <status>inactive</status>
   <class>org.mmbase.module.builders.Resources</class>
