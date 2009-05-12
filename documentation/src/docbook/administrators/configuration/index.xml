@@ -562,9 +562,8 @@
     XML's describing supported databases. These files are only used by the old
     (pre-1.7) database layer of MMBase. If you intend to use the new Storage
     layer (recommended), you can remove this directory. For configuration of
-    the new Storage Layer, see the <ulink
-    url="../backenddevelopers/storage/index.html">storage
-    documentation</ulink>.</para>
+    the new Storage Layer, see the <olink
+    targetdoc="backenddevelopers_storage">storage documentation</olink>.</para>
 
     <para>Even when you use the old database layer, in an actual installation
     all but one of these files can be removed. It must correspond to the
