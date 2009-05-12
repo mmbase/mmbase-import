@@ -320,7 +320,7 @@ See http://www.MMBase.org/license
                   <manifestEntries>
                     <Vendor>MMBase Community</Vendor>
                     <URL>http://www.mmbase.org</URL>
-                    <Comment>The MMBase Content Management System. ${project.name}.</Comment>
+                    <Comment>The MMBase Content Management System. ${project.name} (${project.artifactId}).</Comment>
                     <Version>${project.version}.${timestamp}</Version>
                     <SCM-Revision>${sources.version}</SCM-Revision>
                     <Distribution>${project.version}</Distribution>
@@ -586,7 +586,7 @@ See http://www.MMBase.org/license
                <manifestEntries>
                  <Vendor>MMBase Community</Vendor>
                  <URL>http://www.mmbase.org</URL>
-                 <Comment>The MMBase Content Management System. ${project.name}.</Comment>
+                 <Comment>The MMBase Content Management System. ${project.name} (${project.artifactId}).</Comment>
                  <Version>${project.version}.${timestamp}</Version>
                  <SCM-Revision>${sources.version}</SCM-Revision>
                  <Distribution>${project.version}</Distribution>
