@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 												 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" >
-<article>
+<article id="administrators_install_tomcat">
 	<articleinfo>
 		<title>MMBase installation on Apache Tomcat</title>
 		<date>2002-12-05</date>
@@ -92,7 +92,7 @@
 <?xml version="1.0"?>
 <Server port="8889" shutdown="SHUTDOWN" debug="0">
 	<Service name="Tomcat-Standalone-MMBase">
-		<Connector 
+		<Connector
 			port="8070"
 			address="michiel.omroep.nl"
 			minProcessors="5" maxProcessors="75"
@@ -171,7 +171,7 @@
         <section id="otherreferences">
            <title>Other References</title>
            <itemizedlist>
-                <listitem> 
+                <listitem>
                   <!-- external documentation -->
                   <para>Installation instructions for 1.6.x under Red Hat Linux + Tomcat + MySQL + Apache (<ulink
                      id="installationredhatlinux" url="http://tldp.org/HOWTO/MMBase-Inst-HOWTO/index.html">HTML</ulink>)</para>

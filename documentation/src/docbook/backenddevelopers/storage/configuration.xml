@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
-<article class="specification">
+<article class="specification" id="backenddevelopers_storage_configuration>
 	<!--
 		This document is a template detailing the configuration of an application.
 		Use this document to explain :
@@ -343,7 +343,7 @@
 				<itemizedlist>
 					<title>Values:</title>
 					<listitem>
-						<formalpara><title>org.mmbase.module.database.DatabaseSupportShim</title>						
+						<formalpara><title>org.mmbase.module.database.DatabaseSupportShim</title>
             <para>Standard database support class</para></formalpara>
 					</listitem>
 					<listitem>

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
-<article>
+<article id="administrators_security-framework">
   <articleinfo>
     <title>The MMBase Security Framework</title>
     <date>2003-02-12</date>
@@ -299,8 +299,8 @@
       <para>
         The first worry is that you have to authenticate yourself. You can do this when you <ulink
         url="http://www.mmbase.org/api/org/mmbase/bridge/CloudContext.html#getCloud(java.lang.String,%20java.lang.String,%20java.util.Map)">obtain
-        the cloud object from the 'CloudContext' object.</ulink>.      
-      </para> 
+        the cloud object from the 'CloudContext' object.</ulink>.
+      </para>
       <para>
         You will have to specify a 'cloud name' which is alway 'mmbase' in current mmbase
         implementations. Then you need to give a second string 'authentication type' which corresponds
@@ -330,7 +330,7 @@
       <section id="classauthenticionwrapper">
         <title>Class Authentication as a Wrapper</title>
         <para>
-          The use of 'classauthentication.xml' depends on the security implementation which reads it. 
+          The use of 'classauthentication.xml' depends on the security implementation which reads it.
         </para>
         <para>
           There is a special authenticion implementation available which can 'wrap' another authentication implementation. If in security.xml you specify
@@ -349,7 +349,7 @@
       <para>
         When using the bridge, you don't have to do much...
       </para>
-    </section><!-- usageauthorization -->   
+    </section><!-- usageauthorization -->
   </section>
   <section id="implementation">
     <title>Implementing Your Own Security System</title>
