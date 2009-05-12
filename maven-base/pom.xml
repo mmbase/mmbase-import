@@ -306,6 +306,29 @@ See http://www.MMBase.org/license
           <configuration>
             <archiveClasses>true</archiveClasses>
             <attachClasses>true</attachClasses>
+            <archive>
+              <manifest>
+                <addClasspath>true</addClasspath>
+                <mainClass>org.mmbase.Version</mainClass>
+              </manifest>
+              <manifestEntries>
+                <url>${pom.url}</url>
+              </manifestEntries>
+              <manifestSections>
+                <manifestSection>
+                  <name>org/mmbase</name>
+                  <manifestEntries>
+                    <Vendor>MMBase Community</Vendor>
+                    <URL>http://www.mmbase.org</URL>
+                    <Comment>The MMBase Content Management System. ${project.name}.</Comment>
+                    <Version>${project.version}.${timestamp}</Version>
+                    <SCM-Revision>${sources.version}</SCM-Revision>
+                    <Distribution>${project.version}</Distribution>
+                    <Build-Date>${timestamp}</Build-Date>
+                  </manifestEntries>
+                </manifestSection>
+              </manifestSections>
+            </archive>
           </configuration>
         </plugin>
         <plugin>
@@ -544,6 +567,35 @@ See http://www.MMBase.org/license
         <configuration>
           <showDeprecation>false</showDeprecation>
         </configuration>
+      </plugin>
+      <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-jar-plugin</artifactId>
+       <configuration>
+         <archive>
+           <manifest>
+             <addClasspath>true</addClasspath>
+             <mainClass>org.mmbase.Version</mainClass>
+           </manifest>
+           <manifestEntries>
+             <url>${pom.url}</url>
+           </manifestEntries>
+           <manifestSections>
+             <manifestSection>
+               <name>org/mmbase</name>
+               <manifestEntries>
+                 <Vendor>MMBase Community</Vendor>
+                 <URL>http://www.mmbase.org</URL>
+                 <Comment>The MMBase Content Management System. ${project.name}.</Comment>
+                 <Version>${project.version}.${timestamp}</Version>
+                 <SCM-Revision>${sources.version}</SCM-Revision>
+                 <Distribution>${project.version}</Distribution>
+                 <Build-Date>${timestamp}</Build-Date>
+               </manifestEntries>
+             </manifestSection>
+           </manifestSections>
+         </archive>
+       </configuration>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
