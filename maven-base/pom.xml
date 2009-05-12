@@ -97,6 +97,8 @@ See http://www.MMBase.org/license
 
     <junit.version>4.4</junit.version>
 
+    <buildnumber.doCheck>false</buildnumber.doCheck>
+
     <mmbase.version>1.9-SNAPSHOT</mmbase.version>
     <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
 
@@ -543,6 +545,24 @@ See http://www.MMBase.org/license
           <showDeprecation>false</showDeprecation>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <configuration>
+          <buildNumberPropertyName>sources.version</buildNumberPropertyName>
+          <timestampPropertyName>timestamp</timestampPropertyName>
+          <timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm}</timestampFormat>
+          <doCheck>${buildnumber.doCheck}</doCheck>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -795,6 +815,9 @@ See http://www.MMBase.org/license
     </profile>
     <profile>
       <id>deploy</id>
+      <properties>
+        <buildnumber.doCheck>true</buildnumber.doCheck>
+      </properties>
       <build>
         <defaultGoal>deploy</defaultGoal>
         <plugins>
