@@ -57,6 +57,21 @@
     <programlisting>  &lt;option name="database-stores-binary-as-file" value="true" /&gt;
   &lt;attribute name="database-binary-file-path"&gt;/home/http/default/blob&lt;/attribute&gt;
 </programlisting>
+
+    <para>The default configuration is that your binaries will be written to
+    the data directory, which is configured in
+    'config/modules/mmbaseroot.xml', but when you want your binaries in
+    another location you can specify them with these two lines.</para>
+
+    <para>Next you will need to specify in 'mmbaseroot.xml' that you are using
+    a different file for the database configuration and then restart. When you
+    use the 'config/storage/databases/mysql-binaryasfile.xml' example that
+    line would be:</para>
+
+    <programlisting>  &lt;property name="database"&gt;mysql-binaryasfile&lt;/property&gt;</programlisting>
+
+    <para>Now you are ready to hit the button 'Convert' to start converting
+    your blobs to disk.</para>
   </section>
 
   <section id="filestoblobs">
