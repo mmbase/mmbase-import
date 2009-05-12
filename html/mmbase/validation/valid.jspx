@@ -34,7 +34,7 @@
           }
        };
     }
-    Collection errors = dataType.validate(value, node, field);
+    Collection errors = dataType == null ? new ArrayList() : dataType.validate(value, node, field);
     pageContext.setAttribute("errors", errors);
     pageContext.setAttribute("node", node);
     pageContext.setAttribute("field", field);
