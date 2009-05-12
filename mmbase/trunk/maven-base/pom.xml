@@ -646,10 +646,10 @@ See http://www.MMBase.org/license
       <url>scp://mmbase.org/home/mmweb/web/maven2</url>
     </repository>
     <snapshotRepository>
-     <id>mmbase-snapshots</id>
-     <name>MMBase Maven2 Snapshot Repository</name>
-     <url>scp://mmbase.org/home/mmweb/web/snapshots</url>
-     <uniqueVersion>false</uniqueVersion>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 Snapshot Repository</name>
+      <url>scp://mmbase.org/home/mmweb/web/snapshots</url>
+      <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <site>
       <id>mmbase-website</id>
@@ -846,6 +846,12 @@ See http://www.MMBase.org/license
           <name>Corporate repository</name>
           <url>${my.repository.url}</url>
         </repository>
+        <snapshotRepository>
+          <id>${my.repository.id}</id>
+          <name>Corporate snapshot repository</name>
+          <url>${my.repository.url}</url>
+          <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
       </distributionManagement>
     </profile>
 
