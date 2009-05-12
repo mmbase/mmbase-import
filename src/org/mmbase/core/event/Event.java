@@ -19,6 +19,7 @@ import org.mmbase.module.core.MMBaseContext;
  */
 public abstract class Event implements Serializable, org.mmbase.util.PublicCloneable<Event> {
 
+    private static final long serialVersionUID = 3931865804317363984L;
 
     public static final int TYPE_UNSPECIFIED = -1;
     public static final int TYPE_NEW      = 0;
