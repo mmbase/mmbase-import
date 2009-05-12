@@ -85,6 +85,7 @@ See http://www.MMBase.org/license
                  <URL>http://www.mmbase.org</URL>
                  <Comment>The MMBase Content Management System</Comment>
                  <Version>${project.version}.${timestamp}</Version>
+                 <SCM-Revision>${sources.version}</SCM-Revision>
                  <Distribution>${project.version}</Distribution>
                  <Build-Date>${timestamp}</Build-Date>
                </manifestEntries>
@@ -93,28 +94,6 @@ See http://www.MMBase.org/license
          </archive>
        </configuration>
      </plugin>
-
-
-
-     <!--
-         Generate a timestamp property, which is used in the Manifest of the jar
-     -->
-     <plugin>
-       <groupId>com.keyboardsamurais.maven</groupId>
-       <artifactId>maven-timestamp-plugin</artifactId>
-       <configuration>
-         <propertyName>timestamp</propertyName>
-         <timestampPattern>yyyy-MM-dd'T'HH:mm</timestampPattern>
-       </configuration>
-       <executions>
-         <execution>
-           <goals>
-             <goal>create</goal>
-           </goals>
-         </execution>
-       </executions>
-     </plugin>
-
 
      <plugin>
         <groupId>org.codehaus.mojo</groupId>
