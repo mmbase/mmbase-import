@@ -93,6 +93,13 @@ public  class BasicContextProvider implements ContextProvider {
         return false;
     }
 
+    /**
+     * For the given context- builder return which field contains the 'context'.
+     */
+    protected String getContextNameField(String table) {
+        return "name";
+    }
+
 
     public Collection<NodeSearchQuery> getContextQueries() {
         return queries;
@@ -100,7 +107,8 @@ public  class BasicContextProvider implements ContextProvider {
 
 
     public String getContext(MMObjectNode node) throws SecurityException {
-        return getContextNode(node).getStringValue("name");
+        MMObjectNode contextNode = getContextNode(node);
+        return contextNode.getStringValue(getContextNameField(contextNode.getBuilder().getTableName()));
         //log.debug("check if we may read the node with # " + i + " nodeid?");
         //return Contexts.getBuilder().getContext((User) userContext, nodeId);
     }
@@ -145,9 +153,10 @@ public  class BasicContextProvider implements ContextProvider {
                     MMObjectBuilder contextBuilder = MMBase.getMMBase().getBuilder(q.getSteps().get(0).getTableName());
                     Iterator<MMObjectNode> i = contextBuilder.getNodes(q).iterator();  // list all  Contextes simply..
                     all = new TreeSet<String>();
+                    String nameField = getContextNameField(q.getBuilder().getTableName());
                     while (i.hasNext()) {
                         MMObjectNode context = i.next();
-                        all.add(context.getStringValue("name"));
+                        all.add(context.getStringValue(nameField));
                     }
                 }
                 //invalidableObjects.put("ALL", Collections.unmodifiableSortedSet(all));
@@ -210,8 +219,8 @@ public  class BasicContextProvider implements ContextProvider {
                 try {
                     MMObjectBuilder contextBuilder = query.getBuilder();
                     query = (NodeSearchQuery) query.clone();
-
-                    BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(contextBuilder.getField("name")), context);
+                    String nameField = getContextNameField(contextBuilder.getTableName());
+                    BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(contextBuilder.getField(nameField)), context);
                     query.setConstraint(constraint);
                     Iterator<MMObjectNode> i = contextBuilder.getNodes(query).iterator();
                     if (i.hasNext()) {
@@ -255,11 +264,12 @@ public  class BasicContextProvider implements ContextProvider {
             Iterator<MMObjectNode> i = possibleContexts.iterator();
             while (i.hasNext()) {
                 MMObjectNode context = i.next();
+                String contextField = getContextNameField(context.getBuilder().getTableName());
                 if (mayDo(user, context, Operation.READ )) {
-                    set.add(context.getStringValue("name"));
+                    set.add(context.getStringValue(contextField));
                 } else {
                     if (log.isDebugEnabled()) {
-                        log.debug("context with name:" + context.getStringValue("name") + " could not be added to possible contexes, since we had no read rights");
+                        log.debug("context with name:" + context.getStringValue(contextField) + " could not be added to possible contexes, since we had no read rights");
                     }
                 }
             }
