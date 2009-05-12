@@ -456,8 +456,8 @@ version: $Id: mmbase-taglib.xml,v 1.453 2009-04-30 09:31:34 michiel Exp $
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-  Which list to use, if the tag is in the body of more than one list, and you don't want the
-  direct parent.
+        Which list to use, if the tag is in the body of more than one list, and you don't want the
+        direct parent.
       </info>
     </attribute>
   </taginterface>
@@ -1163,6 +1163,22 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
         Similar to `referids' attribute of mm:url, a simple way to provide (named) arguments to the function.
       </info>
       <see tag="url" attribute="referids" />
+    </attribute>
+  </taginterface>
+  <taginterface>
+    <name>treereferrer</name>
+    <type>tree</type>
+    <info>
+      A treereferrer tag has to live in the body of a tree tag.
+    </info>
+    <attribute>
+      <name>tree</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Which tree to use, if the tag is in the body of more than one tree, and you don't want the
+        direct parent.
+      </info>
     </attribute>
   </taginterface>
   <tag>
