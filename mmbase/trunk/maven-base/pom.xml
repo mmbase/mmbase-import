@@ -858,6 +858,12 @@ See http://www.MMBase.org/license
 
     <profile>
       <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
       <properties>
         <servlet.version>2.5</servlet.version>
         <jsp.version>2.1</jsp.version>
