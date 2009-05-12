@@ -10,11 +10,9 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.List;
-import java.util.Comparator;
+import java.util.*;
 
 /**
- * A list of nodes
  *
  * @author Pierre van Rooden
  * @version $Id$
@@ -30,7 +28,7 @@ public interface BridgeList<E> extends List<E> {
      * @param key the key of the property
      * @return the property value
      */
-    public Object getProperty(Object key);
+    Object getProperty(Object key);
 
     /**
      * Sets a property for this list.
@@ -39,20 +37,27 @@ public interface BridgeList<E> extends List<E> {
      * @param key the key of the property
      * @param value the property value
      */
-    public void setProperty(Object key, Object value);
+    void setProperty(Object key, Object value);
+
+
+    /**
+     * Returns an (unmodifiable) view on all properties of this list (See {@link #getProperty}).
+     * @since MMBase-1.9.1
+     */
+    Map<Object, Object> getProperties();
 
     /**
      * Sorts this list according to a default sort order.
      */
-    public void sort();
+    void sort();
 
     /**
      * Sorts this list according to a specified sort order
      *
      * @param comparator the comparator defining the sort order
      */
-    public void sort(Comparator<? super E> comparator); // ?
+    void sort(Comparator<? super E> comparator); // ?
 
-    public BridgeList<E> subList(int fromIndex, int toIndex);
+    BridgeList<E> subList(int fromIndex, int toIndex);
 
 }
