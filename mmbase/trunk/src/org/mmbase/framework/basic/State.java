@@ -79,6 +79,23 @@ public class State {
         request.setAttribute(KEY, this);
     }
 
+    public State(javax.servlet.http.HttpServletRequest r, State s) {
+        request = r;
+        previousState = s.previousState == null ? null : new State(r, s.previousState);
+        depth = s.depth;
+        count = s.count;
+        id = s.id;
+        renderer = s.renderer;
+        type = s.type;
+        processor = s.processor;
+        processed = s.processed;
+        frameworkParameters = new Parameters(s.frameworkParameters);
+        frameworkParameters.setIfDefined(Parameter.REQUEST, r);
+        originalLocalizationContext = s.originalLocalizationContext;
+        action = s.action;
+        request.setAttribute(KEY, this);
+    }
+
     /**
      * The current window state of rendering. As yet unimplemented.
      * @todo

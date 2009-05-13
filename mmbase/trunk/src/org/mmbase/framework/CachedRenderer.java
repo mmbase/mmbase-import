@@ -13,7 +13,10 @@ package org.mmbase.framework;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 import org.mmbase.util.functions.*;
@@ -61,6 +64,7 @@ public class CachedRenderer extends WrappedRenderer {
     private int expires = -1; // use last modified
 
     private int timeout = 2000; // ms
+    private int wait    = Integer.MAX_VALUE; // ms
 
     private String directory = "CachedRenderer";
 
@@ -74,8 +78,22 @@ public class CachedRenderer extends WrappedRenderer {
         directory = d;
     }
 
+    /**
+     * If using an HttpURLConnection, then use the given timeout. Defaults to 2 seconds.
+     * @param t Timeout in milliseconds
+     */
     public void setTimeout(int  t) {
         timeout = t;
+    }
+
+    /**
+     * If rendering of the cached renderer takes very long, you may choose to not wait for the
+     * result. But serve an message or the old version. The job can be joined later.
+     *
+     * @param t Wait-time in milliseconds
+     */
+    public void setWait(int  t) {
+        wait = t;
     }
 
     public void setIncludeRenderTime(String type) {
@@ -161,16 +179,86 @@ public class CachedRenderer extends WrappedRenderer {
         }
     }
 
+    private static final Map<File, Future<Exception>> rendering = new ConcurrentHashMap<File, Future<Exception>>();
+
     /**
      * Renders the wrapped renderer, and writes the result to both a file, and to the writer.
      */
-    protected void renderWrappedAndFile(File f, Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException, IOException  {
+    protected void renderWrappedAndFile(final File f, final Parameters blockParameters, final Writer w, final RenderHints hints, final Runnable ready) throws FrameworkException, IOException  {
         writeRenderTime(new Date(), w);
-        Writer fw = new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
-        ChainedWriter chain = new ChainedWriter(w, fw);
-        getWraps().render(blockParameters, chain, hints);
-        chain.flush();
-        fw.close();
+
+        Future<Exception> future = rendering.get(f);
+        if (future == null)  {
+            final Parameters myBlockParameters = Utils.fixateParameters(blockParameters);
+            future = ThreadPools.jobsExecutor.submit(new Callable<Exception>() {
+                    public Exception call() {
+                        try {
+                            File tempFile = new File(f + ".busy");
+                            Writer fw = new OutputStreamWriter(new FileOutputStream(tempFile), "UTF-8");
+                            Writer writer;
+                            if (wait == Integer.MAX_VALUE) {
+                                writer = new ChainedWriter(w, fw);
+                            } else {
+                                writer = fw;
+                            }
+                            getWraps().render(myBlockParameters, writer, hints);
+                            writer.flush();
+                            fw.close();
+                            tempFile.renameTo(f);
+                            if (ready != null) {
+                                ready.run();
+                            }
+                            log.info("Created " + f);
+                            return null;
+                        } catch (Exception e) {
+                            return e;
+                        }
+                    }
+                });
+            rendering.put(f, future);
+            log.info("Now rendering " + rendering);
+        } else {
+            log.info("Joined " + f + "" + future);
+        }
+        Exception e;
+        try {
+            e = future.get(wait, TimeUnit.MILLISECONDS);
+            if (e == null) {
+                if (wait < Integer.MAX_VALUE) {
+                    renderFile(f, w);
+                }
+                if (rendering.remove(f) != null) {
+                    log.info("Now rendering " + rendering);
+                }
+            }
+        } catch (TimeoutException to) {
+            log.debug(to);
+            w.write("<div class='mm_c stale'>");
+            if (f.exists()) {
+                w.write("<h1>What you see is stale. A new version is being rendered. Please try again later.</h1>");
+                renderFile(f, w);
+            } else {
+                w.write("<h1>Rendering took too long. This job is still running. Please try again later.</h1>");
+            }
+            w.write("</div>");
+            e = null;
+        } catch (InterruptedException ioe) {
+            throw new FrameworkException(ioe);
+        } catch (ExecutionException ee) {
+            throw new FrameworkException(ee);
+        }
+
+        if (e != null) {
+            if (e instanceof FrameworkException) {
+                throw (FrameworkException) e;
+            }
+            if (e instanceof IOException) {
+                throw (IOException) e;
+            }
+            throw new FrameworkException(e);
+        }
+
+
     }
 
     @Override public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
@@ -180,7 +268,7 @@ public class CachedRenderer extends WrappedRenderer {
             if (expires > 0) {
                 // use expires
                 if (! cacheFile.exists() || ( (cacheFile.lastModified() + expires * 1000) < System.currentTimeMillis())) {
-                    renderWrappedAndFile(cacheFile, blockParameters, w, hints);
+                    renderWrappedAndFile(cacheFile, blockParameters, w, hints, null);
                 } else {
                     renderFile(cacheFile, w);
                 }
@@ -190,12 +278,20 @@ public class CachedRenderer extends WrappedRenderer {
                 if (uri == null) throw new FrameworkException("" + getWraps() + " did not return an URI, and cannot be cached using getLastModified");
                 URLConnection connection =  uri.toURL().openConnection();
                 connection.setConnectTimeout(timeout);
-                String etag = connection.getHeaderField("ETag");
+                final String etag = connection.getHeaderField("ETag");
                 if (etag != null) {
-                    File etagFile = getETagFile(cacheFile);
+                    final File etagFile = getETagFile(cacheFile);
                     if ( ! cacheFile.exists() || ! etagFile.exists() || ! etag.equals(readETag(etagFile))) {
-                        renderWrappedAndFile(cacheFile, blockParameters, w, hints);
-                        writeETag(etagFile, etag);
+                        renderWrappedAndFile(cacheFile, blockParameters, w, hints, new Runnable() {
+                                public void run()  {
+                                    try {
+                                        writeETag(etagFile, etag);
+                                    } catch (IOException ioe) {
+                                        throw new RuntimeException(ioe);
+                                    }
+                                }
+                            });
+
                     } else {
                         renderFile(cacheFile, w);
                     }
@@ -203,7 +299,7 @@ public class CachedRenderer extends WrappedRenderer {
                     long modified = connection.getLastModified();
                     if (! cacheFile.exists() || (cacheFile.lastModified() < modified)) {
                         log.service("Rendering " + uri + " because " + cacheFile + " older than " + new Date(modified));
-                        renderWrappedAndFile(cacheFile, blockParameters, w, hints);
+                        renderWrappedAndFile(cacheFile, blockParameters, w, hints, null);
                     } else {
                         renderFile(cacheFile, w);
                     }
