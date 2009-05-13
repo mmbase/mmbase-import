@@ -28,15 +28,15 @@
 
     <itemizedlist>
       <listitem>
-        <para><olink targetdoc="general_documentation" /></para>
+        <para><olink targetdoc="general_documentation-index" /></para>
       </listitem>
 
       <listitem>
-        <para><olink targetdoc="general_glossary" /></para>
+        <para><olink targetdoc="general_glossary-index" /></para>
       </listitem>
 
       <listitem>
-        <para><olink targetdoc="general_architecture" /></para>
+        <para><olink targetdoc="general_architecture-index" /></para>
       </listitem>
     </itemizedlist>
   </section>
@@ -50,15 +50,15 @@
 
     <itemizedlist>
       <listitem>
-        <para><olink targetdoc="general_contribute" /></para>
+        <para><olink targetdoc="general-contribute-index" /></para>
       </listitem>
 
       <listitem>
-        <para><olink targetdoc="general_3rdparty" /></para>
+        <para><olink targetdoc="general-3rdparty-index" /></para>
       </listitem>
 
       <listitem>
-        <para><olink targetdoc="mmbase.org_mmcmissionstatement" /></para>
+        <para><olink targetdoc="mmbase.org-mmcmissionstatement-index" /></para>
       </listitem>
     </itemizedlist>
 
@@ -66,15 +66,15 @@
 
     <itemizedlist>
       <listitem>
-        <para><olink targetdoc="general_xml-how-to" /></para>
+        <para><olink targetdoc="general-xml_how_to-index" /></para>
       </listitem>
 
       <listitem>
-        <para><olink targetdoc="modules_images-and-attachments" /></para>
+        <para><olink targetdoc="modules-images_and_attachments-index" /></para>
       </listitem>
 
       <listitem>
-        <para><olink targetdoc="modules_i18n" /></para>
+        <para><olink targetdoc="modules-i18n-index" /></para>
       </listitem>
     </itemizedlist>
   </section>
