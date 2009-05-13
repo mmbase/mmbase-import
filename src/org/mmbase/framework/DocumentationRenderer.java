@@ -31,7 +31,7 @@ public class DocumentationRenderer extends CachedRenderer {
     private static final Logger log = Logging.getLoggerInstance(DocumentationRenderer.class);
 
     private String repository  = "http://scm.mmbase.org/view/*checkout*/mmbase/trunk/";
-    private String module      = "documentation";
+    private String module      = "documentation/src/docbook";
 
     private String docbook     = null;
 
