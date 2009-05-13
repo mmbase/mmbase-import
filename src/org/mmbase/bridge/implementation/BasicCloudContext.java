@@ -240,12 +240,14 @@ public abstract class BasicCloudContext implements CloudContext {
         // TODO implement with some nice notify-mechanism.
         CloudContext ctx = LocalContext.getCloudContext();
         while (!MMBaseContext.isInitialized() || ! isUp()) {
+
+            if (mmb != null && mmb.isShutdown()) break;
             try {
                 check();
                 Thread.sleep(10000);
                 log.debug("Sleeping another 10 secs");
-            } catch (Exception e) {
-                // I hate java.
+            } catch (InterruptedException e) {
+                return this;
             }
         }
         return this;
