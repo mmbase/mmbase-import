@@ -84,12 +84,19 @@
   </section>
 
   <section>
-    <title>Backend Developers</title>
+    <title>Developers</title>
 
-    <para>This section contains documentation for people building additional
-    functionality within or based upon MMBase.</para>
+    <para>
+      This section contains documentation for people building additional
+      functionality within or based upon MMBase.
+    </para>
 
     <itemizedlist>
+      <listitem>
+        <para>
+          <olink targetdoc="frontentdevelopers-codingstandards-index" />
+        </para>
+      </listitem>
       <listitem>
         <para>
           <olink
