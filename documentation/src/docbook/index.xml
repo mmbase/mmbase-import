@@ -79,6 +79,88 @@
     </itemizedlist>
   </section>
 
+  <section>
+    <title>Backend Developers</title>
+
+    <para>This section contains documentation for people building additional
+    functionality within or based upon MMBase.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>
+          <olink
+              targetdoc="backenddevelopers-codingstandards-index"
+              />
+        </para>
+      </listitem>
+
+      <listitem>
+        <para><olink targetdoc="backenddevelopers-custombuilderclass-index" /></para>
+      </listitem>
+
+      <listitem>
+        <para><olink targetdoc="backenddevelopers-functionsets" />, examples like &lt;mm:function set="utils"
+        name="generatePassword" /&gt; to generate a password.</para>
+      </listitem>
+
+      <listitem>
+        <para>
+          <olink targetdoc="backenddevelopers-components-index" />
+          document describing the MMBase Component Framework, as of version 1.9.
+          Applications developed with the component requirements will be compitable
+          with all websites implementing this framework.
+        </para>
+      </listitem>
+
+      <listitem>
+        <para><ulink
+        url="applications/rmmci/backenddevelopers/rmmci/index.html">Remote
+        MMBase Cloud Interface</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><olink targetdoc="backenddevelopers-dbsq-index" /></para>
+      </listitem>
+
+      <listitem>
+        <para><olink targetdoc="backenddevelopers-storage-index" /></para>
+
+        <itemizedlist>
+          <listitem>
+            <para>
+              <olink
+                  targetdoc="backenddevelopers-storage-configuration" />
+            </para>
+          </listitem>
+
+          <listitem>
+            <para><olink
+            targetdoc="backenddevelopers-storage-conversions" /></para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>The Event Framework (query caching)</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><olink targetdoc="backenddevelopers-eventframework-index" /></para>
+          </listitem>
+
+          <listitem>
+            <para><olink
+                      targetdoc="backenddevelopers-QueryCache_release_strategies-index" />
+            </para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para><olink targetdoc="backenddevelopers-resourceloader-index" /></para>
+      </listitem>
+    </itemizedlist>
+  </section>
 
 
 
