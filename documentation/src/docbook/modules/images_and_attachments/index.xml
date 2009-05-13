@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
-<article>
+<article id="modules-images_and_attachments-index">
   <articleinfo>
     <title>Images and Attachments</title>
     <date>2005-05-09</date>
-    <edition>$Id$</edition>
+    <edition>$Id: images-and-attachments.xml 35122 2009-05-12 21:14:35Z michiel $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -42,11 +42,11 @@
       MMBase taglib you would for example list the related images like this:
       <programlisting><![CDATA[
 <mm:relatednodes type="images">
-   <img src="????" 
-	height="<mm:field name="height" />" width="<mm:field name="width" />" 
+   <img src="????"
+	height="<mm:field name="height" />" width="<mm:field name="width" />"
 	alt="<mm:field name="title" />" /><mm:field name="description" /><br />
 </mm:relatednodes>
-]]></programlisting>    
+]]></programlisting>
     </para>
     <para>
       As you know, you cannot use the image blob on you HTML page, but you need an URL which presents
@@ -85,10 +85,10 @@
       <programlisting><![CDATA[
 <mm:relatednodes type="images">
    <img src="<mm:image />"
-	height="<mm:field name="height" />" width="<mm:field name="width" />" 
+	height="<mm:field name="height" />" width="<mm:field name="width" />"
 	alt="<mm:field name="title" />" /><mm:field name="description" /><br />
 </mm:relatednodes>
-]]></programlisting>    
+]]></programlisting>
       So, this image tag finds out for you in which context your MMBase is running and to which URL's
       the servlet is mapped and it then produces the right URL.
     </para>
@@ -131,7 +131,7 @@ while(i.hasNext()) {
       </para>
       <para>
         So for the image servlet is does not make much difference if it has to serve a 'cached' image or
-        an 'original' image. 
+        an 'original' image.
       </para>
       <note>
         <para>
@@ -153,7 +153,7 @@ while(i.hasNext()) {
         The 'conversion commands' are passed in a string referred to as 'template'. This string contains
         the commands separated by the + character. The syntax of the individual commands is very similar
         to the command line options of the 'convert' command of ImageMagick, because that program is
-        commonly plugged in to perform the actual conversion. 
+        commonly plugged in to perform the actual conversion.
       </para>
       <para>
         A very simple example of such a conversion template is "geometry(100x200)", which is the command
@@ -178,7 +178,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
 <mm:relatednodes type="images">
    <img src="<mm:image template="geometry(100x200)" />" alt="<mm:field name="title" />" /><mm:field name="description" /><br />
 </mm:relatednodes>
-]]></programlisting>    
+]]></programlisting>
       </para>
       <note>
         <para>
@@ -200,7 +200,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
         command more then once.
       </para>
       <para>
-        TODO: overview of MMBase specific commands. Fonts and Texts. JAI implementation. 
+        TODO: overview of MMBase specific commands. Fonts and Texts. JAI implementation.
       </para>
       <para>
         We refer to the documentation of ImageMagick for a complete description of all commands. Also in
@@ -253,7 +253,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
    </mm:image>
 </mm:relatednodes>
 ]]></programlisting>
-	
+
       </para>
       <para>
         In MMBase-1.8, the creating of the converted image is actually 'lazy', so the icaches object
@@ -315,7 +315,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       For this to work the utility class org.mmbase.bridge.util.xml.NodeFunction was created, which
       can be installed in your XSL like this:
       <programlisting><![CDATA[
-<xsl:stylesheet  
+<xsl:stylesheet
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
     ....
@@ -323,13 +323,13 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       </programlisting>
       and then be used like this:
       <programlisting><![CDATA[
-<img src ="{node:function($cloud, ./o:field[@name='number'], 'servletpath(,cache(s(100x100&gt;)))')}" 
+<img src ="{node:function($cloud, ./o:field[@name='number'], 'servletpath(,cache(s(100x100&gt;)))')}"
       ]]>
       </programlisting>
 
-      We refer to the javadoc  of       
+      We refer to the javadoc  of
       <ulink url="http://www.mmbase.org/api/org/mmbase/bridge/util/xml/NodeFunction.html">NodeFunction</ulink>
-      for more information on how to use it.      
+      for more information on how to use it.
     </para>
   </section>
   <section id="builders">

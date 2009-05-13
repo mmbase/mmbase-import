@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
-<article>
+<article id="general-contribute-index">
   <articleinfo>
     <title>How to contribute to the community</title>
     <date>2005-02-20</date>
@@ -116,7 +116,7 @@
      */
     private static final int foo(int arg1, int arg2) { /* Use visibility modifier first */
         try {                                          /* Brace on same line, indent 4 */
-            if ((some_very_long_condition &amp;&amp; arg2 == 1) 
+            if ((some_very_long_condition &amp;&amp; arg2 == 1)
                     || remaining_condition) {          /* Generally use the 8-space rule */
                 int v = 10 + someFunction(arg1, arg2); /* Use space around operators */
                 return v;
