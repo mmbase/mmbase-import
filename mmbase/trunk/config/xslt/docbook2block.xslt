@@ -38,6 +38,8 @@
   <xsl:param name="request" />
   <xsl:param name="formatter_requestcontext" />
 
+  <xsl:variable name="baseurl">http://scm.mmbase.org/view/*checkout*/mmbase/trunk/documentation/src/docbook/</xsl:variable>
+
   <xsl:variable name="lowercase">abcdefghijklmnopqrstuvwxyz</xsl:variable>
   <xsl:variable name="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
@@ -115,7 +117,7 @@
 
   <xsl:template match="olink">
     <xsl:variable name="target"><xsl:value-of select="translate(@targetdoc, $dash, $slash)" /></xsl:variable>
-    <xsl:variable name="targetxml">http://scm.mmbase.org/view/*checkout*/mmbase/trunk/documentation/src/docbook/<xsl:value-of select="$target" />.xml</xsl:variable>
+    <xsl:variable name="targetxml"><xsl:value-of select="$baseurl" /><xsl:value-of select="$target" />.xml</xsl:variable>
     <a>
       <xsl:attribute name="href">
         <xsl:call-template name="url">
@@ -244,12 +246,18 @@
     </a>
   </xsl:template>
 
+  <xsl:template name="currentdir">
+    <xsl:value-of select="translate(//article/@id, $dash, $slash)" />
+    <xsl:text>/../</xsl:text>
+  </xsl:template>
+
+
   <xsl:template match="graphic">
     <img>
       <xsl:attribute name="src">
-        <xsl:call-template name="url">
-          <xsl:with-param name="url"><xsl:value-of select="@fileref" /></xsl:with-param>
-        </xsl:call-template>
+        <xsl:value-of select="$baseurl" />
+        <xsl:call-template name="currentdir" />
+        <xsl:value-of select="@fileref" />
       </xsl:attribute>
     </img>
   </xsl:template>
