@@ -52,6 +52,7 @@ public class DocumentationRenderer extends CachedRenderer {
 
     public DocumentationRenderer(String t, Block parent) {
         super(t, parent);
+        setWait(5000);
     }
     @Override public Renderer getWraps() {
         if (wrapped == null) {
