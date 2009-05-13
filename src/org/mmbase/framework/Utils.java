@@ -103,4 +103,35 @@ public abstract class Utils {
         XSLTransformer.transform(xml, xsl, res, params);
     }
 
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public static Parameters fixateParameters(Parameters parameters) {
+        final Parameters myParameters = new Parameters(parameters);
+        // CLone parameters, because after time-out they can otherwise be changed by client.
+        // This stuff should problbably be moved to a method of Framework, stince Framework specific
+        // stuff is happening.
+        log.debug("" + parameters + " -> " + myParameters);
+        HttpServletRequest req = myParameters.get(Parameter.REQUEST);//BasicUrlConverter.getUserRequest(myParameters.get(Parameter.REQUEST));
+        if (req != null) {
+            HttpServletRequest myreq = new LocalHttpServletRequest(org.mmbase.module.core.MMBaseContext.getServletContext(), "", req.getServletPath());
+            log.debug("" + req.getServletPath());
+            for (Object attrName : Collections.list(req.getAttributeNames())) {
+                String a = (String) attrName;
+                if (a.equals(org.mmbase.framework.basic.State.KEY)) {
+                    new org.mmbase.framework.basic.State(myreq, (org.mmbase.framework.basic.State) req.getAttribute(org.mmbase.framework.basic.State.KEY));
+                } else {
+                    myreq.setAttribute(a, req.getAttribute(a));
+                }
+            }
+
+            myreq.getParameterMap().putAll(req.getParameterMap());
+            log.debug("atts " + Collections.list(myreq.getAttributeNames()));
+            log.debug("params " + myreq.getParameterMap());
+            myParameters.set(Parameter.REQUEST, myreq);
+        }
+        return myParameters;
+    }
+
 }
