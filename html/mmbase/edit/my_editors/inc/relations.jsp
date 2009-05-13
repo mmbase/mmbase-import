@@ -40,10 +40,9 @@ while(relIterator.hasNext()) {
     c++;
     
     String role  = relationManager.getForwardRole();
+    int relations = node.countRelatedNodes(otherManager, role, searchdir);
     String otherManagerName = otherManager.getName();
-    int relations = node.countRelatedNodes(otherManagerName);
     String maxRelations = relationManager.getStringValue("max");    // max nr. of relation
-    
 %>
     <tr>
       <td class="left">&nbsp;</td>
@@ -61,6 +60,7 @@ while(relIterator.hasNext()) {
         </mm:url>"><img src="img/mmbase-search.png" alt="search" width="21" height="20" /></a>
       </td>
     </tr>
+    <mm:import id="my_type" reset="true" />
     <mm:listrelationscontainer type="<%= otherManagerName %>" role="<%= role %>" searchdir="$searchdir">
     <mm:maxnumber value="$max" />
     <mm:offset value="$offset" />
@@ -69,7 +69,7 @@ while(relIterator.hasNext()) {
       <mm:context>
       <mm:import id="relation" reset="true"><mm:field name="number" /></mm:import>
       <mm:relatednode>
-      <mm:nodeinfo type="type" id="my_type" write="false" />
+      <mm:import id="my_type" reset="true"><mm:nodeinfo type="type" /></mm:import>
       <mm:compare referid="my_type" value="<%= otherManagerName %>">
         <mm:field name="number" id="relatednode" write="false" />
         <tr>
@@ -123,14 +123,16 @@ while(relIterator.hasNext()) {
     </mm:listrelations>
     <tr>
       <td colspan="3" class="pager"> <!-- max: ${max} size: ${size} offset: ${offset} -->
-        <mm:isgreaterthan referid="size" value="0">
-          <mm:previousbatches max="1">
-            <a class="pageleft" href="<mm:url referids="nr,_@offset,max" />">&laquo;&laquo;</a>
-          </mm:previousbatches>
-          <mm:nextbatches max="1">
-            <a class="pageright" href="<mm:url referids="nr,_@offset,max" />">&raquo;&raquo;</a>
-          </mm:nextbatches>
-        </mm:isgreaterthan>
+        <mm:compare referid="my_type" value="<%= otherManagerName %>">
+          <mm:isgreaterthan referid="size" value="0">
+            <mm:previousbatches max="1">
+              <a class="pageleft" href="<mm:url referids="nr,_@offset,max" />">&laquo;&laquo;</a>
+            </mm:previousbatches>
+            <mm:nextbatches max="1">
+              <a class="pageright" href="<mm:url referids="nr,_@offset,max" />">&raquo;&raquo;</a>
+            </mm:nextbatches>
+          </mm:isgreaterthan>
+        </mm:compare>
       </td>
     </tr>       
     </mm:listrelationscontainer>
