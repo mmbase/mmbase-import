@@ -28,15 +28,15 @@
 
     <itemizedlist>
       <listitem>
-        <para><olink targetdoc="general_documentation-index" /></para>
+        <para><olink targetdoc="general-documentation-index" /></para>
       </listitem>
 
       <listitem>
-        <para><olink targetdoc="general_glossary-index" /></para>
+        <para><olink targetdoc="general-glossary-index" /></para>
       </listitem>
 
       <listitem>
-        <para><olink targetdoc="general_architecture-index" /></para>
+        <para><olink targetdoc="general-architecture-index" /></para>
       </listitem>
     </itemizedlist>
   </section>
