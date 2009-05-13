@@ -175,6 +175,25 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         patternBacking = null;
     }
 
+    /**
+     * Copy-constructor
+     * @since MMBase-1.9.1
+     */
+    public  Parameters(Parameters params) {
+        backing = new HashMap<String, Object>();
+        backing.putAll(params.backing);
+        definition = params.definition;
+        if (params.patternBacking != null) {
+            patternBacking = new ArrayList<Map.Entry<String, Object>>();
+            patternBacking.addAll(params.patternBacking);
+        } else {
+            patternBacking = null;
+        }
+        patternLimit   = params.patternLimit;
+        fromIndex = params.fromIndex;
+        toIndex   = params.toIndex;
+    }
+
 
     /**
      * Used for nicer implemenation  of subList (which we want to also be instanceof Parameters).
