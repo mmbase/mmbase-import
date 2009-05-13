@@ -30,13 +30,17 @@ public class RemoteBridgeList_Rmi<R, L> extends RemoteList_Rmi<R, L> implements 
         super(originalObject);
         log.debug("new RemoteBridgeList_Rmi");
     }
-    public void setProperty(java.lang.Object arg0,java.lang.Object arg1) throws RemoteException {
+    public void setProperty(Object arg0,Object arg1) throws RemoteException {
         getOriginalObject().setProperty(ObjectWrapper.rmiObjectToLocal(arg0), ObjectWrapper.rmiObjectToLocal(arg1));
     }
 
-    public java.lang.Object getProperty(java.lang.Object arg0) throws RemoteException {
-        java.lang.Object retval = ObjectWrapper.localToRMIObject(getOriginalObject().getProperty(ObjectWrapper.rmiObjectToLocal(arg0)));
+    public Object getProperty(Object arg0) throws RemoteException {
+        Object retval = ObjectWrapper.localToRMIObject(getOriginalObject().getProperty(ObjectWrapper.rmiObjectToLocal(arg0)));
         return retval;
+    }
+    public java.util.Map<Object, Object> getProperties() throws RemoteException {
+        Object retval = ObjectWrapper.localToRMIObject(getOriginalObject().getProperties());
+        return (java.util.Map<Object, Object>) retval;
     }
 
     public RemoteBridgeList<R> subList(int arg0,int arg1) throws RemoteException {
