@@ -41,6 +41,9 @@
   <xsl:variable name="lowercase">abcdefghijklmnopqrstuvwxyz</xsl:variable>
   <xsl:variable name="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
+  <xsl:variable name="dash">-</xsl:variable>
+  <xsl:variable name="slash">/</xsl:variable>
+
   <xsl:template match="article">
     <div class="mm_docbook" >
       <h1><xsl:value-of select="articleinfo/title" /></h1>
@@ -107,6 +110,22 @@
     <ol>
       <xsl:apply-templates />
     </ol>
+  </xsl:template>
+
+
+  <xsl:template match="olink">
+    <xsl:variable name="target"><xsl:value-of select="translate(@targetdoc, $dash, $slash)" /></xsl:variable>
+    <xsl:variable name="targetxml">http://scm.mmbase.org/view/*checkout*/mmbase/trunk/documentation/src/docbook/<xsl:value-of select="$target" />.xml</xsl:variable>
+    <a>
+      <xsl:attribute name="href">
+        <xsl:call-template name="url">
+          <xsl:with-param name="url"><xsl:value-of select="$target" />.html</xsl:with-param>
+        </xsl:call-template>
+      </xsl:attribute>
+      <xsl:value-of select="document($targetxml)/article/articleinfo/title/text()" />
+      <xsl:text> (</xsl:text><xsl:value-of select="@targetdoc" /><xsl:text>). </xsl:text>
+    </a>
+    <xsl:apply-templates />
   </xsl:template>
 
   <xsl:template match="variablelist">
