@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
-<article>
+<article id="informationanalysts-datatypes-index">
   <articleinfo>
     <title>Data types in MMBase</title>
 
@@ -74,7 +74,7 @@
   &lt;/datatype&gt;
   ...
 
-        
+
       </programlisting> There are only a limited number of data types which
     can be defined like 'integer' in this example. Namely only the database
     types of MMBase (string, integer, binary, float, double, long, xml, node,

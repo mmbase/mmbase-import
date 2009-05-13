@@ -26,23 +26,22 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="informationanalysts/builders.html">MMBase Builder
-        Configuration</ulink></para>
+        <para><olink targetdoc="informationanalysts-builders-index" /></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="informationanalysts/datatypes.html">Datatypes in
-        MMBase</ulink>, How to configure new ones, plus a summary of all datatypes and their specializations which are predefined</para>
+        <para>
+          <olink targetdoc="informationanalysts-datatypes-index"
+                 targetptr="datatypes"
+        />, How to configure new ones, plus a summary of all datatypes and their specializations which are predefined</para>
       </listitem>
 
       <listitem>
-        <para><ulink url="informationanalysts/relations.html">Relations in
-        MMBase</ulink></para>
+        <para><olink targetdoc="informationanalysts-relations-index" targetptr="mmbase"/></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="informationanalysts/applications.html">MMBase
-        Applications</ulink>, how-to create a shipable package containing data, objectmodel (builders, relations) etc.</para>
+        <para><olink targetdoc="informationanalysts-applications-index" targetptr="introduction" />, how-to create a shipable package containing data, objectmodel (builders, relations) etc.</para>
       </listitem>
     </itemizedlist>
   </section>

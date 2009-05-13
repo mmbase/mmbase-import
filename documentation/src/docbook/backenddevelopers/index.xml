@@ -25,24 +25,26 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="backenddevelopers/codingstandards.html">Summary of
-        Coding Standards</ulink></para>
+        <para>
+          <olink
+              targetdoc="backenddevelopers_codingstandards"
+              targetptr="backenddevelopers_codingstandards"
+              />
+        </para>
       </listitem>
 
       <listitem>
-        <para><ulink url="backenddevelopers/custombuilderclass.html">HOW TO:
-        Add a custom function to a nodebuilder</ulink></para>
+        <para><olink targetdoc="backenddevelopers_custombuilderclass" /></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="backenddevelopers/functionsets.html">The MMBase
-        Function sets</ulink>, examples like &lt;mm:function set="utils"
+        <para><olink targetdoc="backenddevelopers_functionsets" />, examples like &lt;mm:function set="utils"
         name="generatePassword" /&gt; to generate a password.</para>
       </listitem>
 
       <listitem>
         <para>
-          <ulink url="backenddevelopers/components.html">Component Framework</ulink>
+          <olink targetdoc="backenddevelopers_components" />
           document describing the MMBase Component Framework, as of version 1.9.
           Applications developed with the component requirements will be compitable
           with all websites implementing this framework.

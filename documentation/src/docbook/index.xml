@@ -5,100 +5,8 @@
   <articleinfo>
     <title>MMBase Documentation Overview</title>
 
-    <date>2008-11-19</date>
-
+    <date>2009-05</date>
     <edition>$Id$</edition>
-    <authorgroup>
-      <author>
-        <firstname>Michiel</firstname>
-        <surname>Meeuwissen</surname>
-      </author>
-
-      <author>
-        <firstname>Pierre</firstname>
-        <surname>van Rooden</surname>
-      </author>
-
-      <author>
-        <firstname>Daniel</firstname>
-        <surname>Ockeloen</surname>
-      </author>
-
-      <author>
-        <firstname>Nico</firstname>
-        <surname>Klasens</surname>
-      </author>
-
-      <author>
-        <firstname>Henk</firstname>
-        <surname>Hangyi</surname>
-      </author>
-
-      <author>
-        <firstname>Ernst</firstname>
-        <surname>Bunders</surname>
-      </author>
-
-      <author>
-        <firstname>Johannes</firstname>
-        <surname>Verelst</surname>
-      </author>
-
-      <author>
-        <firstname>Kees</firstname>
-        <surname>Jongenburger</surname>
-      </author>
-
-      <author>
-        <firstname>Eduard</firstname>
-        <surname>Witteveen</surname>
-      </author>
-
-      <author>
-        <firstname>Sjoerd</firstname>
-
-        <surname>de Heer</surname>
-      </author>
-
-      <author>
-        <firstname>Rob</firstname>
-
-        <surname>van Maris</surname>
-      </author>
-
-      <author>
-        <firstname>Kars</firstname>
-
-        <surname>Veling</surname>
-      </author>
-
-      <author>
-        <firstname>André</firstname>
-
-        <surname>van Toly</surname>
-      </author>
-    </authorgroup>
-
-    <legalnotice>
-      <para>This software is OSI Certified Open Source Software. OSI Certified
-      is a certification mark of the Open Source Initiative.</para>
-
-      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
-      See <ulink
-      url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
-    </legalnotice>
-
-    <revhistory>
-      <revision>
-        <revnumber>0.2</revnumber>
-
-        <date>2009-11-19</date>
-
-        <authorinitials>AvT</authorinitials>
-
-        <revremark>1.8 to 1.9</revremark>
-      </revision>
-    </revhistory>
 
     <abstract>
       <para>This is the main page of the MMBase documentation. All
@@ -142,18 +50,15 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="contribute.html">How to contribute to the
-        community</ulink></para>
+        <para><olink targetdoc="general_contribute" /></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="3rdparty.html">How to share code in the MMBase
-        repository</ulink></para>
+        <para><olink targetdoc="general_3rdparty" /></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="mmbase.org/mmcmissionstatement.html">MMC Mission
-        Statement Document</ulink></para>
+        <para><olink targetdoc="mmbase.org_mmcmissionstatement" /></para>
       </listitem>
     </itemizedlist>
 
@@ -161,62 +66,19 @@
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="xml-how-to.html">How To Use XML</ulink></para>
+        <para><olink targetdoc="general_xml-how-to" /></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="modules/images-and-attachments.html">Images and
-        Attachments</ulink></para>
+        <para><olink targetdoc="modules_images-and-attachments" /></para>
       </listitem>
 
       <listitem>
-        <para><ulink url="modules/i18n.html">MMBase Internationalization and
-        Localization</ulink></para>
+        <para><olink targetdoc="modules_i18n" /></para>
       </listitem>
     </itemizedlist>
   </section>
 
-
-
-  <section id="documentation">
-    <title>Writing documentation</title>
-
-    <para>The documentation is written in Docbook and published as HTML and
-    PDF. We encourage you to use these templates.</para>
-
-    <itemizedlist>
-      <listitem>
-        <para><ulink url="mmbase.org/templates/index.html">The Project
-        [projectname] Document</ulink></para>
-
-        <itemizedlist>
-          <listitem>
-            <para><ulink
-            url="mmbase.org/templates/configuration.html">[applicationname]
-            Configuration</ulink></para>
-          </listitem>
-
-          <listitem>
-            <para><ulink
-            url="mmbase.org/templates/functional-reference.html">The
-            [projectname] Functional Reference</ulink></para>
-          </listitem>
-
-          <listitem>
-            <para><ulink
-            url="mmbase.org/templates/installation.html">[applicationname]
-            Installation</ulink></para>
-          </listitem>
-
-          <listitem>
-            <para><ulink
-            url="mmbase.org/templates/technical-reference.html">The
-            [projectname] Technical Reference</ulink></para>
-          </listitem>
-        </itemizedlist>
-      </listitem>
-    </itemizedlist>
-  </section>
 
 
 

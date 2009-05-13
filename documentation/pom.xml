@@ -14,6 +14,9 @@
   <artifactId>mmbase-documentation</artifactId>
   <version>${mmbase.version}</version>
   <name>MMBase Documentation</name>
+  <properties>
+    <sun.net.client.defaultConnectTimeout>1000</sun.net.client.defaultConnectTimeout>
+  </properties>
 
   <build>
     <defaultGoal>docbook:transform</defaultGoal>
@@ -21,11 +24,11 @@
      <plugin>
        <groupId>org.codehaus.mojo</groupId>
        <artifactId>docbook-maven-plugin</artifactId>
-       <!--
        <configuration>
+         <!--
          <stylesheetLocation>${basedir}/style/</stylesheetLocation>
+         -->
        </configuration>
-       -->
      </plugin>
     </plugins>
 
