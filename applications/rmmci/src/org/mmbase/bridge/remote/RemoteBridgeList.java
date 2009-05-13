@@ -22,6 +22,7 @@ import java.rmi.RemoteException;
 public interface RemoteBridgeList<E> extends  RemoteList<E> {
   public void setProperty(java.lang.Object arg0,java.lang.Object arg1) throws RemoteException;
   public java.lang.Object getProperty(java.lang.Object arg0) throws RemoteException;
+  public java.util.Map<Object, Object> getProperties() throws RemoteException;
   public RemoteBridgeList<E> subList(int arg0,int arg1) throws RemoteException;
   public void sort(java.util.Comparator<? super E> arg0) throws RemoteException;
   public void sort() throws RemoteException;
