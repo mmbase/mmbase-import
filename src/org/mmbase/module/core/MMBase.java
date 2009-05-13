@@ -1339,6 +1339,7 @@ public class MMBase extends ProcessorModule {
     }
 
 
+    private boolean shownDataDir = false;
     /**
      * A setting 'datadir' can be specified in mmbaseroot.xml (and hence in your context xml). This
      * serves as a default for the 'blobs on disk' directory, but it can be used on other spots as well.
@@ -1391,8 +1392,12 @@ public class MMBase extends ProcessorModule {
                 log.warn("Datadir " + dataDir + " is not writable.");
             }
         }
-
-        log.info("MMBase data dir: " + dataDir);
+        if (shownDataDir) {
+            log.debug("MMBase data dir: " + dataDir);
+        } else {
+            log.info("MMBase data dir: " + dataDir);
+            shownDataDir = true;
+        }
         return dataDir;
 
     }
