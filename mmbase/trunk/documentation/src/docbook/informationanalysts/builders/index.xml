@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
-<article>
+<article id="informationanalysts-builders-index">
   <articleinfo>
     <title>MMBase Builder Configuration</title>
 
@@ -34,7 +34,7 @@
     </legalnotice>
   </articleinfo>
 
-  <section>
+  <section id="introduction">
     <title>Introduction</title>
 
     <para>By installing applications or adding your own builder files you can
@@ -59,7 +59,7 @@
 
     <programlisting format="linespecific">
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;builder 
+&lt;builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
@@ -107,7 +107,7 @@
         &lt;type state="..." notnull="..." key="..."&gt;...&lt;/type&gt;
       &lt;/db&gt;
     &lt;/field&gt;
-    ... 
+    ...
   &lt;/fieldlist&gt;
 &lt;/builder&gt;
     </programlisting>
@@ -456,7 +456,7 @@
           will get an input type="text" field in your editor instead of an
           entry that just displays a fields value.</para>
 
-          <programlisting>&lt;field name="creator" readonly="true"&gt; 
+          <programlisting>&lt;field name="creator" readonly="true"&gt;
   &lt;datatype base="creator" xmlns="http://www.mmbase.org/xmlns/datatypes" /&gt;
 &lt;/field&gt;</programlisting>
 

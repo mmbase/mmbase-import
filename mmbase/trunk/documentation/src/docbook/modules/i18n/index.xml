@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
-	<article>
+<article id="modules-i18n-index">
 	<articleinfo>
 		<title>MMBase Internationalization and Localization</title>
 		<date>2002-10-19</date>
@@ -93,7 +93,7 @@
       <title>Non-ascii in Images</title>
       <para>
         Usually the 'convert' tool of imagemagick is used to resize, turn or otherwise convert
-        MMBase images. It is also possible in this way to add text to existing Images. 
+        MMBase images. It is also possible in this way to add text to existing Images.
       </para>
       <para>
         The java strings are then fed to the 'convert' tool by a runtime call. The convert-tool
