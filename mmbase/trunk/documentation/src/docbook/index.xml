@@ -163,5 +163,34 @@
   </section>
 
 
+  <section id="informationanalysts">
+    <title>Information Analysts</title>
+
+    <para>Documentation about structuring information and content and how to
+    package an entire website including data in an MMBase application.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><olink targetdoc="informationanalysts-builders-index" /></para>
+      </listitem>
+
+      <listitem>
+        <para>
+          <olink targetdoc="informationanalysts-datatypes-index"
+                 targetptr="datatypes"
+        />, How to configure new ones, plus a summary of all datatypes and their specializations which are predefined</para>
+      </listitem>
+
+      <listitem>
+        <para><olink targetdoc="informationanalysts-relations-index" targetptr="mmbase"/></para>
+      </listitem>
+
+      <listitem>
+        <para><olink targetdoc="informationanalysts-applications-index" targetptr="introduction" />, how-to create a shipable package containing data, objectmodel (builders, relations) etc.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+
 
 </article>
