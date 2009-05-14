@@ -193,6 +193,7 @@ public class CachedRenderer extends WrappedRenderer {
             future = ThreadPools.jobsExecutor.submit(new Callable<Exception>() {
                     public Exception call() {
                         try {
+                            long startTime = System.currentTimeMillis();
                             File tempFile = new File(f + ".busy");
                             Writer fw = new OutputStreamWriter(new FileOutputStream(tempFile), "UTF-8");
                             Writer writer;
@@ -208,7 +209,11 @@ public class CachedRenderer extends WrappedRenderer {
                             if (ready != null) {
                                 ready.run();
                             }
-                            log.info("Created " + f);
+                            if ((System.currentTimeMillis() - startTime) > (wait / 2)) {
+                                log.service("Created " + f);
+                            } else {
+                                log.debug("Created " + f);
+                            }
                             return null;
                         } catch (Exception e) {
                             return e;
@@ -216,9 +221,11 @@ public class CachedRenderer extends WrappedRenderer {
                     }
                 });
             rendering.put(f, future);
-            log.info("Now rendering " + rendering);
+            if (log.isDebugEnabled()) {
+                log.debug("Now rendering " + rendering);
+            }
         } else {
-            log.info("Joined " + f + "" + future);
+            log.debug("Joined " + f + "" + future);
         }
         Exception e;
         try {
@@ -227,8 +234,10 @@ public class CachedRenderer extends WrappedRenderer {
                 if (wait < Integer.MAX_VALUE) {
                     renderFile(f, w);
                 }
-                if (rendering.remove(f) != null) {
-                    log.info("Now rendering " + rendering);
+            }
+            if (rendering.remove(f) != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Now rendering " + rendering);
                 }
             }
         } catch (TimeoutException to) {
