@@ -311,7 +311,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
             a.checkType(value);
             return backing.put(a.getName(), value);
         } else {
-            if (patternBacking == null) throw new IndexOutOfBoundsException();
+            if (patternBacking == null) throw new IndexOutOfBoundsException("No index " + i + " (" + j + "). Patternlimit " + patternLimit + " " + this);
             return patternBacking.get(j - patternLimit).setValue(value);
         }
     }
