@@ -159,4 +159,14 @@ public class ParametersTest extends TestCase {
         assertEquals("C", subParams.get(1));
         assertEquals("C", subParams.get("c"));
     }
+
+
+    public void testAutodefiningParameters() {
+        Parameters auto = new AutodefiningParameters();
+        auto.setIfDefined("a", "A");
+        auto.set("b", "B");
+
+        Parameters sub = auto.subList(0, 1);
+
+    }
 }
