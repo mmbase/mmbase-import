@@ -519,7 +519,7 @@
       </class>
     </body>
   </block>
-  
+
   <block name="my_editors"
          classification="mmbase.edit:1"
          mimetype="text/html">
@@ -535,7 +535,7 @@
   </block>
 
   <block name="documentation"
-         classification="mmbase.documentation"
+         classification="mmbase.documentation:1"
          mimetype="text/html">
     <title xml:lang="nl">Documentatie</title>
     <title xml:lang="en">Documentation</title>
