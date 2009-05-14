@@ -51,6 +51,11 @@ public abstract class BasicUserProvider implements UserProvider {
         if (ub == null) throw new IllegalArgumentException();
         userBuilder = ub;
     }
+    public BasicUserProvider(String b) {
+        if (b == null) throw new IllegalArgumentException();
+        userBuilder = MMBase.getMMBase().getBuilder(b);
+        if (userBuilder == null) throw new IllegalArgumentException();
+    }
 
 
     public MMObjectNode getAnonymousUser() throws SecurityException {
@@ -346,11 +351,15 @@ public abstract class BasicUserProvider implements UserProvider {
 
     /**
      * @see org.mmbase.security.implementation.cloudcontext.User#getOwnerField
+     * @param node User node
      */
     public String getDefaultContext(MMObjectNode node)  {
         if (node == null) return "system";
         MMObjectNode contextNode = node.getNodeValue(getDefaultContextField());
-        return contextNode == null ? null : contextNode.getStringValue("name");
+        if (contextNode == null) {
+            log.warn("Node " + node + " has no default context ( " + getDefaultContextField() + " is null). Returning system. " + Verify.getInstance().getContextProvider());
+        }
+        return contextNode == null ? "system" : Verify.getInstance().getContextProvider().getContext(contextNode);
     }
 
     public boolean isOwnNode(User user, MMObjectNode node) {
