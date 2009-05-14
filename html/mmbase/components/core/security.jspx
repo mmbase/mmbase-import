@@ -28,7 +28,7 @@
       </tr>
       <tr>
         <th class="view">Your default context</th>
-        <td>${requestScopee['org.mmbase.currentuser'].defaultContext}</td>
+        <td>${requestScope['org.mmbase.cloud'].user.ownerField}</td>
       </tr>
       <tr>
         <th class="view">Your  node</th>
@@ -46,8 +46,12 @@
         </td>
       </tr>
       <tr>
-        <th class="view">Implementation</th>
+        <th class="view">Authentication Implementation</th>
         <td>${cloud.cloudContext.authentication}</td>
+      </tr>
+      <tr>
+        <th class="view">Authorization Implementation</th>
+        <td><jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthorization()</jsp:expression></td>
       </tr>
       <tr>
         <th class="view">User-builder</th>
