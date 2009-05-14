@@ -1,27 +1,3 @@
-The prefered build method currently is Maven 1.1. 
-You will find a HOWTO Maven 2 further below in this document.
-
-
-HOWTO Maven 1.1 (for people who used to use the 'ant' build)
---------------------------------------------------------------------------------
-
-Use Apache Maven 1.1 (_not_ 1.0, _not_ 2)
-
-- ant jar -> maven jar, maven jar:install
-maven -Dmaven.test.skip=true jar:install
-
-- ant     -> maven
-
-- ant bindist -> maven all:install, cd example-webapp; maven war:install
-
-
-If e.g. mmbase.org is unreachable, add 'maven.offline=true' to maven-base/build.properties.
-Sadly it is impossible to find out how to configure a timeout setting for that.
-
-The equivalent for 'ant clean' is 'maven all:clean' to clean all applications, and 'maven clean' to
-only clean the present one.
-
-
 HOWTO Maven 2 (Apache Maven 2.0.6 and up)
 --------------------------------------------------------------------------------
 
