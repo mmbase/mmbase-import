@@ -10,13 +10,13 @@
   <div
       class="mm_c c_core b_security ${requestScope['org.mmbase.componentClassName']}"
       id="${requestScope['org.mmbase.componentId']}">
-    
+
     <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
     <mm:function set="utils" name="mmbase">
-    
+
     <table summary="security implementation detail" border="0" cellspacing="0" cellpadding="3">
       <caption>
-        ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}        
+        ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
       </caption>
       <tr>
         <th class="view">You</th>
@@ -25,6 +25,25 @@
       <tr>
         <th class="view">Your rank</th>
         <td><mm:cloudinfo type="rank" /></td>
+      </tr>
+      <tr>
+        <th class="view">Your default context</th>
+        <td>${requestScopee['org.mmbase.currentuser'].defaultContext}</td>
+      </tr>
+      <tr>
+        <th class="view">Your  node</th>
+        <td>
+          <mm:cloudinfo type="usernode">
+            <mm:isempty>No node</mm:isempty>
+            <mm:isempty inverse="true">
+              <mm:node number="${_}">
+                <mm:field name="number" />
+                <jsp:text> </jsp:text>
+                <mm:nodeinfo type="gui" />
+              </mm:node>
+            </mm:isempty>
+          </mm:cloudinfo>
+        </td>
       </tr>
       <tr>
         <th class="view">Implementation</th>
@@ -36,7 +55,7 @@
           <c:catch var="exception">
             ${cloud.cloudContext.authentication.userBuilder}
           </c:catch>
-          ${exception}  
+          ${exception}
         </td>
       </tr>
       <tr>
@@ -71,7 +90,7 @@
         </tr>
         <jsp:scriptlet>}</jsp:scriptlet>
       </c:catch>
-    </table>    
+    </table>
     ${exception}
 
     <table summary="declared actions" border="0" cellspacing="0" cellpadding="3">
