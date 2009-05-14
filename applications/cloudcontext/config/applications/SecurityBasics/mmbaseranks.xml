@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mmbaseranks  exportsource="mmbase://www.mmbase.org/cloudcontextsecurity" timestamp="20020516170724">
 
-	<node number="3000" owner="security">
+	<node number="3000" owner="security" alias="cloudcontextsecurity_rank_anonymous">
 		<rank>0</rank>
 		<name>anonymous</name>
 		<description>The anonymous user (mandatory rank)</description>
 	</node>
 
-	<node number="3001" owner="security">
+	<node number="3001" owner="security" alias="cloudcontextsecurity_rank_basic_user">
 		<rank>100</rank>
 		<name>basic user</name>
 		<description>Basic User (mandatory rank)</description>
@@ -19,7 +19,7 @@
 		<description>Example rank</description>
 	</node>
 
-	<node number="3003" owner="security">
+	<node number="3003" owner="security" alias="cloudcontextsecurity_rank_administrator">
 		<rank>73059</rank>
 		<name>administrator</name>
 		<description>Admistrator may do everything</description>
