@@ -103,12 +103,15 @@ public class Related {
                     log.debug("" + dest + " already correctly related");
                     // nothing changed
                 } else {
-                    for (Node r : rl) {
-                        log.debug("Deleting " + r);
-                        r.delete();
-                    }
                     RelationManager rel = getRelationManager(node);
-                    if (node.isNew()) node.commit(); // Silly, but you cannot make relations to new nodes.
+                    if (node.isNew()) {
+                        node.commit(); // Silly, but you cannot make relations to new nodes.
+                    } else {
+                        for (Node r : rl) {
+                            log.debug("Deleting " + r);
+                            r.delete();
+                        }
+                    }
                     Relation newrel = node.createRelation(dest, rel);
                     for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
                         newrel.setStringValue(entry.getKey(), entry.getValue());
