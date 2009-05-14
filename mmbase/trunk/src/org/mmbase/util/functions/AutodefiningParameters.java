@@ -43,6 +43,7 @@ public class AutodefiningParameters extends Parameters {
         newDef[newDef.length - 1] = param;
         definition = newDef;
         toIndex++;
+        patternLimit++;
         return definition.length - 1;
     }
 
