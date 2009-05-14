@@ -9,6 +9,8 @@
       <guiname xml:lang="en">Rank</guiname>
     </gui>
     <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <default value="cloudcontextsecurity_basic_rank" />
+      <required value="true" />
       <enumeration enforce="never">
         <query type="mmbaseranks"  xmlns="http://www.mmbase.org/xmlns/searchquery">
           <sortorder field="rank" />
@@ -18,12 +20,14 @@
         <class name="org.mmbase.datatypes.processors.Related$Setter">
           <param name="role">rank</param>
           <param name="type">mmbaseranks</param>
+          <param name="searchDir">source</param>
         </class>
       </setprocessor>
       <getprocessor>
         <class name="org.mmbase.datatypes.processors.Related$Getter">
           <param name="role">rank</param>
           <param name="type">mmbaseranks</param>
+          <param name="searchDir">source</param>
         </class>
         </getprocessor>
     </datatype>
@@ -36,6 +40,7 @@
     </gui>
     <datatype base="list" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <property name="itemDataType" value="node" />
+      <default value="mayreadallgroup" />
       <required value="false" />
       <enumeration enforce="never">
         <query type="mmbasegroups"  xmlns="http://www.mmbase.org/xmlns/searchquery">
