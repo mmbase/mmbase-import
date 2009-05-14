@@ -9,7 +9,7 @@
       <guiname xml:lang="en">Rank</guiname>
     </gui>
     <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      <default value="cloudcontextsecurity_basic_rank" />
+      <default value="cloudcontextsecurity_rank_basic_user" />
       <required value="true" />
       <enumeration enforce="never">
         <query type="mmbaseranks"  xmlns="http://www.mmbase.org/xmlns/searchquery">
@@ -20,16 +20,16 @@
         <class name="org.mmbase.datatypes.processors.Related$Setter">
           <param name="role">rank</param>
           <param name="type">mmbaseranks</param>
-          <param name="searchDir">source</param>
+          <param name="searchDir">destination</param>
         </class>
       </setprocessor>
       <getprocessor>
         <class name="org.mmbase.datatypes.processors.Related$Getter">
           <param name="role">rank</param>
           <param name="type">mmbaseranks</param>
-          <param name="searchDir">source</param>
+          <param name="searchDir">destination</param>
         </class>
-        </getprocessor>
+      </getprocessor>
     </datatype>
   </field>
 
