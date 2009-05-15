@@ -244,15 +244,18 @@ public class URLComposerFactory  {
      * @return The (new) list with urlcomposers.
      */
     public  List<URLComposer> createURLComposers(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, List<URLComposer> urls, Set<MMObjectNode> cacheExpireObjects) {
-        if (urls == null) urls = new ArrayList<URLComposer>();
-        Format format   = Format.get(source.getIntValue("format"));
-        String protocol = provider.getStringValue("protocol");
-        if (log.isDebugEnabled()) log.debug("Creating url-composers for provider " + provider.getNumber() + "(" + format + ")");
+        if (urls == null) {
+            urls = new ArrayList<URLComposer>();
+        }
 
-        Iterator<ComposerConfig> i = urlComposerClasses.iterator();
+        final Format format   = Format.get(source.getIntValue("format"));
+        final String protocol = provider.getStringValue("protocol");
+        if (log.isDebugEnabled()) {
+            log.debug("Creating url-composers for provider " + provider.getNumber() + " (format: " + format + ", protocol: " + protocol + ")");
+        }
+
         boolean found = false;
-        while (i.hasNext()) {
-            ComposerConfig cc = i.next();
+        for (ComposerConfig cc : urlComposerClasses) {
             if (log.isDebugEnabled()) {
                 log.debug("Trying " + cc + " for '" + format + "'/'" + protocol + "'");
             }
@@ -274,19 +277,22 @@ public class URLComposerFactory  {
                     URLComposer uc = cc.getInstance(provider, source, fragment, info, cacheExpireObjects);
                     addURLComposer(uc, urls);
                 }
+                log.debug("Can be used!");
                 found = true;
             } else {
-                log.debug(cc.checkFormat(format) + "/" + cc.checkProtocol(protocol));
+                log.debug("Not usable. For format: " + cc.checkFormat(format) + ", for protocol: " + cc.checkProtocol(protocol));
             }
         }
 
         if (! found) { // use default
             URLComposer uc = defaultUrlComposer.getInstance(provider, source, fragment, info, cacheExpireObjects);
+            log.trace("nothing found");
             if (uc != null && ! urls.contains(uc)) { // avoid duplicates
                 log.debug("No urlcomposer found, adding the default");
                 urls.add(uc);
             }
         }
+        log.debug("returning " + urls);
         return urls;
     }
 }
