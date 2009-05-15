@@ -7,6 +7,7 @@
                         http://www.mmbase.org/xmlns/builder.xsd"
     name="mediafragments"  maintainer="mediaproject.mmbase.org" version="0" extends="object">
 
+  <class>org.mmbase.applications.media.builders.MediaFragments</class>
   <names>
     <singular xml:lang="nl">Mediafragment</singular>
     <singular xml:lang="en">Media fragment</singular>
