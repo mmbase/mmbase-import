@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
 []>
-<article>
+<article id="applications-media-index">
   <articleinfo>
         <title>Media project documentation</title>
         <date>2002-12-17</date>
@@ -37,7 +37,7 @@
     <section id="intro">
         <title>Introduction</title>
         <para>
-    The media application providers a comprehensive and generic way to handle media within MMBase. The first phase of the Media project focused on creating a generic structure that can be easily reused, and on which new media related software can be build. The current media application can be used to maintain media, which consist of audio and video. 
+    The media application providers a comprehensive and generic way to handle media within MMBase. The first phase of the Media project focused on creating a generic structure that can be easily reused, and on which new media related software can be build. The current media application can be used to maintain media, which consist of audio and video.
     After analyses of the already existing media integration within MMBase, and investigation of the wishes  by organisations that were using the MMBase media integration, we came to the following list of issues that should be covered by the first phase of the Media project:
     <itemizedlist>
     <listitem>
@@ -47,7 +47,7 @@
                 </listitem>
                 <listitem>
                     <para>
-    Inherentance. Inherentance was something that was lacking within MMBase. MMBase 1.6.3 is the first release with inherintance functionality and this makes it possible to use audio en video interchangebly. This feature is nice to use while listing media in your web site instead of audio and video separated. 
+    Inherentance. Inherentance was something that was lacking within MMBase. MMBase 1.6.3 is the first release with inherintance functionality and this makes it possible to use audio en video interchangebly. This feature is nice to use while listing media in your web site instead of audio and video separated.
     </para>
                 </listitem>
                 <listitem>
@@ -133,7 +133,7 @@
     <section id="Filters">
         <title>Filters</title>
         <para>
-        Within the Media project a media fragment can contain different media sources, and the media sources can contain different media providers. To decide which actual media source, and which media provider is going to be used for the visitor requesting a media fragment, Filters can be used. The Media project provides some default filters, but organization specific filters can easily be made and plugged in. This chapter will describe some default filters and how you can plug in a new filters. 
+        Within the Media project a media fragment can contain different media sources, and the media sources can contain different media providers. To decide which actual media source, and which media provider is going to be used for the visitor requesting a media fragment, Filters can be used. The Media project provides some default filters, but organization specific filters can easily be made and plugged in. This chapter will describe some default filters and how you can plug in a new filters.
      </para>
         <para>
          The figure below shows the sequence of actions that occur when a media fragment is requested. While requesting a media fragment we have to find out which media source, and which media provider are most appropriate for the requestor of the media fragment. As can be seen in the figure, the object cloud according to the media fragment will be transformed in a list of URL Composers. An URL Composer mainly contains information about the media fragment, media source, media provider, and user information. More information about URL Composers can be found in the Chapter 'URL Composers'. The list of URL Composers will go through a chain of filters which decide which URL Composer is the most appropriate. After filtering the list, one, or more URL Composers will be returned.
@@ -157,7 +157,7 @@
         </para>
 
         <para>
-        The ServerFormatSorter, and the RealSorter are two filters available within the media project. With the ServerFormatSorter you can configure (on the server) which media format you prefer, to be returned. The example below shows that the most preferred media format is real media (rm). If no rm can be found the most appropriate format will be ra. If no ra will be found the most appropriate format will be mp3. If none of the specified formats can be found the list of URL Composers will be returned unsorted. The ServerFormatSorter will sort the url composers in such a way that the most appropriate format is higher in the list. This filter will not remove URL Composers and it therby named Sorter, instead of Filter. All URL Composers will stay available which enables a second filter to manipulate the complete URL composer list again. 
+        The ServerFormatSorter, and the RealSorter are two filters available within the media project. With the ServerFormatSorter you can configure (on the server) which media format you prefer, to be returned. The example below shows that the most preferred media format is real media (rm). If no rm can be found the most appropriate format will be ra. If no ra will be found the most appropriate format will be mp3. If none of the specified formats can be found the list of URL Composers will be returned unsorted. The ServerFormatSorter will sort the url composers in such a way that the most appropriate format is higher in the list. This filter will not remove URL Composers and it therby named Sorter, instead of Filter. All URL Composers will stay available which enables a second filter to manipulate the complete URL composer list again.
         <programlisting id="serverformatfilter"><![CDATA[<config filter="format">
   <preferredSource>
     <source format="rm" />
@@ -195,17 +195,17 @@
         </para>
         <para>
             The configuration information of the url composers can be found in the file urlcomposers.xml. While creating the list of URL Composers the information in this configuration file is used. This means according to the format of the media source, and the protocol information of the media provider a specified URL Composer can be plugged in. The example belows shows which URLComposer will be used by default. The example shows also that in case of format=ra, and the protocol=rtsp the RealURLComposer will be used.
-            
-            <programlisting id="urlcomposerconfiguration"><![CDATA[<urlcomposers>  
+
+            <programlisting id="urlcomposerconfiguration"><![CDATA[<urlcomposers>
   <default>org.mmbase.applications.media.urlcomposers.URLComposer</default>
   <urlcomposer format="ra"  protocol="rtsp">org.mmbase.applications.media.urlcomposers.RealURLComposer</urlcomposer>
 </urlcomposer>]]></programlisting>
-          
+
           The default URL Composer will just create an url like: http://streams.mmbase.org/music/test.mp3. The RealURLComposer will also add start, and stop times to the URI. In this way you can use the subfragment mechanism (explained in the object model section). The url will look like: http://streams.mmbase.org/music/test.ra?start=10.4&amp;stop=52.4. The RealURLComposer will also make sure that the URL is conform the Real specifications. If you want to add more information to this URI, you can easily extend the RealURLComposer and add extra information to the URI.
         </para>
         <para>
             URL Composers can also take information of the requester of the media fragment in mind. This enables URL Composers to behave in a specific way according to the information that is provider by the requester. We will explain this with a simple template example.
-            
+
                <programlisting id="urlcomposertemplate"><![CDATA[<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <mm:cloud>
   <mm:node  number="number of audio fragment">
@@ -231,7 +231,7 @@ http://cgi.omroep.nl/cgi-bin/streams?/tv/ncrv/manbijthond/sb.20051205.rm?title=M
 http://cgi.omroep.nl/cgi-bin/streams?/tv/ncrv/manbijthond/bb.20051205.rm?title=Man bijt hond
 http://cgi.omroep.nl/cgi-bin/streams?/tv/ncrv/manbijthond/sb.20051205.asf?title=Man bijt hond
 http://cgi.omroep.nl/cgi-bin/streams?/tv/ncrv/manbijthond/bb.20051205.asf?title=Man bijt hond
-We want to be able to generate these based on one videofragment, that we can relate to four different videosources. These videosources contain information about the bitrate and format, and based on these we want to be able to generate the urls. 
+We want to be able to generate these based on one videofragment, that we can relate to four different videosources. These videosources contain information about the bitrate and format, and based on these we want to be able to generate the urls.
 What will happen now is if the 'url' function is called on the videofragment node, a list of URLs will be generated for this fragment. We want to be able to parameterize this function call to get only the URL for a specific bitrate and format. To do this, we create the following 'filters.xml' file:
 <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mainFilter SYSTEM "http://www.mmbase.org/dtd/mediafilter_1_0.dtd" [
