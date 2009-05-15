@@ -72,6 +72,13 @@
           <include>**/*.properties</include>
           <include>INDEX</include>
         </includes>
+        <excludes>
+          <exclude>main/**</exclude>
+        </excludes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
         <filtering>false</filtering>
       </resource>
       <resource>
