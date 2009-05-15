@@ -23,6 +23,8 @@ import java.util.concurrent.*;
  */
 public class ChainedLogger implements Logger {
 
+    private static final Logger LOG = Logging.getLoggerInstance(ChainedLogger.class);
+
     private final List<Logger> loggers = new CopyOnWriteArrayList<Logger>();
     public ChainedLogger(Logger... ls) {
         for (Logger l : ls) {
@@ -89,7 +91,7 @@ public class ChainedLogger implements Logger {
 
     public void service (Object m, Throwable t) {
         for (Logger log : loggers) {
-           log.service(m, t);
+            log.service(m, t);
         }
     }
 
@@ -166,6 +168,10 @@ public class ChainedLogger implements Logger {
         for (Logger log : loggers) {
             log.setLevel(p);
         }
+    }
+    @Override
+    public String toString() {
+        return "" + loggers;
     }
 
 }
