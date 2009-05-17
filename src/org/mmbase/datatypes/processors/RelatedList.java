@@ -74,12 +74,21 @@ public class RelatedList {
                 }
                 while(relatedNodes.remove(otherNode));
             }
-            RelationManager rel = cloud.getRelationManager(node.getNodeManager(),
-                                                           cloud.getNodeManager(type),
-                                                           role);
+            RelationManager rel = "destination".equals(searchDir) ?
+                cloud.getRelationManager(node.getNodeManager(),
+                                         cloud.getNodeManager(type),
+                                         role) :
+                cloud.getRelationManager(cloud.getNodeManager(type),
+                                         node.getNodeManager(),
+                                         role);
+
             for (Node otherNode : relatedNodes) {
-                if (node.isNew()) node.commit(); // Silly, but you cannot make relations to new nodes.
-                Relation newrel = node.createRelation(otherNode, rel);
+                if (node.isNew()) {
+                    node.commit(); // Silly, but you cannot make relations to new nodes.
+                }
+                Relation newrel = searchDir.equals("destination") ?
+                    node.createRelation(otherNode, rel) :
+                    otherNode.createRelation(node, rel);
                 newrel.commit();
             }
             return otherNodes;
