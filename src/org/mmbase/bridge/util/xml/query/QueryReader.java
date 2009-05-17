@@ -18,6 +18,7 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * This class contains static methods related to creating a Query object using a (fragment of an) XML.
@@ -27,6 +28,8 @@ import org.mmbase.util.*;
  * @since MMBase-1.8
  **/
 public abstract class QueryReader {
+
+    private static final Logger log = Logging.getLoggerInstance(QueryReader.class);
 
     public static final String XSD_SEARCHQUERY_1_0 = "searchquery.xsd";
     public static final String NAMESPACE_SEARCHQUERY_1_0 = "http://www.mmbase.org/xmlns/searchquery";
@@ -101,8 +104,19 @@ public abstract class QueryReader {
                 }
             }
         } else {
-             throw new IllegalArgumentException("field tag has no 'name' attribute");
+            throw new IllegalArgumentException("field tag has no 'name' attribute");
         }
+    }
+
+    /**
+     * @since MMBase-1.9.1
+    protected static Object resolveVariables(String s, QueryDefinition queryDefinition) {
+        // TODO this is perhaps a too simply implementation (no escaping, no nesting etc..)
+        for (Map.Entry<String, Object> var : queryDefinition.getVariables().entrySet()) {
+            s = s.replace("${" + var.getKey() + "}", "" + var.getValue());
+        }
+        return s;
+
     }
 
     protected static Constraint getConstraint(Element constraintElement, QueryDefinition queryDefinition) {
@@ -115,9 +129,13 @@ public abstract class QueryReader {
             if (hasAttribute(constraintElement,"field2")) {
                 throw new IllegalArgumentException("A constraint tag can only have one of 'value' or 'field2'");
             }
-            value = getAttribute(constraintElement,"value");
-        } else if (hasAttribute(constraintElement,"field2")) {
-            value = queryDefinition.query.createStepField(getFullFieldName(queryDefinition,getAttribute(constraintElement,"field2")));
+            if (log.isDebugEnabled()) {
+                log.debug("Using " + queryDefinition.getVariables());
+            }
+            value = resolveVariables(getAttribute(constraintElement, "value"), queryDefinition);
+
+        } else if (hasAttribute(constraintElement, "field2")) {
+            value = queryDefinition.query.createStepField(getFullFieldName(queryDefinition,getAttribute(constraintElement, "field2")));
         }
         int operator = FieldCompareConstraint.EQUAL;
         if (hasAttribute(constraintElement,"operator")) {
@@ -134,7 +152,7 @@ public abstract class QueryReader {
             if (operator != Queries.OPERATOR_BETWEEN) {
                 throw new IllegalArgumentException("A constraint tag can only use 'value2' attribute with operator BETWEEN");
             }
-            value2 = getAttribute(constraintElement,"value2");
+            value2 = resolveVariables(getAttribute(constraintElement, "value2"), queryDefinition);
         }
         if (operator == Queries.OPERATOR_BETWEEN && value2 == null) {
             throw new IllegalArgumentException("Operator BETWEEN in a constraint tag requires attribute 'value2'");

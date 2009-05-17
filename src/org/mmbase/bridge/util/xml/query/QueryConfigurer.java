@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.util.xml.query;
 
+import java.util.*;
 
 /**
  * A QueryConfigurer has the task to instantiate {@link QueryDefinition}s (wrappers around Query's)
@@ -21,10 +22,15 @@ package org.mmbase.bridge.util.xml.query;
  **/
 public class QueryConfigurer {
 
-    private static final QueryConfigurer DEFAULT_CONFIGURER = new QueryConfigurer();
+    /**
+     * @since MMBase-1.9.1
+     */
+    public final Map<String, Object> variables = new HashMap<String, Object>();
 
     public QueryDefinition getQueryDefinition() {
-        return new QueryDefinition();
+        QueryDefinition qd = new QueryDefinition();
+        qd.setVariables(variables);
+        return qd;
     }
 
     public FieldDefinition getFieldDefinition() {
@@ -32,7 +38,7 @@ public class QueryConfigurer {
     }
 
     public static QueryConfigurer getDefaultConfigurer() {
-        return DEFAULT_CONFIGURER;
+        return new QueryConfigurer();
     }
 
 }
