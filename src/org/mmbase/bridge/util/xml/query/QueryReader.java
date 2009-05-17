@@ -110,6 +110,7 @@ public abstract class QueryReader {
 
     /**
      * @since MMBase-1.9.1
+     */
     protected static Object resolveVariables(String s, QueryDefinition queryDefinition) {
         // TODO this is perhaps a too simply implementation (no escaping, no nesting etc..)
         for (Map.Entry<String, Object> var : queryDefinition.getVariables().entrySet()) {
