@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.util.xml.query;
 
-import java.util.Collection;
+import java.util.*;
 import org.w3c.dom.*;
 
 import org.mmbase.bridge.*;
@@ -56,6 +56,7 @@ public class QueryDefinition {
      */
     public Collection<FieldDefinition> fields = null;
 
+    private Map<String, Object> variables = null;
 
     public QueryDefinition() {
     }
@@ -68,6 +69,18 @@ public class QueryDefinition {
         this.elementManager = queryDefinition.elementManager;
         this.elementStep = queryDefinition.elementStep;
         this.fields = queryDefinition.fields;
+        this.variables = queryDefinition.variables;
+    }
+
+    public Map<String, Object> getVariables() {
+        if (variables == null) {
+            return Collections.emptyMap();
+        } else {
+            return variables;
+        }
+    }
+    public void setVariables(Map<String, Object> vars) {
+        variables = Collections.unmodifiableMap(vars);
     }
 
     /**
