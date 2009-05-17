@@ -1359,14 +1359,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
         public Collection<Map.Entry<C, String>> getEnumeration(Locale locale, Cloud cloud, Node node, Field field) {
             if (value == null) return Collections.emptyList();
-            if (cloud == null) {
-                if (node != null) {
-                    cloud = node.getCloud();
-                } else if (field != null) {
-                    cloud = field.getNodeManager().getCloud();
-                }
-            }
-            return value.get(locale, cloud);
+            return value.get(locale, cloud, node, field);
         }
 
         /**
