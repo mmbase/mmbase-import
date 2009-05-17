@@ -14,6 +14,7 @@
       <required value="false" />
       <enumeration enforce="never">
         <query type="mmbasegroups"  xmlns="http://www.mmbase.org/xmlns/searchquery">
+          <constraint field="number" inverse="true" value="${_node}" />
           <sortorder field="name" />
         </query>
       </enumeration>
@@ -44,6 +45,7 @@
       <required value="false" />
       <enumeration enforce="never">
         <query type="mmbasegroups"  xmlns="http://www.mmbase.org/xmlns/searchquery">
+          <constraint field="number" inverse="true" value="${_node}" />
           <sortorder field="name" />
         </query>
       </enumeration>
