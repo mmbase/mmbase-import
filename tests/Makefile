@@ -1,6 +1,7 @@
 
-export JAVA_HOME=/opt/jdk16
+export JAVA_HOME=/home/nightly/jdk
 
+mvn=/home/nightly/maven2/bin/mvn
 ant=ant -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib target/dependency:. -Dnoconnection=true
 #ant=ant -lib lib:. -Dnoconnection=true
 
@@ -60,8 +61,8 @@ transactions:
 
 dependencies:
 	mkdir -p work
-	mvn dependency:copy-dependencies
+	$(mvn) dependency:copy-dependencies
 
 .PHONY: compile
 compile:
-	mvn compile jar:jar
+	$(mvn) mvn compile jar:jar
