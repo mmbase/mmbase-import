@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
-<article>
+<article id="frontenddevelopers-taglib-tutorial">
   <articleinfo>
     <title>Creating webpages with the MMBase Tag Library</title>
     <date>2006-07</date>
@@ -37,7 +37,7 @@
         <date>2003-07</date>
         <revremark>Completed tutorial for MyNews application and reworked comments
         from Documentation projectgroup.</revremark>
-      </revision>  
+      </revision>
         <revision>
         <revnumber>0.6</revnumber>
         <date>2006-07</date>
@@ -562,7 +562,7 @@
         related to a specific node. Next to &lt;mm:relatednodes &gt; you can use
         &lt;mm:related&gt;, &lt;mm:listnodes&gt; and
         &lt;mm:list&gt;. See the MMBase taglib reference for a
-        difference between these tags. 
+        difference between these tags.
         </para>
         <para>
           The difference beteen mm:relatednodes and mm:related is that the second one does nur
@@ -763,7 +763,7 @@
 &lt;mm:cloud&gt;
   &lt;mm:import externid="newsid" required="true" /&gt;
   &lt;mm:node number="$newsid"&gt;
- 
+
     &lt;html&gt;
       &lt;head&gt;
         &lt;link rel="stylesheet" type="text/css" href="style.css" /&gt;
@@ -816,7 +816,7 @@
 &lt;mm:cloud&gt;
   &lt;mm:import externid="newsid" required="true" /&gt;
   &lt;mm:node number="$newsid"&gt;
- 
+
     &lt;html&gt;
       &lt;head&gt;
         &lt;link rel="stylesheet" type="text/css" href="style.css" /&gt;
@@ -871,7 +871,7 @@
 &lt;mm:cloud&gt;
   &lt;mm:import externid="newsid" required="true" /&gt;
   &lt;mm:node number="$newsid"&gt;
- 
+
     &lt;html&gt;
       &lt;head&gt;
         &lt;link rel="stylesheet" type="text/css" href="style.css" /&gt;
@@ -917,7 +917,7 @@
 
     <para>Here we added the &lt;mm:relatednodes&gt; tag to support retrieval
     of our relevant related nodes. Note the usage of the &lt;mm:last&gt; tag
-    to get a comma after each related nodes but the last one. 
+    to get a comma after each related nodes but the last one.
     </para>
 
     <para>After you completed this step, check your page in your development
@@ -1040,7 +1040,7 @@
   &lt;mm:relatednodes type="urls"&gt;
       &lt;mm:field node="abc" name="title" /&gt;
   &lt;/mm:relatednodes&gt;
-&lt;/mm:node&gt;        
+&lt;/mm:node&gt;
 </programlisting>You see, now the field searches for a node-provider with id
       'abc', and that happens to be the mm:node tag. It still has to
       be <emphasis>inside</emphasis> though.</para>
@@ -1224,7 +1224,7 @@ will write the title field twice.
       variable with a certain name. You will get an error message if you do
       not obey this rule.
       </para>
-      
+
       <para>
         Every mmbase tag can write itself to the 'context' and
         often it also can get some information from the context. Therefore,
@@ -1242,7 +1242,7 @@ will write the title field twice.
       'referid' attribute is used. Lets make it clear with an example.
       <programlisting>
 &lt;mm:node id="my_node" number="123"&gt;
- ... 
+ ...
 &lt;/mm:node&gt;
 
 ...
@@ -1282,7 +1282,7 @@ will write the title field twice.
       <para>To solve this, we came up with the dollar-sign notation:
       <programlisting>
 &lt;mm:field id="type" name="type" /&gt;
-&lt;mm:listnodes type="$type"&gt; 
+&lt;mm:listnodes type="$type"&gt;
    ..
 &lt;/mm:listnodes&gt;
 </programlisting> Dollar signs are often used to indicate that something
@@ -1310,14 +1310,14 @@ ${title}
       <para>Dollar-sign variables can be used in nearly all attributes. It can
       also be combined with other text: <programlisting>
 &lt;mm:field id="title" name="title" /&gt;
-&lt;mm:listnodes type="news" constraints="title LIKE '$title'"&gt; 
+&lt;mm:listnodes type="news" constraints="title LIKE '$title'"&gt;
    ..
 &lt;/mm:listnodes&gt;
 </programlisting> Sometimes it is needed to use curly brackets to indicate
       where the name of the variable ends: <programlisting>
 &lt;mm:field id="firstname" name="firstname" /&gt;
 &lt;mm:field id="lastname" name="lastname" /&gt;
-&lt;mm:listnodes type="news" constraints="title LIKE '${firstname}${lastname}'"&gt; 
+&lt;mm:listnodes type="news" constraints="title LIKE '${firstname}${lastname}'"&gt;
    ..
 &lt;/mm:listnodes&gt;
 </programlisting></para>
@@ -1388,7 +1388,7 @@ ${title}
       inside an attribute. <programlisting>
 &lt;mm:listnodes type="news"&gt;
   &lt;mm:field name="title"&gt;
-    &lt;mm:listnodes type="news" constraints="title LIKE '$_'"&gt; 
+    &lt;mm:listnodes type="news" constraints="title LIKE '$_'"&gt;
       ..
     &lt;/mm:listnodes&gt;
   &lt;/mm:field&gt;
@@ -1404,21 +1404,21 @@ ${title}
       <para>
         In that way you e.g. also easily use field values in attributes.
 <programlisting>
-&lt;mm:listnodes type="news"&gt;  
+&lt;mm:listnodes type="news"&gt;
   &lt;div class="${_node.className}"&gt;
   &lt;/mm:div&gt;
 &lt;/mm:listnodes&gt;
-</programlisting> 
+</programlisting>
       </para>
       <note>
         <para>
           Also mmbase taglib escaping is available in attributes, using EL <emphasis>functions</emphasis>.
 <programlisting>
-&lt;mm:listnodes type="news"&gt;  
+&lt;mm:listnodes type="news"&gt;
   &lt;div title="${mm:escape('text/html/attribute', _node.title)}"&gt;
   &lt;/mm:div&gt;
 &lt;/mm:listnodes&gt;
-</programlisting> 
+</programlisting>
          Where something like &lt;div title="&lt;mm:field name="title" escape="text/html/attribute" /&gt;" &gt;
          happened, but in a XML (and JSPX) compliant way.
         </para>
