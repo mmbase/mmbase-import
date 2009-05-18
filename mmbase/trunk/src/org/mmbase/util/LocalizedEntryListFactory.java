@@ -228,16 +228,17 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
 
     /**
-     * Returns a Collection of Map.Entries for the given Locale. The collection is kind of 'virtual',
-     * it only reflects the underlying memory structures.
-     *
-     * This collection does have a well defined iteration order.
-     *
-     * @param locale The locale of <code>null</code> for the default locale.
-     * @param cloud  The cloud to use. Can be <code>null</code> if no queries added (see {@link #addQuery}).
-     *               If Locale is <code>null</code>, but cloud isn't, the locale of the cloud is used.
+     * @since MMBase-1.9.1
      */
-    public List<Map.Entry<C, String>> get(final Locale locale, final Cloud cloud) {
+    public List<Map.Entry<C, String>> get(final Locale locale, Cloud c, final org.mmbase.bridge.Node node, final Field field) {
+        if (c == null) {
+            if (node != null) {
+                c = node.getCloud();
+            } else if (field != null) {
+                c = field.getNodeManager().getCloud();
+            }
+        }
+        final Cloud cloud = c;
         return new AbstractSequentialList<Map.Entry<C, String>> () {
 
             public int size() {
@@ -314,7 +315,11 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                                 continue;
                                             }
                                         }
-                                        final Query query = QueryReader.parseQuery(element, useCloud, null).query;
+                                        final QueryConfigurer qc = new QueryConfigurer();
+                                        if (node != null) {
+                                            qc.variables.put("_node", node.getNumber());
+                                        }
+                                        final Query query = QueryReader.parseQuery(element, qc, useCloud, null).query;
                                         final org.mmbase.bridge.NodeList list = query.getList();
                                         subIterator = new Iterator<Map.Entry<C, String>>() {
                                                 final NodeIterator nodeIterator = list.nodeIterator();
@@ -412,6 +417,20 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                     };
             }
         };
+    }
+
+    /**
+     * Returns a Collection of Map.Entries for the given Locale. The collection is kind of 'virtual',
+     * it only reflects the underlying memory structures.
+     *
+     * This collection does have a well defined iteration order.
+     *
+     * @param locale The locale of <code>null</code> for the default locale.
+     * @param cloud  The cloud to use. Can be <code>null</code> if no queries added (see {@link #addQuery}).
+     *               If Locale is <code>null</code>, but cloud isn't, the locale of the cloud is used.
+     */
+    public List<Map.Entry<C, String>> get(final Locale locale, final Cloud cloud) {
+        return get(locale, cloud, null, null);
     }
     /**
      * The size of the collections returned by {@link #get}
