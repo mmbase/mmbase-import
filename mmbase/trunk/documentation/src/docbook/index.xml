@@ -110,7 +110,7 @@
       </listitem>
 
       <listitem>
-        <para><olink targetdoc="backenddevelopers-functionsets" />, examples like &lt;mm:function set="utils"
+        <para><olink targetdoc="backenddevelopers-functionsets-index" />, examples like &lt;mm:function set="utils"
         name="generatePassword" /&gt; to generate a password.</para>
       </listitem>
 
