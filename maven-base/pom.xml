@@ -627,13 +627,6 @@ See http://www.MMBase.org/license
       </dependency>
 
       <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
-        <version>${servlet.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
         <groupId>${jsp.groupId}</groupId>
         <artifactId>jsp-api</artifactId>
         <version>${jsp.version}</version>
