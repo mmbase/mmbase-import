@@ -50,11 +50,13 @@
   <block name="email-documentation"
          classification="mmbase.documentation"
          mimetype="text/html">
+    <title xml:lang="en">Email</title>
+    <title xml:lang="nl">Email</title>
     <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
-        <param name="docbook">documentation/email.xml</param>
-        <param name="module">applications/email</param>
+        <param name="docbook">email.xml</param>
+        <param name="module">applications/email/documentation</param>
         <param name="includeRenderTime">xml-comments</param>
       </class>
     </body>
