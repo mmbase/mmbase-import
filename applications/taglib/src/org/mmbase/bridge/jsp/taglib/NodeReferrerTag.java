@@ -145,9 +145,13 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
         NodeProvider np = findNodeProvider(false);
         if (np != null) {
             Node node = np.getNodeVar();
-            Cloud cloud = node.getCloud();
-            p.setIfDefined(Parameter.CLOUD, cloud);
-            p.setIfDefined(Parameter.USER, cloud.getUser());
+            if (node != null) {
+                Cloud cloud = node.getCloud();
+                p.setIfDefined(Parameter.CLOUD, cloud);
+                p.setIfDefined(Parameter.USER, cloud.getUser());
+            } else {
+                log.warn("Node provider " + np + " provided null");
+            }
 
         }
     }
