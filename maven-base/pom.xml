@@ -291,6 +291,7 @@ See http://www.MMBase.org/license
             <maxmem>256M</maxmem>
             <fork>${compiler.fork}</fork>
             <showDeprecation>false</showDeprecation>
+            <encoding>iso-8859-1</encoding>
           </configuration>
         </plugin>
         <plugin>
