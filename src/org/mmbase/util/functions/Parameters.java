@@ -575,18 +575,59 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         return Casting.toString(get(parameterName));
     }
 
+
     /**
-     * Gives the arguments back as a (unmodifiable) map.
+     * Returns a view on the backing where every value wich is the default value is set to
+     * <code>null</code>
+     * @since MMBase-1.9.1
      */
-    public Map<String, Object> toMap() {
+    protected Map<String, Object> undefaultBacking() {
+        return new AbstractMap<String, Object>() {
+            public Set<Map.Entry<String, Object>> entrySet() {
+                return new AbstractSet<Map.Entry<String, Object>>() {
+                    public Iterator<Map.Entry<String, Object>> iterator() {
+                        final Iterator<Map.Entry<String, Object>> iterator = Parameters.this.backing.entrySet().iterator();
+
+                        return new Iterator<Map.Entry<String, Object>>() {
+                            public boolean hasNext() {
+                                return iterator.hasNext();
+                            }
+                            public Map.Entry<String, Object> next() {
+                                Map.Entry<String, Object> entry = iterator.next();
+                                Parameter<?> def = Parameters.this.definition[Parameters.this.indexOfParameter(entry.getKey())];
+                                Object defaultValue = def.getDefaultValue();
+                                if (defaultValue == null) {
+                                    return entry;
+                                }
+                                if (defaultValue.equals(entry.getValue())) {
+                                    return new org.mmbase.util.Entry<String, Object>(entry.getKey(), null);
+                                } else {
+                                    return entry;
+                                }
+                            }
+                            public void remove() {
+                                throw new UnsupportedOperationException();
+                            }
+
+                        };
+                    }
+                    public int size() {
+                        return Parameters.this.backing.size();
+                    }
+                };
+            }
+        };
+    }
+
+    private Map<String, Object> toMap(final Map<String, Object> b) {
         return new AbstractMap<String, Object>() {
             public Set<Map.Entry<String, Object>> entrySet() {
                 return new AbstractSet<Map.Entry<String, Object>>() {
                     public Iterator<Map.Entry<String, Object>> iterator() {
                         return patternBacking != null ?
-                            new org.mmbase.util.ChainedIterator<Map.Entry<String, Object>>(backing.entrySet().iterator(), patternBacking.iterator())
+                            new org.mmbase.util.ChainedIterator<Map.Entry<String, Object>>(b.entrySet().iterator(), patternBacking.iterator())
                             :
-                            backing.entrySet().iterator();
+                            b.entrySet().iterator();
                     }
                     public int size() {
                         return Parameters.this.size();
@@ -594,6 +635,20 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                 };
             }
         };
+    }
+
+    /**
+     * Gives the arguments back as a (unmodifiable) map.
+     */
+    public Map<String, Object> toMap() {
+        return toMap(backing);
+    }
+    /**
+     * Returns this parameters object as a (unmodifiable)  Map, but all values which only have the default value are <code>null</code>
+     * @since MMBase-1.9.1
+     */
+    public Map<String, Object> toUndefaultMap() {
+        return toMap(undefaultBacking());
     }
 
     /**
