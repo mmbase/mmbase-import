@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMBaseContext;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -137,7 +138,8 @@ public class CachedRenderer extends WrappedRenderer {
     private static final Pattern INVALID_IN_FILENAME = Pattern.compile("[\\/\\\\\\s]");
 
     protected File getCacheFile(Parameters blockParameters, RenderHints hints) {
-        File dir = new File(MMBase.getMMBase().getDataDir(), directory);
+        File cachedDir = new File(MMBase.getMMBase().getDataDir(), directory );
+        File dir = new File(cachedDir, MMBaseContext.getHtmlRootUrlPath());
         File componentDir = new File(dir, getBlock().getComponent().getName());
         File blockDir = new File(componentDir, getBlock().getName());
         blockDir.mkdirs();
@@ -220,6 +222,7 @@ public class CachedRenderer extends WrappedRenderer {
                         }
                     }
                 });
+            ThreadPools.identify(future, "Rendering " + f);
             rendering.put(f, future);
             if (log.isDebugEnabled()) {
                 log.debug("Now rendering " + rendering);
