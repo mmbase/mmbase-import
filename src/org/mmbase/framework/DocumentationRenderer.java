@@ -30,7 +30,8 @@ import org.mmbase.util.logging.Logging;
 public class DocumentationRenderer extends CachedRenderer {
     private static final Logger log = Logging.getLoggerInstance(DocumentationRenderer.class);
 
-    private String repository  = "http://scm.mmbase.org/view/*checkout*/mmbase/trunk/";
+    private String repository  = "http://scm.mmbase.org/view/*checkout*";
+    private String project     = "mmbase/trunk";
     private String module      = "documentation/src/docbook";
 
     private String docbook     = null;
@@ -44,9 +45,17 @@ public class DocumentationRenderer extends CachedRenderer {
     public void setRepository(String r) {
         repository = r;
     }
+    public void setProject(String p) {
+        project = p;
+    }
     @Override
     public Parameter<?>[] getParameters() {
-        return new Parameter<?>[] {new Parameter<String>("docbook", String.class)};
+        return new Parameter<?>[] {
+                new Parameter<String>("docbook", String.class, docbook),
+                new Parameter<String>("module", String.class, module),
+                new Parameter<String>("project", String.class, project),
+                new Parameter<String>("repository", String.class, repository)
+                };
     }
 
 
@@ -65,7 +74,7 @@ public class DocumentationRenderer extends CachedRenderer {
                                     db = DocumentationRenderer.this.docbook;
                                     //if (db == null) throw new IllegalArgumentException("docbook parameter not set on parameters, nor as renderer property");
                                 }
-                                return new URL(repository + module + "/" + db).toURI();
+                                return new URL(repository + "/" + project + "/" + module + "/" + db).toURI();
                             } catch (MalformedURLException mfe) {
                                 throw new RuntimeException(mfe.getMessage(), mfe);
                             } catch (URISyntaxException use) {
