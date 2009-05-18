@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
-<article>
+<article id="frontenddevelopers-taglib-include">
   <articleinfo>
 	<title>Include mechanisms with the MMBase Taglibs</title>
 	<date>2003-07</date>
@@ -44,7 +44,7 @@
     <title>Introduction</title>
     <para>
       Since the release of MMBase 1.5 there are two tags within the MMBase
-      taglib which are introduced in this document: 
+      taglib which are introduced in this document:
       <computeroutput>&lt;mm:treeinclude&gt;</computeroutput> and
       <computeroutput>&lt;mm:leafinclude&gt;</computeroutput>. These tags
       allow a site to be set up in a very modular way; this documentation
@@ -61,7 +61,7 @@
     <para>
       With a JSP Include Directive, one can directly insert the content
       of another JSP as if it was part of the calling JSP. The servlet
-      engine will combine these JSPs before compilation; one big 
+      engine will combine these JSPs before compilation; one big
       JSP file is the result. The following syntax is used for this
       directive:
 <programlisting><![CDATA[<%@ include file="includes/header.jsp" %>]]></programlisting>
@@ -94,15 +94,15 @@
 <programlisting><![CDATA[<jsp:include page="includes/page.jsp?param1=value">
    <jsp:param name="param2" value="value2" />
 </jsp:include>]]></programlisting>
-      The example shows that there are two ways of passing named variables: 
-      either pass them on directly in the URL, or add them using 
+      The example shows that there are two ways of passing named variables:
+      either pass them on directly in the URL, or add them using
       <computeroutput>&lt;jsp:param&gt;</computeroutput> tags.
     </para>
     <para>
       The main benefit of using the Include Action is that the URL to include
       can be constructed during execution of the page; and that double variable
       names in pages are no problem. However, every included page results in a
-      new request to the servlet engine, which means there is a bit of a 
+      new request to the servlet engine, which means there is a bit of a
       performance impact when compared to the include directive.
     </para>
     <note>
@@ -133,7 +133,7 @@
     <title>MMBase TreeInclude</title>
     <para>
       TreeInclude is an extension to the MMBase Include, which chooses a
-      page from a list of possible pages; and then includes the one 
+      page from a list of possible pages; and then includes the one
       best suited. The general idea is that TreeInclude receives a path
       of objects that are used to find a file on disk that fits the given
       objects most closely.
@@ -142,11 +142,11 @@
       <title>SmartPath</title>
       <para>
         The functionality that finds a template for a given list of
-        objects is called smartpath. Smartpath is a function on a node, 
+        objects is called smartpath. Smartpath is a function on a node,
         which returns the best possible path for that node. The standard
         behavior of Smartpath is to return a path that exists of the
         node numbers, possibly postfixed by a random string. So, if
-        <computeroutput>getSmartPath()</computeroutput> is called on 
+        <computeroutput>getSmartPath()</computeroutput> is called on
         node number 138, in a directory where one of the subdirectories
         is <computeroutput>138something</computeroutput>, <computeroutput>getSmartPath()</computeroutput>
         will return this path. If there is no matching path, a <computeroutput>null</computeroutput>
@@ -191,7 +191,7 @@
              title 'mmevent3'</para>
           </listitem>
           <listitem>
-            <para>321; this is an object of type <computeroutput>news</computeroutput> with 
+            <para>321; this is an object of type <computeroutput>news</computeroutput> with
             title 'introduction'</para>
           </listitem>
         </itemizedlist>
@@ -244,7 +244,7 @@
            title 'mmevent3'</para>
         </listitem>
         <listitem>
-          <para>321; this is an object of type <computeroutput>news</computeroutput> with 
+          <para>321; this is an object of type <computeroutput>news</computeroutput> with
           title 'introduction'</para>
         </listitem>
       </itemizedlist>
@@ -307,7 +307,7 @@
   </mm:listnodes>
   ....
 ]]></programlisting>
-    
+
      Which creates (maximal) 5 images in the HTML which are clickable, and produce a pop-up window
      with a bigger version of the same image if you click on them.
     </para>

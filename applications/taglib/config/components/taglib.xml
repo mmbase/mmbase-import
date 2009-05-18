@@ -70,4 +70,35 @@
     </body>
   </block>
 
+
+  <block name="taglib-documentation"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <title xml:lang="en">Taglib</title>
+    <title xml:lang="nl">Taglib</title>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="docbook">frontenddevelopers/taglib/tutorial.xml</param>
+        <param name="module">applications/taglib/documentation</param>
+        <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="taglib-including"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <title xml:lang="en">Taglib - Including</title>
+    <title xml:lang="nl">Taglib - Including</title>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="docbook">frontenddevelopers/taglib/include.xml</param>
+        <param name="module">applications/taglib/documentation</param>
+        <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
 </component>
