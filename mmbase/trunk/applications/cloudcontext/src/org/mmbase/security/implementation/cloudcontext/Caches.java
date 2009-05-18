@@ -125,37 +125,45 @@ public abstract class Caches {
 
     static void notify(NodeEvent event) {
 
-        String builder = event.getBuilderName();
-        if (builder.equals(Authenticate.getInstance().getUserProvider().getUserBuilder().getTableName())) {
-            invalidateCaches(event.getNodeNumber());
-        }
-        if (new BuilderNames(Verify.getInstance().getContextProvider().getContextQueries()).contains((builder))
-            || builder.equals("rightsrel")
-            || builder.equals("groups")
-            || builder.equals("ranks")
-            ) {
-            invalidateCaches();
+        try {
+            String builder = event.getBuilderName();
+            if (builder.equals(Authenticate.getInstance().getUserProvider().getUserBuilder().getTableName())) {
+                invalidateCaches(event.getNodeNumber());
+            }
+            if (new BuilderNames(Verify.getInstance().getContextProvider().getContextQueries()).contains((builder))
+                || builder.equals("rightsrel")
+                || builder.equals("groups")
+                || builder.equals("ranks")
+                ) {
+                invalidateCaches();
+            }
+        } catch (ClassCastException cce) {
+            log.debug(cce + " (Different security implementations?)");
         }
     }
     static void notify(RelationEvent event) {
-        String sourceType = event.getRelationSourceType();
-        String destType = event.getRelationDestinationType();
-        String userBuilder = Authenticate.getInstance().getUserProvider().getUserBuilder().getTableName();
-        Collection<String> contextBuilders = new BuilderNames(Verify.getInstance().getContextProvider().getContextQueries());
-        if (sourceType.equals(userBuilder)) {
-            invalidateCaches(event.getRelationSourceNumber());
-        }
-        if (destType.equals(userBuilder)) {
-            invalidateCaches(event.getRelationDestinationNumber());
-        }
-        if (contextBuilders.contains(sourceType) || contextBuilders.contains(destType)) {
-            invalidateCaches();
-        }
-        if (sourceType.equals("groups") || destType.equals("groups")) {
-            invalidateCaches();
-        }
-        if (sourceType.equals("ranks") || destType.equals("ranks")) {
-            invalidateCaches();
+        try {
+            String sourceType = event.getRelationSourceType();
+            String destType = event.getRelationDestinationType();
+            String userBuilder = Authenticate.getInstance().getUserProvider().getUserBuilder().getTableName();
+            Collection<String> contextBuilders = new BuilderNames(Verify.getInstance().getContextProvider().getContextQueries());
+            if (sourceType.equals(userBuilder)) {
+                invalidateCaches(event.getRelationSourceNumber());
+            }
+            if (destType.equals(userBuilder)) {
+                invalidateCaches(event.getRelationDestinationNumber());
+            }
+            if (contextBuilders.contains(sourceType) || contextBuilders.contains(destType)) {
+                invalidateCaches();
+            }
+            if (sourceType.equals("groups") || destType.equals("groups")) {
+                invalidateCaches();
+            }
+            if (sourceType.equals("ranks") || destType.equals("ranks")) {
+                invalidateCaches();
+            }
+        } catch (ClassCastException cce) {
+            log.debug(cce + " (Different security implementations?)");
         }
     }
 
