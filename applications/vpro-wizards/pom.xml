@@ -32,10 +32,8 @@
     creating, deleting and updating nods and
     relations,
     as
-    well as sortinging
-    lists of related nodes. It is trvial to extend the
-    system
-    with your custom actions.
+    well as sorting lists of related nodes. It is easy to extend the
+    system your own custom actions.
   </description>
   <repositories>
   </repositories>
@@ -159,6 +157,24 @@
           </execution>
         </executions>
       </plugin>
+
+      <!--
+        copy the tag files into the WEB-INF folder
+      -->      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webResources>
+            <resource>
+              <!-- this is relative to the pom.xml directory -->
+              <directory>tagfiles</directory>
+              <targetPath>WEB-INF/tags/vpro-wizards</targetPath>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
 </project>
