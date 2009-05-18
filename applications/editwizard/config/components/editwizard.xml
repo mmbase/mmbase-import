@@ -111,10 +111,39 @@
   <block name="editwizard-documentation"
          classification="mmbase.documentation"
          mimetype="text/html">
+    <title>Editwizards</title>
     <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
         <param name="docbook">documentation/frontenddevelopers/editwizard/index.xml</param>
+        <param name="module">applications/editwizard</param>
+        <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="editwizard-documentation-frontend"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <title>Editwizards (frontend)</title>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="docbook">documentation/frontenddevelopers/editwizard/editwizard-frontend.xml</param>
+        <param name="module">applications/editwizard</param>
+        <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="editwizard-documentation-reference"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <title>Editwizards (reference)</title>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="docbook">documentation/frontenddevelopers/editwizard/editwizard-reference.xml</param>
         <param name="module">applications/editwizard</param>
         <param name="includeRenderTime">xml-comments</param>
       </class>
