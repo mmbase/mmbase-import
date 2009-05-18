@@ -71,6 +71,26 @@ public class BasicComponent implements Component {
         return description;
     }
 
+    /**
+     * EXPERIMENTAL. The Manifest of the jar in which this component is definied.
+     * @since MMBase-1.9.1
+     */
+    public java.util.jar.Manifest getManifest() {
+        if (uri != null) {
+            String[] parts = uri.toString().split("!", 2);
+            if (parts.length == 2) {
+                try {
+                    java.net.URL jarUrl = new java.net.URL(parts[0] + "!/");
+                    java.net.JarURLConnection jarConnection = (java.net.JarURLConnection)jarUrl.openConnection();
+                    return  jarConnection.getManifest();
+                } catch (Exception e) {
+                    log.warn(e);
+                }
+            }
+        }
+        return null;
+    }
+
     public void configure(Element el) {
         try {
             uri = new URI(el.getOwnerDocument().getDocumentURI());
