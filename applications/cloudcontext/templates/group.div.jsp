@@ -27,40 +27,6 @@
       </mm:maywrite>
       </mm:fieldlist>
 
-    <tr>
-     <td><%=getPrompt(m,"parent_groups")%></td>
-     <td>
-      <select name="_parentgroups"  size="15" multiple="multiple">
-        <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source" orderby="name">
-         <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
-        </mm:relatednodes>
-        <mm:unrelatednodes type="mmbasegroups" searchdir="both" excludeself="true" orderby="name">
-         <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
-        </mm:unrelatednodes>
-      </select>
-      <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_groups.jsp</mm:param>
-      <mm:relatednodes referid="ingroups">
-        <mm:param name="group"><mm:field name="number" /></mm:param>
-       </mm:relatednodes>
-      </mm:url>"><%=getPrompt(m,"view_groups")%></a>
-     </td>
-     <td><%=getPrompt(m,"child_groups")%></td>
-     <td>
-      <select name="_childgroups"  size="15" multiple="multiple">
-        <mm:relatednodes id="fromgroups" type="mmbasegroups" searchdir="destination" orderby="name">
-         <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
-        </mm:relatednodes>
-        <mm:unrelatednodes type="mmbasegroups" searchdir="both" excludeself="true" orderby="name">
-         <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
-        </mm:unrelatednodes>
-      </select>
-      <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_groups.jsp</mm:param>
-      <mm:relatednodes referid="fromgroups">
-        <mm:param name="group"><mm:field name="number" /></mm:param>
-       </mm:relatednodes>
-      </mm:url>"><%=getPrompt(m,"view_groups")%></a>
-     </td>
-     </tr>
    </table>
    <mm:import id="back">index_groups.jsp</mm:import>
    <%@include file="groupOrUserRights.table.jsp" %>
