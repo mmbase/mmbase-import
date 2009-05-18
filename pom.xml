@@ -129,7 +129,6 @@ See http://www.MMBase.org/license
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-      <version>${jstl.version}</version> <!-- needed explicitely (in maven 2.1), because 'servlet25' profile overrides this property -->
       <scope>provided</scope>
     </dependency>
 
