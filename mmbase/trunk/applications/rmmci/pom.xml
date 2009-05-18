@@ -19,7 +19,7 @@
       <plugin>
         <groupId>org.mmbase.maven</groupId>
         <artifactId>maven-mmbase-plugin</artifactId>
-        <version>${mmbase.version}</version>
+        <version>1.9-SNAPSHOT</version> <!-- cannot be mmbase.version, because that would give circular dependency -->
         <dependencies>
           <dependency>
             <groupId>org.mmbase</groupId>
