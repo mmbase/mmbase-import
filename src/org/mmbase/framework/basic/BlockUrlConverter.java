@@ -183,18 +183,23 @@ public abstract class BlockUrlConverter implements UrlConverter {
                 log.debug("" + niceUrl + " does not start with " + request.getServletPath());
             }
 
-            Map<String, Object> params = action ? blockParameters.toMap() :
-                framework.prefix(getState(frameworkParameters),
-                                 blockParameters.toMap());
-            if (log.isDebugEnabled()) {
-                log.debug("Prefixed params " + params);
-            }
-            map.putAll(params);
-            if (action) map.put("_action", frameworkParameters.get("_action"));
+            try {
+                Map<String, Object> params = action ?
+                    blockParameters.toUndefaultMap() :
+                    framework.prefix(getState(frameworkParameters), blockParameters.toUndefaultMap());
+                if (log.isDebugEnabled()) {
+                    log.debug("Prefixed params " + params);
+                }
+                map.putAll(params);
+                if (action) map.put("_action", frameworkParameters.get("_action"));
 
-            String u = BasicUrlConverter.getUrl(niceUrl.getUrl(), map, request, escapeAmps);
-            log.debug("Returning actual url " + u);
-            return new BasicUrl(this, u, niceUrl.getWeight());
+                String u = BasicUrlConverter.getUrl(niceUrl.getUrl(), map, request, escapeAmps);
+                log.debug("Returning actual url " + u);
+                return new BasicUrl(this, u, niceUrl.getWeight());
+            } catch (RuntimeException re) {
+                log.error(re.getMessage(), re);
+                throw re;
+            }
         } else {
             return Url.NOT;
         }
