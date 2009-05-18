@@ -11,28 +11,40 @@
   <blocktype name="mmbase.about"           weight="0">
     <title xml:lang="nl">Over</title>
     <title xml:lang="en">About</title>
+    <title xml:lang="eo">Pri</title>
   </blocktype>
   <blocktype name="mmbase.admin"           weight="10" >
     <title xml:lang="nl">Beheer</title>
     <title xml:lang="en">Admin</title>
+    <title xml:lang="eo">Estrado</title>
   </blocktype>
   <blocktype name="mmbase.tools"           weight="20">
     <title xml:lang="nl">Gereedschap</title>
     <title xml:lang="en">Tools</title>
+    <title xml:lang="eo">Iloj</title>
   </blocktype>
   <blocktype name="mmbase.components"      weight="30">
     <title xml:lang="nl">Componenten</title>
     <title xml:lang="en">Components</title>
+    <title xml:lang="eo">Kombineroj</title>
   </blocktype>
 
   <blocktype name="mmbase.edit"            weight="40">
     <title xml:lang="nl">Redactie</title>
     <title xml:lang="en">Edit</title>
+    <title xml:lang="eo">Redakto</title>
+  </blocktype>
+
+  <blocktype name="mmbase.documentation" weight="50">
+    <title xml:lang="nl">Documentatie</title>
+    <title xml:lang="en">Documentation</title>
+    <title xml:lang="eo">Dokumentado</title>
   </blocktype>
 
   <blocktype name="mmbase.examples"        weight="10000">
     <title xml:lang="nl">Voorbeelden</title>
     <title xml:lang="en">Examples</title>
+    <title xml:lang="eo">Ekzemploj</title>
   </blocktype>
 </blocktypes>
 
