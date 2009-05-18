@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
   xmlns="http://www.mmbase.org/xmlns/builder"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                      http://www.mmbase.org/xmlns/builder.xsd"                        
+  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                      http://www.mmbase.org/xmlns/builder.xsd"
   name="mmbaseranks" maintainer="www.mmbase.org" version="0" extends="object"
   defaultcontextintypedef="security"
   >
@@ -35,7 +35,9 @@
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+      </datatype>
     </field>
     <field name="name">
       <gui>
