@@ -129,7 +129,7 @@
     <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
-        <param name="docbook">documentation/frontenddevelopers/editwizard/editwizard-frontend.xml</param>
+        <param name="docbook">documentation/frontenddevelopers/editwizard/frontend.xml</param>
         <param name="module">applications/editwizard</param>
         <param name="includeRenderTime">xml-comments</param>
       </class>
@@ -143,7 +143,7 @@
     <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
-        <param name="docbook">documentation/frontenddevelopers/editwizard/editwizard-reference.xml</param>
+        <param name="docbook">documentation/frontenddevelopers/editwizard/reference.xml</param>
         <param name="module">applications/editwizard</param>
         <param name="includeRenderTime">xml-comments</param>
       </class>
