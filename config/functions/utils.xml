@@ -87,4 +87,10 @@
     <method>getModules</method>
   </function>
 
+ <function name="threadPools">
+    <type>class</type>
+    <class>org.mmbase.util.ThreadPools</class>
+    <method>getThreadPools</method>
+  </function>
+
 </functionset>
