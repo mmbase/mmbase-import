@@ -140,7 +140,7 @@ public abstract class ThreadPools {
      *
      * @since MMBase-1.9
      */
-    public static final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactory() {
+    public static final ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactory() {
             public Thread newThread(Runnable r) {
                 return ThreadPools.newThread(r, "SchedulerThread-" + (schedSeq++));
             }
@@ -149,6 +149,16 @@ public abstract class ThreadPools {
         ((ScheduledThreadPoolExecutor) scheduler).setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
     }
 
+    private static final Map<String, ExecutorService> threadPools = new ConcurrentHashMap<String, ExecutorService>();
+    static {
+        threadPools.put("jobs", jobsExecutor);
+        threadPools.put("filters", filterExecutor);
+        threadPools.put("schedules", scheduler);
+    }
+
+    public static Map<String, ExecutorService> getThreadPools() {
+        return threadPools;
+    }
 
 
     static final UtilReader properties = new UtilReader("threadpools.xml", new Runnable() { public void run() { configure(); }});
@@ -162,26 +172,26 @@ public abstract class ThreadPools {
         String max = props.get("jobs.maxsize");
         if (max != null) {
             int newSize = Integer.parseInt(max);
-            if (((ThreadPoolExecutor) jobsExecutor).getMaximumPoolSize() !=  newSize) {
-                log.info("Setting max pool size from " + ((ThreadPoolExecutor) jobsExecutor).getMaximumPoolSize() + " to " + newSize);
-                ((ThreadPoolExecutor) jobsExecutor).setMaximumPoolSize(newSize);
+            if (jobsExecutor.getMaximumPoolSize() !=  newSize) {
+                log.info("Setting max pool size from " + jobsExecutor.getMaximumPoolSize() + " to " + newSize);
+                jobsExecutor.setMaximumPoolSize(newSize);
             }
         }
         String core = props.get("jobs.coresize");
         if (core != null) {
             int newSize = Integer.parseInt(core);
-            if (((ThreadPoolExecutor) jobsExecutor).getCorePoolSize() != newSize) {
-                log.info("Setting core pool size from " + ((ThreadPoolExecutor) jobsExecutor).getCorePoolSize() + " to " + newSize);
-                ((ThreadPoolExecutor) jobsExecutor).setCorePoolSize(newSize);
+            if (jobsExecutor.getCorePoolSize() != newSize) {
+                log.info("Setting core pool size from " + jobsExecutor.getCorePoolSize() + " to " + newSize);
+                jobsExecutor.setCorePoolSize(newSize);
             }
         }
 
         String schedSize = props.get("scheduler.coresize");
         if (schedSize != null) {
             int newSize = Integer.parseInt(schedSize);
-            if (((ThreadPoolExecutor) scheduler).getCorePoolSize() != newSize) {
-                log.info("Setting scheduler pool size from " + ((ThreadPoolExecutor) scheduler).getCorePoolSize() + " to " + schedSize);
-                ((ThreadPoolExecutor) scheduler).setCorePoolSize(newSize);
+            if (scheduler.getCorePoolSize() != newSize) {
+                log.info("Setting scheduler pool size from " + scheduler.getCorePoolSize() + " to " + schedSize);
+                scheduler.setCorePoolSize(newSize);
             }
         }
     }
