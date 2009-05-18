@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
-<article>
+<article id="backenddevelopers-rmmci-index>
   <articleinfo>
     <title>Remote MMBase Cloud Interface</title>
 
@@ -176,7 +176,7 @@ node.commit();
       <programlisting>java.rmi.server.RMISocketFactory.setSocketFactory(new
       sun.rmi.transport.proxy.RMIHttpToCGISocketFactory());</programlisting>
 
-		<para>now if you want to access the cloud from a remote location still access the cloud via a rmi url. 
+		<para>now if you want to access the cloud from a remote location still access the cloud via a rmi url.
 	      <programlisting>ContextProvider.getCloudContext(&#34;rmi://myhost:1111/remotecontet&#34;);</programlisting></para>
     </section>
   <section>
