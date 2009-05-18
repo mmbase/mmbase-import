@@ -62,6 +62,41 @@
             <caption>${c.description}</caption>
             <tr><th>Version</th><td>${c.version}</td></tr>
             <tr><th>Defined in</th><td>${c.uri}</td></tr>
+            <c:if test="${! empty c.manifest}">
+              <tr>
+                <th>Manifest</th>
+                <td>
+                  <table>
+                    <tr>
+                      <th>entries</th>
+                      <td>
+                        <ul>
+                          <c:forEach items="${c.manifest.entries}" var="entry">
+                            <li>${entry.key} =
+                            [
+                            <c:forEach items="${entry.value}" var="value">
+                              ${value.key} = ${value.value}
+                            </c:forEach>
+                            ]
+                            </li>
+                          </c:forEach>
+                        </ul>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>attributes</th>
+                      <td>
+                        <ul>
+                          <c:forEach items="${c.manifest.mainAttributes}" var="attribute">
+                            <li>${attribute}</li>
+                          </c:forEach>
+                        </ul>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </c:if>
             <tr><th>Translations</th><td>${c.bundle}</td></tr>
             <tr><th>Dependencies</th><td>${c.dependencies}</td></tr>
             <c:if test="${! empty c.unsatisfiedDependencies}">
