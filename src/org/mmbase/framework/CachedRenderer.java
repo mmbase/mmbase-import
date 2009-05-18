@@ -218,6 +218,7 @@ public class CachedRenderer extends WrappedRenderer {
                             }
                             return null;
                         } catch (Exception e) {
+                            log.error(e.getMessage());
                             return e;
                         }
                     }
@@ -235,7 +236,12 @@ public class CachedRenderer extends WrappedRenderer {
             e = future.get(wait, TimeUnit.MILLISECONDS);
             if (e == null) {
                 if (wait < Integer.MAX_VALUE) {
-                    renderFile(f, w);
+                    if (f.exists()) {
+                        renderFile(f, w);
+                    } else {
+                        log.error("No " + f);
+                        w.write("<h1>No " + f + "</h1>");
+                    }
                 }
             }
             if (rendering.remove(f) != null) {
