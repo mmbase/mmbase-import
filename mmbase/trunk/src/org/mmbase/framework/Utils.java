@@ -90,6 +90,9 @@ public abstract class Utils {
                 params.put(entry.getKey(), entry.getValue());
             }
         }
+        if (log.isDebugEnabled()) {
+            log.debug("Using from " + blockParameters + " " + params);
+        }
 
         HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
         if (request != null) {
