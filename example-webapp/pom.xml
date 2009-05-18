@@ -124,20 +124,16 @@
       <artifactId>hsqldb</artifactId>
       <version>1.8.0.7</version>
     </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>standard</artifactId>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
   <profiles>
     <profile>
       <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
       <properties>
         <base.version>${mmbase.version}-servlet25</base.version>
       </properties>
