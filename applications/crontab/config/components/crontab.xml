@@ -33,6 +33,7 @@
   <block name="crontab-documentation"
          classification="mmbase.documentation"
          mimetype="text/html">
+    <title>Crontab</title>
     <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
     <body>
       <class name="org.mmbase.framework.DocumentationRenderer">
