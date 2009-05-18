@@ -101,4 +101,32 @@
     </body>
   </block>
 
+  <block name="taglib-reference-uncached"
+         mimetype="text/html">
+    <title xml:lang="en">Taglib - Reference (uncached)</title>
+    <title xml:lang="nl">Taglib - Reference (uncached)</title>
+    <body>
+      <class name="org.mmbase.framework.ConnectionRenderer">
+        <param name="url">http://scm.mmbase.org/view/*checkout*/mmbase/trunk/applications/taglib/src/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml</param>
+        <param name="xslt">http://scm.mmbase.org/view/*checkout*/mmbase/trunk/applications/share/xslt/xml2block.xslt</param>
+        <!--
+        <param name="xslt">file:///home/michiel/mmbase/trunk/applications/share/xslt/xml2block.xslt</param>
+        -->
+      </class>
+    </body>
+  </block>
+  <block name="taglib-reference"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <title xml:lang="en">Taglib - Reference</title>
+    <title xml:lang="nl">Taglib - Reference</title>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <body>
+      <class name="org.mmbase.framework.CachedRenderer">
+        <param name="wrapsBlock">taglib-reference-uncached</param>
+        <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
 </component>
