@@ -63,6 +63,13 @@
       <type>war</type>
     </dependency>
 
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>${jstl.version}</version> <!-- needed explicitely (in maven 2.1), because 'servlet25' profile overrides this property -->
+      <scope>runtime</scope>
+    </dependency>
+
   </dependencies>
   <profiles>
     <profile>
