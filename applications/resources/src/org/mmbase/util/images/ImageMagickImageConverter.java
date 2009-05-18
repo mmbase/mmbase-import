@@ -619,16 +619,28 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
 
         log.info("" + this + " executing " + command);
 
-        String[] env;
+
+
+        Map<String, String> envMap;
         if (cwd != null) {
             // using MAGICK_HOME for mmbase config/fonts if 'font' option used (can put type.mgk)
-            env = new String[] { "MAGICK_HOME=" + cwd.toString() };
+            envMap = new HashMap<String, String>();
+            envMap.putAll(System.getenv());
+
+            envMap.put("MAGICK_HOME", cwd.toString());
             if (log.isDebugEnabled()) {
-                log.debug("MAGICK_HOME " + env[0]);
+                log.debug("MAGICK_HOME " + cwd.toString());
             }
         } else {
-            env = new String[] {};
+            envMap = System.getenv();
         }
+
+        String[] env = new String[envMap.size()];
+        int i = 0;
+        for (Map.Entry<String, String> entry : envMap.entrySet()) {
+            env[i++] = entry.getKey() + "=" + entry.getValue();
+        }
+
 
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
 
