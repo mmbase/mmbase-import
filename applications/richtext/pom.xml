@@ -25,6 +25,22 @@
       <version>1.4.12</version>
       <type>war</type>
     </dependency>
+
+    <!--
+         The XSL's need some functionality not working very well yet in the XSL processor of java.
+
+         Ship Saxon, which is faster and nicer any way.
+    -->
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>saxon-dom</artifactId>
+      <version>8.7</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>saxon-dom</artifactId>
+      <version>8.7</version>
+    </dependency>
   </dependencies>
 
 </project>
