@@ -17,15 +17,35 @@
       <caption>
         ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
       </caption>
-      <tr><th colspan="5">Scheduler</th></tr>
-      <jsp:scriptlet>ThreadPoolExecutor executor = (ThreadPoolExecutor) ThreadPools.scheduler;</jsp:scriptlet>
-      <jsp:directive.include file="job.jspf" />      
-      <tr><th colspan="5">Filters</th></tr>
-      <jsp:scriptlet>executor = (ThreadPoolExecutor) ThreadPools.filterExecutor;</jsp:scriptlet>
-      <jsp:directive.include file="job.jspf" />
-      <tr><th colspan="5">Jobs</th></tr>
-      <jsp:scriptlet>executor = (ThreadPoolExecutor) ThreadPools.jobsExecutor;</jsp:scriptlet>
-      <jsp:directive.include file="job.jspf" />
+      <mm:listfunction set="utils" name="threadPools">
+        <tr><th colspan="5">${_.key}</th></tr>
+        <tr><th>#Active</th><th>#Completed</th><th>Pool size</th><th colspan="2">Queue</th></tr>
+        <tr><th colspan="3"></th><th>Job</th><th>due in</th></tr>
+        <c:set var="rowspan">${1 gt fn:length(_.value.queue) ? 1 : fn:length(_.value.queue)}</c:set>
+        <tr>
+          <td rowspan="${rowspan}">${_.value.activeCount}</td>
+          <td rowspan="${rowspan}">${_.value.completedTaskCount}</td>
+          <td rowspan="${rowspan}">
+            <jsp:text>${_.value.poolSize}</jsp:text>
+            <c:if test="${_.value.maximumPoolSize lt 2147483647}">
+              <jsp:text> / ${_.value.maximumPoolSize}</jsp:text>
+            </c:if>
+          </td>
+        </tr>
+        <c:forEach items="${_.value.queue}" var="future">
+          <jsp:scriptlet>ScheduledFuture future = (ScheduledFuture) pageContext.getAttribute("future");</jsp:scriptlet>
+          <tr>
+            <td>
+              <jsp:expression>ThreadPools.getString(future)</jsp:expression>
+            </td>
+            <td>
+              <jsp:expression>future.getDelay(TimeUnit.SECONDS) / 3600 </jsp:expression>h
+              <jsp:expression>future.getDelay(TimeUnit.SECONDS) / 60  % 60</jsp:expression>min
+              <jsp:expression>future.getDelay(TimeUnit.SECONDS) % 60</jsp:expression>s
+            </td>
+          </tr>
+        </c:forEach>
+      </mm:listfunction>
     </table>
 
   </div>
