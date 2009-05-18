@@ -18,6 +18,10 @@
     Richtext provides utilities to use rich content in MMBase, with embedded links etc.
   </description>
 
+  <properties>
+    <saxon.version>8.7</saxon.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.oscom</groupId>
@@ -34,12 +38,14 @@
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>saxon-dom</artifactId>
-      <version>8.7</version>
+      <version>${saxon.version}</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>saxon-dom</artifactId>
-      <version>8.7</version>
+      <version>${saxon.version}</version>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
 
