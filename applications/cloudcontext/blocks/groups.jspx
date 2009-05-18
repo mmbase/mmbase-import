@@ -12,7 +12,7 @@
   <p class="action">
     <mm:maycreate type="$nodetype">
       <mm:link page="create_group">
-        <a href="${_}"><img src="${mm:link('/mmbase/style/images/create.png')}"  alt="+" title="create user"  /></a>
+        <a href="${_}"><img src="${mm:link('/mmbase/style/images/create.png')}"  alt="+" title="create group"  /></a>
       </mm:link>
     </mm:maycreate>
     <mm:maycreate type="$nodetype" inverse="true">
@@ -33,14 +33,15 @@
 
   </mm:form>
 
-  <mm:import externid="orderby">number</mm:import>
-  <mm:import externid="directions">down</mm:import>
-  <mm:import externid="search" />
-  <table summary="Users">
+
+  <mm:import externid="orderby" from="request">number</mm:import>
+  <mm:import externid="directions" from="request">down</mm:import>
+  <mm:import externid="search" from="request" />
+  <table summary="Groups">
 
     <mm:listnodescontainer type="$nodetype">
 
-      <mm:import externid="offset">0</mm:import>
+      <mm:import externid="offset" from="request">0</mm:import>
       <mm:present referid="search">
         <mm:fieldlist nodetype="$nodetype" type="search">
           <mm:fieldinfo type="usesearchinput" />
