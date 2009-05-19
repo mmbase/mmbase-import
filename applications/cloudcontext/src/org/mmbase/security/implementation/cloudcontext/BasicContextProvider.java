@@ -202,6 +202,7 @@ public  class BasicContextProvider implements ContextProvider {
      * @return The MMObjectNode presenting the context of the given node.
      */
     public  MMObjectNode getContextNode(MMObjectNode node)  {
+        if (node == null) return null;
         String s = node.getStringValue("owner");
         return getContextNode(s);
 
