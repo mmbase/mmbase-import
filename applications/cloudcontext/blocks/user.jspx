@@ -6,6 +6,10 @@
     xmlns:sec="http://www.mmbase.org/tags/mm/security"
     class="mm_c c_cloudcontent b_user ${requestScope.className}"
     id="${requestScope.componentId}">
+  <!--
+    xmlns:sec="urn:jsptagdir:/WEB-INF/tags/mm/security"
+
+  -->
 
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="node" required="true" />
@@ -20,6 +24,7 @@
       validator.setup("#user_form");
     });
   </script>
+  <mm:log> HOOOI </mm:log>
   <mm:form id="user_form">
     <mm:node referid="node">
 
@@ -37,24 +42,29 @@
           </tr>
         </mm:fieldlist>
       </table>
-
       <mm:function set="cloudcontext" name="authorization" write="false"><c:set var="queries" value="${_.contextProvider.contextQueries}"  /></mm:function>
+
       <mm:import externid="submit" />
-      <mm:present referid="submit">
-        <mm:valid>
-          <mm:commit />
-          <c:forEach items="${queries}" var="query">
-            <sec:commit query="${query}"/>
-          </c:forEach>
-          <p>Committed</p>
-        </mm:valid>
-      </mm:present>
+
       <table class="rights">
         <c:forEach items="${queries}" var="query">
-          <sec:tbody  query="${query}" />
+          <sec:tbody  query="${query}" submit="${! empty submit}"/>
         </c:forEach>
       </table>
       <input type="submit" value="submit" name="submit" />
+
+
+
+      <mm:present referid="submit">
+        <mm:valid>
+          <c:forEach items="${queries}" var="query">
+            <mm:log>Commiting for ${query}</mm:log>
+            <sec:commit query="${query}"/>
+          </c:forEach>
+          <mm:commit />
+          <p>Committed</p>
+        </mm:valid>
+      </mm:present>
     </mm:node>
   </mm:form>
 </div>
