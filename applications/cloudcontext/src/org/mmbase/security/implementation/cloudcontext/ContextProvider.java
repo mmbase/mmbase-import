@@ -29,6 +29,10 @@ public interface ContextProvider {
 
     Collection<NodeSearchQuery> getContextQueries();
 
+
+    /**
+     * Sets the context of the given ode.
+     */
     void setContext(User user, MMObjectNode node, String context);
 
     /**
@@ -43,7 +47,7 @@ public interface ContextProvider {
 
 
     /**
-     * Returns the MMObjectNode representing the 'context' of a certain other node
+     * Returns the MMObjectNode representing the 'context' which is identifier with the given name.
      */
     MMObjectNode getContextNode(String context);
 

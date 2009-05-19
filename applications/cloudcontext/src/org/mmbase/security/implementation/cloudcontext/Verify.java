@@ -68,7 +68,7 @@ public class Verify extends Authorization {
 
     @Override
     public boolean check(UserContext userContext, int nodeId, Operation operation)  {
-        return getContextProvider().mayDo((User) userContext, getContextNode(nodeId, true), operation);
+        return getContextProvider().mayDo((User) userContext, getNode(nodeId, true), operation);
     }
 
     @Override public boolean check(UserContext userContext, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) {
@@ -87,11 +87,11 @@ public class Verify extends Authorization {
     }
 
     @Override public void setContext(UserContext user, int nodeId, String context) throws org.mmbase.security.SecurityException {
-        getContextProvider().setContext((User) user, getContextNode(nodeId, true), context);
+        getContextProvider().setContext((User) user, getNode(nodeId, true), context);
     }
 
     @Override public Set<String> getPossibleContexts(UserContext userContext, int nodeId)  throws org.mmbase.security.SecurityException {
-        return getContextProvider().getPossibleContexts((User) userContext, getContextNode(nodeId, true));
+        return getContextProvider().getPossibleContexts((User) userContext, getNode(nodeId, true));
     }
 
     @Override public Set<String> getPossibleContexts(UserContext userContext) throws org.mmbase.security.SecurityException {
@@ -112,8 +112,21 @@ public class Verify extends Authorization {
 
     /**
      * For a certain node, returns the node representing its 'context'.
+     * @param nodeId
+     * @param exception If <code>true</code> throw a security exception if a node which such a
+     * number could not be found. Otherwise, in that case only log a warning.
      */
     protected MMObjectNode getContextNode(int nodeId, boolean exception) {
+        return getContextProvider().getContextNode(getNode(nodeId, exception));
+    }
+
+    /**
+     * For a certain node number , return the MMObjectNode representing it
+     * @param nodeId
+     * @param exception If <code>true</code> throw a security exception if a node which such a
+     * number could not be found. Otherwise, in that case only log a warning.
+     */
+    protected MMObjectNode getNode(int nodeId, boolean exception) {
         MMObjectNode node =  getContextProvider().getContextQueries().iterator().next().getBuilder().getNode(nodeId);
         if (node == null) {
             if (exception) {
@@ -122,7 +135,7 @@ public class Verify extends Authorization {
                 log.warn("node #" + nodeId + " not found");
             }
         }
-        return getContextProvider().getContextNode(node);
+        return node;
     }
 
 
