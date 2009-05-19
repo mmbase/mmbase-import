@@ -115,8 +115,12 @@ public class IncludeDefaultExcludesMojo extends AbstractMojo {
                             getLog().warn(ite);
                         }
                     }
-                    FileUtils.copyFile(sub, subDest);
-                    tot++;
+                    try {
+                        FileUtils.copyFile(sub, subDest);
+                        tot++;
+                    } catch (Exception e) {
+                        getLog().error(e);
+                    }
                 }
             }
         }
