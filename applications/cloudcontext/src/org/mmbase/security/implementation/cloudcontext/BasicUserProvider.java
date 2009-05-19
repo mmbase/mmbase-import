@@ -101,9 +101,18 @@ public abstract class BasicUserProvider implements UserProvider {
         if (isDbPasswordsEncoded()) {
             userPassword = encoded ? password : encode(password);
             dbPassword = user.getStringValue(getPasswordField());
+            if (encoded) {
+                log.debug("Password are encoded in db. User provided it  encoded " + userPassword);
+            } else {
+                log.debug("Password are encoded in db. Encoded user password " + userPassword);
+            }
         } else {
             userPassword = password;
             dbPassword = encoded ? encode(user.getStringValue(getPasswordField())) : user.getStringValue(getPasswordField());
+            if (encoded) {
+                log.debug("Passwords are not encoded in database, but user provided it encoded. So encoded dbPassword -> " + dbPassword);
+            } else {
+            }
         }
 
 
@@ -326,8 +335,13 @@ public abstract class BasicUserProvider implements UserProvider {
 
     protected final String passwordProcessorEncode(String e) {
         org.mmbase.bridge.Field field = getUserBuilder().getField(getPasswordField());
-        if (field == null) throw new IllegalStateException("No such field " + getPasswordField());
-        return org.mmbase.util.Casting.toString(field.getDataType().getProcessor(DataType.PROCESS_SET).process(null, field, e));
+        if (field == null) {
+            throw new IllegalStateException("No such field " + getPasswordField());
+        }
+        org.mmbase.datatypes.processors.Processor processor = field.getDataType().getProcessor(DataType.PROCESS_SET);
+        String processed = org.mmbase.util.Casting.toString(processor.process(null, field, e));
+        log.debug("Using " + processor + " " + e + " ->" + processed);
+        return processed;
     }
 
     protected final String clientEncode(String e) {
