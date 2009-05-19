@@ -578,7 +578,10 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
 
     /**
      * Returns a view on the backing where every value wich is the default value is set to
-     * <code>null</code>
+     * <code>null</code>. If the default is not <code>null</code> itself, <em>but the value is</em>,
+     * than the value will be returned as an empty string.
+     *
+     * This can be used to generated keys and such, which are not polluted with all kind of default values.
      * @since MMBase-1.9.1
      */
     protected Map<String, Object> undefaultBacking() {
@@ -602,7 +605,11 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                                 if (defaultValue.equals(entry.getValue())) {
                                     return new org.mmbase.util.Entry<String, Object>(entry.getKey(), null);
                                 } else {
-                                    return entry;
+                                    if (entry.getValue() == null) {
+                                        return new org.mmbase.util.Entry<String, Object>(entry.getKey(), "");
+                                    } else {
+                                        return entry;
+                                    }
                                 }
                             }
                             public void remove() {
@@ -644,19 +651,15 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         return toMap(backing);
     }
     /**
-     * Returns this parameters object as a (unmodifiable)  Map, but all values which only have the default value are <code>null</code>
+     * Returns this parameters object as a (unmodifiable)  Map, but all values which only have the
+     * default value are <code>null</code>
      * @since MMBase-1.9.1
      */
     public Map<String, Object> toUndefaultMap() {
         return toMap(undefaultBacking());
     }
 
-    /**
-     * Returns the Parameters as an unmodifiable List of Map.Entrys with predictable iteration order
-     * (the same order of this Parameters, which is a List of the values only, itself)
-     * @since MMBase-1.9
-     */
-    public List<Map.Entry<String, Object>> toEntryList() {
+    private List<Map.Entry<String, Object>> toEntryList(final Map<String, Object> b) {
         return new AbstractList<Map.Entry<String, Object>>() {
             public int size() {
                 return Parameters.this.size();
@@ -672,12 +675,12 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
 
                     // see Map.Entry
                     public Object getValue() {
-                        return Parameters.this.backing.get(a.getName());
+                        return b.get(a.getName());
                     }
 
                     // see Map.Entry
                     public Object setValue(Object v) {
-                        return Parameters.this.backing.put(a.getName(), v);
+                        return b.put(a.getName(), v);
                     }
 
                     public int hashCode() {
@@ -698,5 +701,24 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                 };
             }
         };
+    }
+
+    /**
+     * Returns the Parameters as an unmodifiable List of Map.Entrys with predictable iteration order
+     * (the same order of this Parameters, which is a List of the values only, itself)
+     * @since MMBase-1.9
+     */
+    public  List<Map.Entry<String, Object>> toEntryList() {
+        return toEntryList(backing);
+    }
+    /**
+     * Returns the Parameters as an unmodifiable List of Map.Entrys with predictable iteration order
+     * (the same order of this Parameters, which is a List of the values only, itself)
+     * Values which are the same as the default value are returned as <code>null</code>. If the
+     * default is not <code>null</code> but the value is, then it is returned as an empty string.
+     * @since MMBase-1.9.1
+     */
+    public  List<Map.Entry<String, Object>> toUndefaultEntryList() {
+        return toEntryList(undefaultBacking());
     }
 }
