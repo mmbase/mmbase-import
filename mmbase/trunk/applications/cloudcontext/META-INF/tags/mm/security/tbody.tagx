@@ -5,6 +5,7 @@
     version="2.0">
   <jsp:directive.attribute name="operations"  />
   <jsp:directive.attribute name="query"  type="org.mmbase.storage.search.SearchQuery" />
+  <jsp:directive.attribute name="submit"  type="java.lang.Boolean" />
 
   <mm:import id="ops" vartype="list">${empty operations ? 'create,read,write,delete,change context,change relation' : operations}</mm:import>
 
@@ -36,9 +37,18 @@
             <mm:stringlist referid="ops">
               <mm:param name="operation"><mm:write /></mm:param>
               <mm:function name="parentsallow" id="pa" write="false" />
-              <mm:function name="allows" id="a" write="false" />
+
               <td class="${pa ? 'parent' : ''}">
                 <mm:booleanfunction name="maygrant">
+                  <c:choose>
+                    <c:when test="${submit}">
+                      <mm:import id="as" externid="${_}:${_node}" />
+                      <mm:import id="a">${! empty as}</mm:import>
+                    </c:when>
+                    <c:otherwise>
+                      <mm:function name="allows" id="a" write="false" />
+                    </c:otherwise>
+                  </c:choose>
                   <mm:radio type="checkbox" name="${_}:${_node}" value="on" compare="${a ? 'on' : 'off'}" />
                 </mm:booleanfunction>
                 <mm:booleanfunction name="maygrant" inverse="true">
