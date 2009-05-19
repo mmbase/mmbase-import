@@ -110,7 +110,9 @@ public class Verify extends Authorization {
 
 
 
-
+    /**
+     * For a certain node, returns the node representing its 'context'.
+     */
     protected MMObjectNode getContextNode(int nodeId, boolean exception) {
         MMObjectNode node =  getContextProvider().getContextQueries().iterator().next().getBuilder().getNode(nodeId);
         if (node == null) {
@@ -120,7 +122,7 @@ public class Verify extends Authorization {
                 log.warn("node #" + nodeId + " not found");
             }
         }
-        return node;
+        return getContextProvider().getContextNode(node);
     }
 
 
