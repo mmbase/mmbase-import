@@ -124,9 +124,10 @@ public class CachedRenderer extends WrappedRenderer {
 
     protected String getKey(Parameters blockParameters) {
         StringBuilder k = new StringBuilder();
-        for (Map.Entry<String, Object> entry : blockParameters.toEntryList()) {
+        for (Map.Entry<String, Object> entry : blockParameters.toUndefaultEntryList()) {
             if (entry.getValue() == null) continue;
             if (! Casting.isStringRepresentable(entry.getValue().getClass())) continue;
+            if (k.length() > 0) k.append(':');
             k.append(entry.getKey()).append("=");
             k.append(Casting.toString(entry.getValue()));
         }
