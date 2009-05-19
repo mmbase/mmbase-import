@@ -31,20 +31,21 @@
         </mm:function>
 
         <mm:import externid="submit" />
-        <mm:present referid="submit">
-          <mm:valid>
-            <c:forEach items="${queries}" var="query">
-              <sec:commit query="${query}"/>
-            </c:forEach>
-            <mm:commit />
-          </mm:valid>
-        </mm:present>
 
         <c:forEach items="${queries}" var="query">
-          <sec:tbody  query="${query}" />
+          <sec:tbody  query="${query}" submit="${! empty submit}" />
         </c:forEach>
       </table>
       <input type="submit" name="submit" />
+
+      <mm:present referid="submit">
+        <mm:valid>
+          <c:forEach items="${queries}" var="query">
+            <sec:commit query="${query}"/>
+          </c:forEach>
+          <mm:commit />
+        </mm:valid>
+      </mm:present>
     </mm:node>
   </mm:form>
 </div>
