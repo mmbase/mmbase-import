@@ -357,12 +357,11 @@ public class DateHandler extends AbstractTypeHandler {
         cal = getSpecifiedValue(field, cal);
         if (cal == null) {
             if (node != null) {
-                Object value = node.getValue(field.getName());
-                if (value != null) {
+                if (node.isNull(field.getName())) {
+                    cal = null;
+                } else {
                     cal = getInstance();
                     cal.setTime(node.getDateValue(field.getName()));
-                } else {
-                    cal = null;
                 }
             } else {
                 Object def = field.getDataType().getDefaultValue(tag.getLocale(), tag.getCloudVar(), field);
