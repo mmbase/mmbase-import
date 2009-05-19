@@ -354,12 +354,18 @@ public abstract class BasicUserProvider implements UserProvider {
      * @param node User node
      */
     public String getDefaultContext(MMObjectNode node)  {
-        if (node == null) return "system";
+        if (node == null) {
+            return "system";
+        }
         MMObjectNode contextNode = node.getNodeValue(getDefaultContextField());
         if (contextNode == null) {
             log.warn("Node " + node + " has no default context ( " + getDefaultContextField() + " is null). Returning system. " + Verify.getInstance().getContextProvider());
+            return "system";
         }
-        return contextNode == null ? "system" : Verify.getInstance().getContextProvider().getContext(contextNode);
+        if (log.isDebugEnabled()) {
+            log.debug("Default context node  " + contextNode);
+        }
+        return Verify.getInstance().getContextProvider().getContextName(contextNode);
     }
 
     public boolean isOwnNode(User user, MMObjectNode node) {

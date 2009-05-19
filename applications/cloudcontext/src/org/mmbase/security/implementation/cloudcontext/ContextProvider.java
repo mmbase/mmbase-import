@@ -31,10 +31,20 @@ public interface ContextProvider {
 
     void setContext(User user, MMObjectNode node, String context);
 
-    String getContext(MMObjectNode node);
+    /**
+     * Returns the name of the context belonging to a certain context node.
+     */
+    String getContextName(MMObjectNode context);
 
+    /**
+     * Returns the MMObjectNode representing the 'context' of a certain other node
+     */
     MMObjectNode getContextNode(MMObjectNode node);
 
+
+    /**
+     * Returns the MMObjectNode representing the 'context' of a certain other node
+     */
     MMObjectNode getContextNode(String context);
 
     Set<String> getPossibleContexts(User user, MMObjectNode node)  throws SecurityException;
