@@ -106,14 +106,8 @@ public  class BasicContextProvider implements ContextProvider {
     }
 
 
-    /**
-     * @param node User node
-     */
-    public String getContext(MMObjectNode node) throws SecurityException {
-        MMObjectNode contextNode = getContextNode(node);
+    public String getContextName(MMObjectNode contextNode) throws SecurityException {
         return contextNode.getStringValue(getContextNameField(contextNode.getBuilder().getTableName()));
-        //log.debug("check if we may read the node with # " + i + " nodeid?");
-        //return Contexts.getBuilder().getContext((User) userContext, nodeId);
     }
 
     public void setContext(User user, MMObjectNode node, String context) {
