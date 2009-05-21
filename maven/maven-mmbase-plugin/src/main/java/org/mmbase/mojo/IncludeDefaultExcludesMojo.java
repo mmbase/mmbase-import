@@ -90,7 +90,7 @@ public class IncludeDefaultExcludesMojo extends AbstractMojo {
                     }
                 }
             } catch (Exception e) {
-                getLog().error("During copying of " + src + " to " + dst + " " +  e.getMessage());
+                getLog().error("During copying of " + src + " to " + dst + " " +  e.getClass() + " " + e.getMessage());
             }
         }
         return tot;
