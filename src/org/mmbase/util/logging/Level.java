@@ -14,7 +14,8 @@ package org.mmbase.util.logging;
  * translate to an int, which is handy for use in a switch.
  *
  * @author Michiel Meeuwissen
- **/
+ * @version $Id$
+ */
 
 public final class Level implements java.io.Serializable {
 
@@ -49,12 +50,12 @@ public final class Level implements java.io.Serializable {
     private int level;
     private String string;
 
-    private Level (int p, String s) {
+    private Level(int p, String s) {
         level = p;
         string = s;
     }
 
-    public static Level toLevel (String level) {
+    public static Level toLevel(String level) {
 
         String s = level.toUpperCase();
         if (s.equals("TRACE") )   return TRACE;
