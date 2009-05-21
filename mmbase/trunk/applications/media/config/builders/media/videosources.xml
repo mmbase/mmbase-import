@@ -18,6 +18,10 @@
     <description xml:lang="nl">Beschrijving van het daadwerkelijke video bestand</description>
   </descriptions>
 
+  <properties>
+    <property name="org.mmbase.media.containertype">videofragments</property>
+  </properties>
+
   <fieldlist>
     <field name="fps">
       <descriptions>

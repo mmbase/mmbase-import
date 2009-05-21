@@ -48,6 +48,12 @@
     </datatype>
   </field>
 
+  <field name="objecttype" state="virtual">
+    <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <pattern value="videofragments|audiofragments" enforce="onchange" />
+    </datatype>
+  </field>
+
   <!-- <field> 'class'  -->
   <!-- deprecated
        <field>
