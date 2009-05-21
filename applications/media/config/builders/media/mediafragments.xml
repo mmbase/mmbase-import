@@ -22,9 +22,13 @@
   </descriptions>
 
 
+	<properties>
+    <property name="org.mmbase.media.containedtype">mediasources</property>
+	</properties>
+
 
   <xi:include href="http://www.mmbase.org/builders/media/mediafragments.fields.xml" />
-  <xi:include href="http://www.mmbase.org/builders/media/mediafragments.timefields.xml" />
+  <xi:include href="http://www.mmbase.org/builders/media/mediafragments.auxiliary.fields.xml" />
 
 
 </builder>
