@@ -294,6 +294,22 @@
       <maxLength value="1024"/>
     </specialization>
 
+    <specialization id="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <description xml:lang="en">
+        If you define a virtual field with this type in your builder, then it actually works as an
+        editable 'otype' field. In other words, the _type_ of the node becomes editable, which in
+        some cases can come in handy.
+      </description>
+      <class name="org.mmbase.datatypes.NodeManagerNamesDataType" />
+      <required value="true" />
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.ObjectTypeChangerCommitProcessor$Getter" />
+      </getprocessor>
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.ObjectTypeChangerCommitProcessor" />
+      </commitprocessor>
+    </specialization>
+
     <specialization id="whitespacereplacer">
       <description xml:lang="en">
         If you set a value in a field with this datatype, then all occurences of one or more
