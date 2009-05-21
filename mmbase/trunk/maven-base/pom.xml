@@ -310,7 +310,6 @@ See http://www.MMBase.org/license
             <archive>
               <manifest>
                 <addClasspath>true</addClasspath>
-                <mainClass>org.mmbase.Version</mainClass>
               </manifest>
               <manifestEntries>
                 <url>${pom.url}</url>
@@ -320,12 +319,12 @@ See http://www.MMBase.org/license
                   <name>org/mmbase</name>
                   <manifestEntries>
                     <Vendor>MMBase Community</Vendor>
-                    <URL>http://www.mmbase.org</URL>
-                    <Comment>The MMBase Content Management System. ${project.name} (${project.artifactId}).</Comment>
+                    <Comment>MMBase. ${project.name} (${project.artifactId}).</Comment>
                     <Version>${project.version}.${timestamp}</Version>
                     <SCM-Revision>${sources.version}</SCM-Revision>
                     <Distribution>${project.version}</Distribution>
                     <Build-Date>${timestamp}</Build-Date>
+                    <Description>${pom.description}</Description>
                   </manifestEntries>
                 </manifestSection>
               </manifestSections>
@@ -576,9 +575,10 @@ See http://www.MMBase.org/license
          <archive>
            <manifest>
              <addClasspath>true</addClasspath>
-             <mainClass>org.mmbase.Version</mainClass>
            </manifest>
            <manifestEntries>
+             <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
+             <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
              <url>${pom.url}</url>
            </manifestEntries>
            <manifestSections>
@@ -586,12 +586,12 @@ See http://www.MMBase.org/license
                <name>org/mmbase</name>
                <manifestEntries>
                  <Vendor>MMBase Community</Vendor>
-                 <URL>http://www.mmbase.org</URL>
-                 <Comment>The MMBase Content Management System. ${project.name} (${project.artifactId}).</Comment>
+                 <Comment>MMBase  ${project.name} (${project.artifactId}).</Comment>
                  <Version>${project.version}.${timestamp}</Version>
                  <SCM-Revision>${sources.version}</SCM-Revision>
                  <Distribution>${project.version}</Distribution>
                  <Build-Date>${timestamp}</Build-Date>
+                 <Description>${pom.description}</Description>
                </manifestEntries>
              </manifestSection>
            </manifestSections>
@@ -740,6 +740,21 @@ See http://www.MMBase.org/license
       <url>http://repository.jboss.com/maven2</url>
     </repository>
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+      <snapshots>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
   <profiles>
     <profile>
