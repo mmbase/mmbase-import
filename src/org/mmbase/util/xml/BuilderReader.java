@@ -553,10 +553,11 @@ public class BuilderReader extends DocumentReader {
         Map<String, Function> results = new HashMap<String, Function>();
         for (Element functionList : getChildElements("builder","functionlist")) {
             for (Element functionElement : getChildElements(functionList,"function")) {
+                final String functionName = functionElement.getAttribute("name");
+                String providerKey        = functionElement.getAttribute("key");
+                String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
                 try {
-                    final String functionName = functionElement.getAttribute("name");
-                    String providerKey        = functionElement.getAttribute("key");
-                    String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
+
 
                     Function function;
                     log.debug("Using function class '" + functionClass + "'");
@@ -643,7 +644,7 @@ public class BuilderReader extends DocumentReader {
                     results.put(key, function);
                     log.debug("functions are now: " + results);
                 } catch (ClassNotFoundException cnfe) {
-                    log.warn(cnfe.getClass() + " " + getSystemId() + " " + cnfe.getMessage());
+                    log.warn(functionClass + " " + cnfe.getClass() + " " + getSystemId() + " '" + cnfe.getMessage() + "'");
                 } catch (Throwable e) {
                     log.error(e.getClass() + " " + getSystemId() + " " + e.getMessage(), e);
                 }
