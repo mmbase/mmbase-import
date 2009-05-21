@@ -46,7 +46,7 @@ public class NodeManagerNamesDataType extends StringDataType {
     @Override public String getDefaultValue(Locale locale, Cloud cloud, Field field) {
         if (defaultValue != null) {
             for (String def : defaultValue.split("\\s*,\\s*")) {
-                log.info("Considereing " + def);
+                log.debug("Considering " + def);
                 if (cloud.hasNodeManager(def)) return def;
             }
         }
@@ -58,12 +58,24 @@ public class NodeManagerNamesDataType extends StringDataType {
         return new Iterator<Map.Entry<String, String>>() {
             List<NodeManager> list = node == null ? cloud.getNodeManagers() : node.getCloud().getNodeManagers();
             Iterator<NodeManager> iterator = list.iterator();
+            NodeManager next = findNext();
+
+            protected NodeManager findNext() {
+                while (iterator.hasNext()) {
+                    NodeManager prop = iterator.next();
+                    if (NodeManagerNamesDataType.this.validate(prop.getName(), node, field).size() == 0) {
+                        return prop;
+                    }
+                }
+                return null;
+            }
             public boolean hasNext() {
-                return iterator.hasNext();
+                return next != null;
             }
             public Map.Entry<String, String> next() {
-                NodeManager val = iterator.next();
-                return new Entry(val.getName(), val.getGUIName(NodeManager.GUI_PLURAL, locale));
+                NodeManager prev = next;
+                next = findNext();
+                return new Entry(prev.getName(), prev.getGUIName(NodeManager.GUI_PLURAL, locale));
             }
             public void remove() {
                 throw new UnsupportedOperationException();
