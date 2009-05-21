@@ -7,7 +7,6 @@
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
     <version>1.9-SNAPSHOT</version>
-    <relativePath>../maven-base/pom.xml</relativePath>
   </parent>
 
   <groupId>org.mmbase.maven</groupId>
@@ -37,5 +36,19 @@
       </resource>
     </resources>
   </build>
+
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
+
 
 </project>
