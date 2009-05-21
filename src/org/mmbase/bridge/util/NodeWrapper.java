@@ -34,6 +34,7 @@ public abstract class NodeWrapper implements Node {
     }
     public Cloud getCloud()             { return node.getCloud(); }
     public NodeManager getNodeManager() { return node.getNodeManager(); }
+    public void setNodeManager(NodeManager nm) { node.setNodeManager(nm); }
     public int getNumber()         { return node.getNumber(); }
     public boolean isRelation()         { return node.isRelation(); }
     public Relation toRelation()        { return node.toRelation(); }

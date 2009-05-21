@@ -44,6 +44,16 @@ public interface Node extends Comparable<Node> {
      */
     NodeManager getNodeManager();
 
+
+    /**
+     * Sets the node manager of this node. Note that if this nodemanager is not a descendant of the
+     * current node manager, information may get lost!
+     * @since MMBase-1.9.1
+     * @throws SecurityException If you are not allowed to change this node, or not allowed to
+     * create nodes of the destination type.
+     */
+    void setNodeManager(NodeManager nm);
+
     /**
      * Returns the unique number for this node. Every node has a unique number
      * which can be used to refer to it. In addition to this number a node can

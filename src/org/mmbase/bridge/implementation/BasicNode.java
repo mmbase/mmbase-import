@@ -194,6 +194,15 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return nodeManager;
     }
 
+    public void setNodeManager(NodeManager nm) {
+        cloud.check(Operation.WRITE, getNode().getNumber());
+        cloud.check(Operation.CREATE, nm.getNumber());
+
+        noderef.setBuilder(BasicCloudContext.mmb.getBuilder(nm.getName()));
+        setNodeManager(noderef);
+    }
+
+
     @Override
     public int getNumber() {
         int i = getNode().getNumber();

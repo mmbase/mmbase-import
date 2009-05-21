@@ -958,6 +958,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         create(node, builder);
         commitChange(node, "n");
         unloadShortedFields(node, builder);
+        typeCache.put(nodeNumber, builder.getNumber());
         //refresh(node);
         return nodeNumber;
     }
@@ -1651,6 +1652,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             throw new StorageException("cannot delete node " + node.getNumber() + ", it still has relations");
         }
         delete(node, node.getBuilder());
+        typeCache.remove(node.getNumber());
         commitChange(node, "d");
     }
 

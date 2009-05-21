@@ -790,4 +790,8 @@ public abstract class AbstractNode implements Node {
             };
     }
 
+    public void setNodeManager(NodeManager nm) {
+        throw new UnsupportedOperationException();
+    }
+
 }
