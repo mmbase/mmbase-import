@@ -21,4 +21,8 @@
     <description xml:lang="nl">Beschrijving van het daadwerkelijke audio bestand</description>
   </descriptions>
 
+  <properties>
+    <property name="org.mmbase.media.containertype">audiofragments</property>
+  </properties>
+
 </builder>

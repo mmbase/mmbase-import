@@ -17,4 +17,9 @@
     <description xml:lang="nl">Een Audio Fragment beschrijft een stukje audio.</description>
     <description xml:lang="en">An Audio Fragment describes one piece of audio.</description>
   </descriptions>
+
+	<properties>
+    <property name="org.mmbase.media.containedtype">audiosources</property>
+	</properties>
+
 </builder>

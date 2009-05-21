@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <builder
     xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         http://www.mmbase.org/xmlns/builder.xsd"
@@ -24,6 +25,7 @@
   </descriptions>
 
 	<properties>
+    <property name="org.mmbase.media.containertype">mediafragments</property>
     <!--
     If no provider objects are related to a media-source, an URL can be generated with the 'default' provider, if one is specified here.
     -->
@@ -81,7 +83,7 @@
     <field name="bitrate">
       <descriptions>
         <description xml:lang="en">
-          Defines how much physical space one second of audio or video takes in bits.
+          Defines how much physical space one second of audio or video takes in bits per second.
         </description>
         <description xml:lang="nl">
           Hoeveel bit opslagcapaciteit per seconde.
@@ -192,6 +194,15 @@
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
+    <field name="objecttype" state="virtual">
+      <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <pattern value="videosources|audiosources" />
+      </datatype>
+    </field>
+
 
   </fieldlist>
+
+
+  <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
 </builder>

@@ -17,4 +17,8 @@
     <description xml:lang="en">A video Fragment describes one piece of video.</description>
   </descriptions>
 
+	<properties>
+    <property name="org.mmbase.media.containedtype">videosources</property>
+	</properties>
+
 </builder>
