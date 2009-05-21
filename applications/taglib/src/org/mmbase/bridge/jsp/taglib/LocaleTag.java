@@ -21,7 +21,7 @@ import java.util.*;
  * Provides Locale (language, country) information  to its body.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocaleTag.java,v 1.32 2009-01-03 11:08:49 nklasens Exp $
+ * @version $Id$
  */
 
 public class LocaleTag extends CloudReferrerTag  {

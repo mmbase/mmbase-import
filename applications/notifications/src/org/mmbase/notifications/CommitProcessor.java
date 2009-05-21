@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Unused, so untested, at the moment.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CommitProcessor.java,v 1.3 2007-11-12 18:00:58 michiel Exp $
+ * @version $Id$
  **/
 public class CommitProcessor  implements org.mmbase.datatypes.processors.CommitProcessor {
     public void commit(Node node, Field field) {

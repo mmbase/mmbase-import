@@ -30,7 +30,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.36 2009-04-28 08:35:09 michiel Exp $
+ * @version $Id$
  */
 public class Authenticate extends CloudContextAuthentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);

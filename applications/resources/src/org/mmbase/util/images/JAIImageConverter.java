@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Martijn Houtman (JAI fix)
- * @version $Id: JAIImageConverter.java,v 1.3 2007-06-13 18:54:55 nklasens Exp $
+ * @version $Id$
  */
 public class JAIImageConverter extends AbstractImageConverter implements ImageConverter {
 

@@ -14,7 +14,7 @@ package org.mmbase.bridge.jsp.taglib.containers;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerOrNodeProvider.java,v 1.2 2004-02-11 20:40:14 keesj Exp $
+ * @version $Id$
  */
 public interface FunctionContainerOrNodeProvider {
 

@@ -15,7 +15,7 @@ import org.mmbase.bridge.jsp.taglib.pageflow.CompareTag;
  * Checks if a value of a context variable is smaller than a given value
  * 
  * @author Michiel Meeuwissen 
- * @version $Id: IsLessThanTag.java,v 1.3 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 
 public class IsLessThanTag extends CompareTag  {

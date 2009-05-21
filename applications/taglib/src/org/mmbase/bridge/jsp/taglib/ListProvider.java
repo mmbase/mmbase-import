@@ -17,7 +17,7 @@ import javax.servlet.jsp.JspTagException;
  * For example the several NodeListTag's  provide a List.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListProvider.java,v 1.17 2008-02-23 15:55:15 michiel Exp $
+ * @version $Id$
  */
 public interface ListProvider extends ContextProvider, LoopTag {
     /**

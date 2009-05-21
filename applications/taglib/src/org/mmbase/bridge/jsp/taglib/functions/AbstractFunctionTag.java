@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.34 2009-03-02 14:42:21 michiel Exp $
+ * @version $Id$
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 

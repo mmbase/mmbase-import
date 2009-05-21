@@ -14,7 +14,7 @@ import javax.mail.*;
 
 /**
 
- * @version $Id: ChainedMailHandler.java,v 1.4 2007-11-09 18:26:23 michiel Exp $
+ * @version $Id$
  */
 public class  ChainedMailHandler implements MailHandler {
 

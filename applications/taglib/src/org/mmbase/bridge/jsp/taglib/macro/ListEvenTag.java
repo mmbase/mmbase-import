@@ -14,7 +14,7 @@ import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
  *  Macro tag for listContdition even
  *
- * @version $Id: ListEvenTag.java,v 1.5 2004-03-23 19:09:54 michiel Exp $
+ * @version $Id$
  */
 public class ListEvenTag extends ListConditionTag{
     protected final int getValue() throws JspTagException {

@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: Backing.java,v 1.10 2008-12-29 11:19:17 michiel Exp $
+ * @version $Id$
  */
 
 public interface Backing extends Map<String, Object> {

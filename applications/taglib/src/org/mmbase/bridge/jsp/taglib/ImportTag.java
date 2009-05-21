@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.63 2007-12-05 17:06:54 michiel Exp $
+ * @version $Id$
  */
 
 public class ImportTag extends ContextReferrerTag {

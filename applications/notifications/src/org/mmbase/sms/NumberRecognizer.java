@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * numbers. This processor can be used as a set-processor on mobile number fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NumberRecognizer.java,v 1.4 2007-11-12 15:54:53 michiel Exp $
+ * @version $Id$
  **/
 public  class NumberRecognizer implements Processor {
 

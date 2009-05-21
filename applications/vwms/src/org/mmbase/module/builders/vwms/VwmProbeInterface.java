@@ -20,7 +20,7 @@ import org.mmbase.module.core.*;
  * @deprecated with only one implementation, better to not use an interface?
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: VwmProbeInterface.java,v 1.7 2004-10-08 10:57:57 pierre Exp $
+ * @version $Id$
  */
 public interface VwmProbeInterface {
 

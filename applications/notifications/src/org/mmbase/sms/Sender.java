@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * of an extension. Which class is instantiated is determined by &lt;config&gt;utils/sms_sender.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: Sender.java,v 1.9 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id$
  **/
 public abstract class Sender {
     private static final Logger log = Logging.getLoggerInstance(Sender.class);

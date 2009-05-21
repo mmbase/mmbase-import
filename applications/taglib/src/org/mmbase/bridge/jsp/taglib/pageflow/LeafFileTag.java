@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.27 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id$
  */
 
 public class LeafFileTag extends UrlTag {

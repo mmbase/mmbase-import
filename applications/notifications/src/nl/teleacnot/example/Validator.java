@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * back first. Confirmations are handled by {@link #Handler}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Validator.java,v 1.1 2007-12-07 10:15:47 michiel Exp $
+ * @version $Id$
  **/
 public class Validator implements org.mmbase.datatypes.processors.Processor {
 

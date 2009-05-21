@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link ContextProvider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicContextProvider.java,v 1.11 2009-04-28 08:35:09 michiel Exp $
+ * @version $Id$
  * @since  MMBase-1.9.1
  */
 public  class BasicContextProvider implements ContextProvider {

@@ -35,7 +35,7 @@ import org.mmbase.applications.media.Codec;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.35 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {

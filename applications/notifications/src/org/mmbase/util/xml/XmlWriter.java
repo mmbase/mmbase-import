@@ -2,7 +2,7 @@
 // Written by David Megginson, david@megginson.com
 // NO WARRANTY!  This class is in the public domain.
 
-// $Id: XmlWriter.java,v 1.4 2008-03-25 21:00:25 nklasens Exp $
+// $Id$
 
 package org.mmbase.util.xml;
 

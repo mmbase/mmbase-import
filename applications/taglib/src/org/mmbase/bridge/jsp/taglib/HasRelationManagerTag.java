@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Straight-forward wrapper arround {@link org.mmbase.bridge.Cloud#hasRelationManager}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasRelationManagerTag.java,v 1.3 2008-11-06 17:39:25 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

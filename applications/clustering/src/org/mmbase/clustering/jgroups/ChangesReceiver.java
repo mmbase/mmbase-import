@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: ChangesReceiver.java,v 1.8 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id$
  */
 public class ChangesReceiver implements Runnable {
 

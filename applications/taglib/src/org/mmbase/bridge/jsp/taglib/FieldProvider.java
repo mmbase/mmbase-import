@@ -17,7 +17,7 @@ import org.mmbase.bridge.Node;
  * to access a field defined in a tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldProvider.java,v 1.5 2006-04-29 17:15:57 michiel Exp $
+ * @version $Id$
  */
 public interface FieldProvider extends TagIdentifier {
     // Since a field cannot exist alone, it must also implement NodeProvider.

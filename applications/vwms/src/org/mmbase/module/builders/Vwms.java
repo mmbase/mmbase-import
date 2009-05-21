@@ -40,7 +40,7 @@ import org.mmbase.applications.email.SendMail;
  * @author Arjan Houtman
  * @author Rico Jansen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: Vwms.java,v 1.23 2008-08-07 08:26:41 michiel Exp $
+ * @version $Id$
  */
 public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 

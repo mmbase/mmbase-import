@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @rename Sessions
  * @author Daniel Ockeloen
- * @version $Id: sessions.java,v 1.33 2008-08-23 18:56:59 michiel Exp $
+ * @version $Id$
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 

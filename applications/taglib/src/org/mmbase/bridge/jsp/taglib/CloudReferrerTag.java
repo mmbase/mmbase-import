@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.39 2008-11-28 13:54:28 michiel Exp $
+ * @version $Id$
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {

@@ -29,7 +29,7 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.50 2008-03-03 16:12:47 ernst Exp $
+ * @version $Id$
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {

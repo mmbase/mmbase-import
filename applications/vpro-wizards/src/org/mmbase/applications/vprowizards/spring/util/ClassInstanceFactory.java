@@ -6,7 +6,7 @@ import java.lang.reflect.Modifier;
 /**
  * @javadoc
  * @author Ernst Bunders
- * @version $Id: ClassInstanceFactory.java,v 1.4 2008-12-10 15:44:18 ernst Exp $
+ * @version $Id$
  */
 
 public class ClassInstanceFactory<T> {

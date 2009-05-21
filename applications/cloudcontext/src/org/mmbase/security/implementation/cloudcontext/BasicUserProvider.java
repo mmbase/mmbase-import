@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * This is a basic implemention of {@link Provider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUserProvider.java,v 1.4 2009-03-02 17:29:57 michiel Exp $
+ * @version $Id$
  * @since  MMBase-1.9.1
  */
 public abstract class BasicUserProvider implements UserProvider {

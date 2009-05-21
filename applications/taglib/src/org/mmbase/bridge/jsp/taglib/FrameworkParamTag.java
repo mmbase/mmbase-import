@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Adds an extra parameter to the parent {@link FrameworkParamHandler} tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FrameworkParamTag.java,v 1.3 2008-08-29 12:39:04 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 

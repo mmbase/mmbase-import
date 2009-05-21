@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * marked as 'one shot'.
  *
  * @author Daniel Ockeloen
- * @version $Id: EmailExpireHandler.java,v 1.16 2008-11-28 14:26:29 michiel Exp $
+ * @version $Id$
  */
 class EmailExpireHandler implements Runnable {
 

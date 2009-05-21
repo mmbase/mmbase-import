@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * This tags produces request scoped new datatypes. (To be used in conjuction with mm:fieldinfo datatype='')
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeTag.java,v 1.6 2009-04-27 08:32:15 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.7
  */
 public class DataTypeTag extends CloudReferrerTag {

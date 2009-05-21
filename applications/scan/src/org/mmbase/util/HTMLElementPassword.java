@@ -22,7 +22,7 @@ import java.util.*;
  *
  * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementPassword.java,v 1.7 2008-09-03 15:23:39 michiel Exp $
+ * @version $Id$
  */
 public class HTMLElementPassword  extends HTMLElement {
     // Note: more appropriate would be to extend from HTMLElementText

@@ -23,7 +23,7 @@ import org.mmbase.cache.CachePolicy;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.25 2009-04-28 08:46:23 michiel Exp $
+ * @version $Id$
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TreeTag.java,v 1.19 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id$
  */
  
 public class TreeTag extends AbstractNodeListTag {

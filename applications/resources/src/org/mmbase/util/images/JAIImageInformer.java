@@ -20,7 +20,7 @@ import com.sun.media.jai.codec.MemoryCacheSeekableStream;
  * Informs about a image using JAI.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JAIImageInformer.java,v 1.2 2007-06-13 18:54:55 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class JAIImageInformer implements ImageInformer {

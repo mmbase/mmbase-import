@@ -17,7 +17,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
  * @see    org.mmbase.bridge.jsp.taglib.pageflow.UrlTag
- * @version $Id: ParamHandler.java,v 1.5 2008-08-29 12:40:29 michiel Exp $
+ * @version $Id$
  */
 
 public interface ParamHandler {

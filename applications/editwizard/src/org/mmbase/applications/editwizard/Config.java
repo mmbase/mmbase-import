@@ -31,7 +31,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.74 2008-11-15 12:46:30 michiel Exp $
+ * @version $Id$
  */
 
 public class Config implements java.io.Serializable {

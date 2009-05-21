@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementCheckBox.java,v 1.7 2008-09-03 15:23:39 michiel Exp $
+ * @version $Id$
  */
 public class HTMLElementCheckBox  extends HTMLElement {
     // Note: more appropriate would be to extend from HTMLElementSelect

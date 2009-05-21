@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
  * Some url-composers need to know where templates are. Put a properties file in classes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Config.java,v 1.5 2005-05-14 14:07:42 nico Exp $
+ * @version $Id$
  */
 
 public class Config  {

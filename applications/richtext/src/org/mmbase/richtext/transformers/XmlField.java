@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * Like {@link org.mmbase.util.transformers.XmlField} but adds everything related to the MMXF doctype. This means basicly that it knows how to surround &lt;mmxf /&gt;
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.10 2008-06-10 15:46:11 michiel Exp $
+ * @version $Id$
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 

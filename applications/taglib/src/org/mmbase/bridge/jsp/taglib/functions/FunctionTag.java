@@ -20,7 +20,7 @@ import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: FunctionTag.java,v 1.6 2008-08-14 13:58:49 michiel Exp $
+ * @version $Id$
  */
 public class FunctionTag extends AbstractFunctionTag implements Writer, FunctionContainerReferrer {
 

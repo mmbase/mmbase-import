@@ -19,7 +19,7 @@ import java.util.Date;
  * @rename CacheLine
  * @move org.mmbase.cache
  * @author  $Author: pierre $
- * @version $Id: cacheline.java,v 1.9 2003-03-10 11:50:14 pierre Exp $
+ * @version $Id$
  */
 
 public class cacheline {

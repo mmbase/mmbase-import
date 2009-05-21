@@ -20,7 +20,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9.1
- * @version $Id: ListHandler.java,v 1.1 2008-12-29 16:41:31 michiel Exp $
+ * @version $Id$
  */
 
 public class ListHandler extends AbstractTypeHandler {

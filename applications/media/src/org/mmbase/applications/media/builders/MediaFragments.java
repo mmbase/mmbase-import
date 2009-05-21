@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.47 2008-09-03 21:26:59 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 

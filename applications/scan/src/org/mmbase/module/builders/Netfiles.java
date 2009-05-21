@@ -41,7 +41,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Daniel Ockeloen
- * @version $Id: Netfiles.java,v 1.11 2003-03-10 11:50:20 pierre Exp $
+ * @version $Id$
  */
 public class Netfiles extends MMObjectBuilder {
     /**

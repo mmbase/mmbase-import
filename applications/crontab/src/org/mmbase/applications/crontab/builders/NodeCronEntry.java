@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * fields. {@link #isActive} is implemented using related 'mmservers' objects.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeCronEntry.java,v 1.8 2009-04-02 08:08:57 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.6
  */
 

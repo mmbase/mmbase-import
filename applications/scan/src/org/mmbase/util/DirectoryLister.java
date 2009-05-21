@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * Used by a device buidlers (i.e. Cameras), and by SCAN
  * @application SCAN or Devices
  * @author David V van Zeventer
- * @version $Id: DirectoryLister.java,v 1.15 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 public class DirectoryLister {
 

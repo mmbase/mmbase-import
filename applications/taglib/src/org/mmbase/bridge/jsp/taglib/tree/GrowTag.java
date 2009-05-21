@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GrowTag.java,v 1.2 2006-11-14 22:53:49 michiel Exp $
+ * @version $Id$
  */
 public class GrowTag extends AbstractTreeReferrerListTag {
 

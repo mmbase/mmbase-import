@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.58 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id$
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 

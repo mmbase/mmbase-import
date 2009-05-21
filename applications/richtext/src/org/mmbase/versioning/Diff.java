@@ -8,7 +8,7 @@ import java.util.*;
  * Utility to present diffs.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Diff.java,v 1.4 2008-06-30 11:18:03 michiel Exp $
+ * @version $Id$
  * @since
  */
 

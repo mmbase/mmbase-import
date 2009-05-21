@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.38 2008-07-17 13:18:18 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.7
  */
 

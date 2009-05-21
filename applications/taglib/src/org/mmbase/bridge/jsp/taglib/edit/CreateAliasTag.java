@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * To call the method createAlias from Node.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: CreateAliasTag.java,v 1.10 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id$
  */
 
 public class CreateAliasTag extends NodeReferrerTag {    

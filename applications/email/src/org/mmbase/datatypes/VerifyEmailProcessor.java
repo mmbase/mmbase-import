@@ -39,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.14 2009-03-03 15:10:01 michiel Exp $
+ * @version $Id$
 
  */
 

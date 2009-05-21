@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasPageTag.java,v 1.3 2008-01-28 13:52:32 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

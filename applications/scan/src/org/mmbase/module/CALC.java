@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @rename Calc.java
  * @author Daniel Ockeloen
- * @version $Id: CALC.java,v 1.12 2008-12-22 18:52:37 michiel Exp $
+ * @version $Id$
  */
 public class CALC extends ProcessorModule {
     // logging

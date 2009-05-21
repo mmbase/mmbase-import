@@ -16,7 +16,7 @@ import javax.servlet.ServletException;
  * @deprecated only used by HttpAuth.
  * @application SCAN
  * @move org.mmbase.servlet
- * @version $Id: AuthorizationException.java,v 1.9 2004-09-30 14:07:10 pierre Exp $
+ * @version $Id$
  */
 public class AuthorizationException extends ServletException {
 

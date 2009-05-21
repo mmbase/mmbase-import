@@ -21,7 +21,7 @@ import org.mmbase.bridge.Node;
  * Needs to live under a ListRelationsTag
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodeTag.java,v 1.19 2007-02-10 16:49:27 nklasens Exp $ 
+ * @version $Id$ 
  */
 public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
 

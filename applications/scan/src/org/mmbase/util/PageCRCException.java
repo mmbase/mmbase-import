@@ -18,7 +18,7 @@ import javax.servlet.ServletException;
  * @application SCAN
  * @move org.mmbase.servlet
  * @author vpro
- * @version $Id: PageCRCException.java,v 1.4 2004-09-30 14:07:11 pierre Exp $
+ * @version $Id$
  */
 public class PageCRCException extends ServletException {
 

@@ -17,7 +17,7 @@ package org.mmbase.module.builders.vwms;
  * @application VWMs
  * @author vpro
  * @author Pierre van Rooden (javadocs)
- * @version $Id: VwmCallBackInterface.java,v 1.6 2004-10-08 10:57:57 pierre Exp $
+ * @version $Id$
  */
 
 public interface VwmCallBackInterface {

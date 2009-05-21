@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.81 2009-04-17 15:45:04 michiel Exp $
+ * @version $Id$
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 

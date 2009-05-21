@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.9
- * @version $Id: QueryAddNodeTag.java,v 1.3 2008-07-31 08:14:23 michiel Exp $
+ * @version $Id$
  */
 public class QueryAddNodeTag extends ContextReferrerTag implements QueryContainerReferrer {
 

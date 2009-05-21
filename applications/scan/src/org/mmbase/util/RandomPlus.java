@@ -15,7 +15,7 @@ import java.util.Random;
  * Better random function (see Knuth)
  * @application SCAN
  * @author Rico Jansen
- * @version $Id: RandomPlus.java,v 1.7 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id$
  */
 public class RandomPlus extends Random {
     private int table[];

@@ -14,7 +14,7 @@ import javax.xml.xpath.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: IdRelVersioningCommitProcessor.java,v 1.2 2008-11-25 15:15:01 michiel Exp $
+ * @version $Id$
  * @since
  */
 

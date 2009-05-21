@@ -24,7 +24,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  * This tag posts a message. The body of the tag is the message text.
  *
  * @author Pierre van Rooden
- * @version $Id: PostTag.java,v 1.14 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id$
  */
  
 public class PostTag extends AbstractNodeProviderTag implements BodyTag {

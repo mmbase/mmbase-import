@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @application Config
  * @author vpro
- * @version $Id: ErrorStruct.java,v 1.6 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id$
  */
 public class ErrorStruct {
 

@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.32 2008-10-14 15:34:28 michiel Exp $
+ * @version $Id$
  * @todo    EXPERIMENTAL
  */
 public class Functions {

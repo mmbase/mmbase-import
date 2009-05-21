@@ -17,7 +17,7 @@ import javax.servlet.jsp.tagext.TagData;
  * The TEI class belonging to the TreeContainer.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TreeTEI.java,v 1.1 2006-03-14 17:57:04 michiel Exp $
+ * @version $Id$
  */
 
 public class TreeTEI extends TagExtraInfo {

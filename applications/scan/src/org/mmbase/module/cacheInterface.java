@@ -19,7 +19,7 @@ import org.mmbase.util.LRUHashtable;
  * @rename CacheInterface
  * @move org.mmbase.cache
  * @author  $Author: nklasens $
- * @version $Id: cacheInterface.java,v 1.10 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id$
  */
 public interface cacheInterface {
     /**

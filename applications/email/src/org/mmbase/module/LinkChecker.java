@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.8 2007-09-28 15:13:43 michiel Exp $
+ * @version $Id$
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {

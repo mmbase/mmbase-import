@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: OnShrinkTag.java,v 1.5 2008-08-14 13:58:54 michiel Exp $
+ * @version $Id$
  */
 public class OnShrinkTag extends TreeReferrerTag implements DepthProvider {
     private static final Logger log = Logging.getLoggerInstance(OnShrinkTag.class);

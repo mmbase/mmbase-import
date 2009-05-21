@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: RunnableCronJob.java,v 1.5 2009-02-02 13:27:46 michiel Exp $
+ * @version $Id$
  */
 
 public class RunnableCronJob extends AbstractCronJob {

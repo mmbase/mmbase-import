@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.46 2008-08-14 13:59:34 michiel Exp $
+ * @version $Id$
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {

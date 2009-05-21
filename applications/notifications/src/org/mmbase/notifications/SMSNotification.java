@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * A notification implementation which uses SMS.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SMSNotification.java,v 1.3 2007-12-10 18:15:05 michiel Exp $
+ * @version $Id$
  **/
 public  class SMSNotification extends Notification {
 

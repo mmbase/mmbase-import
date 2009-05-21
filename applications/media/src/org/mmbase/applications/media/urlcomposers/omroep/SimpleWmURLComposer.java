@@ -14,7 +14,7 @@ import org.mmbase.applications.media.urlcomposers.URLComposer;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: SimpleWmURLComposer.java,v 1.3 2009-04-16 10:28:07 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class SimpleWmURLComposer extends URLComposer {

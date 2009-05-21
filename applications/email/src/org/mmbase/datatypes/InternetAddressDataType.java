@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * if not exception, the value is valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: InternetAddressDataType.java,v 1.7 2008-10-27 09:37:30 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class InternetAddressDataType extends StringDataType {

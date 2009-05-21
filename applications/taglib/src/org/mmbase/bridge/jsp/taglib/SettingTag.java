@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspException;
  * Returns the value of a certain component setting.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SettingTag.java,v 1.8 2008-08-06 12:18:54 michiel Exp $
+ * @version $Id$
  */
 
 public class SettingTag extends CloudReferrerTag implements Writer {

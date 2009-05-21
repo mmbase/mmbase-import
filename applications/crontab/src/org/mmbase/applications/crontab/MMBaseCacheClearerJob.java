@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: MMBaseCacheClearerJob.java,v 1.2 2008-08-04 14:12:38 michiel Exp $
+ * @version $Id$
  */
 
 public class MMBaseCacheClearerJob extends AbstractCronJob  {

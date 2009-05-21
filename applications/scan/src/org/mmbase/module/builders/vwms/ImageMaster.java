@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImageMaster.java,v 1.30 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id$
  */
 
 public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {

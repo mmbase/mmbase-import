@@ -25,7 +25,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: MayTag.java,v 1.6 2008-08-06 12:18:54 michiel Exp $
+ * @version $Id$
  */
 
 public class MayTag extends CloudReferrerTag implements Condition {

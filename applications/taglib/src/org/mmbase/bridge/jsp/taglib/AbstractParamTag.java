@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Adds an extra parameter to the parent URL tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractParamTag.java,v 1.2 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.9 
  */
 

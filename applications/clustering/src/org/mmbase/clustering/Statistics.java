@@ -11,7 +11,7 @@ package org.mmbase.clustering;
 
 /**
  * A structute for basic statistical information about receiving an sending messages in the cluster.
- * @version $Id: Statistics.java,v 1.2 2007-03-08 08:51:38 nklasens Exp $
+ * @version $Id$
  */
 public class Statistics {
 

@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.41 2008-07-24 08:08:30 michiel Exp $
+ * @version $Id$
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
 

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Receiver.java,v 1.10 2008-08-05 12:02:27 pierre Exp $
+ * @version $Id$
  **/
 public  class Receiver implements Runnable {
 

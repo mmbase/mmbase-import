@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author David V van Zeventer
  * @application SCAN or Devices
- * @version $Id: XFileCompare.java,v 1.8 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id$
  * @todo    Should implement java.util.Comparator, perhaps be named 'FileComparator'.
  */
 public class XFileCompare implements CompareInterface {

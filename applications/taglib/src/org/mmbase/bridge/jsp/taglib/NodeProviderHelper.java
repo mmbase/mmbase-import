@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.28 2008-06-26 13:58:00 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 

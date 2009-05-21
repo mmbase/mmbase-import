@@ -21,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: MayCreateRelationTag.java,v 1.15 2008-08-14 13:59:12 michiel Exp $
+ * @version $Id$
  */
 
 public class MayCreateRelationTag extends MayWriteTag implements Condition {

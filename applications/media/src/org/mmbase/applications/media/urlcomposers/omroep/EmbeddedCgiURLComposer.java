@@ -22,7 +22,7 @@ import java.text.*;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmbeddedCgiURLComposer.java,v 1.1 2009-04-30 09:52:59 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 public class EmbeddedCgiURLComposer extends RealURLComposer {

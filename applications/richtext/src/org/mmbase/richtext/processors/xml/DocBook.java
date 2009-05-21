@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * This implements 'DocBook' Mode of {@link MmxfSetString}.
  * @todo EXPERIMENTAL
  * @author Michiel Meeuwissen
- * @version $Id: DocBook.java,v 1.2 2008-03-25 18:00:14 michiel Exp $
+ * @version $Id$
  */
 
 class DocBook {

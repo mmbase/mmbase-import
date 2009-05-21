@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspException;
  * Straight-forward wrapper arround {@link org.mmbase.bridge.Node#isNull}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IsNullTag.java,v 1.1 2009-03-03 20:23:09 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

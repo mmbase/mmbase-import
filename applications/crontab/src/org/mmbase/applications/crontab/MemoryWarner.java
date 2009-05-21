@@ -24,7 +24,7 @@ import java.util.Locale;
    &lt;property name="memory"&gt;*&#047;10 * * * *|org.mmbase.applications.crontab.MemoryWarner||0.8;Michiel.Meeuwissen@omroep.nl&lt;/property&gt;
    </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MemoryWarner.java,v 1.6 2008-08-04 14:12:38 michiel Exp $
+ * @version $Id$
  */
 
 public class MemoryWarner extends AbstractCronJob  {

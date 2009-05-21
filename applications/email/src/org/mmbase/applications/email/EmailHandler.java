@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.33 2008/11/28 14:28:59 michiel Exp $
+ * @version $Id$
  * @since  MMBase-1.7
  */
 public class EmailHandler {

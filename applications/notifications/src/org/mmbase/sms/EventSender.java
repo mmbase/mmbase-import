@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * some actual SMS sending implementation and accepts the event.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EventSender.java,v 1.3 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id$
  **/
 public class EventSender extends Sender {
     private static final Logger log = Logging.getLoggerInstance(EventSender.class);

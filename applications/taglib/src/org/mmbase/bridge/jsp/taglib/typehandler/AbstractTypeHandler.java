@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.74 2009-04-28 08:48:08 michiel Exp $
+ * @version $Id$
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {

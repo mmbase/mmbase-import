@@ -19,7 +19,7 @@ package org.mmbase.module.builders.vwms;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: VwmServiceInterface.java,v 1.7 2004-10-08 10:57:57 pierre Exp $
+ * @version $Id$
  */
 public interface VwmServiceInterface extends VwmInterface {
 

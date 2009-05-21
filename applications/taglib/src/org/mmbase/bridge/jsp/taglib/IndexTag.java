@@ -22,7 +22,7 @@ import javax.servlet.jsp.jstl.core.*;
  * The index of current item of a list.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexTag.java,v 1.24 2009-02-03 13:12:27 michiel Exp $
+ * @version $Id$
  */
 
 public class IndexTag extends ListReferrerTag implements Writer, QueryContainerReferrer {

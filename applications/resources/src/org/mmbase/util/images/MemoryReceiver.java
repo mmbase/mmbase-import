@@ -15,7 +15,7 @@ import java.io.*;
  * The 'image conversion receiver' storing the result in a File
  *
  * @author Michiel Meeuwissen
- * @version $Id: MemoryReceiver.java,v 1.2 2007-06-13 18:54:55 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class MemoryReceiver implements ImageConversionReceiver {

@@ -13,7 +13,7 @@ package org.mmbase.applications.media.urlcomposers.omroep;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: WmBbURLComposer.java,v 1.7 2009-04-16 10:28:07 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class WmBbURLComposer extends WmSbURLComposer {

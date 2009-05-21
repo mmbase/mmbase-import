@@ -23,7 +23,7 @@ import org.mmbase.bridge.Field;
  *
  * @author Michiel Meeuwissen
  * @see    FieldInfoTag
- * @version $Id: FieldReferrerTag.java,v 1.11 2008-07-25 11:39:42 michiel Exp $
+ * @version $Id$
  */
 
 public abstract class FieldReferrerTag extends NodeReferrerTag {

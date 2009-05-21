@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase. The mmbaseusers builder used to store nothing more than name/password combination. 
  *
  * @author Eduard Witteveen
- * @version $Id: UserBuilder.java,v 1.3 2007-06-21 15:50:27 nklasens Exp $
+ * @version $Id$
  */
 public class UserBuilder extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(UserBuilder.class);

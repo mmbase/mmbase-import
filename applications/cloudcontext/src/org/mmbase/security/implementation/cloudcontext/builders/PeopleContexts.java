@@ -21,7 +21,7 @@ import org.mmbase.core.CoreField;
  * to the mmbaseusers node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PeopleContexts.java,v 1.9 2009-04-28 08:35:09 michiel Exp $
+ * @version $Id$
  */
 public class PeopleContexts extends Contexts {
 

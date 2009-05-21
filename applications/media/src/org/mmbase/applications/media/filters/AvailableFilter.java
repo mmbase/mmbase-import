@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * This removes all URLComposers wich are not available.
  * @author  Michiel Meeuwissen
- * @version $Id: AvailableFilter.java,v 1.7 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id$
  */
 public class AvailableFilter implements Filter {
 

@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.18 2009-04-30 09:30:23 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

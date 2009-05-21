@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryConstraintTag.java,v 1.13 2009-01-20 16:49:55 michiel Exp $
+ * @version $Id$
  */
 public class QueryConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 

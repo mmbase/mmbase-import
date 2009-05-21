@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.16 2008-05-09 11:33:54 nklasens Exp $
+ * @version $Id$
  */
 public class ChangesSender implements Runnable {
 

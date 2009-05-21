@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.36 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id$
  */
 
 public class Message extends MMObjectBuilder {

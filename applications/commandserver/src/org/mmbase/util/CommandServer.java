@@ -51,7 +51,7 @@ commandserver	stream	tcp		nowait	nobody	/usr/bin/java java -jar /home/michiel/mm
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.2
- * @version $Id: CommandServer.java,v 1.2 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id$
  */
 
 

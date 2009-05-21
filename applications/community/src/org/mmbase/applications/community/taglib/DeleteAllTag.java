@@ -22,7 +22,7 @@ import org.mmbase.bridge.jsp.taglib.NodeTag;
  * channel) will be removed after the body.
  *
  * @author Pierre van Rooden
- * @version $Id: DeleteAllTag.java,v 1.5 2003-06-18 20:03:57 michiel Exp $
+ * @version $Id$
  */
  
 public class DeleteAllTag extends NodeTag {

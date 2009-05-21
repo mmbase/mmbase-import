@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  * Password authentication for the email
  * @since MMBase-1.8.4
- * @version $Id: SimpleAuthenticator.java,v 1.2 2006-12-27 16:51:24 michiel Exp $
+ * @version $Id$
  */
 public class SimpleAuthenticator extends Authenticator {
 

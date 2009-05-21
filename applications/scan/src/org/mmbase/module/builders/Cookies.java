@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Cookies.java,v 1.13 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id$
  */
 public class Cookies extends MMObjectBuilder {
 

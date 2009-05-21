@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
  * Wraps a CronEntry with a proposed start date.
  *
- * @version $Id: ProposedJobs.java,v 1.6 2008-08-04 13:36:28 michiel Exp $
+ * @version $Id$
  */
 
 public class ProposedJobs {

@@ -118,7 +118,7 @@ import java.util.Vector;
  *  Released as 1.5.</li>
  * </ul>
  * @author Marco Schmidt
- * @version $Id: ImageInfo.java,v 1.3 2007-06-23 10:42:55 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7.4
  */
 public class ImageInfo {

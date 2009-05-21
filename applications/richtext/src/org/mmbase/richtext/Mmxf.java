@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * Utilities related to the 'mmxf' rich field format of MMBase and bridge.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Mmxf.java,v 1.2 2007-01-05 12:30:47 michiel Exp $
+ * @version $Id$
  * @see    org.mmbase.util.transformers.XmlField
  * @since  MMBase-1.8
  */

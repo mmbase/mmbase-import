@@ -20,7 +20,7 @@ import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
  * 
  * @since MMBase-1.7
  * @author Michiel Meeuwissen
- * @version $Id: ContextProvider.java,v 1.5 2005-01-05 20:49:36 michiel Exp $
+ * @version $Id$
  **/
 
 public interface ContextProvider  extends TagIdentifier {

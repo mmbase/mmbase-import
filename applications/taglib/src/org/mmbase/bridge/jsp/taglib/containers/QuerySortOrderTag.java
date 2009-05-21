@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QuerySortOrderTag.java,v 1.9 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id$
  */
 public class QuerySortOrderTag extends CloudReferrerTag implements QueryContainerReferrer {
 

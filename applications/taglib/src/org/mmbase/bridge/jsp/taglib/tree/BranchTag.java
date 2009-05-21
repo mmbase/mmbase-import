@@ -22,7 +22,7 @@ import org.mmbase.bridge.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BranchTag.java,v 1.2 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id$
  * @todo   EXPERIMENTAL
  */
 public class BranchTag extends ContextReferrerTag implements QueryContainerReferrer {

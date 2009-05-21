@@ -14,7 +14,7 @@ import org.mmbase.bridge.jsp.taglib.CloudTEI;
  * The TEI class belonging to the TransactionTag
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTEI.java,v 1.4 2003-06-06 10:03:22 pierre Exp $ 
+ * @version $Id$ 
  */
 
 public class TransactionTEI extends CloudTEI {

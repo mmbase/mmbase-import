@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMObjectNode;
  * This strategory completely depends on {@link org.mmbase.module.core.MMObjectBuilder#getDefaultUrl(int)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DefaultUrlStrategy.java,v 1.2 2007-07-24 13:25:27 michiel Exp $
+ * @version $Id$
  */
 public class DefaultUrlStrategy extends JumperStrategy { 
 

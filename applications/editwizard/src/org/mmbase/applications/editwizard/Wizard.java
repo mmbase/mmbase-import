@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.179 2009-01-15 18:10:26 michiel Exp $
+ * @version $Id$
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {

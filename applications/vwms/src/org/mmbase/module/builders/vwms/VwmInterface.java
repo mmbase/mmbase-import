@@ -22,7 +22,7 @@ import org.mmbase.module.builders.*;
  * @deprecated all known implementations extend {@link Vwm} so why use an interface?
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: VwmInterface.java,v 1.8 2005-10-05 10:58:52 michiel Exp $
+ * @version $Id$
  */
 
 public interface VwmInterface extends MMBaseObserver {

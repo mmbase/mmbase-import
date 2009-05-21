@@ -22,7 +22,7 @@ import org.mmbase.bridge.*;
  * Lives under a nodeprovider, as a condition tag, reporting whether or not the node is of a certain builder.
  *
  * @author Bert Huijgen
- * @version $Id: InstanceOfTag.java,v 1.3 2008-12-09 15:30:02 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

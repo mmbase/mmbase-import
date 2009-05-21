@@ -21,7 +21,7 @@ import org.mmbase.storage.search.Constraint;
  *
  * @author Gerard van de Looi
  * @since  MMBase-1.6
- * @version $Id: TypeHandler.java,v 1.12 2009-04-17 15:47:56 michiel Exp $
+ * @version $Id$
  */
 
 public interface TypeHandler {

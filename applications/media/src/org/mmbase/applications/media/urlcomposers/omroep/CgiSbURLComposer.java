@@ -20,7 +20,7 @@ import java.util.*;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiSbURLComposer.java,v 1.6 2009-04-16 10:28:07 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class CgiSbURLComposer extends RamURLComposer {

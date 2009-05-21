@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasFunctionTag.java,v 1.4 2008-08-14 13:58:49 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

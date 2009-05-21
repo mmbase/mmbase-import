@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.60 2008-12-22 18:52:37 michiel Exp $
+ * @version $Id$
  */
 public class HtmlBase extends ProcessorModule {
     /**

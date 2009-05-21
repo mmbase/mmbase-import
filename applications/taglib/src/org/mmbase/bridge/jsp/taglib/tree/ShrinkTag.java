@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ShrinkTag.java,v 1.6 2006-11-14 22:53:49 michiel Exp $
+ * @version $Id$
  */
 public class ShrinkTag extends AbstractTreeReferrerListTag implements Writer {
 
