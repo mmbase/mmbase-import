@@ -83,7 +83,12 @@ public class Verify extends Authorization {
 
     @Override public String getContext(UserContext userContext, int nodeId) throws org.mmbase.security.SecurityException {
         // userContext ignored
-        return getContextProvider().getContextName(getContextNode(nodeId, true));
+        MMObjectNode contextNode = getContextNode(nodeId, true);
+        if (contextNode == null) {
+            log.warn("No context node found for node with id " + nodeId);
+            return null;
+        }
+        return getContextProvider().getContextName(contextNode);
     }
 
     @Override public void setContext(UserContext user, int nodeId, String context) throws org.mmbase.security.SecurityException {
