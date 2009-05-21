@@ -18,7 +18,7 @@ import org.mmbase.util.Sortable;
  * @javadoc
  * @deprecated not used anywhere
  * @author vpro
- * @version $Id: PriorityURL.java,v 1.4 2004-10-08 10:48:07 pierre Exp $
+ * @version $Id$
  */
 public class PriorityURL implements Sortable {
     public static int MIN_PRIORITY=0;

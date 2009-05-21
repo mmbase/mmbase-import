@@ -16,7 +16,7 @@ import org.mmbase.applications.xmlimporter.ObjectMerger;
 /**
  * Extended from Transaction for interactive handling of dulpicates.
  * @since MMBase-1.5
- * @version $Id: InteractiveTransaction.java,v 1.4 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 public class InteractiveTransaction extends Transaction {
 

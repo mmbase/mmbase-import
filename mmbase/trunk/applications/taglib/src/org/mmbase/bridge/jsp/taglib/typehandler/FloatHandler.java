@@ -19,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: FloatHandler.java,v 1.7 2009-01-12 12:48:20 michiel Exp $
+ * @version $Id$
  */
 
 public class FloatHandler extends AbstractTypeHandler {

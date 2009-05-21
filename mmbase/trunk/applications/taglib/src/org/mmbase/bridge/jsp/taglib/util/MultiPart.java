@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.23 2009-04-28 16:18:31 michiel Exp $
+ * @version $Id$
  * @deprecated
  **/
 

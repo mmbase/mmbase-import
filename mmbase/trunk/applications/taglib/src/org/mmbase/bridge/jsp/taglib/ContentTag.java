@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.68 2008-11-04 22:33:58 michiel Exp $
+ * @version $Id$
  **/
 
 public class ContentTag extends LocaleTag  {

@@ -14,7 +14,7 @@ package org.mmbase.util;
  * Used by SortedVector.
  * @see SortedVector
  * @deprecated This is the same as java.util.Comparator
- * @version $Id: CompareInterface.java,v 1.1 2007-06-03 12:21:45 nklasens Exp $
+ * @version $Id$
  */
 
 public interface CompareInterface {

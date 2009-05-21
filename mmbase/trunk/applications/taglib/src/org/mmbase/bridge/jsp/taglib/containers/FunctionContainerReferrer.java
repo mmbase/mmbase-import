@@ -15,7 +15,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerReferrer.java,v 1.2 2003-08-11 15:26:36 michiel Exp $
+ * @version $Id$
  */
 public interface FunctionContainerReferrer extends ContainerReferrer {
 

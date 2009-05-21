@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * A helper class to implement notfound attribute
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notfound.java,v 1.4 2007-11-01 09:24:58 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public abstract class  Notfound  {

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: TreeHasPageTag.java,v 1.5 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8.6
  */
 

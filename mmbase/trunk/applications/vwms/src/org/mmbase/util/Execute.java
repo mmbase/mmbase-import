@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @application VWMS
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Execute.java,v 1.2 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id$
  */
 public class Execute {
     // logger

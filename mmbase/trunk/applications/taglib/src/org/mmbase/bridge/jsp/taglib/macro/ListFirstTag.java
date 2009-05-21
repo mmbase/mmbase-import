@@ -14,7 +14,7 @@ import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
  * Macro tag for listCondition first
  *
- * @version $Id: ListFirstTag.java,v 1.4 2004-03-23 19:09:54 michiel Exp $
+ * @version $Id$
  */
 public class ListFirstTag extends ListConditionTag {
     protected final int getValue() throws JspTagException {

@@ -28,7 +28,7 @@ import java.util.*;
  * on nodes with the owner field '[shared]'.
  *
  * @author Eduard Witteveen
- * @version $Id: Verify.java,v 1.2 2007-06-21 15:50:27 nklasens Exp $
+ * @version $Id$
  */
 public class Verify extends Authorization {
     private static final Logger log = Logging.getLoggerInstance(Verify.class);

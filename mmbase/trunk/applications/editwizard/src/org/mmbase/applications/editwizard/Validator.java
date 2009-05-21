@@ -19,7 +19,7 @@ import org.w3c.dom.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Validator.java,v 1.9 2007-03-29 13:52:14 pierre Exp $
+ * @version $Id$
  */
 
 public class Validator {

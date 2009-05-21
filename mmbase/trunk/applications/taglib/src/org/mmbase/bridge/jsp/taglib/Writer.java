@@ -19,7 +19,7 @@ import javax.servlet.jsp.JspTagException;
  * for a quick implementation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Writer.java,v 1.10 2003-06-06 10:03:10 pierre Exp $ 
+ * @version $Id$ 
  */
 
 public interface Writer {

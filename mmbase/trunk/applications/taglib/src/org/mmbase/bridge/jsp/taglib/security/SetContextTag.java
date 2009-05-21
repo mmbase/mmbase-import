@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * A very simple tag to change the context of the node
  * 
  * @author Michiel Meeuwissen
- * @version $Id: SetContextTag.java,v 1.9 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id$
  */
 
 public class SetContextTag extends NodeReferrerTag {

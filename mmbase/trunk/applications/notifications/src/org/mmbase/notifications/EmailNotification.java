@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * A notification implementation which sends using mmbase-email.jar
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmailNotification.java,v 1.5 2007-12-10 18:15:05 michiel Exp $
+ * @version $Id$
  **/
 public  class EmailNotification extends Notification {
 

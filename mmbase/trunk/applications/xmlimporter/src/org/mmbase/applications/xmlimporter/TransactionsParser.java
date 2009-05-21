@@ -29,7 +29,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionsParser.java,v 1.12 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 
 public class TransactionsParser extends DefaultHandler {

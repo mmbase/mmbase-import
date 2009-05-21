@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
 /**
  * Utility functions, used by various classes in the package.
  * @author Michiel Meeuwissen
- * @version $Id: Util.java,v 1.5 2009-04-30 09:30:41 michiel Exp $
+ * @version $Id$
  */
 
 public abstract class Util {

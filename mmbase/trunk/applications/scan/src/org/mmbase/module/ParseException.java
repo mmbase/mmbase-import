@@ -16,7 +16,7 @@ import javax.servlet.*;
  *
  * @application SCAN - Removing this from Core requires changes in Module/MMObjectBuilder
  * @author Wilbert Hengst
- * @version $Id: ParseException.java,v 1.5 2008-12-22 18:52:37 michiel Exp $
+ * @version $Id$
  */
 public class ParseException extends RuntimeException {
 

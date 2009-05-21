@@ -33,7 +33,7 @@ import javax.servlet.http.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.17 2009-04-28 08:48:08 michiel Exp $
+ * @version $Id$
  */
 
 public class BinaryHandler extends AbstractTypeHandler {

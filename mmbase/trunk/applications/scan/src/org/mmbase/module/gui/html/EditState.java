@@ -20,7 +20,7 @@ import org.mmbase.module.core.*;
  * @application SCAN - Removing this from Core requires changes in Module/MMObjectBuilder
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.19 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id$
  */
 public class EditState {
 

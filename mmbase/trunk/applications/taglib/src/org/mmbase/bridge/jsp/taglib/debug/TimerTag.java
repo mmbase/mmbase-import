@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * times' overview.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TimerTag.java,v 1.11 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id$
  */
 
 public class TimerTag extends ContextReferrerTag {

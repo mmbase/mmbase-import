@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * A tool to convert between 'cloud' context security and 'xml' context security. Used in /mmbase/security/admin/
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConvertTool.java,v 1.4 2008-10-27 19:15:27 michiel Exp $
+ * @version $Id$
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts
  * @since MMBase-1.7
  */

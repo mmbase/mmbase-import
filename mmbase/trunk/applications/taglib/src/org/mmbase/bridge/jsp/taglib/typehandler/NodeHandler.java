@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.42 2009-04-28 08:48:08 michiel Exp $
+ * @version $Id$
  */
 
 public class NodeHandler extends AbstractTypeHandler {

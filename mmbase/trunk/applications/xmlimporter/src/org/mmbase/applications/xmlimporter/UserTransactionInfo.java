@@ -16,7 +16,7 @@ import java.util.Hashtable;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: UserTransactionInfo.java,v 1.4 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 public class UserTransactionInfo {
 

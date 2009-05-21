@@ -19,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
  * Remove an object from the Context.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RemoveTag.java,v 1.13 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id$
  */
 
 public class RemoveTag extends ContextReferrerTag {

@@ -21,7 +21,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.18 2009-04-28 08:35:09 michiel Exp $
+ * @version $Id$
  */
 public class RightsRel extends InsRel {
 

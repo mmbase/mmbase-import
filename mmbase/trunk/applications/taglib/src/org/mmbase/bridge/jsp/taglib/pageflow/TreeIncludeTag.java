@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.26 2008-03-17 16:18:15 michiel Exp $
+ * @version $Id$
  */
 
 public class TreeIncludeTag extends IncludeTag {

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notification.java,v 1.7 2007-12-10 18:15:05 michiel Exp $
+ * @version $Id$
  **/
 public abstract class Notification {
     private static final Logger log = Logging.getLoggerInstance(Notification.class);

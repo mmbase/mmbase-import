@@ -16,7 +16,7 @@ import org.mmbase.applications.dove.Dove;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetConstraints.java,v 1.6 2003-06-13 13:30:36 pierre Exp $
+ * @version $Id$
  */
 
 public class ConnectorCommandGetConstraints extends ConnectorCommand {

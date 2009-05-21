@@ -20,7 +20,7 @@ import java.util.concurrent.DelayQueue;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronDaemon.java,v 1.21 2008-08-04 13:36:28 michiel Exp $
+ * @version $Id$
  */
 public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
 

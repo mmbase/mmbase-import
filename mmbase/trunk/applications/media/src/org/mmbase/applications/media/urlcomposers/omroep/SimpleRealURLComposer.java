@@ -16,7 +16,7 @@ import org.mmbase.applications.media.urlcomposers.RealURLComposer;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SimpleRealURLComposer.java,v 1.3 2009-04-16 10:28:07 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class SimpleRealURLComposer extends RealURLComposer {

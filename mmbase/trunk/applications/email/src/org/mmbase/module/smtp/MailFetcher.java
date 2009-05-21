@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logger;
  * bootstrapped by a module {@link SMTPModule}.
  *
 
- * @version $Id: MailFetcher.java,v 1.4 2008-02-03 17:42:06 nklasens Exp $
+ * @version $Id$
  */
 public abstract class MailFetcher  {
     private static final Logger log = Logging.getLoggerInstance(MailFetcher.class);

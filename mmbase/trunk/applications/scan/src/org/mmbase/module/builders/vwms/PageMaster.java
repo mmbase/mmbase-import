@@ -31,7 +31,7 @@ import org.mmbase.module.gui.html.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PageMaster.java,v 1.18 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id$
  */
 
 public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {

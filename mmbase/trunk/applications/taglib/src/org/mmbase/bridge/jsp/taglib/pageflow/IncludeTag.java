@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.89 2009-04-07 08:23:34 nklasens Exp $
+ * @version $Id$
  */
 
 public class IncludeTag extends UrlTag {

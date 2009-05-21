@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.17 2008-12-23 17:30:42 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {

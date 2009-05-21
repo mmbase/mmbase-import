@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.82 2009-04-01 09:00:20 nklasens Exp $
+ * @version $Id$
  */
 
 public class ImageTag extends FieldTag {

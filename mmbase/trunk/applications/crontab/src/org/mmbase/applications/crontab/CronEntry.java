@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.24 2009-04-01 09:19:52 michiel Exp $
+ * @version $Id$
  */
 
 public class CronEntry implements java.io.Serializable {

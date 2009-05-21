@@ -19,7 +19,7 @@ import org.xml.sax.InputSource;
 
 /**
  * @javadoc
- * @version $Id: XMLDynamicFlashReader.java,v 1.9 2007-06-21 15:50:26 nklasens Exp $
+ * @version $Id$
  */
 
 public class XMLDynamicFlashReader {

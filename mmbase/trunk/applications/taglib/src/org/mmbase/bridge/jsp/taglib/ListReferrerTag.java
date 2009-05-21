@@ -18,7 +18,7 @@ import javax.servlet.jsp.jstl.core.*;
  *
  * @author Michiel Meeuwissen 
  *
- * @version $Id: ListReferrerTag.java,v 1.11 2006-09-29 10:04:08 michiel Exp $ 
+ * @version $Id$ 
  */
 
 public abstract class ListReferrerTag extends ContextReferrerTag  {

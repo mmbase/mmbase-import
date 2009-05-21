@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * org.mmbase.sms.EventSender}), this job will do nothing.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SenderJob.java,v 1.4 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id$
  **/
 public class SenderJob implements Runnable {
 

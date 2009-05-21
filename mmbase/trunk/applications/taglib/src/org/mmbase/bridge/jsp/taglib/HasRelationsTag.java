@@ -17,7 +17,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  * Whether current node has relations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasRelationsTag.java,v 1.3 2008-08-14 11:24:15 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 

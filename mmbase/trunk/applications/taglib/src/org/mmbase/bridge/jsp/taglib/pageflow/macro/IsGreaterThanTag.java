@@ -15,7 +15,7 @@ import org.mmbase.bridge.jsp.taglib.pageflow.CompareTag;
  * Checks if a value of a context variable is greater than a given value
  * 
  * @author Michiel Meeuwissen
- * @version $Id: IsGreaterThanTag.java,v 1.4 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 
 public class IsGreaterThanTag extends CompareTag  {

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @author Arjan Houtman
  * @author Daniel Ockeloen
- * @version $Id: MMUsers.java,v 1.17 2008-12-22 18:52:37 michiel Exp $
+ * @version $Id$
  */
 public class MMUsers extends ProcessorModule {
 

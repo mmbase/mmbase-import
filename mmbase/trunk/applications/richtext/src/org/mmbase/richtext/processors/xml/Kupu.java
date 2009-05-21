@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
 /**
  * This implements 'Kupu' Mode of {@link MmxfSetString}.
  * @author Michiel Meeuwissen
- * @version $Id: Kupu.java,v 1.8 2008-11-24 16:52:37 michiel Exp $
+ * @version $Id$
  */
 
 class Kupu {

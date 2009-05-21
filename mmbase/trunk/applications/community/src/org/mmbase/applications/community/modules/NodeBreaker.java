@@ -25,7 +25,7 @@ import org.mmbase.module.core.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: NodeBreaker.java,v 1.10 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id$
  */
 public class NodeBreaker implements Runnable {
 

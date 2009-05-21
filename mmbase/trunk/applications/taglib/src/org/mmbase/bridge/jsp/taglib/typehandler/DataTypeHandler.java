@@ -34,7 +34,7 @@ import org.mmbase.util.functions.Parameter;
  *
  * @author Michiel Meeuwisssen
  * @since  MMBase-1.9.1
- * @version $Id: DataTypeHandler.java,v 1.3 2009-04-17 17:02:38 michiel Exp $
+ * @version $Id$
  */
 
 public class DataTypeHandler implements TypeHandler {

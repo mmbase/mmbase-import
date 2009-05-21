@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.56 2008-12-22 18:52:37 michiel Exp $
+ * @version $Id$
 .*/
 public class INFO extends ProcessorModule {
 

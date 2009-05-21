@@ -21,7 +21,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * Verify#getContextProvider}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextProvider.java,v 1.4 2009-01-05 10:27:25 michiel Exp $
+ * @version $Id$
  * MMBase-1.9.1
  */
 public interface ContextProvider {

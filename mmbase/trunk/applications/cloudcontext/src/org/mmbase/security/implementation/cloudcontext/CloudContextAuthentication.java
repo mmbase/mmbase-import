@@ -15,7 +15,7 @@ import org.mmbase.security.implementation.cloudcontext.builders.Users;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: CloudContextAuthentication.java,v 1.2 2009-01-29 21:51:25 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 public abstract class CloudContextAuthentication extends Authentication {

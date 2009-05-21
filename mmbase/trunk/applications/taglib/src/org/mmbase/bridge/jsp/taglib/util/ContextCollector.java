@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * it's parent too, so it is 'transparent'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.22 2008-11-05 13:06:30 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class  ContextCollector extends StandaloneContextContainer {

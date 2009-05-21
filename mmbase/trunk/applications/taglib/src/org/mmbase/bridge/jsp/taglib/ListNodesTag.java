@@ -23,7 +23,7 @@ import org.mmbase.bridge.util.Queries;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.32 2008-07-24 08:08:07 michiel Exp $
+ * @version $Id$
  */
 
 public class ListNodesTag extends AbstractNodeListTag {

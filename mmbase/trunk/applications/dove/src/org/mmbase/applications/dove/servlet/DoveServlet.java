@@ -31,7 +31,7 @@ import org.mmbase.servlet.MMBaseServlet;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: DoveServlet.java,v 1.14 2008-09-04 05:59:05 michiel Exp $
+ * @version $Id$
  */
 public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to use its logging
 

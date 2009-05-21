@@ -14,7 +14,7 @@ package org.mmbase.bridge.jsp.taglib;
  * In fact a simplified version of WriterTEI (can only provide Field an FieldValue).
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldProviderTEI.java,v 1.4 2005-01-30 16:46:35 nico Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 

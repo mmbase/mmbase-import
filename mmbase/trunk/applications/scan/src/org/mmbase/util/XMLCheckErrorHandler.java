@@ -23,7 +23,7 @@ import org.xml.sax.SAXParseException;
  *
  * @application Config
  * @author cjr@dds.nl
- * @version $Id: XMLCheckErrorHandler.java,v 1.6 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 public class XMLCheckErrorHandler implements ErrorHandler {
 

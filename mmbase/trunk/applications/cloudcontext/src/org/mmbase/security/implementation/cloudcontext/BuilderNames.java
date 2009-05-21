@@ -15,7 +15,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: BuilderNames.java,v 1.3 2008-12-30 17:49:44 michiel Exp $
+ * @version $Id$
  * MMBase-1.9.1
  */
 public class BuilderNames extends AbstractCollection<String> {

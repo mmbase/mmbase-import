@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logger;
  * @move org.mmbase.cache.implementation
  * @rename Cache
  * @author  $Author: nklasens $
- * @version $Id: cache.java,v 1.16 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id$
  */
 public class cache extends Module implements cacheInterface {
 

@@ -16,7 +16,7 @@ import javax.servlet.jsp.JspException;
  * Calls 'doInfo' from NodeManager or from Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: InfoTag.java,v 1.26 2006-06-23 11:32:21 michiel Exp $ 
+ * @version $Id$ 
  * @deprecated
  */
 

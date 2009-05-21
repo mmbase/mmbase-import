@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.163 2008-09-04 12:31:41 michiel Exp $
+ * @version $Id$
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {

@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * @application SCAN
  * @deprecated not used anywhere
  * @author cjr@dds.nl
- * @version $Id: XMLMMLanguageReader.java,v 1.14 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 public class XMLMMLanguageReader extends XMLBasicReader {
 

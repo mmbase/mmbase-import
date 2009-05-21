@@ -16,7 +16,7 @@ import org.mmbase.bridge.jsp.taglib.pageflow.CompareTag;
  * Checks if the parent writer is not empty.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: IsEmptyTag.java,v 1.4 2003-06-06 10:03:29 pierre Exp $
+ * @version $Id$
  */
 
 public class IsEmptyTag extends CompareTag  {

@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.79 2008-09-03 15:23:39 michiel Exp $
+ * @version $Id$
  */
 public class scanparser extends ProcessorModule {
 

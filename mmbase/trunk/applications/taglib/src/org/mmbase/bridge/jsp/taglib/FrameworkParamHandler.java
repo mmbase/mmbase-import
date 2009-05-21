@@ -16,7 +16,7 @@ import javax.servlet.jsp.JspTagException;
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
  * @see    org.mmbase.bridge.jsp.taglib.pageflow.UrlTag
- * @version $Id: FrameworkParamHandler.java,v 1.2 2008-08-29 12:39:04 michiel Exp $
+ * @version $Id$
  */
 
 public interface FrameworkParamHandler {

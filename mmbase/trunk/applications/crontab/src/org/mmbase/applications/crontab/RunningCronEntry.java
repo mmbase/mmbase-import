@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: RunningCronEntry.java,v 1.1 2008-08-04 13:36:28 michiel Exp $
+ * @version $Id$
  */
 
 public class RunningCronEntry  implements Delayed, java.io.Serializable {

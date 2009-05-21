@@ -29,7 +29,7 @@ import org.mmbase.util.functions.*;
  * filename, and mimetype from a referred to file when the url changes.
  *
  * @author Pierre van Rooden
- * @version $Id: ReferredAttachments.java,v 1.4 2008-07-29 08:38:53 pierre Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 public class ReferredAttachments extends Attachments {

@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @application VWMs
  * @author Rico Jansen
- * @version $Id: PerformProbe.java,v 1.8 2004-10-08 10:57:57 pierre Exp $
+ * @version $Id$
  */
 public class PerformProbe implements Runnable {
 

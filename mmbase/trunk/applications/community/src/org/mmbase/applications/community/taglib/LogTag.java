@@ -21,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.NodeTag;
  * at the start of the  body tag.
  *
  * @author Pierre van Rooden
- * @version $Id: LogTag.java,v 1.4 2003-06-18 20:03:57 michiel Exp $
+ * @version $Id$
  */
  
 public class LogTag extends NodeTag {

@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * In all other cases the message is ignored.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Handler.java,v 1.1 2007-12-07 10:15:47 michiel Exp $
+ * @version $Id$
  **/
 public class Handler implements org.mmbase.sms.Handler {
 

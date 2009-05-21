@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.40 2008-12-04 10:30:06 michiel Exp $
+ * @version $Id$
  */
 public class EmailBuilder extends MMObjectBuilder {
 

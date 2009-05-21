@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.24 2009-04-30 09:26:38 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public enum Format {

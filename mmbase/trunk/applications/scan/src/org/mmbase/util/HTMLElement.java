@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @application SCAN
 * @author Jan van Oosterom
-* @version $Id: HTMLElement.java,v 1.11 2008-09-03 15:23:39 michiel Exp $
+* @version $Id$
 *
 */
 public abstract class HTMLElement {

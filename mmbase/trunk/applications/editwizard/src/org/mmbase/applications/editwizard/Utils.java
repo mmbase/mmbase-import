@@ -39,7 +39,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.53 2009-01-07 20:39:58 nklasens Exp $
+ * @version $Id$
  */
 
 public class Utils {

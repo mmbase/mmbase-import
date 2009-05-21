@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementText.java,v 1.7 2008-09-03 15:23:39 michiel Exp $
+ * @version $Id$
  */
 public class HTMLElementText  extends HTMLElement {
     /**

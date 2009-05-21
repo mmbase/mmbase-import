@@ -14,7 +14,7 @@ package org.mmbase.module.gui.html;
  *
  * @application SCAN
  * @author vpro
- * @version $Id: MultiLevelParseException.java,v 1.6 2004-10-01 08:43:45 pierre Exp $
+ * @version $Id$
  */
 public class MultiLevelParseException extends org.mmbase.module.ParseException {
 

@@ -39,7 +39,7 @@ and:
   &lt;/logger&gt;
 </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.9 2008-12-15 14:01:33 michiel Exp $
+ * @version $Id$
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {

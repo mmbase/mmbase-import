@@ -17,7 +17,7 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetList.java,v 1.6 2003-06-13 13:30:36 pierre Exp $
+ * @version $Id$
  */
 
 public class ConnectorCommandGetList extends ConnectorCommand {

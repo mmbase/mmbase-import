@@ -18,7 +18,7 @@ import javax.servlet.jsp.JspTagException;
  * Straight-forward wrapper arround {@link org.mmbase.bridge.Cloud#hasNodeManager}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasNodeManagerTag.java,v 1.2 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

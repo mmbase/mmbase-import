@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * The 'image conversion receiver' storing the result in an 'icaches' node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeReceiver.java,v 1.2 2007-05-04 16:20:30 nklasens Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class NodeReceiver implements ImageConversionReceiver {

@@ -21,7 +21,7 @@ import java.util.*;
  * @application SCAN
  * @deprecated use org.mmbase.cache.MultilevelCacheHandler
  * @author Daniel Ockeloen
- * @version $Id: MultilevelCacheHandler.java,v 1.6 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id$
  */
 public class MultilevelCacheHandler extends LRUHashtable {
 

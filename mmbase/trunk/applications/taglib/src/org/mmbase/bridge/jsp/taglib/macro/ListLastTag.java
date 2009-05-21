@@ -14,7 +14,7 @@ import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
  * Macro tag for listContdition last
  *
- * @version $Id: ListLastTag.java,v 1.4 2004-03-23 19:09:55 michiel Exp $
+ * @version $Id$
  */
 
 public class ListLastTag extends ListConditionTag {

@@ -21,7 +21,7 @@ import org.mmbase.util.*;
  *
  * @application SCAN
  * @author Hans Speijer
- * @version $Id: CommandHandlerInterface.java,v 1.7 2008-12-22 18:52:37 michiel Exp $
+ * @version $Id$
  */
 public interface CommandHandlerInterface {
 

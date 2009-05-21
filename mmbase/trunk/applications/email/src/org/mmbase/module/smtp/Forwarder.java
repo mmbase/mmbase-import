@@ -20,7 +20,7 @@ import org.mmbase.applications.email.SendMail;
 /**
  * Forwarding MailHandler. Fill {@link #forwards} to make this actually do something.
  *
- * @version $Id: Forwarder.java,v 1.4 2008-12-30 11:06:12 michiel Exp $
+ * @version $Id$
  */
 public class Forwarder implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(Forwarder.class);

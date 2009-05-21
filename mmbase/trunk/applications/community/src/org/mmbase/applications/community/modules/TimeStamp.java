@@ -21,7 +21,7 @@ import java.util.Date;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: TimeStamp.java,v 1.8 2005-01-30 16:46:35 nico Exp $
+ * @version $Id$
  */
 
 public class TimeStamp extends Date

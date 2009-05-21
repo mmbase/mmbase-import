@@ -19,7 +19,7 @@ import org.mmbase.module.core.MMObjectNode;
  * @see org.mmbase.module.builders.Urls#getDefaultUrl(int)
  *
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: UrlStrategy.java,v 1.2 2007-09-11 12:38:05 michiel Exp $
+ * @version $Id$
  */
 public class UrlStrategy extends JumperStrategy {
 

@@ -18,7 +18,7 @@ import java.io.*;
  *
  * @since MMBase 1.6.3
  * @author Gerard van de Looi
- * @version $Id: DummyImageConverter.java,v 1.2 2007-06-13 18:54:55 nklasens Exp $
+ * @version $Id$
  */
 public class DummyImageConverter implements ImageConverter {
 

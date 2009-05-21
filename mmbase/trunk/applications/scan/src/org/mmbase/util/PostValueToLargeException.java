@@ -17,7 +17,7 @@ package org.mmbase.util;
  * @rename PostValueTooLargeException
  * @move org.mmbase.servlet
  * @author vpro
- * @version $Id: PostValueToLargeException.java,v 1.8 2004-09-30 14:07:11 pierre Exp $
+ * @version $Id$
  */
 public class PostValueToLargeException extends RuntimeException {
 

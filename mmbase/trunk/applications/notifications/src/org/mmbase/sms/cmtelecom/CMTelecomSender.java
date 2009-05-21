@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: CMTelecomSender.java,v 1.8 2007-12-10 09:59:12 michiel Exp $
+ * @version $Id$
  **/
 public  class CMTelecomSender extends Sender {
     private static final Logger log = Logging.getLoggerInstance(CMTelecomSender.class);

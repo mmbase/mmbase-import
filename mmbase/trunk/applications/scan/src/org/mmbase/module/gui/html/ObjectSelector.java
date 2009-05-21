@@ -26,7 +26,7 @@ import org.mmbase.util.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.25 2008-12-22 18:52:37 michiel Exp $
+ * @version $Id$
  */
 public class ObjectSelector implements CommandHandlerInterface {
 

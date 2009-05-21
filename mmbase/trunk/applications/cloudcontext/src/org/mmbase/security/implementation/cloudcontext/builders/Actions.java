@@ -25,7 +25,7 @@ import org.mmbase.util.functions.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: Actions.java,v 1.2 2008-08-07 20:01:51 michiel Exp $
+ * @version $Id$
  * @since  MMBase-1.7
  */
 public class Actions extends MMObjectBuilder {

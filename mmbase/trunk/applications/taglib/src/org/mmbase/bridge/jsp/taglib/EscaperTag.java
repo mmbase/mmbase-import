@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Configures a new Escaper on this page.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: EscaperTag.java,v 1.14 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

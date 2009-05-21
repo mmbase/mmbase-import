@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.61 2009-04-01 09:01:49 nklasens Exp $
+ * @version $Id$
  *
  */
 public class WizardDatabaseConnector implements java.io.Serializable {

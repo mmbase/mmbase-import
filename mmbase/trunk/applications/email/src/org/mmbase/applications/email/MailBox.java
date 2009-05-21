@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 
 /**
  * At the moment just a container for some constants. This may change
- * @version $Id: MailBox.java,v 1.5 2007-12-21 09:12:47 michiel Exp $
+ * @version $Id$
  */
 public abstract class MailBox {
     public static enum Type {

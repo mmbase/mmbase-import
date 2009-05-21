@@ -18,7 +18,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.27 2006-04-27 09:45:10 michiel Exp $
+ * @version $Id$
  * @deprecated Use BinaryHandler
  */
 

@@ -19,7 +19,7 @@ import org.w3c.dom.Element;
  * Chains some comparators to make one new comparator.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ChainSorter.java,v 1.5 2007-07-10 12:11:45 michiel Exp $
+ * @version $Id$
  */
 public class ChainSorter extends  Sorter {
 

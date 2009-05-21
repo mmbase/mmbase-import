@@ -25,7 +25,7 @@ import java.util.*;
  * using the processor implement automatic numbering of chapters and such.
  *
  * @author Michiel Meeuwissen
- * @version $Id: GetIndex.java,v 1.6 2008-03-11 16:53:22 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

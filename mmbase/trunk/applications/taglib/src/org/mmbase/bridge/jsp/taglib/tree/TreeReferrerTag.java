@@ -19,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeReferrerTag.java,v 1.4 2008-02-14 14:36:31 michiel Exp $
+ * @version $Id$
  */
 abstract public class TreeReferrerTag extends NodeReferrerTag {
 

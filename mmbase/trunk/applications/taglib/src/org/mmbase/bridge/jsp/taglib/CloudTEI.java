@@ -17,7 +17,7 @@ import javax.servlet.jsp.tagext.TagData;
  * The TEI class belonging to the CloudTag and descendents
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudTEI.java,v 1.9 2006-07-04 12:14:57 michiel Exp $
+ * @version $Id$
  */
 
 public class CloudTEI extends TagExtraInfo {

@@ -13,7 +13,7 @@ package org.mmbase.bridge.jsp.taglib;
  * A TEI class for Writer Tags that produce Integer jsp vars.
  *
 s * @author Michiel Meeuwissen
- * @version $Id: IntegerWriterTEI.java,v 1.3 2006-04-12 14:51:40 michiel Exp $ 
+ * @version $Id$ 
  */
 
 public class IntegerWriterTEI extends  WriterTEI {

@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: Transaction.java,v 1.11 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 public class Transaction implements Runnable {
 

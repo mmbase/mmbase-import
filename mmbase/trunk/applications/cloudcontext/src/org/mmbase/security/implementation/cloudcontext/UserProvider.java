@@ -19,7 +19,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * esential properties of them are acquired.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UserProvider.java,v 1.2 2009-01-06 14:38:21 michiel Exp $
+ * @version $Id$
  * MMBase-1.9.1
  */
 public interface UserProvider {

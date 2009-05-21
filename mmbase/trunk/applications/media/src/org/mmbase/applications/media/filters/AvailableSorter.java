@@ -15,7 +15,7 @@ import org.mmbase.applications.media.urlcomposers.URLComposer;
 /**
  * This can sort a list of URLComposers with the available ones on top.
  * @author  Michiel Meeuwissen
- * @version $Id: AvailableSorter.java,v 1.1 2003-02-05 16:31:36 michiel Exp $
+ * @version $Id$
  */
 public class AvailableSorter extends  PreferenceSorter {
 

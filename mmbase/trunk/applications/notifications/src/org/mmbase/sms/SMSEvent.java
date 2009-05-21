@@ -15,7 +15,7 @@ import org.mmbase.module.core.MMBase;
  * An SMS wrapped into an event.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SMSEvent.java,v 1.2 2007-12-10 09:57:41 michiel Exp $
+ * @version $Id$
  */
 public class  SMSEvent extends Event {
 

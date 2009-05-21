@@ -16,7 +16,7 @@ import javax.servlet.jsp.JspTagException;
  * ContextReferrer, but conceptually this is not really correct.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: WriterReferrer.java,v 1.4 2003-06-06 10:03:10 pierre Exp $ 
+ * @version $Id$ 
  */
 
 public interface WriterReferrer {

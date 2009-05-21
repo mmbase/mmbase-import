@@ -19,7 +19,7 @@ package org.mmbase.util;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: fileInfo.java,v 1.9 2004-09-30 08:52:17 pierre Exp $
+ * @version $Id$
  */
 public class fileInfo {
     /**

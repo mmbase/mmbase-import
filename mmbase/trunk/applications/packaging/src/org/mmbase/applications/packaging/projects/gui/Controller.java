@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @author     Daniel Ockeloen
  * @created    July 20, 2004
- * @version    $Id: Controller.java,v 1.10 2007-06-21 15:50:25 nklasens Exp $
+ * @version    $Id$
  */
 public class Controller {
 

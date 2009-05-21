@@ -24,7 +24,7 @@ import java.util.Properties;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *X
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.25 2008-07-24 08:07:35 michiel Exp $
+ * @version $Id$
  */
 
 public class XsltTag extends ContextReferrerTag  {
