@@ -23,7 +23,17 @@ import java.util.Map;
 final public class NoAuthentication extends Authentication {
 
     static final String TYPE = "no authentication";
-    static final UserContext userContext = new BasicUser(TYPE);
+
+    private static final class NoAuthenticationUser extends BasicUser {
+        NoAuthenticationUser() {
+            super(TYPE);
+        }
+        NoAuthenticationUser(String un) {
+            super(TYPE, un);
+        }
+    }
+
+    static final UserContext userContext = new NoAuthenticationUser();
     // package because NoAuthorization uses it to get the one 'possible context' (which is of course the 'getOwnerField' of the only possible user)
     // (this is assuming that NoAuthentication is used too, but if not so, that does not matter)
 
@@ -40,7 +50,7 @@ final public class NoAuthentication extends Authentication {
     public UserContext login(String application, Map loginInfo, Object[] parameters) throws SecurityException {
         String userName = loginInfo == null ? null : (String) loginInfo.get(AuthenticationData.PARAMETER_USERNAME.getName());
         if (userName != null) {
-            return new BasicUser(TYPE, userName);
+            return new NoAuthenticationUser(userName);
         } else {
             return userContext;
         }
@@ -51,7 +61,7 @@ final public class NoAuthentication extends Authentication {
      * @return true
      */
     public boolean isValid(UserContext usercontext) throws SecurityException {
-        return true;
+        return usercontext instanceof NoAuthenticationUser;
     }
 
     /**
