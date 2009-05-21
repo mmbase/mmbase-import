@@ -24,7 +24,7 @@ import org.mmbase.bridge.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: LeafConstraintsTag.java,v 1.7 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id$
  */
 public class LeafConstraintsTag extends ContextReferrerTag implements NodeQueryContainer, QueryContainerReferrer {
 

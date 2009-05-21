@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * Implements the parsing and generating of dynamic flash files
  * @author Johannes Verelst
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.25 2007-12-11 13:20:26 michiel Exp $
+ * @version $Id$
  */
 public class MMFlash extends Module {
 

@@ -45,7 +45,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.97 2009-04-24 19:58:44 michiel Exp $
+ * @version $Id$
  * @see ImportTag
  * @see WriteTag
  */

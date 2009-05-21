@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.24 2008-06-10 15:46:11 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

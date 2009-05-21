@@ -14,7 +14,7 @@ package org.mmbase.module;
  * @deprecated-now use org.mmbase.applications.xmlimporter.TransactionHandlerException
  *
  * @author John Balder
- * @version $Id: TransactionHandlerException.java,v 1.5 2003-08-29 09:36:52 pierre Exp $
+ * @version $Id$
  */
 public class TransactionHandlerException extends Exception {
 	String code = "";

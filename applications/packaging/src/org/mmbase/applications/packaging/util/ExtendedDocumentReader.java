@@ -27,7 +27,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ExtendedDocumentReader.java,v 1.7 2008-09-04 06:01:05 michiel Exp $
+ * @version $Id$
  */
 public class ExtendedDocumentReader extends DocumentReader  {
 

@@ -16,7 +16,7 @@ import java.util.Stack;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeProvider.java,v 1.4 2008-02-14 14:36:31 michiel Exp $
+ * @version $Id$
  */
 public interface TreeProvider extends NodeProvider, ListProvider, DepthProvider {
 

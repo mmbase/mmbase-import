@@ -19,7 +19,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * given).
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderTEI.java,v 1.13 2005-06-20 16:03:38 michiel Exp $ 
+ * @version $Id$ 
  */
 
 public class NodeProviderTEI extends TagExtraInfo {

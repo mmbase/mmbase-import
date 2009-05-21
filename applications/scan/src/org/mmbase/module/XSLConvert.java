@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @application XSL or Tools
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLConvert.java,v 1.2 2008-12-22 18:52:37 michiel Exp $
+ * @version $Id$
  */
 public class XSLConvert extends ProcessorModule {
 

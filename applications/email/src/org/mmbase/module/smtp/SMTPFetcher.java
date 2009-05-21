@@ -41,7 +41,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPFetcher.java,v 1.12 2008-02-03 17:42:06 nklasens Exp $
+ * @version $Id$
  */
 public class SMTPFetcher extends MailFetcher implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPFetcher.class);

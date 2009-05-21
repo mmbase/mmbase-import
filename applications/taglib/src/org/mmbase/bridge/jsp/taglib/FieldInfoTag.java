@@ -45,7 +45,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.121 2009-04-28 08:45:15 michiel Exp $
+ * @version $Id$
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;

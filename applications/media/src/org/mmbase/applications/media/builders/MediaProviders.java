@@ -26,7 +26,7 @@ import org.mmbase.bridge.*;
  * be online/offline.
  *
 * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.17 2009-04-17 19:45:18 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {

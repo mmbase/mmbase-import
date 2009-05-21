@@ -13,7 +13,7 @@ package org.mmbase.bridge.jsp.taglib.tree;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: DepthProvider.java,v 1.3 2008-02-14 14:36:31 michiel Exp $
+ * @version $Id$
  */
 public interface DepthProvider {
 

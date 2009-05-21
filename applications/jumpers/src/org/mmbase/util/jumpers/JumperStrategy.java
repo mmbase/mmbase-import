@@ -39,7 +39,7 @@ import org.mmbase.module.core.MMObjectNode;
  * @see #calculate(MMObjectNode)
  *
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: JumperStrategy.java,v 1.5 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id$
  */
 public abstract class JumperStrategy {
 

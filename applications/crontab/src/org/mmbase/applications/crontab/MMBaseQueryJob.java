@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * following Job can be used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseQueryJob.java,v 1.2 2008-12-09 13:37:42 michiel Exp $
+ * @version $Id$
  */
 
 public class MMBaseQueryJob extends AbstractCronJob  {

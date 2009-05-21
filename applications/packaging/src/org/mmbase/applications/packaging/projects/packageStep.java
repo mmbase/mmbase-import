@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 /**
  *
- * @version $Id: packageStep.java,v 1.6 2007-06-21 15:50:24 nklasens Exp $
+ * @version $Id$
  * @author     Daniel Ockeloen
  * @rename PackageStep
  */

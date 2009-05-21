@@ -24,7 +24,7 @@ import org.mmbase.util.xml.UtilReader;
  * as active.
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.14 2008-07-29 20:56:18 michiel Exp $
+ * @version $Id$
  */
 public class Unicast extends ClusterManager {
 

@@ -17,7 +17,7 @@ import java.util.Date;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommand.java,v 1.7 2007-06-13 20:54:26 nklasens Exp $
+ * @version $Id$
  */
 
 public class ConnectorCommand {

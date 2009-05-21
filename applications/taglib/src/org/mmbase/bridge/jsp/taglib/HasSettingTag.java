@@ -18,7 +18,7 @@ import javax.servlet.jsp.JspTagException;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasSettingTag.java,v 1.1 2008-10-22 09:31:12 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 

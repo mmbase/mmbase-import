@@ -19,7 +19,7 @@ import org.mmbase.util.transformers.Xml;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: Debug.java,v 1.5 2008-08-14 11:22:50 michiel Exp $
+ * @version $Id$
  */
 public enum Debug {
 

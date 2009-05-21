@@ -23,7 +23,7 @@ import org.mmbase.util.functions.Parameters;
  * like what its name is.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: CloudInfoTag.java,v 1.13 2007-11-16 16:23:37 michiel Exp $
+ * @version $Id$
  * @since   MMBase-1.8
  */
 

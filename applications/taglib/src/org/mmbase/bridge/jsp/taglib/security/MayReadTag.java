@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check if node may be viewed
  *
  * @author Michiel Meeuwissen
- * @version $Id: MayReadTag.java,v 1.2 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.1
  */
 

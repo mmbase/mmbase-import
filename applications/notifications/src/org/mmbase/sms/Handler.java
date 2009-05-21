@@ -15,7 +15,7 @@ import org.mmbase.bridge.*;
  * Implementations of these SMS handlers can perform action on receival of an SMS message.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Handler.java,v 1.5 2007-12-07 13:06:43 michiel Exp $
+ * @version $Id$
  **/
 public interface Handler {
 

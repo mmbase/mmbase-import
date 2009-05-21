@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.6 2007-06-26 13:25:49 michiel Exp $
+ * @version $Id$
  */
 public class ImageCaches extends AbstractImages {
 

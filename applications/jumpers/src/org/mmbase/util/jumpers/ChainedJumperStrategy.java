@@ -20,7 +20,7 @@ import org.mmbase.module.core.MMObjectNode;
 /**
 
 * @author Michiel Meeuwissen
-* @version $Id: ChainedJumperStrategy.java,v 1.5 2008-02-03 17:33:57 nklasens Exp $
+* @version $Id$
 */
 public class ChainedJumperStrategy extends JumperStrategy {
 

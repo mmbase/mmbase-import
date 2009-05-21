@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @application Basic [builder]
  * @author Daniel Ockeloen
- * @version $Id: People.java,v 1.10 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id$
  */
 public class People extends MMObjectBuilder {
 

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * HttpPost handles all the PostInformation
  *
  * @application SCAN. To port this, use of HttpPost by i.e. taglibs should be replaced with the jakarta FileUpload code.
- * @version $Id: HttpPost.java,v 1.31 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id$
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen

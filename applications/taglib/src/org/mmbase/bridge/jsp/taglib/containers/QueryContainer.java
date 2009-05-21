@@ -18,7 +18,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryContainer.java,v 1.10 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id$
  */
 public interface QueryContainer extends  CloudProvider {
 

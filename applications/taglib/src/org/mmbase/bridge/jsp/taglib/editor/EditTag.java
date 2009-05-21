@@ -44,7 +44,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.26 2008-09-04 12:31:07 michiel Exp $
+ * @version $Id$
  * @see Editor
  * @see BasicEditor
  * @see YAMMEditor

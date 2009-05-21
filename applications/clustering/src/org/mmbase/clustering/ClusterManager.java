@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.38 2008-07-03 15:08:29 michiel Exp $
+ * @version $Id$
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 

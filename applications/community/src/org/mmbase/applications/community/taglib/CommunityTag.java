@@ -22,7 +22,7 @@ import org.mmbase.bridge.jsp.taglib.NodeTag;
  * This affects all channels of this community.
  *
  * @author Pierre van Rooden
- * @version $Id: CommunityTag.java,v 1.4 2003-06-18 20:03:56 michiel Exp $
+ * @version $Id$
  */
  
 public class CommunityTag extends NodeTag {

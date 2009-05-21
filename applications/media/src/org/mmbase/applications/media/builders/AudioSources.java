@@ -24,7 +24,7 @@ import org.mmbase.module.core.MMObjectNode;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: AudioSources.java,v 1.5 2005-11-23 15:45:13 pierre Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class AudioSources extends MediaSources {    

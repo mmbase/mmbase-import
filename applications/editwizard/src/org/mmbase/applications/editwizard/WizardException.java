@@ -14,7 +14,7 @@ package org.mmbase.applications.editwizard;
  *
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: WizardException.java,v 1.4 2009-01-15 18:10:26 michiel Exp $
+ * @version $Id$
  */
 public class WizardException extends java.lang.Exception {
 

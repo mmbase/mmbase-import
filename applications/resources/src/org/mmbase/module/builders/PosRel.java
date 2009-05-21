@@ -17,7 +17,7 @@ import org.mmbase.module.core.MMObjectNode;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen.
- * @version $Id: PosRel.java,v 1.1 2008-06-12 10:04:38 michiel Exp $
+ * @version $Id$
  */
 public class PosRel extends InsRel {
 

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * A Notifyable is a wrapper arround an MMBase node of the type 'Notifyable'.
  * @author Michiel Meeuwissen
- * @version $Id: Notifyable.java,v 1.8 2007-12-10 18:15:05 michiel Exp $
+ * @version $Id$
  **/
 public class Notifyable implements Delayed {
 

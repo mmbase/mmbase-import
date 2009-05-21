@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * serves as a baseclass for e.g. CancelTag
  *
  * @author Michiel Meeuwissen
- * @version $Id: CommitTag.java,v 1.21 2008-02-03 17:33:58 nklasens Exp $
+ * @version $Id$
  */
 
 public class CommitTag extends CloudReferrerTag {

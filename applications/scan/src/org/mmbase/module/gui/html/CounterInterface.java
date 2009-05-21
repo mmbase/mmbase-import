@@ -17,7 +17,7 @@ import org.mmbase.util.scanpage;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: CounterInterface.java,v 1.2 2004-10-01 08:43:44 pierre Exp $
+ * @version $Id$
  */
 public interface CounterInterface {
     public String getTag( String part, sessionInfo session, scanpage sp );

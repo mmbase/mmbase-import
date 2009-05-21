@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMObjectNode;
  * Like InsRel, only with a GUIIndicator tailored for a relation with an 'id' field.
  *
  * @author Michiel Meeuwissen.
- * @version $Id: IdRel.java,v 1.2 2008-06-03 09:43:01 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public class IdRel extends InsRel {

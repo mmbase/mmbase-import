@@ -18,7 +18,7 @@ import org.mmbase.util.*;
  * @application SCAN
  * @rename SessionsInterface
  * @author vpro
- * @version $Id: sessionsInterface.java,v 1.7 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id$
  */
 public interface sessionsInterface {
     public void init();

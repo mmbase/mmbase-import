@@ -15,7 +15,7 @@ import org.mmbase.module.ParseException;
  * This exception gets thrown when a circular PART is detected.
  * @application SCAN
  * @author Rico Jansen
- * @version $Id: CircularParseException.java,v 1.6 2004-10-01 08:43:44 pierre Exp $
+ * @version $Id$
  */
 public class CircularParseException extends ParseException {
 

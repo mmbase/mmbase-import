@@ -24,7 +24,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  * Posts a message
  *
  * @author Pierre van Rooden
- * @version $Id: UpdateTag.java,v 1.12 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id$
  */
  
 public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {

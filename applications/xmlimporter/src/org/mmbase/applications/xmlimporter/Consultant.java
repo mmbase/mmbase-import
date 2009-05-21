@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Erik Visser (Finalist IT Group)
  * @author Rob van Maris (Finalist IT Group)
  * @since MMBase-1.5
- * @version $Id: Consultant.java,v 1.4 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 public class Consultant {
 

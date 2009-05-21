@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.14 2008-02-12 17:41:14 michiel Exp $
+ * @version $Id$
  */
 public class WizardCommand implements java.io.Serializable {
 

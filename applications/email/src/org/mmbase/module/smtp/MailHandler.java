@@ -18,7 +18,7 @@ import javax.mail.*;
 /**
  * A MailHandler handles <em>one</em> mail. So you must create a new one for every received message
  * (You can use {@link Factory}).
- * @version $Id: MailHandler.java,v 1.14 2008-12-30 11:06:12 michiel Exp $
+ * @version $Id$
  */
 public interface  MailHandler {
 

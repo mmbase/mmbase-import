@@ -22,7 +22,7 @@ package org.mmbase.util;
  * @application SCAN (users)
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PasswordGeneratorInterface.java,v 1.1 2008-08-01 21:46:21 michiel Exp $
+ * @version $Id$
  */
 
 public interface PasswordGeneratorInterface {

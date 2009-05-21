@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.67 2009-04-24 19:58:44 michiel Exp $
+ * @version $Id$
  **/
 
 public abstract class ContextContainer extends AbstractMap<String, Object> implements Map<String, Object> {

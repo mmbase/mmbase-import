@@ -18,7 +18,7 @@ import org.mmbase.bridge.jsp.taglib.Writer;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: DepthTag.java,v 1.8 2008-08-14 13:58:54 michiel Exp $
+ * @version $Id$
  */
 public class DepthTag extends TreeReferrerTag implements Writer {
 

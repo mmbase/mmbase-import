@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: Factory.java,v 1.7 2009-04-22 06:55:15 michiel Exp $
+ * @version $Id$
  */
 
 public class Factory {

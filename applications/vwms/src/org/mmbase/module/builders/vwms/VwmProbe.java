@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @application VWMs
  * @author Daniel Ockeloen
- * @version $Id: VwmProbe.java,v 1.11 2004-10-08 10:57:57 pierre Exp $ current version $Id: VwmProbe.java,v 1.11 2004-10-08 10:57:57 pierre Exp $
+ * @version $Id$ current version $Id$
  */
 public class VwmProbe implements Runnable {
 

@@ -21,7 +21,7 @@ import org.mmbase.util.Entry;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainer.java,v 1.10 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 public interface FunctionContainer extends ParamHandler, TagIdentifier, FunctionContainerOrNodeProvider {
 

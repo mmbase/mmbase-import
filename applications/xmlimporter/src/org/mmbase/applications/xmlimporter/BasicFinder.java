@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * A basic implementation of SimilarObjectFinder.
  * @since MMBase-1.5
- * @version $Id: BasicFinder.java,v 1.5 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 public abstract class BasicFinder implements SimilarObjectFinder {
 

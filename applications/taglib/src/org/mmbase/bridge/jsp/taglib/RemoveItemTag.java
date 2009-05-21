@@ -17,7 +17,7 @@ import javax.servlet.jsp.JspTagException;
  * more.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RemoveItemTag.java,v 1.4 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id$ 
  */
 
 public class RemoveItemTag extends ListReferrerTag {

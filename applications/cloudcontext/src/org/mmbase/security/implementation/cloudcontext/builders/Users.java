@@ -32,7 +32,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.61 2009-01-06 11:45:25 michiel Exp $
+ * @version $Id$
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {

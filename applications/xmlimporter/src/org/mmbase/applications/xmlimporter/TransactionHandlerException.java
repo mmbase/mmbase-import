@@ -14,7 +14,7 @@ package org.mmbase.applications.xmlimporter;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionHandlerException.java,v 1.4 2003-08-29 09:36:50 pierre Exp $
+ * @version $Id$
  */
 public class TransactionHandlerException extends Exception {
     String code = "";

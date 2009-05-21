@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check for the rank of the current user.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasRankTag.java,v 1.3 2005-03-01 15:01:47 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

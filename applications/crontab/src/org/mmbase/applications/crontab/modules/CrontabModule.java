@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Starts a crontab for MMBase as a Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CrontabModule.java,v 1.21 2009-04-30 09:25:36 michiel Exp $
+ * @version $Id$
  */
 public class CrontabModule extends WatchedReloadableModule {
 

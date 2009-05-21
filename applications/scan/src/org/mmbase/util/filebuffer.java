@@ -16,7 +16,7 @@ import java.util.Date;
  *
  * @javadoc
  * @rename FileBuffer
- * @version $Id: filebuffer.java,v 1.5 2004-09-29 14:29:25 pierre Exp $
+ * @version $Id$
  */
 public class filebuffer {
 

@@ -22,7 +22,7 @@ import org.mmbase.bridge.jsp.taglib.NodeTag;
  * Also removed are all replies to the message.
  *
  * @author Pierre van Rooden
- * @version $Id: DeleteTag.java,v 1.5 2003-06-18 20:03:57 michiel Exp $
+ * @version $Id$
  */
  
 public class DeleteTag extends NodeTag {

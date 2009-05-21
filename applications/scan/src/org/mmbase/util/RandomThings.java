@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  * Class for doing random things.
  * @deprecated-now not used anywhere
  * @author Rico Jansen
- * @version $Id: RandomThings.java,v 1.10 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 public class RandomThings {
 

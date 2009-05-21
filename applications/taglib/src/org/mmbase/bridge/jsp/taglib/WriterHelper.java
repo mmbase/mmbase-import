@@ -28,7 +28,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.99 2008-04-11 15:19:52 michiel Exp $
+ * @version $Id$
  */
 
 public class WriterHelper {

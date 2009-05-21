@@ -13,7 +13,7 @@ package org.mmbase.applications.crontab;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronJob.java,v 1.3 2008-07-29 17:58:34 michiel Exp $
+ * @version $Id$
  */
 
 

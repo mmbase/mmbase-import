@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.16 2008-03-31 14:40:52 michiel Exp $
+ * @version $Id$
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8

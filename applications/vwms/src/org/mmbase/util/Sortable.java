@@ -15,7 +15,7 @@ package org.mmbase.util;
  *
  * @deprecated I think this is the same as java.util.Comparable
  * @author Rico Jansen
- * @version $Id: Sortable.java,v 1.1 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id$
  */
 public interface Sortable {
 

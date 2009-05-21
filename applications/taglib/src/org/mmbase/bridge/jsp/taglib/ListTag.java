@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.54 2008-11-06 12:25:11 michiel Exp $
+ * @version $Id$
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {

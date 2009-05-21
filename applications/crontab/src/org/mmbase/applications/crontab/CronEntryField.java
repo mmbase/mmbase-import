@@ -14,7 +14,7 @@ import java.util.*;
  * One the fields of the 'crontab' syntax, which is something like '*' or '* /5' or 5-23. See 'man 5 crontab'
  *
  * @author Kees Jongenburger
- * @version $Id: CronEntryField.java,v 1.3 2008-07-29 15:21:45 michiel Exp $
+ * @version $Id$
  */
 
 public class CronEntryField implements java.io.Serializable {

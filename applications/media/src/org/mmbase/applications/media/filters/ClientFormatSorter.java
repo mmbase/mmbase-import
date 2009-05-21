@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * of the urlcomposer list.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ClientFormatSorter.java,v 1.6 2007-07-10 09:51:35 michiel Exp $ 
+ * @version $Id$ 
  */
 public class ClientFormatSorter extends  PreferenceSorter {
     private static final Logger log = Logging.getLoggerInstance(ClientFormatSorter.class);

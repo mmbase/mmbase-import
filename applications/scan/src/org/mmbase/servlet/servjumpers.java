@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN (depends from JamesServlet)
  * @deprecated use org.mmbase.servlet.JumpersFilter
  * @author Daniel Ockeloen
- * @version $Id: servjumpers.java,v 1.24 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id$
  * @see    org.mmbase.servlet.JumpersFilter
  */
 public class servjumpers extends JamesServlet {

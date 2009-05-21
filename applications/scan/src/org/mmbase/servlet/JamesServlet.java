@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @application SCAN - the cookie code is specific for SCAN
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.50 2007-06-21 15:50:24 nklasens Exp $
+ * @version $Id$
  */
 
 public class JamesServlet extends MMBaseServlet {

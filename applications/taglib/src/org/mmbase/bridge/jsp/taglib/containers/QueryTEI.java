@@ -17,7 +17,7 @@ import javax.servlet.jsp.tagext.TagData;
  * The TEI class belonging to the QueryContainer tags.
  *
  * @author Michiel Meeuwissen
- * @version $Id: QueryTEI.java,v 1.1 2006-07-04 12:16:09 michiel Exp $
+ * @version $Id$
  */
 
 public class QueryTEI extends TagExtraInfo {

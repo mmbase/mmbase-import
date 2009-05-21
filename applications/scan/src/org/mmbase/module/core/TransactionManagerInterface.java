@@ -13,7 +13,7 @@ import java.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManagerInterface.java,v 1.1 2006-10-03 18:31:46 michiel Exp $
+ * @version $Id$
  */
 public interface TransactionManagerInterface {
     public String create(Object user,String transactionname)

@@ -19,7 +19,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * body. This is the TEI class which is needed for that.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: WriterTEI.java,v 1.14 2007-04-26 10:25:49 michiel Exp $ 
+ * @version $Id$ 
  */
 
 public class WriterTEI extends TagExtraInfo {

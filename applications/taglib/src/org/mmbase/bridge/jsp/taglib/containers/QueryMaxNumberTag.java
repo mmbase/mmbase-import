@@ -21,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryMaxNumberTag.java,v 1.3 2008-06-27 09:07:10 michiel Exp $
+ * @version $Id$
  */
 public class QueryMaxNumberTag extends CloudReferrerTag implements QueryContainerReferrer {
 

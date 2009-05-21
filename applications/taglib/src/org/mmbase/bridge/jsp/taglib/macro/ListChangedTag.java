@@ -13,7 +13,7 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
  *  Macro tag for listCondition changed
- *  @version $Id: ListChangedTag.java,v 1.6 2004-03-23 19:09:54 michiel Exp $
+ *  @version $Id$
  */
 
 public class ListChangedTag extends ListConditionTag{

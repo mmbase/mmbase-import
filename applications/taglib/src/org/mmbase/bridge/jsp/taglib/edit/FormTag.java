@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.22 2009-02-05 19:57:15 andre Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

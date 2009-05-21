@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.28 2009-04-28 08:35:09 michiel Exp $
+ * @version $Id$
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends BasicUser implements UserContext, WeakNodeEventListener  {

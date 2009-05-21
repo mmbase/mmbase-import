@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * listener to arrange invalidation of (entries of) them  when necessary.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Caches.java,v 1.4 2009-03-02 17:27:56 michiel Exp $
+ * @version $Id$
  * @since  MMBase-1.9.1
  */
 public abstract class Caches {

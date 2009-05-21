@@ -23,7 +23,7 @@ import org.mmbase.util.Casting;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.38 2008-08-19 14:12:53 michiel Exp $
+ * @version $Id$
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer

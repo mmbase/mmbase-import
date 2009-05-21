@@ -17,7 +17,7 @@ import java.io.File;
  *
  * @author David V van Zeventer
  * @application SCAN or Devices
- * @version $Id: FileCompare.java,v 1.9 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id$
  * @todo   Should be named FileLastModifiedComparator and implement java.util.Comparator
  */
 public class FileCompare implements CompareInterface {

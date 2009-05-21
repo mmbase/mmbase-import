@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * chained before MmxfGetString to ensure that the field is really Mmxf, even if such 'p' fields are stored.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UnPGet.java,v 1.3 2008-03-25 17:52:18 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

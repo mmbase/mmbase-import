@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Arjan Houtman
- * @version $Id: FieldEditor.java,v 1.18 2008-12-22 18:52:37 michiel Exp $
+ * @version $Id$
  */
 public class FieldEditor implements CommandHandlerInterface {
     // Logger

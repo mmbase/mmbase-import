@@ -29,7 +29,7 @@ import org.mmbase.module.builders.*;
  * @application VWMs
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwm.java,v 1.17 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id$
  */
 
 public class Vwm implements VwmInterface, VwmProbeInterface, Runnable {

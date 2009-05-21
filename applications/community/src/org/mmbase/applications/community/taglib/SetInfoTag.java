@@ -20,7 +20,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  * SetInfo tag stores information in the multipurpose INFO field.
  *
  * @author Pierre van Rooden
- * @version $Id: SetInfoTag.java,v 1.10 2005-01-30 16:46:35 nico Exp $
+ * @version $Id$
  */
  
 public class SetInfoTag extends NodeReferrerTag {

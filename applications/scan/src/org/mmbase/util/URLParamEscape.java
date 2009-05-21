@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecated use Encode
  * @author vpro
- * @version $Id: URLParamEscape.java,v 1.3 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id$
  */
 public class URLParamEscape {
 

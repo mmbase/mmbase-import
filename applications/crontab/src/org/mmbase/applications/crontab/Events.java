@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: Events.java,v 1.5 2008-08-04 13:36:28 michiel Exp $
+ * @version $Id$
  */
 
 public class Events {

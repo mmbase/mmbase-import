@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @author  Rob Vermeulen
- * @version $Id: RealSorter.java,v 1.11 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id$
  */
 public class RealSorter extends  ChainSorter {
     private static Logger log = Logging.getLoggerInstance(RealSorter.class);

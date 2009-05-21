@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Can be used with EL. ${_} is only evaluated when used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlWriterTag.java,v 1.14 2009-01-05 18:36:53 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

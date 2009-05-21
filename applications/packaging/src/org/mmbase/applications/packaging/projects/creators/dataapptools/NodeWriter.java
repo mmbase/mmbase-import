@@ -21,7 +21,7 @@ import org.mmbase.util.*;
 
 /**
  * @todo This look a remarkable lot like {@link org.mmbase.util.NodeWriter}. One of them has to go!
- * @version $Id: NodeWriter.java,v 1.6 2006-03-24 13:08:30 nklasens Exp $
+ * @version $Id$
  */
 public class NodeWriter{
 

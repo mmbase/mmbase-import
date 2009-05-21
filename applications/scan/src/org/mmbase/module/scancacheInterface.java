@@ -25,7 +25,7 @@ import org.mmbase.util.scanpage;
  * @rename SCANCacheInterface
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancacheInterface.java,v 1.14 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id$
  */
 public interface scancacheInterface {
     /**

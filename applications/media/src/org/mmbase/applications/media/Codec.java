@@ -18,7 +18,7 @@ import java.util.*;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Codec.java,v 1.5 2009-04-16 13:27:29 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html

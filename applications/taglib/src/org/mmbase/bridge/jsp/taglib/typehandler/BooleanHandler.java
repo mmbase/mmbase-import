@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.6
- * @version $Id: BooleanHandler.java,v 1.6 2009-01-12 12:48:20 michiel Exp $
+ * @version $Id$
  */
 
 public class BooleanHandler extends AbstractTypeHandler {

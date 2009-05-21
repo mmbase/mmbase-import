@@ -24,7 +24,7 @@ import org.mmbase.storage.search.Step;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.21 2008-08-14 13:58:37 michiel Exp $
+ * @version $Id$
  */
 public class RelatedContainerTag extends NodeReferrerTag implements QueryContainer {
 

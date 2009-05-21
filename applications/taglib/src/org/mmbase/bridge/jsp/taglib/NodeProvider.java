@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  * Interface designed to make it possible for child tags to access a node defined in a tag
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeProvider.java,v 1.12 2006-05-17 19:14:35 michiel Exp $ 
+ * @version $Id$ 
  */
 
 public interface NodeProvider extends TagIdentifier, FunctionContainerOrNodeProvider {

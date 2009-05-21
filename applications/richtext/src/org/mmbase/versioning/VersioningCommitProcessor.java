@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
  * This commitprocessor copies on every commit the complete node to a 'versioning' table.
  * @author Sander de Boer
  * @author Michiel Meeuwissen
- * @version $Id: VersioningCommitProcessor.java,v 1.10 2008-08-05 16:38:21 michiel Exp $
+ * @version $Id$
  * @since
  */
 

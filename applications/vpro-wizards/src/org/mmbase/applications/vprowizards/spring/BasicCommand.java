@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Ernst Bunders
- * @version $Id: BasicCommand.java,v 1.3 2009-04-28 15:40:44 michiel Exp $
+ * @version $Id$
  */
 public class BasicCommand implements Command {
     private Map<String, Map<String, Action>> actions = new LinkedHashMap<String, Map<String, Action>>();

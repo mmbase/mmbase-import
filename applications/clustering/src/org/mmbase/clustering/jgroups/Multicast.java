@@ -38,7 +38,7 @@ import org.jgroups.*;
  * @author Nico Klasens
  * @author Costyn van Dongen
  * @author Ronald Wildenberg
- * @version $Id: Multicast.java,v 1.12 2008-07-29 20:56:18 michiel Exp $
+ * @version $Id$
  */
 public class Multicast extends ClusterManager {
 

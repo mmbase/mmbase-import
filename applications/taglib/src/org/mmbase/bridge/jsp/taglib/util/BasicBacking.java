@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: BasicBacking.java,v 1.15 2008-12-29 11:19:17 michiel Exp $
+ * @version $Id$
  */
 
 public  class BasicBacking extends AbstractMap<String, Object>  implements Backing {

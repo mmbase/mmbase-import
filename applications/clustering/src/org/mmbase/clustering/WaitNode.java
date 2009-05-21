@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * TODO: Missing javadoc on methods, odd methods name ('do-..'), used nowhere. Where it this class
  * good for?  Should it perhaps simply be dropped?
- * @version $Id: WaitNode.java,v 1.4 2006-04-02 11:49:07 michiel Exp $
+ * @version $Id$
  */
 public class WaitNode {
 

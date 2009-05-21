@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementRadio.java,v 1.8 2008-09-03 15:23:39 michiel Exp $
+ * @version $Id$
  */
 public class HTMLElementRadio  extends HTMLElement {
     // Note: more appropriate would be to extend from HTMLElementCheckbox

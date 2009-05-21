@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * Straight-forward wrapper arround {@link org.mmbase.bridge.NodeManager#hasField}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasFieldTag.java,v 1.5 2008-08-14 11:24:15 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 

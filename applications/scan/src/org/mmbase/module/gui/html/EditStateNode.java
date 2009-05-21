@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditStateNode.java,v 1.18 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id$
  */
 public class EditStateNode {
 

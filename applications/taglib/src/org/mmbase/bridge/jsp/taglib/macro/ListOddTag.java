@@ -14,7 +14,7 @@ import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
  * Macro tag for listContdition odd
  *
- * @version $Id: ListOddTag.java,v 1.5 2004-03-23 19:09:55 michiel Exp $
+ * @version $Id$
  */
 public class ListOddTag extends ListConditionTag{
     protected final int getValue() throws JspTagException {

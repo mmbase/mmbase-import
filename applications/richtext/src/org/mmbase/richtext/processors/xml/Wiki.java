@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.16 2008-12-08 10:06:08 michiel Exp $
+ * @version $Id$
  * @todo something goes wrong if same node relation multiple times.
  */
 

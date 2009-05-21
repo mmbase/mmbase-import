@@ -24,7 +24,7 @@ import org.mmbase.bridge.jsp.taglib.util.Referids;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.18 2008-10-17 12:02:22 michiel Exp $
+ * @version $Id$
  */
 public class FunctionContainerTag extends AbstractFunctionTag implements FunctionContainer {
     //private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);

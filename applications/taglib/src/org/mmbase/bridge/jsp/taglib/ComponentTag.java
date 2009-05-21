@@ -21,7 +21,7 @@ import org.mmbase.framework.*;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.33 2008-10-22 09:54:58 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {

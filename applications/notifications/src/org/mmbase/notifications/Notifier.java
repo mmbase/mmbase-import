@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.14 2008-09-04 16:33:41 michiel Exp $
+ * @version $Id$
  **/
 public class Notifier extends WatchedReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 

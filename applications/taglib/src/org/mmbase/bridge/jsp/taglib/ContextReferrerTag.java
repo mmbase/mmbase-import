@@ -35,7 +35,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.114 2009-04-28 08:44:46 michiel Exp $
+ * @version $Id$
  * @see ContextTag
  */
 

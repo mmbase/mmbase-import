@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: WmSbURLComposer.java,v 1.10 2009-04-16 10:28:07 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.7
  */
 public class WmSbURLComposer extends URLComposer {

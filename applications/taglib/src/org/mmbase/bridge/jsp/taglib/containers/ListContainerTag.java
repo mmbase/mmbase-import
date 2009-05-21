@@ -22,7 +22,7 @@ import org.mmbase.cache.CachePolicy;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.21 2009-04-28 08:50:54 michiel Exp $
+ * @version $Id$
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
 

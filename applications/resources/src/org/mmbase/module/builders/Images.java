@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.15 2009-04-24 07:30:21 michiel Exp $
+ * @version $Id$
  */
 public class Images extends AbstractImages {
 

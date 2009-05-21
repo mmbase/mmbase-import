@@ -16,7 +16,7 @@ import javax.servlet.jsp.JspException;
  * A simple tag to provide the properties on cloud, nodemanager, modules.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PropertyTag.java,v 1.2 2008-01-31 12:00:06 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.6
  */
 

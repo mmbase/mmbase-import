@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Adds an extra parameter to the parent {@link ParamHandler} tag (e.g. an mm:link tag).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.20 2008-09-04 15:02:58 michiel Exp $
+ * @version $Id$
  */
 
 public class ParamTag extends AbstractParamTag implements ParamHandler {

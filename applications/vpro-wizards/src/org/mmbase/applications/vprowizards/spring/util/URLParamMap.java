@@ -16,7 +16,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * @javadoc
- * @version $Id: URLParamMap.java,v 1.2 2009-04-28 15:23:56 michiel Exp $
+ * @version $Id$
  * @author Ernst Bunders
  */
 
