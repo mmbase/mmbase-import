@@ -107,6 +107,9 @@ public  class BasicContextProvider implements ContextProvider {
 
 
     public String getContextName(MMObjectNode contextNode) throws SecurityException {
+        if (contextNode == null) {
+            return null;
+        }
         return contextNode.getStringValue(getContextNameField(contextNode.getBuilder().getTableName()));
     }
 
