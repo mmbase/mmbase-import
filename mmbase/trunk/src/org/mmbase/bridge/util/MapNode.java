@@ -59,7 +59,15 @@ public class MapNode extends AbstractNode implements Node {
      * object.
      */
     public MapNode(Map v) {
-        this(v, ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null));
+        this(v, guessCloud());
+    }
+    private static final Cloud guessCloud() {
+        try {
+            return ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 
     protected static NodeManager createVirtualNodeManager(Cloud cloud, final Map map) {
