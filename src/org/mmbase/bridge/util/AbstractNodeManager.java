@@ -58,6 +58,13 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     public NodeManager getNodeManager() {
         return cloud.getNodeManager("typedef");
     }
+
+    public void setNodeManager(NodeManager nm) {
+        if (! nm.getName().equals("typedef")) {
+            throw new IllegalArgumentException("Cannot change the node manager of node managers");
+        }
+    }
+
     public Cloud getCloud() {
         return cloud;
     }

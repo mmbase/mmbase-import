@@ -15,6 +15,8 @@ import java.io.*;
 import org.mmbase.cache.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
+import org.mmbase.core.CoreField;
+import org.mmbase.storage.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.security.*;
@@ -205,6 +207,40 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             }
         }
         return builder;
+    }
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    public void setBuilder(MMObjectBuilder bul) {
+        if (bul.equals(builder)) return;
+
+        MMObjectNode clone = this.clone();
+        clone.values = Collections.synchronizedMap(new HashMap<String, Object>());
+        if (parent.getDescendants().contains(bul)) {
+            clone.values.putAll(values);
+        } else {
+            for (CoreField field : bul.getFields()) {
+                clone.values.put(field.getName(), values.get(field.getName()));
+            }
+        }
+
+        StorageManagerFactory<?> fact = parent.mmb.getStorageManagerFactory();
+        fact.beginTransaction();
+        try {
+            fact.getStorageManager().delete(this);
+            clone.setValue("otype", bul.getNumber());
+            clone.builder = bul;
+            log.service("Creating " + clone);
+            fact.getStorageManager().create(clone);
+            fact.commit();
+            // nothing wrong.
+            setValue("otype", bul.getNumber());
+            builder = bul;
+        } catch (RuntimeException e) {
+            fact.rollback();
+            throw e;
+        }
     }
 
     /**
@@ -682,12 +718,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
         // add it to the changed vector so we know that we have to update it
         // on the next commit
-        if (! initializing && state != Field.STATE_VIRTUAL) {
+        if (! initializing) {
             log.trace("Marking '" + fieldName + "' as changed in " + sequence);
             changed.add(fieldName);
         }
         // is it a memory only field ? then send a fieldchange
-        if (state == 0) {
+        if (state == Field.STATE_VIRTUAL) {
             sendFieldChangeSignal(fieldName);
         }
     }
