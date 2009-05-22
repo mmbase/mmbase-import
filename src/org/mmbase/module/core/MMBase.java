@@ -1058,7 +1058,7 @@ public class MMBase extends ProcessorModule {
                 return null;
             }
             if (! parser.getRootElement().getTagName().equals("builder")) {
-                log.service(parser.getSystemId() + " does not represent a builder xml. Because the root element is not 'builder' but " + parser.getRootElement().getTagName() + ". This file is ignored.");
+                log.debug(parser.getSystemId() + " does not represent a builder xml. Because the root element is not 'builder' but " + parser.getRootElement().getTagName() + ". This file is ignored.");
                 loading.remove(builderName);
                 return null;
             }
