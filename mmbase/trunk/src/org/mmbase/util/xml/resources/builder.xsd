@@ -302,6 +302,7 @@
       <xsd:sequence>
         <xsd:element ref="class" />
       </xsd:sequence>
+      <xsd:attribute ref="xml:base" />
       <xsd:attribute name="name" type="xsd:string" />
       <xsd:attribute name="key" type="xsd:string" />
     </xsd:complexType>
