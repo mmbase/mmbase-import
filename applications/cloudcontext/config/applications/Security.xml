@@ -2,11 +2,16 @@
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="Security" maintainer="mmbase://security.mmbase.org/" version="2" auto-deploy="true">
 
-  <requirements>
-    <requires name="SecurityBasics" maintainer="mmbase://security.mmbase.org/" version="2" />
-  </requirements>
-
 	<neededbuilderlist>
+    <!-- builder maintainer="mmbase://security.mmbase.org/" version="1">containsrel</builder-->
+    <builder maintainer="mmbase://security.mmbase.org/" version="1">insrel</builder>
+    <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbaseusers</builder>
+    <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbasegroups</builder>
+    <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbaseranks</builder>
+    <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbaseactions</builder>
+    <builder maintainer="mmbase://security.mmbase.org/" version="1">rightsrel</builder>
+    <builder maintainer="mmbase.org" version="0">typedef</builder>
+
     <builder maintainer="mmbase://security.mmbase.org/" version="1">mmbasecontexts</builder>
   </neededbuilderlist>
 
@@ -19,12 +24,25 @@
   </neededreldeflist>
 
   <allowedrelationlist>
+    <relation from="mmbasegroups"   to="mmbaseusers"    type="contains" />
+    <relation from="mmbasegroups"   to="mmbasegroups"   type="contains" />
+    <relation from="mmbaseusers"    to="mmbaseranks"    type="rank" />
+
+    <relation from="mmbaseactions"  to="mmbasegroups"   type="grants" />
+    <relation from="mmbaseactions"  to="mmbaseusers"    type="grants" />
+
+
     <relation from="mmbasecontexts" to="mmbasegroups"   type="grants" />
     <relation from="mmbasecontexts" to="mmbaseusers"    type="grants" />
     <relation from="mmbasecontexts" to="mmbasecontexts" type="allowed" />
   </allowedrelationlist>
 
   <datasourcelist>
+    <datasource builder="mmbaseranks"    path="Security/mmbaseranks.xml" />
+    <datasource builder="mmbasegroups"   path="Security/mmbasegroups.xml" />
+    <datasource builder="mmbaseusers"    path="Security/mmbaseusers.xml" />
+    <datasource builder="mmbaseactions"   path="Security/mmbaseactions.xml" />
+
     <datasource builder="mmbasecontexts" path="Security/mmbasecontexts.xml" />
   </datasourcelist>
 
