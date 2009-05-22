@@ -740,7 +740,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public boolean isNull(String fieldName) {
         if (checkFieldExistance(fieldName)) {
             Field field = getBuilder().getField(fieldName);
-            if (field.isVirtual()) {
+            if (field != null && field.isVirtual()) {
                 return false;
             }
             if (field != null && field.getType() == Field.TYPE_NODE) {
