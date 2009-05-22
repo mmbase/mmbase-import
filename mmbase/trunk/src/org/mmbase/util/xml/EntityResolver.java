@@ -368,7 +368,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
                     if (res != null) {
                         definitionStream = res.getStream();
                         if (definitionStream == null) {
-                            log.warn("Could not find " + res.toString() + " in " + base.getName() + ", falling back to " + MMRESOURCES + " while resolving " + systemId + " " + publicId);
+                            log.warn("Could not find " + mmResource + " in " + base.getName() + ", falling back to " + MMRESOURCES + " while resolving " + systemId + " " + publicId);
                             base = null; // try it in org.mmbase.resources too.
                         }
                     }
