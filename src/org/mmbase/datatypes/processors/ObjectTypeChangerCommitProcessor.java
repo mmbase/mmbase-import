@@ -30,8 +30,8 @@ public class ObjectTypeChangerCommitProcessor implements CommitProcessor {
     public void commit(Node node, Field field) {
         if (! node.isNew()) {
             String bul = (String) node.getValue(field.getName());
-            if (bul != null) {
-                log.info("Changing type of " + node + " to " + bul);
+            if (bul != null && ! node.getNodeManager().getName().equals(bul)) {
+                log.service("Changing type of " + node + " to " + bul);
                 node.setNodeManager(node.getCloud().getNodeManager(bul));
             }
         }
