@@ -214,32 +214,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public void setBuilder(MMObjectBuilder bul) {
         if (bul.equals(builder)) return;
-
-        MMObjectNode clone = this.clone();
-        clone.values = Collections.synchronizedMap(new HashMap<String, Object>());
-        if (parent.getDescendants().contains(bul)) {
-            clone.values.putAll(values);
-        } else {
-            for (CoreField field : bul.getFields()) {
-                clone.values.put(field.getName(), values.get(field.getName()));
-            }
-        }
-
         StorageManagerFactory<?> fact = parent.mmb.getStorageManagerFactory();
-        fact.beginTransaction();
-        try {
-            fact.getStorageManager().delete(this);
-            clone.setValue("otype", bul.getNumber());
-            clone.builder = bul;
-            log.service("Creating " + clone);
-            fact.getStorageManager().create(clone);
-            fact.commit();
-            // nothing wrong.
-            setValue("otype", bul.getNumber());
+        int bn = fact.getStorageManager().setNodeType(this, bul);
+        if (bn > -1) {
+            setValue("otype", bn);
             builder = bul;
-        } catch (RuntimeException e) {
-            fact.rollback();
-            throw e;
         }
     }
 
@@ -1935,7 +1914,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
     public MMObjectNode clone() {
         try {
-            return (MMObjectNode) super.clone();
+            MMObjectNode clone = (MMObjectNode) super.clone();
+            clone.values = new HashMap<String, Object>();
+            clone.values.putAll(this.values);
+            return clone;
         } catch (CloneNotSupportedException cnse) {
             log.error("Java sucks");
             return null;

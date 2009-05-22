@@ -1656,6 +1656,50 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         commitChange(node, "d");
     }
 
+    public int setNodeType(MMObjectNode node, MMObjectBuilder bul) throws StorageException {
+
+        MMObjectNode clone = new MMObjectNode(bul, false);
+
+        if (node.getBuilder().getDescendants().contains(bul)) {
+            for (Map.Entry<String, Object> entry : node.getValues().entrySet()) {
+                clone.storeValue(entry.getKey(), entry.getValue());
+            }
+        } else {
+            for (CoreField field : node.getBuilder().getFields()) {
+                if (clone.getBuilder().hasField(field.getName())) {
+                    clone.storeValue(field.getName(), node.getValue(field.getName()));
+                }
+            }
+        }
+
+        boolean wasinTransaction = inTransaction;
+        try {
+
+            getActiveConnection();
+
+            if (! inTransaction) beginTransaction();
+
+            delete(node, node.getBuilder());
+            typeCache.remove(node.getNumber());
+            commitChange(node, "d");
+            clone.setValue("otype", bul.getNumber());
+            log.service("Creating " + clone);
+            create(clone);
+            if (! wasinTransaction) {
+                commit();
+            }
+            // nothing wrong.
+            return bul.getNumber();
+        } catch (SQLException sqe) {
+            if (! wasinTransaction) {
+                rollback();
+            } else {
+                releaseActiveConnection();
+            }
+            throw new StorageException(sqe);
+        }
+    }
+
     /**
      * Delete a node from a specific builder
      * This method makes it easier to implement relational databses, where you may need to remove the node
