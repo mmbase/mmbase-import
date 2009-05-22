@@ -55,10 +55,11 @@ public class BinaryFile {
     public static class Delete implements CommitProcessor {
         public void commit(final Node node, final Field field) {
             String existing = (String) node.getValue(field.getName());
-            if (existing != null) {
+            if (existing != null && ! "".equals(existing)) {
                 File ef = new File(getDirectory(), existing);
-                if (ef.exists()) {
+                if (ef.exists() && ef.isFile()) {
                     ef.delete();
+                    log.service("Deleted " + ef);
                 } else {
                     log.warn("Could not find " + ef + " so could not delete it");
                 }
@@ -76,10 +77,10 @@ public class BinaryFile {
             String name = is.getName();
             if (name != null) {
                 String existing = (String) node.getValue(field.getName());
-                if (existing != null) {
+                if (existing != null && ! "".equals(existing)) {
                     File ef = new File(getDirectory(), existing);
-                    if (ef.exists()) {
-                        log.debug("Removing existing field " + ef);
+                    if (ef.exists() && ef.isFile()) {
+                        log.service("Removing existing field " + ef);
                         ef.delete();
                     } else {
                         log.warn("Could not find " + ef + " so could not delete it");
