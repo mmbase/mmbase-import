@@ -35,7 +35,8 @@ public class Related {
     public abstract static class  AbstractProcessor implements Processor {
 
         protected String role = "related";
-        protected String type = "object";
+        private String type = "object";
+        private String typeProperty = null;
         protected String searchDir = "destination";
         protected final Map<String, String> relationConstraints = new HashMap<String, String>();
         public void setRole(String r) {
@@ -44,6 +45,10 @@ public class Related {
         public void setType(String t) {
             type = t;
         }
+        public void setTypeProperty(String tp) {
+            typeProperty = tp;
+        }
+
         public void setSearchDir(String d) {
             searchDir = d;
         }
@@ -51,23 +56,31 @@ public class Related {
             relationConstraints.putAll(map);
         }
 
+        protected NodeManager getRelatedType(Node node) {
+            Cloud cloud = node.getCloud();
+            if(typeProperty != null) {
+                return cloud.getNodeManager(node.getNodeManager().getProperty(typeProperty));
+            } else {
+                return cloud.getNodeManager(type);
+            }
+        }
+
         protected RelationManager getRelationManager(Node node) {
             Cloud cloud = node.getCloud();
             if (searchDir.equals("source")) {
-                return cloud.getRelationManager(cloud.getNodeManager(type),
+                return cloud.getRelationManager(getRelatedType(node),
                                                 node.getNodeManager(),
                                                 role);
 
             } else {
                 return cloud.getRelationManager(node.getNodeManager(),
-                                                cloud.getNodeManager(type),
+                                                getRelatedType(node),
                                                 role);
             }
         }
 
         protected NodeQuery getRelationsQuery(Node node) {
-            Cloud cloud = node.getCloud();
-            NodeQuery nq = Queries.createRelationNodesQuery(node, cloud.getNodeManager(type), role, searchDir);
+            NodeQuery nq = Queries.createRelationNodesQuery(node, getRelatedType(node), role, searchDir);
             for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
                 Queries.addConstraint(nq, Queries.createConstraint(nq, entry.getKey(), FieldCompareConstraint.EQUAL, entry.getValue()));
             }
@@ -97,7 +110,7 @@ public class Related {
                         related = true;
                     }
                 } else if (rl.size() > 1) {
-                    log.warn("More than one correct relations between " + node + " and " + type + " " + rl + ". Will fix this now");
+                    log.warn("More than one correct relations between " + node + " and " + getRelatedType(node) + " " + rl + ". Will fix this now");
                 }
                 if (related) {
                     log.debug("" + dest + " already correctly related");

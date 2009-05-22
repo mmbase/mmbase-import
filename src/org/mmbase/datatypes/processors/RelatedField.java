@@ -35,7 +35,7 @@ public class RelatedField {
 
         protected NodeQuery getRelatedQuery(Node node) {
             Cloud cloud = node.getCloud();
-            NodeQuery nq = Queries.createRelatedNodesQuery(node, cloud.getNodeManager(type), role, searchDir);
+            NodeQuery nq = Queries.createRelatedNodesQuery(node, getRelatedType(node), role, searchDir);
             for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
                 Queries.addConstraint(nq, Queries.createConstraint(nq, entry.getKey(), FieldCompareConstraint.EQUAL, entry.getValue()));
             }
@@ -59,11 +59,11 @@ public class RelatedField {
             NodeQuery related = getRelatedQuery(node);
             NodeList rl = related.getNodeManager().getList(related);
             if (rl.size() == 0) {
-                log.service("No related node of type " + type + ". Implicitely creating now.");
+                log.service("No related node of type " + getRelatedType(node) + ". Implicitely creating now.");
                 if (node.isNew()) node.commit(); // Silly, but you cannot make relations to new
                                                  // nodes.
                 Cloud cloud = node.getCloud();
-                Node newNode = cloud.getNodeManager(type).createNode();
+                Node newNode = getRelatedType(node).createNode();
                 newNode.commit();
                 RelationManager rel = getRelationManager(node);
                 Relation newrel = node.createRelation(newNode, rel);
