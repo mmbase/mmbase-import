@@ -387,7 +387,7 @@
                basename="org.mmbase.datatypes.resources.iso639" />
       </enumeration>
       <getprocessor>
-        <class name="org.mmbase.datatypes.LanguageDatatype$Getter" />
+        <class name="org.mmbase.datatypes.LanguageDataType$Getter" />
       </getprocessor>
     </specialization>
 
