@@ -35,7 +35,12 @@ public class LanguageDataType extends StringDataType {
         if (cloud != null) {
             return cloud.getLocale();
         } else if (field != null) {
-            return field.getNodeManager().getCloud().getLocale();
+            try {
+                return field.getNodeManager().getCloud().getLocale();
+            } catch (UnsupportedOperationException uoe) {
+                // Core field can do this
+                return org.mmbase.util.LocalizedString.getDefault();
+            }
         } else {
             return org.mmbase.util.LocalizedString.getDefault();
         }
