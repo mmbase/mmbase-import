@@ -375,10 +375,10 @@
     </specialization>
 
     <specialization id="iso639">
-      <class name="org.mmbase.datatypes.LanguageDataType" />
       <description xml:lang="en">
         ISO 639 language 2-letter codes (sorted alphabeticly on the name of the language in the current locale)
       </description>
+      <class name="org.mmbase.datatypes.LanguageDataType" />
       <maxLength value="12" />
       <pattern value="\A..\z" />
       <enumeration>
