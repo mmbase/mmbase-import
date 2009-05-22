@@ -375,6 +375,7 @@
     </specialization>
 
     <specialization id="iso639">
+      <class name="org.mmbase.datatypes.LanguageDataType" />
       <description xml:lang="en">
         ISO 639 language 2-letter codes (sorted alphabeticly on the name of the language in the current locale)
       </description>
@@ -385,6 +386,9 @@
         <entry sorterclass="org.mmbase.util.SortedBundle$ValueWrapper"
                basename="org.mmbase.datatypes.resources.iso639" />
       </enumeration>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.LanguageDatatype$Getter" />
+      </getprocessor>
     </specialization>
 
     <specialization id="iso3166">
