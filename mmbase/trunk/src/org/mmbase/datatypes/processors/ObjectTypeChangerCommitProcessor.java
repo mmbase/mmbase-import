@@ -28,10 +28,12 @@ public class ObjectTypeChangerCommitProcessor implements CommitProcessor {
     private static final long serialVersionUID = 1L;
 
     public void commit(Node node, Field field) {
-        String bul = (String) node.getValue(field.getName());
-        if (bul != null) {
-            log.info("Changing type of " + node + " to " + bul);
-            node.setNodeManager(node.getCloud().getNodeManager(bul));
+        if (! node.isNew()) {
+            String bul = (String) node.getValue(field.getName());
+            if (bul != null) {
+                log.info("Changing type of " + node + " to " + bul);
+                node.setNodeManager(node.getCloud().getNodeManager(bul));
+            }
         }
     }
 
