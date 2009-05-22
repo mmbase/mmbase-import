@@ -5,24 +5,31 @@
                         http://www.mmbase.org/xmlns/builder.xsd"
     xmlns="http://www.mmbase.org/xmlns/builder"
     >
+  <!--
+       Sometimes one of the sources is leading (e.g. uploaded by a user), and can as well mirrors some fields of the associated fragment.
+  -->
 
   <field
-      name="mediafragment"
+      name="title"
       state="virtual"
-      readonly="true">
+      readonly="false">
     <gui>
-      <guiname xml:lang="nl">Fragment</guiname>
-      <guiname xml:lang="en">Fragment</guiname>
+      <guiname xml:lang="nl">Titel</guiname>
+      <guiname xml:lang="en">Title</guiname>
     </gui>
-    <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
       <setprocessor>
-        <class name="org.mmbase.datatypes.processors.Related$Setter">
+        <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
           <param name="typeProperty">org.mmbase.media.containertype</param>
           <param name="searchDir">source</param>
         </class>
       </setprocessor>
       <getprocessor>
-        <class name="org.mmbase.datatypes.processors.Related$Getter">
+        <class name="org.mmbase.datatypes.processors.RelatedField$Creator">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
           <param name="typeProperty">org.mmbase.media.containertype</param>
           <param name="searchDir">source</param>
         </class>
