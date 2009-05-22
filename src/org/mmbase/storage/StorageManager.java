@@ -121,6 +121,12 @@ public interface StorageManager<SMF extends StorageManagerFactory> {
      */
     void delete(MMObjectNode node) throws StorageException;
 
+
+    /**
+     * @since MMBase-1.9.1
+     */
+    int setNodeType(MMObjectNode node, MMObjectBuilder builder) throws StorageException;
+
     /**
      * Select a node from a specified builder
      * @param builder The builder to select from
