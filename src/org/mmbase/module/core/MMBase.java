@@ -583,7 +583,7 @@ public class MMBase extends ProcessorModule {
         int nodeType = getMMBase().getStorageManager().getNodeType(number);
         if (nodeType < 0) {
             // the node does not exists, which according to javadoc should return null
-            throw new StorageNotFoundException("Cannot determine node type of node with number =" + number);
+            throw new StorageNotFoundException("Cannot determine node type of node with number " + number);
         }
         // if the type is not for the current builder, determine the real builder
         return getTypeDef().getValue(nodeType);
