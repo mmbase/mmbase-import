@@ -386,9 +386,11 @@
         <entry sorterclass="org.mmbase.util.SortedBundle$ValueWrapper"
                basename="org.mmbase.datatypes.resources.iso639" />
       </enumeration>
+      <!--
       <getprocessor>
         <class name="org.mmbase.datatypes.LanguageDataType$Getter" />
       </getprocessor>
+      -->
     </specialization>
 
     <specialization id="iso3166">
