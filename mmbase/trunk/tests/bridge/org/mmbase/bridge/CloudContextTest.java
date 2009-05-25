@@ -44,9 +44,10 @@ public class CloudContextTest extends BridgeTest {
         // System.out.println(cloudContext.getClass() + " " + cloudContext.getUri());
 
         Cloud cloud = cloudContext.getCloud("mmbase");
-        // FAILS  ON RMMCI
         // http://www.mmbase.org/jira/browse/MMB-1816
-        assertEquals("" + cloud.getCloudContext().getClass() + " " + cloudContext.getClass(), cloudContext.getUri(), cloud.getCloudContext().getUri());
+        assertEquals("" + cloud.getCloudContext().getClass() + " " + cloudContext.getClass(),
+                     cloudContext.getUri(),
+                     cloud.getCloudContext().getUri());
 
     }
 
