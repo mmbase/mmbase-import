@@ -9,14 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.util;
 
-import java.util.*;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
-import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.apache.commons.fileupload.*;
 
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
