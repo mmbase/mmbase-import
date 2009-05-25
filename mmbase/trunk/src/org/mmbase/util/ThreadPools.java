@@ -70,7 +70,7 @@ public abstract class ThreadPools {
 
     private static List<Thread> nameLess = new CopyOnWriteArrayList<Thread>();
 
-    public static Thread newThread(Runnable r, final String id) {
+    public static Thread newThread(final Runnable r, final String id) {
         boolean isUp = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp();
         Thread t = new Thread(threadGroup, r,
                               isUp ? getMachineName() + ":" + id : id) {
@@ -81,7 +81,7 @@ public abstract class ThreadPools {
                     try {
                         super.run();
                     } catch (Throwable t) {
-                        log.error("Error during job: " + t.getClass().getName() + " " + t.getMessage(), t);
+                        log.error("Error during job: " + r + ":" + id + " " + t.getClass().getName() + " " + t.getMessage(), t);
                     }
                 }
             };
