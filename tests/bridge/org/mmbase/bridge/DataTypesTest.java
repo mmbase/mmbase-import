@@ -37,7 +37,7 @@ public class DataTypesTest extends BridgeTest {
     public void setUp() throws Exception {
         cases = casesCache.get(this.getClass());
         if (cases == null) {
-             Cloud cloud = getCloud();
+            Cloud cloud = getCloud();
             Node node1 = cloud.getNodeManager("datatypes");
             NodeManager object = cloud.getNodeManager("object");
             Node node2 = object.getList(object.createQuery()).getNode(0);
@@ -297,11 +297,11 @@ public class DataTypesTest extends BridgeTest {
 
 
     protected Object getDefaultValue(Field field) {
-       Object defaultValue = field.getDataType().getDefaultValue();
-       if (defaultValue == null && field.isRequired()) {
-           defaultValue = Casting.toType(org.mmbase.core.util.Fields.typeToClass(field.getType()), "");
-       }
-       return defaultValue;
+        Object defaultValue = field.getDataType().getDefaultValue(null, null, field);
+        if (defaultValue == null && field.isRequired()) {
+            defaultValue = Casting.toType(org.mmbase.core.util.Fields.typeToClass(field.getType()), "");
+        }
+        return defaultValue;
     }
 
     protected boolean sufficientlyEqual(Object value1, Object value2) {
@@ -317,12 +317,11 @@ public class DataTypesTest extends BridgeTest {
     public void testDefaultValuesUncommited() {
         Node newNode = getNewNode();
         NodeManager nodeManager = newNode.getNodeManager();
-        for (Object element : cases) {
-            Object[] kase = (Object[]) element;
+        for (Object[] kase : cases) {
             Field field = nodeManager.getField((String)kase[0]);
             Object defaultValue = getDefaultValue(field);
             Object value = newNode.getValue(field.getName());
-            assertTrue("default value of uncommitted node is not as expected for field " + field + " " + defaultValue + " != " + value,
+            assertTrue("default value of uncommitted node is not as expected for field " + field + " " + defaultValue + " != " + value + " locale: " + newNode.getCloud().getLocale(),
                        sufficientlyEqual(value, defaultValue));
 
         }
@@ -333,8 +332,7 @@ public class DataTypesTest extends BridgeTest {
         Node newNode = getNewNode();
         NodeManager nodeManager = newNode.getNodeManager();
         commit(newNode);
-        for (Object element : cases) {
-            Object[] kase = (Object[]) element;
+        for (Object[] kase : cases) {
             Field field = nodeManager.getField((String)kase[0]);
             Object defaultValue = getDefaultValue(field);
             Object value = newNode.getValue(field.getName());
