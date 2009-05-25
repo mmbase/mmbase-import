@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <version>1.9.1-rc2</version>
     <relativePath>../maven-base/pom.xml</relativePath>
   </parent>
 
@@ -122,7 +122,7 @@
       <plugin>
         <groupId>org.mmbase.maven</groupId>
         <artifactId>maven-mmbase-plugin</artifactId>
-        <version>1.9-SNAPSHOT</version>
+        <version>1.9.1-rc2</version>
         <executions>
           <execution>
             <id>create-index-files</id>
