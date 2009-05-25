@@ -1,0 +1,49 @@
+ <!-- produces one 'li' presenting links to change one menu-item and its sub-items -->
+<mm:context
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" xmlns:jsp="http://java.sun.com/JSP/Page">
+  <mm:node id="cate">
+    <li>
+      <mm:field name="title" />:
+
+      <span class="editlinks">
+        <mm:maywrite>
+          <mm:import id="wizard">tasks/structure/categories</mm:import>
+          <mm:link referids="loginsessionname,referrer,language,wizard" page="${jsps}wizard.jsp">
+            <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
+            <a href="${_}">Change structure</a>
+          </mm:link>
+        </mm:maywrite>
+
+        <!-- owner-tool, drop down with possible owners, plus link to submit it. -->
+        <mm:maychangecontext>
+          <form style="display: inline;" name="form${cate.number}">
+            <input type="hidden" name="submit${cate.number}" value="true" />
+            <input type="hidden" name="tab" value="${tab}" />
+
+            <mm:import id="submitted" externid="submit${cate.number}" />
+            <mm:present referid="submitted">
+              <mm:fieldlist fields="owner" id="input${cate.number}">
+                <mm:fieldinfo  type="useinput" />
+              </mm:fieldlist>
+              <mm:remove referid="input${cate.number}" />
+              <!-- also give away all relations -->
+              <mm:listrelations>
+                <mm:maychangecontext>
+                  <mm:setcontext><mm:field node="cate" name="owner"  /></mm:setcontext>
+                </mm:maychangecontext>
+              </mm:listrelations>
+            </mm:present>
+
+            | (<a id="a${cate.number}" href="javascript:document.forms['form${cate.number}'].submit()">Change context</a>:
+            <mm:fieldlist fields="owner" id="input${cate.number}">
+              <!-- show form plus a small trick to inform user that he should submit this form now too -->
+              <mm:fieldinfo options="extra:onchange='document.getElementById(&quot;a${cate.number}&quot;).style.backgroundColor=&quot;yellow&quot;'"
+                            type="input" />
+            </mm:fieldlist>
+          </form>
+        </mm:maychangecontext>
+
+      </span>
+    </li>
+  </mm:node>
+</mm:context>

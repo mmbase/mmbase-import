@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<fieldlist
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+
+  <!--
+      In relations you can store for which versions of the node (on the source side), the relation is valid.
+      When using mmxf/idrels this is actually redundant, because a relation which is not mentioned in a certain version of the mmxf xml, is
+      therefore not used in the current version of the node.
+
+      For performance and simplicity-of-implementation reasons it can be convenient to have this
+      information available explicity in the fields of the relation object though.
+  -->
+
+
+  <field name="version_from">
+    <descriptions>
+      <description xml:lang="en">If versioning is used, this field can be used to store a minimal version for the source object.</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">From-Version</guiname>
+    </gui>
+    <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  </field>
+
+  <field name="version_to">
+    <descriptions>
+      <description xml:lang="en">If versioning is used, this field can be used to store a maximal version for the source object.</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">To-Version</guiname>
+    </gui>
+    <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  </field>
+
+</fieldlist>

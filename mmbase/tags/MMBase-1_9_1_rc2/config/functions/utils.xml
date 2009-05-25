@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+
+  <description>Some util functions from org.mmbase.util, made accessible through the function-framework</description>
+
+  <function name="generatePassword">
+    <description>
+      Generates a password. Using a template (chain of characters A (random letter) C (random
+      alphanumeric) H (random hex) S (random syllable) 6 (random dice) 9 (random digit)). Default
+      template: SSSSSS.
+    </description>
+    <type>class</type>
+    <class>org.mmbase.util.PasswordGenerator</class>
+    <method>getPassword</method>
+    <param name="template" type="String">SSSSSS</param>
+  </function>
+
+  <function name="randomLong">
+    <description>
+      Generates a random long integer.
+    </description>
+    <type>class</type>
+    <class>org.mmbase.util.RandomPool</class>
+    <method>value_and_stir</method>
+  </function>
+
+  <!--
+  <function name="filename">
+    <description>
+      Makes filename of commons file upload's FileItem.getName.
+    </description>
+    <type>class</type>
+    <class>org.mmbase.util.functions.Utils</class>
+    <method>getFileItemName</method>
+    <param name="filename" type="String" />
+  </function>
+  -->
+
+  <function name="cloudcontext">
+    <type>singleton</type>
+    <class>org.mmbase.bridge.ContextProvider</class>
+    <method>getDefaultCloudContext</method>
+  </function>
+
+  <function name="mmbase">
+    <type>class</type>
+    <class>org.mmbase.module.core.MMBase</class>
+    <method>getMMBase</method>
+  </function>
+
+  <function name="framework">
+    <type>class</type>
+    <class>org.mmbase.framework.Framework</class>
+    <method>getInstance</method>
+  </function>
+
+  <function name="caches">
+    <type>class</type>
+    <class>org.mmbase.cache.CacheManager</class>
+    <method>getCaches</method>
+  </function>
+
+  <function name="toString">
+    <type>class</type>
+    <class>org.mmbase.util.Casting</class>
+    <method>toString</method>
+    <param name="object" type="Object" />
+  </function>
+
+ <function name="keywords">
+    <type>class</type>
+    <class>org.mmbase.datatypes.processors.KeywordsProcessor</class>
+    <method>getKeywords</method>
+    <param name="repository" type="String"  />
+  </function>
+
+ <function name="functionsets">
+    <type>class</type>
+    <class>org.mmbase.util.functions.FunctionSets</class>
+    <method>getFunctionSets</method>
+  </function>
+
+ <function name="modules">
+    <type>class</type>
+    <class>org.mmbase.module.Module</class>
+    <method>getModules</method>
+  </function>
+
+ <function name="threadPools">
+    <type>class</type>
+    <class>org.mmbase.util.ThreadPools</class>
+    <method>getThreadPools</method>
+  </function>
+
+</functionset>

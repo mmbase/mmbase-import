@@ -1,0 +1,130 @@
+<mm:cloud
+    rank="administrator"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    jspvar="cloud"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.bridge.*" />
+
+  <mm:import externid="builder" jspvar="builder" />
+  <mm:import externid="path" jspvar="path" />
+  <mm:import externid="cmd" jspvar="cmd" />
+
+  <div
+      class="mm_c c_core b_builders-actions ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
+
+      <h3>Administrate builder '${builder}'</h3>
+
+      <mm:present referid="cmd">
+        <mm:functioncontainer module="mmadmin">
+           <mm:nodefunction name="$cmd" referids="builder,path" >
+             <div class="msg"><mm:field name="RESULT" escape="p" /></div>
+           </mm:nodefunction>
+         </mm:functioncontainer>
+      </mm:present>
+
+      <table summary="description of ${builder}" border="0" cellspacing="0" cellpadding="3">
+        <caption>
+          ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
+          <mm:function referids="builder" module="mmadmin" name="BUILDERDESCRIPTION" />
+        </caption>
+        <tr>
+          <th>Setting</th>
+          <th colspan="2">Value</th>
+          <th class="center" colspan="2">Change</th>
+        </tr>
+        <tr>
+          <td>Class</td>
+          <td colspan="2">
+            <mm:function referids="builder" module="mmadmin" name="BUILDERCLASSFILE" />
+          </td>
+          <td class="center" colspan="2">
+            Not Available
+          </td>
+        </tr>
+        <tr>
+          <td>Uri</td>
+          <td colspan="3">
+            <jsp:expression>org.mmbase.util.ResourceLoader.getConfigurationRoot().getResource(org.mmbase.module.core.MMBase.getMMBase().getBuilder(builder).getConfigResource())</jsp:expression>
+          </td>
+        </tr>
+        <tr><td colspan="5"> </td></tr>
+        <tr>
+          <th>Field</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Size</th>
+          <th class="center">View</th>
+        </tr>
+        <mm:nodelistfunction referids="builder" module="mmadmin" name="FIELDS">
+          <tr>
+            <td><mm:field name="item1" /></td>
+            <td>
+              <mm:import id="field" reset="true"><mm:field name="item2" /></mm:import>
+              <mm:link page="builders-field" referids="builder,field">
+                <a href="${_}">${field}</a>
+              </mm:link>
+            </td>
+            <td><mm:field name="item3" /></td>
+            <td><mm:field name="item4" /></td>
+            <td class="center">
+              <mm:link page="builders-field" referids="builder,field">
+                <a href="${_}"><img src="${mm:link('/mmbase/style/images/search.png')}" alt="view properties" width="21" height="20" /></a>
+              </mm:link>
+            </td>
+          </tr>
+        </mm:nodelistfunction>
+      </table>
+
+      <mm:link page="builders-actions" referids="builder">
+        <mm:param name="cmd">BUILDERSAVE</mm:param>
+        <form action="${_}" method="post">
+        <table summary="save ${builder}" border="0" cellspacing="0" cellpadding="3">
+          <tr>
+            <th>Action</th>
+            <th>Path</th>
+            <th class="center">Confirm</th>
+          </tr>
+          <tr>
+           <td>Save</td>
+           <td><input name="path" value="/tmp/${builder}.xml" size="80" /></td>
+           <td class="center">
+             <input type="image" src="${mm:link('/mmbase/style/images/ok.png')}" alt="OK" />
+           </td>
+          </tr>
+        </table>
+        </form>
+      </mm:link>
+
+      <table summary="${builder}">
+        <caption>Parent and descendants</caption>
+        <jsp:scriptlet>if(! "object".equals(builder)) {</jsp:scriptlet>
+        <tr>
+          <td>Parent</td>
+          <td>
+            <mm:link>
+              <mm:param name="builder"><jsp:expression>cloud.getNodeManager(builder).getParent().getName()</jsp:expression></mm:param>
+              <a href="${_}"><jsp:expression>cloud.getNodeManager(builder).getParent().getName()</jsp:expression></a>
+            </mm:link>
+          </td>
+        </tr>
+        <jsp:scriptlet>}</jsp:scriptlet>
+        <tr>
+          <td>Descendants</td>
+          <td>
+            <mm:include page="builder.ul.jspx" referids="builder@b" />
+          </td>
+        </tr>
+      </table>
+
+      <p>
+        <mm:link page="builders">
+          <a href="${_}"><img src="${mm:link('/mmbase/style/images/back.png')}" width="21" height="20" alt="back" /></a>
+          <a href="${_}">Return to Builder Overview</a>
+        </mm:link>
+      </p>
+
+  </div>
+</mm:cloud>

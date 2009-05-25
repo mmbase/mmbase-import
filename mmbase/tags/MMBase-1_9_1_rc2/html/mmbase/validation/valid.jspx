@@ -1,0 +1,57 @@
+<mm:content
+    expires="0"
+    language="${empty param.lang ? client : param.lang}"
+    type="application/xml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+  <!--
+      Validates a certain value for a certain datatype.
+
+      @todo: accept also node argument
+
+      $Id$
+      author: Michiel Meeuwissen
+  -->
+  <jsp:directive.page
+      import="org.mmbase.datatypes.*,org.mmbase.util.LocalizedString"
+      session="false" />
+  <jsp:directive.include file="get.datatype.jspxf" />
+  <mm:import externid="value" required="true" vartype="string" jspvar="value"/>
+  <mm:cloud><!-- cloud to provide locale -->
+  <jsp:scriptlet>
+    if ("".equals(value)) {
+      value = null;
+    }
+    if (node != null) {
+       node = new org.mmbase.bridge.util.NodeWrapper(node) {
+          public boolean isChanged() {
+            return changed;
+          }
+          public boolean isChanged(String fieldName) {
+            return changed;
+          }
+       };
+    }
+    Collection errors = dataType == null ? new ArrayList() : dataType.validate(value, node, field);
+    pageContext.setAttribute("errors", errors);
+    pageContext.setAttribute("node", node);
+    pageContext.setAttribute("field", field);
+  </jsp:scriptlet>
+  <result node="${empty node ? '' : node.number}"
+          field="${empty field ? '' : field.name}"
+          valid="${fn:length(errors) == 0}">
+    <jsp:scriptlet>
+      Iterator i = errors.iterator();
+      while (i.hasNext()) {
+        LocalizedString s = (LocalizedString) i.next();
+        pageContext.setAttribute("xmllang", LocalizedString.getXmlLang(locale));
+    </jsp:scriptlet>
+    <error xml:lang="${xmllang}"><jsp:expression>s.get(locale)</jsp:expression></error>
+    <jsp:scriptlet>
+      }
+    </jsp:scriptlet>
+  </result>
+  </mm:cloud>
+</mm:content>

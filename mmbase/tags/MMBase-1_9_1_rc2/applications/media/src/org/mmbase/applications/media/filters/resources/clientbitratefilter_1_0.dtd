@@ -1,0 +1,7 @@
+<!ELEMENT bitrates (bitrate+)>
+<!ELEMENT bitrate (#PCDATA)>
+<!ATTLIST bitrate
+  name CDATA #REQUIRED
+  min CDATA #REQUIRED
+  max CDATA #REQUIRED
+>

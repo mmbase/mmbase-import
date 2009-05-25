@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+  <extend>${basedir}/../app-base/project.xml</extend>
+  <artifactId>mmbase-mycompany</artifactId>
+  <name>MyCompany</name>
+  <shortDescription>MMBase Company example</shortDescription>
+  <description>
+    This application provides example builders you might use when creating an Intranet application. It is currently not maintained and JSP templates were never created. Use this example for reference only, when desiging an intranet based on MMBase you will probably end up using different builders anyway.
+  </description>
+  <properties>
+    <type>example</type>
+    <status>alpha</status>
+  </properties>
+</project>
+

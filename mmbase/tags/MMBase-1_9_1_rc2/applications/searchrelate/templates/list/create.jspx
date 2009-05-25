@@ -1,0 +1,37 @@
+<jsp:root
+    version="2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm:import externid="source" required="true" />
+  <mm:import externid="type" required="true" />
+  <mm:import externid="seq" required="true" />
+
+  <mm:import id="query" externid="mm_list_query_${seq}" from="session" jspvar="query" vartype="org.mmbase.bridge.Query" />
+  <mm:import externid="fields" />
+  <mm:import externid="item" />
+  <mm:import externid="precreate" />
+  <mm:content expires="0" type="application/xml">
+    <mm:cloud method="asis">
+      <mm:node id="source" referid="source" />
+      <mm:createnode type="${type}" id="d" >
+        <c:if test="${! empty precreate}">
+          <mm:include page="${precreate}" />
+        </c:if>
+      </mm:createnode>
+      
+      <mm:node referid="d" jspvar="d">
+        <jsp:scriptlet>org.mmbase.bridge.util.Queries.addToResult(query, d);</jsp:scriptlet>
+      </mm:node>
+      <mm:node referid="d">
+        <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="source,fields,item">
+          <mm:param name="new">true</mm:param>
+        </mm:include>
+      </mm:node>
+    </mm:cloud>
+  </mm:content>
+</jsp:root>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project name="MMBase MyNews project" default="package" basedir=".">
+  <property name="project.name"     value="mynews" />
+  <property name="project.target.templates.dir"   value="../mmexamples" />
+  <import file="../buildbase-include.xml" />
+</project>
+
+
+
+

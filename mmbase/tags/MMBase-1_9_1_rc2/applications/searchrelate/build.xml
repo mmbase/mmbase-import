@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<project name="MMBase search&amp;relate project" default="jar" basedir=".">
+  <property name="project.name"     value="searchrelate" />
+  <property name="project.package"   value="org/mmbase/" />
+
+  <import file="../buildbase-include.xml" />
+
+
+</project>
+
+
+
+

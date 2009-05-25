@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging_display_html PUBLIC "-//MMBase/DTD packaging_display_html config 1.0//EN" "http://www.mmbase.org/dtd/packaging_display_html_1_0.dtd">
+<packaging_display_html>
+	<lastversion>1</lastversion>
+	<lastdate>Fri Oct 15 14:49:19 CEST 2004</lastdate>
+	<name>MultiLanguageGui Html</name>
+	<maintainer>Submarine</maintainer>
+	<description>Html editors and examples for the multilangauge gui application</description>
+	<license type="MPL" version="1.0" name="Mozzila Public License" />
+	<releasenotes></releasenotes>
+	<installationnotes></installationnotes>
+	<basedir>templates/jsp/</basedir>
+	<include>*</include>
+	<exclude>CVS</exclude>
+	<packagedepends>
+	</packagedepends>
+	<initiators>
+		<initiator name="Daniel Ockeloen" company="Submarine" />
+	</initiators>
+	<supporters>
+	</supporters>
+	<developers>
+		<developer name="Daniel Ockeloen" company="Submarine" />
+	</developers>
+	<contacts>
+		<contact name="Daniel Ockeloen" reason="Bugs Reports" mailto="daniel@submarine.nl" />
+	</contacts>
+</packaging_display_html>

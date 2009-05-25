@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<fieldlist
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    >
+  <!--
+       Sometimes one of the sources is leading (e.g. uploaded by a user), and can as well mirrors some fields of the associated fragment.
+  -->
+
+  <field
+      name="title"
+      state="virtual"
+      readonly="false">
+    <gui>
+      <guiname xml:lang="nl">Titel</guiname>
+      <guiname xml:lang="en">Title</guiname>
+    </gui>
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Creator">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+      </getprocessor>
+    </datatype>
+  </field>
+</fieldlist>
+

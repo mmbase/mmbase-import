@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+  <pomVersion>3</pomVersion>
+  <id>maven-mmbase-module-plugin</id>
+  <artifactId>maven-mmbase-module-plugin</artifactId>
+  <name>MMBase module plugin</name>
+  <groupId>mmapps</groupId>
+  <currentVersion>1.4</currentVersion>
+  <shortDescription>maven plugin to assemble a mmbase module</shortDescription>
+  <organization>
+    <name>MMBase.org</name>
+    <url>http://www.mmbase.org</url>
+    <logo>http://www.mmbase.org/mmdocs/style/logo.png</logo>
+  </organization>
+  <inceptionYear>2004</inceptionYear>
+  <url>http://www.mmbase.org</url>
+  <issueTrackingUrl>http://www.mmbase.org/jira/secure/Dashboard.jspa</issueTrackingUrl>
+  <repository>
+    <connection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:maven-mmbase-module-plugin</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.mmbase.org:/var/cvs:maven-mmbase-module-plugin</developerConnection>
+    <url>http://cvs.mmbase.org/viewcvs/</url>
+  </repository>
+  <build>
+    <nagEmailAddress>developers@mmbase.org</nagEmailAddress>
+    <defaultGoal>plugin:repository-install</defaultGoal>
+    <sourceDirectory></sourceDirectory>
+    <unitTestSourceDirectory></unitTestSourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/plugin-resources</directory>
+        <targetPath>plugin-resources</targetPath>
+      </resource>
+      <resource>
+        <directory>${basedir}</directory>
+        <includes>
+          <include>plugin.jelly</include>
+          <include>project.xml</include>
+          <include>plugin.properties</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+  <reports>    
+    <report>maven-license-plugin</report>
+    <report>maven-linkcheck-plugin</report>
+  </reports>  
+</project>

@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="audiosources" maintainer="mediaproject.mmbase.org" version="0" extends="mediasources">
+
+  <searchage>14</searchage>
+
+  <names>
+    <singular xml:lang="en">Audio source</singular>
+    <singular xml:lang="nl">Audiobron</singular>
+
+    <plural xml:lang="en">Audio sources</plural>
+    <plural xml:lang="nl">Audiobronnen</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">Descriptions of the physical audio file</description>
+    <description xml:lang="nl">Beschrijving van het daadwerkelijke audio bestand</description>
+  </descriptions>
+
+  <properties>
+    <property name="org.mmbase.media.containertype">audiofragments</property>
+  </properties>
+
+</builder>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+<version>1</version>
+<description>Functionset to import csv-files.</description>
+
+  <function name="importcsv">
+    <description>Imports the file</description>
+    <type>class</type>
+    <class>org.mmbase.util.CSVReader</class>
+    <method>readCSV</method>
+    <param name="filename"  type="String" description="The csv file to import" />
+	<param name="delimiter" type="String" description="Something other then a ," />
+	<param name="charset"   type="String" description="Another characterset then utf-8" />
+  </function>
+
+  <function name="values">
+    <description>
+      Returns a Map with the csv values in arrays, thus one csv line per array.
+	  Example:
+
+	  &lt;mm:functioncontainer&gt;
+	    &lt;mm:param name="filename"&gt;somefile.csv&lt;/mm:param&gt;
+	    &lt;mm:function set="csvreader" name="values" id="map"&gt;
+	      &lt;ol&gt;
+	      &lt;c:forEach var="line" items="${map}"&gt;
+	        &lt;li&gt;
+	          line: ${line.value}&lt;br /&gt;
+	          value 1: ${line.value[0]}
+	          value 2: ${line.value[1]}
+	        &lt;/li&gt;
+	        &lt;/li&gt;
+	      &lt;/c:forEach&gt;
+	      &lt;/ol&gt;
+	    &lt;/mm:function&gt;
+	  &lt;mm:functioncontainer&gt;
+
+    </description>
+    <type>class</type>
+	  <class>org.mmbase.util.CSVReader</class>
+    <method>getValues</method>
+	<param name="filename"  type="String" description="The csv file to import" />
+	<param name="delimiter" type="String" description="Something other then a ," />
+	<param name="charset"   type="String" description="Another characterset then utf-8" />
+    <return type="java.util.Map" />
+  </function>
+
+  <function name="description">
+    <description>Show description, like a toString method</description>
+    <type>class</type>
+    <class>org.mmbase.util.CSVReader</class>
+    <method>getDescription</method>
+    <return type="String" />
+  </function>
+
+</functionset>

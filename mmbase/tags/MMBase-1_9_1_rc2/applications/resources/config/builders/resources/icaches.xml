@@ -1,0 +1,188 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="icaches" maintainer="mmbase.org" version="0" extends="object">
+
+  <class>org.mmbase.module.builders.ImageCaches</class>
+  <searchage>14</searchage>
+
+  <names>
+     <singular xml:lang="en">Cached Image</singular>
+     <singular xml:lang="nl">Gebufferd Plaatje</singular>
+     <singular xml:lang="fr">Image Antémémoire</singular>
+     <singular xml:lang="eo">Kaŝmemorita Bildo</singular>
+     <singular xml:lang="it">Immagine nella memoria nascosta</singular>
+
+     <plural xml:lang="en">Cached Images</plural>
+     <plural xml:lang="nl">Gebufferde Plaatjes</plural>
+     <plural xml:lang="fr">Images antémémoire</plural>
+     <plural xml:lang="eo">Kaŝmemoritaj Bildoj</plural>
+     <plural xml:lang="it">Immagini nella memoria nascosta</plural>
+  </names>
+  <descriptions>
+     <description xml:lang="en">Cache for rendered images</description>
+     <description xml:lang="nl">Buffer  voor bewerkte plaatjes</description>
+     <description xml:lang="fr">Cachant la table pour rendues des images</description>
+     <description xml:lang="eo">Kaŝmemoranta tabelo por konvertitaj bildoj</description>
+     <description xml:lang="it">Memoria nascosta per le immagini elaborate</description>
+  </descriptions>
+
+
+  <properties>
+    <!--
+      READ THIS WHEN UPGRADING FROM 1.7.3 OR LOWER
+      LegacyCKey: If this property is true or missing (as in legacy icaches.xml), then icaches are also matched
+                  by the 'legacy' form (without plus-signs). This is a slight performance penalty which can be
+                  avoided if icaches is clean (as in new installations), icached is cleaned, or if you don't mind.
+      FixLegacyCKey: If this property is true or missing, then icaches that mach the legacy form will be updated
+                     with the new CKEY format on the database as soon as they are found. This means that if you
+                     have a mix of 1.7 and 1.8 machines on 1 database, you want to set this to false!
+    -->
+    <property name="LegacyCKey">false</property>
+    <property name="FixLegacyCKey">true</property>
+
+    <property name="Content-Disposition">inline</property>
+  </properties>
+
+
+  <fieldlist>
+
+    <field name="ckey" state="system">
+      <descriptions>
+        <description xml:lang="en">Unique key for accessing cached image</description>
+        <description xml:lang="nl">Unieke sleutel om een gecached plaatje op te halen</description>
+        <description xml:lang="eo">Unike identigas, kaj difinas, la kaŝmemoritan bildon</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Ckey</guiname>
+        <guiname xml:lang="nl">Ckey</guiname>
+        <guiname xml:lang="fr">Ckey</guiname>
+        <guiname xml:lang="eo">Ckey</guiname>
+        <guiname xml:lang="it">Ckey</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" enforce="never" />
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+    <field name="id">
+      <descriptions>
+        <description xml:lang="en">Reference to the original image</description>
+        <description xml:lang="nl">Referentie naar de originele afbeelding</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">ID</guiname>
+        <guiname xml:lang="nl">ID</guiname>
+        <guiname xml:lang="fr">ID</guiname>
+        <guiname xml:lang="eo">ID</guiname>
+        <guiname xml:lang="it">ID</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>3</list>
+        </positions>
+      </editor>
+      <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" enforce="never" />
+      </datatype>
+    </field>
+
+    <field name="handle">
+      <descriptions>
+        <description xml:lang="en">The cached image</description>
+        <description xml:lang="nl">Het gecachte plaatje</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Image</guiname>
+        <guiname xml:lang="nl">Plaatje</guiname>
+        <guiname xml:lang="fr">Image</guiname>
+        <guiname xml:lang="eo">Bildo</guiname>
+        <guiname xml:lang="it">Immagine</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list><search>-1</search>
+        </positions>
+      </editor>
+      <db>
+        <type state="system" size="16777215" notnull="false" key="false">BINARY</type>
+      </db>
+    </field>
+
+    <field name="itype">
+      <descriptions>
+        <description xml:lang="en">Mimetype of the image</description>
+        <description xml:lang="nl">Mimetype van de afbeelding</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">ImageType</guiname>
+        <guiname xml:lang="fr">ImageTapent</guiname>
+        <guiname xml:lang="nl">PlaatjesType</guiname>
+        <guiname xml:lang="eo">Bildotipo</guiname>
+        <guiname xml:lang="it">ImmagineTipo</guiname>
+      </gui>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+         <required value="true" enforce="never" />
+         <maxLength value="32" />
+      </datatype>
+    </field>
+
+    <field name="filesize" state="system">
+      <descriptions>
+        <description xml:lang="en">Filesize of the cached image</description>
+        <description xml:lang="nl">Filegrootte van het gecachte plaatje</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Size</guiname>
+        <guiname xml:lang="nl">Grootte</guiname>
+        <guiname xml:lang="fr">Taille</guiname>
+        <guiname xml:lang="eo">Grando</guiname>
+        <guiname xml:lang="it">Dimensione</guiname>
+      </gui>
+      <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="width" state="system">
+      <descriptions>
+        <description xml:lang="en">Width of the image in pixels</description>
+        <description xml:lang="nl">Breedte van het plaatje in pixels</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Width</guiname>
+        <guiname xml:lang="nl">Breedte</guiname>
+        <guiname xml:lang="eo">Larĝo</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="height" state="system">
+      <descriptions>
+        <description xml:lang="en">Height of the image in pixels</description>
+        <description xml:lang="nl">Hoogte van het plaatje in pixels</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Height</guiname>
+        <guiname xml:lang="nl">Hoogte</guiname>
+        <guiname xml:lang="eo">Alto</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+  </fieldlist>
+  <indexlist>
+    <index name="main">
+      <indexfield name="ckey" />
+    </index>
+  </indexlist>
+
+
+</builder>
