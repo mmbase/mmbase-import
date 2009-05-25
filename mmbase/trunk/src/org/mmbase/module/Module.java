@@ -574,7 +574,7 @@ public abstract class Module extends DescribedFunctionProvider {
                     log.error("Could not load class with name '" + className + "', " +
                               "which was specified in the module:'" + file + " '(" + cnfe + ")" );
                 } catch (Throwable e) {
-                    log.error("Error while loading module class" + Logging.stackTrace(e));
+                    log.error("Error while loading module class " + e.getClass() + ": " + e.getMessage(), e);
                 }
             }
         }
