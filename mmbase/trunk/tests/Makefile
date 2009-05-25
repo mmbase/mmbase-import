@@ -2,6 +2,7 @@
 export JAVA_HOME=/home/nightly/jdk
 
 mvn=/home/nightly/maven2/bin/mvn
+#mvn=mvn
 ant=ant -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib target/dependency:. -Dnoconnection=true
 #ant=ant -lib lib:. -Dnoconnection=true
 
@@ -65,4 +66,4 @@ dependencies:
 
 .PHONY: compile
 compile:
-	$(mvn) mvn compile jar:jar
+	$(mvn) compile jar:jar
