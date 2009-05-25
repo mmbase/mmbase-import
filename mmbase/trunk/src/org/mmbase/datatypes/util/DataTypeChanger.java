@@ -44,6 +44,7 @@ public class DataTypeChanger {
 
     public DataTypeChanger(Field field) {
         dataType = (DataType<?>) field.getDataType().clone();
+        dataType.setGUIName(field.getGUIName());
     }
 
 
