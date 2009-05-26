@@ -60,6 +60,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
     private InputStream wrapped;
     private File file = null;
+    private boolean tempFile = true;
     private String name;
     private String contentType;
 
@@ -67,6 +68,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         this.wrapped = wrapped;
         this.size = s;
         this.name = null;
+        if (wrapped == null) throw new NullPointerException();
     }
 
     public SerializableInputStream(byte[] array) {
@@ -76,9 +78,6 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     }
 
     public SerializableInputStream(FileItem fi) throws IOException {
-        this.size = fi.getSize();
-        this.name = fi.getName();
-        this.contentType = fi.getContentType();
         file = File.createTempFile(getClass().getName(), this.name);
         try {
             fi.write(file);
@@ -87,6 +86,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             ioe.initCause(e);
             throw ioe;
         }
+        this.size = fi.getSize();
+        this.name = fi.getName();
+        this.contentType = fi.getContentType();
         this.wrapped = new FileInputStream(file);
 
 
@@ -104,6 +106,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         return contentType;
     }
     public byte[] get() throws IOException {
+        if (wrapped == null) throw new IllegalStateException();
         if (wrapped.markSupported()) {
             byte[] b =  toByteArray(wrapped);
             wrapped.reset();
@@ -126,6 +129,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             } else if (file.renameTo(f)) {
                 log.debug("Renamed " + file + " to " + f);
                 file = f;
+                tempFile = false;
                 return;
             } else {
                 log.debug("Could not rename " + file + " to " + f + " will copy/delete in stead");
@@ -140,6 +144,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
                 file.delete();
             }
             file = f;
+            tempFile = false;
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
@@ -176,6 +181,20 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             throw new RuntimeException(ioe);
         }
     }
+
+    @Override
+    public void close() {
+        if (file != null && tempFile) {
+            log.service("Deleting " + file);
+            file.delete();
+        }
+    }
+    @Override
+    public void finalize() {
+        log.service("Finalizing " + file);
+        close();
+    }
+
 
     @Override
     public void mark(int readlimit) {
@@ -218,15 +237,6 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             + ")";
     }
 
-    public static boolean byteArraysEquals(byte[] array1, byte[] array2) {
-        if (array1.length != array2.length) {
-            return false;
-        }
-        for (int i = 0;  i < array1.length; i++) {
-            if (array1[i] != array2[i]) return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -237,7 +247,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
                     (getSize() == s.getSize()) &&
                     (getName() == null ? s.getName() == null : getName().equals(s.getName())) &&
                     (getContentType() == null ? s.getContentType() == null : getContentType().equals(s.getContentType())) &&
-                    byteArraysEquals(get(), s.get());
+                    java.util.Arrays.equals(get(), s.get());
 
             } catch (IOException ioe) {
                 log.error(ioe);
@@ -248,4 +258,20 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         }
 
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 43 * hash + (int) (this.size ^ (this.size >>> 32));
+        hash = 43 * hash + (this.used ? 1 : 0);
+        hash = 43 * hash + (this.wrapped != null ? this.wrapped.hashCode() : 0);
+        hash = 43 * hash + (this.file != null ? this.file.hashCode() : 0);
+        hash = 43 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 43 * hash + (this.contentType != null ? this.contentType.hashCode() : 0);
+        return hash;
+    }
+    File getFile() {
+        return file;
+    }
+
 }
