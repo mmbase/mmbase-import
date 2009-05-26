@@ -238,7 +238,7 @@ public class MMBase extends ProcessorModule {
                 p.load(is);
             }
             if (p.getProperty("cache.path") == null || "".equals(p.getProperty("cache.path"))) {
-                p.setProperty("cache.path", getInitParameter("datadir") + java.io.File.separator + "oscache");
+                p.setProperty("cache.path", new File(getDataDir(), "oscache").toString());
             }
 
             Class osCache = Class.forName("com.opensymphony.oscache.web.ServletCacheAdministrator");
