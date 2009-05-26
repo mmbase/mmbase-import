@@ -1372,14 +1372,20 @@ public class ResourceLoader extends ClassLoader {
 
         protected File getFileFromString(String s) {
             if (s == null) return null;
-            if (s.startsWith("file:")) {
-                try {
+            try {
+
+                if (s.startsWith("file:")) {
                     return new File(new URI(s)); // hff, how cumbersome, to translate an URL to a File
-                } catch (URISyntaxException use) {
-                    log.warn("" + s + " : " + use.getMessage() , use);
-                    return null;
+                } else {
+                    ResourceLoader wr = getWebRoot();
+                    if (wr != null) {
+                        return new File(new File(wr.getResource("/").toURI()), s);
+                    } else {
+                        return new File(s);
+                    }
                 }
-            } else {
+            } catch (URISyntaxException use) {
+                log.warn("" + s + " : " + use.getMessage() , use);
                 return new File(s);
             }
         }
@@ -1410,7 +1416,7 @@ public class ResourceLoader extends ClassLoader {
                 File f = getFileFromString(e.getValue());
                 bul.append(e.getValue());
                 if (! f.exists()) {
-                    bul.append("(" + f + " does not exist)");
+                    bul.append("(" + f.toURI() + " does not exist)");
                 } else if (! f.canRead()) {
                     bul.append("(" + f + " cannot be read)");
 
