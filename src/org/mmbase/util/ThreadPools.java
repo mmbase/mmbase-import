@@ -101,10 +101,24 @@ public abstract class ThreadPools {
      */
     public static final ThreadPoolExecutor jobsExecutor = new ThreadPoolExecutor(2, 200, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(300), new ThreadFactory() {
 
+            @Override
             public Thread newThread(Runnable r) {
                 return ThreadPools.newThread(r, "JobsThread-" + (jobsSeq++));
             }
-        });
+        }) {
+            @Override
+            public void execute(Runnable r) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Executing " + r + " because ", new Exception());
+                }
+                super.execute(r);
+            }
+            @Override
+            protected void beforeExecute(Thread t, Runnable r) {
+                log.debug("Now executing " + r + " in thread " + t);
+
+            }
+        };
 
     private static String getMachineName() {
         String machineName;
@@ -117,17 +131,6 @@ public abstract class ThreadPools {
             machineName = "localhost";
         }
         return machineName;
-    }
-
-    static {
-        jobsExecutor.execute(new Runnable() {
-                public void run() {
-                    String machineName = getMachineName();
-                    for (Thread t : nameLess) {
-                        t.setName(machineName + ":" + t.getName());
-                    }
-                }
-            });
     }
 
 
@@ -146,7 +149,21 @@ public abstract class ThreadPools {
             }
         });
     static {
-        ((ScheduledThreadPoolExecutor) scheduler).setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+        scheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+
+
+        // after some time the machine name will be known, use it for the 'nameless' threads.
+        // Actually, getMachineName is starting to wait too, so I think the scheduled delay here is
+        // a bit silly, but otherwise I in some cases encountered an exception ('cannot be started
+        // by this class').
+        scheduler.schedule(new Runnable() {
+                public void run() {
+                    String machineName = getMachineName();
+                    for (Thread t : nameLess) {
+                        t.setName(machineName + ":" + t.getName());
+                    }
+                }
+            }, 1, TimeUnit.MINUTES);
     }
 
     private static final Map<String, ExecutorService> threadPools = new ConcurrentHashMap<String, ExecutorService>();
