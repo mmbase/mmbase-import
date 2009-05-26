@@ -598,24 +598,6 @@ See http://www.MMBase.org/license
          </archive>
        </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-        <configuration>
-          <buildNumberPropertyName>sources.version</buildNumberPropertyName>
-          <timestampPropertyName>timestamp</timestampPropertyName>
-          <timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm}</timestampFormat>
-          <doCheck>${buildnumber.doCheck}</doCheck>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>create</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
@@ -902,6 +884,38 @@ See http://www.MMBase.org/license
                 <id>attach-javadocs</id>
                 <goals>
                   <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>buildnumber</id>
+      <activation>
+        <os>
+          <family>!Windows</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>buildnumber-maven-plugin</artifactId>
+            <configuration>
+              <buildNumberPropertyName>sources.version</buildNumberPropertyName>
+              <timestampPropertyName>timestamp</timestampPropertyName>
+              <timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm}</timestampFormat>
+              <doCheck>${buildnumber.doCheck}</doCheck>
+              <doUpdate>false</doUpdate>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>validate</phase>
+                <goals>
+                  <goal>create</goal>
                 </goals>
               </execution>
             </executions>
