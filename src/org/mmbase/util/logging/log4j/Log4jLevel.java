@@ -31,9 +31,8 @@ import  org.apache.log4j.Priority;
 
 public class Log4jLevel extends Level {
 
-
+    private static final long serialVersionUID = 0L;
     final static int SERVICE_INT   = 15000;
-    final static int TRACE_INT     = 5000;
 
     // OFF            (from log4j.Level)
     // FATAL
@@ -42,8 +41,7 @@ public class Log4jLevel extends Level {
     // INFO
     public static final Log4jLevel SERVICE = new Log4jLevel(SERVICE_INT, "SERVICE", 5);
     // DEBUG    
-    public static final Log4jLevel TRACE   = new Log4jLevel(TRACE_INT,   "TRACE",   7);
-
+    // TRACE
 
     protected  Log4jLevel(int level, String strLevel, int syslogEquiv) {
         super(level, strLevel, syslogEquiv);
@@ -54,15 +52,12 @@ public class Log4jLevel extends Level {
             return Log4jLevel.TRACE;
 
         String stringVal = sArg.toUpperCase();
-
-        if(stringVal.equals("TRACE"))   return Log4jLevel.TRACE;
         if(stringVal.equals("SERVICE")) return Log4jLevel.SERVICE;
         return Level.toLevel(sArg);
     }
         
     public static Level toLevel(int i) throws  IllegalArgumentException {
         switch(i) {
-        case TRACE_INT:   return Log4jLevel.TRACE;
         case SERVICE_INT: return Log4jLevel.SERVICE;
         default:
             return Level.toLevel(i);
@@ -81,7 +76,6 @@ public class Log4jLevel extends Level {
         }
         String s = sArg.toUpperCase();
         if (s.equals("SERVICE")) return SERVICE;
-        if (s.equals("TRACE"))   return TRACE;
         return DEBUG;
     }
 

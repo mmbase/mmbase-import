@@ -166,10 +166,10 @@ public final class Impl implements Logger {
 
     private  final java.util.logging.Level getLevel() {
         java.util.logging.Level level = null;
-        java.util.logging.Logger log = logger;
+        java.util.logging.Logger l = logger;
         while (level == null) {
-            level = log.getLevel();
-            log = log.getParent();
+            level = l.getLevel();
+            l = l.getParent();
         }
         return level;
     }

@@ -51,6 +51,7 @@ public class MMBaseLogger extends java.util.logging.Logger {
     /**
      * See {@link java.util.logging.Logger#log(LogRecord)}.
      */
+    @Override
     public void log(LogRecord record) {
 
         Logger l;

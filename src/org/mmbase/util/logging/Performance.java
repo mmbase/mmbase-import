@@ -163,7 +163,9 @@ public class Performance {
 
     static void  printCase(String configuration) {
         String s = (description == null ? "" : description) + " (" + configuration + ") : ";
-        for (int i = s.length(); i< 50; i++) s += " ";    // damn, sprintf would be nice..        
+        for (int i = s.length(); i< 50; i++) {
+            s += " "; // damn, sprintf would be nice..
+        }   
         System.out.print(s);
 
         double benchmark = Case(configuration);

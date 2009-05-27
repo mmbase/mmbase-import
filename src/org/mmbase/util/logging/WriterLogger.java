@@ -31,6 +31,7 @@ public class WriterLogger extends AbstractSimpleImpl {
         writer = w;
     }
 
+    @Override
     protected void log(String s, Level level) {
         try {
             writer.write(s); writer.write('\n');

@@ -94,6 +94,7 @@ public class SimpleImpl extends AbstractSimpleImpl implements Logger {
         }
     }
 
+    @Override
     protected final void log (String s) {
         ps.println(s);
     }

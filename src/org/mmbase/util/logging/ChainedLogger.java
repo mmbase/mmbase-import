@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.logging;
 
-import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 

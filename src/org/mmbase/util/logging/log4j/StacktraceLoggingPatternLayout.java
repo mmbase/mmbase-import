@@ -16,6 +16,7 @@ public class StacktraceLoggingPatternLayout extends MMPatternLayout {
      * Overridden from PatternLayout; use the normal pattern to format
      * the logevent, but also return the current stacktrace.
      */
+    @Override
     public String format(LoggingEvent event) {
         String res = super.format(event);
         Exception e = new Exception();
