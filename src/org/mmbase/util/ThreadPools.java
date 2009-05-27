@@ -101,7 +101,6 @@ public abstract class ThreadPools {
      */
     public static final ThreadPoolExecutor jobsExecutor = new ThreadPoolExecutor(2, 200, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(300), new ThreadFactory() {
 
-            @Override
             public Thread newThread(Runnable r) {
                 return ThreadPools.newThread(r, "JobsThread-" + (jobsSeq++));
             }
@@ -163,7 +162,7 @@ public abstract class ThreadPools {
                         t.setName(machineName + ":" + t.getName());
                     }
                 }
-            }, 1, TimeUnit.MINUTES);
+            }, 60, TimeUnit.SECONDS);
     }
 
     private static final Map<String, ExecutorService> threadPools = new ConcurrentHashMap<String, ExecutorService>();
