@@ -16,13 +16,15 @@ package org.mmbase.module.lucene.extraction.impl;
 import java.io.InputStream;
 import org.mmbase.module.lucene.extraction.Extractor;
 import org.mmbase.util.logging.*;
-import org.textmining.text.extraction.WordExtractor;
+import org.textmining.extraction.TextExtractor;
+import org.textmining.extraction.word.WordTextExtractorFactory;
 
 /**
  * Use textmining lib to extract text from a Word document
- * 
+ *
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @author Michiel Meeuwissen
+ * @version $Id$
  */
 public class TextMiningExtractor implements Extractor {
     private static final Logger log = Logging.getLoggerInstance(TextMiningExtractor.class);
@@ -39,7 +41,8 @@ public class TextMiningExtractor implements Extractor {
 
     public String extract(InputStream input) throws Exception {
         log.debug("extract stream");
-        WordExtractor extractor = new WordExtractor();
-        return extractor.extractText(input);
+        WordTextExtractorFactory factory = new WordTextExtractorFactory();
+        TextExtractor extractor = factory.textExtractor(input);
+        return extractor.getText().trim();
     }
 }
