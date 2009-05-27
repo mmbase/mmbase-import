@@ -99,7 +99,9 @@ See http://www.MMBase.org/license
 
     <buildnumber.doCheck>false</buildnumber.doCheck>
 
-    <mmbase.version>1.9-SNAPSHOT</mmbase.version>
+    <mmbase.number>1.9</mmbase.number>
+    <mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
+    <mmbase.version>${mmbase.number}${mmbase.version.postfix}</mmbase.version>
     <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
 
     <netbeans.hint.deploy.server>gfv3</netbeans.hint.deploy.server>

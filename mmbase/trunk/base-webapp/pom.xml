@@ -85,6 +85,12 @@
       </dependencies>
     </profile>
     <profile>
+      <id>deploy</id>
+      <build>
+        <defaultGoal>deploy</defaultGoal>
+      </build>
+    </profile>
+    <profile>
       <id>servlet25</id>
       <activation>
         <property>
@@ -93,7 +99,7 @@
         </property>
       </activation>
       <properties>
-        <base.version>${mmbase.version}-servlet25</base.version>
+        <base.version>${mmbase.number}-servlet25${mmbase.version.postfix}</base.version>
       </properties>
     </profile>
   </profiles>
