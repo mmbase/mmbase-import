@@ -305,8 +305,12 @@ public class DatabaseStorageManager implements StorageManager {
         if (inTransaction && factory.supportsTransactions()) {
             changes.put(node, change);
         } else {
-            factory.getChangeManager().commit(node, change);
-            log.debug("Commited node");
+            try {
+                factory.getChangeManager().commit(node, change);
+                log.debug("Commited node");
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         }
     }
 
