@@ -26,7 +26,7 @@ package org.mmbase.util.logging.log4j;
  **/
 
 public class Log4jPriority extends Log4jLevel {
-
+    private static final long serialVersionUID = 0L;
     protected  Log4jPriority(int level, String strLevel, int syslogEquiv) {
         super(level, strLevel, syslogEquiv);
     }

@@ -9,7 +9,7 @@
  */
 package org.mmbase.util.logging.commons;
 
-import java.util.Hashtable;
+import java.util.*;
 
 
 import org.apache.commons.logging.LogFactory;
@@ -18,25 +18,25 @@ import org.apache.commons.logging.LogFactory;
  * Commons logging for MMBase
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Id$
  */
 public class CommonsLogFactory {
 
-	private static Hashtable logInstances = new Hashtable();
+    private static Map<String, CommonsLog> logInstances = new Hashtable<String, CommonsLog>();
 
-	private CommonsLogFactory() {
-		System.out.println("CommonsLogger");
-	}
+    private CommonsLogFactory() {
+        System.out.println("CommonsLogger");
+    }
 
-	public static CommonsLog getLoggerInstance(String name) {
-		CommonsLog logInstance = (CommonsLog) logInstances.get(name);
-		if (logInstance != null) {
-			return logInstance;
-		}
+    public static CommonsLog getLoggerInstance(String name) {
+        CommonsLog logInstance = logInstances.get(name);
+        if (logInstance != null) {
+            return logInstance;
+        }
 
-		logInstance = new CommonsLog(LogFactory.getLog(name));
+        logInstance = new CommonsLog(LogFactory.getLog(name));
 
-		logInstances.put(name, logInstance);
-		return logInstance;
-	}
+        logInstances.put(name, logInstance);
+        return logInstance;
+    }
 }

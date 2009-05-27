@@ -17,19 +17,20 @@ import org.apache.log4j.helpers.PatternParser;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @version $Id$
-*/
+ */
 public class MMPatternLayout extends PatternLayout {
-  public MMPatternLayout() {
-    this(DEFAULT_CONVERSION_PATTERN);
-  }
 
-  public MMPatternLayout(String pattern) {
-    super(pattern);
-  }
-    
-  public PatternParser createPatternParser(String pattern) {
-    return new MMPatternParser(
-      pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern);
-  }
-  
+    public MMPatternLayout() {
+        this(DEFAULT_CONVERSION_PATTERN);
+    }
+
+    public MMPatternLayout(String pattern) {
+        super(pattern);
+    }
+
+    @Override
+    public PatternParser createPatternParser(String pattern) {
+        return new MMPatternParser(
+                pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern);
+    }
 }

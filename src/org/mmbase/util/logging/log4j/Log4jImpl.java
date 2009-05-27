@@ -45,7 +45,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     // class is final, perhaps then its methods can be inlined when compiled with -O?
 
     // It's enough to instantiate a factory once and for all.
-    private final static org.apache.log4j.spi.LoggerRepository repository = new LoggerRepository(getRootLogger());
+    private final static org.apache.log4j.spi.LoggerRepository log4jRepository = new LoggerRepository(getRootLogger());
     private static Logger log = Logging.getLoggerInstance(Log4jImpl.class);
 
     private static final String classname = Log4jImpl.class.getName();
@@ -65,7 +65,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
      */
     public static Log4jImpl getLoggerInstance(String name) {
         try {
-            return (Log4jImpl) repository.getLogger(name);
+            return (Log4jImpl) log4jRepository.getLogger(name);
         } catch (ClassCastException e) {
             Log4jImpl root =  (Log4jImpl) getRootLogger(); // make it log on root, and log a huge error, that something is wrong.
             root.error("ClassCastException, probably you've forgotten a class attribute in your configuration file. It must say class=\"" + Log4jImpl.class.getName() + "\"");
@@ -118,7 +118,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     protected static void doConfigure(InputStream i) {
         DOMConfigurator domConfigurator = new DOMConfigurator();
-        domConfigurator.doConfigure(i, repository);
+        domConfigurator.doConfigure(i, log4jRepository);
     }
     /**
      * Performs the actual parsing of the log4j configuration file and handles the errors
@@ -150,21 +150,23 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     /**
      *  This method overrides {@link org.apache.log4j.Logger#getInstance} by supplying
      *  its own factory type as a parameter.
+     * @deprecated Use {@link #getLogger}
      */
     public static org.apache.log4j.Category getInstance(String name) {
         return getLogger(name);
     }
 
     public static org.apache.log4j.Logger getLogger(String name) {
-        return repository.getLogger(name);
+        return log4jRepository.getLogger(name);
     }
 
     /**
      * A new logging method that takes the TRACE priority.
      */
+    @Override
     public final void trace(Object message) {
         // disable is defined in Category
-        if (repository.isDisabled(Log4jLevel.TRACE_INT)) {
+        if (log4jRepository.isDisabled(Log4jLevel.TRACE_INT)) {
             return;
         }
         if (Log4jLevel.TRACE.isGreaterOrEqual(this.getEffectiveLevel()))
@@ -172,9 +174,10 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             forcedLog(classname, Log4jLevel.TRACE, message, null);
     }
 
+    @Override
     public final void trace(Object message, Throwable t) {
         // disable is defined in Category
-        if (repository.isDisabled(Log4jLevel.TRACE_INT)) {
+        if (log4jRepository.isDisabled(Log4jLevel.TRACE_INT)) {
             return;
         }
         if (Log4jLevel.TRACE.isGreaterOrEqual(this.getEffectiveLevel()))
@@ -187,7 +190,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
      */
     public final void service(Object message) {
         // disable is defined in Category
-        if (repository.isDisabled(Log4jLevel.SERVICE_INT)) {
+        if (log4jRepository.isDisabled(Log4jLevel.SERVICE_INT)) {
             return;
         }
         if (Log4jLevel.SERVICE.isGreaterOrEqual(this.getEffectiveLevel()))
@@ -197,7 +200,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     public final void service(Object message, Throwable t) {
         // disable is defined in Category
-        if (repository.isDisabled(Log4jLevel.SERVICE_INT)) {
+        if (log4jRepository.isDisabled(Log4jLevel.SERVICE_INT)) {
             return;
         }
         if (Log4jLevel.SERVICE.isGreaterOrEqual(this.getEffectiveLevel()))
@@ -206,24 +209,25 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     }
 
     public final boolean isServiceEnabled() {
-        if(repository.isDisabled( Log4jLevel.SERVICE_INT))
+        if(log4jRepository.isDisabled( Log4jLevel.SERVICE_INT))
             return false;
         return Log4jLevel.SERVICE.isGreaterOrEqual(this.getEffectiveLevel());
     }
 
+    @Override
     public final boolean isTraceEnabled() {
-        if(repository.isDisabled( Log4jLevel.TRACE_INT))
+        if(log4jRepository.isDisabled( Log4jLevel.TRACE_INT))
             return false;
         return Log4jLevel.TRACE.isGreaterOrEqual(this.getEffectiveLevel());
     }
 
-    public static void shutdown() {
+     public static void shutdown() {
         Log4jImpl err = getLoggerInstance("STDERR");
         if(err.getLevel() != Log4jLevel.FATAL) {
             log.service("System stderr now going to stdout");
             System.setErr(System.out);
         }
-        repository.shutdown();
+        log4jRepository.shutdown();
     }
 
     /**
@@ -254,10 +258,15 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             super(System.out);
         }
         // simply overriding all methods that possibly could be used (forgotten some still)
+        @Override
         public void print   (char[] s) { log.warn(new String(s)); }
+        @Override
         public void print   (String s) { log.warn(s); }
+        @Override
         public void print   (Object s) { log.warn(s.toString()); }
+        @Override
         public void println (char[] s) { log.warn(new String(s)); }
+        @Override
         public void println (String s) {
             // if something goes wrong log4j write to standard error
             // we don't want to go in an infinite loop then, if LoggerStream is stderr too.
@@ -269,6 +278,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
                 checkCount--;
             }
         }
+        @Override
         public void println (Object s) {
             // it seems that exception are written to log in this way, so we can check
             // if s is an exception, in which case we want to log with FATAL.

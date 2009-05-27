@@ -18,6 +18,7 @@ package org.mmbase.util.logging;
  */
 
 public final class Level implements java.io.Serializable {
+    private static final long serialVersionUID = 0L;
 
     /**
      * A possible result of {@link #toInt}
@@ -72,12 +73,22 @@ public final class Level implements java.io.Serializable {
     }
 
     /**
+     * Like valueOf of real enumerations.
+     * @since MMBase-1.9.1
+     */
+    public static Level valueOf(String level) {
+        return toLevel(level);
+    }
+
+
+    /**
      * Makes an integer from this object.
      */
     public final int toInt() {
         return level;
     }
 
+    @Override
     public final String toString() {
         return string;
     }
