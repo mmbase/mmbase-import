@@ -19,6 +19,7 @@ package org.mmbase.util.logging;
  */
 
 public class LoggingException extends RuntimeException {
+    private static final long serialVersionUID = 0L;
     private Level level;
 
     //javadoc is inherited

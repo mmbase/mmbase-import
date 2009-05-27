@@ -25,6 +25,7 @@ public final class LoggerRepository extends org.apache.log4j.Hierarchy implement
     }
 
 
+    @Override
     public Logger getLogger(String name) {
         return getLogger(name, defaultFactory);
     }

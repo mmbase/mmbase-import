@@ -35,6 +35,7 @@ public class MMPatternParser extends PatternParser {
         super(pattern);
     }
 
+    @Override
     public void finalizeConverter(char c) {
         if (c == 'q') {
             addConverter(new TruncatedLevelPatternConverter(formattingInfo));

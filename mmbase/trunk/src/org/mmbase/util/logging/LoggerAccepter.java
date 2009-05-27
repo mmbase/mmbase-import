@@ -10,9 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.logging;
 
-import java.io.*;
-import java.util.*;
-
 /**
  * A LoggerAccepter is a class with a public 'addLogger' method. The class can log things to the as
  * such provided {@link Logger}'s which may be of interest to the caller of that method.

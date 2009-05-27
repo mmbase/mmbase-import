@@ -92,6 +92,7 @@ public class SimpleTimeStampImpl extends AbstractSimpleImpl implements Logger {
         }
     }
 
+    @Override
     protected final void log (String s) {
         ps.println(dateFormat.format(new java.util.Date()) + s);
     }
