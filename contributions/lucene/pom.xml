@@ -50,7 +50,7 @@
       <dependency>
         <groupId>org.textmining</groupId>
         <artifactId>tm-extractors</artifactId>
-        <version>0.4</version>
+        <version>1.0</version>
       </dependency>
 
       <dependency>
