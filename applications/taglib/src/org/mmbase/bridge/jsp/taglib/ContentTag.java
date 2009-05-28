@@ -282,6 +282,7 @@ public class ContentTag extends LocaleTag  {
     private Attribute expires        = Attribute.NULL;
     private Attribute unacceptable   = Attribute.NULL;
     private Attribute disposition    = Attribute.NULL;
+    private Attribute varies         = Attribute.NULL;
 
 
     public void setType(String ct) throws JspTagException {
@@ -308,6 +309,12 @@ public class ContentTag extends LocaleTag  {
      */
     public void setDisposition(String d) throws JspTagException {
         disposition = getAttribute(d);
+    }
+    /**
+     * @since MMBase-1.9.1
+     */
+    public void setVaries(String v) throws JspTagException {
+        varies = getAttribute(v);
     }
 
 
@@ -533,6 +540,13 @@ public class ContentTag extends LocaleTag  {
                             throw new JspTagException(ioe.getMessage());
                         }
                     }
+                }
+            }
+            String v = varies.getString(this);
+
+            if (!"".equals(v)) {
+                for (String vary : StringSplitter.split(v)) {
+                    addVary(vary);
                 }
             }
             if (locale != null) {
