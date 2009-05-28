@@ -310,7 +310,8 @@ Widgets.prototype.twoMultiples = function(selector) {
 
 
 Widgets.prototype.labelsToInputs = function(selector, options) {
-    var emptyisuntouched = options['emptyisuntouched'];
+    var emptyisuntouched = options && options['emptyisuntouched'];
+    //var ignornon         = options && options['emptyisuntouched'];
     $(document).ready(function() {
         $(selector).each(function() {
             var labelText = $(this).text();
