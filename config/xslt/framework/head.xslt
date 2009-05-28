@@ -83,6 +83,7 @@
           <script>
             <xsl:copy-of select="@*" />
             <xsl:copy-of select="*|text()" />
+            <xsl:comment>help</xsl:comment>
           </script>
         </xsl:if>
       </xsl:for-each>
