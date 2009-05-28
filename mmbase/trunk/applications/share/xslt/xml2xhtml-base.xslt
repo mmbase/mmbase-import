@@ -53,7 +53,7 @@
             <td></td>
             <td>
               <a name="toc"/>
-              <xsl:apply-templates select="tag[contains(type, $type) or $type='all']|function[$type='all']" mode="toc" >
+              <xsl:apply-templates select="tag-file[contains(type, $type) or $type='all']|tag[contains(type, $type) or $type='all']|function[$type='all']" mode="toc">
                 <xsl:sort select="name" />
                 </xsl:apply-templates><br />
             </td>
