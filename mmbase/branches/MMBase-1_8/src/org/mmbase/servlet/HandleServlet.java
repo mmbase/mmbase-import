@@ -292,15 +292,9 @@ public class HandleServlet extends BridgeServlet {
         if (log.isDebugEnabled()) {
             log.debug("Sending by " + bytes.getClass());
         }
-        BufferedOutputStream out = new BufferedOutputStream(res.getOutputStream());
-        byte[] buf = new byte[1024];
-        int b = 0;
-        while ((b = bytes.read(buf)) != -1) {
-            out.write(buf, 0, b);
-        }
-        out.flush();
+        IOUtil.copy(bytes, res.getOutputStream());
+        res.getOutputStream().flush();
         bytes.close();
-        out.close();
     }
 
     public static void main(String argv[]) {
