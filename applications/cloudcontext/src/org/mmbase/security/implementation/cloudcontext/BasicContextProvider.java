@@ -71,7 +71,7 @@ public  class BasicContextProvider implements ContextProvider {
         List<NodeSearchQuery> temp = new ArrayList<NodeSearchQuery>();
         for (String bulName : b) {
             MMObjectBuilder bul = MMBase.getMMBase().getBuilder(bulName);
-            if (bul == null) log.warn("Cannot add 'bulName' to builder list (it does not exist)");
+            if (bul == null) log.warn("Cannot add '" + bulName + "' to builder list (it does not exist)");
             NodeSearchQuery q = new NodeSearchQuery(bul);
             q.setModifiable(false);
             temp.add(q);
