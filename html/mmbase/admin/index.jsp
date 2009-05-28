@@ -91,32 +91,32 @@
                   <mm:param name="id">mmbase</mm:param>
                   <mm:listfunction set="components" name="blockClassification">
                     <mm:stringlist referid="_.subTypes" id="cat">
-		      <c:if test="${fn:length(cat.blocks) gt 0}">
-			<mm:link id="link">
-			  <mm:frameworkparam name="category">${cat.name}</mm:frameworkparam>
-			</mm:link>
-			<li class="weight_${cat.weight}">
-			  <a class="${category eq cat.name ? 'selected' : ''}" href="${link}">${mm:string(cat.title)}</a>
-			  <mm:compare referid="category" value="${cat.name}">
-			    <ul>
-			      <c:forEach var="b" items="${cat.blocks}">
-				<mm:link>
-				  <mm:frameworkparam name="urlconverter">org.mmbase.framework.basic.MMBaseUrlConverter</mm:frameworkparam>
-				  <mm:frameworkparam name="category">${category}</mm:frameworkparam>
-				  <mm:frameworkparam name="component">${b.component.name}</mm:frameworkparam>
-				  <mm:frameworkparam name="block">${b.name}</mm:frameworkparam>
-				  <li class="${b.name eq block and subcat.component.name eq component ? 'current' : ''}">
-				    <a title="${mm:string(b.description)}" href="${_}">${mm:escape('text/xml', mm:string(b.title))}
-				    <span class="component">(${b.component.name})</span>
-				    </a>
-				  </li>
-				</mm:link>
-			      </c:forEach>
-			    </ul>
-			  </mm:compare>
-			</li>
-		      </c:if>
-		    </mm:stringlist>
+                      <c:if test="${fn:length(cat.blocks) gt 0}">
+                        <mm:link id="link">
+                          <mm:frameworkparam name="category">${cat.name}</mm:frameworkparam>
+                        </mm:link>
+                        <li class="weight_${cat.weight}">
+                          <a class="${category eq cat.name ? 'selected' : ''}" href="${link}">${mm:string(cat.title)}</a>
+                          <mm:compare referid="category" value="${cat.name}">
+                            <ul>
+                              <c:forEach var="b" items="${cat.blocks}">
+                                <mm:link>
+                                  <mm:frameworkparam name="urlconverter">org.mmbase.framework.basic.MMBaseUrlConverter</mm:frameworkparam>
+                                  <mm:frameworkparam name="category">${category}</mm:frameworkparam>
+                                  <mm:frameworkparam name="component">${b.component.name}</mm:frameworkparam>
+                                  <mm:frameworkparam name="block">${b.name}</mm:frameworkparam>
+                                  <li class="${b.name eq block and subcat.component.name eq component ? 'current' : ''}">
+                                    <a title="${mm:string(b.description)}" href="${_}">${mm:escape('text/xml', mm:string(b.title))}
+                                    <span class="component">(${b.component.name})</span>
+                                    </a>
+                                  </li>
+                                </mm:link>
+                              </c:forEach>
+                            </ul>
+                          </mm:compare>
+                        </li>
+                      </c:if>
+                    </mm:stringlist>
                   </mm:listfunction>
                 </mm:functioncontainer>
               </ul>
