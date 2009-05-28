@@ -309,7 +309,8 @@ Widgets.prototype.twoMultiples = function(selector) {
 }
 
 
-Widgets.prototype.labelsToInputs = function(selector) {
+Widgets.prototype.labelsToInputs = function(selector, options) {
+    var emptyisuntouched = options['emptyisuntouched'];
     $(document).ready(function() {
         $(selector).each(function() {
             var labelText = $(this).text();
@@ -322,17 +323,41 @@ Widgets.prototype.labelsToInputs = function(selector) {
                     input.attr("type", "text");
                     input.addClass("password");
                 }
-            }
-            $(this).css("display", "none");
-            input.focus(function() {
-                if ($(this).hasClass("untouched")) {
-                    this.value = "";
-                    $(this).removeClass("untouched");
-                    if ($(this).hasClass("password")) {
-                        $(this).attr("type", "password");
+                $(this).css("display", "none");
+                input.focus(function() {
+                    // if entered for the first time, remove the label value
+                    if ($(this).hasClass("untouched")) {
+                        if (emptyisuntouched) {
+                            $(this).removeClass("untouched");
+                        }
+                        this.value = "";
+                        if ($(this).hasClass("password")) {
+                            $(this).attr("type", "password");
+                        }
+                    };
+                });
+                input.blur(function() {
+                    // if leaving, the value is empty, and empty is equivalent to 'untouched', put the label back in.
+                    if ($(this).val() == "") {
+                        if (emptyisuntouched) {
+                            $(this).addClass("untouched");
+                        }
+                        if ($(this).hasClass("untouched")) {
+                            $(this).val(labelText);
+                            if ($(this).hasClass("password")) {
+                                $(this).attr("type", "text");
+                            }
+                        }
                     }
-                };
-            });
+                });
+                if (! emptyisuntouched) {
+                    input.keyup(function() {
+                        $(this).removeClass("untouched");
+                    });
+                }
+            } else {
+                // value is not empty, so cant use it for the label
+            }
 
         });
     });
