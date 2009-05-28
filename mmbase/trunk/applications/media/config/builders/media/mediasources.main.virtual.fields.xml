@@ -36,5 +36,86 @@
       </getprocessor>
     </datatype>
   </field>
+  <field
+      name="subtitle"
+      state="virtual"
+      readonly="false">
+    <gui>
+      <guiname xml:lang="nl">Subtitel</guiname>
+      <guiname xml:lang="en">Subtitle</guiname>
+    </gui>
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Creator">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+      </getprocessor>
+    </datatype>
+  </field>
+  <field
+      name="intro"
+      state="virtual"
+      readonly="false">
+    <gui>
+      <guiname xml:lang="nl">Introductie</guiname>
+      <guiname xml:lang="en">Introduction</guiname>
+    </gui>
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Creator">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+      </getprocessor>
+    </datatype>
+  </field>
+  <field
+      name="body"
+      state="virtual"
+      readonly="false">
+    <gui>
+      <guiname xml:lang="nl">Tekst</guiname>
+      <guiname xml:lang="en">Text</guiname>
+    </gui>
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Creator">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+      </getprocessor>
+    </datatype>
+  </field>
 </fieldlist>
 
