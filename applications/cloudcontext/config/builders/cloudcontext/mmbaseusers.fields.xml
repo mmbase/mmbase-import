@@ -17,6 +17,7 @@
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <unique value="true" />
       <required value="true" enforce="never" />
+      <minLength value="1" />
       <maxLength value="32" />
     </datatype>
   </field>
