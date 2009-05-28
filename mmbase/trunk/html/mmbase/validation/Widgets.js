@@ -8,6 +8,8 @@
  *  -  Widgets.instance.enumerationSuggestion(selector):  Makes single selection only a suggestion, meaning that the value 'OTHER' gives the user the possibility to type a value herself
  *  -  Widgets.instance.boxes(selector):  Makes select into a list of checkboxes (multiple) or radioboxes (single)
  *  -  Widgets.instance.twoMultiples(selector):  Splits up multiple selection into 2 boxes, the left one containing the selected values, the right one the optiosn which are not selected.
+
+ *  -  Widgets.instance.labelsToInputs(selector):  Select a bunch of 'labels'. The text of the label will be put as value of the associated text-input, and removed on focus. The label itself will be hidden.
  *
  * @version $Id: Widgets.js,v 1.9 2008-12-30 17:54:06 michiel Exp $   BETA
  * @author Michiel Meeuwissen
@@ -304,4 +306,36 @@ Widgets.prototype.twoMultiples = function(selector) {
         });
 
     });
-};
+}
+
+
+Widgets.prototype.labelsToInputs = function(selector) {
+    $(document).ready(function() {
+        $(selector).each(function() {
+            var labelText = $(this).text();
+            var labelFor = $(this).attr("for");
+            var input = $("input[name=" + labelFor + "]");
+            if (input.val() == "") {
+                input.val(labelText);
+                input.addClass("untouched");
+                if (input.attr("type") == 'password') {
+                    input.attr("type", "text");
+                    input.addClass("password");
+                }
+            }
+            $(this).css("display", "none");
+            input.focus(function() {
+                if ($(this).hasClass("untouched")) {
+                    this.value = "";
+                    $(this).removeClass("untouched");
+                    if ($(this).hasClass("password")) {
+                        $(this).attr("type", "password");
+                    }
+                };
+            });
+
+        });
+    });
+}
+
+
