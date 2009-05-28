@@ -259,7 +259,18 @@
       <tr>
         <td colspan="2">
           <xsl:if test="name()='tag'"><b>&lt;mm:<xsl:value-of select="name"/>&gt;</b></xsl:if>
-          <xsl:if test="name()='tag-file'"><b>&lt;mm:<xsl:value-of select="name"/>&gt;</b></xsl:if>
+          <xsl:if test="name()='tag-file'">
+            <b>&lt;mm:<xsl:value-of select="name"/>&gt;</b>
+            <p>
+              <a>
+                <xsl:attribute name="href">
+                  <xsl:text>http://scm.mmbase.org/view/*checkout*/mmbase/trunk/applications/taglib/</xsl:text>
+                  <xsl:value-of select="path" />
+                </xsl:attribute>
+                <xsl:text>This is a tagfile.</xsl:text>
+              </a>
+            </p>
+          </xsl:if>
           <xsl:if test="name()='taginterface'"><b><font color="{$extendscolor}">`<xsl:value-of select="name"/>' tags</font></b></xsl:if>
           <xsl:apply-templates select="info"/>
           <xsl:if test="since">
