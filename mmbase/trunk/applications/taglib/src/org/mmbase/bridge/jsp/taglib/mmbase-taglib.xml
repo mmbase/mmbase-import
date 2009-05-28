@@ -6981,6 +6981,15 @@ The 0 is just counter, which starts at 0 on every page.
       </example>
     </attribute>
     <attribute>
+      <name>varies</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.9.1</since>
+      <info>
+        If using cache-headers, you want to add vary-headers too.
+      </info>
+    </attribute>
+    <attribute>
       <name>postprocessor</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
