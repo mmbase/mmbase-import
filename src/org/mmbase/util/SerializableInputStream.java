@@ -78,6 +78,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     }
 
     public SerializableInputStream(FileItem fi) throws IOException {
+        this.size = fi.getSize();
+        this.name = fi.getName();
+        this.contentType = fi.getContentType();
         file = File.createTempFile(getClass().getName(), this.name);
         try {
             fi.write(file);
@@ -86,9 +89,6 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             ioe.initCause(e);
             throw ioe;
         }
-        this.size = fi.getSize();
-        this.name = fi.getName();
-        this.contentType = fi.getContentType();
         this.wrapped = new FileInputStream(file);
 
 
