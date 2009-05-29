@@ -21,28 +21,28 @@ package org.mmbase.storage.search;
 public interface FieldCompareConstraint extends FieldConstraint {
 
     /** Operator 'less than' */
-    public final static int LESS = 1;
+    final static int LESS = 1;
     /** Operator 'less than or equal' */
-    public final static int LESS_EQUAL = 2;
+    final static int LESS_EQUAL = 2;
     /** Operator 'equal' */
-    public final static int EQUAL = 3;
+    final static int EQUAL = 3;
     /** Operator 'not equal' */
-    public final static int NOT_EQUAL = 4;
+    final static int NOT_EQUAL = 4;
     /** Operator 'greater than' */
-    public final static int GREATER = 5;
+    final static int GREATER = 5;
     /** Operator 'greater than or equal' */
-    public final static int GREATER_EQUAL = 6;
+    final static int GREATER_EQUAL = 6;
     /** Operator 'like' */
-    public final static int LIKE = 7;
+    final static int LIKE = 7;
 
-    public final static int REGEXP = 8;
+    final static int REGEXP = 8;
 
     /**
      * Operator descriptions corresponding to the operator values:
      * {@link #LESS}, {@link #LESS_EQUAL}, {@link #EQUAL}, {@link #NOT_EQUAL},
      * {@link #GREATER}, {@link #GREATER_EQUAL}, and {@link #LIKE}
      */
-    public final static String[] OPERATOR_DESCRIPTIONS = new String[] {
+    final static String[] OPERATOR_DESCRIPTIONS = new String[]{
         null, // not specified
         "less than", "less than or equal", "equal", "not equal",
         "greater than", "greater than or equal", "like", "regexp"
