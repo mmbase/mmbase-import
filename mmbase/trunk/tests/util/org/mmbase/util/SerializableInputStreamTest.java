@@ -47,8 +47,17 @@ public class SerializableInputStreamTest extends TestCase {
     protected SerializableInputStream getDiskItemInstance() throws IOException {
         DiskFileItem di = new DiskFileItem("file", "application/octet-stream", false, "foobar", 100, new File(System.getProperty("java.io.tmpdir")));
         OutputStream os = di.getOutputStream();
-        for (int i = 20; i < 100; i++) {
-            os.write(i);
+        for (int i = 1; i < 100; i++) {
+            os.write( (i % 100) + 20);
+        }
+        os.close();
+        return new SerializableInputStream(di);
+    }
+    protected SerializableInputStream getDiskItemInstanceBig() throws IOException {
+        DiskFileItem di = new DiskFileItem("file", "application/octet-stream", false, "foobar", 100, new File(System.getProperty("java.io.tmpdir")));
+        OutputStream os = di.getOutputStream();
+        for (int i = 1; i < 10000; i++) {
+            os.write( (i % 100) + 20);
         }
         os.close();
         return new SerializableInputStream(di);
@@ -107,13 +116,15 @@ public class SerializableInputStreamTest extends TestCase {
         l.moveTo(f);
         testSerializable(l);
         testSerializable(l);
-        System.out.println("" + f);
+        System.out.println("" + f + " of " + l);
         after = l.get();
         assertTrue("" + before.length + " " + after.length, Arrays.equals(before, after));
         l.close();
         l = new SerializableInputStream(new FileInputStream(f), before.length);
         after = l.get();
         assertTrue("" + before.length + " " + after.length, Arrays.equals(before, after));
+
+        assertTrue(l.getSize() > 0);
 
     }
 
@@ -129,6 +140,10 @@ public class SerializableInputStreamTest extends TestCase {
     }
     public void testSerializableC() throws IOException, java.lang.ClassNotFoundException {
         SerializableInputStream c = getDiskItemInstance();
+        testSerializableMany(c);
+    }
+    public void testSerializableD() throws IOException, java.lang.ClassNotFoundException {
+        SerializableInputStream c = getDiskItemInstanceBig();
         testSerializableMany(c);
     }
     public void testCopy(SerializableInputStream l) throws IOException {
