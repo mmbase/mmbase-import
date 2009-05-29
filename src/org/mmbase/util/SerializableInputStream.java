@@ -172,6 +172,8 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         try {
             if (file == null) {
                 file = File.createTempFile(getClass().getName(), this.name);
+            }
+            if (! file.exists()) {
                 FileOutputStream os = new FileOutputStream(file);
                 IOUtil.copy(wrapped, os);
                 os.close();
