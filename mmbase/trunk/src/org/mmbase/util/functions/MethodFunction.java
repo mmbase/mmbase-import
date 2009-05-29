@@ -40,6 +40,7 @@ And be implemented like so:
  * @since MMBase-1.7
  */
 public class MethodFunction extends AbstractFunction<Object> {
+    private static final long serialVersionUID = 0L;
     private static final Logger log = Logging.getLoggerInstance(MethodFunction.class);
 
 

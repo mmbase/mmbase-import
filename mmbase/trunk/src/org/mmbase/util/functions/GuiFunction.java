@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * @since MMBase-1.9
  */
 public class GuiFunction extends NodeFunction<String> {
-
+    private static final long serialVersionUID = 0L;
     private static final Logger log = Logging.getLoggerInstance(GuiFunction.class);
     public static final Parameter<?>[] PARAMETERS = {
         Parameter.FIELD,

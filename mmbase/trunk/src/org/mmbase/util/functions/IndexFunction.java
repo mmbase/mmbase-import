@@ -42,9 +42,11 @@ public class IndexFunction extends FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(IndexFunction.class);
 
     protected static Cache<String,String> indexCache = new Cache<String,String>(400) {
+        @Override
             public  String getName() {
                 return "IndexNumberCache";
             }
+        @Override
             public String getDescription() {
                 return "rootNumber/objectNumber -> Index";
             }
@@ -194,6 +196,7 @@ public class IndexFunction extends FunctionProvider {
 
 
     protected static class Stack<C> extends ArrayList<C> {
+        private static final long serialVersionUID = 0L;
         public void push(C o) {
             add(0, o);
         }
@@ -203,146 +206,154 @@ public class IndexFunction extends FunctionProvider {
     }
 
     protected static NodeFunction<String> index = new NodeFunction<String>("index", INDEX_ARGS, ReturnType.STRING) {
-            {
-                setDescription("Calculates the index of a node, using the surrounding 'indexrels'");
+        private static final long serialVersionUID = 0L;
+
+        {
+            setDescription("Calculates the index of a node, using the surrounding 'indexrels'");
+        }
+
+        /**
+         * complete bridge version of {@link #getFunctionValue}
+         */
+        public String getFunctionValue(final Node node, final Parameters parameters) {
+            Node root = parameters.get(ROOT);
+            final String role = parameters.get(ROLE);
+            final String join = parameters.get(JOINER);
+            final String separator = parameters.get(SEPARATOR);
+            final Pattern indexPattern = Pattern.compile("(.+)" + separator + "(.+)");
+            final boolean roman = parameters.get(ROMAN);
+
+            final String key = getKey(node, parameters);
+
+            initObserver();
+            String result = indexCache.get(key);
+            if (result != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Found index '" + result + "' for node " + node.getNumber() + " from cache (key " + key + ")");
+                }
+                return result;
+            }
+            log.debug("Determining index for node " + node.getNumber() + " with role " + role);
+
+            final NodeManager nm = node.getNodeManager();
+
+            // now we have to determine the path from node to root.
+
+            GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(node), 10, nm, role, "source");
+            NodeQuery template = tree.getTemplate();
+            if (root != null) {
+                StepField sf = template.addField(role + ".root");
+                template.setConstraint(template.createConstraint(sf, root));
             }
 
-            /**
-             * complete bridge version of {@link #getFunctionValue}
-             */
-            public String getFunctionValue(final Node node, final Parameters parameters) {
-                Node root     = parameters.get(ROOT);
-                final String role   = parameters.get(ROLE);
-                final String join   = parameters.get(JOINER);
-                final String separator   = parameters.get(SEPARATOR);
-                final Pattern indexPattern = Pattern.compile("(.+)" + separator + "(.+)");
-                final boolean roman   = parameters.get(ROMAN);
-
-                final String key = getKey(node, parameters);
-
-                initObserver();
-                String result = indexCache.get(key);
-                if (result != null) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Found index '" + result + "' for node " + node.getNumber() + " from cache (key " + key + ")");
-                    }
-                    return result;
-                }
-                log.debug("Determining index for node " + node.getNumber() + " with role " + role);
-
-                final NodeManager nm = node.getNodeManager();
-
-                // now we have to determine the path from node to root.
-
-                GrowingTreeList tree = new GrowingTreeList(Queries.createNodeQuery(node), 10, nm, role, "source");
-                NodeQuery template = tree.getTemplate();
-                if (root != null) {
-                    StepField sf = template.addField(role + ".root");
-                    template.setConstraint(template.createConstraint(sf, root));
-                }
-
-                Stack<Node> stack = new Stack<Node>();
-                TreeIterator it = tree.treeIterator();
-                int depth = it.currentDepth();
-                while (it.hasNext()) {
-                    Node n = it.nextNode();
-                    if (log.isDebugEnabled()) {
-                        log.debug("Considering at " + it.currentDepth() + "/" + depth + " node " + n.getNodeManager().getName() + " " + n.getNumber());
-                    }
-                    if (it.currentDepth() > depth) {
-                        stack.push(n);
-                        depth = it.currentDepth();
-                    }
-                    if (indexCache.contains(getKey(n, parameters))) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Index for " + n.getNumber() + " is known already!, breaking");
-                        }
-                        break;
-                    }
-
-                    if (it.currentDepth() < depth) {
-                        break;
-                    }
-                    //if (root == null) root = n.getNodeValue(role + ".root");
-                    if (root != null && n.getNumber() == root.getNumber()) break;
-                }
-
-                if (stack.isEmpty()) {
-                    log.debug("Stack is empty, no root found, returning ''");
-                    indexCache.put(key, "");
-                    return "";
-                }
-
+            Stack<Node> stack = new Stack<Node>();
+            TreeIterator it = tree.treeIterator();
+            int depth = it.currentDepth();
+            while (it.hasNext()) {
+                Node n = it.nextNode();
                 if (log.isDebugEnabled()) {
-                    log.debug("Now constructing index-number with " + stack.size() + " nodes on stack");
+                    log.debug("Considering at " + it.currentDepth() + "/" + depth + " node " + n.getNodeManager().getName() + " " + n.getNumber());
                 }
-                Node n = stack.pull(); // this is root, or at least _its_ index is known
-                StringBuilder buf;
-                if (! n.equals(node)) {
-                    buf = new StringBuilder(n.getFunctionValue("index", parameters).toString());
-                } else {
-                    buf = new StringBuilder();
+                if (it.currentDepth() > depth) {
+                    stack.push(n);
+                    depth = it.currentDepth();
                 }
-                String j = buf.length() == 0 ? "" : join;
-                OUTER:
-                while(! stack.isEmpty()) {
-                    Node search = stack.pull();
-                    NodeQuery q = Queries.createRelatedNodesQuery(n, nm, role, "destination");
-                    StepField sf = q.addField(role + ".pos");
-                    q.addSortOrder(sf, SortOrder.ORDER_ASCENDING);
-                    q.addField(role + ".index");
+                if (indexCache.contains(getKey(n, parameters))) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Executing " + q.toSql() + " to search " + search.getNumber());
+                        log.debug("Index for " + n.getNumber() + " is known already!, breaking");
                     }
-                    String index = null;
-                    NodeIterator ni = q.getCloud().getList(q).nodeIterator();
-                    boolean doRoman = roman;
-                    while(ni.hasNext()) {
-                        Node clusterFound = ni.nextNode();
-                        Node found = clusterFound.getNodeValue(q.getNodeStep().getAlias());
-                        String i = clusterFound.getStringValue(role + ".index");
-                        if (i == null || i.equals("")) i = index;
-                        if (i == null) i = "1";
-                        log.debug("Found index " + i);
-                        Matcher matcher = indexPattern.matcher(i);
-                        if (matcher.matches()) {
-                            buf = new StringBuilder(matcher.group(1));
-                            i = matcher.group(2);
-                            log.debug("matched " + indexPattern + " --> " + i);
-                        }
-                        doRoman = doRoman && RomanTransformer.ROMAN.matcher(i).matches();
-
-                        boolean explicitEmpty = "-".equals(i) || "--".equals(i);
-                        if (found.getNumber() == search.getNumber()) {
-                            log.debug("found sibling");
-                            // found!
-                            if (! explicitEmpty) {
-                                buf.append(j).append(i);
-                            } else {
-                                buf.setLength(0);
-                            }
-                            j = join;
-                            n = found;
-                            continue OUTER;
-                        }
-                        index = successor(i, separator, join, doRoman);
-
-                        String hapKey = getKey(found, parameters);
-                        String value = explicitEmpty ? "" :  buf.toString() + j + i;
-                        log.debug("Caching " + key + "->" + value);
-                        // can as well cache this one too.
-                        indexCache.put(hapKey, value);
-                    }
-                    // not found
-                    buf.append(j).append("???");
                     break;
                 }
-                String r = buf.toString();
-                log.debug("Found '" + r  + "' for " + key);
-                indexCache.put(key, r);
-                return r;
+
+                if (it.currentDepth() < depth) {
+                    break;
+                }
+                //if (root == null) root = n.getNodeValue(role + ".root");
+                if (root != null && n.getNumber() == root.getNumber()) {
+                    break;
+                }
             }
-        };
+
+            if (stack.isEmpty()) {
+                log.debug("Stack is empty, no root found, returning ''");
+                indexCache.put(key, "");
+                return "";
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug("Now constructing index-number with " + stack.size() + " nodes on stack");
+            }
+            Node n = stack.pull(); // this is root, or at least _its_ index is known
+            StringBuilder buf;
+            if (!n.equals(node)) {
+                buf = new StringBuilder(n.getFunctionValue("index", parameters).toString());
+            } else {
+                buf = new StringBuilder();
+            }
+            String j = buf.length() == 0 ? "" : join;
+            OUTER:
+            while (!stack.isEmpty()) {
+                Node search = stack.pull();
+                NodeQuery q = Queries.createRelatedNodesQuery(n, nm, role, "destination");
+                StepField sf = q.addField(role + ".pos");
+                q.addSortOrder(sf, SortOrder.ORDER_ASCENDING);
+                q.addField(role + ".index");
+                if (log.isDebugEnabled()) {
+                    log.debug("Executing " + q.toSql() + " to search " + search.getNumber());
+                }
+                String index = null;
+                NodeIterator ni = q.getCloud().getList(q).nodeIterator();
+                boolean doRoman = roman;
+                while (ni.hasNext()) {
+                    Node clusterFound = ni.nextNode();
+                    Node found = clusterFound.getNodeValue(q.getNodeStep().getAlias());
+                    String i = clusterFound.getStringValue(role + ".index");
+                    if (i == null || i.equals("")) {
+                        i = index;
+                    }
+                    if (i == null) {
+                        i = "1";
+                    }
+                    log.debug("Found index " + i);
+                    Matcher matcher = indexPattern.matcher(i);
+                    if (matcher.matches()) {
+                        buf = new StringBuilder(matcher.group(1));
+                        i = matcher.group(2);
+                        log.debug("matched " + indexPattern + " --> " + i);
+                    }
+                    doRoman = doRoman && RomanTransformer.ROMAN.matcher(i).matches();
+
+                    boolean explicitEmpty = "-".equals(i) || "--".equals(i);
+                    if (found.getNumber() == search.getNumber()) {
+                        log.debug("found sibling");
+                        // found!
+                        if (!explicitEmpty) {
+                            buf.append(j).append(i);
+                        } else {
+                            buf.setLength(0);
+                        }
+                        j = join;
+                        n = found;
+                        continue OUTER;
+                    }
+                    index = successor(i, separator, join, doRoman);
+
+                    String hapKey = getKey(found, parameters);
+                    String value = explicitEmpty ? "" : buf.toString() + j + i;
+                    log.debug("Caching " + key + "->" + value);
+                    // can as well cache this one too.
+                    indexCache.put(hapKey, value);
+                }
+                // not found
+                buf.append(j).append("???");
+                break;
+            }
+            String r = buf.toString();
+            log.debug("Found '" + r + "' for " + key);
+            indexCache.put(key, r);
+            return r;
+        }
+    };
     {
         addFunction(index);
     }

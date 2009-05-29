@@ -53,7 +53,9 @@ public class Functions {
         if (def == null) return list;
 
         int firstPattern = 0;
-        while (firstPattern < list.size() && ! (list.get(firstPattern) instanceof PatternParameter)) firstPattern++;
+        while (firstPattern < list.size() && ! (list.get(firstPattern) instanceof PatternParameter)) {
+            firstPattern++;
+        }
         boolean patterns = false;
         for (Parameter d : def) {
             if (d instanceof Parameter.Wrapper) {

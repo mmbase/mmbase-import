@@ -23,43 +23,43 @@ import java.util.*;
  * @since MMBase-1.7
  */
 public class ReturnType<C> extends Parameter<C> implements java.io.Serializable {
-
+    private static final long serialVersionUID = 0L;
     /**
      * The return type of a function that does not return a thing.
      */
-    public static final ReturnType<Void> VOID = new ReturnType(void.class, "Does not return anything");
+    public static final ReturnType<Void> VOID = new ReturnType<Void>(void.class, "Does not return anything");
 
     /**
      * The return type of a function that returns a String.
      */
-    public static final ReturnType<String> STRING = new ReturnType(String.class, "String");
+    public static final ReturnType<String> STRING = new ReturnType<String>(String.class, "String");
 
-    public static final ReturnType<CharSequence> CHARSEQUENCE = new ReturnType(CharSequence.class, "CharSequence");
+    public static final ReturnType<CharSequence> CHARSEQUENCE = new ReturnType<CharSequence>(CharSequence.class, "CharSequence");
 
     /**
      * The return type of a function that returns a Integer.
      */
-    public static final ReturnType<Integer> INTEGER = new ReturnType(Integer.class, "Integer");
+    public static final ReturnType<Integer> INTEGER = new ReturnType<Integer>(Integer.class, "Integer");
 
     /**
      * The return type of a function that returns a Long.
      */
-    public static final ReturnType<Long> LONG = new ReturnType(Long.class, "Long");
+    public static final ReturnType<Long> LONG = new ReturnType<Long>(Long.class, "Long");
 
     /**
      * The return type of a function that returns a Double.
      */
-    public static final ReturnType<Double> DOUBLE = new ReturnType(Double.class, "Double");
+    public static final ReturnType<Double> DOUBLE = new ReturnType<Double>(Double.class, "Double");
 
     /**
      * The return type of a function that returns a Boolean.
      */
-    public static final ReturnType<Boolean> BOOLEAN = new ReturnType(Boolean.class, "Boolean");
+    public static final ReturnType<Boolean> BOOLEAN = new ReturnType<Boolean>(Boolean.class, "Boolean");
 
     /**
      * The return type of a function that returns a List.
      */
-    public static final ReturnType LIST = new ReturnType(List.class, "List");
+    public static final ReturnType<List> LIST = new ReturnType<List>(List.class, "List");
 
 
     /**
@@ -75,26 +75,26 @@ public class ReturnType<C> extends Parameter<C> implements java.io.Serializable 
     /**
      * The return type of a function that returns a Set.
      */
-    public static final ReturnType SET = new ReturnType(Set.class, "Set");
+    public static final ReturnType<Set<?>> SET = new ReturnType<Set<?>>(Set.class, "Set");
     /**
      * The return type of a function that returns a Set.
      */
-    public static final ReturnType COLLECTION = new ReturnType(Collection.class, "Collection");
+    public static final ReturnType<Collection<?>> COLLECTION = new ReturnType<Collection<?>>(Collection.class, "Collection");
 
     /**
      * The return type of a function that returns a Map.
      */
-    public static final ReturnType MAP = new ReturnType(Map.class, "Map");
+    public static final ReturnType<Map<?, ?>> MAP = new ReturnType<Map<?, ?>>(Map.class, "Map");
 
     /**
      * The return type of a function is unknown.
      */
-    public static final ReturnType UNKNOWN = new ReturnType(Object.class, "unknown");
+    public static final ReturnType<Object> UNKNOWN = new ReturnType<Object>(Object.class, "unknown");
 
     /**
      * The return type of a function is None
      */
-    public static final ReturnType NONE = new ReturnType(Object.class, "none");
+    public static final ReturnType<Object> NONE = new ReturnType<Object>(Object.class, "none");
 
     /**
      * Can be return by functions that don't want to return anything. (The function framework
@@ -135,17 +135,18 @@ public class ReturnType<C> extends Parameter<C> implements java.io.Serializable 
         } else if (type.equals(Void.class)) {
             return VOID;
         } else {
-            return new ReturnType(type, type.getName());
+            return new ReturnType<Object>(type, type.getName());
         }
     }
 
-    private Map<String, ReturnType> typeStruct = new HashMap<String, ReturnType>(); 
+    private Map<String, ReturnType> typeStruct = new HashMap<String, ReturnType>();
 
     public  ReturnType(Class type, String description) {
         super("RETURN_VALUE", type);
         setDescription(description, null);
     }
 
+    @Override
     public boolean isRequired() {
         return false;
     }
