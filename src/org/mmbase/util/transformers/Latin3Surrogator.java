@@ -27,6 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$
  */
 public class Latin3Surrogator extends ConfigurableReaderTransformer implements CharTransformer {
+    private static final long serialVersionUID = 0L;
     private static Logger log = Logging.getLoggerInstance(Latin3Surrogator.class);
 
     // esperanto 

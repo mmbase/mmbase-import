@@ -26,6 +26,7 @@ import org.mmbase.util.logging.*;
  */
 
 public class CP1252Surrogator extends ConfigurableReaderTransformer implements CharTransformer {
+    private final static long serialVersionUID  = 0L;
     private static final Logger log = Logging.getLoggerInstance(CP1252Surrogator.class);
 
 

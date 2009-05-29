@@ -101,9 +101,10 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
     }
 
     class Encryption extends ReaderTransformer {
-        private String key;
-        private String format;
-        private String algorithm;
+        private static final long serialVersionUID = 0L;
+        private final String key;
+        private final String format;
+        private final String algorithm;
 
         Encryption(String key, String format, String algorithm) {
             this.key = key;
@@ -151,9 +152,10 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
     }
 
     class Decryption extends ReaderTransformer {
-        private String key;
-        private String format;
-        private String algorithm;
+        private static final long serialVersionUID = 0L;
+        private final String key;
+        private final String format;
+        private final String algorithm;
 
         Decryption(String key, String format, String algorithm) {
             this.key = key;

@@ -21,6 +21,7 @@ package org.mmbase.util.transformers;
  */
 
 public class Figlet extends AbstractCommandStringTransformer implements CharTransformer {
+    private static final long serialVersionUID = 0L;
     protected String[] getCommand() {
         return new String[] {"figlet", "-w", "160"};
     }

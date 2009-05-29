@@ -16,7 +16,6 @@ import java.util.regex.*;
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.xml.UtilReader;
 import org.mmbase.util.Entry;
-import org.mmbase.util.Casting;
 
 import org.mmbase.util.logging.*;
 
@@ -31,6 +30,7 @@ import org.mmbase.util.logging.*;
  */
 
 public class RegexpReplacer extends ChunkedTransformer<Pattern> {
+    private static final long serialVersionUID = 0L;
     private static final Logger log = Logging.getLoggerInstance(RegexpReplacer.class);
 
     /**
@@ -140,6 +140,7 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
         Chunk(String s, boolean r) {
             string = s; replaced = r;
         }
+        @Override
         public String toString() { return "'" + string + "'" + (replaced ? "." : ""); }
 
     }
@@ -234,6 +235,7 @@ public class RegexpReplacer extends ChunkedTransformer<Pattern> {
         return "REGEXPS";
     }
 
+    @Override
     public String toString() {
         return getEncoding() + " " + getPatterns();
     }

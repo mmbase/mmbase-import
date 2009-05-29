@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.mmbase.util.logging.*;
 
@@ -59,7 +57,7 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
 
     protected abstract Status createNewStatus();
 
-    abstract static class Status{
+    protected abstract static class Status {
     }
 
 

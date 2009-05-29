@@ -22,8 +22,8 @@ import java.io.Writer;
  */
 
 public class InverseCharTransformer implements CharTransformer {
-
-    private CharTransformer ct;
+    private static final long serialVersionUID = 0L;
+    private final CharTransformer ct;
 
     /**
      * The constructor
@@ -58,6 +58,7 @@ public class InverseCharTransformer implements CharTransformer {
     }
 
 
+    @Override
     public String toString() {
         return "INVERSE "  + ct;
     }

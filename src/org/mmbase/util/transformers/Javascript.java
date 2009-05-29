@@ -23,6 +23,7 @@ import java.util.Map;
  */
 
 public class Javascript extends ConfigurableReaderTransformer implements CharTransformer {
+    private static final long serialVersionUID = 0L;
     private final static String SINGLE_QUOTES     = "JAVASCRIPT_ESCAPE_SINGLE_QUOTES";
     private final static String DOUBLE_QUOTES     = "JAVASCRIPT_ESCAPE_DOUBLE_QUOTES";
     private final static String BOTH_QUOTES     = "JAVASCRIPT_ESCAPE_BOTH_QUOTES";
@@ -129,6 +130,7 @@ public class Javascript extends ConfigurableReaderTransformer implements CharTra
         }
     }
 
+    @Override
     public Writer transformBack(Reader r, Writer w) {
         switch(to){
         case ESCAPE_SINGLE_QUOTES:
