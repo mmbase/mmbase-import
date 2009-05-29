@@ -185,13 +185,13 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     @Override
     public void close() {
         if (file != null && tempFile) {
-            log.service("Deleting " + file);
+            log.debug("Deleting " + file);
             file.delete();
         }
     }
     @Override
     public void finalize() {
-        log.service("Finalizing " + file);
+        log.debug("Finalizing " + file);
         close();
     }
 
