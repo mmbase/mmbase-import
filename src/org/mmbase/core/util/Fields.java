@@ -17,6 +17,7 @@ import java.util.*;
 /**
 
  * @since MMBase-1.8
+ * @version $Id$
  */
 public class Fields {
     public final static int STATE_MINVALUE    = 0;
