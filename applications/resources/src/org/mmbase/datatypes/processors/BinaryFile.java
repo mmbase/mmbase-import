@@ -117,6 +117,7 @@ public class BinaryFile {
         private static final long serialVersionUID = 1L;
 
         public Object process(final Node node, final Field field, final Object value) {
+            if (value == null) return null;
             String fileName = (String) value;
             if (fileName.startsWith("-") && node.getNumber() > 0) {
                 String[] parts = fileName.split("\\.", 2);
