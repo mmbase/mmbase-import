@@ -38,6 +38,7 @@ public abstract class ConfigurableStringTransformer extends StringTransformer im
     abstract public Map<String,Config> transformers();
     abstract public String getEncoding();
 
+    @Override
     public String toString() {
         try {
             return getEncoding();

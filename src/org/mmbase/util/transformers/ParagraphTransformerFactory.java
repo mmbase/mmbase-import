@@ -27,7 +27,7 @@ public class ParagraphTransformerFactory implements ParameterizedTransformerFact
     private static Logger log = Logging.getLoggerInstance(ParagraphTransformerFactory.class);
 
     protected final static Parameter[] PARAMS = {
-        new Parameter("class", String.class, "")
+        new Parameter<String>("class", String.class, "")
     };
 
     public Transformer createTransformer(Parameters parameters) {
@@ -38,8 +38,8 @@ public class ParagraphTransformerFactory implements ParameterizedTransformerFact
     }
 
     public class ParagraphTransformer extends StringTransformer {
-
-        private String className = null;
+        private static final long serialVersionUID = 0L;
+        private final String className;
 
         ParagraphTransformer(String c) {
              className = c;
@@ -62,6 +62,7 @@ public class ParagraphTransformerFactory implements ParameterizedTransformerFact
             return r;
         }
 
+        @Override
         public String toString() {
             return "PARAGRAPH";
         }

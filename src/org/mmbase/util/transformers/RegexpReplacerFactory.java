@@ -54,6 +54,7 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory<Ch
                 {
                     addPatterns(parameters.get(PATTERNS), patterns);
                 }
+            @Override
                 public Collection<Entry<Pattern,String>> getPatterns() {
                     return patterns;
                 }

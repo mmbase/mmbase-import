@@ -11,12 +11,13 @@ package org.mmbase.util.transformers;
 
 /**
  * Describes what encoding is configured.
+ * @version $Id$
  */
 
 public class Config {
-    public Class<?> clazz;
-    public int   config;
-    public String info;
+    public final Class<?> clazz;
+    public final int   config;
+    public final String info;
     public Config(Class<?> c, int i ) {
         clazz = c;
         config = i;
@@ -27,6 +28,7 @@ public class Config {
         config = i;
         info = in;
     }
+    @Override
     public String toString() {
         return "" + config + ":" + info;
     }

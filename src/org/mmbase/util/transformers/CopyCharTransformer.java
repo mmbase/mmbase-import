@@ -25,7 +25,7 @@ import org.mmbase.util.IOUtil;
  */
 
 public class CopyCharTransformer extends ReaderTransformer implements CharTransformer {
-
+    private static final long serialVersionUID = 0L;
     public static final CopyCharTransformer INSTANCE = new CopyCharTransformer();
 
     private CopyCharTransformer() {
@@ -43,20 +43,24 @@ public class CopyCharTransformer extends ReaderTransformer implements CharTransf
     } 
 
     // implementation, javadoc inherited
+    @Override
     public Writer transformBack(Reader r, Writer w) {
         return transform(r, w);
     }
 
     // overridden for performance.
+    @Override
     public String transform(String s) {
         return s;
     }
 
     // overridden for performance.
+    @Override
     public String transformBack(String s) {
         return s;
     }
 
+    @Override
     public String toString() {
         return "COPY";
     }

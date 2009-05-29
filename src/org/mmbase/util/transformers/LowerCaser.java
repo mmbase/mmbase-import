@@ -23,6 +23,7 @@ import org.mmbase.util.logging.*;
  */
 
 public class LowerCaser extends ReaderTransformer implements CharTransformer {
+    private static final long serialVersionUID = 0L;
     private static Logger log = Logging.getLoggerInstance(LowerCaser.class);
 
     public Writer transform(Reader r, Writer w) {
@@ -41,6 +42,7 @@ public class LowerCaser extends ReaderTransformer implements CharTransformer {
     }
 
 
+    @Override
     public String toString() {
         return "LOWERCASER";
     }
