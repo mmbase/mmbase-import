@@ -27,25 +27,25 @@ public interface AggregatedField extends StepField {
      * Aggregation type, resulting in grouping the results on non-null
      * values of this field.
      */
-    public final static int AGGREGATION_TYPE_GROUP_BY = 1;
+    final static int AGGREGATION_TYPE_GROUP_BY = 1;
 
     /**
      * Aggregation type, resulting in count of non-null
      * values in this field.
      */
-    public final static int AGGREGATION_TYPE_COUNT = 2;
+    final static int AGGREGATION_TYPE_COUNT = 2;
 
     /**
      * Aggregation type, resulting in count of distinct non-null
      * values in this field.
      */
-    public final static int AGGREGATION_TYPE_COUNT_DISTINCT = 3;
+    final static int AGGREGATION_TYPE_COUNT_DISTINCT = 3;
 
     /** Aggregation type, resulting in minimum value in this field. */
-    public final static int AGGREGATION_TYPE_MIN = 4;
+    final static int AGGREGATION_TYPE_MIN = 4;
 
     /** Aggregation type, resulting in maximum value in this field. */
-    public final static int AGGREGATION_TYPE_MAX = 5;
+    final static int AGGREGATION_TYPE_MAX = 5;
 
     /**
      * Search type descriptions corresponding to the search type values:
@@ -61,7 +61,7 @@ public interface AggregatedField extends StepField {
     /**
      * Gets the aggregation type.
      */
-    public int getAggregationType();
+    int getAggregationType();
 
     /**
      * Compares this aggregated field to the specified object. The result is
@@ -73,7 +73,8 @@ public interface AggregatedField extends StepField {
      * @return <code>true</code> if the objects are equal,
      * <code>false</code> otherwise.
      */
-    public boolean equals(Object obj);
+    @Override
+    boolean equals(Object obj);
 
     /**
      * Returns a string representation of this AggregatedField.
@@ -96,5 +97,6 @@ public interface AggregatedField extends StepField {
      *
      * @return A string representation of this AggregatedField.
      */
+    @Override
     public String toString();
 }

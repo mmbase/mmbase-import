@@ -23,15 +23,15 @@ import java.util.*;
 public interface CompositeConstraint extends Constraint {
 
     /** Logical operator 'and' */
-    public final static int LOGICAL_AND = 2;
+    final static int LOGICAL_AND = 2;
     /** Logical operator 'or' */
-    public final static int LOGICAL_OR = 1;
+    final static int LOGICAL_OR = 1;
 
     /**
      * Operator descriptions corresponding to the operator values:
      * {@link #LOGICAL_AND}, and {@link #LOGICAL_OR}
      */
-    public final static String[] LOGICAL_OPERATOR_DESCRIPTIONS = new String[] {
+    final static String[] LOGICAL_OPERATOR_DESCRIPTIONS = new String[]{
          null, // not specified
          "or",
          "and"
@@ -55,10 +55,12 @@ public interface CompositeConstraint extends Constraint {
      * @return <code>true</code> if the objects are equal,
      * <code>false</code> otherwise.
      */
-    public boolean equals(Object obj);
+    @Override
+    boolean equals(Object obj);
 
     // javadoc is inherited
-    public int hashCode();
+    @Override
+    int hashCode();
 
     /**
      * Returns a string representation of this CompositeConstraint.
@@ -77,7 +79,8 @@ public interface CompositeConstraint extends Constraint {
      *
      * @return A string representation of this CompositeConstraint.
      */
-    public String toString();
+    @Override
+    String toString();
 
 
 }

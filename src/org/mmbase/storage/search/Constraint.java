@@ -40,9 +40,11 @@ public interface Constraint {
      * @return <code>true</code> if the objects are equal,
      * <code>false</code> otherwise.
      */
-    public boolean equals(Object obj);
+    @Override
+    boolean equals(Object obj);
 
     // javadoc is inherited
-    public int hashCode();
+    @Override
+    int hashCode();
 
 }

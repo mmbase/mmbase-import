@@ -44,7 +44,8 @@ public interface CompareFieldsConstraint extends FieldCompareConstraint {
      *
      * @return A string representation of this CompareFieldsConstraint.
      */
-    public String toString();
+    @Override
+    String toString();
 
 
 }
