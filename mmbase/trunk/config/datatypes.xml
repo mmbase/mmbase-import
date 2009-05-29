@@ -29,6 +29,7 @@
     setprocessor*
     getprocessor*
     commitprocessor*
+    deleteprocessor*
     specialization*
     -->
 
