@@ -54,6 +54,7 @@ public class Index extends ArrayList<Field> {
         this.unique = unique;
     }
 
+    @Override
     public synchronized boolean add(Field field) {
         if (!contains(field)) {
             return super.add(field);
