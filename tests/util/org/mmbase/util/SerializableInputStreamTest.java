@@ -92,7 +92,7 @@ public class SerializableInputStreamTest extends TestCase {
     }
 
 
-    protected void testSerializable(SerializableInputStream l) throws IOException, java.lang.ClassNotFoundException {
+    protected void testSerializableMany(SerializableInputStream l) throws IOException, java.lang.ClassNotFoundException {
         byte[] before = l.get();
         testSerializable(l);
         testSerializable(l);
@@ -120,21 +120,21 @@ public class SerializableInputStreamTest extends TestCase {
 
     public void testSerializableA() throws IOException, java.lang.ClassNotFoundException {
         SerializableInputStream a = getByteArrayInstance();
-        testSerializable(a);
+        testSerializableMany(a);
     }
     public void testSerializableB() throws IOException, java.lang.ClassNotFoundException {
         SerializableInputStream b = getInputStreamInstance();
-        testSerializable(b);
+        testSerializableMany(b);
 
     }
     public void testSerializableC() throws IOException, java.lang.ClassNotFoundException {
         SerializableInputStream c = getDiskItemInstance();
-        testSerializable(c);
+        testSerializableMany(c);
     }
-    public void testCopy(SerializableInputStream i) {
+    public void testCopy(SerializableInputStream l) throws IOException {
         File f = File.createTempFile("oof", ".bar");
         IOUtil.copy(l, new FileOutputStream(f));
-        i.close();
+        l.close();
     }
 
 
