@@ -316,7 +316,7 @@ Widgets.prototype.labelsToInputs = function(selector, options) {
         $(selector).each(function() {
             var labelText = $(this).text();
             var labelFor = $(this).attr("for");
-            var input = $("input[name=" + labelFor + "]");
+            var input = $("#" + labelFor);
             if (input.val() == "") {
                 input.val(labelText);
                 input.addClass("untouched");
