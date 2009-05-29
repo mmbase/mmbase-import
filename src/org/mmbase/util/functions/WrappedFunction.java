@@ -83,9 +83,23 @@ public abstract class WrappedFunction<R> implements Function<R> {
         wrappedFunction.setReturnType(type);
     }
 
+    @Override
     public int hashCode() {
         return getName().hashCode();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final WrappedFunction<R> other = (WrappedFunction<R>) obj;
+        return other.getClass().equals(getClass());
+    }
+    @Override
     public String toString() {
         return "WRAPPED " + wrappedFunction.toString();
     }

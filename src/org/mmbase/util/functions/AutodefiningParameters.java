@@ -21,6 +21,7 @@ package org.mmbase.util.functions;
  */
 
 public class AutodefiningParameters extends Parameters {
+    private static final long serialVersionUID = 0L;
     //private static Logger log = Logging.getLoggerInstance(AutodefiningParameters.class);
 
     public AutodefiningParameters(Parameter<?>[] base) {
