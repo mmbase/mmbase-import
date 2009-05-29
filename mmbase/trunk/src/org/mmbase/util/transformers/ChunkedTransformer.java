@@ -70,6 +70,7 @@ public abstract class ChunkedTransformer<P> extends ConfigurableReaderTransforme
     protected boolean onlyFirstPattern    = false;
     protected boolean onlyFirstMatch      = false;
 
+    @Override
     public void configure(int i) {
         onlyFirstMatch = ((i & ONLY_REPLACE_FIRST_MATCH) > 0);
         onlyFirstPattern = ((i & ONLY_USE_FIRST_MATCHING_PATTERN) > 0);

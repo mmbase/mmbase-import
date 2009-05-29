@@ -24,6 +24,7 @@ import java.io.*;
  */
 
 public class Base64 implements ByteToCharTransformer, ConfigurableTransformer {
+    private static final long serialVersionUID = 0L;
     private final static String ENCODING = "BASE64";
     private final static int BASE_64 = 1;
 
@@ -31,17 +32,27 @@ public class Base64 implements ByteToCharTransformer, ConfigurableTransformer {
     private static char[]    map1 = new char[64];
     static {
         int i=0;
-        for (char c='A'; c<='Z'; c++) map1[i++] = c;
-        for (char c='a'; c<='z'; c++) map1[i++] = c;
-        for (char c='0'; c<='9'; c++) map1[i++] = c;
+        for (char c='A'; c<='Z'; c++) {
+            map1[i++] = c;
+        }
+        for (char c='a'; c<='z'; c++) {
+            map1[i++] = c;
+        }
+        for (char c='0'; c<='9'; c++) {
+            map1[i++] = c;
+        }
         map1[i++] = '+'; map1[i++] = '/';
     }
 
     // Mapping table from Base64 characters to 6-bit nibbles.
     private static byte[]    map2 = new byte[128];
     static {
-        for (int i=0; i<map2.length; i++) map2[i] = -1;
-        for (int i=0; i<64; i++) map2[map1[i]] = (byte)i;
+        for (int i=0; i<map2.length; i++) {
+            map2[i] = -1;
+        }
+        for (int i=0; i<64; i++) {
+            map2[map1[i]] = (byte) i;
+        }
     }
 
 
@@ -121,7 +132,9 @@ public class Base64 implements ByteToCharTransformer, ConfigurableTransformer {
         char[] in = r.toCharArray();
         int iLen = in.length;
         if (iLen%4 != 0) throw new IllegalArgumentException ("Length of Base64 encoded input string is not a multiple of 4.");
-        while (iLen > 0 && in[iLen-1] == '=') iLen--;
+        while (iLen > 0 && in[iLen-1] == '=') {
+            iLen--;
+        }
         int oLen = (iLen*3) / 4;
         byte[] out = new byte[oLen];
         int ip = 0;

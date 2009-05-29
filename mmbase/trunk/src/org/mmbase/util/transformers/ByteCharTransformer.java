@@ -23,7 +23,7 @@ import org.mmbase.util.ReaderInputStream;
  */
 
 public class ByteCharTransformer extends ReaderTransformer implements CharTransformer {
-
+    private static final long serialVersionUID = 0L;
     private ByteToCharTransformer byteToChars;
     private String encoding = "UTF-8";
     public ByteCharTransformer(ByteToCharTransformer b) {
@@ -39,6 +39,7 @@ public class ByteCharTransformer extends ReaderTransformer implements CharTransf
         return byteToChars.transform(new ReaderInputStream(reader, encoding), writer);
     }
 
+    @Override
     public String toString() {
         return "CHAR "  + byteToChars ;
     }

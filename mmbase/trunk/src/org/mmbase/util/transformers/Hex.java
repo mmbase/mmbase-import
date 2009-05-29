@@ -22,6 +22,7 @@ import java.util.Map;
  */
 
 public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransformer, ConfigurableTransformer {
+    private static final long serialVersionUID = 0L;
     private final static String ENCODING = "HEX";
     private final static int HEX = 1;
 
@@ -63,6 +64,7 @@ public class Hex extends ByteArrayToCharTransformer implements ByteToCharTransfo
      * @return an array of bytes
      * @throws IllegalArgumentException whenever the input string is not correctly formatted.
      */
+    @Override
     public byte[] transformBack(String r) {
         try {
             int strlen = r.length();

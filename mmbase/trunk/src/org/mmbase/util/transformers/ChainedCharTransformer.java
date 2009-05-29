@@ -48,6 +48,7 @@ import org.mmbase.util.logging.*;
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
+    private static final long serialVersionUID = 0L;
     private static Logger log = Logging.getLoggerInstance(ChainedCharTransformer.class);
    
     private List<CharTransformer> charTransformers = new ArrayList<CharTransformer>();
@@ -96,6 +97,7 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
     /** 
      * Implementation without Threads. Not needed when transforming by String. 
      */
+    @Override
     public String transform(String string) {
         for (CharTransformer ct : charTransformers) {
             string = ct.transform(string);            
@@ -155,6 +157,7 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
         return endWriter;        
     }
 
+    @Override
     public String toString() {
         return "CHAINED"  + charTransformers;
     }

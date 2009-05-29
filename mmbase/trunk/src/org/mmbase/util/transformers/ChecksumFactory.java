@@ -74,6 +74,7 @@ public class ChecksumFactory implements ParameterizedTransformerFactory  {
             }
         }
 
+        @Override
         public String toString() {
             return "checksum(" + checksum + ")";
         }

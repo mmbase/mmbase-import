@@ -24,6 +24,7 @@ import org.mmbase.util.Entry;
  */
 
 public class LinkFinder extends RegexpReplacer {
+    private static final long serialVersionUID = 0L;
 
     protected static Collection<Entry<Pattern,String>> urlPatterns = new ArrayList<Entry<Pattern,String>>();
 
@@ -38,15 +39,18 @@ public class LinkFinder extends RegexpReplacer {
     }
 
 
+    @Override
     protected String getConfigFile() {
         return "linkfinder.xml";
     }
 
+    @Override
     protected Collection<Entry<Pattern,String>> getPatterns() {
         return urlPatterns;
     }
 
 
+    @Override
     protected void readDefaultPatterns(Collection<Entry<Pattern,String>> patterns) {
 
         patterns.add(new Entry<Pattern,String>(Pattern.compile(".+@.+"),      "<a href=\"mailto:$0\">$0</a>"));
@@ -58,6 +62,7 @@ public class LinkFinder extends RegexpReplacer {
     }
 
 
+    @Override
     public String toString() {
         return "LINKFINDER";
     }

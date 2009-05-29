@@ -22,12 +22,13 @@ import org.mmbase.util.logging.Logging;
  */
 
 public class MD5 extends StringTransformer implements CharTransformer {
-
+    private static final long serialVersionUID = 0L;
     private static final Logger log = Logging.getLoggerInstance(MD5.class);
 
     private final static String ENCODING = "MD5";
     private MD5Implementation transformer = new MD5Implementation();
 
+    @Override
     public String toString() {
         return ENCODING;
     }
@@ -36,6 +37,7 @@ public class MD5 extends StringTransformer implements CharTransformer {
         return transformer.calcMD5(r);
     }
 
+    @Override
     public String transformBack(String w) {
         throw new UnsupportedOperationException("transformBack(String) can never be done for MD5(i hope so :p)");
     }
@@ -43,6 +45,7 @@ public class MD5 extends StringTransformer implements CharTransformer {
     // from http://pajhome.org.uk/crypt/md5/md5.java.txt
     // With permission of Thomas Weber (tw@orange-interactive.de)
     static class MD5Implementation implements java.io.Serializable {
+        private static final long serialVersionUID = 0L;
         /*
          * A Java implementation of the RSA Data Security, Inc. MD5 Message
          * Digest Algorithm, as defined in RFC 1321.
@@ -58,8 +61,9 @@ public class MD5 extends StringTransformer implements CharTransformer {
         String hex_chr = "0123456789abcdef";
         private String rhex(int num) {
             String str = "";
-            for (int j = 0; j <= 3; j++)
+            for (int j = 0; j <= 3; j++) {
                 str = str + hex_chr.charAt((num >> (j * 8 + 4)) & 0x0F) + hex_chr.charAt((num >> (j * 8)) & 0x0F);
+            }
             return str;
         }
 

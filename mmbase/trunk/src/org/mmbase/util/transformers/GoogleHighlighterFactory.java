@@ -89,11 +89,13 @@ public class GoogleHighlighterFactory  implements ParameterizedTransformerFactor
         log.debug("Using search " + search);
 
         RegexpReplacer trans = new RegexpReplacer() {
+            private static final long serialVersionUID = 0L;
                 private Collection<Entry<Pattern,String>> patterns = new ArrayList<Entry<Pattern,String>>();
                 {
                     Pattern p        = Pattern.compile("(" + search.replace('+', '|') + ")");
                     patterns.add(new Entry<Pattern,String>(p, parameters.get(FORMAT)));
                 }
+            @Override
                 public Collection<Entry<Pattern,String>> getPatterns() {
                     return patterns;
                 }
