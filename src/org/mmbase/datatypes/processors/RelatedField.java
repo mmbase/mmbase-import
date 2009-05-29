@@ -60,8 +60,10 @@ public class RelatedField {
             NodeList rl = related.getNodeManager().getList(related);
             if (rl.size() == 0) {
                 log.service("No related node of type " + getRelatedType(node) + ". Implicitely creating now.");
-                if (node.isNew()) node.commit(); // Silly, but you cannot make relations to new
-                                                 // nodes.
+                if (node.isNew() && node.getNumber() < 0) {
+                    node.commit(); // Silly, but you cannot make relations to new nodes.
+
+                }
                 Cloud cloud = node.getCloud();
                 Node newNode = getRelatedType(node).createNode();
                 newNode.commit();
