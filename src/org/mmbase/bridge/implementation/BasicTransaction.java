@@ -184,9 +184,6 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 BasicCloudContext.transactionManager.commit(userContext, transactionName);
 
 
-
-
-
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
                 // return false;

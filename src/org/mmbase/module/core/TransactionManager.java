@@ -194,15 +194,14 @@ public class TransactionManager {
         // MM: I think we need an actual Transaction object! with e.g. a property 'resolved'.
 
         Collection<MMObjectNode> transaction = getTransaction(transactionName);
-        if (transaction instanceof ArrayList) { // a bit of a trick to see if it is resolved already
+        if (transaction instanceof ArrayList) { // a bit of a trick to see if it is committed already
             try {
                 getTransactionResolver().resolve(transaction);
-                transactions.put(transactionName, Collections.unmodifiableCollection(transaction)); // makes it recognizable, and also the transaction is unusable after that
             } catch (TransactionManagerException te) {
                 throw new TransactionManagerException("Can't resolve transaction " + transactionName + " (it has " + transaction.size() + " nodes)", te);
             }
         } else {
-            log.service("Resolved already " + transaction.getClass());
+            log.service("Committed already " + transaction.getClass());
             return false;
         }
         return true;
@@ -212,9 +211,11 @@ public class TransactionManager {
         Collection<MMObjectNode> transaction = getTransaction(transactionName);
         try {
             resolve(transactionName);
+            transactions.put(transactionName, Collections.unmodifiableCollection(transaction)); // makes it recognizable, and also the transaction is unusable after that
             if (!performCommits(user, transaction)) {
                 throw new TransactionManagerException("Can't commit transaction " + transactionName);
             }
+
 
         } finally {
             // remove nodes from the temporary node cache
@@ -268,6 +269,8 @@ public class TransactionManager {
             }
             if (commitOK) {
                 state.state = State.COMMITED;
+                node.storeValue(MMObjectBuilder.TMP_FIELD_RESOLVED, null);
+
             } else {
                 state.state = State.FAILED;
             }
@@ -281,6 +284,7 @@ public class TransactionManager {
             }
             if (insertOK > 0) {
                 state.state = State.COMMITED;
+                node.storeValue(MMObjectBuilder.TMP_FIELD_RESOLVED, null);
             } else {
                 state.state = State.FAILED;
                 String message = "When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])";
@@ -300,6 +304,7 @@ public class TransactionManager {
 
         log.debug("Checking types and existance");
 
+        System.out.println("Commtting " + nodes);
         for (MMObjectNode node : nodes) {
             // Nodes are uncommited by default
             NodeState state = new NodeState();
