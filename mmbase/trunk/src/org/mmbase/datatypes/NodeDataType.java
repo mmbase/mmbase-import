@@ -122,18 +122,26 @@ public class NodeDataType extends BasicDataType<Node> {
         protected boolean simpleValid(Object v, Node node, Field field) {
             if (getValue().equals(Boolean.TRUE)) {
                 if (v != null) {
-                    if (v instanceof String) {
+                    if (v instanceof CharSequence) {
                         Cloud cloud = getCloud(node, field);
-                        return cloud != null && cloud.hasNode((String)v);
+                        boolean res =  cloud != null && cloud.hasNode(v.toString());
+                        if (! res) {
+                            log.warn("The cloud " + cloud + " does not have a node " + v);
+                        }
+                        return res;
                     } else if (v instanceof Number) {
                         int num = ((Number)v).intValue();
                         if (num < 0) return false;
                         Cloud cloud = getCloud(node, field);
-                        return cloud != null && cloud.hasNode(num);
+                        boolean res =  cloud != null && cloud.hasNode(num);
+                        if (! res) {
+                            log.warn("The cloud " + cloud + " does not have a node " + v);
+                        }
+                        return res;
                     } else if (v instanceof Node) {
                         return true;
                     } else {
-                        //log.info("Not valid because node value is a " + v.getClass());
+                        log.debug("Not valid because node value is a " + v.getClass());
                         return false;
                     }
                 }
