@@ -177,7 +177,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
 
     public String htmlInputId(Node node, Field field) throws JspTagException {
-        return prefix(field.getName());
+        return prefixID(field.getName());
     }
 
     /**
