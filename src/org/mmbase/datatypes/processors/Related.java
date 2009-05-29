@@ -150,10 +150,6 @@ public class Related {
             if (log.isDebugEnabled()) {
                 log.debug("getting "  + node);
             }
-            if (node.isNew()) {
-                log.debug("The node is new, returning " + field.getDataType().getDefaultValue());
-                return field.getDataType().getDefaultValue();
-            }
             NodeQuery relations = getRelationsQuery(node);
             NodeList rl = relations.getNodeManager().getList(relations);
             if (rl.size() == 0) {
