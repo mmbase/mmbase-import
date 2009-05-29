@@ -94,6 +94,7 @@
         <guiname xml:lang="nl">Bitrate</guiname>
       </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="false" />
         <minExclusive value="0" />
       </datatype>
     </field>
