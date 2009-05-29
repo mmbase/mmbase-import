@@ -128,7 +128,9 @@ public class FunctionSets {
         List<URL> resources = watcher.getResourceLoader().getResourceList("functionsets.xml");
         log.service("Using " + resources);
         ListIterator<URL> i = resources.listIterator();
-        while (i.hasNext()) i.next();
+        while (i.hasNext()) {
+            i.next();
+        }
         while (i.hasPrevious()) {
             try {
                 URL u = i.previous();
@@ -178,21 +180,21 @@ public class FunctionSets {
             String functionName = reader.getElementAttributeValue(element, "name");
             if (functionName != null) {
 
-                Element a = reader.getElementByPath(element, "function.type");
+                Element a = DocumentReader.getElementByPath(element, "function.type");
 
-                String type = reader.getElementValue(a); // 'class' or 'instance'
+                String type = DocumentReader.getElementValue(a); // 'class' or 'instance'
 
-                a = reader.getElementByPath(element, "function.description");
-                String description = reader.getElementValue(a);
+                a = DocumentReader.getElementByPath(element, "function.description");
+                String description = DocumentReader.getElementValue(a);
 
-                a = reader.getElementByPath(element, "function.class");
-                String className = reader.getElementValue(a);
+                a = DocumentReader.getElementByPath(element, "function.class");
+                String className = DocumentReader.getElementValue(a);
 
-                a = reader.getElementByPath(element, "function.method");
-                String methodName = reader.getElementValue(a);
+                a = DocumentReader.getElementByPath(element, "function.method");
+                String methodName = DocumentReader.getElementValue(a);
 
                 // read the return types and values
-                a = reader.getElementByPath(element, "function.return");
+                a = DocumentReader.getElementByPath(element, "function.return");
                 ReturnType returnType = null;
                 if (a != null) {
                     String returnTypeClassName = reader.getElementAttributeValue(a, "type");

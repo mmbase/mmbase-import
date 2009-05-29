@@ -34,13 +34,14 @@ import org.mmbase.util.logging.*;
  */
 public class BeanFunction extends AbstractFunction<Object> {
 
-
+    private static final long serialVersionUID  = 0L;
     private static int producerSeq = 0;
     /**
      * @since MMBase-1.8.5
      */
     public static abstract class Producer {
         public abstract Object getInstance();
+        @Override
         public String toString() {
             return getClass().getName() + "." + (producerSeq++);
         }
@@ -68,9 +69,11 @@ public class BeanFunction extends AbstractFunction<Object> {
      * A cache for bean classes. Used to avoid some reflection.
      */
     private static Cache<String, BeanFunction> beanFunctionCache = new Cache<String, BeanFunction>(50) {
+        @Override
         public String getName() {
             return "BeanFunctionCache";
         }
+        @Override
         public String getDescription() {
             return "ClassName.FunctionName -> BeanFunction object";
         }
@@ -109,6 +112,7 @@ public class BeanFunction extends AbstractFunction<Object> {
                         throw new RuntimeException(e);
                     }
                 }
+            @Override
                 public String toString() {
                     return "";
                 }
@@ -119,11 +123,11 @@ public class BeanFunction extends AbstractFunction<Object> {
      * argument one, and if that fails, simply newInstance is used.
      * @since MMBase-1.8.5
      */
-    public static Object getInstance(final Class claz, Object constructorArgument) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    public static <C> C getInstance(final Class<C> claz, Object constructorArgument) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         Class c = constructorArgument.getClass();
         while (c != null) {
             try {
-                Constructor con = claz.getConstructor(c);
+                Constructor<C> con = claz.getConstructor(c);
                 return con.newInstance(constructorArgument);
             } catch (NoSuchMethodException e) {
                 c = c.getSuperclass();
@@ -132,7 +136,7 @@ public class BeanFunction extends AbstractFunction<Object> {
         Class[] interfaces = constructorArgument.getClass().getInterfaces();
         for (Class element : interfaces) {
             try {
-                Constructor con = claz.getConstructor(element);
+                Constructor<C> con = claz.getConstructor(element);
                 return con.newInstance(constructorArgument);
             } catch (NoSuchMethodException e) {
             }
@@ -162,7 +166,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     /**
      * The constructor! Performs reflection to fill 'method' and 'setMethods' members.
      */
-    private  BeanFunction(Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException,  InvocationTargetException {
+    private  BeanFunction(Class<?> claz, String name, Producer producer) throws IllegalAccessException, InstantiationException,  InvocationTargetException {
         super(name, null, null);
         this.producer = producer;
 
@@ -223,7 +227,7 @@ public class BeanFunction extends AbstractFunction<Object> {
                         if (required) {
                             log.warn("Required annotation ignored, because a default value is present");
                         }
-                        parameters.add(new Parameter(parameterName, parameterTypes[0], defaultValue));
+                        parameters.add(new Parameter<Object>(parameterName, parameterTypes[0], defaultValue));
                     } else {
                         parameters.add(new Parameter(parameterName, parameterTypes[0], required));
                     }

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * @since MMBase-1.9.1
  */
 public class CloneNodeFunction extends NodeFunction<Node> {
-
+    private static final long serialVersionUID = 0L;
     private static final Logger log = Logging.getLoggerInstance(CloneNodeFunction.class);
 
     public static final Parameter<?>[] PARAMETERS = {
