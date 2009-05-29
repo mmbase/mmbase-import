@@ -606,6 +606,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         StringBuilder buf = new StringBuilder();
         buf.append(getName() + " (" + getTypeAsClass() + (defaultValue != null ? ":" + defaultValue : "") + ")");
         buf.append(commitProcessor == null || EmptyCommitProcessor.getInstance() == commitProcessor ? "" : " commit: " + commitProcessor + "");
+        buf.append(deleteProcessor == null || EmptyCommitProcessor.getInstance() == deleteProcessor ? "" : " delete: " + deleteProcessor + "");
         if (getProcessors != null) {
             for (int i = 0; i < Fields.TYPE_MAXVALUE; i++) {
                 buf.append(getProcessors[i] == null ? "" : ("; get [" + Fields.typeToClass(i) + "]:" + getProcessors[i] + " "));
