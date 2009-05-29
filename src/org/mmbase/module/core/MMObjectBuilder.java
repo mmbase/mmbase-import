@@ -89,6 +89,10 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public static final String TMP_FIELD_NUMBER = "_number";
     public static final String TMP_FIELD_EXISTS = "_exists";
+    /**
+     * @since MMBase-1.9.1
+     */
+    static final String TMP_FIELD_RESOLVED = "_resolved";
 
     /**
      * Default (system) owner name for the owner field.
@@ -277,7 +281,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * This is overridden from FunctionProvider, because this one needs to be (also) a NodeFunction
      * @since MMBase-1.8
      */
-    protected Function<Collection<? extends Function>> getFunctions = new NodeFunction<Collection<? extends Function>>("getFunctions", Parameter.emptyArray(), ReturnType.COLLECTION) {
+    protected Function<Collection<? extends Function>> getFunctions = new NodeFunction<Collection<? extends Function>>("getFunctions",
+                                                                                                                       Parameter.emptyArray(),
+                                                                                                                       new ReturnType<Collection<? extends Function>>(Collection.class, "Collection")) {
             {
                 setDescription("The 'getFunctions' returns a Map of al Function object which are available on this FunctionProvider");
             }
@@ -501,6 +507,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // add temporary fields
             checkAddTmpField(TMP_FIELD_NUMBER);
             checkAddTmpField(TMP_FIELD_EXISTS);
+            checkAddTmpField(TMP_FIELD_RESOLVED);
 
             // get property of maximum number of queries..
             String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERTY);

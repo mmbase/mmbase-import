@@ -34,7 +34,7 @@ class TransactionResolver {
      * Given a map where the keys are temporary identifiers, sets the values to actual new node
      * numbers, unless this was already done.
      */
-    private void getNewNumbers(Map<String, Integer> numbers) {
+    private void getNewNumbers(final Map<String, Integer> numbers) {
         // Get the numbers
         for (Map.Entry<String, Integer> numberEntry : numbers.entrySet()) {
             Integer num = numberEntry.getValue();
@@ -52,7 +52,8 @@ class TransactionResolver {
         }
     }
 
-    private void setNewNumbers(Map<MMObjectNode, Collection<String>> nnodes, Map<String, Integer> numbers) {
+    private void setNewNumbers(final Map<MMObjectNode, Collection<String>> nnodes,
+                               final Map<String, Integer> numbers) {
         // put numbers in the right place
         for (Map.Entry<MMObjectNode, Collection<String>> nnodeEntry : nnodes.entrySet()) {
             MMObjectNode node = nnodeEntry.getKey();
@@ -104,8 +105,8 @@ class TransactionResolver {
      * @throws TransactionManagerException if the transactiosn could not be successfully completely resolved.
     */
     void resolve(final Collection<MMObjectNode> nodes) throws TransactionManagerException {
-        Map<String, Integer> numbers = new HashMap<String, Integer>(); /* Temp key -> Real node number */
-        Map<MMObjectNode, Collection<String>> nnodes  = new HashMap<MMObjectNode, Collection<String>>(); /* MMObjectNode --> List of changed fields */
+        final Map<String, Integer> numbers = new HashMap<String, Integer>(); /* Temp key -> Real node number */
+        final Map<MMObjectNode, Collection<String>> nnodes  = new HashMap<MMObjectNode, Collection<String>>(); /* MMObjectNode --> List of changed fields */
 
 
 
@@ -115,6 +116,10 @@ class TransactionResolver {
             MMObjectBuilder bul = mmbase.getBuilder(node.getName());
             if (log.isDebugEnabled()) {
                 log.debug("TransactionResolver - builder " + node.getName() + " builder " + bul);
+            }
+            if (Boolean.TRUE.equals(node.getValue(MMObjectBuilder.TMP_FIELD_RESOLVED))) {
+                log.debug("Node was resolved already");
+                continue;
             }
             for (CoreField fd : bul.getFields()) {
                 int dbtype = fd.getType();
@@ -127,6 +132,7 @@ class TransactionResolver {
                         String field = fd.getName();
                         String tmpField = "_" + field;
                         if (node.getDBState(tmpField) == Field.STATE_VIRTUAL) {
+
                             if (node.isNull(field)) {
                                 if (! node.isNull(tmpField)) {
                                     String key = node.getStringValue(tmpField);
@@ -175,6 +181,8 @@ class TransactionResolver {
                     }
                 }
             }
+            node.storeValue(MMObjectBuilder.TMP_FIELD_RESOLVED, Boolean.TRUE);
+
         }
 
         if (log.isDebugEnabled()) {
@@ -187,5 +195,6 @@ class TransactionResolver {
         setNewNumbers(nnodes, numbers);
 
         check(nodes);
+
     }
 }
