@@ -58,6 +58,7 @@ public interface FieldValueConstraint extends FieldCompareConstraint {
      *
      * @return A string representation of this FieldValueConstraint.
      */
-    public String toString();
+    @Override
+    String toString();
 
 }
