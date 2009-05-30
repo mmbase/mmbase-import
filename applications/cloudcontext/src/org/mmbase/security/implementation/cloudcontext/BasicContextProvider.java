@@ -71,7 +71,9 @@ public  class BasicContextProvider implements ContextProvider {
         List<NodeSearchQuery> temp = new ArrayList<NodeSearchQuery>();
         for (String bulName : b) {
             MMObjectBuilder bul = MMBase.getMMBase().getBuilder(bulName);
-            if (bul == null) log.warn("Cannot add '" + bulName + "' to builder list (it does not exist)");
+            if (bul == null) {
+                log.warn("Cannot add '" + bulName + "' to builder list (it does not exist)");
+            }
             NodeSearchQuery q = new NodeSearchQuery(bul);
             q.setModifiable(false);
             temp.add(q);
@@ -149,11 +151,12 @@ public  class BasicContextProvider implements ContextProvider {
     protected SortedSet<String> getAllContexts() {
         if (all == null) {
             try {
+                all = new TreeSet<String>();
                 for (NodeSearchQuery q : getContextQueries()) {
                     MMObjectBuilder contextBuilder = MMBase.getMMBase().getBuilder(q.getSteps().get(0).getTableName());
                     Iterator<MMObjectNode> i = contextBuilder.getNodes(q).iterator();  // list all  Contextes simply..
-                    all = new TreeSet<String>();
                     String nameField = getContextNameField(q.getBuilder().getTableName());
+                    log.service("Using " + MMBase.getMMBase().getSearchQueryHandler().createSqlString(q) + " for all context");
                     while (i.hasNext()) {
                         MMObjectNode context = i.next();
                         all.add(context.getStringValue(nameField));
