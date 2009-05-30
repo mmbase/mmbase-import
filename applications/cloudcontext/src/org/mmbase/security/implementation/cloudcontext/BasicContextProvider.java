@@ -156,7 +156,7 @@ public  class BasicContextProvider implements ContextProvider {
                     MMObjectBuilder contextBuilder = MMBase.getMMBase().getBuilder(q.getSteps().get(0).getTableName());
                     Iterator<MMObjectNode> i = contextBuilder.getNodes(q).iterator();  // list all  Contextes simply..
                     String nameField = getContextNameField(q.getBuilder().getTableName());
-                    log.service("Using " + MMBase.getMMBase().getSearchQueryHandler().createSqlString(q) + " for all context");
+                    log.debug("Using " + MMBase.getMMBase().getSearchQueryHandler().createSqlString(q) + " for all context");
                     while (i.hasNext()) {
                         MMObjectNode context = i.next();
                         all.add(context.getStringValue(nameField));
