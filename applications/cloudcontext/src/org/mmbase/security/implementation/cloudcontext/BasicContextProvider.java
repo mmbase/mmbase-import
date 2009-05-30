@@ -567,6 +567,7 @@ public  class BasicContextProvider implements ContextProvider {
 
             BasicRelationStep relationStep = query.addRelationStep(rights, groupsOrUsers);
             relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
+            ((BasicStep) relationStep.getNext()).setAlias("contexts");
 
             BasicStepField  operationStepField = new BasicStepField(relationStep, rights.getField("operation"));
             BasicFieldValueConstraint operationConstraint =  new BasicFieldValueConstraint(operationStepField, operation.toString());
