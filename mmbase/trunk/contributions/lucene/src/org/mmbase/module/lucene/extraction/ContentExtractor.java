@@ -77,7 +77,7 @@ public class ContentExtractor {
             mimeType = extractor.getMimeType();
         }
         cache.clear();
-        Map.Entry<Pattern, Extractor> entry = new org.mmbase.util.Entry(Pattern.compile(mimeType), extractor);
+        Map.Entry<Pattern, Extractor> entry = new org.mmbase.util.Entry<Pattern, Extractor>(Pattern.compile(mimeType), extractor);
         ListIterator <Map.Entry<Pattern, Extractor>> i = extractors.listIterator();
         while (i.hasNext()) {
             Map.Entry<Pattern, Extractor> e = i.next();

@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.64 2009-04-30 10:07:34 michiel Exp $
+ * @version $Id$
  **/
 public class Indexer {
 
@@ -99,7 +99,7 @@ public class Indexer {
     private int errorBufferCursor = -1;
     private long errorCount = 0;
     private final String[] errors = new String[ERRORBUFFER_MAX];
-    protected  List<String> errorBuffer = new AbstractList() {
+    protected  List<String> errorBuffer = new AbstractList<String>() {
             public int size() { return errorBufferSize; }
             public String get(int index) { return errors[(errorBufferSize + errorBufferCursor - index) % errorBufferSize]; }
         };
@@ -129,10 +129,10 @@ public class Indexer {
                 File d = new File(this.path);
                 if (d.exists()) {
                     if (d.isDirectory()) {
-                        if (IndexReader.isLocked(this.path)) {
+                        if (IndexWriter.isLocked(this.path)) {
                             log.info("The directory " + this.path + " is locked! Trying to unlock.");
                             Directory dir = getDirectory();
-                            IndexReader.unlock(dir);
+                            IndexWriter.unlock(dir);
                             log.service("Unlocked lucene index directory " + dir);
                         }
                     } else {
@@ -247,14 +247,14 @@ public class Indexer {
      * @param number the number of the node whose index to delete
      * @param klass The indexes to be deleted can be restricted to a certain class of IndexDefinition's.
      */
-    public int deleteIndex(String number, Class<? extends IndexDefinition> klass) {
+    int deleteIndex(String number, Class<? extends IndexDefinition> klass) {
         int deleted = 0;
         int updated = 0;
         OUTER:
         for (IndexDefinition indexDefinition : queries) {
             if (klass.isAssignableFrom(indexDefinition.getClass())) {
                 IndexReader reader = null;
-                Set<String> mains = new HashSet();
+                Set<String> mains = new HashSet<String>();
                 int d = 0;
                 int u = 0;
 
@@ -300,11 +300,11 @@ public class Indexer {
 
     }
 
-    protected int update(IndexDefinition indexDefinition, Set<String> mains) {
+    int update(IndexDefinition indexDefinition, Set<String> mains) {
         int updated = 0;
         IndexWriter writer = null;
         try {
-            writer = new IndexWriter(getDirectory(), analyzer, false);
+            writer = new IndexWriter(getDirectory(), analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
             for (String mainNumber : mains) {
                 CloseableIterator<? extends IndexEntry> j = indexDefinition.getSubCursor(mainNumber);
                 if (log.isDebugEnabled()) {
@@ -333,7 +333,7 @@ public class Indexer {
      * Update the index for the main element node with the given number.
      * @param number the number of the node whose index to update
      */
-    public int updateIndex(final String number, final Class<? extends IndexDefinition> klass) {
+    int updateIndex(final String number, final Class<? extends IndexDefinition> klass) {
         int updated = 0;
         assert klass != null;
         // process all queries
@@ -417,7 +417,7 @@ public class Indexer {
      * Update the index for the main element node with the given number.
      * @param number the number of the node whose index to update
      */
-    public int newIndex(final String number, final Class<? extends IndexDefinition> klass) {
+     int newIndex(final String number, final Class<? extends IndexDefinition> klass) {
         int updated = 0;
         assert klass != null;
         // process all queries
@@ -462,7 +462,7 @@ public class Indexer {
                     fullIndexing = true;
                     clear(true);
                     fullIndex = getDirectoryForFullIndex();
-                    writer = new IndexWriter(fullIndex, analyzer, true);
+                    writer = new IndexWriter(fullIndex, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
                     long startTime = System.currentTimeMillis();
                     // process all queries
                     int subIndexNumber = 0;
@@ -486,13 +486,14 @@ public class Indexer {
                         clear(false);
                         Directory.copy(fullIndex, getDirectory(), true);
                         Date lastFullIndex = setLastFullIndex(startTime);
-                        log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.docCount());
+                        log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + 
+                                getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.maxDoc());
                     } else if (Thread.currentThread().isInterrupted()) {
                         addError("Interrupted, will not update the index");
                     } else {
                         addError((errorCount - errorCountBefore) + " errors during full index. Will not update the index.");
                     }
-                    EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.IDLE, writer.docCount()));
+                    EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.IDLE, writer.maxDoc()));
                 } catch (Exception e) {
                     addError("" + fullIndex + ": " + e.getMessage());
                     log.error("Cannot run FullIndex: " + e.getMessage(), e);
@@ -530,7 +531,7 @@ public class Indexer {
                     writer.addDocument(document);
                 }
                 document = new Document();
-                document.add(new Field("indexId", indexId,  Field.Store.YES, Field.Index.UN_TOKENIZED));
+                document.add(new Field("indexId", indexId,  Field.Store.YES, Field.Index.NOT_ANALYZED));
                 indexed++;
                 if (indexed % 100 == 0) {
                     log.service("Indexed " + indexed + " documents");
@@ -632,6 +633,7 @@ public class Indexer {
         }
     }
 
+    @Override
     public String toString() {
         return getName() + queries;
     }

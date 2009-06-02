@@ -16,7 +16,7 @@ import org.mmbase.core.event.*;
  *
  * @since  MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: FullIndexEvents.java,v 1.2 2008-07-28 13:03:36 michiel Exp $
+ * @version $Id$
  */
 
 public class FullIndexEvents {
@@ -28,14 +28,14 @@ public class FullIndexEvents {
         IDLE
     }
     public static class Event extends org.mmbase.core.event.Event {
-
+        static final long serialVersionUID = 2650836418243450830L;
         protected final String index;
-        protected final Status status;
+        final Status status;
         protected final int indexed;
         /**
          * The event itself
          */
-        public Event(String i, Status s, int ied) {
+        Event(String i, Status s, int ied) {
             index = i;
             status = s;
             indexed = ied;
@@ -43,7 +43,7 @@ public class FullIndexEvents {
         public String getIndex() {
             return index;
         }
-        public Status getStatus() {
+        Status getStatus() {
             return status;
         }
         public int getIndexed() {

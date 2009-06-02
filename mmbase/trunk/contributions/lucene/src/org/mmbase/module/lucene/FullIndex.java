@@ -17,12 +17,12 @@ import org.mmbase.util.functions.Parameters;
  * Can be scheduled in MMBase crontab.
 
  * @author Michiel Meeuwissen
- * @version $Id: FullIndex.java,v 1.4 2008-07-30 06:05:32 michiel Exp $
+ * @version $Id$
  **/
 public class FullIndex extends  AbstractCronJob {
 
     public void run() {
-        Lucene lucene = (Lucene) Module.getModule("lucene");
+        Lucene lucene = Module.getModule(Lucene.class);
         if (lucene != null) {
             Parameters params = lucene.fullIndexFunction.createParameters();
             String index = cronEntry.getConfiguration();
