@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.lucene;
 
-import java.util.*;
 import org.mmbase.util.CloseableIterator;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
@@ -21,9 +20,9 @@ import org.apache.lucene.document.Document;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: IndexDefinition.java,v 1.17 2007-09-25 16:53:09 michiel Exp $
+ * @version $Id$
  **/
-interface IndexDefinition {
+public interface IndexDefinition {
 
 
     /**

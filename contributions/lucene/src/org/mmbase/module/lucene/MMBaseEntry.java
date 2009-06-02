@@ -12,19 +12,14 @@ package org.mmbase.module.lucene;
 import java.util.*;
 import java.text.*;
 import java.io.*;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 import org.mmbase.module.lucene.extraction.*;
-import org.mmbase.util.Encode;
 
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.bridge.util.xml.query.*;
 
 import org.mmbase.util.logging.*;
 
@@ -34,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.38 2009-02-12 12:05:44 michiel Exp $
+ * @version $Id$
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -85,9 +80,9 @@ public class MMBaseEntry implements IndexEntry {
         log.debug("Adding standard keys");
         // always add the 'element' number first, because that ensures that document.get("number") returns 'the' node
         String id = getIdentifier();
-        document.add(new Field("number",   id,  Field.Store.YES, Field.Index.UN_TOKENIZED));
+        document.add(new Field("number",   id,  Field.Store.YES, Field.Index.NOT_ANALYZED));
         if (multiLevel) {
-            document.add(new Field("builder", elementManager.getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+            document.add(new Field("builder", elementManager.getName(),    Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
             log.debug("added builder as " + elementManager.getName());
             //for (org.mmbase.bridge.Field field : node.getNodeManager().getFields()) {
             for (FieldIterator i = node.getNodeManager().getFields().fieldIterator(); i.hasNext();) {
@@ -96,16 +91,16 @@ public class MMBaseEntry implements IndexEntry {
                 if (id.equals(field.getName())) continue; // was added already
 		try {
 	            Node subNode = node.getNodeValue(field.getName());
-        	    document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
-        	    document.add(new Field("owner",  subNode.getStringValue("owner"), Field.Store.YES, Field.Index.UN_TOKENIZED));
+        	    document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
+        	    document.add(new Field("owner",  subNode.getStringValue("owner"), Field.Store.YES, Field.Index.NOT_ANALYZED));
 		} catch (Exception e) {
 		    log.warn("Failed to load " + field.getName() + "from " + node + " as a node value, continuing...");
 		}
             }
         } else {
-            document.add(new Field("builder",  node.getNodeManager().getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+            document.add(new Field("builder",  node.getNodeManager().getName(),    Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
             log.debug("added builder as " + node.getNodeManager().getName());
-            document.add(new Field("owner",  node.getStringValue("owner"), Field.Store.YES, Field.Index.UN_TOKENIZED));
+            document.add(new Field("owner",  node.getStringValue("owner"), Field.Store.YES, Field.Index.NOT_ANALYZED));
         }
 
     }
@@ -144,21 +139,21 @@ public class MMBaseEntry implements IndexEntry {
                         if (log.isTraceEnabled()) {
                             log.trace("add " + fieldName + " text, keyword " + v);
                         }
-                        Field field = new Field(fieldName, v, Field.Store.YES, Field.Index.UN_TOKENIZED);
+                        Field field = new Field(fieldName, v, Field.Store.YES, Field.Index.NOT_ANALYZED);
                         field.setBoost(fieldDefinition.boost);
                         Indexer.addField(document, field, fieldDefinition.multiple);
                     } else if (fieldDefinition.storeText) {
                         if (log.isTraceEnabled()) {
                             log.trace("added " + fieldDefinition.fieldName + " to  " + fieldName + " text, store. Boost " + fieldDefinition.boost);
                         }
-                        Field field = new Field(fieldName, v, Field.Store.YES, Field.Index.TOKENIZED);
+                        Field field = new Field(fieldName, v, Field.Store.YES, Field.Index.ANALYZED);
                         field.setBoost(fieldDefinition.boost);
                         Indexer.addField(document, field, fieldDefinition.multiple);
                     } else {
                         if (log.isTraceEnabled()) {
                             log.trace("added " + fieldDefinition.fieldName + " to  " + fieldName + " text, no store. Boost " + fieldDefinition.boost);
                         }
-                        Field field = new Field(fieldName, v, Field.Store.NO, Field.Index.TOKENIZED);
+                        Field field = new Field(fieldName, v, Field.Store.NO, Field.Index.ANALYZED);
                         field.setBoost(fieldDefinition.boost);
                         Indexer.addField(document, field, fieldDefinition.multiple);
                     }
@@ -177,7 +172,10 @@ public class MMBaseEntry implements IndexEntry {
     }
 
     public Collection<IndexDefinition> getSubDefinitions() {
-        return subQueries != null ? subQueries : Collections.EMPTY_LIST;
+        if (subQueries == null) {
+            return Collections.emptyList();
+        }
+        return subQueries;
     }
 
     protected Node getNode(IndexFieldDefinition fd) {
@@ -225,6 +223,7 @@ public class MMBaseEntry implements IndexEntry {
      * Store data from field in a node into the cursor
      * @param map The map of fieldName/value mappings
      */
+    @SuppressWarnings("fallthrough")
     protected void storeData(Map<String, Object> map) {
         Cloud cloud = elementManager.getCloud();
         for (IndexFieldDefinition fieldDefinition : fields) {
@@ -279,7 +278,7 @@ public class MMBaseEntry implements IndexEntry {
                     break;
                 }
                 case org.mmbase.bridge.Field.TYPE_UNKNOWN : // unknown field may be binary
-                    log.debug("field type for " + fieldName + " was unknonw");
+                    log.debug("field type for " + fieldName + " was unknown");
                 case org.mmbase.bridge.Field.TYPE_BINARY : {
                     String mimeType = "unknown";
                     try {
@@ -417,6 +416,7 @@ public class MMBaseEntry implements IndexEntry {
         return indexed.contains(number + "_" + fieldName + "_" + alias);
     }
 
+    @Override
     public String toString() {
         return node.getNumber() + " " + subQueries;
     }

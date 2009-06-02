@@ -15,13 +15,12 @@ import org.w3c.dom.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.xml.query.*;
-import org.mmbase.storage.search.*;
 
 /**
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexFieldDefinition.java,v 1.11 2008-08-18 08:46:01 michiel Exp $
+ * @version $Id$
  **/
 public class IndexFieldDefinition extends FieldDefinition {
 
@@ -73,6 +72,7 @@ public class IndexFieldDefinition extends FieldDefinition {
         this.allIndexedFieldsSet = allIndexedFieldsSet;
     }
 
+    @Override
     public void configure(Element fieldElement) {
         if (QueryReader.hasAttribute(fieldElement, "keyword")) {
             keyWord = "true".equals(QueryReader.getAttribute(fieldElement,"keyword"));
@@ -119,6 +119,7 @@ public class IndexFieldDefinition extends FieldDefinition {
         }
     }
 
+    @Override
     public String toString() {
         return "IndexField" + allIndexedFieldsSet + (alias != null ? "(" + alias + ")" : "");
     }

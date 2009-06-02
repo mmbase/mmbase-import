@@ -14,23 +14,24 @@ import org.mmbase.core.event.*;
 /**
  * All the code necessary to propagate events with the meaning 'the lucene index has changed, you must refresh your searchers'.
  * @author Michiel Meeuwissen
- * @version $Id: NewSearcher.java,v 1.6 2008-07-28 13:03:36 michiel Exp $
+ * @version $Id$
  */
 
 public class NewSearcher {
 
     public static class Event extends org.mmbase.core.event.Event {
-
+        private static final long serialVersionUID = 4028605663720060340L;
         protected final String index;
         /**
          * The event itself
          */
         public Event(String i) {
             index = i;
-        };
+        }
         public String getIndex() {
             return index;
         }
+        @Override
         public String toString() {
             return "new searcher for index '" + index + "'" + (isLocal() ? "" : (" from " + getMachine()));
          }

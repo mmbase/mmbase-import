@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * A very simple Extractor based on unix's 'strings'.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: StringsExtractor.java,v 1.1 2007-07-23 15:47:13 michiel Exp $
+ * @version $Id$
  */
 public class StringsExtractor implements Extractor {
     private static final Logger log = Logging.getLoggerInstance(StringsExtractor.class);

@@ -10,9 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.lucene;
 
 import java.util.*;
-import org.w3c.dom.*;
 
-import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.xml.query.*;
 
 /**
@@ -20,7 +18,7 @@ import org.mmbase.bridge.util.xml.query.*;
  * noticeably, it produces fields with a few new attributes.
  * 
  * @author Pierre van Rooden
- * @version $Id: IndexConfigurer.java,v 1.5 2006-09-13 09:51:14 michiel Exp $
+ * @version $Id$
  **/
 public class IndexConfigurer extends QueryConfigurer {
 
@@ -34,10 +32,12 @@ public class IndexConfigurer extends QueryConfigurer {
         this.mergeText = mergeText;
     }
 
+    @Override
     public QueryDefinition getQueryDefinition() {
         return new MMBaseIndexDefinition();
     }
 
+    @Override
     public FieldDefinition getFieldDefinition() {
         return new IndexFieldDefinition(storeText, mergeText, allIndexedFieldsSet);
     }
