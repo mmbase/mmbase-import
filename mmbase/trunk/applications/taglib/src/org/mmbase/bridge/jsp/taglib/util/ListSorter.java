@@ -84,5 +84,8 @@ public class  ListSorter  {
         }
     }
 
+    private ListSorter() {
+    }
+
 
 }
