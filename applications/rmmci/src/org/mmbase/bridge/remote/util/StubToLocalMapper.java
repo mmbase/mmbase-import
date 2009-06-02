@@ -64,7 +64,7 @@ public class StubToLocalMapper {
             //so first we will as a temp fix try to not also check if the object is in the hash
             //is so and they are not the same instance we create a new hash entry
             if (hash.get(mapperCode) != null) {
-                //if there is a hash entry but the object are not equal
+                //if there is a hash entry but the objects are not equal
                 if (hash.get(mapperCode) != object) {
                     for (int counter = 1; true; counter++) {
                         String newMapperCode = mapperCode + "{" + counter + "}";
@@ -97,10 +97,10 @@ public class StubToLocalMapper {
     private static int increaseRefCount(String mapperCode) {
         Integer count = refcount.get(mapperCode);
         if (count == null) {
-            refcount.put(mapperCode, new Integer(1));
+            refcount.put(mapperCode, 1);
             return 1;
         } else {
-            refcount.put(mapperCode, new Integer(count.intValue() + 1));
+            refcount.put(mapperCode, count.intValue() + 1);
             return count.intValue() + 1;
         }
 
@@ -114,7 +114,7 @@ public class StubToLocalMapper {
     private static int decreaseRefCount(String mapperCode) {
         Integer count = refcount.get(mapperCode);
         if (count == null) {
-            log.warn("refcount entry not found for(" + mapperCode + ")");
+            log.warn("refcount entry not found for(" + mapperCode + ")", new Exception());
             return 0;
         }
         int c = count.intValue();
@@ -123,7 +123,7 @@ public class StubToLocalMapper {
             refcount.remove(mapperCode);
             return 0;
         } else {
-            refcount.put(mapperCode, new Integer(c - 1));
+            refcount.put(mapperCode, c - 1);
             return c - 1;
         }
     }
