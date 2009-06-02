@@ -666,7 +666,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             } else {
                 // print some info and return....
                 if (log.isServiceEnabled()) {
-                    log.service("converted ('" + command + "') usign " + this);
+                    log.service("converted ('" + command + "') using " + this);
                 }
             }
         } catch (Exception e) {
