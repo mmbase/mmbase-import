@@ -220,7 +220,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         } else {
             Class<? extends DataType> dataTypeClass = dataType.getClass();
             Class<? extends TypeHandler> handler = handlers.get(dataTypeClass);
-            log.debug("Looking for typehandler for " + dataTypeClass);
+            log.debug("No handler found for " + ct + " Looking for typehandler for " + dataTypeClass);
             while (handler == null) {
                 log.debug("No handler found for " + dataTypeClass);
                 dataTypeClass = (Class<? extends DataType>) dataTypeClass.getSuperclass();
