@@ -72,6 +72,7 @@
           <include>org/mmbase/util/StringSplitter*</include>                 <!-- used by Queries-->
           <include>org/mmbase/util/SerializableInputStream*</include>        <!-- Representation of binaries-->
           <include>org/mmbase/util/ThreadPools*</include>
+          <include>org/mmbase/util/IOUtil*</include>
 
           <include>org/mmbase/storage/Storable.class</include>              <!-- DataTypes uses .. -->
           <include>org/mmbase/storage/StorageException.class</include>      <!--  -->
