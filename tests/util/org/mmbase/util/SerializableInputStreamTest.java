@@ -60,6 +60,7 @@ public class SerializableInputStreamTest extends TestCase {
             os.write( (i % 100) + 20);
         }
         os.close();
+        System.out.println("Found size " + di.getSize());
         return new SerializableInputStream(di);
     }
 
@@ -129,28 +130,56 @@ public class SerializableInputStreamTest extends TestCase {
     }
 
 
-    public void testSerializableA() throws IOException, java.lang.ClassNotFoundException {
+    public void testSerializableA() throws IOException, ClassNotFoundException {
         SerializableInputStream a = getByteArrayInstance();
         testSerializableMany(a);
     }
-    public void testSerializableB() throws IOException, java.lang.ClassNotFoundException {
+    public void testSerializableB() throws IOException, ClassNotFoundException {
         SerializableInputStream b = getInputStreamInstance();
         testSerializableMany(b);
 
     }
-    public void testSerializableC() throws IOException, java.lang.ClassNotFoundException {
+    public void testSerializableC() throws IOException, ClassNotFoundException {
         SerializableInputStream c = getDiskItemInstance();
         testSerializableMany(c);
     }
-    public void testSerializableD() throws IOException, java.lang.ClassNotFoundException {
+    public void testSerializableD() throws IOException, ClassNotFoundException {
         SerializableInputStream c = getDiskItemInstanceBig();
         testSerializableMany(c);
     }
-    public void testCopy(SerializableInputStream l) throws IOException {
+
+    public File testCopy(SerializableInputStream l) throws IOException {
         File f = File.createTempFile("oof", ".bar");
         IOUtil.copy(l, new FileOutputStream(f));
         l.close();
+        return f;
     }
+
+
+    protected void testReset(SerializableInputStream l) throws IOException {
+        long length = l.getSize();
+        File file1 = testCopy(l);
+        assertEquals("" + file1, length, file1.length());
+        l.reset();
+        File file2 = testCopy(l);
+        assertEquals(length, file2.length());
+    }
+
+    public void testResetA() throws IOException, ClassNotFoundException {
+        testReset(getByteArrayInstance());
+    }
+
+    public void testResetB() throws IOException, ClassNotFoundException {
+        testReset(getInputStreamInstance());
+    }
+
+    public void testResetC() throws IOException, ClassNotFoundException {
+        testReset(getDiskItemInstance());
+    }
+    public void testResetD() throws IOException, ClassNotFoundException {
+        testReset(getDiskItemInstanceBig());
+    }
+
 
 
 }
