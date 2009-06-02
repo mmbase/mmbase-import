@@ -47,7 +47,7 @@ public final class BasicUrlConverter implements UrlConverter {
      * in (X)HTML.
      * @return An URL relative to the root of this web application (i.e. without a context path),
      */
-    public static String getUrl(String page, Map<String, ?> params, HttpServletRequest req, boolean escapeamp) {
+    public static String getUrl(String page, Map<? extends CharSequence, ?> params, HttpServletRequest req, boolean escapeamp) {
         if (log.isDebugEnabled()) {
             if (log.isTraceEnabled()) {
                 log.trace("(static) constructing " + page + params + " because ", new Exception());
@@ -75,13 +75,14 @@ public final class BasicUrlConverter implements UrlConverter {
             String connector = (show.indexOf("?") == -1 ? "?" : amp);
 
             Writer w = new StringBuilderWriter(show);
-            for (Map.Entry<String, ? extends Object> entry : params.entrySet()) {
+            for (Map.Entry<? extends CharSequence, ? extends Object> entry : params.entrySet()) {
                 Object value = entry.getValue();
+                String key = entry.getKey().toString();
                 if (value != null) {
                     if (value.getClass().isArray()) {
                         for (Object v : (Object[]) value) {
                             if (v == null || Casting.isStringRepresentable(v.getClass())) { // if not string representable, that suppose it was an 'automatic' parameter which does need presenting on url
-                                show.append(connector).append(entry.getKey()).append("=");
+                                show.append(connector).append(key).append("=");
                                 PARAM_ESCAPER.transform(new StringReader(Casting.toString(v)), w);
                                 connector = amp;
                             }
@@ -89,14 +90,14 @@ public final class BasicUrlConverter implements UrlConverter {
                     } else if (value instanceof Iterable) {
                         for (Object v : (Iterable<?>) value) {
                             if (v == null || Casting.isStringRepresentable(v.getClass())) {
-                                show.append(connector).append(entry.getKey()).append("=");
+                                show.append(connector).append(key).append("=");
                                 PARAM_ESCAPER.transform(new StringReader(Casting.toString(v)), w);
                                 connector = amp;
                             }
                         }
                     } else {
                         if (Casting.isStringRepresentable(value.getClass())) {
-                            show.append(connector).append(entry.getKey()).append("=");
+                            show.append(connector).append(key).append("=");
                             PARAM_ESCAPER.transform(new StringReader(Casting.toString(value)), w);
                             connector = amp;
                         }
@@ -157,7 +158,7 @@ public final class BasicUrlConverter implements UrlConverter {
                             Parameters frameworkParameters, boolean escapeAmps, boolean action) {
         HttpServletRequest request = getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         State state = State.getState(request);
-        Map<String, Object> map = new TreeMap<String, Object>();
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
         if (log.isDebugEnabled()) {
             log.debug("path '" + path + "' p:" + parameters + " fwp:" + frameworkParameters + " " + state + " rp:" + request.getParameterMap());
         }
@@ -173,7 +174,7 @@ public final class BasicUrlConverter implements UrlConverter {
 
             if (toBlock != null) {
 
-                map = new TreeMap<String, Object>(framework.prefix(state, map));
+                map = new LinkedHashMap<String, Object>(framework.prefix(state, map));
                 String prefix = framework.getPrefix(state);
                 log.debug("Using prefix " + prefix);
                 for (Object e : request.getParameterMap().entrySet()) {
