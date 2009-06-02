@@ -33,7 +33,7 @@ public class UrlParameters extends AbstractMap<String, Object> {
     protected void getWrapped(boolean dereference) {
         if (wrapped == null) {
             try {
-                wrapped = new TreeMap<String, Object>();
+                wrapped = new LinkedHashMap<String, Object>();
                 List<Map.Entry<String, Object>> refs = Referids.getList(tag.referids, tag);
                 for (Map.Entry<String, Object> e : refs) {
                     wrapped.put(e.getKey(), e.getValue());
