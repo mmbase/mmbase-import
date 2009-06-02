@@ -59,7 +59,7 @@ public class RelatedField {
             NodeQuery related = getRelatedQuery(node);
             NodeList rl = related.getNodeManager().getList(related);
             if (rl.size() == 0) {
-                log.service("No related node of type " + getRelatedType(node) + ". Implicitely creating now.");
+                log.service("No related node of type " + getRelatedType(node) + " for node " + node.getNumber() + ". Implicitely creating now.");
                 if (node.isNew() && node.getNumber() < 0) {
                     node.commit(); // Silly, but you cannot make relations to new nodes.
 
