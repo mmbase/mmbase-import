@@ -11,7 +11,7 @@
   <description xml:lang="en">Generic editors</description>
 
   <block name="index"
-         classification="mmbase.edit"
+         classification="mmbase.edit unfinished"
          mimetype="text/html">
     <description xml:lang="en">Search page</description>
     <head>
@@ -37,6 +37,7 @@
   </block>
 
   <block name="change"
+         classification="unfinished"
          mimetype="text/html">
     <description xml:lang="en">Change node page</description>
     <head>
@@ -57,6 +58,7 @@
   </block>
 
   <block name="create"
+         classification="unfinished"
          mimetype="text/html">
     <description xml:lang="en">Create node page</description>
     <head>
