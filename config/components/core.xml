@@ -24,6 +24,10 @@
     <description xml:lang="en">Whether you may shutdown MMBase</description>
   </action>
 
+  <action name="garbage_collect" rank="administrator">
+    <description xml:lang="en">Whether you may trigger a garbage collection</description>
+  </action>
+
 
   <!-- about etc. -->
   <block name="welcome"
@@ -556,6 +560,16 @@
       <class name="org.mmbase.framework.DocumentationRenderer">
         <param name="includeRenderTime">xml-comments</param>
       </class>
+    </body>
+  </block>
+
+  <block name="jvm"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="nl">JVM-inspectie</title>
+    <title xml:lang="en">JVM inspection</title>
+    <body jsp="jvm.jspx">
+      <param name="gc"     type="java.lang.Boolean" />
     </body>
   </block>
 
