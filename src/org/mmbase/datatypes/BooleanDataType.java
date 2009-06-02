@@ -18,7 +18,7 @@ import org.mmbase.bridge.*;
  */
 public class BooleanDataType extends BasicDataType<Boolean> {
 
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor for a boolean datatype (either a primitive boolean type or the Boolean class).
@@ -52,21 +52,19 @@ public class BooleanDataType extends BasicDataType<Boolean> {
         Object preCast = preCast(value, cloud, node, field);
         if (preCast == null) return null;
         if (value instanceof Boolean) return (Boolean) value;
-        if (value instanceof String) {
-            String s = ((String)value).toLowerCase();
-            if ("".equals(value)) return null;
-            if ("true".equals(s)) return Boolean.TRUE;
-            if ("false".equals(s)) return Boolean.FALSE;
-            if ("1".equals(s)) return Boolean.TRUE;
-            if ("0".equals(s)) return Boolean.FALSE;
-            throw new CastException("'" + value + "' of type " + value.getClass().getName() + "  cannot be cast to boolean");
-        }
+
         if (value instanceof Number) {
             double d = ((Number) value).doubleValue();
             if (d == 1.0) return Boolean.TRUE;
             if (d == 0.0) return Boolean.FALSE;
             throw new CastException("The number '" + value + "' cannot be cast to boolean (boolean is 0 or 1)");
         }
-        throw new CastException("'" + value + "' cannot be cast to boolean (boolean is 0 or 1)");
+        String s = org.mmbase.util.Casting.toString(value).toLowerCase();
+        if ("".equals(s)) return null;
+        if ("true".equals(s)) return Boolean.TRUE;
+        if ("false".equals(s)) return Boolean.FALSE;
+        if ("1".equals(s)) return Boolean.TRUE;
+        if ("0".equals(s)) return Boolean.FALSE;
+        throw new CastException("'" + value + "' of type " + value.getClass().getName() + "  cannot be cast to boolean");
     }
 }
