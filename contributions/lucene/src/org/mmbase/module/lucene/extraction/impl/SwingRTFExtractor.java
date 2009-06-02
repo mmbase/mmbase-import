@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * RTF text extractor
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Id$
  */
 public class SwingRTFExtractor implements Extractor {
     private static final Logger log = Logging.getLoggerInstance(SwingRTFExtractor.class);
