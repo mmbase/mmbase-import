@@ -862,6 +862,9 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             long size = 0L;
             //log.warn("Storing " + field + " for " + node.getNumber());
             InputStream in = node.getInputStreamValue(fieldName);
+            if (! binaryFile.canWrite()) {
+                throw new StorageException("The file " + binaryFile+ " is not writable");
+            }
             OutputStream out = new FileOutputStream(binaryFile);
             size += IOUtil.copy(in, out);
             out.close();
