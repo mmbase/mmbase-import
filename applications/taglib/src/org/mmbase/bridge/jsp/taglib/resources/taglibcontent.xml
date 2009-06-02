@@ -275,6 +275,13 @@
     </info>
   </escaper>
 
+  <escaper id="filesize">
+    <class>org.mmbase.datatypes.processors.FormatFileSize</class>
+    <info>
+      This works on integers only, and converts them to file size representation.
+    </info>
+  </escaper>
+
   <escaper id="rot13">
     <class>org.mmbase.util.transformers.Rot13</class>
     <info>
