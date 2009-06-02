@@ -28,14 +28,14 @@ public interface Extractor {
      *
      * @param mimetype String representing the MIME Type
      */
-    public void setMimeType(String mimetype);
+    void setMimeType(String mimetype);
 
     /**
      * Mimetype this Extractor handles
      *
      * @return String representing the MIME Type
      */
-    public String getMimeType();
+    String getMimeType();
 
     /**
      * Extract text from a source
@@ -44,6 +44,6 @@ public interface Extractor {
      * @return String representing the extracted text
      * @throws Exception
      */
-    public String extract(InputStream source) throws Exception;
+    String extract(InputStream source) throws Exception;
 
 }

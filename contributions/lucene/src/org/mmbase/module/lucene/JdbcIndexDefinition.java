@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.lucene;
 
+import java.io.IOException;
 import java.util.*;
 import javax.sql.DataSource;
 import java.sql.*;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.19 2007-12-17 13:20:00 michiel Exp $
+ * @version $Id$
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -39,14 +40,16 @@ public class JdbcIndexDefinition implements IndexDefinition {
     private static int directConnections = 0;
 
     private static final int CACHE_SIZE = 10 * 1024;
-    protected static Cache/*<String, LazyMap>*/ nodeCache = new Cache(CACHE_SIZE) {
+    protected static Cache<String, LazyMap> nodeCache = new Cache<String, LazyMap>(CACHE_SIZE) {
             {
                 putCache();
             }
 
+        @Override
             public final String getName() {
                 return "LuceneJdbcNodes";
             }
+        @Override
             public final String getDescription() {
                 return "Node identifier -> Map";
             }
@@ -59,11 +62,11 @@ public class JdbcIndexDefinition implements IndexDefinition {
     private final String findSql;
     private final Analyzer analyzer;
 
-    private final Set<String> keyWords    = new HashSet();
-    private final Map<String, Indexer.Multiple> nonDefaultMultiples = new HashMap();
-    private final Map<String, Float> boosts = new HashMap();
+    private final Set<String> keyWords    = new HashSet<String>();
+    private final Map<String, Indexer.Multiple> nonDefaultMultiples = new HashMap<String, Indexer.Multiple>();
+    private final Map<String, Float> boosts = new HashMap<String, Float>();
 
-    private final Collection<IndexDefinition> subQueries = new ArrayList();
+    private final Collection<IndexDefinition> subQueries = new ArrayList<IndexDefinition>();
 
     private final boolean isSub;
 
@@ -79,8 +82,8 @@ public class JdbcIndexDefinition implements IndexDefinition {
         this.dataSource = ds;
         indexSql = element.getAttribute("sql");
         key = element.getAttribute("key");
-        String id = element.getAttribute("identifier");
-        identifier = "".equals(id) ? key : id;
+        String elementId = element.getAttribute("identifier");
+        identifier = "".equals(elementId) ? key : elementId;
         findSql = element.getAttribute("find");
         NodeList childNodes = element.getChildNodes();
         for (int k = 0; k < childNodes.getLength(); k++) {
@@ -152,7 +155,11 @@ public class JdbcIndexDefinition implements IndexDefinition {
     public boolean inIndex(String identifier) {
         CloseableIterator<JdbcEntry> i = getSqlCursor(getFindSql(identifier));
         boolean result = i.hasNext();
-        i.close();
+        try {
+            i.close();
+        } catch (IOException ex) {
+            log.warn(ex);
+        }
         return result;
     }
 
@@ -164,7 +171,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
         return s;
     }
 
-    protected CloseableIterator<JdbcEntry> getSqlCursor(final String sql) {
+    CloseableIterator<JdbcEntry> getSqlCursor(final String sql) {
         try {
             long start = System.currentTimeMillis();
             final Connection con = getDirectConnection();
@@ -284,22 +291,26 @@ public class JdbcIndexDefinition implements IndexDefinition {
             check();
             return map.entrySet();
         }
+        @Override
         public int size() {
             check();
             return map.size();
         }
+        @Override
         public String get(Object key) {
             if(JdbcIndexDefinition.this.identifier.equals(key)) return identifier;
             if(keys.containsKey(key)) return keys.get(key);
             check();
             return map.get(key);
         }
+        @Override
         public boolean containsKey(Object key) {
             if(JdbcIndexDefinition.this.identifier.equals(key)) return true;
             if(keys.containsKey(key)) return true;
             check();
             return map.containsKey(key);
         }
+        @Override
         public String toString() {
             if (map != null) {
                 return map.toString();
@@ -310,24 +321,26 @@ public class JdbcIndexDefinition implements IndexDefinition {
     }
 
     public org.mmbase.bridge.Node getNode(final Cloud userCloud, final Document doc) {
-        String id = doc.get("number");
-        if (id == null) {
+        String docId = doc.get("number");
+        if (docId == null) {
             throw new IllegalArgumentException("No number found in " + doc);
         }
-        LazyMap m =  (LazyMap) nodeCache.get(id); //
+        LazyMap m =  nodeCache.get(docId); //
         if (m == null) {
-            Map<String, String> keys = new HashMap();
+            Map<String, String> keys = new HashMap<String, String>();
             for (String keyWord : keyWords) {
                 keys.put(keyWord, doc.get(keyWord));
             }
-            m = new LazyMap(id, keys);
-            nodeCache.put(id, m);
+            m = new LazyMap(docId, keys);
+            nodeCache.put(docId, m);
         }
         org.mmbase.bridge.Node node = new MapNode(m, new MapNodeManager(userCloud, m) {
+            @Override
                 public boolean hasField(String name) {
                     if (JdbcIndexDefinition.this.key.equals(name)) return true;
                     return super.hasField(name);
                 }
+            @Override
                 public org.mmbase.bridge.Field getField(String name) {
                     if (map == null && JdbcIndexDefinition.this.key.equals(name)) {
                         org.mmbase.core.CoreField fd = org.mmbase.core.util.Fields.createField(name, org.mmbase.core.util.Fields.classToType(Object.class),
@@ -361,11 +374,12 @@ public class JdbcIndexDefinition implements IndexDefinition {
         }
     }
 
+    @Override
     public String toString() {
         return indexSql;
     }
 
-    class JdbcEntry implements IndexEntry {
+    public class JdbcEntry implements IndexEntry {
         final ResultSetMetaData meta;
         final ResultSet results;
         final String sql;
@@ -383,8 +397,8 @@ public class JdbcIndexDefinition implements IndexDefinition {
             }
             String id  = getIdentifier();
             if (id != null) {
-                document.add(new Field("builder", "VIRTUAL BUILDER", Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
-                document.add(new Field("number",  getIdentifier(),   Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+                document.add(new Field("builder", "VIRTUAL BUILDER", Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
+                document.add(new Field("number",  getIdentifier(),   Field.Store.YES, Field.Index.NOT_ANALYZED)); // keyword
             }
             try {
                 for (int i = 1; i <= meta.getColumnCount(); i++) {
@@ -394,15 +408,15 @@ public class JdbcIndexDefinition implements IndexDefinition {
                     }
                     String fieldName = meta.getColumnName(i);
                     if (keyWords.contains(fieldName)) {
-                        Indexer.addField(document, new Field(fieldName,  value,   Field.Store.YES, Field.Index.UN_TOKENIZED), nonDefaultMultiples.get(fieldName)); // keyword
+                        Indexer.addField(document, new Field(fieldName,  value,   Field.Store.YES, Field.Index.NOT_ANALYZED), nonDefaultMultiples.get(fieldName)); // keyword
                     } else {
-                        Field field = new Field(fieldName,   value,   Field.Store.YES, Field.Index.TOKENIZED);
+                        Field field = new Field(fieldName,   value,   Field.Store.YES, Field.Index.ANALYZED);
                         Float boost = boosts.get(fieldName);
                         if (boost != null) {
                             field.setBoost(boost);
                         }
                         Indexer.addField(document, field, nonDefaultMultiples.get(fieldName));
-                        Field fullText = new Field("fulltext",  value,   Field.Store.YES, Field.Index.TOKENIZED);
+                        Field fullText = new Field("fulltext",  value,   Field.Store.YES, Field.Index.ANALYZED);
                         if (boost != null) {
                             fullText.setBoost(boost);
                         }
@@ -443,7 +457,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
             }
         }
         public Set<String> getIdentifiers() {
-            Set<String> ids = new HashSet();
+            Set<String> ids = new HashSet<String>();
             ids.add(getIdentifier());
             return ids;
         }

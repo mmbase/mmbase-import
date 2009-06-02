@@ -77,8 +77,7 @@ import java.util.BitSet;
  *
  * @author <a href="mailto:kelvint@apache.org">Kelvin Tan</a>
  */
-public class ChainedFilter extends Filter
-{
+public class ChainedFilter extends Filter {
     /**
      * {@link BitSet#or}.
      */

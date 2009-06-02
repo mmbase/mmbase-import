@@ -12,7 +12,6 @@ package org.mmbase.module.lucene;
 import java.io.*;
 import java.util.*;
 
-import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.document.*;
 import org.apache.lucene.analysis.*;
 import org.apache.lucene.index.*;
@@ -22,19 +21,17 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.queryParser.*;
 
 import org.mmbase.core.event.EventManager;
-import org.mmbase.util.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.util.AnnotatedNode;
-import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
 /**
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.55 2009-02-19 10:22:01 michiel Exp $
+ * @version $Id$
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener {
@@ -135,7 +132,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         }
         while (closingSearchers > 0) {
             try {
-                Thread.currentThread().sleep(100);
+                Thread.sleep(100);
             } catch (InterruptedException ie) {
                 break;
             }
@@ -204,7 +201,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                                                Analyzer analyzer, Query extraQuery, String[] fields, final int offset, final int max) throws ParseException  {
         // log the value searched
         if (searchLog.isServiceEnabled()) {
-            if (extraQuery != null && ! extraQuery.equals("")) {
+            if (extraQuery != null) {
                 searchLog.service("(" + extraQuery + ") " + value);
             } else {
                 searchLog.service(value);
@@ -391,7 +388,9 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 value2 += tokens.nextToken();
             } else {
                 // eh, should there no be appended comma's or spaces or so?
-                while (tokens.hasMoreTokens()) value += tokens.nextToken();
+                while (tokens.hasMoreTokens()) {
+                    value += tokens.nextToken();
+                }
             }
             Filter subFilter = null;
             if (type.equals("IN_SET") || type.equals("NIN_SET")) {
@@ -479,7 +478,9 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
                 value2 += tokens.nextToken();
             } else {
                 // eh, should there no be appended comma's or spaces or so?
-                while (tokens.hasMoreTokens()) value += tokens.nextToken();
+                while (tokens.hasMoreTokens()) {
+                    value += tokens.nextToken();
+                }
             }
             Query subQuery = null;
             if (type.equals("EQ") || type.equals("NE")) {
@@ -523,6 +524,7 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
         return producedNodes;
     }
 
+    @Override
     public String toString() {
         return "searcher[" + index.getName() + "]";
     }

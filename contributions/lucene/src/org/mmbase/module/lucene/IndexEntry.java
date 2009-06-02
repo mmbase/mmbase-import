@@ -18,9 +18,9 @@ import org.apache.lucene.document.Document;
  * implementations of this interface define how index entries are added to a Lucene document.
  *
  * @author Michiel Meeuwissen.
- * @version $Id: IndexEntry.java,v 1.7 2007-09-25 16:53:09 michiel Exp $
+ * @version $Id$
  **/
-public interface IndexEntry {
+interface IndexEntry {
 
     /**
      * Writes this index entry to a lucene {@link org.apache.lucene.document.Document}.
