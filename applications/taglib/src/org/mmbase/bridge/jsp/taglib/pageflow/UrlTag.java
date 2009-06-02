@@ -170,7 +170,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
     }
 
     protected void initTag(boolean internal) throws JspTagException {
-        extraParameters = new HashMap<String, Object>();
+        extraParameters = new LinkedHashMap<String, Object>();
         frameworkParameters = new HashMap<String, Object>();
         parameters = new UrlParameters(this);
         helper.useEscaper(false);
