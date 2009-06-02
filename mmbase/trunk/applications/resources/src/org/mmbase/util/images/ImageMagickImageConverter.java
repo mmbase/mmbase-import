@@ -610,7 +610,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         cmd.add(0, "-");
         cmd.add(0, converterPath);
         if (! validFormats.contains(format.toUpperCase())) {
-            log.warn("format " + format + "' is not supported (" + validFormats + ") falling back to " + Factory.getDefaultImageFormat());
+            log.warn("format '" + format + "' is not supported (" + validFormats + ") falling back to " + Factory.getDefaultImageFormat());
             format = Factory.getDefaultImageFormat();
             if ("asis".equals(format)) format = sourceFormat;
         }
