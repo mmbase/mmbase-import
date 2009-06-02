@@ -11,6 +11,7 @@ package org.mmbase.util.transformers;
 
 import java.util.Iterator;
 import org.mmbase.util.functions.Parameters;
+import org.mmbase.datatypes.processors.Processor;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -48,8 +49,9 @@ public class Transformers {
         }
 
         if (! Transformer.class.isAssignableFrom(clazz) &&
-            ! ParameterizedTransformerFactory.class.isAssignableFrom(clazz)) {
-            log.error("The class " + clazz + " specified for "  + errorId + " is not a Transformer");
+            ! ParameterizedTransformerFactory.class.isAssignableFrom(clazz) &&
+            ! Processor.class.isAssignableFrom(clazz)) {
+            log.error("The class " + clazz + " specified for "  + errorId + " is not a Transformer (or easily converted to that)");
             return null;
         }
         Object t;
@@ -69,6 +71,8 @@ public class Transformers {
             }
             config = "";
             t = pt.createTransformer(params);
+        } else if (t instanceof Processor) {
+            t = new ProcessorCharTransformer((Processor) t);
         }
         CharTransformer ct;
 
