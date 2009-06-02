@@ -17,8 +17,8 @@ import java.util.*;
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
  **/
-public interface CloseableIterator<E> extends Iterator<E> {
-    void close();
+public interface CloseableIterator<E> extends Iterator<E>, java.io.Closeable {
+
 }
 
 
