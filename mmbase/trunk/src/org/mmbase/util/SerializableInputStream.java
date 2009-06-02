@@ -28,11 +28,11 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
     private static final long serialVersionUID = 2L;
 
+
     private static final Logger log = Logging.getLoggerInstance(SerializableInputStream.class);
 
     private long size;
 
-    private boolean used = false;
 
     public static byte[] toByteArray(InputStream stream) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -48,21 +48,15 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         return bos.toByteArray();
     }
 
-    private void use() {
-        if (! used) {
-            if (log.isTraceEnabled()) {
-                log.trace("Using " + this + " because ", new Exception());
-            }
-            used = true;
-        }
-    }
 
 
-    private InputStream wrapped;
     private File file = null;
+    private long fileMark = 0;
     private boolean tempFile = true;
     private String name;
     private String contentType;
+    private transient InputStream wrapped;
+    private boolean used = false;
 
     public SerializableInputStream(InputStream wrapped, long s) {
         this.wrapped = wrapped;
@@ -72,7 +66,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     }
 
     public SerializableInputStream(byte[] array) {
-        this.wrapped = new ByteArrayInputStream(array);
+        wrapped = new ByteArrayInputStream(array);
         this.size = array.length;
         this.name = null;
     }
@@ -82,6 +76,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         this.name = fi.getName();
         this.contentType = fi.getContentType();
         file = File.createTempFile(getClass().getName(), this.name);
+        file.deleteOnExit();
         try {
             fi.write(file);
         } catch (Exception e) {
@@ -92,6 +87,20 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         this.wrapped = new FileInputStream(file);
 
 
+    }
+
+
+
+    private void use() {
+        if (! used) {
+            if (log.isTraceEnabled()) {
+                log.trace("Using " + this + " because ", new Exception());
+            }
+            used = true;
+            if (! wrapped.markSupported() && file == null) {
+                supportMark();
+            }
+        }
     }
 
 
@@ -122,6 +131,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         if (name == null) {
             name = f.getName();
         }
+        log.debug("Moving file to " + f);
         if (file != null) {
             if (file.equals(f)) {
                 log.debug("File is already there " + f);
@@ -155,56 +165,64 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         out.writeObject(name);
         out.writeObject(contentType);
     }
-    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-        byte[] b = (byte[]) in.readObject();
+    private void readObject(java.io.ObjectInputStream oin) throws IOException, ClassNotFoundException {
+        byte[] b = (byte[]) oin.readObject();
         wrapped = new ByteArrayInputStream(b);
         size = b.length;
-        used = true;
-        name = (String) in.readObject();
-        contentType = (String) in.readObject();
+        name = (String) oin.readObject();
+        contentType = (String) oin.readObject();
 
     }
-    @Override
-    public int available() throws IOException {
-        return wrapped.available();
-    }
-    private void supportMark() {
+
+    private FileInputStream supportMark() {
         try {
-            if (file == null) {
-                file = File.createTempFile(getClass().getName(), this.name);
-            }
-            if (! file.exists()) {
-                FileOutputStream os = new FileOutputStream(file);
-                IOUtil.copy(wrapped, os);
-                os.close();
-            }
-            wrapped = new FileInputStream(file);
+            assert file == null;
+            file = File.createTempFile(getClass().getName(), this.name);
+            file.deleteOnExit();
+            FileOutputStream os = new FileOutputStream(file);
+            IOUtil.copy(wrapped, os);
+            os.close();
+            FileInputStream fis = new FileInputStream(file);
+            wrapped = fis;
+            System.out.println("Created " + fis + "" + file.length());
+            return fis;
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
+
     }
 
+
     @Override
-    public void close() {
+    public void finalize() {
         if (file != null && tempFile) {
             log.debug("Deleting " + file);
             file.delete();
         }
     }
     @Override
-    public void finalize() {
-        log.debug("Finalizing " + file);
-        close();
+    public void close() throws IOException {
+        wrapped.close();
     }
 
 
     @Override
     public void mark(int readlimit) {
+        log.debug("Marking" + wrapped, new Exception());
+
         if (wrapped.markSupported()) {
             wrapped.mark(readlimit);
-        } else {
-            supportMark();
-            wrapped.mark(readlimit);
+            return;
+        }
+        try {
+            FileInputStream fis =
+                file != null ?  (FileInputStream) wrapped : supportMark();
+
+
+            fileMark = fis.getChannel().position();
+
+        } catch (IOException ioe) {
+            throw new IllegalStateException(ioe);
         }
     }
     @Override
@@ -212,31 +230,56 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         return true;
     }
     @Override
-    public int read() throws IOException { use(); return wrapped.read(); }
-    @Override
-    public int read(byte[] b) throws IOException { use(); return wrapped.read(b); }
-    @Override
-    public int read(byte[] b, int off, int len) throws IOException { use(); return wrapped.read(b, off, len); }
-
-    @Override
-    public void reset() throws IOException {
-        if (wrapped.markSupported()) {
-            wrapped.reset() ;
-        } else {
-            supportMark();
-        }
+    public int read() throws IOException {
+        use();
+        return wrapped.read();
     }
+    @Override
+    public int read(byte[] b) throws IOException {
+        use();
+        return wrapped.read(b);
+    }
+    @Override
+    public int read(byte[] b, int off, int len) throws IOException {
+        use();
+        return wrapped.read(b, off, len);
+    }
+
+
     @Override
     public long skip(long n) throws IOException {
         return wrapped.skip(n);
     }
 
+
+
+    @Override
+    public void reset() throws IOException {
+        if (wrapped.markSupported()) {
+            log.debug("" + wrapped + " supports mark, using it");
+            wrapped.reset() ;
+        } else if (file != null) {
+            log.debug("Resetting " + this + " to " + fileMark + " (" + file + ")");
+            wrapped = new FileInputStream(file);
+            if (fileMark > 0) {
+                wrapped.skip(fileMark);
+            }
+        } else {
+            log.debug("No file yet");
+            supportMark();
+        }
+    }
+
+
+
+
     @Override
     public String toString() {
-        return "SERIALIZABLE " + wrapped + (used ? " (used)" :  "") + " (" + size + " byte, " +
-            ( name == null ? "[no name]" : name) +
-            ( contentType == null ? "[no contenttype]" : contentType)
-            + ")";
+        return "SERIALIZABLE " + wrapped + " (" + size + " byte, " +
+            (name == null ? "[no name]" : name) +
+            ", " +
+            (contentType == null ? "[no contenttype]" : contentType) +
+            ")";
     }
 
 
@@ -265,7 +308,6 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     public int hashCode() {
         int hash = 7;
         hash = 43 * hash + (int) (this.size ^ (this.size >>> 32));
-        hash = 43 * hash + (this.used ? 1 : 0);
         hash = 43 * hash + (this.wrapped != null ? this.wrapped.hashCode() : 0);
         hash = 43 * hash + (this.file != null ? this.file.hashCode() : 0);
         hash = 43 * hash + (this.name != null ? this.name.hashCode() : 0);
