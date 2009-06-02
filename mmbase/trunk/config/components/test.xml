@@ -40,7 +40,7 @@
   </block>
 
   <block name="authenticate"
-         classification="mmbase.test"
+         classification="mmbase.test unfinished"
          mimetype="text/html">
     <description xml:lang="en">Shows details of security configuration</description>
     <body jsp="authenticate.jspx" />

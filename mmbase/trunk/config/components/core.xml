@@ -132,7 +132,7 @@
   </block>
 
   <block name="datatypes"
-         classification="mmbase.tools mmbase.examples"
+         classification="mmbase.tools mmbase.examples unfinished"
          mimetype="text/html">
     <title xml:lang="en">Data Types</title>
     <title xml:lang="nl">Datatypes</title>
@@ -334,7 +334,7 @@
   </block>
 
   <block name="resourceedit"
-         classification="mmbase.tools"
+         classification="mmbase.tools unfinished"
          mimetype="text/html">
     <title xml:lang="en">Resource editor</title>
     <title xml:lang="nl">Resource editor</title>
