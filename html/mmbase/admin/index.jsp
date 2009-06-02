@@ -124,6 +124,11 @@
              <div id="content">
               <c:catch var="exception">
                 <h2 class="top">${mm:escape('text/xml', mm:string(blockObject.title))}</h2>
+                <c:forEach items="${blockObject.classification}" var="clazz">
+                  <c:if test="${clazz.name eq 'unfinished'}">
+                    <h2 class="top unfinished">Warning. This block is marked 'unfinished', so it probably is not working correctly yet.</h2>
+                  </c:if>
+                </c:forEach>
                 <mm:component debug="xml" name="$component" block="${block}">
                   <mm:frameworkparam name="category">${category}</mm:frameworkparam>
                 </mm:component>
