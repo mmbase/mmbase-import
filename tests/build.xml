@@ -123,6 +123,7 @@
         <include name="log4j*.jar" />
         <include name="servletapi*.jar" />
         <include name="commons-fileupload*.jar" />
+        <include name="commons-io*.jar" />
         <include name="mmbase-rmmci-${version}-client.jar" />
       </fileset>
     </path>
