@@ -233,6 +233,8 @@ public  class BasicContextProvider implements ContextProvider {
                     }
                 } catch (SearchQueryException sqe) {
                     log.error(sqe.toString());
+                } catch (RuntimeException re) {
+                    log.error(re.toString());
                 }
             }
             if (contextNode == null) {
