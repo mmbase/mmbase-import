@@ -51,10 +51,10 @@
     </mm:link>
 
     <mm:link absolute="context" page="/justsomeurl">
+      <mm:param name="b">B</mm:param>    <!-- inverse alphabetic, to demonstrate also  	 MMB-1824 -->
+      <p>${_ eq '/justsomeurl?b=B' ? 'ok' : 'NOT ok'}: ${_}</p>
       <mm:param name="a">A</mm:param>
-      <p>${_ eq '/justsomeurl?a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
-      <mm:param name="b">B</mm:param>
-      <p>${_ eq '/justsomeurl?a=A&amp;amp;b=B' ? 'ok' : 'NOT ok'}: ${_}</p>
+      <p>${_ eq '/justsomeurl?b=B&amp;amp;a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:link>
 
     <mm:url id="url" absolute="context" page="/justsomeurl" write="false">
@@ -70,7 +70,7 @@
 
     <mm:write referid="url2" vartype="string"  jspvar="url" write="false">
       <jsp:expression>(url.equals("/justsomeurl?a=A&amp;b=B") ? "ok" : "NOT ok")</jsp:expression>
-      :<mm:escape><jsp:expression>url</jsp:expression></mm:escape>
+      :<mm:escape><jsp:expression>url</jsp:expression></mm:escape> (${url2})
     </mm:write>
 
     <!-- implicit write -->
