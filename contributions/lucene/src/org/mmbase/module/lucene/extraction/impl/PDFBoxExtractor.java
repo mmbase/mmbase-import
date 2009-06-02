@@ -22,7 +22,6 @@ import org.mmbase.util.logging.*;
 
 import org.pdfbox.pdmodel.encryption.*;
 import org.pdfbox.exceptions.CryptographyException;
-import org.pdfbox.exceptions.InvalidPasswordException;
 import org.pdfbox.pdfparser.PDFParser;
 import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.pdmodel.PDDocumentInformation;
@@ -30,7 +29,7 @@ import org.pdfbox.util.PDFTextStripper;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.4 $
+ * @version $Id$
  */
 public class PDFBoxExtractor implements Extractor {
 

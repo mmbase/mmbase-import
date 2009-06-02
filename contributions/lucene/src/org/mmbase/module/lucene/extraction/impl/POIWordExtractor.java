@@ -26,7 +26,7 @@ import org.apache.poi.hdf.extractor.WordDocument;
  * Use POI to extract text from a MS Word document
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Id $
  */
 public class POIWordExtractor implements Extractor {
     private static final Logger log = Logging.getLoggerInstance(POIWordExtractor.class);
