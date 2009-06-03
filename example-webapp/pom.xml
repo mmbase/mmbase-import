@@ -120,6 +120,13 @@
     </dependency>
 
     <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-lucene</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <version>1.8.0.7</version>
