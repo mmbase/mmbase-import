@@ -489,9 +489,10 @@ public class Indexer {
                         Date lastFullIndex = setLastFullIndex(startTime);
                         log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " +
                                 getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.maxDoc());
-                        log.info("Full index finished at " + lastFullIndex );
-                        if (log.isDebugEnabled()) log.debug("Copied " + fullIndex);
-                        if (log.isDebugEnabled()) log.debug("    To " + getDirectory());
+                        if (log.isDebugEnabled()) {
+                            log.debug("Copied " + fullIndex);
+                            log.debug("    To " + getDirectory());
+                        }
                         log.info("Total nr documents in index '" + getName() + "': " + writer.maxDoc());
                     } else if (Thread.currentThread().isInterrupted()) {
                         addError("Interrupted, will not update the index");
