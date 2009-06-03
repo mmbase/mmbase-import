@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * The gui function of calendar items and calendar item types.
  *
  * @author Michiel Meeuwissen
- * @version $Id: GuiFunction.java,v 1.3 2008-11-12 18:04:37 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class GuiFunction extends org.mmbase.util.functions.GuiFunction {

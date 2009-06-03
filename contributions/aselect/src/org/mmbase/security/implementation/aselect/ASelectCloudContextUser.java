@@ -26,7 +26,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen (Publieke Omroep)
  *
- * @version $Id: ASelectCloudContextUser.java,v 1.5 2006-01-17 21:38:49 michiel Exp $
+ * @version $Id$
  * @since  MMBase-1.8
  * @see ASelectAuthentication
  */

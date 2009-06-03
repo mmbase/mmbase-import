@@ -23,7 +23,7 @@ import org.mmbase.util.functions.*;
  * Allow the smilies transformer to be configurable
  *
  * @author Johannes Verelst
- * @version $Id: SmileyFactory.java,v 1.2 2006-12-20 13:00:08 johannes Exp $
+ * @version $Id$
  */
 public class SmileyFactory implements ParameterizedTransformerFactory {
     private static final Parameter[] PARAM = new Parameter[] {

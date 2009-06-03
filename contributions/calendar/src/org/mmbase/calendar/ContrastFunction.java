@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * Calculates a contrasting color for a given color. Used by calendar items types.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContrastFunction.java,v 1.2 2008-09-24 15:08:03 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 public class ContrastFunction extends org.mmbase.util.functions.NodeFunction {

@@ -19,7 +19,7 @@ import java.io.InputStream;
  * Content Extractor interface
  *
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Id $
  */
 public interface Extractor {
 

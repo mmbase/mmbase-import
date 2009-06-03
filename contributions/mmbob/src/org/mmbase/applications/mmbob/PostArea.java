@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @javadoc
  *
  * @author Daniel Ockeloen
- * @version $Id: PostArea.java,v 1.48 2007-10-18 09:55:59 michiel Exp $:
+ * @version $Id$:
  */
 public class PostArea {
 

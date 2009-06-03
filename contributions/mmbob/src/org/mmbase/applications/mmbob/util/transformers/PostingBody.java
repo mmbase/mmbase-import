@@ -31,7 +31,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Gerard van Enk 
  * @since MMBob 
- * @version $Id: PostingBody.java,v 1.2 2005-02-22 15:29:12 gerard Exp $
+ * @version $Id$
  */
 public class PostingBody {
     private static Logger log = Logging.getLoggerInstance(PostingBody.class);

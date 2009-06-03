@@ -33,7 +33,7 @@ import org.mmbase.util.FileWatcher;
  * ToDo: Write docs!
  *
  * @author Daniel Ockeloen (MMBased)
- * @version $Id: ForumManager.java,v 1.36 2007-02-21 11:22:14 michiel Exp $
+ * @version $Id$
  */
 public class ForumManager {
     private static final Logger log = Logging.getLoggerInstance(ForumManager.class);

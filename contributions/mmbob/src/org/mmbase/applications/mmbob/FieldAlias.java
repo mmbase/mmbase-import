@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: FieldAlias.java,v 1.5 2007-01-16 15:57:15 michiel Exp $
+ * @version $Id$
  */
 public class FieldAlias {
  
