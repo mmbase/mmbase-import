@@ -471,6 +471,29 @@
     </body>
   </block>
 
+  <block name="mmbase_microblog_uncached"
+         mimetype="text/html">
+    <body>
+      <class name="org.mmbase.framework.ConnectionRenderer">
+        <param name="url">http://twitter.com/statuses/user_timeline/42594291.rss</param>
+        <param name="xslt">xslt/rss.xslt</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="mmbase_microblog"
+         classification="mmbase.about:101">
+    <title xml:lang="nl">Microblog</title>
+    <title xml:lang="en">Micro blog</title>
+    <description xml:lang="en">Shows latest updates from twitter.com/mmbase</description>
+    <description xml:lang="nl">Toont het laatste updates van twitter.com/mmbase</description>
+    <body>
+      <class name="org.mmbase.framework.CachedRenderer">
+        <param name="wrapsBlock">mmbase_microblog_uncached</param>
+      </class>
+    </body>
+  </block>
+
 
   <block name="releasenotes_uncached"
          mimetype="text/html">
