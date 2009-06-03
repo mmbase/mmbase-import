@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.util.images;
 
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  * @version $Id$
  */
 public class ImageMagickImageInformer implements ImageInformer {
-    
+
     private static final Logger log = Logging.getLoggerInstance(ImageMagickImageInformer.class);
 
     // Currently only ImageMagick works, this are the default value's
@@ -46,24 +46,14 @@ public class ImageMagickImageInformer implements ImageInformer {
 
     }
 
-    public Dimension getDimension(InputStream input) {
-        return new Dimension(-1, -1); // not implemented
-    }
-
-    public Dimension getDimension(byte[] input) throws IOException {
-
-        File file = File.createTempFile("ImageMagickImageInformer", null);
-        FileOutputStream image = new FileOutputStream(file);
-        image.write(input);
-        image.close();
-
+    protected Dimension getDimension(File file) throws IOException {
         try {
             CommandLauncher launcher = new CommandLauncher("ImageMagick's identify");
             ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
- 
+
             launcher.execute(identifyPath, new String[] {file.getCanonicalPath()});
-            launcher.waitAndRead(outputStream, errorStream); 
+            launcher.waitAndRead(outputStream, errorStream);
             String result =  new String(outputStream.toByteArray()).trim();
             Matcher matcher = IDENTIFY_PATTERN.matcher(result);
             if (! matcher.matches()) throw new IOException("'" + result + "' doesn't match " + IDENTIFY_PATTERN);
@@ -76,6 +66,23 @@ public class ImageMagickImageInformer implements ImageInformer {
             file.delete();
         }
         return  new Dimension(0, 0);
+    }
+
+
+    public Dimension getDimension(InputStream input) throws IOException {
+        File file = File.createTempFile("ImageMagickImageInformer", null);
+        FileOutputStream image = new FileOutputStream(file);
+        IOUtil.copy(input, image);
+        image.close();
+        return getDimension(file);
+    }
+
+    public Dimension getDimension(byte[] input) throws IOException {
+        File file = File.createTempFile("ImageMagickImageInformer", null);
+        FileOutputStream image = new FileOutputStream(file);
+        image.write(input);
+        image.close();
+        return  getDimension(file);
 
     }
     public static void main(String[] args) {
@@ -95,7 +102,7 @@ public class ImageMagickImageInformer implements ImageInformer {
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
-        
+
     }
 
 }

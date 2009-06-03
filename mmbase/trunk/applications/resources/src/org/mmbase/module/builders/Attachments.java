@@ -103,7 +103,7 @@ public class Attachments extends AbstractServletBuilder {
         super.checkHandle(node);
         if (getField(FIELD_SIZE) != null) {
             if (node.getIntValue(FIELD_SIZE) == -1) {
-                node.setValue(FIELD_SIZE, node.getByteValue(FIELD_HANDLE).length);
+                node.setValue(FIELD_SIZE, node.getSize(FIELD_HANDLE));
             }
         }
     }
