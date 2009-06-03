@@ -1,3 +1,4 @@
+<%org.mmbase.security.implementation.cloudcontext.Caches.waitForCacheInvalidation(); %>
 <mm:context>
 <div class="group">
 <div class="environment">
