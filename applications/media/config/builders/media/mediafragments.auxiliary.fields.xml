@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <fieldlist
+    xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
-    xmlns="http://www.mmbase.org/xmlns/builder"
-    >
+                        http://www.mmbase.org/xmlns/builder.xsd">
+  
   <field name="start">
     <descriptions>
       <description xml:lang="nl">Starttijd (in millisecondes na het begin van de 'bron' stream)</description>
