@@ -17,11 +17,11 @@
   <bundle name="org.mmbase.security.implementation.cloudcontext.editorresources.texts" />
 
   <block name="users" mimetype="text/html"
-         classification="mmbase.edit:200 mmbase.security:10">
+         classification="mmbase.edit:200 mmbase.security:10 unfinished">
     <title xml:lang="nl">Gebruikers</title>
     <title xml:lang="en">Users</title>
     <description xml:lang="en">Generic security editor</description>
-    <xi:include href="cloudcontext_style.head.xml" />
+    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
     <body jsp="users.jspx">
       <param name="offset" type="java.lang.Integer" />
       <param name="orderby" type="java.lang.String" />
@@ -38,7 +38,7 @@
   <block name="user" mimetype="text/html">
     <title xml:lang="nl">Gebruiker</title>
     <title xml:lang="en">User</title>
-    <xi:include href="cloudcontext_style.head.xml" />
+    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
     <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
     <xi:include href="http://www.mmbase.org/components/widgets.head.xml" />
     <body jsp="user.jspx">
@@ -49,7 +49,7 @@
   <block name="create_user" mimetype="text/html">
     <title xml:lang="nl">Creëeer gebruiker</title>
     <title xml:lang="en">Create user</title>
-    <xi:include href="cloudcontext_style.head.xml" />
+    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
     <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
     <xi:include href="http://www.mmbase.org/components/widgets.head.xml" />
     <body jsp="create_user.jspx" />
@@ -57,12 +57,12 @@
 
 
   <block name="groups"
-         classification="mmbase.security:20"
+         classification="mmbase.security:20 unfinished"
          mimetype="text/html">
     <title xml:lang="nl">Groepen</title>
     <title xml:lang="en">Groups</title>
     <description xml:lang="en">Generic security editor</description>
-    <xi:include href="cloudcontext_style.head.xml" />
+    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
     <body jsp="groups.jspx">
       <param name="orderby" />
       <param name="search" />
@@ -78,7 +78,7 @@
   <block name="group" mimetype="text/html">
     <title xml:lang="nl">Groep</title>
     <title xml:lang="en">Group</title>
-    <xi:include href="cloudcontext_style.head.xml" />
+    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
     <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
     <xi:include href="http://www.mmbase.org/components/widgets.head.xml" />
     <body jsp="group.jspx">
@@ -91,7 +91,7 @@
   <block name="create_group" mimetype="text/html">
     <title xml:lang="nl">Creëeer groep</title>
     <title xml:lang="en">Create group</title>
-    <xi:include href="cloudcontext_style.head.xml" />
+    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
     <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
     <xi:include href="http://www.mmbase.org/components/widgets.head.xml" />
     <body jsp="create_group.jspx" />
@@ -99,12 +99,12 @@
 
 
   <block name="contexts"
-         classification="mmbase.security:30"
+         classification="mmbase.security:30 unfinished"
          mimetype="text/html">
     <title xml:lang="nl">Contexten</title>
     <title xml:lang="en">Contexts</title>
     <description xml:lang="en">Generic security editor</description>
-    <xi:include href="cloudcontext_style.head.xml" />
+    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
     <body jsp="contexts.jspx">
       <param name="offset" type="java.lang.Integer" />
       <param name="tab" type="java.lang.Integer" />
@@ -117,7 +117,7 @@
   <block name="context" mimetype="text/html">
     <title xml:lang="nl">Context</title>
     <title xml:lang="en">Context</title>
-    <xi:include href="cloudcontext_style.head.xml" />
+    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
     <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
     <body jsp="context.jspx">
       <param name="node" />
@@ -128,7 +128,7 @@
   <block name="create_context" mimetype="text/html">
     <title xml:lang="nl">Creëeer context</title>
     <title xml:lang="en">Create Context</title>
-    <xi:include href="cloudcontext_style.head.xml" />
+    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
     <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
     <xi:include href="http://www.mmbase.org/components/widgets.head.xml" />
     <body jsp="create_context.jspx">
@@ -137,12 +137,12 @@
   </block>
 
   <block name="actions"
-         classification="mmbase.security:40"
+         classification="mmbase.security:40 unfinished"
          mimetype="text/html">
     <title xml:lang="nl">Acties</title>
     <title xml:lang="en">Actions</title>
     <description xml:lang="en">Generic security editor</description>
-    <xi:include href="cloudcontext_style.head.xml" />
+    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
     <body jsp="actions.jspx">
       <param name="offset" type="java.lang.Integer" />
       <param name="orderby" type="java.lang.String" />
@@ -155,7 +155,7 @@
   <block name="action" mimetype="text/html">
     <title xml:lang="nl">Actie</title>
     <title xml:lang="en">Actions</title>
-    <xi:include href="cloudcontext_style.head.xml" />
+    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
     <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
     <body jsp="action.jspx">
       <param name="node" />
@@ -169,7 +169,7 @@
     <title xml:lang="nl">Help</title>
     <title xml:lang="en">Help</title>
     <description xml:lang="en">Generic security editor</description>
-    <xi:include href="cloudcontext_style.head.xml" />
+    <xi:include href="http://www.mmbase.org/components/cloudcontext_style.head.xml" />
     <body jsp="help.jspx" />
   </block>
 
