@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * 
  * @author Daniel Ockeloen
  * @author Gerard van Enk
- * @version $Id: ForumMMBaseSyncer.java,v 1.13 2007-01-16 17:29:13 michiel Exp $
+ * @version $Id$
  */
 public class ForumMMBaseSyncer implements Runnable {
 

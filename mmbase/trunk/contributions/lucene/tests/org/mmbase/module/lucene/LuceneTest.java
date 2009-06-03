@@ -17,7 +17,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: LuceneTest.java,v 1.2 2008-01-04 16:54:21 michiel Exp $
+ * @verion $Id$
  */
 public class LuceneTest extends BridgeTest {
 

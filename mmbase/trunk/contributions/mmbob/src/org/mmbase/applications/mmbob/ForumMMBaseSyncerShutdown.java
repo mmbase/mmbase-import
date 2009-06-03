@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * This hook will be used by the jvm and tries to sync all MMBob nodes before shutting down
  *
  * @author Gerard van Enk
- * @version $Id: ForumMMBaseSyncerShutdown.java,v 1.1 2005-02-22 15:34:14 gerard Exp $
+ * @version $Id$
  */
 public class ForumMMBaseSyncerShutdown extends Thread {
     /**

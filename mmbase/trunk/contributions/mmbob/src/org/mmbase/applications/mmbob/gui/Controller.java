@@ -27,7 +27,7 @@ import org.mmbase.applications.mmbob.util.transformers.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Controller.java,v 1.72 2007-04-25 13:02:53 michiel Exp $
+ * @version $Id$
  */
 public class Controller {
 

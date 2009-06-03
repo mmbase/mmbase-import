@@ -29,7 +29,7 @@ import org.mmbase.storage.search.*;
  * ToDo: Write docs!
  *
  * @author Daniel Ockeloen (MMBased)
- * @version $Id: PostAreaConfig.java,v 1.9 2007-01-16 18:01:57 michiel Exp $
+ * @version $Id$
  */
 public class PostAreaConfig {
     private static final Logger log = Logging.getLoggerInstance(PostAreaConfig.class);

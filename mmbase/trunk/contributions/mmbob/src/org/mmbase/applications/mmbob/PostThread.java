@@ -32,7 +32,7 @@ import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostThread.java,v 1.49 2007-10-18 09:54:40 michiel Exp $
+ * @version $Id$
  */
 public class PostThread {
 

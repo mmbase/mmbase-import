@@ -23,7 +23,7 @@ import org.mmbase.applications.thememanager.*;
  * It uses the thememanager for defining the smilies.
  *
  * @author Gerard van Enk 
- * @version $Id: Smilies.java,v 1.8 2007-01-24 16:06:43 michiel Exp $
+ * @version $Id$
  * @since MMBob-1.0
  */
 public class Smilies extends StringTransformer implements CharTransformer {

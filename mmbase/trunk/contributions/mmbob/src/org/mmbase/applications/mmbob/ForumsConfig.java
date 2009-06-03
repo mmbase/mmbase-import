@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @todo This class looks remarkably like {@link ForumConfig}. Something's odd.
  * @author Daniel Ockeloen (MMBased)
- * @verion $Id: ForumsConfig.java,v 1.33 2007-01-16 17:51:52 michiel Exp $
+ * @verion $Id$
  */
 public class ForumsConfig {
     private static final Logger log = Logging.getLoggerInstance(ForumsConfig.class);

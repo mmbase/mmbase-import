@@ -31,7 +31,7 @@ import org.xml.sax.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: ProfileInfo.java,v 1.11 2007-01-16 18:01:57 michiel Exp $
+ * @version $Id$
  */
 public class ProfileInfo {
  

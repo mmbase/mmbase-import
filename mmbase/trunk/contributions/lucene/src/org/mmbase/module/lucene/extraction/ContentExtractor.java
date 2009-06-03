@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * Handles content extraction
  *
  * @author Wouter Heijke
- * @version $Revision: 1.5 $
+ * @version $Id$
  */
 public class ContentExtractor {
 

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * configuration-handling (even if the all use mmbob.xml). I did that for the sync times alreqdy.
  *
  * @author Daniel Ockeloen (MMBased)
- * @version $Id: ForumConfig.java,v 1.21 2007-01-16 17:57:03 michiel Exp $
+ * @version $Id$
  */
 public class ForumConfig {
     private static final Logger log = Logging.getLoggerInstance(ForumConfig.class);

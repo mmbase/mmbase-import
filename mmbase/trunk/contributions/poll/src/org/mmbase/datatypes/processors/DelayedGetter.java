@@ -19,7 +19,7 @@ import org.apache.commons.fileupload.FileItem;
  * is returned.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DelayedGetter.java,v 1.2 2007-01-02 19:49:19 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 

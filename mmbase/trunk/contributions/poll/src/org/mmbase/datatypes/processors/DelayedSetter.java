@@ -22,7 +22,7 @@ import java.util.concurrent.*;
  * way, very many updates on this field, result in only few updates in the database.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DelayedSetter.java,v 1.2 2007-01-02 19:49:19 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9
  */
 

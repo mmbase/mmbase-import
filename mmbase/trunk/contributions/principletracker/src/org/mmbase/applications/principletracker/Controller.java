@@ -237,7 +237,7 @@ public class Controller {
 	    body += "  <articleinfo>\n";
 	    body += "    <title>MMBase princinples (demo version)</title>\n";
 	    body += "    <date>"+(new Date()).toString()+"</date>\n";
-	    body += "    <edition>$Id: Controller.java,v 1.7 2006-11-24 15:54:08 michiel Exp $</edition>\n";
+	    body += "    <edition>$Id$</edition>\n";
 	    body += "    <authorgroup>\n";
 	    body += "      <author>\n";
 	    body += "        <firstname>MMBase</firstname><surname>Community</surname>\n";
