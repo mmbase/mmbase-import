@@ -484,10 +484,13 @@ public class Indexer {
                     if (errorCountBefore == errorCount) {
                         // first clean up, to remove possible mess
                         clear(false);
+                        
                         Directory.copy(fullIndex, getDirectory(), true);
                         Date lastFullIndex = setLastFullIndex(startTime);
-                        log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + 
-                                getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.maxDoc());
+                        log.info("Full index finished at " + lastFullIndex );
+                        if (log.isDebugEnabled()) log.debug("Copied " + fullIndex);
+                        if (log.isDebugEnabled()) log.debug("    To " + getDirectory());
+                        log.info("Total nr documents in index '" + getName() + "': " + writer.maxDoc());
                     } else if (Thread.currentThread().isInterrupted()) {
                         addError("Interrupted, will not update the index");
                     } else {
@@ -590,6 +593,7 @@ public class Indexer {
     void clear(boolean copy) {
         try {
             Directory dir = copy ? getDirectoryForFullIndex(): getDirectory();
+            log.debug("dir: " + dir);
             for (String file : dir.list()) {
                 if (file != null) {
                     try {
