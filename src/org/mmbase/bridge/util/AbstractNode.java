@@ -95,7 +95,7 @@ public abstract class AbstractNode implements Node {
             } else if (value instanceof SerializableInputStream) {
                 SerializableInputStream si = (SerializableInputStream) value;
                 setSize(fieldName, si.getSize());
-                log.info("Setting size to " + si.getSize());
+                log.debug("Setting size to " + si.getSize());
             }
 
             if (value == null && dt instanceof org.mmbase.datatypes.NumberDataType) {
@@ -247,7 +247,9 @@ public abstract class AbstractNode implements Node {
     private static final int readLimit = 10 * 1024 * 1024;
 
     public final void setInputStreamValue(String fieldName, final InputStream value, long size) {
-        log.info("Setting " + size + " + bytes (" + value + ")");
+        if (log.isDebugEnabled()) {
+            log.debug("Setting " + size + " + bytes (" + value + ")");
+        }
         setSize(fieldName, size);
         Field field = getNodeManager().getField(fieldName);
         if (log.isDebugEnabled()) {
@@ -260,6 +262,7 @@ public abstract class AbstractNode implements Node {
                     if (log.isDebugEnabled()) {
                         log.debug("Mark supported and using " + field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY));
                     }
+                    value.reset();
                     value.mark(readLimit);
                     v = field.getDataType().getProcessor(DataType.PROCESS_SET, Field.TYPE_BINARY).process(this, field, value);
                     value.reset();
@@ -350,7 +353,7 @@ public abstract class AbstractNode implements Node {
             Field field = nodeManager.getField(fieldName);
             Object r = field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_UNKNOWN).process(this, field, result);
             if ((result != null && (! result.equals(r)))) {
-                log.info("getObjectvalue was processed! " + result + " != " + r);
+                log.debug("getObjectvalue was processed! " + result + " != " + r);
                 result = r;
             }
         }
