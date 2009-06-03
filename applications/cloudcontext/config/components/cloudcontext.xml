@@ -16,6 +16,14 @@
 
   <bundle name="org.mmbase.security.implementation.cloudcontext.editorresources.texts" />
 
+  <block name="legacy" mimetype="text/html"
+         classification="mmbase.security:1">
+    <title xml:lang="nl">Security editors</title>
+    <title xml:lang="en">Security editors</title>
+    <description xml:lang="en">Generic security editor</description>
+    <body jsp="index.jspx" />
+  </block>
+
   <block name="users" mimetype="text/html"
          classification="mmbase.edit:200 mmbase.security:10 unfinished">
     <title xml:lang="nl">Gebruikers</title>
