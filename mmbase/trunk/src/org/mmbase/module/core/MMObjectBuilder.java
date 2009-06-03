@@ -220,11 +220,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
     /** Collections of (GUI) names (singular) for the builder's objects, divided by language
      */
-    protected Map<String,String> singularNames;
+    protected Map<String, String> singularNames;
 
     /** Collections of (GUI) names (plural) for the builder's objects, divided by language
      */
-    protected Map<String,String> pluralNames;
+    protected Map<String, String> pluralNames;
 
     /**
      * Full filename (path + buildername + ".xml") where we loaded the builder from
@@ -2212,7 +2212,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param age the search age as a <code>String</code>
      */
     public void setSearchAge(String age) {
-        this.searchAge=age;
+        this.searchAge = age;
         update();
     }
 
@@ -2334,7 +2334,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * Sets a list of singular names (language - value pairs)
      */
-    public void setSingularNames(Map<String,String> names) {
+    public void setSingularNames(Map<String, String> names) {
         singularNames = Collections.unmodifiableMap(names);
         update();
     }
@@ -2349,7 +2349,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     /**
      * Sets a list of plural names (language - value pairs)
      */
-    public void setPluralNames(Map<String,String> names) {
+    public void setPluralNames(Map<String, String> names) {
         pluralNames = Collections.unmodifiableMap(names);
         update();
     }
@@ -2387,14 +2387,31 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param node
      * @return an array of <code>byte</code> containing the complete contents of the field.
      * @since MMBase-1.8
+     * @deprecated Use {@link #getShortedInputStream}
      */
     protected byte[] getShortedByte(String fieldName, MMObjectNode node) {
         if (node.getNumber() < 0) return null; // capture calls from temporary nodes
         try {
             return mmb.getStorageManager().getBinaryValue(node, getField(fieldName));
         } catch (StorageException se) {
-            log.error(se.getMessage());
-            log.error(Logging.stackTrace(se));
+            log.error(se.getMessage(), se);
+            return null;
+        }
+    }
+
+    /**
+     * Get binary data of a blob field. This function is called to 'load' a field into the node, because
+     * it was not loaded together with the node, because it is supposed to be too big.
+     * @param fieldName name of the field
+     * @param node
+     * @since MMBase-1.9.1
+     */
+    protected java.io.InputStream getShortedInputStream(String fieldName, MMObjectNode node) {
+        if (node.getNumber() < 0) return null; // capture calls from temporary nodes
+        try {
+            return mmb.getStorageManager().getInputStreamValue(node, getField(fieldName));
+        } catch (StorageException se) {
+            log.error(se.getMessage(), se);
             return null;
         }
     }
