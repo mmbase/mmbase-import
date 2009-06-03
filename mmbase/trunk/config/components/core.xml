@@ -509,8 +509,8 @@
   <block name="releasenotes"
          classification="mmbase.about:11"
          mimetype="text/html">
-    <title xml:lang="nl">Releasenotes</title>
-    <title xml:lang="en">Release notes</title>
+    <title xml:lang="nl">Releasenotes voor MMBase 1.9.1</title>
+    <title xml:lang="en">Release notes for MMBase 1.9.1</title>
     <description xml:lang="en">Shows the release notes straight from the bugtracker on www.mmbase.org.</description>
     <description xml:lang="nl">Toont de release notes rechtstreeks uit de bugtracker op www.mmbase.org.</description>
     <body>
