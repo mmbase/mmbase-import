@@ -47,7 +47,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.16 2009-01-29 21:52:13 michiel Exp $
+ * @version $Id$
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends CloudContextAuthentication {

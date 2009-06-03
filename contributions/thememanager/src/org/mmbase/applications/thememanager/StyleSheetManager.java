@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: StyleSheetManager.java,v 1.4 2008-08-27 17:04:39 michiel Exp $
+ * @version $Id$
  */
 public class StyleSheetManager {
  

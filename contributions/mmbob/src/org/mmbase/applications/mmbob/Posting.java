@@ -33,7 +33,7 @@ import javax.xml.transform.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Posting.java,v 1.29 2007-01-16 18:53:20 michiel Exp $
+ * @version $Id$
  */
 public class Posting {
 

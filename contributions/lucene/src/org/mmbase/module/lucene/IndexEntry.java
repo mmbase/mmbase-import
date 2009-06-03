@@ -20,7 +20,7 @@ import org.apache.lucene.document.Document;
  * @author Michiel Meeuwissen.
  * @version $Id$
  **/
-interface IndexEntry {
+public interface IndexEntry {
 
     /**
      * Writes this index entry to a lucene {@link org.apache.lucene.document.Document}.

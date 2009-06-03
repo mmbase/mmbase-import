@@ -13,7 +13,7 @@ package org.mmbase.security.implementation.aselect;
  * to make it more obvious that it was an ASelect Exception. 
  *
  * The class does not add any functionality
- * @version $Id: ASelectException.java,v 1.1 2005-03-16 20:04:04 michiel Exp $
+ * @version $Id$
  */
 
 public class ASelectException extends RuntimeException {

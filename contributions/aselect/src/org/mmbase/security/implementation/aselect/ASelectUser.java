@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss) 
  * @author Michiel Meeuwissen (Publieke Omroep)
  *
- * @version $Id: ASelectUser.java,v 1.3 2006-02-13 18:21:38 michiel Exp $
+ * @version $Id$
  * @since  MMBase-1.7
  * @see ASelectAuthentication
  */

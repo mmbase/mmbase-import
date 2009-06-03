@@ -9,7 +9,7 @@ import org.mmbase.util.logging.Logging;
  * A Node-function on the 'poll' builder, which simply calculates the total number of given answers.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Total.java,v 1.2 2007-01-02 15:40:48 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8
  */
 public final class Total {

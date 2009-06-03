@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Forum.java,v 1.66 2007-10-18 09:54:26 michiel Exp $
+ * @version $Id$
  */
 public class Forum {
 
