@@ -34,20 +34,6 @@
               </includes>
             </resource>
           </webResources>
-          <overlays>
-            <overlay>
-              <groupId>org.mmbase</groupId>
-              <artifactId>mmbase-editwizard</artifactId>
-              <targetPath>mmexamples/editwizard</targetPath>
-              <classifier>examples</classifier>
-            </overlay>
-            <overlay>
-              <groupId>org.mmbase</groupId>
-              <artifactId>mmbase-taglib</artifactId>
-              <classifier>examples</classifier>
-              <targetPath>mmexamples/taglib</targetPath>
-            </overlay>
-          </overlays>
         </configuration>
       </plugin>
 
