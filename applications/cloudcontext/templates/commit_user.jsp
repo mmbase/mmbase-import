@@ -9,7 +9,7 @@
 <mm:compare referid="user" value="new">
   <mm:remove referid="user" />
   <mm:import id="wasnew" />
-  <mm:createnode id="user" type="mmbaseusers" />
+  <mm:createnode id="user" type="mmbaseusers" commitonclose="false" />
 </mm:compare>
 
 <mm:import id="current">users</mm:import>
@@ -35,46 +35,6 @@
 
     <mm:context>
   <mm:cloudinfo type="user" write="false" id="clouduser" />
-  <mm:field name="username">
-    <mm:compare referid2="clouduser" inverse="true">
-      <mm:import externid="_groups" vartype="list" jspvar="groups" />
-      <mm:listrelations type="mmbasegroups" role="contains">
-        <mm:relatednode jspvar="group">
-          <% if (! groups.contains("" + group.getNumber())) { %>
-          <mm:import id="delete" />
-          <% } %>
-        </mm:relatednode>
-        <mm:present referid="delete">
-          <mm:deletenode />
-        </mm:present>
-      </mm:listrelations>
-      <mm:unrelatednodes id="unrelated" type="mmbasegroups" />
-      <mm:write referid="unrelated" jspvar="unrelated" vartype="list">
-        <mm:stringlist referid="_groups">
-          <mm:node id="ugroup" number="$_" jspvar="ugroup">
-            <% if (unrelated.contains(ugroup)) { %>
-            <mm:createrelation source="ugroup" destination="user" role="contains" />
-            <% } %>
-          </mm:node>
-        </mm:stringlist>
-      </mm:write>
-      <mm:import externid="_rank" />
-      <mm:isnotempty referid="_rank">
-        <mm:relatednodescontainer type="mmbaseranks" role="rank">
-          <mm:constraint field="number" value="$_rank" />
-          <mm:size>
-            <mm:compare value="0">
-              <mm:listrelations type="mmbaseranks" role="rank">
-                <mm:deletenode />
-              </mm:listrelations>
-              <mm:node id="ranknode" number="$_rank" />
-              <mm:createrelation source="user" destination="ranknode" role="rank" />
-            </mm:compare>
-          </mm:size>
-        </mm:relatednodescontainer>
-      </mm:isnotempty>
-    </mm:compare>
-  </mm:field>
 
   <%@include file="commitGroupOrUserRights.jsp" %>
     </mm:context>
