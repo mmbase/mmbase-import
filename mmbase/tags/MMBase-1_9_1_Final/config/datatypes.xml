@@ -1,0 +1,940 @@
+<?xml version="1.0" ?>
+<datatypes
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
+
+  <!-- @version $Id$ -->
+
+  <!--
+  schematic syntax of one datatype entry:
+  datatype
+    name*
+    description*
+    class?
+    property*
+    default?
+    unique?
+    required?
+    minInclusive|minExclusive?
+    maxInclusive|maxExclusive?
+    precision?
+    scale?
+    minLength?
+    maxLength?
+    length?
+    pattern?
+    password?
+    enumeration?
+    setprocessor*
+    getprocessor*
+    commitprocessor*
+    deleteprocessor*
+    specialization*
+    -->
+
+
+  <datatype id="xml">
+    <description xml:lang="en">
+      XML fields can be used for 'richtext' fields, or other fields which are (supposed to be) valid
+      XML.
+    </description>
+    <class name="org.mmbase.datatypes.XmlDataType" />
+
+    <specialization id="html">
+      <description xml:lang="en">
+        Principally, HTML could be valid XML.
+      </description>
+      <setprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.xml.HtmlSetString" />
+      </setprocessor>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.xml.HtmlGetString" />
+      </getprocessor>
+    </specialization>
+
+    <specialization id="xmlfield">
+      <description xml:lang="en">
+        Adds processor to getting and setting as String, so that it looks like plain text then.
+      </description>
+      <setprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.xml.FieldSetString" />
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.xml.FieldGetString" />
+      </getprocessor>
+    </specialization>
+
+
+  </datatype>
+
+
+  <datatype id="string">
+    <name xml:lang="en">Text</name>
+    <name xml:lang="nl">Tekst</name>
+    <description xml:lang="en">
+      String fields contain text.
+    </description>
+    <class name="org.mmbase.datatypes.StringDataType" />
+    <!--
+    <handler mimetype="text/html,application/xml+xhtml" name="org.mmbase.datatypes.handlers.html.StringHandler" />
+    -->
+
+    <specialization id="lastmodifier">
+      <description xml:lang="en">
+        A ready-only field, which contains the user id of the last user that changed the node to which the field belongs.
+      </description>
+      <unique value="false" />
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.Readonly" />
+      </setprocessor>
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.LastModifier" />
+      </commitprocessor>
+    </specialization>
+    <specialization id="ip">
+      <description xml:lang="en">
+        A ready-only field, which contains the IP address of the of the last user that changed the node to which the field belongs.
+      </description>
+      <unique value="false" />
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.Readonly" />
+      </setprocessor>
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.Ip" />
+      </commitprocessor>
+    </specialization>
+
+
+    <specialization id="creator">
+      <description xml:lang="en">
+        A ready-only field, which contains the user id of the user that created the node to wich the field belongs.
+      </description>
+      <unique value="false" />
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.Readonly" />
+      </setprocessor>
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.Creator" />
+      </commitprocessor>
+    </specialization>
+
+    <specialization id="md5password">
+      <description xml:lang="en">
+        In the database an MD5 of the value which is set into this field is set. If you try to get
+        this value as a String, the empty String is returned.
+      </description>
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <password value="true" />
+      <setprocessor>
+        <class name="org.mmbase.util.transformers.MD5" />
+      </setprocessor>
+    </specialization>
+
+    <specialization id="checkequality">
+      <description xml:lang="en">
+        This is a field datatype that of which the value is only valid, if it is equal to the value
+        of another field in this node. The other field's name is default empty but it can be
+        changed by overriding the property 'field'.
+      </description>
+      <class name="org.mmbase.datatypes.CheckEqualityDataType" />
+    </specialization>
+
+    <specialization id="confirmpassword">
+      <description xml:lang="en">
+        This is a field datatype that of which the value is only valid, if it is equal to the value
+        of another field in this node. The other field's name is default 'password' but it can be
+        changed by overriding the property 'field'.
+      </description>
+      <class name="org.mmbase.datatypes.ConfirmPasswordDataType" />
+      <property name="field" value="password" />
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <password value="true" />
+    </specialization>
+
+    <specialization id="lowercaseuppercase">
+      <description xml:lang="en">
+        Silly example (also used to test) Strings are stored all lowercase, but showed all uppercase
+      </description>
+      <setprocessor>
+        <class name="org.mmbase.util.transformers.LowerCaser" />
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.util.transformers.UpperCaser" />
+      </getprocessor>
+    </specialization>
+
+    <specialization id="dutch-zipcode">
+      <description xml:lang="en">
+        The valid values of such a field, are zip-codes as they are used in the Netherlands.
+      </description>
+      <pattern value="(?i)\A[0-9]{4}\s*[A-Z]{2}\z">
+        <description xml:lang="nl">Ongeldige postcode. Een geldige postcode is bijv. 1234 AB.</description>
+        <description xml:lang="en">Invalid zip code. A valid dutch zip code is e.g. 1234 AB.</description>
+      </pattern>
+      <setprocessor>
+        <class name="org.mmbase.util.transformers.UpperCaser" />
+      </setprocessor>
+    </specialization>
+
+    <specialization id="emailaddress">
+      <description xml:lang="en">
+        The valid values of such a field must be a valid email address. The current implemenation is by a rather simple regular expression.
+      </description>
+      <pattern value="(?i)\A[A-Z0-9_\-\+\&amp;\*\#]+([\.-]?[A-Z0-9_\-\+\&amp;\*\#])*@([A-Z0-9_-]{2,}[\.]{1})+([A-Z]{2,})\z">
+        <description xml:lang="nl">'${VALUE}' is geen geldig email adres</description>
+        <description xml:lang="en">'${VALUE}' is not a valid email-address</description>
+        <description xml:lang="fr">'${VALUE}' n'est pas un correct address courriel</description>
+        <description xml:lang="eo">'${VALUE}' ne estas korektforma retadreso</description>
+      </pattern>
+      <!-- arbitrary check for a valid e-mail address
+        below the String equivalent for testing purposes
+        "(?i)\\A[A-Z0-9_\\-\\+\\&\\*\\#]+([\\.-]?[A-Z0-9_\\-\\+\\&\\*\\#])*@([A-Z0-9_-]{2,}[\\.]{1})+([A-Z]{2,})\\z" -->
+    </specialization>
+
+    <specialization id="field">
+      <description xml:lang="en">
+        Mainly supplied for backwards compatibility. A String without further restrications. Practicly this will result in textarea form entries.
+      </description>
+      <!--
+      <handler mimetype="text/html,application/xml+xhtml" name="org.mmbase.datatypes.handlers.html.AreaHandler" />
+      -->
+      <pattern value="(?s)\A.*\z" />
+    </specialization>
+
+    <specialization id="requiredfield">
+      <required value="true" />
+      <pattern value="(?s)\A.*\z" />
+    </specialization>
+
+    <specialization id="line">
+      <description xml:lang="en">
+        A String that may not contain newlines (though this is not enforced). Practicly this will result in 'input type="text"' form entries.
+      </description>
+      <!-- no new lines -->
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+    </specialization>
+
+    <specialization id="eline">
+      <description xml:lang="en">
+        A String that may not contain newlines (this is enforced). Practicly this will result in 'input type="text"' form entries.
+      </description>
+      <!-- enforced line -->
+      <pattern value="\A[^\n\r]*\z" />
+
+      <specialization  id="security_context">
+        <description xml:lang="en">
+          Uses 'setContext' and 'getContext'. The idea is to use this type for a 'virtual' field.
+        </description>
+        <setprocessor >
+          <class name="org.mmbase.datatypes.processors.ContextProcessor$Set" />
+        </setprocessor>
+        <getprocessor>
+          <class name="org.mmbase.datatypes.processors.ContextProcessor$Get" />
+        </getprocessor>
+      </specialization>
+    </specialization>
+
+    <specialization id="colors">
+      <description xml:lang="en">
+        Colors as can be used in css.
+      </description>
+      <default value="white" />
+      <maxLength value="64" />
+      <pattern value="(?i)\A(aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|purple|red|silver|teal|white|yellow|#[0-9,a-f]{3}|#[0-9,a-f]{6})\z" />
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.string.colors" />
+      </enumeration>
+    </specialization>
+
+    <specialization id="trimmedline">
+      <description xml:lang="en">
+        A String that may not contain newlines, after it is trimmed. Practicly this will result in 'input type="text"' form entries.
+      </description>
+      <pattern value="\A\s*[^\n\r]*?\s*\z" />
+      <setprocessor>
+        <class name="org.mmbase.util.transformers.Trimmer" />
+      </setprocessor>
+      <specialization id="trimmedrequiredline" >
+        <description xml:lang="en">
+          A String that may not contain newlines, after it is trimmed. After trimming, there must be at least one character
+        </description>
+        <pattern value="\A\s*+[^\n\r]{0,}\S\s*\z" />
+        <!--                          change this 0 in 1 if you want e.g. 2 required letters. -->
+      </specialization>
+    </specialization>
+
+
+
+
+    <specialization id="owner">
+      <description xml:lang="en">
+        The values of this field are restricted to the possible 'security contexts' of the current user as defined by the MMBase Security implementation.
+      </description>
+      <class name="org.mmbase.datatypes.SecurityContextDataType" />
+    </specialization>
+
+    <specialization id="components">
+      <description xml:lang="en">
+        The names of all available MMBase Framework Components
+      </description>
+      <class name="org.mmbase.datatypes.ComponentNamesDataType" />
+      <required value="true"/>
+      <maxLength value="128"/>
+    </specialization>
+
+    <specialization id="nodemanagers">
+      <description xml:lang="en">
+        The names of all available MMBase NodeManagers
+      </description>
+      <class name="org.mmbase.datatypes.NodeManagerNamesDataType" />
+      <required value="true"/>
+      <maxLength value="1024"/>
+    </specialization>
+
+    <specialization id="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <description xml:lang="en">
+        If you define a virtual field with this type in your builder, then it actually works as an
+        editable 'otype' field. In other words, the _type_ of the node becomes editable, which in
+        some cases can come in handy.
+      </description>
+      <class name="org.mmbase.datatypes.NodeManagerNamesDataType" />
+      <required value="true" />
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.ObjectTypeChangerCommitProcessor$Getter" />
+      </getprocessor>
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.ObjectTypeChangerCommitProcessor" />
+      </commitprocessor>
+    </specialization>
+
+    <specialization id="whitespacereplacer">
+      <description xml:lang="en">
+        If you set a value in a field with this datatype, then all occurences of one or more
+        whitespace characters are replaced by one space before the value is committed to the
+        database.
+      </description>
+      <setprocessor type="string">
+        <class name="org.mmbase.util.transformers.RegexpReplacerFactory">
+          <param name="mode">entire</param>
+          <param name="patterns">
+            <param name="\s+"> </param>
+          </param>
+        </class>
+      </setprocessor>
+    </specialization>
+
+    <specialization id="whitespacecollapser">
+      <description xml:lang="en">
+        If you set a value in a field with this datatype, then all occurences of one or more
+        whitespace characters are removed before the value is committed to the
+        database.
+      </description>
+      <setprocessor type="string">
+        <class name="org.mmbase.util.transformers.RegexpReplacerFactory">
+          <param name="mode">entire</param>
+          <param name="patterns">
+            <param name="\s+"></param>
+          </param>
+        </class>
+      </setprocessor>
+    </specialization>
+
+    <specialization id="checksum">
+      <description xml:lang="en">
+        The default 'checksum' datatype checksums the 'handle' field, but you can of course define
+        your own (anonymously in the builder xml e.g.) for other fields. This is a read-only field
+        which is automaticly filled on commit of the node.  If you define this field as unique, then
+        the effect is that a handle field which already is present in the database, cannot be saved.
+      </description>
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.ChecksumGetProcessorFactory">
+          <param name="field">handle</param>
+        </class>
+      </getprocessor>
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.ChecksumProcessorFactory">
+          <param name="field">handle</param>
+        </class>
+      </commitprocessor>
+    </specialization>
+
+    <specialization id="filename">
+      <description xml:lang="en">
+        A filename field removes directory information on set.
+      </description>
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.IgnoreIfChangedProcessor" />
+        <class name="org.mmbase.datatypes.processors.IgnoreEmptyProcessor" />
+        <class name="org.mmbase.datatypes.processors.FileNameProcessor" />
+      </setprocessor>
+    </specialization>
+
+    <specialization id="iso639">
+      <description xml:lang="en">
+        ISO 639 language 2-letter codes (sorted alphabeticly on the name of the language in the current locale)
+      </description>
+      <class name="org.mmbase.datatypes.LanguageDataType" />
+      <maxLength value="12" />
+      <pattern value="\A..\z" />
+      <enumeration>
+        <!-- ValueWrapper ensures that the enumeration is presented sorted on _value_ -->
+        <entry sorterclass="org.mmbase.util.SortedBundle$ValueWrapper"
+               basename="org.mmbase.datatypes.resources.iso639" />
+      </enumeration>
+      <!--
+      <getprocessor>
+        <class name="org.mmbase.datatypes.LanguageDataType$Getter" />
+      </getprocessor>
+      -->
+    </specialization>
+
+    <specialization id="iso3166">
+      <description xml:lang="en">
+        ISO 3166 language 2-letter country codes
+      </description>
+      <maxLength value="32" />
+      <pattern value="\A..\z" />
+      <enumeration>
+        <!-- ValueWrapper ensures that the enumeration is presented sorted on _value_ -->
+        <entry sorterclass="org.mmbase.util.SortedBundle$ValueWrapper"
+               basename="org.mmbase.datatypes.resources.iso3166" />
+      </enumeration>
+    </specialization>
+
+    <specialization id="sgender">
+      <description xml:lang="en">
+        Gender stored in a string 'M' or 'F'.
+      </description>
+      <maxLength value="12" />
+      <enumeration>
+        <entry
+            basename="org.mmbase.datatypes.resources.genders" />
+      </enumeration>
+    </specialization>
+
+
+  </datatype>
+
+  <datatype id="datetime">
+    <description xml:lang="en">
+      DateTime fields contain absolute points in time. TODO: say something about timezones
+      here. Getting it as a String results in a formatted datetime according to the locale (of the
+      cloud e.g.).
+    </description>
+    <class name="org.mmbase.datatypes.DateTimeDataType" />
+
+    <pattern value="yyyy-MM-dd HH:mm" />
+    <pattern xml:lang="nl" value="dd MMMM yyyy HH:mm" />
+    <pattern xml:lang="eo" value="dd'-a de' MMMM yyyy 'je' HH:mm" />
+    <pattern xml:lang="en" value="dd MMMM yyyy HH:mm" />
+    <pattern xml:lang="en-US" value="MMMM dd yyyy HH:mm" />
+    <pattern xml:lang="fr" value="dd MMMM yyyy HH:mm" />
+    <pattern xml:lang="de" value=":FULL" />
+
+    <getprocessor type="string">
+      <class name="org.mmbase.datatypes.processors.FormatDateTime" />
+    </getprocessor>
+
+    <specialization id="created">
+      <description xml:lang="en">
+        Read-only date-time field that contains the time of creation of the node.
+      </description>
+      <default value="now" />
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.Readonly" />
+      </setprocessor>
+      <getprocessor type="*">
+        <class name="org.mmbase.datatypes.processors.CreationTimeGuesser" />
+      </getprocessor>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.CreationTimeGuesser" />
+        <class name="org.mmbase.datatypes.processors.FormatDateTime" />
+      </getprocessor>
+    </specialization>
+
+    <specialization id="lastmodified">
+      <description xml:lang="en">
+        Read-only date-time field that contains the most recent time at which this node was changed .
+      </description>
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.Readonly" />
+      </setprocessor>
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.LastModified" />
+      </commitprocessor>
+    </specialization>
+
+
+    <specialization id="time">
+      <description xml:lang="en">
+        A date-time field that ignores the date part. Actually this is stored as a time on
+        1970-01-01, but you can use this to indicate an hour of any day. Generic editors will not
+        offer to edit the date parts of the date-time.
+      </description>
+      <default value="100" />
+      <pattern value="HH:mm:ss" />
+    </specialization>
+
+    <specialization id="date">
+      <description xml:lang="en">
+        A date-time field that ignores the time part.
+      </description>
+      <default value="today" />
+      <pattern value="yyyy-MM-dd" />
+      <pattern xml:lang="nl"    value="dd MMMM yyyy" />
+      <pattern xml:lang="en-US" value="MMMM dd yyyy" />
+      <pattern xml:lang="en"    value="dd MMMM yyyy" />
+      <pattern xml:lang="fr" value="dd MMMM yyyy" />
+
+      <specialization id="20th-century">
+        <description xml:lang="en">
+          A specialization of 'date', so it ignores the time part. The only allowed values are dates which are in the 20th century.
+        </description>
+        <description xml:lang="en">
+          Silly example (also used to test)
+          Allow only dates from the previous century..
+        </description>
+        <default value="1950-01-01" />
+        <minInclusive value="1900-01-01"  />
+        <maxExclusive value="2000-01-01"  />
+      </specialization>
+
+      <specialization id="20th-century-pedantic">
+        <description xml:lang="en">
+          Pedantic version of 20th-century. Dates in the year 1900 are rejected, dates in the year 2000 are accepted.
+        </description>
+        <default value="1950-01-01" />
+        <minInclusive value="1901-01-01"  />
+        <maxExclusive value="2001-01-01"  />
+      </specialization>
+
+      <specialization id="birthdate">
+        <description xml:lang="en">
+          DataType specialized for storing birthdates. So, no times. Defaults to 30 years ago. No future dates are accepted.
+        </description>
+        <default value="today- 30 year" />
+        <maxInclusive value="today" />
+      </specialization>
+
+      <specialization id="living-birthdate">
+        <description xml:lang="en">
+          DataType specialized for storing birthdates for people currently alive. Minimal value 140
+          years ago. Because this gives limited number of possible years, a dropdown for the year
+          field becomes possible.
+        </description>
+        <default value="today - 30 year" />
+        <minInclusive enforce="never" value="today - 140 year" />
+        <maxInclusive value="today"    />
+      </specialization>
+
+      <specialization id="historical">
+        <description xml:lang="en">
+          Historical dates, with a ERA designator.
+        </description>
+        <pattern value="GG yyyy-MM-dd" />
+        <pattern xml:lang="nl" value="dd MMMM yyyy GG" />
+        <pattern xml:lang="en-US" value="MMMM dd yyyy GG" />
+        <pattern xml:lang="en" value="dd MMMM yyyy GG" />
+      </specialization>
+
+      <specialization id="weeknumbers">
+        <description xml:lang="en">
+          Exotic specialization of 'date'. It will allow entering dates using the week-number and
+          the name of the day. In controdiction to a more conventional notation with month and day of
+          the month.
+        </description>
+        <pattern value="'dag: 'EEEEE 'week :'ww 'jaar: 'yyyy" xml:lang="nl" />
+        <pattern value="'day: 'EEEEE 'week :'ww 'year: 'yyyy" xml:lang="en" />
+      </specialization>
+
+    </specialization>
+    <specialization id="eventtime">
+      <!-- just an alias for backwards compatibility -->
+    </specialization>
+  </datatype>
+
+  <datatype id="long">
+    <description xml:lang="en">
+      Longs can contain very big (positive and negative) integer numbers.
+    </description>
+    <class name="org.mmbase.datatypes.LongDataType" />
+    <specialization id="duration">
+      <description xml:lang="en">
+        Durations are positive longs, which present a number of seconds. (for other units, we may have to introduce other datatypes).
+      </description>
+      <class name="org.mmbase.datatypes.processors.Duration$DataType" />
+      <required value="false" />
+      <minInclusive value="0" />
+      <!-- I have no idea how to do this -->
+      <setprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.Duration$SetString" />
+      </setprocessor>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.Duration$GetString" />
+      </getprocessor>
+    </specialization>
+  </datatype>
+
+  <datatype id="boolean">
+    <description xml:lang="en">
+      Boolean fields can always contain only two possible values which could be interpreted in several ways (defaults to 'true' and 'false').
+    </description>
+    <class name="org.mmbase.datatypes.BooleanDataType" />
+    <enumeration>
+      <entry basename="org.mmbase.datatypes.resources.boolean.truefalse" />
+    </enumeration>
+    <specialization id="yesno">
+      <description xml:lang="en">
+        Boolean interpreted as yes/no
+      </description>
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.boolean.yesno" />
+      </enumeration>
+    </specialization>
+    <specialization id="onoff">
+      <description xml:lang="en">
+        Boolean interpreted as on/off
+      </description>
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.boolean.onoff" />
+      </enumeration>
+    </specialization>
+    <specialization id="enableddisabled">
+      <description xml:lang="en">
+        Boolean interpreted as enabled/disabled
+      </description>
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.boolean.enableddisabled" />
+      </enumeration>
+    </specialization>
+    <specialization id="check">
+      <description xml:lang="en">
+        Boolean with no explicit enumeration. Will result in checkboxes.
+      </description>
+      <enumeration>
+      </enumeration>
+    </specialization>
+  </datatype>
+
+  <datatype id="integer">
+    <description xml:lang="en">
+      Not so very big integer numbers. Common base for all kind of enumerations.
+    </description>
+    <class name="org.mmbase.datatypes.IntegerDataType" />
+    <!--
+    <handler mimetype="text/html,application/xml+xhtml" name="org.mmbase.datatypes.handlers.html.IntegerHandler" />
+    -->
+
+    <specialization id="dirs">
+      <description xml:lang="en">
+        Enumeration for the 'dir' field of certain MMBase system builders.
+      </description>
+      <default value="2" />
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.dirs" />
+      </enumeration>
+    </specialization>
+    <specialization id="spells">
+      <description xml:lang="en">
+        Demo-enumeration for wizards.
+      </description>
+      <!-- example to test -->
+      <enumeration>
+        <entry value="1" xml:lang="nl" display="hokus pokus" />
+        <entry value="2" xml:lang="nl" display="simsalabim" />
+        <entry value="3" xml:lang="nl" display="pilatus pas" />
+        <entry value="4" xml:lang="nl" display="abcracadabra" />
+        <entry value="2" xml:lang="en" display="simsalabim" />
+        <entry value="3" xml:lang="en" display="pilatus pas" />
+        <entry value="1" xml:lang="en" display="hocus pocus" />
+      </enumeration>
+    </specialization>
+    <specialization id="media">
+      <description xml:lang="en">
+        Media types.
+      </description>
+      <description xml:lang="nl">
+        Media typen cq. soorten media.
+      </description>
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.media" />
+      </enumeration>
+    </specialization>
+    <specialization id="ordinals">
+      <description xml:lang="en">
+        'First', 'second' etc. Implemented by a drop-down, so don't expect 'twothousandeth' to work.
+      </description>
+      <description xml:lang="nl">
+        'Eerste', 'tweede' etc. Geïmplementeerd in een drop-down, dus verwacht niet dat 'tweeduizendeerste' werkt.
+      </description>
+      <enumeration>
+        <entry basename="org.mmbase.datatypes.resources.ordinals" />
+      </enumeration>
+    </specialization>
+
+    <specialization id="gender">
+      <description xml:lang="en">
+       A member of one or other sex, or rather being male or female.
+      </description>
+      <description xml:lang="nl">
+       Lid van een sekse, oftewel vrouw of man.
+      </description>
+      <enumeration>
+        <entry
+            javaconstants="org.mmbase.datatypes.resources.Gender"
+            basename="org.mmbase.datatypes.resources.genders" />
+      </enumeration>
+    </specialization>
+
+    <specialization id="filesize">
+      <description xml:lang="en">
+        Integer interpreted as a filesize. Results in a 'string' representation postfixed by 'KiB' etc.
+      </description>
+      <setprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity$Parser">
+          <param name="unit">B</param>
+          <param name="binaryPrefixes">true</param>
+        </class>
+      </setprocessor>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatFileSize"/>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="filesize_deprecated">
+      <description xml:lang="en">
+        Integer interpreted as a filesize. Results in a 'string' representation postfixed by 'kbyte' etc.
+      </description>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatFileSize">
+          <param name="classical">true</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="byte">
+      <description xml:lang="en">
+        The values 0 - 255 are possible.
+      </description>
+      <minInclusive value="0"  />
+      <maxInclusive value="255"  />
+    </specialization>
+
+    <specialization id="weekdays">
+      <description xml:lang="en">
+        Stores a day of the week (so a number from 1 to 7)
+      </description>
+      <class name="org.mmbase.datatypes.WeekdaysDataType" />
+    </specialization>
+    <specialization id="hour_of_day">
+      <description xml:lang="en">
+        Stores an hour of the day (so a number from 0 to 23)
+      </description>
+      <minInclusive value="0"  />
+      <maxInclusive value="23"  />
+    </specialization>
+    <specialization id="minute_of_hour">
+      <description xml:lang="en">
+        Stores a minute in an hour  (so a number from 0 to 59)
+      </description>
+      <minInclusive value="0"  />
+      <maxInclusive value="59"  />
+    </specialization>
+    <specialization id="age">
+      <description xml:lang="en">
+        This field can be used as a virtual field on a nodemanager with a birthdate field. This
+        field then contains the 'age' in year. This is both settable and gettable.
+      </description>
+      <minInclusive value="0" />
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.Age$Setter">
+          <param name="birthdateField">birthdate</param>
+        </class>
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.Age$Getter">
+          <param name="birthdateField">birthdate</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+  </datatype>
+
+  <datatype id="float">
+    <description xml:lang="en">
+      Floating point numbers.
+    </description>
+    <class name="org.mmbase.datatypes.FloatDataType" />
+    <specialization id="scale1-10">
+      <description xml:lang="en">
+        A scale from 1 to 10.
+      </description>
+      <minInclusive value="1.0"  />
+      <maxInclusive value="10.0"  />
+    </specialization>
+  </datatype>
+
+  <datatype id="double">
+    <description xml:lang="en">
+      Double precision floating point numbers.
+    </description>
+    <class name="org.mmbase.datatypes.DoubleDataType" />
+
+    <specialization id="phys_distance">
+      <description xml:lang="en">
+        Some distance, in the SI unit meters. Always positive.
+      </description>
+      <minInclusive value="0" />
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity">
+          <param name="unit">m</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="phys_temperature">
+      <description xml:lang="en">
+        A physical temparature.
+      </description>
+      <default value="273.15" />
+      <minInclusive value="0" />
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity">
+          <param name="unit">K</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="phys_angle">
+      <description xml:lang="en">
+        An angle in radials (1 radian = 180 / π  degrees).
+      </description>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity">
+          <param name="unit">rad</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="phys_mass">
+      <description xml:lang="en">
+        An physical mass.
+      </description>
+      <minInclusive value="0" />
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity">
+          <param name="unit">g</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+
+    <specialization id="phys_duration">
+      <description xml:lang="en">
+        An physical duration, in seconds.
+      </description>
+      <minInclusive value="0" />
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity">
+          <param name="unit">s</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+
+    <specialization id="phys_energy">
+      <description xml:lang="en">
+      </description>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity">
+          <param name="unit">J</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+  </datatype>
+
+  <datatype id="binary">
+    <description xml:lang="en">
+      Blobs. Images, attachments, those kind of things.
+    </description>
+    <class name="org.mmbase.datatypes.BinaryDataType" />
+
+    <commitprocessor>
+      <class name="org.mmbase.datatypes.processors.BinaryCommitProcessor" />
+    </commitprocessor>
+
+  </datatype>
+
+  <datatype id="node">
+    <description xml:lang="en">
+      Reference to an MMBase node.
+    </description>
+    <class name="org.mmbase.datatypes.NodeDataType" />
+    <specialization id="typedef">
+      <description xml:lang="en">
+        Reference to an MMBase node of the type 'typedef'.
+      </description>
+      <enumeration>
+        <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      </enumeration>
+    </specialization>
+    <specialization id="reldef">
+      <description xml:lang="en">
+        Reference to an MMBase node of the type 'reldef'.
+      </description>
+      <enumeration>
+        <query type="reldef" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      </enumeration>
+    </specialization>
+
+    <specialization id="nodenumber">
+      <description xml:lang="en">
+        Just a node-field, but  getting it as a String returns the node-number, rather then some odd toString of a Node object.
+      </description>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.NodeNumber" />
+      </getprocessor>
+    </specialization>
+
+    <specialization id="user">
+      <description xml:lang="en">Only nodes associated with users are possible. Default value is current user.
+      </description>
+      <class name="org.mmbase.datatypes.UserNodeDataType" />
+    </specialization>
+  </datatype>
+
+
+  <datatype id="decimal">
+    <description xml:lang="en">
+      Arbitrary precision numbers
+    </description>
+    <class name="org.mmbase.datatypes.DecimalDataType" />
+    <precision value="65" /> <!-- maximal for mysql -->
+    <scale     value="30" /> <!-- maximal for mysql -->
+
+
+    <specialization id="currency">
+      <property name="roundingMode" value="HALF_UP" />
+      <precision value="20" />
+      <scale     value="5" enforce="never" />
+
+      <!--
+          Need a getprocessor to round to scale 2 for displaying.
+      -->
+    </specialization>
+  </datatype>
+
+  <datatype id="list">
+    <description xml:lang="en">List valued</description>
+    <class name="org.mmbase.datatypes.ListDataType" />
+
+  </datatype>
+
+</datatypes>

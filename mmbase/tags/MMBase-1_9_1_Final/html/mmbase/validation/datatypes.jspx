@@ -1,0 +1,28 @@
+<mm:content
+    expires="3600"
+    type="application/xml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+  <!--
+      Returns XML describing all datatypes of a certain node-manager.
+      @todo: This JSP must accept a 'language' attribute, and all restriction error message must be included.
+             That way, also those can be used in javascript.
+
+      $Id$
+      author: Michiel Meeuwissen
+  -->
+  <mm:import externid="nodemanager" required="true" />
+  <datatypes 
+      nodemanager="${nodemanager}">
+    <mm:cloud>
+      <mm:fieldlist nodetype="${nodemanager}" type="edit" fields="owner">
+        <mm:fieldinfo type="name">
+          <field name="${_}">
+            <mm:include referids="_@field,nodemanager" page="datatype.jspx" />
+          </field>
+        </mm:fieldinfo>
+      </mm:fieldlist>
+    </mm:cloud>
+  </datatypes>
+
+</mm:content>

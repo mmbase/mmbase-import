@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<project name="vpro-wizards" default="jar" basedir=".">
+	<property name="project.name" value="vpro-wizards" />
+	<property name="project.package" value="org/mmbase/applications/vpro-wizards" />
+	<property name="project.comment" value="The VPRO wizard toolkit for MMBase" />
+
+	<property name="project.jars.includes" value="spring.jar,spring-webmvc.jar,collections-generic*.jar,commons-collections*.jar,commons-fileupload*.jar,commons-lang*.jar,oscache*.jar,nekohtml*.jar,xercesImpl.jar" />
+	<property name="project.jars.dir" location="build" />
+	<property name="java.source.version" value="1.5" />
+
+
+	<import file="../buildbase-include.xml" />
+	<property file="build.properties.default" />
+
+	<!--** create the jar **-->
+	<target name="jar" description="Create the vpro-wizards jar" depends="copy.resources,project.manifest,buildbase.jar" />
+
+	<target name="init" depends="buildbase.init">
+		<available property="xerces.available" file="${project.build.dir}/${xerces.file.noversion}" />
+	</target>
+
+	<target name="compile" depends="vpro-wizards.jars,buildbase.compile" />
+	
+	<!-- copy the web.xml fragment too-->
+	<target name="install" depends="buildbase.install" >
+		<copy tofile="${webapp.dir}/WEB-INF/vprowizards.web.xml" file="WEB-INF/web.fragment.xml" />
+	</target>
+  
+  <!-- copy thefck editors into the templates folder fragment too-->
+	<target name="install.templates" depends="vpro-wizards.jars,buildbase.install.templates" >
+    <copy todir="${fckeditor.destination}" preservelastmodified="true">
+      <fileset dir="${expand.dir}/fckeditor" />
+    </copy>
+		<copy file="ext/fckconfig.js" todir="${fckeditor.destination}"/>
+	</target>
+  
+	<!--copy all the resources to the classes dir, so they become part of the jar-->
+	<target name="copy.resources">
+		<copy todir="${project.build.dir}/classes">
+			<fileset dir="resources" />
+		</copy>
+	</target>
+
+	<!--** get the dependencies **-->
+	<target name="vpro-wizards.jars" description="Get the vpro-wizards dependencies">
+		<!--spring-->
+		<echo message="download spring" />
+		<antcall target="downloadzip">
+			<param name="sourcefile" value="${spring.loc}" />
+			<param name="destfile" value="${spring.dest}" />
+			<param name="destdir" value="${expand.dir}" />
+			<param name="expandedfile" value="${spring.jar}" />
+		</antcall>
+
+		<copy file="${spring.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
+		<copy file="${spring.mvc.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
+		<copy file="${spring.test.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
+
+		<!--commons collections-->
+		<echo message="download commons-collections" />
+		<antcall target="download">
+			<param name="sourcefile" value="${comm.collections.loc}" />
+			<param name="destfile" value="${download.dir}/${comm.collections.file}" />
+		</antcall>
+		<copy file="${download.dir}/${comm.collections.file}" todir="${project.jar.dir}" preservelastmodified="true" />
+
+		<echo message="download commons-collections (with generics support)" />
+		<antcall target="downloadzip">
+			<param name="sourcefile" value="${commons.collections.loc}" />
+			<param name="destfile" value="${commons.collections.dest}" />
+			<param name="destdir" value="${expand.dir}" />
+			<param name="expandedfile" value="${commons.collections.jar}" />
+		</antcall>
+		<copy file="${commons.collections.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
+    
+    <!--
+      Download the fck richtext editor, and copy them to the templates directory 
+    -->
+    <echo message="downloading the FCK richtext editor "/>
+    <antcall target="downloadzip">
+			<param name="sourcefile" value="${fckeditor.url}" />
+			<param name="destfile" value="${download.dir}/${fckeditor.file}" />
+			<param name="destdir" value="${expand.dir}" />
+			<param name="expandedfile" value="${expand.dir}/${fckeditor.file}" />
+		</antcall>
+    
+
+		<!--commons lang-->
+		<echo message="download commons-lang" />
+		<antcall target="download">
+			<param name="sourcefile" value="${comm.lang.loc}" />
+			<param name="destfile" value="${download.dir}/${comm.lang.file}" />
+		</antcall>
+		<copy file="${download.dir}/${comm.lang.file}" todir="${project.jar.dir}" preservelastmodified="true" />
+
+		<!--nekohtml-->
+		<echo message="download nekohtml" />
+		<antcall target="download">
+			<param name="sourcefile" value="${nekohtml.loc}" />
+			<param name="destfile" value="${download.dir}/${nekohtml.file}" />
+		</antcall>
+		<copy file="${download.dir}/${nekohtml.file}" todir="${project.jar.dir}" preservelastmodified="true" />
+
+		<antcall target="download.xerces" />
+
+		<!--oscache-->
+		<echo message="download oscache" />
+		<antcall target="download">
+			<param name="sourcefile" value="${oscache.loc}" />
+			<param name="destfile" value="${download.dir}/${oscache.file}" />
+		</antcall>
+		<copy file="${download.dir}/${oscache.file}" todir="${project.jar.dir}" preservelastmodified="true" />
+	</target>
+
+	<!--** download.xerces **-->
+	<target name="download.xerces" unless="xerces.available" depends="init">
+		<echo message="download xerces" />
+		<antcall target="download">
+			<param name="sourcefile" value="${xerces.loc}" />
+			<param name="destfile" value="${download.dir}/${xerces.file.noversion}" />
+		</antcall>
+		<copy file="${download.dir}/${xerces.file.noversion}" todir="${project.jar.dir}" preservelastmodified="false" />
+	</target>
+
+	<!--** test **-->
+	<target name="test" depends="init">
+		<echo message="build.dir: ${build.dir}" />
+		<echo message="webapp.dir: ${webapp.dir}" />
+		<echo message="download.dir: ${download.dir}" />
+		<echo message="templates.dir: ${templates.dir}" />
+		<echo message="templates.available: ${templates.available}" />
+		<echo message="project.templates.dir: ${project.templates.dir}" />
+		<echo message="examples.dir: ${examples.dir}" />
+		<echo message="project.target.examples.dir: ${project.target.examples.dir}" />
+		<echo message="project.examples.dir: ${project.examples.dir}" />
+		<echo message="project.build.dir: ${project.build.dir}" />
+		<echo message="project.source.dir: ${project.source.dir}" />
+		<echo message="tagfiles.available: ${tagfiles.available}" />
+		<echo message="xerces.available: ${xerces.available}" />
+	</target>
+
+</project>

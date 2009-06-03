@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<datatypes
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
+
+
+  <datatype id="string">
+    <specialization id="file">
+      <description>
+      </description>
+      <class name="org.mmbase.datatypes.BinaryStringDataType" />
+      <handler
+          mimetype="text/html,application/xhtml+xml"
+          name="org.mmbase.datatypes.handlers.html.BinaryHandler">
+        <param name="useSpecificSetter">true</param>
+        <param name="setIfNotChanged">false</param>
+      </handler>
+      <setprocessor type="binary">
+        <class name="org.mmbase.datatypes.processors.BinaryFile$Setter">
+        </class>
+      </setprocessor>
+      <getprocessor type="binary">
+        <class name="org.mmbase.datatypes.processors.BinaryFile$Getter" />
+      </getprocessor>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.BinaryFile$StringGetter" />
+      </getprocessor>
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.BinaryCommitProcessor" />
+      </commitprocessor>
+      <deleteprocessor>
+        <class name="org.mmbase.datatypes.processors.BinaryFile$Delete" />
+      </deleteprocessor>
+    </specialization>
+  </datatype>
+
+
+</datatypes>

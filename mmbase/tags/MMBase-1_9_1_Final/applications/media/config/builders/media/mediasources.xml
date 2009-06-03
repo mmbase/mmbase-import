@@ -1,0 +1,212 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="mediasources"   maintainer="mediaproject.mmbase.org" version="0" extends="object">
+
+  <class>org.mmbase.applications.media.builders.MediaSources</class>
+
+  <searchage>14</searchage>
+
+  <names>
+    <singular xml:lang="en">Media source</singular>
+    <singular xml:lang="nl">Mediabron</singular>
+
+    <plural xml:lang="en">Media sources</plural>
+    <plural xml:lang="nl">Mediabronnen</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">Descriptions of the physical media file</description>
+    <description xml:lang="nl">Beschrijving van het daadwerkelijke media bestand</description>
+  </descriptions>
+
+	<properties>
+    <property name="org.mmbase.media.containertype">mediafragments</property>
+    <!--
+    If no provider objects are related to a media-source, an URL can be generated with the 'default' provider, if one is specified here.
+    -->
+		<property name="default.provider.alias">default.provider</property>
+	</properties>
+
+  <fieldlist>
+    <field name="format">
+      <descriptions>
+        <description xml:lang="en">
+          The format/mimetype of this source.  This is an integer
+       	  corresponding to the org.mmbase.applications.media.resources.format
+          resource.
+        </description>
+        <description xml:lang="nl">
+          Formaat van deze bron (mime-type).
+        </description>
+      </descriptions>
+
+      <gui>
+        <guiname xml:lang="en">Format</guiname>
+        <guiname xml:lang="nl">Formaat</guiname>
+      </gui>
+      <editor><positions><list>1</list></positions></editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry
+              javaconstants="org.mmbase.applications.media.Format"
+              basename="org.mmbase.applications.media.resources.formats" />
+        </enumeration>
+      </datatype>
+    </field>
+
+    <field name="codec">
+      <descriptions>
+        <description xml:lang="en">
+          Codec stands for Coder/Decoder. Basically it is a piece of software or a driver that adds
+          a support for certain video/audio format for your operating system. With codec, your system
+          recognizes the format the codec is built for and allows you to play the audio/video file (=decode)
+          or in some cases, to change another audio/video file into that format (=(en)code).
+        </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Codec</guiname>
+        <guiname xml:lang="nl">Codec</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry basename="org.mmbase.applications.media.resources.codecs" />
+        </enumeration>
+      </datatype>
+    </field>
+
+
+    <field name="bitrate">
+      <descriptions>
+        <description xml:lang="en">
+          Defines how much physical space one second of audio or video takes in bits per second.
+        </description>
+        <description xml:lang="nl">
+          Hoeveel bit opslagcapaciteit per seconde.
+        </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Bitrate</guiname>
+        <guiname xml:lang="nl">Bitrate</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="false" />
+        <minExclusive value="0" />
+      </datatype>
+    </field>
+
+    <field name="channels">
+      <descriptions>
+        <description xml:lang="en">
+          Number of channels in this stream.
+        </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Channels</guiname>
+        <guiname xml:lang="nl">Kanalen</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry basename="org.mmbase.applications.media.builders.resources.channels" />
+        </enumeration>
+      </datatype>
+    </field>
+
+    <field name="url">
+      <descriptions>
+        <description xml:lang="en">
+          Relative URL of the stream on the server. The url of the
+          server is determined by the related mediaprovider object.
+        </description>
+        <description xml:lang="nl">
+          Relatieve URL.
+        </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Url</guiname>
+        <guiname xml:lang="nl">Url</guiname>
+      </gui>
+      <editor><positions><list>7</list></positions></editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+    <field name="state">
+      <descriptions>
+        <description xml:lang="en">
+          A source stream can be in several states, indicating e.g. that it is not immediately available.
+        </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">State</guiname>
+        <guiname xml:lang="nl">Toestand</guiname>
+      </gui>
+      <editor><positions><list>8</list></positions></editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="UNDEFINED" />
+        <enumeration enforce="onchange">
+          <entry
+              javaconstants="org.mmbase.applications.media.State"
+              basename="org.mmbase.applications.media.builders.resources.states" />
+        </enumeration>
+      </datatype>
+    </field>
+
+
+    <field name="filesize" state="system">
+      <descriptions>
+        <description xml:lang="en">
+          The size of the file which is backing the stream.
+        </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Filesize</guiname>
+        <guiname xml:lang="nl">Bestandsgrootte</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>9</list>
+        </positions>
+      </editor>
+      <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="filelastmodified" state="system">
+      <descriptions>
+        <description xml:lang="en">
+          Last modified time-stamp of the file which is backing the stream.
+        </description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">File's timestamp</guiname>
+        <guiname xml:lang="nl">Laatste wijziging van het bestand</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>-1</input><list>9</list><search>-1</search>
+        </positions>
+      </editor>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="objecttype" state="virtual">
+      <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <pattern value="videosources|audiosources" />
+        <commitprocessor>
+          <class name="org.mmbase.applications.media.FragmentTypeFixer" />
+        </commitprocessor>
+      </datatype>
+    </field>
+
+
+  </fieldlist>
+
+
+  <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
+</builder>

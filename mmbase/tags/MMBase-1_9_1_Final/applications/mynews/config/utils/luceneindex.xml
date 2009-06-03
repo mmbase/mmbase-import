@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<luceneindex
+    xmlns="http://www.mmbase.org/xmlns/luceneindex"
+    xmlns:mmsq="http://www.mmbase.org/xmlns/searchquery"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/luceneindex http://www.mmbase.org/xmlns/luceneindex.xsd">
+
+  <index name="mynews_magazine">
+    <description xml:lang="en">Lucene index for the Example 'my news'</description>
+    <analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" />
+    <list startnodes="default.mags,nondefault.mags" path="mags,news" element="news" searchdirs="destination">
+      <mmsq:field name="news.title"        />
+      <mmsq:field name="news.subtitle"  />
+      <mmsq:field name="news.intro"  />
+      <mmsq:field name="news.body"  />
+    </list>
+  </index>
+
+  <index name="mynews_news">
+    <analyzer class="org.mmbase.module.lucene.analysis.nl.StandardCleaningAnalyzer" />
+    <list  path="news" element="news">
+      <mmsq:field name="title"        />
+      <mmsq:field name="subtitle"  />
+      <mmsq:field name="intro"  />
+      <mmsq:field name="body"  />
+    </list>
+  </index>
+
+</luceneindex>

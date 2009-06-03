@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<li xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="yes" />
+  <mm:import externid="type" required="true" />
+  <a class="toggle">
+    <mm:nodeinfo nodetype="${type}" type="guinodemanager" />
+  </a>
+  <div>
+    <form>
+      <mm:relatednodescontainer role="idrel" type="${type}" id="current">
+        <mm:relatednodes id="currentlyRelated" />
+      </mm:relatednodescontainer>
+      <mm:listnodescontainer type="${type}" id="repository">
+        <mm:constraint field="number" operator="IN" referid="currentlyRelated" inverse="true" />
+      </mm:listnodescontainer>
+
+      <mm-sr:relate repository="${repository}" current="${current}" submit="#submit,#submitTest" />
+    </form>
+  </div>
+</li>

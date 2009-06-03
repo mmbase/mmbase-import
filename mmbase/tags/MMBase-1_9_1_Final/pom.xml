@@ -1,0 +1,259 @@
+<?xml version="1.0"?>
+<!--
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!--
+      This pom is responsible for building the mmbase jar, and perhaps the maven site.
+
+      The example war can be build with example-webapp/pom.xml
+
+
+  -->
+
+  <modelVersion>4.0.0</modelVersion>
+  <!-- reference to the root POM -->
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.mmbase</groupId>
+  <artifactId>mmbase</artifactId>
+  <packaging>jar</packaging>
+  <version>${mmbase.version}</version>
+  <name>MMBase Core</name>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.dtd</include>
+          <include>**/*.xsd</include>
+          <include>**/*.properties</include>
+          <include>INDEX</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>html/WEB-INF/classes</directory>
+      </resource>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>META-INF</directory>
+        <excludes>
+          <exclude>"**/CVS"</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <targetPath>org/mmbase/config</targetPath>
+        <directory>config</directory>
+        <excludes>
+          <exclude>"**/CVS"</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javacc-maven-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+          <execution>
+            <id>javacc</id>
+            <goals>
+              <goal>javacc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDirectory>src</sourceDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.mmbase.maven</groupId>
+        <artifactId>maven-mmbase-plugin</artifactId>
+        <version>1.9-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>create-index-files</id>
+            <goals>
+              <goal>create-index-files</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <showDeprecation>false</showDeprecation>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>org.mmbase.Version</mainClass>
+            </manifest>
+            <manifestEntries>
+              <url>${pom.url}</url>
+            </manifestEntries>
+            <manifestSections>
+              <manifestSection>
+                <name>org/mmbase</name>
+                <manifestEntries>
+                  <Vendor>MMBase Community</Vendor>
+                  <URL>http://www.mmbase.org</URL>
+                  <Comment>The MMBase Content Management System. ${project.name} (${project.artifactId}).</Comment>
+                  <Version>${project.version}.${timestamp}</Version>
+                  <SCM-Revision>${sources.version}</SCM-Revision>
+                  <Distribution>${project.version}</Distribution>
+                  <Build-Date>${timestamp}</Build-Date>
+                  <Description>${pom.description}</Description>
+                </manifestEntries>
+              </manifestSection>
+            </manifestSections>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${jsp.groupId}</groupId>
+      <artifactId>jsp-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!--
+    <dependency>
+      <groupId>javax.portlet</groupId>
+      <artifactId>portlet-api</artifactId>
+      <version>2.0</version>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+    </dependency>
+  </dependencies>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-changelog-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-changes-plugin</artifactId>
+        <configuration>
+          <xmlPath>${basedir}/xdocs/changes.xml</xmlPath>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>${basedir}/maven-base/checkstyle-mmbase.xml</configLocation>
+          <headerLocation>${basedir}/LICENSE.txt</headerLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <profiles>
+    <profile>
+      <id>servlet24</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>taglibs</groupId>
+          <artifactId>standard</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
+    </profile>
+  </profiles>
+
+  <!--
+       If your local repository is still empty, and still want to start with this pom
+       The mmbase-parent must be downloaded and we need the repositories first.
+  -->
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>mmbase</id>
+      <name>MMBase Maven2 repository</name>
+      <url>http://www.mmbase.org/maven2</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </pluginRepository>
+  </pluginRepositories>
+</project>

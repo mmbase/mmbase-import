@@ -1,0 +1,131 @@
+<jsp:root
+    version="1.2"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <mm:import externid="a" >A</mm:import>
+  <mm:import externid="b" >B</mm:import>
+  <jsp:output omit-xml-declaration="true" />
+  <div
+      class="test mm_c c_test b_urls ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
+
+
+    <h1>
+      <jsp:text>This block needs to be showed on</jsp:text>
+      <mm:link page="/mmbase/test/test/urls"><a href="${_}">/mmbase/test/test/urls</a></mm:link>
+    </h1>
+
+    <mm:link absolute="context">
+      <p>${_ eq '/mmbase/test/test/urls' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+
+    <mm:link absolute="context" referids="a">
+      <p>${_ eq '/mmbase/test/test/urls?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+
+    <mm:link absolute="context" page="test">
+      <p>${_ eq '/mmbase/test/test/test' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+
+    <mm:link absolute="context" referids="a" page="test">
+      <p>${_ eq '/mmbase/test/test/test?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+
+    <mm:link absolute="context" referids="a" page="suburls">
+      <p>${_ eq '/mmbase/test/test/suburls?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+
+
+    <mm:link absolute="context" page="/justsomeurl">
+      <mm:param name="foo">bar</mm:param>
+      <p>${_ eq '/justsomeurl?foo=bar' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+
+    <mm:link absolute="context" page="/justsomeurl">
+      <mm:param name="foo">bar</mm:param>
+      <mm:param name="foo">xxx</mm:param>
+      <p>${_ eq '/justsomeurl?foo=bar&amp;amp;foo=xxx' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+
+    <mm:link absolute="context" page="/justsomeurl">
+      <mm:param name="b">B</mm:param>    <!-- inverse alphabetic, to demonstrate also  	 MMB-1824 -->
+      <p>${_ eq '/justsomeurl?b=B' ? 'ok' : 'NOT ok'}: ${_}</p>
+      <mm:param name="a">A</mm:param>
+      <p>${_ eq '/justsomeurl?b=B&amp;amp;a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+
+    <mm:url id="url" absolute="context" page="/justsomeurl" write="false">
+      <mm:param name="a">A</mm:param>
+    </mm:url>
+
+    <p>${url eq '/justsomeurl?a=A' ? 'ok' : 'NOT ok'}: ${url}</p>
+
+    <mm:url id="url2" page="/justsomeurl" write="false">
+      <mm:param name="a">A</mm:param>
+      <mm:param name="b">B</mm:param>
+    </mm:url>
+
+    <mm:write referid="url2" vartype="string"  jspvar="url" write="false">
+      <jsp:expression>(url.equals("/justsomeurl?a=A&amp;b=B") ? "ok" : "NOT ok")</jsp:expression>
+      :<mm:escape><jsp:expression>url</jsp:expression></mm:escape> (${url2})
+    </mm:write>
+
+    <!-- implicit write -->
+    <mm:import id="test1"><mm:link absolute="context" page="/justsomeurl" /></mm:import>
+    <p>${test1 eq '/justsomeurl' ? 'ok' : 'NOT ok'}: '${test1}' EQ '/justsomeurl' </p>
+    <mm:import id="test2"><mm:url absolute="context" page="/justsomeurl"><mm:param name="a" value="A" /></mm:url></mm:import>
+    <p>${test2 eq '/justsomeurl?a=A' ? 'ok' : 'NOT ok'}: '${test2}' EQ '/justsomeurl' </p>
+
+    <!--
+    <mm:component name="test" block="suburls" />
+    <mm:component name="test" block="suburls" />
+    -->
+
+    <h2>Framework params</h2>
+
+    <mm:link absolute="context">
+      <mm:frameworkparam name="component">core</mm:frameworkparam>
+      <mm:frameworkparam name="category">foo</mm:frameworkparam>
+      <mm:frameworkparam name="block">view_source</mm:frameworkparam>
+      <mm:param name="page">index.jspx</mm:param>
+      <p>${_ eq '/mmbase/foo/core/view_source?1:page=index.jspx' ? 'ok' : 'NOT ok'}: '${_}'</p>
+    </mm:link>
+
+    <mm:link absolute="context">
+      <mm:frameworkparam name="component">core</mm:frameworkparam>
+      <mm:frameworkparam name="category">foo</mm:frameworkparam>
+      <mm:frameworkparam name="block">servers</mm:frameworkparam>
+      <p>${_ eq '/mmbase/foo/core/servers' ? 'ok' : 'NOT ok'}: '${_}'</p>
+    </mm:link>
+
+    <p>
+      <c:catch var="not_exist">
+        <mm:link id="no_link" absolute="context">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:frameworkparam name="block">does_not_exists</mm:frameworkparam>
+          <jsp:text>${_}</jsp:text>
+        </mm:link>
+      </c:catch>
+      <c:if test="${empty not_exist}">
+        <jsp:text>NOT ok: Should have thrown exception, because the specified  block does not exist</jsp:text>
+      </c:if>
+      <c:if test="${not empty not_exist}">
+        <jsp:text>ok: ${not_exist}</jsp:text>
+      </c:if>
+    </p>
+
+
+    <h2>Internal</h2>
+
+    <!--
+    <mm:include debug="xml" referids="a" page="/mmbase/components/test/included.jspx" />
+    -->
+    <h2>form tag</h2>
+    <mm:form page="/justsomeurl" mode="url" absolute="context">
+      <p>${_ eq '/justsomeurl' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:form>
+  </div>
+</jsp:root>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+    <relativePath>../maven-base/pom.xml</relativePath>
+  </parent>
+
+  <artifactId>example-webapp</artifactId>
+  <packaging>war</packaging>
+  <name>MMBase Example webapp</name>
+  <version>${base.version}</version>
+
+  <properties>
+    <base.version>${mmbase.version}</base.version>
+  </properties>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webResources>
+            <resource>
+              <directory>${basedir}/../html/</directory>
+              <includes>
+                <include>index.jsp</include>
+                <include>mmexamples/**</include>
+              </includes>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>tomcat-maven-plugin</artifactId>
+        <configuration>
+          <warSourceDirectory>src/webapp</warSourceDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>base-webapp</artifactId>
+      <version>${base.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-resources</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-mynews</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-editwizard</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-oscache-cache</artifactId>
+      <version>${mmbase.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-largeobjects</artifactId>
+      <version>${mmbase.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-editwizard</artifactId>
+      <version>${mmbase.version}</version>
+      <classifier>examples</classifier>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-taglib</artifactId>
+      <version>${mmbase.version}</version>
+      <classifier>examples</classifier>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-crontab</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-lucene</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.8.0.7</version>
+    </dependency>
+  </dependencies>
+  <profiles>
+    <profile>
+      <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
+      <properties>
+        <base.version>${mmbase.version}-servlet25</base.version>
+      </properties>
+    </profile>
+  </profiles>
+</project>

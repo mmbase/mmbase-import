@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project name="MMBase CloudSecurity project" default="package" basedir=".">
+  <property name="project.name"     value="cloudsecurity" />
+  <property name="project.target.templates.dir"   value="../mmexamples" />
+  <import file="../buildbase-include.xml" />
+</project>
+
+
+
+

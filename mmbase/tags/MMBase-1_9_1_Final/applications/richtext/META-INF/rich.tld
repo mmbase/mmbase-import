@@ -1,0 +1,34 @@
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        version="2.0"
+        xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance"
+        ns0:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+  <tlib-version>1.0</tlib-version>
+  <short-name>mm-rich</short-name>
+  <uri>http://www.mmbase.org/tags/mm/rich</uri>
+
+  <tag-file>
+    <name>body</name>
+    <path>/META-INF/tags/mm/rich/body.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>field</name>
+    <path>/META-INF/tags/mm/rich/body.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>referred</name>
+    <path>/META-INF/tags/mm/rich/referred.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>versions</name>
+    <path>/META-INF/tags/mm/rich/versions.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>kupulink</name>
+    <path>/META-INF/tags/mm/rich/kupulink.tagx</path>
+  </tag-file>
+
+</taglib>

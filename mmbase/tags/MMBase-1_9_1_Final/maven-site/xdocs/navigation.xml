@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="HelloWorld Plugin">
+
+  <title>Maven mmbase-module plugin</title>
+  <body>
+    <menu name="Overview">
+      <item name="Documentation"      href="/documentation/" />
+    </menu>    
+  </body>
+</project>

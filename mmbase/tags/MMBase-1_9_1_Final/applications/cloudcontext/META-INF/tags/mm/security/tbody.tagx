@@ -1,0 +1,66 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:directive.attribute name="operations"  />
+  <jsp:directive.attribute name="query"  type="org.mmbase.storage.search.SearchQuery" />
+  <jsp:directive.attribute name="submit"  type="java.lang.Boolean" />
+
+  <mm:import id="ops" vartype="list">${empty operations ? 'create,read,write,delete,change context,change relation' : operations}</mm:import>
+
+  <tbody class="rights">
+    <tr>
+      <th><mm:nodeinfo nodetype="${empty query ? 'mmbasecontexts' : query.builder.tableName}" type="guinodemanager" /></th>
+      <mm:stringlist referid="ops">
+        <th><mm:write /></th>
+      </mm:stringlist>
+    </tr>
+    <mm:functioncontainer referids="_node@grouporuser">
+      <mm:listnodescontainer referid="query" type="${empty query ? 'mmbasecontexts' : ''}">
+        <mm:listnodes
+            id="thiscontext"
+            max="200"
+            >
+          <tr>
+            <td class="text">
+              <mm:import id="text">
+                <mm:nodeinfo type="gui" />
+                <mm:hasfield name="description"><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></mm:hasfield>
+              </mm:import>
+              <mm:link page="context" referids="thiscontext@node">
+                <a href="${_}">
+                  <mm:write referid="text" escape="none" />
+                </a>
+              </mm:link>
+            </td>
+            <mm:stringlist referid="ops">
+              <mm:param name="operation"><mm:write /></mm:param>
+              <mm:function name="parentsallow" id="pa" write="false" />
+
+              <td class="${pa ? 'parent' : ''}">
+                <mm:booleanfunction name="maygrant">
+                  <c:choose>
+                    <c:when test="${submit}">
+                      <mm:import id="as" externid="${_}:${_node}" />
+                      <mm:import id="a">${! empty as}</mm:import>
+                    </c:when>
+                    <c:otherwise>
+                      <mm:function name="allows" id="a" write="false" />
+                    </c:otherwise>
+                  </c:choose>
+                  <mm:radio type="checkbox" name="${_}:${_node}" value="on" compare="${a ? 'on' : 'off'}" />
+                </mm:booleanfunction>
+                <mm:booleanfunction name="maygrant" inverse="true">
+                  <mm:booleanfunction name="allows">
+                    <jsp:text>X</jsp:text>
+                  </mm:booleanfunction>
+                </mm:booleanfunction>
+              </td>
+            </mm:stringlist>
+          </tr>
+        </mm:listnodes>
+      </mm:listnodescontainer>
+    </mm:functioncontainer>
+  </tbody>
+</jsp:root>

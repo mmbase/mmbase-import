@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-application-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>mmbase-richtext</artifactId>
+  <name>MMBase Richtext</name>
+  <packaging>war</packaging>
+  <version>${mmbase.version}</version>
+
+  <description>
+    Richtext provides utilities to use rich content in MMBase, with embedded links etc.
+  </description>
+
+  <properties>
+    <saxon.version>9.1.0.6</saxon.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.oscom</groupId>
+      <artifactId>mmbase-kupu</artifactId>
+      <version>1.4.12</version>
+      <type>war</type>
+    </dependency>
+
+    <!--
+         The XSL's need some functionality not working very well yet in the XSL processor of java.
+
+         Ship Saxon, which is faster and nicer any way.
+    -->
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>saxon</artifactId>
+      <version>${saxon.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>saxon-dom</artifactId>
+      <version>${saxon.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+
+</project>

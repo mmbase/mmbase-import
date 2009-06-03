@@ -1,0 +1,73 @@
+/**
+
+  Editwizard cascading style sheet.
+
+  @author Nico Klasens
+  @version  $Id: list.css,v 1.5 2008-10-14 12:51:19 michiel Exp $
+*/
+
+@import url("base.css");
+
+body {
+	overflow: auto;
+}
+
+tr.headtitle  {
+        text-align: right;
+}
+
+
+/** td around the full list with buttons */
+tr.searchcanvas,
+tr.listcanvas,
+tr.pagescanvas,
+tr.buttoncanvas,
+tr.linkcanvas {
+   border-width: 0px;
+   border-style: solid;
+   padding: 5px;
+   width: 100%;
+}
+
+table.searchcontent,
+table.listcontent {
+	font-size: 12px;
+	padding: 2px 4px 2px 4px;
+	text-align:	left;
+	vertical-align:	top;
+	border-width: 1px;
+	border-style: solid;
+	width: 100%;
+}
+
+td.number {
+  text-align: right;
+  width: 1%;
+}
+
+td.deletebutton {
+  width: 1%;
+}
+
+td.field {
+  white-space: nowrap;
+}
+
+td.field.pos1 {
+  white-space: normal;
+}
+
+.itemrow {
+  cursor: pointer;
+}
+
+.itemrow-hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* if permission to edit is lacking, the row is 'disabled' */
+.itemrow-disabled {
+  text-decoration: none;
+  cursor:default;
+}

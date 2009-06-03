@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-application-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>mmbase-rmmci</artifactId>
+  <name>MMBase RMMCI</name>
+  <packaging>jar</packaging>
+  <version>${mmbase.version}</version>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.mmbase.maven</groupId>
+        <artifactId>maven-mmbase-plugin</artifactId>
+        <version>1.9-SNAPSHOT</version> <!-- cannot be mmbase.version, because that would give circular dependency -->
+        <dependencies>
+          <dependency>
+            <groupId>org.mmbase</groupId>
+            <artifactId>mmbase</artifactId>
+            <version>${mmbase.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${servlet.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <includes>
+            <include>org/mmbase/bridge/*.class</include>
+
+            <include>org/mmbase/storage/search/Constraint.class</include>
+            <include>org/mmbase/storage/search/Step.class</include>
+            <include>org/mmbase/storage/search/RelationStep.class</include>
+            <include>org/mmbase/storage/search/StepField.class</include>
+            <include>org/mmbase/storage/search/AggregatedField.class</include>
+            <include>org/mmbase/storage/search/SortOrder.class</include>
+            <include>org/mmbase/storage/search/FieldNullConstraint.class</include>
+            <include>org/mmbase/storage/search/CompareFieldsConstraint.class</include>
+            <include>org/mmbase/storage/search/FieldValueConstraint.class</include>
+            <include>org/mmbase/storage/search/FieldValueInConstraint.class</include>
+            <include>org/mmbase/storage/search/FieldValueInQueryConstraint.class</include>
+            <include>org/mmbase/storage/search/FieldValueBetweenConstraint.class</include>
+            <include>org/mmbase/storage/search/FieldConstraint.class</include>
+            <include>org/mmbase/storage/search/LegacyConstraint.class</include>
+            <include>org/mmbase/storage/search/CompositeConstraint.class</include>
+            <include>org/mmbase/storage/search/SearchQuery.class</include>
+            <include>org/mmbase/storage/search/FieldCompareConstraint.class</include>
+
+            <include>org/mmbase/cache/Cacheable.class</include>
+            <include>org/mmbase/security/UserContext.class</include>
+            <include>org/mmbase/security/AuthenticationData.class</include>
+            <include>org/mmbase/util/functions/Function.class</include>
+          </includes>
+          <excludes>
+            <exclude>org/mmbase/bridge/BridgeList.class</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-remote</id>
+            <goals>
+              <goal>generate-remote</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>assembly/client.xml</descriptor>
+            <descriptor>examples-assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>${servlet.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+
+</project>

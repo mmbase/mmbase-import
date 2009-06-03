@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<fieldlist
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    >
+
+  <field
+      name="mediafragment"
+      state="virtual"
+      readonly="true">
+    <gui>
+      <guiname xml:lang="nl">Fragment</guiname>
+      <guiname xml:lang="en">Fragment</guiname>
+    </gui>
+    <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <setprocessor>
+        <!-- This field is readonly for users, but _code_ could use this setter -->
+        <class name="org.mmbase.datatypes.processors.Related$Setter">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.Related$Getter">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+      </getprocessor>
+    </datatype>
+  </field>
+
+  <field
+      name="length"
+      state="virtual"
+      >
+    <gui>
+      <guiname xml:lang="nl">Lengte</guiname>
+      <guiname xml:lang="en">Length</guiname>
+    </gui>
+    <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
+          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="searchDir">source</param>
+        </class>
+      </getprocessor>
+    </datatype>
+  </field>
+
+</fieldlist>
+

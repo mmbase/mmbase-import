@@ -1,0 +1,24 @@
+<functionlist
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    >
+  <function key="parentsallow">
+    <class>org.mmbase.security.implementation.cloudcontext.ContextBuilderFunctions</class>
+  </function>
+  <function key="allows">
+    <class>org.mmbase.security.implementation.cloudcontext.ContextBuilderFunctions</class>
+  </function>
+  <function key="maygrant">
+    <class>org.mmbase.security.implementation.cloudcontext.ContextBuilderFunctions</class>
+  </function>
+  <function key="mayrevoke">
+    <class>org.mmbase.security.implementation.cloudcontext.ContextBuilderFunctions</class>
+  </function>
+  <function key="grant">
+    <class>org.mmbase.security.implementation.cloudcontext.ContextBuilderFunctions</class>
+  </function>
+  <function key="revoke">
+    <class>org.mmbase.security.implementation.cloudcontext.ContextBuilderFunctions</class>
+  </function>
+</functionlist>

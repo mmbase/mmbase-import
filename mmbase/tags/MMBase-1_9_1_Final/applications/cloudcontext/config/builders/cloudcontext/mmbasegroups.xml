@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<builder
+  xmlns="http://www.mmbase.org/xmlns/builder"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                      http://www.mmbase.org/xmlns/builder.xsd"
+  name="mmbasegroups"
+  maintainer="www.mmbase.org"
+  version="0"
+  extends="object"
+  defaultcontextintypedef="security"
+  >
+  <class>org.mmbase.security.implementation.cloudcontext.builders.Groups</class>
+  <names>
+    <singular xml:lang="en">Security Group</singular>
+    <singular xml:lang="nl">Security groep</singular>
+    <singular xml:lang="eo">Sekureca grupo</singular>
+    <plural xml:lang="en">Security groups</plural>
+    <plural xml:lang="nl">Security groepen</plural>
+    <plural xml:lang="eo">Securecaj grupoj</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="en">MMBase security groups</description>
+    <description xml:lang="nl">MMBase groepen voor security</description>
+  </descriptions>
+  <fieldlist>
+    <field name="name">
+      <gui>
+        <guiname xml:lang="en">Name</guiname>
+        <guiname xml:lang="nl">Naam</guiname>
+        <guiname xml:lang="eo">Nomo</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <unique value="true" />
+        <required value="true" enforce="never" />
+        <maxLength value="32" />
+      </datatype>
+    </field>
+    <field name="description">
+      <gui>
+        <guiname xml:lang="en">Description</guiname>
+        <guiname xml:lang="nl">Omschrijving</guiname>
+        <guiname xml:lang="eo">Priskribo</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="1024" enforce="never"/>
+      </datatype>
+    </field>
+  </fieldlist>
+
+  <xi:include href="http://www.mmbase.org/builders/cloudcontext/mmbasegroups.virtual.fields.xml" />
+
+  <!-- MM: Because the field 'name' is also marked 'unique', this results the following exception:
+       java.sql.SQLException: Constraint already exists in statement [ALTER TABLE MMBASETESTS_MMBASEGROUPS ADD CONSTRAINT MMBASETESTS_MMBASEGROUPS_NAME_IDX UNIQUE (NAME)]
+
+       Commented out for now.
+       See also:   MMB-1751
+  <indexlist>
+    <index name="name" unique="true"><indexfield name="name" /></index>
+  </indexlist>
+  -->
+
+</builder>
