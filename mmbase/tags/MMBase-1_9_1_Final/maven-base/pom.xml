@@ -99,8 +99,8 @@ See http://www.MMBase.org/license
 
     <buildnumber.doCheck>false</buildnumber.doCheck>
 
-    <mmbase.number>1.9</mmbase.number>
-    <mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
+    <mmbase.number>1.9.1</mmbase.number>
+    <mmbase.version.postfix></mmbase.version.postfix>
     <mmbase.version>${mmbase.number}${mmbase.version.postfix}</mmbase.version>
     <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
 
