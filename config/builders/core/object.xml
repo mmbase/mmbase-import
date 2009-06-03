@@ -161,7 +161,7 @@
         </positions>
       </editor>
       <datatype base="owner" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="true" />
+        <required value="true" enforce="never"/>
         <maxLength value="64" enforce="never"/>
       </datatype>
     </field>
