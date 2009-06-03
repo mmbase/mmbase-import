@@ -13,12 +13,12 @@
     <h4>JSP/Taglib demo's</h4>
     <dl>
       <dt>
-        <a href="${mm:link('/mmexamples/mynews.jsp')}">MyNews</a>
+        <a href="${mm:link('/mmbase/mynews/mynews.jsp')}">MyNews</a>
       </dt>
       <dd>
         Small example of a news/magazine system. A more recent version has been rewritten
         to the component framework and can be found at
-        <a href="${mm:link('/mmbase/examples/mynews/magazine')}">/mmbase/examples/mynews/magazine</a>.
+        <a href="${mm:link('/mmbase/mynews/magazine')}">/mmbase/examples/mynews/magazine</a>.
       </dd>
       <dt>
         <a href="${mm:link('/mmexamples/taglib/')}">MMBase tag library examples</a>
@@ -37,7 +37,7 @@
     <h4>Other demo's</h4>
     <dl>
       <dt>
-        <mm:link page="/mmexamples/codings/">
+        <mm:link page="/mmbase/mynews/codings/">
           <a href="${_}">Codings</a>
         </mm:link>
       </dt>
