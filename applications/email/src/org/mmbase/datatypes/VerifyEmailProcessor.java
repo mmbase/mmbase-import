@@ -113,7 +113,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                     return new Object[][] {
                         {"body", "{2}"},
                         {"subject", "{0}"},
-                        {"from", "nobody@nowhere.org"}
+                        {"from", ""}
                     };
                 }
             };
@@ -265,19 +265,12 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                 log.debug("Setting " + key + SEP + email + " in " + field);
 
 
-                Cloud cloud = node.getCloud().getNonTransactionalCloud();
+                Cloud cloud = node.getCloud();
 
                 // Send an email.
                 Locale locale = cloud.getLocale();
 
                 ResourceBundle emailTemplate = getResourceBundle(locale);
-
-                if (log.isDebugEnabled()) {
-                    log.debug("Found email template " + emailTemplate + " " + emailTemplate.getLocale());
-                    for (String k : Collections.list(emailTemplate.getKeys())) {
-                        log.debug(k + "=" + emailTemplate.getString(k));
-                    }
-                }
 
                 Module emailModule   = cloud.getCloudContext().getModule("sendmail");
 
@@ -318,8 +311,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
 
 
                 String from = emailTemplate.getString("from");
-
-                if (! "".equals(from)) {
+                if ("".equals(from)) {
                     emailNode.setStringValue(fromField, from);
                 }
 
@@ -375,7 +367,6 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                     emailNode.delete();
                 }
 
-                log.debug("Using cloud " + cloud);
                 emailNode = cloud.getNode(emailNode.getNumber());
                 try {
                     Function mailFunction = emailNode.getFunction("startmail");
