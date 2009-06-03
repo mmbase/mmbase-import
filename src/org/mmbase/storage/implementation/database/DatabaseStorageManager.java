@@ -136,14 +136,6 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
 
     protected final void logQuery(String query, long startTime) {
         long duration = System.nanoTime() - startTime;
-
-        if (log.isDebugEnabled()) {
-            // This can probably by dropped, we log much nicer on org.mmbase.QUERIES now.
-            log.debug("Time:" + duration / 1000000 + " Query :" + query);
-            if (log.isTraceEnabled()) {
-                log.trace(Logging.stackTrace());
-            }
-        }
         getFactory().logQuery(query, duration);
     }
 
@@ -611,12 +603,15 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 result = s.executeQuery();
                 if ((result != null) && result.next()) {
                     Blob blob = getBlobValue(result, 1, field, mayShorten);
+                    log.debug("Found from database " + blob + " " + blob.length());
                     if (blob != null) {
                         node.setSize(field.getName(), blob.length());
                     }
                     return blob;
                 } else {
-                    if (result != null) result.close();
+                    if (result != null) {
+                        result.close();
+                    }
                     s.close();
                     throw new StorageException("Node with number " + node.getNumber() + " of type " + builder + " not found with query '" + query + "'");
                 }
@@ -657,7 +652,8 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      */
     public InputStream getInputStreamValue(MMObjectNode node, CoreField field) throws StorageException {
         try {
-            return getBlobValue(node, field).getBinaryStream();
+            Blob blob = getBlobValue(node, field);
+            return new org.mmbase.util.SerializableInputStream(blob.getBinaryStream(), blob.length());
         } catch (SQLException sqe) {
             throw new StorageException(sqe);
         }
@@ -701,14 +697,14 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             return blob;
         } else {
             try {
-                InputStream inStream = result.getBinaryStream(index);
+                final InputStream inStream = result.getBinaryStream(index);
+                log.debug("Found " + inStream);
                 if (result.wasNull()) {
                     if (inStream != null) {
                         try {
                             inStream.close();
-                        }
-                        catch (RuntimeException e) {
-                            log.debug("" + e.getMessage(), e);
+                        } catch (RuntimeException e) {
+                            log.warn("" + e.getMessage(), e);
                         }
                     }
                     return null;
@@ -717,13 +713,14 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                     if (inStream != null) {
                         try {
                             inStream.close();
-                        }
-                        catch (RuntimeException e) {
-                            log.debug("" + e.getMessage(), e);
+                        } catch (RuntimeException e) {
+                            log.warn("" + e.getMessage(), e);
                         }
                     }
+                    log.debug("Will shorten");
                     return BLOB_SHORTED;
                 }
+                log.debug("wrapping in Blob");
                 return new InputStreamBlob(inStream);
             } catch (IOException ie) {
                 throw new StorageException(ie);
@@ -851,8 +848,10 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             binaryFile.getParentFile().mkdirs(); // make sure all directory exist.
             if (node.isNull(fieldName)) {
                 if (field.isNotNull()) {
+                    log.service("Field '" + fieldName + "' is null, making empty file");
                     node.storeValue(field.getName(), new ByteArrayInputStream(new byte[0]));
                 } else {
+                    log.service("Field '" + fieldName + "' is null, deleting file");
                     if (binaryFile.exists()) {
                         binaryFile.delete();
                     }
@@ -860,15 +859,18 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 }
             }
             long size = 0L;
-            //log.warn("Storing " + field + " for " + node.getNumber());
+
             InputStream in = node.getInputStreamValue(fieldName);
+            log.service("Storing " + field + " for " + node.getNumber() + " as " + in);
             if ((binaryFile.exists() && ! binaryFile.canWrite()) ||
                 (! binaryFile.exists() && ! binaryFile.getParentFile().canWrite())
                 ) {
                 throw new StorageException("The file " + binaryFile+ " is not writable");
             }
             OutputStream out = new FileOutputStream(binaryFile);
+            in.reset();
             size += IOUtil.copy(in, out);
+            log.service("Stored " + size + " bytes from " + in);
             out.close();
             in.close();
             // unload the input-stream, it is of no use any more.
@@ -1193,32 +1195,34 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      * Commits changes in node to table.
      */
     protected void change(MMObjectNode node, MMObjectBuilder builder, String tableName, Collection<CoreField> changeFields) {
+
+        if (log.isDebugEnabled()) {
+            log.debug("Changing " + changeFields + " in " +  node);
+        }
         // Create a String that represents the fields to be used in the commit
-        StringBuilder setFields = null;
-        List<CoreField> fields = new ArrayList<CoreField>();
+        final StringBuilder setFields = new StringBuilder();;
+        final List<CoreField> fields = new ArrayList<CoreField>();
         for (CoreField field : changeFields) {
             // changing number is not allowed
             if ("number".equals(field.getName()) || "otype".equals(field.getName())) {
                 throw new StorageException("trying to change the '" + field.getName() + "' field of " + node + ". Changed fields " + node.getChanged());
             }
             // skip bytevalues that are written to file
-            if (checkStoreFieldAsFile(field.getParent()) && (field.getType() == Field.TYPE_BINARY)) {
+            if (checkStoreFieldAsFile(field.getParent()) &&
+                (field.getType() == Field.TYPE_BINARY)) {
                 storeBinaryAsFile(node, field);
             } else {
                 // handle this field - store it in fields
                 fields.add(field);
                 // store the fieldname and the value parameter
                 String fieldName = (String)factory.getStorageIdentifier(field);
-                if (setFields == null) {
-                    setFields = new StringBuilder(fieldName + "=?");
-                } else {
-                    setFields.append(',').append(fieldName).append("=?");
+                if (setFields.length() > 0) {
+                    setFields.append(",");
                 }
+                setFields.append(fieldName).append("=?");
             }
         }
-        if (log.isDebugEnabled()) {
-            log.debug("change field values " + node);
-        }
+
         if (fields.size() > 0) {
             Scheme scheme = factory.getScheme(Schemes.UPDATE_NODE, Schemes.UPDATE_NODE_DEFAULT);
             try {
@@ -1533,13 +1537,15 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             } else {
                 size = node.getSize(field.getName());
             }
-            log.debug("Setting " + size + " bytes for inputstream");
             try {
-                statement.setBinaryStream(index, stream, (int) size);
-                stream.close();
-            } catch (IOException ie) {
-                throw new StorageException(ie);
+                if (stream.markSupported()) {
+                    stream.reset();
+                }
+            } catch (IOException ioe) {
+                log.warn(ioe);
             }
+            log.debug("Setting " + size + " bytes for inputstream" + stream);
+            statement.setBinaryStream(index, stream, (int) size);
         }
     }
 
@@ -1896,7 +1902,9 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                         Object value;
                         if (field.getType() == Field.TYPE_BINARY && checkStoreFieldAsFile(builder)) {
                             value =  getBlobFromFile(node, field, true);
-                            if (value == BLOB_SHORTED) value = MMObjectNode.VALUE_SHORTED;
+                            if (value == BLOB_SHORTED) {
+                                value = MMObjectNode.VALUE_SHORTED;
+                            }
                         } else if (field.getType() == Field.TYPE_BINARY) {
                             // it is never in the resultset that came from the database
                             value = MMObjectNode.VALUE_SHORTED;
@@ -1951,8 +1959,12 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 return getStringValue(result, index, field, mayShorten);
             case Field.TYPE_BINARY :
                 Blob b =  getBlobValue(result, index, field, mayShorten);
-                if (b == BLOB_SHORTED) return MMObjectNode.VALUE_SHORTED;
-                if (b == null) return null;
+                if (b == BLOB_SHORTED) {
+                    return MMObjectNode.VALUE_SHORTED;
+                }
+                if (b == null) {
+                    return null;
+                }
                 return b.getBytes(1L, (int) b.length());
             case Field.TYPE_DATETIME :
                 return getDateTimeValue(result, index, field);
@@ -3096,14 +3108,14 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                                                 Blob b = getBlobFromDatabase(node, field, false);
                                                 int length = (int) b.length();
                                                 if (length > 0) {
-                                                  byte[] bytes = b.getBytes(1L, length);
-                                                  node.setValue(fieldName, bytes);
-                                                  storeBinaryAsFile(node, field);
+                                                    byte[] bytes = b.getBytes(1L, length);
+                                                    node.setValue(fieldName, bytes);
+                                                    storeBinaryAsFile(node, field);
 
-                                                  node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
-                                                  // node.commit(); no need, because we only changed blob (so no database updates are done)
-                                                  result++;
-                                                  log.service("( " + result + ") Found " + length + " bytes for " + node.getNumber() + " in database while configured to be on disk. Stored to " + storeFile);
+                                                    node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
+                                                    // node.commit(); no need, because we only changed blob (so no database updates are done)
+                                                    result++;
+                                                    log.service("( " + result + ") Found " + length + " bytes for " + node.getNumber() + " in database while configured to be on disk. Stored to " + storeFile);
                                                 }
                                                 fromDatabase++;
                                             }
