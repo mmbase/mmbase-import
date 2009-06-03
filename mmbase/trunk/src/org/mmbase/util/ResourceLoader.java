@@ -1145,7 +1145,7 @@ public class ResourceLoader extends ClassLoader {
                 } else {
                     File file = getFile(name);
                     if (file == null) return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
-                    u = new URL(null, "file:" + file, this);
+                    u = new URL(null, "file://" + file, this);
                 }
             } catch (MalformedURLException mfue) {
                 throw new AssertionError(mfue.getMessage());
@@ -1752,7 +1752,7 @@ public class ResourceLoader extends ClassLoader {
             @Override protected Map.Entry<String, String> getEntry(org.mmbase.util.xml.DocumentReader reader, String key, String value) {
                 String u = reader.getDocument().getDocumentURI();
                 String[] parts = u.split("!", 2);
-                log.info(u + "-> " + Arrays.asList(parts));
+                log.debug(u + "-> " + Arrays.asList(parts));
                 if (parts.length == 2) {
                     if (key.startsWith("!")) {
                         key = "\\A" + ReplacingLocalizedString.makeLiteral(parts[0]) + key + "\\z"; // should escape '.' and so one.
@@ -2015,7 +2015,7 @@ public class ResourceLoader extends ClassLoader {
                 }
             }
             */
-            if (log.isDebugEnabled()) {
+            if (log != null && log.isDebugEnabled()) {
                 log.debug("Returning  " + results);
             }
             return results;
