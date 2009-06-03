@@ -499,7 +499,7 @@
          mimetype="text/html">
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
-        <param name="url">http://www.mmbase.org/jira/IssueNavigator.jspa?view=rss&amp;&amp;pid=10000&amp;fixfor=10170&amp;version=-3&amp;status=5&amp;status=6&amp;sorter/field=updated&amp;sorter/order=DESC&amp;tempMax=25&amp;reset=true&amp;decorator=none</param>
+        <param name="url">http://www.mmbase.org/jira/IssueNavigator.jspa?view=rss&amp;&amp;pid=10000&amp;fixfor=10170&amp;version=-3&amp;status=5&amp;status=6&amp;sorter/field=updated&amp;sorter/order=DESC&amp;tempMax=200&amp;reset=true&amp;decorator=none</param>
         <param name="xslt">xslt/rss.xslt</param>
       </class>
     </body>
@@ -515,6 +515,7 @@
     <body>
       <class name="org.mmbase.framework.CachedRenderer">
         <param name="wrapsBlock">releasenotes_uncached</param>
+        <param name="expires">300</param>
       </class>
     </body>
   </block>
