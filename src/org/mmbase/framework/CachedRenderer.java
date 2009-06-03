@@ -347,7 +347,7 @@ public class CachedRenderer extends WrappedRenderer {
                             });
 
                     } else {
-                        log.debug("" + cacheFile = " up to date");
+                        log.debug("" + cacheFile + " up to date");
                         renderFile(cacheFile, w);
                     }
                 } else if (expiration > 0) {
