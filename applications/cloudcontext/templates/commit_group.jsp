@@ -1,5 +1,5 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"   prefix="mm"
 %><%@include file="import.jsp" %><%@include file="settings.jsp"
 %>
 <mm:content language="$language" expires="0">
@@ -21,50 +21,7 @@
       <mm:fieldinfo type="useinput" />
     </mm:fieldlist>
 
-    <mm:import externid="_parentgroups" vartype="list" jspvar="parentgroups" />
-    <mm:import externid="_childgroups" vartype="list" jspvar="childgroups" />
 
-     <mm:listrelations type="mmbasegroups" role="contains" searchdir="source">
-       <mm:relatednode id="oldparentgroup" jspvar="oldparentgroup">
-        <% if (! parentgroups.contains("" + oldparentgroup.getNumber())) { %>
-          <mm:import id="deleteparent" />
-       <% } %>
-       </mm:relatednode>
-       <mm:present referid="deleteparent">
-         <mm:deletenode />
-       </mm:present>
-     </mm:listrelations>
-
-     <mm:unrelatednodes id="unrelated" type="mmbasegroups" />
-
-     <mm:write referid="unrelated" jspvar="unrelated" vartype="list">
-       <mm:stringlist referid="_parentgroups">
-         <mm:node id="newparentgroup" number="$_" jspvar="newparentgroup">
-           <% if (unrelated.contains(newparentgroup)) { %>
-             <mm:createrelation source="newparentgroup" destination="group" role="contains" />
-           <% } %>
-         </mm:node>
-       </mm:stringlist>
-     </mm:write>
-     <mm:listrelations type="mmbasegroups" role="contains" searchdir="destination">
-       <mm:relatednode id="childgroup" jspvar="childgroup">
-        <% if (! childgroups.contains("" + childgroup.getNumber())) { %>
-          <mm:import id="deletechild" />
-        <% } %>
-       </mm:relatednode>
-       <mm:present referid="deletechild">
-        <mm:deletenode />
-       </mm:present>
-     </mm:listrelations>
-     <mm:write referid="unrelated" jspvar="unrelated" vartype="list">
-     <mm:stringlist referid="_childgroups">
-       <mm:node id="newchildgroup" number="$_" jspvar="newchildgroup">
-         <% if (unrelated.contains(newchildgroup)) { %>
-              <mm:createrelation source="group" destination="newchildgroup" role="contains" />
-         <% } %>
-        </mm:node>
-     </mm:stringlist>
-     </mm:write>
      <mm:present referid="wasnew">
        <mm:import externid="createcontext" />
        <mm:present referid="createcontext">
