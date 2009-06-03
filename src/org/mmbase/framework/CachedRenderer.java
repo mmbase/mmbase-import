@@ -136,6 +136,7 @@ public class CachedRenderer extends WrappedRenderer {
 
     private static final String CACHE_EXTENSION = ".cache";
     private static final String ETAG_EXTENSION = ".etag";
+    private static final String EXPIRES_EXTENSION = ".expires";
     private static final Pattern INVALID_IN_FILENAME = Pattern.compile("[\\/\\\\\\s]");
 
     protected File getCacheFile(Parameters blockParameters, RenderHints hints) {
@@ -169,6 +170,26 @@ public class CachedRenderer extends WrappedRenderer {
         String t = fr.readLine();
         fr.close();
         return t;
+    }
+
+    protected File getExpiresFile(File file) {
+        String name = file.getName();
+        File dir = file.getParentFile();
+        String tagName = name.substring(0, name.length() - CACHE_EXTENSION.length());
+        return new File(dir, tagName + EXPIRES_EXTENSION);
+    }
+
+    protected void writeExpires(File f, long expires) throws IOException {
+        Writer fw = new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
+        fw.write("" + expires);
+        fw.close();
+    }
+
+    protected long readExpires(File f) throws IOException {
+        BufferedReader fr = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+        long e = Long.parseLong(fr.readLine());
+        fr.close();
+        return e;
     }
 
     protected void renderFile(File f , Writer w) throws FrameworkException, IOException {
@@ -297,7 +318,20 @@ public class CachedRenderer extends WrappedRenderer {
                 if (uri == null) throw new FrameworkException("" + getWraps() + " did not return an URI, and cannot be cached using getLastModified");
                 URLConnection connection =  uri.toURL().openConnection();
                 connection.setConnectTimeout(timeout);
+                List<String> cacheControl = Arrays.asList(connection.getHeaderField("Cache-Control").toLowerCase().split("\\s*,\\s*"));
+                if (cacheControl.contains("no-cache") || cacheControl.contains("no-store")) {
+                    log.warn("The response for " + uri + " cannot be implicitely cached (Because of Cache-Control: " + cacheControl + ") Use the 'expires' parameter on " + this + " to override this, because it will _not_ be cached now.");
+                    getWraps().render(blockParameters, w, hints);
+                    return;
+                }
+                if (cacheControl.contains("must-revalidate")) {
+                    if (cacheFile.exists()) {
+                        log.debug("Server indicated that the cache must be revalidated");
+                        cacheFile.delete();
+                    }
+                }
                 final String etag = connection.getHeaderField("ETag");
+                final long expiration = connection.getExpiration();
                 if (etag != null) {
                     log.debug("Found an etag header on " + uri + " " + etag);
                     final File etagFile = getETagFile(cacheFile);
@@ -313,24 +347,33 @@ public class CachedRenderer extends WrappedRenderer {
                             });
 
                     } else {
+                        log.debug("" + cacheFile = " up to date");
+                        renderFile(cacheFile, w);
+                    }
+                } else if (expiration > 0) {
+                    log.debug("Found an expires header on " + uri + " " + etag);
+                    final File expiresFile = getExpiresFile(cacheFile);
+                    if (! cacheFile.exists() || ! expiresFile.exists() || System.currentTimeMillis() > readExpires(expiresFile)) {
+                        log.service("Rendering " + uri + " because " + cacheFile + " not existing expired");
+                        renderWrappedAndFile(cacheFile, blockParameters, w, hints, new Runnable() {
+                                public void run()  {
+                                    try {
+                                        writeExpires(expiresFile, expiration);
+                                    } catch (IOException ioe) {
+                                        throw new RuntimeException(ioe);
+                                    }
+                                }
+                            });
+                        renderWrappedAndFile(cacheFile, blockParameters, w, hints, null);
+                    } else {
+                        log.debug("Serving cached file because not yet expired (it's before " + new Date(expiration) + ")");
                         renderFile(cacheFile, w);
                     }
                 } else {
-                    List<String> cacheControl = Arrays.asList(connection.getHeaderField("Cache-Control").toLowerCase().split("\\s*,\\s*"));
-                    if (cacheControl.contains("no-cache") || cacheControl.contains("no-store")) {
-                        log.warn("The response for " + uri + " cannot be implicitely cached (Because of Cache-Control: " + cacheControl + ") Use the 'expires' parameter on " + this + " to override this, because it will _not_ be cached now.");
-                        getWraps().render(blockParameters, w, hints);
-                        return;
-                    }
-                    if (cacheControl.contains("must-revalidate")) {
-                        if (cacheFile.exists()) {
-                            log.debug("Server indicated that the cache must be revalidated");
-                            cacheFile.delete();
-                        }
-                    }
+
                     long modified = connection.getLastModified();
-                    if (modified == 0) {
-                        log.warn("No last-modified returned by " + uri + " taking it 5 minutes after last rendering. Consider using 'expires'. Cache control " + cacheControl);
+                    if (modified  == 0) {
+                        log.warn("No last-modified or expiration returned by " + uri + " taking it 5 minutes after last rendering. Consider using 'expires'. Cache control " + cacheControl);
                         if (cacheFile.exists()) {
                             modified = cacheFile.lastModified();
                             long delay =  5 * 60 * 1000;
@@ -340,16 +383,17 @@ public class CachedRenderer extends WrappedRenderer {
                         }
                     }
                     if (! cacheFile.exists() || (cacheFile.lastModified() < modified)) {
-                        log.service("Rendering " + uri + " because " + cacheFile + " older than " + new Date(modified));
+                        log.service("Rendering " + uri + " because " + cacheFile + " older (" + new Date(cacheFile.lastModified()) + ") than " + new Date(modified));
                         renderWrappedAndFile(cacheFile, blockParameters, w, hints, null);
                     } else {
                         if (log.isDebugEnabled()) {
-                            log.debug("Serving cached file because modification time of " + uri + " (" + modified + ") before modification time of " + cacheFile + " (" + cacheFile.lastModified() + ")");
+                            log.debug("Serving cached file because modification time of " + uri + " (" + new Date(modified) + ") after modification time of " + cacheFile + " (" + cacheFile.lastModified() + ")");
                         }
                         renderFile(cacheFile, w);
                     }
                 }
             }
+
         } catch (MalformedURLException mfe) {
             throw new FrameworkException(mfe);
         } catch (IOException mfe) {
