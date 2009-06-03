@@ -631,6 +631,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             setSize(fieldName, fi.getSize());
         } else if (fieldValue instanceof SerializableInputStream) {
             SerializableInputStream si = (SerializableInputStream) fieldValue;
+            log.info("Setting '" + fieldName + "' to " + si + " " + si.getSize());
             setSize(fieldName, si.getSize());
         }
 
@@ -685,7 +686,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             return 0;
         }
         // Value is not yet loaded from the database?
-        if (VALUE_SHORTED.equals(value)) return -1;
+        if (VALUE_SHORTED.equals(value)) {
+            return -1;
+        }
         return SizeOf.getByteSize(value);
     }
 
@@ -728,7 +731,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     /**
      * @since MMBase-1.8
      */
-    public boolean isNull(String fieldName) {
+    public boolean isNull(final String fieldName) {
         if (checkFieldExistance(fieldName)) {
             Field field = getBuilder().getField(fieldName);
             if (field.isVirtual()) {
@@ -737,12 +740,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             if (field != null && field.getType() == Field.TYPE_NODE) {
                 return getIntValue(fieldName) <= -1;
             }
-            Object value = values.get(fieldName);
+            final Object value = values.get(fieldName);
             if (VALUE_SHORTED.equals(value)) {
                 // value is not loaded from the database. We have to check the database to be sure.
                 return parent.isNull(fieldName, this);
             }
-            return values.get(fieldName) == null;
+            return value == null;
         } else {
             return true;
         }
@@ -767,7 +770,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 int type = getDBType(fieldName);
                 switch (type) {
                 case Field.TYPE_BINARY:
-                    value = parent.getShortedByte(fieldName, this);
+                    if (getSize(fieldName) < blobs.getMaxEntrySize()) {
+                        value = parent.getShortedByte(fieldName, this);
+                    } else {
+                        value = parent.getShortedInputStream(fieldName, this);
+                    }
                     break;
                 case Field.TYPE_STRING:
                     value = parent.getShortedText(fieldName, this);
@@ -886,22 +893,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         return o;
     }
 
-    /**
-     * If the values map contains an InputStream, care must be taken because often an InputStream can be used only once.
-     * @since MMBase-1.8
-     */
-    private byte[] useInputStream(String fieldName, InputStream stream) {        // first, convert to byte-array
-        byte[] b = SerializableInputStream.toByteArray(stream);
-        // check if we can cache it.
-        BlobCache blobs = parent.getBlobCache(fieldName);
-        String key = blobs.getKey(getNumber(), fieldName);
-        if (b.length < blobs.getMaxEntrySize()) {
-            blobs.put(key, b);
-        }
-        setSize(fieldName, b.length);
-        values.put(fieldName, b);
-        return b;
-    }
+
 
     /**
      * Get a binary value of a certain field.
@@ -951,13 +943,21 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             }
         }
 
-        if (value instanceof InputStream) {
+        if (value instanceof SerializableInputStream) {
+            SerializableInputStream is = (SerializableInputStream) value;
+            try {
+                is.reset();
+            } catch(IOException ioe) {
+                log.warn(ioe);
+            }
+            return is;
+        } else if (value instanceof InputStream) {
             // cannot return it directly, it would kill the inputstream, and perhaps it cannot be saved in db anymore then.
             // Sad, we have a buffer always now.
             // XXX think of something that the buffer is only needed if actually used a second time
             //      May be we don't have to do this if the InputStream#markSupported()
             //      We could #reset() then if needed
-            return new ByteArrayInputStream(useInputStream(fieldName, (InputStream) value));
+            return new SerializableInputStream((InputStream) value, getSize(fieldName));
         }
 
         if (VALUE_SHORTED.equals(value)) {
