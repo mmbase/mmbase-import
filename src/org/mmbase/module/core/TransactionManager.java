@@ -304,7 +304,6 @@ public class TransactionManager {
 
         log.debug("Checking types and existance");
 
-        System.out.println("Commtting " + nodes);
         for (MMObjectNode node : nodes) {
             // Nodes are uncommited by default
             NodeState state = new NodeState();
