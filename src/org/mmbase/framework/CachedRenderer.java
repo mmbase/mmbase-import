@@ -299,6 +299,7 @@ public class CachedRenderer extends WrappedRenderer {
                 connection.setConnectTimeout(timeout);
                 final String etag = connection.getHeaderField("ETag");
                 if (etag != null) {
+                    log.debug("Found an etag header on " + uri + " " + etag);
                     final File etagFile = getETagFile(cacheFile);
                     if ( ! cacheFile.exists() || ! etagFile.exists() || ! etag.equals(readETag(etagFile))) {
                         renderWrappedAndFile(cacheFile, blockParameters, w, hints, new Runnable() {
@@ -315,11 +316,36 @@ public class CachedRenderer extends WrappedRenderer {
                         renderFile(cacheFile, w);
                     }
                 } else {
+                    List<String> cacheControl = Arrays.asList(connection.getHeaderField("Cache-Control").toLowerCase().split("\\s*,\\s*"));
+                    if (cacheControl.contains("no-cache") || cacheControl.contains("no-store")) {
+                        log.warn("The response for " + uri + " cannot be implicitely cached (Because of Cache-Control: " + cacheControl + ") Use the 'expires' parameter on " + this + " to override this, because it will _not_ be cached now.");
+                        getWraps().render(blockParameters, w, hints);
+                        return;
+                    }
+                    if (cacheControl.contains("must-revalidate")) {
+                        if (cacheFile.exists()) {
+                            log.debug("Server indicated that the cache must be revalidated");
+                            cacheFile.delete();
+                        }
+                    }
                     long modified = connection.getLastModified();
+                    if (modified == 0) {
+                        log.warn("No last-modified returned by " + uri + " taking it 5 minutes after last rendering. Consider using 'expires'. Cache control " + cacheControl);
+                        if (cacheFile.exists()) {
+                            modified = cacheFile.lastModified();
+                            long delay =  5 * 60 * 1000;
+                            if (modified + delay < System.currentTimeMillis()) {
+                                modified += delay;
+                            }
+                        }
+                    }
                     if (! cacheFile.exists() || (cacheFile.lastModified() < modified)) {
                         log.service("Rendering " + uri + " because " + cacheFile + " older than " + new Date(modified));
                         renderWrappedAndFile(cacheFile, blockParameters, w, hints, null);
                     } else {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Serving cached file because modification time of " + uri + " (" + modified + ") before modification time of " + cacheFile + " (" + cacheFile.lastModified() + ")");
+                        }
                         renderFile(cacheFile, w);
                     }
                 }
