@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <version>1.9.1</version>
   </parent>
 
   <artifactId>mmbase-rmmci</artifactId>
@@ -19,7 +19,7 @@
       <plugin>
         <groupId>org.mmbase.maven</groupId>
         <artifactId>maven-mmbase-plugin</artifactId>
-        <version>1.9-SNAPSHOT</version> <!-- cannot be mmbase.version, because that would give circular dependency -->
+        <version>1.9.1</version> <!-- cannot be mmbase.version, because that would give circular dependency -->
         <dependencies>
           <dependency>
             <groupId>org.mmbase</groupId>
