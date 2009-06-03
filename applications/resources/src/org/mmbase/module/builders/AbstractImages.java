@@ -210,10 +210,11 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             }
         }
         Dimension dim;
-        byte[] data = node.getByteValue(Imaging.FIELD_HANDLE);
-        if (data == null || data.length == 0) {
+
+        if (node.isNull(Imaging.FIELD_HANDLE) || node.getSize(Imaging.FIELD_HANDLE) == 0) {
             dim = getDimensionForEmptyHandle(node);
         } else {
+            java.io.InputStream  data = node.getInputStreamValue(Imaging.FIELD_HANDLE);
             ImageInformer ii = Factory.getImageInformer();
             try {
                 dim = ii.getDimension(data);
