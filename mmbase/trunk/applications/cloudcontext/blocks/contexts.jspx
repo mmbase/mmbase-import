@@ -17,8 +17,15 @@
   <mm:import id="nodetype">${query.builder.tableName}</mm:import>
 
 
-  <mm:import id="fields" externid="user_fields"><mm:write value="${mm:managerProperty(nodetype, 'security_editor_fields')}" write="true"><mm:isempty>name</mm:isempty></mm:write></mm:import>
-
+  <mm:import id="fields" externid="user_fields">
+    <mm:property nodemanager="${nodetype}" name="security_editor_fields">
+      <mm:isempty>
+        <mm:fieldlist nodetype="${nodetype}" type="list">
+          <mm:fieldinfo type="name" /><mm:last inverse="true">,</mm:last>
+        </mm:fieldlist>
+      </mm:isempty>
+    </mm:property>
+  </mm:import>
 
   <p class="action">
     <mm:maycreate type="$nodetype">
