@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<!--
+     @version $Id$
+     @author Michiel Meeuwissen
+-->
+<util>
+  <properties>
+    <property name="forwards" type="map">
+
+      <entry><key>testtest@connaitrejesus.com</key><value>Michiel.Meeuwissen@gmail.com,test@meeuw.org</value></entry>
+      <entry><key>info@waaromjezus.be</key><value>info@jip-be.com</value></entry>
+    </property>
+  </properties>
+</util>

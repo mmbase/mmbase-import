@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article class="productsheet">
+  <articleinfo>
+    <title>MMBase Crontab</title>
+
+    <date>2004-09-23</date>
+
+    <edition>$Id$</edition>
+
+    <authorgroup>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+      </author>
+    </authorgroup>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+
+  <section id="introduction">
+    <title>Introduction</title>
+    <para>
+      The crontab functionality is of course heavily inspired by UNIX' crontab. This means that you
+      can schedule jobs with it. You specify when it must run by a string like: "*/3 5-23 * * *"
+      which means every three minutes, but not during the night, or "0 7 * * *" which means every
+      day at 7 am.
+    </para>
+  </section>
+
+  <section id="installation">
+    <title>Installation</title>
+    <para>
+      To install the MMBase crondaemon, you have to place mmbase-crontab.jar, which will activate
+      the crontab module (crontab.xml). You can then optionally also deploy the MMBaseCronTab
+      application (with the cronjobs builder).  If you want to only use the builder and not the
+      module, you can place a crontab.xml in config/modules containing
+      &lt;status&gt;inactive&lt;/status&gt;. You can also simply not use the module, because it doesn't harm.
+    </para>
+  </section>
+
+  <section id="configuration">
+    <title>Configuration</title>
+    <para>
+      You specify what must be run by the class-name of a class implementing 'Runnable', or optionally,
+      implementing the specialized interface CronJob. The CronJob interface extends Runnable but also
+      alows for code to be run when the con-daemon stops or when it starts (a String can be provided for
+      configuration). You must implement such a class and put the class-file e.g. in WEB-INF/classes.
+    </para>
+    <para>
+      In combination with the 'ClassSecurity' feature you can easily implement CronJobs using the bridge
+      interfaces, so you might want to privilege your class in &lt;mmbase-config&gt;security/classauthentication.xml.
+    </para>
+    <para>
+      You can schedule it in two ways now. Make either a cronjobs object or edit
+      &lt;mmbase-config&gt;modules/crontab.xml, or &lt;mmbase-config&gt;utils/crontab.xml.
+      For the module the format is as follows:
+      <programlisting><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<module maintainer="mmbase.org" version="0">
+  <status>active</status>
+  <class>org.mmbase.applications.crontab.modules.CrontabModule</class>
+  <properties>
+    <property name="memorystats">* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||Memory|short</property>
+  </properties>
+</module>
+]]></programlisting>
+      The format for 'crontab.xml' in the utils directory is very similar (find the example).
+      Every property in these files consists of 5 fields, seperated by the pipe (|) symbol. They have the following use:
+      <itemizedlist>
+        <listitem>
+          <para>Timeformat. This is the standard 'crontab' format used in unix, so therefore we refer to the <ulink url="http://www.rt.com/man/crontab.5.html">UNIX crontab manual page</ulink> for more information.</para>
+        </listitem>
+        <listitem>
+          <para>The class that will be executed. This class should implement the 'org.mmbase.applications.crontab.CronJob' interface, of which the 'run()' method will be called whenever it is time to run the cronjob.</para>
+        </listitem>
+        <listitem>
+          <para>Description of the job (optional).</para>
+        </listitem>
+        <listitem>
+          <para>A configuration string (optional). This string is available to the job class instance, so you can make generic cronjob implementations that can be used for multiple jobs.</para>
+        </listitem>
+        <listitem>
+          <para>The type of the job (optional). This can be one of the following: 
+          <itemizedlist>
+            <listitem>
+              <para>short. This means that the job is short, and that the current thread can execute it. No new thread will be spawned, but it is only suitable for jobs that are quickly done. Otherwise, other jobs will have to wait until this job is completed.</para>
+            </listitem>
+            <listitem>
+              <para>canbemore. This means that a new Thread will be spawned to run the job. It doesn't check if there already was a thread from a previous execution that is still running, so it can in theory blow up your application server. If the job execution time exceeds the interval in which new jobs are spawned, this will result in a thread bomb.</para>
+            </listitem>
+            <listitem>
+              <para>mustbeone. This is the default, and means that a new Thread will be spanwed to run the job, but only if the job wasn't still running from the previous invocation. This means that a job might be skipped when the previous one is still running.</para>
+            </listitem>
+          </itemizedlist>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+	    On which server to run.
+	  </para>
+	  <para>
+	    This is a regular expression (defaults to ".*") to which the
+	    current value of MMBase.getMMBase().getMachineName() must match. This makes it possible
+	    to have the same config-files on different servers, without having the same jobs running
+	    on them too.
+	  </para>
+	</listitem>
+      </itemizedlist>
+    </para>
+  </section>
+</article>
