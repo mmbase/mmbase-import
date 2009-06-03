@@ -80,8 +80,10 @@ public abstract class ThreadPools {
                 @Override public void run() {
                     try {
                         super.run();
-                    } catch (Throwable t) {
-                        log.error("Error during job: " + r + ":" + id + " " + t.getClass().getName() + " " + t.getMessage(), t);
+                    } catch (org.mmbase.bridge.NotFoundException nf) {
+                        log.debug("Error during job: " + r + ":" + id + " " + nf.getClass().getName() + " " + nf.getMessage(), nf);
+                    } catch (Throwable e) {
+                        log.error("Error during job: " + r + ":" + id + " " + e.getClass().getName() + " " + e.getMessage(), e);
                     }
                 }
             };
