@@ -354,15 +354,20 @@
             </xsl:for-each>
           </xsl:if>
           <xsl:if test="not($linkexamples)">
-            <xsl:for-each select="example/include">
-
-              <xsl:value-of select="unparsed-text(@href)" />
-            </xsl:for-each>
+            <xsl:apply-templates select="example/include" mode="href" />
           </xsl:if>
         </td>
         </tr>
       </xsl:if>
     </table>
+  </xsl:template>
+
+  <xsl:template name="include" mode="href">
+    <!-- xslt2
+    <xsl:for-each select="example/include">
+      <xsl:value-of select="unparsed-text(@href)" />
+    </xsl:for-each>
+    -->
   </xsl:template>
 
   <xsl:template match="function" mode="full">
@@ -426,9 +431,7 @@
             </xsl:for-each>
           </xsl:if>
           <xsl:if test="not($linkexamples)">
-            <xsl:for-each select="example/include">
-              <xsl:value-of select="unparsed-text(@href)" />
-            </xsl:for-each>
+            <xsl:apply-templates select="example/include" mode="href" />
           </xsl:if>
         </td>
         </tr>
