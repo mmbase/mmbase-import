@@ -84,21 +84,8 @@ public abstract class FileWatcher {
     static ScheduledFuture<?> future;
     static FileWatcherRunner fileWatchers = new FileWatcherRunner();
     static {
-
-        ScheduledExecutorService scheduler;
-        try {
-            // to avoid depdencoy of rmmci on all threadpools
-            scheduler = (ScheduledExecutorService) Class.forName("org.mmbase.util.ThreadPools").getField("scheduler").get(null);
-        } catch (Exception cnfe) {
-            log.service(cnfe);
-            scheduler =  new ScheduledThreadPoolExecutor(1);
-        }
-        future = scheduler.scheduleAtFixedRate(fileWatchers, THREAD_DELAY, THREAD_DELAY, TimeUnit.MILLISECONDS);
-        try {
-            Class.forName("org.mmbase.util.ThreadPools").getMethod("identify", Future.class, String.class).invoke(null, future, "File Watcher");
-        } catch (Exception cnfe) {
-            // never mind
-        }
+        future = org.mmbase.util.ThreadPools.scheduler.scheduleAtFixedRate(fileWatchers, THREAD_DELAY, THREAD_DELAY, TimeUnit.MILLISECONDS);
+        org.mmbase.util.ThreadPools.identify(future, "File Watcher");
     }
 
 
