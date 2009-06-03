@@ -895,7 +895,7 @@ s     */
         protected LocalizedString errorDescription;
         protected Serializable value;
         protected boolean fixed = false;
-        protected int enforceStrength = DataType.ENFORCE_ALWAYS;
+        protected int enforceStrength = DataType.ENFORCE_ONCHANGE;
 
         /**
          * If a restriction has an 'absolute' parent restriction, then also that restriction must be
