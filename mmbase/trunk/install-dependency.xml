@@ -4,13 +4,17 @@
   <!-- =================================================================== -->
 
   <property name="download.dir"           location="download" />
-  <property name="version"                value="1.9-SNAPSHOT" />
+  <property name="version"                value="1.9.1-rc2" />
   <property name="prefix"                 value="mmbase-" />
   <property name="mmbase.templates.path"  value="mmbase/" />
   <property name="base"                   value="mmbase" />
   <property name="local.repository"       value="${user.home}/.maven/repository" />
   <property name="remote.repository"      value="http://www.mmbase.org/maven" />
   <property name="remote.repository2"     value="http://repo1.maven.org/maven/" />
+
+  <property name="local.m2repository"       value="${user.home}/.m2/repository" />
+  <property name="remote.m2repository"      value="http://www.mmbase.org/maven2" />
+  <property name="remote.m2repository2"     value="http://repo1.maven.org/maven2/" />
 
 
   <property name="mmbase.ignorefiles"     value="templates/index.jsp" />
@@ -54,20 +58,20 @@
 
   <target name="get"  depends="local.get,remote.get">
   </target>
+
   <target name="local.get">
     <mkdir dir="${download.dir}" />
-    <copy file="${local.repository}/${file}" tofile="${download.dir}/${destfile}" preservelastmodified="true" overwrite="false" failonerror="false" />
+    <copy file="${local.m2repository}/${file}" tofile="${download.dir}/${destfile}" preservelastmodified="true" overwrite="false" failonerror="false" />
   </target>
 
   <target name="remote.get"  depends="setproxy" unless="noconnection">
-    <get src="${remote.repository}/${file}" dest="${download.dir}/${destfile}"  usetimestamp="true"   ignoreerrors="true" />
-    <get src="${remote.repository2}/${file}" dest="${download.dir}/${destfile}"  usetimestamp="true"  ignoreerrors="true" />
+    <get src="${remote.m2repository}/${file}" dest="${download.dir}/${destfile}"  usetimestamp="true"   ignoreerrors="true" />
+    <get src="${remote.m2repository2}/${file}" dest="${download.dir}/${destfile}"  usetimestamp="true"  ignoreerrors="true" />
   </target>
-
 
   <target name="get.war">
     <antcall target="get">
-      <param name="file"  value="mmbase/wars/${name}-${version}.war" />
+      <param name="file"  value="org/mmbase/${name}/${version}/${name}-${version}.war" />
       <param name="destfile"  value="${name}-${version}.war" />
     </antcall>
   </target>
@@ -147,12 +151,9 @@
 
   </target>
 
-  <target name="mmbase" unless="mmbase.installed" depends="commons-fileupload">
-    <antcall target="install.module.minimalistic">
-      <param name="name" value="" />
-      <param name="prefix" value="mmbase" />
-      <param name="mmbase.templates.path" value="" />
-      <param name="ignorefiles" value="${mmbase.ignorefiles}" />
+  <target name="mmbase" unless="mmbase.installed">
+    <antcall target="install.war">
+      <param name="name" value="base-webapp" />
     </antcall>
     <property name="mmbase.installed" value="yes" />
   </target>
@@ -163,91 +164,74 @@
     </antcall>
   </target>
 
-  <target name="editwizard" depends="dove,mmbase" unless="editwizard.installed">
-    <antcall target="install.module">
-      <param name="name" value="editwizard" />
-      <param name="mmbase.templates.path" value="mmbase/edit/wizard/" />
+  <target name="editwizard" depends="mmbase" unless="editwizard.installed">
+    <antcall target="install.war">
+      <param name="name" value="mmbase-editwizard" />
     </antcall>
     <property name="editwizard.installed" value="yes" />
   </target>
 
-  <target name="dove" depends="mmbase" unless="dove.installed">
-    <antcall target="install.module">
-      <param name="name" value="dove" />
-    </antcall>
-    <property name="dove.installed" value="yes" />
-  </target>
-  
   <target name="vpro-wizards" depends="mmbase" >
-    <antcall target="install.module">
-      <param name="name" value="vpro-wizards" />
+    <antcall target="install.war">
+      <param name="name" value="mmbase-vpro-wizards" />
     </antcall>
-    <property name="dove.installed" value="yes" />
   </target>
 
-  <target name="taglib" depends="mmbase,jstl" unless="taglib.installed">
-    <antcall target="install.module">
-      <param name="name" value="taglib" />
-    </antcall>
-    <property name="taglib.installed" value="yes" />
-  </target>
-
-  <target name="crontab" depends="mmbase" unless="crontab.installed">
-    <antcall target="install.module">
-      <param name="name" value="crontab" />
+  <target name="crontab" unless="crontab.installed">
+    <antcall target="install.war">
+      <param name="name" value="mmbase-crontab" />
     </antcall>
     <property name="crontab.installed" value="yes" />
   </target>
 
-  <target name="email" depends="mmbase">
-    <antcall target="install.module">
-      <param name="name" value="email" />
+  <target name="email">
+    <antcall target="install.war">
+      <param name="name" value="mmbase-email" />
     </antcall>
   </target>
 
-  <target name="clustering" depends="mmbase">
-    <antcall target="install.module">
-      <param name="name" value="clustering" />
+  <target name="clustering">
+    <antcall target="install.war">
+      <param name="name" value="mmbase-clustering" />
     </antcall>
   </target>
 
-  <target name="resources" depends="mmbase">
-    <antcall target="install.module">
-      <param name="name" value="resources" />
+  <target name="resources">
+    <antcall target="install.war">
+      <param name="name" value="mmbase-resources" />
     </antcall>
   </target>
 
-  <target name="jumpers" depends="mmbase">
-    <antcall target="install.module">
-      <param name="name" value="jumpers" />
+  <target name="jumpers">
+    <antcall target="install.war">
+      <param name="name" value="mmbase-jumpers" />
     </antcall>
   </target>
 
-  <target name="richtext" depends="mmbase" unless="richtext.installed">
-    <antcall target="install.module">
-      <param name="name" value="richtext" />
+  <target name="richtext" unless="richtext.installed">
+    <antcall target="install.war">
+      <param name="name" value="mmbase-richtext" />
     </antcall>
     <property name="richtext.installed" value="yes" />
   </target>
 
 
-  <target name="searchrelate" depends="mmbase,jstl">
-    <antcall target="install.module">
-      <param name="name" value="searchrelate" />
-      <param name="mmbase.templates.path" value="mmbase/searchrelate/" />
+  <target name="searchrelate">
+    <antcall target="install.war">
+      <param name="name" value="mmbase-searchrelate" />
     </antcall>
   </target>
 
-  <target name="calendar" depends="mmbase">
-    <antcall target="install.module">
-      <param name="name" value="calendar" />
+  <target name="calendar">
+    <antcall target="install.war">
+      <param name="name" value="mmbase-calendar" />
     </antcall>
   </target>
 
   <target name="statistics">
-    <antcall target="install.module">
-      <param name="name" value="statistics" />
-      <param name="version" value="0.2-SNAPSHOT" />
+    <antcall target="install.war">
+      <param name="name" value="mmbase-statistics" />
+      <param name="version" value="0.2" />
     </antcall>
   </target>
 
@@ -266,14 +250,6 @@
     <copy file="${download.dir}/${name}-${version}.jar" todir="${jardest}" preservelastmodified="true" overwrite="false" failonerror="false" />
   </target>
 
-  <target name="log4j" unless="log4j.installed">
-    <antcall target="install.jar">
-      <param name="name" value="log4j" />
-      <param name="base" value="log4j" />
-      <param name="version" value="1.2.13" />
-    </antcall>
-    <property name="log4j.installed" value="yes" />
-  </target>
 
   <target name="junit">
     <antcall target="install.jar">
@@ -298,22 +274,6 @@
   </target>
 
 
-
-  <target name="jstl" unless="jstl.installed">
-    <antcall target="install.jar">
-      <param name="name" value="jstl" />
-      <param name="base" value="jstl" />
-      <param name="version" value="1.1.2" />
-    </antcall>
-    <antcall target="install.jar">
-      <param name="name" value="standard" />
-      <param name="base" value="taglibs" />
-      <param name="version" value="1.1.2" />
-    </antcall>
-    <property name="jstl.installed" value="yes" />
-  </target>
-
-
   <target name="hsqldb">
     <antcall target="install.jar">
       <param name="name" value="hsqldb" />
@@ -331,15 +291,6 @@
   </target>
 
 
-
-  <target name="commons-fileupload" unless="fileupload.installed">
-    <antcall target="install.jar">
-      <param name="name" value="commons-fileupload" />
-      <param name="base" value="commons-fileupload" />
-      <param name="version" value="1.0" />
-    </antcall>
-    <property name="fileupload.installed" value="yes" />
-  </target>
   <target name="oscache" unless="oscache.installed">
     <antcall target="install.jar">
       <param name="name" value="oscache" />
@@ -354,9 +305,6 @@
     <property name="oscache.installed" value="yes" />
   </target>
 
-  <target name="minimalistic" depends="mmbase,taglib,oscache,log4j" unless="minimalistic.installed">
-    <property name="minimalistic.installed" value="yes" />
-  </target>
-
+  <target name="minimalistic" depends="mmbase" />
 
 </project>
