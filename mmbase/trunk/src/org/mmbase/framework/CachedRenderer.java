@@ -364,7 +364,6 @@ public class CachedRenderer extends WrappedRenderer {
                                     }
                                 }
                             });
-                        renderWrappedAndFile(cacheFile, blockParameters, w, hints, null);
                     } else {
                         log.debug("Serving cached file because not yet expired (it's before " + new Date(expiration) + ")");
                         renderFile(cacheFile, w);
