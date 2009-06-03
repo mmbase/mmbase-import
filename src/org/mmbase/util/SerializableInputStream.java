@@ -285,18 +285,23 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     protected static boolean inputStreamEquals(SerializableInputStream in1, SerializableInputStream in2) throws IOException {
         in1.mark(Integer.MAX_VALUE);
         in2.mark(Integer.MAX_VALUE);
-        final byte[] buffer1 = new byte[1024];
-        final byte[] buffer2 = new byte[1024];
-        while (true) {
-            int n1 = in1.read(buffer1);
-            int n2 = in2.read(buffer2);
-            if (n1 != n2) return false;
-            if (n1 == -1) break;
-            if ( ! java.util.Arrays.equals(buffer1, buffer2)) {
-                return false;
+        try {
+            final byte[] buffer1 = new byte[1024];
+            final byte[] buffer2 = new byte[1024];
+            while (true) {
+                int n1 = in1.read(buffer1);
+                int n2 = in2.read(buffer2);
+                if (n1 != n2) return false;
+                if (n1 == -1) break;
+                if ( ! java.util.Arrays.equals(buffer1, buffer2)) {
+                    return false;
+                }
             }
+            return true;
+        } finally {
+            in1.reset();
+            in2.reset();
         }
-        return true;
 
     }
 
