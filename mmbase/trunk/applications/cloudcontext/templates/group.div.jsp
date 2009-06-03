@@ -1,3 +1,4 @@
+<%org.mmbase.security.implementation.cloudcontext.Caches.waitForCacheInvalidation(); %>
 <div class="group">
   <div class="environment">
     <p class="current">
@@ -16,6 +17,9 @@
 
  <div class="rights">
    <form method="post" action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_group.jsp</mm:param></mm:url>">
+
+
+
    <input type="hidden" name="group" value="<mm:field name="number" />" />
    <table>
     <mm:fieldlist type="edit" fields="owner">
@@ -25,8 +29,7 @@
       <mm:maywrite inverse="true">
        <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="value" /></td></tr>
       </mm:maywrite>
-      </mm:fieldlist>
-
+    </mm:fieldlist>
    </table>
    <mm:import id="back">index_groups.jsp</mm:import>
    <%@include file="groupOrUserRights.table.jsp" %>
