@@ -481,7 +481,6 @@ public class Indexer {
                         }
                     }
                     writer.optimize();
-                    writer.commit();
                     writer.close();
                     if (errorCountBefore == errorCount) {
                         // first clean up, to remove possible mess
