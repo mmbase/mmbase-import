@@ -20,7 +20,7 @@
     <p>
       <mm:link page="/mmbase/admin/stats.jsp">
         <mm:param name="action">memory</mm:param>
-        <a href="${_}">This link can e.g. be used to monitory memory useage.</a>
+        <a href="${_}">This link can e.g. be used to monitor memory usage.</a>
       </mm:link>
     </p>
 
@@ -28,7 +28,7 @@
       <mm:link page="/mmbase/admin/stats.jsp">
         <mm:param name="action">cache</mm:param>
         <mm:param name="cacheType">Nodes</mm:param>
-        <a href="${_}">This link can e.g. be used to monitory node cache useage.</a>
+        <a href="${_}">This link can e.g. be used to monitor node cache usage.</a>
       </mm:link>
     </p>
     <h2>JMX</h2>
