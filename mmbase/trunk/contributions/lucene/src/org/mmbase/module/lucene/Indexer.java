@@ -58,7 +58,7 @@ public class Indexer {
      * @since MMBase-1.9
      */
     public static void addField(Document document, Field field, Multiple multiple) {
-        if (multiple == null) { 
+        if (multiple == null) {
           multiple = Multiple.ADD;
         }
         switch(multiple) {
@@ -481,12 +481,15 @@ public class Indexer {
                         }
                     }
                     writer.optimize();
+                    writer.commit();
+                    writer.close();
                     if (errorCountBefore == errorCount) {
                         // first clean up, to remove possible mess
                         clear(false);
-                        
                         Directory.copy(fullIndex, getDirectory(), true);
                         Date lastFullIndex = setLastFullIndex(startTime);
+                        log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " +
+                                getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.maxDoc());
                         log.info("Full index finished at " + lastFullIndex );
                         if (log.isDebugEnabled()) log.debug("Copied " + fullIndex);
                         if (log.isDebugEnabled()) log.debug("    To " + getDirectory());
