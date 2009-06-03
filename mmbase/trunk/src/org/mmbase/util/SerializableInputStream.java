@@ -275,10 +275,20 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
     @Override
     public String toString() {
-        return "SERIALIZABLE " + wrapped + " (" + size + " byte, " +
+        long filePos = -1;
+        try {
+            filePos = wrapped instanceof FileInputStream ? ((FileInputStream) wrapped).getChannel().position() : 0;
+        } catch (IOException ioe) {
+            log.warn(ioe);
+        }
+        return "SERIALIZABLE " + wrapped +
+            (tempFile ? (" (tempfile: " + file + ") ") : (file != null ? ("(" + file + ")") : "")) +
+            " (" + size + " byte, " +
             (name == null ? "[no name]" : name) +
             ", " +
             (contentType == null ? "[no contenttype]" : contentType) +
+            (fileMark > 0 ? (" mark: " + fileMark) : "") +
+            (filePos > 0 ? (" position: " + filePos) : "") +
             ")";
     }
 
