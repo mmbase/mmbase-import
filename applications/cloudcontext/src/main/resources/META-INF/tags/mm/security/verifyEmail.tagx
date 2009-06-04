@@ -1,0 +1,27 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:directive.tag
+      display-name="HTML"
+      description="The HTML tag defines the basic HTML structure of this site
+                   " />
+  <jsp:directive.attribute name="signature"  required="true" />
+  <div>
+    bla bla bla bla ${signature}
+    <mm:cloud method="delegate" authenticate="class" jspvar="cloud">
+
+      <jsp:scriptlet>
+        org.mmbase.bridge.Node node = org.mmbase.datatypes.VerifyEmailProcessor.validate(cloud, pageScope.getAttribute("signature"));
+        pageScope.setAttribute("usernode", node);
+      </jsp:scriptlet>
+      bla bla
+      <mm:node referid="usernode">
+        <jsp:doBody />
+      </mm:node>
+    </mm:cloud>
+  </div>
+</jsp:root>
+
+
