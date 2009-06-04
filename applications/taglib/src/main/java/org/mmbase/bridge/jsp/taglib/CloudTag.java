@@ -1101,7 +1101,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                     throw new JspTagException("Logon of with "
                                               + (logon != null && logon.size() > 0 ? "'" + logon.get(0) + "'" : "''")
                                               + " failed."
-                                              + (pwd == Attribute.NULL ? " (no password given)" : " (wrong password)"));
+                                              + "(" + exactReason + ")");
                 } else {
                     throw new JspTagException("Authentication ('" + getAuthenticate() + "') failed");
                 }
