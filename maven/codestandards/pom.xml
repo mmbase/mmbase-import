@@ -13,6 +13,5 @@
   <artifactId>codestandards</artifactId>
   <packaging>jar</packaging>
   <name>MMBase code standards</name>
-  <version>${mmbase.version}</version>
 
 </project>

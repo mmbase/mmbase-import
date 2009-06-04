@@ -5,7 +5,7 @@
 
   <parent>
     <groupId>org.mmbase</groupId>
-    <artifactId>mmbase-parent</artifactId>
+    <artifactId>mmbase-cms</artifactId>
     <version>1.9-SNAPSHOT</version>
   </parent>
 
@@ -13,7 +13,6 @@
   <artifactId>mmbase-maven</artifactId>
   <packaging>pom</packaging>
   <name>MMBase Maven Parent</name>
-  <version>${mmbase.version}</version>
 
   <modules>
     <module>codestandards</module>
