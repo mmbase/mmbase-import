@@ -25,7 +25,6 @@
 
   <build>
     <plugins>
-      <!-- Doesn't work right now
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -44,7 +43,7 @@
           </execution>
         </executions>
       </plugin>
-      -->
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>xml-maven-plugin</artifactId>

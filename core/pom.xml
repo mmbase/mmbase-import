@@ -19,7 +19,6 @@ See http://www.MMBase.org/license
   -->
 
   <modelVersion>4.0.0</modelVersion>
-  <!-- reference to the root POM -->
 
   <parent>
     <groupId>org.mmbase</groupId>
@@ -27,45 +26,13 @@ See http://www.MMBase.org/license
     <version>1.9-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.mmbase</groupId>
   <artifactId>mmbase</artifactId>
-  <packaging>jar</packaging>
-  <version>${mmbase.version}</version>
+  <packaging>war</packaging>
   <name>MMBase Core</name>
 
   <build>
-    <resources>
-      <resource>
-        <directory>src</directory>
-        <includes>
-          <include>**/*.xml</include>
-          <include>**/*.dtd</include>
-          <include>**/*.xsd</include>
-          <include>**/*.properties</include>
-          <include>INDEX</include>
-        </includes>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
-        <directory>html/WEB-INF/classes</directory>
-      </resource>
-      <resource>
-        <targetPath>META-INF</targetPath>
-        <directory>META-INF</directory>
-        <excludes>
-          <exclude>"**/CVS"</exclude>
-        </excludes>
-      </resource>
-      <resource>
-        <targetPath>org/mmbase/config</targetPath>
-        <directory>config</directory>
-        <excludes>
-          <exclude>"**/CVS"</exclude>
-        </excludes>
-      </resource>
-    </resources>
     <plugins>
-
+   
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>javacc-maven-plugin</artifactId>
@@ -75,22 +42,6 @@ See http://www.MMBase.org/license
             <id>javacc</id>
             <goals>
               <goal>javacc</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <sourceDirectory>src</sourceDirectory>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.mmbase.maven</groupId>
-        <artifactId>maven-mmbase-plugin</artifactId>
-        <version>1.9-SNAPSHOT</version>
-        <executions>
-          <execution>
-            <id>create-index-files</id>
-            <goals>
-              <goal>create-index-files</goal>
             </goals>
           </execution>
         </executions>
@@ -125,10 +76,33 @@ See http://www.MMBase.org/license
           </archive>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>examples-assembly.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+
     </plugins>
-
   </build>
-
   <dependencies>
     <dependency>
       <groupId>log4j</groupId>
@@ -200,6 +174,10 @@ See http://www.MMBase.org/license
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>taglist-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javacc-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </reporting>
