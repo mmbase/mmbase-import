@@ -2305,7 +2305,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             if (field.isUnique()) {
                 scheme = factory.getScheme(Schemes.CREATE_UNIQUE_KEY, Schemes.CREATE_UNIQUE_KEY_DEFAULT);
                 if (scheme != null) {
-                    definitions = scheme.format(this, field.getParent(), field, field);
+                    definitions = scheme.format(this, field.getParent(), field, field, field.getMaxLength());
                 }
             }
             if (field.getType() == Field.TYPE_NODE) {
