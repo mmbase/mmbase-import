@@ -16,39 +16,8 @@
   <version>${mmbase.version}</version>
 
   <modules>
-    <module>../maven-base</module>
-
     <module>codestandards</module>
     <module>assembly-descriptors</module>
     <module>maven-mmbase-plugin</module>
-
-    <module>../core</module>
-    <module>../applications</module>
-    <module>../base-webapp</module>
-    <module>../example-webapp</module>
   </modules>
-
-  <build>
-    <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
-    <resources>
-      <resource>
-        <directory>${basedir}/src/main/resources</directory>
-      </resource>
-    </resources>
-  </build>
-
-  <repositories>
-    <repository>
-      <id>mmbase</id>
-      <name>MMBase Maven2 repository</name>
-      <url>http://www.mmbase.org/maven2</url>
-    </repository>
-    <repository>
-      <id>mmbase-snapshots</id>
-      <name>MMBase Maven2 snapshots repository</name>
-      <url>http://www.mmbase.org/snapshots</url>
-    </repository>
-  </repositories>
-
-
 </project>
