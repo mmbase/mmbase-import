@@ -84,12 +84,16 @@ public class CheckEqualityDataType extends StringDataType {
         return buf;
     }
 
+    protected String getFieldRestrictionName() {
+        return "confirmfield";
+    }
+
     protected class FieldRestriction extends AbstractRestriction {
         FieldRestriction(FieldRestriction source) {
             super(source);
         }
         FieldRestriction(String field) {
-            super("confirmfield", field);
+            super(CheckEqualityDataType.this.getFieldRestrictionName(), field);
         }
         protected final String getField() {
             return (String) value;
