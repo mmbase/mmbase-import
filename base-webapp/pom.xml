@@ -23,27 +23,6 @@
     This is a minimalistic war containing the essentials for an MMBase web applications. This can be used as initial war overlay for your own project.
   </description>
 
-  <build>
-    <defaultGoal>install</defaultGoal>
-    <plugins>
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <webXml>${basedir}/../html/WEB-INF/web.xml</webXml>
-          <webResources>
-            <resource>
-              <directory>${basedir}/../html/</directory>
-              <excludes>
-                <exclude>index.jsp</exclude>
-                <exclude>mmexamples/**</exclude>
-                <exclude>WEB-INF/web-2.3.xml</exclude>
-              </excludes>
-            </resource>
-          </webResources>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
