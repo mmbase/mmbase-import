@@ -1,4 +1,0 @@
-postgresql.loc=http://jdbc.postgresql.org/download/postgresql-8.2-506.jdbc3.jar
-postgresql.file=postgresql-8.2-506.jdbc3.jar
-postgresql.dest=${download.dir}/${postgresql.file}
-postgresql.jar=${postgresql.dest}
