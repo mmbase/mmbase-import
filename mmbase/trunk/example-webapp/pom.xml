@@ -23,25 +23,10 @@
     <defaultGoal>install</defaultGoal>
     <plugins>
       <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <webResources>
-            <resource>
-              <directory>${basedir}/../html/</directory>
-              <includes>
-                <include>index.jsp</include>
-                <include>mmexamples/**</include>
-              </includes>
-            </resource>
-          </webResources>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <configuration>
-          <warSourceDirectory>src/webapp</warSourceDirectory>
+          <warSourceDirectory>src/main/webapp</warSourceDirectory>
         </configuration>
       </plugin>
     </plugins>

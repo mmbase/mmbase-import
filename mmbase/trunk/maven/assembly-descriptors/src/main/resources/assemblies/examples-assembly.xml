@@ -6,7 +6,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>examples</directory>
+      <directory>src/main/examples</directory>
       <outputDirectory>/mmexamples/${project.name}</outputDirectory>
       <includes>
       	<include>**/*</include>

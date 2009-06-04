@@ -25,6 +25,7 @@
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
+      <classifier>classes</classifier>
       <scope>provided</scope>
     </dependency>
 
@@ -67,51 +68,6 @@
   </dependencies>
 
   <build>
-    <resources>
-      <resource>
-        <directory>${basedir}/src</directory>
-        <includes>
-          <include>**/*.xml</include>
-          <include>**/*.dtd</include>
-          <include>**/*.xsd</include>
-          <include>**/*.properties</include>
-          <include>INDEX</include>
-        </includes>
-        <excludes>
-          <exclude>main/**</exclude>
-        </excludes>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/main/resources</directory>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
-        <targetPath>META-INF</targetPath>
-        <directory>${basedir}/target/generated-resources/xml/xslt/</directory>
-        <includes>
-          <include>**/*.tld</include>
-        </includes>
-      </resource>
-      <resource>
-        <targetPath>META-INF</targetPath>
-        <directory>${basedir}/META-INF</directory>
-        <includes>
-          <include>**</include>
-        </includes>
-      </resource>
-      <resource>
-        <targetPath>org/mmbase/config</targetPath>
-        <directory>${basedir}/config</directory>
-      </resource>
-      <resource>
-        <directory>${basedir}/target/generated-resources</directory>
-        <includes>
-          <include>org/**</include>
-        </includes>
-      </resource>
-    </resources>
-
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
