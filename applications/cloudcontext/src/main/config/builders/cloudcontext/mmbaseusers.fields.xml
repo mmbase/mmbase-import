@@ -91,7 +91,9 @@
     <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <default value="0" />
       <enumeration>
-        <entry basename="org.mmbase.security.status" />
+        <entry
+            javaconstants="org.mmbase.security.implementation.cloudcontext.UserStatus"
+            basename="org.mmbase.security.status" />
       </enumeration>
     </datatype>
   </field>
