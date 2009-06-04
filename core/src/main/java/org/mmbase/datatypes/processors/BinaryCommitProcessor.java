@@ -77,7 +77,7 @@ public class BinaryCommitProcessor implements CommitProcessor {
             log.debug("Committing" + node);
         }
         if (node.isChanged(field.getName())) {
-            Object value = node.getObjectValue(field.getName());
+
             if (node.getNodeManager().hasField(filesizeField) &&
                 (! node.isChanged(filesizeField) || node.isNull(filesizeField))) {
                 long size = node.getSize(field.getName());
@@ -86,6 +86,8 @@ public class BinaryCommitProcessor implements CommitProcessor {
             } else {
                 log.debug("Skipping filesize");
             }
+
+            Object value = node.getObjectValue(field.getName());
 
             if (node.getNodeManager().hasField(filenameField) &&
                 (! node.isChanged(filenameField) || node.isNull(filenameField))) {
