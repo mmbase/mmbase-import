@@ -12,6 +12,8 @@
 
   <attributes>
 
+    <attribute name="database-max-key-length" value="1000" />
+
     <!-- MySQL does not default support transactions, but it's Metadata object claims that it does
              So set support to false.
     -->
@@ -19,6 +21,8 @@
 
     <!-- Use Blobs  -->
     <option name="database-supports-blob" />
+
+
 
     <!-- uses different syntax for creating unique key constraints -->
     <scheme name="create-unique-key-scheme" >UNIQUE INDEX {2} ({2} ({4}))</scheme>
