@@ -2306,9 +2306,9 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 scheme = factory.getScheme(Schemes.CREATE_UNIQUE_KEY, Schemes.CREATE_UNIQUE_KEY_DEFAULT);
                 if (scheme != null) {
                     String mkl = (String) factory.getAttribute("database-max-key-length");
-                    Integer maxKeyLength = mkl == null ? Integer.MAX_VALUE : Integer.parseInt(mkl);
+                    Integer maxKeyLength = mkl == null || "".equals(mkl) ? Integer.MAX_VALUE : Integer.parseInt(mkl);
                     int keyLength = Math.min(maxKeyLength, field.getMaxLength());
-                    definitions = scheme.format(this, field.getParent(), field, field, keyLength);
+                    definitions = scheme.format(this, field.getParent(), field, field, "" + keyLength);
                 }
             }
             if (field.getType() == Field.TYPE_NODE) {
