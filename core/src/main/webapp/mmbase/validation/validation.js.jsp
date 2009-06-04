@@ -779,7 +779,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
         if (element.id) {
             var errorDiv = document.getElementById("mm_check_" + element.id.substring(3));
 	        if (errorDiv != null) {
-		        errorDiv.className = valid ? "mm_check_noerror" : "mm_check_error";
+		        errorDiv.className = valid ? "mm_check_noerror mm_check_updated" : "mm_check_error mm_check_updated";
 		        if (errorDiv) {
                     $(errorDiv).empty();
                     var errors = serverXml.documentElement ? serverXml.documentElement.childNodes : [];
