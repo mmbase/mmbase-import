@@ -33,6 +33,10 @@ public class ConfirmPasswordDataType extends CheckEqualityDataType {
         setField("password");
         setPassword(true);
     }
+    @Override
+    protected String getFieldRestrictionName() {
+        return "confirmpassword";
+    }
 
 
 }
