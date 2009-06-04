@@ -22,7 +22,7 @@
     <module>assembly-descriptors</module>
     <module>maven-mmbase-plugin</module>
 
-    <module>..</module>
+    <module>../core</module>
     <module>../applications</module>
     <module>../base-webapp</module>
     <module>../example-webapp</module>
