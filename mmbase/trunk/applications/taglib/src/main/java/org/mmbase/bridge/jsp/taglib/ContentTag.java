@@ -113,7 +113,7 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
-    private static ParameterizedTransformerFactory readTransformerFactory(final DocumentReader reader, final Element parentElement, final String id) {
+    private static ParameterizedTransformerFactory<CharTransformer> readTransformerFactory(final DocumentReader reader, final Element parentElement, final String id) {
         final String claz = reader.getElementValue(reader.getChildElements(parentElement, "class").get(0));
         final Map configuredParams = new HashMap();
         for (Element param: reader.getChildElements(parentElement, "param")) {
@@ -152,13 +152,13 @@ public class ContentTag extends LocaleTag  {
             InputSource escapersSource = new InputSource(stream);
             readXML(escapersSource);
         }
-        List resources = taglibLoader.getResourceList(resource);
+        List<URL> resources = taglibLoader.getResourceList(resource);
         log.service("Using " + resources);
-        ListIterator i = resources.listIterator();
+        ListIterator<URL> i = resources.listIterator();
         while (i.hasNext()) i.next();
         while (i.hasPrevious()) {
             try {
-                URL u = (URL) i.previous();
+                URL u = i.previous();
                 log.debug("Reading " + u);
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
@@ -203,8 +203,8 @@ public class ContentTag extends LocaleTag  {
         log.debug("Reading content tag parameterizedescaperss");
         for (Element element: reader.getChildElements(root, "parameterizedescaper")) {
             String id   = element.getAttribute("id");
-            ParameterizedTransformerFactory fact = readTransformerFactory(reader, element, id);
-            ParameterizedTransformerFactory prev = parameterizedCharTransformerFactories.put(id, fact);
+            ParameterizedTransformerFactory<CharTransformer> fact = readTransformerFactory(reader, element, id);
+            ParameterizedTransformerFactory<CharTransformer> prev = parameterizedCharTransformerFactories.put(id, fact);
             if (prev != null) {
                 log.warn("Replaced an parameterized escaper '" + id + "' : " + fact + " (was " + prev + ")");
             } else {
