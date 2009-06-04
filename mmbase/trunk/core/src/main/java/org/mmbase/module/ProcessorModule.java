@@ -241,6 +241,7 @@ public abstract class ProcessorModule extends Module {
      * {@inheritDoc}
      * @scope abstract
      */
+    @Override
     public void init() {
     }
 
@@ -248,6 +249,7 @@ public abstract class ProcessorModule extends Module {
      * {@inheritDoc}
      * @scope abstract
      */
+    @Override
     public void onload() {
     }
 
