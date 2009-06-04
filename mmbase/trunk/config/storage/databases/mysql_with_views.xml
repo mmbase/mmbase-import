@@ -21,7 +21,7 @@
     <option name="database-supports-blob" />
 
     <!-- uses different syntax for creating unique key constraints -->
-    <scheme name="create-unique-key-scheme" >UNIQUE INDEX {2} ({2})</scheme>
+    <scheme name="create-unique-key-scheme" >UNIQUE INDEX {2} ({2} ({4}))</scheme>
     <!-- MySQL does not properly support foreign keys, Still create a least an index -->
     <scheme name="create-foreign-key-scheme" >INDEX {2} ({2})</scheme>
 
