@@ -884,6 +884,7 @@ public class MMBase extends ProcessorModule {
     public void initBuilder(MMObjectBuilder builder) {
         if (!builder.isVirtual()) {
             builder.init();
+            if (typeDef == null) throw new IllegalStateException("No typedef builder defined");
             typeDef.loadTypeDef(builder.getTableName());
             Versions versions = (Versions)getBuilder("versions");
             if (versions != null && versions.created()) {

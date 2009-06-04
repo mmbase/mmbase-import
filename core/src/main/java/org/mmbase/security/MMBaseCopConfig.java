@@ -58,8 +58,9 @@ public class MMBaseCopConfig {
             if(cop == null) throw new RuntimeException("MMBase cop was null");
             // log.debug("Starting the file watcher");
             this.cop = cop;
+            add("security.xml");
         }
-
+        @Override
         public void onChange(String s) {
             try {
                 cop.reload();
@@ -97,7 +98,6 @@ public class MMBaseCopConfig {
         log.info("using: '" + config + "' as configuration file for security");
 
         watcher = new SecurityConfigWatcher(mmbaseCop);
-        watcher.add("security.xml");
         watcher.start();
 
         cop = mmbaseCop;
@@ -125,7 +125,7 @@ public class MMBaseCopConfig {
         }
 
         // load the sharedSecret
-        sharedSecret = reader.getElementValue(reader.getElementByPath("security.sharedsecret"));
+        sharedSecret = DocumentReader.getElementValue(reader.getElementByPath("security.sharedsecret"));
 
 
         if(active) {
@@ -138,7 +138,7 @@ public class MMBaseCopConfig {
             authentication = getAuthentication(authenticationClass);
 
             // load the key
-            String key = reader.getElementValue(reader.getElementByPath("security.key"));
+            String key = DocumentReader.getElementValue(reader.getElementByPath("security.key"));
             if (key != null && ! key.equals("")) {
                 try {
                     long k = Long.parseLong(key);

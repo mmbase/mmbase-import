@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module;
 
 import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.util.ThreadPools;
 import java.util.concurrent.*;
 import java.util.*;
 import java.net.*;
@@ -58,6 +57,7 @@ public abstract class Module extends DescribedFunctionProvider {
      * @since MMBase-1.8
      */
     protected Function<Integer> getVersionFunction = new AbstractFunction<Integer>("getVersion") {
+        private static final long serialVersionUID = 0L;
         public Integer getFunctionValue(Parameters arguments) {
             return getVersion();
         }
@@ -70,6 +70,7 @@ public abstract class Module extends DescribedFunctionProvider {
      * @since MMBase-1.8
      */
     protected Function<String> getMaintainerFunction = new AbstractFunction<String>("getMaintainer") {
+        private static final long serialVersionUID = 0L;
         public String getFunctionValue(Parameters arguments) {
             return getMaintainer();
         }
@@ -509,12 +510,13 @@ public abstract class Module extends DescribedFunctionProvider {
      * Loads all module-xml present in <mmbase-config-dir>/modules.
      * @return A HashTable with <module-name> --> Module-instance
      */
+    @SuppressWarnings("deprecation")
     private static synchronized Map<String, Module>  loadModulesFromDisk() {
-        Map<String, Module> results = new TreeMap<String, Module>();
+        Map<String, Module> results = Collections.synchronizedMap(new TreeMap<String, Module>());
         ResourceLoader moduleLoader = getModuleLoader();
-        Collection<String> modules = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
-        log.info("In " + moduleLoader + " the following module XML's were found " + modules);
-        for (String file : modules) {
+        Collection<String> mods = moduleLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false/* non-recursive*/);
+        log.info("In " + moduleLoader + " the following module XML's were found " + mods);
+        for (String file : mods) {
             ModuleReader parser = null;
             try {
                 InputSource is = moduleLoader.getInputSource(file);
