@@ -75,10 +75,11 @@ public abstract class BasicUserProvider implements UserProvider {
         return dbPasswordsEncoded;
     }
 
+
     public MMObjectNode getUser(final String userName, final String password, final boolean encoded) {
 
         if (log.isDebugEnabled()) {
-            log.debug("username: '" + userName + "' password: '" + password + "'");
+            log.debug("username: '" + userName + "' password: '" + password + "' " + this);
         }
         final MMObjectNode user = getUser(userName);
 
@@ -127,10 +128,15 @@ public abstract class BasicUserProvider implements UserProvider {
             }
             if (userRank.getInt() < Rank.ADMIN.getInt() && getField(getStatusField()) != null) {
                 int status = user.getIntValue(getStatusField());
-                if (status == -1) {
+                if (status == UserStatus.BLOCKED.getValue()) {
                     throw new SecurityException("account for '" + userName + "' is blocked");
                 }
             }
+
+            if (! isStatusValid(user)) {
+                throw new SecurityException("Account is not valid. Status " + UserStatus.valueOf(user.getIntValue(getStatusField())));
+            }
+            log.debug("Status of " + user + " is valid");
             if (userRank.getInt() < Rank.ADMIN_INT && getValidFromField() != null) {
                 long validFrom = user.getLongValue(getValidFromField());
                 if (validFrom != -1 && validFrom * 1000 > System.currentTimeMillis() ) {
@@ -298,7 +304,7 @@ public abstract class BasicUserProvider implements UserProvider {
 
 
     protected boolean isStatusValid(MMObjectNode node) {
-        return node.getIntValue(getStatusField()) >= 0;
+        return node.getIntValue(getStatusField()) >= UserStatus.NEW.getValue();
     }
 
     /**
