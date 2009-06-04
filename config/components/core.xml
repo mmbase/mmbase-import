@@ -500,7 +500,7 @@
          mimetype="text/html">
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
-        <param name="url">http://www.mmbase.org/jira/IssueNavigator.jspa?view=rss&amp;&amp;pid=10000&amp;fixfor=10170&amp;version=-3&amp;status=5&amp;status=6&amp;sorter/field=updated&amp;sorter/order=DESC&amp;tempMax=200&amp;reset=true&amp;decorator=none</param>
+        <param name="url">http://www.mmbase.org/jira/IssueNavigator.jspa?view=rss&amp;&amp;pid=10000&amp;fixfor=10171&amp;version=-3&amp;status=5&amp;status=6&amp;sorter/field=updated&amp;sorter/order=DESC&amp;tempMax=200&amp;reset=true&amp;decorator=none</param>
         <param name="xslt">xslt/rss.xslt</param>
       </class>
     </body>
@@ -509,8 +509,8 @@
   <block name="releasenotes"
          classification="mmbase.about:11"
          mimetype="text/html">
-    <title xml:lang="nl">Releasenotes voor MMBase 1.9.1</title>
-    <title xml:lang="en">Release notes for MMBase 1.9.1</title>
+    <title xml:lang="nl">Releasenotes 1.9.2</title>
+    <title xml:lang="en">Release notes 1.9.2</title>
     <description xml:lang="en">Shows the release notes straight from the bugtracker on www.mmbase.org.</description>
     <description xml:lang="nl">Toont de release notes rechtstreeks uit de bugtracker op www.mmbase.org.</description>
     <body>
