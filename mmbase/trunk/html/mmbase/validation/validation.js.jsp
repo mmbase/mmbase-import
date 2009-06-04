@@ -866,6 +866,7 @@ MMBaseValidator.prototype.addValidation = function(el) {
         // switch stolen from editwizards, not all cases are actually supported already here.
         switch(entry.type) {
         case "text":
+        case "password":
         case "textarea":
             $(entry).bind("keyup",  function(ev) { self.validate(ev); });
             $(entry).bind("change", function(ev) { self.validate(ev); });
@@ -883,7 +884,7 @@ MMBaseValidator.prototype.addValidation = function(el) {
         case "select-one":
         case "select-multiple":
         default:
-            this.log("Adding eventhandler to " + entry);
+            this.log("Adding eventhandler to " + entry + " (" + entry.type + ")");
             this.log(entry);
             $(entry).bind("change", function(ev) { self.validate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
