@@ -25,6 +25,7 @@
 
   <build>
     <plugins>
+      <!-- Doesn't work right now
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -43,7 +44,7 @@
           </execution>
         </executions>
       </plugin>
-
+      -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>xml-maven-plugin</artifactId>
@@ -55,7 +56,7 @@
         <configuration>
           <transformationSets>
             <transformationSet>
-              <dir>${basedir}/src/org/mmbase/bridge/jsp/taglib</dir>
+              <dir>${basedir}/src/main/java/org/mmbase/bridge/jsp/taglib</dir>
               <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
               <parameters>
                 <parameter><name>version</name><value>2.0</value></parameter>
@@ -69,7 +70,7 @@
               </fileMappers>
             </transformationSet>
             <transformationSet>
-              <dir>${basedir}/src/org/mmbase/bridge/jsp/taglib</dir>
+              <dir>${basedir}/src/main/java/org/mmbase/bridge/jsp/taglib</dir>
               <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
               <includes><include>*.xml</include></includes>
               <fileMappers>
