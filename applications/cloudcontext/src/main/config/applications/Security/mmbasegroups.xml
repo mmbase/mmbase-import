@@ -10,7 +10,7 @@
 		<description></description>
 	</node>
 
-	<node number="600" owner="admin">
+	<node number="600" owner="admin" alias="defaultusergroup">
 		<name>Users</name>
 		<description></description>
 	</node>
