@@ -24,7 +24,7 @@
           </mm:node>
         </c:when>
         <c:otherwise>
-          <p>Already verified</p>
+          <p class="err">Already verified</p>
         </c:otherwise>
       </c:choose>
     </mm:cloud>
