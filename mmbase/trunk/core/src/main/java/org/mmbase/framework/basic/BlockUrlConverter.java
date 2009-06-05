@@ -53,7 +53,6 @@ public abstract class BlockUrlConverter implements UrlConverter {
     
     /**
      * Explicitly add a block to make sure this BlockUrlConverter is only about that block.
-     *
     */
     protected void addBlock(Block b) {
         Component comp = b.getComponent();
