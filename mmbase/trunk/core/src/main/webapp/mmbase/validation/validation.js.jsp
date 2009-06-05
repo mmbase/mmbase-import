@@ -874,7 +874,7 @@ MMBaseValidator.prototype.addValidation = function(el) {
         case "password":
         case "textarea":
             $(entry).bind("keyup",  function(ev) { self.validate(ev); });
-            $(entry).bind("change", function(ev) { self.validate(ev); });
+            $(entry).bind("change", function(ev) { self.serverValidate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
             // IE calls this when the user does a right-click paste
             $(entry).bind("paste", function(ev) { self.validate(ev); });
