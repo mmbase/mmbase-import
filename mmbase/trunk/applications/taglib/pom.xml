@@ -55,13 +55,13 @@
         <configuration>
           <transformationSets>
             <transformationSet>
-              <dir>${basedir}/src/main/java/org/mmbase/bridge/jsp/taglib</dir>
+              <dir>${basedir}/src/main/resources/</dir>
               <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
               <parameters>
                 <parameter><name>version</name><value>2.0</value></parameter>
                 <parameter><name>uri</name><value>http://www.mmbase.org/mmbase-taglib-2.0</value></parameter>
               </parameters>
-              <includes><include>*.xml</include></includes>
+              <includes><include>mmbase-taglib.xml</include></includes>
               <fileMappers>
                 <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                   <targetName>mmbase-taglib-2.tld</targetName>
@@ -69,9 +69,9 @@
               </fileMappers>
             </transformationSet>
             <transformationSet>
-              <dir>${basedir}/src/main/java/org/mmbase/bridge/jsp/taglib</dir>
+              <dir>${basedir}/src/main/resources/</dir>
               <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
-              <includes><include>*.xml</include></includes>
+              <includes><include>mmbase-taglib.xml</include></includes>
               <fileMappers>
                 <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                   <targetName>mmbase-taglib.tld</targetName>
