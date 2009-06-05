@@ -27,7 +27,11 @@ public class ChainedProcessor implements Processor {
     private List<Processor> processors = new ArrayList<Processor>();
 
     public ChainedProcessor add(Processor proc) {
-        processors.add(proc);
+        if (proc instanceof ChainedCommitProcessor) {
+            processors.addAll(((ChainedProcessor) proc).getProcessors());
+        } else {
+            processors.add(proc);
+        }
         return this;
     }
 
@@ -37,6 +41,15 @@ public class ChainedProcessor implements Processor {
         }
         return value;
     }
+
+
+    /**
+     * @since 1.9.2
+     */
+    public List<Processor> getProcessors() {
+        return Collections.unmodifiableList(processors);
+    }
+
 
     public String toString() {
         return "chained" + processors;
