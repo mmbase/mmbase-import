@@ -31,6 +31,7 @@ public class RelatedField {
 
     private static final Logger log = Logging.getLoggerInstance(RelatedField.class);
 
+
     public abstract static class  AbstractProcessor extends Related.AbstractProcessor {
 
         protected NodeQuery getRelatedQuery(Node node) {
@@ -47,7 +48,35 @@ public class RelatedField {
         public void setField(String f) {
             otherField  = f;
         }
+
+        protected String getKey(Node node, Field field) {
+            return RelatedField.class.getName() + node.getValue("_number") + "." + role + "." + getRelatedType(node) + "." + searchDir;
+        }
+
+        protected Node getRelatedNode(final Node node, final Field field) {
+            String key = getKey(node, field);
+            Node relatedNode = (Node) node.getCloud().getProperty(key);
+            if (relatedNode != null) {
+                log.debug("Found node in  in " + key);
+                return relatedNode;
+            } else {
+                NodeQuery related = getRelatedQuery(node);
+                NodeList rl = related.getNodeManager().getList(related);
+                if (rl.size() > 0) {
+                    relatedNode = rl.getNode(0);
+                    if (node.getCloud() instanceof Transaction) {
+                        node.getCloud().setProperty(key,  relatedNode);
+                    }
+                    log.debug("Found relatedNode " + relatedNode);
+                } else {
+                    log.debug("Not related");
+                }
+                return relatedNode;
+
+            }
+        }
     }
+
 
 
     /**
@@ -56,14 +85,10 @@ public class RelatedField {
     public static class Creator extends AbstractProcessor {
         private static final long serialVersionUID = 1L;
         public Object process(final Node node, final Field field, final Object value) {
-            NodeQuery related = getRelatedQuery(node);
-            NodeList rl = related.getNodeManager().getList(related);
-            if (rl.size() == 0) {
+            Node relatedNode = getRelatedNode(node, field);
+            if (relatedNode == null) {
+                NodeQuery related = getRelatedQuery(node);
                 log.service("No related node of type " + getRelatedType(node) + " for node " + node.getNumber() + ". Implicitely creating now.");
-                if (node.isNew() && node.getNumber() < 0) {
-                    node.commit(); // Silly, but you cannot make relations to new nodes.
-
-                }
                 Cloud cloud = node.getCloud();
                 Node newNode = getRelatedType(node).createNode();
                 newNode.commit();
@@ -72,8 +97,12 @@ public class RelatedField {
                 for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
                     newrel.setStringValue(entry.getKey(), entry.getValue());
                 }
-                log.debug("Created " + newrel);
+                log.service("Created " + newrel);
                 newrel.commit();
+                if (node.getCloud() instanceof Transaction) {
+                    node.getCloud().setProperty(getKey(node, field),  newNode);
+                }
+                log.info("" + node.getCloud().getProperties());
             }
             return value;
         }
@@ -88,10 +117,8 @@ public class RelatedField {
                 log.debug("Setting "  + value);
             }
 
-            NodeQuery related = getRelatedQuery(node);
-            NodeList rl = related.getNodeManager().getList(related);
-            if (rl.size() > 0) {
-                Node otherNode = rl.getNode(0);
+            Node otherNode = getRelatedNode(node, field);
+            if (otherNode != null) {
                 String fieldName = otherField == null ? field.getName() : otherField;
                 otherNode.setValue(fieldName, value);
                 otherNode.commit();
@@ -111,14 +138,8 @@ public class RelatedField {
             if (log.isDebugEnabled()) {
                 log.debug("getting "  + node);
             }
-            if (node.isNew()) {
-                log.debug("The node is new, returning " + field.getDataType().getDefaultValue());
-                return field.getDataType().getDefaultValue();
-            }
-            NodeQuery related = getRelatedQuery(node);
-            NodeList rl = related.getNodeManager().getList(related);
-            if (rl.size() > 0) {
-                Node otherNode = rl.getNode(0);
+            Node otherNode = getRelatedNode(node, field);
+            if (otherNode != null) {
                 String fieldName = otherField == null ? field.getName() : otherField;
                 return otherNode.getValue(fieldName);
             } else {
