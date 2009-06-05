@@ -64,12 +64,16 @@ public class RelatedField {
                 for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
                     newrel.setStringValue(entry.getKey(), entry.getValue());
                 }
-                log.service("Created " + newrel);
+
                 newrel.commit();
                 if (node.getCloud() instanceof Transaction) {
                     node.getCloud().setProperty(getKey(node, field),  newNode);
                 }
-                log.info("" + node.getCloud().getProperties());
+                if (log.isDebugEnabled()) {
+                    log.debug("Created " + newrel);
+                    log.debug("Cloud: : " + node.getCloud().getProperties());
+
+                }
             }
             return value;
         }
