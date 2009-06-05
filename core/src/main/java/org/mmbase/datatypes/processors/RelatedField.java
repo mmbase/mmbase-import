@@ -34,14 +34,6 @@ public class RelatedField {
 
     public abstract static class  AbstractProcessor extends Related.AbstractProcessor {
 
-        protected NodeQuery getRelatedQuery(Node node) {
-            Cloud cloud = node.getCloud();
-            NodeQuery nq = Queries.createRelatedNodesQuery(node, getRelatedType(node), role, searchDir);
-            for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
-                Queries.addConstraint(nq, Queries.createConstraint(nq, entry.getKey(), FieldCompareConstraint.EQUAL, entry.getValue()));
-            }
-            return nq;
-        }
 
         protected String otherField = null;
 
@@ -49,32 +41,7 @@ public class RelatedField {
             otherField  = f;
         }
 
-        protected String getKey(Node node, Field field) {
-            return RelatedField.class.getName() + node.getValue("_number") + "." + role + "." + getRelatedType(node) + "." + searchDir;
-        }
 
-        protected Node getRelatedNode(final Node node, final Field field) {
-            String key = getKey(node, field);
-            Node relatedNode = (Node) node.getCloud().getProperty(key);
-            if (relatedNode != null) {
-                log.debug("Found node in  in " + key);
-                return relatedNode;
-            } else {
-                NodeQuery related = getRelatedQuery(node);
-                NodeList rl = related.getNodeManager().getList(related);
-                if (rl.size() > 0) {
-                    relatedNode = rl.getNode(0);
-                    if (node.getCloud() instanceof Transaction) {
-                        node.getCloud().setProperty(key,  relatedNode);
-                    }
-                    log.debug("Found relatedNode " + relatedNode);
-                } else {
-                    log.debug("Not related");
-                }
-                return relatedNode;
-
-            }
-        }
     }
 
 
