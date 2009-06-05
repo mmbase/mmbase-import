@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.mmbase</groupId>
@@ -60,20 +60,20 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       </notifier>
     </notifiers>
   </ciManagement>
-	
-	<prerequisites>
-			<maven>2.0.9</maven>
-	</prerequisites>
-	
-	<properties>
-		<compiler.fork>false</compiler.fork>
-		
-		<mmbase.number>1.9</mmbase.number>
-		<mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
-		<mmbase.version>${mmbase.number}${mmbase.version.postfix}</mmbase.version>
-		<!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
 
-	</properties>
+  <prerequisites>
+    <maven>2.0.9</maven>
+  </prerequisites>
+
+  <properties>
+    <compiler.fork>false</compiler.fork>
+
+    <mmbase.number>1.9</mmbase.number>
+    <mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
+    <mmbase.version>${mmbase.number}${mmbase.version.postfix}</mmbase.version>
+    <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
+
+  </properties>
 
 
   <mailingLists>
@@ -96,7 +96,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <archive>http://lists.mmbase.org/arc/cvs/index.html</archive>
     </mailingList>
   </mailingLists>
-  
+
   <developers>
     <developer>
       <id>0</id>
@@ -250,10 +250,10 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <url>scp://mmbase.org/home/mmweb/web/maven2</url>
     </repository>
     <snapshotRepository>
-     <id>mmbase-snapshots</id>
-     <name>MMBase Maven2 Snapshot Repository</name>
-     <url>scp://mmbase.org/home/mmweb/web/snapshots</url>
-     <uniqueVersion>false</uniqueVersion>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 Snapshot Repository</name>
+      <url>scp://mmbase.org/home/mmweb/web/snapshots</url>
+      <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <site>
       <id>mmbase-website</id>
@@ -272,7 +272,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <name>MMBase Maven2 snapshots repository</name>
       <url>http://www.mmbase.org/snapshots</url>
     </repository>
-    
+
     <repository>
       <id>jboss</id>
       <name>JBoss maven 2 repository</name>
