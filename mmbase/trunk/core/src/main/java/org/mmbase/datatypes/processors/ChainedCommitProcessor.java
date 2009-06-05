@@ -27,7 +27,11 @@ public class ChainedCommitProcessor implements  CommitProcessor, org.mmbase.util
     private ArrayList<CommitProcessor> processors = new ArrayList<CommitProcessor>();
 
     public ChainedCommitProcessor add(CommitProcessor proc) {
-        processors.add(proc);
+        if (proc instanceof ChainedCommitProcessor) {
+            processors.addAll(((ChainedCommitProcessor) proc).getProcessors());
+        } else {
+            processors.add(proc);
+        }
         return this;
     }
 
@@ -36,6 +40,13 @@ public class ChainedCommitProcessor implements  CommitProcessor, org.mmbase.util
             proc.commit(node, field);
         }
         return;
+    }
+
+    /**
+     * @since 1.9.2
+     */
+    public List<CommitProcessor> getProcessors() {
+        return Collections.unmodifiableList(processors);
     }
 
     public String toString() {
