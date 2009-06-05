@@ -126,21 +126,29 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         return field.getDataType().cast(value, node, field);
     }
 
-    @Override protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
-        Object value = super.getFieldValue(node, field, useDefault);
-        // if an enum is required ('not null'), and no default value was specified, then we simply default to the first
-        // entry, as HTML rendering would do any way.
-        if (value == null && field.getDataType().isRequired()) {
-            Iterator i = getIterator(node, field);
-            if (i!= null && i.hasNext()) {
-                value = ((Map.Entry) i.next()).getKey();
-            }
+
+    @Override
+    protected Object convertToValidate(final Object s, final Node node, final Field field) throws JspTagException {
+        DataType dt = field.getDataType();
+        if (s == null && ! dt.isRequired()) return null;
+        Iterator i = getIterator(node, field);
+        Object firstValue = null;
+        if (i!= null && i.hasNext()) {
+            Object value = ((Map.Entry) i.next()).getKey();
+            if (value.equals(s)) return value;
+            firstValue = value;
         }
-        return value;
+        while (i!= null && i.hasNext()) {
+            Object value = ((Map.Entry) i.next()).getKey();
+            if (value.equals(s)) return value;
+        }
+
+        return firstValue;
+
     }
 
 
-    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    @Override public String htmlInput(final Node node, final Field field, final boolean search) throws JspTagException {
         StringBuilder buffer = new StringBuilder();
         String fieldName = field.getName();
         buffer.append("<select class=\"" + getClasses(node, field) + "\" name=\"").append(prefix(fieldName)).append("\" ");
@@ -150,10 +158,13 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         }
         addExtraAttributes(buffer);
         buffer.append(">");
-        Object value  = cast(getFieldValue(node, field, true), node, field);
+        Object uncastValue = getFieldValue(node, field, true);
+        Object unvalidValue  = cast(uncastValue, node, field);
+        Object value         = convertToValidate(unvalidValue, node, field);
         if (log.isDebugEnabled()) {
-            log.debug("using value " + (value == null ? "NULL" : value.getClass().getName() + " " + value));
+            log.debug("cast " + uncastValue + " -> " + unvalidValue + " -> " + value + " -> " + Casting.toString(value));
         }
+
         if (! field.getDataType().isRequired() && ! multiple) {
             buffer.append("<option value=\"\" ");
             if (value == null) buffer.append("selected=\"selected\" ");
@@ -164,6 +175,10 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         }
 
         List<String> valueString = multiple ? new ArrayList<String>() : Collections.singletonList(Casting.toString(value));
+
+        if (log.isDebugEnabled()) {
+            log.debug("using value for " + field + " " + (value == null ? "NULL" : value.getClass().getName() + " " + value) + " asString: " + valueString);
+        }
         if (multiple) {
             for (Object v : Casting.toList(value)) {
                 valueString.add(Casting.toString(v));
