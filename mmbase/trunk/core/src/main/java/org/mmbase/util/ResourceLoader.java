@@ -1145,7 +1145,8 @@ public class ResourceLoader extends ClassLoader {
                 } else {
                     File file = getFile(name);
                     if (file == null) return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
-                    u = new URL(null, "file://" + file, this);
+                    String fileUrl = file.toURI().toURL().toString();
+                    u = new URL(null, fileUrl, this);
                 }
             } catch (MalformedURLException mfue) {
                 throw new AssertionError(mfue.getMessage());
