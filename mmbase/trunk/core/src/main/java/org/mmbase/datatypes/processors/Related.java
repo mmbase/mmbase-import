@@ -15,6 +15,7 @@ import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
 import org.mmbase.storage.search.*;
 import java.util.*;
+import java.util.concurrent.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -86,6 +87,44 @@ public class Related {
             }
             return nq;
         }
+
+        protected NodeQuery getRelatedQuery(Node node) {
+            Cloud cloud = node.getCloud();
+            NodeQuery nq = Queries.createRelatedNodesQuery(node, getRelatedType(node), role, searchDir);
+            for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
+                Queries.addConstraint(nq, Queries.createConstraint(nq, entry.getKey(), FieldCompareConstraint.EQUAL, entry.getValue()));
+            }
+            return nq;
+        }
+
+        protected String getKey(Node node, Field field) {
+            return Related.class.getName() + node.getValue("_number") + "." + role + "." + getRelatedType(node) + "." + searchDir;
+        }
+
+        protected Node getRelatedNode(final Node node, final Field field) {
+            String key = getKey(node, field);
+            Node relatedNode = (Node) node.getCloud().getProperty(key);
+            if (relatedNode != null) {
+                log.debug("Found node in  in " + key);
+                return relatedNode;
+            } else {
+                NodeQuery related = getRelatedQuery(node);
+                NodeList rl = related.getNodeManager().getList(related);
+                if (rl.size() > 0) {
+                    relatedNode = rl.getNode(0);
+                    if (node.getCloud() instanceof Transaction) {
+                        node.getCloud().setProperty(key,  relatedNode);
+                    }
+                    log.debug("Found relatedNode " + relatedNode);
+                } else {
+                    log.debug("Not related");
+                }
+                return relatedNode;
+
+            }
+        }
+
+
     }
 
     public static class Setter extends AbstractProcessor {
@@ -154,20 +193,7 @@ public class Related {
                 // null cannot be related to anything
                 return null;
             }
-            NodeQuery relations = getRelationsQuery(node);
-            NodeList rl = relations.getNodeManager().getList(relations);
-            if (rl.size() == 0) {
-                log.debug("Not found, returning null");
-                return null;
-            } else {
-                Relation relation = rl.getNode(0).toRelation();
-                log.debug("Found " + relation);
-                if (relation.getSource().getNumber() == node.getNumber()) {
-                    return relation.getDestination();
-                } else {
-                    return relation.getSource();
-                }
-            }
+            return getRelatedNode(node, field);
         }
     }
 
