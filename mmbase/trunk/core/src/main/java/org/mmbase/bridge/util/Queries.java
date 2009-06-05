@@ -1032,7 +1032,14 @@ abstract public class Queries {
      */
     public static NodeQuery createRelatedNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
         NodeQuery query = createNodeQuery(node);
-        if (otherNodeManager == null) otherNodeManager = node.getCloud().getNodeManager("object");
+        if (node.isNew()) {
+            // new nodes do not have related nodes, make sure the query returns nothing either
+            addConstraint(query, createMakeEmptyConstraint(query));
+        }
+        if (otherNodeManager == null) {
+            otherNodeManager = node.getCloud().getNodeManager("object");
+        }
+
         RelationStep step = query.addRelationStep(otherNodeManager, role, direction);
         query.setNodeStep(step.getNext());
         return query;
@@ -1048,7 +1055,13 @@ abstract public class Queries {
      */
     public static NodeQuery createRelationNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
         NodeQuery query = createNodeQuery(node);
-        if (otherNodeManager == null) otherNodeManager = node.getCloud().getNodeManager("object");
+        if (node.isNew()) {
+            // new nodes do not have related nodes
+            addConstraint(query, createMakeEmptyConstraint(query));
+        }
+        if (otherNodeManager == null) {
+            otherNodeManager = node.getCloud().getNodeManager("object");
+        }
         RelationStep step = query.addRelationStep(otherNodeManager, role, direction);
         query.setNodeStep(step);
         return query;
@@ -1072,6 +1085,10 @@ abstract public class Queries {
      */
     public static NodeQuery createRelationNodesQuery(Node node, Node otherNode, String role, String direction) {
         NodeQuery query = createNodeQuery(node);
+        if (node.isNew()) {
+            // new nodes do not have related nodes
+            addConstraint(query, createMakeEmptyConstraint(query));
+        }
         NodeManager otherNodeManager = otherNode.getNodeManager();
         RelationStep step = query.addRelationStep(otherNodeManager, role, direction);
         Step nextStep = step.getNext();
