@@ -203,6 +203,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         return field.getDataType().cast(value, node, field);
     }
 
+
     /**
      * Returns the field value to be used in the page.
      */
@@ -213,7 +214,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             log.debug("No value found in context for " + fieldName);
             if (node != null) {
                 value = node.isNull(fieldName) ? null : getValue(node, fieldName);
-                log.debug("Value found in node " + value);
+                log.debug("Value for " + fieldName + " found in node " + value);
             } else if (useDefault) {
                 value = field.getDataType().getDefaultValue(tag.getLocale(), tag.getCloudVar(), field);
                 log.debug("No Node, defaultvalue found in field " + value);
@@ -223,6 +224,14 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         }
         return value;
     }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    protected Object convertToValidate(Object value, Node node, Field field) throws JspTagException {
+        return value;
+    }
+
 
     public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
         eh = getEnumHandler(node, field);
@@ -241,7 +250,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (log.isDebugEnabled()) {
             log.debug("Value for field " + field + ": " + fieldValue + " and node " + node);
         }
-        Collection<LocalizedString> col = dt.castAndValidate(fieldValue, node, field);
+        Collection<LocalizedString> col = dt.castAndValidate(convertToValidate(fieldValue, node, field), node, field);
         if (col.size() == 0) {
             // do actually set the field, because some datatypes need cross-field checking
             // also in an mm:form, you can simply commit.
@@ -308,7 +317,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     protected Object getValue(Node node, String fieldName) {
         Object v = node.getValue(fieldName);
         if (log.isDebugEnabled()) {
-            log.debug("Value for " + fieldName + ": " + v + " of " + node.getClass() + " " + node.getNodeManager().getField(fieldName));
+            log.debug("Value for " + node.getNumber() + ":" + fieldName + ": " + v.getClass() + " " + v + " of " + node.getClass());
         }
         return v;
     }
