@@ -28,6 +28,8 @@ public abstract class BlockUrlConverter implements UrlConverter {
 
     protected final BasicFramework framework;
     protected Set<Component> components = null;
+    protected final Map<Component, Set<Block>> blocks = new HashMap<Component, Set<Block>>();
+
 
     public BlockUrlConverter(BasicFramework fw) {
         framework = fw;
@@ -40,20 +42,51 @@ public abstract class BlockUrlConverter implements UrlConverter {
         return new Parameter[] {Parameter.REQUEST, Framework.COMPONENT, Framework.BLOCK};
     }
 
+    /**
+     * Explicitly add a block to make sure this BlockUrlConverter is only about that block.
+     *
+    */
     protected void addComponent(Component comp) {
         if (components == null) components = new HashSet<Component>();
         components.add(comp);
     }
-
+    
     /**
-     * The components for which this URLconverter can produce nice url. Or <code>null</code> if it
+     * Explicitly add a block to make sure this BlockUrlConverter is only about that block.
+     *
+    */
+    protected void addBlock(Block b) {
+        Component comp = b.getComponent();
+        addComponent(comp);
+        Set<Block> bs = blocks.get(comp);
+        if (bs == null) { 
+            bs = new HashSet<Block>();
+            blocks.put(comp, bs);
+        }
+        bs.add(b);
+    }
+    
+    /**
+     * The components for which this UrlConverter can produce a 'nice' url. Or <code>null</code> if it
      * can do that for any component.
     */
-    protected Set<Component> getComponents() {
+    protected Collection<Component> getComponents() {
+        if (components == null) return ComponentRepository.getInstance().getComponents(); 
         return components;
     }
-
-
+    
+    /**
+     * The blocks for which this UrlConverter can produce a 'nice' url.
+     *
+    */
+    protected Collection<Block> getBlocks(Component c) {
+        Set<Block> bs = blocks.get(c);
+        if (bs != null) {
+            return bs;            
+        } else {
+            return c.getBlocks();
+        }
+    }
 
     /**
      * This proposal implemention simply uses {@link Framework#COMPONENT} and {@link
@@ -102,8 +135,9 @@ public abstract class BlockUrlConverter implements UrlConverter {
         // First explore
         Block block = getExplicitBlock(path, frameworkParameters);
         if (block != null) {
-            if (components != null && ! components.contains(block.getComponent())) {
-                log.debug("Explicit block, but not mine one");
+            Component component = block.getComponent();
+            if (!getComponents().contains(component) || !getBlocks(component).contains(block)) {
+                log.debug("Explicit block, but not from this component or not the right block");
                 return null;
             }
             return block;
@@ -158,6 +192,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
                                Map<String, ?> parameters,
                                Parameters frameworkParameters, boolean escapeAmps, boolean action) throws FrameworkException {
         Block block = getBlock(path, frameworkParameters);
+        log.debug("path: " + path);
         if (block != null) {
             Map<String, Object> map = new HashMap<String, Object>();
             Url niceUrl;

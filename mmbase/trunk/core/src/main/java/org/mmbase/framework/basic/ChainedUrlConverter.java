@@ -27,6 +27,7 @@ import org.mmbase.util.logging.Logging;
  * question remains whether we want UrlConverters to be realy chained so that the
  * outcome of a converter can be added to the outcome of its preceder.
  *
+ * @author Michiel Meeuwissen
  * @author Andr&eacute; van Toly
  * @version $Id$
  * @since MMBase-1.9
@@ -52,6 +53,7 @@ public class ChainedUrlConverter implements UrlConverter {
         });
 
     public static String URLCONVERTER = "org.mmbase.urlconverter";
+    
     /**
      * List containing the UrlConverters found in the framework configuration.
      */
@@ -72,6 +74,7 @@ public class ChainedUrlConverter implements UrlConverter {
             }
         }
     }
+    
     public boolean contains(UrlConverter u) {
         return uclist.contains(u);
     }
@@ -104,6 +107,11 @@ public class ChainedUrlConverter implements UrlConverter {
 //         return Link.NULL;
 //     }
 
+    
+    /**
+     * The default weight of the UrlConverters. An Url proposal by an UrlConverter receives a weight
+     * upon which is decided which one should resolve the request.
+     */    
     public int getDefaultWeight() {
         return 0;
     }
@@ -115,10 +123,14 @@ public class ChainedUrlConverter implements UrlConverter {
         return false;
     }
 
+    /**
+     * Upon examining the user request an 'nice' URL is proposed by an UrlConverter to resolve the request.
+     * The proposed url receives a weight.
+     */
     protected Url getProposal(Url u, Parameters frameworkParameters) {
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         UrlConverter current  = (UrlConverter) request.getAttribute(URLCONVERTER);
-        Class<?> preferred       = frameworkParameters.get(URLCONVERTER_PARAM);
+        Class<?> preferred    = frameworkParameters.get(URLCONVERTER_PARAM);
         Url b = u;
         if (preferred != null && ! preferred.isInstance(u.getUrlConverter())) {
             int q = b.getWeight();
@@ -132,7 +144,8 @@ public class ChainedUrlConverter implements UrlConverter {
     }
 
     /**
-     * The URL to be printed in a page
+     * The URL to be printed in a page, the 'nice' url. This method requests an url proposal from 
+     * {@link #getProposal} and decides upon their weight which one prevails. 
      */
     public Url getUrl(String path,
                       Map<String, ?> params,
@@ -152,7 +165,11 @@ public class ChainedUrlConverter implements UrlConverter {
         }
         return result;
     }
-
+    
+    
+    /**
+     * Basically the same as {@link #getUrl} but for a Processor url.
+     */
     public Url getProcessUrl(String path,
                                 Map<String, ?> params,
                                 Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
@@ -171,7 +188,9 @@ public class ChainedUrlConverter implements UrlConverter {
 
 
     /**
-     * The 'technical' url
+     * The 'technical' url. The 'nice' urls received by FrameworkFilter resolve to these. This method
+     * decides upon their weight which of the proposed technical url's by the UrlConverters matches 
+     * the 'nice' url.
      */
     public Url getInternalUrl(String path,
                               Map<String, ?> params,
