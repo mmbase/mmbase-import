@@ -325,7 +325,7 @@ Widgets.prototype.labelsToInputs = function(selector, options) {
                     input.addClass("password");
                 }
                 $(this).css("display", "none");
-                input.focus(function() {
+                var focus = function() {
                     // if entered for the first time, remove the label value
                     if ($(this).hasClass("untouched")) {
                         if (emptyisuntouched) {
@@ -335,8 +335,10 @@ Widgets.prototype.labelsToInputs = function(selector, options) {
                         if ($(this).hasClass("password")) {
                             $(this).attr("type", "password");
                         }
-                    };
-                });
+                    }
+                };
+                input.focus(focus);
+                input.select(focus);
                 input.blur(function() {
                     // if leaving, the value is empty, and empty is equivalent to 'untouched', put the label back in.
                     if ($(this).val() == "") {
