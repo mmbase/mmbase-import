@@ -146,16 +146,22 @@ public class Related {
     public static class Getter extends AbstractProcessor {
         private static final long serialVersionUID = 1L;
 
-        public Object process(Node node, Field field, Object value) {
+        public Object process(final Node node, final Field field, final Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("getting "  + node);
+            }
+            if (node == null) {
+                // null cannot be related to anything
+                return null;
             }
             NodeQuery relations = getRelationsQuery(node);
             NodeList rl = relations.getNodeManager().getList(relations);
             if (rl.size() == 0) {
+                log.debug("Not found, returning null");
                 return null;
             } else {
                 Relation relation = rl.getNode(0).toRelation();
+                log.debug("Found " + relation);
                 if (relation.getSource().getNumber() == node.getNumber()) {
                     return relation.getDestination();
                 } else {
