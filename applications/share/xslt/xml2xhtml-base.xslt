@@ -362,7 +362,7 @@
     </table>
   </xsl:template>
 
-  <xsl:template name="include" mode="href">
+  <xsl:template match="include" mode="href">
     <!-- xslt2
     <xsl:for-each select="example/include">
       <xsl:value-of select="unparsed-text(@href)" />
