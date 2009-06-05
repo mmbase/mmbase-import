@@ -477,7 +477,6 @@
       <class name="org.mmbase.framework.ConnectionRenderer">
         <param name="url">http://twitter.com/statuses/user_timeline/42594291.rss</param>
         <param name="xslt">xslt/rss.xslt</param>
-        <param name="expires">120</param>
       </class>
     </body>
   </block>
@@ -491,6 +490,7 @@
     <body>
       <class name="org.mmbase.framework.CachedRenderer">
         <param name="wrapsBlock">mmbase_microblog_uncached</param>
+        <param name="expires">120</param>
       </class>
     </body>
   </block>
