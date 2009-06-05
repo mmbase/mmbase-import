@@ -575,8 +575,13 @@ MMBaseValidator.prototype.getDataTypeArguments = function(key) {
  */
 MMBaseValidator.prototype.setClassName = function(valid, el) {
     this.trace("Setting classname on " + el);
-    if (el.originalClass == null) el.originalClass = el.className;
-    el.className = el.originalClass + (valid ? " valid" : " invalid");
+    if (valid) {
+        $(el).removeClass("invalid");
+        $(el).addClass("valid");
+    } else {
+        $(el).addClass("invalid");
+        $(el).removeClass("valid");
+    }
 }
 
 MMBaseValidator.prototype.hasClass = function(el, searchClass) {
