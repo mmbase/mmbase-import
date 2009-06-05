@@ -318,7 +318,9 @@ public class CachedRenderer extends WrappedRenderer {
                 if (uri == null) throw new FrameworkException("" + getWraps() + " did not return an URI, and cannot be cached using getLastModified");
                 URLConnection connection =  uri.toURL().openConnection();
                 connection.setConnectTimeout(timeout);
-                List<String> cacheControl = Arrays.asList(connection.getHeaderField("Cache-Control").toLowerCase().split("\\s*,\\s*"));
+                String cacheControlHeader = connection.getHeaderField("Cache-Control");
+                if (cacheControlHeader == null) cacheControlHeader = "";
+                List<String> cacheControl = Arrays.asList(cacheControlHeader.toLowerCase().split("\\s*,\\s*"));
                 if (cacheControl.contains("no-cache") || cacheControl.contains("no-store")) {
                     log.warn("The response for " + uri + " cannot be implicitely cached (Because of Cache-Control: " + cacheControl + ") Use the 'expires' parameter on " + this + " to override this, because it will _not_ be cached now.");
                     getWraps().render(blockParameters, w, hints);
