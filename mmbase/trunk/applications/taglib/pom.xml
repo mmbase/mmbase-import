@@ -24,6 +24,28 @@
   </description>
 
   <build>
+	<resources>
+		<resource>
+			<directory>${basedir}/target/generated-resources/xml/xslt</directory>
+			<targetPath>META-INF</targetPath>
+			<includes>
+				<include>**</include>
+			</includes>
+		</resource>
+		<resource>
+			<directory>${basedir}/src/main/resources</directory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</resource>
+		<resource>
+			<directory>${basedir}/src/main/config</directory>
+			<targetPath>org/mmbase/config</targetPath>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</resource>
+	</resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
