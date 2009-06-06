@@ -67,14 +67,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 
   <properties>
     <compiler.fork>false</compiler.fork>
-
-    <mmbase.number>1.9</mmbase.number>
-    <mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
-    <mmbase.version>${mmbase.number}${mmbase.version.postfix}</mmbase.version>
-    <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
-
   </properties>
-
 
   <mailingLists>
     <mailingList>

@@ -26,6 +26,10 @@ See http://www.MMBase.org/license
   <properties>
     <compiler.fork>false</compiler.fork>
 
+    <mmbase.number>1.9</mmbase.number>
+    <mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
+    <mmbase.version>${mmbase.number}${mmbase.version.postfix}</mmbase.version>
+    <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
 
     <servlet.version>2.4</servlet.version>
     <jsp.version>2.0</jsp.version>
