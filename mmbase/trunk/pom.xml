@@ -228,6 +228,9 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     </developer>
   </developers>
 
+  <build>
+    <defaultGoal>install</defaultGoal>
+  </build>
   <modules>
     <module>maven</module>
     <module>maven-base</module>
