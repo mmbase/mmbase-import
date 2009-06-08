@@ -30,7 +30,7 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
 
     //  private static final Logger log = Logging.getLoggerInstance(RelatedContainerTag.class);
 
-    private Query     query      = null;
+    private QueryWrapper<Query> query      = null;
     private Object prevQuery     = null;
     private Attribute cachePolicy  = Attribute.NULL;
     private Attribute path       = Attribute.NULL;
@@ -63,8 +63,10 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
     }
 
     public Query getQuery() {
-        if (query.isUsed()) query = (Query) query.clone();
-        return query;
+        if (query.query.isUsed()) {
+            query.cloneQuery();
+        }
+        return query.query;
     }
 
 
@@ -73,18 +75,18 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
         initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
-            query = (Query) getContextProvider().getContextContainer().getObject(getReferid());
+            query = (QueryWrapper<Query>) getContextProvider().getContextContainer().getObject(getReferid());
         } else {
             if (path == Attribute.NULL) {
                 throw new JspTagException("Path attribute is mandatory");
             }
             Node node = getNode();
             Cloud cloud = node.getCloud();
-            query = cloud.createQuery();
+            query = new QueryWrapper<Query>(cloud.createQuery());
 
-            Step step = query.addStep(node.getNodeManager());
-            query.setAlias(step, node.getNodeManager().getName() + "0");
-            query.addNode(step, node);
+            Step step = query.query.addStep(node.getNodeManager());
+            query.query.setAlias(step, node.getNodeManager().getName() + "0");
+            query.query.addNode(step, node);
 
         }
 
@@ -92,17 +94,17 @@ public class RelatedContainerTag extends NodeReferrerTag implements QueryContain
             getContextProvider().getContextContainer().register(getId(), query);
         }
         if (jspVar != null) {
-            pageContext.setAttribute(jspVar, query);
+            pageContext.setAttribute(jspVar, query.query);
         }
 
 
         if (cachePolicy != Attribute.NULL) {
-            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+            query.query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
         }
 
-        Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+        Queries.addPath(query.query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
-        Queries.addFields(query, (String) fields.getValue(this));
+        Queries.addFields(query.query, (String) fields.getValue(this));
 
         pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
 

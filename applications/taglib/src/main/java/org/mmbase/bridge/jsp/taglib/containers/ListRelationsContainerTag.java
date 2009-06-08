@@ -75,7 +75,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
-            query = new QueryWrapper<NodeQuery>((NodeQuery) getContextProvider().getContextContainer().getObject(getReferid()));
+            query = (QueryWrapper<NodeQuery>) getContextProvider().getContextContainer().getObject(getReferid());
         } else {
             Node relatedFromNode = getNode();
             Cloud cloud = relatedFromNode.getCloud();
@@ -93,7 +93,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
             getContextProvider().getContextContainer().register(getId(), query);
         }
         if (jspVar != null) {
-            pageContext.setAttribute(jspVar, query);
+            pageContext.setAttribute(jspVar, query.query);
         }
         pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
         return EVAL_BODY;

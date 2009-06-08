@@ -115,7 +115,7 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
             getContextProvider().getContextContainer().register(getId(), query);
         }
         if (jspVar != null) {
-            pageContext.setAttribute(jspVar, query);
+            pageContext.setAttribute(jspVar, query.query);
         }
         pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
         return EVAL_BODY;
