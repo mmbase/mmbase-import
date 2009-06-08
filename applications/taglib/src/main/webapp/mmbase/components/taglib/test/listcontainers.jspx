@@ -31,7 +31,7 @@
   <p>
   <c:catch var="ex2">
     Should be empty:
-    <mm:list path="object" nodes="-1">
+    <mm:list path="object" nodes="-1" max="100">
       <mm:field name="number" />
     </mm:list>
   </c:catch>
@@ -39,7 +39,8 @@
   <p>Should be empty: ${ex2}</p>
   <h3><a href="http://www.mmbase.org/jira/browse/MMB-1082">MMB-1082 (bridge)</a></h3>
   <mm:cloud jspvar="cloud">
-    <p>According to MMB-1082 this should be 0: <jsp:expression>cloud.getList("-1", "object", null, null, null, null, null, false).size()</jsp:expression> (WONTFIX)</p>
+    <p>According to MMB-1082 this should be 0:
+    <jsp:expression>cloud.getList("-1", "object", null, "number&lt;100"/* to avoid out-of-memory*/, null, null, null, false).size()</jsp:expression> (WONTFIX)</p>
   </mm:cloud>
   <h3><a href="http://www.mmbase.org/jira/browse/MMB-1082">MMB-1082 (query)</a></h3>
   <mm:cloud jspvar="cloud">
@@ -54,8 +55,9 @@
     Should say that -1 is not a node: ${ex3}
     </p>
   </mm:cloud>
-  <h4><a href="http://www.mmbase.org/jira/browse/MMB-1830">MMB-1830. Reusing mm:listcontainer</a></h4>
-  <mm:listcontainer path="object">
+
+  <h3><a href="http://www.mmbase.org/jira/browse/MMB-1830">MMB-1830. Reusing mm:listcontainer</a></h3>
+  <mm:listcontainer path="object" id="q">
     <mm:maxnumber value="4" />
     <p>
       <mm:list>
