@@ -64,36 +64,39 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
      * Static because also used by TreeTag itself.
      */
     static NodeQuery  getStartQuery(NodeReferrerTag thisTag, Attribute containerAttribute, Attribute nodeAttribute) throws JspTagException {
-        NodeQuery query = null;
+        NodeQuery nq = null;
         String container = containerAttribute.getString(thisTag);
         String node      = nodeAttribute.getString(thisTag);
         if ("".equals(container) && "".equals(node)) {
             log.debug("no node attribute, no container attribute, trying container first");
-            Query q = (Query) thisTag.getPageContext().getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
-            if (q != null && (q instanceof NodeQuery)) query = (NodeQuery) q;
-            if (query == null) {
+            QueryWrapper q = (QueryWrapper) thisTag.getPageContext().getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
+            if (q != null && (q.query instanceof NodeQuery)) {
+                nq = (NodeQuery) q.query;
+            }
+
+            if (nq == null) {
                 NodeQueryContainer c = thisTag.findParentTag(NodeQueryContainer.class, null, false);
                 if (c != null) {
-                    query = c.getNodeQuery();
+                    nq = c.getNodeQuery();
                 }
             }
         } else if (! "".equals(container)) {
             log.debug("container attribute, trying container");
             NodeQueryContainer c = thisTag.findParentTag(NodeQueryContainer.class, container, true);
             if (c != null) {
-                query = c.getNodeQuery();
+                nq = c.getNodeQuery();
             }
         }
-        if (query == null) { // try to work as node-referrer
+        if (nq == null) { // try to work as node-referrer
             log.debug("working as node-referrer");
             Node n = thisTag.findNode();
             if (n == null) {
                 throw new TaglibException("No NodeQueryContainer nor a NodeProvider found in tree-tag");
             } else {
-                query = Queries.createNodeQuery(n);
+                nq = Queries.createNodeQuery(n);
             }
         }
-        return query;
+        return nq;
 
     }
 
@@ -107,26 +110,26 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         // first of all, we need a 'start' query, take it from a surrounding 'nodequery container'
 
-        query = getStartQuery(this, container, parentNodeId);
+        query = new QueryWrapper<NodeQuery>(getStartQuery(this, container, parentNodeId));
 
 
         if (nodeManager != Attribute.NULL) {
-            tree = new GrowingTreeList(query,
+            tree = new GrowingTreeList(query.query,
                                        maxDepth.getInt(this, 5),
-                                       query.getCloud().getNodeManager(nodeManager.getString(this)),
+                                       query.query.getCloud().getNodeManager(nodeManager.getString(this)),
                                        role.getString(this),
                                        searchDirs.getString(this));
 
             if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on treecontainer");
         } else {
-            tree = new GrowingTreeList(query, maxDepth.getInt(this, 5));
+            tree = new GrowingTreeList(query.query, maxDepth.getInt(this, 5));
             if (path != Attribute.NULL) {
                 Queries.addPath(tree.getTemplate(), (String) path.getValue(this), (String) searchDirs.getValue(this));
 
                 // I'm not entirely sure why the following is necessary at all:
                 Step step = tree.getTemplate().getSteps().get(2);
-                if (query.getSteps().contains(step)) {
-                    query.setNodeStep(step);
+                if (query.query.getSteps().contains(step)) {
+                    query.query.setNodeStep(step);
                 }
             }
         }

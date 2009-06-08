@@ -27,7 +27,7 @@ import org.mmbase.cache.CachePolicy;
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
-    private NodeQuery   query        = null;
+    private QueryWrapper<NodeQuery>   query        = null;
     private Object      prevQuery    = null;
     private Attribute cachePolicy  = Attribute.NULL;
     private Attribute type       = Attribute.NULL;
@@ -60,8 +60,10 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         return getNodeQuery();
     }
     public NodeQuery getNodeQuery() {
-        if (query.isUsed()) query = (NodeQuery) query.clone();
-        return query;
+        if (query.query.isUsed()){
+            query.cloneQuery();
+        }
+        return query.query;
     }
 
     public Node getRelatedFromNode() throws JspTagException {
@@ -73,7 +75,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
         initTag();
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
-            query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
+            query = new QueryWrapper<NodeQuery>((NodeQuery) getContextProvider().getContextContainer().getObject(getReferid()));
         } else {
             Node relatedFromNode = getNode();
             Cloud cloud = relatedFromNode.getCloud();
@@ -81,11 +83,11 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
             if (type != Attribute.NULL) {
                 nm = cloud.getNodeManager(type.getString(this));
             }
-            query        = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
+            query        = new QueryWrapper<NodeQuery>(Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this)));
         }
 
         if (cachePolicy != Attribute.NULL) {
-            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+            query.query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
         }
         if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), query);
