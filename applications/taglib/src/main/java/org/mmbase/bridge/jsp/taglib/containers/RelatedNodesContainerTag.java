@@ -55,10 +55,10 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
-            query = (NodeQuery) getContextProvider().getContextContainer().getObject(cloneId);
-            query = (NodeQuery) query.clone();
+            query = (QueryWrapper<NodeQuery>) getContextProvider().getContextContainer().getObject(cloneId);
+            query.cloneQuery();
         } else if (getReferid() != null) {
-            query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
+            query = (QueryWrapper<NodeQuery>) getContextProvider().getContextContainer().getObject(getReferid());
             if (nodeManager != Attribute.NULL || role != Attribute.NULL || searchDirs != Attribute.NULL || path != Attribute.NULL || element != Attribute.NULL) {
                 throw new JspTagException("Cannot use 'nodemanager', 'role', 'searchdirs', 'path' or 'element' attributes together with 'referid'");
             }
@@ -70,11 +70,11 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
                 CloudProvider cloudProvider = findCloudProvider(false);
                 cloud = cloudProvider != null ? cloudProvider.getCloudVar() : node.getCloud();
             }
-            query = cloud.createNodeQuery();
+            query = new QueryWrapper<NodeQuery>( cloud.createNodeQuery());
 
-            Step step = query.addStep(node.getNodeManager());
-            query.setAlias(step, node.getNodeManager().getName() + "0");
-            query.addNode(step, node);
+            Step step = query.query.addStep(node.getNodeManager());
+            query.query.setAlias(step, node.getNodeManager().getName() + "0");
+            query.query.addNode(step, node);
 
             if (nodeManager != Attribute.NULL || role != Attribute.NULL) {
 
@@ -84,15 +84,15 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
                 } else {
                     nodeManagerName = nodeManager.getString(this);
                 }
-                RelationStep relationStep = query.addRelationStep(cloud.getNodeManager(nodeManagerName),
+                RelationStep relationStep = query.query.addRelationStep(cloud.getNodeManager(nodeManagerName),
                                                                   (String) role.getValue(this), (String) searchDirs.getValue(this));
-                query.setNodeStep(relationStep.getNext());
+                query.query.setNodeStep(relationStep.getNext());
                 if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type'/'role' or 'path' attributes on relatednodescontainer. Path=" + path + " Nodmanager=" + nodeManager + " role=" + role);
                 if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute. Element=" + element);
             } else {
                 if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on relatednodescontainer");
 
-                List<Step> newSteps = Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+                List<Step> newSteps = Queries.addPath(query.query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
                 if (element != Attribute.NULL) {
                     String alias = element.getString(this);
@@ -100,15 +100,15 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
                     if (nodeStep == null) {
                         throw new JspTagException("Could not set element to '" + alias + "' (no such (new) step)");
                     }
-                    query.setNodeStep(nodeStep);
+                    query.query.setNodeStep(nodeStep);
                 } else {
                     // default to third step (first two are the node and the relation)
-                    query.setNodeStep(query.getSteps().get(2));
+                    query.query.setNodeStep(query.query.getSteps().get(2));
                 }
             }
         }
         if (cachePolicy != Attribute.NULL) {
-            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+            query.query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
         }
 
         if (getId() != null) { // write to context.

@@ -28,7 +28,7 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
 
     private static final long serialVersionUID = 0L;
 
-    private Query   query        = null;
+    private QueryWrapper<Query>  query        = null;
     protected Object prevQuery   = null;
     private Attribute cachePolicy  = Attribute.NULL;
     private Attribute path       = Attribute.NULL;
@@ -70,15 +70,19 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
 
 
     public Query getQuery() {
-        if (query.isUsed()) query = query.clone();
-        return query;
+        if (query.query.isUsed()) {
+            query.query = query.query.clone();
+        }
+        return query.query;
     }
 
     // overridden from CloudReferrer
     @Override
     public Cloud getCloudVar() throws JspTagException {
-        if (query == null) return super.getCloudVar(); // I think that this does not happen.
-        return query.getCloud();
+        if (query == null) {
+            return super.getCloudVar(); // I think that this does not happen.
+        }
+        return query.query.getCloud();
     }
 
 
@@ -86,13 +90,13 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
     public int doStartTag() throws JspTagException {
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
-            query = (Query) getContextProvider().getContextContainer().getObject(getReferid());
+            query = new QueryWrapper<Query>((Query) getContextProvider().getContextContainer().getObject(getReferid()));
         } else {
             if (path == Attribute.NULL) {
                 throw new JspTagException("Path attribute is mandatory");
             }
             Cloud cloud = getCloudVar();
-            query = cloud.createQuery();
+            query = new QueryWrapper<Query>(cloud.createQuery());
         }
 
         if (getId() != null) { // write to context.
@@ -103,14 +107,14 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
         }
 
         if (cachePolicy != Attribute.NULL) {
-            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+            query.query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
         }
 
-        Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+        Queries.addPath(query.query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
-        Queries.addFields(query, (String) fields.getValue(this));
+        Queries.addFields(query.query, (String) fields.getValue(this));
 
-        Queries.addStartNodes(query, nodes.getString(this));
+        Queries.addStartNodes(query.query, nodes.getString(this));
         pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
         return EVAL_BODY;
     }

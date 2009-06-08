@@ -34,7 +34,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
     private static final Logger log = Logging.getLoggerInstance(ListNodesContainerTag.class);
     // nodereferrer because RelatedNodesContainer extension
 
-    protected NodeQuery   query       = null;
+    protected QueryWrapper<NodeQuery>   query       = null;
     protected Object      prevQuery   = null;
     protected Attribute cachePolicy  = Attribute.NULL;
     protected Attribute   path        = Attribute.NULL;
@@ -102,14 +102,18 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
     }
 
     public NodeQuery getNodeQuery() {
-        if (query.isUsed()) query = (NodeQuery) query.clone();
-        return query;
+        if (query.query.isUsed()) {
+            query.cloneQuery();
+        }
+        return query.query;
     }
 
     // overridden from CloudReferrer.
     public Cloud getCloudVar() throws JspTagException {
-        if (query == null) return super.getCloudVar(); // I think that this does not happen.
-        return query.getCloud();
+        if (query == null) {
+            return super.getCloudVar(); // I think that this does not happen.
+        }
+        return query.query.getCloud();
     }
 
     /**
@@ -123,13 +127,15 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
             return (NodeQuery) o;
         } else if (o instanceof SearchQuery) {
             SearchQuery q = (SearchQuery) o;
-            if (q.getSteps().size() != 1) throw new IllegalStateException("The object " + q + " has not precisely one step and can therefore not be converted to a NodeQuery");
-            NodeQuery query = getCloudVar().getNodeManager(q.getSteps().get(0).getTableName()).createQuery();
-            query.setConstraint(Queries.copyConstraint(q.getConstraint(), q.getSteps().get(0), query, query.getNodeStep()));
-            query.setOffset(q.getOffset());
-            query.setMaxNumber(q.getMaxNumber());
-            query.setDistinct(q.isDistinct());
-            return query;
+            if (q.getSteps().size() != 1) {
+                throw new IllegalStateException("The object " + q + " has not precisely one step and can therefore not be converted to a NodeQuery");
+            }
+            NodeQuery nq = getCloudVar().getNodeManager(q.getSteps().get(0).getTableName()).createQuery();
+            nq.setConstraint(Queries.copyConstraint(nq.getConstraint(), nq.getSteps().get(0), nq, nq.getNodeStep()));
+            nq.setOffset(q.getOffset());
+            nq.setMaxNumber(q.getMaxNumber());
+            nq.setDistinct(q.isDistinct());
+            return nq;
         } else {
             // will give CCE.
             return (NodeQuery) o;
@@ -141,14 +147,14 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
-            query = toNodeQuery(getContextProvider().getContextContainer().getObject(cloneId));
+            query = new QueryWrapper<NodeQuery>(toNodeQuery(getContextProvider().getContextContainer().getObject(cloneId)));
             if (query == null) {
                 throw new JspTagException("No query found with id '" + cloneId + "' in " + getContextProvider().getContextContainer());
             }
-            query = (NodeQuery) query.clone();
+            query.query = (NodeQuery) query.query.clone();
         } else if (getReferid() != null) {
             Object o = getContextProvider().getContextContainer().getObject(getReferid());
-            query = toNodeQuery(o);
+            query = new QueryWrapper<NodeQuery>(toNodeQuery(o));
 
             if (query == null) {
                 throw new JspTagException("No query found in referred id " + getReferid());
@@ -158,34 +164,34 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
             }
         } else {
             if (nodeManager != Attribute.NULL) {
-                query = super.getCloudVar().getNodeManager(nodeManager.getString(this)).createQuery();
+                query = new QueryWrapper<NodeQuery>(super.getCloudVar().getNodeManager(nodeManager.getString(this)).createQuery());
                 if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
                 if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
             } else {
                 if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
 
-                query = super.getCloudVar().createNodeQuery();
-                Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+                query = new QueryWrapper<NodeQuery>(super.getCloudVar().createNodeQuery());
+                Queries.addPath(query.query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
                 if (element != Attribute.NULL) {
                     String alias = element.getString(this);
-                    Step nodeStep = query.getStep(alias);
+                    Step nodeStep = query.query.getStep(alias);
                     if (nodeStep == null) {
                         throw new JspTagException("Could not set element to '" + alias + "' (no such step)");
                     }
-                    query.setNodeStep(nodeStep);
+                    query.query.setNodeStep(nodeStep);
                 } else {
                     // default to first step
-                    query.setNodeStep(query.getSteps().get(0));
+                    query.query.setNodeStep(query.query.getSteps().get(0));
                 }
             }
         }
         if (cachePolicy != Attribute.NULL) {
-            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+            query.query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
         }
 
         if (nodes != Attribute.NULL) {
-            Queries.addStartNodes(query, nodes.getString(this));
+            Queries.addStartNodes(query.query, nodes.getString(this));
         }
 
         if (getId() != null) { // write to context.
@@ -215,7 +221,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         pageContext.setAttribute(KEY, prevQuery, SCOPE);
         prevQuery = null;
         if (markused.getBoolean(this, false)) {
-            query.markUsed();
+            query.query.markUsed();
         }
         query = null;
         return super.doEndTag();
