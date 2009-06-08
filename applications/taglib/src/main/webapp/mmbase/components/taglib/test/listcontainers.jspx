@@ -53,6 +53,21 @@
     </c:catch>
     Should say that -1 is not a node: ${ex3}
     </p>
-
   </mm:cloud>
+  <h4><a href="http://www.mmbase.org/jira/browse/MMB-1830">MMB-1830. Reusing mm:listcontainer</a></h4>
+  <mm:listcontainer path="object">
+    <mm:maxnumber value="4" />
+    <p>
+      <mm:list>
+        <mm:field name="object.number" /><mm:last inverse="true">,</mm:last>
+      </mm:list>
+    </p>
+    <mm:offset value="4" />
+    <p>
+      <mm:list>
+        <mm:field name="object.number" /><mm:last inverse="true">,</mm:last>
+      </mm:list>
+    </p>
+  </mm:listcontainer>
+  <p>Should give 2 different lists of numbers</p>
 </div>
