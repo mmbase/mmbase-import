@@ -147,7 +147,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
-            query = new QueryWrapper<NodeQuery>(toNodeQuery(getContextProvider().getContextContainer().getObject(cloneId)));
+            query = new QueryWrapper<NodeQuery>(toNodeQuery( ((QueryWrapper) getContextProvider().getContextContainer().getObject(cloneId)).query));
             if (query == null) {
                 throw new JspTagException("No query found with id '" + cloneId + "' in " + getContextProvider().getContextContainer());
             }
@@ -198,7 +198,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
             getContextProvider().getContextContainer().register(getId(), query);
         }
         if (jspVar != null) {
-            pageContext.setAttribute(jspVar, query);
+            pageContext.setAttribute(jspVar, query.query);
         }
         pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
 

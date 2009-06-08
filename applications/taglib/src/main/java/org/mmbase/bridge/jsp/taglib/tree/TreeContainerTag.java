@@ -136,7 +136,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, tree);
         }
-        pageContext.setAttribute(QueryContainer.KEY, getNodeQuery(), QueryContainer.SCOPE);
+        pageContext.setAttribute(QueryContainer.KEY, new QueryWrapper<NodeQuery>(getNodeQuery()), QueryContainer.SCOPE);
         return EVAL_BODY;
     }
     @Override
