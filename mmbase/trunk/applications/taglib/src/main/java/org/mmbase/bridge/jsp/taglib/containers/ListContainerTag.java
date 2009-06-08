@@ -90,7 +90,7 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
     public int doStartTag() throws JspTagException {
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
-            query = new QueryWrapper<Query>((Query) getContextProvider().getContextContainer().getObject(getReferid()));
+            query = (QueryWrapper<Query>) getContextProvider().getContextContainer().getObject(getReferid());
         } else {
             if (path == Attribute.NULL) {
                 throw new JspTagException("Path attribute is mandatory");
@@ -103,7 +103,7 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
             getContextProvider().getContextContainer().register(getId(), query);
         }
         if (jspVar != null) {
-            pageContext.setAttribute(jspVar, query);
+            pageContext.setAttribute(jspVar, query.query);
         }
 
         if (cachePolicy != Attribute.NULL) {
