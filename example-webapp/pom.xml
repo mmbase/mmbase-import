@@ -103,18 +103,4 @@
       <version>1.8.0.7</version>
     </dependency>
   </dependencies>
-  <profiles>
-    <profile>
-      <id>servlet25</id>
-      <activation>
-        <property>
-          <name>servlet.version</name>
-          <value>2.5</value>
-        </property>
-      </activation>
-      <properties>
-        <base.version>${mmbase.version}-servlet25</base.version>
-      </properties>
-    </profile>
-  </profiles>
 </project>
