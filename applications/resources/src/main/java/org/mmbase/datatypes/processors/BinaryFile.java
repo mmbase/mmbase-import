@@ -92,6 +92,7 @@ public class BinaryFile {
                     log.debug("" + value + " -> " + is + " -> " + f + " " + Logging.applicationStacktrace());
                 }
                 is.moveTo(f);
+                log.debug("Set a file " + f.getName());
                 return f.getName();
             } else {
                 log.debug("No name given, ignoring this processor (not an upload)");
@@ -119,14 +120,18 @@ public class BinaryFile {
         public Object process(final Node node, final Field field, final Object value) {
             if (value == null) return null;
             String fileName = (String) value;
+            log.debug("String processing " + fileName);
             if (fileName.startsWith("-") && node.getNumber() > 0) {
                 String[] parts = fileName.split("\\.", 2);
                 File file = new File(getDirectory(), fileName);
                 File to = getFile(node, field, parts[1]);
                 to.getParentFile().mkdirs();
+                log.debug("Fixing file");
                 file.renameTo(to);
                 fileName = to.getName();
-                node.setStringValue(field.getName(), fileName);
+                log.debug("Setting file name to " + fileName);
+                node.setValueWithoutProcess(field.getName(), fileName);
+                log.debug("Canched " + node.getChanged() + " " + node.getCloud());
                 node.commit();
             }
 
