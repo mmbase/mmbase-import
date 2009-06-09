@@ -15,6 +15,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.QueryWrapper;
 import org.mmbase.cache.CachePolicy;
 
 /**
@@ -28,7 +29,7 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
 
     private static final long serialVersionUID = 0L;
 
-    private QueryWrapper<Query>  query        = null;
+    private QueryWrapper  query        = null;
     protected Object prevQuery   = null;
     private Attribute cachePolicy  = Attribute.NULL;
     private Attribute path       = Attribute.NULL;
@@ -70,10 +71,10 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
 
 
     public Query getQuery() {
-        if (query.query.isUsed()) {
-            query.query = query.query.clone();
+        if (query.isUsed()) {
+            query.cloneQuery();
         }
-        return query.query;
+        return query.getQuery();
     }
 
     // overridden from CloudReferrer
@@ -82,7 +83,7 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
         if (query == null) {
             return super.getCloudVar(); // I think that this does not happen.
         }
-        return query.query.getCloud();
+        return query.getCloud();
     }
 
 
@@ -90,31 +91,31 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
     public int doStartTag() throws JspTagException {
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         if (getReferid() != null) {
-            query = (QueryWrapper<Query>) getContextProvider().getContextContainer().getObject(getReferid());
+            query = (QueryWrapper) getContextProvider().getContextContainer().getObject(getReferid());
         } else {
             if (path == Attribute.NULL) {
                 throw new JspTagException("Path attribute is mandatory");
             }
             Cloud cloud = getCloudVar();
-            query = new QueryWrapper<Query>(cloud.createQuery());
+            query = new QueryWrapper(cloud.createQuery());
         }
 
         if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), query);
         }
         if (jspVar != null) {
-            pageContext.setAttribute(jspVar, query.query);
+            pageContext.setAttribute(jspVar, query);
         }
 
         if (cachePolicy != Attribute.NULL) {
-            query.query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
         }
 
-        Queries.addPath(query.query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+        Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
-        Queries.addFields(query.query, (String) fields.getValue(this));
+        Queries.addFields(query, (String) fields.getValue(this));
 
-        Queries.addStartNodes(query.query, nodes.getString(this));
+        Queries.addStartNodes(query, nodes.getString(this));
         pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
         return EVAL_BODY;
     }

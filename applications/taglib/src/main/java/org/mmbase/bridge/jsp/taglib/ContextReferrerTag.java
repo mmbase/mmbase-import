@@ -17,10 +17,10 @@ import javax.servlet.jsp.jstl.core.*;
 import java.io.*;
 
 import org.mmbase.bridge.Query;
+import org.mmbase.bridge.util.AbstractQueryWrapper;
 import org.mmbase.bridge.jsp.taglib.edit.FormTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.containers.QueryContainer;
-import org.mmbase.bridge.jsp.taglib.containers.QueryWrapper;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 import org.mmbase.framework.*;
@@ -823,17 +823,24 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     final protected Query getQuery(Attribute container) throws JspTagException {
         Query query;
         if (container == null || container == Attribute.NULL) {
-            QueryWrapper<? extends Query> qcont = (QueryWrapper<? extends Query>) pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
+            Query qcont = (Query) pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
             if (qcont == null) {
                 throw new JspTagException("No query found (" + QueryContainer.KEY + ")");
             }
-            if (qcont.query.isUsed()) {
-                log.debug("Found used query, cloning now");
-                qcont.cloneQuery();
-                assert ! qcont.query.isUsed();
+            if (qcont.isUsed()) {
+                if (qcont instanceof AbstractQueryWrapper) {
+                    log.debug("Found used query, cloning now");
+                    ((AbstractQueryWrapper) qcont).cloneQuery();
+                    assert ! qcont.isUsed();
+
+                } else {
+                    throw new IllegalStateException("Not a query wrapper " + qcont);
+                }
             }
-            log.debug("Found query " + qcont.query);
-            query = qcont.query;
+            if (log.isDebugEnabled()) {
+                log.debug("Found query " + qcont);
+            }
+            query = qcont;
         } else {
             QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
             query = c.getQuery();
