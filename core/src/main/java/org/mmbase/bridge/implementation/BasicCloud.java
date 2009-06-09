@@ -12,8 +12,7 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.BridgeCollections;
-import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
@@ -708,7 +707,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         boolean secure = true;
         if (c instanceof FieldValueInQueryConstraint) {
             SearchQuery q = ((FieldValueInQueryConstraint) c).getInQuery();
-            if (q instanceof BasicQuery) {
+            if (q instanceof Query) {
                 if (! setSecurityConstraint((Query) q)) secure= false;
             } else {
                 log.warn("Don't know how to set a security constraint on a " + q.getClass().getName());
@@ -723,14 +722,28 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     /**
+     * @since MMBase-1.9.2
+     */
+    protected BasicQuery toBasicQuery(Query query) {
+        while (query instanceof AbstractQueryWrapper) {
+            query = ((AbstractQueryWrapper) query).getQuery();
+        }
+        if (query instanceof BasicQuery) {
+            return (BasicQuery) query;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * @param query add security constaint to this query
      * @return is query secure
      * @since MMBase-1.7
      */
     boolean setSecurityConstraint(Query query) {
         Authorization auth = BasicCloudContext.mmb.getMMBaseCop().getAuthorization();
-        if (query instanceof BasicQuery) {  // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
-            BasicQuery bquery = (BasicQuery) query;
+        BasicQuery bquery = toBasicQuery(query);
+        if (bquery != null ) {  // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
             if (bquery.isSecure()) { // already set, and secure
                 return true;
             } else {
