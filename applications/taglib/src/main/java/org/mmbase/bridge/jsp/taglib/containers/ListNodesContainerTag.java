@@ -13,7 +13,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.cache.CachePolicy;
@@ -34,7 +34,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
     private static final Logger log = Logging.getLoggerInstance(ListNodesContainerTag.class);
     // nodereferrer because RelatedNodesContainer extension
 
-    protected QueryWrapper<NodeQuery>   query       = null;
+    protected NodeQueryWrapper   query       = null;
     protected Object      prevQuery   = null;
     protected Attribute cachePolicy  = Attribute.NULL;
     protected Attribute   path        = Attribute.NULL;
@@ -102,10 +102,10 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
     }
 
     public NodeQuery getNodeQuery() {
-        if (query.query.isUsed()) {
+        if (query.isUsed()) {
             query.cloneQuery();
         }
-        return query.query;
+        return query;
     }
 
     // overridden from CloudReferrer.
@@ -113,7 +113,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         if (query == null) {
             return super.getCloudVar(); // I think that this does not happen.
         }
-        return query.query.getCloud();
+        return query.getCloud();
     }
 
     /**
@@ -147,14 +147,14 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
-            query = new QueryWrapper<NodeQuery>(toNodeQuery( ((QueryWrapper) getContextProvider().getContextContainer().getObject(cloneId)).query));
+            query = new NodeQueryWrapper(toNodeQuery(((AbstractQueryWrapper) getContextProvider().getContextContainer().getObject(cloneId))));
             if (query == null) {
                 throw new JspTagException("No query found with id '" + cloneId + "' in " + getContextProvider().getContextContainer());
             }
-            query.query = (NodeQuery) query.query.clone();
+            query.cloneQuery();
         } else if (getReferid() != null) {
             Object o = getContextProvider().getContextContainer().getObject(getReferid());
-            query = new QueryWrapper<NodeQuery>(toNodeQuery(o));
+            query = new NodeQueryWrapper(toNodeQuery(o));
 
             if (query == null) {
                 throw new JspTagException("No query found in referred id " + getReferid());
@@ -164,41 +164,41 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
             }
         } else {
             if (nodeManager != Attribute.NULL) {
-                query = new QueryWrapper<NodeQuery>(super.getCloudVar().getNodeManager(nodeManager.getString(this)).createQuery());
+                query = new NodeQueryWrapper(super.getCloudVar().getNodeManager(nodeManager.getString(this)).createQuery());
                 if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
                 if (element != Attribute.NULL) throw new JspTagException("'element' can only be used in combination with 'path' attribute");
             } else {
                 if (path == Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodescontainer");
 
-                query = new QueryWrapper<NodeQuery>(super.getCloudVar().createNodeQuery());
-                Queries.addPath(query.query, (String) path.getValue(this), (String) searchDirs.getValue(this));
+                query = new NodeQueryWrapper(super.getCloudVar().createNodeQuery());
+                Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
 
                 if (element != Attribute.NULL) {
                     String alias = element.getString(this);
-                    Step nodeStep = query.query.getStep(alias);
+                    Step nodeStep = query.getStep(alias);
                     if (nodeStep == null) {
                         throw new JspTagException("Could not set element to '" + alias + "' (no such step)");
                     }
-                    query.query.setNodeStep(nodeStep);
+                    query.setNodeStep(nodeStep);
                 } else {
                     // default to first step
-                    query.query.setNodeStep(query.query.getSteps().get(0));
+                    query.setNodeStep(query.getSteps().get(0));
                 }
             }
         }
         if (cachePolicy != Attribute.NULL) {
-            query.query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+            query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
         }
 
         if (nodes != Attribute.NULL) {
-            Queries.addStartNodes(query.query, nodes.getString(this));
+            Queries.addStartNodes(query, nodes.getString(this));
         }
 
         if (getId() != null) { // write to context.
             getContextProvider().getContextContainer().register(getId(), query);
         }
         if (jspVar != null) {
-            pageContext.setAttribute(jspVar, query.query);
+            pageContext.setAttribute(jspVar, query);
         }
         pageContext.setAttribute(QueryContainer.KEY, query, QueryContainer.SCOPE);
 
@@ -221,7 +221,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         pageContext.setAttribute(KEY, prevQuery, SCOPE);
         prevQuery = null;
         if (markused.getBoolean(this, false)) {
-            query.query.markUsed();
+            query.markUsed();
         }
         query = null;
         return super.doEndTag();
