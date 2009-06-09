@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge;
 
+import org.mmbase.util.logging.*;
+
 /**
  * Main class to aquire CloudContexts
  * @author Kees Jongenburger
@@ -16,6 +18,7 @@ package org.mmbase.bridge;
  * @since MMBase-1.5
  */
 public class ContextProvider {
+    private static final Logger log = Logging.getLoggerInstance(ContextProvider.class);
    /**
     * When no system property mmbase.defaultcloudcontext is set
     * the default cloud context is the context returned when 
@@ -60,7 +63,11 @@ public class ContextProvider {
      public static String getDefaultCloudContextName() {
          //first choice.. set the cloud context using system properties
          if (defaultCloudContextName == null) {
-             defaultCloudContextName = System.getProperty("mmbase.defaultcloudcontext");
+             try {
+                 defaultCloudContextName = System.getProperty("mmbase.defaultcloudcontext");
+             } catch (SecurityException se) {
+                 log.info(se);
+             }
          }
          if (defaultCloudContextName == null) {
              defaultCloudContextName = DEFAULT_CLOUD_CONTEXT_NAME;
@@ -74,9 +81,13 @@ public class ContextProvider {
      *         Otherwise a default rmmci cloud, or specified with mmbase.defaultcloudtext.property
      **/
     public static CloudContext getDefaultCloudContext() {
-        String uri = System.getProperty("mmbase.defaultcloudcontext");
-        if (uri != null) {
-            return getCloudContext(uri);
+        try {
+            String uri = System.getProperty("mmbase.defaultcloudcontext");
+            if (uri != null) {
+                return getCloudContext(uri);
+            }
+        } catch (SecurityException se) {
+            log.debug(se);
         }
 
         try {        
