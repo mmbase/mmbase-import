@@ -29,6 +29,7 @@ See http://www.MMBase.org/license
   <artifactId>mmbase</artifactId>
   <packaging>war</packaging>
   <name>MMBase Core</name>
+  <version>${mmbase.version}</version>
 
   <build>
     <plugins>

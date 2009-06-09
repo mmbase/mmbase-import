@@ -7,9 +7,9 @@
     <groupId>org.mmbase.maven</groupId>
     <artifactId>mmbase-maven</artifactId>
     <version>1.9-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <groupId>org.mmbase.maven</groupId>
   <artifactId>assembly-descriptors</artifactId>
   <packaging>jar</packaging>
   <name>MMBase Assembly Descriptors</name>

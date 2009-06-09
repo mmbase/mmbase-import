@@ -14,6 +14,10 @@
   <packaging>pom</packaging>
   <name>MMBase Maven Parent</name>
 
+  <properties>
+    <maven.mmbase.version>${mmbase.version}</maven.mmbase.version>
+  </properties>
+
   <modules>
     <module>codestandards</module>
     <module>assembly-descriptors</module>
