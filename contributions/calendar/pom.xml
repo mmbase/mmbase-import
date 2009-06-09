@@ -31,6 +31,13 @@ then:
 Michiel Meeuwissen, July 2006</description>
 
 
+<dependencies>
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>4.0.1</version>
+    </dependency>
+</dependencies>
 
 <repositories>
   <repository>
