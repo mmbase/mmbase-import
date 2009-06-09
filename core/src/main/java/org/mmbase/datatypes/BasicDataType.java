@@ -337,7 +337,12 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             return node.getCloud();
         }
         if (field != null) {
-            return field.getNodeManager().getCloud();
+            try {
+                return field.getNodeManager().getCloud();
+            } catch (UnsupportedOperationException uoe) {
+                log.debug(uoe.getMessage());
+                // Corefield does not support getNodeManager
+            }
         }
         return null;
     }
