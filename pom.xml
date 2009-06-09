@@ -18,6 +18,15 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 
   <packaging>pom</packaging>
 
+  <properties>
+    <compiler.fork>false</compiler.fork>
+
+    <mmbase.number>1.9</mmbase.number>
+    <mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
+    <mmbase.version>${mmbase.number}${mmbase.version.postfix}</mmbase.version>
+    <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
+  </properties>
+
   <description>
     MMBase is a Web Content Management System with strong multi media features. MMBase has a large
     installed base in The Netherlands, and is used by major Dutch broadcasters, publishers,
@@ -65,9 +74,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     <maven>2.0.9</maven>
   </prerequisites>
 
-  <properties>
-    <compiler.fork>false</compiler.fork>
-  </properties>
 
   <mailingLists>
     <mailingList>
@@ -236,6 +242,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     <module>maven-base</module>
     <module>core</module>
     <module>applications</module>
+    <module>contributions</module>
     <module>base-webapp</module>
     <module>example-webapp</module>
   </modules>
@@ -291,5 +298,37 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
+
+  <profiles>
+    <profile>
+      <id>privaterelease</id>
+      <!--
+          This profile makes it possible to build a release with a different version number.
+          This is valid for all (sub) modules which would otherwise use '${mmbase.version}'.
+      -->
+      <activation>
+        <property>
+          <name>my.version</name>
+        </property>
+      </activation>
+
+      <properties>
+        <mmbase.version>1.9-${my.version}</mmbase.version>
+      </properties>
+      <distributionManagement>
+        <repository>
+          <id>${my.repository.id}</id>
+          <name>Corporate repository</name>
+          <url>${my.repository.url}</url>
+        </repository>
+        <snapshotRepository>
+          <id>${my.repository.id}</id>
+          <name>Corporate snapshot repository</name>
+          <url>${my.repository.url}</url>
+          <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+      </distributionManagement>
+    </profile>
+  </profiles>
 
 </project>

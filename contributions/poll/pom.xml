@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <project>
-  
+
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-application-parent</artifactId>
-    <version>1.9</version>
+    <version>1.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>mmbase-poll</artifactId>
-  <name>Poll</name>
+  <name>MMBase Poll</name>
   <version>${mmbase.version}</version>
   <packaging>war</packaging>
   <description>A MMBase poll application</description>
-  
+
   <repositories>
     <repository>
       <id>mmbase</id>

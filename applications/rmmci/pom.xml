@@ -19,12 +19,13 @@
       <plugin>
         <groupId>org.mmbase.maven</groupId>
         <artifactId>maven-mmbase-plugin</artifactId>
-        <version>1.9-SNAPSHOT</version> <!-- cannot be mmbase.version, because that would give circular dependency -->
+        <version>${mmbase.version}</version>
         <dependencies>
           <dependency>
             <groupId>org.mmbase</groupId>
             <artifactId>mmbase</artifactId>
             <version>${mmbase.version}</version>
+            <classifier>classes</classifier>
           </dependency>
           <dependency>
             <groupId>javax.servlet</groupId>

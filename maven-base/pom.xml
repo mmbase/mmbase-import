@@ -14,7 +14,7 @@ See http://www.MMBase.org/license
 	<parent>
 		<groupId>org.mmbase</groupId>
 		<artifactId>mmbase-cms</artifactId>
-		<version>1.9-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
 	</parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -24,12 +24,6 @@ See http://www.MMBase.org/license
   <name>MMBase</name>
 
   <properties>
-    <compiler.fork>false</compiler.fork>
-
-    <mmbase.number>1.9</mmbase.number>
-    <mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
-    <mmbase.version>${mmbase.number}${mmbase.version.postfix}</mmbase.version>
-    <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
 
     <servlet.version>2.4</servlet.version>
     <jsp.version>2.0</jsp.version>
@@ -733,35 +727,7 @@ See http://www.MMBase.org/license
         </plugins>
       </build>
     </profile>
-    <profile>
-      <id>privaterelease</id>
-      <!--
-          This profile makes it possible to build a release with a different version number.
-          This is valid for all (sub) modules which would otherwise use '${mmbase.version}'.
-      -->
-      <activation>
-        <property>
-          <name>my.version</name>
-        </property>
-      </activation>
 
-      <properties>
-        <mmbase.version>1.9-${my.version}</mmbase.version>
-      </properties>
-      <distributionManagement>
-        <repository>
-          <id>${my.repository.id}</id>
-          <name>Corporate repository</name>
-          <url>${my.repository.url}</url>
-        </repository>
-        <snapshotRepository>
-          <id>${my.repository.id}</id>
-          <name>Corporate snapshot repository</name>
-          <url>${my.repository.url}</url>
-          <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-      </distributionManagement>
-    </profile>
 
     <profile>
       <id>servlet24</id>
