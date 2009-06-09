@@ -122,7 +122,6 @@ See http://www.MMBase.org/license
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-      <version>${jstl.version}</version>
     </dependency>
 
     <!--
@@ -170,36 +169,6 @@ See http://www.MMBase.org/license
       </plugin>
     </plugins>
   </reporting>
-
-  <profiles>
-    <profile>
-      <id>servlet24</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>taglibs</groupId>
-          <artifactId>standard</artifactId>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>servlet25</id>
-      <activation>
-        <property>
-          <name>servlet.version</name>
-          <value>2.5</value>
-        </property>
-      </activation>
-      <properties>
-        <base.version>${mmbase.number}-servlet25${mmbase.version.postfix}</base.version>
-        <jsp.version>2.1</jsp.version>
-        <jsp.groupId>javax.servlet.jsp</jsp.groupId>
-        <jstl.version>1.2</jstl.version>
-      </properties>
-    </profile>
-  </profiles>
 
   <!--
        If your local repository is still empty, and still want to start with this pom
