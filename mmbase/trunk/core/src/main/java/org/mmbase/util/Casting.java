@@ -676,7 +676,7 @@ public class Casting {
             res = (Node)i;
         } else if (i instanceof Number) {
             int nodenumber = ((Number)i).intValue();
-            if (nodenumber != -1) {
+            if (nodenumber != -1 && cloud.hasNode(nodenumber)) {
                 res = cloud.getNode(nodenumber);
             }
         } else if (i instanceof Map<?, ?>) {
