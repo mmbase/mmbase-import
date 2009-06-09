@@ -337,14 +337,24 @@ public class ResourceLoader extends ClassLoader {
                 log.debug("found the mmbase config path parameter using the mmbase.config servlet context parameter");
             }
             if (configPath == null) {
-                configPath = System.getProperty("mmbase.config");
+                try {
+                    configPath = System.getProperty("mmbase.config");
+                } catch (SecurityException se) {
+                    log.info(se.getMessage());
+                }
                 if (configPath != null) {
                     log.debug("found the mmbase.config path parameter using the mmbase.config system property");
                 }
-            } else if (System.getProperty("mmbase.config") != null){
-                //if the configPath at this point was not null and the mmbase.config system property is defined
-                //this deserves a warning message since the setting is masked
-                log.warn("mmbase.config system property is masked by mmbase.config servlet context parameter");
+            } else {
+                try {
+                    if (System.getProperty("mmbase.config") != null){
+                        //if the configPath at this point was not null and the mmbase.config system property is defined
+                        //this deserves a warning message since the setting is masked
+                        log.warn("mmbase.config system property is masked by mmbase.config servlet context parameter");
+                    }
+                } catch (SecurityException se) {
+                    log.debug(se.getMessage());
+                }
             }
 
 
@@ -403,7 +413,11 @@ public class ResourceLoader extends ClassLoader {
     public static synchronized ResourceLoader getSystemRoot() {
         if (systemRoot == null) {
             systemRoot = new ResourceLoader();
-            systemRoot.roots.add(systemRoot.new FileURLStreamHandler(new File(System.getProperty("user.dir")), true));
+            try {
+                systemRoot.roots.add(systemRoot.new FileURLStreamHandler(new File(System.getProperty("user.dir")), true));
+            } catch (SecurityException se) {
+                log.service(se.getMessage());
+            }
             File[] roots = File.listRoots();
             for (File element : roots) {
                 systemRoot.roots.add(systemRoot.new FileURLStreamHandler(element, true));
@@ -429,7 +443,11 @@ public class ResourceLoader extends ClassLoader {
             }
 
             if (htmlRoot == null) {
-                htmlRoot = System.getProperty("mmbase.htmlroot");
+                try {
+                    htmlRoot = System.getProperty("mmbase.htmlroot");
+                } catch (SecurityException se) {
+                    log.service(se);
+                }
             }
             if (htmlRoot != null) {
                 webRoot.roots.add(webRoot.new FileURLStreamHandler(new File(htmlRoot), true));
@@ -2275,6 +2293,7 @@ public class ResourceLoader extends ClassLoader {
         } else {
             resourceLoader = getSystemRoot();
         }
+
         try {
             if (argv.length == 0) {
                 System.err.println("useage: java [-Dmmbase.config=<config dir>|-Dmmbase.htmlroot=<some other dir>] " + ResourceLoader.class.getName() + " [<sub directory>] [<resource-name>|*|**]");
