@@ -69,9 +69,9 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         String node      = nodeAttribute.getString(thisTag);
         if ("".equals(container) && "".equals(node)) {
             log.debug("no node attribute, no container attribute, trying container first");
-            QueryWrapper q = (QueryWrapper) thisTag.getPageContext().getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
-            if (q != null && (q.query instanceof NodeQuery)) {
-                nq = (NodeQuery) q.query;
+            AbstractQueryWrapper q = (AbstractQueryWrapper) thisTag.getPageContext().getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
+            if (q != null && (q instanceof NodeQueryWrapper)) {
+                nq = (NodeQuery) q.getQuery();
             }
 
             if (nq == null) {
@@ -110,33 +110,33 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         // first of all, we need a 'start' query, take it from a surrounding 'nodequery container'
 
-        query = new QueryWrapper<NodeQuery>(getStartQuery(this, container, parentNodeId));
+        query = new NodeQueryWrapper(getStartQuery(this, container, parentNodeId));
 
 
         if (nodeManager != Attribute.NULL) {
-            tree = new GrowingTreeList(query.query,
+            tree = new GrowingTreeList(query,
                                        maxDepth.getInt(this, 5),
-                                       query.query.getCloud().getNodeManager(nodeManager.getString(this)),
+                                       query.getCloud().getNodeManager(nodeManager.getString(this)),
                                        role.getString(this),
                                        searchDirs.getString(this));
 
             if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on treecontainer");
         } else {
-            tree = new GrowingTreeList(query.query, maxDepth.getInt(this, 5));
+            tree = new GrowingTreeList(query, maxDepth.getInt(this, 5));
             if (path != Attribute.NULL) {
                 Queries.addPath(tree.getTemplate(), (String) path.getValue(this), (String) searchDirs.getValue(this));
 
                 // I'm not entirely sure why the following is necessary at all:
                 Step step = tree.getTemplate().getSteps().get(2);
-                if (query.query.getSteps().contains(step)) {
-                    query.query.setNodeStep(step);
+                if (query.getSteps().contains(step)) {
+                    query.setNodeStep(step);
                 }
             }
         }
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, tree);
         }
-        pageContext.setAttribute(QueryContainer.KEY, new QueryWrapper<NodeQuery>(getNodeQuery()), QueryContainer.SCOPE);
+        pageContext.setAttribute(QueryContainer.KEY, new NodeQueryWrapper(getNodeQuery()), QueryContainer.SCOPE);
         return EVAL_BODY;
     }
     @Override
