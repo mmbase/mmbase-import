@@ -28,7 +28,7 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
-      <version>${mmbase.version}</version>
+      <version>${base.version}</version>
       <type>war</type>
     </dependency>
 
