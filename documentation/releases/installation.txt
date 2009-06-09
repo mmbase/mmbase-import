@@ -98,11 +98,23 @@ server.policy configuration file. Add:
 
 // permissions needed for MMBase
 grant {
+	// org.mmbase.util.ResourceLoader is a ClassLoader
         permission java.lang.RuntimePermission  "createClassLoader";
-        permission java.lang.RuntimePermission  "createSecurityManager";
-        permission java.lang.RuntimePermission  "setIO";
+	// org.mmbase.util.ResourceLoader specified stream handlers
         permission java.net.NetPermission       "specifyStreamHandler";
+
+	// org.mmbase.security.MMBaseCop is a SecurityManager
+        permission java.lang.RuntimePermission  "createSecurityManager";
+
+
+	// for RMMCI
         permission java.util.PropertyPermission "java.rmi.server.hostname", "write";
+
+	// for documentation rendering in the admin pages:
+        permission java.io.FilePermission "${catalina.base}${file.separator}work${file.separator}-", "read,write,delete";
+        permission java.net.SocketPermission "scm.mmbase.org:80", "connect";
+        permission java.net.SocketPermission "*.oasis-open.org:80", "connect";
+
 };
 
 You may want to limit this permission to specific applications.
