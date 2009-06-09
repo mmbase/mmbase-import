@@ -499,10 +499,11 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      *         on an non-aggregating query.
      */
     public BasicAggregatedField addAggregatedField(Step step, CoreField field, int aggregationType) {
-        if (! modifiable) throw new IllegalStateException("Unmodifiable");
+        if (! modifiable) {
+            throw new IllegalStateException("Unmodifiable");
+        }
         if (!aggregating) {
-            throw new UnsupportedOperationException(
-            "Adding aggregated field to non-aggregating query.");
+            throw new UnsupportedOperationException("Adding aggregated field to non-aggregating query.");
         }
         BasicAggregatedField stepField = new BasicAggregatedField(step, field, aggregationType);
         fields.add(stepField);
