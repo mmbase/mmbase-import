@@ -23,6 +23,41 @@
     This is a minimalistic war containing the essentials for an MMBase web applications. This can be used as initial war overlay for your own project.
   </description>
 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>make-servlet25-war</id>
+            <phase>package</phase>
+            <goals>
+              <goal>war</goal>
+            </goals>
+            <configuration>
+              <classifier>servlet25</classifier>
+              <packagingExcludes>WEB-INF/lib/jstl-1.1.2.jar,WEB-INF/lib/standard-1.1.2.jar</packagingExcludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>make-war</id>
+            <phase>package</phase>
+            <goals>
+              <goal>war</goal>
+            </goals>
+            <configuration>
+              <packagingExcludes>WEB-INF/lib/jstl-1.2.jar</packagingExcludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <dependency>
@@ -46,41 +81,24 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-      <version>${jstl.version}</version> <!-- needed explicitely (in maven 2.1), because 'servlet25' profile overrides this property -->
+      <version>${jstl.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
       <scope>runtime</scope>
     </dependency>
 
   </dependencies>
   <profiles>
     <profile>
-      <id>servlet24</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>taglibs</groupId>
-          <artifactId>standard</artifactId>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
       <id>deploy</id>
       <build>
         <defaultGoal>deploy</defaultGoal>
       </build>
-    </profile>
-    <profile>
-      <id>servlet25</id>
-      <activation>
-        <property>
-          <name>servlet.version</name>
-          <value>2.5</value>
-        </property>
-      </activation>
-      <properties>
-        <base.version>${mmbase.number}-servlet25${mmbase.version.postfix}</base.version>
-      </properties>
     </profile>
   </profiles>
 </project>
