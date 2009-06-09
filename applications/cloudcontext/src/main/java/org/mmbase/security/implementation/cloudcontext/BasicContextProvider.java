@@ -232,6 +232,7 @@ public  class BasicContextProvider implements ContextProvider {
                     String nameField = getContextNameField(contextBuilder.getTableName());
                     org.mmbase.core.CoreField field = contextBuilder.getField(nameField);
                     Object fieldValue = field.getDataType().cast(context, null, field);
+                    if (fieldValue == null) continue;
                     BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(field), fieldValue);
                     query.setConstraint(constraint);
                     if (log.isDebugEnabled()) {
