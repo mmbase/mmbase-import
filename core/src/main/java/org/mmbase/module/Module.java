@@ -260,7 +260,11 @@ public abstract class Module extends DescribedFunctionProvider {
                 // i.e. you could provide a value for the mmbaseroot "machinename" property by specifying:
                 // -Dmmbaseroot.machinename=myname
                 if (value == null) {
-                    value = System.getProperty(getName() + "." + key);
+                    try {
+                        value = System.getProperty(getName() + "." + key);
+                    } catch (SecurityException se) {
+                        log.debug(se);
+                    }
                 }
             }
             return value;
