@@ -83,7 +83,7 @@
         <include name="commons-fileupload*.jar" />
         <include name="mmbase-resources*.jar" />
         <include name="mmbase-richtext*.jar" />
-        <include name="mmbase-${version}.jar" />
+        <include name="mmbase-${version}*.jar" />
       </fileset>
     </path>
     <path id="run.classpath.vpro-wizards">
