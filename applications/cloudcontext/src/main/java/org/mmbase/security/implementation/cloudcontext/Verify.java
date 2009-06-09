@@ -87,6 +87,8 @@ public class Verify extends Authorization {
         if (contextNode == null) {
             log.warn("No context node found for node with id " + nodeId);
             return null;
+        } else {
+            log.debug("Found context node for node with id " + nodeId + " " + contextNode.getNumber());
         }
         return getContextProvider().getContextName(contextNode);
     }
@@ -122,7 +124,12 @@ public class Verify extends Authorization {
      * number could not be found. Otherwise, in that case only log a warning.
      */
     protected MMObjectNode getContextNode(int nodeId, boolean exception) {
-        return getContextProvider().getContextNode(getNode(nodeId, exception));
+        MMObjectNode node = getNode(nodeId, exception);
+        MMObjectNode contextNode = getContextProvider().getContextNode(node);
+        if (log.isDebugEnabled()) {
+            log.debug("Found for " + nodeId + ":" + node.getBuilder().getTableName() + ":" + node.getNumber() + " -> " + contextNode.getBuilder().getTableName() + ":" + contextNode.getNumber());
+        }
+        return contextNode;
     }
 
     /**

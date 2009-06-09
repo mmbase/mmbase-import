@@ -110,9 +110,13 @@ public  class BasicContextProvider implements ContextProvider {
 
     public String getContextName(MMObjectNode contextNode) throws SecurityException {
         if (contextNode == null) {
+            log.debug("No context node given, returning null");
             return null;
         }
-        return contextNode.getStringValue(getContextNameField(contextNode.getBuilder().getTableName()));
+        String builder = contextNode.getBuilder().getTableName();
+        String contextName = contextNode.getStringValue(getContextNameField(builder));
+        log.debug("Getting context name of " + builder + ":" + contextNode.getNumber() + " -> " + contextName);
+        return contextName;
     }
 
     public void setContext(User user, MMObjectNode node, String context) {
@@ -210,6 +214,7 @@ public  class BasicContextProvider implements ContextProvider {
     public  MMObjectNode getContextNode(MMObjectNode node)  {
         if (node == null) return null;
         String s = node.getStringValue("owner");
+        log.debug("Owner of " + node.getNumber() + ":" + s);
         return getContextNode(s);
 
     }
@@ -218,19 +223,30 @@ public  class BasicContextProvider implements ContextProvider {
     public MMObjectNode getContextNode(String context) {
         Cache<String,MMObjectNode> contextCache = Caches.getContextCache();
         MMObjectNode contextNode = contextCache.get(context);
+        log.debug("Getting context node for context " + context);
         if (contextNode == null && ! contextCache.contains(context)) {
             for (NodeSearchQuery query : getContextQueries()) {
                 try {
                     MMObjectBuilder contextBuilder = query.getBuilder();
                     query = (NodeSearchQuery) query.clone();
                     String nameField = getContextNameField(contextBuilder.getTableName());
-                    BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(contextBuilder.getField(nameField)), context);
+                    org.mmbase.core.CoreField field = contextBuilder.getField(nameField);
+                    Object fieldValue = field.getDataType().cast(context, null, field);
+                    BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(field), fieldValue);
                     query.setConstraint(constraint);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Trying " + query + " " + contextBuilder.getTableName() + ":" + nameField + " for " + context);
+                    }
                     Iterator<MMObjectNode> i = contextBuilder.getNodes(query).iterator();
                     if (i.hasNext()) {
                         contextNode = i.next();
+                        if (log.isDebugEnabled()) {
+                            log.debug("Found a hit " + contextNode);
+                        }
                         break;
                     }
+                } catch (IllegalArgumentException ie) {
+                    log.warn("For " + query + " and " + context + " " + ie);
                 } catch (SearchQueryException sqe) {
                     log.error(sqe.toString());
                 } catch (RuntimeException re) {
@@ -247,6 +263,10 @@ public  class BasicContextProvider implements ContextProvider {
                 }
             }
             contextCache.put(context, contextNode);
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("Cache hit " + context + " -> " + contextNode);
+            }
         }
         return contextNode;
 
