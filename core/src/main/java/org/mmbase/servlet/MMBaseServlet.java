@@ -589,7 +589,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
     @Override
     public void destroy() {
-        log.info("Servlet " + getServletName() + " is taken out of service", new Exception());
+        log.info("Servlet " + getServletName() + " is taken out of service");
         if (initThread != null) {
             initThread.interrupt();
         } else {
