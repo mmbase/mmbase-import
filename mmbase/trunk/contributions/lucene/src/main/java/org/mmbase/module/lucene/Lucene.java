@@ -760,7 +760,12 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
                     String readOnlySetting = getInitParameter("readonly");
                     while (readOnlySetting != null && readOnlySetting.startsWith("system:")) {
-                        readOnlySetting = System.getProperty(readOnlySetting.substring(7));
+                        try {
+                            readOnlySetting = System.getProperty(readOnlySetting.substring(7));
+                        } catch (SecurityException se) {
+                            log.info(se);
+                            break;
+                        }
                     }
                     if (readOnlySetting != null) {
                         if (readOnlySetting.startsWith("host:")) {

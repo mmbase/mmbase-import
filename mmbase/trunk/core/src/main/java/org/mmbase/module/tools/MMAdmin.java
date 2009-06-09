@@ -129,10 +129,14 @@ public class MMAdmin extends ProcessorModule {
      * @javadoc
      */
     @Override public void init() {
-        String dtmp = System.getProperty("mmbase.kiosk");
-        if (dtmp != null && dtmp.equals("yes")) {
-            kioskmode = true;
-            log.info("*** Server started in kiosk mode ***");
+        try {
+            String dtmp = System.getProperty("mmbase.kiosk");
+            if (dtmp != null && dtmp.equals("yes")) {
+                kioskmode = true;
+                log.info("*** Server started in kiosk mode ***");
+            }
+        } catch (SecurityException se) {
+            log.debug(se);
         }
         mmb = MMBase.getMMBase();
         org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
