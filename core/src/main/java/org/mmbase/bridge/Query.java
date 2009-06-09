@@ -31,13 +31,6 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
      */
     Cloud getCloud();
 
-    /**
-     * Whether this query is 'aggregating'. You can only use 'addAggregatedField' on aggregating querys.
-     * @return <code>true</code> if the query is aggregating
-     * @todo Should this not appear in SearchQuery itself? Or should there be an AggregatingQuery interface?
-     * It is now used in BasicCloud.getList.
-     */
-    boolean isAggregating();
 
     /**
      * Adds a NodeManager to this Query. This can normally be done only once. After that you need
@@ -149,10 +142,6 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
      */
     Query setDistinct(boolean distinct);
 
-    /**
-     * @see org.mmbase.storage.search.SearchQuery#isDistinct()
-     */
-    boolean isDistinct();
 
     /**
      * Limits the query-result to maxNumber records.
@@ -399,6 +388,6 @@ public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Quer
     String toSql();
 
 
-    public void removeImplicitFields();
+    void removeImplicitFields();
 
 }
