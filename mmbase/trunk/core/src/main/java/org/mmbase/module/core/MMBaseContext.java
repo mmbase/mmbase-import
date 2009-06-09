@@ -44,7 +44,8 @@ public class MMBaseContext {
     /**
      * Initialize MMBase using a <code>ServletContext</code>. This method will
      * check the servlet configuration for context parameters mmbase.outputfile
-     * and mmbase.config. If not found it will look for system properties.
+     * and mmbase.config. If not found it will look for system
+     * properties.
      *
      * @throws ServletException  if mmbase.config is not set or is not a
      *                           directory or doesn't contain the expected
@@ -69,7 +70,11 @@ public class MMBaseContext {
             // default set to the startdir of the appserver
             userDir = sx.getInitParameter("user.dir");
             if (userDir == null) {
-                userDir = System.getProperty("user.dir");
+                try {
+                    userDir = System.getProperty("user.dir");
+                } catch (SecurityException se) {
+                    log.service(se.getMessage());
+                }
             }
             // take into account userdir can start at webrootdir
             if (userDir != null && userDir.indexOf("$WEBROOT") == 0) {
@@ -78,7 +83,11 @@ public class MMBaseContext {
             // Init outputfile.
             String outputFile = sx.getInitParameter("mmbase.outputfile");
             if (outputFile == null) {
-                outputFile = System.getProperty("mmbase.outputfile");
+                try {
+                    outputFile = System.getProperty("mmbase.outputfile");
+                } catch (SecurityException se) {
+                    log.debug(se.getMessage());
+                }
             }
             // take into account configpath can start at webrootdir
             if (outputFile != null && outputFile.indexOf("$WEBROOT") == 0) {
@@ -108,10 +117,18 @@ public class MMBaseContext {
         if (!initialized) {
             log.service("Initializing with " + configPath);
             // Get the current directory using the user.dir property.
-            userDir = System.getProperty("user.dir");
+	    try {
+		userDir = System.getProperty("user.dir");
+	    } catch (SecurityException se) {
+		log.info(se.getMessage());
+	    }
 
             // Init outputfile. // use of mmbase.outputfile  is deprecated!
-            initOutputfile(System.getProperty("mmbase.outputfile"));
+	    try {
+		initOutputfile(System.getProperty("mmbase.outputfile"));
+	    } catch (SecurityException se) {
+		log.info(se.getMessage());
+	    }
 
             // Init logging.
             if (initLogging) {
@@ -192,7 +209,11 @@ public class MMBaseContext {
         log.info("===========================");
         log.info("MMBase logging initialized.");
         log.info("===========================");
-        log.info("java.version       : " +  System.getProperty("java.version"));
+        try {
+            log.info("java.version       : " +  System.getProperty("java.version"));
+        } catch (SecurityException se) {
+            log.info("java.version       : " +  se.getMessage());
+        }
 
         log.info("user.dir          : " + userDir);
         String configPath = ResourceLoader.getConfigurationRoot().toString();
@@ -229,7 +250,11 @@ public class MMBaseContext {
             // Init htmlroot.
             htmlRoot = sx.getInitParameter("mmbase.htmlroot");
             if (htmlRoot == null) {
-                htmlRoot = System.getProperty("mmbase.htmlroot");
+                try {
+                    htmlRoot = System.getProperty("mmbase.htmlroot");
+                } catch (SecurityException se) {
+                    log.debug(se);
+                }
             }
             if (htmlRoot == null) {
                 htmlRoot = sx.getRealPath("");
