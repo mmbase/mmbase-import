@@ -216,43 +216,47 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
                 }
             }
         } else {
-            for (Method m : o.getClass().getMethods()) {
-                String name = m.getName();
-                if (m.getParameterTypes().length == 0 &&
-                    ! name.equals("getNodes")  &&
-                    ! name.equals("getConnection") && // see  	 MMB-1490, we should not call
-                                                      // getConnection, while we won't close it.
-                    name.length() > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3))) {
-                    try {
-                        Class<?> rt = m.getReturnType();
-                        boolean invoked = false;
-                        Object value = null;
-                        if (Casting.isStringRepresentable(rt)) {
-                            if (! Map.class.isAssignableFrom(rt) && ! Collection.class.isAssignableFrom(rt)) {
-                                value = m.invoke(o); invoked = true;
-                                sb.append("<!ENTITY ");
-                                sb.append(prefix);
-                                sb.append('.');
-                                camelAppend(sb, name.substring(3));
-                                sb.append(" \"" + org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"') + "\">\n");
+            try {
+                for (Method m : o.getClass().getMethods()) {
+                    String name = m.getName();
+                    if (m.getParameterTypes().length == 0 &&
+                        ! name.equals("getNodes")  &&
+                        ! name.equals("getConnection") && // see  	 MMB-1490, we should not call
+                        // getConnection, while we won't close it.
+                        name.length() > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3))) {
+                        try {
+                            Class<?> rt = m.getReturnType();
+                            boolean invoked = false;
+                            Object value = null;
+                            if (Casting.isStringRepresentable(rt)) {
+                                if (! Map.class.isAssignableFrom(rt) && ! Collection.class.isAssignableFrom(rt)) {
+                                    value = m.invoke(o); invoked = true;
+                                    sb.append("<!ENTITY ");
+                                    sb.append(prefix);
+                                    sb.append('.');
+                                    camelAppend(sb, name.substring(3));
+                                    sb.append(" \"" + org.mmbase.util.transformers.Xml.XMLAttributeEscape("" + value, '"') + "\">\n");
+                                }
                             }
-                        }
-                        if (! rt.getName().startsWith("java.lang")) {
-                            if (! invoked) value = m.invoke(o);
-                            if (level < 3 && value != null && !os.contains(value)) {
-                                appendEntities(sb, value, prefix + "." + camelAppend(new StringBuilder(), name.substring(3)), level + 1, os);
+                            if (! rt.getName().startsWith("java.lang")) {
+                                if (! invoked) value = m.invoke(o);
+                                if (level < 3 && value != null && !os.contains(value)) {
+                                    appendEntities(sb, value, prefix + "." + camelAppend(new StringBuilder(), name.substring(3)), level + 1, os);
+                                }
                             }
+                        } catch (IllegalAccessException ia) {
+                            log.debug(ia);
+                        } catch (InvocationTargetException ite) {
+                            log.debug(ite);
+                        } catch (AbstractMethodError ame) {
+                            log.debug(ame);
+                        } catch (Exception e) {
+                            log.warn("Error", e);
                         }
-                    } catch (IllegalAccessException ia) {
-                        log.debug(ia);
-                    } catch (InvocationTargetException ite) {
-                        log.debug(ite);
-                    } catch (AbstractMethodError ame) {
-                        log.debug(ame);
-                    } catch (Exception e) {
-                        log.warn("Error", e);
                     }
                 }
+            } catch (SecurityException se) {
+                log.debug(se);
             }
         }
     }
