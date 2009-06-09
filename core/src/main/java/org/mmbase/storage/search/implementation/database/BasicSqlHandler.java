@@ -515,9 +515,8 @@ public class BasicSqlHandler implements SqlHandler {
                 // Combine constraints.
                 sbConstraints.append(" AND ");
                 if (constraint instanceof CompositeConstraint) {
-                    appendCompositeConstraintToSql(
-                    sbConstraints, (CompositeConstraint) constraint,
-                    query, false, true, firstInChain);
+                    appendCompositeConstraintToSql(sbConstraints, (CompositeConstraint) constraint,
+                                                   query, false, true, firstInChain);
                 } else {
                     firstInChain.appendConstraintToSql(
                     sbConstraints, constraint, query,
@@ -1007,10 +1006,9 @@ public class BasicSqlHandler implements SqlHandler {
                 strOperator = " OR ";
             }
         } else {
-            throw new IllegalStateException(
-            "Invalid logical operator: " + compositeConstraint.getLogicalOperator()
-            + ", must be either "
-            + CompositeConstraint.LOGICAL_AND + " or " + CompositeConstraint.LOGICAL_OR);
+            throw new IllegalStateException("Invalid logical operator: " + compositeConstraint.getLogicalOperator()
+                                            + ", must be either "
+                                            + CompositeConstraint.LOGICAL_AND + " or " + CompositeConstraint.LOGICAL_OR);
         }
         List<Constraint> childs = compositeConstraint.getChilds();
 
@@ -1033,8 +1031,9 @@ public class BasicSqlHandler implements SqlHandler {
             Constraint child = iChilds.next();
             if (child instanceof CompositeConstraint) {
                 // Child is composite constraint.
+                boolean childInComposite = inComposite || hasMultipleChilds;
                 appendCompositeConstraintToSql(sb, (CompositeConstraint) child, query,
-                                               overallInverse, hasMultipleChilds, firstInChain);
+                                               overallInverse, childInComposite, firstInChain);
             } else {
                 // Child is non-composite constraint.
                 firstInChain.appendConstraintToSql(sb, child, query, overallInverse, hasMultipleChilds);
