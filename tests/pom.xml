@@ -118,6 +118,7 @@ See http://www.MMBase.org/license
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
+      <classifier>classes</classifier>
     </dependency>
     <dependency>
       <groupId>org.mmbase</groupId>
