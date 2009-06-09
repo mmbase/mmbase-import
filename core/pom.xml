@@ -29,7 +29,12 @@ See http://www.MMBase.org/license
   <artifactId>mmbase</artifactId>
   <packaging>war</packaging>
   <name>MMBase Core</name>
-  <version>${mmbase.version}</version>
+
+  <version>${base.version}</version>
+
+  <properties>
+    <base.version>${mmbase.version}</base.version>
+  </properties>
 
   <build>
     <plugins>
@@ -135,6 +140,7 @@ See http://www.MMBase.org/license
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
+      <version>${jstl.version}</version>
     </dependency>
 
     <!--
@@ -204,6 +210,12 @@ See http://www.MMBase.org/license
           <value>2.5</value>
         </property>
       </activation>
+      <properties>
+        <base.version>${mmbase.number}-servlet25${mmbase.version.postfix}</base.version>
+        <jsp.version>2.1</jsp.version>
+        <jsp.groupId>javax.servlet.jsp</jsp.groupId>
+        <jstl.version>1.2</jstl.version>
+      </properties>
     </profile>
   </profiles>
 
