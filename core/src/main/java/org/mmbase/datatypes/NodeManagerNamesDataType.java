@@ -45,7 +45,7 @@ public class NodeManagerNamesDataType extends StringDataType {
 
     @Override public String getDefaultValue(Locale locale, Cloud cloud, Field field) {
         if (defaultValue != null) {
-            for (String def : defaultValue.split("\\s*,\\s*")) {
+            for (String def : Casting.toString(defaultValue).split("\\s*,\\s*")) {
                 log.debug("Considering " + def);
                 if (cloud.hasNodeManager(def)) return def;
             }
