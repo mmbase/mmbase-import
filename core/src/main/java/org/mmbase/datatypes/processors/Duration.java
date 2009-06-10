@@ -11,7 +11,6 @@ package org.mmbase.datatypes.processors;
 
 import java.util.regex.Pattern;
 
-import org.mmbase.datatypes.processors.Processor;
 import org.mmbase.datatypes.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
@@ -53,6 +52,7 @@ public class Duration {
             Double l =  SetString.getDouble(Casting.toString(preCast)); // this makes it e.g. possible to report that 1e50 is too big for a
             return l;
         }
+        @Override
         protected Object preCast(Object value, Cloud cloud, Node node, Field field) {
             if (value == null) return null;
             try {
@@ -117,6 +117,7 @@ public class Duration {
             return getString(time);
         }
 
+        @Override
         public String toString() {
             return "getDuration";
         }
@@ -161,6 +162,7 @@ public class Duration {
 
         }
 
+        @Override
         public String toString() {
             return "set_duration";
         }

@@ -416,6 +416,13 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         defaultValue = def;
     }
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    public void castAndSetDefaultValue(Object o) {
+        setDefaultValue(cast(o, null, null));
+    }
+
     protected Element getElement(Element parent, String name, String path) {
         return getElement(parent, name, name, path);
     }

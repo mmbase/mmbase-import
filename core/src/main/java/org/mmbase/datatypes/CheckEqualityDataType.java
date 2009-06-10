@@ -11,8 +11,8 @@ package org.mmbase.datatypes;
 
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.util.LocalizedString;
 import org.mmbase.datatypes.processors.Processor;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -57,7 +57,7 @@ public class CheckEqualityDataType extends StringDataType {
     }
 
     @Override
-    protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node node, Field field) {
+    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = fieldRestriction.validate(errors, castValue, node, field);
         return errors;
@@ -88,7 +88,8 @@ public class CheckEqualityDataType extends StringDataType {
         return "confirmfield";
     }
 
-    protected class FieldRestriction extends AbstractRestriction {
+    protected class FieldRestriction extends AbstractRestriction<String> {
+        private static final long serialVersionUID = -8464296460970912369L;
         FieldRestriction(FieldRestriction source) {
             super(source);
         }
@@ -96,7 +97,7 @@ public class CheckEqualityDataType extends StringDataType {
             super(CheckEqualityDataType.this.getFieldRestrictionName(), field);
         }
         protected final String getField() {
-            return (String) value;
+            return value;
         }
 
         @Override

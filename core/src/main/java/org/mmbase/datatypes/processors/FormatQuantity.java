@@ -171,13 +171,16 @@ public class FormatQuantity implements Processor {
         return buf.toString();
     }
 
+    @Override
     public String toString() {
         return "[" + unit + "]";
     }
 
     public static class Parser extends FormatQuantity {
+        private static final long serialVersionUID = 1923784124279730073L;
 
         Pattern parse = Pattern.compile("(.*?)" + PREFIX_PATTERN);
+        @Override
         public final Object process(Node node, Field field, Object value) {
             if (value == null) return null;
             String string = (String) value;

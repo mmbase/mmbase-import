@@ -11,7 +11,6 @@ package org.mmbase.datatypes;
 
 import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -57,7 +56,7 @@ public class LanguageDataType extends StringDataType {
     }
 
     public static class Getter implements org.mmbase.datatypes.processors.Processor {
-
+        private static final long serialVersionUID = 9004314043476276185L;
         public Object process(Node node, Field field, Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("node " + node + " " + field + " "  + value);

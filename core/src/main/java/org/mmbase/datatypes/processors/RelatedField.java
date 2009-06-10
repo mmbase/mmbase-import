@@ -10,10 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
-import org.mmbase.datatypes.*;
-import org.mmbase.util.*;
-import org.mmbase.storage.search.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
 
@@ -54,9 +50,7 @@ public class RelatedField {
         public Object process(final Node node, final Field field, final Object value) {
             Node relatedNode = getRelatedNode(node, field);
             if (relatedNode == null) {
-                NodeQuery related = getRelatedQuery(node);
                 log.service("No related node of type " + getRelatedType(node) + " for node " + node.getNumber() + ". Implicitely creating now.");
-                Cloud cloud = node.getCloud();
                 Node newNode = getRelatedType(node).createNode();
                 newNode.commit();
                 RelationManager rel = getRelationManager(node);

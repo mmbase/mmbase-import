@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  * @since MMBase-1.8
  */
-public class DateTimeDataType extends ComparableDataType {
+public class DateTimeDataType extends ComparableDataType<Date> {
 
     public static final Date MIN_VALUE = new Date(Long.MIN_VALUE);
     public static final Date MAX_VALUE = new Date(Long.MAX_VALUE);
@@ -49,6 +49,7 @@ public class DateTimeDataType extends ComparableDataType {
         setMax(MAX_VALUE, true);
     }
 
+    @Override
     protected void xmlValue(org.w3c.dom.Element el, Object value) {
         if (value instanceof DynamicDate) {
             el.setAttribute("value", ((DynamicDate) value).getFormat());
@@ -58,12 +59,15 @@ public class DateTimeDataType extends ComparableDataType {
         }
     }
 
-    public void setDefaultValue(Object o) {
+    @Override
+    public void setDefaultValue(Date o) {
         log.debug("Setting default value " + o);
         //super.setDefaultValue(Casting.toDate(o));
-        super.setDefaultValue(o == null ? null : Casting.toDate(o));
+        super.setDefaultValue(o == null ? null : o);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
     protected void inheritProperties(BasicDataType origin) {
         super.inheritProperties(origin);
         if (origin instanceof DateTimeDataType) {
@@ -74,6 +78,7 @@ public class DateTimeDataType extends ComparableDataType {
         }
     }
 
+    @Override
     protected Object castToValidate(Object value, Node node, Field field) throws CastException {
         if (value == null) return null;
         try {
@@ -129,12 +134,14 @@ public class DateTimeDataType extends ComparableDataType {
     }
 
 
+    @Override
     public DateTimeDataType clone(String name) {
         DateTimeDataType clone = (DateTimeDataType) super.clone(name);
         clone.weakPattern = true;
         return clone;
     }
 
+    @Override
     protected StringBuilder toStringBuilder() {
         StringBuilder buf = super.toStringBuilder();
         buf.append(" " + pattern);

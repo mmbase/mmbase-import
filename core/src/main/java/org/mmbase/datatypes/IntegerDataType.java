@@ -31,6 +31,8 @@ public class IntegerDataType extends NumberDataType<Integer> {
         maxRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
     protected void inheritRestrictions(BasicDataType origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof BooleanDataType) {
