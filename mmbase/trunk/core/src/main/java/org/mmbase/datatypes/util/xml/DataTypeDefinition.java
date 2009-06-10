@@ -267,7 +267,7 @@ public class DataTypeDefinition {
             return true;
         } else if ("default".equals(childTag)) {
             String value = DataTypeXml.getAttribute(childElement, "value");
-            dataType.castAndSetDefaultValue(value);
+            dataType.setDefaultValue(value);
             return true;
         } else if (addPatternCondition(childElement)) {
             return true;

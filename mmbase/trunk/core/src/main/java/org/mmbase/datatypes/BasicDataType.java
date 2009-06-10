@@ -66,7 +66,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
     private Object owner;
     private Class<C> classType;
-    protected C defaultValue;
+    protected Object defaultValue;
 
     private CommitProcessor commitProcessor = EmptyCommitProcessor.getInstance();
     private CommitProcessor deleteProcessor = EmptyCommitProcessor.getInstance();
@@ -411,17 +411,11 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * {@inheritDoc}
      */
-    public void setDefaultValue(C def) {
+    public void setDefaultValue(Object def) {
         edit();
         defaultValue = def;
     }
 
-    /**
-     * @since MMBase-1.9.2
-     */
-    public void castAndSetDefaultValue(Object o) {
-        setDefaultValue(cast(o, null, null));
-    }
 
     protected Element getElement(Element parent, String name, String path) {
         return getElement(parent, name, name, path);
