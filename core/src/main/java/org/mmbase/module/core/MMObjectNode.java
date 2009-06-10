@@ -98,7 +98,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
     /**
      * Pointer to the parent builder that is responsible for this node.
-     * Note: this may on occasion (due to optimization) duffer for the node's original builder.
+     * Note: this may on occasion (due to optimization) differ for the node's original builder.
      * Use {@link #getBuilder} instead.
      * @scope private
      */
@@ -127,6 +127,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
 
     private String newContext = null;
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    MMObjectBuilder oldBuilder = null;
 
     /**
      * Just a counter to keep track of the number of instances of MMObjectNode that are produced in
@@ -210,16 +215,47 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     }
 
     /**
+     * Returns the original builder after {@link #setBuilder}.
+     * @since 1.9.2
+     */
+    public MMObjectBuilder getOldBuilder() {
+        return oldBuilder;
+    }
+
+
+    private void fixValues(Map<String, Object> map, MMObjectBuilder bul) {
+        Map<String, Object> cloneValues = new HashMap<String, Object>();
+        cloneValues.putAll(map);
+
+        map.clear();
+        if (getBuilder().getDescendants().contains(bul)) {
+            for (Map.Entry<String, Object> entry : cloneValues.entrySet()) {
+                map.put(entry.getKey(), entry.getValue());
+            }
+        } else {
+            for (CoreField field : builder.getFields()) {
+                if (bul.hasField(field.getName())) {
+                    map.put(field.getName(), cloneValues.get(field.getName()));
+                }
+            }
+        }
+    }
+    /**
      * @since MMBase-1.9.1
      */
-    public void setBuilder(MMObjectBuilder bul) {
-        if (bul.equals(builder)) return;
-        StorageManagerFactory<?> fact = parent.mmb.getStorageManagerFactory();
-        int bn = fact.getStorageManager().setNodeType(this, bul);
-        if (bn > -1) {
-            setValue("otype", bn);
-            builder = bul;
+    public void setBuilder(final MMObjectBuilder bul) {
+        getBuilder();
+        if (bul.equals(builder)) {
+            return;
         }
+        fixValues(values, bul);
+        fixValues(oldValues, bul);
+
+        if (oldBuilder == null) {
+            oldBuilder = builder;
+        }
+        storeValue("otype", bul.getNumber());
+        builder = bul;
     }
 
     /**
@@ -260,8 +296,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         } else {
             values.putAll(oldValues);
         }
-        oldValues.clear();
-        changed.clear();
+        clearChanged();
         return success;
     }
 
@@ -272,8 +307,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
     public void cancel() {
         values.putAll(oldValues);
-        oldValues.clear();
-        changed.clear();
+        clearChanged();
     }
     /**
      * Insert this node into the storage
@@ -1192,7 +1226,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return <code>true</code> if changes have been made, <code>false</code> otherwise
      */
     public boolean isChanged() {
-        return newContext != null || changed.size() > 0;
+        return oldBuilder != null || newContext != null || changed.size() > 0;
     }
 
     /**
@@ -1202,6 +1236,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return always <code>true</code>
      */
     public boolean clearChanged() {
+        oldBuilder = null;
+        newContext = null;
         changed.clear();
         oldValues.clear();
         return true;
