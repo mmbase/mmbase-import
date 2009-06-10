@@ -67,7 +67,7 @@ public class DynamicDate extends Date {
     }
 
     /**
-     * This call {@link #getInstance}, then {@link #eval} and catches the parse-exception (in which
+     * This calls {@link #getInstance}, then {@link #eval} and catches the parse-exception (in which
      * case it will return -1).
      * This boils down to that this is a utility method to get a new Date object by String in just
      * one call.
