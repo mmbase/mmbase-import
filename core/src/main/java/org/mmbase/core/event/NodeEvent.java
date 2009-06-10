@@ -163,17 +163,23 @@ public class NodeEvent extends Event {
         }
     }
 
+    public static int oldTypeToNewType(String eventType) {
+        if (eventType.length() > 1) {
+            throw new IllegalArgumentException("HELP! event of type '" + eventType + "' is unknown. This should not happen. (length = " + eventType.length() + ")");
+        }
+        return oldTypeToNewType(eventType.charAt(0));
+
+    }
+
     /**
      * For conveneance: conversion of the old event type indication to the new
      * style
      *
      * @param eventType
+     * @since MMBase-1.9.2
      */
-    public static int oldTypeToNewType(String eventType) {
-        if (eventType.length() > 1) {
-            throw new IllegalArgumentException("HELP! event of type '" + eventType + "' is unknown. This should not happen. (length = " + eventType.length() + ")");
-        }
-        switch(eventType.charAt(0)) {
+    public static int oldTypeToNewType(char eventType) {
+        switch(eventType) {
         case 'c': return Event.TYPE_CHANGE;
         case 'd': return Event.TYPE_DELETE;
         case 'n': return Event.TYPE_NEW;
