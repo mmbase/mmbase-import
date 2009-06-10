@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-abstract public class AbstractField<D> extends AbstractDescriptor implements Field {
+abstract public class AbstractField<D extends Object> extends AbstractDescriptor implements Field {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractField.class);
 
@@ -95,6 +95,7 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
      * @param o the reference object with which to compare.
      * @return true if o is a DataType of which key and type equal to this' key and type.
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Field) {
             Field f = (Field) o;
@@ -103,6 +104,7 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
         return false;
     }
 
+    @Override
     public int hashCode() {
         return getName().hashCode() * 13 + dataType.hashCode();
     }
@@ -126,7 +128,7 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
         return listItemType;
     }
 
-    public DataType<D> getDataType() {
+    public DataType getDataType() {
         return dataType;
     }
 
@@ -212,6 +214,7 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
      * Returns a description for this field.
      * @return a string representation of the object.
      */
+    @Override
     public String toString() {
         return getName() + ":" +
             Fields.getTypeDescription(getType()) + " / " +
@@ -219,6 +222,7 @@ abstract public class AbstractField<D> extends AbstractDescriptor implements Fie
             getDataType();
     }
 
+    @Override
     public AbstractField clone() {
         return clone (null, false);
     }
