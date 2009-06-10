@@ -46,15 +46,7 @@ public class ChainedLogger implements Logger {
     }
 
     public boolean removeLogger(Logger l) {
-        Iterator<Logger> i =  loggers.iterator();
-        while (i.hasNext()) {
-            Logger log = i.next();
-            if (log.equals(l)) {
-                i.remove();
-                return true;
-            }
-        }
-        return false;
+        return loggers.remove(l);
     }
 
 
