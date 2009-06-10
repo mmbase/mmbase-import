@@ -189,7 +189,7 @@ public interface DataType<C> extends Descriptor, Comparable<DataType<C>>, Serial
      * Set the default value for this DataType
      * @param def default value
      */
-    public void setDefaultValue(C def);
+    public void setDefaultValue(Object def);
 
     /**
      * Unlock a DataType so it can be changed or altered.

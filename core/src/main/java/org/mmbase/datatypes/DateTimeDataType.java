@@ -60,10 +60,10 @@ public class DateTimeDataType extends ComparableDataType<Date> {
     }
 
     @Override
-    public void setDefaultValue(Date o) {
+    public void setDefaultValue(Object o) {
         log.debug("Setting default value " + o);
         //super.setDefaultValue(Casting.toDate(o));
-        super.setDefaultValue(o == null ? null : o);
+        super.setDefaultValue(o == null ? null : Casting.toDate(o));
     }
 
     @Override

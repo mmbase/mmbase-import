@@ -15,6 +15,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.SearchQueryException;
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 /**
@@ -36,13 +37,14 @@ public class UniqueStringDataType extends StringDataType {
 
     public String getDefaultValue(Locale locale, Cloud cloud, Field field) {
         if (defaultValue == null) return null;
-        if (field == null) return defaultValue;
+        if (field == null) return Casting.toString(defaultValue);
         try {
             int seq = 0;
-            String value = defaultValue;
+            String def = Casting.toString(defaultValue);
+            String value = def;
             while (true) {
                 NodeQuery q = field.getNodeManager().createQuery();
-                value = defaultValue + seq;
+                value = def + seq;
                 Constraint constraint = q.createConstraint(q.createStepField(field.getName()), value);
                 q.setConstraint(constraint);
                 if (Queries.count(q) == 0) {
