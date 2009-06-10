@@ -665,6 +665,9 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @return true if commit successful
      */
     public boolean commit(MMObjectNode node) {
+        if (node.getOldBuilder() != null) {
+            mmb.getStorageManager().setNodeType(node, node.getBuilder());
+        }
         mmb.getStorageManager().change(node);
         return true;
     }
