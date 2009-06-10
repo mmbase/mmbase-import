@@ -1411,7 +1411,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             }
             for (Map.Entry<C, String> e : validValues) {
                 Object valid = e.getKey();
-                if (valid.equals(candidate)) {
+                if (valid == null && candidate == null) {
+                    return true;
+                }
+                if (value != null && valid.equals(candidate)) {
                     return true;
                 }
             }
