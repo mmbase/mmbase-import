@@ -51,7 +51,7 @@ public class DateHandler extends AbstractTypeHandler {
         return Calendar.getInstance(tag.getTimeZone());
     }
 
-    protected DateTimePattern getPattern(DataType<Object> dt) throws JspTagException {
+    protected DateTimePattern getPattern(DataType dt) throws JspTagException {
         DateTimePattern dateTimePattern;
         if (! (dt instanceof DateTimeDataType)) {
             // backwards compatibility
@@ -137,7 +137,7 @@ public class DateHandler extends AbstractTypeHandler {
             buffer.append(">=</option>");
             buffer.append("</select>");
         }
-        DataType<Object> dt = field.getDataType();
+        DataType dt = field.getDataType();
         DateTimePattern dateTimePattern = getPattern(dt);
         Calendar minDate = getInstance();
         Calendar maxDate = getInstance();
