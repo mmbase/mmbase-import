@@ -24,6 +24,8 @@ public class ChainedIterator<E> implements Iterator<E> {
     private final List<Iterator<E>> iterators = new ArrayList<Iterator<E>>();
     private Iterator<Iterator<E>> iteratorIterator = null;
     private Iterator<E> iterator = null;
+    public ChainedIterator() {
+    }
     public ChainedIterator(Iterator<E>... is) {
         for (Iterator<E> i : is) {
             iterators.add(i);
