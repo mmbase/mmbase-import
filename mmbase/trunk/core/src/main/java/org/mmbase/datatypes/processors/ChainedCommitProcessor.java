@@ -49,10 +49,12 @@ public class ChainedCommitProcessor implements  CommitProcessor, org.mmbase.util
         return Collections.unmodifiableList(processors);
     }
 
+    @Override
     public String toString() {
         return "chained" + processors;
     }
 
+    @Override
     public Object clone() {
         try {
             ChainedCommitProcessor clone = (ChainedCommitProcessor)super.clone();

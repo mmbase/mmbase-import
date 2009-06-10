@@ -32,10 +32,12 @@ public class ComponentNamesDataType extends StringDataType {
         super(name);
     }
 
+    @Override
     public String getDefaultValue(Locale locale, Cloud cloud, Field field) {
         return "core";
     }
 
+    @Override
     public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
         return new Iterator<Map.Entry<String, String>>() {
             Iterator<String> iterator = org.mmbase.framework.ComponentRepository.getInstance().toMap().keySet().iterator();

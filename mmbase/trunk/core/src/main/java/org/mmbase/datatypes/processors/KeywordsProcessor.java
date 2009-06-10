@@ -201,6 +201,7 @@ public class KeywordsProcessor implements Processor, NodeEventListener {
             if (res != 0) return res;
             return o2.getKey().compareTo(o1.getKey());
         }
+        @Override
         public boolean equals(Object o) {
             return o != null && o instanceof EntryComparator;
         }

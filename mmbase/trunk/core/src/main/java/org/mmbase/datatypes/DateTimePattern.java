@@ -153,6 +153,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
     private static final Element MINUTE        = new Element("minute", Calendar.MINUTE, 0, 59);
     private static final Element SECOND        = new Element("second", Calendar.SECOND, 0, 59);
     private static final Element DAY_OF_WEEK   = new Element("dayofweek", Calendar.DAY_OF_WEEK, 1, 7) {
+        @Override
             public String toString(int value, Locale locale, int length) {
                 SimpleDateFormat format = new SimpleDateFormat("EEEEEEEEEEEEE".substring(0, length), locale);
                 Calendar help = Calendar.getInstance();
@@ -164,6 +165,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
     private static final Element WEEK_OF_YEAR  = new Element("weekinyear", Calendar.WEEK_OF_YEAR, 1, 53);
     private static final Element DAY_OF_YEAR   = new Element("dayinyear", Calendar.DAY_OF_YEAR, 1, 366);
     private static final Element DAY_OF_WEEK_IN_MONTH  = new Element("dayofweekinmonth", Calendar.DAY_OF_WEEK_IN_MONTH, 1, 5) {
+        @Override
             public String toString(int value, Locale locale, int length) {
                 if (length > 0) {
                     ResourceBundle bundle = ResourceBundle.getBundle("org.mmbase.datatypes.resources.ordinals", locale);
@@ -177,6 +179,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
     private static final Element AM_PM         = new Element("am_pm", Calendar.AM_PM, 0, //AM
                                                              1 //PM
                                                              ) {
+        @Override
             public String toString(int value, Locale locale, int length) {
                 SimpleDateFormat format = new SimpleDateFormat("aaaaaaaaaaaaaa".substring(0, length), locale);
                 Calendar help = Calendar.getInstance();
@@ -206,6 +209,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
             return new Element("era", Calendar.ERA, startEra, //BC
                                endEra //AD
                                ) {
+                @Override
                 public String toString(int value, Locale locale, int length) {
                     SimpleDateFormat format = new SimpleDateFormat("GGGGGGGGGGGG".substring(0, length), locale);
                     Calendar help = Calendar.getInstance();
@@ -225,6 +229,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
                 startYear = minDate.getActualMinimum(Calendar.YEAR);
             }
             return new Element("year",  Calendar.YEAR,  startYear, endYear) {
+                @Override
                 public int getNullValue() {
                     return Integer.MAX_VALUE;
                 }
@@ -238,12 +243,14 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
             int endYear = maxDate.get(Calendar.YEAR);
             if (maxDate instanceof GregorianCalendar && endEra == GregorianCalendar.BC) endYear = -1 * (endYear - 1);
             return new Element("year",  Calendar.YEAR,  startYear, endYear) {
+                @Override
                 public int getValue(Calendar cal) {
                     int era   = cal.get(Calendar.ERA);
                     int year  = cal.get(Calendar.YEAR);
                     if (cal instanceof GregorianCalendar && era == GregorianCalendar.BC) year = -1 * (year - 1);
                     return year;
                 }
+                @Override
                 public int getNullValue() {
                     return Integer.MAX_VALUE;
                 }
@@ -261,6 +268,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
                 max = 12;
             }
             return new Element("month", Calendar.MONTH, min, max, 1) {
+                @Override
                     public String toString(int value, Locale locale, int length) {
                         SimpleDateFormat format = new SimpleDateFormat("MMMMMMMMMMMMMMMMMM".substring(0, length), locale);
                         Calendar help = Calendar.getInstance();
@@ -387,6 +395,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
             return buf.toString();
         }
 
+        @Override
         public String toString() {
             return getName() + " [" + min + ", " + max + "] + " + getOffset();
         }
@@ -400,10 +409,11 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
     }
 
 
+    @Override
     public Object clone() {
         try {
             DateTimePattern clone =  (DateTimePattern) super.clone();
-            clone.pattern = (LocalizedString) pattern.clone();
+            clone.pattern = pattern.clone();
             return clone;
         } catch (CloneNotSupportedException cns) {
             // should not happen
@@ -411,6 +421,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
         }
     }
 
+    @Override
     public String toString() {
         return pattern.toString();
     }

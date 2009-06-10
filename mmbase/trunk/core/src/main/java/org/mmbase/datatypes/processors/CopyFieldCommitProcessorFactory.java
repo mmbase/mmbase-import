@@ -13,8 +13,8 @@ import org.mmbase.util.functions.*;
 
 import org.mmbase.util.logging.*;
 /**
- * This factory produces commit-processors which simply the copy the value of another field of the
- * same node, to the field to which this CommitProcessor was associated.
+ * This factory produces commit-processors which simply copies the value of another field of the
+ * same node, to the field with which this CommitProcessor was associated.
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.8.6
@@ -26,7 +26,7 @@ public class CopyFieldCommitProcessorFactory implements ParameterizedCommitProce
     private static final long serialVersionUID = 1L;
 
     protected static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter("field", String.class, true)
+        new Parameter<String>("field", String.class, true)
     };
 
     /**

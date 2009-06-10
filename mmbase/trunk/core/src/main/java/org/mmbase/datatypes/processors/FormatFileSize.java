@@ -50,6 +50,7 @@ public class FormatFileSize extends FormatQuantity {
         }
     }
 
+    @Override
     public String toString() {
         return "FILESIZE";
     }

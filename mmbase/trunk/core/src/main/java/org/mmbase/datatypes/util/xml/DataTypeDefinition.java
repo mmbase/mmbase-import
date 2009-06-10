@@ -42,7 +42,7 @@ public class DataTypeDefinition {
     /**
      * The data type which will be produced
      */
-    public BasicDataType dataType = null;
+    public BasicDataType<?> dataType = null;
 
     /**
      * The base data type on which it was based, or <code>null</code>
@@ -267,7 +267,7 @@ public class DataTypeDefinition {
             return true;
         } else if ("default".equals(childTag)) {
             String value = DataTypeXml.getAttribute(childElement, "value");
-            dataType.setDefaultValue(value);
+            dataType.castAndSetDefaultValue(value);
             return true;
         } else if (addPatternCondition(childElement)) {
             return true;
