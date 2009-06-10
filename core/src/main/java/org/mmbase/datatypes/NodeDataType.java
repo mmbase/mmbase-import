@@ -40,18 +40,21 @@ public class NodeDataType extends BasicDataType<Node> {
     }
 
 
+    @Override
     protected void inheritRestrictions(BasicDataType origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof NodeDataType) {
             mustExistRestriction.inherit(((NodeDataType)origin).mustExistRestriction);
         }
     }
+    @Override
     protected void cloneRestrictions(BasicDataType origin) {
         super.cloneRestrictions(origin);
         if (origin instanceof NodeDataType) {
             mustExistRestriction = new MustExistRestriction(((NodeDataType)origin).mustExistRestriction);
         }
     }
+    @Override
     protected Object castToValidate(Object value, Node node, Field field) throws CastException {
         if (value == null || "".equals(value)) return null;
         Object preCast = preCast(value, node, field); // resolves enumerations
@@ -91,17 +94,21 @@ public class NodeDataType extends BasicDataType<Node> {
         return mustExistRestriction;
     }
 
+    @Override
     public int getEnforceStrength() {
         return Math.max(super.getEnforceStrength(), mustExistRestriction.getEnforceStrength());
     }
 
+    @Override
     protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = mustExistRestriction.validate(errors, value, node, field);
         return errors;
     }
 
-    private class MustExistRestriction extends AbstractRestriction<Boolean> {
+    protected class MustExistRestriction extends AbstractRestriction<Boolean> {
+        private static final long serialVersionUID = 7475598158815232356L;
+
         MustExistRestriction(MustExistRestriction me) {
             super(me);
             enforceStrength = DataType.ENFORCE_ONCHANGE;

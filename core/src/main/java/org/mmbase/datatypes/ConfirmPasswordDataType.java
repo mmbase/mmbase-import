@@ -9,12 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes;
 
-import java.util.*;
-import org.mmbase.bridge.*;
-import org.mmbase.datatypes.processors.Processor;
-import org.mmbase.util.LocalizedString;
-import org.mmbase.util.logging.*;
-
 /**
  * A confirmed password datatype must have the same value as another field of the node (and makes
  * only sense as a field of a node).
@@ -24,7 +18,9 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.8
  */
 public class ConfirmPasswordDataType extends CheckEqualityDataType {
+    private static final long serialVersionUID = -9091203075833824290L;
     /**
+
      * Constructor for string data type.
      * @param name the name of the data type
      */

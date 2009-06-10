@@ -10,10 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 import java.math.*;
 import java.util.*;
-import java.text.*;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.bridge.*;
-import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -45,7 +43,7 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
 
 
     protected PrecisionRestriction precisionRestriction  = new PrecisionRestriction();
-    protected AbstractLengthDataType.MinRestriction minRestriction  = new AbstractLengthDataType.MinRestriction(this, 1);
+    protected AbstractLengthDataType.MinRestriction decimalMinRestriction  = new AbstractLengthDataType.MinRestriction(this, 1);
     protected ScaleRestriction     scaleRestriction      = new ScaleRestriction();
 
     private RoundingMode roundingMode = RoundingMode.UNNECESSARY;
@@ -66,15 +64,15 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
     }
     // LengthDataType
     public long getMinLength() {
-        return minRestriction.getValue();
+        return decimalMinRestriction.getValue();
     }
     // LengthDataType
     public DataType.Restriction<Long> getMinLengthRestriction() {
-        return minRestriction;
+        return decimalMinRestriction;
     }
     // LengthDataType
     public void setMinLength(long value) {
-        minRestriction.setValue(value);
+        decimalMinRestriction.setValue(value);
     }
 
     // LengthDataType
@@ -128,6 +126,8 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
         return scaleRestriction;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
     protected void inheritRestrictions(BasicDataType origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof DecimalDataType) {
@@ -137,7 +137,8 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
 
         }
     }
-    @Override protected void cloneRestrictions(BasicDataType origin) {
+    @Override@SuppressWarnings("unchecked")
+ protected void cloneRestrictions(BasicDataType origin) {
         super.cloneRestrictions(origin);
         if (origin instanceof DecimalDataType) {
             DecimalDataType dataType = (DecimalDataType) origin;
@@ -184,6 +185,7 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
     }
 
     public class ScaleRestriction extends AbstractRestriction<Integer> {
+        private static final long serialVersionUID = 6171377670360064921L;
         ScaleRestriction(ScaleRestriction source) {
             super(source);
         }

@@ -24,7 +24,7 @@ public class ChainedProcessor implements Processor {
 
     private static final long serialVersionUID = 1L;
 
-    private List<Processor> processors = new ArrayList<Processor>();
+    private final List<Processor> processors = new ArrayList<Processor>();
 
     public ChainedProcessor add(Processor proc) {
         if (proc instanceof ChainedCommitProcessor) {
@@ -51,6 +51,7 @@ public class ChainedProcessor implements Processor {
     }
 
 
+    @Override
     public String toString() {
         return "chained" + processors;
     }

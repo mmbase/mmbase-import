@@ -67,7 +67,7 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
     @Override
     public String check(Request request, Node node, Field field, boolean errors) {
         Object fieldValue = request.getValue(field);
-        final DataType<Object> dt = field.getDataType();
+        final DataType<?> dt = field.getDataType();
         if (fieldValue == null) {
             log.debug("Field value not found in context, using existing value ");
             fieldValue = getFieldValue(request, node, field, node == null);
@@ -78,7 +78,7 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
         if (log.isDebugEnabled()) {
             log.debug("Value for field " + field + ": " + fieldValue + " and node " + node);
         }
-        Collection<LocalizedString> col = dt.validate(fieldValue, node, field);
+        Collection<LocalizedString> col = dt.castAndValidate(fieldValue, node, field);
         if (col.size() == 0) {
             // do actually set the field, because some datatypes need cross-field checking
             // also in an mm:form, you can simply commit.

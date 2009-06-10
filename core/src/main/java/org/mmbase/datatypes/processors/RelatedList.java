@@ -10,14 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
-import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
-import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * The set- and get- processors implemented in this file can be used to make a virtual field which
- * act as a list (or 'set')  field, but actually represent related nodes.
+ * act as a list (or 'set')  field, but actually represents related nodes.
  *
  * In case just a selection of a limited number of other nodes is desired, this makes it easy to
  * just create a multiple select for it.

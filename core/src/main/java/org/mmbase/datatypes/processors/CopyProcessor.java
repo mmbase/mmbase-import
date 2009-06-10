@@ -32,6 +32,7 @@ public final class CopyProcessor implements Processor {
         return value;
     }
 
+    @Override
     public String toString() {
         return "COPY";
     }
