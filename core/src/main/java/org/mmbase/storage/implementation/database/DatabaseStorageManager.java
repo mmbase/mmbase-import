@@ -952,10 +952,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
 
-    /**
-     * @see org.mmbase.storage.StorageManager#create(org.mmbase.module.core.MMObjectNode)
-     */
-    public int create(MMObjectNode node) throws StorageException {
+    private int createWithoutEvent(MMObjectNode node) throws StorageException {
         // assign a new number if the node has not yet been assigned one
         int nodeNumber = node.getNumber();
         if (nodeNumber == -1) {
@@ -967,11 +964,19 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         // Should be done in MMObjectBuilder
         builder.preCommit(node);
         create(node, builder);
-        commitChange(node, "n");
         unloadShortedFields(node, builder);
         typeCache.put(nodeNumber, builder.getNumber());
         //refresh(node);
         return nodeNumber;
+    }
+
+    /**
+     * @see org.mmbase.storage.StorageManager#create(org.mmbase.module.core.MMObjectNode)
+     */
+    public int create(MMObjectNode node) throws StorageException {
+        int res = createWithoutEvent(node);
+        commitChange(node, "n");
+        return res;
     }
 
     /**
@@ -1673,19 +1678,6 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
 
     public int setNodeType(MMObjectNode node, MMObjectBuilder bul) throws StorageException {
 
-        MMObjectNode clone = new MMObjectNode(bul, false);
-
-        if (node.getBuilder().getDescendants().contains(bul)) {
-            for (Map.Entry<String, Object> entry : node.getValues().entrySet()) {
-                clone.storeValue(entry.getKey(), entry.getValue());
-            }
-        } else {
-            for (CoreField field : node.getBuilder().getFields()) {
-                if (clone.getBuilder().hasField(field.getName())) {
-                    clone.storeValue(field.getName(), node.getValue(field.getName()));
-                }
-            }
-        }
 
         boolean wasinTransaction = inTransaction;
         try {
@@ -1693,16 +1685,15 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             getActiveConnection();
 
             if (! inTransaction) beginTransaction();
-
-            delete(node, node.getBuilder());
+            delete(node, node.getOldBuilder());
             typeCache.remove(node.getNumber());
-            commitChange(node, "d");
-            clone.setValue("otype", bul.getNumber());
-            log.service("Creating " + clone);
-            create(clone);
+            log.service("Recreating " + node);
+            createWithoutEvent(node);
             if (! wasinTransaction) {
                 commit();
             }
+            commitChange(node, "dn");
+
             // nothing wrong.
             return bul.getNumber();
         } catch (SQLException sqe) {
