@@ -26,6 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$
  */
 public class BasicUser implements UserContext, Comparable<Object> {
+    private static final long serialVersionUID = -2999918034738004174L;
     private static final Logger log = Logging.getLoggerInstance(BasicUser.class);
 
     protected final String authenticationType;
@@ -72,6 +73,7 @@ public class BasicUser implements UserContext, Comparable<Object> {
      * Gets a string representation of this user context (for debugging)
      * @return a string describing the usercontext
      */
+    @Override
     public String toString() {
         try {
             return getIdentifier() + " (" + getRank() + ")";
@@ -93,6 +95,7 @@ public class BasicUser implements UserContext, Comparable<Object> {
         return authenticationType;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o instanceof BasicUser) {
             BasicUser ou = (BasicUser) o;
@@ -105,6 +108,7 @@ public class BasicUser implements UserContext, Comparable<Object> {
         }
     }
 
+    @Override
     public int hashCode() {
         int result = 0;
         result = org.mmbase.util.HashCodeUtil.hashCode(result, authenticationType);

@@ -24,6 +24,8 @@ import org.mmbase.util.LocalizedString;
  * @since MMBase-1.9
  */
 public class Action implements java.io.Serializable {
+    private static final long serialVersionUID = -2409754484774417165L;
+
     protected final String name;
     protected final LocalizedString description;
     protected final ActionChecker defaultChecker;
@@ -64,6 +66,7 @@ public class Action implements java.io.Serializable {
         return description;
     }
 
+    @Override
     public String toString() {
         return nameSpace + ":" + name + ":" + defaultChecker;
     }
