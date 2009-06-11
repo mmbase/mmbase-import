@@ -168,6 +168,7 @@ public class Generator {
      * Returns the document as a String.
      * @return the xml generated as an string
      */
+    @Override
     public String toString() {
         return toString(false);
     }
@@ -382,6 +383,7 @@ public class Generator {
         return fieldContent;
     }
 
+    @SuppressWarnings("fallthrough")
     private String getFieldFormat(Field field) {
         switch (field.getType()) {
         case Field.TYPE_XML :

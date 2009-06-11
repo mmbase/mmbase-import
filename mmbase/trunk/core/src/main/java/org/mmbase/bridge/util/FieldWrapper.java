@@ -45,6 +45,7 @@ public abstract class FieldWrapper implements Field {
     public int getListPosition() { return field.getListPosition(); }
     public int getEditPosition() { return field.getEditPosition(); }
     public int getStoragePosition() { return field.getStoragePosition(); }
+    @SuppressWarnings("deprecation")
     public String getGUIType() { return field.getGUIType(); }
     public boolean isRequired() { return field.isRequired(); }
     public int getMaxLength() { return field.getMaxLength(); }

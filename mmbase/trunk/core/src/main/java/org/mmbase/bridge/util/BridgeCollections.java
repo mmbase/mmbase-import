@@ -143,7 +143,7 @@ public abstract class BridgeCollections {
         final BridgeList<E> parent ; // just to expose properties to sublists.
 
         UnmodifiableBridgeList() {
-            c = new EmptyBridgeList<E>() {};
+            c = new EmptyBridgeList<E>() {private static final long serialVersionUID = 0L; };
             parent = null;
         }
 
@@ -298,10 +298,12 @@ public abstract class BridgeCollections {
 
         public final int size() { return 0; }
         public E get(int i) { throw new IndexOutOfBoundsException(); }
+        @Override
         public boolean contains(Object obj) {return false;}
 
         public Object getProperty(Object key) { return null; }
         public Map<Object, Object> getProperties() { return Collections.emptyMap(); }
+        @Override
         public BridgeList<E> subList(int fromIndex, int toIndex) { throw new IndexOutOfBoundsException(); }
         public void setProperty(Object key, Object value) { throw new UnsupportedOperationException(); }
         public void sort() { throw new UnsupportedOperationException(); }
@@ -309,7 +311,7 @@ public abstract class BridgeCollections {
     }
 
     static class EmptyNodeList extends EmptyBridgeList<Node> implements NodeList {
-
+        private static final long serialVersionUID = -4622448065501618413L;
         public final Node getNode(int index) {
             throw new IndexOutOfBoundsException("Index: "+index);
         }
@@ -340,6 +342,7 @@ public abstract class BridgeCollections {
     }
 
     static class EmptyRelationList extends EmptyBridgeList<Relation> implements RelationList {
+        private static final long serialVersionUID = -6540271840341980811L;
 
         public Relation getRelation(int index) {
             throw new IndexOutOfBoundsException("Index: "+index);
@@ -370,7 +373,7 @@ public abstract class BridgeCollections {
     }
 
     static class EmptyNodeManagerList extends EmptyBridgeList<NodeManager> implements NodeManagerList {
-
+        private static final long serialVersionUID = 5693333691036892621L;
         public NodeManager getNodeManager(int index) {
             throw new IndexOutOfBoundsException("Index: "+index);
         }
@@ -395,7 +398,7 @@ public abstract class BridgeCollections {
     }
 
     static class EmptyRelationManagerList extends EmptyBridgeList<RelationManager> implements RelationManagerList {
-
+        private static final long serialVersionUID = -2965057424221639303L;
         public RelationManager getRelationManager(int index) {
             throw new IndexOutOfBoundsException("Index: "+index);
         }
@@ -420,6 +423,7 @@ public abstract class BridgeCollections {
     }
 
     static class EmptyStringList extends EmptyBridgeList<String> implements StringList {
+        private static final long serialVersionUID = 5696848233716029906L;
         public String getString(int index) {
             throw new IndexOutOfBoundsException("Index: "+index);
         }

@@ -12,7 +12,6 @@ package org.mmbase.bridge.util;
 
 import java.util.*;
 import java.util.concurrent.*;
-import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
@@ -43,6 +42,7 @@ public class AnnotatedNode extends NodeWrapper  {
         return annotations.put(a, o);
     }
 
+    @Override
     public Object getValue(String fieldName) {
         if (fieldName.startsWith("annotation:")) {
             log.debug("Getting annotation " + fieldName.substring(11));

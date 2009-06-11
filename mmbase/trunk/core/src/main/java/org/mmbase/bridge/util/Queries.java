@@ -1507,7 +1507,7 @@ abstract public class Queries {
      * @since MMBase-1.8.7
      */
     public static Constraint createMakeEmptyConstraint(Query q) {
-        StepField sf = q.createStepField((Step) q.getSteps().get(0), "number");
+        StepField sf = q.createStepField(q.getSteps().get(0), "number");
         return q.createConstraint(sf, new Integer(-1));
     }
 
