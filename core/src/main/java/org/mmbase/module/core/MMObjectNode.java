@@ -223,7 +223,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     }
 
 
-    private void fixValues(Map<String, Object> map, MMObjectBuilder bul) {
+    private void fixValues(final Map<String, Object> map, MMObjectBuilder bul) {
         Map<String, Object> cloneValues = new HashMap<String, Object>();
         cloneValues.putAll(map);
 
@@ -256,6 +256,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
         storeValue("otype", bul.getNumber());
         builder = bul;
+        parent = bul;
     }
 
     /**
@@ -480,6 +481,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             result.append(values); // simpler version...
         }
         result.append(super.toString());
+        if (oldBuilder != null) {
+            result.append(" (to be converted from " + oldBuilder.getTableName() + " to " + builder.getTableName() + ")");
+        }
         return result.toString();
     }
 
