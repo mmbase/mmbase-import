@@ -41,6 +41,8 @@ public class NodeEvent extends Event {
     private final Map<String, Object> oldValues;
     private final Map<String, Object> newValues;
 
+    private static final Map<String, Object> EMPTY = Collections.unmodifiableMap(new HashMap<String, Object>());
+
     /**
     *@param machineName (MMBase) name of the server
     *@param builderName name of builder of node event is about
@@ -52,8 +54,8 @@ public class NodeEvent extends Event {
         super(machineName, eventType);
         this.builderName = builderName;
         this.nodeNumber = nodeNumber;
-        this.oldValues = oldValues == null ? Collections.emptyMap() : Collections.unmodifiableMap(new HashMap(oldValues));
-        this.newValues = newValues == null ? Collections.emptyMap() : Collections.unmodifiableMap(new HashMap(newValues));
+        this.oldValues = oldValues == null ? EMPTY : Collections.unmodifiableMap(new HashMap<String, Object>(oldValues));
+        this.newValues = newValues == null ? EMPTY : Collections.unmodifiableMap(new HashMap<String, Object>(newValues));
     }
 
 
