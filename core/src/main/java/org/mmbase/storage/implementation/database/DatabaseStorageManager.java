@@ -1693,6 +1693,12 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 commit();
             }
             commitChange(node, "dn");
+            Enumeration<MMObjectNode> en = node.getRelations();
+            if (en != null) {
+                for (MMObjectNode r : Collections.list(en)) {
+                    commitChange(r, "dn");
+                }
+            }
 
             // nothing wrong.
             return bul.getNumber();
