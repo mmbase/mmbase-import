@@ -101,8 +101,17 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
                 log.debug("Parameters for block " + block + " " + params + " extra: " + extraParameters);
             }
             Framework fw = Framework.getInstance();
-            if (fw == null) throw new JspTagException("No MMBase Framework found");
-            Parameters frameworkParams = fw.createParameters();
+            if (fw == null) {
+                throw new JspTagException("No MMBase Framework found");
+            }
+            Parameters frameworkParams = (Parameters) pageContext.getRequest().getAttribute(FrameworkFilter.PARAMS_KEY);
+            if (frameworkParams == null) {
+                frameworkParams = fw.createParameters();
+                log.debug("Not found from filter, created " + frameworkParams + " " + pageContext.getRequest() + " " + Collections.list(pageContext.getRequest().getAttributeNames()) + " " + FrameworkFilter.PARAMS_KEY);
+
+            } else {
+                log.debug("Found fw parameter from filter " + frameworkParams);
+            }
             fillStandardParameters(frameworkParams);
             frameworkParams.setAutoCasting(true);
             for (Map.Entry<String, Object> entry : extraFrameworkParameters) {
