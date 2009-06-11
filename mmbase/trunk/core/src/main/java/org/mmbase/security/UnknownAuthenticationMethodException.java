@@ -18,6 +18,7 @@ package org.mmbase.security;
  * @since  MMBase-1.8
  */
 public class UnknownAuthenticationMethodException extends org.mmbase.security.SecurityException {
+    private static final long serialVersionUID = -1270388603134616140L;
 
     //javadoc is inherited
     public UnknownAuthenticationMethodException() {

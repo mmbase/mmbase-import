@@ -32,7 +32,7 @@ public final class Rank implements Comparable<Rank>, java.io.Serializable {
 
     private static Logger log = Logging.getLoggerInstance(Rank.class);
 
-    private static final int serialVersionUID = 1; // increase this if object chages.
+    private static final long serialVersionUID = 1; // increase this if object chages.
 
     /** int value for the anonymous Rank*/
     public final static int ANONYMOUS_INT = 0;
@@ -52,7 +52,7 @@ public final class Rank implements Comparable<Rank>, java.io.Serializable {
     /** Identifier for admin rank*/
     public final static Rank ADMIN = new Rank(ADMIN_INT, "administrator");
 
-    private static Map<String, Rank> ranks = new HashMap();
+    private static Map<String, Rank> ranks = new HashMap<String, Rank>();
 
 
     static {
@@ -81,6 +81,7 @@ public final class Rank implements Comparable<Rank>, java.io.Serializable {
     /**
      *	@return a string containing the description of the rank
      */
+    @Override
     public String toString() {
         return description;
     }
@@ -143,6 +144,7 @@ public final class Rank implements Comparable<Rank>, java.io.Serializable {
      * @since MMBase-1.6.4
      */
     // see javadoc of Object
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Rank) {
             Rank r = (Rank) o;
@@ -156,6 +158,7 @@ public final class Rank implements Comparable<Rank>, java.io.Serializable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         int result = 0;
         result = HashCodeUtil.hashCode(result, rank);

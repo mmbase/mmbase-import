@@ -21,7 +21,7 @@ final public class NoAuthorization extends Authorization {
 
     // This defined the 'context' used everywhere where one is needed.
     private static final String EVERYBODY = "everybody";
-    private static final Set    possibleContexts = Collections.unmodifiableSet(new HashSet(Arrays.asList( new String[]{EVERYBODY, NoAuthentication.userContext.getOwnerField()})));
+    private static final Set<String>    possibleContexts = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList( new String[]{EVERYBODY, NoAuthentication.userContext.getOwnerField()})));
 
     /**
      *	This method does nothing
@@ -58,6 +58,7 @@ final public class NoAuthorization extends Authorization {
     /**
      * This method does nothing
      */
+    @Override
     public void verify(UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException {
     }
 
@@ -72,6 +73,7 @@ final public class NoAuthorization extends Authorization {
     /**
      * This method does nothing
      */
+    @Override
     public void verify(UserContext user, int nodeid, int srcNodeid, int dstNodeid, Operation operation) throws SecurityException {
     }
 
@@ -97,6 +99,7 @@ final public class NoAuthorization extends Authorization {
         return possibleContexts;
     }
 
+    @Override
     public QueryCheck check(UserContext user, org.mmbase.bridge.Query query, Operation operation) {
         return COMPLETE_CHECK;
     }

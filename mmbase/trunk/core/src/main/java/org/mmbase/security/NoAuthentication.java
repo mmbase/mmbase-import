@@ -25,6 +25,8 @@ final public class NoAuthentication extends Authentication {
     static final String TYPE = "no authentication";
 
     private static final class NoAuthenticationUser extends BasicUser {
+        private static final long serialVersionUID = -232773890397204840L;
+
         NoAuthenticationUser() {
             super(TYPE);
         }
@@ -68,13 +70,16 @@ final public class NoAuthentication extends Authentication {
      * {@inheritDoc}
      * @since MMBase-1.8
      */
+    @Override
     public int getDefaultMethod(String protocol) {
         return METHOD_DELEGATE;
     }
+    @Override
     public String[] getTypes(int method) {
         return new String[] {TYPE};
     }
 
+    @Override
     public Parameters createParameters(String application) {
         return new AutodefiningParameters();
     }

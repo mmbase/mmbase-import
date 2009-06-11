@@ -99,6 +99,7 @@ public final class Operation {
     /**
      *	@return a string containing the description of the operation
      */
+    @Override
     public String toString() {
         return description;
     }
