@@ -364,8 +364,9 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
         if (!(o instanceof Cache))
             return false;
         Cache<?,?> c = (Cache<?,?>) o;
-        if (!c.getName().equals(getName()))
-            return false;;
+        if (!c.getName().equals(getName())) {
+            return false;
+        }
         return implementation.equals(o);
     }
 

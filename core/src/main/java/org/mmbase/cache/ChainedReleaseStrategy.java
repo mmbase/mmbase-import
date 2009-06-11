@@ -111,6 +111,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
      * just setting all wrapped strategies to 'enabled'.
      */
     // MM: very nice. When is this useful?
+    @Override
     public void setEnabled(boolean newStatus) {
         if(newStatus != isEnabled()){
             super.setEnabled(newStatus);
@@ -218,6 +219,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
         return true;
     }
 
+    @Override
     public void clear(){
         super.clear();
         for(Iterator<ReleaseStrategy> i = iterator(); i.hasNext();){
@@ -232,6 +234,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
         return releaseStrategies.size();
     }
 
+    @Override
     public String toString() {
         return "" + releaseStrategies;
     }
