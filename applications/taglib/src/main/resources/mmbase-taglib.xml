@@ -4897,6 +4897,13 @@ like the parameter list or the session (where ever it is available) --&gt;
       </info>
       <since>MMBase-1.8.5</since>
     </attribute>
+    <attribute>
+      <name>xmlnamespace</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <since>MMBase-1.9.2</since>
+    </attribute>
     <example>
     &lt;mm:node number="&lt;%= image_number %&gt;"&gt;
         &lt;img src="&lt;mm:image template="s(100)" /&gt;" width="100" border="0"&gt;
