@@ -53,13 +53,14 @@ public class ResultBuilder extends VirtualBuilder {
             if (fieldAlias == null) {
                 fieldAlias = field.getFieldName();
             }
-            fields.put(fieldAlias, org.mmbase.core.util.Fields.createField(fieldAlias, field.getType(), -1, Field.STATE_VIRTUAL, null));;
+            fields.put(fieldAlias, org.mmbase.core.util.Fields.createField(fieldAlias, field.getType(), -1, Field.STATE_VIRTUAL, null));
         }
     }
 
     /**
      * @see org.mmbase.module.core.VirtualBuilder#getNewNode(java.lang.String)
      */
+    @Override
     public MMObjectNode getNewNode(String owner) {
         return new ResultNode(this);
     }
