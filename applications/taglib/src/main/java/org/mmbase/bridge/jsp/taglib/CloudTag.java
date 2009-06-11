@@ -663,6 +663,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      * Creates the getAumember variables session and cookies variables member
      */
     private final void setupSession() throws JspTagException {
+        switch(getMethod()) {
+        case AuthenticationData.METHOD_DELEGATE:
+            return;
+        }
         cookies = request.getCookies();
         if (cookies == null) {
             cookies = new Cookie[0];
