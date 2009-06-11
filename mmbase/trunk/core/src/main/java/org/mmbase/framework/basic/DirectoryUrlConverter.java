@@ -81,6 +81,7 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
         if (directory == null) throw new RuntimeException("Directory not set");
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         String path = FrameworkFilter.getPath(request);
+        log.debug("Found path from request " + path);
         return path.startsWith(directory) || directory.equals(path + "/");
     }
 
@@ -91,6 +92,14 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
         if (path.size() < 2) {
             log.debug("pa " + pa + " -> " + path + " (Not long enough for " + this + ")");
             return Url.NOT;
+        }
+        if (directory.length() > 1) {
+            if(! ("/" + path.get(1) + "/").equals(directory)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("" + path + " does not start with " + directory + " hence this urconvertor does not handly this path");
+                }
+                return Url.NOT;
+            }
         }
         return getFilteredInternalDirectoryUrl(path.subList(directory.length() > 1 ? 2 : 1, // should also work correctly if directory is empty
                                                             path.size()), params, frameworkParameters);
