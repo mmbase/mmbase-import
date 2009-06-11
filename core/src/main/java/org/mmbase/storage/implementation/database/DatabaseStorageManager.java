@@ -1687,7 +1687,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             if (! inTransaction) beginTransaction();
             delete(node, node.getOldBuilder());
             typeCache.remove(node.getNumber());
-            log.service("Recreating " + node);
+            log.service("Recreating " + node + " " + node.getOldBuilder().getTableName() + " -> " + bul.getTableName());
             createWithoutEvent(node);
             if (! wasinTransaction) {
                 commit();
