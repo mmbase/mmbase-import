@@ -1414,7 +1414,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                 if (valid == null && candidate == null) {
                     return true;
                 }
-                if (value != null && valid.equals(candidate)) {
+                if (valid != null && valid.equals(candidate)) {
                     return true;
                 }
             }
