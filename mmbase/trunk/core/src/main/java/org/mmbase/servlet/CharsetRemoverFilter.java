@@ -83,6 +83,7 @@ public class CharsetRemoverFilter implements Filter {
                 private String contentType;
                 private PrintWriter writer = null;
 
+            @Override
                 public void setContentType(String ct) {
                     contentType = ct;
                     if (log.isDebugEnabled()) {
@@ -90,6 +91,7 @@ public class CharsetRemoverFilter implements Filter {
                     }
                     getResponse().setContentType(ct);                    
                 }
+            @Override
                 public String getContentType() {
                     return contentType;
                 }
@@ -100,6 +102,7 @@ public class CharsetRemoverFilter implements Filter {
                  * irrelevant,and tomcat will not add one any more.
                  */
                 
+            @Override
                 public PrintWriter getWriter() throws IOException {
                     if (writer == null) {                        
                         String charSet = contentType == null ? null : (String) contentTypes.get(contentType);
@@ -112,6 +115,7 @@ public class CharsetRemoverFilter implements Filter {
                             }
                             try {
                                 writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), charSet), false) {
+                                        @Override
                                         public void write(String s, int off, int len) {
                                             super.write(s, off, len);
                                             flush();
