@@ -25,7 +25,7 @@ public class UriParser {
 
     private static final Logger log = Logging.getLoggerInstance(UriParser.class);
     final static char SEPARATOR = java.io.File.separator.charAt(0); // '\' for windows '/' for other oses.
-    
+
     /**
      * Converts an absolute path into a relative path, being a path relative to basePath.
      * Uses the fileseparator of the current filesystem.
@@ -74,7 +74,7 @@ public class UriParser {
         }
 
         // Strip the common prefix off the path
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         if ( pathLen > 1 && ( pos < pathLen || basePath.charAt( pos ) != separatorChar ) ) {
             // Not a direct ancestor, need to back up
             pos = basePath.lastIndexOf( separatorChar, pos );
@@ -88,7 +88,7 @@ public class UriParser {
             buffer.insert( 0, "../" );
             pos = basePath.indexOf( separatorChar, pos + 1 );
         }
-        
+
         if (log.isDebugEnabled()) log.debug("is: " + buffer);
         return buffer.toString();
     }
