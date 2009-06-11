@@ -1,11 +1,11 @@
 
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+  This software is OSI Certified Open Source Software.
+  OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+  The license (Mozilla version 1.0) can be read at the MMBase site.
+  See http://www.MMBase.org/license
 
 */
 package org.mmbase.util.xml.applicationdata;
@@ -46,7 +46,7 @@ public class NodeReader extends DocumentReader {
     }
 
     /**
-    * get the name of this application
+     * get the name of this application
      */
     public String getExportSource() {
         Node n1 = document.getDocumentElement();
@@ -56,8 +56,7 @@ public class NodeReader extends DocumentReader {
                 Node n2 = nm.getNamedItem("exportsource");
                 return (n2.getNodeValue());
             }
-        }
-        else {
+        } else {
             log.warn("exportsource attribute missing");
         }
         return null;
@@ -77,9 +76,9 @@ public class NodeReader extends DocumentReader {
                 Node n2 = nm.getNamedItem("timestamp");
                 try {
                     java.text.SimpleDateFormat formatter =
-                  new java.text.SimpleDateFormat("yyyyMMddhhmmss", Locale.US);
+                        new java.text.SimpleDateFormat("yyyyMMddhhmmss", Locale.US);
                     int times =
-                  (int) (formatter.parse(n2.getNodeValue()).getTime() / 1000);
+                        (int) (formatter.parse(n2.getNodeValue()).getTime() / 1000);
                     //int times=DateSupport.parsedatetime(n2.getNodeValue());
                     return times;
                 }
@@ -99,11 +98,10 @@ public class NodeReader extends DocumentReader {
         Node n1 = document.getDocumentElement();
         while (n1 != null) {
             MMObjectBuilder bul = mmbase.getMMObject(n1.getNodeName());
-         if (bul == null) {
-            log.error(
-               "Can't get builder with name: '" + n1.getNodeName() + "'");
-         }
-         else {
+            if (bul == null) {
+                log.error(
+                          "Can't get builder with name: '" + n1.getNodeName() + "'");
+            } else {
                 Node n2 = n1.getFirstChild();
                 while (n2 != null) {
                     if (n2.getNodeName().equals("node")) {
@@ -136,7 +134,7 @@ public class NodeReader extends DocumentReader {
                                 if (n5.getNodeType() == Node.ELEMENT_NODE) {
                                     String key = n5.getNodeName();
                                     NodeList nl = n5.getChildNodes();
-                                    StringBuffer res = new StringBuffer("");
+                                    StringBuilder res = new StringBuilder("");
                                     for (int i = 0; i < nl.getLength(); i++) {
                                         Node n = nl.item(i);
                                         if ((n.getNodeType() == Node.TEXT_NODE)
@@ -164,17 +162,21 @@ public class NodeReader extends DocumentReader {
     protected void setValue(MMObjectBuilder bul, MMObjectNode newNode, Node n5, String key, String value) {
         int type = bul.getDBType(key);
         if (type != -1) {
+            if ("".equals(value) && ! bul.getField(key).isRequired()) {
+                value = null;
+            }
+            if (value == null) {
+                newNode.setValue(key, null);
+                return;
+            }
             if (type == Field.TYPE_STRING || type == Field.TYPE_XML) {
-                if (value == null) {
-                    value = "";
-                }
                 newNode.setValue(key, value);
             } else if (type == Field.TYPE_NODE) {
                 // do not really set it, because we need syncnodes later for this.
                 newNode.storeValue("__" + key, value); // yes, this is hackery, I'm sorry.
                 newNode.setValue(key, null);
             } else if (type == Field.TYPE_INTEGER) {
-               try {
+                try {
                     newNode.setValue(key, Integer.parseInt(value));
                 } catch (Exception e) {
                     log.warn("error setting integer-field '" + key + "' to '" + value + "' because " + e);
