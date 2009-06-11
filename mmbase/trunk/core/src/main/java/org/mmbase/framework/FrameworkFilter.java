@@ -42,6 +42,8 @@ import org.mmbase.util.logging.Logging;
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
 
+    public static final String PARAMS_KEY = "org.mmbase.framework.filter.parameters";
+
     private static Logger log = Logging.getLoggerInstance(FrameworkFilter.class);
 
     /**
@@ -213,6 +215,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
 
                 if (forwardUrl != null && !forwardUrl.equals("")) {
                     res.setHeader("X-MMBase-forward", forwardUrl);
+                    req.setAttribute(PARAMS_KEY, frameworkParameters);
                     /*
                      * RequestDispatcher: If the path begins with a "/" it is interpreted
                      * as relative to the current context root.
@@ -227,6 +230,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                         forwarded++;
                         rd.forward(request, response);
                     }
+                    log.debug("Ready");
                 } else {
                     if (log.isDebugEnabled()) log.debug("No matching technical URL, just forwarding: " + path);
                     chained++;
