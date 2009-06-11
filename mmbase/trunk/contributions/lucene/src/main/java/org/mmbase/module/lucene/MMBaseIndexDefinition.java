@@ -110,7 +110,7 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
         }
         Node node = cloud.getNode(identifier);
         NodeEvent pseudoEvent = new NodeEvent(null, node.getNodeManager().getName(), node.getNumber(), Collections.EMPTY_MAP,
-                                              new NodeMap(node), Event.TYPE_CHANGE);
+                                              new NodeMapWithoutProcess(node), Event.TYPE_CHANGE);
         boolean result =  releaseStrategy.evaluate(pseudoEvent, query, null).shouldRelease();
         log.debug("Node " + identifier + (result ? " IS " : " IS NOT ") + "in index " + getId() + " according to " + releaseStrategy);
         return result;
