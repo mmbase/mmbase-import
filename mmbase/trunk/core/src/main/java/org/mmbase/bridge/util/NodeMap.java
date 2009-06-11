@@ -77,6 +77,21 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
         throw new UnsupportedOperationException("You cannot remove fields from a Node.");
     }
 
+    /**
+     * Defaults to {@link #getValue}, but could e.g. be overridden with {@link #getValueWithoutProcess}
+     * @since MMBase-1.9.2
+     */
+    protected Object getValueForMap(String field) {
+        return getValue(field);
+    }
+    /**
+     * Defaults to {@link #setValue}, but could e.g. be overridden with {@link #setValueWithoutProcess}
+     * @since MMBase-1.9.2
+     */
+    protected void setValueForMap(String field, Object value) {
+        setValue(field, value);
+    }
+
     // javadoc inherited
     public Set<Entry<String, Object>> entrySet() {
         return new AbstractSet<Entry<String, Object>>() {
@@ -93,11 +108,11 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
                                             return field.getName();
                                         }
                                         public Object getValue() {
-                                            return NodeMap.this.getValue(field.getName());
+                                            return NodeMap.this.getValueForMap(field.getName());
                                         }
                                         public Object setValue(Object value) {
                                             Object r = getValue();
-                                            NodeMap.this.setValue(field.getName(), value);
+                                            NodeMap.this.setValueForMap(field.getName(), value);
                                             return r;
                                         }
                                         @Override
@@ -130,7 +145,7 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
                             public boolean hasNext() { return i.hasNext();}
                             public Object  next() {
                                 Field field = i.nextField();
-                                return NodeMap.this.getValue(field.getName());
+                                return NodeMap.this.getValueForMap(field.getName());
                             }
                             public void remove() {
                                 throw new UnsupportedOperationException("You cannot remove fields from a Node.");
@@ -177,13 +192,13 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
     }
 
     public Object put(String key, Object value) {
-        Object r = getValue(key);
-        setValue(key, value);
+        Object r = getValueForMap(key);
+        setValueForMap(key, value);
         return r;
     }
 
     public Object get(Object key) {
-        return getValue((String) key);
+        return getValueForMap((String) key);
     }
 
     public boolean isEmpty() {
