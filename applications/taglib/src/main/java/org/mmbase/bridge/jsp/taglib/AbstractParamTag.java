@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @version $Id$
- * @since MMBase-1.9 
+ * @since MMBase-1.9
  */
 
 abstract class AbstractParamTag extends ContextReferrerTag {
@@ -55,7 +55,7 @@ abstract class AbstractParamTag extends ContextReferrerTag {
         }
     }
 
-    
+
 
     public int doStartTag() throws JspException {
         findWriter(false); // just to call haveBody, mainly for mm:link.
@@ -90,7 +90,11 @@ abstract class AbstractParamTag extends ContextReferrerTag {
 
             } else if (referid != Attribute.NULL) {
                 if (entries != null) throw new JspTagException("Must specify either 'value', 'referid' or sub-param-tags, not both");
-                addParameter(getObject(referid.getString(this)));
+                if (name == Attribute.NULL) {
+                    addParameter(referid.getString(this), getObject(referid.getString(this)));
+                } else {
+                    addParameter(getObject(referid.getString(this)));
+                }
             } else if (entries != null) {
                 addParameter(entries);
                 entries = null;
