@@ -33,6 +33,7 @@ public abstract class AbstractQueryWrapper<Q extends Query> implements Query {
         this.query = q;
     }
 
+    @SuppressWarnings("unchecked")
     public void cloneQuery() {
         query = (Q) query.clone();
     }
@@ -178,6 +179,8 @@ public abstract class AbstractQueryWrapper<Q extends Query> implements Query {
     public boolean markUsed() {
         return query.markUsed();
     }
+    @Override
+    @SuppressWarnings("unchecked")
     public Query clone() {
         try {
             AbstractQueryWrapper clone = (AbstractQueryWrapper) super.clone();
@@ -237,12 +240,15 @@ public abstract class AbstractQueryWrapper<Q extends Query> implements Query {
     public List<SortOrder> getSortOrders() {
         return query.getSortOrders();
     }
+    @Override
     public boolean equals(Object obj) {
         return query.equals(obj);
     }
+    @Override
     public int hashCode() {
         return query.hashCode();
     }
+    @Override
     public String toString() {
         return query.toString();
     }
