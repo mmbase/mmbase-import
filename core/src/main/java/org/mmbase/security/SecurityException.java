@@ -16,6 +16,7 @@ package org.mmbase.security;
  * @version $Id$
  */
 public class SecurityException extends java.lang.SecurityException {
+    private static final long serialVersionUID = -175749957183734250L;
 
     //javadoc is inherited
     public SecurityException() {

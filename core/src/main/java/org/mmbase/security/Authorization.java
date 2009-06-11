@@ -281,6 +281,7 @@ public abstract class Authorization extends Configurable {
          * Used for debugging.
          * @since MMBase-1.8
          */
+        @Override
         public String toString() {
             return (check ? "CHECKED: " : "NOT CHECKED: ") + constraint;
         }

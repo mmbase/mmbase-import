@@ -29,6 +29,7 @@ public interface ActionChecker extends java.io.Serializable {
      */
 
     public static class Rank implements  ActionChecker {
+        private static final long serialVersionUID = 7047822780810829661L;
         final org.mmbase.security.Rank rank;
         public Rank(org.mmbase.security.Rank r) {
             rank = r;
@@ -36,6 +37,7 @@ public interface ActionChecker extends java.io.Serializable {
         public boolean check(UserContext user, Action ac, Parameters parameters) {
             return user.getRank().getInt() >= rank.getInt();
         }
+        @Override
         public String toString() {
             return "at least " + rank;
         }

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 import org.mmbase.util.functions.*;
-import org.mmbase.bridge.Node;
 
 /**
  * This interface represents information about the authentication implementation. It is the return
@@ -92,15 +91,15 @@ public interface AuthenticationData {
      */
     static final Parameter<String> PARAMETER_USERNAME   = new Parameter<String>("username", String.class, true);
     static final Parameter<String> PARAMETER_PASSWORD   = new Parameter<String>("password", String.class, true);
-    static final Parameter PARAMETER_USERNAMES  = new Parameter("usernames", java.util.List.class);
-    static final Parameter PARAMETER_RANK       = new Parameter("rank",     Rank.class);
+    static final Parameter<java.util.List> PARAMETER_USERNAMES  = new Parameter<java.util.List>("usernames", java.util.List.class);
+    static final Parameter<Rank> PARAMETER_RANK       = new Parameter<Rank>("rank",     Rank.class);
     //    static final Parameter PARAMETER_REMOTEADDR = new Parameter("remoteaddr",   String.class);
 
-    static final Parameter PARAMETER_SESSIONNAME   = new Parameter("sessionname",  String.class);
+    static final Parameter<String> PARAMETER_SESSIONNAME   = new Parameter<String>("sessionname",  String.class);
 
     // parameters used for logout
-    static final Parameter PARAMETER_LOGOUT        = new Parameter("logout",  Boolean.class);
-    static final Parameter PARAMETER_AUTHENTICATE  = new Parameter("authenticate", String.class);
+    static final Parameter<Boolean> PARAMETER_LOGOUT        = new Parameter<Boolean>("logout",  Boolean.class);
+    static final Parameter<String> PARAMETER_AUTHENTICATE  = new Parameter<String>("authenticate", String.class);
 
 
     static final String STORES_CONTEXT_IN_OWNER  = "stores context in owner";
