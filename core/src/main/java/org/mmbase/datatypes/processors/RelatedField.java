@@ -41,36 +41,8 @@ public class RelatedField {
     }
 
 
-
-    /**
-     * This get-processor can be used to implictely create the wanted related node too.
-     */
-    public static class Creator extends AbstractProcessor {
+    public static class Creator extends Related.Creator {
         private static final long serialVersionUID = 1L;
-        public Object process(final Node node, final Field field, final Object value) {
-            Node relatedNode = getRelatedNode(node, field);
-            if (relatedNode == null) {
-                log.service("No related node of type " + getRelatedType(node) + " for node " + node.getNumber() + ". Implicitely creating now.");
-                Node newNode = getRelatedType(node).createNode();
-                newNode.commit();
-                RelationManager rel = getRelationManager(node);
-                Relation newrel = node.createRelation(newNode, rel);
-                for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
-                    newrel.setStringValue(entry.getKey(), entry.getValue());
-                }
-
-                newrel.commit();
-                if (node.getCloud() instanceof Transaction) {
-                    node.getCloud().setProperty(getKey(node, field),  newNode);
-                }
-                if (log.isDebugEnabled()) {
-                    log.debug("Created " + newrel);
-                    log.debug("Cloud: : " + node.getCloud().getProperties());
-
-                }
-            }
-            return value;
-        }
     }
 
 
