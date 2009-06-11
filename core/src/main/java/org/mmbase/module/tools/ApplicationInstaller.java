@@ -250,8 +250,7 @@ class ApplicationInstaller {
                     NodeCache.getCache().remove(localnumber);
                 }
                 n.remove();
-            }
-            catch (SearchQueryException sqe) {
+            } catch (SearchQueryException sqe) {
                 log.error(sqe);
             }
         }
@@ -316,6 +315,7 @@ class ApplicationInstaller {
             Constraint constraint = null;
             NodeSearchQuery query = null;
             for (CoreField def : vec) {
+                if (! def.inStorage()) continue;
                 // check for notnull fields with type NODE.
                 if (def.getType() == Field.TYPE_NODE
                     && ! def.getName().equals("number")
