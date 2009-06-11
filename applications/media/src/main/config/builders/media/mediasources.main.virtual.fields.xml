@@ -20,17 +20,17 @@
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="type">mediafragments</param>
           <param name="searchDir">source</param>
         </class>
       </setprocessor>
       <getprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Creator">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="createTypeProperty">org.mmbase.media.containertype</param>
           <param name="searchDir">source</param>
         </class>
         <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="type">mediafragments</param>
           <param name="searchDir">source</param>
         </class>
       </getprocessor>
@@ -47,17 +47,17 @@
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="type">mediafragments</param>
           <param name="searchDir">source</param>
         </class>
       </setprocessor>
       <getprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Creator">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="createTypeProperty">org.mmbase.media.containertype</param>
           <param name="searchDir">source</param>
         </class>
         <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="type">mediafragments</param>
           <param name="searchDir">source</param>
         </class>
       </getprocessor>
@@ -74,17 +74,17 @@
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="type">mediafragments</param>
           <param name="searchDir">source</param>
         </class>
       </setprocessor>
       <getprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Creator">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="createTypeProperty">org.mmbase.media.containertype</param>
           <param name="searchDir">source</param>
         </class>
         <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="type">mediafragments</param>
           <param name="searchDir">source</param>
         </class>
       </getprocessor>
@@ -101,17 +101,17 @@
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="type">mediafragments</param>
           <param name="searchDir">source</param>
         </class>
       </setprocessor>
       <getprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Creator">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="createTypeProperty">org.mmbase.media.containertype</param>
           <param name="searchDir">source</param>
         </class>
         <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="type">mediafragments</param>
           <param name="searchDir">source</param>
         </class>
       </getprocessor>
