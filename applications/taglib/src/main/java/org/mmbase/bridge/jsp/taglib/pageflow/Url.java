@@ -165,10 +165,23 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
 
         Framework framework = Framework.getInstance();
 
+        HttpServletRequest req = (HttpServletRequest) tag.getPageContext().getRequest();
+        Parameters frameworkParameters = (Parameters) req.getAttribute(FrameworkFilter.PARAMS_KEY);
 
-        Parameters frameworkParameters = framework.createParameters();
+        if (frameworkParameters == null) {
+            frameworkParameters = framework.createParameters();
+            log.debug("Not found from filter, created " + frameworkParameters);
+        } else {
+            log.debug("Found fw parameter from filter " + frameworkParameters);
+        }
         frameworkParameters.setAutoCasting(true);
         tag.fillStandardParameters(frameworkParameters);
+
+
+        if (page != null || page.length() > 0) {
+            frameworkParameters.setIfDefined(Framework.BLOCK, null);
+            frameworkParameters.setIfDefined(Framework.COMPONENT, null);
+        }
 
         if (frameworkParams != null) {
             for (Map.Entry<String, Object> entry : frameworkParams.entrySet()) {
