@@ -28,7 +28,7 @@ public class StringSplitter {
      * @param delimiter
      * @return a (modifiable) List containing the elements
      */
-    static public List<String> split(String string, String delimiter) {
+    static public List<String> split(final String string, final String delimiter) {
         List<String> result = new ArrayList<String>();
         if (string == null) return result;
         for (String v : string.split(delimiter)) {
@@ -53,7 +53,7 @@ public class StringSplitter {
      * a(b,c,d),e,f(g) will be split up in a(b,c,d) and e and f(g).
      * @since MMBase-1.8
      */
-    static public List<String> splitFunctions(CharSequence attribute) {
+    static public List<String> splitFunctions(final CharSequence attribute) {
         int commaPos =  0;
         int nested   =  0;
         List<String>  result = new ArrayList<String>();
@@ -81,7 +81,7 @@ public class StringSplitter {
     /**
      * @since MMBase-1.9
      */
-    static public Map<String, String> map(String string) {
+    static public Map<String, String> map(final String string) {
         return map(string, ",");
     }
     /**
@@ -90,7 +90,7 @@ public class StringSplitter {
      * read like properties
      * @since MMBase-1.9.1
      */
-    static public Map<String, String> map(String string, String delimiter) {
+    static public Map<String, String> map(final String string, final String delimiter) {
         if (delimiter.equals("\n")) {
             final Properties props = new Properties();
             try {
@@ -137,6 +137,9 @@ public class StringSplitter {
             for (String kv : keyValues) {
                 if ("".equals(kv)) continue;
                 int is = kv.indexOf('=');
+                if (is == -1) {
+                    throw new IllegalArgumentException("'" + kv + "' in '" + string + "' does not look like map-entry");
+                }
                 map.put(kv.substring(0, is), kv.substring(is + 1));
             }
             return map;
