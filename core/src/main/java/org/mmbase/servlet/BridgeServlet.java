@@ -362,6 +362,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      * This function is defined in HttpServlet
      * {@inheritDoc}
      **/
+    @Override
     protected long getLastModified(HttpServletRequest req) {
         if (lastModifiedField == null) return -1;
         try {
@@ -382,6 +383,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      * {@inheritDoc}
      */
 
+    @Override
     public void init() throws ServletException {
         super.init();
         lastModifiedField = getInitParameter("lastmodifiedfield");
@@ -458,6 +460,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
             return nodeIdentifier;
         }
 
+        @Override
         public  String toString() {
             return sessionName == null ? nodeIdentifier : "session=" + sessionName + "+" + nodeIdentifier;
         }
