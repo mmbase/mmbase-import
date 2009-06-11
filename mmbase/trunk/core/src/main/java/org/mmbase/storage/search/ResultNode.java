@@ -31,6 +31,7 @@ import org.mmbase.module.core.*;
  * @since MMBase-1.7
  */
 public class ResultNode extends VirtualNode {
+    private static final long serialVersionUID = -8157192884541527741L;
 
     /**
      * Constructor.
@@ -42,6 +43,7 @@ public class ResultNode extends VirtualNode {
     }
 
     // javadoc is inherited
+    @Override
     public int getDBType(String fieldName) {
         return getBuilder().getDBType(fieldName);
     }

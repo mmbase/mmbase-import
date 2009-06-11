@@ -119,9 +119,11 @@ public interface RelationStep extends Step {
      * <code>false</code> otherwise.
      * @see Step#equals
      */
+    @Override
     public boolean equals(Object obj);
 
     // javadoc is inherited
+    @Override
     public int hashCode();
 
     /**
@@ -145,6 +147,7 @@ public interface RelationStep extends Step {
      *
      * @return A string representation of this RelationStep.
      */
+    @Override
     public String toString();
 
 }
