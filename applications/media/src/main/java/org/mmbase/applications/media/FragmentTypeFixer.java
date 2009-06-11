@@ -26,10 +26,21 @@ public class FragmentTypeFixer implements CommitProcessor {
 
     public void commit(Node node, Field field) {
         if (! node.isNew()) {
-            NodeList fragments = node.getRelatedNodes(node.getCloud().getNodeManager("mediafragments"), "related", "source");
-            NodeManager targetType = node.getCloud().getNodeManager(node.getNodeManager().getProperty("org.mmbase.media.containertype"));
+            Cloud ntCloud = node.getCloud().getNonTransactionalCloud();
+            Node ntNode = ntCloud.getNode(node.getNumber());
+            NodeList fragments = ntNode.getRelatedNodes(ntCloud.getNodeManager("mediafragments"), "related", "source");
+            NodeManager targetType = ntCloud.getNodeManager(ntNode.getNodeManager().getProperty("org.mmbase.media.containertype"));
             for (Node fragment : fragments) {
-                fragment.setNodeManager(targetType);
+                if (fragment == null) {
+                    log.error("Fragment is null?");
+                    continue;
+                }
+                if (! fragment.getNodeManager().equals(targetType)) {
+                    log.service("Fixing type of " + node.getNumber() + " fragment " + fragment);
+                    fragment.setNodeManager(targetType);
+                } else {
+                    log.debug("Fragment of " + node.getNumber() + " has correct fragment already");
+                }
             }
         }
 
