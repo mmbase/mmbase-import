@@ -164,7 +164,7 @@ public class MagicParser implements DetectorProvider {
         boolean hexmode = false;
         //int l = s.length();
         char c;
-        StringBuffer numbuf = new StringBuffer();
+        StringBuilder numbuf = new StringBuilder();
 
         test = "";
 
@@ -224,7 +224,7 @@ public class MagicParser implements DetectorProvider {
             }
             i = m;
         } else {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
 
             int m = s.length();
             while (i < m) {
@@ -275,14 +275,14 @@ public class MagicParser implements DetectorProvider {
                                 }
                                 octalmode = false;
                                 backslashmode = false;
-                                buf = new StringBuffer();
+                                buf = new StringBuilder();
                                 buf.append('x');
                             } else {
                                 hexmode = true;
-                                numbuf = new StringBuffer();
+                                numbuf = new StringBuilder();
                                 if (buf.length() > 0) {
                                     test = test + buf.toString();
-                                    buf = new StringBuffer();
+                                    buf = new StringBuilder();
                                 }
                             }
                             break;
@@ -301,10 +301,10 @@ public class MagicParser implements DetectorProvider {
                                 if (buf.length() > 0) {
                                     //test.addElement(buf.toString());
                                     test = test + buf.toString();
-                                    buf = new StringBuffer();
+                                    buf = new StringBuilder();
                                 }
                                 octalmode = true;
-                                numbuf = new StringBuffer();
+                                numbuf = new StringBuilder();
                             }
                             numbuf.append(c);
                             break;
@@ -374,14 +374,14 @@ public class MagicParser implements DetectorProvider {
                     if (buf.length() > 0) {
                         //test.addElement(buf.toString());
                         test = test + buf.toString();
-                        buf = new StringBuffer();
+                        buf = new StringBuilder();
                     }
                     backslashmode = true;
                 } else if (c == ' ' || c == '\t' || c == '\n' || i == m - 1) { // Don't forget to set values on end of string
                     if (buf.length() > 0) {
                         //test.addElement(buf.toString());
                         test = test + buf.toString();
-                        buf = new StringBuffer();
+                        buf = new StringBuilder();
                     }
                     if (numbuf.length() > 0) {
                         if (octalmode) {

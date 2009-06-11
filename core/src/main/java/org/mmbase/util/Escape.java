@@ -30,7 +30,7 @@ public class Escape {
     static public String singlequote(String in) {
         if (in == null || in.indexOf('\'') == -1) return in;
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         char[] data = in.toCharArray();
         for (char element : data) {
             if (element == '\'') sb.append("''");
