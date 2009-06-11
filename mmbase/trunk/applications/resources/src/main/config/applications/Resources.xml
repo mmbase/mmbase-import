@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="Resources" maintainer="mmbase.org" version="1" auto-deploy="true">
+<application name="Resources" maintainer="mmbase.org" version="2" auto-deploy="true">
   <neededbuilderlist>
     <builder maintainer="mmbase.org" version="0">icaches</builder>
     <builder maintainer="mmbase.org" version="0">images</builder>
@@ -15,7 +15,9 @@
 
   <allowedrelationlist />
 
-  <datasourcelist />
+  <datasourcelist>
+    <datasource builder="images"   path="Resources/images.xml" />
+  </datasourcelist>
 
   <relationsourcelist />
 
