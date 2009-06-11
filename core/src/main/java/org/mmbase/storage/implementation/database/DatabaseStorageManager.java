@@ -603,8 +603,8 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 result = s.executeQuery();
                 if ((result != null) && result.next()) {
                     Blob blob = getBlobValue(result, 1, field, mayShorten);
-                    log.debug("Found from database " + blob + " " + blob.length());
                     if (blob != null) {
+                        log.debug("Found from database " + blob + " " + blob.length());
                         node.setSize(field.getName(), blob.length());
                     }
                     return blob;
