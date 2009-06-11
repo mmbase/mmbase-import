@@ -51,12 +51,12 @@ import org.mmbase.util.logging.*;
 
 public class Detector {
     private static final Logger log = Logging.getLoggerInstance(Detector.class);
-    
+
     // No configuration below
     private static final int BIG_ENDIAN = 0;
     private static final int LITTLE_ENDIAN = 1;
     private static final String[] label = new String[] { "big endian", "little endian" };
-    
+
     private String rawinput; // Original input line
     private int offset = -1;
     private String type;
@@ -237,7 +237,7 @@ public class Detector {
      * @return Conversion of 2 byte array to integer
      */
     private int byteArrayToInt(byte[] ar) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (byte element : ar) {
             buf.append(Integer.toHexString(element & 0x000000ff));
         }
@@ -248,13 +248,13 @@ public class Detector {
      * @return Conversion of 4 byte array to long
      */
     private long byteArrayToLong(byte[] ar) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (byte element : ar) {
             buf.append(Integer.toHexString(element & 0x000000ff));
         }
         return Long.decode("0x" + buf.toString()).longValue();
     }
-    
+
     /**
      * Test whether a string matches
      */
@@ -265,14 +265,14 @@ public class Detector {
             return false;
         }
 
-        int maxNeeded = offset + test.length(); 
+        int maxNeeded = offset + test.length();
 
         if (maxNeeded > lithmus.length) {
             return false;
         }
 
         try {
-            xString = new String(lithmus, offset, test.length(), "US-ASCII"); 
+            xString = new String(lithmus, offset, test.length(), "US-ASCII");
             // US-ASCII: fixate the charset, do not depend on platform default:
             //           US-ASCCII: one byte = one char, so length can be predicted
         } catch (java.io.UnsupportedEncodingException usee) { // could not happen: US-ASCII is supported
@@ -319,7 +319,7 @@ public class Detector {
                       "dumb string conversion: 0x"
                       + Integer.toHexString(lithmus[offset] & 0x000000ff)
                       + Integer.toHexString(lithmus[offset + 1] & 0x000000ff));
-            
+
             switch (testComparator) {
             case '=' :
                 log.debug(
@@ -373,7 +373,7 @@ public class Detector {
         }
         xInt = (int) found;
         // If it really is a long, we wouldn't want to know about it
-        
+
         if (test.equals("x")) {
             hasX = true;
             return true;
@@ -381,9 +381,9 @@ public class Detector {
             return false;
         } else {
             long v = Long.decode(test).longValue();
-            
+
             // Hm. How did that binary arithmatic go?
-            
+
             switch (testComparator) {
             case '=' :
                 log.debug("checking " + label[endian] + " long: " + Long.toHexString(v)
@@ -400,7 +400,7 @@ public class Detector {
             }
         }
     }
-    
+
     /**
      * Test whether a byte matches
      */
@@ -441,7 +441,7 @@ public class Detector {
     }
 
     protected String xmlEntities(String s) {
-        StringBuffer res = new StringBuffer();
+        StringBuilder res = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             switch (c) {
@@ -501,7 +501,7 @@ public class Detector {
      * @param level Indicates depth of (child) element
      */
     public void toXML(FileWriter f, int level) throws IOException {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         String comparatorEntity;
 
         char[] pad;
@@ -565,7 +565,7 @@ public class Detector {
         if (!valid) {
             return "parse error";
         } else {
-            StringBuffer res = new StringBuffer("[" + offset + "] {" + type);
+            StringBuilder res = new StringBuilder("[" + offset + "] {" + type);
             if (typeAND != null) {
                 res.append("[" + typeAND + "]");
             }

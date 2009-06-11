@@ -315,7 +315,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      */
 
     protected class ResourceFileWatcher extends FileWatcher {
-        private String resource;
+        private final String resource;
         ResourceFileWatcher(String resource) {
             this.resource = resource;
         }
