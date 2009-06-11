@@ -34,8 +34,10 @@ public class Related {
     public abstract static class  AbstractProcessor implements Processor {
 
         protected String role = "related";
-        private String type = "object";
+        private String type = null;
         private String typeProperty = null;
+        private String createType = null;
+        private String createTypeProperty = null;
         protected String searchDir = "destination";
         protected final Map<String, String> relationConstraints = new HashMap<String, String>();
         public void setRole(String r) {
@@ -46,6 +48,13 @@ public class Related {
         }
         public void setTypeProperty(String tp) {
             typeProperty = tp;
+        }
+
+        public void setCreateType(String t) {
+            createType = t;
+        }
+        public void setCreateTypeProperty(String tp) {
+            createTypeProperty = tp;
         }
 
         public void setSearchDir(String d) {
@@ -59,8 +68,25 @@ public class Related {
             Cloud cloud = node.getCloud();
             if(typeProperty != null) {
                 return cloud.getNodeManager(node.getNodeManager().getProperty(typeProperty));
-            } else {
+            } else if (type != null) {
                 return cloud.getNodeManager(type);
+            } else if(createTypeProperty != null) {
+                return cloud.getNodeManager(node.getNodeManager().getProperty(createTypeProperty));
+            } else if (createType != null) {
+                return cloud.getNodeManager(createType);
+            } else {
+                return cloud.getNodeManager("object");
+            }
+        }
+
+        protected NodeManager getRelatedCreateType(Node node) {
+            Cloud cloud = node.getCloud();
+            if(createTypeProperty != null) {
+                return cloud.getNodeManager(node.getNodeManager().getProperty(createTypeProperty));
+            } else if (createType != null) {
+                return cloud.getNodeManager(createType);
+            } else {
+                return getRelatedType(node);
             }
         }
 
@@ -123,6 +149,38 @@ public class Related {
         }
 
 
+    }
+
+
+    /**
+     * This get-processor can be used to implictely create the wanted related node too.
+     */
+    public static class Creator extends AbstractProcessor {
+        private static final long serialVersionUID = 1L;
+        public Object process(final Node node, final Field field, final Object value) {
+            Node relatedNode = getRelatedNode(node, field);
+            if (relatedNode == null) {
+                log.service("No related node of type " + getRelatedCreateType(node) + " for node " + node.getNumber() + ". Implicitely creating now.");
+                Node newNode = getRelatedCreateType(node).createNode();
+                newNode.commit();
+                RelationManager rel = getRelationManager(node);
+                Relation newrel = node.createRelation(newNode, rel);
+                for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
+                    newrel.setStringValue(entry.getKey(), entry.getValue());
+                }
+
+                newrel.commit();
+                if (node.getCloud() instanceof Transaction) {
+                    node.getCloud().setProperty(getKey(node, field),  newNode);
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("Created " + newrel);
+                    log.debug("Cloud: : " + node.getCloud().getProperties());
+
+                }
+            }
+            return value;
+        }
     }
 
     public static class Setter extends AbstractProcessor {
