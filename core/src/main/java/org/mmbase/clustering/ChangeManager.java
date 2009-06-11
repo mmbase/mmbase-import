@@ -32,7 +32,7 @@ public final class ChangeManager {
      * nodes' builders.
      * @param changes a map with node/change value pairs
      */
-    public void commit(Map<MMObjectNode,String> changes) {
+    public void commit(Map<MMObjectNode, String> changes) {
         for (Iterator<Map.Entry<MMObjectNode,String>> i = changes.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry<MMObjectNode,String> e = i.next();
             MMObjectNode node = e.getKey();
@@ -49,7 +49,7 @@ public final class ChangeManager {
      * @param node the node to commit the change of
      * @param change the type of change: "n": new, "c": commit, "d": delete, "r" : relation changed
      */
-    public void commit(MMObjectNode node, String change) {
+    private void commit(MMObjectNode node, char change) {
         MMObjectBuilder builder = node.getBuilder();
         //create a new local node event
         NodeEvent event = NodeEventHelper.createNodeEventInstance(node, NodeEvent.oldTypeToNewType(change), null);
@@ -69,5 +69,10 @@ public final class ChangeManager {
         }
 
         node.clearChanged();
+    }
+    public  void commit(MMObjectNode node, String change) {
+        for (int i = 0; i < change.length(); i++) {
+            commit(node, change.charAt(i));
+        }
     }
 }
