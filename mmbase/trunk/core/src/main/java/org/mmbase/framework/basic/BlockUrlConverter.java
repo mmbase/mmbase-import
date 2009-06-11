@@ -50,7 +50,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
         if (components == null) components = new HashSet<Component>();
         components.add(comp);
     }
-    
+
     /**
      * Explicitly add a block to make sure this BlockUrlConverter is only about that block.
     */
@@ -58,22 +58,22 @@ public abstract class BlockUrlConverter implements UrlConverter {
         Component comp = b.getComponent();
         addComponent(comp);
         Set<Block> bs = blocks.get(comp);
-        if (bs == null) { 
+        if (bs == null) {
             bs = new HashSet<Block>();
             blocks.put(comp, bs);
         }
         bs.add(b);
     }
-    
+
     /**
      * The components for which this UrlConverter can produce a 'nice' url. Or <code>null</code> if it
      * can do that for any component.
     */
     protected Collection<Component> getComponents() {
-        if (components == null) return ComponentRepository.getInstance().getComponents(); 
+        if (components == null) return ComponentRepository.getInstance().getComponents();
         return components;
     }
-    
+
     /**
      * The blocks for which this UrlConverter can produce a 'nice' url.
      *
@@ -81,7 +81,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
     protected Collection<Block> getBlocks(Component c) {
         Set<Block> bs = blocks.get(c);
         if (bs != null) {
-            return bs;            
+            return bs;
         } else {
             return c.getBlocks();
         }
@@ -103,7 +103,9 @@ public abstract class BlockUrlConverter implements UrlConverter {
                 log.debug("found explicit component " + component);
                 if (path != null && ! "".equals(path)) {
                     Block block =  component.getBlock(path);
-                    if (block == null) throw new FrameworkException("No such block '" + path + "' in component '" + component.getName() + "'");
+                    if (block == null) {
+                        throw new FrameworkException("No such block '" + path + "' in component '" + component.getName() + "'");
+                    }
                     return block;
                 } else {
                     return component.getDefaultBlock();
