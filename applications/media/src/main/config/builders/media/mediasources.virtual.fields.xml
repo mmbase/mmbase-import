@@ -18,13 +18,13 @@
       <setprocessor>
         <!-- This field is readonly for users, but _code_ could use this setter -->
         <class name="org.mmbase.datatypes.processors.Related$Setter">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="type">mediafragments</param>
           <param name="searchDir">source</param>
         </class>
       </setprocessor>
       <getprocessor>
         <class name="org.mmbase.datatypes.processors.Related$Getter">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="type">mediafragments</param>
           <param name="searchDir">source</param>
         </class>
       </getprocessor>
@@ -42,13 +42,13 @@
     <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="type">mediafragments</param>
           <param name="searchDir">source</param>
         </class>
       </setprocessor>
       <getprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Getter">
-          <param name="typeProperty">org.mmbase.media.containertype</param>
+          <param name="type">mediafragments</param>
           <param name="searchDir">source</param>
         </class>
       </getprocessor>
