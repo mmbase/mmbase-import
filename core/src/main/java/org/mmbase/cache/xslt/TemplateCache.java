@@ -40,7 +40,7 @@ public class TemplateCache extends Cache<Key, Templates> {
     private static final Logger log = Logging.getLoggerInstance(TemplateCache.class);
 
     private static int cacheSize = 50;
-    private static TemplateCache cache;
+    private static final TemplateCache cache = new TemplateCache(cacheSize);
 
     /**
      * The Source-s which are based on a file, are added to this FileWatcher, which wil invalidate
@@ -70,16 +70,17 @@ public class TemplateCache extends Cache<Key, Templates> {
     }
 
     static {
-        cache = new TemplateCache(cacheSize);
         cache.putCache();
         templateWatcher.setDelay(10 * 1000); // check every 10 secs if one of the stream source templates was change
         templateWatcher.start();
 
     }
 
+    @Override
     public String getName() {
         return "XSLTemplates";
     }
+    @Override
     public String getDescription() {
         return "XSL Templates";
     }
@@ -134,7 +135,7 @@ public class TemplateCache extends Cache<Key, Templates> {
      * When removing an entry (because of LRU e.g), then also the FileWatcher must be removed.
      */
 
-    public synchronized Templates remove(Key key) {
+    synchronized Templates remove(Key key) {
         if (log.isDebugEnabled()) log.debug("Removing " + key);
         Templates result = super.remove(key);
         String url = key.getURL();
@@ -149,6 +150,7 @@ public class TemplateCache extends Cache<Key, Templates> {
      * @throws RuntimeException
      **/
 
+    @Override
     public Templates put(Key key, Templates value) {
         throw new RuntimeException("wrong types in cache");
     }
@@ -221,6 +223,7 @@ class Key {
         this.src = src.getSystemId();
         this.uri = uri;
     }
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Key) {
             Key k = (Key) o;
@@ -229,6 +232,7 @@ class Key {
         }
         return false;
     }
+    @Override
     public int hashCode() {
         return 32 * (src == null ? 0 : src.hashCode()) + (uri == null ? 0 : uri.hashCode());
     }
@@ -243,6 +247,7 @@ class Key {
             return null;
         }
     }
+    @Override
     public String toString() {
         return "" + src + "/" + uri;
     }
