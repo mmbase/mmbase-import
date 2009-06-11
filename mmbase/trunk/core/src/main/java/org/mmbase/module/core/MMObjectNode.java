@@ -255,6 +255,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             oldBuilder = builder;
         }
         storeValue("otype", bul.getNumber());
+        delRelationsCache();
         builder = bul;
         parent = bul;
     }
