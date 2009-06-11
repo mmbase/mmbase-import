@@ -187,7 +187,9 @@ public class ProcessClosure {
             try {
                 process.waitFor();
             } catch (InterruptedException e) {
-                log.service("Interrupted");
+                log.service("Interrupted. Destroying process");
+                process.destroy();
+                finished = true;
                 return;
             }
             try {
