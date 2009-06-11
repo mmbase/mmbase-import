@@ -61,6 +61,7 @@ public class ImageTag extends FieldTag {
     private Attribute border      = Attribute.NULL;
     private Attribute hspace      = Attribute.NULL;
     private Attribute vspace      = Attribute.NULL;
+    private Attribute xmlns       = Attribute.NULL;
 
 
     private Attribute altAttribute = Attribute.NULL;
@@ -140,6 +141,13 @@ public class ImageTag extends FieldTag {
      */
     public void setDisposition(String d) throws JspTagException {
         disposition = getAttribute(d, true);
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public void setXmlnamespace(String x) throws JspTagException {
+        xmlns = getAttribute(x, true);
     }
 
     private int getMode() throws JspTagException {
@@ -376,6 +384,7 @@ public class ImageTag extends FieldTag {
         attributes.append((border != Attribute.NULL) ? (" border=\"" + border.getString(this) + "\"") : "");
         attributes.append((hspace != Attribute.NULL) ? (" hspace=\"" + hspace.getString(this) + "\"") : "");
         attributes.append((vspace != Attribute.NULL) ? (" vspace=\"" + vspace.getString(this) + "\"") : "");
+        attributes.append((xmlns != Attribute.NULL) ? (" xmlns=\"" + xmlns.getString(this) + "\"") : "");
         return attributes.toString();
     }
 
