@@ -36,6 +36,7 @@ public class ResultCache extends Cache<String, String> {
     private static ResultCache cache;
 
 
+    @Override
     protected int getDefaultMaxEntrySize() {
         return 1500;
     }
@@ -52,9 +53,11 @@ public class ResultCache extends Cache<String, String> {
         cache.putCache();
     }
 
+    @Override
     public String getName() {
         return "XSLTResults";
     }
+    @Override
     public String getDescription() {
         return "XSL Transformation Results";
     }
@@ -82,7 +85,8 @@ public class ResultCache extends Cache<String, String> {
      *
      * @todo Generate this key faster and smaller
      */
-    private StringBuffer append(StringBuffer buf, Node node) {
+    @SuppressWarnings("fallthrough")
+    private StringBuilder append(StringBuilder buf, Node node) {
         switch(node.getNodeType()) {
         case Node.ATTRIBUTE_NODE:
             buf.append(node.getNodeName()).append(node.getNodeValue());
@@ -114,8 +118,16 @@ public class ResultCache extends Cache<String, String> {
      * @todo Generate this key faster and smaller
      */
     private String getKey(Source xsl, Map params, Properties props, Document src) {
-        StringBuffer key = new StringBuffer(""+(xsl.getSystemId() + "/" + (params != null ? params.toString() : "")  + "/" + (props != null ? props.toString() : "")+ "/"));
-
+        StringBuilder key = new StringBuilder(xsl.getSystemId());
+        key.append('/');
+        if (params != null) {
+            key.append(params.toString());
+        }
+        key.append('/');
+        if (props != null) {
+          key.append(props.toString());
+        }
+        key.append('/');
         return append(key, src.getDocumentElement()).toString();
     }
 

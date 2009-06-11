@@ -103,6 +103,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     /**
      * Puts a search result in this cache.
      */
+    @Override
     public List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
         if (!checkCachePolicy(query)) return null;
         if (query instanceof BasicQuery) {
@@ -157,6 +158,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
         }
     }
 
+    @Override
     public String toString() {
         return this.getClass().getName() + " " + getName();
     }
@@ -327,6 +329,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     }
 
 
+    @Override
     public void clear(){
         super.clear();
         releaseStrategy.clear();

@@ -273,7 +273,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
     }
 
-    static abstract class AbstractConstraintMatcher {
+    protected static abstract class AbstractConstraintMatcher {
 
         /**
          * @param valuesToMatch the field values that the constraint value will have to be matched against.
@@ -287,6 +287,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
          * @return true if the wrapped constraint matches the node event
          */
         abstract public boolean eventApplies(Map<String,Object> valuesToMatch, NodeEvent event);
+        @Override
         abstract public String toString();
     }
 
