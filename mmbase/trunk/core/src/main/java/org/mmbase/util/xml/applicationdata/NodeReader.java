@@ -99,8 +99,7 @@ public class NodeReader extends DocumentReader {
         while (n1 != null) {
             MMObjectBuilder bul = mmbase.getMMObject(n1.getNodeName());
             if (bul == null) {
-                log.error(
-                          "Can't get builder with name: '" + n1.getNodeName() + "'");
+                log.error("Can't get builder with name: '" + n1.getNodeName() + "'");
             } else {
                 Node n2 = n1.getFirstChild();
                 while (n2 != null) {
@@ -165,7 +164,9 @@ public class NodeReader extends DocumentReader {
             if ("".equals(value) && ! bul.getField(key).isRequired()) {
                 value = null;
             }
-            if (value == null) {
+            if (value == null &&
+                type != Field.TYPE_BINARY // binaries are handled specially
+                ) {
                 newNode.setValue(key, null);
                 return;
             }
@@ -211,7 +212,7 @@ public class NodeReader extends DocumentReader {
                 NamedNodeMap nm2 = n5.getAttributes();
                 Node n7 = nm2.getNamedItem("file");
                 try {
-                    if(loadBinaries){
+                    if(loadBinaries) {
                         newNode.setValue(key, readBytesStream(n7.getNodeValue()));
                     }
                     else{
