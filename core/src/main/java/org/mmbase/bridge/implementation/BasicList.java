@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 public class BasicList<E extends Comparable<? super E>> extends AbstractList<E> implements BridgeList<E>, java.io.Serializable, RandomAccess  {
-
+    private static final long serialVersionUID = 5940343949744992633L;
     private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
     private final Map<Object, Object> properties = new HashMap<Object, Object>();

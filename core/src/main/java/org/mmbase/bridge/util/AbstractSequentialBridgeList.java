@@ -50,6 +50,7 @@ abstract public  class AbstractSequentialBridgeList<E extends Comparable<? super
     public void sort(Comparator<? super E> comparator) {
         Collections.sort(this, comparator);
     }
+    @Override
     abstract public BridgeList<E> subList(int a, int b);
 
 

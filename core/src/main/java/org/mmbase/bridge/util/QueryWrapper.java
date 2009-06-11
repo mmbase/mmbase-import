@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util;
 
 import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
 
 /**
  * Implementation of {@link Query} completely based on other instance of that.
@@ -25,8 +24,5 @@ public class QueryWrapper extends AbstractQueryWrapper<Query> implements Query {
     public QueryWrapper(Query q) {
         super(q);
     }
-
-
-
 
 }
