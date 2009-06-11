@@ -203,6 +203,16 @@
       <handler mimetype="text/html,application/xml+xhtml" name="org.mmbase.datatypes.handlers.html.AreaHandler" />
       -->
       <pattern value="(?s)\A.*\z" />
+
+      <specialization id="origin-trace">
+        <description xml:lang="en">
+          Automaticly fills the java-stack trace in the value (if it is still null) on commit.
+          This debug aid can be used to trace which code, and why, committed the node.
+        </description>
+        <commitprocessor>
+          <class name="org.mmbase.datatypes.processors.OriginTrace" />
+        </commitprocessor>
+      </specialization>
     </specialization>
 
     <specialization id="requiredfield">
