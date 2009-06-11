@@ -53,7 +53,7 @@ public class ChainedUrlConverter implements UrlConverter {
         });
 
     public static String URLCONVERTER = "org.mmbase.urlconverter";
-    
+
     /**
      * List containing the UrlConverters found in the framework configuration.
      */
@@ -74,7 +74,7 @@ public class ChainedUrlConverter implements UrlConverter {
             }
         }
     }
-    
+
     public boolean contains(UrlConverter u) {
         return uclist.contains(u);
     }
@@ -107,11 +107,11 @@ public class ChainedUrlConverter implements UrlConverter {
 //         return Link.NULL;
 //     }
 
-    
+
     /**
      * The default weight of the UrlConverters. An Url proposal by an UrlConverter receives a weight
      * upon which is decided which one should resolve the request.
-     */    
+     */
     public int getDefaultWeight() {
         return 0;
     }
@@ -144,8 +144,8 @@ public class ChainedUrlConverter implements UrlConverter {
     }
 
     /**
-     * The URL to be printed in a page, the 'nice' url. This method requests an url proposal from 
-     * {@link #getProposal} and decides upon their weight which one prevails. 
+     * The URL to be printed in a page, the 'nice' url. This method requests an url proposal from
+     * {@link #getProposal} and decides upon their weight which one prevails.
      */
     public Url getUrl(String path,
                       Map<String, ?> params,
@@ -165,8 +165,8 @@ public class ChainedUrlConverter implements UrlConverter {
         }
         return result;
     }
-    
-    
+
+
     /**
      * Basically the same as {@link #getUrl} but for a Processor url.
      */
@@ -189,19 +189,26 @@ public class ChainedUrlConverter implements UrlConverter {
 
     /**
      * The 'technical' url. The 'nice' urls received by FrameworkFilter resolve to these. This method
-     * decides upon their weight which of the proposed technical url's by the UrlConverters matches 
+     * decides upon their weight which of the proposed technical url's by the UrlConverters matches
      * the 'nice' url.
      */
     public Url getInternalUrl(String path,
                               Map<String, ?> params,
                               Parameters frameworkParameters) throws FrameworkException {
         Url result = Url.NOT;
+        Parameters fwParams = null;
         for (UrlConverter uc : uclist) {
-            Url proposal = getProposal(uc.getInternalUrl(path, params, frameworkParameters), frameworkParameters);
+            Parameters clone = new Parameters(frameworkParameters);
+            Url proposal = getProposal(uc.getInternalUrl(path, params, clone), clone);
             if (proposal.getWeight() > result.getWeight()) {
                 result = proposal;
+                fwParams = clone;
+
             }
 
+        }
+        if (fwParams != null) {
+            frameworkParameters.setAll(fwParams);
         }
         return result;
     }
