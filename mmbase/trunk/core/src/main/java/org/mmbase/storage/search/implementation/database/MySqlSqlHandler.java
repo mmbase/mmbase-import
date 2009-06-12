@@ -85,6 +85,20 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         return true; // necessary for the larger strings which are stored in blobs
     }
 
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    @Override protected String appendPreField(StringBuilder sb, FieldConstraint constraint, StepField field, boolean multiple) {
+        if (constraint instanceof FieldCompareConstraint) {
+            FieldCompareConstraint compare = (FieldCompareConstraint) constraint;
+            if (field.getType() == Field.TYPE_STRING && compare.isCaseSensitive()) {
+                sb.append(" BINARY ");
+            }
+        }
+        return null;
+    }
+
     @Override protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" LIKE BINARY ");

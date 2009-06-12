@@ -706,6 +706,13 @@ public class BasicSqlHandler implements SqlHandler {
         }
     }
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    protected String appendPreField(StringBuilder sb, FieldConstraint constraint, StepField field, boolean multiple) {
+        return null;
+    }
+
     // javadoc is inherited
     // XXX what exception to throw when an unsupported constraint is
     // encountered (currently throws UnsupportedOperationException)?
@@ -744,8 +751,12 @@ public class BasicSqlHandler implements SqlHandler {
                     appendField(sb, step, fieldName, multipleSteps);
                     sb.append(")");
                 } else {
+                    String after = appendPreField(sb, fieldConstraint, field, multipleSteps);
                     // case sensitive or case irrelevant
                     appendField(sb, step, fieldName, multipleSteps);
+                    if (after != null) {
+                        sb.append(after);
+                    }
                 }
 
                 if (values.size() > 1) {
@@ -827,8 +838,13 @@ public class BasicSqlHandler implements SqlHandler {
                     // case insensitive and database needs it
                     appendLowerField(sb, step, fieldName, multipleSteps);
                 } else {
+                    String after = appendPreField(sb, fieldConstraint, field, multipleSteps);
+                    // case sensitive or case irrelevant
                     // case sensitive or case irrelevant
                     appendField(sb, step, fieldName, multipleSteps);
+                    if (after != null) {
+                        sb.append(after);
+                    }
                 }
                 switch (fieldCompareConstraint.getOperator()) {
                 case FieldCompareConstraint.LESS:
