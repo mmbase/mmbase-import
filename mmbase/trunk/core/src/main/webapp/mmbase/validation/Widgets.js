@@ -321,7 +321,11 @@ Widgets.prototype.labelsToInputs = function(selector, options) {
                 input.val(labelText);
                 input.addClass("untouched");
                 if (input.attr("type") == 'password') {
-                    input.attr("type", "text");
+                    try {
+                        input.attr("type", "text");
+                    } catch (e) {
+                        // happens in text/html FF, never mind...
+                    }
                     input.addClass("password");
                 }
                 $(this).css("display", "none");
@@ -333,7 +337,11 @@ Widgets.prototype.labelsToInputs = function(selector, options) {
                         }
                         this.value = "";
                         if ($(this).hasClass("password")) {
-                            $(this).attr("type", "password");
+                            try {
+                                $(this).attr("type", "password");
+                            } catch (e) {
+                                // happens in text/html FF, never mind...
+                            }
                         }
                     }
                 };
@@ -348,7 +356,11 @@ Widgets.prototype.labelsToInputs = function(selector, options) {
                         if ($(this).hasClass("untouched")) {
                             $(this).val(labelText);
                             if ($(this).hasClass("password")) {
-                                $(this).attr("type", "text");
+                                try {
+                                    $(this).attr("type", "text");
+                                } catch (e) {
+                                    // happens in text/html FF, never mind...
+                                }
                             }
                         }
                     }
