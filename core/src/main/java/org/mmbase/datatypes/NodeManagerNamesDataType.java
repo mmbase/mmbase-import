@@ -47,6 +47,7 @@ public class NodeManagerNamesDataType extends StringDataType {
         if (defaultValue != null) {
             for (String def : Casting.toString(defaultValue).split("\\s*,\\s*")) {
                 log.debug("Considering " + def);
+                if (cloud == null) cloud = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase");
                 if (cloud.hasNodeManager(def)) return def;
             }
         }
