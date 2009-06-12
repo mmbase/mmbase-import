@@ -88,7 +88,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      * @return a Cloud
      */
     public Cloud getCloudVar() throws JspTagException {
-        CloudProvider provider = findCloudProvider(false);
+        CloudProvider provider = findCloudProvider(cloudId.getString(this).length() > 0);
         if (provider != null) return provider.getCloudVar();
         Cloud c = (Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE);
         if (c != null) return c;
