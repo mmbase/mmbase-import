@@ -56,7 +56,11 @@ public abstract class HtmlHandler  extends AbstractHandler<String> {
 
     protected void appendNameId(StringBuilder buf, Request request, Field field) {
         buf.append("name=\"").append(request.getName(field)).append("\" ");
-        buf.append("id=\"").append(id(request.getName(field))).append("\" ");
+        buf.append("id=\"").append(id(request, field)).append("\" ");
+    }
+
+    public String id(Request request, Field field) {
+        return id(request.getName(field));
     }
 
     protected String prefixError(Request request, Field f)  {
