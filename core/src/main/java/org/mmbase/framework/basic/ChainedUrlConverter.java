@@ -151,17 +151,23 @@ public class ChainedUrlConverter implements UrlConverter {
                       Map<String, ?> params,
                       Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         Url result = Url.NOT;
+        Parameters fwParams = null;
         if (log.isDebugEnabled()) {
             log.debug("Producing " + path + " " + params + " " + frameworkParameters);
         }
         for (UrlConverter uc : uclist) {
-            Url proposal = getProposal(uc.getUrl(path, params, frameworkParameters, escapeAmps), frameworkParameters);
+            Parameters clone = new Parameters(frameworkParameters);
+            Url proposal = getProposal(uc.getUrl(path, params, clone, escapeAmps), frameworkParameters);
             if (proposal.getWeight() > result.getWeight()) {
                 result = proposal;
+                fwParams = clone;
             }
         }
         if (result == Url.NOT) {
             log.debug("Could not produce URL for " + path + " " + params + " " + frameworkParameters);
+        }
+        if (fwParams != null) {
+            frameworkParameters.setAll(fwParams);
         }
         return result;
     }
@@ -174,14 +180,20 @@ public class ChainedUrlConverter implements UrlConverter {
                                 Map<String, ?> params,
                                 Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         Url result = Url.NOT;
+        Parameters fwParams = null;
         if (log.isDebugEnabled()) {
             log.debug("Producing process url " + path + " " + params + " " + frameworkParameters);
         }
         for (UrlConverter uc : uclist) {
-            Url proposal = getProposal(uc.getProcessUrl(path, params, frameworkParameters, escapeAmps), frameworkParameters);
+            Parameters clone = new Parameters(frameworkParameters);
+            Url proposal = getProposal(uc.getProcessUrl(path, params, clone, escapeAmps), frameworkParameters);
             if (proposal.getWeight() > result.getWeight()) {
                 result = proposal;
+                fwParams = clone;
             }
+        }
+        if (fwParams != null) {
+            frameworkParameters.setAll(fwParams);
         }
         return result;
     }
