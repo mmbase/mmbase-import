@@ -136,6 +136,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
         // First explore
         Block block = getExplicitBlock(path, frameworkParameters);
         if (block != null) {
+            log.debug("Explicit block found " + block);
             Component component = block.getComponent();
             if (!getComponents().contains(component) || !getBlocks(component).contains(block)) {
                 log.debug("Explicit block, but not from this component or not the right block");
@@ -146,13 +147,20 @@ public abstract class BlockUrlConverter implements UrlConverter {
 
         boolean filteredMode = isFilteredMode(frameworkParameters);
 
+        log.debug("No explit block found. Filtered : " + filteredMode);
+
+
         if (filteredMode) {
             if (state.isRendering() && state.getDepth() == 0) {
                 Block stateBlock = state.getBlock();
+                log.debug("Rendering " + stateBlock);
                 if (components == null || components.contains(stateBlock.getComponent())) {
                     if (path != null && ! "".equals(path)) {
-                        return stateBlock.getComponent().getBlock(path);
+                        Block b = stateBlock.getComponent().getBlock(path);
+                        log.debug("Returing block " + b + " from " + path + " of "  + stateBlock.getComponent());
+                        return b;
                     } else {
+                        log.debug("Returing " + stateBlock);
                         return stateBlock;
                     }
                 } else {
@@ -192,9 +200,11 @@ public abstract class BlockUrlConverter implements UrlConverter {
     protected final Url getUrl(String path,
                                Map<String, ?> parameters,
                                Parameters frameworkParameters, boolean escapeAmps, boolean action) throws FrameworkException {
+        log.debug("1path: " +  path);
         Block block = getBlock(path, frameworkParameters);
-        log.debug("path: " + path);
+        log.debug("2path: " + path + "->" + block);
         if (block != null) {
+            log.info("URL for block " + block);
             Map<String, Object> map = new HashMap<String, Object>();
             Url niceUrl;
             Parameters blockParameters = block.createParameters();
