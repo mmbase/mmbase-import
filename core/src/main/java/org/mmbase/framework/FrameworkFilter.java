@@ -205,6 +205,9 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             if (frameworkParameters.containsParameter(Parameter.RESPONSE)) {
                 frameworkParameters.set(Parameter.RESPONSE, res);
             }
+            if (frameworkParameters.containsParameter(Parameter.CLOUD)) {
+                frameworkParameters.set(Parameter.CLOUD, org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase"));
+            }
             try {
                 @SuppressWarnings("unchecked")
                 String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), frameworkParameters);
