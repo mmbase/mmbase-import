@@ -123,6 +123,11 @@ See http://www.MMBase.org/license
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
     </dependency>
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+      <scope>runtime</scope>
+    </dependency>
 
     <!--
     <dependency>
