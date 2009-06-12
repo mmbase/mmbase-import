@@ -165,22 +165,33 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
 
         Framework framework = Framework.getInstance();
 
-        HttpServletRequest req = (HttpServletRequest) tag.getPageContext().getRequest();
-        Parameters frameworkParameters = (Parameters) req.getAttribute(FrameworkFilter.PARAMS_KEY);
 
-        if (frameworkParameters == null) {
-            frameworkParameters = framework.createParameters();
-            log.debug("Not found from filter, created " + frameworkParameters);
-        } else {
-            log.debug("Found fw parameter from filter " + frameworkParameters);
+        Parameters frameworkParameters;
+
+        {
+            final HttpServletRequest req = (HttpServletRequest) tag.getPageContext().getRequest();
+            final Parameters filterFrameworkParameters = (Parameters) req.getAttribute(FrameworkFilter.PARAMS_KEY);
+
+            if (filterFrameworkParameters == null) {
+                frameworkParameters = framework.createParameters();
+                log.debug("Not found from filter, created " + frameworkParameters);
+            } else {
+                frameworkParameters = new Parameters(filterFrameworkParameters);
+                log.debug("Found fw parameter from filter " + frameworkParameters);
+
+                // clone because should not  _change_ the actual parameters
+            }
+            frameworkParameters.setAutoCasting(true);
+            tag.fillStandardParameters(frameworkParameters);
         }
-        frameworkParameters.setAutoCasting(true);
-        tag.fillStandardParameters(frameworkParameters);
 
 
         if (page != null || page.length() > 0) {
-            frameworkParameters.setIfDefined(Framework.BLOCK, null);
-            frameworkParameters.setIfDefined(Framework.COMPONENT, null);
+            String curBlock = frameworkParameters.get(Framework.BLOCK);
+            if (page.equals(curBlock)) {
+                frameworkParameters.setIfDefined(Framework.BLOCK, null);
+            }
+            //            frameworkParameters.setIfDefined(Framework.COMPONENT, null);
         }
 
         if (frameworkParams != null) {
