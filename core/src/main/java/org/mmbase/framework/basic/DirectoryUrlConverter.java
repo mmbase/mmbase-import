@@ -78,7 +78,9 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
                                          Parameters frameworkParameters,  boolean action) throws FrameworkException;
 
     @Override public boolean isFilteredMode(Parameters frameworkParameters) throws FrameworkException {
-        if (directory == null) throw new RuntimeException("Directory not set");
+        if (directory == null) {
+            throw new RuntimeException("Directory not set");
+        }
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         String path = FrameworkFilter.getPath(request);
         log.debug("Found path from request " + path);
