@@ -61,7 +61,9 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
             if (categoryName != null) {
                 boolean categoryOk = false;
                 Block.Type[] mmbaseBlocks = ComponentRepository.getInstance().getBlockClassification("mmbase." + categoryName);
-                if (mmbaseBlocks.length == 0) throw new FrameworkException("No such category mmbase." + categoryName);
+                if (mmbaseBlocks.length == 0) {
+                    throw new FrameworkException("No such category mmbase." + categoryName);
+                }
                 return mmbaseBlocks[0].getBlocks().get(0);
             }
             return null;
