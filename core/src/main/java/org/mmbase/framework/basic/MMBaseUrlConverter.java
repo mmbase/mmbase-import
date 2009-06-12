@@ -56,7 +56,7 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
 
     @Override public Block getBlock(String path, Parameters frameworkParameters) throws FrameworkException {
         Block block = super.getBlock(path, frameworkParameters);
-        if (block == null) {
+        if (block == null && (path == null || "".equals(path))) {
             String categoryName = frameworkParameters.get(CATEGORY);
             if (categoryName != null) {
                 boolean categoryOk = false;

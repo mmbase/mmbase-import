@@ -157,7 +157,7 @@ public class ChainedUrlConverter implements UrlConverter {
         }
         for (UrlConverter uc : uclist) {
             Parameters clone = new Parameters(frameworkParameters);
-            Url proposal = getProposal(uc.getUrl(path, params, clone, escapeAmps), frameworkParameters);
+            Url proposal = getProposal(uc.getUrl(path, params, clone, escapeAmps), clone);
             if (proposal.getWeight() > result.getWeight()) {
                 result = proposal;
                 fwParams = clone;
@@ -186,7 +186,7 @@ public class ChainedUrlConverter implements UrlConverter {
         }
         for (UrlConverter uc : uclist) {
             Parameters clone = new Parameters(frameworkParameters);
-            Url proposal = getProposal(uc.getProcessUrl(path, params, clone, escapeAmps), frameworkParameters);
+            Url proposal = getProposal(uc.getProcessUrl(path, params, clone, escapeAmps), clone);
             if (proposal.getWeight() > result.getWeight()) {
                 result = proposal;
                 fwParams = clone;
