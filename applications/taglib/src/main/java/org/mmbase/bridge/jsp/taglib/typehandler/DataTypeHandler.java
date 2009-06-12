@@ -146,7 +146,7 @@ public class DataTypeHandler implements TypeHandler {
 
 
     public String htmlInputId(Node node, Field field) throws JspTagException {
-        throw new UnsupportedOperationException();
+        return handler.id(request, field);
     }
 
 
