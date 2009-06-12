@@ -28,6 +28,12 @@ public interface Handler<C> extends java.io.Serializable {
 
 
     /**
+     * Generates a unique id for the field in the request
+     * @since MMBase-1.9.2
+     */
+    String id(Request request, Field field);
+
+    /**
      * Produces an form input field for the given Node, and Field.
      * @param search if true, then a search field is produced.
      */
