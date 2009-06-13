@@ -108,46 +108,24 @@
            No support for http-equiv meta headers.
            Framework should issue real http headers.
       -->
-      <xsl:if test="$descendants/meta[@name = 'author']">
-        <meta name="author">
-          <xsl:attribute name="content">
-            <xsl:for-each select="$descendants/meta[@name='author']">
-              <xsl:if test="position() &gt; 1 and string-length(@content) &gt; 0">, </xsl:if>
-              <xsl:value-of select="@content" />
-            </xsl:for-each>
-          </xsl:attribute>
-        </meta>
-      </xsl:if>
-      <xsl:if test="$descendants/meta[@name = 'keywords']">
-        <meta name="keywords">
-          <xsl:attribute name="content">
-            <xsl:for-each select="$descendants/meta[@name='keywords']">
-              <xsl:if test="position() &gt; 1 and string-length(@content) &gt; 0">, </xsl:if>
-              <xsl:value-of select="@content" />
-            </xsl:for-each>
-          </xsl:attribute>
-        </meta>
-      </xsl:if>
-      <xsl:if test="$descendants/meta[@name = 'description']">
-        <meta name="description">
-          <xsl:attribute name="content">
-            <xsl:for-each select="$descendants/meta[@name='description']">
-              <xsl:if test="position() &gt; 1 and string-length(@content) &gt; 0">, </xsl:if>
-              <xsl:value-of select="@content" />
-            </xsl:for-each>
-          </xsl:attribute>
-        </meta>
-      </xsl:if>
-      <xsl:if test="$descendants/meta[@name = 'revised']">
-        <meta name="revised">
-          <xsl:attribute name="content">
-            <xsl:for-each select="$descendants/meta[@name='revised']">
-              <xsl:if test="position() &gt; 1 and string-length(@content) &gt; 0">, </xsl:if>
-              <xsl:value-of select="@content" />
-            </xsl:for-each>
-          </xsl:attribute>
-        </meta>
-      </xsl:if>
+      <xsl:for-each select="$descendants/meta">
+        <xsl:choose>
+          <xsl:when test="string-length(@name) = 0">
+            <!-- ignore -->
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:variable name="name" select="@name" />
+            <meta name="{$name}">
+              <xsl:attribute name="content">
+                <xsl:for-each select="$descendants/meta[@name=$name]">
+                  <xsl:if test="position() &gt; 1 and string-length(@content) &gt; 0">, </xsl:if>
+                  <xsl:value-of select="@content" />
+                </xsl:for-each>
+              </xsl:attribute>
+            </meta>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:for-each>
 
       <meta name="generator" content="MMBase" />
 
