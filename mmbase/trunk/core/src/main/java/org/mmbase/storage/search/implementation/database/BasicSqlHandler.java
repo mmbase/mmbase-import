@@ -14,6 +14,7 @@ import org.mmbase.bridge.Field;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.Casting;
 import java.util.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -178,6 +179,14 @@ public class BasicSqlHandler implements SqlHandler {
                 sb.append("TRUE");
             } else {
                 sb.append("FALSE");
+            }
+        } else if (fieldType == Field.TYPE_NODE) {
+            if (value instanceof Number) {
+                sb.append(((Number) value).intValue());
+            } else if (value instanceof String) {
+                sb.append(((String) value));
+            } else {
+                sb.append(Casting.toString(value));
             }
         } else {
             // Numerical field:
