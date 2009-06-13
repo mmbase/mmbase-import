@@ -232,7 +232,12 @@ public  class BasicContextProvider implements ContextProvider {
                     String nameField = getContextNameField(contextBuilder.getTableName());
                     org.mmbase.core.CoreField field = contextBuilder.getField(nameField);
                     Object fieldValue = field.getDataType().cast(context, null, field);
-                    if (fieldValue == null) continue;
+                    if (fieldValue == null) {
+                        log.debug("Value " + nameField + ":" + fieldValue);
+                        continue;
+                    }
+                    log.debug("Value " + nameField + ":" + fieldValue.getClass() + " " + fieldValue);
+
                     BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(field), fieldValue);
                     query.setConstraint(constraint);
                     if (log.isDebugEnabled()) {
@@ -248,6 +253,7 @@ public  class BasicContextProvider implements ContextProvider {
                     }
                 } catch (IllegalArgumentException ie) {
                     log.warn("For " + query + " and " + context + " " + ie);
+                    log.debug(ie.getMessage(), ie);
                 } catch (SearchQueryException sqe) {
                     log.error(sqe.toString());
                 } catch (RuntimeException re) {

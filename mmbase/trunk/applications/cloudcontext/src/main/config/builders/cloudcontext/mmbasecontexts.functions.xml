@@ -21,4 +21,7 @@
   <function key="revoke">
     <class>org.mmbase.security.implementation.cloudcontext.ContextBuilderFunctions</class>
   </function>
+  <function key="may">
+    <class>org.mmbase.security.implementation.cloudcontext.ContextBuilderFunctions</class>
+  </function>
 </functionlist>

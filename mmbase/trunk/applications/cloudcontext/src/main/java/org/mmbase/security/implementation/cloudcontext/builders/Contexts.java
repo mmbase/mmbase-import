@@ -44,15 +44,6 @@ public class Contexts extends MMObjectBuilder {
     public final static Parameter<String> PARAMETER_OPERATION   = new Parameter<String>("operation", String.class);
     public final static Parameter<String> PARAMETER_GROUPORUSER = new Parameter<String>("grouporuser", String.class);
 
-    public final static Parameter[] MAY_PARAMETERS = {
-        Parameter.USER,
-        new Parameter<String>("usertocheck",  String.class),
-        PARAMETER_OPERATION
-
-    };
-
-
-
 
     /**
      * Things which must be cleared when some security objects change, can all be collected in this map
@@ -186,53 +177,6 @@ public class Contexts extends MMObjectBuilder {
         return groupOrUser;
     }
 
-    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
-        if (log.isDebugEnabled()) {
-            log.trace("executefunction of contexts " + function + " " + args);
-        }
-        if (function.equals("info")) {
-            List<Object> empty = new ArrayList<Object>();
-            Map<String,String> info = (Map<String,String>) super.executeFunction(node, function, empty);
-            info.put("may",          "" + MAY_PARAMETERS + " Checks a right for another user than yourself");
-
-            if (args == null || args.size() == 0) {
-                return info;
-            } else {
-                return info.get(args.get(0));
-            }
-        } else if (function.equals("may")) {
-            Parameters a = Functions.buildParameters(MAY_PARAMETERS, args);
-            MMObjectNode checkingUser = getUserNode(a.get(Parameter.USER));
-            if (checkingUser == null) {
-                throw new SecurityException("Self was not supplied");
-            }
-            // find the user first, the check if the current user actually has rights on the object
-            UserProvider users = Authenticate.getInstance().getUserProvider();
-            MMObjectNode userToCheck = users.getUserBuilder().getNode(a.getString("usertocheck"));
-            if (userToCheck == null) { // the user is null?
-                // I don't know then,
-                // yes perhaps?
-                return Boolean.TRUE;
-            }
-
-            // admin bypasses security system (maydo(mmobjectnode ... does not check for this)
-            if (users.getRank(checkingUser).getInt() < Rank.ADMIN_INT) {
-                if ((! mayDo(checkingUser, provider.getContextNode(userToCheck), Operation.READ, true))) {
-                    throw new SecurityException("You " + checkingUser + " / " + users.getRank(checkingUser) + " are not allowed to check user '" + userToCheck + "' of context '" + provider.getContextNode(userToCheck) + "' (you have no read rights on that context)");
-                }
-
-            }
-            // MMObjectNode contextNode = getContextNode(node);
-
-            if (mayDo(userToCheck, node, Operation.getOperation(a.getString(PARAMETER_OPERATION)), true)) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
-        } else {
-            return super.executeFunction(node, function, args);
-        }
-    }
 
 
 
