@@ -21,11 +21,13 @@ public class ImplementationSuite extends TestCase {
     /**
      * Sets up before each test.
      */
+    @Override
     public void setUp() throws Exception {}
     
     /**
      * Tears down after each test.
      */
+    @Override
     public void tearDown() throws Exception {}
     
     public static Test suite() {
