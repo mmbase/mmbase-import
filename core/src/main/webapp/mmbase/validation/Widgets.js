@@ -309,6 +309,9 @@ Widgets.prototype.twoMultiples = function(selector) {
 }
 
 
+
+
+
 Widgets.prototype.labelsToInputs = function(selector, options) {
     var emptyisuntouched = options && options['emptyisuntouched'];
     //var ignornon         = options && options['emptyisuntouched'];
@@ -318,16 +321,22 @@ Widgets.prototype.labelsToInputs = function(selector, options) {
             var labelFor = $(this).attr("for");
             var input = $("#" + labelFor);
             if (input.val() == "") {
-                input.val(labelText);
-                input.addClass("untouched");
                 if (input.attr("type") == 'password') {
                     try {
                         input.attr("type", "text");
                     } catch (e) {
                         // happens in text/html FF, never mind...
+                        var i = $("<input type='text' value='' id='" + input.attr("id") + " name='" + input.attr('name') + " class='" + input.attr("class") + "' />");
+                        input.before(i);
+                        input.hide();
+                        i[0].realInput = input;
+                        input = i;
+
                     }
                     input.addClass("password");
                 }
+                input.val(labelText);
+                input.addClass("untouched");
                 $(this).css("display", "none");
                 var focus = function() {
                     // if entered for the first time, remove the label value
@@ -340,7 +349,10 @@ Widgets.prototype.labelsToInputs = function(selector, options) {
                             try {
                                 $(this).attr("type", "password");
                             } catch (e) {
+                                $(this.realInput).show().focus();
+                                $(this).hide();
                                 // happens in text/html FF, never mind...
+
                             }
                         }
                     }
