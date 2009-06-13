@@ -204,7 +204,7 @@ public abstract class BlockUrlConverter implements UrlConverter {
         Block block = getBlock(path, frameworkParameters);
         log.debug("2path: " + path + "->" + block);
         if (block != null) {
-            log.info("URL for block " + block);
+            log.debug("URL for block " + block);
             Map<String, Object> map = new HashMap<String, Object>();
             Url niceUrl;
             Parameters blockParameters = block.createParameters();
