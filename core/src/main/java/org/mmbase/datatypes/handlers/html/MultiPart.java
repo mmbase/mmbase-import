@@ -14,6 +14,7 @@ import javax.servlet.http.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.SerializableInputStream;
+import org.mmbase.datatypes.handlers.html.upload.*;
 import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.*;
 import org.apache.commons.fileupload.servlet.*;
@@ -83,7 +84,8 @@ public class MultiPart {
 
         MMultipartRequest(HttpServletRequest req, String c) {
             try {
-                FileItemFactory factory = new DiskFileItemFactory();
+                UploadListener listener = new UploadListener(req, log.isDebugEnabled() ? 100 : 0);
+                FileItemFactory factory = new MonitoredDiskFileItemFactory(listener);
                 ServletFileUpload fu = new ServletFileUpload(factory);
                 fu.setHeaderEncoding("ISO-8859-1"); // if incorrect, it will be fixed later.
                 List fileItems = fu.parseRequest(req);
