@@ -52,6 +52,7 @@ public class BasicSqlHandlerTest extends TestCase {
     /**
      * Sets up before each test.
      */
+    @Override
     public void setUp() throws Exception {
         MMBaseContext.init();
         mmbase = MMBase.getMMBase();
@@ -71,6 +72,7 @@ public class BasicSqlHandlerTest extends TestCase {
     /**
      * Tears down after each test.
      */
+    @Override
     public void tearDown() throws Exception {}
 
     /** Test of init method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
