@@ -15,6 +15,7 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.security.Operation;
 import org.mmbase.security.UserContext;
+import org.mmbase.security.Rank;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.bridge.*;
 import java.util.*;
@@ -107,5 +108,40 @@ public class ContextBuilderFunctions {
         MMObjectNode groupOrUserNode = groups.getNode(groupOrUser.getNumber());
         return Verify.getInstance().getContextProvider().revoke((User) user, contextNode, groupOrUserNode, operation);
 
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public static boolean may(@Name("node") Node  context,
+                              @Name("user") UserContext user,
+                              @Name("usertocheck") String usertocheck,
+                              @Name("operation") Operation operation) {
+
+        MMObjectNode checkingUser = ((User) user).getNode();
+        if (checkingUser == null) {
+            throw new SecurityException("Self was not supplied");
+        }
+        // find the user first, the check if the current user actually has rights on the object
+        UserProvider users = Authenticate.getInstance().getUserProvider();
+        MMObjectNode userToCheck = users.getUserBuilder().getNode(usertocheck);
+        if (userToCheck == null) { // the user is null?
+            // I don't know then,
+            // yes perhaps?
+            return true;
+        }
+
+        ContextProvider provider = Verify.getInstance().getContextProvider();
+
+        // admin bypasses security system (maydo(mmobjectnode ... does not check for this)
+        if (users.getRank(checkingUser).getInt() < Rank.ADMIN_INT) {
+            if ((! provider.mayDoOnContext(checkingUser, provider.getContextNode(userToCheck), Operation.READ, true))) {
+                throw new SecurityException("You " + checkingUser + " / " + users.getRank(checkingUser) + " are not allowed to check user '" + userToCheck + "' of context '" + provider.getContextNode(userToCheck) + "' (you have no read rights on that context)");
+            }
+
+        }
+        Groups groups = Groups.getBuilder();
+        MMObjectNode contextNode = groups.getNode(context.getNumber());
+        return provider.mayDoOnContext(userToCheck, contextNode, operation, true);
     }
 }
