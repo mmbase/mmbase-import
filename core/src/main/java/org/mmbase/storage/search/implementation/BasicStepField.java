@@ -62,7 +62,7 @@ public class BasicStepField implements StepField {
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
         case Field.TYPE_NODE:
-            ok = value instanceof Number;
+            ok = value instanceof Number || value instanceof org.mmbase.bridge.Node;
             break;
 
             // String types.
