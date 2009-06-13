@@ -53,23 +53,21 @@
             <a href="${_}">Change a</a>
           </mm:link>
         </p>
-	<mm:form>
-	  <table>
-	    <tr><th>a</th><td><input name="a" value="${a}" /></td></tr>
-	    <tr><th>b</th><td><input name="b" value="${b}" /></td></tr>
-	    <tr><td colspan="100"><input type="submit" /></td></tr>
-	  </table>
+        <mm:form>
+          <table>
+            <tr><th>a</th><td><input name="a" value="${a}" /></td></tr>
+            <tr><th>b</th><td><input name="b" value="${b}" /></td></tr>
+            <tr><td colspan="100"><input type="submit" /></td></tr>
+          </table>
 
-	</mm:form>
+        </mm:form>
         <h2>Sub-component</h2>
         <p>
           Using mm:component <em>inside</em> this component. It should work as expected.
         </p>
         <mm:component name="core" block="servers" />
-        <!--
         <p>And another time, so that you can see, that states are distinct</p>
         <mm:component name="core" block="servers" />
-        -->
       </div>
     </c:otherwise>
   </c:choose>
