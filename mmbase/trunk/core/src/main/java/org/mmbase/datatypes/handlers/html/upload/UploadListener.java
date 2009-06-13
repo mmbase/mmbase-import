@@ -17,12 +17,12 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 public class UploadListener implements OutputStreamListener {
+
+    public static final String KEY = "org.mmbase.uploadInfo";
     private final HttpServletRequest request;
+    private final UploadInfo uploadInfo;
     private final long delay;
     private final long startTime;
-    private final int totalToRead;
-    private int totalBytesRead = 0;
-    private int totalFiles = -1;
 
     public UploadListener(HttpServletRequest request) {
         this(request, 0);
@@ -30,23 +30,25 @@ public class UploadListener implements OutputStreamListener {
     public UploadListener(HttpServletRequest request, long debugDelay) {
         this.request = request;
         this.delay = debugDelay;
-        this.totalToRead = request.getContentLength();
         this.startTime = System.currentTimeMillis();
+        this.uploadInfo = new UploadInfo(request.getContentLength());
     }
 
     public void start() {
-        totalFiles ++;
+        uploadInfo.fileIndex++;
         updateUploadInfo("start");
     }
 
     public void bytesRead(int bytesRead) {
-        totalBytesRead = totalBytesRead + bytesRead;
+        uploadInfo.bytesRead += bytesRead;
         updateUploadInfo("progress");
 
-        try {
-            Thread.sleep(delay);
-        } catch (InterruptedException e) {
-            //
+        if (delay > 0) {
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                //
+            }
         }
     }
 
@@ -63,7 +65,8 @@ public class UploadListener implements OutputStreamListener {
     }
 
     private void updateUploadInfo(String status) {
-        request.getSession().setAttribute("uploadInfo", new UploadInfo(totalFiles, totalToRead, totalBytesRead, getDelta(), status));
+        uploadInfo.setStatus(status);
+        request.getSession().setAttribute(KEY, uploadInfo);
     }
 
 }

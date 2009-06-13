@@ -17,18 +17,15 @@ package org.mmbase.datatypes.handlers.html.upload;
  */
 
 public class UploadInfo {
-    private long totalSize;
-    private long bytesRead;
-    private long elapsedTime;
-    private String status;
-    private int fileIndex;
+    private final long totalSize;
+    long bytesRead = 0;
+    long elapsedTime = 0;
+    String status = "init";
+    int fileIndex = -1;
 
-    public UploadInfo(int fileIndex, long totalSize, long bytesRead, long elapsedTime, String status) {
-        this.fileIndex = fileIndex;
+
+    public UploadInfo(long totalSize) {
         this.totalSize = totalSize;
-        this.bytesRead = bytesRead;
-        this.elapsedTime = elapsedTime;
-        this.status = status;
     }
 
     public String getStatus() {
@@ -41,10 +38,6 @@ public class UploadInfo {
 
     public long getTotalSize() {
         return totalSize;
-    }
-
-    public void setTotalSize(long totalSize) {
-        this.totalSize = totalSize;
     }
 
     public long getBytesRead() {
