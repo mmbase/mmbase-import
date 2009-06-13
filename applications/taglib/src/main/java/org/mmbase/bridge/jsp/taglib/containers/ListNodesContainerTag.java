@@ -147,7 +147,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
-            query = new NodeQueryWrapper(toNodeQuery(((AbstractQueryWrapper) getContextProvider().getContextContainer().getObject(cloneId))));
+            query = new NodeQueryWrapper(toNodeQuery((getContextProvider().getContextContainer().getObject(cloneId))));
             if (query == null) {
                 throw new JspTagException("No query found with id '" + cloneId + "' in " + getContextProvider().getContextContainer());
             }
