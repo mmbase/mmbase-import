@@ -28,8 +28,9 @@ i.e. format"ogg" codec="vorbis" will be prefered to format="*" codec="*"
   <map format="mid" codec="*">audio/midi</map>
   <map format="mp4" codec="*">video/mp4</map>
 
+  <map format="mpg" codec="*">video/mpeg</map>
+
   <map format="ogv" codec="*">video/ogg</map>
 
 
-  <map format="*"   codec="*">applications/octet-stream</map>
 </mimemapping>
