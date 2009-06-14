@@ -220,6 +220,24 @@ public class ApplicationReader extends org.mmbase.util.xml.DocumentReader {
     }
 
     /**
+     * @since MMBase-1.9.2
+     */
+    public Map<Integer, Runnable> getAfterDeployment() {
+        final Map<Integer, Runnable> result = new TreeMap<Integer, Runnable>();
+        for (Element element: getChildElements("application.afterdeployment", "runnable")) {
+            String v = element.getAttribute("version");
+            int version = "".equals(v) ? Integer.MAX_VALUE : Integer.parseInt(v);
+            try {
+                Runnable runnable = (Runnable) org.mmbase.util.xml.Instantiator.getInstance(element);
+                result.put(version, runnable);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Get the installation notices for this application
      */
     public String getInstallNotice() {
