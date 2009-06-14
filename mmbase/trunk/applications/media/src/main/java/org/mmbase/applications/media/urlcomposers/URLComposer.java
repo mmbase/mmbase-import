@@ -54,9 +54,15 @@ public class URLComposer  {
         if (this.info == null) this.info = new java.util.Hashtable<String, Object>();
     }
 
-    public MMObjectNode getSource()   { return source;  }
-    public MMObjectNode getProvider() { return provider;}
-    public Map<String, Object>          getInfo()     { return info; }
+    public MMObjectNode getSource()   {
+        return source;
+    }
+    public MMObjectNode getProvider() {
+        return provider;
+    }
+    public Map<String, Object>          getInfo()     {
+        return info;
+    }
 
     /**
      * The format of the produced URL. This is not necessarily the format of the source.
@@ -98,8 +104,8 @@ public class URLComposer  {
      * Extension will normally create URL's differently. They override this function.
      *
      */
-    protected StringBuffer getURLBuffer() {
-        StringBuffer buff = new StringBuffer(provider.getFunctionValue("url", null).toString());
+    protected StringBuilder getURLBuffer() {
+        StringBuilder buff = new StringBuilder(provider.getFunctionValue("url", null).toString());
         buff.append(source.getStringValue("url"));
         return buff;
     }

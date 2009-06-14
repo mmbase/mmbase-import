@@ -42,7 +42,7 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
     }
 
     @Override
-    protected StringBuffer  getURLBuffer() {
+    protected StringBuilder getURLBuffer() {
         List<String> servlets = MMBaseServlet.getServletMappings("media-" + format);
         String servlet;
         if (servlets == null || servlets.size() == 0) {
@@ -54,7 +54,7 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
             servlet = root  + servlets.get(0);
         }
 
-        return new StringBuffer("http://" + Config.host + servlet + "?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()) + "&source=" + (source == null ? "" : "" + source.getNumber()));
+        return new StringBuilder("http://" + Config.host + servlet + "?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()) + "&source=" + (source == null ? "" : "" + source.getNumber()));
 
     }
     @Override

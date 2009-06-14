@@ -32,7 +32,7 @@ public class RealSbURLComposer extends RealURLComposer {
     /**
      * Add the url to the buffer, but first remove the sb. or bb. prefix if it is in it already.
      */
-    static int addURL(StringBuffer buf, String url) {
+    static int addURL(StringBuilder buf, String url) {
         int length    = buf.length();
         buf.append(url);
         int lastSlash = length + url.lastIndexOf('/');
@@ -54,8 +54,8 @@ public class RealSbURLComposer extends RealURLComposer {
     }
 
     @Override
-    protected StringBuffer getURLBuffer() {
-        StringBuffer buff = new StringBuffer("rtsp://streams.omroep.nl");
+    protected StringBuilder getURLBuffer() {
+        StringBuilder buff = new StringBuilder("rtsp://streams.omroep.nl");
         int lastSlash = addURL(buff, source.getStringValue("url"));
         buff.insert(lastSlash + 1, getBandPrefix());
         RealURLComposer.getRMArgs(buff, fragment, info); // append time, title, als

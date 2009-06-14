@@ -45,9 +45,9 @@ public class CgiURLComposer extends RamURLComposer {
     }
 
     @Override
-    protected StringBuffer getURLBuffer() {
+    protected StringBuilder getURLBuffer() {
         String rootpath = provider.getStringValue("rootpath");
-        StringBuffer buff = new StringBuffer(provider.getStringValue("protocol") + "://cgi.omroep.nl" + rootpath);
+        StringBuilder buff = new StringBuilder(provider.getStringValue("protocol") + "://cgi.omroep.nl" + rootpath);
         buff.append(source.getStringValue("url"));
         RealURLComposer.getRMArgs(buff, fragment, info); // append time, title
         if (fragment == null) {

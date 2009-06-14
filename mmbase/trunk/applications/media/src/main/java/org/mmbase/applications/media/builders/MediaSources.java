@@ -82,6 +82,7 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean init() {
         boolean result = super.init();
 
@@ -468,6 +469,7 @@ public class MediaSources extends MMObjectBuilder {
         }
     }
 
+    @Override
     public boolean setValue(MMObjectNode node,String fieldName, Object value) {
         if ("format".equals(fieldName)) {
         }
@@ -480,10 +482,12 @@ public class MediaSources extends MMObjectBuilder {
      * (todo: which of commit,insert must be overriden?)
      */
 
+    @Override
     public boolean commit(MMObjectNode node) {
         checkFields(node);
         return super.commit(node);
     }
+    @Override
     public int insert(String owner, MMObjectNode node) {
         checkFields(node);
         return super.insert(owner, node);

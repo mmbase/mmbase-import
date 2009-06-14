@@ -109,7 +109,7 @@ public enum Format {
             for(Element map:reader.getChildElements("mimemapping", "map")) {
                 String format = reader.getElementAttributeValue(map, "format");
                 String codec = reader.getElementAttributeValue(map, "codec");
-                String mime = reader.getElementValue(map);
+                String mime = DocumentReader.getElementValue(map);
 
                 mimeMapping.put(format + "/" + codec,mime);
                 log.debug("Adding mime mapping " + format + "/" + codec + " -> " + mime);

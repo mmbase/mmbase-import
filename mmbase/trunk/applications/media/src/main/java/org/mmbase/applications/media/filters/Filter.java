@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface Filter {
     
-    public List<URLComposer> filter(List<URLComposer> urlcomposers);
-    public void configure(DocumentReader reader, Element e);
+    List<URLComposer> filter(List<URLComposer> urlcomposers);
+    void configure(DocumentReader reader, Element e);
 }
 
