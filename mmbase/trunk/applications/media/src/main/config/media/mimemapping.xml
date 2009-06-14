@@ -31,5 +31,5 @@ i.e. format"ogg" codec="vorbis" will be prefered to format="*" codec="*"
   <map format="ogv" codec="*">video/ogg</map>
 
 
-  <map format="*"   codec="*">audio/x-pn-realaudio</map>
+  <map format="*"   codec="*">applications/octet-stream</map>
 </mimemapping>
