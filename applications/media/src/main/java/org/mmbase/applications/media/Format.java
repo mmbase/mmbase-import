@@ -183,7 +183,7 @@ public enum Format {
     }
 
     public String getMimeType(String codec) {
-        String format = toString();
+        String format = toString().toLowerCase();
         if(format == null || format.equals("unknown")) {
             format = "*";
         }
@@ -192,22 +192,24 @@ public enum Format {
         }
 
         String mimeType = mimeMapping.get(format + "/" + codec);
-        while (mimeType == null) {
-            if (! codec.equals("*")) {
-                mimeType = mimeMapping.get(format + "/*");
-                if (mimeType != null) break;
-            }
-            if (! format.equals("*")) {
-                mimeType = mimeMapping.get("*/" + codec);
-                if (mimeType != null) break;
-            }
+        if(mimeType == null && ! codec.equals("*")) {
+            mimeType = mimeMapping.get(format + "/*");
+        }
+        if (mimeType == null && ! format.equals("*")) {
+            mimeType = mimeMapping.get("*/" + codec);
+        }
+        if (mimeType == null) {
             mimeType = mimeMapping.get("*/*");
-            if (mimeType == null) mimeType =  "application/octet-stream";
-            break;
+        }
+        if (mimeType == null) {
+            mimeType = MMBaseContext.getServletContext().getMimeType("test." + format);
+        }
+        if (mimeType == null) {
+            mimeType =  "application/octet-stream";
         }
 
         if (log.isDebugEnabled()) {
-            log.info("Finding mimetype for " + this + " -> " + mimeType + " (used " + mimeMapping + ")");
+            log.debug("Finding mimetype for " + this + " -> " + mimeType + " (used " + mimeMapping + ")");
         }
         return mimeType;
 
