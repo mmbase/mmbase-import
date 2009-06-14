@@ -198,13 +198,11 @@ a:hover {
   border-bottom: solid 1px white;
 }
 
-.filelisting .lastmodified, .filelisting .filesize {
-  border-right: solid 1px black;
-}
 .filelisting .lastmodified {
   width: 20ex;
 }
 .filelisting .filesize {
+  border-right: solid 1px black;
   width: 10ex;
 }
 
