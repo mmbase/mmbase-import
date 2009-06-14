@@ -102,6 +102,13 @@ See http://www.MMBase.org/license
       <artifactId>commons-fileupload</artifactId>
     </dependency>
     <dependency>
+      <!-- this is actually a depdency of commons-fileupload
+           which for some reason we have to maintain manually nowadays.
+      -->
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <scope>provided</scope>
