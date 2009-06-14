@@ -44,9 +44,9 @@ public final class Operation {
     public final static int CHANGECONTEXT_INT = CHANGE_CONTEXT_INT;
 
 
-    /** 
+    /**
      * A 'read' operation is acquiring an MMBase Node. We have no field-level granularity for the
-     * authorization. Having a {@link org.mmbase.bridge.Node} means that you 
+     * authorization. Having a {@link org.mmbase.bridge.Node} means that you
      */
     public final static Operation READ = new Operation(READ_INT, "read");
 
@@ -67,19 +67,19 @@ public final class Operation {
      */
     public final static Operation CHANGE_RELATION = new Operation(CHANGE_RELATION_INT, "change relation");
 
-    /** 
+    /**
      *Identifier for remove operation, which is used when removing a node */
     public final static Operation DELETE = new Operation(DELETE_INT, "delete");
 
-    /** 
-     * Identifier for change context operation, which is used when changing the context of a node 
+    /**
+     * Identifier for change context operation, which is used when changing the context of a node
      * @since MMBase-1.7
      */
     public final static Operation CHANGE_CONTEXT = new Operation(CHANGE_CONTEXT_INT, "change context");
 
     /**
      *	Private constructor, to prevent creation of new Operations
-     * @param level operation identifier 
+     * @param level operation identifier
      * @param description operation description
      */
     private Operation(int level, String description) {
@@ -113,9 +113,10 @@ public final class Operation {
      * the description of this operation
      */
     private final String description;
- 
-    /** retrieve a Operation by a given string 
-     * @param operationString the {@link Operation#toString()}   
+
+    /**
+     * retrieve a Operation by a given string
+     * @param operationString the {@link Operation#toString()}
      * @return Operation
      */
     public static Operation getOperation(String operationString) {
