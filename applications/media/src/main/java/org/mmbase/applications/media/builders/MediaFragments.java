@@ -244,8 +244,11 @@ public class MediaFragments extends MMObjectBuilder {
         Iterator<MMObjectNode> i = getSources(fragment).iterator();
         while (i.hasNext()) {
             MMObjectNode source = i.next();
-            MediaSources bul    = (MediaSources) source.getBuilder(); // cast everytime, because it can be extended
-            bul.getURLs(source, fragment, info, urls, cacheExpireObjects);
+            if (source != null) {
+                log.error("No sources builder!");
+                MediaSources bul    = (MediaSources) source.getBuilder(); // cast everytime, because it can be extended
+                bul.getURLs(source, fragment, info, urls, cacheExpireObjects);
+            }
         }
         return urls;
     }
