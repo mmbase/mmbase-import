@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.servlet;
 
 import org.mmbase.module.core.*;
-
+import org.mmbase.datatypes.processors.FormatFileSize;
 import java.util.*;
 import javax.servlet.http.*;
 import javax.servlet.*;
@@ -142,6 +142,7 @@ public class FileServlet extends BridgeServlet {
     }
 
 
+    private static final FormatFileSize formatFileSize = new FormatFileSize();
     protected void listing(HttpServletRequest req, HttpServletResponse resp, File directory) throws IOException {
         if ("true".equals(getInitParameter("listings"))) {
             resp.setContentType("application/xhtml+xml"); // We hate IE anyways.
@@ -174,15 +175,21 @@ public class FileServlet extends BridgeServlet {
             }
             result.append("<table>");
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.lastModified())) + "</td><td class='filename'><a href='.'>./</a></td></tr>");
+            result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.lastModified())) + "</td><td class='filesize'> </td><td class='filename'><a href='.'>./</a></td></tr>");
             if (! pathInfo.equals("/")) {
-                result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.getParentFile().lastModified()))  +"</td><td class='filename'><a href='..'>../</a></td></tr>");
+                result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.getParentFile().lastModified()))  +"</td><td class='filesize'> </td><td class='filename'><a href='..'>../</a></td></tr>");
             }
             for (File file : directory.listFiles()) {
                 String name = file.getName() + (file.isDirectory() ? "/" : "");
                 if (ignores(pathInfo + name)) continue;
 
-                result.append("<tr><td class='lastmodified'>" + df.format(new Date(file.lastModified())) + "</td><td class='filename'>");
+                result.append("<tr><td class='lastmodified'>");
+                result.append(df.format(new Date(file.lastModified())));
+                result.append("</td>");
+                result.append("<td class='filesize'>");
+                result.append(formatFileSize.process(null, null, file.length()));
+                result.append("</td>");
+                result.append("<td class='filename'>");
                 if (canRead(req, file)) {
                     result.append("<a href='" + name + "'>" + name + "</a>");
                 } else {
