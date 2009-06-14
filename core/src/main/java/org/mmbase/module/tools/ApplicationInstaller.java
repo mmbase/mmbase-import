@@ -164,18 +164,19 @@ class ApplicationInstaller {
                     && installRelDefs(reader.getNeededRelDefs(), result)
                     && installAllowedRelations(reader.getAllowedRelations(), result)
                     && installDataSources(reader.getDataSources(), applicationName, result)
-                    && installRelationSources(reader.getRelationSources(), applicationName, result)) {
-
+                    && installRelationSources(reader.getRelationSources(), applicationName, result)
+                    && runAfterDeployment(reader.getAfterDeployment(), installedVersion, version, result)
+                    ) {
                     if (installedVersion == -1) {
                         ver.setInstalledVersion(name, "application", maintainer, version);
                     } else {
                         ver.updateInstalledVersion(name, "application", maintainer, version);
                     }
+
                     log.info("Application '" + name + "' deployed succesfully.");
-                    result.success(
-                        "Application loaded oke\n\n"
-                            + "The application has the following install notice for you : \n\n"
-                            + reader.getInstallNotice());
+                    result.success("Application loaded oke\n\n"
+                                   + "The application has the following install notice for you : \n\n"
+                                   + reader.getInstallNotice());
                 }
                 // installed or failed - remove from installation set
                 installationSet.remove(applicationName);
@@ -254,6 +255,32 @@ class ApplicationInstaller {
                 log.error(sqe);
             }
         }
+    }
+
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    private boolean runAfterDeployment(Map<Integer, Runnable> runnables, int installedVersion, int version, ApplicationResult result) {
+        for (int i = installedVersion; i <= version; i++) {
+            Runnable runnable = runnables.get(i);
+            if (runnable != null) {
+                try {
+                    runnable.run();
+                } catch (Exception e) {
+                    return result.error(e.getMessage());
+                }
+            }
+        }
+        Runnable runnable = runnables.get(Integer.MAX_VALUE);
+        if (runnable != null) {
+            try {
+                runnable.run();
+            } catch (Exception e) {
+                return result.error(e.getMessage());
+            }
+        }
+        return true;
     }
 
     private void findFieldsOfTypeNode(List<MMObjectNode> nodeFieldNodes, String exportsource, MMObjectNode newNode) {
