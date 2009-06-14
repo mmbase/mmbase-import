@@ -52,11 +52,15 @@ public class ServerFormatSorter extends  PreferenceSorter {
         Format format = ri.getFormat();
         int index =  preferredFormats.indexOf(format);
         if (index == -1) {
-            if (log.isDebugEnabled()) log.debug("Not found format: '" + format + "' in" + preferredFormats);
+            if (log.isDebugEnabled()) {
+                log.debug("Not found format: '" + format + "' in" + preferredFormats);
+            }
             index = preferredFormats.size() + 1;
         }
         index = -index;   // low index =  high preference
-        if (log.isDebugEnabled()) log.debug("preference of format '" + format + "': " + index);
+        if (log.isDebugEnabled()) {
+            log.debug("preference of format '" + format + "': " + index);
+        }
         return index;
     }
 

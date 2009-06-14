@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: Codec.java 35335 2009-05-21 08:14:41Z michiel $
+ * @version $Id$
  */
 public class FragmentTypeFixer implements CommitProcessor {
     private static Logger log = Logging.getLoggerInstance(FragmentTypeFixer.class);

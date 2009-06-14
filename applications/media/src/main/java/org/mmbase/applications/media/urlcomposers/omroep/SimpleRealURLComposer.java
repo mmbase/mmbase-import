@@ -27,8 +27,8 @@ public class SimpleRealURLComposer extends RealURLComposer {
     }
 
     @Override
-    protected StringBuffer getURLBuffer() {
-        StringBuffer buff = new StringBuffer("rtsp://streams.omroep.nl" + source.getStringValue("url"));
+    protected StringBuilder getURLBuffer() {
+        StringBuilder buff = new StringBuilder("rtsp://streams.omroep.nl" + source.getStringValue("url"));
         RealURLComposer.getRMArgs(buff, fragment, info); // append time, title, als
         return buff;
     }

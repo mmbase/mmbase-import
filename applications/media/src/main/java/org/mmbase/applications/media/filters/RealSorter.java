@@ -59,11 +59,12 @@ public class RealSorter extends  ChainSorter {
         private int maxSpeed        = -1;    
         private int defaultSpeed        = -1;    
 
+        @Override
         public void configure(DocumentReader reader, Element e) {
             try {
-                minSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".minspeed")));
-                maxSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".maxspeed")));
-                defaultSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".defaultspeed")));
+                minSpeed    = Integer.parseInt(DocumentReader.getElementValue(DocumentReader.getElementByPath(e, CONFIG_TAG + ".minspeed")));
+                maxSpeed    = Integer.parseInt(DocumentReader.getElementValue(DocumentReader.getElementByPath(e, CONFIG_TAG + ".maxspeed")));
+                defaultSpeed    = Integer.parseInt(DocumentReader.getElementValue(DocumentReader.getElementByPath(e, CONFIG_TAG + ".defaultspeed")));
             } catch (Exception ex) {
                 log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information:" + ex);
                 log.error(Logging.stackTrace(ex));
@@ -120,11 +121,12 @@ public class RealSorter extends  ChainSorter {
         private int defaultChannels = -1;
 
 
+        @Override
         public void configure(DocumentReader reader, Element e) {
             try {
-                minChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".minchannels")));
-                maxChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".maxchannels")));
-                defaultChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".defaultchannels")));
+                minChannels = Integer.parseInt(DocumentReader.getElementValue(DocumentReader.getElementByPath(e, CONFIG_TAG + ".minchannels")));
+                maxChannels = Integer.parseInt(DocumentReader.getElementValue(DocumentReader.getElementByPath(e, CONFIG_TAG + ".maxchannels")));
+                defaultChannels = Integer.parseInt(DocumentReader.getElementValue(DocumentReader.getElementByPath(e, CONFIG_TAG + ".defaultchannels")));
             } catch (Exception ex) {
                 log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information:" + ex);
                 log.error(Logging.stackTrace(ex));

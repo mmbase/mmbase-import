@@ -43,11 +43,11 @@ public class CgiSbURLComposer extends RamURLComposer {
      */
     @Override
     public Format getFormat() {
-        Format format = super.getFormat();
-        if (format == Format.RM)  return Format.RAM;
-        if (format == Format.RA)  return Format.RAM;
-        if (format == Format.ASF) return Format.WMP;
-        return format;
+        Format f = super.getFormat();
+        if (f == Format.RM)  return Format.RAM;
+        if (f == Format.RA)  return Format.RAM;
+        if (f == Format.ASF) return Format.WMP;
+        return f;
     }
 
     /**
@@ -59,9 +59,9 @@ public class CgiSbURLComposer extends RamURLComposer {
     }
 
     @Override
-    protected StringBuffer getURLBuffer() {
+    protected StringBuilder getURLBuffer() {
         String rootPath = provider.getStringValue("rootpath").substring(1);
-        StringBuffer buff = new StringBuffer(provider.getStringValue("protocol") + "://cgi.omroep.nl" + rootPath);
+        StringBuilder buff = new StringBuilder(provider.getStringValue("protocol") + "://cgi.omroep.nl" + rootPath);
         int lastSlash = RealSbURLComposer.addURL(buff, source.getStringValue("url"));
         buff.insert(lastSlash + 1, getBandPrefix());
         RealURLComposer.getRMArgs(buff, fragment, info); // append time, title

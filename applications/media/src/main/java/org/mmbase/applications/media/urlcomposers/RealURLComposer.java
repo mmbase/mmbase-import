@@ -23,8 +23,8 @@ import java.util.*;
 public class RealURLComposer extends FragmentURLComposer  {
 
     @Override
-    protected StringBuffer getURLBuffer() {
-        StringBuffer buff = super.getURLBuffer();
+    protected StringBuilder getURLBuffer() {
+        StringBuilder buff = super.getURLBuffer();
         if (getFormat().equals(Format.RM)) {
             return getRMArgs(buff, fragment, info);
         } else {
@@ -32,7 +32,7 @@ public class RealURLComposer extends FragmentURLComposer  {
         }
     }
 
-    public static StringBuffer getRMArgs(StringBuffer args, MMObjectNode fragment, Map<String, Object> info) {
+    public static StringBuilder getRMArgs(StringBuilder args, MMObjectNode fragment, Map<String, Object> info) {
         if ("true".equals(info.get("nude"))) return args;
         if (fragment != null) { // can add this for RM-sources
             long start = fragment.getLongValue("start");
@@ -60,7 +60,7 @@ public class RealURLComposer extends FragmentURLComposer  {
      * @param time the time in milliseconds
      * @return the time in real format
      */
-    public static StringBuffer appendTime(long time, StringBuffer buf) {
+    public static StringBuilder appendTime(long time, StringBuilder buf) {
         time /= 10; // in centis
 
         long centis = -1;

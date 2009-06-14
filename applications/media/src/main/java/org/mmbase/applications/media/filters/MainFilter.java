@@ -54,24 +54,26 @@ public class MainFilter {
         }
     };
 
-    private List<Filter> filters = new ArrayList<Filter>();
+    private final List<Filter> filters = new ArrayList<Filter>();
 
     /**
      * Construct the MainFilter
      */
     private MainFilter() {
         String configFile = CONFIG_FILE;
-        readConfiguration(configFile);
         configWatcher.add(configFile);
         configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
         configWatcher.start();
+        configWatcher.onChange();
     }
 
 
     private static MainFilter filter = null;
 
     public static MainFilter getInstance() {
-        if (filter == null) filter = new MainFilter();
+        if (filter == null) {
+            filter = new MainFilter();
+        }
         return filter;
     }
 

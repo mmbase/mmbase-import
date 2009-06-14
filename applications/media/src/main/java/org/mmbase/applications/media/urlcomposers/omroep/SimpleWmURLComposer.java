@@ -25,8 +25,8 @@ public class SimpleWmURLComposer extends URLComposer {
     }
 
     @Override
-    protected StringBuffer getURLBuffer() {
-        StringBuffer buff = new StringBuffer("mms://media.omroep.nl" + source.getStringValue("url"));
+    protected StringBuilder getURLBuffer() {
+        StringBuilder buff = new StringBuilder("mms://media.omroep.nl" + source.getStringValue("url"));
         return buff;
     }
 }
