@@ -4,11 +4,11 @@
  @version $Id: mmbase.css,v 1.13 2007-07-25 05:15:55 michiel Exp $;
 */
 
-html { 
+html {
   background-color: white;
   color: black;
 }
- 
+
 body {
   font-family: Verdana, Arial, Helvetica, sans-serif;
   background-color: white;
@@ -19,7 +19,7 @@ body {
   padding-right: 0pt;
 }
 
-table { 
+table {
   width: 100%;
   font-size: 9pt;
   border-bottom: none;
@@ -31,28 +31,28 @@ table {
 
 
 }
-td.numeric { 
+td.numeric {
   text-align: right;
 }
 
 /* a basic body is a page not using a table */
-body.basic h1 { 
+body.basic h1 {
   padding-left: 3%;
   background-color: #ddd;
 }
-body.basic p, table { 
+body.basic p, table {
   margin-left: 3%;
   width: 94%;
 }
 
-.intro { 
+.intro {
   font-style: italic;
 }
 
 td {
   padding: 3pt;
 }
-td p { 
+td p {
 
 }
 th {
@@ -60,7 +60,7 @@ th {
   text-align: left;
 }
 
-th.header,th.navigate { 
+th.header,th.navigate {
   border-top: solid white 2ex;
 }
 tr.even{
@@ -98,7 +98,7 @@ a:visited {
   color: purple;
 }
 
-a:hover { 
+a:hover {
   /*
     color: red;
      text-decoration: underline;
@@ -138,11 +138,11 @@ a:hover {
   font-weight: bold;
 }
 
-.link a img { 
+.link a img {
   border: none;
 }
 
-.navigate img { 
+.navigate img {
   border: none;
 }
 /* tabs */
@@ -183,27 +183,32 @@ a:hover {
   background: #f3f3f3;
 }
 
-.filelisting h1 { 
+.filelisting h1 {
   border-bottom: #666688 solid 2px;
 }
 
-.filelisting table { 
+.filelisting table {
   background-color: #f3f3f3;
   border-left: #666688 solid 15px;
   border-right: #666688 solid 15px;
   margin-bottom: 20px;
 
 }
-.filelisting td { 
+.filelisting td {
   border-bottom: solid 1px white;
 }
 
-.filelisting .lastmodified { 
+.filelisting .lastmodified, .filelisting .filesize {
   border-right: solid 1px black;
+}
+.filelisting .lastmodified {
   width: 20ex;
 }
+.filelisting .filesize {
+  width: 10ex;
+}
 
-.filelisting h3 { 
+.filelisting h3 {
   text-align: right;
   border-top: #666688 solid 2px;
 }
