@@ -7,11 +7,11 @@
  %real;
 ]>
 <mainFilter>
-	<!-- 
+	<!--
   Define the chain of filters, the filter that has to filter first
   has to be mentioned as first. A filter is specified or by the classname
   (class needs to be a org.mmbase.applications.media.filters.Filter).
-  
+
   One kind of filter are the Sorters, for which filtering is no
   more then sorting.
 
@@ -28,24 +28,24 @@
   <filterConfigs>
 
     <config filter="format">
-    <!-- 
-    Configuration of ServerFormatSorter 
+    <!--
+    Configuration of ServerFormatSorter
     Define the sequence of preference of the servers.
     -->
-      <preferredSource>    
+      <preferredSource>
         <source format="smil" /> <!-- we like smil -->
         <source format="html" /> <!-- also nice (generates html code for object tag -->
 
         <!-- well.. -->
-        <source format="wmp" />  
+        <source format="wmp" />
         <source format="ram" />
         <source format="rm" />
         <source format="ra" />
         <source format="asf" />
       </preferredSource>
     </config>
-    
-    <!-- 
+
+    <!--
     Configuration of RealSorter
     Used to specify realaudio preferences.
     -->
@@ -61,7 +61,7 @@
     </config>
 
 
-	<!-- 
+	<!--
     The filterOnHost filter can be used when you want to redirect certain domains
 	  to certain mediaproviders. user="*" is a default, when no filter matches the provider
 	  specified by this dfault filter will be used.

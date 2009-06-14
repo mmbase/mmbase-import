@@ -42,8 +42,8 @@ public class WmSbURLComposer extends URLComposer {
     }
 
     @Override
-    protected StringBuffer getURLBuffer() {
-        StringBuffer buff = new StringBuffer("mms://media.omroep.nl");
+    protected StringBuilder getURLBuffer() {
+        StringBuilder buff = new StringBuilder("mms://media.omroep.nl");
         int lastSlash = RealSbURLComposer.addURL(buff, source.getStringValue("url"));
         if (lastSlash > 0) {
             buff.insert(lastSlash + 1, getBandPrefix());

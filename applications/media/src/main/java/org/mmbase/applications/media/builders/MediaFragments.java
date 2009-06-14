@@ -110,6 +110,7 @@ public class MediaFragments extends MMObjectBuilder {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (log.isDebugEnabled()) {
             log.debug("executeFunction  " + function + "(" + args + ") on " + node);
@@ -171,7 +172,7 @@ public class MediaFragments extends MMObjectBuilder {
         } else if (FUNCTION_FORMAT.equals(function)) {
             return getFormat(node, translateURLArguments(args, null));
         } else if (FUNCTION_DURATION.equals(function)) {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             org.mmbase.applications.media.urlcomposers.RealURLComposer.appendTime(calculateLength(node), buf);
             return buf.toString();
         }
@@ -204,6 +205,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param node the mediafragment node
      * @return the title of the mediafragment
      */
+    @Override
     public String getGUIIndicator(MMObjectNode node) {
         String url = node.getFunctionValue(FUNCTION_URL, null).toString();
         String title = node.getStringValue("title");
@@ -219,9 +221,10 @@ public class MediaFragments extends MMObjectBuilder {
     }
 
 
+    @Override
     public String getGUIIndicator(String field, MMObjectNode node) {
         if (getField(field).getGUIType().equals("relativetime")) { // must be delegated to a field-type implementation
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             org.mmbase.applications.media.urlcomposers.RealURLComposer.appendTime(node.getIntValue(field), buf);
             return buf.toString();
         }
@@ -344,6 +347,7 @@ public class MediaFragments extends MMObjectBuilder {
      * this, so on top is the mediafragment with the sources, and on
      * the bottom is the fragment itself.
      */
+    @SuppressWarnings("empty-statement")
     public Stack<MMObjectNode> getParentFragments(MMObjectNode fragment) {
         Stack<MMObjectNode> result = new Stack<MMObjectNode>();
         result.push(fragment);
@@ -440,6 +444,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param command the stringtokenizer reference with the replace command.
      * @return the result value of the replace command or null.
      */
+    @Override
     public String replace(PageInfo sp,StringTokenizer command) {
         if (command.hasMoreTokens()) {
             String token=command.nextToken();
@@ -476,6 +481,7 @@ public class MediaFragments extends MMObjectBuilder {
         return "No commands defined.";
     }
 
+    @Override
     public Object getObjectValue(MMObjectNode node, String field) {
         if (field.equals("lengthsec")) {
             long val=node.getLongValue("length");
@@ -484,6 +490,7 @@ public class MediaFragments extends MMObjectBuilder {
         return super.getObjectValue(node,field);
     }
 
+    @Override
     public boolean setValue(MMObjectNode node,String fieldname) {
         if (fieldname.equals("lengthsec")) {
             long val=node.getLongValue("lengthsec");
@@ -501,6 +508,7 @@ public class MediaFragments extends MMObjectBuilder {
      * Stack.contains is used, so make sure equal node are equal.
      */
 
+    @Override
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
         int n1 = o1.getNumber();
         int n2 = o2.getNumber();

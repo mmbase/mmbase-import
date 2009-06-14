@@ -38,7 +38,9 @@ public final class Codec {   // final class!!
     private Codec(int n, String i) { // private constructor!!
         number = n; id = i;
         if (n >= 0) {
-            while (codecs.size() <= number) codecs.add(null);
+            while (codecs.size() <= number) {
+                codecs.add(null);
+            }
             codecs.set(number, this);
         }
     }
@@ -63,6 +65,7 @@ public final class Codec {   // final class!!
 
 
     public int toInt()    { return number; }
+    @Override
     public String toString() { return id;     }
     public static Codec get(int i) {
         if (i < 0) return UNKNOWN;
@@ -93,6 +96,7 @@ public final class Codec {   // final class!!
             return "UNKNOWN";
         }
     }
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Codec) {
             Codec c = (Codec) o;
@@ -105,6 +109,7 @@ public final class Codec {   // final class!!
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return number;
     }

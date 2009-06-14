@@ -46,6 +46,7 @@ public class ChainSorter extends  Sorter {
     /**
      * Configure. Configures all elements on default.
      */
+    @Override
     public void configure(DocumentReader reader, Element e) {
         for (Sorter ri : comparators) {
             ri.configure(reader, e);

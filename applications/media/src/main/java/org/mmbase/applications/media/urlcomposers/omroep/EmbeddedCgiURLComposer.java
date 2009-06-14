@@ -28,6 +28,7 @@ import java.text.*;
 public class EmbeddedCgiURLComposer extends RealURLComposer {
 
 
+    @Override
     public String getGUIIndicator(Map options) {
         return super.getGUIIndicator(options) + " (for embedding)";
     }
@@ -42,9 +43,9 @@ public class EmbeddedCgiURLComposer extends RealURLComposer {
     }
 
     @Override
-    protected StringBuffer getURLBuffer() {
+    protected StringBuilder getURLBuffer() {
         String rootpath = provider.getStringValue("rootpath");
-        StringBuffer buff = new StringBuffer(provider.getStringValue("protocol") + "://cgi.omroep.nl" + rootpath);
+        StringBuilder buff = new StringBuilder(provider.getStringValue("protocol") + "://cgi.omroep.nl" + rootpath);
         buff.append(source.getStringValue("url"));
         RealURLComposer.getRMArgs(buff, fragment, info); // append time, title
         if (fragment == null) {
