@@ -10,6 +10,7 @@
 
   <artifactId>mmbase-aselect</artifactId>
   <name>MMBase ASelect</name>
+  <version>${mmbase.version}</version>
   <!--
   <version>1.0</version>
   -->
