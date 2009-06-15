@@ -16,7 +16,7 @@
   <version>${base.version}</version>
 
   <properties>
-    <servlet.version>2.4</servlet.version>
+    <standard.scope>runtime</standard.scope>
     <base.version>${mmbase.version}</base.version>
   </properties>
 
@@ -55,41 +55,25 @@
       <type>war</type>
     </dependency>
 
-
-
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+      <scope>${standard.scope}</scope>
     </dependency>
 
   </dependencies>
+
+
   <profiles>
     <profile>
       <id>deploy</id>
       <build>
         <defaultGoal>deploy</defaultGoal>
       </build>
-    </profile>
-    <profile>
-      <id>servlet24</id>
-      <activation>
-        <property>
-          <name>servlet.version</name>
-          <value>2.4</value>
-        </property>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>javax.servlet</groupId>
-          <artifactId>jstl</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>taglibs</groupId>
-          <artifactId>standard</artifactId>
-        </dependency>
-      </dependencies>
     </profile>
     <profile>
       <id>servlet25</id>
@@ -108,6 +92,7 @@
       </dependencies>
       <properties>
         <base.version>${mmbase.number}-servlet25${mmbase.version.postfix}</base.version>
+        <standard.scope>provided</standard.scope>
       </properties>
     </profile>
   </profiles>
