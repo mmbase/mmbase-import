@@ -27,35 +27,12 @@
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>make-servlet25-war</id>
-            <phase>package</phase>
-            <goals>
-              <goal>war</goal>
-            </goals>
-            <configuration>
-              <classifier>servlet25</classifier>
-              <packagingExcludes>WEB-INF/lib/jstl-1.1.2.jar,WEB-INF/lib/standard-1.1.2.jar</packagingExcludes>
-            </configuration>
-          </execution>
-        </executions>
+        <configuration>
+          <archiveClasses>false</archiveClasses>
+          <attachClasses>false</attachClasses>
+        </configuration>
       </plugin>
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>make-war</id>
-            <phase>package</phase>
-            <goals>
-              <goal>war</goal>
-            </goals>
-            <configuration>
-              <packagingExcludes>WEB-INF/lib/jstl-1.2.jar</packagingExcludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+
     </plugins>
   </build>
 
@@ -63,8 +40,7 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
-      <version>${base.version}</version>
-      <type>war</type>
+      <version>${mmbase.version}</version>
     </dependency>
 
     <!--
@@ -78,17 +54,11 @@
       <type>war</type>
     </dependency>
 
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-      <version>${jstl.version}</version>
-      <scope>runtime</scope>
-    </dependency>
+
 
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-      <version>1.2</version>
       <scope>runtime</scope>
     </dependency>
 
@@ -99,6 +69,35 @@
       <build>
         <defaultGoal>deploy</defaultGoal>
       </build>
+    </profile>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>javax.servlet</groupId>
+          <artifactId>jstl</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>taglibs</groupId>
+          <artifactId>standard</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>servlet25</id>
+      <dependencies>
+        <dependency>
+          <groupId>javax.servlet</groupId>
+          <artifactId>jstl</artifactId>
+          <version>1.2</version>
+        </dependency>
+      </dependencies>
+      <properties>
+        <base.version>${mmbase.number}-servlet25${mmbase.version.postfix}</base.version>
+      </properties>
     </profile>
   </profiles>
 </project>
