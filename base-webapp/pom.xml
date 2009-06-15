@@ -16,6 +16,7 @@
   <version>${base.version}</version>
 
   <properties>
+    <servlet.version>2.4</servlet.version>
     <base.version>${mmbase.version}</base.version>
   </properties>
 
@@ -71,8 +72,12 @@
       </build>
     </profile>
     <profile>
-      <id>default</id>
+      <id>servlet24</id>
       <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.4</value>
+        </property>
         <activeByDefault>true</activeByDefault>
       </activation>
       <dependencies>
