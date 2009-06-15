@@ -22,6 +22,7 @@ import java.io.IOException;
  * @version $Id$
  */
 public class MonitoredDiskFileItem extends DiskFileItem {
+    private static final long serialVersionUID = 0L;
     private MonitoredOutputStream mos = null;
     private final OutputStreamListener listener;
 

@@ -72,6 +72,7 @@ public class UploadInfo {
     public int getPercentage() {
         return isInProgress() ? (int) (bytesRead  * 100 / totalSize) : 100;
     }
+    @Override
     public String toString() {
         return status + ":" + fileIndex + ":" + bytesRead + "/" + totalSize + " (" + (getPercentage()) + "%,  " + elapsedTime + " ms)";
     }
