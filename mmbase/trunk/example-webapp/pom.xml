@@ -16,8 +16,8 @@
   <version>${base.version}</version>
 
   <properties>
-    <my.version>${mmbase.version.postfix}</my.version>
-    <base.version>${mmbase.version.number}${my.version}</base.version>
+    <my.postfix>${mmbase.version.postfix}</my.postfix>
+    <base.version>${mmbase.version.number}${my.postfix}</base.version>
   </properties>
 
   <build>
@@ -114,7 +114,8 @@
         </property>
       </activation>
       <properties>
-        <base.version>${mmbase.version.number}-servlet25${my.version}</base.version>
+        <my.postfix>-${my.version}</my.postfix>
+        <base.version>${mmbase.version.number}-servlet25${my.postfix}</base.version>
       </properties>
     </profile>
   </profiles>

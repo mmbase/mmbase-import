@@ -20,7 +20,6 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 
   <properties>
     <compiler.fork>false</compiler.fork>
-
     <mmbase.version.number>1.9</mmbase.version.number>
     <mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
     <mmbase.version>${mmbase.version.number}${mmbase.version.postfix}</mmbase.version>
@@ -313,7 +312,8 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       </activation>
 
       <properties>
-        <mmbase.version>${mmbase.version.number}-${my.version}</mmbase.version>
+        <my.postfix>-${my.version}</my.postfix>
+        <mmbase.version>${mmbase.version.number}${my.postfix}</mmbase.version>
       </properties>
       <distributionManagement>
         <repository>
