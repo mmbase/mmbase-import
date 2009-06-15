@@ -3,11 +3,16 @@
      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.mmbase</groupId>
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+  </parent>
   <artifactId>mmbase-contributions-parent</artifactId>
   <packaging>pom</packaging>
   <name>MMBase Contributions</name>
-  <version>1.9-SNAPSHOT</version>
+  <version>${mmbase.version}</version>
 
   <description>
   </description>
@@ -23,5 +28,16 @@
     <module>calendar</module>
   </modules>
 
+  <repositories>
+    <repository>
+      <id>mmbase</id>
+      <url>http://www.mmbase.org/maven2</url>
+    </repository>
+    <repository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 snapshots repository</name>
+      <url>http://www.mmbase.org/snapshots</url>
+    </repository>
+  </repositories>
 
 </project>
