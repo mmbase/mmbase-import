@@ -25,7 +25,6 @@
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
       <version>${mmbase.version}</version>
-      <classifier>classes</classifier>
       <scope>provided</scope>
     </dependency>
 
