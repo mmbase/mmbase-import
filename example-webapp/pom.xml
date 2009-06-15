@@ -16,7 +16,8 @@
   <version>${base.version}</version>
 
   <properties>
-    <base.version>${mmbase.version}</base.version>
+    <my.version>${mmbase.version.postfix}</my.version>
+    <base.version>${mmbase.version.number}-${my.version}</base.version>
   </properties>
 
   <build>
@@ -103,4 +104,19 @@
       <version>1.8.0.7</version>
     </dependency>
   </dependencies>
+  <profiles>
+    <profile>
+      <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
+      <properties>
+        <base.version>${mmbase.version.number}-servlet25${my.version}</base.version>
+      </properties>
+    </profile>
+  </profiles>
 </project>
+
