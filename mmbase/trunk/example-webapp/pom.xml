@@ -17,7 +17,7 @@
 
   <properties>
     <my.version>${mmbase.version.postfix}</my.version>
-    <base.version>${mmbase.version.number}-${my.version}</base.version>
+    <base.version>${mmbase.version.number}${my.version}</base.version>
   </properties>
 
   <build>
