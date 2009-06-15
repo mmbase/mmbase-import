@@ -91,7 +91,7 @@
         </dependency>
       </dependencies>
       <properties>
-        <base.version>${mmbase.number}-servlet25${mmbase.version.postfix}</base.version>
+        <base.version>${mmbase.version.number}-servlet25${mmbase.version.postfix}</base.version>
         <standard.scope>provided</standard.scope>
       </properties>
     </profile>
