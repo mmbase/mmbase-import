@@ -17,7 +17,8 @@
 
   <properties>
     <standard.scope>runtime</standard.scope>
-    <base.version>${mmbase.version}</base.version>
+    <my.version>${mmbase.version.postfix}</my.version>
+    <base.version>${mmbase.version.number}-${my.version}</base.version>
   </properties>
 
   <description>
@@ -91,7 +92,7 @@
         </dependency>
       </dependencies>
       <properties>
-        <base.version>${mmbase.version.number}-servlet25${mmbase.version.postfix}</base.version>
+        <base.version>${mmbase.version.number}-servlet25${my.version}</base.version>
         <standard.scope>provided</standard.scope>
       </properties>
     </profile>
