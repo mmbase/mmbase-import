@@ -18,7 +18,7 @@
   <properties>
     <standard.scope>runtime</standard.scope>
     <my.version>${mmbase.version.postfix}</my.version>
-    <base.version>${mmbase.version.number}-${my.version}</base.version>
+    <base.version>${mmbase.version.number}${my.version}</base.version>
   </properties>
 
   <description>
