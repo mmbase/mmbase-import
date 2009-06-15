@@ -95,5 +95,27 @@
         <standard.scope>provided</standard.scope>
       </properties>
     </profile>
+    <profile>
+      <id>development</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.mmbase.maven</groupId>
+            <artifactId>maven-mmbase-plugin</artifactId>
+            <version>${mmbase.version}</version>
+            <executions>
+              <execution>
+                <id>installsvnsr</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>include-default-excludes</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
   </profiles>
 </project>
