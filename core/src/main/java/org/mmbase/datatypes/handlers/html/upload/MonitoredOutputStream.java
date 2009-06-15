@@ -28,11 +28,13 @@ public class MonitoredOutputStream extends OutputStream {
         this.listener.start();
     }
 
+    @Override
     public void write(byte b[], int off, int len) throws IOException {
         target.write(b,off,len);
         listener.bytesRead(len - off);
     }
 
+    @Override
     public void write(byte b[]) throws IOException {
         target.write(b);
         listener.bytesRead(b.length);
@@ -43,11 +45,13 @@ public class MonitoredOutputStream extends OutputStream {
         listener.bytesRead(1);
     }
 
+    @Override
     public void close() throws IOException {
         target.close();
         listener.done();
     }
 
+    @Override
     public void flush() throws IOException {
         target.flush();
     }
