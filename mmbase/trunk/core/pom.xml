@@ -27,7 +27,6 @@ See http://www.MMBase.org/license
   </parent>
 
   <artifactId>mmbase</artifactId>
-  <packaging>war</packaging>
   <name>MMBase Core</name>
 
   <version>${base.version}</version>
@@ -129,13 +128,8 @@ See http://www.MMBase.org/license
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
+      <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>standard</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
     <!--
     <dependency>
       <groupId>javax.portlet</groupId>
