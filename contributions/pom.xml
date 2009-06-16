@@ -21,12 +21,29 @@
     <defaultGoal>install</defaultGoal>
   </build>
 
-  <modules>
-    <module>lucene</module>
-    <module>aselect</module>
-    <module>poll</module>
-    <module>calendar</module>
-  </modules>
+
+  <profiles>
+    <profile>
+      <id>mmapplications_all</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>lucene</module>
+        <module>aselect</module>
+        <module>poll</module>
+        <module>calendar</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>mmapplications_subset1</id>
+      <modules>
+        <module>lucene</module>
+      </modules>
+    </profile>
+  </profiles>
+
+
 
   <repositories>
     <repository>
