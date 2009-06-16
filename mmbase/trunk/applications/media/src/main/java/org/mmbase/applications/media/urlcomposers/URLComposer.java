@@ -119,6 +119,11 @@ public class URLComposer  {
         return getURLBuffer().toString();
     }
 
+    /**
+     * Wether the URL which will be produced by this composer is actually already useable.
+     * This means that the provider must be 'on', and the source must be either an original ({@link
+     * State#SOURCE}), or its a generated source and its generation is done.
+     */
     public boolean      isAvailable() {
         boolean sourceAvailable    = (source != null &&
                                       (source.getIntValue("state") == State.DONE.getValue() ||
