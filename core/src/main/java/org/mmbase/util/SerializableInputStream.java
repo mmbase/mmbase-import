@@ -115,14 +115,20 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         return contentType;
     }
     public byte[] get() throws IOException {
-        if (wrapped == null) throw new IllegalStateException();
-        if (wrapped.markSupported()) {
+        if (wrapped == null) {
+            throw new IllegalStateException();
+        }
+        if (file != null || wrapped.markSupported()) {
+            log.debug("Making byte array of " + wrapped);
             byte[] b =  toByteArray(wrapped);
+            log.debug("Resetting  " + wrapped);
             wrapped.reset();
             return b;
         } else {
+            log.debug("Making byte array of " + wrapped);
             byte[] b =  toByteArray(wrapped);
             wrapped = new ByteArrayInputStream(b);
+            log.debug("Converted to bytearray" + wrapped);
             return b;
         }
     }
@@ -242,12 +248,19 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         use();
-        return wrapped.read(b, off, len);
+        int res =  wrapped.read(b, off, len);
+        if (log.isTraceEnabled()) {
+            log.trace("Reading  " + res + "/" + len + " offset " + off+ " from " + wrapped, new Exception());
+        }
+        return res;
+
     }
 
 
     @Override
     public long skip(long n) throws IOException {
+        use();
+        log.trace("Skipping " + n + " from " + wrapped);
         return wrapped.skip(n);
     }
 
