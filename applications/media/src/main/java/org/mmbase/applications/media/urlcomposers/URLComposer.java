@@ -15,6 +15,7 @@ import org.mmbase.applications.media.builders.MediaSources;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.applications.media.Format;
+import org.mmbase.applications.media.State;
 
 import java.util.*;
 
@@ -119,9 +120,15 @@ public class URLComposer  {
     }
 
     public boolean      isAvailable() {
-        boolean sourceAvailable    = (source != null && source.getIntValue("state") == MediaSources.STATE_DONE);
+        boolean sourceAvailable    = (source != null &&
+                                      (source.getIntValue("state") == State.DONE.getValue() ||
+                                       source.getIntValue("state") == State.SOURCE.getValue()));
         boolean providerAvailable  = (provider.getIntValue("state") == MediaProviders.STATE_ON);
         return providerAvailable && sourceAvailable;
+    }
+
+    public boolean isSource() {
+        return source != null && source.getIntValue("state") == State.SOURCE.getValue();
     }
 
     @Override
