@@ -23,6 +23,7 @@ import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.applications.media.filters.MainFilter;
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.Codec;
+import org.mmbase.applications.media.State;
 
 
 
@@ -65,10 +66,18 @@ public class MediaSources extends MMObjectBuilder {
 
 
 
-    // Status (this should be helped by field-type project (resourcebundle/java-constants))
-    public final static int    STATE_DONE     = 3; // jikes
-    public final static int    STATE_SOURCE   = 4; // what does this mean?
-    public final static int    STATE_REMOVED = 10; // jikes
+    /**
+     * @deprecated
+     */
+    public final static int    STATE_DONE     = State.DONE.getValue();
+    /**
+     * @deprecated
+     */
+    public final static int    STATE_SOURCE   = State.SOURCE.getValue();
+    /**
+     * @deprecated
+     */
+    public final static int    STATE_REMOVED =  State.REMOVED.getValue();
     public final static String STATES_RESOURCE = "org.mmbase.applications.media.builders.resources.states";
 
     public final static int MONO   = 1;
