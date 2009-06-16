@@ -72,7 +72,7 @@ public final class IOUtil {
         long size = 0;
         final byte[] buffer = new byte[bufferSize];
         int n = 0;
-        while (-1 != (n = input.read(buffer))) {
+        while (-1 != (n = input.read(buffer, 0, bufferSize))) {
             output.write(buffer, 0, n);
             size += n;
         }
