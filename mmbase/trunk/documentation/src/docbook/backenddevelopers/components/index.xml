@@ -1072,6 +1072,9 @@ if (finalpage != null) {
     <section>
       <title>Component Framework (MMBase 1.9)</title>
 
+      <note>
+        <para>This sections needs an update. It does not describe the actual situation for components in the MMBase repository. We use a maven2 structure.</para>
+      </note>
       <para>For the file structure of components the following principle will
       be used.</para>
 
