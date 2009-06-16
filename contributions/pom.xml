@@ -41,6 +41,12 @@
         <module>lucene</module>
       </modules>
     </profile>
+    <profile>
+      <id>test_build</id>
+      <modules>
+        <module>poll</module>
+      </modules>
+    </profile>
   </profiles>
 
 
