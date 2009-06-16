@@ -76,37 +76,65 @@
     </plugins>
   </build>
 
-  <modules>
-    <module>resources</module>
-    <module>taglib</module>
-    <module>cloudcontext</module>
-    <module>crontab</module>
-    <module>dove</module>
-    <module>editwizard</module>
-    <module>email</module>
-    <module>media</module>
-    <module>notifications</module>
-    <module>searchrelate</module>
-    <module>richtext</module>
-    <module>rmmci</module>
 
-    <module>jumpers</module>
-    <module>xmlimporter</module>
-    <module>largeobjects</module>
-    <module>oscache-cache</module>
-    <module>clustering</module>
-    <module>commandserver</module>
-    <module>cloudsecurity</module>
+  <profiles>
+    <profile>
+      <id>mmapplications_all</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>resources</module>
+        <module>taglib</module>
+        <module>cloudcontext</module>
+        <module>crontab</module>
+        <module>dove</module>
+        <module>editwizard</module>
+        <module>email</module>
+        <module>media</module>
+        <module>notifications</module>
+        <module>searchrelate</module>
+        <module>richtext</module>
+        <module>rmmci</module>
 
-    <module>mynews</module>
-    <module>vpro-wizards</module>
+        <module>jumpers</module>
+        <module>xmlimporter</module>
+        <module>largeobjects</module>
+        <module>oscache-cache</module>
+        <module>clustering</module>
+        <module>commandserver</module>
+        <module>cloudsecurity</module>
+
+        <module>mynews</module>
+        <module>vpro-wizards</module>
 
 
-    <!-- deprecated-->
-    <module>vwms</module>
-    <module>scan</module>
-
-  </modules>
+        <!-- deprecated-->
+        <module>vwms</module>
+        <module>scan</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>mmapplications_subset1</id>
+      <!--
+          No deprecated and experimental stuff, no rmmci.
+      -->
+      <modules>
+        <module>resources</module>
+        <module>taglib</module>
+        <module>cloudcontext</module>
+        <module>crontab</module>
+        <module>dove</module>
+        <module>editwizard</module>
+        <module>email</module>
+        <module>media</module>
+        <module>searchrelate</module>
+        <module>richtext</module>
+        <module>jumpers</module>
+        <module>clustering</module>
+      </modules>
+    </profile>
+  </profiles>
 
 
 </project>
