@@ -134,6 +134,16 @@
         <module>clustering</module>
       </modules>
     </profile>
+
+    <profile>
+      <id>test_build</id>
+      <!--
+          Only one application, to speed up things when testing the build process itself.
+      -->
+      <modules>
+        <module>resources</module>
+      </modules>
+    </profile>
   </profiles>
 
 
