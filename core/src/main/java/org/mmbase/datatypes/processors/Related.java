@@ -106,8 +106,16 @@ public class Related {
 
         protected NodeQuery getRelationsQuery(Node node) {
             NodeQuery nq = Queries.createRelationNodesQuery(node, getRelatedType(node), role, searchDir);
+            Step relationStep = nq.getSteps().get(1);
             for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
-                Queries.addConstraint(nq, Queries.createConstraint(nq, entry.getKey(), FieldCompareConstraint.EQUAL, entry.getValue()));
+                String key = entry.getKey();
+                if (key.indexOf(".") > 0) {
+                    Queries.addConstraint(nq, Queries.createConstraint(nq, key, FieldCompareConstraint.EQUAL, entry.getValue()));
+                } else {
+                    NodeManager relationNodeManager = node.getCloud().getNodeManager(relationStep.getTableName());
+                    StepField sf = nq.createStepField(relationStep, relationNodeManager.getField(key));
+                    Queries.addConstraint(nq, nq.createConstraint(sf, FieldCompareConstraint.EQUAL, entry.getValue()));
+                }
             }
             return nq;
         }
