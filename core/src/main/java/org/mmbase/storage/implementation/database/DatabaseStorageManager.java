@@ -26,6 +26,7 @@ import org.mmbase.storage.*;
 import org.mmbase.storage.util.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.IOUtil;
+import org.mmbase.util.SerializableInputStream;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.transformers.CharTransformer;
@@ -858,8 +859,6 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                     return;
                 }
             }
-            long size = 0L;
-
             InputStream in = node.getInputStreamValue(fieldName);
             log.service("Storing " + field + " for " + node.getNumber() + " as " + in);
             if ((binaryFile.exists() && ! binaryFile.canWrite()) ||
@@ -867,12 +866,18 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 ) {
                 throw new StorageException("The file " + binaryFile+ " is not writable");
             }
-            OutputStream out = new FileOutputStream(binaryFile);
-            in.reset();
-            size += IOUtil.copy(in, out);
+            final long size;
+            if (in instanceof SerializableInputStream) {
+                SerializableInputStream sin = (SerializableInputStream) in;
+                size = sin.getSize();
+                sin.moveTo(binaryFile);
+            } else {
+                OutputStream out = new FileOutputStream(binaryFile);
+                in.reset();
+                size = IOUtil.copy(in, out);
+                out.close();
+            }
             log.service("Stored " + size + " bytes from " + in);
-            out.close();
-            in.close();
             // unload the input-stream, it is of no use any more.
             node.setSize(fieldName, size);
             node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED);
