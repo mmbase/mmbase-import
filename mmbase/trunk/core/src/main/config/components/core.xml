@@ -440,6 +440,19 @@
     </body>
   </block>
 
+  <block name="components-documentation"
+         classification="mmbase.components:30"
+         mimetype="text/html">
+    <title>Documentation</title>
+    <xi:include href="http://www.mmbase.org/components/docbook.head.xml" />
+    <body>
+      <class name="org.mmbase.framework.DocumentationRenderer">
+        <param name="docbook">backenddevelopers/components/index.xml</param>
+        <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
   <block name="login"
          classification=""
          mimetype="text/html">
