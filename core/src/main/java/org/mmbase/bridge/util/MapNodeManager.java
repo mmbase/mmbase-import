@@ -17,7 +17,7 @@ import java.util.*;
 import org.mmbase.bridge.*;
 
 /**
- * A bridge NodeManager based on a Map of node values. The type of the values in the mapped is used to infer the 'fieldTypes'. 
+ * A bridge NodeManager based on a Map of node values. The type of the values in the mapped is used to infer the 'fieldTypes'.
  *
  * This happens lazily.
  *
@@ -31,10 +31,16 @@ public class MapNodeManager extends AbstractNodeManager  {
     protected final Map<String, Object> map;
     private final Map<String, Field> fieldTypes = new HashMap<String, Field>();
     private boolean checked = false;
+    private final boolean implicitCreate;
 
-    public MapNodeManager(Cloud cloud, Map m) {
+    public MapNodeManager(Cloud cloud, Map<String, Object> m, boolean create) {
         super(cloud);
         map = m;
+        implicitCreate = create;
+    }
+
+    public MapNodeManager(Cloud cloud, Map<String, Object> m) {
+        this(cloud, m, false);
     }
     protected void check() {
         if (! checked) {
@@ -64,7 +70,11 @@ public class MapNodeManager extends AbstractNodeManager  {
     // override for performance
     @Override
     public boolean hasField(String fieldName) {
-        return map.containsKey(fieldName);
+        if (implicitCreate) {
+            return true;
+        } else {
+            return map.containsKey(fieldName);
+        }
     }
     // override for performance
     @Override
@@ -75,7 +85,13 @@ public class MapNodeManager extends AbstractNodeManager  {
                 f = mapField(fieldName, map.get(fieldName));
             }
         }
-        if (f == null) throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
+        if (f == null) {
+            if (implicitCreate) {
+                return mapField(fieldName, null);
+            } else {
+                throw new NotFoundException("Field '" + fieldName + "' does not exist in NodeManager '" + getName() + "'.(" + getFieldTypes() + ")");
+            }
+        }
         return f;
     }
 
