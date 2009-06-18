@@ -59,6 +59,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
         log.service("Creating cache " + getName() + ": " + getDescription());
     }
 
+    @SuppressWarnings("unchecked")
     void setImplementation(String clazz, Map<String,String> configValues) {
         try {
             Class<?> clas = Class.forName(clazz);

@@ -405,7 +405,10 @@ public class CacheManager implements CacheManagerMBean {
      */
     public static Object remove(String name, Object key) {
         Cache cache = getCache(name);
-        if (cache == null) throw new IllegalArgumentException();
+        if (cache == null) {
+            throw new IllegalArgumentException();
+        }
+        log.service("Removing " + key + " from " + cache);
         return cache.remove(key);
     }
 

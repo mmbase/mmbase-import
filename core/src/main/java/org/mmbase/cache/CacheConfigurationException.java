@@ -17,7 +17,7 @@ package org.mmbase.cache;
  * @version $Id$
  */
 public class CacheConfigurationException extends Exception {
-
+    private static final long serialVersionUID = 0L;
 
     public CacheConfigurationException(String string) {
         super(string);

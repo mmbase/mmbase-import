@@ -10,14 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.cache;
 import org.mmbase.core.event.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.Casting;
 
 /**
- * A cache for MMObjectNodes. 
+ * A cache for MMObjectNodes.
  *
  * @author  Michiel Meeuwissen
  * @version $Id$
  */
-public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEventListener { 
+public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEventListener {
     private static final int CACHE_SIZE = 4 * 1024;
 
     private static NodeCache cache;
@@ -31,9 +32,11 @@ public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEvent
         cache.putCache();
     }
 
+    @Override
     public String getName() {
         return "Nodes";
     }
+    @Override
     public String getDescription() {
         return "Node number -> MMObjectNodes";
     }
@@ -46,10 +49,11 @@ public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEvent
         // node cache is registered as a Listener in MMBase.java.
     }
 
-
+    @Override
     public MMObjectNode remove(Object key) {
-        RelatedNodesCache.getCache().removeNode((Integer) key);
-        return super.remove(key);
+        Integer nodeNumber = Casting.toInt(key);
+        RelatedNodesCache.getCache().removeNode(nodeNumber);
+        return super.remove(nodeNumber);
     }
 
 
