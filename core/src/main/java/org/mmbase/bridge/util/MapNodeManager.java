@@ -28,23 +28,23 @@ import org.mmbase.bridge.*;
 
 public class MapNodeManager extends AbstractNodeManager  {
 
-    protected final Map<String, Object> map;
+    protected final Map<String, ?> map;
     private final Map<String, Field> fieldTypes = new HashMap<String, Field>();
     private boolean checked = false;
     private final boolean implicitCreate;
 
-    public MapNodeManager(Cloud cloud, Map<String, Object> m, boolean create) {
+    public MapNodeManager(Cloud cloud, Map<String, ?> m, boolean create) {
         super(cloud);
         map = m;
         implicitCreate = create;
     }
 
-    public MapNodeManager(Cloud cloud, Map<String, Object> m) {
+    public MapNodeManager(Cloud cloud, Map<String, ?> m) {
         this(cloud, m, false);
     }
     protected void check() {
         if (! checked) {
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
+            for (Map.Entry<String, ?> entry : map.entrySet()) {
                 String fieldName = entry.getKey();
                 Object value = entry.getValue();
                 mapField(fieldName, value);
