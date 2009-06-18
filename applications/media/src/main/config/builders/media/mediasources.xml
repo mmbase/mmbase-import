@@ -74,7 +74,9 @@
       </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
-          <entry basename="org.mmbase.applications.media.resources.codecs" />
+          <entry
+              javaconstants="org.mmbase.applications.media.Codec"
+              basename="org.mmbase.applications.media.resources.codecs" />
         </enumeration>
       </datatype>
     </field>
