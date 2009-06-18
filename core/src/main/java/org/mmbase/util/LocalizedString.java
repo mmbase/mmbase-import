@@ -310,6 +310,19 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
         return null;
     }
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    public static List<Locale> degrade(Locale locale) {
+        List<Locale> result = new ArrayList<Locale>();
+        while (locale != null) {
+            result.add(locale);
+            locale = degrade(locale, result.get(0));
+        }
+        return result;
+
+    }
+
 
     /**
      * This utility determines the value of an xml:lang attribute. So, given a {@link java.util.Locale}
