@@ -26,8 +26,20 @@ public class LanguageDataType extends StringDataType {
 
     private static final long serialVersionUID = 1L;
 
+    protected boolean languageInSelf = false;
+
     public LanguageDataType(String name) {
         super(name);
+    }
+
+
+    /**
+     * If you set this to true, then the names of the languages are not presented in the current
+     * locale, but in the language itself (if that is known by the JVM).
+     * @since MMBase-1.9.2
+     */
+    public void setInSelf(boolean b) {
+        languageInSelf = b;
     }
 
     protected static Locale getLocale(Cloud cloud, Field field) {
@@ -44,6 +56,30 @@ public class LanguageDataType extends StringDataType {
             return org.mmbase.util.LocalizedString.getDefault();
         }
     }
+
+    @Override public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
+
+        final Iterator<Map.Entry<String, String>> superIterator = super.getEnumerationValues(locale, cloud, node, field);
+        if (languageInSelf) {
+            return new Iterator<Map.Entry<String, String>>() {
+                public boolean hasNext() {
+                    return superIterator.hasNext();
+                }
+                public Map.Entry<String, String> next() {
+                    Map.Entry<String, String> superEntry = superIterator.next();
+                    Locale valueLocale = new Locale(superEntry.getKey());
+                    return new org.mmbase.util.Entry<String, String>(superEntry.getKey(), valueLocale.getDisplayLanguage(valueLocale));
+                }
+                public void remove() {
+                    superIterator.remove();
+                }
+
+            };
+        } else {
+            return superIterator;
+        }
+    }
+
 
 
     @Override
