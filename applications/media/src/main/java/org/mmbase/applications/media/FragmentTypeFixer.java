@@ -38,6 +38,7 @@ public class FragmentTypeFixer implements CommitProcessor {
                 if (! fragment.getNodeManager().equals(targetType)) {
                     log.service("Fixing type of " + node.getNumber() + " fragment " + fragment);
                     fragment.setNodeManager(targetType);
+                    fragment.commit();
                 } else {
                     log.debug("Fragment of " + node.getNumber() + " has correct fragment already");
                 }
