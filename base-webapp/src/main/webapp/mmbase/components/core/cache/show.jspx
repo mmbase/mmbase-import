@@ -8,71 +8,79 @@
   <jsp:directive.page import="org.mmbase.cache.*" />
   <jsp:output omit-xml-declaration="true" />
   <mm:cloud rank="administrator">
-  <mm:import externid="cache"       from="request" id="name"  required="true" />
-  <mm:import externid="deleteentry" from="request" vartype="integer">-1</mm:import>
-  <mm:import externid="deletekey"   from="request" />
-  
-  <h3>Showing cache ${name}</h3>
-  <mm:voidfunction set="caches" name="get" referids="name" id="cache" />
-  
-  <c:forEach items="${cache.entrySet}" var="entry" end="500" varStatus="status">
-    <c:if test="${deleteentry eq status.index}">
-      <div class="msg">
-        Removed '<mm:function set="caches" name="remove" referids="cache.name@cache,deletekey@key" />' from cache.
-      </div>
-    </c:if>
-  </c:forEach>
-  
-  <form method="post">
-    <input type="hidden" name="cache" value="${name}" />
-    <table summary="show cache ${name}" cellspacing="0" cellpadding="3" border="0">
-      <caption>
-        ${cache.description} : ${cache.size gt 500 ? 'first 500 of' : ''} ${cache.size} entries
-      </caption>
-      
-      <mm:import externid="key">.*</mm:import>
-      <mm:import externid="value">.*</mm:import>
-      <tr>
-        <th scope="col">Position</th>
-        <th scope="col">Count</th>
-        <th scope="col">
-          <label for="cachekey">Key</label> 
-          <input type="text" id="cachekey" name="key" value="${key}" />
-        </th>
-        <th scope="col">
-          <label for="cachevalue">Value</label>
-          <input type="text" id="cachevalue" name="value" value="${value}" />
-          <input type="submit" value="search" /> 
-        </th>
-        <th scope="col"> Remove </th>
-      </tr>
+    <mm:import externid="cache"       from="request" id="name"  required="true" />
+    <mm:import externid="deleteentry" from="request" vartype="integer">-1</mm:import>
+    <mm:import externid="deletekey"   from="request" />
 
-      <c:forEach items="${cache.entrySet}" var="entry" end="500" varStatus="status">
-        <mm:context>
-          <mm:import id="ckey" jspvar="ckey" reset="true">${entry.key}</mm:import>
-          <mm:import id="cvalue" reset="true">${entry.value}</mm:import>
-          <mm:compare referid="ckey" regexp="${key}">
-            <mm:compare referid="cvalue" regexp="${value}">
-              <tr>
-                <td class="view">${status.index} </td>
-                <td class="center">${cache.counts[ckey]} </td>
-                <td>${entry.key} </td>
-                <td>${entry.value} </td>
-                <td class="center">
-                  <mm:link referids="name@cache">
-                    <mm:param name="deletekey" value="$ckey" />
-                    <mm:param name="deleteentry" value="${status.index}" />
-                    <a title="remove this entry" href="${_}"><img src="${mm:link('/mmbase/style/images/delete.png')}" alt="remove" width="21" height="20" /></a>
-                  </mm:link>
-                </td>
-              </tr>
+    <h3>Showing cache ${name}</h3>
+    <mm:voidfunction set="caches" name="get" referids="name" id="cache" />
+
+    <c:forEach items="${cache.entrySet}" var="entry" end="500" varStatus="status">
+      <mm:context>
+        <mm:import id="thiskey">${entry.key}</mm:import>
+        <c:if test="${deleteentry eq status.index and thiskey  eq deletekey}">
+          <mm:write id="key" referid="entry.key" write="false" />
+          <div class="msg">
+            <mm:functioncontainer>
+              <mm:param name="cache">${cache.name}</mm:param>
+              Removed '<mm:function set="caches" name="remove"  referids="key" />' from cache '${cache}' with key '${deletekey}'.
+            </mm:functioncontainer>
+          </div>
+        </c:if>
+      </mm:context>
+
+    </c:forEach>
+
+    <form method="post">
+      <input type="hidden" name="cache" value="${name}" />
+      <table summary="show cache ${name}" cellspacing="0" cellpadding="3" border="0">
+        <caption>
+          ${cache.description} : ${cache.size gt 500 ? 'first 500 of' : ''} ${cache.size} entries
+        </caption>
+
+        <mm:import externid="key">.*</mm:import>
+        <mm:import externid="value">.*</mm:import>
+        <tr>
+          <th scope="col">Position</th>
+          <th scope="col">Count</th>
+          <th scope="col">
+            <label for="cachekey">Key</label>
+            <input type="text" id="cachekey" name="key" value="${key}" />
+          </th>
+          <th scope="col">
+            <label for="cachevalue">Value</label>
+            <input type="text" id="cachevalue" name="value" value="${value}" />
+            <input type="submit" value="search" />
+          </th>
+          <th scope="col"> Remove </th>
+        </tr>
+
+        <c:forEach items="${cache.entrySet}" var="entry" end="500" varStatus="status">
+          <mm:context>
+            <mm:import id="ckey" jspvar="ckey" reset="true">${entry.key}</mm:import>
+            <mm:import id="cvalue" reset="true">${entry.value}</mm:import>
+            <mm:compare referid="ckey" regexp="${key}">
+              <mm:compare referid="cvalue" regexp="${value}">
+                <tr>
+                  <td class="view">${status.index} </td>
+                  <td class="center">${cache.counts[ckey]} </td>
+                  <td>${entry.key} </td>
+                  <td>${entry.value} </td>
+                  <td class="center">
+                    <mm:link referids="name@cache">
+                      <mm:param name="deletekey" value="$ckey" />
+                      <mm:param name="deleteentry" value="${status.index}" />
+                      <a title="remove this entry" href="${_}"><img src="${mm:link('/mmbase/style/images/delete.png')}" alt="remove" width="21" height="20" /></a>
+                    </mm:link>
+                  </td>
+                </tr>
+              </mm:compare>
             </mm:compare>
-          </mm:compare>
-        </mm:context>
-      </c:forEach>
-    
-    </table>
-  </form>
+          </mm:context>
+        </c:forEach>
+
+      </table>
+    </form>
 
     <p>
       <mm:link page="cache">
