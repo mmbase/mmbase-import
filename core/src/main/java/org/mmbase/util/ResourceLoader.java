@@ -237,12 +237,9 @@ public class ResourceLoader extends ClassLoader {
         // reset both roots, they will be redetermined using servletContext.
         configRoot = null;
         webRoot    = null;
-        Set<ResourceWatcher> rws = ResourceWatcher.resourceWatchers;
-        if (rws != null) {
-            synchronized(rws) {
-                for (ResourceWatcher rw : rws) {
-                    rw.onChange();
-                }
+        synchronized(ResourceWatcher.resourceWatchers) {
+            for (ResourceWatcher rw : ResourceWatcher.resourceWatchers.keySet()) {
+                rw.onChange();
             }
         }
     }
