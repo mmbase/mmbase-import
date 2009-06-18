@@ -12,7 +12,7 @@
   <jsp:scriptlet>
     Cloud cloud = (Cloud) jspContext.getAttribute(org.mmbase.bridge.jsp.taglib.CloudTag.KEY,  PageContext.REQUEST_SCOPE);
     assert cloud != null;
-    Node node = new MapNode(map, cloud, true);
+    Node node = new MapNode&lt;Object&gt;(map, cloud, true);
     jspContext.setAttribute("virtualnode", node);
   </jsp:scriptlet>
   <mm:node referid="virtualnode">
