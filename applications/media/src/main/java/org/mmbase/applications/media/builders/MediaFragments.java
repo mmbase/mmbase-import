@@ -239,14 +239,16 @@ public class MediaFragments extends MMObjectBuilder {
      *
      */
     protected List<URLComposer> getURLs(MMObjectNode fragment, Map<String, Object> info, List<URLComposer> urls, Set<MMObjectNode> cacheExpireObjects) {
-        if (urls == null) urls = new ArrayList<URLComposer>();
+        if (urls == null) {
+            urls = new ArrayList<URLComposer>();
+        }
 
         Iterator<MMObjectNode> i = getSources(fragment).iterator();
         while (i.hasNext()) {
             MMObjectNode source = i.next();
             if (source != null) {
-                log.error("No sources builder!");
-                MediaSources bul    = (MediaSources) source.getBuilder(); // cast everytime, because it can be extended
+                MediaSources bul    =
+                    (MediaSources) source.getBuilder();
                 bul.getURLs(source, fragment, info, urls, cacheExpireObjects);
             }
         }
