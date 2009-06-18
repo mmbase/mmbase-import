@@ -25,37 +25,37 @@ import org.mmbase.util.functions.*;
  * @since   MMBase-1.8
  */
 
-public class MapNode extends AbstractNode implements Node {
+public class MapNode<V> extends AbstractNode implements Node {
 
     /**
      * This is normally, but not always, a VirtualBuilder. It is not for some builders which have
      * besides real nodes also virtual nodes, like typedef (cluster nodes) and typerel (allowed relations because of inheritance).
      */
     final protected NodeManager nodeManager;
-    final protected Map values;
+    final protected Map<String, V> values;
     final protected Map<String, Long> sizes = new HashMap<String, Long>();
-    final protected Map<String, Object> wrapper;
-    final protected Map<String, Object> originals = new HashMap<String, Object>();
+    final protected Map<String, V> wrapper;
+    final protected Map<String, V> originals = new HashMap<String, V>();
     boolean implicitCreate = false;
 
     /**
      * This constructor explicitely specifies the node manager of the Node. This is used for {#getNodeManager} and {#getCloud}.
      */
-    public MapNode(Map<String, ?> v, NodeManager nm) {
+    public MapNode(Map<String, V> v, NodeManager nm) {
         values = v;
-        wrapper = new LinkMap<String, Object>(values, originals, LinkMap.Changes.CONSERVE);
+        wrapper = new LinkMap<String, V>(values, originals, LinkMap.Changes.CONSERVE);
         nodeManager = nm;
     }
     /**
      * A node with a 'virtual' nodemanager will be constructed. This virtual node manager will have
      * fields which are guessed based on the keys and values of the given map.
      */
-    public MapNode(Map v, Cloud cloud, boolean implicitCreate) {
+    public MapNode(Map<String, V> v, Cloud cloud, boolean implicitCreate) {
         this(v, createVirtualNodeManager(cloud, v, implicitCreate));
 
     }
 
-    public MapNode(Map v, Cloud cloud) {
+    public MapNode(Map<String, V>  v, Cloud cloud) {
         this(v, cloud, false);
 
     }
@@ -64,7 +64,7 @@ public class MapNode extends AbstractNode implements Node {
      * is used to acquire a Cloud, because every bridge node must be associated with some Cloud
      * object.
      */
-    public MapNode(Map v) {
+    public MapNode(Map<String, V> v) {
         this(v, guessCloud());
     }
     private static final Cloud guessCloud() {
@@ -116,11 +116,11 @@ public class MapNode extends AbstractNode implements Node {
     }
     @Override
     public void setValueWithoutProcess(String fieldName, Object value) {
-        wrapper.put(fieldName, value);
+        wrapper.put(fieldName, (V) value);
     }
     @Override
     public void setValueWithoutChecks(String fieldName, Object value) {
-        wrapper.put(fieldName, value);
+        wrapper.put(fieldName, (V) value);
     }
 
     @Override
