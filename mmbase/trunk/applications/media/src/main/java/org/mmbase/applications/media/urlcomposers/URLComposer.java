@@ -15,6 +15,7 @@ import org.mmbase.applications.media.builders.MediaSources;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.applications.media.Format;
+import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.State;
 
 import java.util.*;
@@ -71,6 +72,10 @@ public class URLComposer  {
      */
     public Format       getFormat()   {
         return Format.get(source.getIntValue("format"));
+    }
+
+    public Codec       getCodec()   {
+        return Codec.get(source.getIntValue("codec"));
     }
 
     /**
