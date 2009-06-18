@@ -1135,6 +1135,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 log.warn("Just acquired user " + cloud.getUser().getIdentifier() + " is not valid!");
                 return deny(DENYREASON_FAIL, "Just acquired user " + cloud.getUser().getIdentifier() + " is not valid!");
             }
+            if (logon != null && pwd != Attribute.NULL) {
+                logon.set(0, cloud.getUser().getIdentifier());
+            }
             // ok, logging on work, now check rank if necessary
             if (rank != Attribute.NULL) {
                 log.debug("Checking for rank");
