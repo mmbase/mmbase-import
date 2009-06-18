@@ -9158,4 +9158,11 @@ The 0 is just counter, which starts at 0 on every page.
     <since>MMBase-1.9.1</since>
   </tag-file>
 
+  <tag-file>
+    <type>mmbase.basic</type>
+    <name>virtualnode</name>
+    <path>/META-INF/tags/mm/u/virtualnode.tagx</path>
+    <since>MMBase-1.9.2</since>
+  </tag-file>
+
 </taglib>
