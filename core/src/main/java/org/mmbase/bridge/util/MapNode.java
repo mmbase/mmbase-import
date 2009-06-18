@@ -36,6 +36,7 @@ public class MapNode extends AbstractNode implements Node {
     final protected Map<String, Long> sizes = new HashMap<String, Long>();
     final protected Map<String, Object> wrapper;
     final protected Map<String, Object> originals = new HashMap<String, Object>();
+    boolean implicitCreate = false;
 
     /**
      * This constructor explicitely specifies the node manager of the Node. This is used for {#getNodeManager} and {#getCloud}.
@@ -49,8 +50,13 @@ public class MapNode extends AbstractNode implements Node {
      * A node with a 'virtual' nodemanager will be constructed. This virtual node manager will have
      * fields which are guessed based on the keys and values of the given map.
      */
+    public MapNode(Map v, Cloud cloud, boolean implicitCreate) {
+        this(v, createVirtualNodeManager(cloud, v, implicitCreate));
+
+    }
+
     public MapNode(Map v, Cloud cloud) {
-        this(v, createVirtualNodeManager(cloud, v));
+        this(v, cloud, false);
 
     }
     /**
@@ -70,8 +76,8 @@ public class MapNode extends AbstractNode implements Node {
 
     }
 
-    protected static NodeManager createVirtualNodeManager(Cloud cloud, final Map map) {
-        return new MapNodeManager(cloud, map);
+    protected static NodeManager createVirtualNodeManager(Cloud cloud, final Map map, boolean implicitCreate) {
+        return new MapNodeManager(cloud, map, implicitCreate);
     }
 
     public Cloud getCloud() {
