@@ -1425,7 +1425,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         protected String valueString(Node node, Field field) {
             Collection<Map.Entry<C, String>> col = getEnumeration(null, null, node, field);
             if(col.size() == 0) return "";
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             Iterator<Map.Entry<C, String>> it = col.iterator();
             int i = 0;
             while (it.hasNext() && ++i < 10) {
