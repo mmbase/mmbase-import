@@ -93,4 +93,17 @@
     <method>getThreadPools</method>
   </function>
 
+ <function name="resourceWatchers">
+    <type>class</type>
+    <class>org.mmbase.util.ResourceWatcher</class>
+    <method>getResourceWatchers</method>
+  </function>
+
+ <function name="degradeLocale">
+    <type>class</type>
+    <class>org.mmbase.util.LocalizedString</class>
+    <method>degrade</method>
+    <param name="locale" type="java.util.Locale"  />
+  </function>
+
 </functionset>
