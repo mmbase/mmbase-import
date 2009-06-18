@@ -13,6 +13,7 @@ package org.mmbase.util;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
+import java.lang.ref.*;
 
 
 import org.mmbase.core.event.*;
@@ -38,14 +39,14 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * is set to null, and not used any more (also used in ResourceLoader).
      *
      */
-    static Set<ResourceWatcher> resourceWatchers = Collections.synchronizedSet(new HashSet<ResourceWatcher>());
+    static final Map<ResourceWatcher, Object> resourceWatchers = Collections.synchronizedMap(new WeakHashMap<ResourceWatcher, Object>());
 
     /**
      * Considers all resource-watchers. Perhaps onChange must be called, because there is a node for this resource available now.
      */
     static void setResourceBuilder() {
         synchronized(resourceWatchers) {
-            for (ResourceWatcher rw : resourceWatchers) {
+            for (ResourceWatcher rw : resourceWatchers.keySet()) {
                 if (rw.running) {
                     EventManager.getInstance().addEventListener(rw);
                 }
@@ -58,13 +59,12 @@ public abstract class ResourceWatcher implements NodeEventListener  {
                 }
             }
         }
-        resourceWatchers = null; // no need to store those any more.
     }
 
     /**
      * Delay setting used for the filewatchers.
      */
-   private long delay = -1;
+   private long delay = FileWatcher.DEFAULT_DELAY;
 
     /**
      * All resources watched by this ResourceWatcher. A Set of Strings. Often, a ResourceWatcher would watch only one resource.
@@ -98,11 +98,16 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * Constructor.
      */
     protected ResourceWatcher(ResourceLoader rl) {
+        this(rl, true);
+    }
+
+    protected ResourceWatcher(ResourceLoader rl, boolean administrate) {
         resourceLoader = rl;
-        if (resourceWatchers != null) {
-            resourceWatchers.add(this);
+        if (administrate) {
+            resourceWatchers.put(this, null);
         }
     }
+
     /**
      * Constructor, defaulting to the Root ResourceLoader (see {@link ResourceLoader#getConfigurationRoot}).
      */
@@ -164,12 +169,11 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      */
     protected synchronized void createFileWatcher(String resource) {
         FileWatcher fileWatcher = new ResourceFileWatcher(resource);
-        if (delay != -1) {
-            fileWatcher.setDelay(delay);
-        }
+        fileWatcher.setDelay(delay);
         fileWatcher.getFiles().addAll(resourceLoader.getFiles(resource));
         fileWatcher.start(); // filewatchers are only created on start, so must always be started themselves.
         fileWatchers.put(resource, fileWatcher);
+        log.info("Created " + fileWatcher);
     }
 
     /**
@@ -229,7 +233,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
             mapNodeNumber(resource);
             createFileWatcher(resource);
         }
-        if (resourceWatchers == null) {
+        if (EventManager.getInstance() != null) {
             EventManager.getInstance().addEventListener(this);
         }
         running = true;
@@ -311,12 +315,39 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     }
 
     /**
+     * @since MMBase-1.9.2
+     */
+    public static Set<ResourceWatcher> getResourceWatchers() {
+        return resourceWatchers.keySet();
+    }
+    /**
+     * @since MMBase-1.9.2
+     */
+    public long getDelay() {
+        return delay;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public Map<String, FileWatcher> getFileWatchers() {
+        return Collections.unmodifiableMap(fileWatchers);
+    }
+    /**
+     * @since MMBase-1.9.2
+     */
+    public boolean isRunning() {
+        return running;
+    }
+
+    /**
      * A FileWatcher associated with a certain resource of this ResourceWatcher.
      */
 
     protected class ResourceFileWatcher extends FileWatcher {
         private final String resource;
         ResourceFileWatcher(String resource) {
+            super(true);
             this.resource = resource;
         }
         public void onChange(File f) {
