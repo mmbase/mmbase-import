@@ -27,15 +27,18 @@ public abstract class BlobCache extends Cache<String, Object> {
         super(size);
     }
 
+    @Override
     protected int getDefaultMaxEntrySize() {
         return 100 * 1024;
 
     }
 
+    @Override
     public String getName() {
         return "A Blob Cache";
     }
 
+    @Override
     public String getDescription() {
         return "Node number - field Name-> ByteArray";
     }
@@ -44,6 +47,7 @@ public abstract class BlobCache extends Cache<String, Object> {
         return "" + nodeNumber + '-' + fieldName;
     }
 
+    @Override
     public Object put(String key, Object value) {
         if (!checkCachePolicy(key)) return null;
         if (value instanceof byte[]) {
