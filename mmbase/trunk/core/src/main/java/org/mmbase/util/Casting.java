@@ -241,6 +241,12 @@ public class Casting {
                 return (C) toDataType(value);
            } else if (type.equals(org.mmbase.security.Operation.class)) {
                 return (C) org.mmbase.security.Operation.getOperation(toString(value));
+           } else if (type.equals(Locale.class)) {
+                if (value instanceof Locale) {
+                    return (C) value;
+                } else {
+                    return (C) new Locale(toString(value));
+                }
             } else {
                 log.error("Don't know how to convert to " + type, new Exception());
                 if (value == null || "".equals(value)) {
