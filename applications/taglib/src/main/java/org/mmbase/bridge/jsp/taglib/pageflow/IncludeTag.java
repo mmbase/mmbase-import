@@ -70,6 +70,8 @@ public class IncludeTag extends UrlTag {
 
     protected Attribute omitXmlDeclaration = Attribute.NULL;
 
+    protected Object prevIncludePath = null;
+
     /**
      * Test whether or not the 'cite' parameter is set
      */
@@ -125,6 +127,7 @@ public class IncludeTag extends UrlTag {
     }
     @Override
     public int doStartTag() throws JspTagException {
+        prevIncludePath = pageContext.getRequest().getAttribute(INCLUDE_PATH_KEY);
         checkAttributes();
         initTag(true);
         return EVAL_BODY_BUFFERED;
@@ -368,7 +371,9 @@ public class IncludeTag extends UrlTag {
      */
     private void cite(BodyContent bodyContent, String relativeUrl, HttpServletRequest request) throws JspTagException {
         try {
-            if (log.isDebugEnabled()) log.trace("Citing " + relativeUrl);
+            if (log.isTraceEnabled()) {
+                log.trace("Citing " + relativeUrl);
+            }
             if (resource == Attribute.NULL) {
                 if (relativeUrl.indexOf("..") > -1 || relativeUrl.toUpperCase().indexOf("WEB-INF") > -1)  { // toUpperCase: just for windows, of course
                     throw new JspTagException("Not allowed to cite " + relativeUrl);
@@ -388,7 +393,9 @@ public class IncludeTag extends UrlTag {
 
 
             String resource = relativeUrl;
-            if (log.isDebugEnabled()) log.debug("Citing " + resource);
+            if (log.isDebugEnabled()) {
+                log.debug("Citing " + resource);
+            }
 
 
             Reader reader = ResourceLoader.getWebRoot().getReader(resource);
@@ -516,12 +523,9 @@ public class IncludeTag extends UrlTag {
                 }
 
             } else { // really absolute
-                if (getCite()) {
-                    cite(bodyContent, gotUrl, request);
-                } else {
-                    external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
-                                                                   // also no need to encode the URL.
-                }
+                external(bodyContent, gotUrl, null, response);
+                // null: no need to give cookies to external url
+                // also no need to encode the URL.
             }
 
         } catch (IOException e) {
@@ -530,6 +534,12 @@ public class IncludeTag extends UrlTag {
         if (pageLog.isDebugEnabled()) {
             pageLog.debug("END Parsing mm:include JSP page");
         }
+    }
+
+    @Override
+    public int doEndTag() throws JspTagException {
+        pageContext.getRequest().setAttribute(INCLUDE_PATH_KEY, prevIncludePath);
+        return super.doEndTag();
     }
 
     /**
