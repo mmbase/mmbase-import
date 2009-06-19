@@ -13,9 +13,12 @@ package org.mmbase.applications.media.builders;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.applications.media.urlcomposers.URLComposerFactory;
 import org.mmbase.module.core.*;
+import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
 import java.util.*;
 import java.lang.reflect.Method;
+
+import javax.servlet.http.HttpServletRequest;
 import org.mmbase.util.functions.*;
 import org.mmbase.bridge.*;
 
@@ -43,7 +46,28 @@ public class MediaProviders extends MMObjectBuilder {
             @Override
             public String getFunctionValue(Node node, Parameters parameters) {
                 String protocol = node.getStringValue("protocol");
+                if ("".equals(protocol)) protocol = "http";
+
                 String host = node.getStringValue("host");
+                if ("".equals(host)) {
+                    HttpServletRequest req = parameters.get(Parameter.REQUEST);
+                    if (req == null) {
+                        // a bit of a hack, the function in MediaFragments should be updated to
+                        // decently pass Request objects as a parameters
+                        Cloud cloud = org.mmbase.bridge.util.CloudThreadLocal.currentCloud();
+                        if (cloud != null) {
+                            req = (HttpServletRequest) cloud.getProperty(org.mmbase.bridge.Cloud.PROP_REQUEST);
+                        } else {
+                            log.warn("No cloud found ", new Exception());
+                        }
+                    }
+                    if (req != null) {
+                        host = req.getServerName();
+                    } else {
+                        log.warn("No request found");
+
+                    }
+                }
                 //String rootpath = node.getStringValue("rootpath").replace("${CONTEXT}", MMBaseContext.getServletContext().getContextPath());  // servlet >= 2.5
                 String rootpath = node.getStringValue("rootpath").replace("${CONTEXT}", MMBaseContext.getHtmlRootUrlPath());  // servlet < 2.5
                 if ("".equals(host)) {
