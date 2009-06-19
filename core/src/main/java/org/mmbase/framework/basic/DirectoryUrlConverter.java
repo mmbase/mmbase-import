@@ -67,7 +67,7 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
         for (String p: pa.split("/")) {
             path.add(p);
         }
-        while (path.size() < 2) {
+        if (path.size() == 0) {
             path.add("");
         }
         return path;
@@ -94,9 +94,16 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
 
     @Override final public Url getFilteredInternalUrl(String pa, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
         List<String> path = getPath(pa);
-        if (path.size() < 2 && directory.length() > 1) {
-            log.debug("pa " + pa + " -> " + path + " (Not long enough for " + this + ")");
-            return Url.NOT;
+        if (directory.length() > 1) {
+            if (path.size() < 2) {
+                log.debug("pa " + pa + " -> " + path + " (Not long enough for " + this + ")");
+                return Url.NOT;
+            }
+        } else {
+            if (path.size() < 1) {
+                log.debug("pa " + pa + " -> " + path + " (Not long enough for " + this + ")");
+                return Url.NOT;
+            }
         }
         if (directory.length() > 1) {
             if(! ("/" + path.get(1) + "/").equals(directory)) {
@@ -107,11 +114,17 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("" + path + " from " + pa + " directotry" + directory);
+            log.debug("" + path + " from " + pa + " directory" + directory);
         }
+        List<String> subPath;
+        if (directory.length() > 1) {
+            subPath = path.subList(2, path.size());
+        } else {
+            subPath = path.subList(1, path.size());
 
-        return getFilteredInternalDirectoryUrl(path.subList(directory.length() > 1 ? 2 : 1, // should also work correctly if directory is empty
-                                                            path.size()), params, frameworkParameters);
+        }
+        log.debug("'" + pa + "' -> " + subPath + " " + subPath.size());
+        return getFilteredInternalDirectoryUrl(subPath, params, frameworkParameters);
     }
 
     protected abstract Url getFilteredInternalDirectoryUrl(List<String> path, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException;
@@ -123,5 +136,14 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
         return directory;
     }
 
+
+    public static void main(String[] argv) {
+        for (String s : new String[] { "", "/", "//", "/bla/", "/bla"}) {
+            String[] l = s.split("/", -1);
+            System.out.println("'" + s + "': " + Arrays.asList(l) + " " + l.length);
+            String[] m = s.split("/");
+            System.out.println("'" + s + "': " + Arrays.asList(m) + " " + m.length);
+        }
+    }
 
 }
