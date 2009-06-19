@@ -44,7 +44,9 @@ public enum Codec {
         number = n;
     }
 
-    public int toInt()    { return number; }
+    public int toInt()    {
+        return number;
+    }
 
     public static Codec get(int i) {
         for (Codec c : Codec.values()) {
