@@ -71,7 +71,7 @@
       <guiname xml:lang="nl">Introductie</guiname>
       <guiname xml:lang="en">Introduction</guiname>
     </gui>
-    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+    <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
           <param name="type">mediafragments</param>
@@ -98,7 +98,7 @@
       <guiname xml:lang="nl">Tekst</guiname>
       <guiname xml:lang="en">Text</guiname>
     </gui>
-    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+    <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" >
       <setprocessor>
         <class name="org.mmbase.datatypes.processors.RelatedField$Setter">
           <param name="type">mediafragments</param>
