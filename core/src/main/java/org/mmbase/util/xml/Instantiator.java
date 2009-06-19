@@ -127,7 +127,8 @@ public abstract class Instantiator {
             } catch (IllegalAccessException ie) {
                 log.warn(ie);
             } catch (InvocationTargetException ite) {
-                log.warn(ite);
+                invoked = true;
+                log.warn(ite.getMessage(), ite);
             }
         }
         if (! invoked && setProperty != null) {
