@@ -209,8 +209,7 @@ class ApplicationInstaller {
                 NodeReader nodeReader = getNodeReader(bh, appName);
                 if (nodeReader == null) {
                     continue;
-                }
-                else {
+                } else {
                     installDatasource(syncbul, nodeReader, nodeFieldNodes, result);
                 }
             }
@@ -268,6 +267,7 @@ class ApplicationInstaller {
                 try {
                     runnable.run();
                 } catch (Exception e) {
+                    log.error(e.getMessage(), e);
                     return result.error(e.getMessage());
                 }
             }
@@ -277,6 +277,7 @@ class ApplicationInstaller {
             try {
                 runnable.run();
             } catch (Exception e) {
+                log.error(e.getMessage(), e);
                 return result.error(e.getMessage());
             }
         }
@@ -464,8 +465,7 @@ class ApplicationInstaller {
                 RelationNodeReader nodereader = getRelationNodeReader(appname, bh);
                 if (nodereader == null) {
                     continue;
-                }
-                else {
+                } else {
                     installRelationSource(syncbul, insRel, nodereader, nodeFieldNodes, result);
                 }
             }
