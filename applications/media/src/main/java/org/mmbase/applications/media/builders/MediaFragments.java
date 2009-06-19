@@ -303,7 +303,7 @@ public class MediaFragments extends MMObjectBuilder {
         log.debug("Getting format of a fragment.");
         // XXX also cache this ?
         // XXX can be done in the same cache if we extend the key...
-        List<URLComposer> urls = getFilteredURLs(fragment, info, null);
+        List<URLComposer> urls = getFilteredURLs(fragment, info,  null);
         if (urls.size() > 0) {
             return urls.get(0).getFormat().toString();
         } else {
