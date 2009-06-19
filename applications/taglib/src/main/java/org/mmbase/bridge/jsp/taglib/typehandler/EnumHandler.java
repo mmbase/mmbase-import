@@ -135,14 +135,22 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         Object firstValue = null;
         if (i!= null && i.hasNext()) {
             Object value = ((Map.Entry) i.next()).getKey();
-            if (value.equals(s)) return value;
+            if (log.isDebugEnabled()) {
+                log.debug("Comparing " + value + " to " + s);
+            }
+            if (value.equals(s)) {
+                return value;
+            }
             firstValue = value;
         }
         while (i!= null && i.hasNext()) {
             Object value = ((Map.Entry) i.next()).getKey();
+            if (log.isDebugEnabled()) {
+                log.debug("Comparing " + value + " to " + s);
+            }
             if (value.equals(s)) return value;
         }
-
+        log.debug("Returning firstValue");
         return firstValue;
 
     }
@@ -160,9 +168,10 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         buffer.append(">");
         Object uncastValue = getFieldValue(node, field, true);
         Object unvalidValue  = cast(uncastValue, node, field);
-        Object value         = convertToValidate(unvalidValue, node, field);
+        Object value         = multiple ? unvalidValue : convertToValidate(unvalidValue, node, field);
         if (log.isDebugEnabled()) {
             log.debug("cast " + uncastValue + " -> " + unvalidValue + " -> " + value + " -> " + Casting.toString(value));
+            //cast 191 ->          [Users (191)] ->     Administrators (189) -> 189
         }
 
         if (! field.getDataType().isRequired() && ! multiple) {
