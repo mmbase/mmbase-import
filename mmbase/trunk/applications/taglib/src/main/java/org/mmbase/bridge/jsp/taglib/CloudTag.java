@@ -82,6 +82,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     private Attribute cloudURI = Attribute.NULL;
     private Cloud cloud;
     private Object prevCloud;
+    private Cloud prevCloudThreadLocal;
 
     /**
      * @since MMBase-1.7
@@ -505,6 +506,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             getContextProvider().getContextContainer().register(getId(), cloud);
         }
 
+        prevCloudThreadLocal = org.mmbase.bridge.util.CloudThreadLocal.currentCloud();
         if (cloud == null) {
             return SKIP_BODY;
         }
@@ -513,6 +515,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             log.debug("Found previous cloud " + prevCloud);
         }
         pageContext.setAttribute(KEY, cloud, SCOPE);
+        org.mmbase.bridge.util.CloudThreadLocal.bind(cloud);
 
         if (cloud.getCloudContext() instanceof LocalContext) {
             cloud.setProperty(Cloud.PROP_REQUEST, request);
@@ -542,8 +545,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
                 tag.setUser(cloud.getUser());
             }
         }
-        org.mmbase.bridge.util.CloudThreadLocal.unbind();
-        org.mmbase.bridge.util.CloudThreadLocal.bind(cloud);
         return EVAL_BODY;
     }
 
@@ -1289,6 +1290,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      *
      */
     public int doStartTag() throws JspTagException {
+
         //log.info("" +  Collections.list(pageContext.setAttributeNamesInScope(PageContext.PAGE_SCOPE)));
         checkLocale();
 
@@ -1351,22 +1353,24 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     public int doEndTag() throws JspTagException {
         if (log.isDebugEnabled()) {
-            log.debug("Resetting cloud to " + prevCloud);
+            log.debug("Resetting cloud to " + prevCloud + " " + prevCloudThreadLocal);
         }
         org.mmbase.bridge.util.CloudThreadLocal.unbind();
-        org.mmbase.bridge.util.CloudThreadLocal.bind((Cloud) prevCloud);
+        org.mmbase.bridge.util.CloudThreadLocal.bind(prevCloudThreadLocal);
         pageContext.setAttribute(KEY, prevCloud, SCOPE);
         prevCloud = null;
+        prevCloudThreadLocal = null;
         return super.doEndTag();
     }
 
     public void doFinally() {
         // can be cleaned for gc:
         super.doFinally();
-        org.mmbase.bridge.util.CloudThreadLocal.unbind();
         cookies = null;
         cloudContext = null;
         cloud = null;
+        prevCloud = null;
+        prevCloudThreadLocal = null;
         logon = null;
         session = null;
         request = null;
