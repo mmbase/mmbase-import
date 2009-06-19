@@ -91,7 +91,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
 
 
-    private void use() {
+    private synchronized void use() {
         if (! used) {
             if (log.isTraceEnabled()) {
                 log.trace("Using " + this + " because ", new Exception());
@@ -114,15 +114,16 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     public String getContentType() {
         return contentType;
     }
-    public byte[] get() throws IOException {
+    public synchronized byte[] get() throws IOException {
         if (wrapped == null) {
             throw new IllegalStateException();
         }
         if (file != null || wrapped.markSupported()) {
             log.debug("Making byte array of " + wrapped);
+            reset();
             byte[] b =  toByteArray(wrapped);
-            log.debug("Resetting  " + wrapped);
-            wrapped.reset();
+            log.debug("Resetting");
+            reset();
             return b;
         } else {
             log.debug("Making byte array of " + wrapped);
@@ -133,7 +134,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         }
     }
 
-    public void moveTo(File f) {
+    public synchronized void moveTo(File f) {
         if (name == null) {
             name = f.getName();
         }
@@ -143,10 +144,15 @@ public class SerializableInputStream  extends InputStream implements Serializabl
                 log.debug("File is already there " + f);
                 return;
             } else if (file.renameTo(f)) {
-                log.debug("Renamed " + file + " to " + f);
-                file = f;
-                tempFile = false;
-                return;
+                try {
+                    log.debug("Renamed " + file + " to " + f);
+                    file = f;
+                    wrapped = new FileInputStream(file);
+                    tempFile = false;
+                    return;
+                } catch (IOException ioe) {
+                    throw new RuntimeException(ioe);
+                }
             } else {
                 log.debug("Could not rename " + file + " to " + f + " will copy/delete in stead");
             }
@@ -180,7 +186,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
     }
 
-    private FileInputStream supportMark() {
+    private synchronized FileInputStream supportMark() {
         try {
             assert file == null;
             file = File.createTempFile(getClass().getName(), this.name);
@@ -272,7 +278,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             log.debug("" + wrapped + " supports mark, using it");
             wrapped.reset() ;
         } else if (file != null) {
-            log.debug("Resetting " + this + " to " + fileMark + " (" + file + ")");
+            if (log.isDebugEnabled()) {
+                log.debug("Resetting " + this + " to " + fileMark + " (" + file + ")");
+            }
             wrapped = new FileInputStream(file);
             if (fileMark > 0) {
                 wrapped.skip(fileMark);
@@ -292,7 +300,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         try {
             filePos = wrapped instanceof FileInputStream ? ((FileInputStream) wrapped).getChannel().position() : 0;
         } catch (IOException ioe) {
-            log.warn(ioe);
+            log.warn(ioe.getMessage(), ioe);
         }
         return "SERIALIZABLE " + wrapped +
             (tempFile ? (" (tempfile: " + file + ") ") : (file != null ? ("(" + file + ")") : "")) +
