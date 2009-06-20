@@ -494,6 +494,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
         }
         incRefCount(req);
         try {
+            res.addHeader("X-Powered-By", org.mmbase.Version.get());
             super.service(req, res);
         } finally { // whatever happens, decrease the refcount:
             decRefCount(req);
