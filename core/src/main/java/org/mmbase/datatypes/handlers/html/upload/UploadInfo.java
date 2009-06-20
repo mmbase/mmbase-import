@@ -18,9 +18,20 @@ package org.mmbase.datatypes.handlers.html.upload;
 
 public class UploadInfo {
     private final long totalSize;
+    private final long startTime = System.currentTimeMillis();
+
+    String errorMessage = null;
     long bytesRead = 0;
-    long elapsedTime = 0;
-    String status = "init";
+    long elapsedTime = -1;
+
+    public static enum Status {
+        INIT,
+        START,
+        PROGRESS,
+        ERROR,
+        DONE;
+    }
+    Status status = Status.INIT;
     int fileIndex = -1;
 
 
@@ -28,12 +39,23 @@ public class UploadInfo {
         this.totalSize = totalSize;
     }
 
-    public String getStatus() {
+    void error(String mes) {
+        status = Status.ERROR;
+        errorMessage = mes;
+    }
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
+        if (status == Status.DONE) {
+            elapsedTime = getElapsedTime();
+        }
     }
 
     public long getTotalSize() {
@@ -49,14 +71,18 @@ public class UploadInfo {
     }
 
     public long getElapsedTime() {
-        return elapsedTime;
+        if (elapsedTime < 0) {
+            return System.currentTimeMillis() - startTime;
+        } else {
+            return elapsedTime;
+        }
     }
     public void setElapsedTime(long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 
     public boolean isInProgress() {
-        return "progress".equals(status) || "start".equals(status);
+        return Status.PROGRESS == status || Status.PROGRESS == status;
     }
 
     public int getFileIndex() {

@@ -36,12 +36,12 @@ public class UploadListener implements OutputStreamListener {
 
     public void start() {
         uploadInfo.fileIndex++;
-        updateUploadInfo("start");
+        updateUploadInfo(UploadInfo.Status.START);
     }
 
     public void bytesRead(int bytesRead) {
         uploadInfo.bytesRead += bytesRead;
-        updateUploadInfo("progress");
+        updateUploadInfo(UploadInfo.Status.PROGRESS);
 
         if (delay > 0) {
             try {
@@ -53,18 +53,19 @@ public class UploadListener implements OutputStreamListener {
     }
 
     public void error(String message) {
-        updateUploadInfo("error");
+        updateUploadInfo(UploadInfo.Status.ERROR);
+        uploadInfo.error(message);
     }
 
     public void done() {
-        updateUploadInfo("done");
+        updateUploadInfo(UploadInfo.Status.DONE);
     }
 
     private long getDelta() {
         return System.currentTimeMillis() - startTime;
     }
 
-    private void updateUploadInfo(String status) {
+    private void updateUploadInfo(UploadInfo.Status status) {
         uploadInfo.setStatus(status);
         request.getSession().setAttribute(KEY, uploadInfo);
     }
