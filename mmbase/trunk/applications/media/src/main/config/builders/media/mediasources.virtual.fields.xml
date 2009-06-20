@@ -55,5 +55,15 @@
     </datatype>
   </field>
 
+
+  <field name="objecttype" state="virtual">
+    <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <pattern value="videosources|audiosources" />
+      <commitprocessor>
+        <class name="org.mmbase.applications.media.FragmentTypeFixer" />
+      </commitprocessor>
+    </datatype>
+  </field>
+
 </fieldlist>
 
