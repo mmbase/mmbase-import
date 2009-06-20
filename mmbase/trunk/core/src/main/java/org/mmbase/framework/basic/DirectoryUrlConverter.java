@@ -80,7 +80,8 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
                                          Parameters parameters,
                                          Parameters frameworkParameters,  boolean action) throws FrameworkException;
 
-    @Override public boolean isFilteredMode(Parameters frameworkParameters) throws FrameworkException {
+    @Override
+    public boolean isFilteredMode(Parameters frameworkParameters) throws FrameworkException {
         if (directory == null) {
             throw new RuntimeException("Directory not set");
         }
