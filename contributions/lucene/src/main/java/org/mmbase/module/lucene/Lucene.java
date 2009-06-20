@@ -336,7 +336,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         addFunction(statusDescriptionFunction);
     }
 
-    protected Function <Scheduler.Assignment> assignmentFunction = new AbstractFunction<Scheduler.Assignment> ("assignment", Parameter.EMPTY, 
+    protected Function <Scheduler.Assignment> assignmentFunction = new AbstractFunction<Scheduler.Assignment> ("assignment", Parameter.EMPTY,
             new ReturnType<Scheduler.Assignment>(Scheduler.Assignment.class, "")) {
         private static final long serialVersionUID = 0L;
         public Scheduler.Assignment getFunctionValue(Parameters arguments) {
@@ -687,12 +687,10 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     protected void init(final boolean initialWait) {
         super.init();
-        // Force init of MMBase
-        mmbase = MMBase.getMMBase();
-
 
         ThreadPools.jobsExecutor.execute(new Runnable() {
                 public void run() {
+                    mmbase = MMBase.getMMBase();
                     String databaseName = "";
                     String binaryFileBasePath = "";
                     //try to get the index path from the strorage configuration
