@@ -334,7 +334,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
             m = new LazyMap(docId, keys);
             nodeCache.put(docId, m);
         }
-        org.mmbase.bridge.Node node = new MapNode(m, new MapNodeManager(userCloud, m) {
+        org.mmbase.bridge.Node node = new MapNode<String>(m, new MapNodeManager(userCloud, m) {
             @Override
                 public boolean hasField(String name) {
                     if (JdbcIndexDefinition.this.key.equals(name)) return true;
