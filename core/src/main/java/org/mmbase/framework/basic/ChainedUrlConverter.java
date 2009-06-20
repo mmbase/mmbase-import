@@ -218,6 +218,8 @@ public class ChainedUrlConverter implements UrlConverter {
                     fwParams = clone;
 
                 }
+            } catch (NotFoundException nfe) {
+                throw nfe;
             } catch (RuntimeException re) {
                 log.warn(re.getMessage(), re);
             }
