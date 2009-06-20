@@ -65,10 +65,14 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         if (n != null) {
             try {
                 Node nd = getNode();
-                if (nd == null) throw new JspTagException("No node found (" + findNodeProvider() + ")");
+                if (nd == null) {
+                    throw new JspTagException("No node found (" + findNodeProvider() + ")");
+                }
                 NodeManager nm = nd.getNodeManager();
-                if (nm == null) throw new RuntimeException("NodeManager for " + n + " is null!");
-                	field = nm.getField(n);
+                if (nm == null) {
+                    throw new RuntimeException("NodeManager for " + n + " is null!");
+                }
+                field = nm.getField(n);
 		/*
                 if (!nm.getName().equals("virtual_manager")) {
 		} else {
@@ -76,6 +80,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 		}
 		*/
             } catch (NotFoundException e) {
+                log.warn(e);
                 field = null;
             }
             fieldName = n;
