@@ -141,6 +141,10 @@ public class URLComposer  {
         return source != null && source.getIntValue("state") == State.SOURCE.getValue();
     }
 
+    public State getState() {
+        return source == null ? null : State.get(source.getIntValue("state"));
+    }
+
     @Override
     public String toString() {
         // for verboseness:
