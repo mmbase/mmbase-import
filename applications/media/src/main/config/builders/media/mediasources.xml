@@ -73,6 +73,7 @@
         <guiname xml:lang="nl">Codec</guiname>
       </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="UNKNOWN" />
         <enumeration>
           <entry
               javaconstants="org.mmbase.applications.media.Codec"
@@ -197,14 +198,6 @@
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
-    <field name="objecttype" state="virtual">
-      <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <pattern value="videosources|audiosources" />
-        <commitprocessor>
-          <class name="org.mmbase.applications.media.FragmentTypeFixer" />
-        </commitprocessor>
-      </datatype>
-    </field>
 
 
   </fieldlist>
