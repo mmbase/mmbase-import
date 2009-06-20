@@ -858,6 +858,12 @@ class BeanPair extends Pair {
                 return null;
             }
         }
+        if (! method.isAccessible()) {
+            try {
+                method.setAccessible(true);
+            } catch (SecurityException se) {
+            }
+        }
         //while (! method.isAccessible()) {
         //}
         return method;
