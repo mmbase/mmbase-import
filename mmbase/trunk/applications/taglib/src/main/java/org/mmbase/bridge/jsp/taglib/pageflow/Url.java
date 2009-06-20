@@ -148,19 +148,38 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
       }
 
 
+
+    private static final Pattern EXTERNAL = Pattern.compile("[a-z]{2,}:.*");
     /**
      * Returns the URL as a String, always without the application context. Never <code>null</code>
      */
 
     public String get(boolean escapeamp) throws JspTagException, FrameworkException {
-        if (legacy) {
-            return getLegacy(escapeamp);
-        }
 
         String result = escapeamp ? cacheEscapeAmp : cacheNoEscapeAmp;
         if (result != null) {
             log.debug("found cached " + result);
             return result;
+        }
+        if (legacy) {
+            result =  getLegacy(escapeamp);
+            if (escapeamp) {
+                cacheEscapeAmp = result;
+            } else {
+                cacheNoEscapeAmp = result;
+            }
+            return result;
+        }
+        if (page != null || page.length() > 0) {
+            if (EXTERNAL.matcher(page).matches()) {
+                result = getLegacy(escapeamp);
+                if (escapeamp) {
+                    cacheEscapeAmp = result;
+                } else {
+                    cacheNoEscapeAmp = result;
+                }
+                return result;
+            }
         }
 
         Framework framework = Framework.getInstance();
