@@ -319,7 +319,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             field = fieldProvider.getFieldVar();
         } else {
             field = fieldProvider.getFieldVar();
-            if (field == null) throw new JspTagException("No field found in " + fieldProvider);
+            if (field == null) {
+                throw new JspTagException("No field found in " + fieldProvider);
+            }
             if (dataType != null) {
                 field = new DataTypeField(field, dataType);
             } else {
