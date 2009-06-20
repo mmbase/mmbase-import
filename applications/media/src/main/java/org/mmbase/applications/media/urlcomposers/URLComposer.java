@@ -137,7 +137,7 @@ public class URLComposer  {
         return providerAvailable && sourceAvailable;
     }
 
-    public boolean isMain) {
+    public boolean isMain() {
         return source != null && source.getIntValue("state") == State.SOURCE.getValue();
     }
 
