@@ -506,10 +506,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             getContextProvider().getContextContainer().register(getId(), cloud);
         }
 
-        prevCloudThreadLocal = org.mmbase.bridge.util.CloudThreadLocal.currentCloud();
+        prevCloudThreadLocal = org.mmbase.bridge.util.CloudThreadLocal.unbind();
         if (cloud == null) {
             return SKIP_BODY;
         }
+
         prevCloud = pageContext.getAttribute(KEY, SCOPE);
         if (prevCloud != null) {
             log.debug("Found previous cloud " + prevCloud);
