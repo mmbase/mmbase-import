@@ -111,7 +111,11 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             default: node = getNode(referString);
             }
             if (node != null) {
-                if (node.getCloud().hasNodeManager(node.getNodeManager().getName())) { // rather clumsy way to check virtuality
+                NodeManager nm = node.getNodeManager();
+                Cloud       nc = node.getCloud();
+                if (nc == null) throw new IllegalStateException("Node " + node + " without cloud");
+                if (nm == null) throw new IllegalStateException("Node " + node + "  without nodeManager");
+                if (nc.hasNodeManager(nm.getName())) { // rather clumsy way to check virtuality
                     nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
                 }
             }
