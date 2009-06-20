@@ -18,7 +18,8 @@ public enum State {
      */
     SOURCE(4),
     UNDEFINED(-1),
-    REMOVED(10);
+    REMOVED(10),
+    INTERRUPTED(20);
 
     private final int value;
 
@@ -29,12 +30,12 @@ public enum State {
         return value;
     }
 
-    public static State get(int ordinal) {
+    public static State get(int value) {
         for (State et : State.values()) {
-            if (et.ordinal() == ordinal) {
+            if (et.value == value) {
                 return et;
             }
         }
-        throw new IllegalArgumentException("" + ordinal + " is not an ordinal of state");
+        throw new IllegalArgumentException("" + value + " is not an  state");
     }
 }
