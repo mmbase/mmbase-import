@@ -236,15 +236,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
   <build>
     <defaultGoal>install</defaultGoal>
   </build>
-  <modules>
-    <module>maven</module>
-    <module>maven-base</module>
-    <module>core</module>
-    <module>applications</module>
-    <module>contributions</module>
-    <module>base-webapp</module>
-    <module>example-webapp</module>
-  </modules>
+
 
   <distributionManagement>
     <repository>
@@ -300,6 +292,33 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 
   <profiles>
     <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>maven</module>
+        <module>maven-base</module>
+        <module>core</module>
+        <module>applications</module>
+        <module>contributions</module>
+        <module>base-webapp</module>
+        <module>example-webapp</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>mmapplications_subset1</id>
+      <!--
+          No no example-app, no maven stuff
+      -->
+      <modules>
+        <module>core</module>
+        <module>applications</module>
+        <module>contributions</module>
+        <module>base-webapp</module>
+      </modules>
+    </profile>
+    <profile>
       <id>privaterelease</id>
       <!--
           This profile makes it possible to build a release with a different version number.
@@ -312,8 +331,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       </activation>
 
       <properties>
-        <my.postfix>-${my.version}</my.postfix>
-        <mmbase.version>${mmbase.version.number}${my.postfix}</mmbase.version>
+        <mmbase.version.postfix>-${my.version}</mmbase.version.postfix>
       </properties>
       <distributionManagement>
         <repository>
