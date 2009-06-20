@@ -211,11 +211,15 @@ public class ChainedUrlConverter implements UrlConverter {
         Parameters fwParams = null;
         for (UrlConverter uc : uclist) {
             Parameters clone = new Parameters(frameworkParameters);
-            Url proposal = getProposal(uc.getInternalUrl(path, params, clone), clone);
-            if (proposal.getWeight() > result.getWeight()) {
-                result = proposal;
-                fwParams = clone;
+            try {
+                Url proposal = getProposal(uc.getInternalUrl(path, params, clone), clone);
+                if (proposal.getWeight() > result.getWeight()) {
+                    result = proposal;
+                    fwParams = clone;
 
+                }
+            } catch (RuntimeException re) {
+                log.warn(re.getMessage(), re);
             }
 
         }
