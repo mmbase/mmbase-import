@@ -14,25 +14,27 @@ xinha_init = xinha_init ? xinha_init : function() {
 //   'TableOperations'
   ];
   // THIS BIT OF JAVASCRIPT LOADS THE PLUGINS, NO TOUCHING  :)
-  if(!HTMLArea.loadPlugins(xinha_plugins, xinha_init)) return;
+  if(!Xinha.loadPlugins(xinha_plugins, xinha_init)) return;
   xinha_config = createDefaultConfig();
-  xinha_editors = HTMLArea.makeEditors(xinha_editors, xinha_config, xinha_plugins);
-  HTMLArea.startEditors(xinha_editors);
+  xinha_editors = Xinha.makeEditors(xinha_editors, xinha_config, xinha_plugins);
+  Xinha.startEditors(xinha_editors);
 }
 
 createDefaultConfig = function() {
 
-  var xinha_config = xinha_config ? xinha_config() : new HTMLArea.Config();
+  var xinha_config = xinha_config ? xinha_config() : new Xinha.Config();
+/*
   xinha_config.registerButton({
     id        : "my-createlink",
-    tooltip   : HTMLArea._lc("Insert Web Link"),
+    tooltip   : Xinha._lc("Insert Web Link"),
     image     : _editor_url + xinha_config.imgURL +  "ed_link.gif",
     textMode  : false,
     action    : myCreateLinkAction
   });
+*/
   xinha_config.registerButton({
     id        : "my-validatesave",
-    tooltip   : HTMLArea._lc("Validate The Form"),
+    tooltip   : Xinha._lc("Validate The Form"),
     image     : _editor_url + xinha_config.imgURL +  "ed_validate_save.gif",
     textMode  : true,
     action    : myValidateSaveAction
@@ -42,7 +44,7 @@ createDefaultConfig = function() {
      'insertorderedlist', 'insertunorderedlist', 'separator',
      'cut', 'copy', 'paste', 'separator',
      'undo', 'redo', 'separator',
-     'my-createlink', 'separator',
+     'createlink', 'separator',
      'htmlmode', 'separator',
      'my-validatesave'
     ]
@@ -161,7 +163,7 @@ myValidateSaveAction = function(editor) {
 
 // overrides editwizard.jsp
 function doCheckHtml() {
-  if (HTMLArea.checkSupportedBrowser()) {
+  if (Xinha.checkSupportedBrowser()) {
     for (var editorname in xinha_editors) {
       editor = xinha_editors[editorname];
       updateValue(editor);
@@ -175,21 +177,32 @@ function doCheckHtml() {
 }
 
 function updateValue(editor) {
-  value = editor.outwardHtml(editor.getHTML());
-  // These two lines could cause editors to complain about responsetime
-  // when they leave a form with many large htmlarea fields.
-  // this is the case when doCheckHtml() is called by the editwizard.jsp with
-  // doSave, doSaveOnly, gotoForm and doStartWizard
-  value = wizardClean(value);
-  value = clean(value);
+  // cancel on view only editor
+  if(editor._doc == null) {
+	  return;
+  }
+  if(editor != null && editor.getHTML) {
+    setWidthForTables(editor);
+    if(!Xinha.is_ie) {
+      setDimensionForImages(editor);
+    }
 
-  editor._textArea.value = value;
+    value = editor.outwardHtml(editor.getHTML());
+    // These two lines could cause editors to complain about responsetime
+    // when they leave a form with many large htmlarea fields.
+    // this is the case when doCheckHtml() is called by the editwizard.jsp with
+    // doSave, doSaveOnly, gotoForm and doStartWizard
+    value = wizardClean(value);
+    value = clean(value);
 
-  if (editor._editMode == "wysiwyg") {
-      var html = editor.inwardHtml(value);
-      editor.deactivateEditor();
-      editor.setHTML(html);
-      editor.activateEditor();
+    editor._textArea.value = value;
+
+    if (editor._editMode == "wysiwyg") {
+        var html = editor.inwardHtml(value);
+        editor.deactivateEditor();
+        editor.setHTML(html);
+        editor.activateEditor();
+    }
   }
 }
 
@@ -228,7 +241,7 @@ function clean(value) {
   // Remove Tags with XML namespace declarations: <o:p></o:p>
   value = value.replace(/<\/?\w+:[^>]*>/gi, "");
   // Replace the &nbsp;
-  value = value.replace(/&nbsp;/, " " );
+  value = value.replace(/&nbsp;/gi, " " );
 
   return value;
 }
@@ -247,4 +260,31 @@ function HTMLEncode(text) {
   text = text.replace(/'/g, "&#146;") ;
 
   return text ;
+}
+
+function setWidthForTables(editor) {
+	if(editor._doc != null) {
+		var tables = editor._doc.getElementsByTagName('table');
+		for (var i = 0 ; i < tables.length ; i++) {
+			var table = tables[i];
+			if (table.style.width)
+				table.width = table.style.width;
+		}
+	}
+}
+
+function setDimensionForImages(editor) {
+	if(editor._doc != null) {
+		var images = editor._doc.getElementsByTagName('img');
+		for (var i = 0 ; i < images.length ; i++) {
+			var image = images[i];
+			if (image.style.width) {
+				image.width = image.style.width;
+         }
+         if (image.style.height)
+         {
+            image.height = image.style.height;
+         }
+		}
+	}
 }

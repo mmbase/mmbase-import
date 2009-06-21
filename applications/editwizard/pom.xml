@@ -30,6 +30,21 @@
       <artifactId>mmbase-dove</artifactId>
       <version>${mmbase.version}</version>
     </dependency>
+
+<!-- html editors or versions    
+    <dependency>
+      <groupId>org.mmbase.editwizards</groupId>
+      <artifactId>htmlarea</artifactId>
+      <version>3.0-rc1-mm19</version>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.xinha</groupId>
+      <artifactId>xinha</artifactId>
+      <version>0.96beta2</version>
+      <type>zip</type>
+    </dependency>
+  -->
   </dependencies>
 
   <build>
