@@ -247,6 +247,12 @@ public class Casting {
                 } else {
                     return (C) new Locale(toString(value));
                 }
+            } else if (type.equals(Collator.class)) {
+                if (value instanceof Collator) {
+                    return (C) value;
+                } else {
+                    return (C) LocaleCollator.getInstance(toString(value));
+                }
             } else {
                 log.error("Don't know how to convert to " + type, new Exception());
                 if (value == null || "".equals(value)) {
