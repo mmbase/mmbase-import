@@ -62,6 +62,7 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <property name="collator" value=":IDENTICAL" />
         <unique value="true" />
         <required value="true" enforce="never" />
         <maxLength value="64" />
