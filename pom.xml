@@ -339,6 +339,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           <id>${my.repository.id}</id>
           <name>Corporate repository</name>
           <url>${my.repository.url}</url>
+          <uniqueVersion>false</uniqueVersion> <!-- hmm? -->
         </repository>
         <snapshotRepository>
           <id>${my.repository.id}</id>
