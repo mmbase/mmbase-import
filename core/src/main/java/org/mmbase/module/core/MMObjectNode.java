@@ -548,7 +548,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             values.remove(fieldName);
         }
         if (fieldValue != null && (fieldValue instanceof InputStream && (! (fieldValue instanceof Serializable)))) {
-            log.info("Wrapping " + fieldValue + " for " + fieldName + " because ", new Exception());
             fieldValue = new SerializableInputStream((InputStream) fieldValue, getSize(fieldName));
         }
         fieldValue = checkSerializable(fieldName, fieldValue);
