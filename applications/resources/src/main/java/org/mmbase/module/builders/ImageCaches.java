@@ -42,6 +42,8 @@ public class ImageCaches extends AbstractImages {
 
     private boolean fixLegacyCkeys = true;
 
+    private boolean findCaseSensitive = true;
+
     public ImageCaches() {
     }
 
@@ -51,6 +53,11 @@ public class ImageCaches extends AbstractImages {
 
         checkLegacyCkey = ! "false".equals(getInitParameter("LegacyCKey"));
         fixLegacyCkeys = ! "false".equals(getInitParameter("FixLegacyCKey"));
+        findCaseSensitive = ! "false".equals(getInitParameter("FindCaseSensitive"));
+
+        log.info("Check legacy ckey: "   + checkLegacyCkey);
+        log.info("Fix legacy ckey: "     + fixLegacyCkeys);
+        log.info("Find case sensitive: " + findCaseSensitive);
         return true;
     }
 
@@ -63,7 +70,7 @@ public class ImageCaches extends AbstractImages {
         return getNode(node.getIntValue(FIELD_ID));
     }
 
-    protected StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {        
+    protected StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {
         MMObjectNode originalImage = originalImage(node);
         Images images = (Images) originalImage.getBuilder();
         images.getFileName(originalImage, buf);
@@ -203,7 +210,8 @@ public class ImageCaches extends AbstractImages {
             query.setMaxNumber(2); // to make sure this is a cheap query.
             StepField ckeyField = query.getField(getField(Imaging.FIELD_CKEY));
             BasicFieldValueConstraint bfvc = new BasicFieldValueConstraint(ckeyField, ckey);
-            bfvc.setCaseSensitive(true);
+            log.info("Find case sensitive: " + findCaseSensitive);
+            bfvc.setCaseSensitive(findCaseSensitive);
             query.setConstraint(bfvc);
             nodes = getNodes(query);
         } catch (SearchQueryException e) {
