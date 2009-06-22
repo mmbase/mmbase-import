@@ -2234,7 +2234,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      * @return the typedefiniton as a String
      * @throws StorageException if the field type cannot be mapped
      */
-    protected String getFieldTypeDefinition(CoreField field) throws StorageException {
+    public String getFieldTypeDefinition(CoreField field) throws StorageException {
         // create the type mapping to search for
         String typeName = Fields.getTypeDescription(field.getType());
         long size = field.getMaxLength();
