@@ -103,7 +103,7 @@
           <plugin>
             <groupId>org.mmbase.maven</groupId>
             <artifactId>maven-mmbase-plugin</artifactId>
-            <version>${mmbase.version}</version>
+            <version>1.9-SNAPSHOT</version>
             <executions>
               <execution>
                 <id>installsvnsr</id>
