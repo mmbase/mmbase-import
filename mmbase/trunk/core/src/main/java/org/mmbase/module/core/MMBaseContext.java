@@ -225,6 +225,13 @@ public class MMBaseContext {
         log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " MiB");
         log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " MiB");
         log.info("system locale     : " + Locale.getDefault());
+        try {
+            Locale locale = org.mmbase.util.LocalizedString.getLocale(org.mmbase.module.Module.getInitParameter("mmbaseroot", "language"));
+            log.info("MMBase locale     : " + locale);
+            org.mmbase.util.LocalizedString.setDefault(locale);
+        } catch (IOException ioe) {
+            log.error(ioe);
+        }
         log.info("start time        : " + DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL).format(new Date(1000 * (long) MMBase.startTime)));
     }
 
