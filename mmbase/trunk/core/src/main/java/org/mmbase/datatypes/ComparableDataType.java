@@ -207,6 +207,10 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
         return buf;
     }
 
+
+    /**
+     * @since MMBase-1.9.2
+     */
     protected int compare(E comp1, E comp2) {
         return comp1.compareTo(comp2);
     }
