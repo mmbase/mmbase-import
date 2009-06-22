@@ -13,9 +13,11 @@ import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.implementation.database.DatabaseStorageManager;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.LocaleCollator;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.core.CoreField;
+import org.mmbase.datatypes.*;
 import java.util.regex.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -88,21 +90,46 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
 
+    protected CoreField getField(StepField field) {
+        String stepName = field.getStep().getTableName();
+        String fieldName = field.getFieldName();
+        MMBase mmb = MMBase.getMMBase();
+        DatabaseStorageManager storageManager = (DatabaseStorageManager) mmb.getStorageManagerFactory().getStorageManager();
+        MMObjectBuilder bul = mmb.getBuilder(stepName);
+        return bul.getField(fieldName);
+    }
+    protected DataType getDataType(StepField field) {
+        return getField(field).getDataType();
+    }
+
+    protected boolean isCaseSensitive(DataType dt) {
+       if (dt instanceof StringDataType) {
+           StringDataType sdt = (StringDataType) dt;
+           if (sdt.getCollator().getStrength() == LocaleCollator.Strength.IDENTICAL.get()) {
+               return true;
+           }
+       }
+       return false;
+    }
+
     private static final Pattern NO_LOWER_NEEDED = Pattern.compile("(varchar|char|text|mediumtext|longtext).*");
     private static final Map<String, Boolean> useLowerCache = new ConcurrentHashMap<String, Boolean>();
     // javadoc inherited
     @Override protected boolean useLower(FieldConstraint constraint) {
-        String stepName = constraint.getField().getStep().getTableName();
-        String fieldName = constraint.getField().getFieldName();
+        StepField stepField = constraint.getField();
+        String stepName = stepField.getStep().getTableName();
+        String fieldName = stepField.getFieldName();
         String key = stepName + ":" + fieldName;
         Boolean res = useLowerCache.get(key);
         if (res == null) {
-            MMBase mmb = MMBase.getMMBase();
-            DatabaseStorageManager storageManager = (DatabaseStorageManager) mmb.getStorageManagerFactory().getStorageManager();
-            MMObjectBuilder bul = mmb.getBuilder(stepName);
-            CoreField field  = bul.getField(fieldName);
-            String fieldDef = storageManager.getFieldTypeDefinition(field);
-            res = ! NO_LOWER_NEEDED.matcher(fieldDef).matches();
+            if (isCaseSensitive(getDataType(stepField))) {
+                res = true;
+            } else {
+                MMBase mmb = MMBase.getMMBase();
+                DatabaseStorageManager storageManager = (DatabaseStorageManager) mmb.getStorageManagerFactory().getStorageManager();
+                String fieldDef = storageManager.getFieldTypeDefinition(getField(stepField));
+                res = ! NO_LOWER_NEEDED.matcher(fieldDef).matches();
+            }
             useLowerCache.put(key, res);
         }
         return res;
@@ -115,7 +142,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     @Override protected String appendPreField(StringBuilder sb, FieldConstraint constraint, StepField field, boolean multiple) {
         if (constraint instanceof FieldCompareConstraint) {
             FieldCompareConstraint compare = (FieldCompareConstraint) constraint;
-            if (field.getType() == Field.TYPE_STRING && compare.isCaseSensitive()) {
+            if (field.getType() == Field.TYPE_STRING && compare.isCaseSensitive() && ! isCaseSensitive(getDataType(field))) {
                 sb.append(" BINARY ");
             }
         }
