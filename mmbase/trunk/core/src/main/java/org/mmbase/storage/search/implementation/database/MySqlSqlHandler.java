@@ -11,7 +11,14 @@ package org.mmbase.storage.search.implementation.database;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.implementation.database.DatabaseStorageManager;
 import org.mmbase.util.logging.*;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.core.CoreField;
+import java.util.regex.*;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * The MySQL query handler, implements {@link
@@ -80,9 +87,25 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         return result;
     }
 
+
+    private static final Pattern NO_LOWER_NEEDED = Pattern.compile("(varchar|char|text|mediumtext|longtext).*");
+    private static final Map<String, Boolean> useLowerCache = new ConcurrentHashMap<String, Boolean>();
     // javadoc inherited
-    @Override protected boolean useLower(FieldCompareConstraint constraint) {
-        return true; // necessary for the larger strings which are stored in blobs
+    @Override protected boolean useLower(FieldConstraint constraint) {
+        String stepName = constraint.getField().getStep().getTableName();
+        String fieldName = constraint.getField().getFieldName();
+        String key = stepName + ":" + fieldName;
+        Boolean res = useLowerCache.get(key);
+        if (res == null) {
+            MMBase mmb = MMBase.getMMBase();
+            DatabaseStorageManager storageManager = (DatabaseStorageManager) mmb.getStorageManagerFactory().getStorageManager();
+            MMObjectBuilder bul = mmb.getBuilder(stepName);
+            CoreField field  = bul.getField(fieldName);
+            String fieldDef = storageManager.getFieldTypeDefinition(field);
+            res = ! NO_LOWER_NEEDED.matcher(fieldDef).matches();
+            useLowerCache.put(key, res);
+        }
+        return res;
     }
 
 
