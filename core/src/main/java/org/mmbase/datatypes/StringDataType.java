@@ -35,6 +35,9 @@ public class StringDataType extends ComparableDataType<String> implements Length
     protected PatternRestriction patternRestriction = new PatternRestriction(Pattern.compile("(?s)\\A.*\\z"));
     private boolean isPassword = false;
     private Collator collator = LocaleCollator.getInstance();
+    // Perhaps a case sensitive collator is more backwards compatible:
+    //private Collator collator = LocaleCollator.getInstance(":IDENTICAL");
+    // On the other hand,
     protected AbstractLengthDataType.MinRestriction minLengthRestriction = new AbstractLengthDataType.MinRestriction(this, 0);
     protected AbstractLengthDataType.MaxRestriction maxLengthRestriction = new AbstractLengthDataType.MaxRestriction(this, Integer.MAX_VALUE);
 
@@ -247,6 +250,10 @@ public class StringDataType extends ComparableDataType<String> implements Length
     }
 
     /**
+     * Returns the {@link java.text.Collator} associated with string with this datatype. Collators define how strings
+     * should be compared and sorted. This can be language dependent. The DataType XML configuration
+     * uses {@link org.mmbase.util.LocaleCollator#getInstance(String)} to parse the string present
+     * in datatype XML's to a Collator.
      * @since MMBase-1.9.2
      */
     public Collator getCollator() {
