@@ -292,6 +292,7 @@
         The names of all available MMBase Framework Components
       </description>
       <class name="org.mmbase.datatypes.ComponentNamesDataType" />
+      <property name="collator" value=":IDENTICAL" />
       <required value="true"/>
       <maxLength value="128"/>
     </specialization>
