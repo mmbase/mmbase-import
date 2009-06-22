@@ -2260,6 +2260,8 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             if (dt instanceof DecimalDataType) {
                 DecimalDataType dec = (DecimalDataType) dt;
                 fieldDef = tm.getType(dec.getPrecisionRestriction().getValue(), dec.getScaleRestriction().getValue());
+            } else if (dt instanceof StringDataType) {
+                fieldDef = tm.getType(size, factory.getMappedCollation(((StringDataType) dt).getCollator()));
             } else if (dt instanceof LengthDataType) {
                 fieldDef = tm.getType(size);
             } else {
