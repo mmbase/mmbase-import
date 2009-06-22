@@ -10,10 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 import java.util.*;
+import java.text.*;
 
 import java.util.regex.Pattern;
 import org.mmbase.bridge.*;
-import org.mmbase.util.Casting;
+import org.mmbase.util.*;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.util.logging.*;
 
@@ -33,6 +34,7 @@ public class StringDataType extends ComparableDataType<String> implements Length
 
     protected PatternRestriction patternRestriction = new PatternRestriction(Pattern.compile("(?s)\\A.*\\z"));
     private boolean isPassword = false;
+    private Collator collator = LocaleCollator.getInstance();
     protected AbstractLengthDataType.MinRestriction minLengthRestriction = new AbstractLengthDataType.MinRestriction(this, 0);
     protected AbstractLengthDataType.MaxRestriction maxLengthRestriction = new AbstractLengthDataType.MaxRestriction(this, Integer.MAX_VALUE);
 
@@ -145,6 +147,12 @@ public class StringDataType extends ComparableDataType<String> implements Length
         }
     }
 
+
+    @Override
+    protected int compare(String comp1, String comp2) {
+        return collator.compare(comp1, comp2);
+    }
+
     public long getLength(Object value) {
         if (value == null) return 0;
         return ((String) value).length();
@@ -228,6 +236,21 @@ public class StringDataType extends ComparableDataType<String> implements Length
     public void setPassword(boolean pw) {
         edit();
         isPassword = pw;
+    }
+
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public void setCollator(Collator col) {
+        collator = col;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public Collator getCollator() {
+        return collator;
     }
 
     @Override public void toXml(org.w3c.dom.Element parent) {

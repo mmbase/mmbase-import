@@ -207,6 +207,10 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
         return buf;
     }
 
+    protected int compare(E comp1, E comp2) {
+        return comp1.compareTo(comp2);
+    }
+
     protected class MinRestriction extends AbstractRestriction<E> {
         private boolean inclusive;
         MinRestriction(MinRestriction source) {
@@ -220,16 +224,16 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
 
         @Override protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
-            Comparable comparable = (Comparable) v;
-            Comparable minimum;
+            E comparable = (E) v;
+            E minimum;
             try {
-                minimum = (Comparable) ComparableDataType.this.castToValidate(getValue(), node, field);
+                minimum = (E) ComparableDataType.this.castToValidate(getValue(), node, field);
             } catch (CastException ce) {
                 log.error(ce); // probably config error.
                 // invalid value, but not because of min-restriction
                 return true;
             }
-            int ct = comparable.compareTo(minimum);
+            int ct = ComparableDataType.this.compare(comparable, minimum);
             if (inclusive && (ct == 0)) return true;
             return ct > 0;
         }
@@ -249,16 +253,16 @@ public abstract class ComparableDataType<E extends java.io.Serializable & Compar
         }
         @Override protected boolean simpleValid(Object v, Node node, Field field) {
             if ((v == null) || (getValue() == null)) return true;
-            Comparable comparable = (Comparable) v;
-            Comparable maximum;
+            E comparable = (E) v;
+            E maximum;
             try {
-                maximum = (Comparable) ComparableDataType.this.castToValidate(getValue(), node, field);
+                maximum = (E) ComparableDataType.this.castToValidate(getValue(), node, field);
             } catch (CastException ce) {
                 log.error(ce); // probably config error.
                 // invalid value, but not because of max-restriction
                 return true;
             }
-            int ct = comparable.compareTo(maximum);
+            int ct = ComparableDataType.this.compare(comparable, maximum);
             if (inclusive && (ct == 0)) return true;
             boolean res = ct < 0;
             return res;
