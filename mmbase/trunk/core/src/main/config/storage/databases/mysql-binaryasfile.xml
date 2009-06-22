@@ -2,6 +2,7 @@
 <!DOCTYPE storage PUBLIC "-//MMBase//DTD storage config 1.0//EN" "http://www.mmbase.org/dtd/storage_1_0.dtd" [
   <!ENTITY type-mappings SYSTEM "mysql.type-mappings.xml">
   <!ENTITY disallowed-fields SYSTEM "mysql.disallowed-fields.xml">
+  <!ENTITY collation-mappings SYSTEM "mysql.collation-mappings.xml">
 ]>
 <storage>
   <!-- MySQLdb configuration resource. -->
@@ -58,5 +59,6 @@
 
   &type-mappings;
   &disallowed-fields;
+  &collation-mappings;
 
 </storage>
