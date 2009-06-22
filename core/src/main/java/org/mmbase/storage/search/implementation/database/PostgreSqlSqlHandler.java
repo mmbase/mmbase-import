@@ -95,9 +95,9 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
 
 
-    @Override protected boolean useLower(FieldCompareConstraint constraint) {
-        if (constraint.getOperator() == FieldCompareConstraint.LIKE) {
-            return false;
+    @Override protected boolean useLower(FieldConstraint constraint) {
+        if (constraint instanceof FieldCompareConstraint) {
+            return  ((FieldCompareConstraint) constraint).getOperator() != FieldCompareConstraint.LIKE; // we can use  ILIKE
         } else {
             return true;
         }
