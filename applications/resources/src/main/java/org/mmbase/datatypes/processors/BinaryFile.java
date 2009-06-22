@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.*;
 import org.mmbase.util.*;
 import org.mmbase.datatypes.processors.*;
 import java.util.*;
@@ -53,13 +54,38 @@ public class BinaryFile {
     }
 
     public static class Delete implements CommitProcessor {
+
+        protected String searchFields = "";
+
+        public void setSetFields(String f) {
+            searchFields = f;
+        }
         public void commit(final Node node, final Field field) {
             String existing = (String) node.getValue(field.getName());
             if (existing != null && ! "".equals(existing)) {
                 File ef = new File(getDirectory(), existing);
                 if (ef.exists() && ef.isFile()) {
-                    ef.delete();
-                    log.service("Deleted " + ef);
+                    // check whether not in use by some other node
+                    boolean inUse = false;
+                    if (searchFields.length() == 0) searchFields = field.getNodeManager().getName() + ":" + field.getName();
+                    FIELDS:
+                    for (String fd : searchFields.split(",")) {
+                        String[] fdef = fd.split(":", 2);
+                        NodeList otherNodes = SearchUtil.findNodeList(node.getCloud(), fdef[0], fdef[1], existing);
+                        for (Node otherNode : otherNodes) {
+                            if (otherNode.getNumber() != node.getNumber()) {
+                                inUse = true;
+                                break FIELDS;
+                            }
+                        }
+                    }
+                    if (! inUse) {
+                        // no? Then d lete the file.
+                        ef.delete();
+                        log.service("Deleted " + ef);
+                    } else {
+                        log.service("Not deleted " + ef + " because still in use");
+                    }
                 } else {
                     log.warn("Could not find " + ef + " so could not delete it");
                 }
