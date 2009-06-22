@@ -109,8 +109,8 @@ public class BasicSqlHandler implements SqlHandler {
      */
     private static boolean isRelevantCaseInsensitive(FieldConstraint constraint) {
         return !constraint.isCaseSensitive()
-        && (constraint.getField().getType() == Field.TYPE_STRING
-        || constraint.getField().getType() == Field.TYPE_XML);
+            && (constraint.getField().getType() == Field.TYPE_STRING
+                || constraint.getField().getType() == Field.TYPE_XML);
     }
 
     /**
@@ -118,7 +118,7 @@ public class BasicSqlHandler implements SqlHandler {
      * not always the case, because some database only match case insensitively, in which case it
      * does not make sense to lowercase.
      */
-    protected boolean useLower(FieldCompareConstraint constraint) {
+    protected boolean useLower(FieldConstraint constraint) {
         return true;
     }
 
@@ -754,7 +754,7 @@ public class BasicSqlHandler implements SqlHandler {
                     "Field value-in constraint specifies no values "
                     + "(at least 1 value is required).");
                 }
-                if (isRelevantCaseInsensitive(fieldConstraint)) {
+                if (isRelevantCaseInsensitive(fieldConstraint) && useLower(valueInConstraint)) {
                     // case insensitive
                     sb.append("LOWER(");
                     appendField(sb, step, fieldName, multipleSteps);
@@ -785,12 +785,13 @@ public class BasicSqlHandler implements SqlHandler {
                     // otherwise use equals, which is a LOT faster in some cases
                     sb.append(overallInverse? "<>": "=");
                     appendFieldValue(sb, values.first(),
-                        !fieldConstraint.isCaseSensitive(), fieldType);
+                                     !fieldConstraint.isCaseSensitive(),
+                                     fieldType);
                 }
             } else if (fieldConstraint instanceof FieldValueInQueryConstraint) {
                 FieldValueInQueryConstraint queryConstraint = (FieldValueInQueryConstraint) fieldConstraint;
                 String subQuery = toSql(queryConstraint.getInQuery(), this);
-                if (isRelevantCaseInsensitive(fieldConstraint)) {
+                if (isRelevantCaseInsensitive(fieldConstraint) && useLower(queryConstraint)) {
                     // case insensitive
                     sb.append("LOWER(");
                     appendField(sb, step, fieldName, multipleSteps);
@@ -806,7 +807,7 @@ public class BasicSqlHandler implements SqlHandler {
 
                 // Field value-between constraint
                 FieldValueBetweenConstraint valueBetweenConstraint = (FieldValueBetweenConstraint) fieldConstraint;
-                if (isRelevantCaseInsensitive(fieldConstraint)) {
+                if (isRelevantCaseInsensitive(fieldConstraint) && useLower(valueBetweenConstraint)) {
                     // case insensitive
                     appendLowerField(sb, step, fieldName, multipleSteps);
                 } else {
@@ -843,12 +844,11 @@ public class BasicSqlHandler implements SqlHandler {
                     if (part > -1) {
                         fieldType = Field.TYPE_INTEGER;
                     }
-                } else if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
+                } else if (isRelevantCaseInsensitive(fieldConstraint) && useLower(fieldCompareConstraint)) {
                     // case insensitive and database needs it
                     appendLowerField(sb, step, fieldName, multipleSteps);
                 } else {
                     String after = appendPreField(sb, fieldConstraint, field, multipleSteps);
-                    // case sensitive or case irrelevant
                     // case sensitive or case irrelevant
                     appendField(sb, step, fieldName, multipleSteps);
                     if (after != null) {
@@ -899,14 +899,17 @@ public class BasicSqlHandler implements SqlHandler {
                     // FieldValueConstraint.
                     FieldValueConstraint fieldValueConstraint = (FieldValueConstraint) fieldCompareConstraint;
                     Object value = fieldValueConstraint.getValue();
-                    appendFieldValue(sb, value, useLower(fieldValueConstraint) && isRelevantCaseInsensitive(fieldValueConstraint), fieldType);
+                    appendFieldValue(sb, value,
+                                     isRelevantCaseInsensitive(fieldValueConstraint) &&
+                                     useLower(fieldValueConstraint),
+                                     fieldType);
                 } else if (fieldCompareConstraint instanceof CompareFieldsConstraint) {
                     // CompareFieldsConstraint
                     CompareFieldsConstraint compareFieldsConstraint = (CompareFieldsConstraint) fieldCompareConstraint;
                     StepField field2 = compareFieldsConstraint.getField2();
                     String fieldName2 = field2.getFieldName();
                     Step step2 = field2.getStep();
-                    if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
+                    if (isRelevantCaseInsensitive(fieldConstraint) && useLower(fieldCompareConstraint)) {
                         // case insensitive
                         appendLowerField(sb, step2, fieldName2, multipleSteps);
                     } else {
