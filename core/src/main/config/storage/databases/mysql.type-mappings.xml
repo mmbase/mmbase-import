@@ -4,12 +4,11 @@
   <type-mapping name="FLOAT" type="float" />
   <type-mapping name="INTEGER" type="integer" />
   <type-mapping name="NODE"   type="integer" />
-  <type-mapping name="STRING" min-size="1" max-size="12" casesensitive="false" type="char({0})" />
-  <type-mapping name="STRING" min-size="1" max-size="12" casesensitive="true" type="char({0})" />
-  <type-mapping name="STRING" min-size="13" max-size="255" type="varchar({0})" />
-  <type-mapping name="STRING" min-size="256" max-size="65535" type="text" />
-  <type-mapping name="STRING" min-size="65536" max-size="16777216" type="mediumtext" />
-  <type-mapping name="STRING" min-size="16777217" max-size="4294967296" type="longtext" />
+  <type-mapping name="STRING" min-size="1" max-size="12" type="char({0}) COLLATE {1}" />
+  <type-mapping name="STRING" min-size="13" max-size="255" type="varchar({0}) COLLATE {1}" />
+  <type-mapping name="STRING" min-size="256" max-size="65535" type="text COLLATE {1}" />
+  <type-mapping name="STRING" min-size="65536" max-size="16777216" type="mediumtext COLLATE {1}" />
+  <type-mapping name="STRING" min-size="16777217" max-size="4294967296" type="longtext COLLATE {1}" />
   <type-mapping name="XML" min-size="1" max-size="255" type="varchar({0})" />
   <type-mapping name="XML" min-size="256" max-size="65535" type="text" />
   <type-mapping name="XML" min-size="65536" max-size="16777216" type="mediumtext" />
