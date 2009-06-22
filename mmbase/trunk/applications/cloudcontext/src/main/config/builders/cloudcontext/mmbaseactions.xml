@@ -47,6 +47,7 @@
         </positions>
       </editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <property name="collator" value=":IDENTICAL" />
         <maxLength value="128" />
       </datatype>
     </field>
