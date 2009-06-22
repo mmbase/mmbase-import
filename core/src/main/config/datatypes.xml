@@ -302,6 +302,7 @@
         The names of all available MMBase NodeManagers
       </description>
       <class name="org.mmbase.datatypes.NodeManagerNamesDataType" />
+      <property name="collator" value=":IDENTICAL" />
       <required value="true"/>
       <maxLength value="1024"/>
     </specialization>
@@ -361,6 +362,7 @@
         which is automaticly filled on commit of the node.  If you define this field as unique, then
         the effect is that a handle field which already is present in the database, cannot be saved.
       </description>
+      <property name="collator" value=":IDENTICAL" />
       <pattern enforce="never" value="\A[^\n\r]*\z" />
       <getprocessor>
         <class name="org.mmbase.datatypes.processors.ChecksumGetProcessorFactory">
@@ -391,6 +393,7 @@
         ISO 639 language 2-letter codes (sorted alphabeticly on the name of the language in the current locale)
       </description>
       <class name="org.mmbase.datatypes.LanguageDataType" />
+      <property name="collator" value=":IDENTICAL" />
       <maxLength value="12" />
       <pattern value="\A..\z" />
       <enumeration>
@@ -409,6 +412,7 @@
       <description xml:lang="en">
         ISO 3166 language 2-letter country codes
       </description>
+      <property name="collator" value=":IDENTICAL" />
       <maxLength value="32" />
       <pattern value="\A..\z" />
       <enumeration>
