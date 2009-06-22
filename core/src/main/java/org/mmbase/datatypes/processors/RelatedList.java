@@ -97,13 +97,14 @@ public class RelatedList {
         private static final long serialVersionUID = 1L;
 
         public Object process(Node node, Field field, Object value) {
-            if (log.isDebugEnabled()) {
-                log.debug("getting "  + node);
-            }
             NodeList nl = node.getRelatedNodes(type, role, searchDir);
+            if (log.isDebugEnabled()) {
+                log.debug("related nodes for  "  + node  + " " + nl);
+            }
             if (nl.size() == 0) {
                 return null;
             } else {
+
                 return nl;
             }
         }
