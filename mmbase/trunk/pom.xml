@@ -312,6 +312,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
           No no example-app, no maven stuff
       -->
       <modules>
+        <module>maven/assembly-descriptors</module>
         <module>core</module>
         <module>applications</module>
         <module>contributions</module>
