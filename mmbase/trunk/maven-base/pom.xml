@@ -555,6 +555,7 @@ See http://www.MMBase.org/license
       </activation>
       <properties>
         <maven.test.skip>true</maven.test.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
       </properties>
     </profile>
 
