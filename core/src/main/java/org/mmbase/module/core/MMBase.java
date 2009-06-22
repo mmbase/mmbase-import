@@ -301,10 +301,9 @@ public class MMBase extends ProcessorModule {
 
         tmp = getInitParameter("LANGUAGE");
         if (tmp != null && !tmp.equals("")) {
-            locale = new Locale(tmp, "");
+            locale = org.mmbase.util.LocalizedString.getLocale(tmp);
         }
-        log.info("MMBase default locale : " + locale);
-        org.mmbase.util.LocalizedString.setDefault(locale);
+
 
         tmp = getInitParameter("DEVELOPMENT");
         if (tmp != null && !tmp.equals("")) {
@@ -1402,7 +1401,7 @@ public class MMBase extends ProcessorModule {
                 } catch (SecurityException se) {
                     log.warn(se.getMessage(), se);
                 }
-                
+
             }
         }
         if (shownDataDir) {

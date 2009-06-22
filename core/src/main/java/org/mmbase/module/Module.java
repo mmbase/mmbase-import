@@ -243,31 +243,55 @@ public abstract class Module extends DescribedFunctionProvider {
     }
 
     /**
+     * @since MMBase-1.9.2
+     */
+    public static Map<String, String> getInitParameters(String module) throws java.io.IOException {
+        ModuleReader parser = new ModuleReader(getModuleLoader().getInputSource(module + ".xml"));
+        Map<String, String> props = parser.getProperties();
+        addInitParameters("mmbase/" + module, props);
+        return props;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public static String getInitParameter(String module, Map<String, String> props, String key) {
+
+        String value = props.get(key);
+        if (value == null) {
+            key = key.toLowerCase();
+            value = props.get(key);
+            // Can also set properties in web.xml/context.xml
+            if (value == null && MMBaseContext.isInitialized() && MMBaseContext.getServletContext() != null) {
+                value = MMBaseContext.getServletContext().getInitParameter(module + "." + key);
+            }
+            // try the system property, set on the JVM commandline
+            // i.e. you could provide a value for the mmbaseroot "machinename" property by specifying:
+            // -Dmmbaseroot.machinename=myname
+            if (value == null) {
+                try {
+                    value = System.getProperty(module + "." + key);
+                } catch (SecurityException se) {
+                    log.debug(se);
+                }
+            }
+        }
+        return value;
+    }
+    /**
+     * @since MMBase-1.9.2
+     */
+    public static String getInitParameter(String module, String key) throws java.io.IOException  {
+        return getInitParameter(module, getInitParameters(module), key);
+    }
+
+    /**
      * Gets an init-parameter  key-value pair
      */
     public String getInitParameter(String key) {
         if (properties != null) {
             log.debug("Getting init parameter " + key + " for " + this);
-            String value = properties.get(key);
-            if (value == null) {
-                key = key.toLowerCase();
-                value = properties.get(key);
-                // Can also set properties in web.xml/context.xml
-                if (value == null && MMBaseContext.isInitialized() && MMBaseContext.getServletContext() != null) {
-                    value = MMBaseContext.getServletContext().getInitParameter(getName() + "." + key);
-                }
-                // try the system property, set on the JVM commandline
-                // i.e. you could provide a value for the mmbaseroot "machinename" property by specifying:
-                // -Dmmbaseroot.machinename=myname
-                if (value == null) {
-                    try {
-                        value = System.getProperty(getName() + "." + key);
-                    } catch (SecurityException se) {
-                        log.debug(se);
-                    }
-                }
-            }
-            return value;
+            return getInitParameter(getName(), properties, key);
         } else {
             log.error("getInitParameters(" + key + "): No properties found, called before they where loaded");
         }
@@ -290,18 +314,27 @@ public abstract class Module extends DescribedFunctionProvider {
     }
 
     /**
+     * @since MMBase 1.9.2
+     */
+    protected static Map<String, String> addInitParameters(String contextPath, Map<String, String> map) {
+        try {
+            Map<String, String> contextMap = ApplicationContextReader.getProperties(contextPath);
+            map.putAll(contextMap);
+            return contextMap;
+        } catch (javax.naming.NamingException ne) {
+            log.debug("Can't obtain properties from application context: " + ne.getMessage());
+            return new HashMap<String, String>();
+        }
+    }
+
+    /**
      * Override properties through application context
      * @param contextPath path in application context where properties are located
      * @since MMBase 1.8.5
      */
     protected void loadInitParameters(String contextPath) {
-        try {
-            Map<String, String> contextMap = ApplicationContextReader.getProperties(contextPath);
-            properties.putAll(contextMap);
-            log.info("Put for " + getName() + " " + contextMap);
-        } catch (javax.naming.NamingException ne) {
-            log.debug("Can't obtain properties from application context: " + ne.getMessage());
-        }
+        Map<String, String> contextMap = addInitParameters(contextPath, properties);
+        log.info("Put for " + getName() + " " + contextMap);
     }
 
     /**
