@@ -547,7 +547,11 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
     }
 
     /**
-     * Returns a sorted list of type mappings for this storage.
+     * Given a {@lang java.text.Collator} return a String such as the storage
+     * implemetnation may use to identify a collation. E.g. MySql would like something like
+     * 'utf8_danish_ci'. Internally, MMBase uses strings as defined by {@link
+     * org.mmbase.util.LocaleCollator} to identify collators.
+     *
      * @since MMBase-1.9.2
      */
     public String getMappedCollation(Collator s) {
