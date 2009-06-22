@@ -5,7 +5,7 @@
 <!--
         The main tag. You can specify a name and version for administration purposes.
 -->
-<!ELEMENT storage (storagemanagerfactory?,storagemanager?,searchqueryhandler*,attributes?,store-binary-as-file-objects?,type-mappings?,disallowed-fields?)>
+<!ELEMENT storage (storagemanagerfactory?,storagemanager?,searchqueryhandler*,attributes?,store-binary-as-file-objects?,type-mappings?,disallowed-fields?,collation-mappings?)>
 <!ATTLIST storage name CDATA #IMPLIED>
 <!ATTLIST storage version CDATA #IMPLIED>
 
@@ -111,4 +111,11 @@
 <!ELEMENT disallowed-field EMPTY>
 <!ATTLIST disallowed-field name CDATA #REQUIRED>
 <!ATTLIST disallowed-field replacement CDATA #IMPLIED>
+
+
+
+<!ELEMENT collation-mappings (collation-mapping*)>
+<!ELEMENT collation-mapping EMPTY>
+<!ATTLIST collation-mapping java CDATA #REQUIRED>
+<!ATTLIST collation-mapping database CDATA #REQUIRED>
 

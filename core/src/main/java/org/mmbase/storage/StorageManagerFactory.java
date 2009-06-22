@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.storage;
 
 import java.util.*;
+import java.text.Collator;
+import org.mmbase.util.*;
 import org.xml.sax.InputSource;
 import javax.servlet.ServletContext;
 import java.util.concurrent.ConcurrentHashMap;
@@ -72,6 +74,8 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * The list with type mappings
      */
     protected List<TypeMapping> typeMappings;
+
+    protected Map<String, String> collationMappings;
 
     /**
      * The list with objects of which binary data should not be stored in database
@@ -299,6 +303,8 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         list.addAll(reader.getTypeMappings());
         Collections.sort(list);
         typeMappings.addAll(list);
+
+        collationMappings = reader.getCollationMappings();
 
         // get the queryhandler class
         // has to be done last, as we have to passing the disallowedfields map (doh!)
@@ -539,6 +545,26 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
     public List<TypeMapping> getTypeMappings() {
         return Collections.unmodifiableList(typeMappings);
     }
+
+    /**
+     * Returns a sorted list of type mappings for this storage.
+     * @since MMBase-1.9.2
+     */
+    public String getMappedCollation(Collator s) {
+        LocaleCollator col;
+        if (s instanceof  LocaleCollator) {
+            col = (LocaleCollator) s;
+        } else {
+            col = new LocaleCollator(LocalizedString.getDefault(), s);
+        }
+        for (Map.Entry<String, String> entry : collationMappings.entrySet()) {
+            if (col.matches(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+        return s.toString();
+    }
+
 
     /**
      * Returns a list of objects of which binary data should be stored in a file.

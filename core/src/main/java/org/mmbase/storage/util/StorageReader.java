@@ -10,13 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.util;
 
 import java.util.*;
-
+//import com.ibm.icu.text.*;
+import java.text.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
 import org.mmbase.storage.*;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.*;
+
 
 /**
  * @javadoc
@@ -305,5 +307,24 @@ public class StorageReader<SM extends StorageManager> extends DocumentReader  {
             }
         }
         return binaryAsFileObjects;
+    }
+
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public Map<String, String> getCollationMappings() {
+        LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
+        Element root = document.getDocumentElement();
+        NodeList mappingsLists = root.getElementsByTagName("collation-mappings");
+        if (mappingsLists.getLength()>0) {
+            Element  mappingsList = (Element)mappingsLists.item(0);
+            NodeList list = mappingsList.getElementsByTagName("collation-mapping");
+            for (int i=0; i<list.getLength(); i++) {
+                Element mapping = (Element)list.item(i);
+                result.put(mapping.getAttribute("java"), mapping.getAttribute("database"));
+            }
+        }
+        return result;
     }
 }
