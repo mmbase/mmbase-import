@@ -149,8 +149,8 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         return null;
     }
 
-    @Override protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
-        if (caseSensitive) {
+    @Override protected StringBuilder appendLikeOperator(StringBuilder sb, FieldConstraint constraint) {
+        if (constraint.isCaseSensitive() && ! isCaseSensitive(getDataType(constraint.getField()))) {
             sb.append(" LIKE BINARY ");
         } else {
             sb.append(" LIKE ");
@@ -158,8 +158,8 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         return sb;
     }
 
-    @Override protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, boolean caseSensitive) {
-        if (caseSensitive) {
+    @Override protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, FieldConstraint constraint) {
+        if (constraint.isCaseSensitive() && ! isCaseSensitive(getDataType(constraint.getField()))) {
             sb.append(" REGEXP BINARY ");
         } else {
             sb.append(" REGEXP ");
