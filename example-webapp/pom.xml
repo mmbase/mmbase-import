@@ -30,20 +30,6 @@
           <warSourceDirectory>src/main/webapp</warSourceDirectory>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <overlays>
-            <overlay>
-              <groupId>org.mmbase.editwizards</groupId>
-              <artifactId>htmlarea</artifactId>
-              <type>zip</type>
-              <targetPath>mmbase/edit/wizard/htmlarea</targetPath>
-            </overlay>
-          </overlays>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
@@ -117,16 +103,16 @@
       <artifactId>hsqldb</artifactId>
       <version>1.8.0.7</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.mmbase.editwizards</groupId>
       <artifactId>htmlarea</artifactId>
       <version>3.0-rc1-mm19</version>
-      <type>zip</type>
+      <type>war</type>
     </dependency>
 
   </dependencies>
-  
+
   <profiles>
     <profile>
       <id>servlet25</id>
