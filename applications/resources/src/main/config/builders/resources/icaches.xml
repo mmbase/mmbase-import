@@ -42,8 +42,7 @@
                      have a mix of 1.7 and 1.8 machines on 1 database, you want to set this to false!
     -->
     <property name="LegacyCKey">false</property>
-    <property name="FixLegacyCKey">true</property>
-
+    <property name="FixLegacyCKey">false</property>
     <property name="Content-Disposition">inline</property>
   </properties>
 
