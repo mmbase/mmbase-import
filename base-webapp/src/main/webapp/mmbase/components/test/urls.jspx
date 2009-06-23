@@ -7,6 +7,7 @@
     >
   <mm:import externid="a" >A</mm:import>
   <mm:import externid="b" >B</mm:import>
+
   <jsp:output omit-xml-declaration="true" />
   <div
       class="test mm_c c_test b_urls ${requestScope['org.mmbase.componentClassName']}"
@@ -16,14 +17,31 @@
     <h1>
       <jsp:text>This block needs to be showed on</jsp:text>
       <mm:link page="/mmbase/test/test/urls"><a href="${_}">/mmbase/test/test/urls</a></mm:link>
+      and
+      <mm:link page="/mmbase/test/test/urls?x=X"><a href="${_}">/mmbase/test/test/urls?x=X</a></mm:link>
     </h1>
+    <mm:import externid="x" from="parameters" />
 
     <mm:link absolute="context">
-      <p>${_ eq '/mmbase/test/test/urls' ? 'ok' : 'NOT ok'}: ${_}</p>
+      <c:choose>
+        <c:when test="${empty x}">
+          <p>${_ eq '/mmbase/test/test/urls' ? 'ok' : 'NOT ok'}: ${_}</p>
+        </c:when>
+        <c:otherwise>
+          <p>${_ eq '/mmbase/test/test/urls?x=X' ? 'ok' : 'NOT ok'}: ${_}</p>
+        </c:otherwise>
+      </c:choose>
     </mm:link>
 
     <mm:link absolute="context" referids="a">
-      <p>${_ eq '/mmbase/test/test/urls?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
+      <c:choose>
+        <c:when test="${empty x}">
+          <p>${_ eq '/mmbase/test/test/urls?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
+        </c:when>
+        <c:otherwise>
+          <p>${_ eq '/mmbase/test/test/urls?1:a=A&amp;amp;x=X' ? 'ok' : 'NOT ok'}: ${_}</p>
+        </c:otherwise>
+      </c:choose>
     </mm:link>
 
     <mm:link absolute="context" page="test">
@@ -127,5 +145,33 @@
     <mm:form page="/justsomeurl" mode="url" absolute="context">
       <p>${_ eq '/justsomeurl' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:form>
+
+    <mm:form mode="url" absolute="context">
+      <c:choose>
+        <c:when test="${empty x}">
+          <p>${_ eq '/mmbase/test/test/urls?_action=1' ? 'ok' : 'NOT ok'}: ${_}</p>
+        </c:when>
+        <c:otherwise>
+          <p>${_ eq '/mmbase/test/test/urls?_action=1&amp;amp;x=X' ? 'ok' : 'NOT ok'}: ${_}</p>
+        </c:otherwise>
+      </c:choose>
+    </mm:form>
+
+    <mm:form>
+      <p id="form2"></p>
+      <script type="text/javascript">
+        $(document).ready(function() {
+          var p = $('#form2');
+          p.text(p.parents("form").attr("action"));
+        });
+      </script>
+    </mm:form>
+
+    <h3>Unfiltered rendering</h3>
+    <mm:link page="/mmbase/components/test/unfilteredurls.jspx" referids="x?">
+      <iframe
+          style="width: 100%; heigh: 300px"
+          src="${_}" />
+    </mm:link>
   </div>
 </jsp:root>
