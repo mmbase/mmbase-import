@@ -666,12 +666,12 @@ public class BasicSqlHandler implements SqlHandler {
      *
      * @return The string buffer.
      */
-    protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
+    protected StringBuilder appendLikeOperator(StringBuilder sb, FieldConstraint fieldConstraint) {
         sb.append(" LIKE ");
         return sb;
     }
 
-    protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, boolean caseSensitive) {
+    protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, FieldConstraint fieldConstraint) {
         throw new UnsupportedOperationException();
     }
 
@@ -838,6 +838,7 @@ public class BasicSqlHandler implements SqlHandler {
                     sb.append(overallInverse? "NOT (": "");
                 }
 
+                String after = appendPreField(sb, fieldConstraint, field, multipleSteps);
                 if (fieldConstraint instanceof FieldValueDateConstraint) {
                     int part = ((FieldValueDateConstraint)fieldConstraint).getPart();
                     appendDateField(sb, step, fieldName, multipleSteps, part);
@@ -848,12 +849,11 @@ public class BasicSqlHandler implements SqlHandler {
                     // case insensitive and database needs it
                     appendLowerField(sb, step, fieldName, multipleSteps);
                 } else {
-                    String after = appendPreField(sb, fieldConstraint, field, multipleSteps);
                     // case sensitive or case irrelevant
                     appendField(sb, step, fieldName, multipleSteps);
-                    if (after != null) {
-                        sb.append(after);
-                    }
+                }
+                if (after != null) {
+                    sb.append(after);
                 }
                 switch (fieldCompareConstraint.getOperator()) {
                 case FieldCompareConstraint.LESS:
@@ -884,13 +884,13 @@ public class BasicSqlHandler implements SqlHandler {
                     if (overallInverse) {
                         sb.append(" NOT");
                     }
-                    appendLikeOperator(sb, fieldConstraint.isCaseSensitive());
+                    appendLikeOperator(sb, fieldConstraint);
                     break;
                 case FieldValueConstraint.REGEXP:
                     if (overallInverse) {
                         sb.append(" NOT");
                     }
-                    appendRegularExpressionOperator(sb, fieldConstraint.isCaseSensitive());
+                    appendRegularExpressionOperator(sb, fieldConstraint);
                     break;
                 default:
                     throw new IllegalStateException("Unknown operator value in constraint: " + fieldCompareConstraint.getOperator());

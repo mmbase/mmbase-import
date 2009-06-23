@@ -104,8 +104,8 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
 
 
-    @Override protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
-        if (caseSensitive) {
+    @Override protected StringBuilder appendLikeOperator(StringBuilder sb, FieldConstraint constraint) {
+        if (constraint.isCaseSensitive()) {
             sb.append(" LIKE ");
         } else {
             sb.append(" ILIKE ");
@@ -140,8 +140,8 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
         }
     }
 
-    @Override protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, boolean caseSensitive) {
-        if (caseSensitive) {
+    @Override protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, FieldConstraint constraint) {
+        if (constraint.isCaseSensitive()) {
             sb.append(" ~ ");
         } else {
             sb.append(" ~* ");
