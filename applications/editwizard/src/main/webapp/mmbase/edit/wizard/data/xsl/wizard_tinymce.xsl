@@ -20,7 +20,7 @@
     See the xmlns attributes of the xsl:stylesheet
   -->
 
-  <xsl:import href="xsl/wizard.xsl"/>
+  <xsl:import href="xsl/wizard.clean.xsl"/>
 
   <!-- ================================================================================
     The following things can be overriden to customize the appearance of wizard

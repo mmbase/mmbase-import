@@ -207,7 +207,7 @@
     formObject[tempFieldName].selectedIndex = monthSelected;
 		tempFieldName = fieldName + "_year";
 		formObject[tempFieldName].value = yearSelected;
-		
+
 		validator.validate(formObject[tempFieldName]);
 	}
 
@@ -606,14 +606,13 @@
 
 	document.onkeypress = function hidecal1 (ev) {
 		ev = (window.event) ? window.event : ev;
-		var key = String.fromCharCode(HTMLArea.is_ie ? ev.keyCode : ev.charCode).toLowerCase();
+		var key = String.fromCharCode(HTMLArea && HTMLArea.is_ie ? ev.keyCode : ev.charCode).toLowerCase();
 		if (key == 27) {
 			hideCalendar()
 		}
 	}
 	document.onclick = function hidecal2 () {
-		if (!bShow)
-		{
+		if (!bShow) {
 			hideCalendar()
 		}
 		bShow = false
