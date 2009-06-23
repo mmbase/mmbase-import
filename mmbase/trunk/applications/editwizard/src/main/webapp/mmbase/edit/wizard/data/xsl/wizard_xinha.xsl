@@ -16,7 +16,7 @@
     See the xmlns attributes of the xsl:stylesheet
   -->
 
-  <xsl:import href="ew:xsl/wizard.xsl"/>
+  <xsl:import href="ew:xsl/wizard.clean.xsl"/>
 
   <xsl:variable name="htmlareadir">../xinha/</xsl:variable>
 
