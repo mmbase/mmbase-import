@@ -379,7 +379,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     protected String getSearchValue(String string, Field field, int operator) {
         if (operator == FieldCompareConstraint.LIKE) {
-            return "%" + string.toUpperCase() + "%";
+            return "%" + string + "%";
         } else {
             return string;
         }
