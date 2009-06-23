@@ -125,7 +125,9 @@ public class KeywordsProcessor implements Processor, NodeEventListener {
                                 addKeywords(repository, keywords.toLowerCase());
                             }
                         }
-                        log.info("Ready " + getKeywords(repository));
+                        if (log.isDebugEnabled()) {
+                            log.debug("Ready " + getKeywords(repository));
+                        }
                     }
                 }
                 );
