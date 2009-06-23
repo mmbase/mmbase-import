@@ -31,7 +31,8 @@
       <version>${mmbase.version}</version>
     </dependency>
 
-<!-- html editors or versions    
+<!-- html editors or versions
+     -->
     <dependency>
       <groupId>org.mmbase.editwizards</groupId>
       <artifactId>htmlarea</artifactId>
@@ -44,7 +45,7 @@
       <version>0.96beta2</version>
       <type>zip</type>
     </dependency>
-  -->
+
   </dependencies>
 
   <build>
