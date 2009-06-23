@@ -1,30 +1,30 @@
 <collation-mappings>
   <collation-mapping java=":IDENTICAL" database="utf8_bin" />
-  <collation-mapping java="cs:PRIMARY" database="utf8_czech_ci" />
-  <collation-mapping java="da:PRIMARY" database="utf8_danish_ci" />
-  <collation-mapping java="eo:PRIMARY" database="utf8_esperanto_ci" />
-  <collation-mapping java="et:PRIMARY" database="utf8_estonian_ci" />
-  <collation-mapping java="hu:PRIMARY" database="utf8_hungarian_ci" />
-  <collation-mapping java="is:PRIMARY" database="utf8_icelandic_ci" />
-  <collation-mapping java="lv:PRIMARY" database="utf8_latvian_ci" />
-  <collation-mapping java="lt:PRIMARY" database="utf8_lithuanian_ci" />
-  <collation-mapping java="fa:PRIMARY" database="utf8_persian_ci" />
-  <collation-mapping java="pl:PRIMARY" database="utf8_polish_ci" />
+  <collation-mapping java="cs" database="utf8_czech_ci" />
+  <collation-mapping java="da" database="utf8_danish_ci" />
+  <collation-mapping java="eo" database="utf8_esperanto_ci" />
+  <collation-mapping java="et" database="utf8_estonian_ci" />
+  <collation-mapping java="hu" database="utf8_hungarian_ci" />
+  <collation-mapping java="is" database="utf8_icelandic_ci" />
+  <collation-mapping java="lv" database="utf8_latvian_ci" />
+  <collation-mapping java="lt" database="utf8_lithuanian_ci" />
+  <collation-mapping java="fa" database="utf8_persian_ci" />
+  <collation-mapping java="pl" database="utf8_polish_ci" />
   <!--
       I've never heard of this language.
-      perhaps all other latinic languages are meant? Frensh?
-  <collation-mapping java="?:PRIMARY" database="utf8_roman_ci" />
+      perhaps all other latinic languages are meant? French?
+  <collation-mapping java="?:TERTIARY" database="utf8_roman_ci" />
   -->
-  <collation-mapping java="ro:PRIMARY" database="utf8_romanian_ci" />
-  <collation-mapping java="sk:PRIMARY" database="utf8_slovak_ci" />
-  <collation-mapping java="sl:PRIMARY" database="utf8_slovenian_ci" />
+  <collation-mapping java="ro" database="utf8_romanian_ci" />
+  <collation-mapping java="sk" database="utf8_slovak_ci" />
+  <collation-mapping java="sl" database="utf8_slovenian_ci" />
   <!--
       Suppose that 'spanish2' is better?
-  <collation-mapping java="es:PRIMARY" database="utf8_spanish_ci" />
+  <collation-mapping java="es" database="utf8_spanish2_ci" />
   -->
-  <collation-mapping java="es:PRIMARY" database="utf8_spanish2_ci" />
-  <collation-mapping java="sv:PRIMARY" database="utf8_swedish_ci" />
-  <collation-mapping java="tr:PRIMARY" database="utf8_turkish_ci" />
+  <collation-mapping java="es" database="utf8_spanish_ci" />
+  <collation-mapping java="sv" database="utf8_swedish_ci" />
+  <collation-mapping java="tr" database="utf8_turkish_ci" />
 
   <collation-mapping java=""   database="utf8_general_ci" />
 
