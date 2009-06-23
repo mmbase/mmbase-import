@@ -68,10 +68,14 @@
           <mm:present referid="s">
             <mm:valid>
               <mm:commit />
-              <mm:node referid="newnode">
-                <mm:log>Created new node ${_node}</mm:log>
-                Created <span class="newnode">${_node}</span>
-              </mm:node>
+              <mm:cloud method="delegate" authenticate="class">
+                <mm:node number="${newnode.number}">
+                  <mm:setcontext>${context}</mm:setcontext>
+                  <mm:log>Created new node ${_node}</mm:log>
+
+                  Created <span class="newnode">${_node}</span> with owner ${_node.owner}.
+                </mm:node>
+              </mm:cloud>
             </mm:valid>
             <mm:valid inverse="true">
               NOT VALID
