@@ -67,7 +67,7 @@
                            description="Whether to produce forms. Default to true, but since forms cannot be nested you may want to set this to false."/>
 
 
-  <jsp:directive.attribute name="customizedir"        type="java.lang.String" 
+  <jsp:directive.attribute name="customizedir"        type="java.lang.String"
                            description="Enables the specification of the location of a directory with extra actions on nodes in the lists which will become visible in the td.action." />
 
 
@@ -105,6 +105,7 @@
     <c:if test="${! empty pagesize}"> this.relater.setPageSize(${pagesize}); </c:if>
     <c:if test="${! empty maxpages}"> this.relater.setMaxPages(${maxpages}); </c:if>
     <c:if test="${! empty context}"> this.relater.setContext('${context}'); </c:if>
+    this.relater.setSessionName('${mm:property('org.mmbase.cloud.sessionname')}');
     <c:if test="${! empty current}">
       if (this.relater.current != null) this.relater.current.searcher.maxNumber = ${current.maxNumber};
     </c:if>

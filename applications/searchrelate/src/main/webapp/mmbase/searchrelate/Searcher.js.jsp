@@ -7,7 +7,7 @@
  * Generic mmbase search & relate tool. Javascript part.
  *
  *
- * Usage: It is sufficient to use the mm:relate tag. This tag wil know whether this javascript is 
+ * Usage: It is sufficient to use the mm:relate tag. This tag wil know whether this javascript is
  * already loaded, and if not, will arrange for that. It is required to load jquery, though.
  *
  * On ready, the necessary javascript will then be connected to .mm_related a.search
@@ -83,13 +83,14 @@ function MMBaseRelater(d) {
         var fun =  MMBaseRelater.readyFunctions[i];
         fun(this);
     }
+    this.sessionName = null;
     var self = this;
     $(this.div).trigger("mmsrRelaterReady", [self]);
 }
 
 /**
- *  This Searcher.js.jsp is normally loaded implicetly by the first mm-sr:relate. Using the 'ready' 
- *  function, you can do something immediately after the MMBaseRealter is ready. E.g. you can add a 
+ *  This Searcher.js.jsp is normally loaded implicetly by the first mm-sr:relate. Using the 'ready'
+ *  function, you can do something immediately after the MMBaseRealter is ready. E.g. you can add a
  *  'relateCallBack' function.
  *  @todo I think jquery provides something with user defined events.
  */
@@ -157,7 +158,7 @@ MMBaseRelater.prototype.needsCommit = function() {
 MMBaseRelater.prototype.commit = function(ev) {
     var relatedNumbers   = this.getNumbers(this.related);
     var unrelatedNumbers = this.getNumbers(this.unrelated);
-    
+
     if (relatedNumbers != "" || unrelatedNumbers != "") {
         var a = ev.target;
         $(a).addClass("submitting");
@@ -181,11 +182,11 @@ MMBaseRelater.prototype.commit = function(ev) {
                     if (status == "success") {
                         //console.log("" + res);
                         $(a).addClass("succeeded");
-                        if (self.canEditrelations && relatedNumbers != "") { // create tr's in which to edit relations 
+                        if (self.canEditrelations && relatedNumbers != "") { // create tr's in which to edit relations
                             var nrs = relatedNumbers.split(",");
                             $(nrs).each(function(i) {
                                 var nr = this;
-                                var trr = self.getNewRelationTr(nr); 
+                                var trr = self.getNewRelationTr(nr);
                                 $('#' + id + ' div.mm_relate_current tr.click').each(function() {
                                     if (self.getNumber(this) == nr) {
                                         $(trr).insertAfter(this);
@@ -222,7 +223,7 @@ MMBaseRelater.prototype.getNewRelationTr = function(nodenr) {
     var queryid = this.repository.searcher.getQueryId();
     queryid = queryid.replace(/repository/i, "current");
     self.logger.debug(url + ", id: " + queryid + ", node: " + nodenr +  ", fields: " + this.repository.searcher.fields);
-    
+
     var params = {id: queryid, node: nodenr, fields: this.repository.searcher.fields};
     var result;
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
@@ -235,7 +236,7 @@ MMBaseRelater.prototype.getNewRelationTr = function(nodenr) {
             result = res.responseText;
         }
     });
-    
+
     return result;
 }
 
@@ -279,7 +280,7 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
                 })
             }
         });
-        
+
         if (self.canEditrelations) self.bindSaverelation(rep);
     }
 }
@@ -359,7 +360,7 @@ MMBaseRelater.prototype.getRelationTrs = function(number) {
 MMBaseRelater.prototype.unrelate = function(tr) {
     var number = this.getNumber(tr);
     this.logger.debug("Unrelating " + number);
-    
+
     // relation tr's
     var relationTrs = this.getRelationTrs(number);
     this.logger.debug("+ relations: " + relationTrs.length);
@@ -401,7 +402,7 @@ MMBaseRelater.prototype.unrelate = function(tr) {
 MMBaseRelater.prototype.saverelation = function(ev) {
     ev.preventDefault();
     var form = ev.target;
-    
+
     var params = {};
     if (this.transaction != null) {
         params.transaction = this.transaction;
@@ -413,7 +414,7 @@ MMBaseRelater.prototype.saverelation = function(ev) {
         params[name] = $(inputs[i]).attr("value");
         this.logger.debug("name: " + name + ", value: " + $(inputs[i]).attr("value"));
     }
-    
+
     var url = "${mm:link('/mmbase/searchrelate/saverelation.jspx')}";
     $.ajax({
         type: "POST",
@@ -422,7 +423,7 @@ MMBaseRelater.prototype.saverelation = function(ev) {
         complete: function(res, status) {
             if (status == "success") {
                 var msg = $(res.responseXML.documentElement).text();
-                if ($(form).find('div.succeeded').length == 0) { 
+                if ($(form).find('div.succeeded').length == 0) {
                     $(form).prepend('<div class="succeeded" />');
                 } else {
                    $(form).find('div.succeeded').show();
@@ -448,6 +449,15 @@ MMBaseRelater.prototype.setContext = function(context) {
     }
     if (this.repository != null) {
         this.repository.searcher.context = context;
+    }
+}
+
+MMBaseRelater.prototype.setSessionName = function(sessionName) {
+    if (this.current != null) {
+        this.current.searcher.sessionName = sessionName;
+    }
+    if (this.repository != null) {
+        this.repository.searcher.sessionName = sessionName;
     }
 }
 
@@ -585,12 +595,12 @@ MMBaseSearcher.prototype.search = function(val, offset) {
     }
 
     var rep = this.getResultDiv();
-    var params = { id: this.getQueryId(), 
-                   offset: offset, 
-                   search: "" + this.value, 
-                   fields: this.fields, 
-                   pagesize: this.pagesize, 
-                   maxpages: this.maxpages, 
+    var params = { id: this.getQueryId(),
+                   offset: offset,
+                   search: "" + this.value,
+                   fields: this.fields,
+                   pagesize: this.pagesize,
+                   maxpages: this.maxpages,
                    customizedir: this.customizedir,
                    editrelations: this.canEditrelations };
 
@@ -681,7 +691,8 @@ MMBaseSearcher.prototype.create = function () {
     var params = {
         queryid: this.getQueryId(),
         id: this.getId(),
-        context: this.context
+        context: this.context,
+        sessionname : this.sessionName
     };
 
     var self = this;
