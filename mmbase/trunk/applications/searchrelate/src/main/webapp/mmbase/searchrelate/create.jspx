@@ -9,9 +9,12 @@
   <mm:import externid="queryid"  />
   <mm:import externid="id"  />
   <mm:import externid="context"  />
+  <mm:import externid="sessionname"  />
   <mm:import from="session" externid="${queryid}" id="query" required="true" />
 
-  <mm:cloud method="asis">
+  <mm:cloud
+      sessionname="${sessionname}"
+      method="asis">
     <mm:content expires="0" type="text/html" language="${query.cloud.locale}">
       <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
         <mm:import from="session" externid="mm_related_${id}_extracreate" id="extracreate"   required="false" />
@@ -32,6 +35,7 @@
                   <input type="hidden" name="queryid" value="${queryid}" />
                   <input type="hidden" name="id"      value="${id}" />
                   <input type="hidden" name="context" value="${context}" />
+                  <input type="hidden" name="sessionname" value="${sessionname}" />
                   <input type="hidden" name="nodemanager" id="nodemanager" value="${query.nodeManager.name}" />
                 </td>
               </tr>
@@ -62,20 +66,22 @@
               <c:if test="${! empty extracreate}">
                 <mm:include page="${extracreate}" attributes="newnode,context" />
               </c:if>
+              <tr><td> OWNER ${_node.owner}</td>
+              <td><mm:cloudinfo type="user" /></td>
+              </tr>
+
+
             </mm:createnode>
           </table>
           <mm:import externid="s" />
           <mm:present referid="s">
             <mm:valid>
               <mm:commit />
-              <mm:cloud method="delegate" authenticate="class">
-                <mm:node number="${newnode.number}">
-                  <mm:setcontext>${context}</mm:setcontext>
-                  <mm:log>Created new node ${_node}</mm:log>
+              <mm:node referid="newnode">
+                <mm:log>Created new node ${_node}</mm:log>
 
-                  Created <span class="newnode">${_node}</span> with owner ${_node.owner}.
-                </mm:node>
-              </mm:cloud>
+                Created <span class="newnode">${_node}</span> with owner ${_node.owner}.
+              </mm:node>
             </mm:valid>
             <mm:valid inverse="true">
               NOT VALID
