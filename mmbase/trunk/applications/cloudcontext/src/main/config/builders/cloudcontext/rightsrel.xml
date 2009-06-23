@@ -30,6 +30,7 @@
       </gui>
       <editor><positions><list>3</list></positions></editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <property name="collator" value=":IDENTICAL" />
         <default value="read" />
         <required value="true" enforce="never" />
         <maxLength value="15" enforce="never" />
