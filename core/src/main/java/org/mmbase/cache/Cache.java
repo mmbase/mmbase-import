@@ -32,7 +32,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
     /**
      * @since MMBase-1.8
      */
-    CacheImplementationInterface<K, V> implementation;
+    private CacheImplementationInterface<K, V> implementation;
     protected Object lock;
 
     /**
@@ -61,21 +61,24 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
 
     @SuppressWarnings("unchecked")
     void setImplementation(String clazz, Map<String,String> configValues) {
-        try {
+        synchronized(lock) {
+            clear();
+            try {
 
-            Class<?> clas = Class.forName(clazz);
-            if (implementation == null || (! clas.equals(implementation.getClass()))) {
-                log.info("Setting implementation of " + this + " to " + clas);
-                implementation = (CacheImplementationInterface<K,V>) clas.newInstance();
-                implementation.config(configValues);
-                lock = implementation.getLock();
+                Class<?> clas = Class.forName(clazz);
+                if (implementation == null || (! clas.equals(implementation.getClass()))) {
+                    log.info("Setting implementation of " + this + " to " + clas);
+                    implementation = (CacheImplementationInterface<K,V>) clas.newInstance();
+                    implementation.config(configValues);
+                    lock = implementation.getLock();
+                }
+            } catch (ClassNotFoundException cnfe) {
+                log.error("For cache " + this + " " + cnfe.getClass().getName() + ": " + cnfe.getMessage());
+            } catch (InstantiationException ie) {
+                log.error("For cache " + this + " " + ie.getClass().getName() + ": " + ie.getMessage());
+            } catch (IllegalAccessException iae) {
+                log.error("For cache " + this + " " + iae.getClass().getName() + ": " + iae.getMessage());
             }
-        } catch (ClassNotFoundException cnfe) {
-            log.error("For cache " + this + " " + cnfe.getClass().getName() + ": " + cnfe.getMessage());
-        } catch (InstantiationException ie) {
-            log.error("For cache " + this + " " + ie.getClass().getName() + ": " + ie.getMessage());
-        } catch (IllegalAccessException iae) {
-            log.error("For cache " + this + " " + iae.getClass().getName() + ": " + iae.getMessage());
         }
     }
 
