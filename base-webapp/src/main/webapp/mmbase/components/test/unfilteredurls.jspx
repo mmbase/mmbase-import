@@ -7,21 +7,26 @@
   <html>
     <head>
       <title>Testing urls outside filtered urls</title>
+      <jsp:directive.include file="/mmbase/jquery/jquery.jspx" />
     </head>
     <body >
       <mm:import externid="x" />
-      <p>
-        <mm:link absolute="context">
-          <c:choose>
-            <c:when test="${empty x}">
-              ${_ eq '/mmbase/components/test/unfilteredurls.jspx' ? 'ok' : 'NOT ok'}: '${_}'
-            </c:when>
-            <c:otherwise>
-              ${_ eq '/mmbase/components/test/unfilteredurls.jspx?x=X' ? 'ok' : 'NOT ok'}: '${_}'
-            </c:otherwise>
-          </c:choose>
-        </mm:link>
-      </p>
+      <mm:link absolute="context">
+        <p>${_ eq '/mmbase/components/test/unfilteredurls.jspx' ? 'ok' : 'NOT ok'}: '${_}'</p>
+      </mm:link>
+
+    <h3>no page attribute</h3>
+    <mm:form>
+      <p id="form2"></p>
+      <script type="text/javascript">
+        $(document).ready(function() {
+          var p = $('#form2');
+          var action = p.parents("form").attr("action");
+          var expected = '';
+          p.text((action == expected ? 'ok' : 'NOT ok: ' + expected + '!=') + ': ' + action);
+        });
+      </script>
+    </mm:form>
     </body>
   </html>
 </mm:content>
