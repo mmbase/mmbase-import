@@ -166,7 +166,7 @@ public class Dove extends AbstractDove {
                                                            // booleans. Don't ask me why. It's stupid.
                     key =  "" + Casting.toInt(key);
                 }
-                Element o = addContentElement("option", "" + entry.getValue(), ol);
+                Element o = addContentElement("option", Casting.toString(entry.getValue()), ol);
                 o.setAttribute("id", Casting.toString(key));
             }
         }
