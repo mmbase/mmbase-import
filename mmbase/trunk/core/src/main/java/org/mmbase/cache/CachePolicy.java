@@ -31,7 +31,8 @@ abstract public class CachePolicy implements Serializable {
      * Standard cache policy that advises to never cache a passed object.
      * Accessible with the key "never".
      */
-    static public CachePolicy NEVER = new CachePolicy("never") {
+    static final public CachePolicy NEVER = new CachePolicy("never") {
+        private static final long serialVersionUID = 0;
         public boolean checkPolicy(Object o) {
             return false;
         }
@@ -46,7 +47,8 @@ abstract public class CachePolicy implements Serializable {
      * Standard cache policy that advises to always cache a passed object.
      * Accessible with the key "always".
      */
-    static public CachePolicy ALWAYS = new CachePolicy("always") {
+    static final public CachePolicy ALWAYS = new CachePolicy("always") {
+        private static final long serialVersionUID = 0L;
         public boolean checkPolicy(Object o) {
             return true;
         }
