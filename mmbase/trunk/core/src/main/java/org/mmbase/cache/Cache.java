@@ -62,8 +62,10 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
     @SuppressWarnings("unchecked")
     void setImplementation(String clazz, Map<String,String> configValues) {
         try {
+
             Class<?> clas = Class.forName(clazz);
             if (implementation == null || (! clas.equals(implementation.getClass()))) {
+                log.info("Setting implementation of " + this + " to " + clas);
                 implementation = (CacheImplementationInterface<K,V>) clas.newInstance();
                 implementation.config(configValues);
                 lock = implementation.getLock();
@@ -299,11 +301,13 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
             size += ((SizeMeasurable) implementation).getByteSize(sizeof);
         } else {
             // sizeof.sizeof(implementation) does not work because this.equals(implementation)
-            Iterator<Map.Entry<K, V>> i = implementation.entrySet().iterator();
-            while(i.hasNext()) {
-                Map.Entry<K, V> entry = i.next();
-                size += sizeof.sizeof(entry.getKey());
-                size += sizeof.sizeof(entry.getValue());
+            synchronized(lock) {
+                Iterator<Map.Entry<K, V>> i = implementation.entrySet().iterator();
+                while(i.hasNext()) {
+                    Map.Entry<K, V> entry = i.next();
+                    size += sizeof.sizeof(entry.getKey());
+                    size += sizeof.sizeof(entry.getValue());
+                }
             }
         }
         return size;
@@ -318,12 +322,14 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
     public int getCheapByteSize() {
         int size = 0;
         SizeOf sizeof = new SizeOf();
-        Iterator<Map.Entry<K, V>> i = implementation.entrySet().iterator();
-        while(i.hasNext()) {
-            Map.Entry<K, V> entry = i.next();
-            size += sizeof.sizeof(entry.getKey());
-            size += sizeof.sizeof(entry.getValue());
-            sizeof.clear();
+        synchronized(lock) {
+            Iterator<Map.Entry<K, V>> i = implementation.entrySet().iterator();
+            while(i.hasNext()) {
+                Map.Entry<K, V> entry = i.next();
+                size += sizeof.sizeof(entry.getKey());
+                size += sizeof.sizeof(entry.getValue());
+                sizeof.clear();
+            }
         }
         return size;
     }
