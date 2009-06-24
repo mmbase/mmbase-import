@@ -516,8 +516,10 @@ public class CacheManager implements CacheManagerMBean {
                         public Iterator<Map.Entry<K, Integer>> iterator() {
                             return new Iterator<Map.Entry<K, Integer>>() {
                                 private Iterator<K> iterator;
-                                synchronized(cache.getLock()) {
-                                    iterator = new HashSet<K>(cache.keySet()).iterator();
+                                {
+                                    synchronized(cache.getLock()) {
+                                        iterator = new HashSet<K>(cache.keySet()).iterator();
+                                    }
                                 }
                                 public boolean hasNext() {
                                     return iterator.hasNext();
