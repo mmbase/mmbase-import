@@ -54,13 +54,15 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
     public void setMaxSize(int size) {
         if (size < 0 ) throw new IllegalArgumentException("Cannot set size to negative value " + size);
         maxSize = size;
-        while (size() > maxSize()) {
-            try {
-                Iterator<Entry<K,V>> i = entrySet().iterator();
-                i.next();
-                i.remove();
-            } catch (Exception e) {
-                // ConcurentModification?
+        synchronized(backing) {
+            while (size() > maxSize()) {
+                try {
+                    Iterator<Entry<K,V>> i = entrySet().iterator();
+                    i.next();
+                    i.remove();
+                } catch (Exception e) {
+                    // ConcurentModification?
+                }
             }
         }
     }
