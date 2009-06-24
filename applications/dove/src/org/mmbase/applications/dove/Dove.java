@@ -167,7 +167,7 @@ public class Dove extends AbstractDove {
                     key =  "" + Casting.toInt(key);
                 }
                 Element o = addContentElement("option", "" + entry.getValue(), ol);
-                o.setAttribute("id", "" + key);
+                o.setAttribute("id", Casting.toString(key));
             }
         }
         return fel;
