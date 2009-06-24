@@ -40,13 +40,19 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
             private static final long serialVersionUID = 0L;
             @Override
             protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-                int size = size();
-                if (LRUCache.this.maxSize > 0  && size > 2 * LRUCache.this.maxSize) {
-                    log.error("For some reason this cache grew much too big (" + size + " >> " + LRUCache.this.maxSize() + "). This must be some kind of bug. Resizing now.");
-                    LRUCache.this.setMaxSize(LRUCache.this.maxSize);
+                int overSized = size() - LRUCache.this.maxSize;
+                if (overSized <= 0) {
                     return false;
+                } else if (overSized == 1) {
+                    return true;
                 } else {
-                    return size > LRUCache.this.maxSize;
+                    log.warn("How is this possible? Oversized: " + overSized);
+                    log.debug("because", new Exception());
+                    if ((overSized > 10) && (overSized >  LRUCache.this.maxSize)) {
+                        log.error("For some reason this cache grew much too big (" + size() + " >> " + LRUCache.this.maxSize + "). This must be some kind of bug. Resizing now.");
+                        LRUCache.this.setMaxSize(LRUCache.this.maxSize);
+                    }
+                    return false;
                 }
             }
         });
@@ -65,12 +71,13 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
         if (size < 0 ) throw new IllegalArgumentException("Cannot set size to negative value " + size);
         maxSize = size;
         synchronized(backing) {
-            while (size() > maxSize()) {
+            while (size() > maxSize) {
                 try {
                     Iterator<Entry<K,V>> i = entrySet().iterator();
                     i.next();
                     i.remove();
                 } catch (Exception e) {
+                    log.warn(e);
                     // ConcurentModification?
                 }
             }
@@ -78,7 +85,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
     }
 
 
-    public int maxSize() {
+    public final int maxSize() {
         return maxSize;
     }
 
