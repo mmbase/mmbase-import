@@ -56,7 +56,7 @@ public class RelatedNodesCache extends QueryResultCache {
 
 
     @Override
-    public List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
+    public List<MMObjectNode> put(final SearchQuery query, List<MMObjectNode> queryResult) {
         synchronized(lock) {
             // test cache policy before caching
             if (!checkCachePolicy(query)) return null;
@@ -73,7 +73,7 @@ public class RelatedNodesCache extends QueryResultCache {
 
 
     @Override
-    public List<MMObjectNode> remove(Object key) {
+    public List<MMObjectNode> remove(final Object key) {
         synchronized(lock) {
             SearchQuery query = (SearchQuery) key;
             Integer number = (query.getSteps().get(0)).getNodes().first();
