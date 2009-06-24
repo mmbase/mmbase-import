@@ -16,7 +16,22 @@
     <li><mm:link page="test_vars"><a href="${_}">variables</a></mm:link></li>
     <li><mm:link page="test_form"><a href="${_}">mm:form</a></mm:link></li>
     <li><mm:link page="test_image"><a href="${_}">mm:image</a></mm:link></li>
+
   </ol>
+
+  <h3>MMB-1844</h3>
+  <mm:import id="list" vartype="list">a,b</mm:import>
+  <mm:stringlist referid="list" id="main">
+    <mm:stringlist referid="list" id="sub">
+        <mm:stringlist referid="list" id="subsub">
+          <!-- ${main}.${sub}.${subsub} -->
+        </mm:stringlist>
+        <mm:remove referid="subsub" />
+    </mm:stringlist>
+    <mm:remove referid="sub" />
+  </mm:stringlist>
+  <mm:remove referid="main" />
+  [${main}.${sub}.${subsub}] : Should be [..]
 
 </div>
 
