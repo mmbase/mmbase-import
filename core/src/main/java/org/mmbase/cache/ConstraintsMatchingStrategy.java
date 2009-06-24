@@ -430,7 +430,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
         protected abstract int getOperator();
 
-        protected boolean valueMatches(final Class<Object> fieldType, Object constraintValue, Object valueToCompare, final boolean isCaseSensitive) {
+        protected boolean valueMatches(final Class<?> fieldType, Object constraintValue, Object valueToCompare, final boolean isCaseSensitive) {
             if (log.isDebugEnabled()) {
                 log.debug("**method: valueMatches() fieldtype: " + fieldType);
             }
@@ -596,12 +596,12 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             return stringToCompare.matches(sb.toString());
         }
 
-        protected Class<Object> getFieldTypeClass(StepField stepField) {
+        protected Class<?> getFieldTypeClass(StepField stepField) {
             MMBase mmbase = MMBase.getMMBase();
             // why it this checked anyway?
             CoreField field = mmbase.getBuilder(stepField.getStep().getTableName()).getField(stepField.getFieldName());
-            DataType<Object> fieldType = field.getDataType();
-            Class<Object> fieldTypeClass = fieldType.getTypeAsClass();
+            DataType<?> fieldType = field.getDataType();
+            Class<?> fieldTypeClass = fieldType.getTypeAsClass();
             if( fieldTypeClass.equals(Boolean.class) ||
                 fieldTypeClass.equals(Date.class) ||
                 fieldTypeClass.equals(Integer.class) ||
@@ -625,7 +625,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
 
     private static class BasicFieldValueConstraintMatcher extends FieldCompareConstraintMatcher {
-        private final Class<Object> fieldTypeClass;
+        private final Class<?> fieldTypeClass;
         protected final StepField stepField;
         protected final BasicFieldValueConstraint wrappedFieldValueConstraint;
 
@@ -710,7 +710,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
      * @since MMBase-1.8.1
      */
     private static class BasicFieldValueInConstraintMatcher extends FieldCompareConstraintMatcher {
-        private final Class<Object> fieldTypeClass;
+        private final Class<?> fieldTypeClass;
         protected final StepField stepField;
         protected final BasicFieldValueInConstraint wrappedFieldValueInConstraint;
 
