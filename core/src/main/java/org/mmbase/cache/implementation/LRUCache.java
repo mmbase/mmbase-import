@@ -11,6 +11,7 @@ package org.mmbase.cache.implementation;
 
 import org.mmbase.cache.CacheImplementationInterface;
 import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A cache implementation backed by a {@link java.util.LinkedHashMap}, in access-order mode, and
@@ -22,6 +23,8 @@ import java.util.*;
  * @since MMBase-1.8.6
  */
 public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
+
+    private static final Logger log = Logging.getLoggerInstance(LRUCache.class);
 
     public int maxSize = 100;
     private final Map<K, V> backing;
@@ -37,7 +40,14 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
             private static final long serialVersionUID = 0L;
             @Override
             protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-                return size() > LRUCache.this.maxSize;
+                int size = size();
+                if (LRUCache.this.maxSize > 0  && size > 2 * LRUCache.this.maxSize) {
+                    log.error("For some reason this cache grew much too big (" + size + " >> " + LRUCache.this.maxSize() + "). This must be some kind of bug. Resizing now.");
+                    LRUCache.this.setMaxSize(LRUCache.this.maxSize);
+                    return false;
+                } else {
+                    return size > LRUCache.this.maxSize;
+                }
             }
         });
     }
