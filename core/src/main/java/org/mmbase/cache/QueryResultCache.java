@@ -121,13 +121,14 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
      *
      * @param key A SearchQuery object.
      */
-    public List<MMObjectNode> remove(SearchQuery key) {
+    @Override
+    public List<MMObjectNode> remove(Object key) {
         if (key instanceof BasicQuery) {
             key = ((BasicQuery) key).getQuery();
         }
         synchronized(lock) {
             List<MMObjectNode> result = super.remove(key);
-            if (result != null) decreaseCounters(key, typeCounters);
+            if (result != null) decreaseCounters((SearchQuery) key, typeCounters);
             return result;
         }
     }
