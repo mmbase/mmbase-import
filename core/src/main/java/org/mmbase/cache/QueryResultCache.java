@@ -105,9 +105,11 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
      */
     @Override
     public List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
-        if (!checkCachePolicy(query)) return null;
-        while (query instanceof BasicQuery) {
+        if (query instanceof BasicQuery) {
             query = ((BasicQuery) query).getQuery();
+        }
+        if (!checkCachePolicy(query)) {
+            return null;
         }
         synchronized(lock) {
             increaseCounters(query, typeCounters);
@@ -123,12 +125,14 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
      */
     @Override
     public List<MMObjectNode> remove(Object key) {
-        while (key instanceof BasicQuery) {
+        if (key instanceof BasicQuery) {
             key = ((BasicQuery) key).getQuery();
         }
         synchronized(lock) {
             List<MMObjectNode> result = super.remove(key);
-            if (result != null) decreaseCounters((SearchQuery) key, typeCounters);
+            if (result != null) {
+                decreaseCounters((SearchQuery) key, typeCounters);
+            }
             return result;
         }
     }

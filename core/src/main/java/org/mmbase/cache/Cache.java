@@ -128,7 +128,9 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
     }
 
     public Set<Map.Entry<K,V>> entrySet() {
-        if (! active) return new HashSet<Map.Entry<K,V>>();
+        if (! active) {
+            return new HashSet<Map.Entry<K,V>>();
+        }
         return implementation.entrySet();
     }
 
