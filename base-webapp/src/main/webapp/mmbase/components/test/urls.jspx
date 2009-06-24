@@ -142,10 +142,13 @@
     <mm:include debug="xml" referids="a" page="/mmbase/components/test/included.jspx" />
     -->
     <h2>form tag</h2>
+
+    <h3>simple</h3>
     <mm:form page="/justsomeurl" mode="url" absolute="context">
       <p>${_ eq '/justsomeurl' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:form>
 
+    <h3>mode=url</h3>
     <mm:form mode="url" absolute="context">
       <c:choose>
         <c:when test="${empty x}">
@@ -157,12 +160,22 @@
       </c:choose>
     </mm:form>
 
+    <h3>no page attribute</h3>
     <mm:form>
       <p id="form2"></p>
       <script type="text/javascript">
         $(document).ready(function() {
           var p = $('#form2');
-          p.text(p.parents("form").attr("action"));
+          var action = p.parents("form").attr("action");
+          <c:choose>
+            <c:when test="${empty x}">
+              var expected = '${pageContext.request.contextPath}/mmbase/test/test/urls?_action=1';
+            </c:when>
+            <c:otherwise>
+              var expected = '${pageContext.request.contextPath}/mmbase/test/test/urls?_action=1&amp;amp;x=X';
+            </c:otherwise>
+          </c:choose>
+          p.text((action == expected ? 'ok' : 'NOT ok: ' + expected + '!=') + ': ' + action);
         });
       </script>
     </mm:form>
