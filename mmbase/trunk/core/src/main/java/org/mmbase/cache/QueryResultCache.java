@@ -332,7 +332,9 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
 
     @Override
     public void clear(){
-        super.clear();
-        releaseStrategy.clear();
+        synchronized(lock) {
+            super.clear();
+            releaseStrategy.clear();
+        }
     }
 }

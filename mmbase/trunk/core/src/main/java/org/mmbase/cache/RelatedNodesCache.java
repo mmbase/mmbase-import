@@ -56,40 +56,46 @@ public class RelatedNodesCache extends QueryResultCache {
 
 
     @Override
-    public synchronized List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
-        // test cache policy before caching
-        if (!checkCachePolicy(query)) return null;
-        Integer number = (query.getSteps().get(0)).getNodes().first();
-        Set<SearchQuery> keys = numberToKeys.get(number);
-        if (keys == null) {
-            keys = new HashSet<SearchQuery>();
-            numberToKeys.put(number, keys);
+    public List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
+        synchronized(lock) {
+            // test cache policy before caching
+            if (!checkCachePolicy(query)) return null;
+            Integer number = (query.getSteps().get(0)).getNodes().first();
+            Set<SearchQuery> keys = numberToKeys.get(number);
+            if (keys == null) {
+                keys = new HashSet<SearchQuery>();
+                numberToKeys.put(number, keys);
+            }
+            keys.add(query);
+            return super.put(query, queryResult);
         }
-        keys.add(query);
-        return super.put(query, queryResult);
     }
 
 
     @Override
-    public synchronized List<MMObjectNode> remove(Object key) {
-        SearchQuery query = (SearchQuery) key;
-        Integer number = (query.getSteps().get(0)).getNodes().first();
-        Set<SearchQuery> keys = numberToKeys.get(number);
-        if (keys != null) {
-            keys.remove(query);
-            if (keys.size() == 0) numberToKeys.remove(number);
+    public List<MMObjectNode> remove(Object key) {
+        synchronized(lock) {
+            SearchQuery query = (SearchQuery) key;
+            Integer number = (query.getSteps().get(0)).getNodes().first();
+            Set<SearchQuery> keys = numberToKeys.get(number);
+            if (keys != null) {
+                keys.remove(query);
+                if (keys.size() == 0) numberToKeys.remove(number);
+            }
+            return super.remove(key);
         }
-        return super.remove(key);
     }
 
-    synchronized void removeNode(Integer number) {
-        Set<SearchQuery>  keys = numberToKeys.get(number);
-        if (keys != null) {
-            Iterator<SearchQuery> i = keys.iterator();
-            while (i.hasNext()) {
-                super.remove(i.next());
+    void removeNode(Integer number) {
+        synchronized(lock) {
+            Set<SearchQuery>  keys = numberToKeys.get(number);
+            if (keys != null) {
+                Iterator<SearchQuery> i = keys.iterator();
+                while (i.hasNext()) {
+                    super.remove(i.next());
+                }
+                numberToKeys.remove(number);
             }
-            numberToKeys.remove(number);
         }
     }
 
@@ -102,7 +108,9 @@ public class RelatedNodesCache extends QueryResultCache {
 
     @Override
     public void clear(){
-        super.clear();
-        numberToKeys.clear();
+        synchronized(lock) {
+            super.clear();
+            numberToKeys.clear();
+        }
     }
 }
