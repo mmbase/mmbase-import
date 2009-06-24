@@ -51,8 +51,10 @@ public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEvent
 
     @Override
     public MMObjectNode remove(Object key) {
+
         Integer nodeNumber = Casting.toInt(key);
         RelatedNodesCache.getCache().removeNode(nodeNumber);
+
         return super.remove(nodeNumber);
     }
 

@@ -12,6 +12,7 @@ package org.mmbase.cache;
 import java.util.*;
 
 import org.mmbase.storage.search.*;
+import org.mmbase.bridge.implementation.BasicQuery;
 import org.mmbase.module.core.MMObjectNode;
 
 /**
@@ -56,10 +57,15 @@ public class RelatedNodesCache extends QueryResultCache {
 
 
     @Override
-    public List<MMObjectNode> put(final SearchQuery query, List<MMObjectNode> queryResult) {
+    public List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
+        if (query instanceof BasicQuery) {
+            query = ((BasicQuery) query).getQuery();
+        }
+        if (!checkCachePolicy(query)) {
+            return null;
+        }
+
         synchronized(lock) {
-            // test cache policy before caching
-            if (!checkCachePolicy(query)) return null;
             Integer number = (query.getSteps().get(0)).getNodes().first();
             Set<SearchQuery> keys = numberToKeys.get(number);
             if (keys == null) {
@@ -86,7 +92,7 @@ public class RelatedNodesCache extends QueryResultCache {
         }
     }
 
-    void removeNode(Integer number) {
+    final void removeNode(Integer number) {
         synchronized(lock) {
             Set<SearchQuery>  keys = numberToKeys.get(number);
             if (keys != null) {
