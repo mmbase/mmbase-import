@@ -1632,12 +1632,19 @@ public class BasicSqlHandlerTest extends TestCase {
     /** Test of appendLikeOperator method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testAppendLikeOperator() {
         // Should always append " LIKE ".
+        BasicSearchQuery query = new BasicSearchQuery();
+        Step step = query.addStep(images);
+        CoreField imagesField = images.getField("owner");
+        StepField field = query.addField(step, imagesField);
+        BasicFieldConstraint constraint = new BasicFieldValueConstraint(field, "123");
         StringBuilder sb = new StringBuilder();
-        instance.appendLikeOperator(sb, true);
+        constraint.setCaseSensitive(true);
+        instance.appendLikeOperator(sb, constraint);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(" LIKE "));
 
         sb.setLength(0);
-        instance.appendLikeOperator(sb, false);
+        constraint.setCaseSensitive(false);
+        instance.appendLikeOperator(sb, constraint);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(" LIKE "));
     }
 
