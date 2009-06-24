@@ -57,24 +57,16 @@ public final class BasicUrlConverter implements UrlConverter {
 
         }
         req = getUserRequest(req);
+
         StringBuilder show = new StringBuilder();
-        if (escapeamp && page != null) {
-            page = page.replaceAll("&", "&amp;");
-        }
         if (page == null || page.equals("")) { // means _this_ page
             //with /, which at least is not what mm:url wants in this case.
             show.append(FrameworkFilter.getPath(req));
-            String qs = req.getQueryString();
-            if (qs != null) {
-                show.append('?');
-                if (escapeamp) {
-                    qs = qs.replaceAll("&", "&amp;");
-                }
-                show.append(qs);
-            }
-
             log.debug("page not given, -> supposing it " + page + " determined");
         } else {
+            if (escapeamp) {
+                page = page.replaceAll("&", "&amp;");
+            }
             show.append(page);
         }
 
