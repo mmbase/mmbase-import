@@ -624,6 +624,7 @@ public class BasicQuery implements Query  {
 
     public boolean markUsed() {
         boolean wasUsed = used;
+        query.setModifiable(false);
         if (queryCheck == null) {  // if called manually
             /// XXXX CASTING HERE. Is this really necessary!
             // apply security constraints first, if not yet done, because the query gets unmodifiable from now on.
