@@ -22,4 +22,42 @@
     smallband users using MMBase functions.
   </description>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-resources</artifactId>
+      <version>${mmbase.version}</version>
+      <classifier>classes</classifier>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+
+  <developers>
+    <developer>
+      <id>michiel</id>
+      <name>Michiel Meeuwissen</name>
+      <email>Michiel.Meeuwissen at gmail.com</email>
+    </developer>
+
+    <developer>
+      <id>elfuego</id>
+      <name>André van Toly</name>
+    </developer>
+
+    <developer>
+      <id>ernst</id>
+      <name>Ernst Bunders</name>
+    </developer>
+
+    <developer>
+      <id>rico</id>
+      <name>Rico Jansen</name>
+    </developer>
+
+    <developer>
+      <name>Rob Vermeulen</name>
+    </developer>
+  </developers>
+
 </project>

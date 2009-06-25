@@ -17,6 +17,7 @@ import org.mmbase.util.HashCodeUtil;
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.State;
+import org.mmbase.util.images.Dimension;
 
 import java.util.*;
 
@@ -97,6 +98,17 @@ public class URLComposer  {
         return null; // no informative description
     }
 
+    public Dimension getDimension() {
+        if (source.getBuilder().hasField("height")) {
+            return new Dimension(source.getIntValue("width"),
+                                 source.getIntValue("height"));
+
+        } else {
+            return null;
+        }
+
+    }
+
     /**
      * Returns true. This can be overridden if the URLComposer not
      * always can do it's job. It then returns false if it is (can be?)
@@ -111,8 +123,14 @@ public class URLComposer  {
      *
      */
     protected StringBuilder getURLBuffer() {
-        StringBuilder buff = new StringBuilder(provider.getFunctionValue("url", null).toString());
-        buff.append(source.getStringValue("url"));
+        String sourceUrl = source.getStringValue("url");
+        StringBuilder buff = new StringBuilder();
+        if (sourceUrl.length() > 0) {
+            buff.append(provider.getFunctionValue("url", null).toString());
+            buff.append(sourceUrl);
+        } else {
+            buff.append("#nourlyet");
+        }
         return buff;
     }
     /**
