@@ -19,7 +19,7 @@
 	<chain>
 
 		<filter>org.mmbase.applications.media.filters.AvailableSorter</filter>
-		<filter id="clienformat">org.mmbase.applications.media.filters.ClientFormatSorter</filter>
+		<filter id="clientformat">org.mmbase.applications.media.filters.ClientFormatSorter</filter>
 		<filter id="format">org.mmbase.applications.media.filters.ServerFormatSorter</filter>
 		<filter id="real">org.mmbase.applications.media.filters.RealSorter</filter>
 

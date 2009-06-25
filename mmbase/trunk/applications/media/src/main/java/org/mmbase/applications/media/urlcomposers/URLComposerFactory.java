@@ -81,7 +81,8 @@ public class URLComposerFactory  {
             try {
                 log.debug("Instatiating " + klass);
                 URLComposer newComposer = (URLComposer) klass.newInstance();
-                newComposer.init(provider, source, fragment, info, cacheExpireObjects);
+                Map<String, Object> clone = new HashMap<String, Object>(); // filter may change the info map, but that should of course not influence others
+                newComposer.init(provider, source, fragment, clone, cacheExpireObjects);
                 return newComposer;
             }  catch (Exception g) {
                 log.error("URLComposer could not be instantiated " + g.toString());
