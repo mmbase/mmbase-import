@@ -634,6 +634,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     public NodeList getList(Query query) {
         log.debug("get List");
         NodeList result;
+        query.markUsed();
         if (query.isAggregating()) { // should this perhaps be a seperate method? --> Then also 'isAggregating' not needed any more
             result = getResultNodeList(query);
         } else {
@@ -671,9 +672,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
             if (! checked) {
                 log.warn("Query " + query + " could not be completely modified by security: Aggregated result might be wrong");
             }
+            query.markUsed();
             ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
             List<MMObjectNode> resultList = resultBuilder.getResult();
-            query.markUsed();
             NodeManager tempNodeManager = new VirtualNodeManager(query, this);
             NodeList resultNodeList = new BasicNodeList(resultList, tempNodeManager);
             resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
@@ -840,6 +841,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     protected NodeList getSecureList(Query query) {
 
         boolean checked = setSecurityConstraint(query);
+        query.markUsed();
 
         List<MMObjectNode> resultList = getClusterNodes(query);
 
