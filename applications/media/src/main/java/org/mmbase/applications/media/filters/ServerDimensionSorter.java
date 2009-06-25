@@ -48,8 +48,9 @@ public class ServerDimensionSorter extends  PreferenceSorter {
             preferredDimensions.add(new Dimension(xa.equals("*") ? - 1 : Integer.parseInt(xa),
                                                   ya.equals("*") ? - 1 : Integer.parseInt(ya)));
 
-            log.service("Adding preferred diemnsion '"+ preferredDimensions +"'");
         }
+        log.service("Preferred dimensions '"+ preferredDimensions +"'");
+
     }
 
     protected int getPreference(URLComposer ri) {
@@ -59,9 +60,13 @@ public class ServerDimensionSorter extends  PreferenceSorter {
         for (index = 0; index <= preferredDimensions.size(); index++) {
             if (index< preferredDimensions.size()) {
                 Dimension dim = preferredDimensions.get(index);
-                if ((dim.getHeight() == -1 || dimension.getHeight() == dim.getHeight()) ||
+
+                if ((dim.getHeight() == -1 || dimension.getHeight() == dim.getHeight()) &&
                     (dim.getWidth() == -1 || dimension.getWidth() == dim.getWidth())) {
+                    log.debug("Comparing " + dim + " with " + dimension + " -> matched");
                     break;
+                } else {
+                    log.debug("Comparing " + dim + " with " + dimension + " -> not matched");
                 }
             }
         }

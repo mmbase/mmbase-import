@@ -24,23 +24,21 @@ import java.util.*;
  * @author Rob Vermeulen (VPRO)
  */
 public class ClientBitrateFilter implements Filter {
-    private static Logger log = Logging.getLoggerInstance(ClientBitrateFilter.class);
+    private static final Logger log = Logging.getLoggerInstance(ClientBitrateFilter.class);
     private static final String CONFIG_TAG = MainFilter.FILTERCONFIG_TAG + ".bitrates";
-    private static Map<String, BitrateFilterInfo> bitrateFilters = new HashMap<String, BitrateFilterInfo>();
+
+    private final Map<String, BitrateInfo> bitrateFilters = new LinkedHashMap<String, BitrateInfo>();
 
     public void configure(DocumentReader reader, Element element) {
+        bitrateFilters.clear();
         try {
             for(Element bitrate:reader.getChildElements(reader.getElementByPath(element, CONFIG_TAG))) {
-                String name = reader.getElementAttributeValue(bitrate, "name");
-                int min = Integer.parseInt(reader.getElementAttributeValue(bitrate, "min"));
-                int max = Integer.parseInt(reader.getElementAttributeValue(bitrate, "max"));
-                BitrateFilterInfo brfi = new BitrateFilterInfo(name, min, max);
+                BitrateInfo brfi = new BitrateInfo(bitrate);
                 log.debug("Adding BitrateFilterInfo "+brfi);
-                bitrateFilters.put(name, brfi);
+                bitrateFilters.put(brfi.getName(), brfi);
             }
         } catch (Exception ex) {
-            log.error("Error in filter.xml:" + ex);
-            log.error(Logging.stackTrace(ex));
+            log.error("Error in filter.xml:" + ex, ex);
         }
     }
 
@@ -51,7 +49,7 @@ public class ClientBitrateFilter implements Filter {
             Object bitrate = urlcomposer.getInfo().get("bitrate");
             log.debug("Client specified bitrate = " + bitrate);
 
-            if(bitrate==null) {
+            if(bitrate == null) {
                 log.debug("Client did not specify bitrate.");
                 return urlcomposers;
             }
@@ -63,11 +61,11 @@ public class ClientBitrateFilter implements Filter {
 
             if (bitrate instanceof String) {
                 if(!bitrateFilters.containsKey(bitrate)) {
-                    log.error("Specified bitrate keyword is invaled. biterate="+bitrate);
+                    log.error("Specified bitrate keyword is invalidid. biterate="+bitrate);
                 }
-                BitrateFilterInfo brfi = bitrateFilters.get(bitrate);
+                BitrateInfo brfi = bitrateFilters.get(bitrate);
                 int br = urlcomposer.getSource().getIntValue("bitrate");
-                if (brfi.validate(br)) {
+                if (brfi.matches(br)) {
                     log.debug("BitrateFilter "+brfi+" fits for urlcomposer with bitrate "+br);
                     filteredUrlcomposers.add(urlcomposer);
                 }
@@ -78,27 +76,5 @@ public class ClientBitrateFilter implements Filter {
         return filteredUrlcomposers;
     }
 
-    /**
-     * container for information beloning to a bitrate filter keyword.
-     * In filter.xml the line <bitrate name="smallband" min="0" max="150000" />
-     * will result in a BitrateFilterInfo innerclass.
-     */
-    private class BitrateFilterInfo {
-        private String name;
-        private int min, max;
 
-        private BitrateFilterInfo(String name, int min, int max) {
-            this.name = name;
-            this.min = min;
-            this.max = max;
-        }
-
-        private boolean validate(int bitrateMedia) {
-            return min<bitrateMedia && max>bitrateMedia;
-        }
-
-        public String toString() {
-            return "BitrateFilterInfo name="+name+" max="+max+" min="+min;
-        }
-    }
 }
