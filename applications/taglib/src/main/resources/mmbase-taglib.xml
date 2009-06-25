@@ -8852,6 +8852,12 @@ The 0 is just counter, which starts at 0 on every page.
       <since>MMBase-1.9</since>
       <see tag="url" attribute="absolute" />
     </attribute>
+    <attribute>
+      <name>method</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.9.2</since>
+    </attribute>
   </tag>
   <tag>
     <name>valid</name>
