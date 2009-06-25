@@ -48,17 +48,23 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
                     // disappears, because that seems to fail sometimes for QueryResultCache.
                     // The assertions are ment to detect the odd situations where this would have happened.
 
-                    Iterator<Map.Entry<K, V>> i = LRUCache.this.entrySet().iterator();
+                    Iterator<Map.Entry<K, V>> i = entrySet().iterator();
                     Map.Entry<K, V> actualEldest = i.next();
                     i.remove();
-                    assert (eldest == null && actualEldest == null) || (eldest != null && eldest.equals(actualEldest)) : "equal: " + eldest + " != " + actualEldest;
-                    assert (eldest == null && actualEldest == null) || (eldest != null && actualEldest != null && eldest.hashCode() == actualEldest.hashCode()) : "hashcodes: " + eldest + " != " + actualEldest;
-                    assert size() <= LRUCache.this.maxSize;
+                    if ( !( (eldest == null && actualEldest == null) || (eldest != null && eldest.equals(actualEldest)))) {
+                        log.warn("equal: " + eldest + " != " + actualEldest);
+                    }
+                    if (! (eldest == null && actualEldest == null) || (eldest != null && actualEldest != null && eldest.hashCode() == actualEldest.hashCode())) {
+                        log.warn("hashcodes: " + eldest + " != " + actualEldest);
+                    }
+                    if  (size() > LRUCache.this.maxSize) {
+                        log.warn("Size still too big!");
+                    }
                     return false;
                 } else {
                     log.warn("How is this possible? Oversized: " + overSized);
                     log.debug("because", new Exception());
-                    if ((overSized > 10) && (overSized >  LRUCache.this.maxSize)) {
+                    if (overSized > 10) {
                         log.error("For some reason this cache grew much too big (" + size() + " >> " + LRUCache.this.maxSize + "). This must be some kind of bug. Resizing now.");
                         LRUCache.this.setMaxSize(LRUCache.this.maxSize);
                     }
