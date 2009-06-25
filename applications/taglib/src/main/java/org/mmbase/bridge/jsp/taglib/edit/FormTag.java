@@ -68,6 +68,7 @@ public class FormTag extends TransactionTag implements Writer {
 
 
     private Attribute mode = Attribute.NULL;
+    private Attribute method = Attribute.NULL;
     private int m;
 
     private Attribute page = Attribute.NULL;
@@ -86,7 +87,11 @@ public class FormTag extends TransactionTag implements Writer {
     }
 
     public void setMode(String m) throws JspTagException {
-        mode = getAttribute(m);
+        mode = getAttribute(m, true);
+    }
+
+    public void setMethod(String m) throws JspTagException {
+        method = getAttribute(m);
     }
 
     public void setStyleClass(String c) throws JspTagException {
@@ -134,19 +139,21 @@ public class FormTag extends TransactionTag implements Writer {
         m = getMode();
         Url u = new Url(this, (CharSequence) page.getString(this), absolute.getString(this));
         u.setProcess();
-        String url = u.toString();
+
 
         switch(m) {
         case MODE_URL:
-            helper.setValue(url);
+            helper.setValue(u);
             break;
         case MODE_HTML_FORM:
         case MODE_HTML_FORM_VALIDATE:
+            String url = u.toString();
             String id = getId();
             String c  = clazz.getString(this);
             try {
+                String m = method == Attribute.NULL ? "post" : method.getString(this);
                 pageContext.getOut().write("<form " + (id != null ? "id=\"" + id + "\" " : "") +
-                                           "action=\"" + url + "\" method=\"post\" enctype=\"multipart/form-data\" class=\"mm_form" +
+                                           "action=\"" + url + "\" method=\"" + m + "\" enctype=\"multipart/form-data\" class=\"mm_form" +
                                            ("".equals(c) ? "" : " " + c) +
                                            "\" >");
             } catch (java.io.IOException ioe) {
