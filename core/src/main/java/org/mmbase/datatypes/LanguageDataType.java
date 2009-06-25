@@ -11,6 +11,7 @@ package org.mmbase.datatypes;
 
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.util.LocalizedString;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -43,19 +44,22 @@ public class LanguageDataType extends StringDataType {
     }
 
     protected static Locale getLocale(Cloud cloud, Field field) {
+        Locale loc;
         if (cloud != null) {
-            return cloud.getLocale();
+            loc = cloud.getLocale();
         } else if (field != null) {
             try {
-                return field.getNodeManager().getCloud().getLocale();
+                loc = field.getNodeManager().getCloud().getLocale();
             } catch (UnsupportedOperationException uoe) {
                 // Core field can do this
-                return org.mmbase.util.LocalizedString.getDefault();
+                loc = org.mmbase.util.LocalizedString.getDefault();
             }
         } else {
-            return org.mmbase.util.LocalizedString.getDefault();
+            loc = org.mmbase.util.LocalizedString.getDefault();
         }
+        return loc;
     }
+
 
     @Override public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
 
@@ -67,7 +71,7 @@ public class LanguageDataType extends StringDataType {
                 }
                 public Map.Entry<String, String> next() {
                     Map.Entry<String, String> superEntry = superIterator.next();
-                    Locale valueLocale = new Locale(superEntry.getKey());
+                    Locale valueLocale = LocalizedString.getLocale(superEntry.getKey());
                     return new org.mmbase.util.Entry<String, String>(superEntry.getKey(), valueLocale.getDisplayLanguage(valueLocale));
                 }
                 public void remove() {
@@ -84,10 +88,19 @@ public class LanguageDataType extends StringDataType {
 
     @Override
     public String getDefaultValue(Locale locale, Cloud cloud, Field field) {
+        Locale loc;
         if (locale != null) {
-            return locale.getLanguage();
+            loc = locale;
         } else {
-            return getLocale(cloud, field).getLanguage();
+            loc = getLocale(cloud, field);
+        }
+        if (validate(loc.toString(), null, field).size() == 0) {
+            return loc.toString();
+
+        } else {
+            // simply return the first valid one then.
+            String ret =  getEnumerationValues(loc, cloud, null, field).next().getKey();
+            return ret;
         }
     }
 
