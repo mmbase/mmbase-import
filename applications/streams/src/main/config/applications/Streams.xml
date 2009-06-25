@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="Streams" maintainer="streams.mmbase.org" version="3" auto-deploy="true">
+
+  <requirements>
+    <requires name="Media" maintainer="mediaproject.mmbase.org" version="1" />
+    <requires name="Resources" maintainer="mmbase.org" version="1" />
+  </requirements>
+
+  <neededbuilderlist>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="mediafragments"  to="streamsources"          type="related" />
+    <relation from="mediafragments"  to="streamsourcescaches"    type="related" />
+
+    <!-- these should not actually be necessary -->
+    <relation from="mediafragments"  to="videostreamsources"          type="related" />
+    <relation from="mediafragments"  to="videostreamsourcescaches"    type="related" />
+    <relation from="mediafragments"  to="audiostreamsources"          type="related" />
+    <relation from="mediafragments"  to="audiostreamsourcescaches"    type="related" />
+  </allowedrelationlist>
+
+  <datasourcelist>
+    <datasource builder="mediaproviders"      path="Streams/mediaproviders.xml" />
+  </datasourcelist>
+  <relationsourcelist />
+
+  <contextsourcelist>
+  </contextsourcelist>
+
+  <description>
+     Relations needed for the media-project.
+  </description>
+
+  <install-notice>
+     The needed relations for the media functionality are created.
+  </install-notice>
+</application>

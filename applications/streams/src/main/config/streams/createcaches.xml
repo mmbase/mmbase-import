@@ -1,0 +1,55 @@
+<createcaches
+    xmlns="http://www.mmbase.org/xmlns/createcaches"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/createcaches http://www.mmbase.org/xmlns/createcaches.xsd"
+    >
+
+  <!--
+     Example configuration
+    -->
+  <!--
+  <server max_simultaneous_transcoders="2" host="localhost" port="1679" />
+  -->
+  <localhost max_simultaneous_transcoders="1" />
+  <server max_simultaneous_transcoders="2" host="openbeelden2.tuxic.nl" port="1679" />
+
+
+  <!--
+  <transcoder>
+    <class name="org.mmbase.streams.transcoders.InfiniteTranscoder">
+
+    </class>
+  </transcoder>
+  -->
+
+
+  <transcoder>
+    <class name="org.mmbase.streams.transcoders.FFMpeg2TheoraTranscoder">
+      <param name="videoQuality">5</param>
+    </class>
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpeg2TheoraAnalyzer" />
+  </transcoder>
+
+  <transcoder>
+    <class name="org.mmbase.streams.transcoders.FFMpeg2TheoraTranscoder">
+      <param name="videoQuality">8</param>
+    </class>
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpeg2TheoraAnalyzer" />
+  </transcoder>
+
+  <transcoder>
+    <class name="org.mmbase.streams.transcoders.FFMpegTranscoder">
+      <param name="codec">mp4</param>
+    </class>
+
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
+  </transcoder>
+
+  <!--
+  <transcoder>
+    <class name="org.mmbase.streams.transcoders.InfiniteTranscoder">
+
+    </class>
+  </transcoder>
+  -->
+</createcaches>
