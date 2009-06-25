@@ -48,13 +48,13 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
                     // disappears, because that seems to fail sometimes for QueryResultCache.
                     // The assertions are ment to detect the odd situations where this would have happened.
 
-                    Iterator<Map.Entry<K, V>> i = entrySet().iterator();
-                    Map.Entry<K, V> actualEldest = i.next();
+                    Iterator<K> i = keySet().iterator();
+                    K actualEldest = i.next();
                     i.remove();
-                    if ( !( (eldest == null && actualEldest == null) || (eldest != null && eldest.equals(actualEldest)))) {
+                    if ( !( (eldest.getKey() == null && actualEldest == null) || (eldest.getKey() != null && eldest.equals(actualEldest)))) {
                         log.warn("equal: " + eldest + " != " + actualEldest);
                     }
-                    if (! (eldest == null && actualEldest == null) || (eldest != null && actualEldest != null && eldest.hashCode() == actualEldest.hashCode())) {
+                    if (! (eldest.getKey() == null && actualEldest == null) || (eldest.getKey() != null && actualEldest != null && eldest.getKey().hashCode() == actualEldest.hashCode())) {
                         log.warn("hashcodes: " + eldest + " != " + actualEldest);
                     }
                     if  (size() > LRUCache.this.maxSize) {
@@ -91,7 +91,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
         synchronized(backing) {
             while (size() > maxSize) {
                 try {
-                    Iterator<Entry<K,V>> i = entrySet().iterator();
+                    Iterator<K> i = keySet().iterator();
                     i.next();
                     i.remove();
                 } catch (Exception e) {
