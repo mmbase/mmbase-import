@@ -119,6 +119,13 @@
       <p>${_ eq '/mmbase/foo/core/servers' ? 'ok' : 'NOT ok'}: '${_}'</p>
     </mm:link>
 
+    <mm:link absolute="context">
+      <mm:frameworkparam name="component">test</mm:frameworkparam>
+      <mm:frameworkparam name="category">test</mm:frameworkparam>
+      <mm:frameworkparam name="block">urls</mm:frameworkparam>
+      <p>${_ eq '/mmbase/test/test/urls' ? 'ok' : 'NOT ok'}: '${_}'</p>
+    </mm:link>
+
     <p>
       <c:catch var="not_exist">
         <mm:link id="no_link" absolute="context">
