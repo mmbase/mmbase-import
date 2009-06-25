@@ -22,7 +22,7 @@
         $(document).ready(function() {
           var p = $('#form2');
           var action = p.parents("form").attr("action");
-          var expected = '';
+          var expected = '${pageContext.request.contextPath}/mmbase/components/test/unfilteredurls.jspx';
           p.text((action == expected ? 'ok' : 'NOT ok: ' + expected + '!=') + ': ' + action);
         });
       </script>
