@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<xsd:schema
+    xmlns="http://www.mmbase.org/xmlns/createcaches"
+    targetNamespace="http://www.mmbase.org/xmlns/createcaches"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    version="1.0"
+    >
+
+  <xsd:import
+      namespace="http://www.w3.org/XML/1998/namespace"
+      schemaLocation="http://www.w3.org/2001/03/xml.xsd"
+      />
+
+  <xsd:element name="createcaches">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+          <xsd:element ref="localhost" />
+          <xsd:element ref="server"  />
+        </xsd:choice>
+        <xsd:element ref="transcoder" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="name"  type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="transcoder">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="class" minOccurs="1" maxOccurs="1" />
+        <xsd:element ref="loganalyzer" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="localhost">
+    <xsd:complexType>
+      <xsd:attribute name="max_simultaneous_transcoders" type="xsd:integer" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="server">
+    <xsd:complexType>
+      <xsd:attribute name="max_simultaneous_transcoders" type="xsd:integer"  use="required" />
+      <xsd:attribute name="host" type="xsd:string"  use="required" />
+      <xsd:attribute name="port" type="xsd:integer" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="class">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="param" maxOccurs="unbounded" minOccurs="0" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="loganalyzer">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="param" maxOccurs="unbounded" minOccurs="0" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="param">
+    <xsd:complexType mixed="true">
+      <xsd:sequence>
+        <xsd:element ref="param" maxOccurs="unbounded" minOccurs="0" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" />
+      <xsd:attribute name="value" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>
