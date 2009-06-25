@@ -51,15 +51,16 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
                     Iterator<K> i = keySet().iterator();
                     K actualEldest = i.next();
                     i.remove();
-                    if ( !( (eldest.getKey() == null && actualEldest == null) || (eldest.getKey() != null && eldest.equals(actualEldest)))) {
-                        log.warn("equal: " + eldest + " != " + actualEldest);
+                    overSized = size() - LRUCache.this.maxSize;
+                    while (overSized > 0) {
+                        // if for some reason a key changed in the cache, even 1 i.remove may not
+                        // shrink the cache.
+                        log.warn("cache didn't shrink " + eldest + " = " + actualEldest);
+                        i.next();
+                        i.remove();
+                        overSized = size() - LRUCache.this.maxSize;
                     }
-                    if (! (eldest.getKey() == null && actualEldest == null) || (eldest.getKey() != null && actualEldest != null && eldest.getKey().hashCode() == actualEldest.hashCode())) {
-                        log.warn("hashcodes: " + eldest + " != " + actualEldest);
-                    }
-                    if  (size() > LRUCache.this.maxSize) {
-                        log.warn("Size still too big!");
-                    }
+                    assert overSized <= 0;
                     return false;
                 } else {
                     log.warn("How is this possible? Oversized: " + overSized);
