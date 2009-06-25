@@ -63,7 +63,7 @@ public class URLComposer  {
     public MMObjectNode getProvider() {
         return provider;
     }
-    public Map<String, Object>          getInfo()     {
+    public Map<String, Object> getInfo()     {
         return info;
     }
 
@@ -77,6 +77,9 @@ public class URLComposer  {
 
     public Codec       getCodec()   {
         return Codec.get(source.getIntValue("codec"));
+    }
+    public int getBitrate() {
+        return source.getIntValue("bitrate");
     }
 
     /**
