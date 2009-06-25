@@ -46,9 +46,8 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
                 } else if (overSized == 1) {
                     // Using iterator to manualy remove the eldest rather then return true to make absolutely sure that one
                     // disappears, because that seems to fail sometimes for QueryResultCache.
-                    // The assertions are ment to detect the odd situations where this would have happened.
 
-                    Iterator<K> i = keySet().iterator();
+                    final Iterator<K> i = keySet().iterator();
                     K actualEldest = i.next();
                     i.remove();
                     overSized = size() - LRUCache.this.maxSize;
@@ -56,7 +55,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
                         // if for some reason a key changed in the cache, even 1 i.remove may not
                         // shrink the cache.
                         log.warn("cache didn't shrink " + eldest + " = " + actualEldest);
-                        i.next();
+                        actualEldest = i.next();
                         i.remove();
                         overSized = size() - LRUCache.this.maxSize;
                     }
@@ -67,7 +66,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
                     log.debug("because", new Exception());
                     if (overSized > 10) {
                         log.error("For some reason this cache grew much too big (" + size() + " >> " + LRUCache.this.maxSize + "). This must be some kind of bug. Resizing now.");
-                        LRUCache.this.setMaxSize(LRUCache.this.maxSize);
+                        clear();
                     }
                     return false;
                 }
