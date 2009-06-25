@@ -104,6 +104,7 @@
         <module>clustering</module>
         <module>commandserver</module>
         <module>cloudsecurity</module>
+        <module>streams</module>
 
         <module>mynews</module>
         <module>vpro-wizards</module>
@@ -138,10 +139,14 @@
     <profile>
       <id>test_build</id>
       <!--
-          Only one application, to speed up things when testing the build process itself.
+          Very few applications, to speed up things when testing the build process itself.
       -->
       <modules>
         <module>resources</module>
+        <module>editwizard</module>
+        <module>largeobjects</module>
+        <module>mynews</module>
+        <module>oscache-cache</module>
       </modules>
     </profile>
   </profiles>
