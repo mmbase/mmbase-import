@@ -44,7 +44,17 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
                 if (overSized <= 0) {
                     return false;
                 } else if (overSized == 1) {
-                    return true;
+                    // Using iterator to manualy remove the eldest rather then return true to make absolutely sure that one
+                    // disappears, because that seems to fail sometimes for QueryResultCache.
+                    // The assertions are meant to detect the odd situations where this would have happened.
+
+                    Iterator<Map.Entry<K, V>> i = LRUCache.this.entrySet().iterator();
+                    Map.Entry<K, V> actualEldest = i.next();
+                    assert (eldest == null && actualEldest == null) || (eldest != null && eldest.equals(actualEldest)) : "equal: " + eldest + " != " + actualEldest;
+                    assert (eldest == null && actualEldest == null) || (eldest != null && actualEldest != null && eldest.hashCode() == actualEldest.hashCode()) : "hahcodes: " + eldest + " != " + actualEldest;
+                    i.remove();
+                    assert size() <= LRUCache.this.maxSize;
+                    return false;
                 } else {
                     log.warn("How is this possible? Oversized: " + overSized);
                     log.debug("because", new Exception());
@@ -68,7 +78,9 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
      * @param size the new desired size
      */
     public void setMaxSize(int size) {
-        if (size < 0 ) throw new IllegalArgumentException("Cannot set size to negative value " + size);
+        if (size < 0 ) {
+            throw new IllegalArgumentException("Cannot set size to negative value " + size);
+        }
         maxSize = size;
         synchronized(backing) {
             while (size() > maxSize) {
