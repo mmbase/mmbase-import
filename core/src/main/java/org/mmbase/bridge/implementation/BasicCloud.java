@@ -634,7 +634,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     public NodeList getList(Query query) {
         log.debug("get List");
         NodeList result;
-        query.markUsed();
         if (query.isAggregating()) { // should this perhaps be a seperate method? --> Then also 'isAggregating' not needed any more
             result = getResultNodeList(query);
         } else {
