@@ -229,6 +229,13 @@ public class Users extends MMObjectBuilder {
 
 
     /**
+     * @deprecated This returns true always, and is not used, nor do we know what it is supposed to mean
+     */
+    public boolean check() {
+        return true;
+    }
+
+    /**
      * @javadoc
      */
     public boolean isValid(MMObjectNode node)  {
