@@ -624,9 +624,8 @@ public class BasicQuery implements Query  {
 
     public boolean markUsed() {
         boolean wasUsed = used;
-        query.setModifiable(false);
-        assert queryCheck != null; // should this perhaps be implicitely done then?
-
+        query.markUsed();
+        //assert queryCheck != null; // should this perhaps be implicitely done then?
         used = true;
         return wasUsed;
     }
