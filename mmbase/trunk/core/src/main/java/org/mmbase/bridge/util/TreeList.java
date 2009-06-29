@@ -483,14 +483,19 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
 
         public Node getParent() {
             NodeList nl = TreeList.this.getLeafList(currentDepth() - 1);
-            Query q = TreeList.this.branches.get(currentDepth() -1 ).getQuery();
+            Query q = TreeList.this.branches.get(currentDepth() - 1).getQuery();
             List<Step> steps = q.getSteps();
             if (steps.size() >= 3) {
                 Step thisStep = steps.get(steps.size() - 1);
                 Step parentStep = steps.get(steps.size() - 3);
                 for (Node sibling : nl) {
                     if (current.getNumber() == sibling.getIntValue(thisStep.getAlias() +".number")) {
-                        return getCloud().getNode(sibling.getIntValue(parentStep.getAlias() +".number"));
+                        String parentAlias = parentStep.getAlias();
+                        if (parentAlias == null) {
+                            parentAlias = parentStep.getTableName();
+                            //throw new IllegalStateException("No alias in " + parentStep + " (of " + q + ")");
+                        }
+                        return getCloud().getNode(sibling.getIntValue(parentAlias +".number"));
                     }
                 }
             }
@@ -509,7 +514,11 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
                 Step thisStep = steps.get(steps.size() - 1);
                 Step parentStep = steps.get(steps.size() - 3);
                 for (Node sibling : nl) {
-                    if (sibling.getIntValue(parentStep.getAlias() +".number") == parent) {
+                    String parentAlias = parentStep.getAlias();
+                    if (parentAlias == null) {
+                        parentAlias = parentStep.getTableName();
+                    }
+                    if (sibling.getIntValue(parentAlias +".number") == parent) {
                         l.add(getCloud().getNode(sibling.getIntValue(thisStep.getAlias() +".number")));
                     }
                 }
