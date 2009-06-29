@@ -22,10 +22,9 @@ import org.mmbase.storage.search.*;
  */
 public class BasicAggregatedField extends BasicStepField implements AggregatedField {
 
-    private final int aggregationType;
+    private int aggregationType = 0;
 
     /**
-     * Constructor.
      *
      * @param step The associated step.
      * @param fieldDefs The associated fieldDefs.
@@ -34,14 +33,27 @@ public class BasicAggregatedField extends BasicStepField implements AggregatedFi
      */
     public BasicAggregatedField(Step step, CoreField fieldDefs, int aggregationType) {
         super(step, fieldDefs);
-        if (aggregationType < AggregatedField.AGGREGATION_TYPE_GROUP_BY
-        || aggregationType > AggregatedField.AGGREGATION_TYPE_MAX) {
-            throw new IllegalArgumentException("Invalid aggregationType value: " + aggregationType);
-        }
-        this.aggregationType = aggregationType;
+        setAggregationType(aggregationType);
     }
 
+    /**
+     * Sets the aggregation type.
+     *
+     * @param aggregationType The aggregation type.
+     * @return This <code>BasicAggregatedField</code> instance.
+     * @throws IllegalArgumentException when an invalid argument is supplied.
+     */
+    public BasicAggregatedField setAggregationType(int aggregationType) {
+        if (! modifiable) throw new IllegalStateException();
 
+        if (aggregationType < AggregatedField.AGGREGATION_TYPE_GROUP_BY
+        || aggregationType > AggregatedField.AGGREGATION_TYPE_MAX) {
+            throw new IllegalArgumentException(
+            "Invalid aggregationType value: " + aggregationType);
+        }
+        this.aggregationType = aggregationType;
+        return this;
+    }
 
     /**
      * Gets the aggregation type.

@@ -23,14 +23,13 @@ import org.mmbase.storage.search.*;
  */
 public class BasicStepField implements StepField {
 
-    /** Associated field definition. */
-    private CoreField field = null;
+    private final CoreField field;
 
-    /** Associated step. */
-    private Step step = null;
+    private final Step step;
 
-    /** Alias property. */
     private String alias = null;
+
+    protected boolean modifiable = true;
 
     /**
      * Tests if a value is acceptable for comparison with a certain field.
@@ -144,6 +143,14 @@ public class BasicStepField implements StepField {
     }
 
     /**
+     * @since MMBase-1.9.2
+     */
+    public void setUnmodifiable() {
+        modifiable = true;
+    }
+
+
+    /**
      * Sets alias property.
      *
      * @param alias The alias property.
@@ -151,6 +158,7 @@ public class BasicStepField implements StepField {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicStepField setAlias(String alias) {
+        if (! modifiable) throw new IllegalStateException();
         if (alias != null && alias.trim().length() == 0) {
             throw new IllegalArgumentException("Invalid alias value: " + alias);
         }

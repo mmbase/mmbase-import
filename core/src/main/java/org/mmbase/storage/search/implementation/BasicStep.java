@@ -23,15 +23,16 @@ import org.mmbase.storage.search.*;
  */
 public class BasicStep implements Step {
 
-    /** Associated builder. */
-    protected MMObjectBuilder builder = null;
-    /** Alias property. */
+    protected final MMObjectBuilder builder;
+
     protected String alias = null;
     /**
      * Nodenumber set for nodes to be included (ordered
      * using integer comparison).
      */
     protected SortedSet<Integer> nodes = null;
+
+    protected boolean modifiable = true;
     /**
      * Constructor.
      *
@@ -54,6 +55,7 @@ public class BasicStep implements Step {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicStep setAlias(String alias) {
+        if (! modifiable) throw new IllegalStateException();
         if (alias != null && alias.trim().length() == 0) {
             throw new IllegalArgumentException("Invalid alias value: " + alias);
         }
@@ -69,6 +71,7 @@ public class BasicStep implements Step {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public Step addNode(int nodeNumber) {
+        if (! modifiable) throw new IllegalStateException();
         if (nodeNumber < 0) {
             throw new IllegalArgumentException("Invalid nodeNumber value: " + nodeNumber);
         }
@@ -130,5 +133,12 @@ public class BasicStep implements Step {
         append(")");
         return sb.toString();
     }
+
+    public void setUnmodifiable() {
+        modifiable = false;
+    }
+
+
+
 
 }
