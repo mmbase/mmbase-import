@@ -137,4 +137,12 @@ public interface SearchQuery extends Cacheable {
     public String toString();
 
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    boolean markUsed();
+
+
+
+
 }
