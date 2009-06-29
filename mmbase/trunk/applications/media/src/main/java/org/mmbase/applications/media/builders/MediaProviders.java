@@ -49,6 +49,7 @@ public class MediaProviders extends MMObjectBuilder {
                 if ("".equals(protocol)) protocol = "http";
 
                 String host = node.getStringValue("host");
+                int port = -1;
                 if ("".equals(host)) {
                     HttpServletRequest req = parameters.get(Parameter.REQUEST);
                     if (req == null) {
@@ -63,6 +64,7 @@ public class MediaProviders extends MMObjectBuilder {
                     }
                     if (req != null) {
                         host = req.getServerName();
+                        port = req.getServerPort();
                     } else {
                         log.warn("No request found");
 
@@ -73,6 +75,7 @@ public class MediaProviders extends MMObjectBuilder {
                 if ("".equals(host)) {
                     return rootpath;
                 } else {
+                    if (port > -1) host = host + ":" + port;  
                     return protocol + "://" + host + rootpath;
                 }
             }
