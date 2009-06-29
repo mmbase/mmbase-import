@@ -132,7 +132,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     public BasicSearchQuery clone() {
         try {
             BasicSearchQuery clone = (BasicSearchQuery) super.clone();
-            clone.setModifiable(true);
+            clone.modifiable = true;
             clone.copySteps(this);
             clone.copyFields(this);
             clone.copySortOrders(this);
@@ -457,7 +457,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     }
 
     // MM
-
     public void  addFields(Step step) {
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
@@ -599,11 +598,21 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     /**
      * @since MMBase-1.9.1
      */
-    public void setModifiable(boolean m) {
-        modifiable = m;
+    public void setModifiable(boolean b) {
+        if (! modifiable && b) throw new IllegalStateException("Unmodifiable");
+        modifiable = b;
     }
 
-    // javadoc is inherited
+    /**
+     * @since MMBase-1.9.2
+     */
+    public boolean markUsed() {
+        boolean wasModifiable = modifiable;
+        modifiable = false;
+        return ! wasModifiable;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -624,7 +633,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         }
     }
 
-    // javadoc is inherited
+    @Override
     public int hashCode() {
         if (hasChangedHashcode) {
           savedHashcode = (distinct? 0: 101)
@@ -638,7 +647,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         return savedHashcode;
     }
 
-    // javadoc is inherited
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("SearchQuery(distinct:").append(isDistinct()).
         append(", steps:" + getSteps()).
