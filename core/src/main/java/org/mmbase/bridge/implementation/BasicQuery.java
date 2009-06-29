@@ -107,6 +107,9 @@ public class BasicQuery implements Query  {
     public BasicSearchQuery getQuery() {
         return query;
     }
+    public SearchQuery unwrap() {
+        return query;
+    }
 
     protected void createNewQuery() {
         query = new BasicSearchQuery();
