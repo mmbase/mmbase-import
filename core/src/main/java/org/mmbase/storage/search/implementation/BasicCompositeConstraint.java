@@ -23,11 +23,9 @@ import org.mmbase.util.logging.*;
 public class BasicCompositeConstraint extends BasicConstraint implements CompositeConstraint {
     private static final Logger log = Logging.getLoggerInstance(BasicCompositeConstraint.class);
 
-    /** The child constraints. */
-    private List<Constraint> childs = new ArrayList<Constraint>();
+    private final List<Constraint> childs = new ArrayList<Constraint>();
 
-    /** The logical operator. */
-    private int logicalOperator = 0;
+    private final int logicalOperator;
 
     /**
      * Constructor.
@@ -50,6 +48,13 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
         }
     }
 
+    public void setUnmodifiable() {
+        super.setUnmodifiable();
+        for (Constraint c : childs) {
+            c.setUnmodifiable();
+        }
+    }
+
     /**
      * Adds new child constraint.
      *
@@ -58,20 +63,20 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicCompositeConstraint addChild(Constraint child) {
+        if (! modifiable) throw new IllegalStateException();
         if (child == null) {
-            throw new IllegalArgumentException(
-            "Invalid child argument: " + child);
+            throw new IllegalArgumentException("Invalid child argument: " + child);
         }
         // Check constraint not added to itself.
         if (child == this) {
-            throw new IllegalArgumentException(
-            "Trying to add constraint as child to itself: " + child);
+            throw new IllegalArgumentException("Trying to add constraint as child to itself: " + child);
         }
         childs.add(child);
         return this;
     }
 
     public BasicCompositeConstraint removeChild(Constraint child) {
+        if (! modifiable) throw new IllegalStateException();
         if (! childs.remove(child)) {
             log.info("Tried to remove non existing child");
         }

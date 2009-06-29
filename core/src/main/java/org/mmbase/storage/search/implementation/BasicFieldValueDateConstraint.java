@@ -57,6 +57,7 @@ public class BasicFieldValueDateConstraint extends BasicFieldValueConstraint imp
     }
 
     public void setPart(int p) {
+        if (! modifiable) throw new IllegalStateException();
         part = p;
     }
 

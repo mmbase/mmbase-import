@@ -29,15 +29,8 @@ import org.mmbase.util.logging.*;
 public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicCloneable<BasicSearchQuery> {
     private static final Logger log = Logging.getLoggerInstance(BasicSearchQuery.class);
 
-    /**
-     * Distinct property.
-     */
     private boolean distinct = false;
-
-    /** MaxNumber property. */
     private int maxNumber = SearchQuery.DEFAULT_MAX_NUMBER;
-
-    /** Offset property. */
     private int offset = SearchQuery.DEFAULT_OFFSET;
 
     // Following fields would must logically be final, but that is incompatible with
@@ -48,10 +41,8 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     protected List<StepField> fields       = new ArrayList<StepField>();
     private   List<SortOrder> sortOrders   = new ArrayList<SortOrder>();
 
-    /** Constraint.. */
     private Constraint constraint = null;
 
-    /** Aggragating property. */
     private boolean aggregating = false;
 
     /** Two variables to speed up hashCode() by caching the result */
@@ -304,9 +295,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
             FieldValueInConstraint constraint = (FieldValueInConstraint) c;
             BasicFieldValueInConstraint newConstraint = new BasicFieldValueInConstraint(createNewStepField(q, constraint.getField()));
 
-            Iterator<Object> k = constraint.getValues().iterator();
-            while (k.hasNext()) {
-                Object value = k.next();
+            for (Object value : constraint.getValues()) {
                 newConstraint.addValue(value);
             }
             newConstraint.setInverse(constraint.isInverse());
@@ -592,6 +581,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
 
     public void setCachePolicy(CachePolicy policy) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
+        hasChangedHashcode = true;
         this.cachePolicy = policy;
     }
 
@@ -609,6 +599,12 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     public boolean markUsed() {
         boolean wasModifiable = modifiable;
         modifiable = false;
+        if (constraint != null) {
+            constraint.setUnmodifiable();
+        }
+        for (SortOrder so : sortOrders) {
+            so.setUnmodifiable();
+        }
         return ! wasModifiable;
     }
 

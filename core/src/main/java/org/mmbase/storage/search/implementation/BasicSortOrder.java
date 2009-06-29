@@ -20,12 +20,11 @@ import org.mmbase.storage.search.*;
  */
 public class BasicSortOrder implements SortOrder {
 
-    /** Associated stepfield. */
-    private StepField field = null;
 
-    /** Direction property. */
+    protected boolean modifiable = true;
+    private final StepField field;
+
     private int direction = SortOrder.ORDER_ASCENDING;
-
     private boolean caseSensitive = true;
 
     /**
@@ -44,6 +43,13 @@ public class BasicSortOrder implements SortOrder {
     }
 
     /**
+     * @since MMBase-1.9.2
+     */
+    public void setUnmodifiable() {
+        modifiable = false;
+    }
+
+    /**
      * Sets direction.
      *
      * @param direction The direction.
@@ -51,6 +57,7 @@ public class BasicSortOrder implements SortOrder {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicSortOrder setDirection(int direction) {
+        if (! modifiable) throw new IllegalStateException();
         if (direction != SortOrder.ORDER_ASCENDING
             && direction != SortOrder.ORDER_DESCENDING) {
             throw new IllegalArgumentException("Invalid direction value: " + direction);
@@ -87,6 +94,7 @@ public class BasicSortOrder implements SortOrder {
      * @since MMBase-1.8
      */
     public BasicSortOrder setCaseSensitive(boolean c) {
+        if (! modifiable) throw new IllegalStateException();
         caseSensitive = c;
         return this;
     }

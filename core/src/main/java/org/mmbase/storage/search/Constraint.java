@@ -47,4 +47,10 @@ public interface Constraint {
     @Override
     int hashCode();
 
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    void setUnmodifiable();
+
 }

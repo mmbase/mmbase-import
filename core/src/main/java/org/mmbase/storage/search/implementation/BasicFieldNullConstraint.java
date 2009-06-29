@@ -18,8 +18,7 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicFieldNullConstraint extends BasicFieldConstraint
-implements FieldNullConstraint {
+public class BasicFieldNullConstraint extends BasicFieldConstraint implements FieldNullConstraint {
 
     /**
      * Constructor.

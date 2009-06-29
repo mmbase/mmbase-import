@@ -22,11 +22,17 @@ import org.mmbase.storage.search.*;
 // this class would logically be abstract, but test-cases are instantiating it.
 public class BasicConstraint implements Constraint {
 
-    /** Inverse property. */
     private boolean inverse = false;
+    protected boolean modifiable = true;
 
-    /** Default constructor. */
     protected BasicConstraint() {}
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public void setUnmodifiable() {
+        modifiable = false;
+    }
 
     /**
      * Sets inverse.
@@ -35,6 +41,7 @@ public class BasicConstraint implements Constraint {
      * @param inverse The inverse value.
      */
     public BasicConstraint setInverse(boolean inverse) {
+        if (! modifiable) throw new IllegalStateException();
         this.inverse = inverse;
         return this;
     }

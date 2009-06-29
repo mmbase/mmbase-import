@@ -23,10 +23,8 @@ import org.mmbase.storage.search.*;
 // this class would logically be abstract, but test-cases are instantiating it.
 public class BasicFieldConstraint extends BasicConstraint implements FieldConstraint {
 
-    /** The associated field. */
-    private StepField field;
+    final private StepField field;
 
-    /** The caseSensitive property. */
     private boolean caseSensitive = true;
 
     /**
@@ -52,6 +50,7 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
      * @param caseSensitive The caseSensitive property value.
      */
     public BasicFieldConstraint setCaseSensitive(boolean caseSensitive) {
+        if (! modifiable) throw new IllegalStateException();
         this.caseSensitive = caseSensitive;
         return this;
     }

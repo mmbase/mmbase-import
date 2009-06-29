@@ -21,7 +21,6 @@ import org.mmbase.storage.search.*;
  */
 public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint {
 
-    /** The values. */
     private final SortedSet<Object> values = new TreeSet<Object>();
 
     /**
@@ -42,6 +41,7 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
      * @see org.mmbase.storage.search.FieldValueInConstraint#getValues
      */
     public BasicFieldValueInConstraint addValue(Object value) {
+        if (! modifiable) throw new IllegalStateException();
         BasicStepField.testValue(value, getField());
         values.add(value);
         return this;
