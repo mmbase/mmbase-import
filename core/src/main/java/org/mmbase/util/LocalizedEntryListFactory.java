@@ -235,7 +235,11 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             if (node != null) {
                 c = node.getCloud();
             } else if (field != null) {
-                c = field.getNodeManager().getCloud();
+                try {
+                    c = field.getNodeManager().getCloud();
+                } catch (UnsupportedOperationException use) {
+                    // stupid CoreFields
+                }
             }
         }
         final Cloud cloud = c;
