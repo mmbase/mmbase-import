@@ -84,7 +84,7 @@ public class MultiPart {
 
         MMultipartRequest(HttpServletRequest req, String c) {
             try {
-                UploadListener listener = new UploadListener(req, log.isDebugEnabled() ? 100 : 0);
+                UploadListener listener = new UploadListener(req, log.isDebugEnabled() ? 1 : 0);
                 FileItemFactory factory = new MonitoredDiskFileItemFactory(listener);
                 ServletFileUpload fu = new ServletFileUpload(factory);
                 fu.setHeaderEncoding("ISO-8859-1"); // if incorrect, it will be fixed later.
