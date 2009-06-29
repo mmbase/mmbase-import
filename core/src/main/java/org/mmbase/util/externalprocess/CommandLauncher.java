@@ -414,6 +414,11 @@ public class CommandLauncher {
         // Drain the pipes.
         try {
             while (errInPipe.available() > 0 || inputPipe.available() > 0) {
+                // Operation canceled by the user, terminate abnormally.
+                if (monitor.isCanceled()) {
+                    closure.terminate();
+                    throw new ProcessException("Command canceled");
+                }
                 nbytes = 0;
                 if (errInPipe.available() > 0) {
                     nbytes = errInPipe.read(buffer);
