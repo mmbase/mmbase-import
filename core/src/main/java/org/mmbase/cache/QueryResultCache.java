@@ -105,6 +105,7 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
      */
     @Override
     public List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
+        query.markUsed();
         if (query instanceof BasicQuery) {
             query = ((BasicQuery) query).getQuery();
         }
