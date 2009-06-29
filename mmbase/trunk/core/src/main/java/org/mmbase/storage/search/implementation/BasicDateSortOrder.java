@@ -20,7 +20,6 @@ import org.mmbase.storage.search.*;
  */
 public class BasicDateSortOrder extends BasicSortOrder implements DateSortOrder {
 
-    /** The date part. */
     private int part = -1; // unset
 
     /**
