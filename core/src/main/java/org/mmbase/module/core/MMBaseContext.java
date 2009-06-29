@@ -224,7 +224,7 @@ public class MMBaseContext {
         Runtime rt = Runtime.getRuntime();
         log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " MiB");
         log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " MiB");
-        log.info("system locale     : " + Locale.getDefault());
+        log.service("system locale     : " + Locale.getDefault());
         try {
             Locale locale = org.mmbase.util.LocalizedString.getLocale(org.mmbase.module.Module.getInitParameter("mmbaseroot", "language"));
             log.info("MMBase locale     : " + locale);
