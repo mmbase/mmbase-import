@@ -12,11 +12,16 @@
   <mm:node number="default.mags">
     <mm:relatednodescontainer type="news" role="posrel">
       <mm:relatednodes />
-
       <mm:treecontainer path="object" searchdirs="destination" id="t">
         <mm:tree>
-          <mm:field name="number" />
-          <mm:last inverse="true">, </mm:last>
+          <mm:grow>
+            <jsp:text><![CDATA[<ul class="${branch}" id="${status.index}">]]></jsp:text>
+            <mm:onshrink><![CDATA[</ul>]]></mm:onshrink>
+          </mm:grow>
+          <li>
+            <mm:field name="number" /><jsp:text>: </jsp:text><mm:nodeinfo type="gui" />
+          </li>
+          <mm:shrink />
         </mm:tree>
       </mm:treecontainer>
 
