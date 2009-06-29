@@ -36,6 +36,7 @@ import org.mmbase.storage.search.*;
  */
 public class ModifiableQuery implements SearchQuery {
 
+    private boolean modifiable = true;
     private SearchQuery query = null;
 
     /**
@@ -91,7 +92,7 @@ public class ModifiableQuery implements SearchQuery {
      */
     private CachePolicy cachePolicy = null;
 
-    
+
     /** Creates a new instance of ModifiedQuery */
     public ModifiableQuery(SearchQuery query) {
         this.query = query;
@@ -105,6 +106,7 @@ public class ModifiableQuery implements SearchQuery {
      * @return This <code>ModifiableQuery</code> instance.
      */
     public ModifiableQuery setMaxNumber(int maxNumber) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.maxNumber = maxNumber;
         return this;
     }
@@ -117,6 +119,7 @@ public class ModifiableQuery implements SearchQuery {
      * @return This <code>ModifiableQuery</code> instance.
      */
     public ModifiableQuery setOffset(int offset) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.offset = offset;
         return this;
     }
@@ -129,6 +132,7 @@ public class ModifiableQuery implements SearchQuery {
      * @return This <code>ModifiableQuery</code> instance.
      */
     public ModifiableQuery setConstraint(Constraint constraint) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.constraint = constraint;
         return this;
     }
@@ -141,6 +145,7 @@ public class ModifiableQuery implements SearchQuery {
      * @return This <code>ModifiableQuery</code> instance.
      */
     public ModifiableQuery setFields(List<StepField> fields) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.fields = fields;
         return this;
     }
@@ -153,6 +158,7 @@ public class ModifiableQuery implements SearchQuery {
      * @return This <code>ModifiableQuery</code> instance.
      */
     public ModifiableQuery setSortOrders(List<SortOrder> sortOrders) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.sortOrders = sortOrders;
         return this;
     }
@@ -165,6 +171,7 @@ public class ModifiableQuery implements SearchQuery {
      * @return This <code>ModifiableQuery</code> instance.
      */
     public ModifiableQuery setSteps(List<Step> steps) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.steps = steps;
         return this;
     }
@@ -177,6 +184,7 @@ public class ModifiableQuery implements SearchQuery {
      * @return This <code>ModifiableQuery</code> instance.
      */
     public ModifiableQuery setDistinct(Boolean distinct) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.distinct = distinct;
         return this;
     }
@@ -189,6 +197,7 @@ public class ModifiableQuery implements SearchQuery {
      * @return This <code>ModifiableQuery</code> instance.
      */
     public ModifiableQuery setAggregating(Boolean aggregating) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.aggregating = aggregating;
         return this;
     }
@@ -275,6 +284,7 @@ public class ModifiableQuery implements SearchQuery {
     }
 
     public void setCachePolicy(CachePolicy policy) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.cachePolicy = policy;
     }
 
@@ -331,6 +341,11 @@ public class ModifiableQuery implements SearchQuery {
         return sb.toString();
     }
 
+    public boolean markUsed() {
+        boolean wasUsed = !modifiable;
+        modifiable = false;
+        return wasUsed;
+    }
 
 
 }
