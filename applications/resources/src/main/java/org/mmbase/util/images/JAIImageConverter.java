@@ -35,6 +35,7 @@ public class JAIImageConverter extends AbstractImageConverter implements ImageCo
     /**
      * @javadoc
      */
+    @Override
     public void init(Map<String,String> params) {
         log.info("Starting JAI convertor");
     }
@@ -43,6 +44,7 @@ public class JAIImageConverter extends AbstractImageConverter implements ImageCo
     /**
      * @javadoc
      */
+    @Override
     public byte[] convertImage(byte[] input, String sourceFormat, List<String> commands) {
         String format;
         byte[] pict=null;

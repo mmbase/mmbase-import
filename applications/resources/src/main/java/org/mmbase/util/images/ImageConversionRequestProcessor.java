@@ -115,7 +115,7 @@ public class ImageConversionRequestProcessor implements Runnable {
                         }
                         rec.ready();
                     } else {
-                        log.warn("processRequest(): Convert problem params : " + params);
+                        log.warn("Convert problem. params : " + params);
                     }
                 } catch (java.io.IOException ioe) {
                     log.error(ioe);
