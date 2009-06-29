@@ -32,7 +32,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
 
     public static final String REAL_NODES = "realnodes";
 
-    protected Cloud cloud;
+    protected final Cloud cloud;
     protected final List<Branch> branches        = new ArrayList<Branch>();
 
     protected int topQuery = 0;
@@ -320,6 +320,12 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
         Constraint leafConstraint = null;
 
         Branch(NodeQuery q) {
+            if (q.isUsed()) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Query " + q + " is used already");
+                }
+                q = (NodeQuery) q.clone();
+            }
             query = q;
         }
         Branch(Branch b) {
