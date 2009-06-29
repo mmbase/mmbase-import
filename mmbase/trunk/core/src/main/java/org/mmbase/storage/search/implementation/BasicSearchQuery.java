@@ -585,6 +585,12 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         for (SortOrder so : sortOrders) {
             so.setUnmodifiable();
         }
+        for (StepField sf : fields) {
+            sf.setUnmodifiable();
+        }
+        for (Step s : steps) {
+            s.setUnmodifiable();
+        }
         return ! wasModifiable;
     }
 
