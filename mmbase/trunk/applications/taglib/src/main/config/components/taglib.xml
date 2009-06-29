@@ -63,6 +63,11 @@
       <param name="article"      type="String" />
     </body>
   </block>
+  <block name="test_tree" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/tree.jspx">
+    </body>
+  </block>
 
   <block name="test_image" mimetype="text/html"
          classification="taglib.test">
