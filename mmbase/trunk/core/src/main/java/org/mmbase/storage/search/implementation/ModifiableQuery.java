@@ -37,7 +37,7 @@ import org.mmbase.storage.search.*;
 public class ModifiableQuery implements SearchQuery {
 
     private boolean modifiable = true;
-    private SearchQuery query = null;
+    private final SearchQuery query;
 
     /**
      * The value of the maxNumber property, -1 means: use
@@ -343,6 +343,7 @@ public class ModifiableQuery implements SearchQuery {
 
     public boolean markUsed() {
         boolean wasUsed = !modifiable;
+        query.markUsed();
         modifiable = false;
         return wasUsed;
     }
