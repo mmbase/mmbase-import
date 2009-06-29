@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  * @since MMBase-1.7
  * @see org.mmbase.bridge.util.Queries
  */
-public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Query> {
+public interface Query extends SearchQuery, org.mmbase.util.PublicCloneable<Query>, SearchQueryWrapper {
 
     /**
      * Returns the Cloud for which this Query was defined.
