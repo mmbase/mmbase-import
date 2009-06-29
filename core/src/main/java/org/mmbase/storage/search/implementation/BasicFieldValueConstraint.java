@@ -49,6 +49,7 @@ implements FieldValueConstraint {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicFieldValueConstraint setValue(Object value) {
+        if (! modifiable) throw new IllegalStateException();
         BasicStepField.testValue(value, getField());
         this.value = value;
         return this;

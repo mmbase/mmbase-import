@@ -44,7 +44,7 @@ public class BasicFieldCompareConstraint extends BasicFieldConstraint implements
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicFieldCompareConstraint setOperator(int operator) {
-
+        if (! modifiable) throw new IllegalStateException();
         // Test for defined operator value.
         if (operator < FieldCompareConstraint.LESS
         || operator > FieldCompareConstraint.REGEXP) {

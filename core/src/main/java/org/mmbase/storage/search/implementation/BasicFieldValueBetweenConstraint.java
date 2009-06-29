@@ -57,6 +57,7 @@ implements FieldValueBetweenConstraint {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicFieldValueBetweenConstraint setLowerLimit(Object lowerLimit) {
+        if (! modifiable) throw new IllegalStateException();
         this.lowerLimit = lowerLimit;
         return this;
     }
@@ -72,6 +73,7 @@ implements FieldValueBetweenConstraint {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicFieldValueBetweenConstraint setUpperLimit(Object upperLimit) {
+        if (! modifiable) throw new IllegalStateException();
         this.upperLimit = upperLimit;
         return this;
     }

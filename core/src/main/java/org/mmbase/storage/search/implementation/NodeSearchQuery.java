@@ -41,7 +41,7 @@ import org.mmbase.storage.search.*;
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
 
     /** Builder for the specified nodetype. */
-    private MMObjectBuilder builder = null;
+    private final MMObjectBuilder builder;
 
     /** Map, maps fields to stepfields. */
     private Map<CoreField, BasicStepField> stepFields = new HashMap<CoreField, BasicStepField>();

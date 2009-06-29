@@ -19,11 +19,9 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint
-implements CompareFieldsConstraint {
+public class BasicCompareFieldsConstraint extends BasicFieldCompareConstraint implements CompareFieldsConstraint {
 
-    /** The second associated field. */
-    private StepField field2 = null;
+    private final StepField field2;
 
     /**
      * Constructor.
@@ -37,15 +35,13 @@ implements CompareFieldsConstraint {
 
         // Test for non-null value.
         if (field2 == null) {
-            throw new IllegalArgumentException(
-            "Invalid field2 value: " + field2);
+            throw new IllegalArgumentException("Invalid field2 value: " + field2);
         }
 
         // Test for matching fieldtype.
         if (field1.getType() != field2.getType()) {
-            throw new IllegalArgumentException(
-            "Fieldtypes do not match: " + field1.getType()
-            + " and " + field2.getType());
+            throw new IllegalArgumentException( "Fieldtypes do not match: " + field1.getType()
+                                                + " and " + field2.getType());
         }
         this.field2 = field2;
     }
