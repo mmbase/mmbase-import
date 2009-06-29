@@ -413,6 +413,11 @@ See http://www.MMBase.org/license
           <version>1.0</version>
         </plugin>
 
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>buildnumber-maven-plugin</artifactId>
+          <version>1.0-beta-3</version>
+        </plugin>
       </plugins>
 
     </pluginManagement>
