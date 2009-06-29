@@ -45,6 +45,10 @@ public abstract class AbstractQueryWrapper<Q extends Query> implements Query {
         return query;
     }
 
+    public SearchQuery unwrap() {
+        return query.unwrap();
+    }
+
     // Query
 
     public Cloud getCloud() { return query.getCloud(); }
