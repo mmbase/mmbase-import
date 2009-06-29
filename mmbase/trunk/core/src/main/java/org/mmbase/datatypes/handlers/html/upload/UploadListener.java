@@ -9,6 +9,8 @@
 */
 package org.mmbase.datatypes.handlers.html.upload;
 import javax.servlet.http.HttpServletRequest;
+import org.mmbase.datatypes.handlers.html.MultiPart;
+import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Pierre-Alexandre Losson
@@ -46,6 +48,10 @@ public class UploadListener implements OutputStreamListener {
         if (delay > 0) {
             try {
                 Thread.sleep(delay);
+                if (Logging.getLoggerInstance(MultiPart.class).isDebugEnabled()) {
+                    Thread.sleep(100);
+                }
+
             } catch (InterruptedException e) {
                 //
             }
