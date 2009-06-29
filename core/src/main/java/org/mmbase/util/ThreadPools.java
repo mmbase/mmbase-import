@@ -101,7 +101,7 @@ public abstract class ThreadPools {
      * job of this type.
      *
      */
-    public static final ThreadPoolExecutor jobsExecutor = new ThreadPoolExecutor(2, 200, 5 * 60 , TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(300), new ThreadFactory() {
+    public static final ThreadPoolExecutor jobsExecutor = new ThreadPoolExecutor(2, 200, 5 * 60 , TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
                 return ThreadPools.newThread(r, "JobsThread-" + (jobsSeq++));
