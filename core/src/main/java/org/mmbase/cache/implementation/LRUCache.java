@@ -54,7 +54,8 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
                     while (overSized > 0) {
                         // if for some reason a key changed in the cache, even 1 i.remove may not
                         // shrink the cache.
-                        log.warn("cache didn't shrink " + eldest + " = " + actualEldest);
+                        log.warn("cache didn't shrink (a)" + eldest.getKey() + " [" + eldest.getKey().getClass() + "] [" + eldest.getKey().hashCode() + "]");
+                        log.warn("cache didn't shrink (b)" + actualEldest + " [" + actualEldest.getClass() + "] [" + actualEldest.hashCode() + "]");
                         actualEldest = i.next();
                         i.remove();
                         overSized = size() - LRUCache.this.maxSize;
