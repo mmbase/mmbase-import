@@ -697,8 +697,8 @@ public class BasicQuery implements Query  {
     }
 
     @Override public boolean equals(Object obj) {
-        if (obj instanceof BasicQuery) {
-            obj = ((BasicQuery)obj).query;
+        while (obj instanceof SearchQueryWrapper) {
+            obj = ((SearchQueryWrapper)obj).unwrap();
         }
         return query.equals(obj);
     }
