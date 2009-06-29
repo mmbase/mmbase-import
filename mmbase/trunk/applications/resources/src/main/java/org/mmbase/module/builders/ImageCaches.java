@@ -210,7 +210,7 @@ public class ImageCaches extends AbstractImages {
             query.setMaxNumber(2); // to make sure this is a cheap query.
             StepField ckeyField = query.getField(getField(Imaging.FIELD_CKEY));
             BasicFieldValueConstraint bfvc = new BasicFieldValueConstraint(ckeyField, ckey);
-            log.info("Find case sensitive: " + findCaseSensitive);
+            log.debug("Find case sensitive: " + findCaseSensitive);
             bfvc.setCaseSensitive(findCaseSensitive);
             query.setConstraint(bfvc);
             nodes = getNodes(query);
