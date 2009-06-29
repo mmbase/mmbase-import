@@ -129,6 +129,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
      *               ImageConvert.ConverterRoot and ImageConvert.ConverterCommand specifying the converter root, and it can also contain
      *               ImageConvert.DefaultImageFormat which can also be 'asis'.
      */
+    @Override
     public void init(Map<String, String> params) {
         String converterRoot = "";
         String converterCommand = "convert";
@@ -281,6 +282,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
      *                 ImageConvert.converterRoot and ImageConvert.converterCommand specifying the converter root....
      * @return an array of <code>byte</code>s containing the new converted image.
      */
+    @Override
     public byte[] convertImage(byte[] input, String sourceFormat, List<String> commands) {
         if (input == null) {
             log.error("Converting an empty image does not make sense.");
@@ -617,7 +619,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         cmd.add(format+ ":-");
         String command = cmd.toString(); // only for debugging.
 
-        log.info("" + this + " executing " + command);
+        log.service("" + this + " executing " + command);
 
 
 
@@ -655,13 +657,11 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             byte[] error = errorStream.toByteArray();
 
             if (error.length >  0) {
-                log.error("Imagemagick conversion did not succeed. Returning null.");
                 String errorMessage = errorStream.toString();
-
                 if (errorMessage.length() > 0) {
-                    log.error( "From stderr with command '" + command + "' in '" + new File("").getAbsolutePath() + "'  --> '" + errorMessage + "'");
+                    log.error( "From stderr with command '" + command + "' in '" + new File("").getAbsolutePath() + "'  --> '" + errorMessage + "'.");
                 } else {
-                    log.warn("No information on stderr found for '" + command + "' in " + cwd);
+                    log.warn("No information on stderr found for '" + command + "' in " + cwd + ".");
                 }
             } else {
                 // print some info and return....
