@@ -45,8 +45,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
 
     private boolean aggregating = false;
 
-    /** Two variables to speed up hashCode() by caching the result */
-    private boolean hasChangedHashcode = true;
     private int savedHashcode = -1;
 
     /**
@@ -64,7 +62,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      */
     public BasicSearchQuery(boolean aggregating) {
         this.aggregating = aggregating;
-        hasChangedHashcode = true;
     }
 
     /**
@@ -106,7 +103,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
             log.debug("Unknown copy method " + copyMethod);
             break;
         }
-        hasChangedHashcode = true;
     }
 
 
@@ -181,7 +177,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         }
         //log.info("copied steps " + q.getSteps() + " became " + steps);
         unmodifiableSteps = Collections.unmodifiableList(steps);
-        hasChangedHashcode = true;
     }
     protected void copyFields(SearchQuery q) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
@@ -198,7 +193,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
             BasicStepField newField = addField(newStep, bul.getField(field.getFieldName()));
             newField.setAlias(field.getAlias());
         }
-        hasChangedHashcode = true;
         //log.info("copied fields " + q.getFields() + " became " + fields);
     }
     protected void copySortOrders(SearchQuery q) {
@@ -219,7 +213,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
             BasicSortOrder newSortOrder = addSortOrder(newField);
             newSortOrder.setDirection(sortOrder.getDirection());
         }
-        hasChangedHashcode = true;
     }
 
     /**
@@ -318,7 +311,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     public BasicSearchQuery setDistinct(boolean distinct) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.distinct = distinct;
-        hasChangedHashcode = true;
         return this;
     }
 
@@ -335,7 +327,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
             throw new IllegalArgumentException( "Invalid maxNumber value: " + maxNumber);
         }
         this.maxNumber = maxNumber;
-        hasChangedHashcode = true;
         return this;
     }
 
@@ -353,7 +344,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
             "Invalid offset value: " + offset);
         }
         this.offset = offset;
-        hasChangedHashcode = true;
         return this;
     }
 
@@ -368,7 +358,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
         BasicStep step = new BasicStep(builder);
         steps.add(step);
-        hasChangedHashcode = true;
         return step;
     }
 
@@ -395,7 +384,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         BasicRelationStep relationStep = new BasicRelationStep(builder, previous, next);
         steps.add(relationStep);
         steps.add(next);
-        hasChangedHashcode = true;
         return relationStep;
     }
 
@@ -417,7 +405,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         BasicStepField field = new BasicStepField(step, fieldDefs);
         assert ! fields.contains(field) : "" + field + " is already one of " + fields;
         fields.add(field);
-        hasChangedHashcode = true;
         return field;
     }
 
@@ -433,7 +420,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         int i = fields.indexOf(field);
         if (i == -1) {
             fields.add(field);
-            hasChangedHashcode = true;
         } else {
             field = (BasicStepField) fields.get(i);
         }
@@ -466,13 +452,11 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
                 mapField(field, stepField);
             }
         }
-        hasChangedHashcode = true;
     }
 
     public void removeFields() {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
         fields.clear();
-        hasChangedHashcode = true;
     }
 
     /**
@@ -495,7 +479,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         }
         BasicAggregatedField stepField = new BasicAggregatedField(step, field, aggregationType);
         fields.add(stepField);
-        hasChangedHashcode = true;
         return stepField;
     }
 
@@ -516,7 +499,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
             sortOrder = new BasicSortOrder(field);
         }
         sortOrders.add(sortOrder);
-        hasChangedHashcode = true;
         return sortOrder;
     }
 
@@ -529,7 +511,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     public void setConstraint(Constraint constraint) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
         this.constraint = constraint;
-        hasChangedHashcode = true;
     }
 
     // javadoc is inherited
@@ -581,7 +562,6 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
 
     public void setCachePolicy(CachePolicy policy) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
-        hasChangedHashcode = true;
         this.cachePolicy = policy;
     }
 
@@ -629,18 +609,25 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         }
     }
 
+    protected int calculateHashCode() {
+         return (distinct? 0: 101)
+             + maxNumber * 17 + offset * 19
+             + 23 * steps.hashCode()
+             + 29 * fields.hashCode()
+             + 31 * sortOrders.hashCode()
+             + 37 * (constraint == null? 0: constraint.hashCode());
+    }
+
     @Override
     public int hashCode() {
-        if (hasChangedHashcode) {
-          savedHashcode = (distinct? 0: 101)
-            + maxNumber * 17 + offset * 19
-            + 23 * steps.hashCode()
-            + 29 * fields.hashCode()
-            + 31 * sortOrders.hashCode()
-            + 37 * (constraint == null? 0: constraint.hashCode());
-          hasChangedHashcode = false;
+        if (modifiable) {
+            return calculateHashCode();
+        } else {
+            if (savedHashcode == -1) {
+                savedHashcode = calculateHashCode();
+            }
+            return savedHashcode;
         }
-        return savedHashcode;
     }
 
     @Override
