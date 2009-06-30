@@ -396,10 +396,10 @@ function resizeEditTable() {
     var textareas = document.getElementsByTagName("textarea");
     for (var i = 0 ; i < textareas.length ; i++) {
         if(isSubEditElement(textareas[i])) {
-	        textareas[i].style.width = docWidth - 355;
+	        textareas[i].style.width = docWidth - 405;
 	     }
 	     else {
-        	textareas[i].style.width = docWidth -100;
+        	textareas[i].style.width = docWidth -150;
 	     }
     }
 }
