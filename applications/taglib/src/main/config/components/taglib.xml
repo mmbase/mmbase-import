@@ -69,9 +69,24 @@
     </body>
   </block>
 
+  <block name="test_context" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/context.jspx">
+    </body>
+  </block>
+
   <block name="test_image" mimetype="text/html"
          classification="taglib.test">
     <body jsp="test/image.jspx">
+    </body>
+  </block>
+
+  <block name="taglib examples" mimetype="text/html"
+         classification="mmbase.examples">
+    <body>
+      <class name="org.mmbase.framework.IFrameRenderer">
+        <param name="url">/mmexamples/taglib/index.jsp</param>
+      </class>
     </body>
   </block>
 
