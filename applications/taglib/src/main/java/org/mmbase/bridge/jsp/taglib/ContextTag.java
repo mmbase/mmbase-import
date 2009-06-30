@@ -153,7 +153,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         ContextContainer container;
         int s = getScope();
         prevParent = null;
-        if (referid != Attribute.NULL || (s != PageContext.PAGE_SCOPE && getId() != null)) {
+        if (referid != Attribute.NULL || (s != PageContext.PAGE_SCOPE)) {
             Object o;
             if (s == PageContext.PAGE_SCOPE) {
                 o = getObject(referid.getString(this));
@@ -161,11 +161,16 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                 String id = referid.getString(this);
                 if (id.length() == 0) {
                     id = getId();
-                    if (id == null) throw new JspTagException("Must use id or referid attributes when using 'scope' attibute of context tag");
+                    if (id == null) {
+                        id = CONTEXTTAG_KEY + "." + scope.getString(this).toLowerCase();
+
+                    }
                 }
                 o = pageContext.getAttribute(id, s);
+                log.info("picking up from " + id + " in " + scope.getString(this) + " ->" + o);
             }
             if (o == null || "".equals(o)) { // that means, lets ignore it.
+                log.debug("Nothing foudn");
                 container = createContainer(getContextProvider().getContextContainer());
             } else {
                 if (! (o instanceof ContextContainer)) {
@@ -203,8 +208,13 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
             String id = getId();
             if (id == null) {
                 id = referid.getString(this);
+                if (id.length() == 0) {
+                    id = CONTEXTTAG_KEY + "." + scope.getString(this).toLowerCase();
+                }
             }
             ContextContainer storedContainer =  new StandaloneContextContainer(id, container.getBacking().getOriginalMap(), container.getBacking().isELIgnored());
+            log.info("Using " + id + " to store in " + scope.getString(this) + " " + storedContainer);
+
             pageContext.setAttribute(id, storedContainer, s);
         }
         setCloudContext(getContextTag().cloudContext);
