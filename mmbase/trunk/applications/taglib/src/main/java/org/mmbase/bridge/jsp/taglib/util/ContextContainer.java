@@ -21,8 +21,18 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This is a HashMap, but the keys can contain 'dots', in which case
- * there is searched for HashMaps in the HashMap.
+ * This is basicly a Map, and it also implements {@link java.util.Map}. This map is however not
+ * completely normal, because its {@link #get(String)} method can return non-null for keys it does
+ * not actually contain (as e.g. returend by {@link #entrySet}.
+ *
+ * Firstly, the keys can contain 'dots', in which case this key is 'split' by the dot, and the
+ * second part is interpreted as a key in the Map stored undert the first part in this Map.
+ *
+ * Secondly, this Map can have a 'parent'. If a key cannot be found in this map itself, it will also
+ * try it in the parent (if there is one).
+ *
+ * Both 'dotted' keys, and parent keys, do <em>not</em> appear in size, keySet and entrySet
+ * methods. You can use {@link #keySet(boolean)} and {@link #entrySet(boolean)}.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -122,9 +132,25 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     }
 
 
-    @Override
+    /**
+     * @since MMBase-1.9.2
+     */
     public Set<Entry<String, Object>> entrySet() {
-        return getBacking().entrySet();
+        return entrySet(false);
+    }
+
+    public Set<Entry<String, Object>> entrySet(boolean checkParent) {
+        if (parent == null || ! checkParent) {
+            return getBacking().entrySet();
+        } else {
+            HashMap<String, Object> result = new HashMap<String, Object>();
+            if (parent != null) {
+                result.putAll(parent);
+            }
+
+            result.putAll(getBacking());
+            return result.entrySet();
+        }
     }
 
 
@@ -219,7 +245,8 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
             }
 
             if(c == null) {
-                throw new JspTagException("Context '" + contextKey+ "' could not be found.");
+                return null;
+                //throw new JspTagException("Context '" + contextKey+ "' could not be found.");
             }
             String newKey = key.substring(dotPos + 1);
             // and search with that one:
@@ -312,21 +339,16 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         return null;
     }
 
-    @Override
-    public Set<String> keySet() {
-        HashSet<String> result = new HashSet<String>(getBacking().keySet());
-        if (parent != null) {
-            result.addAll(parent.keySet());
-        }
-        return result;
-    }
-
     /**
      * @since MMBase-1.7
      */
     Set<String> keySet(boolean checkParent) {
-        if (checkParent) {
-            return keySet();
+        if (checkParent && parent != null) {
+            HashSet<String> result = new HashSet<String>(getBacking().keySet());
+            if (parent != null) {
+                result.addAll(parent.keySet());
+            }
+            return result;
         } else {
             return getBacking().keySet();
         }
@@ -339,7 +361,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      */
     public Object getObject(String key) throws JspTagException {
         if (! containsKey(key, true)) { // do check parent.
-            throw new JspTagException("Object '" + key + "' is not registered. Registered are " + keySet());
+            throw new JspTagException("Object '" + key + "' is not registered. Registered are " + keySet(true));
         }
         if (log.isDebugEnabled()) {
             log.debug("Getting '" + key + "' from container " + this);
@@ -430,7 +452,9 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      * @since MMBase-1.7
      */
     void registerAll(Map<String, Object> map) throws JspTagException {
-        if (map == null) return;
+        if (map == null) {
+            return;
+        }
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             register(entry.getKey(), entry.getValue());
         }
@@ -869,7 +893,9 @@ class BeanPair extends Pair {
         return method;
     }
     final boolean containsKey(String key, boolean checkParent) throws JspTagException {
-        if (checkParent) throw new JspTagException("Cannot check parent of Bean");
+        if (checkParent) {
+            throw new JspTagException("Cannot check parent of Bean");
+        }
         return getMethod(key) != null;
     }
     final Object get(String key, boolean checkParent) throws JspTagException {
