@@ -196,7 +196,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             os.close();
             FileInputStream fis = new FileInputStream(file);
             wrapped = fis;
-            System.out.println("Created " + fis + "" + file.length());
+            if (log.isDebugEnabled()) {
+                log.debug("Created " + fis + "" + file.length());
+            }
             return fis;
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
