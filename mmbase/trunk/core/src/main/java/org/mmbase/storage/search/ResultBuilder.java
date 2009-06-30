@@ -14,7 +14,9 @@ import java.util.List;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.cache.AggregatedResultCache;
+import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
+import org.mmbase.core.CoreField;
 import org.mmbase.storage.StorageException;
 
 /**
@@ -31,6 +33,16 @@ import org.mmbase.storage.StorageException;
 public class ResultBuilder extends VirtualBuilder {
 
     private final SearchQuery query;
+    protected static final Cache<String, CoreField> fieldCache = new Cache<String, CoreField>(200) {
+        @Override
+        public String getName() {
+            return "ResultFieldCache";
+        }
+    };
+    static {
+        fieldCache.putCache();
+    }
+
 
     /**
      * Creator.
@@ -50,7 +62,13 @@ public class ResultBuilder extends VirtualBuilder {
             if (fieldAlias == null) {
                 fieldAlias = field.getFieldName();
             }
-            fields.put(fieldAlias, org.mmbase.core.util.Fields.createField(fieldAlias, field.getType(), -1, Field.STATE_VIRTUAL, null));
+            String key = fieldAlias + "-" + field.getType();
+            CoreField coreField = fieldCache.get(key);
+            if (coreField == null) {
+                coreField = org.mmbase.core.util.Fields.createField(fieldAlias, field.getType(), -1, Field.STATE_VIRTUAL, null);
+                fieldCache.put(key, coreField);
+            }
+            fields.put(fieldAlias, coreField);
         }
     }
 
