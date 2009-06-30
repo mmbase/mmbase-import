@@ -1,7 +1,7 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><%@page errorPage="error.jsp" session="false"%>
 <mm:content type="text/html">
-<mm:cloud>
+<mm:cloud rank="administrator">
 
 <html>
 
