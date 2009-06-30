@@ -95,36 +95,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         account = cloud.account;
     }
 
-    /**
-     * @param name name of cloud
-     * @param authenticationType authentication type
-     * @param loginInfo Map with login credentials
-     * @param cloudContext cloudContext of cloud
-     * @throws NotFoundException If MMBase not yet started, or shutting down.
-     * @throws BridgeException   No security could be obtained.
-     * @throws SecurityException  Could not perform login
-     */
-    BasicCloud(String name, String authenticationType, Map<String, ?> loginInfo, BasicCloudContext cloudContext) {
-        // get the cloudcontext and mmbase root...
-        this.cloudContext = cloudContext;
-        init();
-        userContext = BasicCloudContext.mmb.getMMBaseCop().getAuthentication().login(authenticationType, loginInfo, null);
-        if (userContext == null) {
-            log.debug("Login failed");
-            throw new java.lang.SecurityException("Login invalid (login-module: " + authenticationType + "  on " + BasicCloudContext.mmb.getMMBaseCop().getAuthentication());
-        }
-        // end authentication...
-
-        if (userContext.getAuthenticationType() == null) {
-            log.warn("Security implementation did not set 'authentication type' in the user object.");
-        }
-
-        // normally, we want the cloud to read it's context from an xml file.
-        // the current system does not support multiple clouds yet,
-        // so as a temporary hack we set default values
-        this.name = name;
-        description = name;
-    }
 
     /**
      * @param name name of cloud
