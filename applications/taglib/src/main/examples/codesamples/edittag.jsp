@@ -1,4 +1,4 @@
-<mm:edit type="yammeditor">
+<mm:edit type="example">
   <%--
       optional parameters
 
