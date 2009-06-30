@@ -17,6 +17,7 @@
     <li><mm:link page="test_form"><a href="${_}">mm:form</a></mm:link></li>
     <li><mm:link page="test_image"><a href="${_}">mm:image</a></mm:link></li>
     <li><mm:link page="test_tree"><a href="${_}">mm:tree</a></mm:link></li>
+    <li><mm:link page="test_context"><a href="${_}">mm:context</a></mm:link></li>
 
   </ol>
 
