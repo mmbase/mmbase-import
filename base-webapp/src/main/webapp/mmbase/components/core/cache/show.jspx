@@ -64,8 +64,8 @@
                 <tr>
                   <td class="view">${status.index} </td>
                   <td class="center">${cache.counts[ckey]} </td>
-                  <td>${entry.key} </td>
-                  <td>${entry.value} </td>
+                  <td><mm:escape>${entry.key}</mm:escape></td>
+                  <td><mm:escape>${entry.value}</mm:escape></td>
                   <td class="center">
                     <mm:link referids="name@cache">
                       <mm:param name="deletekey" value="$ckey" />
