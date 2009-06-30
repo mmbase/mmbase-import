@@ -150,7 +150,17 @@ public abstract class BasicCloudContext implements CloudContext {
 
     public Cloud getCloud(String cloudName, String authenticationType, Map<String, ?> loginInfo) throws NotFoundException  {
         checkExists(cloudName);
-        return new BasicCloud(cloudName, authenticationType, loginInfo, this);
+        UserContext userContext = mmb.getMMBaseCop().getAuthentication().login(authenticationType, loginInfo, null);
+        if (userContext == null) {
+            log.debug("Login failed");
+            throw new java.lang.SecurityException("Login invalid (login-module: " + authenticationType + "  on " + BasicCloudContext.mmb.getMMBaseCop().getAuthentication());
+        }
+        // end authentication...
+
+        if (userContext.getAuthenticationType() == null) {
+            log.warn("Security implementation did not set 'authentication type' in the user object.");
+        }
+        return getCloud(cloudName, userContext);
     }
 
     public Cloud getCloud(String cloudName, UserContext user) throws NotFoundException {
