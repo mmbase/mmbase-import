@@ -30,8 +30,8 @@ import org.mmbase.storage.StorageException;
  */
 public class ResultBuilder extends VirtualBuilder {
 
-    private SearchQuery query;
-    
+    private final SearchQuery query;
+
     /**
      * Creator.
      * Creates new <code>ResultBuilder</code> instance, used to represent
@@ -45,10 +45,7 @@ public class ResultBuilder extends VirtualBuilder {
         this.query = query;
 
         // Create fieldsByAlias map.
-        List<StepField> queryFields = query.getFields();
-        Iterator<StepField> i = queryFields.iterator();
-        while (i.hasNext()) {
-            StepField field = i.next();
+        for (StepField field : query.getFields()) {
             String fieldAlias = field.getAlias();
             if (fieldAlias == null) {
                 fieldAlias = field.getFieldName();
