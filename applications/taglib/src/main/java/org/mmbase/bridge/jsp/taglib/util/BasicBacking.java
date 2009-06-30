@@ -153,6 +153,10 @@ public  class BasicBacking extends AbstractMap<String, Object>  implements Backi
                                     BasicBacking.this.mirrorPut(wrapped.getKey(), v);
                                     return wrapped.setValue(v);
                                 }
+                                @Override
+                                public String toString() {
+                                    return getKey() + "=" + getValue();
+                                }
 
                             };
                             return last;
