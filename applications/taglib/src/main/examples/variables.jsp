@@ -56,7 +56,7 @@
 <p>
   To write the value of a variable to the page, we did use the `write'
   tag. If the value of the variable must be used in some attribute than
-  you have to use the {}-notation. For example like this: 
+  you have to use the {}-notation. For example like this:
   <mm:url   page="${a}" />
 </p>
 <h2>Escaping to JSP</h2>
@@ -73,8 +73,8 @@
   <mm:import id="A"><%= a.toUpperCase() %></mm:import>
 </mm:write>
 <p>
- The value of A: <mm:write referid="A" /> 
- (could also have been done like this: <mm:write referid="a" escape="uppercase" />) 
+ The value of A: <mm:write referid="A" />
+ (could also have been done like this: <mm:write referid="a" escape="uppercase" />)
 </p>
 <p>
   Jsp-variable also have a type. Currently they can be `Object',
@@ -85,10 +85,12 @@
 <p>
   Lets put a node in variable `typedefnode'.
 </p>
-<mm:cloud>
-  <mm:listnodes type="typedef" max="2" ><mm:first><mm:node id="typedefnode" /></mm:first><mm:last><mm:node id="anothernode" /></mm:last></mm:listnodes>
+<mm:cloud rank="administrator">
+  <mm:listnodes type="object" max="2" >
+    <mm:first><mm:node id="typedefnode" /></mm:first><mm:last><mm:node id="anothernode" /></mm:last>
+  </mm:listnodes>
   <p>
-    Writing this variable is possible (though not very usefull). typedef: <mm:write referid="typedefnode" />  
+    Writing this variable is possible (though not very useful). typedef: <mm:write referid="typedefnode" />
   </p>
   <p>
     Lets make a jsp-variable of this node, and write a field of it:
@@ -116,7 +118,7 @@
     but it is not nested with two node tags:
     <mm:node id="outernode" referid="typedefnode">
       <mm:node referid="anothernode">
-        <mm:field node="outernode" name="description" /> 
+        <mm:field node="outernode" name="description" />
       </mm:node>
     </mm:node>
   </p>
@@ -142,11 +144,11 @@
   <p>A list:
   <ul>
     <mm:listnodes id="alist" type="typedef" max="5">
-      <li><mm:field name="description" /> 
+      <li><mm:field name="description" />
       (<mm:first>showing use of referid in list: </mm:first><mm:node referid="alist"><mm:field name="number" /></mm:node>)
     </li>
   </mm:listnodes>
-</ul>						  
+</ul>
 </p>
 <p>
   Reusing the same list:
@@ -157,7 +159,7 @@
   </ul>
 </p>
 <p>
-  Making a jspvar of the list. Size of list is: 
+  Making a jspvar of the list. Size of list is:
   <mm:write referid="alist" jspvar="list" vartype="List">
     <%= list.size() %>
   </mm:write>
