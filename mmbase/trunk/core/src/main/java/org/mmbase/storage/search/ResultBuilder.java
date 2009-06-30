@@ -38,6 +38,10 @@ public class ResultBuilder extends VirtualBuilder {
         public String getName() {
             return "ResultFieldCache";
         }
+        @Override
+        public String getDescription() {
+            return "Caches the field objects which are needed to present aggregated results";
+        }
     };
     static {
         fieldCache.putCache();
