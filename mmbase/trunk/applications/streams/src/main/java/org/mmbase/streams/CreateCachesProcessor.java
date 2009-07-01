@@ -35,8 +35,9 @@ import org.w3c.dom.*;
 
 
 /**
- * This commit-processor is used on node of the type 'streamsources', and is used to initiate
- * conversions to other formats.
+ * This commit-processor is used on nodes of type 'streamsources' and is used to initiate the
+ * conversions to other formats which are saved in 'streamsourcescaches'. Its analogy is derived 
+ * from the conversion of 'images' in MMBase to their resulting 'icaches' nodes.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -55,7 +56,6 @@ public class CreateCachesProcessor implements CommitProcessor {
     }
 
     private static List<JobDefinition> list = new CopyOnWriteArrayList<JobDefinition>();
-
 
     private static int transSeq = 0;
     public final ThreadPoolExecutor transcoderExecutor = new ThreadPoolExecutor(3, 3, 5 * 60 , TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
@@ -160,9 +160,13 @@ public class CreateCachesProcessor implements CommitProcessor {
         initWatcher();
     }
 
-
-
-
+    /**
+     * Gets the node representing the 'cached' stream (the result of a conversion).
+     * @param cacheManager
+     * @param node  the original node from which the 'cached' stream was created
+     * @param key   representation of the way the stream was created from its source 
+     * @param logger
+     */
     protected Node getCacheNode(final String cacheManager, final Node node, final String key,  final Logger logger) {
         final NodeManager caches = node.getCloud().getNodeManager(cacheManager);
         NodeQuery q = caches.createQuery();
@@ -185,11 +189,9 @@ public class CreateCachesProcessor implements CommitProcessor {
      * @param mediafragment
      * @param transcoder The transcoder providing the 'key'.
      */
-
     protected Node getCacheNode(final Node node, final Node mediaprovider, final Node mediafragment, final Transcoder t, final Logger logger) {
         assert mediafragment != null;
         assert mediaprovider != null;
-
 
         final String key = t.getKey();
         Node resultNode = null;
@@ -428,7 +430,6 @@ public class CreateCachesProcessor implements CommitProcessor {
         }
     }
 
-
     public void commit(final Node node, final Field field) {
         if (node.getNumber() > 0) {
             if (node.isChanged(field.getName())) {
@@ -450,13 +451,16 @@ public class CreateCachesProcessor implements CommitProcessor {
     @Override
     protected Object clone() throws CloneNotSupportedException {
         CreateCachesProcessor clone = (CreateCachesProcessor) super.clone();
-        LOG.info("CLoned");
+        LOG.info("Cloned");
         clone.initWatcher();
         return clone;
     }
 
 
 
+    /** 
+     * The description or definition of a job that's doing the transcoding.
+     */
     public class JobDefinition {
         public final Transcoder transcoder;
         public final List<Analyzer> analyzers;
