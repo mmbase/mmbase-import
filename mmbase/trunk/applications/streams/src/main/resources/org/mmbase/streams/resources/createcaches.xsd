@@ -20,6 +20,7 @@
           <xsd:element ref="localhost" />
           <xsd:element ref="server"  />
         </xsd:choice>
+        <xsd:element ref="sourceanalyzer"   minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="transcoder" minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
       <xsd:attribute name="name"  type="xsd:string" />
@@ -32,6 +33,9 @@
         <xsd:element ref="class" minOccurs="1" maxOccurs="1" />
         <xsd:element ref="loganalyzer" minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
+      <xsd:attribute name="id"        type="xsd:string" use="required" />
+      <xsd:attribute name="in"        type="xsd:string" />
+      <xsd:attribute name="mimetype"  type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
 

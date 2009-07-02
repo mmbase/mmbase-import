@@ -19,17 +19,17 @@
   <ul>
     <mm:listfunction set="streams" name="runningJobs" id="job">
       <li>
-        <span>${_} (${_.progress}). Node ${_.nodeNumber}.</span>
+        <span>${_} (${_.progress}). Node ${_.node.number}.</span>
         <mm:may action="cancel_jobs">
           <mm:link>
-            <mm:param name="cancel">${job.nodeNumber}</mm:param>
+            <mm:param name="cancel">${job.node.number}</mm:param>
             <a href="${_}">Cancel this job</a>
           </mm:link>
         </mm:may>
         <p>
-          <span class="in">${_.transcoder.in}</span>
+          <span class="in">${_.current.in}</span>
           <jsp:text> -&amp;gt; </jsp:text>
-          <span class="out">${_.transcoder.out}</span>
+          <span class="out">${_.current.out}</span>
         </p>
         <div class="log">
           <pre>

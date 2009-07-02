@@ -22,6 +22,7 @@ import org.mmbase.util.xml.*;
 import org.mmbase.util.externalprocess.CommandExecutor;
 import org.mmbase.datatypes.processors.*;
 import org.mmbase.applications.media.State;
+import org.mmbase.applications.media.Format;
 import org.mmbase.servlet.FileServlet;
 import org.mmbase.core.event.*;
 
@@ -36,7 +37,7 @@ import org.w3c.dom.*;
 
 /**
  * This commit-processor is used on nodes of type 'streamsources' and is used to initiate the
- * conversions to other formats which are saved in 'streamsourcescaches'. Its analogy is derived 
+ * conversions to other formats which are saved in 'streamsourcescaches'. Its analogy is derived
  * from the conversion of 'images' in MMBase to their resulting 'icaches' nodes.
  *
  * @author Michiel Meeuwissen
@@ -55,7 +56,7 @@ public class CreateCachesProcessor implements CommitProcessor {
         EntityResolver.registerSystemID(NAMESPACE_CREATECACHES + ".xsd", XSD_CREATECACHES, CreateCachesProcessor.class);
     }
 
-    private static List<JobDefinition> list = new CopyOnWriteArrayList<JobDefinition>();
+    private static Map<String, JobDefinition> list = Collections.synchronizedMap(new LinkedHashMap<String, JobDefinition>());
 
     private static int transSeq = 0;
     public final ThreadPoolExecutor transcoderExecutor = new ThreadPoolExecutor(3, 3, 5 * 60 , TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
@@ -80,7 +81,7 @@ public class CreateCachesProcessor implements CommitProcessor {
             public void onChange(String resource) {
                 try {
                     LOG.service("Reading " + resource);
-                    List<JobDefinition> newList = new ArrayList<JobDefinition>();
+                    Map<String, JobDefinition> newList = new LinkedHashMap<String, JobDefinition>();
                     List<CommandExecutor.Method> newExecutors = new ArrayList<CommandExecutor.Method>();
                     Document document = getResourceLoader().getDocument(resource);
                     if (document != null) {
@@ -91,7 +92,12 @@ public class CreateCachesProcessor implements CommitProcessor {
                             if (ellist.item(i) instanceof Element) {
                                 Element el = (Element) ellist.item(i);
                                 if (el.getTagName().equals("transcoder")) {
-                                    Transcoder transcoder = (Transcoder) Instantiator.getInstanceWithSubElement(el);
+                                    String id = el.getAttribute("id");
+                                    Transcoder transcoder = (Transcoder) Instantiator.getInstanceWithSubElement(el, id);
+                                    String in = el.getAttribute("in");
+                                    if (in.length() > 0) {
+                                        transcoder.setInId(in);
+                                    }
                                     LOG.debug("Created " + transcoder);
                                     JobDefinition def = new JobDefinition(transcoder);
                                     org.w3c.dom.NodeList childs = el.getChildNodes();
@@ -105,7 +111,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                                             }
                                         }
                                     }
-                                    newList.add(def);
+                                    newList.put(id, def);
                                 } else if (el.getTagName().equals("localhost")) {
                                     int max = Integer.parseInt(el.getAttribute("max_simultaneous_transcoders"));
                                     totalTranscoders += max;
@@ -130,7 +136,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                         LOG.warn("No " + resource);
                     }
                     list.clear();
-                    list.addAll(newList);
+                    list.putAll(newList);
                     synchronized(executors) {
                         executors.clear();
                         executors.addAll(newExecutors);
@@ -158,70 +164,6 @@ public class CreateCachesProcessor implements CommitProcessor {
         LOG.info("Addding " + configFile);
         this.configFile = configFile;
         initWatcher();
-    }
-
-    /**
-     * Gets the node representing the 'cached' stream (the result of a conversion).
-     * @param cacheManager
-     * @param node  the original node from which the 'cached' stream was created
-     * @param key   representation of the way the stream was created from its source 
-     * @param logger
-     */
-    protected Node getCacheNode(final String cacheManager, final Node node, final String key,  final Logger logger) {
-        final NodeManager caches = node.getCloud().getNodeManager(cacheManager);
-        NodeQuery q = caches.createQuery();
-        Queries.addConstraint(q, Queries.createConstraint(q, "id",  FieldCompareConstraint.EQUAL, node));
-        Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
-
-        LOG.service("Executing " + q.toSql());
-        NodeList nodes = caches.getList(q);
-        if (nodes.size() > 0) {
-            return nodes.getNode(0);
-        }
-        return null;
-    }
-
-    /**
-     * Gets, and if necessary creates, the node representing the 'cached' stream (the result of a
-     * conversion).
-     * @param node The original node
-     * @param mediaprovider
-     * @param mediafragment
-     * @param transcoder The transcoder providing the 'key'.
-     */
-    protected Node getCacheNode(final Node node, final Node mediaprovider, final Node mediafragment, final Transcoder t, final Logger logger) {
-        assert mediafragment != null;
-        assert mediaprovider != null;
-
-        final String key = t.getKey();
-        Node resultNode = null;
-        for (String cacheType : new String[] {"streamsourcescaches", "videostreamsourcescaches", "audiostreamsourcescaches"}) {
-            resultNode = getCacheNode(cacheType, node, key, logger);
-            if (resultNode != null) break;
-        }
-
-        final NodeManager caches = node.getCloud().getNodeManager(node.getNodeManager().getProperty("org.mmbase.streams.cachestype"));
-
-        if (resultNode != null) {
-            resultNode.setIntValue("state",  State.REQUEST.getValue());
-            resultNode.commit();
-        } else {
-            resultNode = caches.createNode();
-            resultNode.setIntValue("state",  State.REQUEST.getValue());
-            resultNode.setStringValue("key", t.getKey());
-            resultNode.setIntValue("format", t.getFormat().toInt());
-            resultNode.setIntValue("codec", t.getCodec().toInt());
-            resultNode.setNodeValue("id",    node);
-            resultNode.commit();
-
-            // virtual field actually creates relation
-            resultNode.setNodeValue("mediaprovider", mediaprovider);
-            resultNode.setNodeValue("mediafragment", mediafragment);
-            resultNode.commit();
-            logger.info("Created cache node " + resultNode.getNumber()  + " for provider " + mediaprovider.getNumber() + " fragment " + mediafragment.getNumber());
-
-        }
-        return resultNode;
     }
 
 
@@ -270,93 +212,50 @@ public class CreateCachesProcessor implements CommitProcessor {
         }
     }
 
-    public List<JobDefinition> getConfiguration() {
-        return Collections.unmodifiableList(list);
+    public Map<String, JobDefinition> getConfiguration() {
+        return Collections.unmodifiableMap(list);
     }
 
 
-    private Job createJob(final Node node, final Node mediaprovider, final Node mediafragment, final ChainedLogger logger) {
+    private Job createJob(final Node node, final ChainedLogger logger) {
         Job job = runningJobs.get(node.getNumber());
         if (job != null) {
             // already running
             return null;
         }
-        final Job thisJob = new Job(node, logger, list.size());
-
+        final Job thisJob = new Job(node, logger, list);
         runningJobs.put(node.getNumber(), thisJob);
+
         thisJob.setFuture(transcoderExecutor.submit(new Callable<Integer>() {
                     public Integer call() {
                         thisJob.setThread(Thread.currentThread());
                         int result = 0;
                         try {
-                            final List<JobDefinition> clones = new ArrayList<JobDefinition>();
-                            try {
-                                for (JobDefinition jd : list) {
-                                    JobDefinition clone = new JobDefinition(jd);
-                                    clones.add(clone);
-                                    getCacheNode(node, mediaprovider, mediafragment, clone.transcoder, logger);
-                                }
-                            } catch (Exception e) {
-                                logger.error(e.getClass() + " " + e.getMessage(), e);
-                            }
-                            LOG.info("Using " + clones);
-                            for (final JobDefinition jd : clones) {
+                            LOG.info("Using " + thisJob.clones);
+                            for (final JobDefinition jd : thisJob) {
                                 logger.service("NOW doing " + jd);
-                                thisJob.setTranscoder(jd.transcoder);
-                                Node cacheNode = CreateCachesProcessor.this.getCacheNode(node, mediaprovider, mediafragment, jd.transcoder, logger);
-                                File inFile = new File(FileServlet.getDirectory(), node.getStringValue("url"));
-                                URI in = inFile.toURI();
-                                StringBuilder buf = new StringBuilder();
-                                org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, cacheNode.getNumber(), "/");
-                                buf.append(cacheNode.getNumber()).append(".");
-                                buf.append(ResourceLoader.getName(inFile.getName())).append(".").append(jd.transcoder.getFormat().toString().toLowerCase());
-                                File outFile = new File(FileServlet.getDirectory(), buf.toString().replace("/", File.separator));
-                                logger.service("Transcoding with " + jd.transcoder + " for " + in + " -> " + outFile);
+                                URI in = jd.getIn();
+                                URI out = jd.getOut();
+
                                 final List<AnalyzerLogger> analyzerLoggers = new ArrayList<AnalyzerLogger>();
                                 for (Analyzer a: jd.analyzers) {
-                                    AnalyzerLogger al = new AnalyzerLogger(a.clone(), node, cacheNode);
+                                    AnalyzerLogger al = new AnalyzerLogger(a.clone(), thisJob.getNode(), jd.getResultNode());
                                     analyzerLoggers.add(al);
                                     logger.addLogger(al);
                                 }
                                 try {
-                                    cacheNode.setIntValue("state", State.BUSY.getValue());
-                                    cacheNode.setStringValue("url", buf.toString());
-                                    cacheNode.commit();
-                                    if (jd.transcoder instanceof CommandTranscoder) {
-                                        // Get free method
-                                        CommandExecutor.Method m = null;
-                                        synchronized(executors) {
-                                            for (CommandExecutor.Method e : executors) {
-                                                if (! e.isInUse()) {
-                                                    e.setInUse(true);
-                                                    m = e;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        if (m == null) {
-                                            LOG.error("There should always be a free CommandExecutor. Using LAUCHER now.");
-                                        } else {
-                                            ((CommandTranscoder) jd.transcoder).setMethod(m);
-                                        }
-                                    }
-
-                                    jd.transcoder.transcode(in, outFile.toURI(), logger);
+                                    jd.transcoder.transcode(in, out, logger);
                                     for (AnalyzerLogger al : analyzerLoggers) {
-                                        al.getAnalyzer().ready(node, cacheNode);
+                                        al.getAnalyzer().ready(thisJob.getNode(), jd.getResultNode());
                                     }
-                                    if (node.isChanged()) {
-                                        node.commit();
-                                    }
-                                    cacheNode.setLongValue("filesize", outFile.length());
-                                    cacheNode.setIntValue("state",
-                                                          State.DONE.getValue());
-                                    cacheNode.commit();
                                     result++;
                                     logger.info("READY " + thisJob);
                                     if (thisJob.isInterrupted() || Thread.currentThread().isInterrupted()){
-                                        cacheNode.setIntValue("state", State.INTERRUPTED.getValue());
-                                        cacheNode.commit();
+                                        Node cacheNode = jd.getResultNode();
+                                        if (cacheNode != null) {
+                                            cacheNode.setIntValue("state", State.INTERRUPTED.getValue());
+                                            cacheNode.commit();
+                                        }
                                         logger.info("Interrupted");
                                         break;
                                     }
@@ -381,7 +280,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                             throw e;
                         } finally {
                             logger.info("READY " + result);
-                            runningJobs.remove(thisJob.getNodeNumber());
+                            runningJobs.remove(thisJob.getNode().getNumber());
                         }
                         return result;
 
@@ -398,15 +297,9 @@ public class CreateCachesProcessor implements CommitProcessor {
             final ChainedLogger logger = new ChainedLogger(LOG);
             final Node ntNode = ntCloud.getNode(node.getNumber());
             ntNode.getStringValue("title"); // This triggers RelatedField$Creator to create a
-            // mediafragment if it does not yet exist
-            final Node mediafragment = ntCloud.getNode(ntNode.getNodeValue("mediafragment").getNumber());
-            final Node mediaprovider = ntCloud.getNode(ntNode.getNodeValue("mediaprovider").getNumber());
+            LOG.info("Triggering caches for " + list + " Mediaframent " + node.getNodeValue("mediafragment").getNumber());
 
-            LOG.info("Triggering caches for " + list + " Mediaframent " + mediafragment);
-
-            final Job thisJob = createJob(ntNode,
-                                          mediaprovider,
-                                          mediafragment, logger);
+            final Job thisJob = createJob(ntNode, logger);
             if (thisJob != null) {
 
                 // If the node happens to be deleted before the future with cache creations is ready, cancel the future
@@ -458,19 +351,28 @@ public class CreateCachesProcessor implements CommitProcessor {
 
 
 
-    /** 
+    /**
      * The description or definition of a job that's doing the transcoding.
      */
     public class JobDefinition {
         public final Transcoder transcoder;
+        public final Node dest;
         public final List<Analyzer> analyzers;
+        public final URI in;
+        public final URI out;
         JobDefinition(Transcoder t) {
             transcoder = t;
             analyzers = new ArrayList<Analyzer>();
+            dest = null;
+            in = null;
+            out = null;
         }
-        JobDefinition(JobDefinition jd) {
+        JobDefinition(JobDefinition jd, Node dest, URI in, URI out) {
             transcoder = jd.transcoder.clone();
             analyzers  = jd.analyzers;
+            this.dest = dest;
+            this.in = in;
+            this.out = out;
         }
 
         public Transcoder getTranscoder() {
@@ -478,6 +380,16 @@ public class CreateCachesProcessor implements CommitProcessor {
         }
         public List<Analyzer> getAnalyzers() {
             return Collections.unmodifiableList(analyzers);
+        }
+        public Node getResultNode() {
+            return dest;
+        }
+
+        public URI getIn() {
+            return in;
+        }
+        public URI getOut() {
+            return out;
         }
 
         @Override
@@ -488,37 +400,172 @@ public class CreateCachesProcessor implements CommitProcessor {
 
 
     private static long lastJobNumber = 0;
-    public class Job {
+    public class Job implements Iterable<JobDefinition> {
 
         private final String user;
-        private final int nodeNumber;
+        private final Node node;
+        private final Node mediaprovider;
+        private final Node mediafragment;
         private final BufferedLogger logger;
-        private final int size;
+        private final Map<String, JobDefinition> clones = new LinkedHashMap<String, JobDefinition>();
         private final long number = lastJobNumber++;
 
         private int busy = 0;
 
         private Future<Integer> future;
-        private Transcoder transcoder;
+
+        private JobDefinition current;
+
         private Thread thread;
         boolean interrupted = false;
         boolean ready = false;
 
-        public Job(Node node, ChainedLogger chain, int s) {
+
+        public Job(Node node, ChainedLogger chain, Map<String, JobDefinition> list) {
             user = node.getCloud().getUser().getIdentifier();
-            nodeNumber = node.getNumber();
+            this.node = node;
             logger = new BufferedLogger();
             logger.setLevel(Level.DEBUG);
             logger.setMaxSize(100);
             logger.setMaxAge(60000);
             chain.addLogger(logger);
-            size = s;
+            // mediafragment if it does not yet exist
+            mediafragment = node.getNodeValue("mediafragment");
+            mediaprovider = node.getNodeValue("mediaprovider");
+            File inFile = new File(FileServlet.getDirectory(), node.getStringValue("url"));
+
+            try {
+                synchronized(list) {
+                    for (Map.Entry<String, JobDefinition> entry : list.entrySet()) {
+                        JobDefinition jd = entry.getValue();
+                        String id = entry.getKey();
+                        if (jd.transcoder.getFormat() != null) {
+                            Node resultNode = getCacheNode(jd.transcoder.getKey());
+                            resultNode.setIntValue("state",  State.REQUEST.getValue());
+                            resultNode.setStringValue("key", jd.transcoder.getKey());
+                            resultNode.setIntValue("format", jd.transcoder.getFormat().toInt());
+                            resultNode.setIntValue("codec", jd.transcoder.getCodec().toInt());
+                            resultNode.setNodeValue("id",    node);
+                            resultNode.commit();
+
+                            StringBuilder buf = new StringBuilder();
+                            org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, resultNode.getNumber(), "/");
+                            buf.append(resultNode.getNumber()).append(".");
+                            buf.append(ResourceLoader.getName(inFile.getName())).append(".").append(jd.transcoder.getFormat().toString().toLowerCase());
+                            String outFileName = buf.toString();
+                            resultNode.setStringValue("url", outFileName);
+                            URI in = inFile.toURI();
+                            File outFile = new File(FileServlet.getDirectory(), outFileName.replace("/", File.separator));
+
+
+                            // virtual field actually creates relation
+                            resultNode.setNodeValue("mediaprovider", mediaprovider);
+                            resultNode.setNodeValue("mediafragment", mediafragment);
+                            resultNode.commit();
+                            logger.info("Created cache node " + resultNode.getNumber()  + " for provider " + mediaprovider.getNumber() + " fragment " + mediafragment.getNumber());
+                            URI inURI;
+                            if (jd.transcoder.getInId() == null) {
+                                inURI = inFile.toURI();
+                            } else {
+                                inURI = clones.get(jd.transcoder.getInId()).getOut();
+                            }
+                            JobDefinition clone = new JobDefinition(jd, resultNode, inFile.toURI(), outFile.toURI());
+                            clones.put(id, clone);
+                        } else {
+
+                            JobDefinition clone = new JobDefinition(jd, null, inFile.toURI(), null);
+                            logger.info("Cachenode less job" + clone);
+                            clones.put(id, clone);
+
+                        }
+
+                    }
+
+                }
+            } catch (Exception e) {
+                chain.error(e.getClass() + " " + e.getMessage(), e);
+            }
         }
+
+        public Iterator<JobDefinition> iterator() {
+            final Iterator<Map.Entry<String, JobDefinition>> i = clones.entrySet().iterator();
+            return new Iterator<JobDefinition>() {
+                public boolean hasNext() {
+                    return i.hasNext();
+                }
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+                public JobDefinition next() {
+                    if (current != null) {
+                        File outFile = new File(FileServlet.getDirectory(), current.getResultNode().getStringValue("url").replace("/", File.separator));
+                        current.getResultNode().setLongValue("filesize", outFile.length());
+                        current.getResultNode().setIntValue("state",
+                                                            State.DONE.getValue());
+                        current.getResultNode().commit();
+                    }
+                    current = i.next().getValue();
+                    if (current.transcoder instanceof CommandTranscoder) {
+                        // Get free method
+                        CommandExecutor.Method m = null;
+                        synchronized(executors) {
+                            for (CommandExecutor.Method e : executors) {
+                                if (! e.isInUse()) {
+                                    e.setInUse(true);
+                                    m = e;
+                                    break;
+                                }
+                            }
+                        }
+                        if (m == null) {
+                            LOG.error("There should always be a free CommandExecutor. Using LAUCHER now.");
+                        } else {
+                            ((CommandTranscoder) current.transcoder).setMethod(m);
+                        }
+                    }
+                    busy++;
+                    current.getResultNode().setIntValue("state", State.BUSY.getValue());
+                    return current;
+                }
+
+            };
+        }
+
         public void setFuture(Future<Integer> f) {
             future = f;
         }
         public Logger getLogger() {
             return logger;
+        }
+
+        /**
+         * Gets the node representing the 'cached' stream (the result of a conversion).
+         * @param cacheManager
+         * @param node  the original node from which the 'cached' stream was created
+         * @param key   representation of the way the stream was created from its source
+         * @param logger
+         */
+        protected Node getCacheNode(final String key) {
+
+            for (String cacheManager : new String[] {"streamsourcescaches", "videostreamsourcescaches", "audiostreamsourcescaches"}) {
+                final NodeManager caches = node.getCloud().getNodeManager(cacheManager);
+                NodeQuery q = caches.createQuery();
+                Queries.addConstraint(q, Queries.createConstraint(q, "id",  FieldCompareConstraint.EQUAL, node));
+                Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
+
+                LOG.service("Executing " + q.toSql());
+                NodeList nodes = caches.getList(q);
+                if (nodes.size() > 0) {
+                    return nodes.getNode(0);
+                }
+            }
+            final NodeManager caches = node.getCloud().getNodeManager(node.getNodeManager().getProperty("org.mmbase.streams.cachestype"));
+            return caches.createNode();
+        }
+
+
+        public JobDefinition getCurrent() {
+            return current;
         }
 
         public Thread getThread() {
@@ -549,15 +596,8 @@ public class CreateCachesProcessor implements CommitProcessor {
             ready = true;
         }
 
-        public void setTranscoder(Transcoder t) {
-            transcoder = t;
-            busy++;
-        }
-        public Transcoder getTranscoder() {
-            return transcoder;
-        }
         public String getProgress() {
-            return "" + busy + "/" + size;
+            return "" + busy + "/" + clones.size();
         }
         public String getUser() {
             return user;
@@ -565,16 +605,16 @@ public class CreateCachesProcessor implements CommitProcessor {
         public long getNumber() {
             return number;
         }
-        public int getNodeNumber() {
-            return nodeNumber;
+        public Node getNode() {
+            return node;
         }
 
         @Override
         public String toString() {
-            if (transcoder == null) {
-                return number + ":" + user + ":SCHEDULED:" + list;
+            if (current == null) {
+                return number + ":" + user + ":SCHEDULED:" + clones;
             } else {
-                return number + ": " + user + ":" + transcoder + ":" + getProgress() + ":" + thread;
+                return number + ": " + user + ":" + current + ":" + getProgress() + ":" + thread;
             }
         }
     }

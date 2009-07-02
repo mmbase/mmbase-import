@@ -34,10 +34,13 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpeg2TheoraTranscoder.class);
 
-    {
+
+    public FFMpeg2TheoraTranscoder(String id) {
+        super(id);
         format = Format.OGV;
         codec  = Codec.THEORA;
     }
+
 
     int videoQuality = 5;
     int keyInt = 64;
@@ -117,9 +120,11 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
 
 
     public static void main(String[] argv) throws Exception {
-        FFMpeg2TheoraTranscoder ff = new FFMpeg2TheoraTranscoder();
+        FFMpeg2TheoraTranscoder ff = new FFMpeg2TheoraTranscoder("1");
         ff.setHeight(100);
         //ff.setWidth(100);
+        System.out.println("KEY" + ff + " -> " + AbstractTranscoder.getInstance(ff.getKey()));
+        System.exit(0);
         CommandTranscoder transcoder = ff.clone();
         Logger logger = Logging.getLoggerInstance("FFMPEG2THEORA");
         ChainedLogger chain = new ChainedLogger(logger);
