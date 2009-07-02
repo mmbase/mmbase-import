@@ -21,8 +21,8 @@
       <table summary="configuration">
         <caption>Configuration</caption>
         <c:forEach items="${status.current.dataType.commitProcessor.processors[2].configuration}" var="jobdef">
-          <tr><td>${jobdef.transcoder}</td></tr>
-          <tr><td>${jobdef.analyzers}</td></tr>
+          <tr><td>${jobdef.value.transcoder}</td></tr>
+          <tr><td>${jobdef.value.analyzers}</td></tr>
         </c:forEach>
       </table>
     </mm:fieldlist>

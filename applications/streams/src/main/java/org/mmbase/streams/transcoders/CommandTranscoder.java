@@ -31,6 +31,10 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
     private CommandExecutor.Method method = new CommandExecutor.Method();
 
 
+    public CommandTranscoder(String id) {
+        super(id);
+    }
+
     public void setMethod(CommandExecutor.Method m) {
         method = m;
     }
