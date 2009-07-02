@@ -17,7 +17,11 @@
     </gui>
     <editor><positions><list>1</list></positions></editor>
     <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      <maxLength value="255" enforce="never"/>
+      <minLength value="1" enforce="never">
+        <description xml:lang="nl">Een titel is verplicht</description>
+        <description xml:lang="en">A title is required</description>        
+      </minLength>
+      <maxLength value="255" enforce="never" />
     </datatype>
   </field>
 
