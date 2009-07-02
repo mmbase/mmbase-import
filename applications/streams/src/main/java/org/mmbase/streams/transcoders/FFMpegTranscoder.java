@@ -29,9 +29,12 @@ public class FFMpegTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpegTranscoder.class);
 
-    {
+
+    public FFMpegTranscoder(String id) {
+        super(id);
         format = Format.AVI;
     }
+
 
     @Override
     protected  String getCommand() {
@@ -72,7 +75,7 @@ public class FFMpegTranscoder extends CommandTranscoder {
 
 
     public static void main(String[] argv) throws Exception {
-        CommandTranscoder transcoder = new FFMpegTranscoder().clone();
+        CommandTranscoder transcoder = new FFMpegTranscoder("1").clone();
         Logger logger = Logging.getLoggerInstance("FFMPEG");
 
         ChainedLogger chain = new ChainedLogger(logger);

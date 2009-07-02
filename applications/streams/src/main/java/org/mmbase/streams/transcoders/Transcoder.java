@@ -31,6 +31,12 @@ public interface Transcoder  extends org.mmbase.util.PublicCloneable<Transcoder>
 
     Codec getCodec();
 
+    String getId();
+
+    MimeType getMimeType();
+
+    String getInId();
+    void setInId(String i);
 
     /**
      *

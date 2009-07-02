@@ -28,20 +28,50 @@ import org.mmbase.util.logging.*;
  */
 public abstract class AbstractTranscoder implements Transcoder {
 
+    public static String PACKAGE = "org.mmbase.streams.transcoders.";
+
     public static final Logger LOG = Logging.getLoggerInstance(AbstractTranscoder.class);
 
-    public static Transcoder getInstance(String key) throws ClassNotFoundException, InstantiationException, IllegalAccessException  {
+    public static Transcoder getInstance(String key) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException  {
         String[] split = key.split(" ", 2);
-        Transcoder trans = (Transcoder) Class.forName(split[0]).newInstance();
-        String[] props = split[1].split(", ");
-        for (String prop : props) {
-            String[] entry = prop.split("=", 2);
-            String k = entry[0];
-            String value = entry[1];
-            org.mmbase.util.xml.Instantiator.setProperty(k, trans.getClass(), trans, value);
+        Transcoder trans;
+        {
+            String[] idWithClass = split[0].split(":", 2);
+            if (idWithClass.length == 1) {
+                idWithClass = new String[] { "", split[0]};
+            }
+            Class clazz;
+            try {
+                clazz  = Class.forName(idWithClass[1]);
+            } catch (ClassNotFoundException cnfe) {
+                clazz  = Class.forName(PACKAGE + idWithClass[1]);
+            }
+            Constructor constructor = clazz.getConstructor(String.class);
+
+            trans = (Transcoder) constructor.newInstance(idWithClass[0]);
+        }
+        {
+            String[] props = split[1].split(", ");
+            for (String prop : props) {
+                String[] entry = prop.split("=", 2);
+                String k = entry[0];
+                String value = entry[1];
+                org.mmbase.util.xml.Instantiator.setProperty(k, trans.getClass(), trans, value);
+            }
         }
         return trans;
 
+    }
+
+    private final String id;
+    private String inId = null;
+
+    protected AbstractTranscoder(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     protected boolean clone = false;
@@ -52,6 +82,8 @@ public abstract class AbstractTranscoder implements Transcoder {
     protected Format format;
 
     protected Codec  codec = Codec.UNKNOWN;
+
+    protected MimeType  mimeType = MimeType.ANY;
 
     public void setFormat(String f) {
         format = Format.valueOf(f);
@@ -69,8 +101,34 @@ public abstract class AbstractTranscoder implements Transcoder {
         return codec;
     }
 
+    public MimeType getMimeType() {
+        return mimeType;
+    }
+    public void setMimeType(String m) {
+        mimeType = new MimeType(m);
+    }
+    public String getInId() {
+        return inId;
+    }
+    public void setInId(String i) {
+        inId = i;
+
+    }
+
+
     public  final String getKey() {
-        StringBuilder buf = new StringBuilder(getClass().getName());
+        StringBuilder buf = new StringBuilder();
+        if (getId() != null && getId().length() > 0) {
+            buf.append(getId());
+            buf.append(":");
+        }
+        {
+            String cn = getClass().getName();
+            if (cn.startsWith(PACKAGE)) {
+                cn = cn.substring(PACKAGE.length());
+            }
+            buf.append(cn);
+        }
         buf.append(" ");
         boolean appendedSetting = false;
         Settings settings = getClass().getAnnotation(Settings.class);
