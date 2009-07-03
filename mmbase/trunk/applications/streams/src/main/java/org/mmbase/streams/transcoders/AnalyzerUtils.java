@@ -25,14 +25,18 @@ import org.mmbase.util.logging.*;
 
 public final class AnalyzerUtils {
 
-    private AnalyzerUtils() {
-        // no instances for this class
+    private static final Logger LOG = Logging.getLoggerInstance(AnalyzerUtils.class);
+
+
+    private final ChainedLogger log = new ChainedLogger(LOG);
+    AnalyzerUtils(Logger l) {
+        log.addLogger(l);
     }
 
-    private static final Logger log = Logging.getLoggerInstance(AnalyzerUtils.class);
 
 
-    public static  long getLength(String l) {
+
+    public  long getLength(String l) {
         String[] duration = l.split(":");
         int i = duration.length - 1;
         long len = (long) (Float.parseFloat(duration[i]) * 1000L); // secs
@@ -58,16 +62,16 @@ public final class AnalyzerUtils {
 
     private static final Pattern DURATION = Pattern.compile("\\s*Duration: (.*?), start: (.*?), bitrate: (.*?) kb/s.*");
 
-    public static boolean duration(String l, Node source, Node des) {
+    public boolean duration(String l, Node source, Node des) {
         Matcher m = DURATION.matcher(l);
         if (m.matches()) {
             Node fragment = source.getNodeValue("mediafragment");
             long length = getLength(m.group(1));
             source.setLongValue("length", length);
 
-            log.info("Duration: " + m.group(1));
-            log.info("Start: " + m.group(2));
-            log.info("BitRate: " + m.group(3));
+            log.debug("Duration: " + m.group(1));
+            log.debug("Start: " + m.group(2));
+            log.debug("BitRate: " + m.group(3));
             source.setIntValue("bitrate", 1000 * Integer.parseInt(m.group(3)));
             return true;
         } else {
@@ -75,23 +79,43 @@ public final class AnalyzerUtils {
         }
     }
 
-    public static void toVideo(Node source, Node dest) {
+    public void toVideo(Node source, Node dest) {
         Cloud cloud = source.getCloud();
         if (cloud != null) {
-            log.service("This is video, now converting type. source: " + source.getNumber() + " dest:" +  dest.getNumber());
+            log.service("This is video, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
             source.setNodeManager(cloud.getNodeManager("videostreamsources"));
-            dest.setNodeManager(cloud.getNodeManager("videostreamsourcescaches"));
             source.commit();
-            dest.commit();
             assert source.getNodeManager().getName().equals("videostreamsources");
-            assert dest.getNodeManager().getName().equals("videostreamsourcescaches");
+            if (dest != null) {
+                dest.setNodeManager(cloud.getNodeManager("videostreamsourcescaches"));
+                dest.commit();
+                assert dest.getNodeManager().getName().equals("videostreamsourcescaches");
+
+            }
+
+        }
+    }
+    public void toAudio(Node source, Node dest) {
+        Cloud cloud = source.getCloud();
+        if (cloud != null) {
+            log.service("This is audio, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
+            source.setNodeManager(cloud.getNodeManager("audiostreamsources"));
+            source.commit();
+            assert source.getNodeManager().getName().equals("audiostreamsources");
+            if (dest != null) {
+                dest.setNodeManager(cloud.getNodeManager("audiostreamsourcescaches"));
+                dest.commit();
+                assert dest.getNodeManager().getName().equals("audiostreamsourcescaches");
+
+            }
+
         }
     }
 
 
     private static final Pattern VIDEO    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*?([0-9]+)\\s+kb/s.*");
 
-    public static boolean video(String l, Node source, Node dest) {
+    public boolean video(String l, Node source, Node dest) {
         Matcher m = VIDEO.matcher(l);
         if (m.matches()) {
             toVideo(source, dest);
@@ -104,7 +128,9 @@ public final class AnalyzerUtils {
             } else if (source.getIntValue("channels") == 1) {
                 source.setIntValue("channels", 2);
             }
-            dest.setIntValue("channels", source.getIntValue("channels"));
+            if (dest != null) {
+                dest.setIntValue("channels", source.getIntValue("channels"));
+            }
             source.setIntValue("width", Integer.parseInt(m.group(1)));
             source.setIntValue("height", Integer.parseInt(m.group(2)));
 

@@ -22,7 +22,10 @@
           <jsp:text>${_.state}</jsp:text>
           ${_.dimension}
         </td>
-        <td><a href="${_.URL}">${_.URL}</a></td>
+        <td>
+          <a href="${_.URL}">${_.URL}</a>
+          ${_.mimeType}
+        </td>
         <c:choose>
           <c:when test="${_.main}">
             <td colspan="2">
