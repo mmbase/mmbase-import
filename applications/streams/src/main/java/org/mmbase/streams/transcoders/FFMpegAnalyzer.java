@@ -24,26 +24,43 @@ import org.mmbase.util.logging.*;
 public class FFMpegAnalyzer implements Analyzer {
 
 
-    private static final Logger log = Logging.getLoggerInstance(FFMpegAnalyzer.class);
+    private static final Logger LOG = Logging.getLoggerInstance(FFMpegAnalyzer.class);
 
+    private final ChainedLogger log = new ChainedLogger(LOG);
+
+    private final AnalyzerUtils util = new AnalyzerUtils(log);
 
     public int getMaxLines() {
         return 100;
     }
 
+    public void addLogger(Logger logger) {
+        log.addLogger(logger);
+    }
+
     public void analyze(String l, Node source, Node des) {
         Cloud cloud = source.getCloud();
-        if (AnalyzerUtils.duration(l, source, des)) {
-            log.info("Found length " + source);
+        if (util.duration(l, source, des)) {
+            log.service("Found length " + source);
             return;
         }
-        if (AnalyzerUtils.video(l, source, des)) {
-            log.info("Found video " + source);
+        if (util.video(l, source, des)) {
+            log.service("Found video " + source);
             return;
         }
     }
 
     public void ready(Node sourceNode, Node destNode) {
+        if (sourceNode.isNull("bitrate")) {
+            log.info("This is an image");
+            // have to think of up of something
+        } else if (sourceNode.isNull("width")) {
+            log.info("This is audio");
+            util.toAudio(sourceNode, destNode);
+        } else {
+            log.info("This is video");
+            util.toVideo(sourceNode, destNode);
+        }
         //
     }
 

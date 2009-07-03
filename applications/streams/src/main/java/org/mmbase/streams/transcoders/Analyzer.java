@@ -28,6 +28,9 @@ public interface Analyzer extends org.mmbase.util.PublicCloneable<Analyzer> {
      */
     int  getMaxLines();
 
+
+    void addLogger(Logger l);
+
     /**
      * Analyzes a line of logging of
      * @param l This line

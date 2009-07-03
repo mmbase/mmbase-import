@@ -11,6 +11,7 @@ package org.mmbase.streams.transcoders;
 
 import org.mmbase.util.logging.*;
 import java.net.*;
+import org.mmbase.applications.media.MimeType;
 
 
 /**

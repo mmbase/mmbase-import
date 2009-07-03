@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 public class FFMpeg2TheoraAnalyzer implements Analyzer {
 
 
-    private static final Logger log = Logging.getLoggerInstance(FFMpeg2TheoraAnalyzer.class);
+    private static final Logger LOG = Logging.getLoggerInstance(FFMpeg2TheoraAnalyzer.class);
 
 
     public int getMaxLines() {
@@ -40,15 +40,24 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
     private double bits = -1;
     private long prevPos = 0;
 
+    private ChainedLogger log = new ChainedLogger(LOG);
+
+    private AnalyzerUtils util = new AnalyzerUtils(log);
+
+    public void addLogger(Logger logger) {
+        log.addLogger(logger);
+    }
+
+
 
     public void analyze(String l, Node source, Node des) {
         Cloud cloud = source.getCloud();
-        if (AnalyzerUtils.duration(l, source, des)) {
+        if (util.duration(l, source, des)) {
             length = source.getLongValue("length");
             log.info("Found length " + source);
             return;
         }
-        if (AnalyzerUtils.video(l, source, des)) {
+        if (util.video(l, source, des)) {
             log.info("Found video " + source);
             return;
         }
@@ -56,7 +65,7 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
         {
             Matcher m = RESIZE.matcher(l);
             if (m.matches()) {
-                AnalyzerUtils.toVideo(source, des);
+                util.toVideo(source, des);
                 log.info("Found " + m);
                 source.setIntValue("width", Integer.parseInt(m.group(1)));
                 source.setIntValue("height", Integer.parseInt(m.group(2)));
@@ -69,7 +78,7 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
                 Matcher n = NORESIZE.matcher(l);
                 if (n.matches()) {
                     log.info("Found " + m);
-                    AnalyzerUtils.toVideo(source, des);
+                    util.toVideo(source, des);
                     source.setIntValue("width", Integer.parseInt(n.group(1)));
                     source.setIntValue("height", Integer.parseInt(n.group(2)));
                     source.commit();
@@ -83,7 +92,7 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
         {
             Matcher m = PROGRESS.matcher(l);
             if (m.matches()) {
-                long pos = AnalyzerUtils.getLength(m.group(1));
+                long pos = util.getLength(m.group(1));
                 long audioBitrate = Integer.parseInt(m.group(2));
                 long videoBitrate = Integer.parseInt(m.group(3));
                 bits += ((double) (audioBitrate + videoBitrate)) * ((double) pos - prevPos) * 1000;
