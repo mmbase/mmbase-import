@@ -33,6 +33,11 @@ public class ChainedAnalyzer implements Analyzer {
             maxLines = a.getMaxLines();
         }
     }
+    public void addLogger(org.mmbase.util.logging.Logger l) {
+        for (Analyzer a : analyzers) {
+            a.addLogger(l);
+        }
+    }
 
     public    int  getMaxLines() {
         return maxLines;

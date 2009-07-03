@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.streams.transcoders;
 
-import org.mmbase.applications.media.Format;
-import org.mmbase.applications.media.Codec;
+import org.mmbase.applications.media.*;
 import java.net.*;
 import java.lang.reflect.*;
 import java.io.*;
@@ -30,12 +29,14 @@ import org.mmbase.util.logging.*;
 public class RecognizerTranscoder implements Transcoder {
 
     final Recognizer recognizer;
-    protected RecognizerTranscoder(Recognizer rec) {
+    final String id;
+    public RecognizerTranscoder(Recognizer rec, String id) {
         recognizer = rec;
+        this.id = id;
     }
 
     public String getId() {
-        return "";
+        return id;
     }
 
     protected boolean clone = false;
@@ -106,6 +107,11 @@ public class RecognizerTranscoder implements Transcoder {
             throw new RuntimeException(cnse);
         }
     }
+
+    public String toString() {
+        return recognizer.toString();
+    }
+
 
 
 

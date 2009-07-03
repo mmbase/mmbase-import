@@ -33,6 +33,11 @@ test.h264: samples/mahnamahna.mpg
 	mkdir -p results
 	java org.mmbase.streams.transcoders.FFMpegTranscoder samples/mahnamahna.mpg  results/mahnamahna.h264
 
+test.recognize: samples/mahnamahna.mpg
+	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/mahnamahna.mpg
+	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/test.mp3
+	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/test.jpeg
+
 
 transcode:
 	java Transcode samples/mahnamahna.mpg  -o results/mahnamahna.avi

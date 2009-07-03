@@ -33,6 +33,10 @@
     </datatype>
   </field>
 
+  <field name="mimetype">
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  </field>
+
   <field name="objecttype" state="virtual">
     <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <pattern value="audiostreamsources|videostreamsources|streamsources" />

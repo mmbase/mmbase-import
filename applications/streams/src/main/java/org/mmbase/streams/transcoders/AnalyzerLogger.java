@@ -45,7 +45,7 @@ public class AnalyzerLogger  extends AbstractSimpleImpl {
                 LOG.warn(e.getMessage(), e);
             }
         } else if (! commited) {
-            LOG.info(" " + source.getNumber() + " " + source.getChanged());
+            LOG.service(" " + source.getNumber() + " " + source.getChanged());
             if (source.isChanged()) {
                 source.commit();
             }

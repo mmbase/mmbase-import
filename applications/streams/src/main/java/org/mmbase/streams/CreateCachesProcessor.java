@@ -91,9 +91,15 @@ public class CreateCachesProcessor implements CommitProcessor {
                         for (int i = 0; i <= ellist.getLength(); i++) {
                             if (ellist.item(i) instanceof Element) {
                                 Element el = (Element) ellist.item(i);
-                                if (el.getTagName().equals("transcoder")) {
+                                if (el.getTagName().equals("transcoder") || el.getTagName().equals("recognizer")) {
                                     String id = el.getAttribute("id");
-                                    Transcoder transcoder = (Transcoder) Instantiator.getInstanceWithSubElement(el, id);
+                                    Transcoder transcoder;
+                                    if (el.getTagName().equals("transcoder")) {
+                                        transcoder = (Transcoder) Instantiator.getInstanceWithSubElement(el, id);
+                                    } else {
+                                        Recognizer recognizer = (Recognizer) Instantiator.getInstanceWithSubElement(el);
+                                        transcoder = new RecognizerTranscoder(recognizer, id);
+                                    }
                                     String in = el.getAttribute("in");
                                     if (in.length() > 0) {
                                         transcoder.setInId(in);
@@ -110,6 +116,9 @@ public class CreateCachesProcessor implements CommitProcessor {
 
                                             }
                                         }
+                                    }
+                                    if (newList.containsKey(id)) {
+                                        LOG.warn("" + newList + " already contains an entry with id " + id);
                                     }
                                     newList.put(id, def);
                                 } else if (el.getTagName().equals("localhost")) {
@@ -231,7 +240,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                         thisJob.setThread(Thread.currentThread());
                         int result = 0;
                         try {
-                            LOG.info("Using " + thisJob.clones);
+                            LOG.service("Using " + thisJob.clones);
                             for (final JobDefinition jd : thisJob) {
                                 logger.service("NOW doing " + jd);
                                 URI in = jd.getIn();
@@ -467,10 +476,18 @@ public class CreateCachesProcessor implements CommitProcessor {
                             if (jd.transcoder.getInId() == null) {
                                 inURI = inFile.toURI();
                             } else {
-                                inURI = clones.get(jd.transcoder.getInId()).getOut();
+                                JobDefinition other = clones.get(jd.transcoder.getInId());
+                                if (other == null) {
+                                    logger.warn("No job definition with id '" + jd.transcoder.getInId() + "' found");
+                                    inURI = null;
+                                } else {
+                                    inURI = other.getOut();
+                                }
                             }
-                            JobDefinition clone = new JobDefinition(jd, resultNode, inFile.toURI(), outFile.toURI());
-                            clones.put(id, clone);
+                            if (inURI != null) {
+                                JobDefinition clone = new JobDefinition(jd, resultNode, inURI, outFile.toURI());
+                                clones.put(id, clone);
+                            }
                         } else {
 
                             JobDefinition clone = new JobDefinition(jd, null, inFile.toURI(), null);
@@ -497,7 +514,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                     throw new UnsupportedOperationException();
                 }
                 public JobDefinition next() {
-                    if (current != null) {
+                    if (current != null && current.getResultNode() != null) {
                         File outFile = new File(FileServlet.getDirectory(), current.getResultNode().getStringValue("url").replace("/", File.separator));
                         current.getResultNode().setLongValue("filesize", outFile.length());
                         current.getResultNode().setIntValue("state",
@@ -524,7 +541,9 @@ public class CreateCachesProcessor implements CommitProcessor {
                         }
                     }
                     busy++;
-                    current.getResultNode().setIntValue("state", State.BUSY.getValue());
+                    if (current.getResultNode() != null) {
+                        current.getResultNode().setIntValue("state", State.BUSY.getValue());
+                    }
                     return current;
                 }
 
@@ -560,7 +579,11 @@ public class CreateCachesProcessor implements CommitProcessor {
                 }
             }
             final NodeManager caches = node.getCloud().getNodeManager(node.getNodeManager().getProperty("org.mmbase.streams.cachestype"));
-            return caches.createNode();
+            Node newNode =  caches.createNode();
+            newNode.setNodeValue("id", node);
+            newNode.setStringValue("key", key);
+            newNode.commit();
+            return newNode;
         }
 
 

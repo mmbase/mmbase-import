@@ -24,11 +24,20 @@ import java.util.regex.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-@Settings({"format"})
+@Settings({"format", "acodec", "vcodec"})
 public class FFMpegTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpegTranscoder.class);
 
+    String acodec = null;
+    String vcodec = null;
+
+    public void setAcodec(String a) {
+        acodec = a;
+    }
+    public void setVcodec(String v) {
+        vcodec = v;
+    }
 
     public FFMpegTranscoder(String id) {
         super(id);
@@ -49,10 +58,22 @@ public class FFMpegTranscoder extends CommandTranscoder {
         File inFile = new File(in.getPath());
         File outFile = new File(out.getPath());
 
-        return new String[] { "-y",
-                              "-i", inFile.toString(),
-                              outFile.toString()
-        };
+        List<String> args = new ArrayList<String>();
+        args.add("-y");
+        if (acodec != null) {
+            args.add("-acodec");
+            args.add(acodec);
+        }
+        if (vcodec != null) {
+            args.add("-vcodec");
+            args.add(vcodec);
+        }
+        args.add("-i");
+        args.add(inFile.toString());
+
+        args.add(outFile.toString());
+
+        return args.toArray(new String[args.size()]);
     }
 
     private static final Pattern PROGRESS = Pattern.compile(".*time remaining.*");
