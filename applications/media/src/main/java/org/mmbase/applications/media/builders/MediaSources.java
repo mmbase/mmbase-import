@@ -24,6 +24,7 @@ import org.mmbase.applications.media.filters.MainFilter;
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.State;
+import org.mmbase.applications.media.MimeType;
 
 
 
@@ -163,7 +164,7 @@ public class MediaSources extends MMObjectBuilder {
      * @param source the media source
      * @return the content type
      */
-    String getMimeType(MMObjectNode source) { // package because it is used in URLResolver
+    MimeType getMimeType(MMObjectNode source) { // package because it is used in URLResolver
         return getFormat(source).getMimeType();
 
     }

@@ -81,7 +81,7 @@ public enum Format {
 
     // in case you want i18ed format strings.
 
-    private static Map<String,String> mimeMapping = null;
+    private static Map<String, MimeType> mimeMapping = null;
     static {
 
         org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_MIMEMAPPING_1_0, DTD_MIMEMAPPING_1_0, Format.class);
@@ -99,7 +99,7 @@ public enum Format {
     }
 
     static void readMimeMapping(String mimeMappingFile) {
-        mimeMapping = new HashMap<String, String>();
+        mimeMapping = new HashMap<String, MimeType>();
 
 
         log.service("Reading " + mimeMappingFile);
@@ -111,7 +111,7 @@ public enum Format {
                 String codec = reader.getElementAttributeValue(map, "codec");
                 String mime = DocumentReader.getElementValue(map);
 
-                mimeMapping.put(format + "/" + codec,mime);
+                mimeMapping.put(format + "/" + codec, new MimeType(mime));
                 log.debug("Adding mime mapping " + format + "/" + codec + " -> " + mime);
             }
         } catch (Exception e) {
@@ -146,7 +146,11 @@ public enum Format {
         return Arrays.asList(Format.values());
     }
     public static Format get(String id) {
-        return Format.valueOf(id.toUpperCase());
+        try {
+            return Format.valueOf(id.toUpperCase());
+        } catch (IllegalArgumentException iae) {
+            return UNKNOWN;
+        }
     }
 
     public String getGUIIndicator(Locale locale) {
@@ -178,20 +182,20 @@ public enum Format {
         return Arrays.asList(new Format[]{this});
     }
 
-    public String getMimeType() {
+    public MimeType getMimeType() {
         return getMimeType(null);
     }
 
-    public String getMimeType(String codec) {
+    public MimeType getMimeType(String codec) {
         String format = toString().toLowerCase();
         if(format == null || format.equals("unknown")) {
-            format = "*";
+            format = MimeType.STAR;
         }
         if(codec == null || codec.equals("")) {
-            codec = "*";
+            codec = MimeType.STAR;
         }
 
-        String mimeType = mimeMapping.get(format + "/" + codec);
+        MimeType mimeType = mimeMapping.get(format + "/" + codec);
         if(mimeType == null && ! codec.equals("*")) {
             mimeType = mimeMapping.get(format + "/*");
         }
@@ -202,10 +206,10 @@ public enum Format {
             mimeType = mimeMapping.get("*/*");
         }
         if (mimeType == null) {
-            mimeType = MMBaseContext.getServletContext().getMimeType("test." + format);
+            mimeType = new MimeType(MMBaseContext.getServletContext().getMimeType("test." + format));
         }
         if (mimeType == null) {
-            mimeType =  "application/octet-stream";
+            mimeType = new MimeType("application", "octet-stream");
         }
 
         if (log.isDebugEnabled()) {
