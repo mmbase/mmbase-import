@@ -445,17 +445,13 @@ public class CreateCachesProcessor implements CommitProcessor {
 
             try {
                 synchronized(list) {
+                    createCacheNodes();
+
                     for (Map.Entry<String, JobDefinition> entry : list.entrySet()) {
                         JobDefinition jd = entry.getValue();
                         String id = entry.getKey();
                         if (jd.transcoder.getFormat() != null) {
                             Node resultNode = getCacheNode(jd.transcoder.getKey());
-                            resultNode.setIntValue("state",  State.REQUEST.getValue());
-                            resultNode.setStringValue("key", jd.transcoder.getKey());
-                            resultNode.setIntValue("format", jd.transcoder.getFormat().toInt());
-                            resultNode.setIntValue("codec", jd.transcoder.getCodec().toInt());
-                            resultNode.setNodeValue("id",    node);
-                            resultNode.commit();
 
                             StringBuilder buf = new StringBuilder();
                             org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, resultNode.getNumber(), "/");
@@ -504,6 +500,23 @@ public class CreateCachesProcessor implements CommitProcessor {
             }
         }
 
+        protected void createCacheNodes() {
+            synchronized(list) {
+                for (Map.Entry<String, JobDefinition> entry : list.entrySet()) {
+
+                    // TODO check only create if always must be created or, if mimetyep matches with input.
+                    JobDefinition jd = entry.getValue();
+                    Node resultNode = getCacheNode(jd.transcoder.getKey());
+                    resultNode.setIntValue("state",  State.REQUEST.getValue());
+                    resultNode.setStringValue("key", jd.transcoder.getKey());
+                    resultNode.setIntValue("format", jd.transcoder.getFormat().toInt());
+                    resultNode.setIntValue("codec", jd.transcoder.getCodec().toInt());
+                    resultNode.setNodeValue("id",    node);
+                    resultNode.commit();
+                }
+            }
+        }
+
         public Iterator<JobDefinition> iterator() {
             final Iterator<Map.Entry<String, JobDefinition>> i = clones.entrySet().iterator();
             return new Iterator<JobDefinition>() {
@@ -520,6 +533,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                         current.getResultNode().setIntValue("state",
                                                             State.DONE.getValue());
                         current.getResultNode().commit();
+                        createCacheNodes();
                     }
                     current = i.next().getValue();
                     if (current.transcoder instanceof CommandTranscoder) {
