@@ -12,6 +12,7 @@ package org.mmbase.applications.media.urlcomposers;
 
 import org.mmbase.applications.media.builders.MediaProviders;
 import org.mmbase.applications.media.builders.MediaSources;
+import org.mmbase.applications.media.MimeType;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.applications.media.Format;
@@ -86,7 +87,7 @@ public class URLComposer  {
      * The mime-type of the produced URL. This is not necessarily the mimetype of the source.
      * (Though it normally would be)
      */
-    public String       getMimeType() {
+    public MimeType       getMimeType() {
         return getFormat().getMimeType();
     }
 
