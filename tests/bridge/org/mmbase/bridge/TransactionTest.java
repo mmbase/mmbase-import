@@ -183,12 +183,17 @@ public class TransactionTest extends BridgeTest {
         Transaction t = cloud.getTransaction("bar7");
         Node n = t.getNodeManager("news").createNode();
         n.setContext("non_default");
+        assertEquals("non_default", n.getStringValue("owner"));
         assertEquals("non_default", n.getContext());
+
         t.commit();
 
         Node n2 = cloud.getNode(n.getNumber());
+        assertEquals("non_default", n2.getStringValue("owner"));
         assertEquals("non_default", n2.getContext());
+
     }
+
     public void testSetContextSubTransaction() {
         Cloud cloud = getCloud();
 
@@ -406,7 +411,6 @@ public class TransactionTest extends BridgeTest {
         assertTrue(t1.isCommitted());
         // assertTrue(t1 == t2); // FAILS IN RMMCI. Perhaps we should simply implement .equals on transactions
     }
-
 
 
 }
