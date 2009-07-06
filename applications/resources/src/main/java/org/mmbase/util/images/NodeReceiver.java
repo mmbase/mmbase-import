@@ -58,14 +58,13 @@ public class NodeReceiver implements ImageConversionReceiver {
     }
     public void setDimension(Dimension dim) {
         Dimension predicted = (Dimension) icacheNode.getFunctionValue("dimension", null);
-        if (log.isDebugEnabled()) {
+        if (! predicted.equals(Dimension.UNDETERMINED)) {
             if (! predicted.equals(dim)) {
                 log.warn("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for  icache " + icacheNode);
-            }
-        }
-        else {
-            if (! predicted.equalsIgnoreRound(dim, 1)) {
-                log.warn("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for icache " + icacheNode);
+            } else {
+                if (! predicted.equalsIgnoreRound(dim, 1)) {
+                    log.warn("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for icache " + icacheNode);
+                }
             }
         }
         icacheNode.setValue("height", dim.y);
