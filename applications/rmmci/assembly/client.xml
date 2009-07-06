@@ -46,6 +46,7 @@
           <include>org/mmbase/util/ResourceLoader*.class</include>       <!-- well... -->
           <include>org/mmbase/util/ResourceWatcher*.class</include>      <!--  -->
           <include>org/mmbase/util/LocalizedString.class</include>         <!-- returned by bridge -->
+          <include>org/mmbase/util/LocaleCollator*</include>         <!-- returned by bridge -->
           <include>org/mmbase/util/ReadonlyLocalizedString.class</include>
           <include>org/mmbase/util/ReplacingLocalizedString*.class</include> <!-- returned by bridge -->
           <include>org/mmbase/util/EncodingDetectingOutputStreamWriter.class</include> <!-- used by resourceloader -->
