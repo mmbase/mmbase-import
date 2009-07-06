@@ -793,31 +793,26 @@ public class BasicSqlHandlerTest extends TestCase {
         query = new BasicSearchQuery(true);
         step1 = query.addStep(images).setAlias(null);
         BasicAggregatedField field4a
-            = (BasicAggregatedField) query.addAggregatedField(
-                step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT)
-                    .setAlias(null);
+            = (BasicAggregatedField) query.addAggregatedField(step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT)
+            .setAlias(null);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assertTrue(strSql, strSql.equalsIgnoreCase(
-        "COUNT(TITLE) " + "FROM " + prefix + "images IMAGES"));
+        assertTrue(strSql, strSql.equalsIgnoreCase("COUNT(TITLE) " + "FROM " + prefix + "images IMAGES"));
 
-        field4a.setAggregationType(
-        AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT);
+        field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assertTrue(strSql, strSql.equalsIgnoreCase(
-        "COUNT(DISTINCT TITLE) "
-        + "FROM " + prefix + "images IMAGES"));
+        assertTrue(strSql, strSql.equalsIgnoreCase("COUNT(DISTINCT TITLE) "
+                                                   + "FROM " + prefix + "images IMAGES"));
 
         field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_MIN);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assertTrue(strSql, strSql.equalsIgnoreCase(
-        "MIN(TITLE) "
-        + "FROM " + prefix + "images IMAGES"));
+        assertTrue(strSql, strSql.equalsIgnoreCase("MIN(TITLE) "
+                                                   + "FROM " + prefix + "images IMAGES"));
 
         field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_MAX);
         sb.setLength(0);
@@ -842,10 +837,9 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assertTrue(strSql, strSql.equalsIgnoreCase(
-        "MAX(TITLE) AS maxTitle,"
-        + "COUNT(NUMBER) "
-        + "FROM " + prefix + "images IMAGES"));
+        assertTrue(strSql, strSql.equalsIgnoreCase("MAX(TITLE) AS maxTitle,"
+                                                   + "COUNT(NUMBER) "
+                                                   + "FROM " + prefix + "images IMAGES"));
 
         field4b.setAggregationType(AggregatedField.AGGREGATION_TYPE_GROUP_BY);
         sb.setLength(0);
