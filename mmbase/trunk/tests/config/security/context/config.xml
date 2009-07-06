@@ -13,7 +13,7 @@
 
   <accounts>
     <user name="anonymous" context="default" />
-    <user name="admin" context="admin"><identify type="name/password" rank="administrator">admin2k</identify></user>
+    <user name="admin" context="default"><identify type="name/password" rank="administrator">admin2k</identify></user>
     <user name="foo" context="default" ><identify type="name/password" rank="basic user">bar</identify></user>
   </accounts>
 
