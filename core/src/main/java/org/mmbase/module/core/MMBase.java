@@ -608,7 +608,9 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     public MMObjectBuilder addBuilder(String name, MMObjectBuilder bul) {
-        if (bul == null) throw new IllegalArgumentException("Builder '" + name + "' was null");
+        if (bul == null) {
+            throw new IllegalArgumentException("Builder '" + name + "' was null");
+        }
         return mmobjs.put(name, bul);
     }
 
@@ -883,7 +885,9 @@ public class MMBase extends ProcessorModule {
     public void initBuilder(MMObjectBuilder builder) {
         if (!builder.isVirtual()) {
             builder.init();
-            if (typeDef == null) throw new IllegalStateException("No typedef builder defined");
+            if (typeDef == null) {
+                throw new IllegalStateException("No typedef builder defined");
+            }
             typeDef.loadTypeDef(builder.getTableName());
             Versions versions = (Versions)getBuilder("versions");
             if (versions != null && versions.created()) {
