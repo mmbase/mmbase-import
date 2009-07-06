@@ -383,7 +383,7 @@ public class BasicQuery implements Query  {
 
     public StepField addField(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
-        org.mmbase.core.CoreField cf = ((BasicField)field).coreField; /// XXX Casting is wrong
+        org.mmbase.core.CoreField cf = BasicField.getCoreField(field);
         BasicStepField sf = new BasicStepField(step, cf);
         if (! implicitFields.remove(sf)) {// it's explicitly added now
             if (cf.inStorage()) {
@@ -415,7 +415,7 @@ public class BasicQuery implements Query  {
     protected void addFieldImplicit(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
         if (! query.isDistinct()) {
-            org.mmbase.core.CoreField coreField = ((BasicField)field).coreField; /// XXX Casting is wrong
+            org.mmbase.core.CoreField coreField = BasicField.getCoreField(field);
             StepField sf = query.addFieldUnlessPresent(step, coreField);
             if (! implicitFields.contains(sf)) {
                 implicitFields.add(sf);
@@ -426,7 +426,7 @@ public class BasicQuery implements Query  {
     public StepField createStepField(Step step, Field field) {
         if (field == null) throw new BridgeException("Field is null");
         return
-            new BasicStepField(step, ((BasicField)field).coreField); /// XXX Casting is wrong
+            new BasicStepField(step, BasicField.getCoreField(field));
     }
 
     public StepField createStepField(Step step, String fieldName) {
@@ -454,7 +454,7 @@ public class BasicQuery implements Query  {
 
     public AggregatedField addAggregatedField(Step step, Field field, int aggregationType) {
         if (used) throw new BridgeException("Query was used already");
-        BasicAggregatedField aggregatedField =  query.addAggregatedField(step, ((BasicField)field).coreField, aggregationType); /// XXX Casting is wrong
+        BasicAggregatedField aggregatedField =  query.addAggregatedField(step, BasicField.getCoreField(field), aggregationType); /// XXX Casting is wrong
         // aggregatedField.setAlias(field.getName());
 
         if (this instanceof NodeQuery) { // UGLY!

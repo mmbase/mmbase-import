@@ -18,21 +18,25 @@ import org.mmbase.datatypes.DataType;
 
 
 /**
- * Wraps another Field. You can use this if you want to implement Field, and want to base that
+ * Wraps another Field (and makes it unmodifiable). You can use this if you want to implement Field, and want to base that
  * implementation on a existing <code>Field</code> instance.
+ *
+ * To implement a modifiable field, you need to override the setters too.
  *
  * @author  Michiel Meeuwissen
  * @version $Id$
  * @since   MMBase-1.8.1
  */
 
-public abstract class FieldWrapper implements Field {
+public class FieldWrapper implements Field {
     protected final Field field;
 
     public FieldWrapper(Field field)  {
         this.field = field;
     }
-    public abstract NodeManager getNodeManager();
+    public NodeManager getNodeManager() {
+        throw new UnsupportedOperationException();
+    }
 
     public int getState() { return Field.STATE_VIRTUAL; }
 
@@ -50,8 +54,8 @@ public abstract class FieldWrapper implements Field {
     public boolean isRequired() { return field.isRequired(); }
     public int getMaxLength() { return field.getMaxLength(); }
     public Collection<String> validate(Object value) { return field.validate(value); }
-    public boolean isVirtual() { return true; }
-    public boolean isReadOnly() { return true; }
+    public boolean isVirtual() { return field.isVirtual(); }
+    public boolean isReadOnly() { return field.isReadOnly(); }
     public String getName() { return field.getName(); }
     public String getGUIName() { return field.getGUIName(); }
     public String getGUIName(Locale locale) { return field.getGUIName(locale); }
@@ -63,6 +67,7 @@ public abstract class FieldWrapper implements Field {
     public String getDescription() { return field.getDescription(); }
     public void setDescription(String description, Locale locale) { throw new UnsupportedOperationException(); }
     public void setDescription(String description) { throw new UnsupportedOperationException(); }
+    public int compareTo(Field f) { return field.compareTo(f); }
 
 
     public Field getField() {

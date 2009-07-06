@@ -11,10 +11,9 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import org.mmbase.bridge.*;
-import org.mmbase.core.AbstractField;
+import org.mmbase.bridge.util.FieldWrapper;
 import org.mmbase.core.CoreField;
-import org.mmbase.util.LocalizedString;
-import java.util.Collection;
+import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
@@ -22,19 +21,34 @@ import java.util.Collection;
  * @author Pierre van Rooden
  * @version $Id$
  */
-public class BasicField extends AbstractField<Object> implements Field {
+public class BasicField extends FieldWrapper implements Field {
+
+    private static final Logger log = Logging.getLoggerInstance(BasicField.class);
 
     private final NodeManager nodeManager;
-    protected final CoreField coreField;
+
+
+    /**
+     * Converts a Field to a CoreField.
+     * @todo Should this method be here?
+
+     * @since MMBase-1.9.2
+     */
+     static CoreField getCoreField(Field f) {
+        while (f instanceof FieldWrapper) {
+            f  = ((FieldWrapper) f).getField();
+        }
+        if (f instanceof CoreField) {
+            return (CoreField) f;
+        } else {
+            return BasicCloudContext.mmb.getBuilder(f.getNodeManager().getName()).getField(f.getName());
+        }
+    }
+
 
     public BasicField(Field field, NodeManager nodeManager) {
-        super(field.getName(), field);
+        super(field);
         this.nodeManager = nodeManager;
-        if (field instanceof CoreField) {
-            this.coreField = (CoreField) field;
-        } else {
-            this.coreField = new CoreField(field);
-        }
     }
 
     @Override
@@ -42,47 +56,5 @@ public class BasicField extends AbstractField<Object> implements Field {
         return nodeManager;
     }
 
-    @Override
-    public int getSearchPosition(){
-        return coreField.getSearchPosition();
-    }
-
-    @Override
-    public int getListPosition(){
-        return coreField.getListPosition();
-    }
-
-    @Override
-    public int getEditPosition(){
-        return coreField.getEditPosition();
-    }
-
-    @Override
-    public int getStoragePosition(){
-        return coreField.getStoragePosition();
-    }
-
-    public Collection<String> validate(Object value) {
-        Collection<LocalizedString> errors = getDataType().validate(value, null, this);
-        return LocalizedString.toStrings(errors, getNodeManager().getCloud().getLocale());
-    }
-
-    @Override
-    public int getMaxLength() {
-        return coreField.getMaxLength();
-    }
-
-
-    @Override
-    protected java.util.Locale getDefaultLocale() {
-        return nodeManager.getCloud().getLocale();
-    }
-
-    // deprecated methods
-    @Override
-    @Deprecated
-    public String getGUIType() {
-        return coreField.getGUIType();
-    }
 
 }
