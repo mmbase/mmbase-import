@@ -354,7 +354,6 @@ public abstract class NodeTest extends BridgeTest {
             assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
             assertEquals(node.getContext(), node.getValue("owner"));
             assertEquals(node.getContext(), node.getStringValue("owner"));
-            System.out.println("----------Committing " + node + " context should be " + otherContext);
             node.commit();
 
             assertEquals("Context did not change '" + otherContext + "' != '" + node.getStringValue("owner") + "'", otherContext, node.getStringValue("owner"));
