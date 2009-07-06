@@ -38,7 +38,7 @@
   -->
 
   <function name="cloudcontext">
-    <type>singleton</type>
+    <type>class</type>
     <class>org.mmbase.bridge.ContextProvider</class>
     <method>getDefaultCloudContext</method>
   </function>
