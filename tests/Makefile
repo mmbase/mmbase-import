@@ -62,7 +62,7 @@ transactions:
 
 dependencies:
 	mkdir -p work
-	$(mvn) dependency:copy-dependencies
+	$(mvn) validate
 
 .PHONY: compile
 compile:
