@@ -287,8 +287,7 @@ public class TransactionManager {
                 node.storeValue(MMObjectBuilder.TMP_FIELD_RESOLVED, null);
             } else {
                 state.state = State.FAILED;
-                String message = "When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])";
-                throw new RuntimeException(message);
+                throw new RuntimeException("When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])");
             }
         }
     }
