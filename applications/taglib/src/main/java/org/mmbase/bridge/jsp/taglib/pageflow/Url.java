@@ -153,7 +153,6 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     /**
      * Returns the URL as a String, always without the application context. Never <code>null</code>
      */
-
     public String get(boolean escapeamp) throws JspTagException, FrameworkException {
 
         String result = escapeamp ? cacheEscapeAmp : cacheNoEscapeAmp;
@@ -293,6 +292,11 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
                             ? "" : ":" + port);
             }
         } else if (abs.equals("server")) {
+            if (ABSOLUTE_URLS.matcher(page).matches()) {
+                // The redirect tag giv
+                show.append(page);
+                return true;
+            }
             //show.append("/");
         } else if (abs.equals("context")) {
 
@@ -323,7 +327,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
      * Returns the actual URL, considering all options of the url-tag, like 'absolute' and 'encode'.
      */
     public String get() {
-        if (string != null) return string;
+        if (string != null) {
+            return string;
+        }
         try {
             String u = get(escapeAmps);
             log.debug("Produced " + u);
