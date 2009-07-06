@@ -364,6 +364,7 @@
       </description>
       <property name="collator" value=":IDENTICAL" />
       <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <maxLength value="255" />
       <getprocessor>
         <class name="org.mmbase.datatypes.processors.ChecksumGetProcessorFactory">
           <param name="field">handle</param>
@@ -675,7 +676,7 @@
         Media types.
       </description>
       <description xml:lang="nl">
-        Media typen cq. soorten media.
+        Mediatypen cq. soorten media.
       </description>
       <enumeration>
         <entry basename="org.mmbase.datatypes.resources.media" />
