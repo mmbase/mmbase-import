@@ -206,13 +206,13 @@
     <p>
       <mm:link>
         <mm:param name="redirect"><mm:url page="/" absolute="true" /></mm:param>
-        <a href="${_}">Redirect to <mm:url page="/" absolute="true" /></a> (fails)
+        <a href="${_}">Redirect to <mm:url page="/" absolute="true" /></a> (MMB-1847)
       </mm:link>
     </p>
     <p>
       <mm:link>
         <mm:param name="redirect">http://www.google.com</mm:param>
-        <a href="${_}">Redirect to google.com</a> (fails)
+        <a href="${_}">Redirect to google.com</a>  (MMB-1847)
       </mm:link>
     </p>
 
