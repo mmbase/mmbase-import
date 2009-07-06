@@ -32,7 +32,6 @@ public class BinaryCommitProcessor implements CommitProcessor {
     private String filenameField = "filename";
     private String filesizeField = "filesize";
     private String contenttypeField = "mimetype";
-    private String mimetypeField = "mimetype";
     private boolean itypeField = false;
 
     public void setFilenameField(String fn) {
