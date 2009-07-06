@@ -87,13 +87,14 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                     case Field.TYPE_STRING:  type = String.class; break;
                     case Field.TYPE_INTEGER: type = Integer.class; break;
                     case Field.TYPE_LONG:    type = Long.class; break;
+                    case Field.TYPE_NODE:    type = Node.class; break;
 
                         // I wonder if enums for the following types could make any sense, but well:
                     case Field.TYPE_FLOAT:   type = Float.class; break;
                     case Field.TYPE_DOUBLE:  type = Double.class; break;
                     case Field.TYPE_BINARY:    type = byte[].class; break;
                     case Field.TYPE_XML:     type = String.class; break; // Document.class ?
-                    case Field.TYPE_NODE:    type = Node.class; break;
+
                         /*
                           case Field.TYPE_DATETIME:  type = Date.class; break;
                           case Field.TYPE_BOOLEAN:   type = Boolean.class; break;
@@ -130,7 +131,10 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     @Override
     protected Object convertToValidate(final Object s, final Node node, final Field field) throws JspTagException {
         DataType dt = field.getDataType();
-        if (s == null && ! dt.isRequired()) return null;
+        if (s == null && ! dt.isRequired()) {
+            return null;
+        }
+        String ss = Casting.toString(s);
         Iterator i = getIterator(node, field);
         Object firstValue = null;
         if (i!= null && i.hasNext()) {
@@ -138,7 +142,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             if (log.isDebugEnabled()) {
                 log.debug("Comparing " + value + " to " + s);
             }
-            if (value.equals(s)) {
+            if (Casting.toString(value).equals(ss)) {
                 return value;
             }
             firstValue = value;
@@ -148,7 +152,9 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             if (log.isDebugEnabled()) {
                 log.debug("Comparing " + value + " to " + s);
             }
-            if (value.equals(s)) return value;
+            if (Casting.toString(value).equals(ss)) {
+                return value;
+            }
         }
         log.debug("Returning firstValue");
         return firstValue;
