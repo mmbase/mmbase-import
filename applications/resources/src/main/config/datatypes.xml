@@ -27,7 +27,9 @@
         <class name="org.mmbase.datatypes.processors.BinaryFile$StringGetter" />
       </getprocessor>
       <commitprocessor>
-        <class name="org.mmbase.datatypes.processors.BinaryCommitProcessor" />
+        <class name="org.mmbase.datatypes.processors.BinaryCommitProcessor">
+          <param name="setContentTypeIfNotRecognized">false</param>
+        </class>
       </commitprocessor>
       <deleteprocessor>
         <class name="org.mmbase.datatypes.processors.BinaryFile$Delete" />
