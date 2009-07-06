@@ -23,6 +23,7 @@ import org.mmbase.util.externalprocess.CommandExecutor;
 import org.mmbase.datatypes.processors.*;
 import org.mmbase.applications.media.State;
 import org.mmbase.applications.media.Format;
+import org.mmbase.applications.media.Codec;
 import org.mmbase.servlet.FileServlet;
 import org.mmbase.core.event.*;
 
@@ -504,13 +505,23 @@ public class CreateCachesProcessor implements CommitProcessor {
             synchronized(list) {
                 for (Map.Entry<String, JobDefinition> entry : list.entrySet()) {
 
-                    // TODO check only create if always must be created or, if mimetyep matches with input.
+                    // TODO check only create if always must be created or, if mimetype matches with input.
                     JobDefinition jd = entry.getValue();
                     Node resultNode = getCacheNode(jd.transcoder.getKey());
                     resultNode.setIntValue("state",  State.REQUEST.getValue());
                     resultNode.setStringValue("key", jd.transcoder.getKey());
-                    resultNode.setIntValue("format", jd.transcoder.getFormat().toInt());
-                    resultNode.setIntValue("codec", jd.transcoder.getCodec().toInt());
+                    Format f = jd.transcoder.getFormat();
+                    if (f == null) {
+                        resultNode.setValue("format", null);
+                    } else {
+                        resultNode.setIntValue("format", f.toInt());
+                    }
+                    Codec c = jd.transcoder.getCodec();
+                    if (c == null) {
+                        resultNode.setValue("codec", null);
+                    } else {
+                        resultNode.setIntValue("codec", c.toInt());
+                    }
                     resultNode.setNodeValue("id",    node);
                     resultNode.commit();
                 }
