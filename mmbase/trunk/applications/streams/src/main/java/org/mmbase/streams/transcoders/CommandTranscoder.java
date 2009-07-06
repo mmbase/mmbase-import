@@ -30,6 +30,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
 
     private CommandExecutor.Method method = new CommandExecutor.Method();
 
+    private String path = "";
 
     public CommandTranscoder(String id) {
         super(id);
@@ -37,6 +38,10 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
 
     public void setMethod(CommandExecutor.Method m) {
         method = m;
+    }
+
+    public void setPath(String p) {
+        path = p;
     }
 
     protected abstract String getCommand();
@@ -53,7 +58,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
     protected void transcode(final Logger log) throws Exception {
         OutputStream outStream = new WriterOutputStream(getOutputWriter(log), System.getProperty("file.encoding"));
         log.service("Calling (" + method + ") " + getCommand() + " " + Arrays.asList(getArguments()));
-        CommandExecutor.execute(outStream, method, getCommand(), getArguments());
+        CommandExecutor.execute(outStream, method, path + getCommand(), getArguments());
     }
 
 
