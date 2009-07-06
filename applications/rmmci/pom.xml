@@ -52,6 +52,7 @@
             <include>org/mmbase/storage/search/LegacyConstraint.class</include>
             <include>org/mmbase/storage/search/CompositeConstraint.class</include>
             <include>org/mmbase/storage/search/SearchQuery.class</include>
+            <include>org/mmbase/storage/search/SearchQueryWrapper.class</include>
             <include>org/mmbase/storage/search/FieldCompareConstraint.class</include>
 
             <include>org/mmbase/cache/Cacheable.class</include>
