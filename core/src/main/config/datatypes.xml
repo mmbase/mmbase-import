@@ -363,8 +363,8 @@
         the effect is that a handle field which already is present in the database, cannot be saved.
       </description>
       <property name="collator" value=":IDENTICAL" />
-      <pattern enforce="never" value="\A[^\n\r]*\z" />
       <maxLength value="255" />
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
       <getprocessor>
         <class name="org.mmbase.datatypes.processors.ChecksumGetProcessorFactory">
           <param name="field">handle</param>
