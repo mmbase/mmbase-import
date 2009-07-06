@@ -116,6 +116,17 @@
     <body jsp="jobs.jspx" />
   </block>
 
+  <block name="watchers"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Watchers</title>
+    <title xml:lang="nl">Watcher</title>
+    <description xml:lang="en">
+      An overview of all watched configuration resources.
+    </description>
+    <body jsp="watchers.jspx" />
+  </block>
+
   <block name="functions"
          classification="mmbase.tools"
          mimetype="text/html">
