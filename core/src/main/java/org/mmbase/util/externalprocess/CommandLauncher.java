@@ -300,13 +300,14 @@ public class CommandLauncher {
      * @param err process stderr is written to this stream
      * @throws ProcessException if process not yet executed
      */
-    public void waitAndWrite(InputStream in, OutputStream out, OutputStream err) throws ProcessException {
+    public ProcessClosure waitAndWrite(InputStream in, OutputStream out, OutputStream err) throws ProcessException {
         if (process == null) {
             throw new ProcessException("Process not yet executed");
         }
 
         ProcessClosure reader = new ProcessClosure(name, process, in, out, err);
         reader.writeBlocking(); // a blocking call
+        return reader;
     }
 
     /**
