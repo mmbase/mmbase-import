@@ -11,15 +11,19 @@ package org.mmbase.util;
 
 import java.text.*;
 import java.util.*;
+import java.io.*;
 
 /**
- * This class wraps a {@link java.text.Collator} and associates it with a {@link java.util.Locale}.
+ * This class wraps a {@link java.text.Collator} and associates it with a {@link
+ * java.util.Locale}. Also, it is {@link java.io.Serializable} (mostly to help RMMC).
  *
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9.2
  */
-public class LocaleCollator  extends Collator {
+public class LocaleCollator  extends Collator implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static enum Strength {
         IDENTICAL(Collator.IDENTICAL),
@@ -95,7 +99,7 @@ public class LocaleCollator  extends Collator {
         return collator;
     }
 
-    private final Collator wrapped;
+    private transient Collator wrapped;
     private final Locale locale;
     private LocaleCollator(Locale loc) {
         locale = loc;
@@ -182,6 +186,28 @@ public class LocaleCollator  extends Collator {
             if (Decomposition.valueOf(elements[2]).get() != getDecomposition()) return false;
         }
         return true;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeUTF(wrapped.getClass().getName());
+        if (wrapped instanceof RuleBasedCollator) {
+            out.writeUTF(((RuleBasedCollator) wrapped).getRules());
+        } else {
+            throw new IOException("Don't know how to serialize " + wrapped);
+        }
+
+    }
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        String clazz = in.readUTF(); // ignore for now
+        try {
+            wrapped = new RuleBasedCollator(in.readUTF());
+        } catch (ParseException pe) {
+            throw new IOException(pe);
+        }
+
+
     }
 
 
