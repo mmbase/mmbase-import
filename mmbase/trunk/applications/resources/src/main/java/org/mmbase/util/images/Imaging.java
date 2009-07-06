@@ -302,7 +302,7 @@ public abstract class Imaging {
 
                 if (key.equals("trim")) {
                     // This requires information about the content of the image
-                    log.service("Trimming makes the dimension impossible  to predict " + params);
+                    log.debug("Trimming makes the dimension impossible  to predict " + params);
                     return Dimension.UNDETERMINED;
                 }
             }
