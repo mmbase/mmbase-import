@@ -98,6 +98,12 @@ public class BinaryFile {
 
         private static final long serialVersionUID = 1L;
 
+        private String contenttypeField = "mimetype";
+
+        public void setContenttypeField(String f) {
+            contenttypeField = f;
+        }
+
         public Object process(final Node node, final Field field, final Object value) {
             SerializableInputStream is = Casting.toSerializableInputStream(value);
             String name = is.getName();
@@ -119,6 +125,16 @@ public class BinaryFile {
                 }
                 is.moveTo(f);
                 log.debug("Set a file " + f.getName());
+                if (node.getNodeManager().hasField(contenttypeField)) {
+                    if (! node.isChanged(contenttypeField) || node.isNull(contenttypeField)) {
+                        node.setStringValue(contenttypeField, is.getContentType());
+                        log.info("Found " + is.getContentType());
+                    } else {
+                        log.debug("Field " + contenttypeField + " is already changed " + node.getChanged() + " not setting to " + is.getContentType());
+                    }
+                } else {
+                    log.debug("No field " + contenttypeField);
+                }
                 return f.getName();
             } else {
                 log.debug("No name given, ignoring this processor (not an upload)");
