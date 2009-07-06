@@ -52,6 +52,7 @@
     <body jsp="urls.jspx">
       <param name="a" />
       <param name="b" />
+      <param name="redirect" />
     </body>
   </block>
   <block name="suburls"
