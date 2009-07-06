@@ -962,13 +962,17 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     // javadoc inherited (from Node)
     @Override
     public void setContext(String context) {
+        checkAccount();
         if (getNode().getNumber() > -1) {
             cloud.verify(Operation.CHANGE_CONTEXT, getNode().getNumber());
         } else {
             //TODO
         }
+        if (temporaryNodeId == -1) {
+            temporaryNodeId = cloud.add(this);
+        }
         // set the context on the node (run after insert).
-        getNode().setContext(cloud.getUser(), context, temporaryNodeId == -1);
+        getNode().setContext(cloud.getUser(), context, temporaryNodeId > -1);
     }
 
     // javadoc inherited (from Node)
