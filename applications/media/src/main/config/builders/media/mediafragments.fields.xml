@@ -19,11 +19,11 @@
     <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <default value="title" />
       <required value="true">
-        <description xml:lang="en">A title is required</description>        
+        <description xml:lang="en">A title is required</description>
         <description xml:lang="nl">Een titel is verplicht</description>
       </required>
-      <minLength value="2" enforce="validate">
-        <description xml:lang="en">A title is required</description>        
+      <minLength value="2" enforce="onvalidate">
+        <description xml:lang="en">A title is required</description>
         <description xml:lang="nl">Een titel is verplicht</description>
       </minLength>
       <maxLength value="255" enforce="never" />
