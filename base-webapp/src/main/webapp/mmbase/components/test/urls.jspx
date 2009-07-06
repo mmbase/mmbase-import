@@ -187,6 +187,25 @@
       </script>
     </mm:form>
 
+    <h3>mm:redirect</h3>
+    <p>The following redirects should work.</p>
+    <mm:import externid="redirect" />
+    <mm:present referid="redirect">
+      <mm:redirect page="${redirect}" />
+    </mm:present>
+    <p>
+      <mm:link>
+        <mm:param name="redirect">/</mm:param>
+        <a href="${_}">Redirect to /</a>
+      </mm:link>
+    </p>
+    <p>
+      <mm:link>
+        <mm:param name="redirect"><mm:url page="/" absolute="true" /></mm:param>
+        <a href="${_}">Redirect to <mm:url page="/" absolute="true" /></a> (fails)
+      </mm:link>
+    </p>
+
     <h3>Unfiltered rendering</h3>
     <mm:link page="/mmbase/components/test/unfilteredurls.jspx" referids="x?">
       <iframe
