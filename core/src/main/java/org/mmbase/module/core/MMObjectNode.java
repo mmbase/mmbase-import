@@ -170,6 +170,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     public MMObjectNode(MMObjectNode node) {
         parent = node.parent;
         isNew  = node.isNew();
+        newContext = node.newContext;
         values.putAll(node.getValues());
         values.putAll(node.getOldValues());
     }
@@ -328,13 +329,22 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.7
      */
     public int insert(UserContext user) {
+        String nc = newContext;
         int nodeID = parent.safeInsert(this, user.getIdentifier());
         if (nodeID != -1) {
             MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
             mmbaseCop.getAuthorization().create(user, nodeID);
-            if (newContext != null) {
-                mmbaseCop.getAuthorization().setContext(user, nodeID, newContext);
+            if (nc != null) {
+                mmbaseCop.getAuthorization().setContext(user, nodeID, nc);
+                if (log.isDebugEnabled()) {
+                    log.debug("Context was set " + newContext + " " + this);
+                }
                 newContext = null;
+                parent.safeCommit(this);
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("Context was not set " + this);
+                }
             }
         }
         return nodeID;
@@ -353,9 +363,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
             mmbaseCop.getAuthorization().update(user, getNumber());
             if (newContext != null) {
-                mmbaseCop.getAuthorization().setContext(user,getNumber(), newContext);
+                // can only be done with real number
+                mmbaseCop.getAuthorization().setContext(user, getNumber(), newContext);
                 newContext = null;
+                parent.safeCommit(this);
             }
+            mmbaseCop.getAuthorization().update(user, getNumber());
         }
         return success;
     }
@@ -383,11 +396,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @since MMBase-1.7
      */
     public void setContext(UserContext user, String context, boolean now) {
-       if (now) {
-           parent.getMMBase().getMMBaseCop().getAuthorization().setContext(user, getNumber(), context);
-       } else {
-           newContext = context;
-       }
+        if (log.isDebugEnabled()) {
+            log.debug("Setting context " + user + " -> " + context + " " + now + " on " + this);
+        }
+        if (now) {
+            parent.getMMBase().getMMBaseCop().getAuthorization().setContext(user, getNumber(), context);
+        } else {
+            newContext = context;
+        }
     }
 
     /**
