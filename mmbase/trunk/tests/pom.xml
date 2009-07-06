@@ -83,15 +83,24 @@ See http://www.MMBase.org/license
       </plugin>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
+
         <executions>
           <execution>
             <id>copy1</id>
-            <phase>compile</phase>
+            <phase>validate</phase>
             <goals>
               <goal>copy-dependencies</goal>
             </goals>
+
           </execution>
         </executions>
+
+        <configuration>
+          <overWriteSnapshots>false</overWriteSnapshots>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteIfNewer>false</overWriteIfNewer>
+        </configuration>
+
       </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
