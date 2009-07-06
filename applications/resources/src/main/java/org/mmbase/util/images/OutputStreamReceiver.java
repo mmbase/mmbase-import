@@ -15,7 +15,7 @@ import java.io.*;
  * The 'image conversion receiver' storing result directly to an output stream.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MemoryReceiver.java 35335 2009-05-21 08:14:41Z michiel $
+ * @version $Id$
  * @since MMBase-1.9.2
  */
 public class OutputStreamReceiver implements ImageConversionReceiver {
