@@ -34,6 +34,8 @@ public class BinaryCommitProcessor implements CommitProcessor {
     private String contenttypeField = "mimetype";
     private boolean itypeField = false;
 
+    private boolean setContentTypeIfNotRecognized = true;
+
     public void setFilenameField(String fn) {
         filenameField = fn;
     }
@@ -46,6 +48,15 @@ public class BinaryCommitProcessor implements CommitProcessor {
 
     public void setItype(boolean i) {
         itypeField = i;
+    }
+
+    /**
+     * If this is true (default), then the content type will be set to 'application/octet-stream' if
+     * nothing explicit could be found.
+     * @since MMBase-1.9.2
+     */
+    public void setSetContentTypeIfNotRecognized(boolean s) {
+        setContentTypeIfNotRecognized = s;
     }
 
 
@@ -62,13 +73,17 @@ public class BinaryCommitProcessor implements CommitProcessor {
 
     }
     private String getContentType(Object o) {
+        String ct = setContentTypeIfNotRecognized ? "application/octet-stream" : null;
         if (o instanceof SerializableInputStream) {
-            return ((SerializableInputStream)o).getContentType();
+            ct =  ((SerializableInputStream)o).getContentType();
+            log.debug("Found ct " + ct);
         } else if (o instanceof FileItem) {
-            return ((FileItem)o).getContentType();
+            ct = ((FileItem)o).getContentType();
+            log.debug("Found ct " + ct);
         } else {
-            return "application/octet-stream";
+            log.debug("No ct found in " + o.getClass() + " " + o);
         }
+        return ct;
     }
 
     public void commit(Node node, Field field) {
@@ -106,7 +121,10 @@ public class BinaryCommitProcessor implements CommitProcessor {
                             fn = fn.substring(slash + 1);
                         }
                     }
+                    log.debug("Setting ct " + fn);
                     node.setValue(contenttypeField, fn);
+                } else {
+                    log.debug("No ct found for " + value);
                 }
             }
         }
