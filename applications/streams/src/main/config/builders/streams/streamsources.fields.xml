@@ -21,7 +21,9 @@
     <datatype base="file" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <unique value="true" />
       <commitprocessor>
-        <class name="org.mmbase.datatypes.processors.BinaryCommitProcessor" />
+        <class name="org.mmbase.datatypes.processors.BinaryCommitProcessor">
+          <param name="setContentTypeIfNotRecognized">false</param>
+        </class>
         <class name="org.mmbase.streams.CreateCachesProcessor">
           <param name="configFile">streams/createcaches.xml</param>
         </class>
@@ -33,7 +35,7 @@
     </datatype>
   </field>
 
-  <field name="mimetype">
+  <field name="mimetype" state="system">
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
   </field>
 
