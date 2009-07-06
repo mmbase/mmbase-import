@@ -774,7 +774,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         if (cloud == null) {
             log.debug("Cloud is null, cannot check it");
             removeCloud();
-            return;
+           return;
         }
         // we have a cloud, check if it is a desired one
         // otherwise make it null.
@@ -1359,28 +1359,29 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         org.mmbase.bridge.util.CloudThreadLocal.unbind();
         org.mmbase.bridge.util.CloudThreadLocal.bind(prevCloudThreadLocal);
         pageContext.setAttribute(KEY, prevCloud, SCOPE);
-        prevCloud = null;
-        prevCloudThreadLocal = null;
+        dereference();
         return super.doEndTag();
     }
-
-    public void doFinally() {
-        // can be cleaned for gc:
-        super.doFinally();
+    protected void dereference() {
+        prevCloud = null;
+        prevCloudThreadLocal = null;
         cookies = null;
         cloudContext = null;
         cloud = null;
-        prevCloud = null;
-        prevCloudThreadLocal = null;
         logon = null;
         session = null;
         request = null;
         response = null;
     }
 
+    public void doFinally() {
+        // can be cleaned for gc:
+        super.doFinally();
+        dereference();
+    }
+
     // if EVAL_BODY == EVAL_BODY_BUFFERED
     public int doAfterBody() throws JspTagException {
-
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
                 if (bodyContent != null) {
