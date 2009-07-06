@@ -151,6 +151,7 @@ public abstract class AbstractNode implements Node {
     public void setValueWithoutProcess(String fieldName, Object value) {
         checkWrite();
         if ("owner".equals(fieldName)) {
+            // System.out.println("Setting owner, so setting context to " + Casting.toString(value));
             setContext(Casting.toString(value));
             return;
         }
