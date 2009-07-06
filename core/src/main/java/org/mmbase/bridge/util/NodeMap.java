@@ -44,8 +44,7 @@ public class NodeMap extends NodeWrapper implements Map<String, Object> {
     public boolean containsKey(Object key) {
         if (key instanceof String) {
             return getNodeManager().hasField((String) key);
-        }
-        else {
+        } else {
             return false;
         }
     }
