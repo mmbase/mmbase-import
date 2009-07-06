@@ -172,6 +172,8 @@ public abstract class Imaging {
      *
      * Probably because of different rounding strategies, there is sometimes a difference of one or
      * two pixels beteen the prediction and/or the result of ImageMagick and/or JAI.
+     * @return A reasonable prediction of the new dimension or <code>Dimension.UNDETERMINED</code> if that really is
+     * not possible
      */
     public static Dimension predictDimension(Dimension originalSize, List<String> params) {
 
@@ -294,6 +296,14 @@ public abstract class Imaging {
                     if (y1 > y2) y1 = y2;
                     dim.x = x2 - x1;
                     dim.y = y2 - y1;
+                }
+            } else {
+                // options without arguments
+
+                if (key.equals("trim")) {
+                    // This requires information about the content of the image
+                    log.service("Trimming makes the dimension impossible  to predict " + params);
+                    return Dimension.UNDETERMINED;
                 }
             }
 
