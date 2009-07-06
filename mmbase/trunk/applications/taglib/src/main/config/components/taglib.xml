@@ -81,7 +81,7 @@
     </body>
   </block>
 
-  <block name="taglib examples" mimetype="text/html"
+  <block name="taglib_examples" mimetype="text/html"
          classification="mmbase.examples">
     <body>
       <class name="org.mmbase.framework.IFrameRenderer">
