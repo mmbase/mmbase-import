@@ -88,7 +88,12 @@ public class URLComposer  {
      * (Though it normally would be)
      */
     public MimeType       getMimeType() {
-        return getFormat().getMimeType();
+        Format f = Format.get(source.getIntValue("format"));
+        if (f == Format.UNKNOWN && source.getBuilder().hasField("mimetype")) {
+            return new MimeType(source.getStringValue("mimetype"));
+        }
+        Codec c = Codec.get(source.getIntValue("codec"));
+        return f.getMimeType(c == Codec.UNKNOWN ? null : c.toString().toLowerCase());
     }
 
 
