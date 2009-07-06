@@ -102,6 +102,10 @@
     <mm:component name="test" block="suburls" />
     -->
 
+    <mm:link page="http://www.google.com">
+      <p>${_ eq 'http://www.google.com' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+
     <h2>Framework params</h2>
 
     <mm:link absolute="context">
@@ -203,6 +207,12 @@
       <mm:link>
         <mm:param name="redirect"><mm:url page="/" absolute="true" /></mm:param>
         <a href="${_}">Redirect to <mm:url page="/" absolute="true" /></a> (fails)
+      </mm:link>
+    </p>
+    <p>
+      <mm:link>
+        <mm:param name="redirect">http://www.google.com</mm:param>
+        <a href="${_}">Redirect to google.com</a> (fails)
       </mm:link>
     </p>
 
