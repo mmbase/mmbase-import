@@ -132,6 +132,14 @@ public class ProcessClosure {
         }
     }
 
+    public long getCount() {
+        if (inputWriter != null) {
+            return inputWriter.getCount();
+        } else {
+            return 0;
+        }
+    }
+
     /**
      * read data from the external process and block the calling thread until
      * reading is finished
