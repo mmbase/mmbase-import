@@ -66,14 +66,12 @@
       <descriptions>
         <description>Example of String range</description>
       </descriptions>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base ="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="b" />
         <minInclusive value="a" />
         <maxInclusive value="zzzzz" />
+        <maxLength value="255" />
       </datatype>
-      <db>
-        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
-      </db>
     </field>
     <field name="stringlength">
       <descriptions>
@@ -355,7 +353,7 @@
     </field>
     <field name="nonode_typedef">
       <datatype  base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
-	<maxLength value="255" />
+        <maxLength value="255" />
         <enumeration>
           <query path="typedef" element="" xmlns="http://www.mmbase.org/xmlns/searchquery">
             <distinct />
