@@ -60,6 +60,8 @@ class StreamCopyThread extends Thread {
      */
     private boolean finished = false;
 
+    private long count = 0;
+
     /**
      * Create a thread to copy bytes fro one strea to the other
      *
@@ -119,6 +121,7 @@ class StreamCopyThread extends Thread {
                 return;
             }
 
+            count = 0;
             int size = 0;
             //this buffer has nothing to do with the OS buffer
             byte[] buffer = new byte[StreamCopyThread.BUFFER_SIZE];
@@ -128,6 +131,7 @@ class StreamCopyThread extends Thread {
                     writer.write(buffer, 0, size);
                     writer.flush();
                 }
+                count += size;
                 //log.debug("StreamCopy " + this.getName() + " read " + size + " bytes from input and wrote to output." );
 
                 //Maybe we should reset variables
@@ -172,6 +176,10 @@ class StreamCopyThread extends Thread {
      */
     public synchronized boolean finished() {
         return finished;
+    }
+
+    public long getCount() {
+        return count;
     }
 
     /**
