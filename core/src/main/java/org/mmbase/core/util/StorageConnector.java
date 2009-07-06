@@ -402,6 +402,9 @@ public class StorageConnector {
         verifyBuilderQuery(query);
 
         // Wrap in modifiable query, replace fields by one count field.
+
+        // What if the original query is modified?
+
         ModifiableQuery modifiedQuery = new ModifiableQuery(query);
         Step step = query.getSteps().get(0);
         CoreField numberField = builder.getField(MMObjectBuilder.FIELD_NUMBER);
