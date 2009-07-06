@@ -24,6 +24,7 @@ import org.mmbase.datatypes.processors.*;
 import org.mmbase.applications.media.State;
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.Codec;
+import org.mmbase.applications.media.MimeType;
 import org.mmbase.servlet.FileServlet;
 import org.mmbase.core.event.*;
 
@@ -105,8 +106,9 @@ public class CreateCachesProcessor implements CommitProcessor {
                                     if (in.length() > 0) {
                                         transcoder.setInId(in);
                                     }
+                                    MimeType mimeType = new MimeType(el.getAttribute("mimetype"));
                                     LOG.debug("Created " + transcoder);
-                                    JobDefinition def = new JobDefinition(transcoder);
+                                    JobDefinition def = new JobDefinition(transcoder, mimeType);
                                     org.w3c.dom.NodeList childs = el.getChildNodes();
                                     for (int j = 0; j <= childs.getLength(); j++) {
                                         if (childs.item(j) instanceof Element) {
@@ -370,16 +372,19 @@ public class CreateCachesProcessor implements CommitProcessor {
         public final List<Analyzer> analyzers;
         public final URI in;
         public final URI out;
-        JobDefinition(Transcoder t) {
+        public final MimeType mimeType;
+        JobDefinition(Transcoder t, MimeType mt) {
             transcoder = t;
             analyzers = new ArrayList<Analyzer>();
             dest = null;
             in = null;
             out = null;
+            mimeType = mt;
         }
         JobDefinition(JobDefinition jd, Node dest, URI in, URI out) {
             transcoder = jd.transcoder.clone();
             analyzers  = jd.analyzers;
+            mimeType   = jd.mimeType;
             this.dest = dest;
             this.in = in;
             this.out = out;
@@ -400,6 +405,10 @@ public class CreateCachesProcessor implements CommitProcessor {
         }
         public URI getOut() {
             return out;
+        }
+
+        public MimeType getMimeType() {
+            return mimeType;
         }
 
         @Override
@@ -451,7 +460,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                     for (Map.Entry<String, JobDefinition> entry : list.entrySet()) {
                         JobDefinition jd = entry.getValue();
                         String id = entry.getKey();
-                        if (jd.transcoder.getFormat() != null) {
+                        if (jd.transcoder.getKey() != null) {
                             Node resultNode = getCacheNode(jd.transcoder.getKey());
 
                             StringBuilder buf = new StringBuilder();
@@ -488,7 +497,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                         } else {
 
                             JobDefinition clone = new JobDefinition(jd, null, inFile.toURI(), null);
-                            logger.info("Cachenode less job" + clone);
+                            logger.info("Cachenodeless job" + clone);
                             clones.put(id, clone);
 
                         }
@@ -507,23 +516,21 @@ public class CreateCachesProcessor implements CommitProcessor {
 
                     // TODO check only create if always must be created or, if mimetype matches with input.
                     JobDefinition jd = entry.getValue();
-                    Node resultNode = getCacheNode(jd.transcoder.getKey());
-                    resultNode.setIntValue("state",  State.REQUEST.getValue());
-                    resultNode.setStringValue("key", jd.transcoder.getKey());
-                    Format f = jd.transcoder.getFormat();
-                    if (f == null) {
-                        resultNode.setValue("format", null);
-                    } else {
+                    if (jd.transcoder.getKey() != null) {
+                        Node resultNode = getCacheNode(jd.transcoder.getKey());
+                        resultNode.setIntValue("state",  State.REQUEST.getValue());
+                        resultNode.setStringValue("key", jd.transcoder.getKey());
+                        Format f = jd.transcoder.getFormat();
                         resultNode.setIntValue("format", f.toInt());
+                        Codec c = jd.transcoder.getCodec();
+                        if (c == null) {
+                            resultNode.setValue("codec", null);
+                        } else {
+                            resultNode.setIntValue("codec", c.toInt());
+                        }
+                        resultNode.setNodeValue("id",    node);
+                        resultNode.commit();
                     }
-                    Codec c = jd.transcoder.getCodec();
-                    if (c == null) {
-                        resultNode.setValue("codec", null);
-                    } else {
-                        resultNode.setIntValue("codec", c.toInt());
-                    }
-                    resultNode.setNodeValue("id",    node);
-                    resultNode.commit();
                 }
             }
         }
@@ -568,6 +575,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                     busy++;
                     if (current.getResultNode() != null) {
                         current.getResultNode().setIntValue("state", State.BUSY.getValue());
+                        current.getResultNode().commit();
                     }
                     return current;
                 }
