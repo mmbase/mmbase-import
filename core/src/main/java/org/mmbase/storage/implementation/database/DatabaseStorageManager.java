@@ -849,10 +849,10 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             binaryFile.getParentFile().mkdirs(); // make sure all directory exist.
             if (node.isNull(fieldName)) {
                 if (field.isNotNull()) {
-                    log.service("Field '" + fieldName + "' is null, making empty file");
+                    log.service("Field '" + fieldName + "' of node " + node.getNumber() + " is null, making empty file");
                     node.storeValue(field.getName(), new ByteArrayInputStream(new byte[0]));
                 } else {
-                    log.service("Field '" + fieldName + "' is null, deleting file");
+                    log.service("Field '" + fieldName + "' of node " + node.getNumber() + " is null, deleting file");
                     if (binaryFile.exists()) {
                         binaryFile.delete();
                     }
