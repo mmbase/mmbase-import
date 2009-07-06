@@ -96,7 +96,7 @@ See http://www.MMBase.org/license
         </executions>
 
         <configuration>
-          <overWriteSnapshots>false</overWriteSnapshots>
+          <overWriteSnapshots>true</overWriteSnapshots>
           <overWriteReleases>false</overWriteReleases>
           <overWriteIfNewer>false</overWriteIfNewer>
         </configuration>
