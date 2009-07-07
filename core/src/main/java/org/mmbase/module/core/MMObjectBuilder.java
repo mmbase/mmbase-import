@@ -276,14 +276,15 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         addFunction(wrapFunction);
     }
 
+    private static final ReturnType<Collection<? extends Function>> RETURNTYPE_COLLECTION = new ReturnType<Collection<? extends Function>>(Collection.class, "Collection");
     /**
      * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
      * This is overridden from FunctionProvider, because this one needs to be (also) a NodeFunction
      * @since MMBase-1.8
      */
     protected Function<Collection<? extends Function>> getFunctions = new NodeFunction<Collection<? extends Function>>("getFunctions",
-                                                                                                                       Parameter.emptyArray(),
-                                                                                                                       new ReturnType<Collection<? extends Function>>(Collection.class, "Collection")) {
+                                                                                                                       Parameter.emptyArray(), RETURNTYPE_COLLECTION) {
+
             {
                 setDescription("The 'getFunctions' returns a Map of al Function object which are available on this FunctionProvider");
             }
