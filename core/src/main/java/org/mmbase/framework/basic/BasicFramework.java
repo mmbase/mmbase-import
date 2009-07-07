@@ -160,7 +160,7 @@ public class BasicFramework extends Framework {
     */
 
 
-    private final Parameter<?> DEF = new Parameter<?>[] {ACTION, Parameter.REQUEST, Parameter.CLOUD, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
+    private final Parameter<?>[] DEF = new Parameter<?>[] {ACTION, Parameter.REQUEST, Parameter.CLOUD, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
 
     /**
      */
