@@ -84,8 +84,9 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
 
     }
 
-    /**
 
+
+    private static CoreField UNKNOWN_NODE_TYPE = Fields.createField("unknown_node_type", Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, DataTypes.getDataType("node"));
     /**
      * Returns the fieldlist of this nodemanager after making sure the manager is synced with the builder.
      * @since MMBase-1.8
@@ -97,13 +98,11 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
             if (query != null) { // means not yet called (lazy loading of fields)
                 // code to solve the fields.
                 for (Step step : query.getSteps()) {
-                    DataType nodeType  = DataTypes.getDataType("node");
-
                     String name = step.getAlias();
-                    if (name == null) name = step.getTableName();
-                    CoreField fd = Fields.createField(name, Field.TYPE_NODE, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, nodeType);
-
-                    Field ft = new VirtualNodeManagerField(fd, name);
+                    if (name == null) {
+                        name = step.getTableName();
+                    }
+                    Field ft = new VirtualNodeManagerField(UNKNOWN_NODE_TYPE, name);
                     fieldTypes.put(name, ft);
 
                     if (allowNonQueriedFields && ! query.isAggregating()) {
