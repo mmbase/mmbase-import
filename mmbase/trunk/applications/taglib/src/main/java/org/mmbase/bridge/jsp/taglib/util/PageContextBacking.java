@@ -161,14 +161,25 @@ public  class PageContextBacking extends AbstractMap<String, Object> implements 
         }
     }
     public Object getOriginal(String key) {
-        if (key == null) return null; // pageContext cannot accept null keys
+        if (key == null) {
+            return null; // pageContext cannot accept null keys
+        }
         Object value = unwrapped.get(key);
-        if (value != null) return value;
-        if (pageContext.getRequest() == null) throw new IllegalArgumentException("PageContext " + pageContext + " has no request");
-        try {
-            return pageContext.findAttribute((String) key);
-        } catch (Exception e) {
-            throw new RuntimeException(" for " + (key == null ? "NULL" : (key.getClass() + ":" + key)) + "  " + e.getMessage() , e);
+        if (value != null) {
+            return value;
+        }
+        if (pageContext.getRequest() == null) {
+            log.warn("PageContext " + pageContext + " has no request.");
+
+            // findAttribute would throw NPE. This is no good, you shouldn't have had the
+            // pageContext in the first place. Probably it was stored in a the session or so?
+            return null;
+        } else {
+            try {
+                return pageContext.findAttribute((String) key);
+            } catch (Exception e) {
+                throw new RuntimeException(" for " + (key == null ? "NULL" : (key.getClass() + ":" + key)) + "  " + e.getMessage() , e);
+            }
         }
     }
 
