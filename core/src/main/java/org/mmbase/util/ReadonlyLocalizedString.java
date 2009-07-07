@@ -28,36 +28,37 @@ public class ReadonlyLocalizedString extends WrappedLocalizedString {
     /**
      * @param s The wrapped LocalizedString.
      */
-    public ReadonlyLocalizedString(LocalizedString s) {
+    ReadonlyLocalizedString(LocalizedString s) {
         super(s);
-    }
-
-    @Override
-    public Locale setLocale(Locale loc) {
-        throw new IllegalStateException();
     }
 
 
     @Override
     public void setKey(String key) {
-        throw new IllegalStateException();
+        throw new UnsupportedOperationException();
+
     }
 
     @Override
     public void set(String value, Locale locale) {
-        throw new IllegalStateException();
+        throw new UnsupportedOperationException();
     }
 
 
     @Override
     public void setBundle(String b) {
-        throw new IllegalStateException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public LocalizedString clone() {
         // clone is writeable again.
         return wrapped.clone();
+    }
+
+    @Override
+    public ReadonlyLocalizedString getReadonlyLocalizedString() {
+        return this;
     }
 
 
