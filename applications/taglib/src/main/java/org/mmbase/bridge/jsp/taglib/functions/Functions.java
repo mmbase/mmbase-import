@@ -195,7 +195,7 @@ public class Functions {
      */
     public static LocalizedString string(LocalizedString s) {
         javax.servlet.jsp.PageContext pageContext = ContextReferrerTag.getThreadPageContext();
-        WrappedLocalizedString result = new WrappedLocalizedString(s);
+        LocaleLocalizedString result = new LocaleLocalizedString(s);
         Locale locale = (Locale) pageContext.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
         if (locale == null) {
             locale = LocalizedString.getDefault();
