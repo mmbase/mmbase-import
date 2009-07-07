@@ -49,7 +49,8 @@ public class BasicFramework extends Framework {
 
     public static final Parameter<String> ACTION     = new Parameter<String>("_action", String.class);
 
-    protected final ChainedUrlConverter urlConverter = new ChainedUrlConverter();
+    private final ChainedUrlConverter urlConverter = new ChainedUrlConverter();
+    private Parameter<?>[] parDef;
     protected final UrlConverter fallbackConverter   = new BasicUrlConverter(this);
 
     protected final LocalizedString description      = new LocalizedString("description");
@@ -129,6 +130,7 @@ public class BasicFramework extends Framework {
                 }
                 urlConverter.add(uc);
             }
+            parDef = null;
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -160,12 +162,15 @@ public class BasicFramework extends Framework {
     */
 
 
-    private final Parameter<?>[] DEF = new Parameter<?>[] {ACTION, Parameter.REQUEST, Parameter.CLOUD, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
+
 
     /**
      */
     public Parameter<?>[] getParameterDefinition() {
-        return DEF;
+        if (parDef == null) {
+            parDef = new Parameter<?>[] {ACTION, Parameter.REQUEST, Parameter.CLOUD, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
+        }
+        return parDef;
     }
 
     public Parameters createParameters() {
