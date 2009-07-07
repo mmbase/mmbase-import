@@ -222,6 +222,12 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
         dataType.setDefaultValue(defaultValue);
     }
 
+    private Parameter(String name) {
+        super();
+        key = name;
+        dataType = null;
+    }
+
     @SuppressWarnings("unchecked")
     public Parameter(String name, C defaultValue) {
         this(name, (Class<C>) defaultValue.getClass());
@@ -356,7 +362,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
         Parameter[] arguments;
 
         public Wrapper(Parameter... arg) {
-            super("[ARRAYWRAPPER]", Parameter[].class);
+            super("[ARRAYWRAPPER]");
             arguments = arg;
         }
 
