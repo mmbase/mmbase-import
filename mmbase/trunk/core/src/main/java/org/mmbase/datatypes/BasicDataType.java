@@ -361,7 +361,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             CloudContext context = ContextProvider.getDefaultCloudContext();
             if (! context.isUp()) return null;
             // class security can be a bit expensive, and this method can in certain cases be called very often.
-            if (classCloud == null || ! classCloud.getUser().isValid()) classCloud = context.getCloud("mmbase", "class", null);
+            if (classCloud == null || ! classCloud.getUser().isValid()) {
+                classCloud = context.getCloud("mmbase", "class", null);
+            }
             cloud  = classCloud;
         }
         return cloud;
@@ -491,8 +493,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     public void finish(Object owner) {
         if (! isFinished()) {
             handlers = Collections.unmodifiableMap(handlers);
-            description  = new ReadonlyLocalizedString(description);
-            guiName      = new ReadonlyLocalizedString(guiName);
+            description  = description.getReadonlyLocalizedString();
+            guiName      = guiName.getReadonlyLocalizedString();
         }
         this.owner = owner;
     }
