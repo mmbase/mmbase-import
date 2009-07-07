@@ -76,7 +76,6 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
     }
 
     private String key;
-
     private Map<Locale, String> values = null;
     private String bundle = null;
 
@@ -459,6 +458,14 @@ public class LocalizedString implements java.io.Serializable, PublicCloneable<Lo
         result = HashCodeUtil.hashCode(result, values);
         result = HashCodeUtil.hashCode(result, bundle);
         return result;
+    }
+
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public ReadonlyLocalizedString getReadonlyLocalizedString() {
+        return new ReadonlyLocalizedString(this);
     }
 
 }

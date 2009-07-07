@@ -19,29 +19,24 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  * @since MMBase-1.9
  */
-public class WrappedLocalizedString extends LocalizedString {
+public abstract class WrappedLocalizedString extends LocalizedString {
     private static final long serialVersionUID = 0L;
     private static final Logger log = Logging.getLoggerInstance(WrappedLocalizedString.class);
 
     protected final LocalizedString wrapped;
-    private Locale defaultLocale = null;
 
 
     /**
      * @param s The wrapped LocalizedString.
      */
-    public WrappedLocalizedString(LocalizedString s) {
+    protected  WrappedLocalizedString(LocalizedString s) {
         super("WRAPPED");
-        if (s == null) s = new LocalizedString("NULL");
+        if (s == null) {
+            s = new LocalizedString("NULL");
+        }
         wrapped = s;
     }
 
-
-    public Locale setLocale(Locale loc) {
-        Locale prev = defaultLocale;
-        defaultLocale = loc;
-        return prev;
-    }
 
 
     @Override
@@ -56,7 +51,6 @@ public class WrappedLocalizedString extends LocalizedString {
 
     @Override
     public String get(Locale locale) {
-        if (locale == null) locale = defaultLocale;
         return wrapped.get(locale);
     }
 
@@ -94,6 +88,11 @@ public class WrappedLocalizedString extends LocalizedString {
         int hash = 7;
         hash = 47 * hash + (this.wrapped != null ? this.wrapped.hashCode() : 0);
         return hash;
+    }
+
+    @Override
+    public ReadonlyLocalizedString getReadonlyLocalizedString() {
+        return wrapped.getReadonlyLocalizedString();
     }
 
 
