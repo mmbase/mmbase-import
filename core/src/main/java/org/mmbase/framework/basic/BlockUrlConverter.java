@@ -35,11 +35,12 @@ public abstract class BlockUrlConverter implements UrlConverter {
         framework = fw;
     }
 
+    private static final Parameter[] DEF = new Parameter[] {Parameter.REQUEST, Framework.COMPONENT, Framework.BLOCK};
     /**
      * Block url converters add an explicit 'component' and 'block' framework parameters
      */
     public Parameter[] getParameterDefinition() {
-        return new Parameter[] {Parameter.REQUEST, Framework.COMPONENT, Framework.BLOCK};
+        return DEF;
     }
 
     /**
