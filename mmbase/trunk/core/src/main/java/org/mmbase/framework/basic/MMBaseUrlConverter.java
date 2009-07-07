@@ -50,8 +50,10 @@ public class MMBaseUrlConverter extends DirectoryUrlConverter {
         renderJsp = j;
     }
 
+    private static final Parameter<?>[] DEF = new Parameter<?>[] {Parameter.REQUEST, CATEGORY, Framework.COMPONENT, Framework.BLOCK};
+
     @Override public Parameter<?>[] getParameterDefinition() {
-        return new Parameter<?>[] {Parameter.REQUEST, CATEGORY, Framework.COMPONENT, Framework.BLOCK};
+        return DEF;
     }
 
     @Override public Block getBlock(String path, Parameters frameworkParameters) throws FrameworkException {
