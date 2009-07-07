@@ -133,12 +133,14 @@ public final class BasicUrlConverter implements UrlConverter {
         return null;
     }
 
+
+    private static final Parameter<?>[] DEF = new Parameter<?>[] {Parameter.REQUEST};
     /**
      * @todo Actually these parameters are only added here, because this urlconverter is always in
      * BasicFramework. Actually BasicFramework should add them itself.
      */
     public Parameter<?>[] getParameterDefinition() {
-        return new Parameter<?>[] {Parameter.REQUEST};
+        return DEF;
     }
 
     /**
