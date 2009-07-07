@@ -112,11 +112,15 @@ public class NodeEvent extends Event {
 
 
     public String toString() {
-        String changedFields = "";
-        for (Object element : getChangedFields()) {
-            changedFields = changedFields + (String) element + ",";
-        }
-        return "Node event: '" + getEventTypeGuiName(eventType) + "', node: " + nodeNumber + ", nodetype: " + builderName + ", oldValues: " + oldValues + ", newValues: " + newValues + "changedFields: " + getChangedFields();
+        StringBuilder buf = new StringBuilder("Node event: '");
+        buf.append(getEventTypeGuiName(eventType)).append( "', node: ").append(nodeNumber).append(", nodetype: ").append(builderName);
+        buf.append(", oldValues: ");
+        buf.append(oldValues.keySet().toString());
+        buf.append(", newValues: ");
+        buf.append(newValues.keySet().toString());
+        buf.append("changedFields: ");
+        buf.append(getChangedFields());
+        return buf.toString();
     }
 
     protected static String getEventTypeGuiName(int eventType) {
