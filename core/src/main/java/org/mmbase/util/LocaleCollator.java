@@ -204,7 +204,9 @@ public class LocaleCollator  extends Collator implements Serializable {
         try {
             wrapped = new RuleBasedCollator(in.readUTF());
         } catch (ParseException pe) {
-            throw new IOException(pe);
+            IOException e = new IOException(pe.getMessage());
+            e.initCause(pe);
+            throw e;
         }
 
 
