@@ -461,6 +461,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                         JobDefinition jd = entry.getValue();
                         String id = entry.getKey();
                         if (jd.transcoder.getKey() != null) {
+                            LOG.debug("## format: " + jd.transcoder.getFormat());
                             Node resultNode = getCacheNode(jd.transcoder.getKey());
 
                             StringBuilder buf = new StringBuilder();
@@ -510,6 +511,9 @@ public class CreateCachesProcessor implements CommitProcessor {
             }
         }
 
+        /**
+         * The several streamcaches get created here according to their configuration.
+         */
         protected void createCacheNodes() {
             synchronized(list) {
                 for (Map.Entry<String, JobDefinition> entry : list.entrySet()) {
