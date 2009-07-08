@@ -4964,8 +4964,8 @@ like the parameter list or the session (where ever it is available) --&gt;
   </tag>
   <tag>
     <name>include</name>
-    <extends>writer</extends>
     <type>util</type>
+    <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <bodycontent>JSP</bodycontent>
