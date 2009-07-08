@@ -383,6 +383,12 @@ public class MMBaseContext {
                     // check wether this is root
                     if (sx.equals(sx.getContext("/"))) {
                         htmlRootUrlPath = "/";
+                    } else if (sx.getMajorVersion() >=2 || (sx.getMajorVersion() == 2 && sx.getMinorVersion() >= 5)) {
+                        try {
+                            htmlRootUrlPath = (String) sx.getClass().getMethod("getContextPath").invoke(sx);
+                        } catch(Exception e) {
+                            log.error(e);
+                        }
                     } else {
                         String url = sx.getResource("/").toString();
                         // MM: simply hope that it is the last part of that URL.
@@ -391,6 +397,7 @@ public class MMBaseContext {
                         int lastSlash = url.substring(0, length - 1).lastIndexOf('/');
                         if (lastSlash > 0) {
                             htmlRootUrlPath = url.substring(lastSlash);
+                            log.info("Found " + htmlRootUrlPath + " from " + url);
                         } else {
                             log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath + "(contextUrl     :" + url + ")");
                         }
@@ -399,8 +406,9 @@ public class MMBaseContext {
                     log.error(e);
                 }
                 try {
-                    if (!sx.equals(sx.getContext(htmlRootUrlPath))) {
-                        log.warn("Probably did not succeed in determining htmlRootUrlPath ('" + htmlRootUrlPath + "'). Consider using the mmbase.htmlrooturlpath  context-param in web.xml");
+                    ServletContext refound = sx.getContext(htmlRootUrlPath);
+                    if (refound != null && !sx.equals(refound)) {
+                        log.warn("Probably did not succeed in determining htmlRootUrlPath ('" + htmlRootUrlPath + "', because " + sx + "!= " + refound + "). Consider using the mmbase.htmlrooturlpath  context-param in web.xml");
                     }
                 } catch (Exception e2) {
                     log.error(e2);
