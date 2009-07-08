@@ -75,8 +75,18 @@ public class MediaProviders extends MMObjectBuilder {
                 if ("".equals(host)) {
                     return rootpath;
                 } else {
-                    if (port > -1) host = host + ":" + port;  
-                    return protocol + "://" + host + rootpath;
+                    StringBuilder buf = new StringBuilder(protocol);
+                    buf.append("://");
+                    buf.append(host);
+                    if (port > -1) {
+                        if (("http".equals(protocol) && port != 80) ||
+                            ("https".equals(protocol) && port != 443)) {
+                            buf.append(':');
+                            buf.append(port);
+                        }
+                    }
+                    buf.append(rootpath);
+                    return buf.toString();
                 }
             }
         };
