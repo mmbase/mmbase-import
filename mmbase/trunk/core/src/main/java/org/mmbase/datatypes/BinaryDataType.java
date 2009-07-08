@@ -41,6 +41,12 @@ public class BinaryDataType extends AbstractLengthDataType<InputStream> {
 
 
     @Override
+    protected String castToPresent(Object value, Node node, Field field) {
+        return "BINARY";
+    }
+
+
+    @Override
     protected InputStream cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
         Object preCast = preCast(value, cloud, node, field);
         if (preCast == null) return null;
