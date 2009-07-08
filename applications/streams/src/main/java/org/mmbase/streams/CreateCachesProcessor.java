@@ -577,11 +577,6 @@ public class CreateCachesProcessor implements CommitProcessor {
                 }
                 public JobDefinition next() {
                     if (current != null && current.getResultNode() != null) {
-                        File outFile = new File(FileServlet.getDirectory(), current.getResultNode().getStringValue("url").replace("/", File.separator));
-                        current.getResultNode().setLongValue("filesize", outFile.length());
-                        current.getResultNode().setIntValue("state",
-                                                            State.DONE.getValue());
-                        current.getResultNode().commit();
                         createCacheNodes();
                     }
                     current = i.next().getValue();
@@ -680,6 +675,10 @@ public class CreateCachesProcessor implements CommitProcessor {
             return ready;
         }
         public void ready() {
+            File outFile = new File(FileServlet.getDirectory(), current.getResultNode().getStringValue("url").replace("/", File.separator));
+            current.getResultNode().setLongValue("filesize", outFile.length());
+            current.getResultNode().setIntValue("state", State.DONE.getValue());
+            current.getResultNode().commit();
             ready = true;
         }
 
