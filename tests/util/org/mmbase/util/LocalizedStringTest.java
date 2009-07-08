@@ -120,7 +120,7 @@ public class LocalizedStringTest extends TestCase {
 
     public void testMakeReadOnly() {
         LocalizedString l = getInstance();
-        LocalizedString rol = new ReadonlyLocalizedString(l);
+        LocalizedString rol = l.getReadonlyLocalizedString();
 
         assertEquals(l, rol);
 
@@ -131,13 +131,13 @@ public class LocalizedStringTest extends TestCase {
         try {
             rol.set("plezzant", BE_VAR);
             fail();
-        } catch (IllegalStateException ise) {
+        } catch (UnsupportedOperationException ise) {
         }
         assertEquals(l, rol);
     }
 
     public void testMakeReadOnlyClone() {
-        LocalizedString rol = new ReadonlyLocalizedString(getInstance());
+        LocalizedString rol = getInstance().getReadonlyLocalizedString();
         LocalizedString clone = rol.clone();
 
         assertEquals(rol, clone);
@@ -145,7 +145,7 @@ public class LocalizedStringTest extends TestCase {
         try {
             rol.set("plezzant", BE_VAR);
             fail();
-        } catch (IllegalStateException ise) {
+        } catch (UnsupportedOperationException ise) {
         }
         assertEquals(rol, clone);
         assertEquals(clone, rol);
@@ -159,7 +159,7 @@ public class LocalizedStringTest extends TestCase {
 
     public void testSetKey() {
         LocalizedString l = getInstance();
-        LocalizedString rol = new ReadonlyLocalizedString(l);
+        LocalizedString rol = l.getReadonlyLocalizedString();
         LocalizedString clone = l.clone();
 
         assertEquals("funny", l.getKey());
@@ -180,7 +180,7 @@ public class LocalizedStringTest extends TestCase {
         try {
             rol.setKey("nuf");
             fail();
-        } catch (IllegalStateException ise) {
+        } catch (UnsupportedOperationException ise) {
         }
         assertEquals("funny", l.getKey());
         assertEquals("funny", rol.getKey());
