@@ -315,12 +315,12 @@ public class CreateCachesProcessor implements CommitProcessor {
 
     /**
      */
-    void createCaches(final Cloud ntCloud, final Node node) {
-        if (ntCloud.hasNode(node.getNumber())) {
+    void createCaches(final Cloud ntCloud, final int node) {
+        if (ntCloud.hasNode(node)) {
             final ChainedLogger logger = new ChainedLogger(LOG);
-            final Node ntNode = ntCloud.getNode(node.getNumber());
+            final Node ntNode = ntCloud.getNode(node);
             ntNode.getStringValue("title"); // This triggers RelatedField$Creator to create a
-            LOG.info("Triggering caches for " + list + " Mediaframent " + node.getNodeValue("mediafragment").getNumber());
+            LOG.info("Triggering caches for " + list + " Mediaframent " + ntNode.getNodeValue("mediafragment").getNumber());
 
             final Job thisJob = createJob(ntNode, logger);
             if (thisJob != null) {
@@ -337,12 +337,12 @@ public class CreateCachesProcessor implements CommitProcessor {
                             }
                         }
                         public String toString() {
-                            return "Job canceler for " + node.getNumber();
+                            return "Job canceler for " + node;
                         }
                     });
             }
         } else {
-            LOG.warn("Node " + node.getNumber() + " is not real.");
+            LOG.warn("Node " + node  + " is not real.");
         }
     }
 
@@ -351,9 +351,10 @@ public class CreateCachesProcessor implements CommitProcessor {
             if (node.isChanged(field.getName())) {
 
                 final Cloud ntCloud = node.getCloud().getNonTransactionalCloud();
+                final int nodeNumber = node.getNumber();
                 ThreadPools.scheduler.schedule(new Runnable() {
                         public void run() {
-                            createCaches(ntCloud, node);
+                            createCaches(ntCloud, nodeNumber);
                         }
                     }, 2, TimeUnit.SECONDS);
             } else {
@@ -478,6 +479,8 @@ public class CreateCachesProcessor implements CommitProcessor {
             // mediafragment if it does not yet exist
             mediafragment = node.getNodeValue("mediafragment");
             mediaprovider = node.getNodeValue("mediaprovider");
+            assert mediafragment != null;
+            assert mediaprovider != null;
             File inFile = new File(FileServlet.getDirectory(), node.getStringValue("url"));
 
             try {
@@ -488,7 +491,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                         JobDefinition jd = entry.getValue();
                         String id = entry.getKey();
                         if (jd.transcoder.getKey() != null) {
-                            LOG.debug("## format: " + jd.transcoder.getFormat());
+                            LOG.debug("Format: " + jd.transcoder.getFormat());
                             Node resultNode = getCacheNode(jd.transcoder.getKey());
 
                             StringBuilder buf = new StringBuilder();
@@ -501,11 +504,9 @@ public class CreateCachesProcessor implements CommitProcessor {
                             File outFile = new File(FileServlet.getDirectory(), outFileName.replace("/", File.separator));
 
 
-                            // virtual field actually creates relation
-                            resultNode.setNodeValue("mediaprovider", mediaprovider);
-                            resultNode.setNodeValue("mediafragment", mediafragment);
+
                             resultNode.commit();
-                            logger.info("Created cache node " + resultNode.getNumber()  + " for provider " + mediaprovider.getNumber() + " fragment " + mediafragment.getNumber());
+                            logger.info("Using cache node " + resultNode.getNumber()  + " for provider " + mediaprovider.getNumber() + " fragment " + mediafragment.getNumber());
                             URI inURI;
                             if (jd.transcoder.getInId() == null) {
                                 inURI = inFile.toURI();
@@ -549,6 +550,10 @@ public class CreateCachesProcessor implements CommitProcessor {
                     JobDefinition jd = entry.getValue();
                     if (jd.transcoder.getKey() != null) {
                         Node resultNode = getCacheNode(jd.transcoder.getKey());
+                        // virtual field actually creates relation
+                        resultNode.setNodeValue("mediaprovider", mediaprovider);
+                        resultNode.setNodeValue("mediafragment", mediafragment);
+
                         resultNode.setIntValue("state",  State.REQUEST.getValue());
                         resultNode.setStringValue("key", jd.transcoder.getKey());
                         Format f = jd.transcoder.getFormat();
@@ -628,9 +633,10 @@ public class CreateCachesProcessor implements CommitProcessor {
                 Queries.addConstraint(q, Queries.createConstraint(q, "id",  FieldCompareConstraint.EQUAL, node));
                 Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
 
-                LOG.service("Executing " + q.toSql());
+                LOG.debug("Executing " + q.toSql());
                 NodeList nodes = caches.getList(q);
                 if (nodes.size() > 0) {
+                    logger.service("Found existing node for " + key + "(" + node.getNumber() + "): " + nodes.getNode(0).getNumber());
                     return nodes.getNode(0);
                 }
             }
@@ -639,6 +645,7 @@ public class CreateCachesProcessor implements CommitProcessor {
             newNode.setNodeValue("id", node);
             newNode.setStringValue("key", key);
             newNode.commit();
+            logger.service("Created new node for " + key + "(" + node.getNumber() + "): " + newNode.getNumber());
             return newNode;
         }
 

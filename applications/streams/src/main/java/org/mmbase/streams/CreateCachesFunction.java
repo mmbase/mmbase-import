@@ -61,6 +61,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
                 NodeList list = SearchUtil.findNodeList(node.getCloud(), node.getNodeManager().getProperty("org.mmbase.streams.cachestype"), "id", node.getNumber());
                 for (Node cache : list) {
                     cache.delete(true);
+                    LOG.service("Deleted " + cache.getNumber());
                 }
             }
 
@@ -68,7 +69,7 @@ public class CreateCachesFunction  extends NodeFunction<Boolean> {
                 final CreateCachesProcessor cc = getCacheCreator(url);
                 if (cc != null) {
                     LOG.info("Calling " + cc);
-                    cc.createCaches(node.getCloud().getNonTransactionalCloud(), node);
+                    cc.createCaches(node.getCloud().getNonTransactionalCloud(), node.getNumber());
                     return true;
                 } else {
                     LOG.error("No CreateCachesProcessor in " + url);
