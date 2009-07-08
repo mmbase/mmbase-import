@@ -92,9 +92,6 @@ public class Authenticate extends CloudContextAuthentication {
         return ((User) user).getNode().getNumber();
     }
 
-    @Override public String getUserBuilder() {
-        return getUserProvider().getUserBuilder().getTableName();
-    }
 
     private boolean warnedNoAnonymousUser = false;
 
