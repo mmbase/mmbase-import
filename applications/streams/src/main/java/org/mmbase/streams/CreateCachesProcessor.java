@@ -58,7 +58,11 @@ public class CreateCachesProcessor implements CommitProcessor {
         EntityResolver.registerSystemID(NAMESPACE_CREATECACHES + ".xsd", XSD_CREATECACHES, CreateCachesProcessor.class);
     }
 
+    /**
+     * @todo Should not be static
+     */
     private static Map<String, JobDefinition> list = Collections.synchronizedMap(new LinkedHashMap<String, JobDefinition>());
+
 
     private static int transSeq = 0;
     public final ThreadPoolExecutor transcoderExecutor = new ThreadPoolExecutor(3, 3, 5 * 60 , TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
@@ -229,6 +233,10 @@ public class CreateCachesProcessor implements CommitProcessor {
     }
 
 
+    /**
+     * Creates and submits a jobs transcoding everytthing as configured for one source object, this
+     * produces all new 'caches' as configured in createcaches.xml.
+     */
     private Job createJob(final Node node, final ChainedLogger logger) {
         Job job = runningJobs.get(node.getNumber());
         if (job != null) {
@@ -304,6 +312,9 @@ public class CreateCachesProcessor implements CommitProcessor {
 
     }
 
+
+    /**
+     */
     void createCaches(final Cloud ntCloud, final Node node) {
         if (ntCloud.hasNode(node.getNumber())) {
             final ChainedLogger logger = new ChainedLogger(LOG);
@@ -364,7 +375,10 @@ public class CreateCachesProcessor implements CommitProcessor {
 
 
     /**
-     * The description or definition of a job that's doing the transcoding.
+     * The description or definition of one 'transcoding' sub job that's doing the transcoding. This
+     * is used both as an actual place holder in a {@link Job}, but also as a template (those 2
+     * tasks are mirroed in the 2 constructors).
+     * @todo Perhaps it is a bit silly to use the same object for these two basicly different things.
      */
     public class JobDefinition {
         public final Transcoder transcoder;
@@ -373,6 +387,10 @@ public class CreateCachesProcessor implements CommitProcessor {
         public final URI in;
         public final URI out;
         public final MimeType mimeType;
+
+        /**
+         * Creates an JobDefinition template (used in the configuration container).
+         */
         JobDefinition(Transcoder t, MimeType mt) {
             transcoder = t;
             analyzers = new ArrayList<Analyzer>();
@@ -381,6 +399,9 @@ public class CreateCachesProcessor implements CommitProcessor {
             out = null;
             mimeType = mt;
         }
+        /**
+         * Copy-contructor to do an actual transcoding
+         */
         JobDefinition(JobDefinition jd, Node dest, URI in, URI out) {
             transcoder = jd.transcoder.clone();
             analyzers  = jd.analyzers;
@@ -419,6 +440,12 @@ public class CreateCachesProcessor implements CommitProcessor {
 
 
     private static long lastJobNumber = 0;
+
+    /**
+     * A Job is associated with a 'source' node, and describes what is currently happening to create
+     * 'caches' nodes for it. Such a Job object is created everytime somebody create a new source
+     * object, or explictely triggers the associated 'cache' objects to be (re)created.
+     */
     public class Job implements Iterable<JobDefinition> {
 
         private final String user;
@@ -512,7 +539,7 @@ public class CreateCachesProcessor implements CommitProcessor {
         }
 
         /**
-         * The several streamcaches get created here according to their configuration.
+         * The several stream cache nodes (which are certain already) get created here.
          */
         protected void createCacheNodes() {
             synchronized(list) {
@@ -596,10 +623,7 @@ public class CreateCachesProcessor implements CommitProcessor {
 
         /**
          * Gets the node representing the 'cached' stream (the result of a conversion).
-         * @param cacheManager
-         * @param node  the original node from which the 'cached' stream was created
          * @param key   representation of the way the stream was created from its source
-         * @param logger
          */
         protected Node getCacheNode(final String key) {
 
@@ -623,14 +647,17 @@ public class CreateCachesProcessor implements CommitProcessor {
             return newNode;
         }
 
-
         public JobDefinition getCurrent() {
             return current;
         }
 
+        /**
+         * The Thread in which this Job is running.
+         */
         public Thread getThread() {
             return thread;
         }
+
         public synchronized void setThread(Thread t) {
             thread = t;
             if (t != null) {
