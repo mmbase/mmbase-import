@@ -115,7 +115,9 @@ public  class BasicContextProvider implements ContextProvider {
         }
         String builder = contextNode.getBuilder().getTableName();
         String contextName = contextNode.getStringValue(getContextNameField(builder));
-        log.debug("Getting context name of " + builder + ":" + contextNode.getNumber() + " -> " + contextName);
+        if (log.isDebugEnabled()) {
+            log.debug("Getting context name of " + builder + ":" + contextNode.getNumber() + " -> " + contextName);
+        }
         return contextName;
     }
 
@@ -158,14 +160,15 @@ public  class BasicContextProvider implements ContextProvider {
                 all = new TreeSet<String>();
                 for (NodeSearchQuery q : getContextQueries()) {
                     MMObjectBuilder contextBuilder = MMBase.getMMBase().getBuilder(q.getSteps().get(0).getTableName());
-                    Iterator<MMObjectNode> i = contextBuilder.getNodes(q).iterator();  // list all  Contextes simply..
                     String nameField = getContextNameField(q.getBuilder().getTableName());
-                    log.debug("Using " + MMBase.getMMBase().getSearchQueryHandler().createSqlString(q) + " for all context");
-                    while (i.hasNext()) {
-                        MMObjectNode context = i.next();
+                    if (log.isDebugEnabled()) {
+                        log.debug("Using " + MMBase.getMMBase().getSearchQueryHandler().createSqlString(q) + " for all context");
+                    }
+                    for (MMObjectNode context : contextBuilder.getNodes(q)) {
                         all.add(context.getStringValue(nameField));
                     }
                 }
+                log.info("All contexts " + all);
                 //invalidableObjects.put("ALL", Collections.unmodifiableSortedSet(all));
             } catch (SearchQueryException sqe) {
                 log.error(sqe.getMessage(), sqe);
@@ -179,15 +182,22 @@ public  class BasicContextProvider implements ContextProvider {
      * Returns a Set (of Strings) of all existing contexts for which the given operation is not allowed for the given user.
      */
     protected SortedSet<String> getDisallowingContexts(User user, Operation operation) {
-        if (operation != Operation.READ) throw new UnsupportedOperationException("Currently only implemented for READ");
+        if (operation != Operation.READ) {
+            throw new UnsupportedOperationException("Currently only implemented for READ");
+        }
         SortedSet<String> set = new TreeSet<String>();
         if (! canReadAll()) {
-            Iterator<String> i = getAllContexts().iterator();
-            while (i.hasNext()) {
-                String context = i.next();
+            if (log.isDebugEnabled()) {
+                log.debug("Comparing " + getAllContexts());
+            }
+            for (String context : getAllContexts()) {
                 MMObjectNode contextNode = getContextNode(context);
-                if (! mayDo(user, contextNode, operation)) {
+                log.debug("Checking for " + user + " " + contextNode);
+                if (! mayDoOnContext(user, contextNode, operation, true)) {
+                    log.debug("not allowed for " + context);
                     set.add(context);
+                } else {
+                    log.debug("allowed for " + context);
                 }
             }
         }
@@ -294,9 +304,7 @@ public  class BasicContextProvider implements ContextProvider {
         } else {
             List<MMObjectNode> possibleContexts = getContextNode(node).getRelatedNodes("mmbasecontexts", "allowed", RelationStep.DIRECTIONS_DESTINATION);
             SortedSet<String> set = new TreeSet<String>();
-            Iterator<MMObjectNode> i = possibleContexts.iterator();
-            while (i.hasNext()) {
-                MMObjectNode context = i.next();
+            for (MMObjectNode context: possibleContexts) {
                 String contextField = getContextNameField(context.getBuilder().getTableName());
                 if (mayDo(user, context, Operation.READ )) {
                     set.add(context.getStringValue(contextField));
@@ -621,9 +629,11 @@ public  class BasicContextProvider implements ContextProvider {
 
     public Authorization.QueryCheck check(User userContext, Query query, Operation operation) {
         if (userContext.getRank().getInt() >= Rank.ADMIN_INT) {
+            log.debug("User is admin");
             return Authorization.COMPLETE_CHECK;
         } else {
             if (operation == Operation.READ && (canReadAll() || disableContextChecks())) {
+                log.debug("No read checks done (can read all: " + canReadAll() + " disable context checks: " + disableContextChecks() + ")");
                 return Authorization.COMPLETE_CHECK;
             } else if (operation == Operation.READ) {
                 Cache<String, ContextProvider.AllowingContexts> allowingContextsCache = Caches.getAllowingContextsCache();
@@ -650,14 +660,12 @@ public  class BasicContextProvider implements ContextProvider {
                     allowingContextsCache.put(userContext.getIdentifier(), ac);
                 }
 
+
                 List<Step> steps = query.getSteps();
                 Constraint constraint = null;
-
                 // constraints on security objects
                 {
-                    Iterator<Step> i = steps.iterator();
-                    while (i.hasNext()) {
-                        Step step = i.next();
+                    for (Step step : steps) {
                         Constraint newConstraint = null;
                         if (step.getTableName().equals("mmbasegroups")) {
                             newConstraint = query.createConstraint(query.createStepField(step, "number"), userContext.getGroups()); // must be member of group to see group
@@ -681,15 +689,19 @@ public  class BasicContextProvider implements ContextProvider {
 
                     }
                 }
-
+                if (log.isDebugEnabled()) {
+                    log.debug("Allowing contexts for " + userContext + ": " + ac + " and " + constraint);
+                }
                 if (ac.contexts.size() == 0) {
                     if (ac.inverse) {
+                        log.debug("All contexts allowed");
                         if (constraint == null) {
                             return Authorization.COMPLETE_CHECK;
                         } else {
                             return new Authorization.QueryCheck(true, constraint);
                         }
                     } else {
+                        log.debug("No contexts allowed");
                         // may read nothing, simply making the query result nothing: number = -1
                         Constraint mayNothing = query.createConstraint(query.createStepField(query.getSteps().get(0), "number"), Integer.valueOf(-1));
                         return new Authorization.QueryCheck(true, mayNothing);
@@ -698,9 +710,7 @@ public  class BasicContextProvider implements ContextProvider {
 
 
                 if (steps.size() * ac.contexts.size() < getMaxContextsInQuery()) {
-                    Iterator<Step> i = steps.iterator();
-                    while (i.hasNext()) {
-                        Step step = i.next();
+                    for (Step step : steps) {
                         StepField field = query.createStepField(step, "owner");
                         Constraint newConstraint = query.createConstraint(field, ac.contexts);
                         if (ac.inverse) query.setInverse(newConstraint, true);
@@ -720,8 +730,12 @@ public  class BasicContextProvider implements ContextProvider {
                             constraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
                         }
                     }
+                    if (log.isDebugEnabled()) {
+                        log.debug("Constraint " + constraint);
+                    }
                     return new Authorization.QueryCheck(true, constraint);
                 } else { // query would grow too large
+                    log.debug("Too many contexts");
                     return Authorization.NO_CHECK;
                 }
 
