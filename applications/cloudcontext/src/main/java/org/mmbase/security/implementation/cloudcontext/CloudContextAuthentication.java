@@ -28,4 +28,9 @@ public abstract class CloudContextAuthentication extends Authentication {
         return Users.getBuilder().getProvider();
     }
 
+    @Override
+    public String getUserBuilder() {
+        return getUserProvider().getUserBuilder().getTableName();
+    }
+
 }
