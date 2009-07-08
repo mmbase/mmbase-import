@@ -45,7 +45,7 @@ public class FFMpegRecognizer implements Recognizer {
         Writer writer = new LoggerWriter(logger, Level.SERVICE);
         OutputStream outStream = new WriterOutputStream(writer, System.getProperty("file.encoding"));
         String p = path;
-        if (p == null) p = "":
+        if (p == null) p = "";
         //log.service("Calling (" + method + ") " + getCommand() + " " + Arrays.asList(getArguments()));
         File inFile = new File(in.getPath());
         CommandExecutor.execute(outStream, new CommandExecutor.Method(), p + "ffmpeg", new String[] {
