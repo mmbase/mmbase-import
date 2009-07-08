@@ -56,10 +56,10 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
-            query = (NodeQueryWrapper) getContextProvider().getContextContainer().getObject(cloneId);
+            query = new NodeQueryWrapper(ListNodesContainerTag.toNodeQuery(this, getContextProvider().getContextContainer().getObject(cloneId)));
             query.cloneQuery();
         } else if (getReferid() != null) {
-            query = (NodeQueryWrapper) getContextProvider().getContextContainer().getObject(getReferid());
+            query = new NodeQueryWrapper(ListNodesContainerTag.toNodeQuery(this, getContextProvider().getContextContainer().getObject(getReferid())));
             if (nodeManager != Attribute.NULL || role != Attribute.NULL || searchDirs != Attribute.NULL || path != Attribute.NULL || element != Attribute.NULL) {
                 throw new JspTagException("Cannot use 'nodemanager', 'role', 'searchdirs', 'path' or 'element' attributes together with 'referid'");
             }
