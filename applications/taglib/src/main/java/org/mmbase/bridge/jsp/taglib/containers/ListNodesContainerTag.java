@@ -15,6 +15,7 @@ import javax.servlet.jsp.JspException;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
+import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.storage.search.*;
@@ -121,7 +122,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
      * org.mmbase.util.Casting or so.
      * @since MMBase-1.9.1
      */
-    private NodeQuery toNodeQuery(Object o) throws JspTagException {
+    static NodeQuery toNodeQuery(CloudReferrerTag ct, Object o) throws JspTagException {
         if (o == null) return null;
         if (o instanceof NodeQuery) {
             return (NodeQuery) o;
@@ -130,7 +131,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
             if (q.getSteps().size() != 1) {
                 throw new IllegalStateException("The object " + q + " has not precisely one step and can therefore not be converted to a NodeQuery");
             }
-            NodeQuery nq = getCloudVar().getNodeManager(q.getSteps().get(0).getTableName()).createQuery();
+            NodeQuery nq = ct.getCloudVar().getNodeManager(q.getSteps().get(0).getTableName()).createQuery();
             nq.setConstraint(Queries.copyConstraint(nq.getConstraint(), nq.getSteps().get(0), nq, nq.getNodeStep()));
             nq.setOffset(q.getOffset());
             nq.setMaxNumber(q.getMaxNumber());
@@ -147,14 +148,14 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         prevQuery= pageContext.getAttribute(QueryContainer.KEY, QueryContainer.SCOPE);
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
-            query = new NodeQueryWrapper(toNodeQuery((getContextProvider().getContextContainer().getObject(cloneId))));
+            query = new NodeQueryWrapper(toNodeQuery(this, getContextProvider().getContextContainer().getObject(cloneId)));
             if (query == null) {
                 throw new JspTagException("No query found with id '" + cloneId + "' in " + getContextProvider().getContextContainer());
             }
             query.cloneQuery();
         } else if (getReferid() != null) {
             Object o = getContextProvider().getContextContainer().getObject(getReferid());
-            query = new NodeQueryWrapper(toNodeQuery(o));
+            query = new NodeQueryWrapper(toNodeQuery(this, o));
 
             if (query == null) {
                 throw new JspTagException("No query found in referred id " + getReferid());
