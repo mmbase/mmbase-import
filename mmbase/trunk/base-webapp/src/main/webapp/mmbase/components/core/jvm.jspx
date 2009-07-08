@@ -23,17 +23,21 @@
               <p><a href="${_}">reload</a></p>
             </mm:link>
           </c:when>
-          <c:otherwise>
-            <mm:link>
-              <mm:param name="gc">true</mm:param>
-              <p><a href="${_}">GC</a></p>
-            </mm:link>
-          </c:otherwise>
         </c:choose>
+        <mm:link>
+          <mm:param name="gc">true</mm:param>
+          <p><a href="${_}">${gc eq true ? 'another GC' : 'GC'}</a></p>
+        </mm:link>
       </mm:may>
 
+      <p>Used memory: <mm:escape escape="filesize"><jsp:expression>Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()</jsp:expression></mm:escape></p>
       <p>Free memory: <mm:escape escape="filesize"><jsp:expression>Runtime.getRuntime().freeMemory()</jsp:expression></mm:escape></p>
       <p>Total memory: <mm:escape escape="filesize"><jsp:expression>Runtime.getRuntime().totalMemory()</jsp:expression></mm:escape></p>
+      <p>MMBase Uptime: <mm:import id="time"><jsp:expression>(System.currentTimeMillis() / 1000) - org.mmbase.module.core.MMBase.startTime</jsp:expression></mm:import>
+      <mm:write referid="time">
+        <mm:time format="HH:mm:ss" timezone="UT" />
+      </mm:write>
+      </p>
 
       <table class="environment">
         <caption>Environment</caption>
