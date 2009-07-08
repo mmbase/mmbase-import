@@ -665,6 +665,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     @Override public BasicDataType<C> clone(String name) {
         @SuppressWarnings("unchecked")
         BasicDataType<C> clone = (BasicDataType<C>) super.clone(name);
+        clone.restrictions.clear();
         // reset owner if it was set, so this datatype can be changed
         clone.rewrite(clone.owner);
         // properly inherit from this datatype (this also clones properties and processor arrays)
