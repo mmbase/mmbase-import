@@ -49,62 +49,6 @@ public class RelatedNodesCache extends QueryResultCache {
         return "Caches related nodes of a certain node";
     }
 
-    // nodenumber -> set of keys
-    // Used to sync this cache with node-cache. If node not any more in node-cache, then we decide to also remove its related nodes.
-    // This seems a plausible thing to do.
-
-    private Map<Integer, Set<SearchQuery>> numberToKeys = new HashMap<Integer, Set<SearchQuery>>();
-
-
-    @Override
-    public List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
-        if (query instanceof BasicQuery) {
-            query = ((BasicQuery) query).getQuery();
-        }
-        if (!checkCachePolicy(query)) {
-            return null;
-        }
-
-        synchronized(lock) {
-            Integer number = (query.getSteps().get(0)).getNodes().first();
-            Set<SearchQuery> keys = numberToKeys.get(number);
-            if (keys == null) {
-                keys = new HashSet<SearchQuery>();
-                numberToKeys.put(number, keys);
-            }
-            keys.add(query);
-            return super.put(query, queryResult);
-        }
-    }
-
-
-    @Override
-    public List<MMObjectNode> remove(final Object key) {
-        synchronized(lock) {
-            SearchQuery query = (SearchQuery) key;
-            Integer number = (query.getSteps().get(0)).getNodes().first();
-            Set<SearchQuery> keys = numberToKeys.get(number);
-            if (keys != null) {
-                keys.remove(query);
-                if (keys.size() == 0) numberToKeys.remove(number);
-            }
-            return super.remove(key);
-        }
-    }
-
-    final void removeNode(Integer number) {
-        synchronized(lock) {
-            Set<SearchQuery>  keys = numberToKeys.get(number);
-            if (keys != null) {
-                Iterator<SearchQuery> i = keys.iterator();
-                while (i.hasNext()) {
-                    super.remove(i.next());
-                }
-                numberToKeys.remove(number);
-            }
-        }
-    }
-
     /**
      * Creates the Node list cache.
      */
@@ -112,11 +56,4 @@ public class RelatedNodesCache extends QueryResultCache {
         super(size);
     }
 
-    @Override
-    public void clear(){
-        synchronized(lock) {
-            super.clear();
-            numberToKeys.clear();
-        }
-    }
 }
