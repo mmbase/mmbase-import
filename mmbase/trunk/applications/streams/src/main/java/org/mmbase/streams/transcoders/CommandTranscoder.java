@@ -27,13 +27,15 @@ import org.mmbase.util.logging.*;
  */
 
 public abstract class CommandTranscoder extends AbstractTranscoder {
+    private static final Logger log = Logging.getLoggerInstance(CommandTranscoder.class);
 
     private CommandExecutor.Method method = new CommandExecutor.Method();
 
-    private String path = "";
+    private String path = org.mmbase.util.ApplicationContextReader.getCachedProperties(getClass().getName()).get("path");
 
     public CommandTranscoder(String id) {
         super(id);
+        log.service("" + getClass().getName() + " path:" + path);
     }
 
     public void setMethod(CommandExecutor.Method m) {
@@ -57,8 +59,10 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
 
     protected void transcode(final Logger log) throws Exception {
         OutputStream outStream = new WriterOutputStream(getOutputWriter(log), System.getProperty("file.encoding"));
-        log.service("Calling (" + method + ") " + getCommand() + " " + Arrays.asList(getArguments()));
-        CommandExecutor.execute(outStream, method, path + getCommand(), getArguments());
+        String p = path;
+        if (p == null) p = "";
+        log.service("Calling (" + method + ") " + p + getCommand() + " " + Arrays.asList(getArguments()));
+        CommandExecutor.execute(outStream, method, p + getCommand(), getArguments());
     }
 
 
