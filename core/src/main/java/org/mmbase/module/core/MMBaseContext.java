@@ -358,7 +358,8 @@ public class MMBaseContext {
      *
      * This information should be requested from the ServletRequest, but if for some reason you
      * don't have one handy, this method can be used.
-
+     * When using Servlet 2.5, this is the same as {@link #getServletContext()}.getContextPath() +
+     * "/", so this <em>also ends in a /</em>
      * @return  the HtmlRootUrlPath
      */
     public synchronized static String getHtmlRootUrlPath() {
@@ -385,7 +386,7 @@ public class MMBaseContext {
                         htmlRootUrlPath = "/";
                     } else if (sx.getMajorVersion() > 2 || (sx.getMajorVersion() == 2 && sx.getMinorVersion() >= 5)) {
                         try {
-                            htmlRootUrlPath = (String) sx.getClass().getMethod("getContextPath").invoke(sx);
+                            htmlRootUrlPath = (String) sx.getClass().getMethod("getContextPath").invoke(sx) + "/";
                         } catch(Exception e) {
                             log.error(e);
                         }
