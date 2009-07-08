@@ -49,16 +49,6 @@ public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEvent
         // node cache is registered as a Listener in MMBase.java.
     }
 
-    @Override
-    public MMObjectNode remove(Object key) {
-
-        Integer nodeNumber = Casting.toInt(key);
-        RelatedNodesCache.getCache().removeNode(nodeNumber);
-
-        return super.remove(nodeNumber);
-    }
-
-
     public void notify(NodeEvent event) {
         int type = event.getType();
         if(type == Event.TYPE_DELETE || ((! event.isLocal()) && type == Event.TYPE_CHANGE)) {
