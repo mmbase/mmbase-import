@@ -30,6 +30,8 @@ public class FFMpegRecognizer implements Recognizer {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpegRecognizer.class);
 
+    private String path = org.mmbase.util.ApplicationContextReader.getCachedProperties(getClass().getName()).get("path");
+
     private MimeType mimeType;
 
     public MimeType getMimeType() {
@@ -42,9 +44,11 @@ public class FFMpegRecognizer implements Recognizer {
     public void analyze(URI in, Logger logger) throws Exception {
         Writer writer = new LoggerWriter(logger, Level.SERVICE);
         OutputStream outStream = new WriterOutputStream(writer, System.getProperty("file.encoding"));
+        String p = path;
+        if (p == null) p = "":
         //log.service("Calling (" + method + ") " + getCommand() + " " + Arrays.asList(getArguments()));
         File inFile = new File(in.getPath());
-        CommandExecutor.execute(outStream, new CommandExecutor.Method(), "ffmpeg", new String[] {
+        CommandExecutor.execute(outStream, new CommandExecutor.Method(), p + "ffmpeg", new String[] {
                 "-i", inFile.toString(),
             }
             );
