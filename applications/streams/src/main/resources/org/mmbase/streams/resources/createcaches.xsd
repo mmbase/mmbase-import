@@ -39,6 +39,16 @@
     </xsd:complexType>
   </xsd:element>
 
+  <xsd:element name="recognizer">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="class" minOccurs="1" maxOccurs="1" />
+        <xsd:element ref="loganalyzer" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="id"        type="xsd:ID" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+
   <xsd:element name="localhost">
     <xsd:complexType>
       <xsd:attribute name="max_simultaneous_transcoders" type="xsd:integer" use="required" />
