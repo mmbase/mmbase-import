@@ -123,7 +123,9 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
                         String name = field.getAlias();
                         if (name == null) {
                             name = step.getAlias();
-                            if (name == null) name = step.getTableName();
+                            if (name == null) {
+                                name = step.getTableName();
+                            }
                             name += "." + field.getFieldName();
                         }
                         final String fieldName = name;
