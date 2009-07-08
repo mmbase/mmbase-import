@@ -383,7 +383,7 @@ public class MMBaseContext {
                     // check wether this is root
                     if (sx.equals(sx.getContext("/"))) {
                         htmlRootUrlPath = "/";
-                    } else if (sx.getMajorVersion() >=2 || (sx.getMajorVersion() == 2 && sx.getMinorVersion() >= 5)) {
+                    } else if (sx.getMajorVersion() > 2 || (sx.getMajorVersion() == 2 && sx.getMinorVersion() >= 5)) {
                         try {
                             htmlRootUrlPath = (String) sx.getClass().getMethod("getContextPath").invoke(sx);
                         } catch(Exception e) {
