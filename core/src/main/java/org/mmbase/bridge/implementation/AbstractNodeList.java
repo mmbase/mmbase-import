@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.implementation;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.MapNode;
@@ -138,10 +137,10 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
                 try {
                     node = cloud.getNodeManager(builderName);
                 } catch (Throwable t) {
-                    node = getNode(cloud, coreNode);
+                    node = getNode(cloud, nodeManager, coreNode);
                 }
             } else {
-                node = getNode(cloud, coreNode);
+                node = getNode(cloud, nodeManager, coreNode);
             }
         } else if (coreBuilder instanceof RelDef) {
             node = cloud.getRelationManager(coreNode.getStringValue("sname"));
@@ -172,7 +171,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
             }
             node = cloud.getRelationManager(nm1.getName(), nm2.getName(), role.getStringValue("sname"));
         } else if(coreBuilder instanceof InsRel) {
-            node = getNode(cloud, coreNode);
+            node = getNode(cloud, nodeManager, coreNode);
         } else if (coreNode instanceof org.mmbase.module.core.VirtualNode) {
             MMObjectBuilder builder = coreNode.getBuilder();
             if (builder instanceof VirtualBuilder) {
@@ -191,7 +190,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
                 node = new VirtualNode(cloud, (org.mmbase.module.core.VirtualNode) coreNode, cloud.getNodeManager(builder.getObjectType()));
             }
         } else {
-            node =  getNode(cloud, coreNode);
+            node =  getNode(cloud, nodeManager, coreNode);
         }
         return node;
     }
@@ -211,7 +210,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
     /**
      * @since MMBase-1.8.4
      */
-    protected static Node getNode(Cloud cloud, MMObjectNode coreNode) {
+    protected static Node getNode(Cloud cloud, NodeManager nodeManager, MMObjectNode coreNode) {
         int n = coreNode.getNumber();
         if (n == -1) {
             String[] na  = coreNode.getStringValue("_number").split("_");
@@ -226,7 +225,16 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
             }
         } else {
             if (cloud.hasNode(n)) {
-                return cloud.getNode(n);
+                if (cloud.mayRead(n)) {
+                    return cloud.getNode(n);
+                } else {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("number", n);
+                    if (nodeManager == null) nodeManager = cloud.getNodeManager("object");
+                    Node placeHolder = new MapNode<Object>(map, nodeManager);
+                    log.warn("List containing a node which may not be read. Bug in Security implmentation?. Returning a placeholder for now: " + placeHolder + " " + nodeManager, new Exception());
+                    return placeHolder;
+                }
             } else {
                 return new BasicNode(coreNode, (BasicCloud) cloud);
             }
