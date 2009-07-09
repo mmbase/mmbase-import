@@ -18,12 +18,13 @@ import java.util.*;
 /**
  * A Fragment URLComposer is an URLComposer which can also use
  * information about the Fragment in the URL. Generally this means
- * that is can represent a fragments 'completely' so, with
+ * that it can represent a fragments 'completely' so, with
  * information about start and stop times.
  *
  *
  * @author Michiel Meeuwissen
  * @author Rob Vermeulen (VPRO)
+ * @version $Id$
  */
 public class FragmentURLComposer extends URLComposer  {
     protected MMObjectNode fragment;
