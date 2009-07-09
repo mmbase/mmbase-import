@@ -74,14 +74,18 @@ public class BinaryCommitProcessor implements CommitProcessor {
     }
     private String getContentType(Object o) {
         String ct = setContentTypeIfNotRecognized ? "application/octet-stream" : null;
-        if (o instanceof SerializableInputStream) {
+        if (o == null) {
+            return ct;
+        } else if (o instanceof SerializableInputStream) {
             ct =  ((SerializableInputStream)o).getContentType();
             log.debug("Found ct " + ct);
         } else if (o instanceof FileItem) {
             ct = ((FileItem)o).getContentType();
             log.debug("Found ct " + ct);
         } else {
-            log.debug("No ct found in " + o.getClass() + " " + o);
+            if (log.isDebugEnabled()) {
+                log.debug("No ct found in " + o.getClass() + " " + o);
+            }
         }
         return ct;
     }
