@@ -468,6 +468,10 @@
     <function name="nodeListFunction1">
       <class>org.mmbase.util.functions.ExampleBean</class>
     </function>
+
+    <function name="thisnode">
+      <class>org.mmbase.bridge.ThisNodeFunction</class>
+    </function>
   </functionlist>
 
 </builder>
