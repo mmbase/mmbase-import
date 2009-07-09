@@ -12,6 +12,7 @@ package org.mmbase.bridge;
 
 import org.mmbase.tests.BridgeTest;
 import org.mmbase.bridge.util.*;
+import org.mmbase.bridge.implementation.*;
 import junit.framework.*;
 
 /**
@@ -54,6 +55,7 @@ public class AllTests {
         suite.addTestSuite(SerializableTest.class);
         suite.addTestSuite(ToStringTest.class);
         suite.addTestSuite(ProcessorTest.class);
+        suite.addTestSuite(VirtualNodeTest.class);
         suite.addTest(BridgeTest.SHUTDOWN);
         return suite;
     }
