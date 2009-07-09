@@ -51,7 +51,7 @@ public class VirtualNodeTest extends BridgeTest {
         VirtualNode node = new VirtualNode(map, getCloud());
         assertEquals("A", node.getStringValue("a"));
 
-        assertNotNull("" + node, node.getNodeValue("subnode")); // FAILS
+        assertNotNull("" + node, node.getNodeValue("subnode"));
         assertEquals("B", node.getNodeValue("subnode").getStringValue("b"));
 
     }
