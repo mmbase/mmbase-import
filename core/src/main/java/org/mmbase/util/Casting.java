@@ -205,7 +205,9 @@ public class Casting {
             } else if (type.equals(Node.class)) {
                 try {
                     if (cloud == null) {
-                        if (anonymousCloud == null) anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+                        if (anonymousCloud == null || ! anonymousCloud.getUser().isValid()) {
+                            anonymousCloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+                        }
                         cloud = anonymousCloud;
                     }
                     return (C) toNode(value, cloud);
