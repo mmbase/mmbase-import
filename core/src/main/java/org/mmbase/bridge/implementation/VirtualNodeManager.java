@@ -187,6 +187,11 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
         public String getName() {
             return name;
         }
+        @Override
+        public int getState() {
+            return Field.STATE_VIRTUAL;
+        }
+
         public int compareTo(Field o) {
             return name.compareTo(o.getName());
         }

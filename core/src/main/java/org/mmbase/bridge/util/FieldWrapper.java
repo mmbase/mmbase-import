@@ -38,7 +38,9 @@ public class FieldWrapper implements Field {
         throw new UnsupportedOperationException();
     }
 
-    public int getState() { return Field.STATE_VIRTUAL; }
+    public int getState() {
+        return field.getState();
+    }
 
     public DataType<?> getDataType() { return field.getDataType(); }
     public boolean isUnique() { return field.isUnique(); }
