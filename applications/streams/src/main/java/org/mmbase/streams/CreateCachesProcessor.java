@@ -592,6 +592,10 @@ public class CreateCachesProcessor implements CommitProcessor {
                             inNode = node;
                         } else {
                             Result prevResult = results.get(next.getKey());
+                            if (prevResult == null) {
+                                logger.error("No result with id " + next.getKey() + " in " + results + ". Misconfiguration?");
+                                continue;
+                            }
                             inFile = prevResult.getOut();
                             inNode = prevResult.getNode();
                         }
@@ -641,9 +645,13 @@ public class CreateCachesProcessor implements CommitProcessor {
                         }
                     }
                     if (current.getNode() != null) {
-                        LOG.info("Setting " + current.getNode().getNumber() + " to BUSY");
-                        current.getNode().setIntValue("state", State.BUSY.getValue());
-                        current.getNode().commit();
+                        try {
+                            LOG.info("Setting " + current.getNode().getNumber() + " to BUSY");
+                            current.getNode().setIntValue("state", State.BUSY.getValue());
+                            current.getNode().commit();
+                        } catch (Exception e) {
+                            LOG.error(e);
+                        }
                     }
                     busy++;
                     return current;
