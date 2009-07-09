@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.urlcomposers;
 
 import org.mmbase.applications.media.Format;
+import org.mmbase.applications.media.MimeType;
 import org.mmbase.applications.media.builders.MediaFragments;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.Logger;
@@ -44,6 +45,7 @@ public class URLComposerFactory  {
     private static final String COMPOSER_TAG = "urlcomposer";
     private static final String FORMAT_ATT   = "format";
     private static final String PROTOCOL_ATT   = "protocol";
+    private static final String MIMETYPE_ATT   = "mimetype";
 
     public static final  String CONFIG_FILE = "media/urlcomposers.xml";
 
@@ -61,21 +63,31 @@ public class URLComposerFactory  {
         private static Class[] constructorArgs = new Class[] {
             MMObjectNode.class, MMObjectNode.class, MMObjectNode.class, Map.class, List.class
         };*/
-        private Format format;
-        private String protocol;
-        private Class<?>  klass;
+        private final Format format;
+        private final String protocol;
+        private final Class<?>  klass;
+        private final MimeType mimeType;
 
-        ComposerConfig(Format f, Class<?> k, String p) {
+        ComposerConfig(Format f, Class<?> k, String p, MimeType mt) {
             this.format = f;
             this.klass = k;
-            this.protocol = p;
-            if (protocol == null) protocol = "";
+            this.protocol = p == null ? "" : p;
+            this.mimeType = mt;
 
         }
-        boolean checkFormat(Format f) {     return format.equals(f); }
-        boolean checkProtocol(String p) {   return "".equals(protocol) || protocol.equals(p); }
+        boolean checkFormat(Format f) {
+            return format.equals(f);
+        }
+        boolean checkProtocol(String p) {
+            return "".equals(protocol) || protocol.equals(p);
+        }
+        boolean checkMimeType(MimeType mt) {
+            return mimeType.matches(mt);
+        }
 
-        Class<?>   getComposerClass() { return klass; };
+        Class<?>   getComposerClass() {
+            return klass;
+        }
 
         URLComposer getInstance(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
             try {
@@ -96,7 +108,7 @@ public class URLComposerFactory  {
     // this is the beforementioned list.
     private List<ComposerConfig> urlComposerClasses = new ArrayList<ComposerConfig>();
 
-    private ComposerConfig defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null);
+    private ComposerConfig defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null, MimeType.ANY);
 
     private ResourceWatcher configWatcher = new ResourceWatcher() {
         public void onChange(String file) {
@@ -137,9 +149,9 @@ public class URLComposerFactory  {
         } else {
             DocumentReader reader = new DocumentReader(doc);
             try {
-                defaultUrlComposer = new ComposerConfig(null, Class.forName(reader.getElementValue(MAIN_TAG + "." + DEFAULT_TAG)), null);
+                defaultUrlComposer = new ComposerConfig(null, Class.forName(reader.getElementValue(MAIN_TAG + "." + DEFAULT_TAG)), null, MimeType.ANY);
             } catch (java.lang.ClassNotFoundException e) {
-                defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null);
+                defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null, MimeType.ANY);
                 // let it be something in any case
                 log.error(e.toString());
             }
@@ -155,12 +167,13 @@ public class URLComposerFactory  {
                     formats.add(Format.get(f));
                 }
                 String  protocol  =  element.getAttribute(PROTOCOL_ATT);
+                MimeType mimeType = new MimeType(element.getAttribute(MIMETYPE_ATT));
                 Iterator<Format> i = formats.iterator();
                 while(i.hasNext()) {
                     Format format = i.next();
                     try {
                         log.debug("Adding for format " + format + " urlcomposer " + clazz);
-                        urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz), protocol));
+                        urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz), protocol, mimeType));
                     } catch (ClassNotFoundException ex) {
                         log.error("Cannot load urlcomposer " + clazz + " because " + ex.getMessage());
                     }
@@ -251,6 +264,13 @@ public class URLComposerFactory  {
 
         final Format format   = Format.get(source.getIntValue("format"));
         final String protocol = provider.getStringValue("protocol");
+        MimeType mt = format.getMimeType();
+        if (source.getBuilder().hasField("mimetype")) {
+            String v = source.getStringValue("mimetype");
+            if (v != null && v.length() > 0) {
+                mt = new MimeType(source.getStringValue("mimetype"));
+            }
+        }
         if (log.isDebugEnabled()) {
             log.debug("Creating url-composers for provider " + provider.getNumber() + " (format: " + format + ", protocol: " + protocol + ")");
         }
@@ -261,7 +281,7 @@ public class URLComposerFactory  {
                 log.debug("Trying " + cc + " for '" + format + "'/'" + protocol + "'");
             }
 
-            if (cc.checkFormat(format) && cc.checkProtocol(protocol)) {
+            if (cc.checkFormat(format) && cc.checkProtocol(protocol) && cc.checkMimeType(mt)) {
                 if (MarkupURLComposer.class.isAssignableFrom(cc.getComposerClass())) {
                     // markupurlcomposers need a template, and a fragment can have 0-n of those.
                     List<MMObjectNode> templates = getTemplates(fragment);
