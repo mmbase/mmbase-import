@@ -41,6 +41,9 @@ public class ApplicationContextReader {
         if (m == null) {
             try {
                 m = getProperties(path);
+            } catch (javax.naming.NameNotFoundException nfe) {
+                log.service(nfe);
+                m =  Collections.emptyMap();
             } catch (javax.naming.NamingException ne) {
                 log.error(ne);
                 m =  Collections.emptyMap();
