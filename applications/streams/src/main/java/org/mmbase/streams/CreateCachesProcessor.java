@@ -109,6 +109,8 @@ public class CreateCachesProcessor implements CommitProcessor {
                                     String in = el.getAttribute("in");
                                     if (in.length() > 0) {
                                         transcoder.setInId(in);
+                                    } else {
+                                        transcoder.setInId(null);
                                     }
                                     MimeType mimeType = new MimeType(el.getAttribute("mimetype"));
                                     LOG.debug("Created " + transcoder);
@@ -243,39 +245,36 @@ public class CreateCachesProcessor implements CommitProcessor {
             // already running
             return null;
         }
-        final Job thisJob = new Job(node, logger, list);
+        final Job thisJob = new Job(node, logger);
         runningJobs.put(node.getNumber(), thisJob);
 
         thisJob.setFuture(transcoderExecutor.submit(new Callable<Integer>() {
                     public Integer call() {
                         thisJob.setThread(Thread.currentThread());
-                        int result = 0;
+                        int resultCount = 0;
                         try {
-                            LOG.service("Using " + thisJob.clones);
-                            for (final JobDefinition jd : thisJob) {
-                                logger.service("NOW doing " + jd);
-                                URI in = jd.getIn();
-                                URI out = jd.getOut();
+                            LOG.service("Using " + thisJob.results);
+                            for (final Result result : thisJob) {
+                                logger.service("NOW doing " + result);
+                                URI in  = result.getIn();
+                                URI out = result.getOut();
 
+                                JobDefinition jd = result.getJobDefinition();
                                 final List<AnalyzerLogger> analyzerLoggers = new ArrayList<AnalyzerLogger>();
                                 for (Analyzer a: jd.analyzers) {
-                                    AnalyzerLogger al = new AnalyzerLogger(a.clone(), thisJob.getNode(), jd.getResultNode());
+                                    AnalyzerLogger al = new AnalyzerLogger(a.clone(), thisJob.getNode(), result.getNode());
                                     analyzerLoggers.add(al);
                                     logger.addLogger(al);
                                 }
                                 try {
                                     jd.transcoder.transcode(in, out, logger);
                                     for (AnalyzerLogger al : analyzerLoggers) {
-                                        al.getAnalyzer().ready(thisJob.getNode(), jd.getResultNode());
+                                        al.getAnalyzer().ready(thisJob.getNode(), result.getNode());
                                     }
-                                    result++;
-                                    logger.info("READY " + thisJob);
+                                    resultCount++;
+                                    result.ready();
+                                    logger.info("READY " + thisJob + ":" + result);
                                     if (thisJob.isInterrupted() || Thread.currentThread().isInterrupted()){
-                                        Node cacheNode = jd.getResultNode();
-                                        if (cacheNode != null) {
-                                            cacheNode.setIntValue("state", State.INTERRUPTED.getValue());
-                                            cacheNode.commit();
-                                        }
                                         logger.info("Interrupted");
                                         break;
                                     }
@@ -299,10 +298,10 @@ public class CreateCachesProcessor implements CommitProcessor {
                             logger.error(e.getMessage(), e);
                             throw e;
                         } finally {
-                            logger.info("READY " + result);
+                            logger.info("READY " + resultCount);
                             runningJobs.remove(thisJob.getNode().getNumber());
                         }
-                        return result;
+                        return resultCount;
 
                     }
                     })
@@ -377,39 +376,20 @@ public class CreateCachesProcessor implements CommitProcessor {
 
     /**
      * The description or definition of one 'transcoding' sub job that's doing the transcoding. This
-     * is used both as an actual place holder in a {@link Job}, but also as a template (those 2
-     * tasks are mirroed in the 2 constructors).
-     * @todo Perhaps it is a bit silly to use the same object for these two basicly different things.
+     * combines a transcoder, with a mime type for which it must be valid, and a list of analyzers.
      */
     public class JobDefinition {
-        public final Transcoder transcoder;
-        public final Node dest;
-        public final List<Analyzer> analyzers;
-        public final URI in;
-        public final URI out;
-        public final MimeType mimeType;
+        final Transcoder transcoder;
+        final List<Analyzer> analyzers;
+        final MimeType mimeType;
 
         /**
          * Creates an JobDefinition template (used in the configuration container).
          */
         JobDefinition(Transcoder t, MimeType mt) {
-            transcoder = t;
+            transcoder = t.clone();
             analyzers = new ArrayList<Analyzer>();
-            dest = null;
-            in = null;
-            out = null;
             mimeType = mt;
-        }
-        /**
-         * Copy-contructor to do an actual transcoding
-         */
-        JobDefinition(JobDefinition jd, Node dest, URI in, URI out) {
-            transcoder = jd.transcoder.clone();
-            analyzers  = jd.analyzers;
-            mimeType   = jd.mimeType;
-            this.dest = dest;
-            this.in = in;
-            this.out = out;
         }
 
         public Transcoder getTranscoder() {
@@ -418,16 +398,7 @@ public class CreateCachesProcessor implements CommitProcessor {
         public List<Analyzer> getAnalyzers() {
             return Collections.unmodifiableList(analyzers);
         }
-        public Node getResultNode() {
-            return dest;
-        }
 
-        public URI getIn() {
-            return in;
-        }
-        public URI getOut() {
-            return out;
-        }
 
         public MimeType getMimeType() {
             return mimeType;
@@ -440,6 +411,68 @@ public class CreateCachesProcessor implements CommitProcessor {
     }
 
 
+    /**
+     * Container for the result of a JobDefinition
+     */
+    public class Result {
+        final JobDefinition definition;
+        final Node dest;
+        final URI in;
+        final URI out;
+        Result(JobDefinition def, Node dest, URI in, URI out) {
+            definition = def;
+            this.dest = dest;
+            this.in = in;
+            this.out = out;
+            if (this.dest != null) {
+                LOG.info("Setting " + dest.getNumber() + " to request");
+                dest.setIntValue("state",  State.REQUEST.getValue());
+                dest.commit();
+            }
+
+        }
+        public JobDefinition getJobDefinition() {
+            return definition;
+        }
+        public Node getNode() {
+            return dest;
+        }
+        public MimeType getMimeType() {
+            if (dest == null) {
+                return null;
+            } else {
+                return new MimeType(dest.getStringValue("mimetype"));
+            }
+        }
+
+        public URI getIn() {
+            return in;
+        }
+        public URI getOut() {
+            return out;
+        }
+        public void ready() {
+            if (dest != null) {
+                LOG.info("Setting " + dest.getNumber() + " to done");
+                File outFile = new File(FileServlet.getDirectory(), dest.getStringValue("url").replace("/", File.separator));
+                dest.setLongValue("filesize", outFile.length());
+                dest.setIntValue("state", State.DONE.getValue());
+                dest.commit();
+
+            }
+        }
+
+        public String toString() {
+            if (dest != null) {
+                return dest.getNumber() + ":" + out;
+            } else {
+                return definition.toString();
+            }
+        }
+
+    }
+
+
     private static long lastJobNumber = 0;
 
     /**
@@ -447,28 +480,28 @@ public class CreateCachesProcessor implements CommitProcessor {
      * 'caches' nodes for it. Such a Job object is created everytime somebody create a new source
      * object, or explictely triggers the associated 'cache' objects to be (re)created.
      */
-    public class Job implements Iterable<JobDefinition> {
+    public class Job implements Iterable<Result> {
 
         private final String user;
         private final Node node;
         private final Node mediaprovider;
         private final Node mediafragment;
         private final BufferedLogger logger;
-        private final Map<String, JobDefinition> clones = new LinkedHashMap<String, JobDefinition>();
+        private final Map<String, Result> results = new LinkedHashMap<String, Result>();
         private final long number = lastJobNumber++;
 
         private int busy = 0;
 
         private Future<Integer> future;
 
-        private JobDefinition current;
+        private Result current;
 
         private Thread thread;
         boolean interrupted = false;
         boolean ready = false;
 
 
-        public Job(Node node, ChainedLogger chain, Map<String, JobDefinition> list) {
+        public Job(Node node, ChainedLogger chain) {
             user = node.getCloud().getUser().getIdentifier();
             this.node = node;
             logger = new BufferedLogger();
@@ -481,62 +514,6 @@ public class CreateCachesProcessor implements CommitProcessor {
             mediaprovider = node.getNodeValue("mediaprovider");
             assert mediafragment != null;
             assert mediaprovider != null;
-            File inFile = new File(FileServlet.getDirectory(), node.getStringValue("url"));
-
-            try {
-                synchronized(list) {
-                    createCacheNodes();
-
-                    for (Map.Entry<String, JobDefinition> entry : list.entrySet()) {
-                        JobDefinition jd = entry.getValue();
-                        String id = entry.getKey();
-                        if (jd.transcoder.getKey() != null) {
-                            LOG.debug("Format: " + jd.transcoder.getFormat());
-                            Node resultNode = getCacheNode(jd.transcoder.getKey());
-
-                            StringBuilder buf = new StringBuilder();
-                            org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, resultNode.getNumber(), "/");
-                            buf.append(resultNode.getNumber()).append(".");
-                            buf.append(ResourceLoader.getName(inFile.getName())).append(".").append(jd.transcoder.getFormat().toString().toLowerCase());
-                            String outFileName = buf.toString();
-                            resultNode.setStringValue("url", outFileName);
-                            URI in = inFile.toURI();
-                            File outFile = new File(FileServlet.getDirectory(), outFileName.replace("/", File.separator));
-
-
-
-                            resultNode.commit();
-                            logger.info("Using cache node " + resultNode.getNumber()  + " for provider " + mediaprovider.getNumber() + " fragment " + mediafragment.getNumber());
-                            URI inURI;
-                            if (jd.transcoder.getInId() == null) {
-                                inURI = inFile.toURI();
-                            } else {
-                                JobDefinition other = clones.get(jd.transcoder.getInId());
-                                if (other == null) {
-                                    logger.warn("No job definition with id '" + jd.transcoder.getInId() + "' found");
-                                    inURI = null;
-                                } else {
-                                    inURI = other.getOut();
-                                }
-                            }
-                            if (inURI != null) {
-                                JobDefinition clone = new JobDefinition(jd, resultNode, inURI, outFile.toURI());
-                                clones.put(id, clone);
-                            }
-                        } else {
-
-                            JobDefinition clone = new JobDefinition(jd, null, inFile.toURI(), null);
-                            logger.info("Cachenodeless job" + clone);
-                            clones.put(id, clone);
-
-                        }
-
-                    }
-
-                }
-            } catch (Exception e) {
-                chain.error(e.getClass() + " " + e.getMessage(), e);
-            }
         }
 
         /**
@@ -548,44 +525,104 @@ public class CreateCachesProcessor implements CommitProcessor {
 
                     // TODO check only create if always must be created or, if mimetype matches with input.
                     JobDefinition jd = entry.getValue();
+                    String id = entry.getKey();
                     if (jd.transcoder.getKey() != null) {
-                        Node resultNode = getCacheNode(jd.transcoder.getKey());
-                        // virtual field actually creates relation
-                        resultNode.setNodeValue("mediaprovider", mediaprovider);
-                        resultNode.setNodeValue("mediafragment", mediafragment);
+                        String inId = jd.transcoder.getInId();
+                        if ((inId == null || results.containsKey(inId))) {
 
-                        resultNode.setIntValue("state",  State.REQUEST.getValue());
-                        resultNode.setStringValue("key", jd.transcoder.getKey());
-                        Format f = jd.transcoder.getFormat();
-                        resultNode.setIntValue("format", f.toInt());
-                        Codec c = jd.transcoder.getCodec();
-                        if (c == null) {
-                            resultNode.setValue("codec", null);
-                        } else {
-                            resultNode.setIntValue("codec", c.toInt());
+                            MimeType inMimeType;
+                            if (inId == null) {
+                                inMimeType = new MimeType(node.getStringValue("mimetype"));
+                            } else {
+                                inMimeType = results.get(id).getMimeType();
+                            }
+                            if (! jd.getMimeType().matches(inMimeType)) {
+                                continue;
+                            }
+
+                            Node resultNode = getCacheNode(jd.transcoder.getKey());
+
+                            // virtual field actually creates relation
+                            resultNode.setNodeValue("mediaprovider", mediaprovider);
+                            resultNode.setNodeValue("mediafragment", mediafragment);
+
+                            resultNode.setStringValue("key", jd.transcoder.getKey());
+                            Format f = jd.transcoder.getFormat();
+                            resultNode.setIntValue("format", f.toInt());
+                            Codec c = jd.transcoder.getCodec();
+                            if (c == null) {
+                                resultNode.setValue("codec", null);
+                            } else {
+                                resultNode.setIntValue("codec", c.toInt());
+                            }
+                            resultNode.setNodeValue("id",    node);
+
+                            File inFile  = new File(FileServlet.getDirectory(), node.getStringValue("url").replace("/", File.separator));
+                            StringBuilder buf = new StringBuilder();
+                            org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, node.getNumber(), "/");
+                            buf.append(resultNode.getNumber()).append('.').append(ResourceLoader.getName(inFile.getName())).append(".").append(jd.transcoder.getFormat().toString().toLowerCase());
+                            String outFileName = buf.toString();
+                            resultNode.setStringValue("url", outFileName);
+
+                            resultNode.commit();
                         }
-                        resultNode.setNodeValue("id",    node);
-                        resultNode.commit();
                     }
                 }
             }
         }
 
-        public Iterator<JobDefinition> iterator() {
-            final Iterator<Map.Entry<String, JobDefinition>> i = clones.entrySet().iterator();
-            return new Iterator<JobDefinition>() {
+        public Iterator<Result> iterator() {
+            final Iterator<Map.Entry<String, JobDefinition>> i = CreateCachesProcessor.this.list.entrySet().iterator();
+            return new Iterator<Result>() {
+                Result next;
+                {
+                    next = findResult();
+                }
+
+                protected Result findResult() {
+                    createCacheNodes();
+                    Result result = null;
+                    while (i.hasNext()) {
+                        Map.Entry<String, JobDefinition> next = i.next();
+                        JobDefinition jd = next.getValue();
+                        URI inFile;
+                        Node inNode;
+                        if (jd.transcoder.getInId() == null) {
+                            inFile = new File(FileServlet.getDirectory(), node.getStringValue("url")).toURI();
+                            inNode = node;
+                        } else {
+                            Result prevResult = results.get(next.getKey());
+                            inFile = prevResult.getOut();
+                            inNode = prevResult.getNode();
+                        }
+                        if (jd.transcoder.getKey() != null) {
+                            if (jd.transcoder.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
+                                Node dest = getCacheNode(jd.transcoder.getKey());
+                                URI outFile = new File(FileServlet.getDirectory(), dest.getStringValue("url")).toURI();
+                                result = new Result(jd, dest, inFile, outFile);
+                                break;
+                            } else {
+                                logger.info("Skipping " + jd + " because " + inFile + " of (" + inNode.getNumber() + ", " + inNode.getStringValue("mimetype") + ") does not match mimetype.");
+                            }
+                        } else {
+                            // recognizers;
+                            result = new Result(jd, null, inFile, null);
+                            break;
+                        }
+                    }
+                    return result;
+                }
+
                 public boolean hasNext() {
-                    return i.hasNext();
+                    return next != null;
                 }
                 public void remove() {
                     throw new UnsupportedOperationException();
                 }
-                public JobDefinition next() {
-                    if (current != null && current.getResultNode() != null) {
-                        createCacheNodes();
-                    }
-                    current = i.next().getValue();
-                    if (current.transcoder instanceof CommandTranscoder) {
+                public Result next() {
+                    current = next;
+                    next = findResult();
+                    if (current.definition.transcoder instanceof CommandTranscoder) {
                         // Get free method
                         CommandExecutor.Method m = null;
                         synchronized(executors) {
@@ -600,14 +637,15 @@ public class CreateCachesProcessor implements CommitProcessor {
                         if (m == null) {
                             LOG.error("There should always be a free CommandExecutor. Using LAUCHER now.");
                         } else {
-                            ((CommandTranscoder) current.transcoder).setMethod(m);
+                            ((CommandTranscoder) current.definition.transcoder).setMethod(m);
                         }
                     }
-                    busy++;
-                    if (current.getResultNode() != null) {
-                        current.getResultNode().setIntValue("state", State.BUSY.getValue());
-                        current.getResultNode().commit();
+                    if (current.getNode() != null) {
+                        LOG.info("Setting " + current.getNode().getNumber() + " to BUSY");
+                        current.getNode().setIntValue("state", State.BUSY.getValue());
+                        current.getNode().commit();
                     }
+                    busy++;
                     return current;
                 }
 
@@ -649,7 +687,7 @@ public class CreateCachesProcessor implements CommitProcessor {
             return newNode;
         }
 
-        public JobDefinition getCurrent() {
+        public Result getCurrent() {
             return current;
         }
 
@@ -663,10 +701,15 @@ public class CreateCachesProcessor implements CommitProcessor {
         public synchronized void setThread(Thread t) {
             thread = t;
             if (t != null) {
-                interrupted  = t.isInterrupted();
+                interrupted = t.isInterrupted();
             }
         }
         public synchronized void interrupt() {
+            Node cacheNode = current.getNode();
+            if (cacheNode != null) {
+                cacheNode.setIntValue("state", State.INTERRUPTED.getValue());
+                cacheNode.commit();
+            }
             interrupted = true;
             if (thread != null) {
                 logger.info("Interrupting " + thread);
@@ -682,15 +725,12 @@ public class CreateCachesProcessor implements CommitProcessor {
             return ready;
         }
         public void ready() {
-            File outFile = new File(FileServlet.getDirectory(), current.getResultNode().getStringValue("url").replace("/", File.separator));
-            current.getResultNode().setLongValue("filesize", outFile.length());
-            current.getResultNode().setIntValue("state", State.DONE.getValue());
-            current.getResultNode().commit();
             ready = true;
+
         }
 
         public String getProgress() {
-            return "" + busy + "/" + clones.size();
+            return "" + busy + "/" + results.size();
         }
         public String getUser() {
             return user;
@@ -705,7 +745,7 @@ public class CreateCachesProcessor implements CommitProcessor {
         @Override
         public String toString() {
             if (current == null) {
-                return number + ":" + user + ":SCHEDULED:" + clones;
+                return number + ":" + user + ":SCHEDULED:" + results;
             } else {
                 return number + ": " + user + ":" + current + ":" + getProgress() + ":" + thread;
             }
