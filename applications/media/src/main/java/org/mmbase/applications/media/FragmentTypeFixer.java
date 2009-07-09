@@ -36,7 +36,7 @@ public class FragmentTypeFixer implements CommitProcessor {
                     continue;
                 }
                 if (! fragment.getNodeManager().equals(targetType)) {
-                    log.service("Fixing type of " + node.getNumber() + " fragment " + fragment);
+                    log.service("Fixing type of " + node.getNumber() + " fragment " + fragment + " Setting from " + fragment.getNodeManager().getName() + " " + targetType.getName() + " (because " + ntNode.getNodeManager().getName() + " " + ntNode.getNumber() + ")");
                     fragment.setNodeManager(targetType);
                     fragment.commit();
                 } else {
