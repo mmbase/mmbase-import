@@ -429,6 +429,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                 dest.setIntValue("state",  State.REQUEST.getValue());
                 dest.commit();
             }
+            LOG.info("Created " + this + " " + definition.transcoder.getClass().getName(), new Exception());
 
         }
         public JobDefinition getJobDefinition() {
@@ -466,7 +467,7 @@ public class CreateCachesProcessor implements CommitProcessor {
             if (dest != null) {
                 return dest.getNumber() + ":" + out;
             } else {
-                return definition.toString();
+                return "(NO RESULT:" + definition.toString();
             }
         }
 
@@ -576,6 +577,7 @@ public class CreateCachesProcessor implements CommitProcessor {
             return new Iterator<Result>() {
                 Result next;
                 {
+                    LOG.info("Iterating "+ CreateCachesProcessor.this.list.entrySet());
                     next = findResult();
                 }
 
@@ -583,25 +585,30 @@ public class CreateCachesProcessor implements CommitProcessor {
                     createCacheNodes();
                     Result result = null;
                     while (i.hasNext()) {
-                        Map.Entry<String, JobDefinition> next = i.next();
-                        JobDefinition jd = next.getValue();
+                        Map.Entry<String, JobDefinition> n = i.next();
+                        JobDefinition jd = n.getValue();
                         URI inFile;
                         Node inNode;
                         if (jd.transcoder.getInId() == null) {
                             inFile = new File(FileServlet.getDirectory(), node.getStringValue("url")).toURI();
                             inNode = node;
                         } else {
-                            Result prevResult = results.get(next.getKey());
+                            Result prevResult = results.get(n.getKey());
                             if (prevResult == null) {
-                                logger.error("No result with id " + next.getKey() + " in " + results + ". Misconfiguration?");
+                                logger.error("No result with id " + n.getKey() + " in " + results + ". Misconfiguration?");
                                 continue;
                             }
                             inFile = prevResult.getOut();
                             inNode = prevResult.getNode();
                         }
                         if (jd.transcoder.getKey() != null) {
-                            if (jd.transcoder.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
+                            LOG.info("matcing " +  jd.getMimeType() + " of " + jd.transcoder + " with " + new MimeType(inNode.getStringValue("mimetype")));
+                            if (jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
                                 Node dest = getCacheNode(jd.transcoder.getKey());
+                                if (dest == null) {
+                                    LOG.warn("Could not create cache node from " + node.getNodeManager().getName() + " " + node.getNumber() + " for " + jd.transcoder.getKey());
+                                    continue;
+                                }
                                 URI outFile = new File(FileServlet.getDirectory(), dest.getStringValue("url")).toURI();
                                 result = new Result(jd, dest, inFile, outFile);
                                 break;
@@ -646,7 +653,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                     }
                     if (current.getNode() != null) {
                         try {
-                            LOG.info("Setting " + current.getNode().getNumber() + " to BUSY");
+                            LOG.info("Setting " + current.getNode().getNodeManager().getName() + " " + current.getNode().getNumber() + " to BUSY");
                             current.getNode().setIntValue("state", State.BUSY.getValue());
                             current.getNode().commit();
                         } catch (Exception e) {
@@ -672,27 +679,32 @@ public class CreateCachesProcessor implements CommitProcessor {
          * @param key   representation of the way the stream was created from its source
          */
         protected Node getCacheNode(final String key) {
+            String ct = node.getNodeManager().getProperty("org.mmbase.streams.cachestype");
+            if (ct != null) {
+                for (String cacheManager : new String[] {"streamsourcescaches", "videostreamsourcescaches", "audiostreamsourcescaches"}) {
+                    final NodeManager caches = node.getCloud().getNodeManager(cacheManager);
+                    NodeQuery q = caches.createQuery();
+                    Queries.addConstraint(q, Queries.createConstraint(q, "id",  FieldCompareConstraint.EQUAL, node));
+                    Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
 
-            for (String cacheManager : new String[] {"streamsourcescaches", "videostreamsourcescaches", "audiostreamsourcescaches"}) {
-                final NodeManager caches = node.getCloud().getNodeManager(cacheManager);
-                NodeQuery q = caches.createQuery();
-                Queries.addConstraint(q, Queries.createConstraint(q, "id",  FieldCompareConstraint.EQUAL, node));
-                Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
-
-                LOG.debug("Executing " + q.toSql());
-                NodeList nodes = caches.getList(q);
-                if (nodes.size() > 0) {
-                    logger.service("Found existing node for " + key + "(" + node.getNumber() + "): " + nodes.getNode(0).getNumber());
-                    return nodes.getNode(0);
+                    LOG.debug("Executing " + q.toSql());
+                    NodeList nodes = caches.getList(q);
+                    if (nodes.size() > 0) {
+                        logger.service("Found existing node for " + key + "(" + node.getNumber() + "): " + nodes.getNode(0).getNumber());
+                        return nodes.getNode(0);
+                    }
                 }
+
+                final NodeManager caches = node.getCloud().getNodeManager(node.getNodeManager().getProperty("org.mmbase.streams.cachestype"));
+                Node newNode =  caches.createNode();
+                newNode.setNodeValue("id", node);
+                newNode.setStringValue("key", key);
+                newNode.commit();
+                logger.service("Created new node for " + key + "(" + node.getNumber() + "): " + newNode.getNumber());
+                return newNode;
+            } else {
+                return null;
             }
-            final NodeManager caches = node.getCloud().getNodeManager(node.getNodeManager().getProperty("org.mmbase.streams.cachestype"));
-            Node newNode =  caches.createNode();
-            newNode.setNodeValue("id", node);
-            newNode.setStringValue("key", key);
-            newNode.commit();
-            logger.service("Created new node for " + key + "(" + node.getNumber() + "): " + newNode.getNumber());
-            return newNode;
         }
 
         public Result getCurrent() {

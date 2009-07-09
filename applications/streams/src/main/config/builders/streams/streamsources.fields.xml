@@ -41,7 +41,7 @@
 
   <field name="objecttype" state="virtual">
     <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      <pattern value="audiostreamsources|videostreamsources|streamsources" />
+      <pattern value="audiostreamsources|videostreamsources|streamsources|imagesources" />
       <commitprocessor>
         <class name="org.mmbase.applications.media.FragmentTypeFixer" />
       </commitprocessor>
