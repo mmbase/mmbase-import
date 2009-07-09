@@ -1,5 +1,5 @@
 <!--
-   DTD for URLComposerFactory configuration file 
+   DTD for URLComposerFactory configuration file
 
 -->
 <!ELEMENT urlcomposers (default, urlcomposer*)>
@@ -7,3 +7,4 @@
 <!ELEMENT urlcomposer (#PCDATA)>
 <!ATTLIST urlcomposer format  CDATA #REQUIRED >
 <!ATTLIST urlcomposer protocol  NMTOKEN #IMPLIED >
+<!ATTLIST urlcomposer mimetype  NMTOKEN #IMPLIED >
