@@ -28,7 +28,7 @@ public class MimeType {
 
 
     public MimeType(String s) {
-        if (s != null) {
+        if (s != null && s.length() > 0) {
             String[] m = s.split("/", 2);
             type = m[0];
             if (m.length > 1) {
