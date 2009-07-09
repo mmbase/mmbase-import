@@ -207,6 +207,11 @@ public class VirtualNode extends AbstractNode implements Node {
             return this;
         }
         Node result = null;
+        Object o = getNode().getValue(fieldName);
+        if (o instanceof Node) {
+            // a Node already
+            return (Node) o;
+        }
         MMObjectNode mmobjectNode = getNode().getNodeValue(fieldName);
         if (mmobjectNode != null) {
             try {
