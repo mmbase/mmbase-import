@@ -112,6 +112,15 @@ public final class AnalyzerUtils {
         }
     }
 
+    public void toImage(Node source, Node dest) {
+        Cloud cloud = source.getCloud();
+        if (cloud != null) {
+            log.service("This is image, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
+            source.setNodeManager(cloud.getNodeManager("imagesources"));
+            source.commit();
+        }
+    }
+
 
     private static final Pattern VIDEO    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*?([0-9]+)\\s+kb/s.*");
 

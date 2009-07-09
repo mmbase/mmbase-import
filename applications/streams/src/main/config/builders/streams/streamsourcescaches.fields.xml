@@ -45,6 +45,10 @@
     </datatype>
   </field>
 
+  <field name="mimetype" state="system">
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  </field>
+
 
   <field name="url" readonly="true">
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
