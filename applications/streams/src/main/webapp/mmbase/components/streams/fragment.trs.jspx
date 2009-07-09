@@ -36,13 +36,15 @@
                 JOB: ${_.class}
               </mm:function>
               <mm:node number="${_.source.number}">
+                <c:set var="triggervalue" value="${fragment}:${_node}" />
                 <c:choose>
-                  <c:when test="${trigger eq _node.number}">
+                  <c:when test="${trigger eq triggervalue}">
+                    <mm:log> CALLING TRIGGER FOR ${trigger}</mm:log>
                     <mm:voidfunction name="trigger" />
                     <jsp:text>Triggered conversion</jsp:text>
                   </c:when>
                   <c:otherwise>
-                    <mm:link referids="_node@trigger">
+                    <mm:link referids="triggervalue@trigger">
                       <a href="${_}">Trigger</a>
                     </mm:link>
                   </c:otherwise>
