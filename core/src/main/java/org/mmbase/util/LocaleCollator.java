@@ -15,7 +15,7 @@ import java.io.*;
 
 /**
  * This class wraps a {@link java.text.Collator} and associates it with a {@link
- * java.util.Locale}. Also, it is {@link java.io.Serializable} (mostly to help RMMC).
+ * java.util.Locale}. Also, it is {@link java.io.Serializable} (mostly to help RMMCI).
  *
  * @author Michiel Meeuwissen
  * @version $Id$
