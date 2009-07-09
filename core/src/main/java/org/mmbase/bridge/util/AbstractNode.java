@@ -337,7 +337,7 @@ public abstract class AbstractNode implements Node {
             case Field.TYPE_DECIMAL: return getDecimalValue(fieldName);
             case Field.TYPE_LIST:    return getListValue(fieldName);
             default:
-                log.error("Unknown fieldtype '" + type + "'");
+                log.error("Unknown fieldtype '" + type + "' " +  Logging.stackTrace());
                 return value;
             }
         } else {
