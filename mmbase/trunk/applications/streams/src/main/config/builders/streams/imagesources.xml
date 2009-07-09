@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    name="imagesources" maintainer="openimages.eu" version="0" extends="mediasources">
+  <names>
+  </names>
+
+  <descriptions>
+  </descriptions>
+
+  <properties>
+    <property name="org.mmbase.media.containertype">imagefragments</property>
+  </properties>
+
+  <fieldlist>
+
+
+    <field name="height">
+      <descriptions>
+        <description xml:lang="en">Height in pixels</description>
+        <description xml:lang="nl">Hoogte in pixel</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Height</guiname>
+        <guiname xml:lang="nl">Hoogte</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>11</list>
+        </positions>
+      </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="0" />
+      </datatype>
+    </field>
+
+    <field name="width">
+      <descriptions>
+        <description xml:lang="en">Width in pixels</description>
+        <description xml:lang="nl">Breedte in pixel</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Width</guiname>
+        <guiname xml:lang="nl">Breedte</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>12</list>
+        </positions>
+      </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="0" />
+      </datatype>
+    </field>
+  </fieldlist>
+
+  <xi:include href="streamsources.fields.xml" />
+  <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
+  <xi:include href="streamsources.virtual.fields.xml" />
+  <xi:include href="http://www.mmbase.org/builders/media/mediasources.main.virtual.fields.xml" />
+  <xi:include href="streamsources.functions.xml" />
+
+</builder>

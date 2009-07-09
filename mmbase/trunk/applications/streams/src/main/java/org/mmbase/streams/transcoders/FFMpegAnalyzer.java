@@ -53,7 +53,7 @@ public class FFMpegAnalyzer implements Analyzer {
     public void ready(Node sourceNode, Node destNode) {
         if (sourceNode.isNull("bitrate")) {
             log.info("This is an image");
-            // have to think of up of something
+            util.toImage(sourceNode, destNode);
         } else if (! sourceNode.getNodeManager().hasField("width")) {
             log.info("This is audio");
             util.toAudio(sourceNode, destNode);
