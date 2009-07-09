@@ -69,7 +69,9 @@ public enum Format {
     M4A(60),
     M4V(61),
     GGP(70),
-    FLASH(80);
+   FLASH(80),
+
+    ANY(10000);
 
 
     private static Logger log = Logging.getLoggerInstance(Format.class);

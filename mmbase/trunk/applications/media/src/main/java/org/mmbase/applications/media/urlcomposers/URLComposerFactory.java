@@ -67,6 +67,7 @@ public class URLComposerFactory  {
         private final String protocol;
         private final Class<?>  klass;
         private final MimeType mimeType;
+        private final Map<String, String> properties = new HashMap<String, String>();
 
         ComposerConfig(Format f, Class<?> k, String p, MimeType mt) {
             this.format = f;
@@ -76,10 +77,10 @@ public class URLComposerFactory  {
 
         }
         boolean checkFormat(Format f) {
-            return format.equals(f);
+            return format == Format.ANY || format.equals(f);
         }
         boolean checkProtocol(String p) {
-            return "".equals(protocol) || protocol.equals(p);
+            return "".equals(protocol) || "".equals(p) || protocol.equals(p);
         }
         boolean checkMimeType(MimeType mt) {
             return mimeType.matches(mt);
@@ -89,20 +90,27 @@ public class URLComposerFactory  {
             return klass;
         }
 
+        void setProperty(String key, String value) {
+            properties.put(key, value);
+        }
         URLComposer getInstance(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
             try {
                 log.debug("Instatiating " + klass);
                 URLComposer newComposer = (URLComposer) klass.newInstance();
+                for (Map.Entry<String, String> e : properties.entrySet()) {
+                    org.mmbase.util.xml.Instantiator.setProperty(e.getKey(), klass, newComposer, e.getValue());
+                }
                 Map<String, Object> clone = new HashMap<String, Object>(); // filter may change the info map, but that should of course not influence others
                 newComposer.init(provider, source, fragment, clone, cacheExpireObjects);
                 return newComposer;
             }  catch (Exception g) {
-                log.error("URLComposer could not be instantiated " + g.toString());
+                log.error("URLComposer could not be instantiated " + g.toString(), g);
             }
             return null; // could not get instance, this is an error, but go on anyway (implemtnation checks for null)
         }
+
         public String toString() {
-            return "" + format + ":" + klass.getName();
+            return "" + format + ":" + klass.getName() + " " + protocol + " " + mimeType + " " + properties;
         }
     }
     // this is the beforementioned list.
@@ -157,28 +165,31 @@ public class URLComposerFactory  {
             }
 
             for(Element element:reader.getChildElements(MAIN_TAG, COMPOSER_TAG)) {
-                String  clazz   =  reader.getElementValue(element);
+                String  clazz   =  element.getAttribute("class");
+                if (clazz.length() == 0) {
+                    clazz = reader.getElementValue(element);
+                }
                 String  f = element.getAttribute(FORMAT_ATT);
-                List<Format> formats;
-                if ("*".equals(f)) {
-                    formats = Format.getMediaFormats();
+                Format format;
+                if ("*".equals(f) || f.length() == 0) {
+                    format = Format.ANY;
                 } else {
-                    formats = new ArrayList<Format>();
-                    formats.add(Format.get(f));
+                    format = Format.get(f);
                 }
                 String  protocol  =  element.getAttribute(PROTOCOL_ATT);
                 MimeType mimeType = new MimeType(element.getAttribute(MIMETYPE_ATT));
-                Iterator<Format> i = formats.iterator();
-                while(i.hasNext()) {
-                    Format format = i.next();
-                    try {
-                        log.debug("Adding for format " + format + " urlcomposer " + clazz);
-                        urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz), protocol, mimeType));
-                    } catch (ClassNotFoundException ex) {
-                        log.error("Cannot load urlcomposer " + clazz + " because " + ex.getMessage());
+                try {
+                    log.debug("Adding for format " + format + " urlcomposer " + clazz);
+                    ComposerConfig config = new ComposerConfig(format, Class.forName(clazz), protocol, mimeType);
+                    for(Element e : reader.getChildElements(element, "param")) {
+                        config.setProperty(e.getAttribute("name"), reader.getElementValue(e));
                     }
+                    urlComposerClasses.add(config);
+                } catch (ClassNotFoundException ex) {
+                    log.error("Cannot load urlcomposer " + clazz + " because " + ex.getMessage());
                 }
             }
+            log.info("Read url composers " + urlComposerClasses);
         }
         org.mmbase.cache.Cache<String, String> cache =  org.mmbase.applications.media.cache.URLCache.getCache();
         if (cache.size() > 0) {
@@ -232,7 +243,7 @@ public class URLComposerFactory  {
         if (uc == null) {
             log.debug("Could not make urlcomposer");
         } else if (urls.contains(uc)) {  // avoid duplicates
-            log.debug("This URLComposer already in the list");
+            log.debug("This URLComposer " + uc + " already in the list " + urls);
         } else if (!uc.canCompose()) {
             log.debug("This URLComposer cannot compose");
         } else {
@@ -278,7 +289,7 @@ public class URLComposerFactory  {
         boolean found = false;
         for (ComposerConfig cc : urlComposerClasses) {
             if (log.isDebugEnabled()) {
-                log.debug("Trying " + cc + " for '" + format + "'/'" + protocol + "'");
+                log.debug("Trying " + cc + " for '" + format + "'/'" + protocol + "' " + mt);
             }
 
             if (cc.checkFormat(format) && cc.checkProtocol(protocol) && cc.checkMimeType(mt)) {
@@ -301,7 +312,9 @@ public class URLComposerFactory  {
                 log.debug("Can be used!");
                 found = true;
             } else {
-                log.debug("Not usable. For format: " + cc.checkFormat(format) + ", for protocol: " + cc.checkProtocol(protocol));
+                if (log.isDebugEnabled()) {
+                    log.debug(cc + " Not usable. For format '" + format + "': " + cc.checkFormat(format) + ", for protocol '" + protocol + "': " + cc.checkProtocol(protocol));
+                }
             }
         }
 
