@@ -662,14 +662,14 @@ public abstract class AbstractNode implements Node {
     }
 
     public void commit() {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
+        throw new UnsupportedOperationException("Cannot edit node of type " + getClass().getName());
     }
 
     public void cancel() {
     }
 
     public void delete(boolean deleteRelations) {
-        throw new UnsupportedOperationException("Cannot edit virtual node");
+        throw new UnsupportedOperationException("Cannot edit node of type " + getClass().getName());
     }
 
     public void deleteRelations(String type) throws NotFoundException {
