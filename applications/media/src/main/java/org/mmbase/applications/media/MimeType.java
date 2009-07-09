@@ -56,4 +56,10 @@ public class MimeType {
     public String toString() {
         return type + "/" + subType;
     }
+
+    public boolean matches(MimeType mt) {
+        return
+            (type.equals(STAR) || mt.type.equals(STAR) || type.equals(mt.type)) &&
+            (subType.equals(STAR) || mt.subType.equals(STAR) || subType.equals(mt.subType));
+    }
 }
