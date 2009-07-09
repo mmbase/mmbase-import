@@ -550,7 +550,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                             Format f = jd.transcoder.getFormat();
                             resultNode.setIntValue("format", f.toInt());
                             Codec c = jd.transcoder.getCodec();
-                            if (c == null) {
+                            if (c == null || c == Codec.UNKNOWN) {
                                 resultNode.setValue("codec", null);
                             } else {
                                 resultNode.setIntValue("codec", c.toInt());
