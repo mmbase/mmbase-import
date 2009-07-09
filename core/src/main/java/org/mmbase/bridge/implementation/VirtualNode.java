@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.*;
+import java.io.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
@@ -33,7 +34,8 @@ import org.w3c.dom.Document;
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
  */
-public class VirtualNode extends AbstractNode implements Node {
+public class VirtualNode extends AbstractNode implements Node, Serializable {
+    private static final long serialVersionUID = 0L;
 
     private static final Logger log = Logging.getLoggerInstance(VirtualNode.class);
 
@@ -43,7 +45,7 @@ public class VirtualNode extends AbstractNode implements Node {
      * This is normally, but not always, a VirtualBuilder. It is not for some builders which have
      * besides real nodes also virtual nodes, like typedef (cluster nodes) and typerel (allowed relations because of inheritance).
      */
-    final protected NodeManager nodeManager;
+    protected transient NodeManager nodeManager;
     final protected Cloud cloud;
 
 
@@ -293,4 +295,15 @@ public class VirtualNode extends AbstractNode implements Node {
         return new BasicFunctionValue(getCloud(), result);
     }
 
+
+   private void writeObject(ObjectOutputStream out) throws IOException {
+       // Serialization is not really tested
+       out.defaultWriteObject();
+       out.writeUTF(nodeManager.getName());
+   }
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        // Serialization is not really tested
+        in.defaultReadObject();
+        nodeManager = cloud.getNodeManager(in.readUTF());
+    }
 }
