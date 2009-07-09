@@ -87,7 +87,7 @@ public abstract class AbstractTranscoder implements Transcoder {
     protected MimeType  mimeType = MimeType.ANY;
 
     public void setFormat(String f) {
-        format = Format.valueOf(f);
+        format = Format.valueOf(f.toUpperCase());
     }
 
     public Format getFormat() {
