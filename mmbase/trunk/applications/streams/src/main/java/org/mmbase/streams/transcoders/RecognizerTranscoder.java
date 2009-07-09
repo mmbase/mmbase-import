@@ -76,7 +76,9 @@ public class RecognizerTranscoder implements Transcoder {
         return null;
     }
     public void setInId(String i) {
-        throw new UnsupportedOperationException();
+        if (i != null) {
+            throw new UnsupportedOperationException();
+        }
     }
 
 
