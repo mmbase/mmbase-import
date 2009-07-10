@@ -219,17 +219,6 @@ public class HandleServlet extends BridgeServlet {
         return node.getSize("handle");
     }
 
-
-    /**
-     * @since MMBase-1.9.2
-     */
-    protected void returnCloud(Node node) {
-        Cloud cloud = node.getCloud();
-        if (cloud.getProperty(CLOUD_MARKER) != null) {
-            cloud.getCloudContext().returnCloud(cloud);
-        }
-    }
-
     /**
      * Serves a node with a byte[] handle field as an attachment.
      */
@@ -252,7 +241,6 @@ public class HandleServlet extends BridgeServlet {
         if (! manager.hasField("handle")) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND, "No handle found in node " + node.getNumber());
             req.setAttribute(MESSAGE_ATTRIBUTE, "No handle found in node " + node.getNumber());
-            returnCloud(node);
             return;
         }
 
@@ -263,7 +251,6 @@ public class HandleServlet extends BridgeServlet {
         res.setContentType(mimeType);
 
         if (node.isNull("handle")) {
-            returnCloud(node);
             return;
         }
 
@@ -302,10 +289,8 @@ public class HandleServlet extends BridgeServlet {
         }
 
         if (!setContent(query, node, mimeType)) {
-            returnCloud(node);
             return;
         }
-
         setExpires(res, node);
         setCacheControl(res, node);
 
@@ -321,7 +306,6 @@ public class HandleServlet extends BridgeServlet {
             res.setContentLength(jpegLength);
             log.debug("Serving node " + node.getNumber() + " with bytes " + jpegLength);
         }
-        returnCloud(node);
         sendBytes(res, bytes);
     }
 
