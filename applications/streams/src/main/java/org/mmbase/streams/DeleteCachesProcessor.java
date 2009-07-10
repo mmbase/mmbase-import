@@ -27,11 +27,17 @@ import org.mmbase.util.logging.*;
 public class DeleteCachesProcessor implements CommitProcessor {
     private static final long serialVersionUID = 0L;
 
+    public static String NOT = DeleteCachesProcessor.class.getName() + ".DONOT";
+
     private static final Logger LOG = Logging.getLoggerInstance(DeleteCachesProcessor.class);
 
 
 
     public void commit(final Node node, final Field field) {
+        if (node.getCloud().getProperty(NOT) != null) {
+            LOG.service("Not doing because of property");
+            return;
+        }
         if (node.getNumber() > 0) {
             final NodeManager caches = node.getCloud().getNodeManager("streamsourcescaches");
             NodeQuery q = caches.createQuery();
