@@ -32,4 +32,6 @@ public interface ImagesInterface  {
     java.io.InputStream getBinary(MMObjectNode node);
 
 
+    StringBuilder getFileName(MMObjectNode node , StringBuilder buf);
+
 }
