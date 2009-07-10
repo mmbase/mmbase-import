@@ -24,7 +24,7 @@ import java.util.regex.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-@Settings({"format", "acodec", "vcodec", "ab"})
+@Settings({"format", "acodec", "vcodec", "ab", "b", "async", "r", "ac"})
 public class FFMpegTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpegTranscoder.class);
@@ -32,6 +32,10 @@ public class FFMpegTranscoder extends CommandTranscoder {
     String acodec = null;
     String vcodec = null;
     String ab = null;
+    String b = null;
+    String async = null;
+    String r = null;
+    String ac = null;
 
     public void setAcodec(String a) {
         acodec = a;
@@ -42,6 +46,35 @@ public class FFMpegTranscoder extends CommandTranscoder {
 
     public void setAb(String a) {
         ab = a;
+    }
+    public void setAbitrate(String a) {
+        ab = a;
+    }
+
+    public void setB(String b) {
+        this.b = b;
+    }
+    public void setBitrate(String b) {
+        this.b = b;
+    }
+
+    public void setAsync(String a) {
+        async = a;
+    }
+
+    // fps
+    public void setR(String r) {
+        this.r = r;
+    }
+    public void setFramesPerSecond(String r) {
+        this.r = r;
+    }
+
+    public void setAc(String a) {
+        ac = a;
+    }
+    public void setAudioChannels(String a) {
+        ac = a;
     }
 
     public FFMpegTranscoder(String id) {
@@ -76,6 +109,18 @@ public class FFMpegTranscoder extends CommandTranscoder {
         if (ab != null) {
             args.add("-ab");
             args.add(ab);
+        }
+        if (b != null) {
+            args.add("-b");
+            args.add(b);
+        }
+        if (r != null) {
+            args.add("-r");
+            args.add(r);
+        }
+        if (ac != null) {
+            args.add("-ac");
+            args.add(ac);
         }
         args.add("-i");
         args.add(inFile.toString());
