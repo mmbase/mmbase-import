@@ -25,7 +25,7 @@ import org.mmbase.util.functions.*;
  * @version $Id$
  * @since   MMBase-1.6
  */
-public abstract class AbstractImages extends AbstractServletBuilder {
+public abstract class AbstractImages extends AbstractServletBuilder implements ImagesInterface {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractImages.class);
 
@@ -201,7 +201,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
     /**
      * Gets the dimension of given node. Also when the fields are missing, it will result a warning then.
      */
-    protected Dimension getDimension(MMObjectNode node) {
+    public Dimension getDimension(MMObjectNode node) {
         if (storesDimension()) {
             int width  = node.getIntValue(FIELD_WIDTH);
             int height = node.getIntValue(FIELD_HEIGHT);
@@ -286,7 +286,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * Determines the image type of an object and stores the content in the itype field.
      * @param node The object to use.
      */
-    protected String getImageFormat(MMObjectNode node) {
+    public String getImageFormat(MMObjectNode node) {
         String itype = null;
         if (storesImageType()) {
             itype = node.getStringValue(FIELD_ITYPE);
