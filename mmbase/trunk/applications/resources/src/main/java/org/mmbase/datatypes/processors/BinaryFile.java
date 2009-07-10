@@ -165,13 +165,14 @@ public class BinaryFile {
             String fileName = (String) value;
             log.debug("String processing " + fileName);
             if (fileName.startsWith("-") && node.getNumber() > 0) {
+                File dir = getDirectory();
                 String[] parts = fileName.split("\\.", 2);
-                File file = new File(getDirectory(), fileName);
+                File file = new File(dir, fileName);
                 File to = getFile(node, field, parts[1]);
                 to.getParentFile().mkdirs();
                 log.debug("Fixing file");
                 file.renameTo(to);
-                fileName = to.getName();
+                fileName = to.toString().substring(dir.toString().length());
                 log.debug("Setting file name to " + fileName);
                 node.setValueWithoutProcess(field.getName(), fileName);
                 log.debug("Canched " + node.getChanged() + " " + node.getCloud());
