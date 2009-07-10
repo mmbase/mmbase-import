@@ -79,7 +79,7 @@ public class ImagesURLComposer extends FragmentURLComposer {
         buf.append(imageCaches.getFunctionValue("servletpath", null));
         buf.append(icacheNode.getNumber());
         buf.append('/');
-        buf.append(source.getStringValue("title"));
+        buf.append(source.getStringValue("url"));
         return buf;
 
     }
