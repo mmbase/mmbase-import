@@ -6,6 +6,9 @@
                         http://www.mmbase.org/xmlns/builder.xsd"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     name="imagesources" maintainer="openimages.eu" version="0" extends="mediasources">
+
+  <class>org.mmbase.streams.builders.ImageSources</class>
+
   <names>
   </names>
 
@@ -56,6 +59,16 @@
         <minInclusive value="0" />
       </datatype>
     </field>
+
+  <field name="handle" state="systemvirtual">
+    <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.OtherField" >
+          <param name="field">url</param>
+        </class>
+      </getprocessor>
+    </datatype>
+  </field>
   </fieldlist>
 
   <xi:include href="streamsources.fields.xml" />
