@@ -180,12 +180,14 @@ public class ImageCaches extends AbstractImages {
             String template = Imaging.parseCKey(ckey).template;
             List<String> params     = Imaging.parseTemplate(template);
             MMObjectNode image = originalImage(node);
+            ImagesInterface images = (ImagesInterface) image.getBuilder();
             // make sure the bytes don't come from the cache (e.g. multi-cast change!, new conversion could be triggered, but image-node not yet invalidated!)
             image.getBuilder().clearBlobCache(image.getNumber());
-            byte[] bytes = image.getByteValue(Imaging.FIELD_HANDLE);
-            String format = ((AbstractImages) image.getBuilder()).getImageFormat(image);
+            java.io.InputStream bytes = images.getBinary(image);
+            log.info("Found bytes " + bytes);
+            String format = images.getImageFormat(image);
             // This triggers conversion, or waits for it to be ready.
-            ImageConversionRequest req = Factory.getImageConversionRequest(params, bytes, format, node);
+            ImageConversionRequest req = Factory.getImageConversionRequest(bytes, format, new NodeReceiver(node), params);
             req.waitForConversion();
             return true;
         } else {
@@ -333,7 +335,7 @@ public class ImageCaches extends AbstractImages {
     /**
      * Returns the image format.
      */
-    protected String getImageFormat(MMObjectNode node) {
+    public String getImageFormat(MMObjectNode node) {
         if (storesImageType()) {
             String iType = node.getStringValue(FIELD_ITYPE);
             if(iType.equals("")) {
@@ -366,7 +368,12 @@ public class ImageCaches extends AbstractImages {
             if (r.equals("asis")) {
                 MMObjectNode original = originalImage(node);
                 if (original != null) {
-                    return ((AbstractImages) original.getBuilder()).getImageFormat(original);
+                    if (original.getBuilder() instanceof ImagesInterface) {
+                        return ((ImagesInterface) original.getBuilder()).getImageFormat(original);
+                    } else {
+                        log.warn("Original image not images but" + original.getBuilder());
+                        return "png";
+                    }
                 } else {
                     log.warn("Could not find original image for " + node);
                     return r;
@@ -389,8 +396,13 @@ public class ImageCaches extends AbstractImages {
         String template = Imaging.parseCKey(ckey).template;
         List<String> params     = Imaging.parseTemplate(template);
         MMObjectNode orig = originalImage(node);
-        Dimension origDimension = ((Images) orig.getBuilder()).getDimension(orig);
-        return Imaging.predictDimension(origDimension, params);
+        if (orig.getBuilder() instanceof ImagesInterface) {
+            Dimension origDimension = ((ImagesInterface) orig.getBuilder()).getDimension(orig);
+            return Imaging.predictDimension(origDimension, params);
+        } else {
+            log.warn("Original node is not in the Images builder but, " + orig.getBuilder());
+            return Dimension.UNDETERMINED;
+        }
     }
 
 
