@@ -19,6 +19,9 @@
 
 	<properties>
     <property name="org.mmbase.media.containedtype">imagesources</property>
+
+    <!-- TODO, this is actually OIP specific. But it doesn't matter much -->
+    <property name="translations.builder">mediafragments_translations</property>
 	</properties>
 
 </builder>
