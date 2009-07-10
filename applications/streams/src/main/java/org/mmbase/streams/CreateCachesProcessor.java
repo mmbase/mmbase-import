@@ -49,6 +49,7 @@ import org.w3c.dom.*;
 public class CreateCachesProcessor implements CommitProcessor {
     private static final long serialVersionUID = 0L;
 
+    public static String NOT = CreateCachesProcessor.class.getName() + ".DONOT";
     private static final Logger LOG = Logging.getLoggerInstance(CreateCachesProcessor.class);
 
     public static final String XSD_CREATECACHES       = "createcaches.xsd";
@@ -346,6 +347,10 @@ public class CreateCachesProcessor implements CommitProcessor {
     }
 
     public void commit(final Node node, final Field field) {
+        if (node.getCloud().getProperty(NOT) != null) {
+            LOG.service("Not doing because of property");
+            return;
+        }
         if (node.getNumber() > 0) {
             if (node.isChanged(field.getName())) {
 
