@@ -33,9 +33,16 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
 
     private String path = org.mmbase.util.ApplicationContextReader.getCachedProperties(getClass().getName()).get("path");
 
+    // TODO
+    private Map<String, String> moreOptions = new HashMap<String, String>();
+
     public CommandTranscoder(String id) {
         super(id);
         log.service("" + getClass().getName() + " path:" + path);
+    }
+
+    public void setProperty(String key, String value) {
+        moreOptions.put(key, value);
     }
 
     public void setMethod(CommandExecutor.Method m) {
@@ -60,8 +67,15 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
     protected void transcode(final Logger log) throws Exception {
         OutputStream outStream = new WriterOutputStream(getOutputWriter(log), System.getProperty("file.encoding"));
         String p = path;
+
         if (p == null) p = "";
-        log.service("Calling (" + method + ") " + p + getCommand() + " " + Arrays.asList(getArguments()));
+        if (log.isServiceEnabled()) {
+            log.service("Calling (" + method + ") " + p + getCommand() + " " + Arrays.asList(getArguments()));
+        }
+
+        // TODO Add support for 'moreOptions'
+        // Here, but also in getKey.
+
         CommandExecutor.execute(outStream, method, p + getCommand(), getArguments());
     }
 
