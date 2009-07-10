@@ -15,6 +15,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.servlet.MMBaseServlet;
 import org.mmbase.util.logging.*;
 import org.mmbase.applications.media.Format;
+import org.mmbase.applications.media.State;
 import org.mmbase.applications.media.urlcomposers.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.util.images.*;
@@ -44,6 +45,18 @@ public class ImagesURLComposer extends FragmentURLComposer {
     }
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public State getState() {
+        return State.DONE;
+    }
+
+    @Override
+    public Dimension getDimension() {
+        ImageCaches imageCaches = (ImageCaches) MMBase.getMMBase().getBuilder("icaches");
+        MMObjectNode icacheNode = imageCaches.getCachedNode(source.getNumber(), template);
+        return new Dimension(icacheNode.getIntValue("width"), icacheNode.getIntValue("height"));
     }
 
 
