@@ -116,7 +116,13 @@ public abstract class AbstractTranscoder implements Transcoder {
 
     }
 
-
+    /**
+     * Default and generic implementation of the key. It can be parsed back to the same transcoder
+     * instance with {@link #getInstance}. This makes for a key which is, like the icaches 'ckey'
+     * key unique and parseable.
+     *
+     * The implemetation depends on {@link Settings} annotations to be set on the classes.
+     */
     public  final String getKey() {
         StringBuilder buf = new StringBuilder();
         if (getId() != null && getId().length() > 0) {
