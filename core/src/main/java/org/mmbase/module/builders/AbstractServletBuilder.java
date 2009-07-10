@@ -662,4 +662,12 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return null;
     }
 
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public java.io.InputStream getBinary(MMObjectNode node) {
+        return node.getInputStreamValue(FIELD_HANDLE);
+    }
+
 }
