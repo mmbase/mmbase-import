@@ -124,6 +124,7 @@ public final class AnalyzerUtils {
 
     private static final Pattern VIDEO    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*?([0-9]+)\\s+kb/s.*");
 
+
     public boolean video(String l, Node source, Node dest) {
         Matcher m = VIDEO.matcher(l);
         if (m.matches()) {
@@ -140,6 +141,23 @@ public final class AnalyzerUtils {
             if (dest != null) {
                 dest.setIntValue("channels", source.getIntValue("channels"));
             }
+            source.setIntValue("width", Integer.parseInt(m.group(1)));
+            source.setIntValue("height", Integer.parseInt(m.group(2)));
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static final Pattern IMAGE    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
+    public boolean image(String l, Node source, Node dest) {
+        Matcher m = IMAGE.matcher(l);
+        if (m.matches()) {
+            toImage(source, dest);
+
+            log.debug("width: "  + m.group(1));
+            log.debug("height: " + m.group(2));
             source.setIntValue("width", Integer.parseInt(m.group(1)));
             source.setIntValue("height", Integer.parseInt(m.group(2)));
 

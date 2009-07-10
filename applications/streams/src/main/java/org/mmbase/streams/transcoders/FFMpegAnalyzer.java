@@ -48,6 +48,10 @@ public class FFMpegAnalyzer implements Analyzer {
             log.service("Found video " + source);
             return;
         }
+        if (util.image(l, source, des)) {
+            log.service("Found image " + source);
+            return;
+        }
     }
 
     public void ready(Node sourceNode, Node destNode) {
