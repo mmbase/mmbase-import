@@ -63,7 +63,7 @@
     <field name="handle" state="systemvirtual">
       <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <getprocessor>
-          <class name="org.mmbase.datatypes.processors.OtherField" >
+          <class name="org.mmbase.datatypes.processors.OtherField$Getter" >
             <param name="field">url</param>
           </class>
         </getprocessor>
