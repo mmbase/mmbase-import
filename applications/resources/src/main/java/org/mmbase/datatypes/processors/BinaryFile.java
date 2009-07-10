@@ -108,9 +108,10 @@ public class BinaryFile {
             SerializableInputStream is = Casting.toSerializableInputStream(value);
             String name = is.getName();
             if (name != null) {
+                File dir = getDirectory();
                 String existing = (String) node.getValue(field.getName());
                 if (existing != null && ! "".equals(existing)) {
-                    File ef = new File(getDirectory(), existing);
+                    File ef = new File(dir, existing);
                     if (ef.exists() && ef.isFile()) {
                         log.service("Removing existing field " + ef);
                         ef.delete();
@@ -135,7 +136,7 @@ public class BinaryFile {
                 } else {
                     log.debug("No field " + contenttypeField);
                 }
-                return f.getName();
+                return f.toString().substring(dir.toString().length());
             } else {
                 log.debug("No name given, ignoring this processor (not an upload)");
                 return value;
