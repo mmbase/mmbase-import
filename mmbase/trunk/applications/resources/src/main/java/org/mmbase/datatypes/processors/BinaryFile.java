@@ -136,7 +136,7 @@ public class BinaryFile {
                 } else {
                     log.debug("No field " + contenttypeField);
                 }
-                return f.toString().substring(dir.toString().length());
+                return f.toString().substring(dir.toString().length() + 1);
             } else {
                 log.debug("No name given, ignoring this processor (not an upload)");
                 return value;
@@ -172,7 +172,7 @@ public class BinaryFile {
                 to.getParentFile().mkdirs();
                 log.debug("Fixing file");
                 file.renameTo(to);
-                fileName = to.toString().substring(dir.toString().length());
+                fileName = to.toString().substring(dir.toString().length() + 1);
                 log.debug("Setting file name to " + fileName);
                 node.setValueWithoutProcess(field.getName(), fileName);
                 log.debug("Canched " + node.getChanged() + " " + node.getCloud());
