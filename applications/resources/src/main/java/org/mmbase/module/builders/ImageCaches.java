@@ -70,12 +70,12 @@ public class ImageCaches extends AbstractImages {
         return getNode(node.getIntValue(FIELD_ID));
     }
 
-    protected StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {
+    public StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {
         MMObjectNode originalImage = originalImage(node);
-        Images images = (Images) originalImage.getBuilder();
+        ImagesInterface images = (ImagesInterface) originalImage.getBuilder();
         images.getFileName(originalImage, buf);
         String ext = getImageFormat(node);
-        if (images.storesImageType()) { // otherwise too expensive
+        if (! (images instanceof Images) || ((Images) images).storesImageType()) { // otherwise too expensive
             if (! ext.equals(images.getImageFormat(originalImage))) {
                 buf.append('.').append(ext);
             }
