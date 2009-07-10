@@ -24,7 +24,7 @@ import java.util.regex.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-@Settings({"format", "acodec", "vcodec"})
+@Settings({"format", "acodec", "vcodec", "ab"})
 public class FFMpegTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpegTranscoder.class);
