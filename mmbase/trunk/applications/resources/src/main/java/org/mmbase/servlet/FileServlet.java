@@ -11,7 +11,9 @@ package org.mmbase.servlet;
 
 import org.mmbase.module.core.*;
 import org.mmbase.datatypes.processors.FormatFileSize;
+import org.mmbase.util.transformers.*;
 import java.util.*;
+
 import javax.servlet.http.*;
 import javax.servlet.*;
 import java.util.regex.*;
@@ -35,8 +37,10 @@ public class FileServlet extends BridgeServlet {
     private static Logger log;
 
     private static File files = null;
+    private static final UrlEscaper URL = new UrlEscaper();
 
     private Pattern ignore = Pattern.compile("");
+
 
     //private static final Properties properties= new Properties();
 
@@ -91,7 +95,7 @@ public class FileServlet extends BridgeServlet {
         if (pathInfo == null) {
             return files;
         } else {
-            return new File(files, pathInfo.replace("/", File.separator));
+            return new File(files, URL.transformBack(pathInfo).replace("/", File.separator));
         }
     }
 
@@ -143,6 +147,8 @@ public class FileServlet extends BridgeServlet {
 
 
     private static final FormatFileSize formatFileSize = new FormatFileSize();
+
+    private static final Xml XML = new Xml();
     protected void listing(HttpServletRequest req, HttpServletResponse resp, File directory) throws IOException {
         if ("true".equals(getInitParameter("listings"))) {
             resp.setContentType("application/xhtml+xml"); // We hate IE anyways.
@@ -155,11 +161,11 @@ public class FileServlet extends BridgeServlet {
                 resp.sendRedirect(req.getContextPath() + req.getServletPath() + (pathInfo == null ? "" : pathInfo) + "/");
                 return;
             }
-            result.append("<title>Directory Listing For " + pathInfo + "</title>");
+            result.append("<title>Directory Listing For " + XML.transform(URL.transformBack(pathInfo)) + "</title>");
             result.append("<link rel='stylesheet' href='" + req.getContextPath() + "/mmbase/style/css/mmbase.css' type='text/css' />");
             result.append("</head>");
             result.append("<body class='filelisting'>");
-            result.append("<h1>Directory Listing For " + pathInfo + "</h1>");
+            result.append("<h1>Directory Listing For " + XML.transform(URL.transformBack(pathInfo)) + "</h1>");
             String header = getInitParameter("header");
             if (header != null && ! "".equals(header)) {
                 File headerFile = new File(directory, header);
@@ -191,9 +197,10 @@ public class FileServlet extends BridgeServlet {
                 result.append("</td>");
                 result.append("<td class='filename'>");
                 if (canRead(req, file)) {
-                    result.append("<a href='" + name + "'>" + name + "</a>");
+                    String url = URL.transform(file.getName()) + (file.isDirectory() ? "/" : "");
+                    result.append("<a href='" + url + "'>" + XML.transform(name) + "</a>");
                 } else {
-                    result.append(name);
+                    result.append(XML.transform(name));
                 }
                 result.append("</td></tr>");
             }
