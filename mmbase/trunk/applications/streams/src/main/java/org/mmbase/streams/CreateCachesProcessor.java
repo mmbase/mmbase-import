@@ -564,10 +564,15 @@ public class CreateCachesProcessor implements CommitProcessor {
                             resultNode.setNodeValue("id",    node);
 
                             File inFile  = new File(FileServlet.getDirectory(), node.getStringValue("url").replace("/", File.separator));
+
                             StringBuilder buf = new StringBuilder();
                             org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, node.getNumber(), "/");
+                            buf.append("/");
                             buf.append(resultNode.getNumber()).append('.').append(ResourceLoader.getName(inFile.getName())).append(".").append(jd.transcoder.getFormat().toString().toLowerCase());
                             String outFileName = buf.toString();
+                            if (outFileName.startsWith("/")) {
+                                outFileName = outFileName.substring(1);
+                            }
                             resultNode.setStringValue("url", outFileName);
 
                             resultNode.commit();
