@@ -341,7 +341,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     /**
      * @since MMBase-1.8
      */
-    protected StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {
+    public StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {
         String fileName = hasField(FIELD_FILENAME) ? node.getStringValue(FIELD_FILENAME) : "";
         if (fileName.equals("")) {
             String fileTitle;
