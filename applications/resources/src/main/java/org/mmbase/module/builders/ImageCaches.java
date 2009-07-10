@@ -396,7 +396,10 @@ public class ImageCaches extends AbstractImages {
         String template = Imaging.parseCKey(ckey).template;
         List<String> params     = Imaging.parseTemplate(template);
         MMObjectNode orig = originalImage(node);
-        if (orig.getBuilder() instanceof ImagesInterface) {
+        if (orig == null) {
+            log.warn("Could not find original node for " + node.getNumber() + " " + ckey);
+            return Dimension.UNDETERMINED;
+        } else if (orig.getBuilder() instanceof ImagesInterface) {
             Dimension origDimension = ((ImagesInterface) orig.getBuilder()).getDimension(orig);
             return Imaging.predictDimension(origDimension, params);
         } else {
