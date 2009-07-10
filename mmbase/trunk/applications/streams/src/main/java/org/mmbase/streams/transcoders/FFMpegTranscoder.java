@@ -31,12 +31,17 @@ public class FFMpegTranscoder extends CommandTranscoder {
 
     String acodec = null;
     String vcodec = null;
+    String ab = null;
 
     public void setAcodec(String a) {
         acodec = a;
     }
     public void setVcodec(String v) {
         vcodec = v;
+    }
+
+    public void setAb(String a) {
+        ab = a;
     }
 
     public FFMpegTranscoder(String id) {
@@ -67,6 +72,10 @@ public class FFMpegTranscoder extends CommandTranscoder {
         if (vcodec != null) {
             args.add("-vcodec");
             args.add(vcodec);
+        }
+        if (ab != null) {
+            args.add("-ab");
+            args.add(ab);
         }
         args.add("-i");
         args.add(inFile.toString());
