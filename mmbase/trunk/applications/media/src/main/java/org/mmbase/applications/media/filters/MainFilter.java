@@ -153,7 +153,7 @@ public class MainFilter {
             try {
                 urls = filter.filter(urls);
             } catch (Exception filterException) {
-                log.error("Check filter "+filter+" "+filterException);
+                log.error("Check filter " + filter + ": " + filterException.getMessage(), filterException);
             }
             if (log.isDebugEnabled()) {
                 log.debug("after: " + urls);
