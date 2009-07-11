@@ -151,7 +151,7 @@ public class DataTypesTest extends TestCase {
         try {
             getString().getLocalizedGUIName().set("bla", new Locale("nl"));
             fail();
-        } catch (IllegalStateException ise) {
+        } catch (UnsupportedOperationException ise) {
         }
         getStringClone().setRequired(true);
     }
