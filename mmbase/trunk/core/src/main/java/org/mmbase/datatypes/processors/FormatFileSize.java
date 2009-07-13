@@ -15,7 +15,9 @@ package org.mmbase.datatypes.processors;
  * Actually, using setters like {@link FormatQuantity#setUnit(String)}, this class can also be used to postfix all
  * other kinds of units to integers.
  *
- * @todo Why not apply this to floats too. Also support SI prefixes below k then (c, m, micro, n, etc).
+ * The unit symbol used is 'B', the IEEE 1541 recommended symbol for a 'byte'. Use {@link
+ * #setClassical} or {@link #setUnit} if you prefer the non-standard, but once common 'byte' as a
+ * unit.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -32,10 +34,17 @@ public class FormatFileSize extends FormatQuantity {
     }
     /**
      * It was commonplace to mix SI prefixes with 'binary' factors.
-     * If this is set to 'true', then SI prefixes are used 'byte' will be the unit symbol, and 1024 the
+     * If this is set to 'true', then SI prefixes are used and 'byte' will be the unit symbol, and 1024 the
      * basic factor (which basically adheres to no recommendation or standard, but is widely used by
      * e.g. hard disk manufacturers).
-     * @param c classical
+     *
+     * If this is set to 'false'. then then IEEE prefixes are used, and 'B' will be the unit.
+     *
+     * Using this method with 'true' is the only way to get a multiplication factor which does not
+     * correspond to the set of prefixes. Normally {@link #setBinaryPrefixes} can be used to toggle
+     * between IEEE and SI mode.
+     *
+     * @param c boolean
      * @since MMBase-1.9
      */
     public void setClassical(boolean c) {
@@ -53,6 +62,20 @@ public class FormatFileSize extends FormatQuantity {
     @Override
     public String toString() {
         return "FILESIZE";
+    }
+
+    public static class Parser extends FormatQuantity.Parser {
+        public void setClassical(boolean c) {
+            if (c) {
+                prefixes = SI;
+                unit = "byte";
+                k = KIBI;
+            } else {
+                prefixes = IEEE_BI;
+                unit = "B";
+                k = KIBI;
+            }
+        }
     }
 }
 
