@@ -13,7 +13,6 @@
   <mm:node referid="mail1">
     <mm:function name="mail" />
     <p>Mail ${mail1} was sent with status <mm:field name="mailstatus"><mm:fieldinfo type="guivalue" /></mm:field></p>
-
   </mm:node>
 
 </mm:cloud>
