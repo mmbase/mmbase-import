@@ -18,9 +18,9 @@
     <li><mm:link page="test_image"><a href="${_}">mm:image</a></mm:link></li>
     <li><mm:link page="test_tree"><a href="${_}">mm:tree</a></mm:link></li>
     <li><mm:link page="test_context"><a href="${_}">mm:context</a></mm:link></li>
+    <li><mm:link page="test_import"><a href="${_}">mm:import</a></mm:link></li>
 
   </ol>
-
   <h3>MMB-1844</h3>
   <mm:import id="list" vartype="list">a,b</mm:import>
   <mm:stringlist referid="list" id="main">
@@ -34,7 +34,6 @@
   </mm:stringlist>
   <mm:remove referid="main" />
   [${main}.${sub}.${subsub}] : Should be [..]
-
 </div>
 
 
