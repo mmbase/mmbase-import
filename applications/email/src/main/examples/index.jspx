@@ -35,7 +35,6 @@
             </pre>
           </td>
           <td>
-            BLE BLOE ${example}
             <mm:include debug="html" page="${example}" />
           </td>
         </tr>
