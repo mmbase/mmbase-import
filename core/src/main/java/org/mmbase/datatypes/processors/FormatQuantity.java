@@ -33,7 +33,7 @@ public class FormatQuantity implements Processor {
     protected static final BigDecimal KILO     = new BigDecimal(1000); // 10^3
     protected static final BigDecimal KIBI     = new BigDecimal(1024); // 2^10
 
-    public static final String PREFIX_PATTERN = "(Ki|Mi|Ti|Gi|Pi|Ei|Zi|Yi|[kMGTPEZYm\u00b5npfazy])";
+    public static final String PREFIX_PATTERN = "(Ki|Mi|Ti|Gi|Pi|Ei|Zi|Yi|da|[hkMGTPEZYcdm\u00b5npfazy])";
     //                                              3     6         9     12    15    18    21    24
     //                                              1     2         3     4     5     6     7     8
     protected static final String[] IEEE_BI     = {"Ki", "Mi",     "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"}; // 1024,  1024^2,
@@ -204,6 +204,16 @@ public class FormatQuantity implements Processor {
                     return BigDecimal.ONE.divide(KILO.pow(i + 1));
                 }
             }
+            // support for remaining SI prefixes (no powers of 1000)
+            if (prefix.equals("da")) {
+                return new BigDecimal(10);
+            } else if (prefix.equals("h")) {
+                return new BigDecimal(10);
+            } else if (prefix.equals("d")) {
+                return BigDecimal.ONE.divide(new BigDecimal(10));
+            } else if (prefix.equals("c")) {
+                return BigDecimal.ONE.divide(new BigDecimal(100));
+            }
             return BigDecimal.ONE;
         }
 
@@ -242,10 +252,13 @@ public class FormatQuantity implements Processor {
         FormatQuantity format = new FormatQuantity();
         FormatQuantity fileSize = new FormatFileSize();
 
-        String formatted = "" + format.process(null, null, argv[0]);
-        String formattedAsFileSize = "" + fileSize.process(null, null, argv[0]);
-
         Parser parser = new Parser();
+        BigDecimal in = (BigDecimal) parser.process(null, null, argv[0]);
+
+        String formatted = "" + format.process(null, null, in);
+        String formattedAsFileSize = "" + fileSize.process(null, null, in);
+
+
         //String parsed = "" + parser.process(null, null, formatted);
         //String parsedFileSize = "" + fsparser.process(null, null, formattedAsFileSize);
         System.out.println("" + argv[0] + " -> '" + formatted + "', '" + formattedAsFileSize + "'");
