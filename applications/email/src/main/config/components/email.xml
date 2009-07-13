@@ -44,7 +44,11 @@
   <block
       classification="mmbase.examples"
       name="emailexamples" mimetype="text/html">
-    <body jsp="index.jspx" />
+    <body>
+      <class name="org.mmbase.framework.IFrameRenderer">
+        <param name="url">/mmexamples/email/index.jspx</param>
+      </class>
+    </body>
   </block>
 
   <block name="email-documentation"

@@ -14,6 +14,10 @@
   <packaging>war</packaging>
   <version>${mmbase.version}</version>
 
+  <properties>
+    <project.name>email</project.name>
+  </properties>
+
   <description>
     The email application provides builders and functions to enable MMBase to send (and receive)
     email. You can create 'email' objects which you can fill with information that needs to be send,
