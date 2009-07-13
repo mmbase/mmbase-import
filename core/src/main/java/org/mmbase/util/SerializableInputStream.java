@@ -85,6 +85,17 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             throw ioe;
         }
         this.wrapped = new FileInputStream(file);
+    }
+
+    SerializableInputStream(SerializableInputStream is) {
+        is.supportMark();
+        this.size = is.size;
+        this.file = is.file;
+        this.tempFile = is.tempFile;
+        this.name = is.name;
+        this.contentType =  is.contentType;
+        this.wrapped = is.wrapped;
+        this.used = is.used;
 
 
     }
