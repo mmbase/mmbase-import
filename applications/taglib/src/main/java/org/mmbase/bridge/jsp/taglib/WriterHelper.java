@@ -136,8 +136,16 @@ public class WriterHelper {
     private class StackEntry {
         public final Object value;
         public final CharTransformer escaper;
-        StackEntry(Object v, CharTransformer e) {
-            value = v; escaper = e;
+        public final int vartype;
+        StackEntry(Object v, CharTransformer e, int vt) {
+            value = v;
+            //explicitEscaper = ee;
+            escaper = e;
+            vartype = vt;
+        }
+
+        public String toString() {
+            return "" + value + " (" + escaper + ")";
         }
     }
     // whether this tag pushed something on the stack already.
@@ -283,7 +291,9 @@ public class WriterHelper {
 
     public String getEscape() throws JspTagException {
         String e = (String) escape.getValue(thisTag);
-        if ("".equals(e)) return null;
+        if ("".equals(e)) {
+            return null;
+        }
         return e;
     }
 
@@ -325,6 +335,7 @@ public class WriterHelper {
             }
         }
         if (v != null || vartype == TYPE_LIST || vartype == TYPE_VECTOR || vartype == TYPE_SET) {
+            log.debug("Setting " + (v == null ? "NULL" : v.getClass()) + " " + v + " for type " + vartype, new Exception());
             switch (vartype) {
                 // these accept a value == null (meaning that they are empty)
             case TYPE_LIST:
@@ -398,7 +409,7 @@ public class WriterHelper {
             case TYPE_STRING:
                 if (v instanceof Url) {
                     try {
-                    v = ((Url)v).get(false);
+                        v = ((Url)v).get(false);
                     } catch (Exception e) {
                         log.warn(e);
                     }
@@ -432,19 +443,47 @@ public class WriterHelper {
                     v = Casting.toByte(v);
                 }
                 break;
+            case TYPE_OBJECT:
+                log.debug("Found " + (v == null ? "NULL  " : v.getClass()) + " " + v);
+                break;
             case TYPE_FILEITEM:
                 if (! (v instanceof org.apache.commons.fileupload.FileItem)) {
                     throw new JspTagException("Variable is not of type FileItem, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
                 }
                 break;
             default:
-                log.debug("Unknown vartype" + vartype);
+                log.debug("Unknown vartype" + vartype );
                 break;
             }
             value = v;
         }
 
     }
+
+
+    /**
+     * How to wrap the values when they are stored somewhere.
+     * @since MMBase-1.9.2
+     */
+    protected Object wrap(StackEntry se)  {
+        //if (se.explicitEscaper != null || se.vartype != TYPE_OBJECT) {
+        return Casting.wrap(se.value, se.escaper);
+        /*
+        } else {
+            return se.value;
+        }
+        */
+    }
+    /**
+     * How to wrap the values when they are stored somewhere.
+     * @since MMBase-1.9.2
+     */
+    protected StackEntry getStackEntry() throws JspTagException {
+        String e = getEscape();
+        return new StackEntry(value, getEscaper(), vartype);
+    }
+
+
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
         setValueOnly(v, noImplicitList);
 
@@ -461,16 +500,18 @@ public class WriterHelper {
         }
         setJspvar();
         if (use_Stack) {
+
+            StackEntry se = getStackEntry();
             if (pushed && _Stack.size() > 0) {
                 if (log.isDebugEnabled()) {
                     log.debug("Value was already pushed by this tag");
                 }
-                _Stack.set(0, new StackEntry(value, getEscaper()));
+                _Stack.set(0,se);
             } else {
-                _Stack.addFirst(new StackEntry(value, getEscaper()));
+                _Stack.addFirst(se);
                 pushed = true;
             }
-            pageContext.setAttribute("_", Casting.wrap(value, getEscaper()));
+            pageContext.setAttribute("_", wrap(se));
             if (log.isDebugEnabled()) {
                 log.debug("pushed  on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
                 log.debug("Escaper: " + getEscaper());
@@ -487,9 +528,10 @@ public class WriterHelper {
     /**
      * Don't forget to call 'setValue' first!
      */
-
     private void setJspvar() throws JspTagException {
-        if (jspvar == null) return;
+        if (jspvar == null) {
+            return;
+        }
 
         if (log.isDebugEnabled()) {
             log.debug("Setting variable " + jspvar + " to " + value + "(" + (value != null ? value.getClass().getName() : "" ) + ")");
@@ -527,9 +569,17 @@ public class WriterHelper {
      */
 
     protected java.io.Writer getPageString(java.io.Writer w) throws JspTagException, IOException {
-        if (value == null) return w;
+        if (value == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("value is null " + thisTag);
+            }
+            return w;
+        }
 
         Object writeValue = thisTag.getPageContext().getAttribute("_");
+        if (log.isDebugEnabled()) {
+            log.debug("value to write " + writeValue + " " + thisTag);
+        }
         if (writeValue == value) {
             if (value instanceof byte[]) {
                 // writing bytes to the page?? We write base64 encoded...
@@ -542,8 +592,17 @@ public class WriterHelper {
                     writeValue = ct.transform(Casting.toString(value));
                 }
             }
+        } else if (writeValue == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Found null for " + thisTag);
+            }
+            writeValue = "";
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("Found odd writeValue " + writeValue + " for " + thisTag);
+            }
         }
-        if (writeValue == null) writeValue = "";
+
         w.write(writeValue.toString());
         return w;
     }
@@ -584,7 +643,7 @@ public class WriterHelper {
                 thisTag.getPageContext().removeAttribute("_");
             } else {
                 StackEntry peek = _Stack.peek();
-                thisTag.getPageContext().setAttribute("_", Casting.wrap(peek.value, peek.escaper));
+                thisTag.getPageContext().setAttribute("_", wrap(peek));
             }
             _Stack = null;
             pushed = false;
@@ -607,7 +666,9 @@ public class WriterHelper {
      * It also pops the _-stack, and releases the members for gc.
      */
     public int doEndTag() throws JspTagException {
-        log.debug("doEndTag of WriterHelper");
+        if (log.isDebugEnabled()) {
+            log.debug("doEndTag o f WriterHelper " + thisTag);
+        }
         try {
             String body = getString();
             if (isWrite()) {
