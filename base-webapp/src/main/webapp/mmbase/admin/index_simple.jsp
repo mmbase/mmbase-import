@@ -28,7 +28,6 @@
             <mm:component debug="xml" name="${param.component}" block="${param.block}">
               <mm:frameworkparam name="category">${param.category}</mm:frameworkparam>
             </mm:component>
-            -->
           </div>
         </body>
       </html>
