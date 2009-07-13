@@ -30,23 +30,23 @@ import java.math.*;
 public class FormatQuantity implements Processor {
 
     private static final long serialVersionUID = 1L;
-    protected static final int KILO     = 1000; // 10^3
-    protected static final int KIBI     = 1024; // 2^10
+    protected static final BigDecimal KILO     = new BigDecimal(1000); // 10^3
+    protected static final BigDecimal KIBI     = new BigDecimal(1024); // 2^10
 
-    public static final String PREFIX_PATTERN = "([kMGTPEZYm\u00b5npfazycdh]|da|Ki|Mi|Gi|Ti|Pi|Ei|Zi|Yi)";
+    public static final String PREFIX_PATTERN = "(Ki|Mi|Ti|Gi|Pi|Ei|Zi|Yi|[kMGTPEZYm\u00b5npfazy])";
     //                                              3     6         9     12    15    18    21    24
     //                                              1     2         3     4     5     6     7     8
-    protected static final String[] IEEE_BI     = {"Ki", "Mi",     "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"}; // 1024
-    protected static final String[] SI          = {"k",  "M",      "G",  "T",  "P",  "E",  "Z",  "Y"};  // 10, 1000
-    protected static final String[] SI_NEGATIVE = {"m",  "\u00b5", "n",  "p",  "f",  "a",  "z",  "y"};  // 1/10, 1/1000
+    protected static final String[] IEEE_BI     = {"Ki", "Mi",     "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"}; // 1024,  1024^2,
+    protected static final String[] SI          = {"k",  "M",      "G",  "T",  "P",  "E",  "Z",  "Y"};  // 1000, 1000000
+    protected static final String[] SI_NEGATIVE = {"m",  "\u00b5", "n",  "p",  "f",  "a",  "z",  "y"};  // 1/1000, 1/1000000
 
-    protected int      k        = KILO;
+    protected BigDecimal      k        = KILO;
     protected String[] prefixes = SI;
     protected String unit = "";
     protected String lowFormat = "0.0 ";
     protected String highFormat = "0 ";
-    protected int lowLimit = 15;
-    protected int limit= 2 * k;
+    protected BigDecimal lowLimit = new BigDecimal(15);
+    protected BigDecimal limit = k.multiply(new BigDecimal(2));
 
     /**
      * If  set, will use binary prefixes as recommended by IEEE 1541 . So, Ki, Mi, etc. which
@@ -111,7 +111,7 @@ public class FormatQuantity implements Processor {
      * @since MMBase-1.9
      */
     public void setLimit(int l) {
-        limit = l;
+        limit = new BigDecimal(l);
     }
 
     /**
@@ -120,29 +120,33 @@ public class FormatQuantity implements Processor {
      * (14.3 KiB vs 64 KiB).
      */
     public void setLowLimit(int l) {
-        lowLimit = l;
+        lowLimit = new BigDecimal(l);
     }
 
 
     public  Object process(Node node, Field field, Object value) {
         if (value == null) return null;
 
-        double v = org.mmbase.util.Casting.toDouble(value);
-        double av = v < 0 ? - v : v;
-        int factor = 1;
+        BigDecimal v = org.mmbase.util.Casting.toDecimal(value);
+        BigDecimal av = v.abs();
+        BigDecimal factor = BigDecimal.ONE;
         int power  = 0;
-        if (av != 0.0) {
-            if (av >= 1.0) {
-                while (av > factor * limit && power < prefixes.length) {
-                    factor *= k;
+        if (av.unscaledValue().intValue() != 0) {
+            if (av.compareTo(BigDecimal.ONE) > 0) {
+                while (av.compareTo(factor.multiply(limit)) > 0
+                       && power < prefixes.length) {
+                    factor =  factor.multiply(k);
                     power++;
                 }
             } else {
-                double iv = 1.0 / av;
-                while (iv > factor * limit && -power < SI_NEGATIVE.length) {
-                    factor *= KILO;
+                BigDecimal inverse = BigDecimal.ONE.divide(av, RoundingMode.HALF_UP);
+                while (inverse.compareTo(factor.multiply(limit)) > 0
+                       && -power < SI_NEGATIVE.length) {
+                    factor =  factor.multiply(KILO);
                     power--;
                 }
+                factor =  factor.multiply(KILO);
+                power--;
             }
         }
 
@@ -151,17 +155,19 @@ public class FormatQuantity implements Processor {
                                                    node.getCloud().getLocale());
 
         if (power > 0) {
-            v /= factor;
+            v = v.divide(factor, 0, RoundingMode.HALF_UP);
         }  else {
-            v *= factor;
+            v = v.multiply(factor);
+            //v.setScale(0, RoundingMode.HALF_UP);
+
         }
 
         if (nf instanceof DecimalFormat) {
-            av = v < 0 ? -v : v;
-            ((DecimalFormat) nf).applyPattern(av > lowLimit ? highFormat : lowFormat);
+            av = v.abs();
+            ((DecimalFormat) nf).applyPattern(av.compareTo(lowLimit) > 0 ? highFormat : lowFormat);
         }
 
-        StringBuffer buf = nf.format(v, new StringBuffer(), new FieldPosition(0));
+        StringBuffer buf = nf.format(v.doubleValue(), new StringBuffer(), new FieldPosition(0));
         if (power > 0) {
             buf.append(prefixes[power - 1]);
         } else if (power < 0) {
@@ -176,10 +182,32 @@ public class FormatQuantity implements Processor {
         return "[" + unit + "]";
     }
 
+
+    private static final Pattern PARSER = Pattern.compile("([0-9]+[\\.,]?[0-9]*)\\s?(" + PREFIX_PATTERN + ")?.*");
+
     public static class Parser extends FormatQuantity {
         private static final long serialVersionUID = 1923784124279730073L;
 
-        Pattern parse = Pattern.compile("(.*?)" + PREFIX_PATTERN);
+        protected BigDecimal factor(String prefix) {
+            for (int i = 0 ; i < IEEE_BI.length; i++) {
+                if (IEEE_BI[i].equals(prefix)) {
+                    return KIBI.pow(i + 1);
+                }
+            }
+            for (int i = 0 ; i < SI.length; i++) {
+                if (SI[i].equals(prefix)) {
+                    return KILO.pow(i + 1);
+                }
+            }
+            for (int i = 0 ; i < SI_NEGATIVE.length; i++) {
+                if (SI_NEGATIVE[i].equals(prefix)) {
+                    return BigDecimal.ONE.divide(KILO.pow(i + 1));
+                }
+            }
+            return BigDecimal.ONE;
+        }
+
+
         @Override
         public final Object process(Node node, Field field, Object value) {
             if (value == null) return null;
@@ -187,69 +215,42 @@ public class FormatQuantity implements Processor {
             if (string.endsWith(unit)) {
                 string = string.substring(0, string.length() - unit.length());
             }
-            Matcher matcher = parse.matcher(string);
+            Matcher matcher = PARSER.matcher(string);
             String number;
-            double factor = 1;
+            BigDecimal factor;
             if (matcher.matches()) {
                 number = matcher.group(1).trim();
-                String prefix = matcher.group(2).trim();
-                int bi_pow = 1;
-                for (int i = 0 ; i < IEEE_BI.length; i++) {
-                    if (IEEE_BI[i].equals(prefix)) {
-                        for (int j = 0; j <= i; j++) {
-                            bi_pow *= 1024;
-                        }
-                        break;
-                    }
-                }
-                if (bi_pow != 1) {
-                    factor *= bi_pow;
+                String prefix = matcher.group(2);
+                if (prefix != null) {
+                    factor = factor(prefix);
                 } else {
-                    int si_pow = 1;
-                    for (int i = 0 ; i < SI.length; i++) {
-                        if (SI[i].equals(prefix)) {
-                            for (int j = 0; j <= i; j++) {
-                                si_pow *= 1000;
-                            }
-                            break;
-                        }
-                    }
-                    if (si_pow != 1) {
-                        factor *= si_pow;
-                    } else {
-                        int si_neg = 1;
-                        for (int i = 0 ; i < SI_NEGATIVE.length; i++) {
-                            if (SI_NEGATIVE[i].equals(prefix)) {
-                                for (int j = 0; j <= i; j++) {
-                                    si_neg *= 1000;
-                                }
-                                break;
-                            }
-                        }
-                        if (si_neg != 1) {
-                            factor /= si_neg;
-                        }
-
-                    }
+                    factor = BigDecimal.ONE;
                 }
             } else {
                 number = string.trim();
+                factor = BigDecimal.ONE;
             }
-            BigDecimal dec = new BigDecimal(number).multiply(new BigDecimal(factor));
-            return dec;
 
-
-
+            BigDecimal dec = new BigDecimal(number);
+            MathContext context  = new MathContext(dec.precision());
+            return dec.multiply(factor).round(context);
         }
     }
 
 
     public static void main(String[] argv) {
         FormatQuantity format = new FormatQuantity();
-        FormatQuantity parser = new FormatQuantity.Parser();
+        FormatQuantity fileSize = new FormatFileSize();
+
         String formatted = "" + format.process(null, null, argv[0]);
-        String parsed = "" + parser.process(null, null, formatted);
-        System.out.println("" + argv[0] + " -> '" + formatted + "' -> " + parsed);
+        String formattedAsFileSize = "" + fileSize.process(null, null, argv[0]);
+
+        Parser parser = new Parser();
+        //String parsed = "" + parser.process(null, null, formatted);
+        //String parsedFileSize = "" + fsparser.process(null, null, formattedAsFileSize);
+        System.out.println("" + argv[0] + " -> '" + formatted + "', '" + formattedAsFileSize + "'");
+        System.out.println("-> " + parser.process(null, null, formatted) + "," + parser.process(null, null, formattedAsFileSize));
+
     }
 }
 
