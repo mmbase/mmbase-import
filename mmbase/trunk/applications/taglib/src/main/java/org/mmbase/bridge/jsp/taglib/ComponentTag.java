@@ -139,14 +139,18 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
         used = false;
         helper.setValue(new Object() {
                 final ComponentTag t = ComponentTag.this;
+                String string = null;
                 public String toString() {
-                    try {
-                        StringWriter w = new StringWriter();
-                        t.getContent(w);
-                        return w.toString();
-                    } catch (JspException je) {
-                        return je.getMessage();
+                    if (string == null) {
+                        try {
+                            StringWriter w = new StringWriter();
+                            t.getContent(w);
+                            string =  w.toString();
+                        } catch (JspException je) {
+                            string = je.getMessage();
+                        }
                     }
+                    return string;
                 }
             });
         helper.useEscaper(false);
