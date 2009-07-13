@@ -5,8 +5,8 @@
   <mm:createnode id="mail1" type="email">
     <mm:setfield name="from">${email}</mm:setfield>
     <!-- WTF -->
-    <mm:setfield name="subject"><mm:url absolute="true" page="example5_subject.jsp" /></mm:setfield>
-    <mm:setfield name="body"><mm:url absolute="true" page="example5_body.jsp" /></mm:setfield>
+    <mm:setfield name="subject"><mm:url absolute="true" page="urls_subject.jsp" /></mm:setfield>
+    <mm:setfield name="body"><mm:url absolute="true" page="urls_body.jsp" /></mm:setfield>
   </mm:createnode>
 
   <mm:node id="group1" number="groups.testgroep" />
