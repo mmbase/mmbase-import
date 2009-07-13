@@ -27,32 +27,41 @@ public class VirtualNodeTest extends BridgeTest {
 
 
     public void testBasic() {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("a", "A");
+        if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) {
 
-        VirtualNode node = new VirtualNode(map, getCloud());
-        assertEquals("A", node.getStringValue("a"));
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("a", "A");
+
+            VirtualNode node = new VirtualNode(map, getCloud());
+            assertEquals("A", node.getStringValue("a"));
+        } else {
+            System.out.println("Cannot test on rmmci (MMObjectBuilder needed)");
+        }
 
     }
 
 
     public void testNodeValue() {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("a", "A");
+        if (getCloudContext().getUri().equals(ContextProvider.DEFAULT_CLOUD_CONTEXT_NAME)) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("a", "A");
 
 
-        Map<String, Object> sub = new HashMap<String, Object>();
-        sub.put("b", "B");
+            Map<String, Object> sub = new HashMap<String, Object>();
+            sub.put("b", "B");
 
-        VirtualNode subNode = new VirtualNode(sub, getCloud());
-        map.put("subnode", subNode);
+            VirtualNode subNode = new VirtualNode(sub, getCloud());
+            map.put("subnode", subNode);
 
 
-        VirtualNode node = new VirtualNode(map, getCloud());
-        assertEquals("A", node.getStringValue("a"));
+            VirtualNode node = new VirtualNode(map, getCloud());
+            assertEquals("A", node.getStringValue("a"));
 
-        assertNotNull("" + node, node.getNodeValue("subnode"));
-        assertEquals("B", node.getNodeValue("subnode").getStringValue("b"));
+            assertNotNull("" + node, node.getNodeValue("subnode"));
+            assertEquals("B", node.getNodeValue("subnode").getStringValue("b"));
+        } else {
+            System.out.println("Cannot test on rmmci (MMObjectBuilder needed)");
+        }
 
     }
 
