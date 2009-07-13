@@ -208,7 +208,7 @@ public class FormatQuantity implements Processor {
             if (prefix.equals("da")) {
                 return new BigDecimal(10);
             } else if (prefix.equals("h")) {
-                return new BigDecimal(10);
+                return new BigDecimal(100);
             } else if (prefix.equals("d")) {
                 return BigDecimal.ONE.divide(new BigDecimal(10));
             } else if (prefix.equals("c")) {
