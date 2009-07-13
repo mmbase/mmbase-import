@@ -469,9 +469,14 @@
       <class>org.mmbase.util.functions.ExampleBean</class>
     </function>
 
+    <function name="thisnode2" key="thisNode">
+      <class>org.mmbase.bridge.TestFunctionSet</class>
+    </function>
+
     <function name="thisnode">
       <class>org.mmbase.bridge.ThisNodeFunction</class>
     </function>
+
   </functionlist>
 
 </builder>
