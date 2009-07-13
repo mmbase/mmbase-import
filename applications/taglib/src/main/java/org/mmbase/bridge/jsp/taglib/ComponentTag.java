@@ -135,6 +135,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
 
     public int doStartTag() throws JspException{
         super.doStartTag();
+        helper.overrideWrite(true);
         used = false;
         helper.setValue(new Object() {
                 final ComponentTag t = ComponentTag.this;
