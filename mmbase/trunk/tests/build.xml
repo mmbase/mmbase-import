@@ -125,6 +125,7 @@
         <include name="commons-fileupload*.jar" />
         <include name="commons-io*.jar" />
         <include name="mmbase-rmmci-${version}-client.jar" />
+        <include name="mmbase-richtext-${version}-classes.jar" />
       </fileset>
     </path>
 
