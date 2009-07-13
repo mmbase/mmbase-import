@@ -125,7 +125,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         out.writeObject(getProcessors);
         out.writeObject(setProcessors);
         out.writeObject(handlers);
-        //out.writeObject(restrictions);
+        out.writeObject(restrictions);
     }
     // implementation of serializable
     @SuppressWarnings("unchecked")
@@ -149,8 +149,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         getProcessors         = (Processor[]) in.readObject();
         setProcessors         = (Processor[]) in.readObject();
         handlers              = (Map<String, Handler<?>>) in.readObject();
-        //restrictions          = (Collection<Restriction<?>>) in.readObject();
-        //unmodifiableRestrictions = Collections.unmodifiableCollection(restrictions);
+        restrictions          = (Collection<Restriction<?>>) in.readObject();
+        unmodifiableRestrictions = Collections.unmodifiableCollection(restrictions);
     }
 
     public String getBaseTypeIdentifier() {
