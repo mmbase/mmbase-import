@@ -20,8 +20,7 @@ import java.math.*;
  * Actually, using setters like {@link FormatQuantity#setUnit(String)}, this class can also be used to postfix all
  * other kinds of units to integers.
  *
- * @todo Why not apply this to floats too. Also support SI prefixes below k then (c, m, micro, n, etc).
- *
+
  * @author Michiel Meeuwissen
  * @version $Id$
  * @since MMBase-1.9
@@ -33,7 +32,6 @@ public class FormatQuantity implements Processor {
     protected static final BigDecimal KILO     = new BigDecimal(1000); // 10^3
     protected static final BigDecimal KIBI     = new BigDecimal(1024); // 2^10
 
-    public static final String PREFIX_PATTERN = "(Ki|Mi|Ti|Gi|Pi|Ei|Zi|Yi|da|[hkMGTPEZYcdm\u00b5npfazy])";
     //                                              3     6         9     12    15    18    21    24
     //                                              1     2         3     4     5     6     7     8
     protected static final String[] IEEE_BI     = {"Ki", "Mi",     "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"}; // 1024,  1024^2,
@@ -49,10 +47,9 @@ public class FormatQuantity implements Processor {
     protected BigDecimal limit = k.multiply(new BigDecimal(2));
 
     /**
-     * If  set, will use binary prefixes as recommended by IEEE 1541 . So, Ki, Mi, etc. which
+     * If  set, will use binary prefixes as recommended by <a href="http://en.wikipedia.org/wiki/IEEE_1541-2002">IEEE 1541</a>. So, Ki, Mi, etc. which
      * are multiples of 1024. Otherwise normal SI prefixes are applied (k, M, G etc), which are multiples of
      * 1000.
-     * @since MMBase-1.9
      */
     public void setBinaryPrefixes(boolean bi) {
         if (bi) {
@@ -65,9 +62,7 @@ public class FormatQuantity implements Processor {
     }
 
     /**
-     * The unit symbol which is prefixed by the prefixes. Defaults to 'B', the IEEE 1541 recommended
-     * symbol for a 'byte'.
-     * @since MMBase-1.9
+     * The unit symbol which is prefixed by the prefixes. No unit on default.
      */
     public void setUnit(String u) {
         unit = u;
@@ -177,26 +172,43 @@ public class FormatQuantity implements Processor {
         return buf.toString();
     }
 
+    public Parser getParser() {
+        Parser parser = new Parser();
+        parser.k = k;
+        parser.prefixes = prefixes;
+        return parser;
+    }
+
     @Override
     public String toString() {
         return "[" + unit + "]";
     }
 
 
+    public static final String PREFIX_PATTERN = "(Ki|Mi|Ti|Gi|Pi|Ei|Zi|Yi|da|[hkMGTPEZYcdm\u00b5npfazy])";
     private static final Pattern PARSER = Pattern.compile("([0-9]+[\\.,]?[0-9]*)\\s?(" + PREFIX_PATTERN + ")?.*");
 
     public static class Parser extends FormatQuantity {
         private static final long serialVersionUID = 1923784124279730073L;
 
         protected BigDecimal factor(String prefix) {
-            for (int i = 0 ; i < IEEE_BI.length; i++) {
-                if (IEEE_BI[i].equals(prefix)) {
-                    return KIBI.pow(i + 1);
+            for (int i = 0 ; i < prefixes.length; i++) {
+                if (prefixes[i].equals(prefix)) {
+                    return k.pow(i + 1);
                 }
             }
-            for (int i = 0 ; i < SI.length; i++) {
-                if (SI[i].equals(prefix)) {
-                    return KILO.pow(i + 1);
+            if (prefixes != IEEE_BI) {
+                for (int i = 0 ; i < IEEE_BI.length; i++) {
+                    if (IEEE_BI[i].equals(prefix)) {
+                        return KIBI.pow(i + 1);
+                    }
+                }
+            }
+            if (prefixes != SI) {
+                for (int i = 0 ; i < SI.length; i++) {
+                    if (SI[i].equals(prefix)) {
+                        return KILO.pow(i + 1);
+                    }
                 }
             }
             for (int i = 0 ; i < SI_NEGATIVE.length; i++) {
