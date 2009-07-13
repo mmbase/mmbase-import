@@ -75,6 +75,7 @@ public class ImportTag extends ContextReferrerTag {
     }
 
 
+
     public int doStartTag() throws JspTagException {
         value = null;
         helper.setUse_Stack(false);
@@ -135,7 +136,7 @@ public class ImportTag extends ContextReferrerTag {
             if (found) {
                 value = getObject(useId);
                 if (log.isDebugEnabled()) {
-                    log.debug("found value for " + useId + " '" + value + "'");
+                    log.debug("found value for " + useId + " " + (value == null ? "" : value.getClass()) + " '" + value + "'");
                 }
             }
         }
@@ -148,12 +149,17 @@ public class ImportTag extends ContextReferrerTag {
 
     }
 
+
+
     /**
      * Retrieves the value from the writer-helper, but escapes if necessary (using 'escape' attribute)
      * @since MMBase-1.7.2
      */
     protected void setValue(Object v, boolean noImplicitList) throws JspTagException {
-        v = getEscapedValue(v);
+        if (helper.getEscape() != null) {
+            v = getEscapedValue(v);
+            // Import may support odd types (like SerializalbeInputStream), which you'd better not escape
+        }
         if (log.isDebugEnabled()) {
             log.debug("Setting " + v + " " + (v== null ? "NULL" : "" + v.getClass()));
         }
@@ -170,9 +176,14 @@ public class ImportTag extends ContextReferrerTag {
     public int doEndTag() throws JspTagException {
         if (found) {
             setValue(value, WriterHelper.NOIMPLICITLIST);
+            log.debug("Set value for " + (value == null ? "" : value.getClass()) + " '" + value + "'");
             if (useId != null) {
                 ContextContainer cc = getContextProvider().getContextContainer();
-                cc.reregister(useId, helper.getValue());
+                Object helperValue  = helper.getValue();
+                if (log.isDebugEnabled()) {
+                    log.debug("Registering for " + useId + " " + (helperValue == null ? "" : helperValue.getClass()) + " '" + helperValue + "'");
+                }
+                cc.reregister(useId, helperValue);
             }
         } else {
             setValue(null);
@@ -183,7 +194,9 @@ public class ImportTag extends ContextReferrerTag {
         }
         if (externid != Attribute.NULL) {
             if (! found ) {
-                if (log.isDebugEnabled()) log.debug("External Id " + externid.getString(this) + " not found");
+                if (log.isDebugEnabled()) {
+                    log.debug("External Id " + externid.getString(this) + " not found");
+                }
                 // try to find a default value in the body.
                 Object body = bodyContent != null ? bodyContent.getString() : "";
                 if (! "".equals(body)) { // hey, there is a body content!
@@ -195,6 +208,7 @@ public class ImportTag extends ContextReferrerTag {
                 }  else {
                     //  might be vartype="list" or so, still need to set
                     setValue(null);
+
                     getContextProvider().getContextContainer().reregister(useId, helper.getValue());
                 }
             }
