@@ -437,11 +437,7 @@ public class Casting {
         } else if (o instanceof CharSequence) {
             return new StringWrapper((CharSequence) o, escaper);
         } else if (o instanceof InputStream) {
-            try {
-                return escape(escaper, new String(toSerializableInputStream(o).get()));
-            } catch (IOException ioe) {
-                throw new RuntimeException(ioe);
-            }
+            return new StringSerializableInputStream(toSerializableInputStream(o), escaper);
         } else {
             return o;
         }
@@ -1293,6 +1289,28 @@ public class Casting {
             return (o2 instanceof org.w3c.dom.Node && ((org.w3c.dom.Node) o1).isEqualNode((org.w3c.dom.Node) o2));
         } else {
             return o1.equals(o2);
+        }
+    }
+
+    /**
+     * A SerializableInputStream where the toString represents the (escaped) contents of the stream itself.
+     * @since MMBase-1.9.2
+     */
+    static class StringSerializableInputStream extends SerializableInputStream implements Unwrappable {
+        final CharTransformer escaper;
+        StringSerializableInputStream(SerializableInputStream is, CharTransformer e) {
+            super(is);
+            escaper = e;
+        }
+
+
+        @Override
+        public String toString() {
+            try {
+                return Casting.escape(escaper, new String(get()));
+            } catch (IOException ioe) {
+                throw new RuntimeException(ioe);
+            }
         }
     }
 
