@@ -88,7 +88,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     }
 
     SerializableInputStream(SerializableInputStream is) {
-        is.supportMark();
+        if (is.file == null) {
+            is.supportMark();
+        }
         this.size = is.size;
         this.file = is.file;
         this.tempFile = is.tempFile;
