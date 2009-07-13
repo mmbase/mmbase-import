@@ -262,16 +262,16 @@ public class FunctionsTest extends BridgeTest {
 
     }
 
-    public void testThisNode() {
+    protected void testThisNode(String function) {
         Cloud cloud = getCloud();
         NodeManager nm = cloud.getNodeManager("datatypes");
         Node node1 = nm.createNode();
         node1.commit();
 
-        Function fun = node1.getFunction("thisnode");
+        Function fun = node1.getFunction(function);
         assertNotNull(fun);
 
-        FieldValue result = node1.getFunctionValue("thisnode", null);
+        FieldValue result = node1.getFunctionValue(function, null);
         assertNotNull(result);
 
         Node resultNode = result.toNode();
@@ -280,8 +280,14 @@ public class FunctionsTest extends BridgeTest {
 
         assertEquals(node1, resultNode);
 
-        Node resultNode2 = node1.getNodeValue("thisnode()");
+        // calling it in a a 'legacy' way
+        Node resultNode2 = node1.getNodeValue(function + "()");
 
         assertEquals(node1, resultNode2);
+    }
+
+    public void testThisNode() {
+        testThisNode("thisnode");
+        testThisNode("thisnode2");
     }
 }
