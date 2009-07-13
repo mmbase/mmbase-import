@@ -8,7 +8,8 @@
   <!-- form is like a transaction -->
   <mm:form mode="form">
 
-
+    <input type="hidden" name="example" value="mmform.jspx" />
+    <p>To: <input type="text" name="email" value="${email}" /></p>
     <!-- because in transaction now actual object will be created until commit -->
     <mm:createnode type="email" commitonclose="false">
 
@@ -44,15 +45,15 @@
           <!--
               could e.g. also redirect if you don't want to see the form again.
           -->
+          <p>Thanks, for sending the above mail.</p>
+          <p>
+            Status was:
+            <mm:functioncontainer>
+              <mm:param name="field">mailstatus</mm:param>
+              <mm:function name="gui" />
+            </mm:functioncontainer>
+          </p>
         </mm:present>
-        <p>Thanks, for sending the above mail.</p>
-        <p>
-          Status was:
-          <mm:functioncontainer>
-            <mm:param name="field">mailstatus</mm:param>
-            <mm:function name="gui" />
-          </mm:functioncontainer>
-        </p>
       </mm:valid>
       <!-- if not valid, the form is still showed, so that people can fix its content -->
       <mm:valid inverse="true">
