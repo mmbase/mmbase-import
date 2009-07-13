@@ -335,7 +335,9 @@ public class WriterHelper {
             }
         }
         if (v != null || vartype == TYPE_LIST || vartype == TYPE_VECTOR || vartype == TYPE_SET) {
-            log.debug("Setting " + (v == null ? "NULL" : v.getClass()) + " " + v + " for type " + vartype, new Exception());
+            if (log.isDebugEnabled()) {
+                log.debug("Setting " + (v == null ? "NULL" : v.getClass()) + " " + v + " for type " + vartype);
+            }
             switch (vartype) {
                 // these accept a value == null (meaning that they are empty)
             case TYPE_LIST:
