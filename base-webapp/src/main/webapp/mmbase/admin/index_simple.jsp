@@ -15,22 +15,20 @@
   -->
 
   <mm:content expires="0"
-              type="application/xhtml+xml"
+              type="text/html"
               unacceptable="CRIPPLE"
               postprocessor="none" language="client">
 
     <mm:cloud rank="basic user">
-      <mm:import externid="category">about</mm:import>
-      <mm:import externid="subcategory"></mm:import>
-      <mm:import externid="component" />
-      <mm:import externid="block" />
       <html xmlns="http://www.w3.org/1999/xhtml" >
         <body>
 
           <div id="content">
-            <mm:component debug="xml" name="$component" block="${block}">
-              <mm:frameworkparam name="category">${category}</mm:frameworkparam>
+            <p>${param.component} / ${param.block} / ${param.category}</p>
+            <mm:component debug="xml" name="${param.component}" block="${param.block}">
+              <mm:frameworkparam name="category">${param.category}</mm:frameworkparam>
             </mm:component>
+            -->
           </div>
         </body>
       </html>
