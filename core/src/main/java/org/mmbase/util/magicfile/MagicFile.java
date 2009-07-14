@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.magicfile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 import java.util.List;
 import org.mmbase.util.logging.*;
@@ -82,15 +80,9 @@ public class MagicFile {
     protected String getMimeType(File file) throws IOException {
         FileInputStream fir = null;
         try {
-            byte[] lithmus = new byte[BUFSIZE];
             fir = new FileInputStream(file);
-            int res = fir.read(lithmus, 0, BUFSIZE);
-            log.debug("read " + res + "  bytes from " + file.getAbsolutePath());
-            return getMimeType(lithmus);
-        } catch (IOException ioe) {
-            throw ioe;
-        }
-        finally {
+            return getMimeType(fir);
+        } finally {
             if (fir != null) {
                 fir.close();
             }
@@ -125,6 +117,15 @@ public class MagicFile {
             }
         }
         return FAILED;
+    }
+    /**
+     * @since MMBase-1.9.2
+     */
+    public String getMimeType(InputStream input) throws IOException {
+        byte[] lithmus = new byte[BUFSIZE];
+        int res = input.read(lithmus, 0, BUFSIZE);
+        log.debug("read " + res + "  bytes from " + input);
+        return getMimeType(lithmus);
     }
 
     /**
