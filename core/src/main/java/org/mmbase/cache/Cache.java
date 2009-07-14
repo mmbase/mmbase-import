@@ -127,11 +127,11 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
      * Returns the average 'length' of the values in the cache. Whatever that may mean. For a {@link
      * QueryResultCache} the length obviously is the length of the cached lists.
      *
-     * May return <code>-1</code> if unknown or undetermined.
+     * May return <code>NaN</code> if unknown or undetermined.
      * @since MMBase-1.9.2
      */
-    public int getAvarageValueLength() {
-        return -1;
+    public double getAvarageValueLength() {
+        return Double.NaN;
     }
 
     /**
