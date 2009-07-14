@@ -124,6 +124,17 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
     }
 
     /**
+     * @since MMBase-1.9.2
+     */
+    public void setMaxEntrySize(int i) {
+        if (getDefaultMaxEntrySize() > 0) {
+            maxEntrySize = i;
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    /**
      * Returns the average 'length' of the values in the cache. Whatever that may mean. For a {@link
      * QueryResultCache} the length obviously is the length of the cached lists.
      *
