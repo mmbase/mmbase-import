@@ -35,9 +35,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     private static final Logger log = Logging.getLoggerInstance(ResourceWatcher.class);
 
     /**
-     * All instantiated ResourceWatchers. Only used until setResourceBuilder is called. Then it
-     * is set to null, and not used any more (also used in ResourceLoader).
-     *
+     * All instantiated ResourceWatchers.
      */
     static final Map<ResourceWatcher, Object> resourceWatchers = Collections.synchronizedMap(new WeakHashMap<ResourceWatcher, Object>());
 
@@ -47,16 +45,32 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     static void setResourceBuilder() {
         synchronized(resourceWatchers) {
             for (ResourceWatcher rw : resourceWatchers.keySet()) {
-                if (rw.running) {
-                    EventManager.getInstance().addEventListener(rw);
-                }
-                for (String resource : rw.resources) {
-                    if (rw.mapNodeNumber(resource)) {
-                        log.service("ResourceBuilder is available now. Resource " + resource + " must be reloaded.");
-                        rw.onChange(resource);
+                if (ResourceLoader.resourceBuilder != null) {
 
+                    if (rw.running) {
+                        EventManager.getInstance().addEventListener(rw);
+                    }
+                    for (String resource : rw.resources) {
+                        if (rw.mapNodeNumber(resource)) {
+                            log.service("ResourceBuilder is available now. Resource " + resource + " must be reloaded.");
+                            rw.onChange(resource);
+
+                        }
                     }
                 }
+            }
+            reinitWatchers();
+
+        }
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    static void reinitWatchers() {
+        synchronized(resourceWatchers) {
+            for (ResourceWatcher rw : resourceWatchers.keySet()) {
+                rw.readdResources();
             }
         }
     }
@@ -106,6 +120,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         if (administrate) {
             resourceWatchers.put(this, null);
         }
+        log.debug(" " + this + " for " + rl, new Exception());
     }
 
     /**
@@ -173,7 +188,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         fileWatcher.getFiles().addAll(resourceLoader.getFiles(resource));
         fileWatcher.start(); // filewatchers are only created on start, so must always be started themselves.
         fileWatchers.put(resource, fileWatcher);
-        log.info("Created " + fileWatcher);
+        log.service("Created " + fileWatcher);
     }
 
     /**
@@ -213,7 +228,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
                 break;
             }
             default: {
-                Node node = ResourceLoader.resourceBuilder.getCloud().getNode(number);
+                Node node = ResourceLoader.getResourceBuilder().getCloud().getNode(number);
                 int contextPrefix = resourceLoader.getContext().getPath().length() - 1;
                 String name = node.getStringValue(ResourceLoader.RESOURCENAME_FIELD);
                 if (name.length() > contextPrefix && resources.contains(name.substring(contextPrefix))) {
@@ -292,6 +307,19 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     }
 
     /**
+     * @since MMBase-1.9.2
+     */
+    protected synchronized void readdResources() {
+        SortedSet<String> copy = new TreeSet<String>();
+        copy.addAll(resources);
+        clear();
+        for (String resource : copy) {
+            add(resource);
+        }
+
+    }
+
+    /**
      * Stops watching. Stops all filewatchers, removes observers.
      */
     public synchronized void exit() {
@@ -301,7 +329,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
             fw.exit();
             i.remove();
         }
-        if (ResourceLoader.resourceBuilder != null) {
+        if (ResourceLoader.getResourceBuilder() != null) {
             EventManager.getInstance().removeEventListener(this);
         }
         running = false;

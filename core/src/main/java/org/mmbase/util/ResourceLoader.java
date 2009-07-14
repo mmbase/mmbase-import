@@ -149,8 +149,12 @@ public class ResourceLoader extends ClassLoader {
      */
     protected static final String INDEX = "INDEX";
 
-    private static  ResourceLoader configRoot = null;
-    private static  ResourceLoader webRoot = null;
+    private static  final ResourceLoader configRoot = new ResourceLoader();
+    private static  boolean        configRootNeedsInit = true;
+
+    private static  final ResourceLoader webRoot = new ResourceLoader();
+    private static  boolean        webRootNeedsInit = true;
+
     private static  ResourceLoader systemRoot = null;
 
     private static ServletContext  servletContext = null;
@@ -178,7 +182,7 @@ public class ResourceLoader extends ClassLoader {
 
 
     // This should perhaps be a member (too) to allow for better authorisation support.
-    static NodeManager resourceBuilder = null;
+    static String resourceBuilder = null;
 
 
     /**
@@ -235,30 +239,39 @@ public class ResourceLoader extends ClassLoader {
     public static  synchronized void init(ServletContext sc) {
         servletContext = sc;
         // reset both roots, they will be redetermined using servletContext.
-        configRoot = null;
-        webRoot    = null;
-        synchronized(ResourceWatcher.resourceWatchers) {
-            for (ResourceWatcher rw : ResourceWatcher.resourceWatchers.keySet()) {
-                rw.onChange();
-            }
-        }
+        configRootNeedsInit = true;
+        webRootNeedsInit    = true;
+        ResourceWatcher.reinitWatchers();
     }
 
     /**
      * Sets the MMBase builder which must be used for resource.
      * The builder must have an URL and a HANDLE field.
      * This method can be called only once.
-     * @param b An MMObjectBuilder (this may be <code>null</code> if no such builder available)
+     * @param b An String (this may be <code>null</code> if no such builder available)
      * @throws RuntimeException if builder was set already.
      */
-    public static void setResourceBuilder(NodeManager b) {
+    public static void setResourceBuilder(String b) {
         if (ResourceWatcher.resourceWatchers == null) {
             throw new RuntimeException("A resource builder was set already: " + resourceBuilder);
         }
         resourceBuilder = b;
         // must be informed to existing ResourceWatchers.
         ResourceWatcher.setResourceBuilder(); // this will also set ResourceWatcher.resourceWatchers to null.
-        log.info("The resources builder '" + b.getName() + "' is available. (user: " + b.getCloud().getUser() + ")");
+        log.info("The resources builder '" + b  + "' is available.");
+    }
+
+    private static NodeManager resourceNodeManager;
+    /**
+     * @since MMBase-1.9.2
+     */
+    static NodeManager getResourceBuilder() {
+        if (resourceBuilder == null) return null;
+        if (resourceNodeManager == null) {
+            Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+            resourceNodeManager = cloud.getNodeManager(ResourceLoader.resourceBuilder);
+        }
+        return resourceNodeManager;
     }
 
 
@@ -320,9 +333,9 @@ public class ResourceLoader extends ClassLoader {
      * Singleton that returns the ResourceLoader for loading mmbase configuration
      */
     public static synchronized ResourceLoader getConfigurationRoot() {
-        if (configRoot == null) {
-
-            configRoot = new ResourceLoader();
+        if (configRootNeedsInit) {
+            configRootNeedsInit = false;
+            configRoot.roots.clear();
 
             //adds a resource that can load from nodes
             configRoot.roots.add(configRoot.new NodeURLStreamHandler(Type.CONFIG.ordinal()));
@@ -428,9 +441,9 @@ public class ResourceLoader extends ClassLoader {
      * Singleton that returns the ResourceLoader for witch the base path is the web root
      */
     public static synchronized ResourceLoader getWebRoot() {
-        if (webRoot == null) {
-            webRoot = new ResourceLoader();
-
+        if (webRootNeedsInit) {
+            webRootNeedsInit = false;
+            webRoot.roots.clear();
             //webRoot.roots.add(webRoot.new NodeURLStreamHandler(Resource.TYPE_WEB));
 
 
@@ -1476,9 +1489,10 @@ public class ResourceLoader extends ClassLoader {
             return new NodeConnection(u, name, type);
         }
         @Override public Set<String> getPaths(final Set<String> results, final Pattern pattern,  final boolean recursive, final boolean directories) {
-            if (ResourceLoader.resourceBuilder != null) {
+            if (ResourceLoader.getResourceBuilder() != null) {
                 try {
-                    NodeQuery query = ResourceLoader.resourceBuilder.createQuery();
+                    NodeManager nm = ResourceLoader.getResourceBuilder();
+                    NodeQuery query = nm.createQuery();
                     Constraint typeConstraint = Queries.createConstraint(query, TYPE_FIELD, Queries.getOperator("="),  type);
                     Constraint nameConstraint = Queries.createConstraint(query, RESOURCENAME_FIELD, Queries.getOperator("LIKE"),  ResourceLoader.this.context.getPath().substring(1) + "%");
 
@@ -1487,7 +1501,7 @@ public class ResourceLoader extends ClassLoader {
                     constraint.addChild(typeConstraint).addChild(nameConstraint);
 
                     query.setConstraint(constraint);
-                    for (Node node :  resourceBuilder.getList(query)) {
+                    for (Node node :  nm.getList(query)) {
                         String url = node.getStringValue(RESOURCENAME_FIELD);
                         String subUrl = url.substring(ResourceLoader.this.context.getPath().length() - 1);
                         int pos = subUrl.indexOf('/');
@@ -1537,7 +1551,7 @@ public class ResourceLoader extends ClassLoader {
             this.type = t;
         }
         @Override public void connect() throws IOException {
-            if (ResourceLoader.resourceBuilder == null) {
+            if (ResourceLoader.getResourceBuilder() == null) {
                 throw new IOException("No resources builder available.");
             }
             connected = true;
@@ -1550,9 +1564,11 @@ public class ResourceLoader extends ClassLoader {
             if (node != null) return node;
             if (name.equals("")) return null;
             String realName = (ResourceLoader.this.context.getPath() + name).substring(1);
-            if (ResourceLoader.resourceBuilder != null) {
+            if (ResourceLoader.getResourceBuilder() != null) {
                 try {
-                    NodeQuery query = resourceBuilder.createQuery();
+                    NodeManager nm = ResourceLoader.getResourceBuilder();
+
+                    NodeQuery query = nm.createQuery();
                     Constraint constraint1 = Queries.createConstraint(query, RESOURCENAME_FIELD, Queries.getOperator("="), realName);
                     Constraint constraint2 = Queries.createConstraint(query, TYPE_FIELD, Queries.getOperator("="), type);
 
@@ -1561,7 +1577,8 @@ public class ResourceLoader extends ClassLoader {
                     constraint.addChild(constraint2);
 
                     query.setConstraint(constraint);
-                    Iterator<Node> i = resourceBuilder.getList(query).iterator();
+
+                    Iterator<Node> i = nm.getList(query).iterator();
                     if (i.hasNext()) {
                         node = i.next();
                         return node;
@@ -1581,7 +1598,7 @@ public class ResourceLoader extends ClassLoader {
             getResourceNode();
             return
                 (node != null && node.mayWrite()) ||
-                (ResourceLoader.resourceBuilder != null && ResourceLoader.resourceBuilder.mayCreateNode());
+                (ResourceLoader.resourceBuilder != null && ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null).getNodeManager(ResourceLoader.resourceBuilder).mayCreateNode());
         }
 
         @Override public InputStream getInputStream() throws IOException {
@@ -1596,7 +1613,9 @@ public class ResourceLoader extends ClassLoader {
             if (getResourceNode() == null) {
                 if (ResourceLoader.resourceBuilder == null) return null;
 
-                node = ResourceLoader.resourceBuilder.createNode();
+                Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+                NodeManager nm = cloud.getNodeManager(resourceBuilder);
+                node = nm.createNode();
                 node.setContext(DEFAULT_CONTEXT);
                 String resourceName = (ResourceLoader.this.context.getPath() + name).substring(1);
                 node.setStringValue(RESOURCENAME_FIELD, resourceName);
