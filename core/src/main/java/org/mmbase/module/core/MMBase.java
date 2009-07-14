@@ -407,6 +407,13 @@ public class MMBase extends ProcessorModule {
 
         initBuilders();
 
+        MMObjectBuilder resources = getBuilder("resources");
+        if (resources != null && resources.getClass().getName().equals("org.mmbase.module.builders.Resources")) {
+            ResourceLoader.setResourceBuilder("resources");
+        } else {
+            ResourceLoader.setResourceBuilder(null);
+        }
+
         EventManager.getInstance().addEventListener(org.mmbase.cache.NodeCache.getCache());
 
         log.debug("Objects started");
