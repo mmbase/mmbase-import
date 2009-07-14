@@ -25,39 +25,6 @@ import org.mmbase.util.logging.*;
 public class Resources extends Attachments {
     private static final Logger log = Logging.getLoggerInstance(Resources.class);
 
-    /**
-     * Registers this builder in the ResourceLoader.
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean init() {
-        boolean res = super.init();
-        if (res) {
-            ThreadPools.jobsExecutor.execute(new Runnable() {
-                    public void run() {
-                        Cloud cloud = null;
-                        while (cloud == null) {
-                            try {
-                                cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
-                            } catch (Throwable t) {
-                                log.info(t.getMessage());
-                            }
-                            if (cloud == null) {
-                                try {
-                                    log.info("No cloud found, waiting for 5 seconds");
-                                    Thread.sleep(5000);
-                                } catch (InterruptedException ie) {
-                                    return;
-                                }
-                            }
-                        }
-                        ResourceLoader.setResourceBuilder(cloud.getNodeManager(Resources.this.getTableName()));
-                    }
-                });
-        }
-        return res;
-
-    }
 
     /**
      * Implements virtual filename field.
