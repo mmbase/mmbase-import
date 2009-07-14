@@ -71,6 +71,8 @@ public class ProcessClosure {
      */
     protected StreamCopyThread errorReader;
 
+    protected long count = -1;
+
     /**
      * Creates a process reader
     * .
@@ -136,7 +138,7 @@ public class ProcessClosure {
         if (inputWriter != null) {
             return inputWriter.getCount();
         } else {
-            return 0;
+            return count;
         }
     }
 
@@ -182,7 +184,9 @@ public class ProcessClosure {
         process = null;
         outputReader = null;
         errorReader = null;
+        count = inputWriter.getCount();
         inputWriter = null;
+
         log.debug(name + " write done");
     }
 
