@@ -59,13 +59,13 @@ public class NodeReceiver implements ImageConversionReceiver {
     public void setDimension(Dimension dim) {
         Dimension predicted = (Dimension) icacheNode.getFunctionValue("dimension", null);
         if (! predicted.equals(Dimension.UNDETERMINED)) {
-            if (! predicted.equals(dim)) {
-                log.info("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for  icache " + icacheNode);
-            } else {
-                if (! predicted.equalsIgnoreRound(dim, 1)) {
-                    log.info("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for icache " + icacheNode);
-                }
+            if (! predicted.equalsIgnoreRound(dim, 1)) {
+                log.warn("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for icache " + icacheNode);
+            } else if (! predicted.equals(dim)) {
+                // It is equal ignoring round, but not precisely equal, that's not worth a warning.
+                log.service("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for  icache " + icacheNode);
             }
+
         }
         icacheNode.setValue("height", dim.y);
         icacheNode.setValue("width", dim.x);
