@@ -70,7 +70,7 @@ public interface CacheMBean {
 
     int getByteSize();
 
-    int getAvarageValueLength();
+    double getAvarageValueLength();
 
 
 
