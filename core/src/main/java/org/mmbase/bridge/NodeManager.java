@@ -16,13 +16,22 @@ import javax.servlet.ServletRequest;
 
 
 /**
- * This interface represents a node's type information object - what used to be the 'builder'.
- * It contains all the field and attribuut information, as well as GUI data for editors and
- * some information on deribed and deriving types. It also contains some maintenance code - code
- * to create new nodes, en code to query objects belonging to the same manager.
- * Since node types are normally maintained through use of config files (and not in the database),
- * as wel as for security issues, the data of a nodetype cannot be changed except through
- * the use of an administration module (which is why we do not include setXXX methods here).
+ * <p>
+ * This interface represents a node's type information object. This is also commonly - because of
+ * legacy -  referred to as 'builder'.</p>
+ *
+ * <p>It contains all the field and attribute information, as well as GUI data for editors and
+ * some information on derived and deriving types. It also contains some maintenance code - code
+ * to create new nodes, and code to query objects belonging to the same manager.</p>
+ *
+ * <p> Node types are normally maintained through use of config files (and not in the database), in so
+ * called 'builder xmls'.</p>
+ *
+  <p>* A NodeManager does however extend {@link Node}, because an entry for each node manager is stored
+ * in the 'typedef' NodeManager. The number {@link Node#getNumber} of the NodeManager is the 'otype'
+ * field of the Nodes of that type.</p>
+
+ *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @version $Id$
