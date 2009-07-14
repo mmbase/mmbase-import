@@ -18,8 +18,7 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.DocumentReader;
 import org.w3c.dom.Element;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.concurrent.*;
 import java.lang.management.*;
 import javax.management.*;
 
@@ -95,8 +94,6 @@ public class CacheManager implements CacheManagerMBean {
                         } catch (Throwable t) {
                             log.error("" + on + " " + t.getClass() + " " + t.getMessage());
                         }
-
-
                     }
                 });
 
@@ -157,6 +154,14 @@ public class CacheManager implements CacheManagerMBean {
     }
 
 
+    private static ThreadPoolExecutor cachePutter = new ThreadPoolExecutor(1, 1, 2 , TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                return ThreadPools.newThread(r, "CachePutter");
+            }
+        });
+    static {
+        cachePutter.allowCoreThreadTimeOut(true);
+    }
     /**
      * Puts a cache in the caches repository. This function will be
      * called in the static of childs, therefore it is protected.
@@ -187,7 +192,7 @@ public class CacheManager implements CacheManagerMBean {
         if (org.mmbase.bridge.ContextProvider.getDefaultCloudContext().isUp()) {
             run.run();
         } else {
-            ThreadPools.jobsExecutor.execute(run);
+            cachePutter.execute(run);
         }
 
         return old;
@@ -198,23 +203,25 @@ public class CacheManager implements CacheManagerMBean {
      * @since MMBase-1.9
      */
     private static ObjectName getObjectName(Cache cache) {
-        Hashtable<String, String> props = new Hashtable<String, String>();
+        // Not using the Constructor with Hashtable, because you can't influence the order of keys
+        // with that. Which is relevant, e.g. when presented in a tree by jconsole.
+        StringBuilder buf = new StringBuilder("org.mmbase:");
         try {
-            props.put("type", "Caches");
+            buf.append("type=Caches");
             org.mmbase.util.transformers.CharTransformer identifier = new org.mmbase.util.transformers.Identifier();
             String machineName = getMachineName();
             if (machineName != null) {
-                props.put("mmb", machineName);
+                buf.append(",mmb=").append(machineName);
             } else {
             }
             if (cache != null) {
-                props.put("name", identifier.transform(cache.getName()));
+                buf.append(",name=").append(identifier.transform(cache.getName()));
             } else {
                 //props.put("name", "*"); // WTF, this does not work in java 5.
             }
-            return new ObjectName("org.mmbase", props);
+            return new ObjectName(buf.toString());
         } catch (MalformedObjectNameException mfone) {
-            log.warn("" + props + " " + mfone);
+            log.warn("" + buf + " " + mfone);
             return null;
         }
     }
