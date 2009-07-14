@@ -33,7 +33,8 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
      * @since MMBase-1.8
      */
     private CacheImplementationInterface<K, V> implementation;
-    protected Object lock;
+
+    protected volatile Object lock;
 
     /**
      * The number of times an element was succesfully retrieved from this cache.
@@ -217,6 +218,14 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
         return puts;
     }
 
+    /**
+     * Reset 'puts', 'misses' and 'puts' to 0.
+     * @since MMBase-1.9.2
+     */
+    public void reset() {
+        hits = 0; misses = 0; puts = 0;
+    }
+
     public  void setMaxSize(int size) {
         implementation.setMaxSize(size);
     }
@@ -307,9 +316,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
         } else {
             // sizeof.sizeof(implementation) does not work because this.equals(implementation)
             synchronized(lock) {
-                Iterator<Map.Entry<K, V>> i = implementation.entrySet().iterator();
-                while(i.hasNext()) {
-                    Map.Entry<K, V> entry = i.next();
+                for (Map.Entry<K, V> entry : implementation.entrySet()) {
                     size += sizeof.sizeof(entry.getKey());
                     size += sizeof.sizeof(entry.getValue());
                 }
@@ -328,9 +335,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V>, CacheMBe
         int size = 0;
         SizeOf sizeof = new SizeOf();
         synchronized(lock) {
-            Iterator<Map.Entry<K, V>> i = implementation.entrySet().iterator();
-            while(i.hasNext()) {
-                Map.Entry<K, V> entry = i.next();
+            for (Map.Entry<K, V> entry : implementation.entrySet()) {
                 size += sizeof.sizeof(entry.getKey());
                 size += sizeof.sizeof(entry.getValue());
                 sizeof.clear();

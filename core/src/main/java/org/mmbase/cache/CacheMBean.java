@@ -28,6 +28,11 @@ public interface CacheMBean {
     void clear();
 
     /**
+     * @see Cache#reset()
+     */
+    void reset();
+
+    /**
      * @see Cache#getSize()
      */
     int getSize();
