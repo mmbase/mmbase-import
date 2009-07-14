@@ -12,6 +12,8 @@ package org.mmbase.storage.search.implementation;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.SizeMeasurable;
+import org.mmbase.util.SizeOf;
 
 /**
  * Basic implementation.
@@ -21,7 +23,7 @@ import org.mmbase.storage.search.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicStepField implements StepField {
+public class BasicStepField implements StepField, SizeMeasurable {
 
     private final CoreField field;
 
@@ -288,6 +290,16 @@ public class BasicStepField implements StepField {
             sb.append(" as ").append(alias);
         }
         return sb.toString();
+    }
+
+    public int getByteSize() {
+        return getByteSize(new SizeOf());
+    }
+
+    public int getByteSize(SizeOf sizeof) {
+        int size = 21;
+        size += sizeof.sizeof(alias);
+        return size;
     }
 
 }

@@ -17,6 +17,8 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.*;
+import org.mmbase.util.SizeMeasurable;
+import org.mmbase.util.SizeOf;
 import org.mmbase.util.logging.*;
 
 /**
@@ -26,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  * @since MMBase-1.7
  */
-public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicCloneable<BasicSearchQuery> {
+public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicCloneable<BasicSearchQuery>,  SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicSearchQuery.class);
 
     private boolean distinct = false;
@@ -647,6 +649,20 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         append(", offset:").append(getOffset()).
         append(")");
         return sb.toString();
+    }
+
+    public int getByteSize() {
+        return getByteSize(new SizeOf());
+    }
+
+    public int getByteSize(SizeOf sizeof) {
+        int size = 47;
+        size += 21 * steps.size();    // 21: Size of a BasicStep
+        for (StepField sf : fields) {
+            size += sizeof.sizeof(sf);
+        }
+        size += 18 * sortOrders.size(); // 18: Size of a BasicSortOrder
+        return size;
     }
 
 }
