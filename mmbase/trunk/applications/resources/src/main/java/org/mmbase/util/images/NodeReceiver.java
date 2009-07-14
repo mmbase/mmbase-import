@@ -60,10 +60,10 @@ public class NodeReceiver implements ImageConversionReceiver {
         Dimension predicted = (Dimension) icacheNode.getFunctionValue("dimension", null);
         if (! predicted.equals(Dimension.UNDETERMINED)) {
             if (! predicted.equals(dim)) {
-                log.warn("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for  icache " + icacheNode);
+                log.info("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for  icache " + icacheNode);
             } else {
                 if (! predicted.equalsIgnoreRound(dim, 1)) {
-                    log.warn("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for icache " + icacheNode);
+                    log.info("Predicted dimension " + predicted + " was not equal to resulting dimension " + dim + " for icache " + icacheNode);
                 }
             }
         }
