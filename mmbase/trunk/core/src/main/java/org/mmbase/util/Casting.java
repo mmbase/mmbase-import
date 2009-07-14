@@ -398,7 +398,7 @@ public class Casting {
                         case org.mmbase.bridge.Field.TYPE_XML:
                             return wrap(getXMLValue(fieldName), escaper);
                         case org.mmbase.bridge.Field.TYPE_UNKNOWN:
-                            log.warn("NodeManager " + nm + " has field " + fieldName + " but it is of unknown type.", new Exception());
+                            log.debug("NodeManager " + nm + " has field " + fieldName + " but it is of unknown type.");
                             return wrap(super.getValueWithoutProcess(fieldName), escaper);
                         default:
                             return escape(escaper, Casting.toString(super.getValue(fieldName)));
