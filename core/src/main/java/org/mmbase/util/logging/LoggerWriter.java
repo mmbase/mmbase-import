@@ -24,6 +24,8 @@ public class LoggerWriter extends  Writer {
 
     private final StringBuilder buffer = new StringBuilder();
     private final Level level;
+    protected String prefix = "";
+    private long count = 0;
 
     /**
      * @param log The logger to which this Writer must write everythin
@@ -35,16 +37,38 @@ public class LoggerWriter extends  Writer {
         level = lev;
     }
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    public LoggerWriter(Logger log, Level lev, String p) {
+        this(log, lev);
+        prefix = p;
+    }
+
     protected Level getLevel(String line) {
         return level;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    protected String getPrefix() {
+        return prefix;
     }
 
     protected void logLine(String line) {
         Level l = getLevel(line);
         if (l == null) l = level;
-        Logging.log(l, logger, line);
+        Logging.log(l, logger, getPrefix() + line);
+        count++;
     }
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    public long getCount() {
+        return count;
+    }
 
     @Override
     public void write(char[] buf, int start, int end) throws IOException {
