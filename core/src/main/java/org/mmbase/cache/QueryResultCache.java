@@ -166,9 +166,9 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
     /**
      *
      */
-    public int getAvarageValueLength() {
+    public double getAvarageValueLength() {
         synchronized(lock) {
-            int total = 0;
+            double total = 0;
             for (List<MMObjectNode> result : values()) {
                 total += result.size();
             }
