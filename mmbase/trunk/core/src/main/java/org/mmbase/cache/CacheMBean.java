@@ -62,6 +62,12 @@ public interface CacheMBean {
      * @see Cache#getMaxEntrySize
      */
     int getMaxEntrySize();
+
+    /**
+     * @see Cache#setMaxEntrySize
+     */
+    void setMaxEntrySize(int m);
+
     /**
      * @see Cache#getRatio
      */
