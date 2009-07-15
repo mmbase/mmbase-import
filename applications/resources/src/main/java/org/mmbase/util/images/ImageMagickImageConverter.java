@@ -14,11 +14,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.mmbase.util.Encode;
-import org.mmbase.util.externalprocess.CommandLauncher;
-import org.mmbase.util.externalprocess.ProcessException;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.*;
+import org.mmbase.util.externalprocess.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Converts images using ImageMagick.
@@ -96,15 +94,21 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 stream.writeObject((cmd.toArray(EMPTY)));
                 stream.writeObject(EMPTY);
                 Copier copier = new Copier(new ByteArrayInputStream(new byte[0]), os, ".file -> socket");
+                log.debug("Executing " + copier);
                 org.mmbase.util.ThreadPools.jobsExecutor.execute(copier);
 
                 Copier copier2 = new Copier(socket.getInputStream(), outputStream, ";socket -> cout");
                 org.mmbase.util.ThreadPools.jobsExecutor.execute(copier2);
-
+                log.debug("Waitting for " + copier);
                 copier.waitFor();
+                log.debug("Ready 1");
+                socket.shutdownInput();
                 socket.shutdownOutput();
+                log.debug("Now waiting for 2");
                 copier2.waitFor();
+                log.debug("Ready 2");
                 socket.close();
+                log.debug("Ready");
             } catch (Exception ioe) {
                 log.error("" + host + ":" + port);
                 try {
@@ -280,58 +284,60 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
      * @param sourceFormat original image format
      * @param commands a <code>List</code> of <code>String</code>s containing commands which are operations on the image which will be returned.
      *                 ImageConvert.converterRoot and ImageConvert.converterCommand specifying the converter root....
-     * @return an array of <code>byte</code>s containing the new converted image.
+     * @return The number of bytes produces
      */
     @Override
-    public byte[] convertImage(byte[] input, String sourceFormat, List<String> commands) {
+    public long convertImage(InputStream input, String sourceFormat, OutputStream out, List<String> commands) throws IOException {
         if (input == null) {
             log.error("Converting an empty image does not make sense.");
-            return input;
+            return -1;
         }
         if (excludeFormats.contains(sourceFormat)) {
             log.debug("Conversion is excluded for image format: " + sourceFormat);
-            return input;
+            return -1;
         }
 
-        byte[] pict = null;
+        SerializableInputStream in = Casting.toSerializableInputStream(input);
+
+        if (in.getSize() <= 0) {
+            log.debug("Nothing to convert");
+            return -1;
+        }
+
+        long result;
         if (commands != null && !commands.isEmpty()) {
             ParseResult parsedCommands = getConvertCommands(commands);
             if (parsedCommands.format.equals("asis") && sourceFormat != null) {
                 parsedCommands.format = sourceFormat;
             }
             if (log.isDebugEnabled()) {
-                log.debug("Converting image (" + input.length + " bytes)  to '" + parsedCommands.format + "' ('" + parsedCommands.args + "') with cwd = " + parsedCommands.cwd);
+                log.debug("Converting image (" + in.getSize() + " bytes)  to '" + parsedCommands.format + "' ('" + parsedCommands.args + "') with cwd = " + parsedCommands.cwd);
             }
             if ("gif".equals(parsedCommands.format)) {
-                if (isAnimated(input)) {
+                if (isAnimated(in)) {
                     parsedCommands.args.add(0, "-coalesce");
                 }
+                in.reset();
             }
-
-            ByteArrayInputStream in = new ByteArrayInputStream(input);
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            convertImage(in, out, sourceFormat, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
-            pict = out.toByteArray();
-
+            log.info("Now converting " + in + " to " + out.getClass() + " " + out);
+            result = convertImage(in, out, sourceFormat, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
             for (File tempFile : parsedCommands.temporaryFiles) {
                 try {
                     tempFile.delete();
                 } catch (Exception e) {
                 }
             }
-        }
-        else {
-            log.error("Converting with empty commands.");
+        } else {
+            log.error("Not Converting with empty commands.");
             log.error(Logging.stackTrace());
+            result = -1;
         }
-        return pict;
+        return result;
     }
 
-    protected boolean isAnimated(byte[] rawimage) {
+    protected boolean isAnimated(InputStream inp) {
         ImageInfo imageInfo = new ImageInfo();
         imageInfo.setDetermineImageNumber(true);
-        ByteArrayInputStream inp = new ByteArrayInputStream(rawimage);
-
         imageInfo.setInput(inp);
         imageInfo.check();
         return (imageInfo.getNumberOfImages() > 1);
@@ -607,7 +613,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
      * @param format The picture format to output to (jpg, gif etc.).
      * @param cwd Directory for fonts
      */
-    private void convertImage(InputStream originalStream, OutputStream imageStream, String sourceFormat, List<String> cmd, String format, File cwd) {
+    private long convertImage(InputStream originalStream, OutputStream imageStream, String sourceFormat, List<String> cmd, String format, File cwd) {
 
         cmd.add(0, "-");
         cmd.add(0, converterPath);
@@ -619,7 +625,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         cmd.add(format+ ":-");
         String command = cmd.toString(); // only for debugging.
 
-        log.service("" + this + " executing " + command);
+        log.service("" + this + " executing " + command + " on " + originalStream);
 
 
 
@@ -643,27 +649,25 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             env[i++] = entry.getKey() + "=" + entry.getValue();
         }
 
+        LoggerWriter writer = new LoggerWriter(log, Level.ERROR, "'" + command + "'");
+        OutputStream errorStream = new WriterOutputStream(writer, "ISO-8859-1");
 
-        ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
-
+        long result;
         try {
             switch(method) {
-            case METHOD_LAUNCHER: launcherConvertImage(cmd, env, originalStream, imageStream, errorStream); break;
-            case METHOD_CONNECTOR: connectorConvertImage(cmd, env, originalStream, imageStream, errorStream); break;
+            case METHOD_LAUNCHER:
+                result = launcherConvertImage(cmd, env, originalStream, imageStream, errorStream);
+                break;
+            case METHOD_CONNECTOR:
+                result = connectorConvertImage(cmd, env, originalStream, imageStream, errorStream);
+                break;
             default: log.error("unknown method " + method);
+                result = 0;
             }
+            writer.close();
 
             log.debug("retrieved all information");
-            byte[] error = errorStream.toByteArray();
-
-            if (error.length >  0) {
-                String errorMessage = errorStream.toString();
-                if (errorMessage.length() > 0) {
-                    log.error( "From stderr with command '" + command + "' in '" + new File("").getAbsolutePath() + "'  --> '" + errorMessage + "'.");
-                } else {
-                    log.warn("No information on stderr found for '" + command + "' in " + cwd + ".");
-                }
-            } else {
+            if (writer.getCount() == 0) {
                 // print some info and return....
                 if (log.isServiceEnabled()) {
                     log.service("converted ('" + command + "') using " + this);
@@ -671,6 +675,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             }
         } catch (Exception e) {
             log.error("converting image with command: '" + command + "' failed  with reason: '" + e.getMessage() + "'"  + errorStream.toString());
+            result = 0;
         } finally {
             try {
                 if (originalStream != null) {
@@ -685,19 +690,21 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             } catch (IOException ioe) {
             }
         }
+        return result;
 
     }
 
-    protected void launcherConvertImage(List<String> cmd, String[] env, InputStream originalStream, OutputStream imageStream, OutputStream errorStream) throws ProcessException {
+    protected long launcherConvertImage(List<String> cmd, String[] env, InputStream originalStream, OutputStream imageStream, OutputStream errorStream) throws ProcessException {
         CommandLauncher launcher = new CommandLauncher("ConvertImage");
         launcher.execute(cmd.toArray(new String[0]), env);
-        launcher.waitAndWrite(originalStream, imageStream, errorStream);
+        ProcessClosure reader = launcher.waitAndWrite(originalStream, imageStream, errorStream);
+        return reader.getCount();
     }
 
     // copy job
     public static class Copier implements Runnable {
-        private boolean ready;
-        private int count = 0;
+        private volatile boolean ready;
+        private long count = 0;
         private final InputStream in;
         private final OutputStream out;
         private final String name;
@@ -707,40 +714,45 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             in = i; out = o; name = n;
         }
         public void run() {
+            log.debug("Executing " + this);
             int size = 0;
             try {
                 byte[] buffer = new byte[1024];
                 while ((size = in.read(buffer)) != -1) {
                     out.write(buffer, 0, size);
-                    count+= size;
+                    count += size;
                 }
             } catch (Throwable t) {
                 System.err.println("Connector " + toString() +  ": " + t.getClass() + " " + t.getMessage());
             }
+            log.debug("Ready" + this);
             synchronized(this) {
-                notifyAll();
                 ready = true;
+                notifyAll();
             }
         }
         public  boolean ready() {
             return ready;
         }
         public void  waitFor() throws InterruptedException {
-            if (! ready ) {
-                synchronized(this) {
-                    if (! ready) wait();
+            synchronized(this) {
+                while (! ready) {
+                    wait();
                 }
             }
         }
         public String toString() {
             return name;
         }
+        public long getCount() {
+            return count;
+        }
 
     }
 
 
     private final String[] EMPTY = new String[] {};
-    protected void connectorConvertImage(List<String> cmd, String[] env, InputStream originalStream, OutputStream imageStream, OutputStream errorStream) throws java.net.UnknownHostException, IOException, InterruptedException   {
+    protected long connectorConvertImage(List<String> cmd, String[] env, InputStream originalStream, OutputStream imageStream, OutputStream errorStream) throws java.net.UnknownHostException, IOException, InterruptedException   {
         try {
             java.net.Socket socket = new java.net.Socket(host, port);
             final OutputStream os = socket.getOutputStream();
@@ -762,6 +774,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             log.debug("Waiting for response");
             copier2.waitFor();
             socket.close();
+            return copier2.getCount();
         } catch (IOException ioe) {
             log.error("" + host + ":" + port);
             errorStream.write(("" + host + ":" + port).getBytes());
