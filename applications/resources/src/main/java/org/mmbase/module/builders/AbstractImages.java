@@ -12,6 +12,7 @@ package org.mmbase.module.builders;
 import java.util.*;
 import org.mmbase.cache.BlobCache;
 import org.mmbase.util.magicfile.MagicFile;
+import org.mmbase.util.*;
 import org.mmbase.util.images.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
@@ -195,7 +196,7 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
      * @since MMBase-1.8.1
      */
     protected Dimension getDimensionForEmptyHandle(MMObjectNode node) {
-        log.warn("Cannot get dimension of node with no 'handle' " + node + " (stores " + storesDimension() + ") "  + node.getValue(Imaging.FIELD_HANDLE));
+        log.debug("Cannot get dimension of node with no 'handle' " + node + " (stores " + storesDimension() + ") "  + node.getValue(Imaging.FIELD_HANDLE));
         return Dimension.UNDETERMINED;
     }
     /**
@@ -312,34 +313,38 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
             ) {
             log.debug("Determining itype for " + node.getNumber());
             itype = "";
-            try {
-                MagicFile magicFile = MagicFile.getInstance();
-                String mimeType = magicFile.getMimeType(node.getByteValue(Imaging.FIELD_HANDLE));
-                if (!mimeType.equals(MagicFile.FAILED)) {
-                    // determine itype
-                    if (mimeType.startsWith("image/")) {
-                        itype = mimeType.substring(6);
-                        log.debug("set itype to " + itype);
+            SerializableInputStream in = Casting.toSerializableInputStream(node.getInputStreamValue(Imaging.FIELD_HANDLE));
+            if (in.getSize() > 0) {
+                try {
+
+                    MagicFile magicFile = MagicFile.getInstance();
+                    String mimeType = magicFile.getMimeType(in);
+                    if (!mimeType.equals(MagicFile.FAILED)) {
+                        // determine itype
+                        if (mimeType.startsWith("image/")) {
+                            itype = mimeType.substring(6);
+                            log.debug("set itype to " + itype);
+                        } else {
+                            log.warn("Mimetype " + mimeType + " is not an image type");
+                            itype = magicFile.mimeTypeToExtension(itype);
+                        }
                     } else {
-                        log.warn("Mimetype " + mimeType + " is not an image type");
-                        int pos = mimeType.indexOf('/');
-                        itype = mimeType.substring(pos + 1);
+                        log.warn(MagicFile.FAILED);
+                        itype = getDefaultImageType();
+                    }
+                } catch (Exception e) {
+                    log.warn("Error while determining image mimetype : " + Logging.stackTrace(e));
+                }
+                if (storesImageType()) {
+                    node.setValue(FIELD_ITYPE, itype);
+                    if (!node.isNew()) {
+                        node.commit();
                     }
                 } else {
-                    log.warn(MagicFile.FAILED);
-                    itype = getDefaultImageType();
-                }
-            } catch (Exception e) {
-                log.warn("Error while determining image mimetype : " + Logging.stackTrace(e));
-            }
-            if (storesImageType()) {
-                log.debug("Found itype " + itype + " storing that");
-                node.setValue(FIELD_ITYPE, itype);
-                if (!node.isNew()) {
-                    node.commit();
+                    log.debug("Doesn't store");
                 }
             } else {
-                log.debug("Doesn't store");
+                log.debug("No stream, nothing to determin, leaving itype undetermined");
             }
         }
         return itype;
