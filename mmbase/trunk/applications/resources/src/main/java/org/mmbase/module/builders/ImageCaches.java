@@ -184,7 +184,9 @@ public class ImageCaches extends AbstractImages {
             // make sure the bytes don't come from the cache (e.g. multi-cast change!, new conversion could be triggered, but image-node not yet invalidated!)
             image.getBuilder().clearBlobCache(image.getNumber());
             java.io.InputStream bytes = images.getBinary(image);
-            log.info("Found bytes " + bytes);
+            if (log.isDebugEnabled()) {
+                log.debug("Found bytes " + bytes);
+            }
             String format = images.getImageFormat(image);
             // This triggers conversion, or waits for it to be ready.
             ImageConversionRequest req = Factory.getImageConversionRequest(bytes, format, new NodeReceiver(node), params);
