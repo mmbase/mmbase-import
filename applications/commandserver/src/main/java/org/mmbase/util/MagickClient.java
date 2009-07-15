@@ -15,7 +15,7 @@ import java.util.*;
 
 
 /**
- * Utilities related to Images.
+ * Just to test the command server
  *
  * @author Michiel Meeuwissen
  */
@@ -35,30 +35,45 @@ public class MagickClient {
         InputStream is = new FileInputStream(file);
         OutputStream result = new FileOutputStream("/tmp/testresult");
 
-        Socket socket = new Socket("localhost" , 1679);
-        final OutputStream os = socket.getOutputStream();
-        os.write(0); // version
-        final ObjectOutputStream stream = new ObjectOutputStream(os);
-        stream.writeObject((String []) command.toArray(new String[] {}));
-        stream.writeObject(new String[] {});
+        try {
+            Socket socket = new Socket("localhost" , 1679);
+            OutputStream os = socket.getOutputStream();
+            os.write(0); // version
+            final ObjectOutputStream stream = new ObjectOutputStream(os);
+            stream.writeObject((String []) command.toArray(new String[] {}));
+            stream.writeObject(new String[] {});
 
-        CommandServer.Copier copier = new CommandServer.Copier(is, os, ".file -> socket");
-        Thread listen = new Thread(copier);
-        listen.start();
+            CommandServer.Copier copier = new CommandServer.Copier(is, os, ".file -> socket");
+            Thread listen = new Thread(copier);
+            listen.start();
 
-        CommandServer.Copier copier2 = new CommandServer.Copier(socket.getInputStream(), result, ";socket -> cout");
-        Thread listen2 = new Thread(copier2);
-        listen2.start();
+            CommandServer.Copier copier2 = new CommandServer.Copier(socket.getInputStream(), result, ";socket -> cout");
+            Thread listen2 = new Thread(copier2);
+            listen2.start();
 
-        System.out.println("Waiting for send");
-        copier.waitFor();
-        socket.shutdownOutput();
-        
-        System.out.println("Waiting for response");
-        copier2.waitFor();
+            System.out.println("Waiting for send");
+            copier.waitFor();
+            socket.shutdownOutput();
+
+            System.out.println("Waiting for response");
+            copier2.waitFor();
+
+            socket.close();
+            System.out.println("Result in /tmp/testresult");
+        } catch (java.net.ConnectException ce) {
+            System.err.println(ce.getMessage());
+            PipedInputStream input = new PipedInputStream();
+            OutputStream out = new PipedOutputStream(input);
+            out.write(1);
+            CommandServer.Copier copier = new CommandServer.Copier(input, out, ";file -> cout");
+            Thread listen = new Thread(copier);
+            listen.start();
 
 
-        socket.close();
+            Runnable run = new CommandServer.Command(input, result, System.err, "stdin/stdout", null);
+            run.run();
+        }
+
 
         result.close();
 
