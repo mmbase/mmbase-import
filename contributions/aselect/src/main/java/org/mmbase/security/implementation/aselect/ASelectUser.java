@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * implementation is about the most straight-forward user implementation possible: (A user has an
  * identifier and a rank, both specified by the constructor).
  *
- * @author Arnout Hannink     (Alfa & Ariss) 
+ * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep)
  *
  * @version $Id$
@@ -39,7 +39,7 @@ public class ASelectUser extends BasicUser {
 
 
     // constructor, perhaps needs more argumetns
-    protected ASelectUser(String name, Rank r, long uniqueNumber, String app) {
+    public ASelectUser(String name, Rank r, long uniqueNumber, String app) {
         super(app);
         if (log.isDebugEnabled()) {
             log.debug("Instantiating " + name);

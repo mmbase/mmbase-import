@@ -17,12 +17,12 @@ package org.mmbase.security.implementation.aselect;
  * @version 1.1
  */
 public class ASelectErrors  {
-    final static String ASELECT_NO_ERROR                    = "0000";
-    final static String ASELECT_UNKNOWN_APPLICATION         = "0031";
-    final static String ASELECT_SERVER_ID_MISMATCH          = "0033";
-    final static String ASELECT_UNKNOWN_USER                = "0102";
-    final static String ASELECT_COULD_NOT_AUTHENTICATE_USER = "0103";
-    final static String ASELECT_COULD_NOT_AUTHENTICATE_USER_1 = "0003";
+    public final static String ASELECT_NO_ERROR                    = "0000";
+    public final static String ASELECT_UNKNOWN_APPLICATION         = "0031";
+    public final static String ASELECT_SERVER_ID_MISMATCH          = "0033";
+    public final static String ASELECT_UNKNOWN_USER                = "0102";
+    public final static String ASELECT_COULD_NOT_AUTHENTICATE_USER = "0103";
+    public final static String ASELECT_COULD_NOT_AUTHENTICATE_USER_1 = "0003";
 
     /**
      * sigh..
