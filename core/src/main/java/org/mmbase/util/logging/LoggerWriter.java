@@ -20,6 +20,8 @@ import java.io.*;
 
 public class LoggerWriter extends  Writer {
 
+    private static final Logger LOG = Logging.getLoggerInstance(LoggerWriter.class);
+
     protected final  Logger logger;
 
     private final StringBuilder buffer = new StringBuilder();
@@ -76,6 +78,7 @@ public class LoggerWriter extends  Writer {
         flush();
     }
 
+
     @Override
     public void flush() throws IOException {
         String[] lines = buffer.toString().split("[\\n\\r]");
@@ -90,6 +93,8 @@ public class LoggerWriter extends  Writer {
     @Override
     public void close() throws IOException {
         flush();
-        logLine(buffer.toString());
+        if (buffer.length() > 0) {
+            logLine(buffer.toString());
+        }
     }
 }
