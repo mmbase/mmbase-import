@@ -13,6 +13,7 @@ import org.mmbase.bridge.*;
 import org.apache.commons.fileupload.FileItem;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.SerializableInputStream;
+import org.mmbase.util.magicfile.MagicFile;
 
 /**
  * Used as 'commitprocessor' on the 'binaries'. This automaticly fills associated 'filename' and
@@ -120,10 +121,9 @@ public class BinaryCommitProcessor implements CommitProcessor {
                 String fn = getContentType(value);
                 if (fn != null) {
                     if (itypeField) {
-                        int slash = fn.indexOf('/');
-                        if (slash > -1)  {
-                            fn = fn.substring(slash + 1);
-                        }
+                        MagicFile magicFile = MagicFile.getInstance();
+                        fn = magicFile.mimeTypeToExtension(fn);
+                        if ("???".equals(fn)) fn = null;
                     }
                     log.debug("Setting ct " + fn);
                     node.setValue(contenttypeField, fn);
