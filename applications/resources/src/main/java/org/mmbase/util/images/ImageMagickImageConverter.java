@@ -715,13 +715,8 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         }
         public void run() {
             log.debug("Executing " + this);
-            int size = 0;
             try {
-                byte[] buffer = new byte[1024];
-                while ((size = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, size);
-                    count += size;
-                }
+                count = IOUtil.copy(in, out);
             } catch (Throwable t) {
                 System.err.println("Connector " + toString() +  ": " + t.getClass() + " " + t.getMessage());
             }
