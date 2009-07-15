@@ -115,8 +115,8 @@ public class CommandServer {
             }
             debug("Read " + toString() + " "  + count);
             synchronized(this) {
-                notifyAll();
                 ready = true;
+                notifyAll();
             }
         }
         public  boolean ready() {
@@ -124,10 +124,8 @@ public class CommandServer {
         }
         public void  waitFor() throws InterruptedException {
             debug("Waiting for " + this);
-            if (! ready ) {
-                synchronized(this) {
-                    if (! ready) wait();
-                }
+            synchronized(this) {
+                while (! ready) wait();
             }
             debug("Written " + toString() + " "  + count);
         }
@@ -257,7 +255,7 @@ public class CommandServer {
             while (true) {
 
                 final Socket accept = server.accept();
-                accept.setSoTimeout(0);
+                accept.setSoTimeout(100000);
                 accept.setKeepAlive(true);
                 accept.setReceiveBufferSize(1024);
                 Command command = new Command(accept.getInputStream(),
