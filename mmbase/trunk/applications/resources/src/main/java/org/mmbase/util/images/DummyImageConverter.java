@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.images;
 
+import org.mmbase.util.IOUtil;
 import java.util.*;
 import java.io.*;
 
@@ -37,19 +38,8 @@ public class DummyImageConverter implements ImageConverter {
         return input;
     }
 
-    public int convertImage(InputStream input, String sourceFormat, OutputStream out, List<String> commands) throws IOException {
-        BufferedOutputStream outBuf = new BufferedOutputStream(out);
-        byte[] buf = new byte[1024];
-        int b = 0;
-        int tot = 0;
-        while ((b = input.read(buf)) != -1) {
-            outBuf.write(buf, 0, b);
-            tot += b;
-        }
-        outBuf.flush();
-        input.close();
-        outBuf.close();
-        return b;
+    public long convertImage(InputStream input, String sourceFormat, OutputStream out, List<String> commands) throws IOException {
+        return IOUtil.copy(input, out);
     }
 
 }
