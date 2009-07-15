@@ -159,9 +159,10 @@ public class CacheManager implements CacheManagerMBean {
                 return ThreadPools.newThread(r, "CachePutter");
             }
         });
-    static {
+/*    static {
         cachePutter.allowCoreThreadTimeOut(true);
     }
+*/    
     /**
      * Puts a cache in the caches repository. This function will be
      * called in the static of childs, therefore it is protected.
