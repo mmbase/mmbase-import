@@ -144,15 +144,14 @@ public class MagicFile {
 
     /**
      * Given a mime-type string, this function tries to create a common extension for it.
-     * @return An extension (without the dot), or an empty string if the mime-type is unknown.
+     * @return An extension (without the dot), or an empty string if the mime-type is unknown, or '???'
+     * if no valid extension for it is found.
      * @since MMBase-1.7.1
      */
     public String mimeTypeToExtension(String mimeType) {
         for (Detector detector : getDetectors()) {
             if (mimeType.equalsIgnoreCase(detector.getMimeType())) {
-                Iterator<String> j = detector.getExtensions().iterator();
-                if (j.hasNext()) {
-                    String ex = j.next();
+                for (String ex : detector.getExtensions()) {
                     return ex;
                 }
             }
