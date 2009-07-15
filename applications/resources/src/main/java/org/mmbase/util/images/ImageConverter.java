@@ -40,10 +40,10 @@ public interface ImageConverter {
      * @param commands a <code>List</code> of <code>String</code>s containing commands which are operations on the image which will be returned.
      * @return number of bytes of converted image.
      * @throws IOException When an error occurs when converting the image
-     * 
+     *
      * @since MMBase-1.9
      */
-    int convertImage(InputStream input, String sourceFormat, OutputStream out, List<String> commands) throws IOException;
+    long convertImage(InputStream input, String sourceFormat, OutputStream out, List<String> commands) throws IOException;
 
 
 }

@@ -15,6 +15,7 @@ import java.util.concurrent.BlockingQueue;
 import java.io.*;
 
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -104,21 +105,28 @@ public class ImageConversionRequestProcessor implements Runnable {
                 List<String> params = req.getParams();
                 try {
                     OutputStream out = rec.getOutputStream();
-                    int length = convert.convertImage(inputPicture, req.getInputFormat(), out, params);
+                    SerializableInputStream in = Casting.toSerializableInputStream(inputPicture);
+
+                    if (in.getSize() > 0) {
+                        long length = convert.convertImage(in, req.getInputFormat(), out, params);
 
 
-                    if (length > 0) {
-                        rec.setSize(length);
-                        if (rec.wantsDimension()) {
-                            Dimension dim = Factory.getImageInformer().getDimension(rec.getInputStream());
-                            rec.setDimension(dim);
+                        if (length > 0) {
+                            rec.setSize(length);
+                            if (rec.wantsDimension()) {
+                                Dimension dim = Factory.getImageInformer().getDimension(rec.getInputStream());
+                                rec.setDimension(dim);
+                            }
+                            rec.ready();
+                        } else {
+                            log.warn("Convert problem. params : " + params);
                         }
-                        rec.ready();
+
                     } else {
-                        log.warn("Convert problem. params : " + params);
+                        log.debug("Nothing to convert");
                     }
                 } catch (java.io.IOException ioe) {
-                    log.error(ioe);
+                    log.warn(ioe);
                 }
             }
         } finally {
