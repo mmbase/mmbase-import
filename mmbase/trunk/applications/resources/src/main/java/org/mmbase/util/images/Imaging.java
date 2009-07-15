@@ -48,9 +48,8 @@ public abstract class Imaging {
         javax.servlet.ServletContext sx = org.mmbase.module.core.MMBaseContext.getServletContext();
         String mimeType = sx.getMimeType(fileName);
         if (mimeType == null) {
-            log.warn("Can't find mimetype for a file with name '" + fileName + "'. Defaulting to text/html");
-            log.warn(Logging.stackTrace());
-            mimeType = "text/html";
+            mimeType = "application/octet-stream";
+            log.service("Can't find mimetype for a file with name '" + fileName + "'. Defaulting to " + mimeType);
         }
         return mimeType;
     }
