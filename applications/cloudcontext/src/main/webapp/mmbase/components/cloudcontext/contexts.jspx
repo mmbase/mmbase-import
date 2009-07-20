@@ -70,9 +70,13 @@
   <mm:import externid="orderby" from="request">number</mm:import>
   <mm:import externid="directions" from="request">${orderby eq 'number' ? 'DOWN' : 'UP'}</mm:import>
   <mm:import externid="search" />
+
   <table summary="Contexts">
 
-    <mm:listnodescontainer referid="query">
+    <mm:listnodescontainer referid="query" id="q">
+
+      <p>${q.sql}</p>
+
 
       <mm:import externid="offset">0</mm:import>
       <mm:present referid="search">
