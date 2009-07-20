@@ -31,7 +31,7 @@
     <description xml:lang="en">
       The MMBase urlconverter handles about pretty URL's in /mmbase.
     </description>
-    <param name="directory">mmbase</param>
+    <param name="directory">/mmbase/</param>
     <param name="renderJsp">/mmbase/admin/index.jsp</param> <!-- you can also do index_simple.jsp when debugging -->
   </urlconverter>
 
