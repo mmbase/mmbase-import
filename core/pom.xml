@@ -87,10 +87,38 @@ See http://www.MMBase.org/license
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.mmbase.maven</groupId>
+        <artifactId>maven-mmbase-plugin</artifactId>
+        <version>1.9-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>create-index-files</id>
+            <goals>
+              <goal>create-index-files</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>copy-web-resources</id>
+            <goals>
+              <goal>install-resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
     </plugins>
   </build>
   <dependencies>
+
+    <!--
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>4.0.1</version>
+    </dependency>
+    -->
+
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
@@ -146,21 +174,9 @@ See http://www.MMBase.org/license
 
   <reporting>
     <plugins>
+      <!--
       <plugin>
         <artifactId>maven-changelog-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-changes-plugin</artifactId>
-        <configuration>
-          <xmlPath>${basedir}/xdocs/changes.xml</xmlPath>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <configLocation>${basedir}/maven-base/checkstyle-mmbase.xml</configLocation>
-          <headerLocation>${basedir}/LICENSE.txt</headerLocation>
-        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -173,6 +189,7 @@ See http://www.MMBase.org/license
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>javacc-maven-plugin</artifactId>
       </plugin>
+      -->
     </plugins>
   </reporting>
 
