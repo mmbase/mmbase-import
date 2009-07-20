@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework.basic;
 import java.util.*;
+import java.util.regex.*;
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.framework.*;
 import org.mmbase.util.functions.*;
@@ -31,6 +32,8 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
 
     private String  directory = null;
 
+    private Pattern domain = Pattern.compile(".*");
+
     public DirectoryUrlConverter(BasicFramework fw) {
         super(fw);
     }
@@ -42,10 +45,26 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
     }
 
     /**
+     * @since MMBase-1.9.2
+     */
+    public void setDomain(String d) {
+        domain = Pattern.compile(d);
+    }
+
+    /**
      * The 'directory' used for thie UrlConverter. A String which begins and ends with '/'.
      */
     public String getDirectory() {
         return directory;
+    }
+
+    /**
+     * A regular expression witch must match 'getLocalName' of the request for this UrlConverter to
+     * match. This defaults to .*.
+     * @since MMBase-1.9.2
+     */
+    public Pattern getDomain() {
+        return domain;
     }
 
     @Override public int getDefaultWeight() {
@@ -73,6 +92,8 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
         return path;
     }
 
+
+
     /**
      * This is the method you must implement. Append the nice URL to b. b already ends with &lt;directory&gt;/
      */
@@ -86,6 +107,9 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
             throw new RuntimeException("Directory not set");
         }
         HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
+        if (! domain.matcher(request.getLocalName()).matches()) {
+            return false;
+        }
         String path = FrameworkFilter.getPath(request);
         log.debug("Found path from request " + path);
         return path.startsWith(directory) || directory.equals(path + "/");
@@ -94,6 +118,11 @@ public abstract class DirectoryUrlConverter extends BlockUrlConverter {
 
 
     @Override final public Url getFilteredInternalUrl(String pa, Map<String, ?> params, Parameters frameworkParameters) throws FrameworkException {
+        HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
+
+        if (! domain.matcher(request.getLocalName()).matches()) {
+            return Url.NOT;
+        }
         List<String> path = getPath(pa);
         if (directory.length() > 1) {
             if (path.size() < 2) {
