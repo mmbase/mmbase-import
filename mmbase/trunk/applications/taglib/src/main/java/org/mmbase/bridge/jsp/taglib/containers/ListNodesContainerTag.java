@@ -132,7 +132,7 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
                 throw new IllegalStateException("The object " + q + " has not precisely one step and can therefore not be converted to a NodeQuery");
             }
             NodeQuery nq = ct.getCloudVar().getNodeManager(q.getSteps().get(0).getTableName()).createQuery();
-            nq.setConstraint(Queries.copyConstraint(nq.getConstraint(), nq.getSteps().get(0), nq, nq.getNodeStep()));
+            nq.setConstraint(Queries.copyConstraint(q.getConstraint(), q.getSteps().get(0), nq, nq.getNodeStep()));
             nq.setOffset(q.getOffset());
             nq.setMaxNumber(q.getMaxNumber());
             nq.setDistinct(q.isDistinct());
