@@ -9,15 +9,18 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="operations" vartype="list">create,read,write,delete,change context,change relation</mm:import>
   <mm:import externid="node" required="true" />
-  <mm:cloud id="parentcloud">
+  <mm:cloud id="parentcloud" method="asis">
+
     <mm:form>
-      <mm:node referid="node" id="currentcontext">
+      <mm:node number="${node}" id="currentcontext">
 
         <input type="hidden" name="node" value="${node}" />
         <table>
           <mm:fieldlist type="edit">
             <tr>
-              <th><mm:fieldinfo type="guiname" /></th>
+              <th>
+                <mm:fieldinfo type="guiname" />
+              </th>
               <td>
                 <mm:fieldinfo type="input" />
                 <mm:fieldinfo type="errors" />
@@ -50,9 +53,13 @@
           </mm:valid>
         </mm:present>
       </mm:node>
-      <mm:node number="${node}" id="currentcontext2" cloud="parentcloud">
+
+
+      <mm:node number="${node}" id="currentcontext2" cloud="parentcloud" commitonclose="false">
         <table class="rights">
-          <caption><mm:nodeinfo nodetype="mmbasegroups" type="plural_guinodemanager" /></caption>
+          <caption>
+          <mm:nodeinfo nodetype="mmbasegroups" type="plural_guinodemanager" />
+          </caption>
           <tr>
             <th />
             <mm:stringlist referid="operations">
