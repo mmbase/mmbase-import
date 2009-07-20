@@ -24,6 +24,9 @@
       var searchterm = getParameter_general("searchterm", "nothing");
       var cmd = getParameter_general("cmd", "");
       var selected = getParameter_general("selected", "");
+      var relationRole = getParameter_general("relationRole", "");
+      var relationOriginNode = getParameter_general("relationOriginNode", "");
+      var relationCreateDir = getParameter_general("relationCreateDir", "");
     </script>
 
     <script type="text/javascript" src="{$javascriptdir}searchwindow.js">
