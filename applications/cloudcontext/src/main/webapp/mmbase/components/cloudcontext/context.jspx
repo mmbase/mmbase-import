@@ -25,64 +25,74 @@
         </mm:fieldlist>
       </table>
       <mm:import externid="submit" />
-      <mm:valid>
-        <mm:commit />
-        <mm:functioncontainer>
-          <mm:listnodes   type="mmbasegroups">
-            <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
-            <mm:stringlist referid="operations">
-              <mm:param name="operation"><mm:write /></mm:param>
-              <mm:import id="right" externid="$_:$_node" />
-              <mm:compare referid="right" value="on">
-                <mm:function write="false" node="currentcontext" name="grant" />
-              </mm:compare>
-              <mm:compare referid="right" value="on" inverse="true">
-                <mm:function write="false" node="currentcontext" name="revoke" />
-              </mm:compare>
-            </mm:stringlist>
-          </mm:listnodes>
-        </mm:functioncontainer>
-        <jsp:scriptlet>org.mmbase.security.implementation.cloudcontext.Caches.waitForCacheInvalidation();</jsp:scriptlet>
-      </mm:valid>
-      <table class="rights">
-        <caption><mm:nodeinfo nodetype="mmbasegroups" type="plural_guinodemanager" /></caption>
-        <tr>
-          <th />
-          <mm:stringlist referid="operations">
-            <th><mm:write /></th>
-          </mm:stringlist>
-        </tr>
-
-        <mm:functioncontainer>
-          <mm:listnodes  type="mmbasegroups" orderby="name">
-            <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
-            <tr>
-              <td class="text">
-                <mm:link referids="_node@node" page="group">
-                  <a href="${_}">
-                    <mm:nodeinfo type="gui" />
-                    <mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field>
-                  </a>
-                </mm:link>
-              </td>
+      <mm:present referid="submit">
+        <mm:valid>
+          <mm:functioncontainer>
+            <mm:listnodes   type="mmbasegroups">
+              <mm:param name="grouporuser">
+                <mm:field name="number" />
+              </mm:param>
               <mm:stringlist referid="operations">
                 <mm:param name="operation"><mm:write /></mm:param>
-                <mm:function id="pa" node="currentcontext" name="parentsallow" write="false" />
-                <mm:function name="allows" id="a"  node="currentcontext" write="false" />
-                <td class="${pa  ? 'parent' : ''}">
-                  <mm:booleanfunction  node="currentcontext" name="maygrant">
-                    <mm:radio type="checkbox" name="${_}:${_node}" value="on" compare="${a ? 'on' : 'off'}" />
-                  </mm:booleanfunction>
-                  <mm:booleanfunction node="currentcontext" name="maygrant" inverse="true">
-                    <c:if test="${a}">X</c:if>
-                  </mm:booleanfunction>
-                </td>
+                <mm:import id="right" externid="$_:$_node" />
+                <mm:compare referid="right" value="on">
+                  <mm:function write="false" node="currentcontext" name="grant" />
+                </mm:compare>
+                <mm:compare referid="right" value="on" inverse="true">
+                  <mm:function write="false" node="currentcontext" name="revoke" />
+                </mm:compare>
               </mm:stringlist>
-            </tr>
-          </mm:listnodes>
-        </mm:functioncontainer>
-      </table>
+            </mm:listnodes>
+          </mm:functioncontainer>
+          <mm:commit />
+          <jsp:scriptlet>org.mmbase.security.implementation.cloudcontext.Caches.waitForCacheInvalidation();</jsp:scriptlet>
+        </mm:valid>
+      </mm:present>
     </mm:node>
-    <input type="submit" name="submit" />
   </mm:form>
+  <mm:node number="${node}" id="currentcontext2">
+    <table class="rights">
+      <caption><mm:nodeinfo nodetype="mmbasegroups" type="plural_guinodemanager" /></caption>
+      <tr>
+        <th />
+        <mm:stringlist referid="operations">
+          <th><mm:write /></th>
+        </mm:stringlist>
+      </tr>
+
+      <mm:functioncontainer>
+        <mm:listnodes  type="mmbasegroups" orderby="name">
+          <mm:param name="grouporuser">
+            <mm:field name="number" />
+          </mm:param>
+          <tr>
+            <td class="text">
+              <mm:link referids="_node@node" page="group">
+                <a href="${_}">
+                  <mm:nodeinfo type="gui" />
+                  <mm:hasfield name="description">
+                    <mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field>
+                  </mm:hasfield>
+                </a>
+              </mm:link>
+            </td>
+            <mm:stringlist referid="operations">
+              <mm:param name="operation"><mm:write /></mm:param>
+              <mm:function id="pa" node="currentcontext2" name="parentsallow" write="false" />
+              <mm:function name="allows" id="a"  node="currentcontext2" write="false" />
+              <td class="${pa  ? 'parent' : ''}">
+                <mm:booleanfunction  node="currentcontext2" name="maygrant">
+                  <mm:radio type="checkbox" name="${_}:${_node}" value="on" compare="${a ? 'on' : 'off'}" />
+                </mm:booleanfunction>
+                <mm:booleanfunction node="currentcontext2" name="maygrant" inverse="true">
+                  <c:if test="${a}">X</c:if>
+                </mm:booleanfunction>
+              </td>
+            </mm:stringlist>
+          </tr>
+        </mm:listnodes>
+      </mm:functioncontainer>
+    </table>
+  </mm:node>
+  <input type="submit" name="submit" />
 </div>
