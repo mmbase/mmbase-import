@@ -20,9 +20,9 @@ import java.io.OutputStream;
 
 public interface ByteTransformer extends Transformer {
 
-    public OutputStream transform(InputStream r, OutputStream o); 
+    public OutputStream transform(InputStream r, OutputStream o);
     public OutputStream transformBack(InputStream r, OutputStream o);
 
-    public byte[] transform(byte[] r); 
+    public byte[] transform(byte[] r);
     public byte[] transformBack(byte[]  r);
 }
