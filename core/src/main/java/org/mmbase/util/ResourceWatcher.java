@@ -70,7 +70,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     static void reinitWatchers() {
         synchronized(resourceWatchers) {
             for (ResourceWatcher rw : resourceWatchers.keySet()) {
-                log.info("Reinitting watcher " + rw);
+                log.debug("Reinitting watcher " + rw);
                 rw.readdResources();
             }
         }
@@ -192,7 +192,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         fileWatcher.start(); // filewatchers are only created on start, so must always be started themselves.
         FileWatcher old = fileWatchers.put(resource, fileWatcher);
         if (old == null) {
-            log.service("Created " + fileWatcher + " " + fileWatchers);
+            log.debug("Created " + fileWatcher + " " + fileWatchers);
         } else {
             log.warn("Replaced " + fileWatcher + " " + fileWatchers, new Exception());
             old.exit();
@@ -328,7 +328,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         for (String resource : copy) {
             add(resource);
         }
-        log.info("Readded resources, now " + resources);
+        log.debug("Readded resources, now " + resources);
 
     }
 
@@ -348,7 +348,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
             }
             running = false;
         } else {
-            log.warn("Not running", new Exception());
+            log.debug("Not running");
         }
     }
 
