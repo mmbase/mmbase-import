@@ -102,7 +102,7 @@ public abstract class FileWatcher {
                     String delay = props.get("delay");
                     if (delay != null) {
                         THREAD_DELAY = Integer.parseInt(delay);
-                        log.service("Set thread delay time to " + THREAD_DELAY);
+                        log.info("Set thread delay time to " + THREAD_DELAY);
                     }
                 } catch (Exception e) {
                     log.error(e);
@@ -180,6 +180,20 @@ public abstract class FileWatcher {
     /**
      * @since MMBase-1.9.2
      */
+    public boolean isRunning() {
+        return ! stop;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public boolean isContinueAfterChange() {
+        return continueAfterChange;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
     public Date getLastCheck() {
         return new Date(lastCheck);
     }
@@ -240,8 +254,8 @@ public abstract class FileWatcher {
      * Stops watching.
      */
     public void exit() {
+        log.debug("Exiting " + this);
         synchronized (this) {
-            fileWatchers.remove(this);
             stop = true;
         }
     }
@@ -316,24 +330,12 @@ public abstract class FileWatcher {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (o == null) return false;
-        if (getClass().equals(o.getClass())) {
-            FileWatcher f = (FileWatcher)o;
-            return this.files.equals(f.files);
-        }
-        return false;
-    }
-
 
     /**
-     * @see java.lang.Object#hashCode()
+     * @since MMBase-1.9.2
      */
-    @Override
-    public int hashCode() {
-        return files == null ? 0 : files.hashCode();
+    public static Set<FileWatcher> getFileWatchers() {
+        return Collections.unmodifiableSet(fileWatchers.watchers);
     }
 
     /**
@@ -387,6 +389,9 @@ public abstract class FileWatcher {
         void remove(FileWatcher f) {
             watchers.remove(f);
         }
+        int size() {
+            return watchers.size();
+        }
 
         /**
          *  Main loop, will check every watched file every amount of time.
@@ -415,7 +420,10 @@ public abstract class FileWatcher {
                     }
                 }
                 if (removed.size() > 0) {
+                    log.debug("Now removing " + removed);
+                    int sizeBefore = watchers.size();
                     watchers.removeAll(removed);
+                    log.debug("Size " + sizeBefore + " -> " +  watchers.size());
                 }
             } catch (Throwable ex) {
                 // unexpected exception?? This run method should never interrupt, so we catch everything.
