@@ -140,7 +140,11 @@ public class ContextAuthentication extends Authentication {
      * this method does nothing..
      */
     public boolean isValid(UserContext userContext) throws SecurityException {
-        if ( getKey() == ((ContextUserContext)userContext).getKey()) return true;
+        if (userContext == null) return false;
+
+        if ( getKey() == ((ContextUserContext)userContext).getKey()) {
+            return true;
+        }
         if (log.isDebugEnabled()) {
             log.debug("not valid because " + getKey () + " != " + ((ContextUserContext) userContext).getKey());
         }
