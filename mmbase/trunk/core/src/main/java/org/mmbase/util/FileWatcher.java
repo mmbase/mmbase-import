@@ -90,7 +90,7 @@ public abstract class FileWatcher {
 
 
 
-    private static Map<String,String> props;
+    private static Map<String, String> props;
 
 
     /**
@@ -149,6 +149,7 @@ public abstract class FileWatcher {
     }
 
     public void start() {
+        stop = false;
         fileWatchers.add(this);
     }
     /**
@@ -167,6 +168,20 @@ public abstract class FileWatcher {
             log.info("Delay of " + this + "  (" + delay + " ms) is smaller than the delay of the watching thread. Will not watch more often then once per " + THREAD_DELAY + " ms. Set to " + THREAD_DELAY);
             this.delay = THREAD_DELAY;
         }
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public long getDelay() {
+        return delay;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public Date getLastCheck() {
+        return new Date(lastCheck);
     }
 
     /**
@@ -198,6 +213,7 @@ public abstract class FileWatcher {
      */
     public void remove(File file) {
         synchronized (this) {
+            log.debug("Secheduling " + file + " from removal", new Exception());
             removeFiles.add(file);
         }
     }
@@ -225,6 +241,7 @@ public abstract class FileWatcher {
      */
     public void exit() {
         synchronized (this) {
+            fileWatchers.remove(this);
             stop = true;
         }
     }
@@ -367,6 +384,10 @@ public abstract class FileWatcher {
             watchers.add(f);
         }
 
+        void remove(FileWatcher f) {
+            watchers.remove(f);
+        }
+
         /**
          *  Main loop, will check every watched file every amount of time.
          *  It will never stop, this thread is a daemon.
@@ -379,7 +400,7 @@ public abstract class FileWatcher {
                     long staleness = (now - f.lastCheck);
                     if (staleness >= f.delay) {
                         if (log.isTraceEnabled()) {
-                            log.trace("Filewatcher with " + f.delay  + " ms <= " + staleness  + " ms is expired. Currently it's watching: " + f.getClass().getName() + " " + f.toString());
+                            log.trace("Filewatcher " + f + " with " + f.delay  + " ms <= " + staleness  + " ms is expired. Currently it's watching: " + f.getClass().getName() + " " + f.toString());
                         }
                         // System.out.print(".");
                         f.removeFiles();

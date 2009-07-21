@@ -70,6 +70,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     static void reinitWatchers() {
         synchronized(resourceWatchers) {
             for (ResourceWatcher rw : resourceWatchers.keySet()) {
+                log.info("Reinitting watcher " + rw);
                 rw.readdResources();
             }
         }
@@ -157,12 +158,14 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         }
         resources.add(resourceName);
         if (log.isDebugEnabled()) {
-            log.debug("Started watching '" + resourceName + "' for resource loader " + resourceLoader.getContext());
+            log.debug("Started watching '" + resourceName + "' for resource loader " + resourceLoader);
             log.trace("(now watching " + resources + ")");
         }
         if (running) {
             createFileWatcher(resourceName);
             mapNodeNumber(resourceName);
+        } else {
+            log.debug("Not createing file and and node watchers because not running");
         }
     }
 
@@ -188,7 +191,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         fileWatcher.getFiles().addAll(resourceLoader.getFiles(resource));
         fileWatcher.start(); // filewatchers are only created on start, so must always be started themselves.
         fileWatchers.put(resource, fileWatcher);
-        log.service("Created " + fileWatcher);
+        log.service("Created " + fileWatcher + " " + fileWatchers);
     }
 
     /**
@@ -316,6 +319,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         for (String resource : copy) {
             add(resource);
         }
+        log.info("Readded resources, now " + resources);
 
     }
 
