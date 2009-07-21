@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
-<functionset>
+<?xml version="1.0"?>
+<functionset
+    xmlns="http://www.mmbase.org/xmlns/functionset"
+    >
 
   <description>Some util functions from org.mmbase.util, made accessible through the function-framework</description>
 
@@ -13,7 +14,12 @@
     <type>class</type>
     <class>org.mmbase.util.PasswordGenerator</class>
     <method>getPassword</method>
-    <param name="template" type="String">SSSSSS</param>
+    <param name="template">
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="SSSSSS" />
+        <pattern value="[ACHS69]+" />
+      </datatype>
+    </param>
   </function>
 
   <function name="randomLong">
