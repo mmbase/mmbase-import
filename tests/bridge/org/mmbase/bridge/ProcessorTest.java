@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * Testing wether the processors of datatypes behave as expected.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ProcessorTest.java,v 1.8 2009-04-30 22:36:13 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
   */
 public class ProcessorTest extends BridgeTest {

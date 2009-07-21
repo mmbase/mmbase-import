@@ -20,7 +20,7 @@ import org.mmbase.bridge.util.CollectionNodeList;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id: FunctionsTest.java,v 1.16 2008-11-18 23:33:31 michiel Exp $
+ * @since $Id$
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {

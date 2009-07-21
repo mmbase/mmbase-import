@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: LocalizedEntryListFactoryTest.java,v 1.4 2009-04-30 18:59:25 michiel Exp $
+ * @verion $Id$
  */
 public class LocalizedEntryListFactoryTest extends TestCase {
 

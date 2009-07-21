@@ -15,7 +15,7 @@ import org.mmbase.util.functions.Parameters;
  * JUnit tests for convertimage-interface implementation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageTest.java,v 1.12 2009-04-22 08:20:43 michiel Exp $
+ * @version $Id$
  */
 public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
 
