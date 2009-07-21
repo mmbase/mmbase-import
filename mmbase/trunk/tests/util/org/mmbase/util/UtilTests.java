@@ -31,6 +31,7 @@ public class UtilTests {
         TestSuite suite = new TestSuite("Util Tests");
         suite.addTestSuite(CastingTest.class);
         suite.addTestSuite(ResourceLoaderTest.class);
+        suite.addTestSuite(FileWatcherTest.class);
         suite.addTestSuite(EncodeTest.class);
         suite.addTestSuite(DateParserTest.class);
         suite.addTestSuite(org.mmbase.util.transformers.XmlFieldTest.class);

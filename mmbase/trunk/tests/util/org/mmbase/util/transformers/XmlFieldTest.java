@@ -9,7 +9,7 @@ import junit.framework.TestCase;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @version $Id: XmlFieldTest.java,v 1.18 2008-07-08 15:46:45 michiel Exp $
+ * @version $Id$
  */
 public class XmlFieldTest  extends TestCase {
 

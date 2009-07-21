@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TypeRelTest.java,v 1.17 2008-10-01 20:16:45 michiel Exp $
+ * @version $Id$
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 

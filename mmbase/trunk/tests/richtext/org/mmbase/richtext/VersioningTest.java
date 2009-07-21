@@ -15,7 +15,7 @@ import org.mmbase.tests.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: VersioningTest.java,v 1.2 2008-11-18 13:07:00 michiel Exp $
+ * @verion $Id$
  */
 public class VersioningTest extends BridgeTest {
 

@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: ParametersTest.java,v 1.5 2008-08-20 21:56:24 michiel Exp $
+ * @verion $Id$
  */
 public class ParametersTest extends TestCase {
 

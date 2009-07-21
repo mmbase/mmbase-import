@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.18 2008-12-22 17:38:19 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {

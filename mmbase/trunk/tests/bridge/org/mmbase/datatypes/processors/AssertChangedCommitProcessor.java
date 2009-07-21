@@ -16,7 +16,7 @@ import org.mmbase.bridge.*;
  * to assert it is changed  in test-cases.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AssertChangedCommitProcessor.java,v 1.2 2009-04-30 14:17:54 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 
