@@ -12,6 +12,7 @@ package org.mmbase.util.functions;
 
 import org.mmbase.core.AbstractDescriptor;
 import org.mmbase.datatypes.*;
+import org.mmbase.datatypes.util.xml.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
@@ -41,8 +42,8 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * these constants, and if it has a cloud ('mm:cloud is used'), then cloud-parameters are filled
      * automaticly.
      */
-    public static final Parameter<String> LANGUAGE                                  = new Parameter<String>("language", String.class);
-    public static final Parameter<Locale> LOCALE                                    = new Parameter<Locale>("locale",   Locale.class);
+    public static final Parameter<String>                                  LANGUAGE = new Parameter<String>("language", String.class);
+    public static final Parameter<Locale>                                  LOCALE   = new Parameter<Locale>("locale",   Locale.class);
     public static final Parameter<org.mmbase.security.UserContext>         USER     = new Parameter<org.mmbase.security.UserContext>("user", org.mmbase.security.UserContext.class);
     public static final Parameter<javax.servlet.http.HttpServletResponse>  RESPONSE = new Parameter<javax.servlet.http.HttpServletResponse>("response", javax.servlet.http.HttpServletResponse.class);
     public static final Parameter<javax.servlet.http.HttpServletRequest>   REQUEST  = new Parameter<javax.servlet.http.HttpServletRequest>("request",  javax.servlet.http.HttpServletRequest.class);
@@ -96,17 +97,40 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
         String type = element.getAttribute("type");
         String required = element.getAttribute("required");
         String description   = element.getAttribute("description"); // actually description as attribute is not very sane
+
+        boolean dataTypeDefined;
+        DataType dataType;
+        if (! "".equals(type)) {
+            dataTypeDefined = false;
+            Class<C> clazz = (Class<C>) getClassForName(type);
+            dataType = DataTypes.createDataType(name, clazz);
+        } else {
+            dataTypeDefined = true;
+            NodeList dataTypeElements = element.getElementsByTagNameNS(DataType.XMLNS, "datatype");
+            Element dataTypeElement = (Element) dataTypeElements.item(0);
+            String base = dataTypeElement.getAttribute("base");
+            BasicDataType baseDataType = DataTypes.getSystemCollector().getDataType(base);
+            try {
+                dataType = DataTypeReader.readDataType(dataTypeElement, baseDataType, new DataTypeCollector(new Object())).dataType;
+            } catch (DependencyException de) {
+                throw new IllegalArgumentException(de);
+            }
+        }
+
+
         Parameter<C> parameter =
             ! "".equals(regex) ?
-            new PatternParameter<C>(java.util.regex.Pattern.compile(regex), (Class<C>) getClassForName(type)) :
-            new Parameter<C>(name, (Class<C>) getClassForName(type));
+            new PatternParameter<C>(java.util.regex.Pattern.compile(regex), dataType) :
+            new Parameter<C>(name, dataType);
         if (! "".equals(description)) {
             parameter.getLocalizedDescription().set(description, null); // just set it for the default locale...
         }
-        parameter.dataType.setRequired("true".equals(required));
+        if (required.length() > 0 || ! dataTypeDefined) {
+            parameter.dataType.setRequired("true".equals(required));
+        }
 
         // check for a default value
-        if (element.getFirstChild() != null) {
+        if (element.getFirstChild() != null && ! dataTypeDefined) {
             parameter.setDefaultValue(parameter.autoCast(org.mmbase.util.xml.DocumentReader.getNodeTextValue(element)));
         }
         return parameter;
@@ -307,7 +331,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     /**
      * Checks if the passed object is of the correct class (compatible with the type of this Parameter),
      * and throws an IllegalArgumentException if it doesn't.
-     * @param value teh value whose type (class) to check
+     * @param value the value whose type (class) to check
      * @throws IllegalArgumentException if the type is not compatible
      */
     public void checkType(Object value) {

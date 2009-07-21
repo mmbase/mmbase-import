@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
-import org.mmbase.util.Casting;
-import org.mmbase.util.Entry;
+import org.mmbase.util.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
 
@@ -319,6 +318,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
 
     /**
      * Throws an IllegalArgumentException if one of the required parameters was not entered.
+     * @see #validate() For complete datatype validation
      */
     public void checkRequiredParameters() {
         checkDef();
@@ -328,6 +328,24 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                 throw new IllegalArgumentException("Required parameter '" + a.getName() + "' is null (of (" + toString() + ")");
             }
         }
+    }
+    /**
+     * Validates all values in the Parameters object with their {@link #getDataType}. You should
+     * call this method if you ready to pass it into some function or so, if you want
+     * validation. If the returned Collection is not empty, something is wrong, and you may want to
+     * not proceed.
+     *
+     * @return A collection with errors.
+     * @since MMBase-1.9.2
+     */
+    public Collection<LocalizedString> validate() {
+        checkDef();
+        Collection<LocalizedString> errors = new ArrayList<LocalizedString>();
+        for (int i = fromIndex; i < toIndex && i < patternLimit; i++) {
+            Parameter<?> a = definition[i];
+            errors.addAll(a.getDataType().castAndValidate(get(a), null, null));
+        }
+        return errors;
     }
 
     /**
