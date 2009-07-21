@@ -190,8 +190,13 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         fileWatcher.setDelay(delay);
         fileWatcher.getFiles().addAll(resourceLoader.getFiles(resource));
         fileWatcher.start(); // filewatchers are only created on start, so must always be started themselves.
-        fileWatchers.put(resource, fileWatcher);
-        log.service("Created " + fileWatcher + " " + fileWatchers);
+        FileWatcher old = fileWatchers.put(resource, fileWatcher);
+        if (old == null) {
+            log.service("Created " + fileWatcher + " " + fileWatchers);
+        } else {
+            log.warn("Replaced " + fileWatcher + " " + fileWatchers, new Exception());
+            old.exit();
+        }
     }
 
     /**
@@ -245,16 +250,20 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     }
 
     public synchronized void start() {
-        // create and start all filewatchers.
-        for (String resource : resources) {
-            //resourceLoader.checkShadowedNewerResources(resource);
-            mapNodeNumber(resource);
-            createFileWatcher(resource);
+        if (! running) {
+            // create and start all filewatchers.
+            for (String resource : resources) {
+                //resourceLoader.checkShadowedNewerResources(resource);
+                mapNodeNumber(resource);
+                createFileWatcher(resource);
+            }
+            if (EventManager.getInstance() != null) {
+                EventManager.getInstance().addEventListener(this);
+            }
+            running = true;
+        } else {
+            log.warn("Already running.", new Exception());
         }
-        if (EventManager.getInstance() != null) {
-            EventManager.getInstance().addEventListener(this);
-        }
-        running = true;
     }
 
     /**
@@ -327,16 +336,20 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * Stops watching. Stops all filewatchers, removes observers.
      */
     public synchronized void exit() {
-        Iterator<FileWatcher> i = fileWatchers.values().iterator();
-        while (i.hasNext()) {
-            FileWatcher fw = i.next();
-            fw.exit();
-            i.remove();
+        if (running) {
+            Iterator<FileWatcher> i = fileWatchers.values().iterator();
+            while (i.hasNext()) {
+                FileWatcher fw = i.next();
+                fw.exit();
+                i.remove();
+            }
+            if (ResourceLoader.getResourceBuilder() != null) {
+                EventManager.getInstance().removeEventListener(this);
+            }
+            running = false;
+        } else {
+            log.warn("Not running", new Exception());
         }
-        if (ResourceLoader.getResourceBuilder() != null) {
-            EventManager.getInstance().removeEventListener(this);
-        }
-        running = false;
     }
 
     /**
