@@ -6,8 +6,8 @@
                         http://www.mmbase.org/xmlns/builder.xsd"
     name="mustbechanged" maintainer="mmbase.org" version="0" extends="object">
   <names>
-    <singular xml:lang="en">datatypes</singular>
-    <plural xml:lang="en">datatypes</plural>
+    <singular xml:lang="en">must be changes</singular>
+    <plural xml:lang="en">must be changed</plural>
   </names>
 
   <descriptions>
