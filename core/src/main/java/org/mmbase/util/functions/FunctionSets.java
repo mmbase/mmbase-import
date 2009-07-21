@@ -96,6 +96,7 @@ public class FunctionSets {
                     }
                 };
             readSets(watcher);
+            watcher.setDelay(10000);
             watcher.start();
         } catch (Throwable t) {
             log.error(t.getClass().getName(), t);
@@ -127,9 +128,14 @@ public class FunctionSets {
      * @todo It makes FunctionSet's now using a sub-XML. It would be possible to create a complete function-set by reflection.
      */
 
-    private static void readSets(ResourceWatcher watcher) {
+    private static synchronized void readSets(ResourceWatcher watcher) {
 
         List<URL> resources = watcher.getResourceLoader().getResourceList("functionsets.xml");
+        watcher.clear();
+
+        log.info("Watchers " + watcher.getFileWatchers().size());
+        watcher.add("functionsets.xml");
+
         log.service("Using " + resources);
         ListIterator<URL> i = resources.listIterator();
         while (i.hasNext()) {
@@ -152,7 +158,9 @@ public class FunctionSets {
                             }
                             String setResource = n.getAttribute("resource");
                             if (setResource.equals("")) setResource = n.getAttribute("file"); // deprecated, it's not necessarily a file
-                            watcher.add(setResource);
+                            if (! watcher.getResources().contains(setResource)) {
+                                watcher.add(setResource);
+                            }
                             decodeFunctionSet(watcher.getResourceLoader(), setResource, setName);
                         } catch (Throwable t) {
                             log.error(t.getClass() + " " +  t.getMessage(), t);
