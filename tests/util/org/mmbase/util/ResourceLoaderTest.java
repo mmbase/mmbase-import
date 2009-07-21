@@ -23,7 +23,7 @@ import junit.framework.TestCase;
  * </ul>
  *
  * @author Kees Jongenburger
- * @verion $Id: ResourceLoaderTest.java,v 1.9 2009-04-22 08:21:21 michiel Exp $
+ * @verion $Id$
  */
 public class ResourceLoaderTest extends TestCase {
 

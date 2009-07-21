@@ -15,7 +15,7 @@ import org.mmbase.bridge.*;
  * This commit processor can be used to check how often a commitprocessor is called.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CountCommitProcessor.java,v 1.1 2008-11-25 16:02:02 michiel Exp $
+ * @version $Id$
  * @since MMBase-1.9.1
  */
 

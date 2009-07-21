@@ -18,7 +18,7 @@ import junit.framework.*;
  * Test class <code>CloudContext</code> from the bridge package.
  *
  * @author Jaco de Groot
- * @version $Id: CloudContextTest.java,v 1.7 2009-04-30 22:36:13 michiel Exp $
+ * @version $Id$
  */
 public class CloudContextTest extends BridgeTest {
 

@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 /**
  * 
  * @author Michiel Meeuwissen
- * @verion $Id: DateParserTest.java,v 1.4 2006-04-30 10:16:26 michiel Exp $
+ * @verion $Id$
  */
 public class DateParserTest extends TestCase {
 

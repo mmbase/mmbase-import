@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperTest.java,v 1.1 2008-12-18 15:05:41 michiel Exp $
+ * @version $Id$
  */
 public class TagStripperTest  extends TestCase {
 

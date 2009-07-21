@@ -20,7 +20,7 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: LocalizedStringTest.java,v 1.6 2009-04-30 19:56:25 michiel Exp $
+ * @verion $Id$
  */
 public class SerializableInputStreamTest extends TestCase {
 

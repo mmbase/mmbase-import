@@ -17,7 +17,7 @@ import junit.framework.TestCase;
 /**
  * 
  * @author Michiel Meeuwissen
- * @verion $Id: DocumentReaderTest.java,v 1.5 2007-06-21 15:50:25 nklasens Exp $
+ * @verion $Id$
  */
 public class DocumentReaderTest extends TestCase {
 

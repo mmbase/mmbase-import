@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id: CastingTest.java,v 1.2 2008-09-12 13:10:43 michiel Exp $
+ * @verion $Id$
  */
 public class CastingTest extends TestCase {
 
