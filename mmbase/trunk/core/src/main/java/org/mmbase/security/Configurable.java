@@ -70,8 +70,9 @@ public abstract class Configurable {
             } else {
                 configResource = configPath;
             }
-
-            configWatcher.add(configResource);
+            if (! configWatcher.getResources().contains(configResource)) {
+                configWatcher.add(configResource);
+            }
         }
 
 
