@@ -41,6 +41,8 @@ public class FileServlet extends BridgeServlet {
 
     private Pattern ignore = Pattern.compile("");
 
+    private Comparator<File> comparator = null;
+
 
     //private static final Properties properties= new Properties();
 
@@ -50,6 +52,15 @@ public class FileServlet extends BridgeServlet {
         String ig = getInitParameter("ignore");
         if (ig != null && ig.length() > 0) {
             ignore = Pattern.compile(ig);
+        }
+        String comparatorClass = getInitParameter("comparator");
+        if (comparatorClass != null && comparatorClass.length() > 0) {
+            try {
+                Class clazz = Class.forName(comparatorClass);
+                comparator = (Comparator<File>) clazz.newInstance();
+            } catch (Exception e) {
+                log.error(e);
+            }
         }
     }
 
@@ -185,7 +196,11 @@ public class FileServlet extends BridgeServlet {
             if (! pathInfo.equals("/")) {
                 result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.getParentFile().lastModified()))  +"</td><td class='filesize'> </td><td class='filename'><a href='..'>../</a></td></tr>");
             }
-            for (File file : directory.listFiles()) {
+            List<File> files = Arrays.asList(directory.listFiles());
+            if (comparator != null) {
+                Collections.sort(files, comparator);
+            }
+            for (File file : files) {
                 String name = file.getName() + (file.isDirectory() ? "/" : "");
                 if (ignores(pathInfo + name)) continue;
 
