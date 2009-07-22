@@ -81,7 +81,13 @@ public class BinaryCommitProcessor implements CommitProcessor {
             ct =  ((SerializableInputStream)o).getContentType();
             log.debug("Found ct " + ct);
         } else if (o instanceof FileItem) {
-            ct = ((FileItem)o).getContentType();
+            FileItem fi = (FileItem) o;
+            ct = fi.getContentType();
+            if (ct == null) {
+                String name = fi.getName();
+                javax.servlet.ServletContext sx = org.mmbase.module.core.MMBaseContext.getServletContext();
+                ct = sx.getMimeType(name);
+            }
             log.debug("Found ct " + ct);
         } else {
             if (log.isDebugEnabled()) {
