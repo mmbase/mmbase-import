@@ -238,6 +238,9 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                 if (getReferid() != null) { // referid
                     value = getObject(getReferid());
                 } else {         // function
+                    if (node == null) {
+                        throw new IllegalStateException("Cannot get the field '" + fieldName + "' from node with is null");
+                    }
                     value = node.getValue(fieldName);
                 }
             } else {        // a field was found!
