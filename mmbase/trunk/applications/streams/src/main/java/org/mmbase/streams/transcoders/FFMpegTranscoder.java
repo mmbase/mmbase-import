@@ -97,7 +97,10 @@ public class FFMpegTranscoder extends CommandTranscoder {
         File outFile = new File(out.getPath());
 
         List<String> args = new ArrayList<String>();
-        args.add("-y");
+        
+        args.add("-i");
+        args.add(inFile.toString());
+
         if (acodec != null) {
             args.add("-acodec");
             args.add(acodec);
@@ -122,10 +125,9 @@ public class FFMpegTranscoder extends CommandTranscoder {
             args.add("-ac");
             args.add(ac);
         }
-        args.add("-i");
-        args.add(inFile.toString());
 
         args.add(outFile.toString());
+        args.add("-y"); // overwrite
 
         return args.toArray(new String[args.size()]);
     }
