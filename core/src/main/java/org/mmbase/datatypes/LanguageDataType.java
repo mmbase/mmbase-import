@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Returns the current language a a default value. For the rest it is like {@link StringDataType}.
+ * Returns the current language as a default value. For the rest it is like {@link StringDataType}.
  * @author Michiel Meeuwissen
  * @version $Id: NodeManagerNamesDataType.java 35348 2009-05-21 15:40:40Z michiel $
  * @since MMBase-1.9.1
