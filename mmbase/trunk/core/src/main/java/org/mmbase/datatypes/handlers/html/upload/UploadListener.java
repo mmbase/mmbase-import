@@ -16,6 +16,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre-Alexandre Losson
  * @author Michiel Meeuwissen (adapted for MMBase)
  * @version $Id$
+ * @since MMBase-1.9.2
  */
 
 public class UploadListener implements OutputStreamListener {
