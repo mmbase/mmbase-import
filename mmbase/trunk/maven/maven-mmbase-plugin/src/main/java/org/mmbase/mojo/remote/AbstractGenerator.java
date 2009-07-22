@@ -19,7 +19,7 @@ import java.lang.reflect.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: AbstractGenerator.java,v 1.1 2009-03-08 18:12:44 nklasens Exp $
+ * @version $Id$
  */
 abstract public class AbstractGenerator {
 
