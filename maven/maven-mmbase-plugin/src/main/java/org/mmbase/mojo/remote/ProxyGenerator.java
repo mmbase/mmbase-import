@@ -20,7 +20,7 @@ import java.io.File;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: ProxyGenerator.java,v 1.2 2009-04-30 20:06:07 michiel Exp $
+ * @version $Id$
  */
 public class ProxyGenerator extends AbstractClassGenerator {
 
