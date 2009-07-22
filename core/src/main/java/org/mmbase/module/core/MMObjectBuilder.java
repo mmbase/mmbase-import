@@ -304,11 +304,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         addFunction(getFunctions);
     }
 
+    private static final Parameter[] INFO_FUNCTION_ARGS = new Parameter[] { new Parameter<String>("function", String.class) };
     /**
      * The info-function is a node-function and a builder-function. Therefore it is defined as a node-function, but also overidesd getFunctionValue(Parameters).
      * @since MMBase-1.8
      */
-    protected Function<Object> infoFunction = new NodeFunction<Object>("info", new Parameter[] { new Parameter<String>("function", String.class) }, ReturnType.UNKNOWN) {
+    protected Function<Object> infoFunction = new NodeFunction<Object>("info", INFO_FUNCTION_ARGS, ReturnType.UNKNOWN) {
             {
                 setDescription("Returns information about available functions");
             }
