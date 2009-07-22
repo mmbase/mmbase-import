@@ -213,6 +213,11 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
         return encrypt(node.getNodeManager().getName() + SEP + field.getName() + SEP + key);
     }
 
+
+    /**
+     * Call this method with the key received from the client to perform the actual validation. This
+     * method decrypts and parses this key, and then sets the value.
+     */
     public static Node validate(Cloud cloud, String encryptedKey) {
         String keyChain = decrypt(encryptedKey.replaceAll(" ", "+"));
         log.debug("Found keyChain " + keyChain + " (from " + encryptedKey + " ). User " + cloud.getUser());

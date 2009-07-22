@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * Validates a value by putting it into {@link javax.mail.internet.InternetAddress#parse(String)},
- * if not exception, the value is valid.
+ * if no exception is caused by that, the value is valid.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
