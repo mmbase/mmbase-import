@@ -18,7 +18,7 @@ import java.lang.reflect.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: InterfaceGenerator.java,v 1.2 2009-04-30 20:06:07 michiel Exp $
+ * @version $Id$
  */
 public class InterfaceGenerator extends AbstractClassGenerator {
 

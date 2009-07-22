@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @since MMBase-1.9
  * @author Pierre van Rooden
- * @version $Id: AbstractClassGenerator.java,v 1.1 2009-03-08 18:12:44 nklasens Exp $
+ * @version $Id$
  */
 abstract public class AbstractClassGenerator extends AbstractGenerator {
 
