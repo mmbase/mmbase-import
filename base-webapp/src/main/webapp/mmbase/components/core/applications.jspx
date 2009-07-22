@@ -1,6 +1,6 @@
 <mm:cloud rank="administrator"
           xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           >
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="application" />
@@ -10,8 +10,10 @@
       id="${requestScope['org.mmbase.componentId']}">
 
     <mm:notpresent referid="application">
-      
+
       <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+
+      <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
       <table summary="applications" border="0" cellspacing="0" cellpadding="3">
         <caption>
           ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
@@ -22,6 +24,7 @@
           <th>Installed</th>
           <th>Maintainer</th>
           <th>Auto-Deploy</th>
+          <th>Requirements</th>
           <th class="center">Manage</th>
         </tr>
         <mm:nodelistfunction module="mmadmin" name="APPLICATIONS">
@@ -36,6 +39,7 @@
             <td><mm:field name="item3" /></td>
             <td><mm:field name="item4" /></td>
             <td><mm:field name="item5" /></td>
+            <td><mm:field name="item6" /></td>
             <td class="center">
               <mm:link page="applications">
                 <mm:param name="application"><mm:field name="item1" /></mm:param>
@@ -46,15 +50,15 @@
         </mm:nodelistfunction>
       </table>
     </mm:notpresent>
-    
+
     <mm:present referid="application">
-    
+
       <mm:import id="version"><mm:function module="mmadmin" name="VERSION" referids="application" /></mm:import>
       <mm:import id="installedversion"><mm:function module="mmadmin" name="INSTALLEDVERSION" referids="application" /></mm:import>
-    
+
       <h3>Application <mm:write referid="application" /></h3>
       <p><mm:function module="mmadmin" name="DESCRIPTION" referids="application" escape="none" /></p>
-      
+
       <table border="0" cellspacing="0" cellpadding="3">
         <caption>Install the application <mm:write referid="application" />.</caption>
         <tr>
@@ -82,7 +86,7 @@
          </td>
         </tr>
       </table>
-    
+
       <mm:link page="applications-actions" referids="application">
         <form action="${_}" method="post">
         <input name="cmd" type="hidden" value="SAVE" />
@@ -104,7 +108,7 @@
         </table>
         </form>
       </mm:link>
-    
+
       <p>
         <mm:link page="applications">
           <a href="${_}"><mm:link page="/mmbase/style/images/back.png"><img src="${_}" alt="back" width="21" height="20" /></mm:link></a>
@@ -112,6 +116,6 @@
         </mm:link>
       </p>
     </mm:present>
-   
+
   </div>
 </mm:cloud>
