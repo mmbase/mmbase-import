@@ -748,7 +748,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      */
 
     private final void checkValid() {
-        if (!cloud.getUser().isValid()) {
+        if (cloud.getUser() == null || !cloud.getUser().isValid()) {
             log.debug("found a cloud in the session, but is was expired, throwing it away");
             cloud = null;
         }
