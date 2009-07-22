@@ -192,8 +192,8 @@
          mimetype="text/html">
     <title xml:lang="en">Applications</title>
     <title xml:lang="nl">Applicaties</title>
-    <description xml:lang="en">Shows an overview of all MMBase apps1 applications</description>
-    <description xml:lang="nl">Overzicht van MMBase apps1 applicaties</description>
+    <description xml:lang="en">Shows an overview of all MMBase apps1 applications. An app1 contains object model definition and possibly objects too</description>
+    <description xml:lang="nl">Overzicht van MMBase apps1 applicaties. Een 'apps1' bevat objectmodel-definitie, en eventueel ook objecten.</description>
     <body jsp="applications.jspx">
       <param name="application" type="String" />
     </body>
