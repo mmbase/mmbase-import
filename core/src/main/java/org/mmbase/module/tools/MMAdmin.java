@@ -196,7 +196,7 @@ public class MMAdmin extends ProcessorModule {
                 return new Vector<String>();
             }
             if (cmd.equals("APPLICATIONS")) {
-                tagger.setValue("ITEMS", "5");
+                tagger.setValue("ITEMS", "6");
                 try {
                     return getApplicationsList();
                 } catch (SearchQueryException e) {
@@ -766,6 +766,7 @@ public class MMAdmin extends ProcessorModule {
             } else {
                 results.add("no");
             }
+            results.add(org.mmbase.util.Casting.toString(reader.getRequirements()));
         }
         return results;
     }
