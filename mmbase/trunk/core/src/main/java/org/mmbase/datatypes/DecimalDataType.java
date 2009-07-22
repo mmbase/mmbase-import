@@ -25,8 +25,8 @@ import org.mmbase.util.logging.Logging;
  * #getMaxLength} are synonymous though.
  *
  * The precision and scale properties correspond with the xsd-tags xsd:precision and xsd:scale,
- * indicating <em>maximal</em> values for those concepts. The can be set with dt:precision
- * (dt:maxLength should work too) and dt:scale.
+ * indicating <em>maximal</em> values for those concepts. They can be set with dt:precision
+ * (dt:maxLength should work too) and dt:scale elements in datatypes-XML's.
  *
  * The rounding mode is used, and must be relaxed (since it is default {@link
  * RoundingMode#UNNECESSARY}), if the scale restriction is not enforced. In this case the values can
@@ -108,13 +108,22 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
         roundingMode = RoundingMode.valueOf(mode);
     }
 
+    /**
+     * @see getPrecision()
+     */
     public void setPrecision(int p) {
         precisionRestriction.setValue((long) p);
     }
 
+    /**
+     * The maximal value for {@link BigDecimal#precision()}.
+     */
     public int getPrecision() {
         return precisionRestriction.getValue().intValue();
     }
+    /**
+     * The maximal value for {@link BigDecimal#scale()}.
+     */
     public int getScale() {
         return scaleRestriction.getValue();
     }
