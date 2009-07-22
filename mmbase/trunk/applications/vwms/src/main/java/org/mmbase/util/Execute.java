@@ -20,9 +20,10 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @version $Id$
+ * @deprecated Use {@link org.mmbase.util.externalprocess.CommandExecutor}
  */
 public class Execute {
-    // logger
+
     private static Logger log = Logging.getLoggerInstance(Execute.class.getName());
 
     /**
