@@ -15,11 +15,11 @@ import javax.servlet.jsp.JspTagException;
  * something else). To ensure a common behavior, this interface is
  * created.
  *
- * Tags implementing this interface can (should?) use 'WriterHelper'
+ * Tags implementing this interface can (should?) use {@link WriterHelper}
  * for a quick implementation.
  *
  * @author Michiel Meeuwissen
- * @version $Id$ 
+ * @version $Id$
  */
 
 public interface Writer {
@@ -43,7 +43,7 @@ public interface Writer {
      */
     public void setJspvar(String j);
 
-    /** 
+    /**
      * Type of the jspvar.
      */
 
