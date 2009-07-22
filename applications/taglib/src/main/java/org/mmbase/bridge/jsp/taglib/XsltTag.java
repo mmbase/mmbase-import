@@ -21,8 +21,8 @@ import javax.xml.transform.OutputKeys;
 import java.util.Properties;
 
 /**
- * Has to live in a formatter tag, and can provide inline XSLT to it.
- *X
+ * Has to live in a formatter tag ({@link FormatterTag}, and can provide inline XSLT to it.
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  */

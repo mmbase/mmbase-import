@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Michiel Meeuwissen
  * @version $Id$
+ * @since MMBase-1.9
  */
 
 public class SettingTag extends CloudReferrerTag implements Writer {

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * jsp variable, or write it to the page.
  *
  * This is also more or less the simplest possible implemententation
- * of a 'Writer' tag.
+ * of a {@link Writer} tag.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
