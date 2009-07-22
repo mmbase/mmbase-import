@@ -33,6 +33,9 @@
         <module>aselect</module>
         <module>poll</module>
         <module>calendar</module>
+        <module>mmbob</module>
+        <module>multilanguagegui</module>
+        <module>thememanager</module>
       </modules>
     </profile>
     <profile>
