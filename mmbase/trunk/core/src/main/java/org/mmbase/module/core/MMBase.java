@@ -162,7 +162,7 @@ public class MMBase extends ProcessorModule {
     /**
      * The storage manager factory to use. Retrieve using getStorageManagerFactory();
      */
-    private StorageManagerFactory<?> storageManagerFactory = null;
+    private StorageManagerFactory<? extends StorageManager> storageManagerFactory = null;
 
     /**
      * Reference to the Root builder (the most basic builder, aka 'object').
@@ -1177,7 +1177,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.7
      * @return a StorageManagerFactory class, or <code>null</code> if not configured
      */
-    public StorageManagerFactory<?> getStorageManagerFactory() {
+    public StorageManagerFactory<? extends StorageManager> getStorageManagerFactory() {
         return  storageManagerFactory;
     }
 
