@@ -23,6 +23,9 @@ import org.mmbase.bridge.*;
 
 public interface Analyzer extends org.mmbase.util.PublicCloneable<Analyzer> {
 
+
+    void addThrowable(Throwable t);
+
     /**
      * How many lines of logging should be offered for {@link $analyze}ing at the most.
      */

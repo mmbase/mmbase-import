@@ -37,10 +37,11 @@ test.h264: samples/mahnamahna.mpg
 	java org.mmbase.streams.transcoders.FFMpegTranscoder samples/mahnamahna.mpg  results/mahnamahna.h264
 
 test.recognize: samples/mahnamahna.mpg samples/mahnamahna.broken
-	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/mahnamahna.mpg
-	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/test.mp3
-	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/test.jpeg
-	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/mahnamahna.broken
+#	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/mahnamahna.mpg
+#	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/test.mp3
+#	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/test.jpeg
+#	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/mahnamahna.broken
+	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/odd.ogg
 
 
 transcode:

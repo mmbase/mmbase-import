@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.streams.transcoders;
 
 import java.util.regex.*;
+import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
@@ -43,6 +44,12 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
     private ChainedLogger log = new ChainedLogger(LOG);
 
     private AnalyzerUtils util = new AnalyzerUtils(log);
+
+    private List<Throwable> errors =new ArrayList<Throwable>();
+
+    public void addThrowable(Throwable t) {
+        errors.add(t);
+    }
 
     public void addLogger(Logger logger) {
         log.addLogger(logger);
