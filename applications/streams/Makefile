@@ -15,6 +15,9 @@ samples/mahnamahna.mpg:
 	mkdir -p samples
 	(cd samples ; wget http://www.toly.net/downloads/mahnamahna.mpg)
 
+samples/mahnamahna.broken: samples/mahnamahna.mpg
+	cp samples/mahnamahna.mpg samples/mahnamahna.broken
+
 
 samples/Kort-stormpje.mov:
 	mkdir -p samples
@@ -33,10 +36,11 @@ test.h264: samples/mahnamahna.mpg
 	mkdir -p results
 	java org.mmbase.streams.transcoders.FFMpegTranscoder samples/mahnamahna.mpg  results/mahnamahna.h264
 
-test.recognize: samples/mahnamahna.mpg
+test.recognize: samples/mahnamahna.mpg samples/mahnamahna.broken
 	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/mahnamahna.mpg
 	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/test.mp3
 	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/test.jpeg
+	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/mahnamahna.broken
 
 
 transcode:
