@@ -80,7 +80,9 @@ public class ConnectionRenderer extends AbstractRenderer {
     @Override public void render(Parameters blockParameters, Writer w, RenderHints hints) throws FrameworkException {
 
 
-        if (w == null) throw new NullPointerException();
+        if (w == null) {
+            throw new NullPointerException();
+        }
         try {
             if (log.isDebugEnabled()) {
                 log.debug("Rendering with " + blockParameters);
