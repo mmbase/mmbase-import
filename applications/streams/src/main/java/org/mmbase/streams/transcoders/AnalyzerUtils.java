@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.streams.transcoders;
 
+import org.mmbase.applications.media.MimeType;
 import java.util.*;
 import java.util.regex.*;
 import org.mmbase.bridge.*;
@@ -79,8 +80,29 @@ public final class AnalyzerUtils {
         }
     }
 
+
+    /**
+     * @todo Should this perhaps be arranged in the respective builders themselves. It seems a
+     * requiredment or videosources to have a video/* mimetype
+     *
+     */
+    protected void fixMimeType(String type, Node node) {
+        if (node == null) return;
+        MimeType actualMimeType = new MimeType(node.getStringValue("mimetype"));
+        if (! actualMimeType.getType().equals(type)) {
+            MimeType newType = new MimeType(type, actualMimeType.getSubType());
+            node.setStringValue("mimetype", newType.toString());
+            log.service("Fixing mime type " + actualMimeType + "-> " + newType) ;
+
+        } else {
+            log.debug("MimType " + actualMimeType + " is correct");
+        }
+    }
+
     public void toVideo(Node source, Node dest) {
         Cloud cloud = source.getCloud();
+        fixMimeType("video", source);
+        fixMimeType("video", dest);
         if (cloud != null) {
             log.service("This is video, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
             source.setNodeManager(cloud.getNodeManager("videostreamsources"));
@@ -97,9 +119,12 @@ public final class AnalyzerUtils {
     }
     public void toAudio(Node source, Node dest) {
         Cloud cloud = source.getCloud();
+        fixMimeType("audio", source);
+        fixMimeType("audio", dest);
         if (cloud != null) {
             log.service("This is audio, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
             source.setNodeManager(cloud.getNodeManager("audiostreamsources"));
+
             source.commit();
             assert source.getNodeManager().getName().equals("audiostreamsources");
             if (dest != null) {
@@ -114,6 +139,7 @@ public final class AnalyzerUtils {
 
     public void toImage(Node source, Node dest) {
         Cloud cloud = source.getCloud();
+        fixMimeType("image", source);
         if (cloud != null) {
             log.service("This is image, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
             source.setNodeManager(cloud.getNodeManager("imagesources"));
@@ -175,6 +201,7 @@ public final class AnalyzerUtils {
         sourceNode.put("bitrate", null);
         sourceNode.put("channels", null);
         sourceNode.put("length", null);
+        sourceNode.put("mimetype", null);
         return new MapNode(sourceNode);
 
     }
