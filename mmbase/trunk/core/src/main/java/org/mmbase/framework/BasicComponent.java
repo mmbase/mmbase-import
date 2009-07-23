@@ -178,7 +178,7 @@ public class BasicComponent implements Component {
                 log.trace("Found block: " + blockName);
                 b.putRenderer(Renderer.Type.HEAD, getRenderer("head", element, b));
                 b.putRenderer(Renderer.Type.BODY, getRenderer("body", element, b));
-                b.setProcessor(getProcessor("process", element, b));
+                b.setProcessor(getProcessor(element, b));
                 if (defaultBlock == null) defaultBlock = b;
                 blocks.put(blockName, b);
             }
@@ -213,7 +213,7 @@ public class BasicComponent implements Component {
         }
     }
 
-    private Renderer getRenderer(String name, Element block, Block b) {
+    private Renderer getRenderer(String type, Element block, Block b) {
         NodeList renderElements = block.getElementsByTagName(name);
         log.debug("Number of [" + name + "] elements: " + renderElements.getLength());
         if (renderElements.getLength() < 1) return null;
@@ -227,7 +227,7 @@ public class BasicComponent implements Component {
                 subRenderer = new JspRenderer(name.toUpperCase(), jsp, b);
             } else {
                 try {
-                    subRenderer = (Renderer) Instantiator.getInstanceWithSubElement(renderElement, name.toUpperCase(), b);
+                    subRenderer = (Renderer) Instantiator.getInstanceWithSubElement(renderElement, type.toUpperCase(), b);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                     return null;
@@ -252,7 +252,7 @@ public class BasicComponent implements Component {
 
     }
 
-    private Processor getProcessor(String name, Element block, Block b) {
+    private Processor getProcessor(Element block, Block b) {
         NodeList processorElements = block.getElementsByTagName(name);
         if (processorElements.getLength() < 1) return null;
         Element processorElement = (Element) processorElements.item(0);
@@ -262,7 +262,7 @@ public class BasicComponent implements Component {
             processor = new JspProcessor(jsp, b);
         } else {
             try {
-                processor = (Processor) Instantiator.getInstanceWithSubElement(processorElement, name.toUpperCase(), b);
+                processor = (Processor) Instantiator.getInstanceWithSubElement(processorElement, b);
             } catch (Exception e) {
                 log.error(e);
                 return null;
