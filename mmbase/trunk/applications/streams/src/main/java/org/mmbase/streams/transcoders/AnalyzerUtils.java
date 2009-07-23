@@ -154,7 +154,6 @@ public final class AnalyzerUtils {
 
     private static final Pattern VIDEO    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*?([0-9]+)\\s+kb/s.*");
 
-
     public boolean video(String l, Node source, Node dest) {
         Matcher m = VIDEO.matcher(l);
         if (m.matches()) {
@@ -181,6 +180,11 @@ public final class AnalyzerUtils {
     }
 
     private static final Pattern IMAGE    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
+    /*
+    use this in stead for image matching and do height and width in other method ?
+    private static final Pattern IMAGE    = Pattern.compile("^Input #\\d+, image.*"); 
+    */
+        
     public boolean image(String l, Node source, Node dest) {
         if (! source.isNull("bitrate")) {
             // already has a bitrate
@@ -188,6 +192,7 @@ public final class AnalyzerUtils {
         }
         Matcher m = IMAGE.matcher(l);
         if (m.matches()) {
+            log.debug("Image match! ");
             toImage(source, dest);
 
             log.debug("width: "  + m.group(1));
