@@ -417,10 +417,11 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     }
 
     /**
-     * Serves MMBase version information. This doesn't do much usefull
+     * Serves MMBase version information. This doesn't do much useful
      * yet, but one could image lots of cool stuff here. Any other
      * MMBase servlet will probably override this method.
      */
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         res.setContentType("text/plain");
         PrintWriter pw = res.getWriter();
@@ -488,6 +489,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
      * simply override doGet in extension classes, and this stays
      * working, without having to think about it.
      */
+    @Override
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
         if (!checkInited(res)) {
             return;
@@ -504,7 +506,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     /**
      * Returns information about this servlet. Don't forget to override it.
      */
-
+    @Override
     public String getServletInfo()  {
         return "Serves MMBase version information";
     }
