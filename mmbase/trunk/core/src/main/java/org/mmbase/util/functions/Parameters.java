@@ -330,7 +330,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         }
     }
     /**
-     * Validates all values in the Parameters object with their {@link #getDataType}. You should
+     * Validates all values in the Parameters object with their {@link Parameter#getDataType()}. You should
      * call this method if you ready to pass it into some function or so, if you want
      * validation. If the returned Collection is not empty, something is wrong, and you may want to
      * not proceed.
