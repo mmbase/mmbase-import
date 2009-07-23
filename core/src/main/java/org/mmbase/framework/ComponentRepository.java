@@ -246,7 +246,7 @@ public class ComponentRepository {
                     }
                 } catch (ClassNotFoundException cnfe) {
                     log.error("For " + url + ": " + cnfe.getClass() + " " + cnfe.getMessage());
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     log.error("For " + url + ": " + e.getMessage(), e);
                 }
 
