@@ -18,6 +18,7 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.*;
+import org.mmbase.util.transformers.Xml;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -40,6 +41,8 @@ import org.mmbase.util.logging.Logging;
 public class MediaFragments extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(MediaFragments.class);
+
+    private static final Xml XML = new Xml();
 
     // let the compiler check for typo's:
     public static final String FUNCTION_URLS        = "urls";
@@ -214,9 +217,9 @@ public class MediaFragments extends MMObjectBuilder {
             if (url.startsWith("/")) {
                 url = MMBaseContext.getHtmlRootUrlPath() + url.substring(1);
             }
-            return "<a href=\"" + url + "\" alt=\"\" >" + title + "</a>";
+            return "<a href=\"" + XML.transform(url) + "\" alt=\"\" >" + XML.transform(title) + "</a>";
         } else {
-            return "[" + title + "]";
+            return "[" + XML.transform(title) + "]";
         }
     }
 
