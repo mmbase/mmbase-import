@@ -585,10 +585,10 @@ public class CreateCachesProcessor implements CommitProcessor {
         public Iterator<Result> iterator() {
             final Iterator<Map.Entry<String, JobDefinition>> i = CreateCachesProcessor.this.list.entrySet().iterator();
             return new Iterator<Result>() {
-                Result next;
+                Result next = null;
+                boolean foundNext = false;
                 {
                     LOG.info("Iterating "+ CreateCachesProcessor.this.list.entrySet());
-                    next = findResult();
                 }
 
                 protected Result findResult() {
@@ -611,6 +611,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                             inFile = prevResult.getOut();
                             inNode = prevResult.getNode();
                         }
+
                         if (jd.transcoder.getKey() != null) {
                             LOG.info("matching " +  jd.getMimeType() + " of " + jd.transcoder + " with " + new MimeType(inNode.getStringValue("mimetype")));
                             if (jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
@@ -635,6 +636,10 @@ public class CreateCachesProcessor implements CommitProcessor {
                 }
 
                 public boolean hasNext() {
+                    if (! foundNext) {
+                        next = findResult();
+                        foundNext = true;
+                    }
                     return next != null;
                 }
                 public void remove() {
@@ -642,7 +647,8 @@ public class CreateCachesProcessor implements CommitProcessor {
                 }
                 public Result next() {
                     current = next;
-                    next = findResult();
+                    next = null;
+                    foundNext = false;
                     if (current.definition.transcoder instanceof CommandTranscoder) {
                         // Get free method
                         CommandExecutor.Method m = null;
