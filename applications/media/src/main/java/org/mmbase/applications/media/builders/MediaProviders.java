@@ -69,7 +69,7 @@ public class MediaProviders extends MMObjectBuilder {
                         host = req.getServerName();
                         port = req.getServerPort();
                     } else {
-                        log.warn("No request found");
+                        log.debug("No request found");
 
                     }
                 }
