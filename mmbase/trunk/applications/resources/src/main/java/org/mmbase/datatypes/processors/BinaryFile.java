@@ -31,6 +31,8 @@ import org.mmbase.servlet.FileServlet;
 
 public class BinaryFile {
 
+    public static final String DISABLE_DELETE = BinaryFile.class.getName() + ".DISABLE";
+
     private static final Logger log = Logging.getLoggerInstance(BinaryFile.class);
 
 
@@ -61,6 +63,10 @@ public class BinaryFile {
             searchFields = f;
         }
         public void commit(final Node node, final Field field) {
+            if (node.getCloud().getProperty(DISABLE_DELETE) != null) {
+                log.service("Disabled");
+                return;
+            }
             String existing = (String) node.getValue(field.getName());
             if (existing != null && ! "".equals(existing)) {
                 File ef = new File(getDirectory(), existing);
