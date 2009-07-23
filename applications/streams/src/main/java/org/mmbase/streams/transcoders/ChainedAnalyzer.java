@@ -27,6 +27,12 @@ public class ChainedAnalyzer implements Analyzer {
 
     public ChainedAnalyzer() {
     }
+
+    public void addThrowable(Throwable t) {
+        for (Analyzer a : analyzers) {
+            a.addThrowable(t);
+        }
+    }
     public void add(Analyzer a) {
         analyzers.add(a);
         if (a.getMaxLines() > maxLines) {
