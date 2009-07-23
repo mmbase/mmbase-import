@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * CommandLauncher} or a connection to a CommandServer.
  *
  * @author Michiel Meeuwissen
- * @version $Id:
+ * @version $Id: $
  * @since MMBase-1.9.1
  */
 public class CommandExecutor {
