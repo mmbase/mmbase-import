@@ -125,14 +125,20 @@ public class BasicFramework extends Framework {
                 } catch (NoSuchMethodException nsme) {
                     uc = (UrlConverter) Instantiator.getInstance(element);
                 } catch (ClassNotFoundException cnfe) {
-                    log.warn(cnfe);
+                    log.warn(org.mmbase.util.xml.XMLWriter.write(element) + " " + cnfe);
+                    continue;
+                } catch (Throwable t) {
+                    log.error(org.mmbase.util.xml.XMLWriter.write(element) + ": " + t.getMessage(), t);
+                    if (t.getCause() != null) {
+                        log.error("Caused by: " + t.getCause().getMessage(), t.getCause());
+                    }
                     continue;
                 }
                 urlConverter.add(uc);
             }
             parDef = null;
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error(e.getMessage(), e);
         }
         /*
