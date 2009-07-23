@@ -38,6 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Andr&eacute; van Toly
  * @version $Id$
+ * @since MMBase-1.9
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
