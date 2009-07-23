@@ -30,7 +30,10 @@ public class FragmentTypeFixer implements CommitProcessor {
             Node ntNode = ntCloud.getNode(node.getNumber());
             NodeList fragments = ntNode.getRelatedNodes(ntCloud.getNodeManager("mediafragments"), "related", "source");
             NodeManager targetType = ntCloud.getNodeManager(ntNode.getNodeManager().getProperty("org.mmbase.media.containertype"));
-            log.info("Fixing fragment type for " + node + " " + fragments) ;
+            if (targetType == null) {
+                throw new IllegalStateException("No such node manager " + ntNode.getNodeManager().getProperty("org.mmbase.media.containertype") + " (container type of " + ntNode.getNodeManager().getName() + ", node " + node.getNumber() + ")");
+            }
+            log.info("Fixing fragment type for " + node.getNumber() + " " + fragments) ;
             for (Node fragment : fragments) {
                 if (fragment == null) {
                     log.error("Fragment is null?");
