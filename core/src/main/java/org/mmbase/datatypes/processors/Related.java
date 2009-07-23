@@ -208,9 +208,15 @@ public class Related {
                 boolean related = false;
                 if (rl.size() == 1) {
                     Relation r = rl.getNode(0).toRelation();
-                    if (r.getDestination().getNumber() == dest.getNumber() ||
-                        r.getSource().getNumber() == dest.getNumber()) {
-                        related = true;
+                    try {
+                        if (r.getDestination().getNumber() == dest.getNumber() ||
+                            r.getSource().getNumber() == dest.getNumber()) {
+                            related = true;
+                        }
+                    } catch (NotFoundException nfe) {
+                        log.warn(nfe.getMessage(), nfe);
+                        log.warn("Inconsistent db?, Deleting this relation");
+                        r.delete();
                     }
                 } else if (rl.size() > 1) {
                     log.warn("More than one correct relations between " + node + " and " + getRelatedType(node) + " " + rl + ". Will fix this now");
