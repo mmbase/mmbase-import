@@ -16,7 +16,7 @@ import java.io.*;
  * Oddly enough, Java does not provide this itself. It is necessary
  * though in GenericResponseWrapper, because you sometimes are stuck
  * with a writer, while an outputStream is requested.
- * Code inspired by  http://www.koders.com/java/fid5A2897DDE860FCC1D9D9E0EA5A2834CC62A87E85.aspx
+ * Code inspired by  <a href="http://www.koders.com/java/fid5A2897DDE860FCC1D9D9E0EA5A2834CC62A87E85.aspx">http://www.koders.com/java/fid5A2897DDE860FCC1D9D9E0EA5A2834CC62A87E85.aspx</a>
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.7.4
  */
