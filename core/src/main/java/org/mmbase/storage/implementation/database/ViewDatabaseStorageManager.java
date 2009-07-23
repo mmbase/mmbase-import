@@ -87,9 +87,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 super.create(node, builder);
             } else {
                 // insert in parent tables (from parents to childs) (especially because foreign keys on object's number may exist)
-                Iterator<MMObjectBuilder> i = builder.getAncestors().iterator();
-                while(i.hasNext()) {
-                    MMObjectBuilder b = i.next();
+                for (MMObjectBuilder b : builder.getAncestors()) {
                     createObject(node, b);
                 }
                 createObject(node, builder);
