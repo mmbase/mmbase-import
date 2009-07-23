@@ -19,8 +19,9 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Currently renders documentation directly from CVS. The idea is that a fall-back can be added to
- * render the documenation from the xml's in a/the jar.
+ * Currently renders documentation directly from subversion, using an XSLT to convert docbook to
+ * HTML. The idea is that a fall-back could be added to render the documenation from the xml's in
+ * a/the jar.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
