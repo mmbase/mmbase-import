@@ -23,7 +23,7 @@
           ${_.dimension}
         </td>
         <td>
-          <a href="${_.URL}">${_.URL}</a>
+          <a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
           ${_.mimeType}
         </td>
         <c:choose>
