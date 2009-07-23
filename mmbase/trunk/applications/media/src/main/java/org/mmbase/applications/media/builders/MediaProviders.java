@@ -59,7 +59,10 @@ public class MediaProviders extends MMObjectBuilder {
                         if (cloud != null) {
                             req = (HttpServletRequest) cloud.getProperty(org.mmbase.bridge.Cloud.PROP_REQUEST);
                         } else {
-                            log.warn("No cloud found ", new Exception());
+                            cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+                            if (log.isDebugEnabled()) {
+                                log.debug("No cloud found ", new Exception());
+                            }
                         }
                     }
                     if (req != null) {
