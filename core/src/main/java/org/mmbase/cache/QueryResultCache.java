@@ -31,7 +31,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @author Bunst Eunders
+ * @author Ernst Bunders
  * @version $Id$
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
