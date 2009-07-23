@@ -63,6 +63,7 @@ public final class AnalyzerUtils {
 
     private static final Pattern DURATION = Pattern.compile("\\s*Duration: (.*?), start: (.*?), bitrate: (.*?) kb/s.*");
 
+
     public boolean duration(String l, Node source, Node des) {
         Matcher m = DURATION.matcher(l);
         if (m.matches()) {
@@ -104,13 +105,17 @@ public final class AnalyzerUtils {
         fixMimeType("video", source);
         fixMimeType("video", dest);
         if (cloud != null) {
-            log.service("This is video, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
-            source.setNodeManager(cloud.getNodeManager("videostreamsources"));
-            source.commit();
+            if (! source.getNodeManager().getName().equals("videostreamsources")) {
+                log.info("This is video, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
+                source.setNodeManager(cloud.getNodeManager("videostreamsources"));
+                source.commit();
+            }
             assert source.getNodeManager().getName().equals("videostreamsources");
             if (dest != null) {
-                dest.setNodeManager(cloud.getNodeManager("videostreamsourcescaches"));
-                dest.commit();
+                if (! source.getNodeManager().getName().equals("videostreamsourcescaches")) {
+                    dest.setNodeManager(cloud.getNodeManager("videostreamsourcescaches"));
+                    dest.commit();
+                }
                 assert dest.getNodeManager().getName().equals("videostreamsourcescaches");
 
             }
@@ -124,7 +129,6 @@ public final class AnalyzerUtils {
         if (cloud != null) {
             log.service("This is audio, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
             source.setNodeManager(cloud.getNodeManager("audiostreamsources"));
-
             source.commit();
             assert source.getNodeManager().getName().equals("audiostreamsources");
             if (dest != null) {
@@ -141,7 +145,7 @@ public final class AnalyzerUtils {
         Cloud cloud = source.getCloud();
         fixMimeType("image", source);
         if (cloud != null) {
-            log.service("This is image, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
+            log.info("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""), new Exception());
             source.setNodeManager(cloud.getNodeManager("imagesources"));
             source.commit();
         }
@@ -178,6 +182,10 @@ public final class AnalyzerUtils {
 
     private static final Pattern IMAGE    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
     public boolean image(String l, Node source, Node dest) {
+        if (! source.isNull("bitrate")) {
+            // already has a bitrate
+            return false;
+        }
         Matcher m = IMAGE.matcher(l);
         if (m.matches()) {
             toImage(source, dest);
