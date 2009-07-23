@@ -690,6 +690,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
         ThreadPools.jobsExecutor.execute(new Runnable() {
                 public void run() {
+
+                    // Make sure that everthing is well initalized, otherise the binary file base
+                    // path may still be empty.
+                    org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
+
                     mmbase = MMBase.getMMBase();
                     String databaseName = "";
                     String binaryFileBasePath = "";
