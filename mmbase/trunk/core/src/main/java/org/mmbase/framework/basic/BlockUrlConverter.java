@@ -220,11 +220,14 @@ public abstract class BlockUrlConverter implements UrlConverter {
 
             HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
             if (niceUrl.getUrl().startsWith(request.getServletPath())) {
-                log.debug("servlet path not changing, also conservering parameters");
-                // conserve other parameters which happen to be on the request
-                for (Object e : request.getParameterMap().entrySet()) {
-                    Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
-                    map.put(entry.getKey(), entry.getValue());
+                State state = getState(frameworkParameters);
+                if (state.isRendering() && state.isLeading() && state.getBlock().equals(block)) {
+                    log.debug("servlet path not changing, also conservering parameters");
+                    // conserve other parameters which happen to be on the request
+                    for (Object e : request.getParameterMap().entrySet()) {
+                        Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
+                        map.put(entry.getKey(), entry.getValue());
+                    }
                 }
             } else {
                 log.debug("" + niceUrl + " does not start with " + request.getServletPath());
