@@ -36,7 +36,7 @@ public class ResourceRenderer extends AbstractRenderer {
     protected boolean decorate = false;
 
 
-    public ResourceRenderer(String t, Block parent) {
+    public ResourceRenderer(Type t, Block parent) {
         super(t, parent);
     }
 

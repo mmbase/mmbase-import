@@ -101,7 +101,7 @@ public class CachedRenderer extends WrappedRenderer {
         includeRenderTime = type;
     }
 
-    public CachedRenderer(String t, Block parent) {
+    public CachedRenderer(Type t, Block parent) {
         super(t, parent);
     }
 
