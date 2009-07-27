@@ -40,10 +40,10 @@ public class ContextBuilderFunctions {
             MMObjectNode groupOrUserNode = groups.getNode(groupOrUser.getNumber());
 
             Set<MMObjectNode> groupsAndUsers = ((BasicContextProvider) Verify.getInstance().getContextProvider()).getGroupsAndUsers(contextNode, operation); // TODO Casting.
-            Iterator<MMObjectNode> i = groupsAndUsers.iterator();
-            while (i.hasNext()) {
-                MMObjectNode containingGroup = i.next();
-                if (groups.contains(containingGroup, groupOrUserNode)) return true;
+            for (MMObjectNode containingGroup : groupsAndUsers) {
+                if (groups.contains(containingGroup, groupOrUserNode)) {
+                    return true;
+                }
             }
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
