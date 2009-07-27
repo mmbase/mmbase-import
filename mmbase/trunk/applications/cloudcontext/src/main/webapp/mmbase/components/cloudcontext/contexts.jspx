@@ -74,10 +74,6 @@
   <table summary="Contexts">
 
     <mm:listnodescontainer referid="query" id="q">
-
-      <p>${q.sql}</p>
-
-
       <mm:import externid="offset">0</mm:import>
       <mm:present referid="search">
         <mm:fieldlist nodetype="$nodetype" fields="$fields">
