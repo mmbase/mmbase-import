@@ -5,6 +5,7 @@
     version="2.0">
   <jsp:directive.attribute name="operations"  />
   <jsp:directive.attribute name="query"  type="org.mmbase.storage.search.SearchQuery" />
+  <jsp:directive.attribute name="cloud"  type="java.lang.String" />
   <jsp:directive.attribute name="submit"  type="java.lang.Boolean" />
 
   <mm:import id="ops" vartype="list">${empty operations ? 'create,read,write,delete,change context,change relation' : operations}</mm:import>
@@ -17,7 +18,7 @@
       </mm:stringlist>
     </tr>
     <mm:functioncontainer referids="_node@grouporuser">
-      <mm:listnodescontainer referid="query" type="${empty query ? 'mmbasecontexts' : ''}">
+      <mm:listnodescontainer cloud="${cloud}" referid="query" type="${empty query ? 'mmbasecontexts' : ''}">
         <mm:listnodes
             id="thiscontext"
             max="200"
