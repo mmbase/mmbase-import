@@ -4,8 +4,8 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
   <jsp:directive.tag
-      display-name="HTML"
-      description="The HTML tag defines the basic HTML structure of this site
+      display-name="wait for email"
+      description="
                    " />
   <jsp:directive.attribute name="signature"  required="true" type="java.lang.String" />
   <div>
