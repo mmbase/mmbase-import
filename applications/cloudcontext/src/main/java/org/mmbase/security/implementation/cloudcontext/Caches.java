@@ -127,19 +127,25 @@ public abstract class Caches {
     static void notify(NodeEvent event) {
 
         try {
+            Collection<String> contextBuilders = new BuilderNames(Verify.getInstance().getContextProvider().getContextQueries());
+
+            if (log.isDebugEnabled()) {
+                log.debug("Received " + event + " context builders are " + contextBuilders);
+            }
+
             String builder = event.getBuilderName();
             if (builder.equals(Authenticate.getInstance().getUserProvider().getUserBuilder().getTableName())) {
                 invalidateCaches(event.getNodeNumber());
             }
-            if (new BuilderNames(Verify.getInstance().getContextProvider().getContextQueries()).contains((builder))
+            if (contextBuilders.contains((builder))
                 || builder.equals("rightsrel")
-                || builder.equals("groups")
-                || builder.equals("ranks")
+                || builder.equals("mmbasegroups")
+                || builder.equals("mmbaseranks")
                 ) {
                 invalidateCaches();
             }
         } catch (ClassCastException cce) {
-            log.debug(cce + " (Different security implementations?)");
+            log.warn(cce + " (Different security implementations?)");
         }
     }
     static void notify(RelationEvent event) {
@@ -148,6 +154,10 @@ public abstract class Caches {
             String destType = event.getRelationDestinationType();
             String userBuilder = Authenticate.getInstance().getUserProvider().getUserBuilder().getTableName();
             Collection<String> contextBuilders = new BuilderNames(Verify.getInstance().getContextProvider().getContextQueries());
+            if (log.isDebugEnabled()) {
+                log.debug("Received " + event + " context builders are " + contextBuilders);
+            }
+
             if (sourceType.equals(userBuilder)) {
                 invalidateCaches(event.getRelationSourceNumber());
             }
@@ -157,14 +167,14 @@ public abstract class Caches {
             if (contextBuilders.contains(sourceType) || contextBuilders.contains(destType)) {
                 invalidateCaches();
             }
-            if (sourceType.equals("groups") || destType.equals("groups")) {
+            if (sourceType.equals("mmbasegroups") || destType.equals("mmbasegroups")) {
                 invalidateCaches();
             }
-            if (sourceType.equals("ranks") || destType.equals("ranks")) {
+            if (sourceType.equals("mmbaseranks") || destType.equals("mmbaseranks")) {
                 invalidateCaches();
             }
         } catch (ClassCastException cce) {
-            log.debug(cce + " (Different security implementations?)");
+            log.warn(cce + " (Different security implementations?)");
         }
     }
 
