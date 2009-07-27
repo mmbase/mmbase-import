@@ -72,7 +72,7 @@ public abstract class Caches {
     };
 
 
-    protected static Cache<String,Boolean> containsCache = new Cache<String,Boolean>(500) {
+    protected static Cache<String, Boolean> containsCache = new Cache<String, Boolean>(500) {
             public String getName()        { return "CCS:ContainedBy"; }
             public String getDescription() { return "group + group/user --> boolean"; }
         };
@@ -88,6 +88,7 @@ public abstract class Caches {
         contextCache.putCache();
         allowingContextsCache.putCache();
         operationsCache.putCache();
+        containsCache.putCache();
 
         EventManager.getInstance().addEventListener(new NodeEventListener() {
                 public void notify(NodeEvent event) {
