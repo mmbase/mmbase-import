@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE storage PUBLIC "-//MMBase//DTD storage config 1.0//EN" "http://www.mmbase.org/dtd/storage_1_0.dtd" >
+<!DOCTYPE storage PUBLIC "-//MMBase//DTD storage config 1.0//EN" "http://www.mmbase.org/dtd/storage_1_0.dtd" [
+<!ENTITY type-mappings SYSTEM "mysql.type-mappings.xml">
+<!ENTITY disallowed-fields SYSTEM "mysql.disallowed-fields.xml">
+<!ENTITY collation-mappings SYSTEM "mysql.collation-mappings.xml">
+]>
 <storage>
   <!-- MySQLdb configuration resource. -->
 
@@ -42,75 +46,9 @@
     <scheme name="create-view-scheme">CREATE VIEW {1} ({3}) AS SELECT {4} FROM {2} JOIN {6} USING ({5})</scheme>
   </attributes>
 
-  <!-- MySQL type mappings    -->
-  <type-mappings>
-    <type-mapping name="DOUBLE" type="double" />
-    <type-mapping name="LONG" type="bigint" />
-    <type-mapping name="FLOAT" type="float" />
-    <type-mapping name="INTEGER" type="integer" />
-    <type-mapping name="NODE"   type="integer" />
-    <type-mapping name="STRING" min-size="1" max-size="12" type="char({0})" />
-    <type-mapping name="STRING" min-size="13" max-size="255" type="varchar({0})" />
-    <type-mapping name="STRING" min-size="256" max-size="65535" type="text" />
-    <type-mapping name="STRING" min-size="65536" max-size="16777216" type="mediumtext" />
-    <type-mapping name="STRING" min-size="16777217" max-size="4294967296" type="longtext" />
-    <type-mapping name="XML" min-size="1" max-size="255" type="varchar({0})" />
-    <type-mapping name="XML" min-size="256" max-size="65535" type="text" />
-    <type-mapping name="XML" min-size="65536" max-size="16777216" type="mediumtext" />
-    <type-mapping name="BINARY" min-size="1" max-size="65535" type="blob" />
-    <type-mapping name="BINARY" min-size="65536" max-size="16777216" type="mediumblob" />
-    <type-mapping name="BINARY" min-size="16777217" max-size="4294967296" type="longblob" />
-    <type-mapping name="DATETIME" type="DATETIME" />
-    <type-mapping name="BOOLEAN"  type="BIT" />
-    <type-mapping name="DECIMAL"  type="DECIMAL({0}, {1})" />
-  </type-mappings>
-
-
-  <!-- MySQL disallowed fields (copied from the old configurations)   -->
-  <disallowed-fields>
-    <disallowed-field name="case" replacement="m_case"/> <!-- standard SQL keyword -->
-    <disallowed-field name="column" replacement="m_column"/> <!-- standard SQL keyword -->
-    <disallowed-field name="columns" replacement="m_columns"/>
-    <disallowed-field name="comment" replacement="m_comment"/>
-    <disallowed-field name="create" replacement="m_create"/> <!-- standard SQL keyword -->
-    <disallowed-field name="data" replacement="m_data"/>
-    <disallowed-field name="day" replacement="m_day"/> <!-- standard SQL keyword -->
-    <disallowed-field name="decimal" replacement="m_decimal"/>
-    <disallowed-field name="delayed" replacement="m_delayed"/>
-    <disallowed-field name="fields" replacement="m_fields"/>
-    <disallowed-field name="float" replacement="m_float"/>
-    <disallowed-field name="from" replacement="m_from"/> <!-- standard SQL keyword -->
-    <disallowed-field name="global" replacement="m_global"/> <!-- standard SQL keyword -->
-    <disallowed-field name="group" replacement="m_group"/> <!-- standard SQL keyword -->
-    <disallowed-field name="hosts" replacement="m_hosts"/>
-    <disallowed-field name="hour" replacement="m_hour"/> <!-- standard SQL keyword -->
-    <disallowed-field name="int" replacement="m_int"/> <!-- standard SQL keyword -->
-    <disallowed-field name="integer" replacement="m_integer"/>
-    <disallowed-field name="interval" replacement="m_interval"/>
-    <disallowed-field name="key" replacement="m_key"/> <!-- standard SQL keyword -->
-    <disallowed-field name="keys" replacement="m_keys"/>
-    <disallowed-field name="left" replacement="m_left"/>
-    <disallowed-field name="local" replacement="m_local"/> <!-- standard SQL keyword -->
-    <disallowed-field name="month" replacement="m_month"/> <!-- standard SQL keyword -->
-    <disallowed-field name="option" replacement="m_option"/> <!-- standard SQL keyword -->
-    <disallowed-field name="order" replacement="m_order"/> <!-- standard SQL keyword -->
-    <disallowed-field name="parent" replacement="m_parent"/>
-    <disallowed-field name="read" replacement="m_read"/> <!-- standard SQL keyword -->
-    <disallowed-field name="references" replacement="m_references"/> <!-- standard SQL keyword -->
-    <disallowed-field name="rows" replacement="m_rows"/>
-    <disallowed-field name="second" replacement="m_second"/> <!-- standard SQL keyword -->
-    <disallowed-field name="status" replacement="m_status"/>
-    <disallowed-field name="table" replacement="m_table"/>
-    <disallowed-field name="time" replacement="m_time"/> <!-- standard SQL keyword -->
-    <disallowed-field name="to" replacement="m_to"/> <!-- standard SQL keyword -->
-    <disallowed-field name="type" replacement="m_type"/>
-    <disallowed-field name="use" replacement="m_use"/>
-    <disallowed-field name="write" replacement="m_write"/> <!-- standard SQL keyword -->
-    <disallowed-field name="show" replacement="m_show"/>
-    <disallowed-field name="index" replacement="m_index"/>
-
-  </disallowed-fields>
-
+  &type-mappings;
+  &disallowed-fields;
+  &collation-mappings;
 
 
 </storage>
