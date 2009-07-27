@@ -13,6 +13,7 @@ import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import java.util.*;
 
 /**
+ * Wraps a collection of NodeSearchQuery's to be a collection of builder names.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
