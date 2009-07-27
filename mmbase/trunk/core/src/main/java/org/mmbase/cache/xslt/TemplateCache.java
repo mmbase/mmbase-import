@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @version $Id$
  * @since   MMBase-1.6
  */
-public class TemplateCache extends Cache<Key, Templates> {
+public class TemplateCache extends Cache<TemplateCache.Key, Templates> {
 
     private static final Logger log = Logging.getLoggerInstance(TemplateCache.class);
 
@@ -49,13 +49,17 @@ public class TemplateCache extends Cache<Key, Templates> {
     private static ResourceWatcher templateWatcher = new ResourceWatcher(ResourceLoader.getWebRoot()) {
             public  void onChange(String file) {
                 // invalidate cache.
-                if (log.isDebugEnabled()) log.debug("Removing " + file.toString() + " from cache");
+                if (log.isDebugEnabled()) {
+                    log.debug("Removing " + file.toString() + " from cache");
+                }
                 synchronized(cache) {
                     int removed = cache.remove(file);
                     if (removed == 0) {
                         log.error("Could not remove " + file.toString() + " Template(s) from cache!");
                     } else {
-                        if (log.isDebugEnabled()) log.debug("Removed " + removed + " entries from cache");
+                        if (log.isDebugEnabled()) {
+                            log.debug("Removed " + removed + " entries from cache");
+                        }
                     }
                 }
                 this.remove(file); // should call remove of FileWatcher, not of TemplateCache again.
@@ -132,16 +136,26 @@ public class TemplateCache extends Cache<Key, Templates> {
     }
 
     /**
-     * When removing an entry (because of LRU e.g), then also the FileWatcher must be removed.
+     * When removing an entry then also the FileWatcher must be removed.
+     * @todo When the cache shrinks because of LRU, or other operations done directly on the operation, this method of course is not called.
      */
-
-    synchronized Templates remove(Key key) {
-        if (log.isDebugEnabled()) log.debug("Removing " + key);
+    @Override
+    public  synchronized Templates remove(Object o) {
+        if (log.isDebugEnabled()) {
+            log.debug("Removing " + o);
+        }
+        Key key = (Key) o;
         Templates result = super.remove(key);
         String url = key.getURL();
         remove(url);
         templateWatcher.remove(url);
         return result;
+    }
+
+    @Override
+    public void clear() {
+        templateWatcher.clear();
+        super.clear();
     }
 
     /**
@@ -167,7 +181,9 @@ public class TemplateCache extends Cache<Key, Templates> {
         Key key = new Key(src, uri);
         Templates res = super.put(key, value);
         log.service("Put xslt in cache with key " + key);
-        templateWatcher.add(key.getURL());
+        if (! templateWatcher.getResources().contains(key.getURL())) {
+            templateWatcher.add(key.getURL());
+        }
         if (log.isDebugEnabled()) {
             log.debug("have set watch on  " + key.getURL());
             log.trace("currently watching: " + templateWatcher);
@@ -208,48 +224,42 @@ public class TemplateCache extends Cache<Key, Templates> {
 
     }
 
-}
 
-
-/**
- * Object to use as a key in the Caches.
- * Contains the systemid of the XSLT object (if there is one)
- * and the URIResolver.
- */
-class Key {
-    private String  src;
-    private URIResolver uri;
-    Key(Source src, URIResolver uri) {
-        this.src = src.getSystemId();
-        this.uri = uri;
-    }
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof Key) {
-            Key k = (Key) o;
-            return  (src == null ? k.src == null : src.equals(k.src)) &&
-                (uri == null ? k.uri == null : uri.equals(k.uri));
-        }
-        return false;
-    }
-    @Override
-    public int hashCode() {
-        return 32 * (src == null ? 0 : src.hashCode()) + (uri == null ? 0 : uri.hashCode());
-    }
     /**
-     * Returns File object or null
+     * Object to use as a key in the Caches.
+     * Contains the systemid of the XSLT object (if there is one)
+     * and the URIResolver.
      */
-    String getURL() {
-        if (src == null) return null;
-        try {
-            return src;
-        } catch (Exception e) {
-            return null;
+    public static class Key {
+        private final String  src;
+        private final URIResolver uri;
+        Key(Source src, URIResolver uri) {
+            this.src = src.getSystemId();
+            this.uri = uri;
         }
+        @Override
+            public boolean equals(Object o) {
+            if (o instanceof Key) {
+                Key k = (Key) o;
+                return  (src == null ? k.src == null : src.equals(k.src)) &&
+                    (uri == null ? k.uri == null : uri.equals(k.uri));
+            }
+            return false;
+        }
+        @Override
+            public int hashCode() {
+            return 32 * (src == null ? 0 : src.hashCode()) + (uri == null ? 0 : uri.hashCode());
+        }
+        /**
+         * Returns File object or null
+         */
+        String getURL() {
+            return src;
+        }
+        @Override
+        public String toString() {
+            return "" + src + "/" + uri;
+        }
+
     }
-    @Override
-    public String toString() {
-        return "" + src + "/" + uri;
-    }
-    
 }
