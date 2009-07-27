@@ -33,7 +33,7 @@ public class IFrameRenderer extends AbstractRenderer {
 
     private String url;
 
-    public IFrameRenderer(String t, Block parent) {
+    public IFrameRenderer(Type t, Block parent) {
         super(t, parent);
     }
 

@@ -156,11 +156,15 @@ public class ChainedUrlConverter implements UrlConverter {
             log.debug("Producing " + path + " " + params + " " + frameworkParameters);
         }
         for (UrlConverter uc : uclist) {
-            Parameters clone = new Parameters(frameworkParameters);
-            Url proposal = getProposal(uc.getUrl(path, params, clone, escapeAmps), clone);
-            if (proposal.getWeight() > result.getWeight()) {
-                result = proposal;
-                fwParams = clone;
+            try {
+                Parameters clone = new Parameters(frameworkParameters);
+                Url proposal = getProposal(uc.getUrl(path, params, clone, escapeAmps), clone);
+                if (proposal.getWeight() > result.getWeight()) {
+                    result = proposal;
+                    fwParams = clone;
+                }
+            } catch (UnsupportedOperationException uoe) {
+                log.debug(uoe);
             }
         }
         if (result == Url.NOT) {

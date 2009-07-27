@@ -33,7 +33,7 @@ public class JspRenderer extends AbstractRenderer {
 
     protected final String path;
 
-    public JspRenderer(String t, String p, Block parent) {
+    public JspRenderer(Type t, String p, Block parent) {
         super(t, parent);
         path = p;
     }

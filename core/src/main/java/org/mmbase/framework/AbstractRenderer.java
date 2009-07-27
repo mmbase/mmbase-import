@@ -35,10 +35,6 @@ abstract public class AbstractRenderer implements Renderer {
         type = t;
         parent = p;
     }
-    public AbstractRenderer(String t, Block p) {
-        type = Type.valueOf(t);
-        parent = p;
-    }
 
     public Type getType() {
         return type;
