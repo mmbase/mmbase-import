@@ -168,7 +168,7 @@ public  class BasicContextProvider implements ContextProvider {
                         all.add(context.getStringValue(nameField));
                     }
                 }
-                log.info("All contexts " + all);
+                log.debug("All contexts " + all);
                 //invalidableObjects.put("ALL", Collections.unmodifiableSortedSet(all));
             } catch (SearchQueryException sqe) {
                 log.error(sqe.getMessage(), sqe);
