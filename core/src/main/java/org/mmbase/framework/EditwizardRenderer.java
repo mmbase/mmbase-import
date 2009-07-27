@@ -43,7 +43,7 @@ public class EditwizardRenderer extends IFrameRenderer {
 
     protected String list;
     protected String wizard;
-    public EditwizardRenderer(String t, Block parent) {
+    public EditwizardRenderer(Type t, Block parent) {
         super(t, parent);
     }
 

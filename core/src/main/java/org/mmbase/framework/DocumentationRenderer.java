@@ -60,14 +60,14 @@ public class DocumentationRenderer extends CachedRenderer {
     }
 
 
-    public DocumentationRenderer(String t, Block parent) {
+    public DocumentationRenderer(Type t, Block parent) {
         super(t, parent);
         setWait(5000);
     }
     @Override public Renderer getWraps() {
         if (wrapped == null) {
             try {
-                ConnectionRenderer connection = new ConnectionRenderer(getType().toString(), getBlock()) {
+                ConnectionRenderer connection = new ConnectionRenderer(getType(), getBlock()) {
                         @Override public URI getUri(Parameters blockParameters, RenderHints hints) {
                             try {
                                 String db = blockParameters != null ? blockParameters.getString("docbook") : null;

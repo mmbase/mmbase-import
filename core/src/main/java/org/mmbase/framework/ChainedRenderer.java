@@ -28,7 +28,7 @@ public class ChainedRenderer extends AbstractRenderer {
     protected final List<Renderer> chain = new ArrayList<Renderer>();
     protected Parameter[] parameters = Parameter.EMPTY;
 
-    public ChainedRenderer(String t, Block parent) {
+    public ChainedRenderer(Type t, Block parent) {
         super(t, parent);
     }
 

@@ -31,7 +31,7 @@ public class StringRenderer extends AbstractRenderer {
     protected String string;
     protected Map<String, Method> requestMethods;
 
-    public StringRenderer(String t, Block parent) {
+    public StringRenderer(Type t, Block parent) {
         super(t, parent);
     }
 

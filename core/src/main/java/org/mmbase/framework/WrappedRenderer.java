@@ -29,7 +29,7 @@ public abstract class WrappedRenderer extends AbstractRenderer {
 
     protected Renderer wrapped;
 
-    public WrappedRenderer(String t, Block parent) {
+    public WrappedRenderer(Type t, Block parent) {
         super(t, parent);
     }
 

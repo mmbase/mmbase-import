@@ -54,7 +54,7 @@ public class ConnectionRenderer extends AbstractRenderer {
     protected String xsl = null;
     protected boolean decorate = true;
 
-    public ConnectionRenderer(String t, Block parent) {
+    public ConnectionRenderer(Type t, Block parent) {
         super(t, parent);
     }
 

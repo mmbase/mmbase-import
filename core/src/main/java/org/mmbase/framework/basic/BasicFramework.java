@@ -236,8 +236,10 @@ public class BasicFramework extends Framework {
         State state = State.getState(request);
         if (state.isRendering()) { // mm:component used during rending of a component, that's fine, but use a new State.
             state = new State(request);
+            log.debug("Alreadying rendering, taking a new state for sub-block-rendering: " + state);
         }
 
+        log.debug("Rendering " + renderer.getBlock() + " " + renderer);
         Object prevHints = request.getAttribute(RenderHints.KEY);
         try {
 

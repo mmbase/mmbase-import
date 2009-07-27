@@ -176,8 +176,8 @@ public class BasicComponent implements Component {
                 b.getDescription().fillFromXml("description", element);
                 b.getTitle().fillFromXml("title", element);
                 log.trace("Found block: " + blockName);
-                b.putRenderer(Renderer.Type.HEAD, getRenderer("head", element, b));
-                b.putRenderer(Renderer.Type.BODY, getRenderer("body", element, b));
+                b.putRenderer(Renderer.Type.HEAD, getRenderer("head", Renderer.Type.HEAD, element, b));
+                b.putRenderer(Renderer.Type.BODY, getRenderer("body", Renderer.Type.BODY, element, b));
                 b.setProcessor(getProcessor(element, b));
                 if (defaultBlock == null) defaultBlock = b;
                 blocks.put(blockName, b);
@@ -213,8 +213,8 @@ public class BasicComponent implements Component {
         }
     }
 
-    private Renderer getRenderer(String type, Element block, Block b) {
-        NodeList renderElements = block.getElementsByTagName(name);
+    private Renderer getRenderer(String elementName, Renderer.Type type, Element block, Block b) {
+        NodeList renderElements = block.getElementsByTagName(elementName);
         log.debug("Number of [" + name + "] elements: " + renderElements.getLength());
         if (renderElements.getLength() < 1) return null;
         Renderer renderer = null;
@@ -224,10 +224,10 @@ public class BasicComponent implements Component {
 
             Renderer subRenderer;
             if (!"".equals(jsp)) {
-                subRenderer = new JspRenderer(name.toUpperCase(), jsp, b);
+                subRenderer = new JspRenderer(type, jsp, b);
             } else {
                 try {
-                    subRenderer = (Renderer) Instantiator.getInstanceWithSubElement(renderElement, type.toUpperCase(), b);
+                    subRenderer = (Renderer) Instantiator.getInstanceWithSubElement(renderElement, type, b);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                     return null;
@@ -241,7 +241,7 @@ public class BasicComponent implements Component {
                 if (renderer instanceof ChainedRenderer) {
                     ((ChainedRenderer) renderer).add(subRenderer);
                 } else {
-                    ChainedRenderer chain = new ChainedRenderer(name.toUpperCase(), b);
+                    ChainedRenderer chain = new ChainedRenderer(type, b);
                     chain.add(renderer);
                     chain.add(subRenderer);
                     renderer = chain;
@@ -253,7 +253,7 @@ public class BasicComponent implements Component {
     }
 
     private Processor getProcessor(Element block, Block b) {
-        NodeList processorElements = block.getElementsByTagName(name);
+        NodeList processorElements = block.getElementsByTagName("processor");
         if (processorElements.getLength() < 1) return null;
         Element processorElement = (Element) processorElements.item(0);
         String jsp = processorElement.getAttribute("jsp");
