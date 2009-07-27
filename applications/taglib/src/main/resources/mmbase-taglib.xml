@@ -7185,6 +7185,7 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.list</type>
     <extends>querycontainer</extends>
     <extends>contextreader</extends>
+    <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
     <bodycontent>JSP</bodycontent>
