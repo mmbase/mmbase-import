@@ -37,6 +37,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     private static final long serialVersionUID  = 0L;
     private static int producerSeq = 0;
     /**
+     * A producer can instantiate beans
      * @since MMBase-1.8.5
      */
     public static abstract class Producer {
@@ -46,6 +47,7 @@ public class BeanFunction extends AbstractFunction<Object> {
             return getClass().getName() + "." + (producerSeq++);
         }
     }
+
 
     private static final Logger log = Logging.getLoggerInstance(BeanFunction.class);
     /**
@@ -88,7 +90,7 @@ public class BeanFunction extends AbstractFunction<Object> {
      * @param claz The class which must be considered a 'bean' function
      * @param name The name of the function (the name of a Method in the given class)
      * @param producer An object that can produce in instance of the class
-     * <code>claz</code>. Defaults to a producer that simply calls <code>claz.newInstance()</code>
+     * <code>claz</code>. Defaults to a producer that simply calls {@link Class#newInstance()}.
      * @since MMBase-1.8.5
      */
     public static BeanFunction getFunction(final Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException, InvocationTargetException {
@@ -101,23 +103,25 @@ public class BeanFunction extends AbstractFunction<Object> {
         return result;
     }
     /**
+     * This defaulting version of {@link #getFunction(Class, String, Producer)} uses a producer that uses {@link Class#newInstance()}.
      * Called from {@link FunctionFactory}
      */
     public static BeanFunction getFunction(final Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         return getFunction(claz, name, new Producer() {
-                public Object getInstance()  {
-                    try {
-                        return  claz.newInstance();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+            public Object getInstance()  {
+                try {
+                    return  claz.newInstance();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
+            }
             @Override
                 public String toString() {
-                    return "";
-                }
+                return "";
+            }
             });
     }
+
     /**
      * Utitily function to create an instance of a certain class. Two constructors are tried, a one
      * argument one, and if that fails, simply newInstance is used.
