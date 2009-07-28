@@ -23,6 +23,22 @@ public interface ActionChecker extends java.io.Serializable {
 
     boolean check(UserContext user, Action ac, Parameters parameters);
 
+
+    /**
+     * The ActionChecker that always allows every action to to everybody.
+     * @since MMBase-1.9.2
+     */
+    public static final ActionChecker ALLOWS = new ActionChecker() {
+            private static final long serialVersionUID = 1L;
+            public boolean check(UserContext user, Action ac, Parameters parameters) {
+                return true;
+            }
+            @Override
+            public String toString() {
+                return "allows";
+            }
+        };
+
     /**
      * This basic implementation of ActionChecker checks the action only based on rank. A minimal
      * rank is to be supplied in the constructor.
