@@ -234,7 +234,8 @@ public class CronEntry implements java.io.Serializable {
                 public void run(Interruptable i) {
                     CronEntry.this.incCount();
                     CronEntry.this.setLastCost((int) (new Date().getTime() - start.getTime()));
-                    EventManager.getInstance().propagateEvent(new Events.Event(new RunningCronEntry(CronEntry.this, start, MMBaseContext.getMachineName(), i.getId()), Events.DONE));
+                    String message = i.getRunException() == null ? null : i.getRunException().getMessage();
+                    EventManager.getInstance().propagateEvent(new Events.Event(new RunningCronEntry(CronEntry.this, start, MMBaseContext.getMachineName(), i.getId(), message), Events.DONE));
                 }
             };
         Interruptable.CallBack begin = new Interruptable.CallBack() {
