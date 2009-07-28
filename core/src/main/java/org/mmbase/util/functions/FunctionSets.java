@@ -133,7 +133,6 @@ public class FunctionSets {
         List<URL> resources = watcher.getResourceLoader().getResourceList("functionsets.xml");
         watcher.clear();
 
-        log.info("Watchers " + watcher.getFileWatchers().size());
         watcher.add("functionsets.xml");
 
         log.service("Using " + resources);
