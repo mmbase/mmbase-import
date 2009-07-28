@@ -149,7 +149,7 @@ public class FunctionSets {
                 if (con.getDoInput()) {
                     InputSource source = new InputSource(con.getInputStream());
                     DocumentReader reader = new DocumentReader(source, FunctionSets.class);
-
+                    reader.setSystemId(u.toString());
                     for (Element n: reader.getChildElements("functionsets", "functionset")) {
                         try {
                             String setName     = n.getAttribute("name");
