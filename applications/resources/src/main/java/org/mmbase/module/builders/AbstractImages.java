@@ -211,10 +211,12 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
             }
         }
         Dimension dim;
-
+        boolean empty;
         if (node.isNull(Imaging.FIELD_HANDLE) || node.getSize(Imaging.FIELD_HANDLE) == 0) {
+            empty = true;
             dim = getDimensionForEmptyHandle(node);
         } else {
+            empty = false;
             java.io.InputStream  data = node.getInputStreamValue(Imaging.FIELD_HANDLE);
             ImageInformer ii = Factory.getImageInformer();
             try {
@@ -226,9 +228,7 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
             }
         }
 
-        if (! dim.valid()) return dim;
-
-        if (storesDimension()) {
+        if ((empty || dim.valid()) && storesDimension()) {
             int width  = node.getIntValue(FIELD_WIDTH);
             int height = node.getIntValue(FIELD_HEIGHT);
             if (width != dim.getWidth() || height != dim.getHeight()) { // avoid recursive call on fail
@@ -325,8 +325,8 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
                             itype = mimeType.substring(6);
                             log.debug("set itype to " + itype);
                         } else {
-                            log.warn("Mimetype " + mimeType + " is not an image type");
                             itype = magicFile.mimeTypeToExtension(itype);
+                            log.warn("Mimetype " + mimeType + " of " + node.getNumber() + " is not an image type. Taking itype " + itype);
                         }
                     } else {
                         log.warn(MagicFile.FAILED);
