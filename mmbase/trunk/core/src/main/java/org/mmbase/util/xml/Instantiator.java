@@ -58,8 +58,12 @@ public abstract class Instantiator {
      */
     public static Object getInstance(Element classElement, Object... args)
         throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
-        String className = classElement.getAttribute("name");
-        if ("".equals(className)) className = classElement.getAttribute("class");
+        String className;
+        if (classElement.getTagName().equals("class")) {
+            className = classElement.getAttribute("name");
+        } else {
+            className = classElement.getAttribute("class");
+        }
         Class claz = Class.forName(className);
         List<Class> argTypes = new ArrayList<Class>(args.length);
         for (Object arg : args) {
