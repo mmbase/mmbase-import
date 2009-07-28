@@ -67,6 +67,16 @@
       <groupId>nekohtml</groupId>
       <artifactId>nekohtml</artifactId>
       <version>1.9.6.2</version>
+      <!--
+           Impossible, nekohtml and code using it has a lot of dependency on org.apache.xerces shit.
+
+      <exclusions>
+        <exclusion>
+          <groupId>xerces</groupId>
+          <artifactId>xercesImpl</artifactId>
+        </exclusion>
+      </exclusions>
+      -->
     </dependency>
     <dependency>
       <groupId>opensymphony</groupId>
@@ -102,6 +112,8 @@
         <executions>
           <execution>
             <!--
+                MM: I propose we simply wrap fck editors in an overlay and put in on mmbase.org/maven2
+
               weird to have to assign this action to phase 'test'. but
               prepare-package (the more logical phase) is not available in
               older versions of maven, and the war:war task is bound to the
