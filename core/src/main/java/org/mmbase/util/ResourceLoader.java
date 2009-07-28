@@ -1400,7 +1400,9 @@ public class ResourceLoader extends ClassLoader {
         }
 
         protected File getFileFromString(String s) {
-            if (s == null) return null;
+            if (s == null) {
+                return null;
+            }
             try {
 
                 if (s.startsWith("file:")) {
@@ -1408,7 +1410,13 @@ public class ResourceLoader extends ClassLoader {
                 } else {
                     ResourceLoader wr = getWebRoot();
                     if (wr != null) {
-                        return new File(new File(wr.getResource("/").toURI()), s);
+                        URI rootDir = wr.getResource("/").toURI();
+                        if (rootDir.getScheme().equals("file")) {
+                            return new File(new File(rootDir), s);
+                        } else {
+                            log.debug("The web root is no real directory");
+                            return new File(s);
+                        }
                     } else {
                         return new File(s);
                     }
