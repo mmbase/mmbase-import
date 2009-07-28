@@ -16,6 +16,14 @@
   <bundle name="org.mmbase.framework.resources.core" />
 
 
+  <action name="generic_basic_user" rank="basic user">
+    <description xml:lang="en">Generic action for things that may only be done by 'basic users' or higher ranked.</description>
+  </action>
+
+  <action name="generic_admistrator" rank="administrator">
+    <description xml:lang="en">Generic action for things that may only be done by 'administrators'</description>
+  </action>
+
   <action name="view_source" rank="administrator">
     <description xml:lang="en">Whether the source code of templates may be seen</description>
   </action>
