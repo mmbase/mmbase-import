@@ -16,22 +16,31 @@ import java.util.Date;
 import org.mmbase.util.logging.*;
 
 /**
-
+ *
  * @author Michiel Meeuwissen
  * @version $Id$
  */
 
 public class RunningCronEntry  implements Delayed, java.io.Serializable {
+
+    static final long serialVersionUID = 7750051360512560297L;
+
     protected final CronEntry entry;
     protected final Date started;
     protected final int thread;
     protected final String machine;
+    protected final String message;
 
-    public RunningCronEntry(CronEntry entry, Date started, String machine, int thread) {
+    public RunningCronEntry(CronEntry entry, Date started, String machine, int thread, String message) {
         this.entry = entry;
         this.started = started;
         this.thread = thread;
         this.machine = machine;
+        this.message = message;
+    }
+
+    public RunningCronEntry(CronEntry entry, Date started, String machine, int thread) {
+        this(entry, started, machine, thread, null);
     }
     public CronEntry getCronEntry() {
         return entry;
@@ -50,6 +59,11 @@ public class RunningCronEntry  implements Delayed, java.io.Serializable {
     public String getMachine() {
         return machine;
     }
+
+    public String getMessage() {
+        return message;
+    }
+
     public boolean equals(Object o) {
         if (o instanceof RunningCronEntry) {
             RunningCronEntry e = (RunningCronEntry) o;
