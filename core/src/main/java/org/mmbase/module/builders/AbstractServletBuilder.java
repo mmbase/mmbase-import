@@ -39,6 +39,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
     public static final String PROPERTY_EXTERNAL_URL_FIELD = "externalUrlField";
 
+    private static final String TMP_FIELD_CHECKHANDLE = "_checkHandle";
+
     public static final String FIELD_MIMETYPE   = "mimetype";
     public static final String FIELD_FILENAME   = "filename";
     public static final String FIELD_HANDLE     = "handle";
@@ -123,6 +125,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         if (property != null) {
             externalUrlField = property;
         }
+        checkAddTmpField(TMP_FIELD_CHECKHANDLE);
         return super.init();
     }
 
@@ -278,15 +281,19 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             Collection<String> cp = new ArrayList<String>();
             cp.addAll(getHandleFields());
             cp.removeAll(changed);
-            Iterator<String> i = cp.iterator();
-            while (i.hasNext()) {
-                String f = i.next();
+
+            for (String f : cp) {
                 if (node.getBuilder().hasField(f)) {
                     node.setValue(f, null);
                 }
             }
         }
-        checkHandle(node);
+        if (node.getValue(TMP_FIELD_CHECKHANDLE) == null) {
+            // Check handle itself may call commit, this arrangment with 'TMP_FILE_CHECKHANDLE' avoids infinite recursion
+            node.setValue(TMP_FIELD_CHECKHANDLE, "checking handle now");
+            checkHandle(node);
+            node.setValue(TMP_FIELD_CHECKHANDLE, null);
+        }
         boolean result = super.commit(node);
         if (log.isDebugEnabled()) {
             log.debug("After commit node " + node.getNumber() + " memory: " + SizeOf.getByteSize(node));
