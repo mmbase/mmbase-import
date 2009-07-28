@@ -30,6 +30,11 @@
           <warSourceDirectory>src/main/webapp</warSourceDirectory>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.19</version> <!-- need fix for http://jira.codehaus.org/browse/JETTY-1028 -->
+      </plugin>
     </plugins>
   </build>
 
@@ -97,6 +102,15 @@
       <version>${mmbase.version}</version>
       <type>war</type>
     </dependency>
+
+    <!--
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-statistics</artifactId>
+      <version>0.3-SNAPSHOT</version>
+      <type>war</type>
+    </dependency>
+    -->
 
     <dependency>
       <groupId>hsqldb</groupId>
