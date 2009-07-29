@@ -1703,10 +1703,24 @@ public class ResourceLoader extends ClassLoader {
         }
         @Override public URLConnection openConnection(String name) {
             try {
-                URL u = ResourceLoader.servletContext.getResource(root + ResourceLoader.this.context.getPath() + name);
-                if (u == null) return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
+                String rn = root + ResourceLoader.this.context.getPath() + name;
+                if (rn.startsWith("//")) {
+                    // Doesn't seem to work in Jetty otherwise.
+                    // On the other hand, it's a bit odd that it can happen, but let simply work around for now.
+                    rn = rn.substring(1);
+                }
+                URL u = ResourceLoader.servletContext.getResource(rn);
+                if (u == null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Not found " + rn + " in " + ResourceLoader.servletContext);
+                    }
+                    return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
+                } else {
+                    log.debug("Found " + u);
+                }
                 return u.openConnection();
             } catch (IOException ioe) {
+                log.debug(ioe.getMessage());
                 return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
             }
         }
