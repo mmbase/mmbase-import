@@ -218,7 +218,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
      *
      */
 
-    protected Pair getPair(String key, boolean checkParent) throws JspTagException {
+    Pair getPair(String key, boolean checkParent) throws JspTagException {
         // checking if key contains a 'dot'.
         int dotPos = -1;
         {
@@ -290,7 +290,14 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         if (p == null) {
             return simpleContainsKey(key, checkParent);
         } else {
-            return p.containsKey(p.restKey, ! p.wentDown);
+            boolean pResult = p.containsKey(p.restKey, p.canCheckParent() && ! p.wentDown);
+            if (pResult) {
+                return true;
+            } else {
+                // perhaps the key contained dots itself
+                // We don't support this ourselves, but those kind of keys can e.g. be on the pageContext.
+                return simpleContainsKey(key, checkParent);
+            }
         }
     }
 
@@ -553,6 +560,8 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         } else {
             // I think this happens seldom, if ever.
             log.debug("form encoding specified: " + enc);
+            // but _if_ it happens, don't try to be smarter then the servlet container. It would have handled it correctly then.
+            return value;
         }
 
         if (enc.equalsIgnoreCase("ISO-8859-1")) {
@@ -779,6 +788,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
     }
 
 
+    @Override
     public String toString() {
         if (id == null) {
             return "the context without id " + getBacking().toString();
@@ -805,6 +815,9 @@ abstract class Pair {
     abstract  Object get(String key, boolean checkParent) throws JspTagException;
     abstract  void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException;
     abstract void unRegister(String key, boolean checkParent) throws JspTagException;
+    public boolean canCheckParent() {
+        return true;
+    }
 }
 
 /**
@@ -855,6 +868,10 @@ class MapPair extends Pair {
     final void unRegister(String key, boolean checkParent) throws JspTagException {
         if (checkParent) throw new JspTagException("Cannot check parent of Map");
         map.remove(key);
+    }
+    @Override
+    public boolean canCheckParent() {
+        return false;
     }
 }
 
@@ -913,6 +930,10 @@ class BeanPair extends Pair {
     }
     final void unRegister(String key, boolean checkParent) throws JspTagException {
         throw new UnsupportedOperationException("Cannot unregister in a bean");
+    }
+    @Override
+    public boolean canCheckParent() {
+        return false;
     }
 
 }
