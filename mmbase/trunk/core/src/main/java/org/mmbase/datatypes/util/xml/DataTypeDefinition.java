@@ -206,7 +206,7 @@ public class DataTypeDefinition {
                             Handler handler = (Handler) Instantiator.getInstance(childElement);
                             dataType.getHandlers().put(mimeType, handler);
                         } catch (Exception e) {
-                            log.error("For mimetype " + mimeType + " " + e.getMessage());
+                            log.error("For mimetype " + mimeType + " " + e.getClass() + " " + e.getMessage(), e);
                         }
                     }
                 }
