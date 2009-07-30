@@ -50,7 +50,7 @@ public abstract class Instantiator {
      * Instantiates any object using an Dom Element and constructor arguments. Sub-param tags are
      * used on set-methods on the newly created object.
      * @param classElement a 'class' element with a 'name' attribute,
-     *        or any element with a 'class' attribute.
+     *        or any element with a 'class' attribute. Finally ff this any element has no 'class' attribute, it will try 'name' too.
      * @param args Constructor arguments.
      * @throws NoSuchMethodError If not matching constructor could be found
      * @throws ClassNotFoundException If the specified class does not exist.
@@ -63,6 +63,9 @@ public abstract class Instantiator {
             className = classElement.getAttribute("name");
         } else {
             className = classElement.getAttribute("class");
+            if ("".equals(className)) {
+                className = classElement.getAttribute("name");
+            }
         }
         Class claz = Class.forName(className);
         List<Class> argTypes = new ArrayList<Class>(args.length);
@@ -80,7 +83,9 @@ public abstract class Instantiator {
             constructor = c;
             break;
         }
-        if (constructor == null) throw new NoSuchMethodError("No constructors found for " + args);
+        if (constructor == null) {
+            throw new NoSuchMethodError("No constructors found for " + args);
+        }
         log.debug("Found constructor " + constructor);
 
         Object o = constructor.newInstance(args);
