@@ -258,7 +258,11 @@ public class ResourceLoader extends ClassLoader {
         resourceBuilder = b;
         // must be informed to existing ResourceWatchers.
         ResourceWatcher.setResourceBuilder(); // this will also set ResourceWatcher.resourceWatchers to null.
-        log.info("The resources builder '" + b  + "' is available.");
+        if (b != null) {
+            log.info("The resources builder '" + b  + "' is available.");
+        } else {
+            log.debug("No resources builder");
+        }
     }
 
     private static NodeManager resourceNodeManager;
@@ -1799,20 +1803,33 @@ public class ResourceLoader extends ClassLoader {
     // ================================================================================
     // ClassLoader
 
+    private static String RESOURCELOADER_XML = "resourceloader.xml";
     private static org.mmbase.util.xml.UtilReader.PropertiesMap<Collection<Map.Entry<String, String>>> classWeightProperties =
-        new org.mmbase.util.xml.UtilReader("resourceloader.xml", new Runnable() {
+        new org.mmbase.util.xml.UtilReader(RESOURCELOADER_XML, new Runnable() {
                 public void run() {
                     ResourceLoader.readClassWeights();
                 }
             }
             ) {
-            @Override protected Map.Entry<String, String> getEntry(org.mmbase.util.xml.DocumentReader reader, String key, String value) {
-                String u = reader.getDocument().getDocumentURI();
-                String[] parts = u.split("!", 2);
-                log.debug(u + "-> " + Arrays.asList(parts));
-                if (parts.length == 2) {
-                    if (key.startsWith("!")) {
+            @Override protected Map.Entry<String, String> getEntry(final org.mmbase.util.xml.DocumentReader reader, String key, final String value) {
+                if (key.startsWith("!")) {
+                    String u = reader.getDocument().getDocumentURI();
+                    String[] parts = u.split("!", 2);
+                    log.debug(u + "-> " + Arrays.asList(parts));
+                    if (parts.length == 2) {
                         key = "\\A" + ReplacingLocalizedString.makeLiteral(parts[0]) + key + "\\z"; // should escape '.' and so one.
+                    } else {
+                        // jetty:run may opt to no wrap it in a jar (though requested by maven).
+                        // anyhow you also configure maven to not archive the classes
+                        int classes = u.lastIndexOf("/classes/");
+                        if (classes >  0) {
+                            String prefix = u.substring(0, classes + 1);
+                            key = "\\A" + ReplacingLocalizedString.makeLiteral(prefix) + key.substring(1) + "\\z"; // should escape '.' and so one.
+                            log.debug("Using key " + key + " in " + u);
+                        } else {
+                            log.debug("No /classes/ found in " + u);
+                        }
+
                     }
                 }
                 return new Entry<String, String>(key, value);
@@ -1830,7 +1847,7 @@ public class ResourceLoader extends ClassLoader {
                 classWeights.put(Pattern.compile(entry.getKey()), Integer.parseInt(entry.getValue()));
             }
         }
-        log.service("Found classWeights " + classWeights);
+        log.info("Found classWeights " + classWeights);
     }
     static {
         readClassWeights();
