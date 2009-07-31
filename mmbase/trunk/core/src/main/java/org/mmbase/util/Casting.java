@@ -1298,10 +1298,21 @@ public class Casting {
      * @since MMBase-1.9.2
      */
     static class StringSerializableInputStream extends SerializableInputStream implements Unwrappable {
-        final CharTransformer escaper;
+        private static final long serialVersionUID = 2L;
+
+        CharTransformer escaper;
         StringSerializableInputStream(SerializableInputStream is, CharTransformer e) {
             super(is);
             escaper = e;
+        }
+
+        private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+            _writeObject(out);
+            out.writeObject(escaper);
+        }
+        private void readObject(java.io.ObjectInputStream oin) throws IOException, ClassNotFoundException {
+            _readObject(oin);
+            escaper = (CharTransformer) oin.readObject();
         }
 
 
