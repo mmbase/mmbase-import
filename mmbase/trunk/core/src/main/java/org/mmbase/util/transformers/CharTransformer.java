@@ -17,16 +17,16 @@ import java.io.*;
  * @author Michiel Meeuwissen
  */
 
-public interface CharTransformer extends Transformer {
+public interface CharTransformer extends Transformer, java.io.Serializable {
 
 
-    Writer transform(Reader r, Writer w); 
+    Writer transform(Reader r, Writer w);
     Writer transformBack(Reader r, Writer w);
-    
-    Writer transform(Reader r); 
+
+    Writer transform(Reader r);
     Writer transformBack(Reader r);
-    
-    String transform(String r); 
+
+    String transform(String r);
     String transformBack(String r);
 
 }
