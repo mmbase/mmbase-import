@@ -21,6 +21,7 @@ import org.mmbase.tests.*;
 public class NodeManagerTest extends BridgeTest {
     Cloud cloud;
     NodeList nodes;
+    int offsetSize;
     int nrOfTestNodes;
     public final static String TEST_STRING_VALUE = "C05353E04zz HAVO, Cultuur/Maatschappij, Z'zee, 04-05";
 
@@ -32,6 +33,7 @@ public class NodeManagerTest extends BridgeTest {
         // Create some test nodes
         cloud = getCloud();
         nodes = cloud.createNodeList();
+        offsetSize = cloud.getNodeManager("aa").getList(null, null, null).size();
         Node node = cloud.getNodeManager("aa").createNode();
         node.setByteValue("binaryfield", "100".getBytes());
         node.setDoubleValue("doublefield", 200);
@@ -67,9 +69,9 @@ public class NodeManagerTest extends BridgeTest {
         NodeManager nodeManager = cloud.getNodeManager("aa");
         NodeList nodeList;
         nodeList = nodeManager.getList(null, null, null);
-        assertTrue(nodeList.size() == nodes.size());
+        assertEquals(nodeList.size(), nodes.size() + offsetSize);
         nodeList = nodeManager.getList("", "", "");
-        assertTrue(nodeList.size() == nodes.size());
+        assertEquals(nodeList.size(), nodes.size() + offsetSize);
     }
 
     /**
