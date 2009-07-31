@@ -97,6 +97,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         }
         if (compare1 instanceof Boolean) {
             compare1 = Casting.toInteger(compare1);
+            log.debug("First value is a boolean, casted to" + compare1);
         } else if (compare1 instanceof Date) {
             compare1 = Casting.toInteger(compare1);
         } else if (compare1 instanceof List) {
@@ -140,13 +141,10 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                 compareToSet.add(getCompare2());
             }
 
-            Iterator<Object> i = compareToSet.iterator();
-
-
             if (compare1 instanceof Number) {
                 compare1 = new BigDecimal(compare1.toString());
-                while (i.hasNext()) {
-                    Object compare2 = i.next();
+                log.debug("Number casted to " + compare1);
+                for (Object compare2 : compareToSet) {
                     if (compare2 instanceof Date) {
                         compare2 = Casting.toInteger(compare2);
                     }
@@ -164,6 +162,8 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                         compare2 = new BigDecimal(compare2.toString());
                     } else if (compare2 instanceof Node) {
                         compare2 = new BigDecimal(((Node)compare2).getNumber());
+                    } else if (compare2 instanceof Boolean) {
+                        compare2 = new BigDecimal(Casting.toInteger(compare2));
                     }
 
                     if (doCompare((Comparable<Comparable>)compare1, (Comparable)compare2)) {
@@ -174,8 +174,8 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
 
                 }
             } else {
-                while (i.hasNext()) {
-                    Object compare2 = i.next();
+                for (Object compare2 : compareToSet) {
+
                     if (compare2 instanceof Date || compare2 instanceof Boolean) {
                         compare2 = Casting.toInteger(compare2);
                     }
