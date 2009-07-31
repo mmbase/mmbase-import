@@ -151,7 +151,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         if (name == null) {
             name = f.getName();
         }
-        log.debug("Moving file to " + f);
+        log.debug("Moving " + (file == null ? "" + this : "" + file) + " to " + f);
         if (file != null) {
             if (file.equals(f)) {
                 log.debug("File is already there " + f);
@@ -186,11 +186,20 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        if (log.isDebugEnabled()) {
+            log.debug("Serializing " + this);
+        }
+        supportMark();
+        reset();
         out.writeObject(get());
         out.writeObject(name);
         out.writeObject(contentType);
+        reset();
     }
     private void readObject(java.io.ObjectInputStream oin) throws IOException, ClassNotFoundException {
+        if (log.isDebugEnabled()) {
+            log.debug("DeSerializing " + this);
+        }
         byte[] b = (byte[]) oin.readObject();
         wrapped = new ByteArrayInputStream(b);
         size = b.length;
@@ -229,6 +238,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
     }
     @Override
     public void close() throws IOException {
+        use();
         wrapped.close();
     }
 
