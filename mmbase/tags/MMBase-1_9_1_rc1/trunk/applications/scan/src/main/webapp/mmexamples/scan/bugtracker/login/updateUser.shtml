@@ -1,9 +1,0 @@
-<IF $MOD-MMBASE-BUILDER-cookies-number^=N>
-<transactions>
-	<create>
-		<accessObject mmbaseId="$MOD-MMBASE-BUILDER-cookies-number">
-			<setField name="lastlogin">$MOD-INFO-TIME-CURTIME^</setField>
-		</accessObject>
-	</create>
-</transactions>
-</IF>
