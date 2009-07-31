@@ -1,0 +1,36 @@
+$Id$
+
+
+- Make sure all automated test-cases succeed. Check the nightly build, or run 'make all' in tests.
+- Manually test. Build or download an example war. Deploy it on recent tomcat version.
+    - No warnings, errors in the log
+    - No easily found problems in the example webapp
+    - run test jsps? tests/taglib?  All pages under /mmbase/admin/tests?
+
+
+- Make a tag or branch
+   svn cp -m "Tagged 1.9.1"  https://scm.mmbase.org/mmbase/trunk  https://scm.mmbase.org/mmbase/tags/MMBase-1_9_1_Final
+
+- Check it out
+  svn co  https://scm.mmbase.org/mmbase/tags/MMBase-1_9_1_Final
+
+   And edit:
+  - src/org/mmbase/Version.java
+  - maven-base/pom.xml
+  - Fix the poms:
+   for i in `find . -name pom.xml` ; do cat $i | sed s/1.9-SNAPSHOT/1.9.1/g > $i.new ; mv $i.new $i   ; done
+
+ - Build following dirs first with -N
+   maven-base
+   maven
+   maven/maven-mmbase-plugin
+   applications
+   contributions/lucene
+
+ - Then in maven: mvn -Pdeploy
+
+ - Build some other contributions too, if desired.
+
+
+
+

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<!--This resouce configuration points to the test database-->
+<Configure class="org.mortbay.jetty.webapp.WebAppContext">
+
+
+  <!--
+      When using jetty:run use an hsql database in the directory 'data'.
+  -->
+
+  <New  class="org.mortbay.jetty.plus.naming.EnvEntry">
+    <Arg type="java.lang.String">mmbase/mmbaseroot/database</Arg>
+    <Arg type="java.lang.String">hsqldb_csv</Arg>
+    <Arg type="boolean">true</Arg>
+  </New>
+
+  <New  class="org.mortbay.jetty.plus.naming.EnvEntry">
+    <Arg type="java.lang.String">mmbase/mmbaseroot/datasource</Arg>
+    <Arg type="java.lang.String">jdbc/MMBase</Arg>
+    <Arg type="boolean">true</Arg>
+  </New>
+
+  <New class="org.mortbay.jetty.plus.naming.Resource">
+    <Arg>jdbc/MMBase</Arg>
+    <Arg>
+      <New class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <Set name="driverClass">org.hsqldb.jdbcDriver</Set>
+        <Set name="jdbcUrl">jdbc:hsqldb:file:data/hsqldb/mmbase</Set>
+        <Set name="user">sa</Set>
+        <Set name="password"></Set>
+      </New>
+    </Arg>
+   </New>
+
+
+   <!--
+       Put all mmbase date files there too.
+   -->
+  <New  class="org.mortbay.jetty.plus.naming.EnvEntry">
+    <Arg type="java.lang.String">mmbase/mmbaseroot/datadir</Arg>
+    <Arg type="java.lang.String">data</Arg>
+    <Arg type="boolean">true</Arg>
+  </New>
+
+
+</Configure>
+

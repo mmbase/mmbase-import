@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+	<title>Example 1 Magazine editor!!</title>
+	<action type="load">
+    <object type="mags" />
+		<relation destination="news"     role="posrel"  />
+	</action>
+
+	<action type="create">
+		<object type="mags">
+      <field name="title" ftype="string">My Magazine</field>
+    </object>
+	</action>
+
+ <lists>
+   <optionlist name="subtitle">
+     <option id="interesting" >A magazine with lots of interesting stuff</option>
+		 <option id="dull"        >A dull magazine</option>
+		 <option id="exciting"    >The _MOST_ Exciting Magazine!!</option>
+   </optionlist>
+  </lists>
+
+  <form-schema id="mags">
+
+		<field name="title" >
+			<prompt>Title</prompt>
+		</field>
+
+    <field name="subtitle" dtminlength="1" dtmaxlength="10" ftype="enum" dtrequired="true">
+	    <prompt>Subtitle (showing the use of optionlists)</prompt>
+      <optionlist select="subtitle" />
+   	</field>
+
+		<field name="intro" ftype="text" rows="4" >
+			<prompt>Intro</prompt>
+		</field>
+
+		<field name="body" ftype="text" rows="8" >
+			<prompt>Body</prompt>
+		</field>
+
+	<list role="posrel" destination="news" minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" >
+      <title>News articles in this magazine</title>
+
+      <item>
+        <title>News article</title>
+        <field name="title" ftype="data" />
+        <field name="date" ftype="data" />
+        <field fdatapath="field[@name='pos']" ftype="data" />
+      </item>
+
+      <command name="search" nodepath="news" fields="title" orderby="title" age="-1">
+				<prompt>News</prompt>
+				<search-filter>
+					<name>title contains</name>
+					<search-fields>title</search-fields>
+				</search-filter>
+			</command>
+
+      <action type="create">
+        <relation role="posrel" destinationtype="news" >
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and @source=/data/object/@number and object/@searchtype = 'news']/field[@name='pos'])+{$pos}}</field>
+        </relation>
+      </action>
+    </list>
+
+  </form-schema>
+
+</wizard-schema>

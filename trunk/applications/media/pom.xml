@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-application-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>mmbase-media</artifactId>
+  <name>MMBase Media</name>
+  <packaging>war</packaging>
+  <version>${mmbase.version}</version>
+
+  <description>
+    The MMBase media project provides you with builders and code to manage videofragments and
+    audiofragments. It is currently written towards facilitating content stored on the servers of
+    the dutch public broadcasting organisations (NPO), but can be used for other video material
+    also. By specifying media metadata like bitrate etc, you can easily create links for broadband /
+    smallband users using MMBase functions.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-resources</artifactId>
+      <version>${mmbase.version}</version>
+      <classifier>classes</classifier>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+
+  <developers>
+    <developer>
+      <id>michiel</id>
+      <name>Michiel Meeuwissen</name>
+      <email>Michiel.Meeuwissen at gmail.com</email>
+    </developer>
+
+    <developer>
+      <id>elfuego</id>
+      <name>André van Toly</name>
+    </developer>
+
+    <developer>
+      <id>ernst</id>
+      <name>Ernst Bunders</name>
+    </developer>
+
+    <developer>
+      <id>rico</id>
+      <name>Rico Jansen</name>
+    </developer>
+
+    <developer>
+      <name>Rob Vermeulen</name>
+    </developer>
+  </developers>
+
+</project>

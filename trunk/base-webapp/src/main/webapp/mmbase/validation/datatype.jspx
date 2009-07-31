@@ -1,0 +1,34 @@
+<mm:content
+    expires="300"
+    type="application/xml"
+    postprocessor="none"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+  <mm:cloud>
+  <!--
+      Returns XML describing a certain MMBase DataType.
+      This can be used in (AJAX based) javascript validation of form entries.
+
+      @todo: This JSP must accept a 'language' attribute, and all restriction error message must be included.
+             That way, also those can be used in javascript.
+
+      $Id$
+      author: Michiel Meeuwissen
+  -->
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.include file="get.datatype.jspxf" />
+
+  <jsp:scriptlet>
+    if (dataType == null) {
+      response.setStatus(404);
+  </jsp:scriptlet>
+  <notfound />
+  <jsp:scriptlet>
+    } else {
+  </jsp:scriptlet>
+  <jsp:expression>org.mmbase.util.xml.XMLWriter.write(DataTypes.toXml(dataType), false, true)</jsp:expression>
+  <jsp:scriptlet>
+    }
+  </jsp:scriptlet>
+  </mm:cloud>
+</mm:content>

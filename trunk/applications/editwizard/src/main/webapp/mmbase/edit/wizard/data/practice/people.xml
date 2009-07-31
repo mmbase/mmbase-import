@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wizard-schema id="people">
+  <title>People</title>
+  <!-- Action to create a new people object -->
+  <action type="create">
+    <object type="people">
+      <field name="firstname">Enter firstname HERE</field>
+    </object>
+  </action>
+  <!-- Action to delete a people object -->
+  <action type="delete"/>
+  <!-- Action to load a people object, including all posrel relations to news  -->
+  <action type="load">
+    <relation destinationtype="news" role="posrel"/>
+  </action>
+  <form-schema id="step1">
+    <title>People</title>
+    <!-- Show people object -->
+    <field name="firstname">
+      <prompt>Firstname</prompt>
+    </field>
+    <field name="lastname">
+      <prompt>Lastname</prompt>
+    </field>
+    <!-- List all news items related with role posrel
+					     This list can have a minumum of 0 and a amximum of inifinite ("*") items.
+							 This is also the default for a list
+					-->
+    <list role="posrel" destination="news" minoccurs="0" maxoccurs="*">
+      <title>Related newsitems</title>
+      <!-- Show the 'item' in a list (the object) -->
+      <item>
+        <field name="title" ftype="data">
+          <prompt>Newsitem</prompt>
+          <description>Here you can see the name of the related newsitem</description>
+        </field>
+      </item>
+      <!-- defines a search command.
+								 This creates a search box that allows you to search for objects
+								 using a specified ndoepath.
+								 In this case, the searchs ercahes for news items, using the fields
+								 'title' and 'subtitle' to show the results of the search in the list.
+						-->
+      <command name="search" nodepath="news" fields="title,subtitle" age="-1">
+        <prompt>Search newsitems</prompt>
+        <!-- Search filters determine what you can search on (in this case, on title
+									 or both title and subtitle)
+							     If you do not specify a search filter, the default is to search on the
+									 'title' field.
+							-->
+        <!-- Search on title -->
+        <search-filter>
+          <name>subtitle contains</name>
+          <search-fields>subtitle</search-fields>
+        </search-filter>
+        <!-- Search on title and subtitle
+							     not the notation in the search-fields for more than one field
+							-->
+        <search-filter>
+          <name>title or subtitle contains</name>
+          <search-fields>title|subtitle</search-fields>
+        </search-filter>
+      </command>
+      <!-- Action to create a relation, used by teh search command to create
+						     the relation once it is found and chosen.
+						-->
+      <action type="create">
+        <relation destinationtype="news" role="related"/>
+      </action>
+    </list>
+  </form-schema>
+</wizard-schema>
+

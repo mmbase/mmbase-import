@@ -1,0 +1,321 @@
+<?xml version="1.0"?>
+<div
+    class="mm_c c_lucene b_admin ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm:import externid="org.mmbase.lucene.admin.machines"
+             id="machines"
+             vartype="list" from="parameters,cookie"><jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMachineName()</jsp:expression></mm:import>
+  <mm:write cookie="org.mmbase.lucene.admin.machines" value="${machines}" />
+  <h1>Lucene admin page for ${machines}</h1>
+  <p>
+    <em><mm:time format="yyyy-MM-dd HH:mm:ss" time="now" /></em>
+    Configuration was read at <mm:function module="lucene" name="config"><mm:time format="yyyy-MM-dd HH:mm:ss"/></mm:function>.
+    <mm:booleanfunction name="readOnly" module="lucene">
+      The lucene module is configured to be <em>read only</em>.
+      Responsible for the index is '<mm:function name="master" module="lucene" />'.
+    </mm:booleanfunction>
+    The following indices are currently defined.
+  </p>
+
+  <mm:context id="img">
+    <mm:url id="next" write="false" page="/mmbase/style/images/next.png" />
+    <mm:url id="ok" write="false" page="/mmbase/style/images/ok.png" />
+    <mm:url id="reload" write="false" page="/mmbase/style/images/reload.png" />
+  </mm:context>
+  <mm:import id="durationformat">H'h' m'min' ss's'</mm:import>
+
+  <mm:function name="readOnly" module="lucene" id="readOnly" write="false" />
+  <table summary="Lucene indices">
+    <col />
+    <col />
+    <col class="numeric" />
+    <col class="numeric" />
+    <col />
+    <col class="errors" />
+    <col class="numeric" />
+    <col />
+    <col />
+    <tr>
+      <th rowspan="${readOnly ? '1' : '2'}">name</th>
+      <th rowspan="${readOnly ? '1' : '2'}">description</th>
+      <th colspan="2" rowspan="1"># of entries in index</th>
+      <th rowspan="${readOnly ? '1' : '2'}">last full index (duration)</th>
+      <th rowspan="${readOnly ? '1' : '2'}">recent errors</th>
+      <th rowspan="${readOnly ? '1' : '2'}">results</th>
+      <th rowspan="${readOnly ? '1' : '2'}">search</th>
+      <th rowspan="${readOnly ? '1' : '2'}">full index</th>
+    </tr>
+    <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
+      <tr>
+        <th>in use</th>
+        <th>full index copy</th>
+      </tr>
+      <mm:import externid="clear" />
+      <mm:present referid="clear">
+        <mm:function module="lucene" referids="clear@index" name="clearDirectory" />
+      </mm:present>
+      <mm:import externid="clearcopy" />
+      <mm:present referid="clearcopy">
+        <mm:functioncontainer>
+          <mm:param name="copy" value="true" />
+          <mm:function module="lucene" referids="clearcopy@index" name="clearDirectory" />
+        </mm:functioncontainer>
+      </mm:present>
+    </mm:booleanfunction>
+    <mm:listfunction id="index" module="lucene" name="list">
+      <c:catch var="exception1">
+        <tr>
+          <td>
+            <mm:write />
+            <mm:function module="lucene" name="default" write="false">
+              <c:if test="${index eq _.name }">
+                <jsp:text>*</jsp:text>
+                <mm:write id="default" referid="index" write="false" />
+              </c:if>
+            </mm:function>
+          </td>
+          <td>
+            <mm:function module="lucene" referids="index" name="description" />
+          </td>
+          <td class="numeric">
+            <mm:function module="lucene" referids="index" name="searchsize">
+              <jsp:text>${_}</jsp:text>
+            </mm:function>
+            <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
+
+              <mm:link>
+                <mm:param name="clear">${index}</mm:param>
+                <jsp:text> (</jsp:text>
+                <a onclick="return confirm('Are you sure? This will fully delete the index ${index}.');"
+                   href="${_}">X</a>
+                <jsp:text>)</jsp:text>
+              </mm:link>
+            </mm:booleanfunction>
+          </td>
+          <td class="numeric">
+            <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
+              <mm:functioncontainer>
+                <mm:function referids="index" module="lucene" name="fullIndexing">
+                  <c:choose>
+                    <c:when test="${_ eq -1}">
+                      <mm:param name="copy" value="true" />
+                      <mm:function referids="index" module="lucene" name="searchsize">
+                        ${_}
+                      </mm:function>
+                      <mm:link>
+                        <mm:param name="clearcopy">${index}</mm:param>
+                        (<a href="${_}">X</a>)
+                      </mm:link>
+                    </c:when>
+                    <c:otherwise>
+                      ${_} (busy)
+                    </c:otherwise>
+                  </c:choose>
+                </mm:function>
+              </mm:functioncontainer>
+            </mm:booleanfunction>
+          </td>
+          <td>
+            <mm:function module="lucene" referids="index" name="last">
+              <mm:time format="yyyy-MM-dd HH:mm" />
+            </mm:function>
+            <jsp:text> (</jsp:text>
+            <mm:function module="lucene" referids="index" name="lastduration">
+              <c:choose>
+                <c:when test="${_ eq -1}">
+                  Not yet run
+                </c:when>
+                <c:otherwise>
+                  <mm:write value="${_ / 1000}" vartype="integer">
+                    <c:set var="total">${empty total ? _ : _ + total}</c:set>
+                    <mm:time timezone="utc" format="${durationformat}" />
+                  </mm:write>
+                </c:otherwise>
+              </c:choose>
+            </mm:function>
+            <jsp:text>) </jsp:text>
+          </td>
+          <td>
+            <mm:functioncontainer>
+              <mm:param name="max" value="5" />
+              <mm:listfunction referids="index" module="lucene" name="errors">
+                <p><mm:write /></p>
+              </mm:listfunction>
+            </mm:functioncontainer>
+          </td>
+          <td class="numeric" >
+            <mm:function module="lucene" referids="index" name="nodes" />
+          </td>
+          <td>
+            <mm:link referids="index" page="search">
+              <a href="${_}" class="navigate">
+                <img src="${img.next}" alt="next"  />
+              </a>
+            </mm:link>
+          </td>
+          <td>
+            <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
+              <mm:link>
+                <mm:param name="fullindex" value="$index" />
+                <a href="${_}" class="navigate"
+                   onclick="return confirm('Are you sure? This will fully delete the index ${index}, and may take some time.');"
+                   >
+                  <img src="${img.next}" alt="next"  />
+                </a>
+              </mm:link>
+            </mm:booleanfunction>
+          </td>
+        </tr>
+      </c:catch>
+      <c:if test="${! empty exception1}">
+        <jsp:text>${exception1}</jsp:text><![CDATA[</td></tr>]]>
+      </c:if>
+    </mm:listfunction>
+    <tr>
+      <td colspan="4"><jsp:text> </jsp:text></td>
+      <td>
+        <c:if test="${! empty total}">
+          <jsp:text>total:  </jsp:text>
+          <mm:write referid="total">
+            <mm:time timezone="utc" format="${durationformat}" />
+          </mm:write>
+        </c:if>
+      </td>
+    </tr>
+  </table>
+  <hr />
+  <mm:import externid="fullindex" />
+  <mm:present referid="fullindex">
+    <jsp:text>Triggering full index for ${fullindex} for ${machines}.</jsp:text>
+    <mm:voidfunction module="lucene" name="fullIndex" referids="fullindex@index,machines" />
+  </mm:present>
+  <mm:import externid="delete" />
+  <mm:present referid="delete">
+    <jsp:text>Removing assignment ${delete}</jsp:text>
+    <mm:voidfunction module="lucene" name="unassign" referids="delete@id" />
+  </mm:present>
+  <mm:import externid="interrupt" />
+  <mm:present referid="interrupt">
+    <mm:function module="lucene" name="interrupt"/>
+  </mm:present>
+  <mm:import externid="reload" />
+  <mm:present referid="reload">
+    <mm:function module="lucene" name="reload"/>
+  </mm:present>
+  <table summary="Misc. options">
+    <tr>
+      <th>Status</th>
+      <td>
+        <mm:function module="lucene" name="statusdescription" />
+        <mm:link>
+          <mm:param name="interrupt" value="now" />
+          <jsp:text>, </jsp:text><a onclick="return confirm('Do you want to interrupt the current process?');" href="${_}">interrupt</a>
+        </mm:link>
+      </td>
+    </tr>
+    <mm:listnodescontainer type="mmservers">
+      <mm:constraint field="state" value="active" />
+      <mm:size>
+        <mm:isgreaterthan value="1">
+          <tr>
+            <th>Full index commands work on</th>
+            <td>
+              <form>
+                <select multiple="multiple" name="org.mmbase.lucene.admin.machines">
+
+                  <mm:listnodes>
+                    <mm:option value="${_node.name}" compareset="${machines}">
+                      <mm:field name="name" />
+                    </mm:option>
+                  </mm:listnodes>
+                </select>
+                <input type="submit" name="submit_machines" value="Change" />
+              </form>
+            </td>
+          </tr>
+        </mm:isgreaterthan>
+      </mm:size>
+    </mm:listnodescontainer>
+    <tr>
+      <th>Queue</th>
+      <td>
+        <mm:listfunction module="lucene" name="queue" jspvar="assignment" >
+          <c:catch var="exception2">
+            <mm:first><mm:import id="notempty" /></mm:first>
+            <mm:link>
+              <mm:param name="delete" value="${assignment.id}" />
+              <a onclick="return confirm('Do you want to unschedule ${assignment}?');" href="${_}">
+                <jsp:text>${assignment}</jsp:text>
+              </a>
+            </mm:link>
+            <mm:last inverse="true">, </mm:last>
+          </c:catch>
+          <c:if test="${! empty exception2}">
+            <jsp:text>EXCEPTIONL ${exception1}</jsp:text>
+          </c:if>
+        </mm:listfunction>
+        <mm:notpresent referid="notempty">
+          <jsp:text>Queue is empty</jsp:text>
+        </mm:notpresent>
+      </td>
+    </tr>
+    <tr>
+      <th>Search on default index (${default})</th>
+      <td>
+        <mm:link page="search">
+          <mm:param name="index" /><a href="${_}" class="navigate"><img src="${img.next}" alt="next"  /></a>
+        </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <th>Full index on all indices</th>
+      <td>
+        <mm:booleanfunction name="readOnly" module="lucene" inverse="true">
+          <mm:link>
+            <mm:param name="fullindex" />
+            <a href="${_}" onclick="return confirm('Are you sure? This will fully delete the indices ${index}, and may take some time.')"
+               class="navigate">
+              <img src="${img.next}" alt="next"  />
+            </a>
+          </mm:link>
+        </mm:booleanfunction>
+      </td>
+    </tr>
+    <tr>
+      <th>Directory</th>
+      <td>
+        <mm:function name="path" module="lucene" />
+      </td>
+    </tr>
+    <tr>
+      <th>Reload module</th>
+      <td>
+        <mm:link>
+          <mm:param name="reload" />
+          <a href="${_}" class="navigate" onclick="return confirm('Are you sure you want to reload the lucene module?')" >
+            <img src="${img.next}" alt="next"  />
+          </a>
+        </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <th>Reload this page</th>
+      <td><mm:link><a href="${_}" class="navigate"><img src="${img.ok}" alt="reload"  /></a></mm:link></td>
+    </tr>
+    <tr>
+      <th>You are <mm:cloudinfo type="user" />. Log out</th>
+      <td>
+        <mm:link>
+          <mm:param name="logout" />
+          <a href="${_}" class="navigate"><img src="${img.reload}" alt="log out"  /></a>
+        </mm:link>
+      </td>
+    </tr>
+  </table>
+</div>

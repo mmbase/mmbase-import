@@ -1,0 +1,45 @@
+<div
+    class="mm_c c_streams b_admin ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud rank="basic user" jspvar="cloud">
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+    <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+
+    <mm:import from="request" externid="trigger" />
+    <mm:import from="request" externid="interrupt" vartype="integer" />
+    <mm:import from="request" externid="page">0</mm:import>
+
+    <mm:import id="pagesize" vartype="integer">50</mm:import>
+    <mm:import externid="type">mediafragments</mm:import>
+    <mm:fieldlist nodetype="streamsources" fields="url" varStatus="status">
+      <table summary="configuration">
+        <caption>Configuration</caption>
+        <c:forEach items="${status.current.dataType.commitProcessor.processors[2].configuration}" var="jobdef">
+          <tr>
+            <td>${jobdef.value.transcoder}</td><td>${jobdef.value.mimeType}</td>
+          </tr>
+          <tr>
+          <td>${jobdef.value.analyzers}</td>
+          </tr>
+        </c:forEach>
+      </table>
+    </mm:fieldlist>
+
+
+    <table summary="mediafragments">
+      <caption>Recent mediafragments</caption>
+      <mm:listnodescontainer type="${type}">
+        <mm:sortorder field="number" direction="down" />
+        <mm:offset value="${page * pagesize}" />
+        <mm:maxnumber value="${pagesize}" />
+        <jsp:directive.include file="fragment.trs.jspx" />
+      </mm:listnodescontainer>
+    </table>
+  </mm:cloud>
+</div>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+												 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" >
+<article id="administrators_install-tomcat">
+	<articleinfo>
+		<title>MMBase installation on Apache Tomcat</title>
+		<date>2002-12-05</date>
+		<edition>$Id$</edition>
+		<authorgroup>
+			<author>
+				<firstname>Michiel</firstname>
+				<surname>Meeuwissen</surname>
+				<affiliation>
+					<orgname>Publieke Omroep</orgname>
+				</affiliation>
+			</author>
+		</authorgroup>
+		<legalnotice>
+			<para>
+				This software is OSI Certified Open Source Software. OSI Certified is a certification mark
+				of the Open Source Initiative.
+			</para>
+			<para>
+				The license (Mozilla version 1.0) can be read at the MMBase site. See
+				<ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+			</para>
+		</legalnotice>
+	</articleinfo>
+	<section id="intro">
+		<title>Introduction</title>
+		<para>
+			This document applies to MMBase 1.7 and
+			<ulink url="http://jakarta.apache.org/tomcat">Tomcat</ulink> 4.1.12 (or higher). In earlier Tomcat
+			4.1 versions are bugs which make some MMBase jsp-pages not even compile. The taglib
+			implementation of Tomcat 4.0 is very slow, so we strongly advice to go for the latest Tomcat
+			4.1 or 5.0 version.
+		</para>
+		<para>
+			This installation procedure was tested on a Debian/GNU Linux system (with sun jdk in
+			/usr/local), other Unixes must be very similar, and for those systems I have good hopes, but did not
+			test (yet).
+		</para>
+		<para>
+			So <ulink url="http://jakarta.apache.org/site/binindex.html">download</ulink> a binary Tomcat
+			4.1 or 5.0, and install it (i.e. unpack it somewhere). You also need jdk 1.4
+			installed (think of the JAVA_HOME environment variable if necessary). MMBase 1.6.5 was
+			available for both jdk 1.3 and 1.4, but the 1.7 release of MMBase requires jdk 1.4. Make
+			sure the current working directory and the 'conf', 'logs', 'temp' and 'work' of the tomcat
+			installation are writable for the user who is going to run it (and the rest is readable at
+			least)
+		</para>
+		<para>
+			Run Tomcat with one of the scripts of its 'bin' directory ('catalina.sh run' e.g.). Before
+			trying to install MMBase make sure that tomcat is working (surf to http://localhost:8080 and
+			try some jsp examples). Don't proceed until all problems which might occur related to the
+			Tomcat installation are solved.
+		</para>
+	</section>
+	<section id="installmmbase">
+		<title>Install MMBase</title>
+		<para>
+			Download or generate an MMBase 'binary' distro and unpack it (it is distributed as a zip). You
+			find a directory 'mmbase-webapp' and remember its location.
+		</para>
+		<para>
+			MMBase still uses some Xerces specific XML parsing
+			functionality, which is not compatible with the Xerces version
+			of Tomcat. So, in the tomcat directory common/endorsed remove
+			'xercesImpl.jar' and 'xmlParserAPI.jar', and move 'xalan.jar'
+			'xerces.jar' and 'xml-apis.jar' from
+			mmbase-webapp/WEB-INF/lib to their place. You have to move them,
+			because letting them on two place can give class-loader
+			problems.
+
+		</para>
+		<para>
+			To 'server.xml' of Tomcat's 'conf' directory add the following:
+			<programlisting id="contextserver.xml"><![CDATA[
+<Context path="/mm" docBase="/home/michiel/mmbase/1.6/mmbase/build/mmbase/mmbase-webapp" debug="0" allowLinking="true">
+	<!-- if you want symlinks to work in tomcat4: -->
+	<Resources className="org.apache.naming.resources.FileDirContext" allowLinking="true" />
+</Context>
+]]></programlisting>
+		 <!-- TODO:
+				 reloadable="false" / "true" ?
+		 -->
+			Be sure to fill in the right docBase, of course.
+		</para>
+		 <para>
+		 A complete server.xml might look like this then.
+			<programlisting id="server.xml"><![CDATA[
+<?xml version="1.0"?>
+<Server port="8889" shutdown="SHUTDOWN" debug="0">
+	<Service name="Tomcat-Standalone-MMBase">
+		<Connector
+			port="8070"
+			address="michiel.omroep.nl"
+			minProcessors="5" maxProcessors="75"
+			enableLookups="false"
+			redirectPort="8443"
+			acceptCount="10"
+			debug="0"
+			connectionTimeout="60000"
+			proxyPort="80"
+			proxyName="michiel.omroep.nl"
+		/>
+		<Engine name="Standalone" defaultHost="localhost" debug="0">
+			<Logger className="org.apache.catalina.logger.FileLogger"
+				directory="log"
+				prefix="catalina."
+				suffix=".log"
+				timestamp="true"
+				/>
+			<Host name="localhost" debug="0" appBase="webapps" unpackWARs="true" autoDeploy="true">
+				<Valve className="org.apache.catalina.valves.AccessLogValve"
+					directory="log"
+					prefix="access."
+					suffix=".log"
+					pattern="common"
+				/>
+				<Logger className="org.apache.catalina.logger.FileLogger"
+					directory="log"
+					prefix="tomcat."
+					suffix=".log"
+					timestamp="false"
+				/>
+				<Context path="/mm" docBase="/home/michiel/mmbase/1.6/mmbase/build/mmbase/mmbase-webapp" debug="0" allowLinking="true">
+					<Resources className="org.apache.naming.resources.FileDirContext" allowLinking="true" /><!-- only for tomcat 4 -->
+					<Resource name="mail/Session" auth="Container" type="javax.mail.Session"/>
+					<ResourceParams name="mail/Session">
+						<parameter>
+							<name>mail.smtp.host</name>
+							<value>localhost</value>
+						</parameter>
+					</ResourceParams>
+				</Context>
+			</Host>
+		</Engine>
+	</Service>
+</Server>
+
+]]></programlisting>
+		</para>
+		<para>
+			Make sure 'context-param' mmbase.htmlrooturlpath in 'web.xml' of
+			mmbase-webapp/WEB-INF/, is not set, or set to the right value.
+		</para>
+		<para>
+			Now you can start Tomcat again (make sure the current working directory is writable: hsql is
+			using it). On http://localhost:8080/mm you now should find MMBase's introduction page.
+		</para>
+	</section>
+	<section id="notes">
+		<title>Notes</title>
+		<para>
+			Follow the instructions of the introduction page of MMBase. Deploy some example applications
+			and so on.
+		</para>
+		<para>
+			If you want image-conversion in MMBase to work, make sure to install ImageMagick and be sure
+			that the 'convert' program is in the PATH when you start Tomcat. Alternatively you can edit
+			the images.xml builder definition to specify its location (search for images.xml in
+			mmbase-webapp/WEB-INF/config/)
+		</para>
+		<para>
+			For a real installation you want to at least use another database (default MMBase is using
+			hsql). See the configuration documentation.
+		</para>
+	</section>
+
+        <section id="otherreferences">
+           <title>Other References</title>
+           <itemizedlist>
+                <listitem>
+                  <!-- external documentation -->
+                  <para>Installation instructions for 1.6.x under Red Hat Linux + Tomcat + MySQL + Apache (<ulink
+                     id="installationredhatlinux" url="http://tldp.org/HOWTO/MMBase-Inst-HOWTO/index.html">HTML</ulink>)</para>
+                </listitem>
+                <listitem>
+                  <!-- external documentation -->
+                  <para>Installation instructions for 1.5.x under Debian GNU / Linux "woody" + Tomcat + MySQL (<ulink
+                     id="installationdebiangnulinux" url="http://tldp.org/HOWTO/MMBase.html">HTML</ulink>)</para>
+                </listitem>
+           </itemizedlist>
+       </section>
+
+</article>

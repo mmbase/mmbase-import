@@ -1,0 +1,17 @@
+<jsp:root
+    version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    >
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm:import externid="delete" />
+  <mm:log> Deleting ${delete} </mm:log>
+  <mm:present referid="delete">
+    <mm:node referid="delete">
+      <mm:deletenode deleterelations="true"/>
+    </mm:node>
+  </mm:present>
+</jsp:root>

@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+<fieldlist
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd">
+  
+  <field name="start">
+    <descriptions>
+      <description xml:lang="nl">Starttijd (in millisecondes na het begin van de 'bron' stream)</description>
+      <description xml:lang="en">Start time (in milliseconds after the start of the 'source' stream)</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="nl">Start</guiname>
+      <guiname xml:lang="en">Start</guiname>
+    </gui>
+    <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <default value="0" />
+      <minInclusive value="0" />
+    </datatype>
+  </field>
+
+  <field name="stop">
+    <descriptions>
+      <description xml:lang="nl">Stoptijd (in millisecondes na het eind van de 'bron' stream)</description>
+      <description xml:lang="en">Stop time (in milliseconds after the end of the 'source' stream)</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="nl">Stop</guiname>
+      <guiname xml:lang="en">Stop</guiname>
+    </gui>
+    <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <minInclusive value="0" />
+    </datatype>
+  </field>
+
+  <field name="length">
+    <descriptions>
+      <description xml:lang="nl">Duur van dit clipje (ms)</description>
+      <description xml:lang="en">Duration of this fragment (ms)</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="nl">Lengte</guiname>
+      <guiname xml:lang="en">Length</guiname>
+    </gui>
+    <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <minInclusive value="0" />
+    </datatype>
+  </field>
+
+  <field name="objecttype" state="virtual">
+    <datatype base="objecttype" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <pattern value="videofragments|audiofragments" enforce="onchange" />
+    </datatype>
+  </field>
+
+  <!-- <field> 'class'  -->
+  <!-- deprecated
+       <field>
+       <descriptions>
+       <description xml:lang="nl">Niet-te-gebruiken?</description>
+       <description xml:lang="en">Deprecated?</description>
+       </descriptions>
+       <gui>
+       <guiname xml:lang="en">Classification</guiname>
+       <guiname xml:lang="nl">Classificatie</guiname>
+       <guitype>integer</guitype>
+       </gui>
+       <editor>
+       <positions>
+       <input>8</input><list>8</list><search>-1</search>
+       </positions>
+       </editor>
+       <db>
+       <name>class</name>
+       <type state="persistent" notnull="false" key="false">INTEGER</type>
+       </db>
+       </field>
+  -->
+
+</fieldlist>
+

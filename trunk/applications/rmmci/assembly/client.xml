@@ -1,0 +1,107 @@
+<assembly>
+  <id>client</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <includes>
+        <include>org.mmbase:mmbase:jar</include>
+        <include>javax.servlet:servlet-api</include>
+      </includes>
+      <unpack>true</unpack>
+      <scope>provided</scope>
+
+      <unpackOptions>
+        <includes>
+          <include>javax/servlet/ServletRequest.class</include>
+          <include>javax/servlet/ServletResponse.class</include>
+          <include>javax/servlet/http/HttpServletRequest.class</include>
+          <include>javax/servlet/http/HttpServletResponse.class</include>
+
+          <include>org/mmbase/bridge/**</include>               <!-- of course -->
+          <include>org/mmbase/bridge/util/**</include>                   <!-- not essential, but the idea is that you could use those with any bridge impl, so you should want them -->
+          <include>org/mmbase/storage/search/*</include>                <!-- those interfaces are  part of bridge -->
+
+
+          <include>org/mmbase/datatypes/**</include>            <!-- datatype classes are bridge -->
+          <include>org/mmbase/security/UserContext.class</include>       <!-- security classes are bridge -->
+          <include>org/mmbase/security/BasicUser.class</include>       <!-- security classes are bridge -->
+          <include>org/mmbase/security/AuthenticationData*.class</include> <!-- security classes are bridge -->
+          <include>org/mmbase/security/Rank.class</include>              <!-- security classes are bridge -->
+          <include>org/mmbase/security/SecurityException.class</include> <!-- security classes are bridge -->
+          <include>org/mmbase/security/Action*.class</include> <!-- security classes are bridge -->
+          <include>org/mmbase/security/Configurable*.class</include> <!-- security classes are bridge -->
+
+          <include>org/mmbase/util/functions/**</include>               <!-- functions are bridge -->
+
+          <include>org/mmbase/cache/CachePolicy*</include>             <!-- used in bridge -->
+          <include>org/mmbase/cache/Cache*</include>          <!-- used by SortedBundle, but any how it is utility -->
+          <include>org/mmbase/cache/**</include>                <!-- used by SortedBundle, but any how it is utility -->
+          <include>org/mmbase/util/LRUHashtable*</include>             <!-- cache implementation -->
+
+          <!-- perhaps we need _all_ of util ? -->
+          <include>org/mmbase/util/logging/**</include>                  <!-- every class use, and it's no real burden to have it -->
+          <include>org/mmbase/util/ResourceLoader*.class</include>       <!-- well... -->
+          <include>org/mmbase/util/ResourceWatcher*.class</include>      <!--  -->
+          <include>org/mmbase/util/LocalizedString.class</include>         <!-- returned by bridge -->
+          <include>org/mmbase/util/LocaleCollator*</include>         <!-- returned by bridge -->
+          <include>org/mmbase/util/ReadonlyLocalizedString.class</include>
+          <include>org/mmbase/util/ReplacingLocalizedString*.class</include> <!-- returned by bridge -->
+          <include>org/mmbase/util/EncodingDetectingOutputStreamWriter.class</include> <!-- used by resourceloader -->
+          <include>org/mmbase/util/FileWatcher*.class</include>             <!-- used by resourceloader -->
+          <include>org/mmbase/util/Entry.class</include>           <!-- used by LocalizedString -->
+          <include>org/mmbase/util/LocalizedEntryListFactory*.class</include> <!-- returned by DataType -->
+          <include>org/mmbase/util/SortedBundle*.class</include>            <!-- Used by LocalizedEntryListFactory -->
+          <include>org/mmbase/util/ChainedIterator*.class</include>            <!-- Used by LocalizedEntryListFactory -->
+          <include>org/mmbase/util/SizeMeasurable.class</include>           <!-- implemented by several class -->
+          <include>org/mmbase/util/Casting*.class</include>                 <!-- widely used -->
+          <include>org/mmbase/util/StringBuilderWriter.class</include>      <!-- used by Casting -->
+          <include>org/mmbase/util/StringBufferWriter.class</include>       <!-- used by Datatype Restrictions -->
+          <include>org/mmbase/util/WrappedLocalizedString.class</include>  <!-- used by Casting -->
+          <include>org/mmbase/util/Encode.class</include>                   <!-- general utility -->
+          <include>org/mmbase/util/transformers/**.class</include>          <!-- used by Encode -->
+          <include>org/mmbase/util/xml/**</include>
+          <include>org/mmbase/util/XMLEntityResolver*.class</include>        <!-- -->
+          <include>org/mmbase/util/XMLErrorHandler.class</include>           <!-- -->
+          <include>org/mmbase/util/DynamicDate.class</include>              <!-- used by Casting -->
+          <include>org/mmbase/util/DateFormats*.class</include>
+          <include>org/mmbase/util/dateparser/**</include>                  <!-- used by Casting -->
+          <include>org/mmbase/util/HashCodeUtil*</include>                 <!-- used by SortedBundle, but is generic tool-->
+          <include>org/mmbase/util/PublicCloneable*</include>                 <!-- used by SortedBundle, but is generic tool-->
+          <include>org/mmbase/util/StringSplitter*</include>                 <!-- used by Queries-->
+          <include>org/mmbase/util/SerializableInputStream*</include>        <!-- Representation of binaries-->
+          <include>org/mmbase/util/ThreadPools*</include>
+          <include>org/mmbase/util/IOUtil*</include>
+
+          <include>org/mmbase/storage/Storable.class</include>              <!-- DataTypes uses .. -->
+          <include>org/mmbase/storage/StorageException.class</include>      <!--  -->
+          <include>org/mmbase/storage/StorageNotFoundException.class</include> <!-- may be thrown through bridge. -->
+
+
+          <include>org/mmbase/core/util/Fields.class</include>              <!-- DataTypes uses .. -->
+          <include>org/mmbase/core/*.class</include>               <!-- DataTypes uses .. -->
+          <include>org/mmbase/core/event/**</include>
+
+          <include>org/mmbase/module/core/MMBaseObserver.class</include>    <!-- resourcewatcher extends -->
+          <include>org/mmbase/module/corebuilders/FieldDefs.class</include> <!-- DataTypes uses .. -->
+
+          <include>org/mmbase/util/RandomPool*</include>          <!-- Used in test cases .. -->
+          <include>org/mmbase/util/PasswordGenerator*</include>            <!-- Used in test cases .. -->
+          <include>org/mmbase/config/functions/**</include>                  <!-- Used in test cases .. -->
+        </includes>
+        <excludes>
+          <exclude>org/mmbase/storage/search/SearchQueryHandler*</exclude>   <!-- Has a dependency on MMObjectNode -->
+        </excludes>
+
+      </unpackOptions>
+    </dependencySet>
+  </dependencySets>
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.outputDirectory}</directory>
+      <outputDirectory>/</outputDirectory>
+    </fileSet>
+  </fileSets>
+</assembly>
