@@ -44,18 +44,20 @@
         </mm:context>
         <mm:import id="x" reset="true">X</mm:import>
         <mm:write referid="x" />
+
       </mm:context>
+
       <p>${context_in_session.subcontext}</p>
 
       <h3><a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></h3>
       <mm:import id="zooi">000</mm:import>
       <mm:import id="list" vartype="list">a,b,c</mm:import>
       <mm:stringlist referid="list">
-        <p>Test A: ${zooi}</p>
+        <p>Test A: ${zooi} ${pageScope.zooi}</p>
         <mm:import id="zooi" reset="true"><mm:write /></mm:import>
-        <p>Test B: ${zooi eq _ ? 'ok' : 'NOT ok'} ${zooi}</p>
+        <p>Test B: ${zooi eq _ ? 'ok' : 'NOT ok'} ${zooi} ${pageScope.zooi}</p>
       </mm:stringlist>
-      <p>Test C: ${zooi eq 'c' ? 'ok' : 'NOT ok'} ${zooi}</p>
+      <p>Test C: ${zooi eq '000' ? 'ok' : 'NOT ok'} ${zooi} ${pageScope.zooi}</p>
 
     </mm:context>
   </mm:cloud>
