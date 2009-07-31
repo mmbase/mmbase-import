@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="searchrelate"
+    version="1"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <dependency component="core" version="9" />
+  <dependency component="taglib" version="2" />
+
+  <bundle name="org.mmbase.searchrelate.resources.searchrelate" />
+
+  <block name="searchrelate" mimetype="text/html"
+         classification="mmbase.examples:200">
+    <title xml:lang="nl">Search &amp; Relate Voorbeelden</title>
+    <title xml:lang="en">Search &amp; Relate Examples</title>
+    <body jsp="examples.jspx" />
+  </block>
+
+</component>

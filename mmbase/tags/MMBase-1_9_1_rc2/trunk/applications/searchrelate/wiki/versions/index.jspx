@@ -1,0 +1,37 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <mm:content type="application/xhtml+xml" expires="${param.expires}" language="en">
+  <mm:cloud>
+
+    <head>
+        <mm:link page="/mmbase/style/css/mmxf.css">
+          <link rel="stylesheet" type="text/css" href="${_}" />
+        </mm:link>
+      </head>
+      <body>
+        <mm:import externid="objectnumber" required="true" />
+
+
+        <mm:listnodescontainer type="wikiobjects_versions">
+          <mm:sortorder field="version" direction="down" />
+          <mm:constraint field="object" value="${objectnumber}" />
+          <ul>
+            <mm:listnodes>
+              <li>
+                ${_node.version} ${_node.ip} <mm:nodeinfo type="gui" />: ${_node.comments}
+              </li>
+            </mm:listnodes>
+          </ul>
+
+        </mm:listnodescontainer>
+        <hr />
+        <mm:link page="../edit/" referids="objectnumber">
+          <a href="${_}">back</a>
+        </mm:link>
+
+      </body>
+  </mm:cloud>
+
+  </mm:content>
+</html>

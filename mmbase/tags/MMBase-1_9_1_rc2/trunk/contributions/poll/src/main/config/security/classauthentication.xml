@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE security PUBLIC "-//MMBase//DTD classsecurity config 1.0//EN" "http://www.mmbase.org/dtd/classsecurity_1_0.dtd">
+<security>
+  <authenticate class="org\.apache\.jsp\.tag\..*">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
+  <authenticate class="org\.mmbase\.poll\.TotalUpdater">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
+</security>
+ 

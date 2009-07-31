@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>The MMBase media project</title>
+  </head>
+  <body>
+    <p>
+     The MMBase media projects define an object model to represent
+     meta data for 'media' formats like real audio streams and mp3
+     files. The necessary builder implementations can be find in the
+     'builders' subpackage.
+    </p>
+    <p>
+     Besides descriptive texts and other useful information it also
+     models 'fragments' from streams, which is particular useful when
+     you want to generate Smil or otherwise want to show something a
+     small part of the entire stream.
+    </p>
+    <p>
+      Because the same content can be available as several streams,
+      (think small-band/broad-band, more servers), there is
+      functionality to make the selection which of the result URL's to
+      offer. This functionality can be found in the 'filters' subpackage.
+    </p>
+    <p>
+      Generating the actual URL can also be done in several ways, and
+      this is modelled by use of 'URLComposer's. Some URL's for
+      example can contain start and stop times, titles etc. Perhaps
+      only one mmbase object number is sufficient if the url points to
+      e.g. a MMBase servlet. Which kind of URLComposer to use in which
+      cases is determined by the URLComposerFactory class.
+    </p>
+    <!-- version of package description $Id$ -->
+    @since   MMBase-1.7
+  </body>
+</html>

@@ -1,0 +1,31 @@
+<div
+    class="mm_c c_streams b_myjobs ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <jsp:output omit-xml-declaration="true" />
+
+  <ul>
+    <mm:listfunction set="streams" name="myJobs">
+      <li>
+        <span>${_} ${_.transcoder} (${_.progress})</span>
+        <p>
+          <span class="in">${_.transcoder.in}</span>
+          <jsp:text> -&amp;gt; </jsp:text>
+          <span class="out">${_.transcoder.out}</span>
+        </p>
+        <div class="log">
+          <pre>
+            <jsp:text>${_.logger.debugList}</jsp:text>
+          </pre>
+        </div>
+      </li>
+    </mm:listfunction>
+  </ul>
+
+
+</div>

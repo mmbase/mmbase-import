@@ -1,0 +1,45 @@
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c c_taglib b_test_cloud ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:content  expires="0">
+    <h1>Cloud logout/login</h1>
+    <mm:log>logout</mm:log>
+    <p>
+      Testing logout
+      <mm:cloud method="logout" />.
+    </p>
+    <mm:log>login</mm:log>
+    <p>
+      Testing method="http"
+      <!-- loggin in on the _same_ page, should work too -->
+      <mm:cloud method="http" jspvar="cloud">
+        You are <mm:cloudinfo type="user" /> (<mm:cloudinfo type="rank" />)
+        <mm:hasrank value="administrator">
+          You are administrator !!
+        </mm:hasrank>
+        <mm:hasrank minvalue="administrator" inverse="true">
+          You are not administrator!
+        </mm:hasrank>
+        Cloud: <mm:cloudinfo type="name" />
+      </mm:cloud>
+    </p>
+    <p>
+      Do a shift-reload on this page. Again a login-box must popup
+      (because logout was done). Try also what happens if you press
+      'cancel' of try a wrong password. Results must be sensible.
+    </p>
+    <p>
+      This page does not work in MMBase 1.5 (will cause a loop).
+    </p>
+    <hr />
+    <mm:link page="test_cloud1">
+      <a href="${_}">Next</a>
+    </mm:link>
+    <br />
+  </mm:content>
+</div>

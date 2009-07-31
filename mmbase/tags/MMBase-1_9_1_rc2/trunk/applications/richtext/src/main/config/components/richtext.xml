@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="richtext"
+    defaultblock="rich"
+    version="1"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <title xml:lang="nl">Richtext</title>
+  <title xml:lang="en">Richtext</title>
+
+  <dependency component="resources" version="1" />
+
+  <block name="rich"
+         classification="mynews"
+         >
+    <description xml:lang="en">Simply shows one field of type mmxf</description>
+    <head jsp="/mmbase/style/css/mmxf.css" />
+    <body jsp="rich.jspx" />
+  </block>
+
+  <block name="edit"
+         classification="edit.mynews"
+         >
+    <description xml:lang="en">Most simple instance of a rich editor</description>
+    <head jsp="/mmbase/kupu/mmbase/head.jspx" />
+    <body jsp="/mmbase/kupu/mmbase/body.jspx">
+      <param name="objectnumber" />
+    </body>
+  </block>
+
+  <block name="book"
+         classification="mynews"
+         >
+    <description xml:lang="en">Shows a tree of 'segment' objects</description>
+    <head jsp="/mmbase/style/css/mmxf.css" />
+    <body jsp="/richtext/book.jspx" />
+  </block>
+
+
+  <block name="book-edit"
+         classification="edit.mynews"
+         >
+    <description xml:lang="en">Edits a tree of 'segment' objects</description>
+    <head jsp="/mmbase/kupu/mmbase/head.jsp" />
+    <body jsp="/mmbase/kupu/mmbase/?tools=tree">
+      <param name="objectnumber" />
+    </body>
+  </block>
+
+
+
+</component>

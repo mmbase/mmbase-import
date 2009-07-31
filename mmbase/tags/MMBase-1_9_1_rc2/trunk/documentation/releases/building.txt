@@ -1,0 +1,85 @@
+===================================================================
+                     MMBase 1.9.0 - Building
+===================================================================  
+  
+This is the source distribution of the MMBase project. It includes the
+following contents:
+
+building.txt                This file
+installation.txt            Instructions for installing MMBase
+readme.txt                  General info about the MMBase distro
+release-notes.txt           Releasenotes for this distro (contains
+                            changes/bugfixes/know issues)
+upgrade.txt                 Instructions for upgrading existing MMBase
+                            installations
+build.properties            Build properties for ant, you may
+                            add your own properties
+build.properties.default    Default build properties for ant
+                            (locations of external libs, etc)
+build.xml                   Ant build for, see top of this file for
+                            more information
+config/                     MMBase config dir
+  accounts.properties       File with accounts/passwords (deprecated)
+  applications/             Applications that can be installed
+  builders/                 Builder config files
+    core/                   Core builder files
+    applications/           Application builder files, contains
+                            builders of default installed
+                            applications 
+  caches.xml                Configuration file for cache configuration
+  databases/                Databaseconfig for databases that can be
+                            used with MMBase
+  dtd/                      dtds which have no place elsewhere :)
+                            Other dtds are placed inside one of the
+                            jars
+  log/                      Logging configuration
+  magic.xml                 File with information about mimetypes
+  modules/                  All modules that can be used, including
+                            core modules and optional modules. Not all
+                            modules are activated by default  
+  security/                 Configuration for the security
+  utils/                    All config related to org.mmbase.util-classes 
+  xslt/                     Some xslt's for displaying config files in
+                            adminpages
+docs/                       
+  api/                      Apidocs for MMBase-sources
+html/                       Html-directory
+  mmbase/                   All mmbase-related templates                 
+    admin/                  Admin pages
+    edit/                   
+      basic/                Basic jsp-editors
+      mmeditors/            Jsp-editors based on old (and deprecated)
+                            scan editors
+      my_editors/           Alternative my_editors
+      wizards/              Editwizards
+    index.jsp               
+    mpl-1.0.jsp             License
+    style                 
+    xmlimporter             Xmlimporter tool pages
+  mmdocs/                   Documentation for different groups of
+                            users (templaters/administrators/etc) 
+  mmexamples/               Examples directory
+src/                        Src-dir
+  org/
+    mmbase/
+      LICENSE               MPL-1.0 license
+      ..                    Rest of the source dirs
+tests/                      Automated testcases
+
+In order build MMBase into your own webapplication, you must do the following:
+
+1. Download and install a Java Development Kit (j2sdk-1.5.x or newer)
+
+2. Download and install the Ant Binary Distribution (Ant 1.5 is required)
+
+3. Choose one of the Ant-targets, eg bindist which will build a
+   complete binary distribution, and start ant with this target ('ant
+   bindist'). See 'ant -projecthelp' for more information about the
+   different targets.
+
+4. Ant will now download all needed packages, unpacks them and will
+   start building mmbase. All the output from the build proces
+   (downloaded packages, compiled classes, jars, etc) can be found in
+   <mmbase-src/build>. 
+
+5. Now you can install MMBase using the installation.txt

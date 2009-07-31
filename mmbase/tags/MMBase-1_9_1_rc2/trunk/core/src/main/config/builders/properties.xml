@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    extends="object"
+    name="properties"
+    maintainer="mmbase.org"
+    version="0"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+
+  <!--
+      This is the 'properties' builder MMBase used to have.
+      You can set it active again.
+      See also javadoc in org.mmbase.module.builders.Properties
+      MMB-1656
+  -->
+  <status>inactive</status>
+
+  <class>Properties</class>
+  <searchage>-1</searchage>
+  <names>
+    <singular xml:lang="en">Property</singular>
+    <singular xml:lang="nl">Eigenschap</singular>
+
+    <plural xml:lang="en">Properties</plural>
+    <plural xml:lang="nl">Eigenschappen</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">
+      Flexible properties to be added to any object. The implementation depends on the application
+      or template in which a property can be used.
+    </description>
+    <description xml:lang="nl">
+      Flexibele eigenschappen of voorkeuren die aan een node kunnen worden toegekend. De implementatie 
+      ervan is afhankelijk van de applicatie of de template waarin een voorkeur kan worden gebruikt.
+    </description>
+  </descriptions>
+
+  <fieldlist>
+
+    <field name="parent">
+      <descriptions>
+        <description xml:lang="en">Node to which the property was added</description>
+        <description xml:lang="nl">Node waaraan de eigenschap of voorkeur is toegekend</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Parent</guiname>
+        <guiname xml:lang="nl">Ouder</guiname>
+      </gui>
+      <editor><positions><list>1</list></positions></editor>
+      <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+      </datatype>
+    </field>
+
+    <field name="key">
+      <descriptions>
+        <description xml:lang="en">Key, identifier of a property</description>
+        <description xml:lang="nl">Sleutel, identificatiewaarde waarmee de eigenschap of voorkeur kan worden herkend</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Key</guiname>
+        <guiname xml:lang="nl">Sleutel</guiname>
+      </gui>
+      <editor><positions><list>2</list></positions></editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <minLength value="1" />
+        <maxLength value="255" />
+      </datatype>
+    </field>
+    <field name="ptype">
+      <!-- I have no idea what a ptype is
+           Probably the 'type' of the value. But what the possible values can be is still unclear.
+           I'd suggest that the values could be datatypes, but that certainly is not what it used to mean a long time ago.
+      -->
+      <gui>
+        <guiname xml:lang="en">Ptype</guiname>
+        <guiname xml:lang="nl">P-type</guiname>
+      </gui>
+      <editor><positions><input>-1</input><list>-1</list><search>-1</search></positions></editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="16" />
+      </datatype>
+    </field>
+
+    <field name="value">
+      <descriptions>
+        <description xml:lang="en">Value of the property</description>
+        <description xml:lang="nl">Waarde van de eigenschap of voorkeur</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Value</guiname>
+        <guiname xml:lang="nl">Waarde</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+  </fieldlist>
+
+</builder>

@@ -1,0 +1,15 @@
+<jsp:root
+    version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:context>
+    <mm:import id="__javascript" from="request" externid="org.mmbase.jquery" />
+    <mm:notpresent referid="__javascript">
+      <mm:link page="/mmbase/jquery/jquery-1.3.2.min.js">
+        <script src="${_}" type="text/javascript"><!-- help msie --></script>
+      </mm:link>
+      <mm:write request="org.mmbase.jquery" value="yes" />
+    </mm:notpresent>
+  </mm:context>
+</jsp:root>

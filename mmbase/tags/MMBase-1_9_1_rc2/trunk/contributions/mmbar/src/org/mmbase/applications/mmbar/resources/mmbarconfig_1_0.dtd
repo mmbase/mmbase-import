@@ -1,0 +1,65 @@
+<!--
+    mmbarconfig.dtd
+-->
+
+<!ELEMENT mmbarconfig (basetesturl?,machinespecs?,readtests?,writetests?,mixedtests?,endurancetests?)>
+
+<!ELEMENT machinespecs (#PCDATA)>
+<!ATTLIST machinespecs os CDATA #IMPLIED>
+<!ATTLIST machinespecs cpu CDATA #IMPLIED>
+<!ATTLIST machinespecs server CDATA #IMPLIED>
+<!ATTLIST machinespecs database CDATA #IMPLIED>
+<!ATTLIST machinespecs driver CDATA #IMPLIED>
+<!ATTLIST machinespecs java CDATA #IMPLIED>
+
+<!ELEMENT writetests (writetest*)>
+
+<!ELEMENT writetest (description*,property*,benchmark*)>
+<!ATTLIST writetest name CDATA #IMPLIED>
+<!ATTLIST writetest action CDATA #IMPLIED>
+<!ATTLIST writetest class CDATA #IMPLIED>
+<!ATTLIST writetest count CDATA #IMPLIED>
+<!ATTLIST writetest threads CDATA #IMPLIED>
+
+
+<!ELEMENT readtests (readtest*)>
+
+<!ELEMENT readtest (description*,property*,benchmark*)>
+<!ATTLIST readtest name CDATA #IMPLIED>
+<!ATTLIST readtest action CDATA #IMPLIED>
+<!ATTLIST readtest class CDATA #IMPLIED>
+<!ATTLIST readtest count CDATA #IMPLIED>
+<!ATTLIST readtest threads CDATA #IMPLIED>
+
+
+<!ELEMENT mixedtests (mixedtest*)>
+<!ELEMENT mixedtest (description*,property,benchmark*)>
+<!ATTLIST mixedtest name CDATA #IMPLIED>
+<!ATTLIST mixedtest action CDATA #IMPLIED>
+<!ATTLIST mixedtest class CDATA #IMPLIED>
+<!ATTLIST mixedtest count CDATA #IMPLIED>
+<!ATTLIST mixedtest threads CDATA #IMPLIED>
+
+
+<!ELEMENT endurancetests (endurancetest*)>
+<!ELEMENT endurancetest (description*,propery*,benchmark*)>
+<!ATTLIST endurancetest name CDATA #IMPLIED>
+<!ATTLIST endurancetest action CDATA #IMPLIED>
+<!ATTLIST endurancetest class CDATA #IMPLIED>
+<!ATTLIST endurancetest count CDATA #IMPLIED>
+<!ATTLIST endurancetest threads CDATA #IMPLIED>
+
+<!ELEMENT description (#PCDATA)>
+
+<!ELEMENT property (#PCDATA)>
+<!ATTLIST property name CDATA #IMPLIED>
+<!ATTLIST property value CDATA #IMPLIED>
+
+<!ELEMENT benchmark (#PCDATA)>
+<!ATTLIST benchmark result CDATA #IMPLIED>
+<!ATTLIST benchmark os CDATA #IMPLIED>
+<!ATTLIST benchmark cpu CDATA #IMPLIED>
+<!ATTLIST benchmark server CDATA #IMPLIED>
+<!ATTLIST benchmark database CDATA #IMPLIED>
+<!ATTLIST benchmark driver CDATA #IMPLIED>
+<!ATTLIST benchmark java CDATA #IMPLIED>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="test"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+  <class name="org.mmbase.framework.BasicComponent" />
+  <description xml:lang="nl">Test-component</description>
+  <description xml:lang="en">Test component</description>
+</component>
