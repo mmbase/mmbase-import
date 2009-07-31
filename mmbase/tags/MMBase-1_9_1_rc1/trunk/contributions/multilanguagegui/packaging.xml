@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging PUBLIC "-//MMBase/DTD packaging config 1.0//EN" "http://www.mmbase.org/dtd/packaging_1_0.dtd">
+<packaging basedir=".">
+	<package name="jar" type="java/jar" file="packaging/Multilanguagegui_jar.xml" />
+	<package name="config" type="config/basic" file="packaging/Multilanguagegui_config_basic.xml" />
+	<package name="html" type="display/html" file="packaging/Multilanguagegui_html.xml" />
+	<package name="functions" type="function/set" file="packaging/Multilanguagegui_function_set.xml" />
+	<bundle name="basic" type="bundle/basic" file="packaging/Multilanguagegui_bundle_basic.xml" />
+</packaging>

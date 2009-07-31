@@ -1,0 +1,23 @@
+<pools exportsource="mmbase://wizard.xs4all.nl:8242/xsbase/xsa" timestamp="20000602143030">
+
+	<node number="30" owner="system" alias="MyYahoo.start">
+		<name>MyYahoo</name>
+		<description>Our own MyYahoo</description>
+	</node>
+
+	<node number="31" owner="system">
+		<name>Music</name>
+		<description>All the best music links</description>
+	</node>
+
+	<node number="32" owner="system">
+		<name>Movies</name>
+		<description>Some nice movie links</description>
+	</node>
+
+	<node number="33" owner="system">
+		<name>Partners</name>
+		<description>Founding mmbase opensource partners</description>
+	</node>
+</pools>
+

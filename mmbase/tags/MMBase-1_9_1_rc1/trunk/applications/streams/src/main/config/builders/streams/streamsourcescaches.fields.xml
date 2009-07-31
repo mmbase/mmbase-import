@@ -1,0 +1,72 @@
+<fieldlist
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    >
+
+  <field name="state" state="system">
+    <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <default value="REQUEST" />
+      <enumeration enforce="onchange">
+        <entry
+            javaconstants="org.mmbase.applications.media.State"
+            basename="org.mmbase.applications.media.builders.resources.states" />
+      </enumeration>
+    </datatype>
+  </field>
+
+  <field name="key">
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  </field>
+
+
+  <field name="id">
+    <descriptions>
+      <description xml:lang="en">Reference to the original stream</description>
+      <description xml:lang="nl">Referentie naar de originel stream</description>
+    </descriptions>
+    <gui>
+      <guiname xml:lang="en">ID</guiname>
+      <guiname xml:lang="nl">ID</guiname>
+      <guiname xml:lang="fr">ID</guiname>
+      <guiname xml:lang="eo">ID</guiname>
+      <guiname xml:lang="it">ID</guiname>
+    </gui>
+    <editor>
+      <positions><list>3</list></positions>
+    </editor>
+    <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <required value="true" enforce="never" />
+      <enumeration>
+        <query type="mediasources" xmlns="http://www.mmbase.org/xmlns/searchquery" />
+      </enumeration>
+    </datatype>
+  </field>
+
+  <field name="mimetype" state="system">
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  </field>
+
+
+  <field name="url" readonly="true">
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <getprocessor type="binary">
+        <class name="org.mmbase.datatypes.processors.BinaryFile$Getter" />
+      </getprocessor>
+      <deleteprocessor>
+        <class name="org.mmbase.datatypes.processors.BinaryFile$Delete" />
+      </deleteprocessor>
+    </datatype>
+  </field>
+
+  <!--
+  <field name="origin_trace" state="system">
+    <datatype base="origin-trace" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  </field>
+  -->
+
+  <xi:include href="mediaprovider.field.xml" />
+
+</fieldlist>

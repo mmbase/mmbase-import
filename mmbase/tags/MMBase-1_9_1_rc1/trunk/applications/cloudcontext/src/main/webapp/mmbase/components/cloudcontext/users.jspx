@@ -1,0 +1,153 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c c_cloudcontent b_users ${requestScope.className}"
+    id="${requestScope.componentId}">
+
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm:import id="nodetype">
+    <mm:function set="cloudcontext" name="authentication">${_.userProvider.userBuilder.tableName}</mm:function>
+  </mm:import>
+
+  <mm:import id="fields" externid="user_fields"><mm:write value="${mm:managerProperty(nodetype, 'security_editor_fields')}" write="true"><mm:isempty>username,defaultcontext,status,owner</mm:isempty></mm:write></mm:import>
+
+
+  <p class="action">
+    <mm:maycreate type="$nodetype">
+      <mm:link page="create_user">
+        <a href="${_}"><img src="${mm:link('/mmbase/style/images/create.png')}"  alt="+" title="create user"  /></a>
+      </mm:link>
+    </mm:maycreate>
+    <mm:maycreate type="$nodetype" inverse="true">
+      <fmt:message key="notallowedtocreateusers" />
+    </mm:maycreate>
+  </p>
+  <mm:form>
+    <table>
+      <caption><mm:nodeinfo nodetype="$nodetype" type="guitype" /></caption>
+      <mm:fieldlist nodetype="$nodetype" fields="$fields">
+        <tr>
+          <td><mm:fieldinfo type="guiname" /></td>
+          <td><mm:fieldinfo type="searchinput" /></td>
+        </tr>
+      </mm:fieldlist>
+    </table>
+    <tr><td colspan="2"><input type="submit" value="search" name="search" /></td></tr>
+
+  </mm:form>
+
+  <mm:import externid="orderby">number</mm:import>
+  <mm:import externid="directions">DOWN</mm:import>
+  <mm:import externid="search" />
+  <table summary="Users">
+
+    <mm:listnodescontainer type="$nodetype">
+
+      <mm:import externid="offset">0</mm:import>
+      <mm:present referid="search">
+        <mm:fieldlist nodetype="$nodetype" fields="$fields">
+          <mm:fieldinfo type="usesearchinput" />
+        </mm:fieldlist>
+      </mm:present>
+
+
+      <mm:size id="totalsize" write="false" />
+
+      <mm:offset value="$offset" />
+      <mm:maxnumber value="10" />
+
+      <tr>
+        <th>
+          <mm:present referid="extrauserlink">
+            <mm:include  page="$extrauserlink" notfound="skip" />
+          </mm:present>
+        </th>
+        <mm:fieldlist nodetype="$nodetype"  fields="$fields">
+          <th>
+            <mm:link referids="search" >
+              <mm:param name="orderby"><mm:fieldinfo type="name" /></mm:param>
+              <mm:fieldinfo type="name">
+                <mm:compare referid2="orderby">
+                  <mm:write referid="directions">
+                    <mm:compare value="UP">
+                      <mm:param name="directions">DOWN</mm:param>
+                    </mm:compare>
+                    <mm:compare value="DOWN">
+                      <mm:param name="directions">UP</mm:param>
+                    </mm:compare>
+                  </mm:write>
+                </mm:compare>
+              </mm:fieldinfo>
+              <mm:fieldlist  nodetype="$nodetype" fields="$fields"><mm:fieldinfo type="reusesearchinput" /></mm:fieldlist>
+              <a title="order" href="${_}">
+                <mm:fieldinfo type="guiname" />
+              </a>
+            </mm:link>
+          </th>
+        </mm:fieldlist>
+        <th><fmt:message key="rank" /></th>
+        <th>
+          <mm:link referids="search">
+            <mm:compare referid="orderby" value="number">
+              <mm:write referid="directions">
+                <mm:compare value="UP">
+                  <mm:param name="directions">DOWN</mm:param>
+                </mm:compare>
+                <mm:compare value="DOWN">
+                  <mm:param name="directions">UP</mm:param>
+                </mm:compare>
+              </mm:write>
+            </mm:compare>
+            <mm:param name="orderby">number</mm:param>
+            <a title="order" href="${_}">*</a>
+          </mm:link>
+        </th>
+      </tr>
+
+      <mm:sortorder field="$orderby" direction="$directions" />
+
+      <mm:listnodes id="user" varStatus="status">
+        <tr id="object${_node}" class="${status.index % 2 eq 0 ? 'even' : 'odd'}">
+          <td>
+            <mm:present referid="extrauserlink">
+              <mm:include referids="user" page="$extrauserlink" notfound="skip"/>
+            </mm:present>
+          </td>
+          <mm:fieldlist fields="$fields">
+            <td><mm:fieldinfo type="guivalue" /></td>
+          </mm:fieldlist>
+          <td>
+            <mm:function name="rank" />
+          </td>
+          <td class="commands">
+            <mm:maywrite>
+              <mm:link referids="user@node" page="user">
+                <a href="${_}">
+                  <fmt:message key="update" />
+                  <img src="${mm:link('/mmbase/style/images/edit.png')}"
+                       alt="edit" title="" />
+                </a>
+              </mm:link>
+            </mm:maywrite>
+            <mm:maydelete>
+              <mm:link referids="user@delete" page="users" process="true">
+                <a class="confirm post"
+                   href="${_}">
+                  <fmt:message key="delete" />
+                  <img src="${mm:link('/mmbase/style/images/delete.png')}"
+                       alt="X" title="" />
+                </a>
+              </mm:link>
+            </mm:maydelete>
+          </td>
+        </tr>
+      </mm:listnodes>
+
+      <jsp:directive.include file="pager.tr.jspx" />
+
+    </mm:listnodescontainer>
+  </table>
+</div>
+

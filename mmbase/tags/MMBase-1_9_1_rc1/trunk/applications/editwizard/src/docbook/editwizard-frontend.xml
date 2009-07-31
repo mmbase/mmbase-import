@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
+<article>
+	<articleinfo>
+		<title>MMBase Editwizard Front end</title>
+		<date>2004-01-05</date>
+		<edition>$Id$</edition>
+		<authorgroup>
+			<author>
+				<firstname>Nico</firstname>
+				<surname>Klasens</surname>
+				<affiliation>
+					<orgname>Finalist IT Group</orgname>
+				</affiliation>
+			</author>
+		</authorgroup>
+		<legalnotice>
+			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+		</legalnotice>
+		<releaseinfo></releaseinfo>
+	</articleinfo>
+	<section id="introduction">
+		<title>Introduction</title>
+		<para>The MMBase editwizard extension provides an easy way to create customizable wizards for edit environments. In most cases the default editwizard look does not match the look of the rest of the edit environment. This document describes how the look and feel of the editwizard front end can be changed to match with the rest.</para>
+	</section>
+	<section id="assumptions">
+		<title>Assumptions</title>
+		<para>The front end relies heavily on xsl, css and javascript. Therefore, this document assumes you know something about these techniques. A good reference for these techniques is http://www.w3schools.com and the official w3c site (http://www.w3c.org)</para>
+	</section>
+	<section id="inner-workings">
+		<title>Inner workings</title>
+		<para>We will elaborate a little on the inner workings of the editwizard extension before we dive into the details of the front end. The editwizard extension can be divided into 2 layers. The first layer is the server side engine which consists of java and jsp files. The engine communicates with MMBase and generates the data for the second layer. The second layer is the front end, which runs on the server and in the client browser.</para>
+		<para>The engine communicates with MMBase through the dove interface. The dove interface adds a protocol for communication with, and passing commands to, the MMBase system using an XML format. The output from the engine to the front end is an XML stream with the data to build the html pages. The engine is not only a pass-through for data. It also keeps track of stacks with opened wizards for every user and parses the wizard definition schema files.</para>
+	</section>
+	<section id="locations">
+		<title>Files and directory locations</title>
+		<para>The editwizard extension assumes a directory structure where files can be found. Two root locations are used to find the files. The most important one is the editwizard home directory. The editwizard home is the directory that contains the editwizard data library, css-stylesheets, javascript files and jsp pages. In the standard distribution, this location is /mmapps/editwizard/. The other root location is the referrer page directory. You call the editwizard scripts (list.jsp and wizard.jsp) from a page located in another directory than the editwizard home directory. If you do, the wizards keep a reference to the calling page, the 'referrer'. When a xml or xsl file is requested, the wizard first checks whether the file can be found in the directory of the referrer page. You can also use this location to have you own javascript files or css-stylesheets.</para>
+		<para>The assumed sub locations of the editwizard home directory are:</para>
+		<itemizedlist>
+			<listitem>
+				<para>/data/</para>
+				<para>Searched for wizard definition schema files when they are not found in the referrer page directory.</para>
+			</listitem>
+			<listitem>
+				<para>/data/i18n/</para>
+				<para>Translated prompts in the wizards. These will override the English version in the /data/xsl/ directory</para>
+			</listitem>
+			<listitem>
+				<para>/data/xsl/</para>
+				<para>Xsl transformation files used to generate the html pages. These are used when the xsl files are not found in the referrer page directory.</para>
+			</listitem>
+			<listitem>
+				<para>/javascript/</para>
+				<para>Javascript files which are used for many things on the client side.</para>
+			</listitem>
+			<listitem>
+				<para>/jsp/</para>
+				<para>scripts to enter the editwizard extension. Frequently used files are list.jsp and wizard.jsp.</para>
+			</listitem>
+			<listitem>
+				<para>/media/</para>
+				<para>Images and other media files used in the front end.</para>
+			</listitem>
+			<listitem>
+				<para>/style/color/</para>
+				<para>css-stylesheets which define the colors of the wizards.</para>
+			</listitem>
+			<listitem>
+				<para>/style/layout/</para>
+				<para>css-stylesheets which define the layout of the wizards.</para>
+			</listitem>
+		</itemizedlist>
+	</section>
+	<section id="types-of-pages">
+		<title>Types of pages</title>
+		<para>The editwizard generates five types of pages. Three of them are used in normal operation. These are the list, wizard and searchlist pages. Most of the times, you go from a list page to a wizard page and then you add related objects with the searchlist page to the wizard. The ones left over are the debug and error (exception) pages. The debug page shows editwizard engine internal data which could be handy to use when changing the front end xsl’s. Hopefully, you will never see the error page. If you look in some directories then you will see files with the same names as the types of the pages.</para>
+	</section>
+	<section id="look">
+		<title>Changing the look</title>
+		<para>You probably already guessed what to do when you want to change the colors and images of the front-end. The colors are defined in the css-stylesheets in the /style/colors/. This is the only place where colors are defined. If you want to know where the class definitions are used then you should consult the comments in /style/layout/wizard.css. The images are in the /media/ directory so that is not hard to change too. If you want to change the editwizard hardcoded prompts (eg the save and cancel link) then you should change the /data/xsl/prompts.xsl (and the i18n ones) to accomplish this.</para>
+		<para>The above are the simple things to change your wizards. You can customize much more. One of the powerful things in the editwizard extension is that you can use the referrer page directory to override the default xsl’s. One big pro is that you can easily change to a newer version of the editwizard extension without re-applying your own changes. The xsl’s have empty templates (eg. extrameta, extrastyle, extrajavascript) where you can add extra functionality for your wizards and variables to turn things on and off. One of these variables is the SEARCH_LIST_TYPE which switches the searchlist from a popup window to an iframe.</para>
+	</section>
+	<section id="example1">
+		<title>Example 1: logo in the header</title>
+		<para>This example shows how you can add a logo to the header of the wizards. The first thing you have to do is create a file base.xsl in your referrer directory. The new base.xsl will import the one from the editwizard home directory. The ew: prefix in the import points to the editwizard home directory. The new xsl overrides the headcontent template from the editwizard base.xsl to add an extra column for the logo.</para>
+		
+		<programlisting format="linespecific">
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet 
+  version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+  xmlns:date="org.mmbase.bridge.util.xml.DateFormat"
+  extension-element-prefixes="node date">
+
+   <!-- Import original stylesheet -->
+   <xsl:import href="ew:xsl/base.xsl"/>
+
+  <xsl:template name="headcontent" >
+    <table class="head">
+      <tr class="headtitle">
+        <td rowspan="2"><img src="{$referrerdir}my_logo.jpg"/></td>
+        <xsl:call-template name="title" />
+      </tr>
+      <tr class="headsubtitle">
+        <xsl:call-template name="subtitle" />
+      </tr>
+    </table>
+  </xsl:template>
+
+</xsl:stylesheet>
+		]]>
+		</programlisting>
+	</section>
+	<section id="example2">
+		<title>Example 2: new fieldtype</title>
+		<para>Adding a logo is not so hard to do, but what if you have your own fieldtype (wizard definition schema attribute ftype)? Maybe, you want your fieldtype represented as a checkbox, radio button or dropdown box. This involves graphical representation, client-side initialisation and validation.</para>
+		<para>The first thing we have to do for this is overriding the ftype-unknown template of the wizard.xsl (See the first example). This template calls templates for unknown ftypes to generate the graphical representation.</para>
+		<programlisting format="linespecific">
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8" ?>
+<xsl:stylesheet 
+  version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+  xmlns:date="org.mmbase.bridge.util.xml.DateFormat"
+  extension-element-prefixes="node date">
+
+   <!-- Import original stylesheet -->
+   <xsl:import href="ew:xsl/wizard.xsl"/>
+
+  <xsl:template name="ftype-unknown">
+    <xsl:choose>
+      <xsl:when test="@ftype=&apos;my_ftype&apos;">
+      	<xsl:call-template name="ftype-my-ftype"/>
+      </xsl:when>
+      <xsl:otherwise>
+      	<xsl:call-template name="ftype-other"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template name="ftype-my-ftype">
+    <input type="checkbox" name="{@fieldname}" value="{value}" id="{@fieldname}">
+      <xsl:apply-templates select="@*" />
+    </input>
+  </xsl:template>
+
+  <xsl:template name="extrajavascript">
+    <script language="javascript" src="{$referrerdir}override.js"></script>
+  </xsl:template>
+
+</xsl:stylesheet>
+		]]>
+		</programlisting>
+		<para>Now the editwizard will generate a checkbox for all fields with ftyp=”my_ftype”. We will use an &lt;referrer page directory&gt;/override.js to initialise and validate the checkbox. The validator will attach itself to the input fields when it is required to validate it. The validation is now only at the client-side. The editwizard will do a server-side validation for the existing fieldtypes too.</para>
+		<programlisting format="linespecific">
+		<![CDATA[
+function initializeElement(elem, dttype, ftype) {
+    if (ftype == "my_ftype") {
+        elem.checked = true;
+    }
+}
+
+//validator methods
+function requiresUnknown(el, form) {
+    return (el.getAttribute("ftype") == "my_ftype");
+}
+
+function validateUnknown(el, form, v) {
+    if (el.getAttribute("ftype") == "my_ftype" && el.checked) {
+        return "Checkbox is still checked";
+    }
+    return "";
+}
+		]]>
+		</programlisting>
+	</section>
+</article>

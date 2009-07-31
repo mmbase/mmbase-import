@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="streams"
+    version="1"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <title xml:lang="nl">Streams</title>
+  <title xml:lang="en">Streams</title>
+
+  <dependency component="media" version="1" />
+
+  <action name="cancel_jobs" rank="administrator">
+    <description xml:lang="en">Whether you may cancel jobs</description>
+  </action>
+
+  <action name="retrigger_jobs" rank="administrator">
+    <description xml:lang="en">Whether you may cancel jobs</description>
+  </action>
+
+  <block name="recent"
+         classification="mmbase.examples:90 mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Recent </title>
+    <title xml:lang="nl">Recente resources</title>
+    <description xml:lang="en">Displays recent streams in MMBase</description>
+    <description xml:lang="nl">Toont recent in MMBase ingevoerde streams</description>
+    <body jsp="recent.jspx">
+      <param name="nodetypes" />
+    </body>
+  </block>
+
+  <block name="admin"
+         classification="mmbase.examples:90 mmbase.streams"
+         mimetype="text/html">
+    <title xml:lang="en">Streams admin</title>
+    <title xml:lang="nl">Streams admin</title>
+    <description xml:lang="en">Displays streams configuration</description>
+    <body jsp="admin.jspx">
+      <param name="trigger" />
+      <param name="interrupt" />
+      <param name="page"  type="java.lang.Integer" />
+    </body>
+  </block>
+
+  <block name="myfragments"
+         classification="mmbase.examples:90 mmbase.streams"
+         mimetype="text/html">
+    <body jsp="myfragments.jspx">
+      <param name="trigger" />
+      <param name="interrupt" />
+      <param name="page"  type="java.lang.Integer" />
+    </body>
+  </block>
+
+  <block name="myjobs"
+         classification="mmbase.examples:90 mmbase.streams"
+         mimetype="text/html">
+    <body jsp="myjobs.jspx" />
+  </block>
+  <block name="alljobs"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <body jsp="alljobs.jspx">
+      <param name="cancel" />
+    </body>
+  </block>
+
+  <block name="upload"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <xi:include href="http://www.mmbase.org/components/widgets.head.xml" />
+    <body jsp="upload.jspx" />
+  </block>
+
+  <block name="test_upload"
+         classification="mmbase.streams"
+         mimetype="text/html">
+    <body jsp="test_upload.jspx" />
+  </block>
+
+</component>

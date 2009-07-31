@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<article id="backenddevelopers-rmmci-index">
+  <articleinfo>
+    <title>Remote MMBase Cloud Interface</title>
+
+    <date>2001</date>
+
+    <edition>$Id$</edition>
+
+    <authorgroup>
+      <author>
+        <firstname>Kees</firstname>
+
+        <surname>Jongenburger</surname>
+
+        <affiliation>
+          <orgname>Publieke Omroep</orgname>
+        </affiliation>
+      </author>
+    </authorgroup>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+
+  <section>
+    <title>Remote MMBase Cloud Interface</title>
+
+    <section>
+      <title>What is RMMCI?</title>
+
+      <para>To be able to understand RMMCI some basic knowledge about java,
+      MMBase and the MMBase Cloud Interface is required. Lets try to do this
+      in a few line. MMBase is a object / relation object management system.
+      Object instances in MMBase are known as nodes. They Are much like other
+      (java)objects they have data members and behavior. Each nodes has a
+      type. The type or as mmbase calls it node manager defines what behavior
+      and data members a node may have. A node manager is a combination of a
+      java class and an xml configuration. In java term the node manager with
+      nodes is much like a container managed entity bean (but better). A
+      strong aspect of MMBase is the way it handle relations. The difference
+      between a java object and an MMBase node is that the nodes are
+      persistent. The combination of the object and node managers is called the
+      cloud.</para>
+
+      <para>The MMBase cloud is an abstract definition the of world that
+      MMBase knows. An MMBase cloud can run distributed over multiple
+      machines.</para>
+
+      <para>The MMBase Cloud Interface (MMCI) is a java interface that
+      provides access to the MMBase cloud. The interface is defined in the
+      java package org.mmbase.bridge. There are currently 2 implementations of
+      the MMCI. on known as the local implementation and one known as the
+      remote implementation. The local implementation uses the mmbase core
+      packages to implement the bridge interface. The remote implementation
+      (what this document is about) is a wrapper around the local
+      implementation that makes it possible to access a cloud instance from a
+      &#34;remote&#34; location.</para>
+
+      <para>Since an MMBase cloud can run distributed over multiple
+      machines/instances why use RMMCI? Well running multiple MMBase instances
+      can be to much for what you want. If you just want to connect to a cloud
+      ant change some nodes of install new node types RMMCI is what you are
+      looking for. An other reasons for using RMMCI is that is also makes is
+      possible to connect to multiple MMBase clouds and send data
+      over(agents).</para>
+
+      <para>RMMCI stand for Remote MMBase Cloud Interface, RMMCI is a set of
+      java files that makes it possible to connect to an MMBase cloud using
+      the MMCI (MMBase Cloud Interface) without the need to start a own MMBase
+      Cloud instance.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>RMMCI examples</title>
+
+    <section>
+      <title>Server setup</title>
+
+      <para>edit WEB-INF/config/rmmci.xml and change the status to active.
+      restart MMBase</para>
+    </section>
+
+    <section>
+      <title>Using BeanShell</title>
+
+			<para>RMMCI allows scripting. get mmbase-rmmci.jar from /WEB-INF/lib . Download <ulink url="http://www.beanshell.org/">http://www.beanshell.org/</ulink>
+      (in the example bsh-1.2b7.jar was downloaded) copy both files to a
+      directory and create a files called bshdemo.bsh with the content of this
+      listing. If now you make the program executable (chmod 755 bshdemo.bsh)
+      and run the program you will have created and run your first RMMCI
+      BeanShell script.</para>
+
+      <programlisting>#!/bin/sh
+#! The following hack allows java to reside anywhere in the PATH.
+//bin/sh -c &#34;exec java -classpath bsh-1.2b7.jar bsh.Interpreter $0 $*&#34;; exit
+addClassPath(&#34;mmbase-rmmci.jar&#34;);
+import org.mmbase.bridge.*;
+
+cloud = ContextProvider.getCloudContext(&#34;rmi://127.0.0.1:1111/remotecontext&#34;).getCloud(&#34;mmbase&#34;);
+list = cloud.getNodeManager(&#34;mmservers&#34;).getList(null,null,null);
+for (x =0 ; x &#60; list.size() ; x++){
+  print(list.getNode(x).getStringValue(&#34;host&#34;));
+}</programlisting>
+	</section>
+	<section>
+      <title>BeanShell, a more realistic example</title>
+	 <para>The previous example of course is not very usefull. Here we wil show how to use rmmci so that mmbase can recieve mail on a unix box. with unix you can forward your mail to a program this is usualy done with a .forward file. here is content of my example .forward file
+	 </para>
+	 <programlisting>|/home/keesj/mmbasemail.sh</programlisting>
+	 <para>and here the content of mmbasemail.sh</para>
+	 <programlisting>
+#!/bin/sh
+//bin/sh -c "exec /usr/local/java/bin/java -classpath /home/keesj/bsh-2.0b1.jar bsh.Interpreter $0 $*"; exit
+addClassPath("/home/keesj/mmbase-rmmci.jar");
+
+import org.mmbase.bridge.*;
+
+HashMap user = new HashMap();
+user.put("username","admin");
+user.put("password","admin2k");
+
+Cloud cloud = ContextProvider.getCloudContext("rmi://127.0.0.1:1111/remotecontext").getCloud("mmbase","name/password",user);
+
+NodeManager nodeManager = cloud.getNodeManager("news");
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringBuffer sb = new StringBuffer();
+String line = null;
+
+while(  (line = br.readLine()) != null){
+		  	sb.append(line);
+		  	sb.append("\n");
+}
+
+Node node = nodeManager.createNode();
+node.setStringValue("body",sb.toString());
+node.commit();
+	 </programlisting>
+	 </section>
+  </section>
+
+    <section>
+      <title>RMI over HTTP</title>
+
+      <para>If your application has to be accessed via the internet your
+      probably need to use the HTTP protocol for communication between the
+      client and server. While again this is not very good for performance it
+      is possible. MMBase provides a servlet that acts a a HTTP to rmi gateway
+      servlet org.mmbase.servlet.rmi.RMIHandlerServlet (it is a drop in
+      replacement for the java-rmi.cgi provided with the java jdk) . make the
+      servlet available under the /cgi-bin/java-rmi.cgi servlet mapping</para>
+
+      <programlisting><![CDATA[
+<servlet>
+  <servlet-name>javarmi</servlet-name>
+  <description>java http rmi gateway</description>
+  <servlet-class>org.mmbase.servlet.rmi.RMIHandlerServlet</servlet-class>
+  <load-on-startup>1</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+  <servlet-name>javarmi</servlet-name>
+  <url-pattern>/cgi-bin/java-rmi.cgi</url-pattern>
+</servlet-mapping> ]]></programlisting>
+
+      <para>In your client code to force RMI over HTTP add the following lines</para>
+
+      <programlisting>java.rmi.server.RMISocketFactory.setSocketFactory(new
+      sun.rmi.transport.proxy.RMIHttpToCGISocketFactory());</programlisting>
+
+		<para>now if you want to access the cloud from a remote location still access the cloud via a rmi url.
+	      <programlisting>ContextProvider.getCloudContext(&#34;rmi://myhost:1111/remotecontet&#34;);</programlisting></para>
+    </section>
+  <section>
+    <title>RMMCI implementation details</title>
+
+    <section>
+      <title>RMMCI uses the MMCI Local implementation</title>
+
+      <para>This document describes the technical architecture behind the
+      Remote MMBase Cloud Interface and how it&#39;s build process works</para>
+
+      <para>Developers of the MMBase community have created an interface
+      called MMBase Cloud Interface (MMCI). This interface is a Java Interface
+      (as in interface classes). Using the MMCI it is possible to access most
+      of the features of MMBase. The interface is there to provide abstraction
+      between how MMBase is implemented (database/Java code) and the outside
+      world. Using the interface it is possible to access different parts of
+      MMBase, the cloud, transactions, node managers, nodes, modules etc...
+      Until now there was only one implementation of the MMCI known as the
+      &#34;LocalContext&#34; implementation. This Local MMCI implementation
+      uses core MMBase classes to implement the MMCI and is widely used. An
+      example of functionality that is created on top of the MMCI is the JSP
+      tag library. RMMCI uses the decorator pattern to intercept every call to
+      the MMCI, sends the call over a network(using RMI) and at server side
+      RMMCI calls the &#34;LocalContext&#34; implementation.</para>
+    </section>
+
+    <section>
+      <title>The current MMBase MMCI architecture</title>
+
+      <para>The MMCI interface provides access to the MMBase cloud. The MMCI
+      interface is defined in the package org.mmbase.bridge. Examples of such
+      definitions are the <ulink
+      url="http://www.mmbase.org/development/api/1.7/org/mmbase/bridge/Cloud.html">org.mmbase.bridge.Cloud</ulink>
+      and the <ulink
+      url="http://www.mmbase.org/development/api/1.7/org/mmbase/bridge/Node.html">org.mmbase.bridge.Node</ulink>
+      interface. Depending on your configuration a security model is chosen.
+      the MMCI implementation (LocalContext) interfaces with the core MMBase
+      classes.</para>
+
+      <programlisting>
+        ---------------------
+        |MMCI interface     |
+        ---------------------
+                | uses
+        ---------------------
+        |MMCI implementation|
+        ---------------------
+                | uses
+        ---------------------
+        |  security         |
+        ---------------------
+                | uses
+        ---------------------
+        |MMbase cloud       |
+        ---------------------
+                | uses
+        ---------------------
+        |database support   |
+        ---------------------
+            |          |
+         database    file system
+      </programlisting>
+
+      <para>RMMCI adds a network layer to the MMCI by re-implementing the MMCI
+      and using the current MMCI implementation.</para>
+    </section>
+
+    <section>
+      <title>How the RMMCI code generation works</title>
+
+      <para>RMMCI uses Remote Method Invocation(RMI). To use RMI it is
+      required to write an interface that extends java.rmi.Remote and every
+      method in the class should throw RemoteException. Since we have an
+      existing interface we decided to create a <emphasis>new</emphasis>
+      interface based on the current one but that extended the java.rmi.Remote
+      interface and throws RemoteExceptions. We also decided to generate the
+      <emphasis>new</emphasis> interface. The first step is to create a XML
+      description of the current interface. this is done in a class found in
+      org.mmbase.bridge.remote.generator.MMCI that class uses ClassToXML also
+      found in org.mmbase.bridge.remote.generator.ClassToXML. the resulting
+      XML file <filename>MMCI.xml</filename> look like this:</para>
+
+      <programlisting>
+&#60;mmci&#62;
+ &#60;class shortname=&#34;Cloud&#34; name=&#34;org.mmbase.bridge.Cloud&#34; implements=&#34;&#34;&#62;
+        &#60;method name=&#34;getName&#34;&#62;
+            &#60;input/&#62;
+            &#60;output&#62;
+                &#60;sunclass name=&#34;java.lang.String&#34;/&#62;
+            &#60;/output&#62;
+        &#60;/method&#62;
+        &#60;method name=&#34;getDescription&#34;&#62;
+            &#60;input/&#62;
+            &#60;output&#62;
+                &#60;sunclass name=&#34;java.lang.String&#34;/&#62;
+            &#60;/output&#62;
+        &#60;/method&#62;
+        &#60;method name=&#34;createTransaction&#34;&#62;
+            &#60;input&#62;
+                &#60;sunclass name=&#34;java.lang.String&#34;/&#62;
+                &#60;primitiveclass shortname=&#34;boolean&#34; name=&#34;boolean&#34; classname=&#34;java.lang.Boolean&#34;/&#62;
+            &#60;/input&#62;
+            &#60;output&#62;
+                &#60;classReference name=&#34;org.mmbase.bridge.Transaction&#34;/&#62;
+            &#60;/output&#62;
+        &#60;/method&#62;
+        ...........
+    &#60;/class&#62;
+    &#60;class shortname=&#34;CloudContext&#34; name=&#34;org.mmbase.bridge.CloudContext&#34; implements=&#34;&#34;&#62;
+    ..........
+&#60;/mmci&#62;
+      </programlisting>
+
+      <para>based on this XML file
+      org.mmbase.bridge.remote.generator.RemoteGenerator creates the
+      interface. for example org.mmbase.bridge.Cloud becomes
+      org.mmbase.bridge.remote.RemoteCloud</para>
+
+      <programlisting>
+public interface RemoteCloud extends  Remote {
+   public java.lang.String getName() throws RemoteException;
+   public java.lang.String getDescription() throws RemoteException;
+......
+      </programlisting>
+
+      <para>for every MMCI interface class RemoteGenerator also create 2 more
+      classes. One implementation of the RemoteCloud
+      (org.mmbase.bridge.remote.rmi.RemoteCloud_Rmi</para>
+
+      <programlisting>
+public class RemoteCloud_Rmi extends  UnicastRemoteObject implements RemoteCloud  {
+  Cloud originalObject;
+      public java.lang.String getName() throws RemoteException{
+         return originalObject.getName();
+   }
+      </programlisting>
+
+      <para>and</para>
+
+      <programlisting>
+public class RemoteCloud_Impl implements Cloud  {
+   //original object
+   RemoteCloud originalObject;
+   public java.lang.String getName() {
+      try {
+         return originalObject.getName();
+      } catch (Exception e){throw new RuntimeException(e.getMessage());}
+   }
+}
+      </programlisting>
+
+      <para>The last class implements the original interface and uses the
+      RemoteInterface for network traffic. The RemoteCloud_Rmi should be
+      compiled using the java rmic</para>
+
+      <para>The final picture looks like this:</para>
+
+      <programlisting>
+        org.mmbase.bridge.remote.implementation.RemoteCloud
+                                |                  |
+                                |                  | uses
+                                |                 \ /
+                                | implements       org.mmbase.bridge.remote.rmi.RemoteCloud_Stub
+                                |                                 |
+                                |                                 | implements
+                               \ /                               \ /
+                   org.mmbase.bridge.Cloud &#60;--looks like--&#62; org.mmbase.bridge.remote.RemoteCloud
+                               / \                               / \
+                                |                                 | implements
+                                |                                 |
+                                | implements      org.mmbase.bridge.remote.rmi.RemoteClound_Skel
+                                |                 |
+                                |                 | uses
+                                |                \ /
+        org.mmbase.bridge.implementation.BasicCloud
+      </programlisting>
+
+      <para>We now have 2 implementation of the MMCI
+      org.mmbase.bridge.implementation that uses MMBase core classes and
+      org.mmbase.bridge.remote.implementation that uses the RMI classes and
+      the org.mmbase.bridge.implementation classes.</para>
+    </section>
+
+    <section>
+      <title>Security concerns</title>
+
+      <para>RMMCI provides a very powerful tool to update MMBase cloud
+      remotely, not only for you but also for persons that should not be able
+      to update your content. MMBase has a security module that can provide a
+      user/password protection on your data. This is the minimal security you
+      should take. A standard MMBase build has security turned off. The
+      current security module does not protect access to MMBase modules (like
+      the admin module).</para>
+
+      <para>The communication between MMBase clouds and the RMMCI client is
+      not encrypted, serialized objects are sent over the network. There is
+      work in progress to use SSL.</para>
+    </section>
+
+    <section>
+      <title>Integration process</title>
+
+      <para>The classes currently using the MMCI call LocalContext directly
+      therefore will not be able to access RMMCI. Support for multiple
+      implementations of the bridge interface is provided by means of the
+      ContextProvider class. This class should be used in order to be able to
+      run programs local and remote.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>When RMMCI/RMI doesn&#39;t work</title>
+
+    <section>
+      <title>java compatibility</title>
+
+      <para>Sun has been very smart and decided that with java 1.4 it was a good idea to change the way objects are serialized.
+	      The result is that rmi will only work if the client and server run the same java version @#$%%^</para>
+    </section>
+    <section>
+      <title>Installing server side</title>
+
+      <para>To get RMI working on the server some mmbase configurations are
+      important:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>edit <filename>conf.mmbase/modules/mmbaseroot.xml</filename>
+          look for a line <literal>&#60;property
+          name=&#34;host&#34;&#62;127.0.0.1&#60;/property&#62;</literal> and
+          make sure this is the right IP number for your machine. If not set
+          correctly RMI will work for localhost but not from remote machines</para>
+        </listitem>
+
+        <listitem>
+          <para>edit <filename>conf.mmbase/modules/rmmci.xml</filename> look
+          for a line <literal>&#60;status&#62;inactive&#60;/status&#62;</literal>
+          and change it to <literal>&#60;status&#62;active&#60;/status&#62;</literal>
+          to activate the RemoteMMCI module</para>
+        </listitem>
+
+        <listitem>
+          <para>Once started the RemoteMMCI MMBase module wait for a
+          configured amount of time (default 30 seconds) if you try to access
+          the RMMCI before that time it will not work</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Client side</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>For RMMCI the default port to accept connections is 1111 java
+          does by default not allow this to get around this &#34;problem&#34;
+          create a file called rmipolicy.txt with the following content</para>
+
+          <programlisting>
+grant {
+   permission java.net.SocketPermission *:1024-65535, connect,accept;
+};
+          </programlisting>
+
+          <para>and start the JVM with the following option
+          <literal>java -Djava.security.policy=rmipolicy.txt -cp
+          .:mmbase-rmmci.jar:$CLASSPATH MyClassFile</literal></para>
+        </listitem>
+
+        <listitem>
+          <para>Not all the MMBase classes are required to run the the client,
+          required classes are:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>all classes in org.mmbase.bridge.*</para>
+            </listitem>
+
+            <listitem>
+              <para>all classes in org.mmbase.bridge.remote.*</para>
+            </listitem>
+
+            <listitem>
+              <para>all stub classes in org.mmbase.bridge.remote.rmi.*_Stub*</para>
+            </listitem>
+
+            <listitem>
+              <para>all classes in org.mmbase.bridge.remote.implementation.*</para>
+            </listitem>
+
+            <listitem>
+              <para>the javax.servlet.ServletRequest class</para>
+            </listitem>
+
+            <listitem>
+              <para>the javax.servlet.ServletResponse class</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
+  <section>
+    <title>Example and TODO</title>
+
+    <section>
+      <title>Example</title>
+
+      <programlisting>import org.mmbase.bridge.*;
+import java.util.*;
+
+public class RMMCITest{
+   public static void main(String[] argv){
+      CloudContext cloudContext= ContextProvider.getCloudContext(&#34;rmi://127.0.0.1:1111/remotecontext&#34;);
+      HashMap user = new HashMap();
+      user.put(&#34;username&#34;, &#34;admin&#34;);
+      user.put(&#34;password&#34;, &#34;admin2k&#34;);
+      Cloud cloud = cloudContext.getCloud(&#34;mmbase&#34;,&#34;name/password&#34;,user);
+      NodeManager nodeManager = cloud.getNodeManager(&#34;mmservers&#34;);
+      NodeIterator nodeIterator = nodeManager.getList(null,null,null).nodeIterator();
+      System.out.println(&#34;NodeManager &#34; + nodeManager.getName());
+      while(nodeIterator.hasNext()){
+         Node node = nodeIterator.nextNode();
+         FieldIterator fieldIterator = nodeManager.getFields(NodeManager.ORDER_EDIT).fieldIterator();
+         System.out.println(&#34;name \t: value&#34;);
+         while(fieldIterator.hasNext()){
+            Field field = fieldIterator.nextField();
+            String fieldName = field.getName();
+            System.out.println(fieldName +&#34;\t: &#34;+ node.getStringValue(fieldName));
+         }
+      }
+   }
+}
+      </programlisting>
+
+      <screen>[keesj@carlit classes]$ <userinput>java RMMCITest</userinput>
+NodeManager mmservers
+name   : value
+name  : MMBaseserver
+state  : 1
+atime  : 1002874731
+host  : 127.0.0.1
+os  : Linux/2.2.19-7.0.8
+jdk  : 1.3.0/Java HotSpot(TM) Client VM
+      </screen>
+    </section>
+
+
+    <section>
+      <title>TODO</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Creating a build.xml that create a jar rmmci.jar containing
+          everything needed for using RMMCI at client side.[DONE the target is
+          called rmmci]. rmmci now lives in the applications directory of mmbase</para>
+        </listitem>
+
+        <listitem>
+          <para>When a bridge class extends a java.util.list interface the
+          generated classes should extends AbstractList so that sorting and
+          using the base methods is possible.[DONE]</para>
+        </listitem>
+
+        <listitem>
+          <para>Generate better errors send stack traces to the client?.[DONE]
+          bridge Exception are thrown or containing a root cause</para>
+        </listitem>
+
+        <listitem>
+          <para>write guidelines for writing rmmci compatible code (no casting
+          etc).[DONE] most casting if not all is possible</para>
+        </listitem>
+        <listitem>
+          <para>rmmci has been tested with the Query project but it needs more testing</para>
+        </listitem>
+        <listitem>
+								<para>Performance is not very good. We need to profile the code</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+</article>

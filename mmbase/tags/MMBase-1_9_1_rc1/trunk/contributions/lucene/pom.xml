@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-application-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>mmbase-lucene</artifactId>
+  <name>MMBase Lucene</name>
+  <version>${mmbase.version}</version>
+  <packaging>war</packaging>
+
+  <description>Lucene is an apache product that can index objects. This wraps it into an mmbase module, to index MMBase queries. It provides</description>
+
+
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>2.4.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queries</artifactId>
+        <version>2.4.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>pdfbox</groupId>
+        <artifactId>pdfbox</artifactId>
+        <version>0.7.3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-contrib</artifactId>
+        <version>3.1-FINAL</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+        <version>3.1-FINAL</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-scratchpad</artifactId>
+        <version>3.1-FINAL</version>
+      </dependency>
+      <dependency>
+        <groupId>org.textmining</groupId>
+        <artifactId>tm-extractors</artifactId>
+        <version>1.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mmbase</groupId>
+        <artifactId>mmbase-crontab</artifactId>
+        <version>${mmbase.version}</version>
+        <classifier>classes</classifier>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mmbase</groupId>
+        <artifactId>mmbase-taglib</artifactId>
+        <version>${mmbase.version}</version>
+        <classifier>classes</classifier>
+        <scope>provided</scope>
+      </dependency>
+    </dependencies>
+
+    <repositories>
+      <repository>
+        <id>mmbase</id>
+        <url>http://www.mmbase.org/maven2</url>
+      </repository>
+    </repositories>
+
+  </project>

@@ -1,0 +1,116 @@
+MMBase lucene module provides an MMBase interface to lucene (http://lucene.apache.org), which is
+about stand-alone (i.e. not by the database) indexing.
+
+
+To install MMBase-lucene:
+--------------------------------------------------------------------------------
+
+- You need MMBase 1.8
+
+- You need Java 1.5
+
+- You need a servlet 2.4 compatible application server like Tomcat 5, to run the administration
+  templates (not essential)
+
+
+then:
+
+- Copy WEB-INF/lib/mmbase-lucene.jar to your WEB-INF/lib
+
+- Install the administration pages found in templates in your webdir, e.g. in '/mmbase/lucene' or
+  '/mmbase/admin/lucene'
+
+- Copy WEB-INF/config/utils/luceneindex.xml to your WEB-INF/config/utils and configure your indices
+  in it (see documentation).
+
+- If you have mmbase-crontab installed, you may want to schedule full indexing. See
+  WEB-INF/config/utils/crontab.xml for an example. It is not absolutely necessary, because the index
+  is kept up-to-date using MMBase events and so on.
+
+- Restart your application server
+
+Once installed you can still edit luceneindex.xml (changes will be noticed). Indices can be
+triggered and tested using the templates.
+
+
+
+Note: There is also a lucene module on mmapps.sourceforge.net: http://mmapps.sourceforge.net/lucenemodule/
+
+
+
+To build and test this contribution
+--------------------------------------------------------------------------------
+
+BUILDING with MMBase 1.8
+----------------------------------------
+
+The lucene contribution is maintained only in the MMBase HEAD CVS, but it does compile against mmbase
+1.8 too.
+michiel@mitulo:~/mmbase/1.8/contributions/lucene$ cvs up -A
+..
+michiel@mitulo:~/mmbase/1.8/contributions/lucene$ ant
+
+jar:
+      [zip] Building zip: /home/michiel/mmbase/1.8/contributions/lucene/build/mmbase-1.8.6.20080104-lucene.zip
+
+BUILD SUCCESSFUL
+Total time: 13 seconds
+michiel@mitulo:~/mmbase/1.8/contributions/lucene$
+
+The test cases are working via maven, and only against HEAD.
+
+BUILDING with MMBase >= 1.9
+----------------------------------------
+You do this approximately like so:
+
+
+michiel@mitulo:~/mmbase/head/contributions/lucene$ maven
+ __  __
+|  \/  |__ _Apache__ ___
+| |\/| / _` \ V / -_) ' \  ~ intelligent projects ~
+|_|  |_\__,_|\_/\___|_||_|  v. 1.1
+
+....
+
+
+jar:install:
+    [echo] Installing...
+Uploading to mmbase/jars/mmbase-lucene-1.9.0-SNAPSHOT.jar:
+.................... (137K)
+Uploading to mmbase/poms/mmbase-lucene-1.9.0-SNAPSHOT.pom:
+.................... (11K)
+-------------------------------------------------------------------------------
+BUILD SUCCESSFUL
+-------------------------------------------------------------------------------
+Total time   : 4 seconds
+Finished at  : Friday, January 4, 2008 6:13:22 PM CET
+Final Memory : 6M/30M
+-------------------------------------------------------------------------------
+michiel@mitulo:~/mmbase/head/contributions/lucene$
+
+
+TESTING
+----------------------------------------
+
+On default testing is disabled. You must explicely reenable it. Also clean the data dir first.
+michiel@mitulo:~/mmbase/head/contributions/lucene$ rm -r data/* ; maven -Dmaven.test.skip=false
+....
+
+BUILD FAILED
+-------------------------------------------------------------------------------
+Total time   : 1 minutes 40 seconds
+Finished at  : Friday, January 4, 2008 6:23:51 PM CET
+Final Memory : 14M/44M
+-------------------------------------------------------------------------------
+michiel@mitulo:~/mmbase/head/contributions/lucene$
+
+
+In this case a test-case is failing.
+
+michiel@mitulo:~/mmbase/head/contributions/lucene$ cat target/test-reports/TEST-org.mmbase.module.lucene.LuceneTest.txt
+Testsuite: org.mmbase.module.lucene.LuceneTest
+Tests run: 10, Failures: 1, Errors: 0, Time elapsed: 96.12 sec
+...
+
+
+

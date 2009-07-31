@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mimemapping SYSTEM "http://www.mmbase.org/dtd/mimemapping_1_0.dtd">
+<!--
+This will arrange the mimetype mapping according to the format/codec.
+You can use wildcards, the most strict mapping will have priority.
+i.e. format"ogg" codec="vorbis" will be prefered to format="*" codec="*"
+ -->
+<mimemapping>
+  <map format="ra"  codec="*">audio/x-pn-realaudio</map>
+  <map format="rm"  codec="*">application/x-pn-realmedia</map>
+  <map format="ram" codec="*">audio/x-pn-realaudio</map>
+  <map format="ogg" codec="vorbis">audio/x-vorbis</map>
+  <map format="ogg" codec="theora">video/ogg</map>
+  <map format="ogg" codec="*">application/x-ogg</map>
+  <map format="asf" codec="*">video/x-ms-asf</map>
+  <map format="avi" codec="*">video/x-msvideo</map>
+  <map format="wmp" codec="*">video/x-ms-wmp</map>
+
+  <map format="asx" codec="*">video/x-ms-asf</map>
+  <map format="wma" codec="*">audio/x-ms-wma</map>
+  <map format="wax" codec="*">audio/x-ms-wax</map>
+  <map format="wax" codec="*">audio/x-ms-wax</map>
+  <map format="wmv" codec="*">audio/x-ms-wmv</map>
+  <map format="wmx" codec="*">audio/x-ms-wmx</map>
+  <map format="wmx" codec="*">application/x-ms-wmz</map>
+  <map format="wmd" codec="*">application/x-ms-wmd</map>
+
+  <map format="wav" codec="*">video/x-msvideo</map>
+  <map format="mid" codec="*">audio/midi</map>
+  <map format="mp4" codec="*">video/mp4</map>
+
+  <map format="mpg" codec="*">video/mpeg</map>
+
+  <map format="ogv" codec="*">video/ogg</map>
+
+
+</mimemapping>

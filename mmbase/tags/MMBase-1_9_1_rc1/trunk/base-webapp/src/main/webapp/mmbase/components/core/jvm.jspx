@@ -1,0 +1,65 @@
+<mm:content
+    type="application/xml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <mm:cloud method="asis">
+    <jsp:output omit-xml-declaration="true" />
+    <div
+        class="mm_c c_core b_jvm ${requestScope['org.mmbase.componentClassName']}"
+        id="${requestScope['org.mmbase.componentId']}">
+
+      <mm:import externid="gc" from="request" vartype="boolean" />
+
+      <mm:may action="garbage_collect">
+        <c:choose>
+          <c:when test="${gc eq true}">
+            <jsp:scriptlet>Runtime.getRuntime().gc();</jsp:scriptlet>
+            <p>Triggered a gc.</p>
+            <mm:link>
+              <p><a href="${_}">reload</a></p>
+            </mm:link>
+          </c:when>
+        </c:choose>
+        <mm:link>
+          <mm:param name="gc">true</mm:param>
+          <p><a href="${_}">${gc eq true ? 'another GC' : 'GC'}</a></p>
+        </mm:link>
+      </mm:may>
+
+      <p>Used memory: <mm:escape escape="filesize"><jsp:expression>Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()</jsp:expression></mm:escape></p>
+      <p>Free memory: <mm:escape escape="filesize"><jsp:expression>Runtime.getRuntime().freeMemory()</jsp:expression></mm:escape></p>
+      <p>Total memory: <mm:escape escape="filesize"><jsp:expression>Runtime.getRuntime().totalMemory()</jsp:expression></mm:escape></p>
+      <p>MMBase Uptime: <mm:import id="time"><jsp:expression>(System.currentTimeMillis() / 1000) - org.mmbase.module.core.MMBase.startTime</jsp:expression></mm:import>
+      <mm:write referid="time">
+        <mm:time format="HH:mm:ss" timezone="UT" />
+      </mm:write>
+      </p>
+
+      <table class="environment">
+        <caption>Environment</caption>
+        <jsp:scriptlet>pageContext.setAttribute("env", System.getenv());</jsp:scriptlet>
+        <c:forEach items="${env}" var="entry">
+          <tr>
+            <th>${entry.key}</th>
+            <td><mm:escape>${entry.value}</mm:escape></td>
+          </tr>
+        </c:forEach>
+      </table>
+      <table class="properties">
+        <caption>Properties</caption>
+        <jsp:scriptlet>pageContext.setAttribute("props", System.getProperties());</jsp:scriptlet>
+        <c:forEach items="${props}" var="entry">
+          <tr>
+            <th>${entry.key}</th>
+            <td><mm:escape>${entry.value}</mm:escape></td>
+          </tr>
+        </c:forEach>
+      </table>
+
+    </div>
+  </mm:cloud>
+</mm:content>
