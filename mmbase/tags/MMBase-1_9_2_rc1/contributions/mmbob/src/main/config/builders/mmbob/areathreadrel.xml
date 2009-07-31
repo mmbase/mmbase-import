@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="areathreadrel" maintainer="submarine.nl" version="0" extends="insrel">
+
+
+  <names>
+    <singular xml:lang="en">AreaThreadRel</singular>
+    <plural xml:lang="en">AreaThreadRels</plural>
+  </names>
+
+   <descriptions>
+     <description xml:lang="en">Relation between Forum Areas and the threads inside the area at the moment no active fields inside</description>
+   </descriptions>
+
+   <fieldlist />
+
+</builder>

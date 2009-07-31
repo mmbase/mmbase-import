@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<datatypes
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
+
+
+  <datatype base="string" id="notify_types">
+    <description xml:lang="en">
+      Types of notifications
+    </description>
+    <required value="false" />
+    <maxLength value="1024" />
+
+    <enumeration enforce="oncreate">
+      <entry value="org.mmbase.notifications.EmailNotification"                 xml:lang="nl" display="email" />
+      <entry value="org.mmbase.notifications.EmailNotification"                 xml:lang="en" display="email" />
+      <entry value="org.mmbase.notifications.SMSNotification"                   xml:lang="nl" display="sms"   />
+      <entry value="org.mmbase.notifications.SMSNotification"                   xml:lang="en" display="sms"   />
+    </enumeration>
+    <!-- Set new nodes to status 'unconfirmed' initially -->
+    <!--
+        <commitprocessor>
+        <class name="org.mmbase.notifications.cmtelecom.CommitProcessor" />
+        </commitprocessor>
+    -->
+  </datatype>
+</datatypes>
+

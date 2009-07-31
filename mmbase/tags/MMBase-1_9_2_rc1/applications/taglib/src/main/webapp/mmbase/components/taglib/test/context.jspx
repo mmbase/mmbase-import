@@ -1,0 +1,64 @@
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c c_taglib b_test_context ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
+  <h2>mm:context</h2>
+
+  <mm:cloud>
+    <mm:context>
+
+      ${pageScope['org.mmbase.bridge.jsp.taglib.escaper']}
+      <mm:context id="test">
+        <mm:import id="a">A</mm:import>
+      </mm:context>
+
+      <mm:write referid="test" jspvar="t" vartype="java.util.Map">
+        <p><jsp:expression>t.getClass()</jsp:expression></p>
+        <p><jsp:expression>t.keySet().size()</jsp:expression> (should be 1)</p>
+
+        <p><mm:escape><jsp:expression>t.entrySet()</jsp:expression></mm:escape> (should be [a=A])</p>
+
+        <p><jsp:expression>t.size()</jsp:expression> (should be 1)</p>
+        <jsp:scriptlet>
+
+        </jsp:scriptlet>
+      </mm:write>
+      <p>
+        <c:forEach items="${test}" var="entry">
+          <mm:escape>${entry.key}=${entry.value}</mm:escape>
+        </c:forEach>
+        (should be a=A)
+      </p>
+      <!--
+      <p>${requestScope['org.mmbase.bridge.jsp.taglib.escaper']} should equal <mm:write referid="org.mmbase.bridge jsp.taglib.escaper" /></p>
+      -->
+
+      <mm:context scope="session" id="context_in_session">
+        <mm:remove referid="subcontext" />
+        <mm:context id="subcontext">
+          <mm:import id="y" reset="true">Y</mm:import>
+        </mm:context>
+        <mm:import id="x" reset="true">X</mm:import>
+        <mm:write referid="x" />
+
+      </mm:context>
+
+      <p>${context_in_session.subcontext}</p>
+
+      <h3><a href="http://www.mmbase.org/jira/browse/MMB-1702">MMB-1702</a></h3>
+      <mm:import id="zooi">000</mm:import>
+      <mm:import id="list" vartype="list">a,b,c</mm:import>
+      <mm:stringlist referid="list">
+        <p>Test A: ${zooi} ${pageScope.zooi}</p>
+        <mm:import id="zooi" reset="true"><mm:write /></mm:import>
+        <p>Test B: ${zooi eq _ ? 'ok' : 'NOT ok'} ${zooi} ${pageScope.zooi}</p>
+      </mm:stringlist>
+      <p>Test C: ${zooi eq '000' ? 'ok' : 'NOT ok'} ${zooi} ${pageScope.zooi}</p>
+
+    </mm:context>
+  </mm:cloud>
+</div>

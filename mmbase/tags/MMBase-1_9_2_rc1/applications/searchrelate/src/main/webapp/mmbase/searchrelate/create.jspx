@@ -1,0 +1,99 @@
+<div
+    class="create"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="queryid"  />
+  <mm:import externid="id"  />
+  <mm:import externid="context"  />
+  <mm:import externid="sessionname"  />
+  <mm:import from="session" externid="${queryid}" id="query" required="true" />
+
+  <mm:cloud
+      sessionname="${sessionname}"
+      method="asis">
+    <mm:content expires="0" type="text/html" language="${query.cloud.locale}">
+      <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
+        <mm:import from="session" externid="mm_related_${id}_extracreate" id="extracreate"   required="false" />
+
+        <mm:form name="create"
+                 page="/mmbase/searchrelate/create.jspx" commitonclose="false">
+          <fmt:message key="createsummary" var="summary">
+            <fmt:param><mm:nodeinfo nodetype="${query.nodeManager.name}" type="guinodemanager" /></fmt:param>
+          </fmt:message>
+          <fmt:message key="create" var="createmessage" />
+          <table class="create ${query.nodeManager.name}" summary="${summary}">
+            <caption>${summary}</caption>
+            <tfoot>
+              <tr class="buttons">
+                <td colspan="2">
+                  <input type="submit" value="${createmessage}" />
+                  <input type="hidden" name="s" value="submitted" />
+                  <input type="hidden" name="queryid" value="${queryid}" />
+                  <input type="hidden" name="id"      value="${id}" />
+                  <input type="hidden" name="context" value="${context}" />
+                  <input type="hidden" name="sessionname" value="${sessionname}" />
+                  <input type="hidden" name="nodemanager" id="nodemanager" value="${query.nodeManager.name}" />
+                </td>
+              </tr>
+            </tfoot>
+            <mm:createnode id="newnode" type="${query.nodeManager.name}" commitonclose="false">
+              <c:if test="${! empty context}">
+                <mm:log>Setting context to ${context}</mm:log>
+                <mm:setcontext>${context}</mm:setcontext>
+              </c:if>
+              <tbody>
+                <mm:fieldlist type="create" varStatus="field">
+                  <c:if test="${field.current.state eq 2}">
+
+                    <tr class="fields ${field.current.name}">
+                      <th class="node">
+                        <mm:fieldinfo type="guiname" />
+                      </th>
+                      <td>
+                        <mm:fieldinfo type="input" />
+                        <mm:fieldinfo type="errors" />
+                      </td>
+                    </tr>
+                  </c:if>
+                </mm:fieldlist>
+              </tbody>
+              <mm:log> Using ${extracreate} </mm:log>
+
+              <c:if test="${! empty extracreate}">
+                <mm:include page="${extracreate}" attributes="newnode,context" />
+              </c:if>
+              <tr><td> OWNER ${_node.owner}</td>
+              <td><mm:cloudinfo type="user" /></td>
+              </tr>
+
+
+            </mm:createnode>
+          </table>
+          <mm:import externid="s" />
+          <mm:present referid="s">
+            <mm:valid>
+              <mm:commit />
+              <mm:node referid="newnode">
+                <mm:log>Created new node ${_node}</mm:log>
+
+                Created <span class="newnode">${_node}</span> with owner ${_node.owner}.
+              </mm:node>
+            </mm:valid>
+            <mm:valid inverse="true">
+              NOT VALID
+              <mm:cancel />
+            </mm:valid>
+          </mm:present>
+          <mm:present referid="s" inverse="true">
+            <mm:cancel />
+          </mm:present>
+        </mm:form>
+      </fmt:bundle>
+    </mm:content>
+  </mm:cloud>
+</div>
+

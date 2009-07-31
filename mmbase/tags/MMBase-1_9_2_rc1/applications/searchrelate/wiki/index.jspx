@@ -1,0 +1,54 @@
+<html
+    xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl"
+    xmlns:rich="http://www.mmbase.org/tags/mm/rich"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <mm:content
+      type="application/xhtml+xml"
+      expires="${param.expires}"
+      language="en">
+    <mm:cloud>
+
+      <head>
+        <mm:link page="/mmbase/style/css/mmxf.css">
+          <link rel="stylesheet" type="text/css" href="${_}" />
+        </mm:link>
+      </head>
+      <body>
+        <mm:import externid="objectnumber" />
+        <mm:notpresent referid="objectnumber">
+          <ul>
+            <mm:listnodes type="wikiobjects" orderby="number" directions="down">
+              <li><mm:link referids="_node@objectnumber"><a href="${_}"><mm:nodeinfo type="gui" /></a></mm:link></li>
+            </mm:listnodes>
+          </ul>
+          <mm:link page="edit/">
+            <mm:param name="objectnumber">new</mm:param>
+            <a href="${_}">new</a>
+          </mm:link>
+        </mm:notpresent>
+
+        <mm:present referid="objectnumber">
+          <mm:edit type="wiki">
+
+            <mm:node referid="objectnumber">
+              <h1><mm:field name="title" /></h1>
+              <h2><mm:field name="subtitle" /></h2>
+              <h3>v <mm:field name="version" /></h3>
+              <mm:field name="intro" escape="p" />
+
+              <rich:field name="body" />
+
+            </mm:node>
+          </mm:edit>
+          <hr />
+          <mm:link page=".">
+            <a href="${_}">Back</a>
+          </mm:link>
+        </mm:present>
+
+      </body>
+    </mm:cloud>
+
+  </mm:content>
+</html>

@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.mmbase</groupId>
+		<artifactId>mmbase-cms</artifactId>
+    <version>1.9-SNAPSHOT</version>
+	</parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.mmbase</groupId>
+  <artifactId>mmbase-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>MMBase</name>
+
+  <properties>
+
+    <servlet.version>2.4</servlet.version>
+    <jsp.version>2.0</jsp.version>
+    <jsp.groupId>javax.servlet</jsp.groupId>
+    <jstl.version>1.1.2</jstl.version>
+    <taglib-standard.version>1.1.2</taglib-standard.version>
+
+
+    <!-- MMBase 2.0?
+         -->
+    <!--
+    <servlet.version>2.5</servlet.version>
+    <jsp.version>2.1</jsp.version>
+    <jsp.groupId>javax.servlet.jsp</jsp.groupId>
+    <jstl.version>1.2</jstl.version>
+    -->
+
+
+    <log4j.version>1.2.14</log4j.version>
+
+    <surefire.fork.mode>once</surefire.fork.mode>
+    <surefire.format>brief</surefire.format>
+    <surefire.usefile>false</surefire.usefile>
+    <surefire.fork.vmargs>-ea</surefire.fork.vmargs>
+    <compile.flags>-Xlint:unchecked,deprecation,fallthrough,finally</compile.flags>
+
+    <junit.version>4.4</junit.version>
+
+    <buildnumber.doCheck>false</buildnumber.doCheck>
+
+
+    <netbeans.hint.deploy.server>gfv3</netbeans.hint.deploy.server>
+    <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
+
+    <!-- Try to configure netbeans to be as faithful as possible to mmbase code conventions -->
+    <org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>2</org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>
+    <org-netbeans-modules-editor-indent.CodeStyle.project.text-limit-width>120</org-netbeans-modules-editor-indent.CodeStyle.project.text-limit-width>
+    <org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>2</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
+    <org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>2</org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>
+    <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.spaces-per-tab>
+    <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.tab-size>8</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.tab-size>
+    <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.indent-shift-width>
+    <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.text-limit-width>120</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.text-limit-width>
+    <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.indentCasesFromSwitch>false</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.indentCasesFromSwitch>
+
+  </properties>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/java</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/main/resources-filtered</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/main/config</directory>
+				<targetPath>org/mmbase/config</targetPath>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>${basedir}/target/generated/src/main/resources</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/java</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+			</testResource>
+			<testResource>
+				<directory>src/test/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>true</filtering>
+			</testResource>
+			<testResource>
+				<directory>target/generated/src/test/resources</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+			</testResource>
+		</testResources>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+            <maxmem>256M</maxmem>
+            <fork>${compiler.fork}</fork>
+            <showDeprecation>false</showDeprecation>
+            <encoding>iso-8859-1</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+          <!-- this is a version of the war plugin compiled by Michiel. See http://jira.codehaus.org/browse/MWAR-205 -->
+          <version>2.1-beta-2-20090723.092931-2</version>
+          <configuration>
+            <archiveClasses>true</archiveClasses>
+            <attachClasses>true</attachClasses>
+            <archive>
+              <manifest>
+                <addClasspath>true</addClasspath>
+              </manifest>
+              <manifestEntries>
+                <url>${pom.url}</url>
+              </manifestEntries>
+              <manifestSections>
+                <manifestSection>
+                  <name>org/mmbase</name>
+                  <manifestEntries>
+                    <Vendor>MMBase Community</Vendor>
+                    <Comment>MMBase. ${project.name} (${project.artifactId}).</Comment>
+                    <Version>${project.version}.${timestamp}</Version>
+                    <SCM-Revision>${sources.version}</SCM-Revision>
+                    <Distribution>${project.version}</Distribution>
+                    <Build-Date>${timestamp}</Build-Date>
+                    <Description>${pom.description}</Description>
+                  </manifestEntries>
+                </manifestSection>
+              </manifestSections>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-2</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.mmbase.maven</groupId>
+              <artifactId>assembly-descriptors</artifactId>
+              <version>${mmbase.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>2.4</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.mmbase.maven</groupId>
+              <artifactId>codestandards</artifactId>
+              <version>${mmbase.version}</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <rulesets>
+              <ruleset>mmbase-pmd-ruleset.xml</ruleset>
+              <ruleset>mmbase-pmd-custom.xml</ruleset>
+            </rulesets>
+            <sourceEncoding>UTF-8</sourceEncoding>
+            <targetJdk>1.5</targetJdk>
+            <linkXRef>false</linkXRef>
+            <includeTests>true</includeTests>
+            <verbose>true</verbose>
+            <excludeRoots>
+              <excludeRoot>${basedir}/src/main/generated</excludeRoot>
+            </excludeRoots>
+          </configuration>
+          <executions>
+            <execution>
+              <id>validate</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <includes>
+              <include>**/*Test.java</include>
+              <include>**/*TestCase.java</include>
+              <include>**/*TestCases.java</include>
+            </includes>
+            <!-- do not exclude **/Abstract*Test.java **/Abstract*TestCase.java -->
+            <excludes>
+              <exclude>**/*$*</exclude>
+            </excludes>
+            <reportFormat>${surefire.format}</reportFormat>
+            <useFile>${surefire.usefile}</useFile>
+            <forkMode>${surefire.fork.mode}</forkMode>
+            <childDelegation>false</childDelegation>
+            <argLine>${surefire.fork.vmargs}</argLine>
+            <systemProperties>
+              <property>
+                <name>java.awt.headless</name>
+                <value>${java.awt.headless}</value>
+              </property>
+              <property>
+                <name>java.util.logging.config.file</name>
+                <value>${basedir}/target/test-classes/logging.properties</value>
+              </property>
+              <property>
+                <name>surefire.fork.vmargs</name>
+                <value>${surefire.fork.vmargs}</value>
+              </property>
+            </systemProperties>
+            <check>
+              <branchRate>80</branchRate>
+              <lineRate>80</lineRate>
+              <haltOnFailure>true</haltOnFailure>
+              <totalBranchRate>80</totalBranchRate>
+              <totalLineRate>80</totalLineRate>
+              <packageLineRate>80</packageLineRate>
+              <packageBranchRate>80</packageBranchRate>
+            </check>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <tagBase>https://scm.mmbase.org/mmbase/tags</tagBase>
+            <useReleaseProfile>false</useReleaseProfile>
+            <preparationGoals>clean install</preparationGoals>
+            <goals>deploy</goals>
+            <arguments>-Prelease,deploy</arguments>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <attach>true</attach>
+            <quiet>true</quiet>
+            <bottom>MMBase.org</bottom>
+            <links>
+              <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+              <link>http://java.sun.com/javaee/5/docs/api/</link>
+            </links>
+            <source>1.5</source>
+            <tags>
+              <tag>
+                <head>To Do:</head>
+                <name>todo</name>
+                <placement>a</placement>
+              </tag>
+              <tag>
+                <head>Classifies the class as an APPLICATION class, belonging to the application with name application-name</head>
+                <name>application</name>
+              </tag>
+              <tag>
+                <head>Section contains hard-coded values, which should be made configurable.</head>
+                <name>bad-constant</name>
+              </tag>
+              <tag>
+                <head>Section contains literals (numeric or string constants), where constants (public final static identifiers) should be used.</head>
+                <name>bad-literal</name>
+              </tag>
+              <tag>
+                <head>The class needs to be adapted to the MMBase Coding Standards.</head>
+                <name>code-conventions</name>
+              </tag>
+              <tag>
+                <head>Classifies the class as a CORE class</head>
+                <name>core</name>
+              </tag>
+              <tag>
+                <head>Section is deprecated and will be removed from the code. If this is a Class, the entire Class will be removed.</head>
+                <name>deprecated-now</name>
+              </tag>
+              <tag>
+                <head>Section uses deprecated (java) code, which will be fixed</head>
+                <name>deprecation-used</name>
+              </tag>
+              <tag>
+                <head>Section contains code which is depedent on a class, where it is undesirable. The code will be adapated to be more generic or moved to a more appropriate class.</head>
+                <name>dependency</name>
+              </tag>
+              <tag>
+                <head>Section contains code which will be moved to an higher (possibly abstract) class, identified with &lt;classname></head>
+                <name>duplicate</name>
+              </tag>
+              <tag>
+                <head>Section needs Javadoc..</head>
+                <name>javadoc</name>
+              </tag>
+              <tag>
+                <head>Section needs to be altered to use internationalization, using english ('en') as a default.</head>
+                <name>language</name>
+              </tag>
+              <tag>
+                <head>The code for this class falls under a different (and conflicting) license, such as GPL. The code needs to be replaced or moved out of the core.</head>
+                <name>license</name>
+              </tag>
+              <tag>
+                <head>Class will be moved to package &lt;packagename&amp;lg;</head>
+                <name>move</name>
+              </tag>
+              <tag>
+                <head>Section need be improved for performance reasons.</head>
+                <name>performance</name>
+              </tag>
+              <tag>
+                <head>Class wil be renamed to &lt;classname></head>
+                <name>rename</name>
+              </tag>
+              <tag>
+                <head>This Class needs the indicated version of the MMBase core.</head>
+                <name>requires</name>
+              </tag>
+              <!--
+                  This seems to conflict with something and fails to complete mvn javadoc:jar  build
+              <tag>
+                <head>Section scope will be narrowed to &lt;scope> (i.e. private, package, protected)</head>
+                <name>scope</name>
+              </tag>
+              <tag>
+                <name>sql</name>
+                <head>Section uses (direct) SQL queries, which will be removed or fixed:</head>
+              </tag>
+              <tag>
+                <name>vpro</name>
+                <head>Section contains VPRO-specific code, which will be removed or fixed:</head>
+              </tag>
+              -->
+
+            </tags>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-changes-plugin</artifactId>
+          <configuration>
+            <resolutionIds>Fixed</resolutionIds>
+            <statusIds>Resolved, Closed</statusIds>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>com.keyboardsamurais.maven</groupId>
+          <artifactId>maven-timestamp-plugin</artifactId>
+          <version>1.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>buildnumber-maven-plugin</artifactId>
+          <version>1.0-beta-3</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>2.3</version><!-- The default version (2.2) contains a horrible bug, and deletes the _contents_ of a symlinked directory -->
+        </plugin>
+      </plugins>
+
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <showDeprecation>false</showDeprecation>
+        </configuration>
+      </plugin>
+      <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-jar-plugin</artifactId>
+       <configuration>
+         <archive>
+           <manifest>
+             <addClasspath>true</addClasspath>
+           </manifest>
+           <manifestEntries>
+             <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
+             <ExtensionName>${pom.groupId}:${pom.artifactId}</ExtensionName>
+             <url>${pom.url}</url>
+           </manifestEntries>
+           <manifestSections>
+             <manifestSection>
+               <name>org/mmbase</name>
+               <manifestEntries>
+                 <Vendor>MMBase Community</Vendor>
+                 <Comment>MMBase  ${project.name} (${project.artifactId}).</Comment>
+                 <Version>${project.version}.${timestamp}</Version>
+                 <SCM-Revision>${sources.version}</SCM-Revision>
+                 <Distribution>${project.version}</Distribution>
+                 <Build-Date>${timestamp}</Build-Date>
+                 <Description>${pom.description}</Description>
+               </manifestEntries>
+             </manifestSection>
+           </manifestSections>
+         </archive>
+       </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>${servlet.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${jsp.groupId}</groupId>
+        <artifactId>jsp-api</artifactId>
+        <version>${jsp.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+        <version>${jstl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>taglibs</groupId>
+        <artifactId>standard</artifactId>
+        <version>${taglib-standard.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <version>3.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.1.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>logkit</groupId>
+            <artifactId>logkit</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>avalon-framework</groupId>
+            <artifactId>avalon-framework</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.4</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-fileupload</groupId>
+        <artifactId>commons-fileupload</artifactId>
+        <version>1.2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>1.3.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+  <profiles>
+    <profile>
+      <id>fastinstall</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <maven.test.skip>true</maven.test.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>sourcecheck</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+              <compilerArgument>${compile.flags}</compilerArgument>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>metrics</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>coverage</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>cobertura-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>clean</goal>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <inherited>true</inherited>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <configuration>
+              <updateReleaseInfo>true</updateReleaseInfo>
+            </configuration>
+          </plugin>
+          <!-- We want to sign the artifact, the POM, and all attached artifacts -->
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <configuration>
+              <passphrase>${gpg.passphrase}</passphrase>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+              <id>enforce-no-snapshots</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <requireReleaseVersion>
+                    <message>No Snapshots Allowed!</message>
+                  </requireReleaseVersion>
+                </rules>
+                <fail>true</fail>
+              </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>deploy</id>
+      <properties>
+        <buildnumber.doCheck>true</buildnumber.doCheck>
+      </properties>
+      <build>
+        <defaultGoal>deploy</defaultGoal>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>buildnumber</id>
+      <activation>
+        <os>
+          <family>!Windows</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>buildnumber-maven-plugin</artifactId>
+            <configuration>
+              <buildNumberPropertyName>sources.version</buildNumberPropertyName>
+              <timestampPropertyName>timestamp</timestampPropertyName>
+              <timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm}</timestampFormat>
+              <doCheck>${buildnumber.doCheck}</doCheck>
+              <doUpdate>false</doUpdate>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>validate</phase>
+                <goals>
+                  <goal>create</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+
+    <profile>
+      <id>servlet24</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+
+    <profile>
+      <id>servlet25</id>
+      <activation>
+        <property>
+          <name>servlet.version</name>
+          <value>2.5</value>
+        </property>
+      </activation>
+      <properties>
+        <servlet.version>2.5</servlet.version>
+        <jsp.version>2.1</jsp.version>
+        <jsp.groupId>javax.servlet.jsp</jsp.groupId>
+        <jstl.version>1.2</jstl.version>
+      </properties>
+
+    </profile>
+    <profile>
+      <id>development</id>
+      <properties>
+        <maven.war.useDefaultExcludes>false</maven.war.useDefaultExcludes>
+      </properties>
+    </profile>
+  </profiles>
+
+</project>

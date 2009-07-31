@@ -1,0 +1,84 @@
+<PROCESSOR MMADMIN>
+<SECURE>
+<html>
+<head>
+  <title>MMADMIN tools</title>
+</head>
+<body background="beeld/back.gif" text="#42bdad" bgcolor="#00425b" link="#44bdad" alink="#44bdad" vlink="#44bdad">
+<br />
+<IF $MOD-INFO-USER-NAME^=Nadmin>
+<table width="90%" cellspacing="1" cellpadding="3" border="0">
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+  <td bgcolor="44BDAD" width="700">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+      <strong>MMBase access error</strong>
+    </font>
+  </td>
+</tr>
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+  <td bgcolor="#00425A">
+    You are not allowed to access these pages, only admin can use these.
+  </td>
+</tr>
+</table>
+<ELSE>
+<table width="90%" cellspacing=1 cellpadding=3 border=0>
+  <tr>
+    <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+    <td bgcolor="#44BDAD" colspan=5>
+      <font color="#000000" face="helvetica,arial,geneva" size="2">
+        <strong>Description of "$PARAM1" field "$PARAM2" </strong>
+      </font>
+    </td>
+  </tr>
+  <tr>
+    <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+    <td bgcolor="#00425A" colspan=5>
+      <br />
+      <br />
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <br />
+    </td>
+  </tr>
+<PART builders_fielddbpart.shtml?$PARAM1+$PARAM2>
+  <tr>
+    <td>
+      <br />
+    </td>
+  </tr>
+<PART builders_fieldeditorpart.shtml?$PARAM1+$PARAM2>
+  <tr>
+    <td>
+      <br />
+    </td>
+  </tr>
+<PART builders_fieldguipart.shtml?$PARAM1+$PARAM2>
+  <tr>
+    <td>
+      <br />
+    </td>
+  </tr>
+<PART builders_fieldremovepart.shtml?$PARAM1+$PARAM2>
+  <tr>
+    <td>
+      <br />
+    </td>
+  </tr>
+  <tr>
+    <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+    <td bgcolor="#44BDAD">
+      <a href="builders_actions.shtml?$PARAM1"><img src="beeld/pijl2.gif" border="0" align="left" /></a>
+    </td>
+    <td bgcolor="#00425A" colspan="4">
+      &nbsp;
+    </td>
+  </tr>
+</table>
+</IF>
+</body>
+</html>

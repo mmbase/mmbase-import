@@ -1,0 +1,57 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:mm-u="urn:jsptagdir:/WEB-INF/tags/mm/u"
+    lang="en">
+
+  <mm:content type="application/xhtml+xml"
+              postprocessor="none"
+              language="en" expires="0">
+    <head>
+      <mm:link page="/mmbase/extjs/adapter/ext/ext-base.js">
+        <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+      </mm:link>
+      <mm:link page="/mmbase/extjs/ext-all-debug.js">
+        <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+      </mm:link>
+      <script language="javascript" src="test.js"><jsp:text> </jsp:text></script>
+      <mm:link page="/mmbase/extjs/resources/css/ext-all.css">
+        <link rel="stylesheet" type="text/css" href="${_}" />
+      </mm:link>
+      <mm:link page="/mmbase/extjs/adapter/css/ext-base.css">
+        <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+      </mm:link>
+    </head>
+    <body>
+      <div id="title">
+        bla bla
+      </div>
+      <div id="main">
+        bloe bloe
+      </div>
+      <div id="relations">
+        <mm:cloud>
+          <mm:node number="131" id="source">
+            <mm:listrelationscontainer type="urls" id="current">
+            </mm:listrelationscontainer>
+            <mm:listnodescontainer  type="urls" id="repository">
+              <mm:constraint field="number" inverse="true" operator="IN" value="${related}" />
+            </mm:listnodescontainer>
+            <mm-u:relate repository="${repository}" current="${current}">
+              <jsp:attribute name="n">
+                <mm:field name="number" />
+              </jsp:attribute>
+              <jsp:attribute name="relate">
+                <mm:createrelation source="source" destination="destination" role="related" />
+              </jsp:attribute>
+            </mm-u:relate>
+            <mm:listnodescontainer  type="news" id="news" markused="true" />
+            <mm:relatednodescontainer  type="news" id="current_news" />
+            <mm-u:relate repository="${news}" current="${current_news}">
+            </mm-u:relate>
+          </mm:node>
+        </mm:cloud>
+      </div>
+    </body>
+  </mm:content>
+</html>

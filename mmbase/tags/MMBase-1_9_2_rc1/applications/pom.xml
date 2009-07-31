@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mmbase</groupId>
+    <artifactId>mmbase-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+    <relativePath>../maven-base/pom.xml</relativePath>
+  </parent>
+
+  <artifactId>mmbase-application-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>MMBase Applications</name>
+  <version>1.9-SNAPSHOT</version>
+
+  <description>
+    Applications are war overlays then can plug in some functionality into an existing MMBase installation.
+    This would normally contain at least a 'component', but it can e.g. also be only a security implementation.
+   </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${mmbase.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${jsp.groupId}</groupId>
+      <artifactId>jsp-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.mmbase.maven</groupId>
+        <artifactId>maven-mmbase-plugin</artifactId>
+        <version>1.9-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>create-index-files</id>
+            <goals>
+              <goal>create-index-files</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>copy-web-resources</id>
+            <goals>
+              <goal>install-resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+
+  <profiles>
+    <profile>
+      <id>mmapplications_all</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>resources</module>
+        <module>taglib</module>
+        <module>cloudcontext</module>
+        <module>crontab</module>
+        <module>dove</module>
+        <module>editwizard</module>
+        <module>email</module>
+        <module>media</module>
+        <module>notifications</module>
+        <module>searchrelate</module>
+        <module>richtext</module>
+        <module>rmmci</module>
+
+        <module>jumpers</module>
+        <module>xmlimporter</module>
+        <module>largeobjects</module>
+        <module>oscache-cache</module>
+        <module>clustering</module>
+        <module>commandserver</module>
+        <module>cloudsecurity</module>
+        <module>streams</module>
+
+        <module>mynews</module>
+        <module>vpro-wizards</module>
+
+
+        <!-- deprecated-->
+        <module>vwms</module>
+        <module>scan</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>mmapplications_subset1</id>
+      <!--
+          No deprecated and experimental stuff, no rmmci.
+      -->
+      <modules>
+        <module>resources</module>
+        <module>taglib</module>
+        <module>cloudcontext</module>
+        <module>crontab</module>
+        <module>dove</module>
+        <module>editwizard</module>
+        <module>email</module>
+        <module>media</module>
+        <module>searchrelate</module>
+        <module>richtext</module>
+        <module>jumpers</module>
+        <module>clustering</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>test_build</id>
+      <!--
+          Very few applications, to speed up things when testing the build process itself.
+      -->
+      <modules>
+        <module>resources</module>
+        <module>editwizard</module>
+        <module>largeobjects</module>
+        <module>mynews</module>
+        <module>oscache-cache</module>
+      </modules>
+    </profile>
+  </profiles>
+
+
+</project>
