@@ -1,9 +1,0 @@
-<!--
-    functionsets.dtd
--->
-
-<!ELEMENT functionsets (functionset*)>
-
-<!ELEMENT functionset (#PCDATA)>
-<!ATTLIST functionset name CDATA #IMPLIED>
-<!ATTLIST functionset file CDATA #IMPLIED>
