@@ -1,0 +1,242 @@
+<jsp:root
+    version="2.0"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:x="http://java.sun.com/jsp/jstl/xml"
+    xmlns:jsp="http://java.sun.com/JSP/Page">
+  <jsp:directive.tag
+      description="This tag creates tabs. Every tab contains the result of a certain jsp. Every tab is part of the same transaction. This tag also provides the save and cancel butons." />
+
+  <jsp:directive.attribute name="path"
+                           description="Comma seperated path of tabs. Every entry is interpreted as a jsp which must be dynamiclly included to show the tab."
+                           />
+  <jsp:directive.attribute name="extension"
+                           description="Extension used for tab-implementing jsp"
+                           />
+  <jsp:directive.attribute name="form"
+                           description="Identification of this set of forms. Also used as parameter name"
+                           />
+
+  <jsp:directive.attribute name="objectlist"
+                           description="Actually the tabs are tree-included, if you provide an objectlist"
+                           />
+  <jsp:directive.attribute name="directory"
+                           description="Directory to include the jsps from. Defaults to the current directory."
+                           />
+  <jsp:directive.attribute name="styleClass"
+                           description="Extra classes to be added on the generated table"
+                           />
+
+  <jsp:directive.attribute name="page"
+                           description="As page attribute of mm:url, used to generate the urls. Defaults to empty string (current page)"
+                           />
+
+  <jsp:directive.attribute name="gonext" type="java.lang.Boolean"
+                           description="Automaticly go to next tab if pressed on save"
+                           />
+
+  <jsp:directive.attribute name="closelast" type="java.lang.Boolean"
+                           description="Automaticly call window.close if pressed on save in last tab"
+                           />
+
+  <jsp:directive.attribute name="intro" fragment="true"
+                           />
+
+  <jsp:directive.attribute name="aftercommit" fragment="true"
+                           />
+
+  <jsp:directive.attribute name="aftercancel" fragment="true"
+                           />
+
+  <jsp:directive.attribute name="aftersubmit" fragment="true"
+                           />
+
+  <mm:import id="e">.${empty extension ? 'jspx' : extension}</mm:import>
+  <mm:import id="p" externid="path" from="this" vartype="list">${empty path ? 'a,b,c' : path}</mm:import>
+  <mm:import id="f" externid="form" from="this">${empty form ? 'form' : form}</mm:import>
+
+  <mm:import externid="${f}" id="currentpage">${p[0]}</mm:import>
+
+  <!--
+  <mm:treefile   absolute="true" id="page" page="${directory}${currentpage}${e}" objectlist="${objectlist}" />
+
+  -->
+  <mm:import id="tabs">
+
+    <mm:stringlist referid="p" id="q">
+
+      <mm:import id="available">
+        <mm:treehaspage page="${directory}${_}${e}" objectlist="${objectlist}" inverse="true">notavailable</mm:treehaspage>
+      </mm:import>
+      <mm:treehaspage page="${directory}${q}${e}" objectlist="${objectlist}">
+        <x:parse var="source">
+          <mm:treeinclude cite="true" objectlist="${objectlist}" page="${directory}${q}${e}" />
+        </x:parse>
+      </mm:treehaspage>
+      <c:choose>
+        <c:when test="${currentpage eq _}">
+          <mm:import id="className">current ${available}</mm:import>
+          <mm:index id="current" offset="0" write="false" />
+        </c:when>
+        <c:otherwise>
+          <mm:import id="className">${available}</mm:import>
+        </c:otherwise>
+      </c:choose>
+      <mm:link page="${page}" referids="q@${f}">
+        <a class="nav ${className}"
+           href="${_}"
+           onclick="document.forms['${f}_form']['${f}_next'].value = '${q}'; document.forms['${f}_form'].submit(); return false;"
+           >
+          <mm:import id="title">
+            <mm:treehaspage page="${directory}${q}${e}" objectlist="${objectlist}">
+              <x:out select="$source/descendant::h1" />
+            </mm:treehaspage>
+          </mm:import>
+
+
+          <mm:write referid="title" write="true">
+            <mm:isempty>${q}</mm:isempty>
+          </mm:write>
+          <c:if test="${currentpage eq q}">
+            <mm:import id="currentpagetitle" from="this" externid="title" />
+          </c:if>
+
+        </a>
+      </mm:link>
+      <span class="separator">
+        <mm:last inverse="true">, </mm:last>
+      </span>
+    </mm:stringlist>
+  </mm:import>
+
+  <div class="tabs">
+    <x:parse var="currentsource">
+      <mm:treeinclude cite="true" objectlist="${objectlist}" page="${directory}${currentpage}${e}" />
+    </x:parse>
+    <mm:import id="tabClass">
+      <mm:treehaspage page="${directory}${currentpage}${e}" objectlist="${objectlist}">
+        <x:out select="$currentsource/*/@class" />
+      </mm:treehaspage>
+    </mm:import>
+
+    <h1>
+      <span class="index"><jsp:text>${current + 1} / ${fn:length(p)} </jsp:text></span>
+      ${empty currentpagetitle ? currentpage : currentpagetitle}
+    </h1>
+      <div class="top links">
+        <mm:write referid="tabs" escape="none" />
+      </div>
+      <mm:link page="/mmbase/style/ajax-loader.gif">
+        <img src="${_}" id="ajax-loader" />
+      </mm:link>
+      <div class="body ${currentpage}${e} ${styleClass}" style="display: none;">
+        <mm:compare referid="tabClass" regexp=".*\boutside\b.*">
+          <jsp:invoke fragment="intro" />
+          <mm:treeinclude debug="html"
+                          notfound="message" page="${directory}${currentpage}${e}" objectlist="${objectlist}" />
+        </mm:compare>
+        <mm:form page="" id="${f}_form"  jspvar="transaction">
+          <mm:import id="cancel" externid="${f}_cancel" />
+          <mm:import id="submit" externid="${f}_submit" />
+          <mm:present referid="cancel">
+            <mm:cancel />
+            <mm:log>Canceling <jsp:expression>transaction</jsp:expression>
+            <jsp:expression>transaction.isCanceled()</jsp:expression>
+            </mm:log>
+            <script type="text/javascript">
+              $(document).ready(function() {
+              window.location = '<mm:url page="${page}"><mm:param name="${f}">${currentpage}</mm:param></mm:url>'
+              });
+            </script>
+            <jsp:invoke fragment="aftercancel" />
+            <jsp:invoke fragment="aftersubmit" />
+          </mm:present>
+          <mm:notpresent referid="cancel">
+            <mm:compare referid="tabClass" regexp=".*\boutside\b.*" inverse="true">
+              <jsp:invoke fragment="intro" />
+              <mm:treeinclude debug="html"
+                              notfound="message" page="${directory}${currentpage}${e}" objectlist="${objectlist}" />
+            </mm:compare>
+
+            <div class="buttons">
+              <c:if test="${empty nosubmit}">
+                <input type="submit" name="${f}_submit" id="${f}_submit" value="Sla op" />
+                <input type="submit" name="${f}_cancel" id="${f}_cancel" value="Annuleer" />
+              </c:if>
+              <input type="hidden" name="${f}" value="${currentpage}" />
+              <input type="hidden" name="${f}_next" id="${f}_next" value="" />
+            </div>
+
+            <mm:valid>
+              <mm:import externid="${f}_next" id="next" />
+              <mm:log>Valid now going to ${next}</mm:log>
+
+              <mm:present referid="submit">
+                <mm:log>committing <jsp:expression>transaction</jsp:expression></mm:log>
+                <mm:commit />
+                <c:if test="${empty next}">
+                  <script type="text/javascript">
+                    <mm:import id="redirected" />
+                    $(document).ready(function() {
+                      window.location = '<mm:url page="${page}"><mm:param name="${f}">${currentpage}</mm:param></mm:url>';
+                    });
+                  </script>
+                </c:if>
+                <jsp:invoke fragment="aftercommit" />
+                <jsp:invoke fragment="aftersubmit" />
+              </mm:present>
+
+              <script type="text/javascript">
+                <c:choose>
+                  <c:when test="${! empty submit}">
+                    <c:choose>
+                      <c:when test="${(empty closelast or closelast) and empty p[current + 1]}">
+                        <mm:import id="redirected" />
+                        $(document).ready(function() {
+                        window.close();
+                        });
+                      </c:when>
+                      <c:when test="${empty gonext or gonext}">
+                        <mm:import id="redirected" />
+                        $(document).ready(function() {
+                        window.location = '<mm:url page="${page}"><mm:param name="${f}">${p[current + 1]}</mm:param></mm:url>';
+                        });
+                      </c:when>
+                    </c:choose>
+                  </c:when>
+                  <c:when test="${! empty next}">
+                    <mm:import id="redirected" />
+                    $(document).ready(function() {
+                       window.location = '<mm:url page="${page}"><mm:param name="${f}">${next}</mm:param></mm:url>';
+                     });
+                  </c:when>
+                  <c:otherwise>
+                    //alert("don't know what to do");
+                  </c:otherwise>
+                </c:choose>
+              </script>
+            </mm:valid>
+          </mm:notpresent>
+        </mm:form>
+        <mm:notpresent referid="redirected">
+          <script type="text/javascript">
+            $(document).ready(function() {
+              $("div.body").css("display", "block");
+              $("#ajax-loader").css("display", "none");
+              $("div.buttons input, div.tabs a.nav").click(function() {
+                $("#ajax-loader").css("display", "");
+                $('div.body div.tab').css('display', 'none');
+              });
+
+            });
+          </script>
+        </mm:notpresent>
+      </div>
+      <div class="bottom links">
+        <mm:write referid="tabs" escape="none" />
+      </div>
+  </div>
+
+</jsp:root>

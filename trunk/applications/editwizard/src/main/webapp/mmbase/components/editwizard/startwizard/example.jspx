@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<div
+    class="mm_c c_editwizard b_startwizard.example ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+  <h1>Editwizard Examples (startwizards)</h1>
+  <p>
+    This is a set up with news articles and authors. By use of
+    `startwizards' you can stack wizards as high as you want. Note it
+    goes wrong if you edit the same data twice (this might be
+    considered a bug).
+  </p>
+  <table>
+    <tr>
+      <td>
+        <mm:import id="jsps"><mm:setting name="location" />/jsp</mm:import>
+        <mm:import id="templates">/mmbase/components/editwizard/startwizard/</mm:import>
+        <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
+
+        <mm:link referids="referrer,templates" page="$jsps/list.jsp">
+          <mm:param name="wizard">tasks/people</mm:param>
+          <mm:param name="nodepath">people</mm:param>
+          <mm:param name="fields">number,firstname,lastname,owner</mm:param>
+          <mm:param name="orderby">number</mm:param>
+          <mm:param name="directions">down</mm:param>
+          <a href="${_}">List people</a>
+        </mm:link>
+      </td>
+      <td>
+       <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">${templates}/tasks/people.xml</mm:param>
+          <a href="${_}">See XML</a>
+       </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <mm:link referids="referrer,templates" page="$jsps/list.jsp">
+          <mm:param name="wizard">tasks/news</mm:param>
+          <mm:param name="nodepath">news</mm:param>
+          <mm:param name="fields">number,title,date,owner</mm:param>
+          <mm:param name="orderby">number</mm:param>
+          <mm:param name="directions">down</mm:param>
+          <a href="${_}">List news</a>
+        </mm:link>
+      </td>
+      <td>
+       <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">${templates}/tasks/news.xml</mm:param>
+          <a href="${_}">See XML</a>
+       </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <mm:link referids="referrer,templates" page="$jsps/wizard.jsp">
+          <mm:param name="wizard">tasks/people</mm:param>
+          <mm:param name="objectnumber">new</mm:param>
+          <a href="${_}">New person</a>
+        </mm:link>
+      </td>
+      <td>
+
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <mm:link referids="referrer,templates" page="$jsps/wizard.jsp">
+          <mm:param name="wizard">tasks/news</mm:param>
+          <mm:param name="objectnumber">new</mm:param>
+          <a href="${_}">New article</a>
+        </mm:link>
+      </td>
+      <td>
+
+      </td>
+    </tr>
+  </table>
+  <hr />
+  <div class="link">
+    <mm:link page="examples">
+      <a href="${_}"><img alt="back" src="${mm:link('/mmbase/style/images/back.png')}" /></a>
+    </mm:link>
+  </div>
+</div>

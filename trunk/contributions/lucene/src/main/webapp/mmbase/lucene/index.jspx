@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <jsp:directive.include file="head.jspx" />
+  <mm:content type="application/xhtml+xml"
+              postprocessor="none"
+              unacceptable="CRIPPLE"
+              language="en" expires="0">
+    <body class="basic">
+      <mm:cloud rank="administrator">
+        <mm:include page="/mmbase/components/lucene/index.jspx" />
+      </mm:cloud>
+    </body>
+  </mm:content>
+</html>

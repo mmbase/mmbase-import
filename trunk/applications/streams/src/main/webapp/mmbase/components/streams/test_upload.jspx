@@ -1,0 +1,37 @@
+<div
+    class="mm_c c_streams b_upload ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud method="asis" id="cloud">
+    <mm:form commitonclose="false">
+      <mm:createnode id="newsource" type="blob_on_disk" commitonclose="false">
+        <mm:fieldlist fields="url" id="field">
+          <mm:fieldinfo type="input" />
+          <mm:fieldinfo type="errors" />
+        </mm:fieldlist>
+      </mm:createnode>
+      <input type="submit" name="submit" />
+      <mm:import externid="submit" />
+      <mm:present referid="submit">
+        <mm:valid>
+          <mm:commit />
+          <mm:import id="committed" />
+          <mm:node number="${newsource}" cloud="cloud">
+            <p>Submitted ${_node} ${_node.url}</p>
+          </mm:node>
+        </mm:valid>
+      </mm:present>
+      <mm:notpresent referid="committed">
+        <mm:cancel />
+      </mm:notpresent>
+    </mm:form>
+  </mm:cloud>
+
+</div>

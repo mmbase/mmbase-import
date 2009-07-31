@@ -1,0 +1,103 @@
+<jsp:root version="2.0"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <mm:listnodes id="fragment">
+    <tr>
+      <th colspan="100">
+        <mm:nodeinfo type="nodemanager"/>
+        <jsp:text> </jsp:text>
+        <mm:field name="number" />
+        <jsp:text>: </jsp:text>
+        <mm:nodeinfo type="gui" />
+      </th>
+    </tr>
+    <mm:listfunction name="filteredurls" id="uc">
+      <tr>
+        <th>${_.source.builder.tableName} ${_.source.number}</th>
+        <td>
+          <jsp:text>${_.state}</jsp:text>
+          ${_.dimension}
+        </td>
+        <td>
+          <a href="${mm:escape('text/xml', _.URL)}"><mm:escape>${_.URL}</mm:escape></a>
+          ${_.mimeType}
+        </td>
+        <c:choose>
+          <c:when test="${_.main}">
+            <td colspan="2">
+              <mm:function set="streams" name="getJob" referids="_node@node">
+                JOB: ${_.class}
+              </mm:function>
+              <mm:function set="streams" name="runningJobs">
+                JOB: ${_.class}
+              </mm:function>
+              <mm:node number="${_.source.number}">
+                <c:set var="triggervalue" value="${fragment}:${_node}" />
+                <c:choose>
+                  <c:when test="${trigger eq triggervalue}">
+                    <mm:log> CALLING TRIGGER FOR ${trigger}</mm:log>
+                    <mm:voidfunction name="trigger" />
+                    <jsp:text>Triggered conversion</jsp:text>
+                  </c:when>
+                  <c:otherwise>
+                    <mm:link referids="triggervalue@trigger">
+                      <a href="${_}">Trigger</a>
+                    </mm:link>
+                  </c:otherwise>
+                </c:choose>
+                <jsp:text>, </jsp:text>
+                <c:choose>
+                  <c:when test="${interrupt eq _node.number}">
+                    <mm:function set="streams" name="cancelJob" referids="interrupt@node" />
+                  </c:when>
+                  <c:otherwise>
+                    <mm:link referids="_node@interrupt">
+                      <a href="${_}">interrupt</a>
+                    </mm:link>
+                  </c:otherwise>
+                </c:choose>
+              </mm:node>
+            </td>
+          </c:when>
+          <c:otherwise>
+            <mm:node number="${_.source.number}" notfound="skip">
+              <td>
+                <mm:hasfield name="id">
+                  <mm:field name="id" />
+                </mm:hasfield>
+              </td>
+              <td>
+                <mm:hasfield name="id">
+                  <mm:field name="key" />
+                </mm:hasfield>
+              </td>
+            </mm:node>
+          </c:otherwise>
+        </c:choose>
+      </tr>
+    </mm:listfunction>
+  </mm:listnodes>
+  <tr cols="100">
+    <mm:previousbatches id="pb">
+      <mm:link>
+        <mm:param name="page"><mm:index  /></mm:param>
+        <a href="${_}"><mm:index /></a>
+      </mm:link>
+      <jsp:text>, </jsp:text>
+    </mm:previousbatches>
+    <mm:index />
+    <mm:nextbatches id="nb">
+      <jsp:text>, </jsp:text>
+      <mm:link>
+        <mm:param name="page"><mm:index /></mm:param>
+        <a href="${_}"><mm:index /></a>
+      </mm:link>
+    </mm:nextbatches>
+
+  </tr>
+
+</jsp:root>

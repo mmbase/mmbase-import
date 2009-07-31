@@ -1,0 +1,9 @@
+<!--
+    assigned.dtd
+-->
+
+<!ELEMENT assigned (assign*)>
+
+<!ELEMENT assign (#PCDATA)>
+<!ATTLIST assign id CDATA #IMPLIED>
+<!ATTLIST assign theme CDATA #IMPLIED>

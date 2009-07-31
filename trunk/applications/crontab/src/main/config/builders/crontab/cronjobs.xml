@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    version="1" name="cronjobs" maintainer="mmbase.org" extends="object">
+  <class>org.mmbase.applications.crontab.builders.CronJobs</class>
+  <searchage>360</searchage>
+
+  <names>
+    <singular xml:lang="nl">Cronjob</singular>
+    <singular xml:lang="en">Cron job</singular>
+    <plural xml:lang="nl">Cronjobs</plural>
+    <plural xml:lang="en">Cron jobs</plural>
+  </names>
+
+  <properties>
+    <!--
+        If this property is 'false' than the cronjobs will run on _all_ servers if no mmservers objects are related
+    -->
+    <property name="RelatedMMServersRequired">false</property>
+  </properties>
+
+
+  <fieldlist>
+    <field name="name">
+      <descriptions>
+        <description xml:lang="en">A identifying name for this job</description>
+        <description xml:lang="nl">Een naam voor deze cron-taak</description>
+      </descriptions>
+
+      <gui>
+        <guiname xml:lang="nl">Naam</guiname>
+        <guiname xml:lang="en">Name</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="127" />
+      </datatype>
+    </field>
+
+    <field name="crontime">
+      <descriptions>
+        <description xml:lang="en">When the cronjob must be executed, using the 'crontab' syntax (see crontab(5))</description>
+        <description xml:lang="nl">Op welke tijdstippen deze cron-taak moet worden uitgevoerd volgens de 'crontab' syntax (zie crontab(5))</description>
+      </descriptions>
+
+      <gui>
+        <guiname xml:lang="nl">Crontijd</guiname>
+        <guiname xml:lang="en">Cron time</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="*/5 * * * *" />
+        <maxLength value="127" />
+      </datatype>
+    </field>
+
+    <field name="classfile">
+      <descriptions>
+        <description xml:lang="en">The name of the implementating class (implementation Runnable or CronJob)</description>
+        <description xml:lang="nl">De naam van de class die deze taak implementeert (een implementatie van Runnable of CronJob)</description>
+      </descriptions>
+
+      <gui>
+        <guiname xml:lang="nl">Class</guiname>
+        <guiname xml:lang="en">Class</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>3</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="127" />
+      </datatype>
+    </field>
+
+    <field name="config">
+      <descriptions>
+        <description xml:lang="en">A configuration string for the CronJob</description>
+        <description xml:lang="nl">Een configuratie-string voor de CronJob class</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Configuratie</guiname>
+        <guiname xml:lang="en">Configuration</guiname>
+      </gui>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="2048" />
+      </datatype>
+    </field>
+
+    <field name="type">
+      <descriptions>
+        <description xml:lang="en">cronjob type</description>
+        <description xml:lang="nl">het type job</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Type jobs</guiname>
+        <guiname xml:lang="en">Job type</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="MUSTBEONE" />
+        <required value="true" />
+        <enumeration>
+          <entry
+              javaconstants="org.mmbase.applications.crontab.CronEntry$Type"
+              basename="org.mmbase.applications.crontab.builders.resources.jobtypes" />
+        </enumeration>
+      </datatype>
+    </field>
+    <field name="lastrun">
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="count">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+    <field name="lastcost">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+  </fieldlist>
+</builder>
+

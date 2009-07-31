@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="scan"
+    defaultblock="welcome"
+    version="9"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
+                        http://www.mmbase.org/xmlns/component.xsd">
+
+  <description xml:lang="en">MMBase SCAN (deprecated)</description>
+  <description xml:lang="nl">MMBase SCAN (niet gebruiken)</description>
+
+
+  <block name="scan"
+         classification="mmbase.edit:1000"
+         mimetype="text/html">
+    <title xml:lang="nl">Generieke scan-editors</title>
+    <title xml:lang="en">Basic generic SCAN editors</title>
+    <body>
+      <class name="org.mmbase.framework.IFrameRenderer">
+        <param name="url">/mmeditors/index.shtml</param>
+      </class>
+    </body>
+  </block>
+
+</component>
