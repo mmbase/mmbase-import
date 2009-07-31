@@ -188,7 +188,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         if (log.isDebugEnabled()) {
             log.debug("Serializing " + this);
         }
-        supportMark();
+        if (file == null) {
+            supportMark();
+        }
         reset();
         out.writeObject(get());
         out.writeObject(name);
