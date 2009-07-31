@@ -184,8 +184,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             throw new RuntimeException(ioe);
         }
     }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+    protected void _writeObject(java.io.ObjectOutputStream out) throws IOException {
         if (log.isDebugEnabled()) {
             log.debug("Serializing " + this);
         }
@@ -196,7 +195,13 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         out.writeObject(contentType);
         reset();
     }
-    private void readObject(java.io.ObjectInputStream oin) throws IOException, ClassNotFoundException {
+
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        _writeObject(out);
+    }
+
+
+    protected void _readObject(java.io.ObjectInputStream oin) throws IOException, ClassNotFoundException {
         if (log.isDebugEnabled()) {
             log.debug("DeSerializing " + this);
         }
@@ -205,7 +210,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         size = b.length;
         name = (String) oin.readObject();
         contentType = (String) oin.readObject();
-
+    }
+    private void readObject(java.io.ObjectInputStream oin) throws IOException, ClassNotFoundException {
+        _readObject(oin);
     }
 
     private synchronized FileInputStream supportMark() {
