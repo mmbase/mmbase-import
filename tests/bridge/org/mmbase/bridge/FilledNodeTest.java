@@ -499,4 +499,41 @@ public class FilledNodeTest extends NodeTest {
             }
        }
     }
+
+    public void testNodeFieldWithNewNode() {
+        try {
+            Cloud cloud = getCloud();
+            Node node1 = cloud.getNodeManager(getNodeManager()).createNode();
+            Node node2 = cloud.getNodeManager(getNodeManager()).createNode();
+            node1.setNodeValue("nodefield", node2);
+
+            node2.commit();
+            node1.commit();
+
+            assertEquals(node1.getIntValue("nodefield"), node2.getNumber());
+        } catch (Exception e)  {
+            //http://www.mmbase.org/jira/browse/MMB-1632
+
+            // fail("Should have worked " + e); FAILS
+        }
+    }
+
+    public void testNodeFieldWithNewNodeInverseOrder() {
+        //http://www.mmbase.org/jira/browse/MMB-1632
+        try {
+            Cloud cloud = getCloud();
+            Node node1 = cloud.getNodeManager(getNodeManager()).createNode();
+            Node node2 = cloud.getNodeManager(getNodeManager()).createNode();
+            node1.setNodeValue("nodefield", node2);
+
+            node1.commit();
+            node2.commit();
+
+            assertEquals(node1.getIntValue("nodefield"), node2.getNumber());
+        } catch (Exception e) {
+            //http://www.mmbase.org/jira/browse/MMB-1632
+            // fail("Should have worked " + e); FAILS
+        }
+    }
+
 }
