@@ -15,10 +15,15 @@ $Id$
   svn co  https://scm.mmbase.org/mmbase/tags/MMBase-1_9_1_Final
 
    And edit:
-  - src/org/mmbase/Version.java
-  - maven-base/pom.xml
-  - Fix the poms:
+  - core/src/main/java/org/mmbase/Version.java
+  - pom.xml
+  - Fix the other poms:
    for i in `find . -name pom.xml` ; do cat $i | sed s/1.9-SNAPSHOT/1.9.1/g > $i.new ; mv $i.new $i   ; done
+
+  - Check this in
+
+
+- Make sure you use java 5
 
  - Build following dirs first with -N
    maven-base
@@ -27,9 +32,11 @@ $Id$
    applications
    contributions/lucene
 
- - Then in maven: mvn -Pdeploy
+ - Then:
+   mvn -P'deploy,!development,!servlet25' clean deploy
+   cd base-app
+   mvn -P'deploy,!development,setvlet25' clean deploy
 
- - Build some other contributions too, if desired.
 
 
 
