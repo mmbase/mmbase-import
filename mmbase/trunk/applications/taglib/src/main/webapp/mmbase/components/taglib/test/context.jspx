@@ -3,7 +3,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    class="mm_c c_taglib b_test_tree ${requestScope.componentClassName}"
+    class="mm_c c_taglib b_test_context ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
   <h2>mm:context</h2>
@@ -11,7 +11,7 @@
   <mm:cloud>
     <mm:context>
 
-      ${pageScope['org.mmbase.escaper']}
+      ${pageScope['org.mmbase.bridge.jsp.taglib.escaper']}
       <mm:context id="test">
         <mm:import id="a">A</mm:import>
       </mm:context>
@@ -33,7 +33,19 @@
         </c:forEach>
         (should be a=A)
       </p>
-      <mm:write referid="org.mmbase.bridge.jsp.taglib.escaper" />
+      <!--
+      <p>${requestScope['org.mmbase.bridge.jsp.taglib.escaper']} should equal <mm:write referid="org.mmbase.bridge jsp.taglib.escaper" /></p>
+      -->
+
+      <mm:context scope="session" id="context_in_session">
+        <mm:remove referid="subcontext" />
+        <mm:context id="subcontext">
+          <mm:import id="y" reset="true">Y</mm:import>
+        </mm:context>
+        <mm:import id="x" reset="true">X</mm:import>
+        <mm:write referid="x" />
+      </mm:context>
+      <p>${context_in_session.subcontext}</p>
 
     </mm:context>
   </mm:cloud>

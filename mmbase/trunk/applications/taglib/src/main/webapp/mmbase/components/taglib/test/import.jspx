@@ -31,7 +31,7 @@
   <form enctype="multipart/form-data" method="post">
     <p><input type="file" name="a" /></p>
     <p><input type="string" name="b" value="${b}" readonly="readonly"  /></p>
-    <p><input type="string" name="c" value="2" readonly="readonly"  /></p>
+    <p><input type="string" name="c" value="${mm:escape('none', c)}" readonly="readonly"  /></p>
     <input type="submit" name="post" value="Post" />
   </form>
   <hr />
