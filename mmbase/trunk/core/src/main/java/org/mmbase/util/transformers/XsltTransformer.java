@@ -14,6 +14,7 @@ import org.mmbase.util.*;
 import java.io.*;
 import java.util.*;
 import java.net.URL;
+import javax.xml.stream.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.Source;
