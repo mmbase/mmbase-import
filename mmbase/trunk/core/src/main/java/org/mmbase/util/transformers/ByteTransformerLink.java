@@ -31,6 +31,7 @@ public class ByteTransformerLink implements Runnable {
     private InputStream     in;
     private boolean    closeOutputStream;
     private boolean    ready = false;
+    private Throwable exception;
 
     public ByteTransformerLink(ByteTransformer t, InputStream i, OutputStream o, boolean co) {
         in = i;
@@ -42,17 +43,31 @@ public class ByteTransformerLink implements Runnable {
     synchronized public  void run() {
         try {
             transformer.transform(in, out);
-            if (closeOutputStream) {
+        } catch (Throwable t) {
+            log.error(t.toString(), t);
+            exception = t;
+        }
+        if (closeOutputStream) {
+            try {
                 out.close();
+            } catch (IOException io) {
+                log.error(io.toString(), io);
+                if (exception != null) {
+                    exception = io;
+                }
             }
-        } catch (IOException io) {
-            log.error(io.toString());
-            log.error(io);
         }
         ready = true;
         notifyAll();
     }
     synchronized public boolean ready() {
         return ready;
+    }
+
+    /**
+     * If some exception occured, durint {@link #run()}, then it can be found here.
+     */
+    public Throwable getException() {
+        return exception;
     }
 }
