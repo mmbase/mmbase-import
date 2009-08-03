@@ -27,8 +27,19 @@ public class LastModifier implements CommitProcessor {
 
     private static final long serialVersionUID = 1L;
 
+    private boolean setIfNotChanged = false;
+    /**
+     * On default the field is not changed if no other fields were changed. You can override this
+     * using this property.
+     *
+     * @since MMBase-1.9.1
+     */
+    public void setIfNotChanged(boolean b) {
+        setIfNotChanged = b;
+    }
+
     public void commit(Node node, Field field) {
-        if (node.mayWrite()) {
+        if (node.mayWrite() && (setIfNotChanged || node.getChanged().size() > 0)) {
             node.setValueWithoutProcess(field.getName(),node.getCloud().getUser().getIdentifier());
         }
     }
