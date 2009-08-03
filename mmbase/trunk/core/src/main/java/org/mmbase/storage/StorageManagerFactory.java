@@ -17,7 +17,6 @@ import javax.servlet.ServletContext;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-
 import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.*;
 
@@ -646,15 +645,15 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
             if (!hasOption(Attributes.DISALLOWED_FIELD_CASE_SENSITIVE)) {
                 key = key.toLowerCase();
             }
-            if (disallowedFields.containsKey(key)) {
-                String newid = disallowedFields.get(key);
-                if (newid == null) {
-                    if (hasOption(Attributes.ENFORCE_DISALLOWED_FIELDS)) {
-                        throw new StorageException("The name of the field '"+((CoreField)mmobject).getName()+"' is disallowed, and no alternate value is available.");
-                    }
-                } else {
-                    id = newid;
+            String newid = disallowedFields.get(key);
+            if (newid == null) {
+                if (hasOption(Attributes.ENFORCE_DISALLOWED_FIELDS)) {
+                   if (disallowedFields.containsKey(key)) {
+                       throw new StorageException("The name of the field '"+key+"' is disallowed, and no alternate value is available.");
+                   }
                 }
+            } else {
+                id = newid;
             }
         } else {
             throw new StorageException("Cannot obtain identifier for param of type '"+mmobject.getClass().getName()+".");
