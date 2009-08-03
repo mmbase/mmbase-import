@@ -75,6 +75,10 @@ public class TransformingOutputStream extends PipedOutputStream {
 
     }
 
+    public Throwable getException() {
+        return link.getException();
+    }
+
 
 
 }
