@@ -15,7 +15,6 @@
   <version>${mmbase.version}</version>
 
   <properties>
-    <project.name>taglib</project.name>
   </properties>
 
   <description>
