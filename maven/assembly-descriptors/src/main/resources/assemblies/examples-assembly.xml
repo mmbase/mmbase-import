@@ -7,7 +7,7 @@
   <fileSets>
     <fileSet>
       <directory>src/main/examples</directory>
-      <outputDirectory>/mmexamples/${project.name}</outputDirectory>
+      <outputDirectory>/</outputDirectory>
       <includes>
       	<include>**/*</include>
       </includes>
