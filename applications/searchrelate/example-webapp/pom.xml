@@ -75,6 +75,14 @@
 
     <dependency>
       <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-searchrelate</artifactId>
+      <version>${mmbase.version}</version>
+      <classifier>examples</classifier>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mmbase</groupId>
       <artifactId>mmbase-mynews</artifactId>
       <version>${mmbase.version}</version>
       <type>war</type>
