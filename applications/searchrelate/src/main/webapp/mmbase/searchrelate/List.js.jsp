@@ -56,17 +56,19 @@ function List(d) {
     this.defaultStale = 1000;
 
     this.valid = true;
-    this.validator = new MMBaseValidator();
-    this.validator.lang = "${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}";
-    this.validator.prefetchNodeManager(this.type);
-    this.validator.setup(this.div);
-    this.validator.validateHook =  function(valid, element) {
-        self.valid = valid;
-        self.lastChange = new Date();
-        if (self.lastCommit == null && element == null) {
-            self.lastCommit = self.lastChange;
-        }
-    };
+    this.validator = typeof(MMBaseValidator) != "undefined" ?  new MMBaseValidator() : null;
+    if (this.validator != null) {
+        this.validator.lang = "${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}";
+        this.validator.prefetchNodeManager(this.type);
+        this.validator.setup(this.div);
+        this.validator.validateHook =  function(valid, element) {
+            self.valid = valid;
+            self.lastChange = new Date();
+            if (self.lastCommit == null && element == null) {
+                self.lastCommit = self.lastChange;
+            }
+        };
+    }
     $.timer(1000, function(timer) {
         self.commit();
     });
@@ -96,7 +98,9 @@ function List(d) {
     $(this.div).find("input[type='text']").filter(function() {
         return this.value.match(/^<.*>$/); }).one("focus", function() {
             this.value = "";
-            self.validator.validateElement(this);
+            if (self.validator != null) {
+                self.validator.validateElement(this);
+            }
         });
     this.setTabIndices();
     $(this.div).trigger("mmsrRelatedNodesReady", [self]);
@@ -222,14 +226,18 @@ List.prototype.bindCreate = function(a) {
                             // remove default value on focus
                             $(r).find("input").one("focus", function() {
                                 this.value = "";
-                                a.list.validator.validateElement(this);
+                                if (a.list.validator != null) {
+                                    a.list.validator.validateElement(this);
+                                }
                             });
                             if (params.createpos == 'top') {
                                 a.list.find(null, "ol").prepend(r);
                             } else {
                                 a.list.find(null, "ol").append(r);
                             }
-                            a.list.validator.addValidation(r);
+                            if (a.list.validator != null) {
+                                a.list.validator.addValidation(r);
+                            }
                             a.list.find("delete", "a", r).each(function() {
                                 a.list.bindDelete(this);
                             });
@@ -273,7 +281,9 @@ List.prototype.bindDelete = function(a) {
                     complete: function(res, status){
                         if ( status == "success" || status == "notmodified" ) {
                             var li = $(a).parents("li")[0];
-                            a.list.validator.removeValidation(li);
+                            if (a.list.validator != null) {
+                                a.list.validator.removeValidation(li);
+                            }
                             var ol = $(a).parents("ol")[0];
                             if (ol != null) { // seems to happen in IE sometimes?
                                 ol.removeChild(li);
