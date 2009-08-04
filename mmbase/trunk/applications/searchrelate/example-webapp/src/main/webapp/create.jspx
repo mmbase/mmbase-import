@@ -1,0 +1,12 @@
+<mm:cloud
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    method="asis">
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm:import externid="type" required="true" />
+
+  <mm:createnode type="${type}" commitonclose="false">
+    <mm:include page="item.jspx" />
+  </mm:createnode>
+</mm:cloud>
