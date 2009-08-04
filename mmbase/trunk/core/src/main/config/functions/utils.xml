@@ -4,7 +4,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/functionset
                         http://www.mmbase.org/xmlns/functionset.xsd">
-    >
 
   <description>Some util functions from org.mmbase.util, made accessible through the function-framework</description>
 
