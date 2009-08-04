@@ -121,8 +121,12 @@ public class CreateCachesProcessor implements CommitProcessor {
                                         if (childs.item(j) instanceof Element) {
                                             Element child = (Element) childs.item(j);
                                             if (child.getTagName().equals("loganalyzer")) {
-                                                Analyzer analyzer = (Analyzer) Instantiator.getInstance(child);
-                                                def.analyzers.add(analyzer);
+                                                try {
+                                                    Analyzer analyzer = (Analyzer) Instantiator.getInstance(child);
+                                                    def.analyzers.add(analyzer);
+                                                } catch (Exception e) {
+                                                    LOG.error(XMLWriter.write(child) + ": " + e.getMessage(), e);
+                                                }
 
                                             }
                                         }
