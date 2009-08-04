@@ -14,12 +14,13 @@ import org.mmbase.bridge.Transaction;
 /**
  * This tag can be used inside a transaction tag, to cancel it.
  *
- * @author Michiel Meeuwissen 
+ * @author Michiel Meeuwissen
  * @version $Id$
  */
 
-public class CancelTag extends CommitTag {
+public class CancelTag extends TransactionReferrerTag {
 
+    @Override
     protected void doAction(Transaction t) {
         t.cancel();
     }

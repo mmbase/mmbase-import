@@ -18,19 +18,20 @@ import org.mmbase.bridge.Transaction;
 import org.mmbase.util.logging.*;
 
 /**
- * This tag can be used inside a transaction tag, to commit it. It also
- * serves as a baseclass for e.g. CancelTag
  *
  * @author Michiel Meeuwissen
- * @version $Id$
+ * @version $Id: CommitTag.java 35335 2009-05-21 08:14:41Z michiel $
+ * @since MMBase-1.9.2
  */
 
-public class CommitTag extends TransactionReferrerTag {
+public class RefreshTag extends TransactionReferrerTag {
     private static final Logger log = Logging.getLoggerInstance(CommitTag.class);
 
     @Override
-    protected void doAction(Transaction t) {
-        log.debug("Committing " + t);
-        t.commit();
+    public int doStartTag() throws JspTagException {
+        TransactionTag tag = findTransactionTag(true);
+        tag.refreshTransaction();
+        return SKIP_BODY;
     }
+
 }

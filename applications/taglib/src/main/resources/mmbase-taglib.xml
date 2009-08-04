@@ -3498,6 +3498,13 @@ transaction was commited, following should result anything:
       <rtexprvalue>true</rtexprvalue>
       <info>The id of the transaction.</info>
     </attribute>
+    <attribute>
+      <name>refresh</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Whether to 'refresh' the transaction afher the commit</info>
+      <since>MMBase-1.9.2</since>
+    </attribute>
     <example>See the example for tag `transaction'.</example>
   </tag>
   <tag>
@@ -3508,6 +3515,30 @@ transaction was commited, following should result anything:
     <info>
       The commit tag can be use to commit a transaction.
     </info>
+    <attribute>
+      <name>transaction</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The id of the transaction.</info>
+    </attribute>
+    <attribute>
+      <name>refresh</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Whether to 'refresh' the transaction afher the commit</info>
+      <since>MMBase-1.9.2</since>
+    </attribute>
+    <example>See the example for tag `transaction'.</example>
+  </tag>
+  <tag>
+    <name>refresh</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.edit.RefreshTag</tagclass>
+    <bodycontent>empty</bodycontent>
+    <see tag="transaction" />
+    <info>
+      The refresh tag can be used to make the current mm:transaction (or mm:form) useable again, after a commit or cancel
+    </info>
+    <since>MMBase-1.9.2</since>
     <attribute>
       <name>transaction</name>
       <required>false</required>
