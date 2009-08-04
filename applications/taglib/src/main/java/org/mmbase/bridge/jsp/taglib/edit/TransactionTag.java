@@ -47,6 +47,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
 
     protected Object prevCloud;
     protected Object prevTransaction;
+    protected boolean putInContext = false;
 
     public void setCommitonclose(String c) throws JspTagException {
         commit = getAttribute(c);
@@ -76,6 +77,21 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
     }
 
     /**
+     * @since MMBase-1.9.2
+     */
+    protected void refreshTransaction() throws JspTagException {
+        String n = getName();
+        if (name == null) {
+            throw new JspTagException("Did not find transaction in context, and no name for transaction supplied");
+        }
+        transaction = super.getCloudVar().getTransaction(n);
+        if (getId() != null && putInContext) { // put it in context
+            log.debug("putting transaction in context");
+            getContextProvider().getContextContainer().register(getId(), transaction);
+        }
+    }
+
+    /**
      *  Creates the transaction.
      */
     public int doStartTag() throws JspTagException{
@@ -102,16 +118,9 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
                 }
             } catch (JspTagException e) { }
         }
+        putInContext = ! foundThis;
         if (transaction == null) { // not found in context
-            String n = getName();
-            if (name == null) {
-                throw new JspTagException("Did not find transaction in context, and no name for transaction supplied");
-            }
-            transaction = super.getCloudVar().getTransaction(n);
-            if (getId() != null && ! foundThis) { // put it in context
-                log.debug("putting transaction in context");
-                getContextProvider().getContextContainer().register(getId(), transaction);
-            }
+            refreshTransaction();
         }
         prevCloud = pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE);
         prevTransaction = pageContext.getAttribute(TransactionTag.KEY, TransactionTag.SCOPE);
