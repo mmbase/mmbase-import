@@ -36,6 +36,14 @@
         <configuration>
           <jettyEnvXml>${basedir}/jetty-env.xml</jettyEnvXml>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
       </plugin>
       <!--
           it's broken.
@@ -124,7 +132,7 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-statistics</artifactId>
-      <version>0.3-SNAPSHOT</version>
+      <version>0.4-SNAPSHOT</version>
       <type>war</type>
     </dependency>
 
@@ -139,14 +147,6 @@
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <version>1.8.0.7</version>
-    </dependency>
-
-
-    <dependency>
-      <groupId>c3p0</groupId>
-      <artifactId>c3p0</artifactId>
-      <version>0.9.1.2</version>
-      <scope>runtime</scope>
     </dependency>
 
   </dependencies>
