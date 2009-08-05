@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="portalpagesnodes" maintainer="didactor.nl" version="3" extends="navigationnodes">
+  <searchage>1000</searchage>
+
+  <names>
+    <singular xml:lang="en">Portalpagesnode</singular>
+    <plural xml:lang="en">Portalpagesnodes</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="en">Portal Page Node</description>
+  </descriptions>
+  <properties>
+    <property name="show_domain">/portalpages/frontoffice/</property>
+  </properties>
+
+</builder>

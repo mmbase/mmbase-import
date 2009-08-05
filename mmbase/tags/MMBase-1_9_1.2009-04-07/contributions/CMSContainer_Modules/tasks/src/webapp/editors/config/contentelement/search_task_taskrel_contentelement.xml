@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="taskrel" destination="contentelement" minoccurs="0" maxoccurs="1">
+   <title xml:lang="nl">Content element</title>
+   <title xml:lang="en">Content element</title>
+   <title xml:lang="zh">内容元素</title>
+   <item>
+      <field ftype="data" name="title" >
+         <prompt xml:lang="en">Title</prompt>
+         <prompt xml:lang="nl">Titel</prompt>
+         <prompt xml:lang="zh">标题</prompt>
+      </field>
+   </item>
+   <command name="contentselector" ></command>
+
+   <action type="create">
+      <relation destinationtype="contentelement" role="taskrel"/>
+   </action>
+</list>

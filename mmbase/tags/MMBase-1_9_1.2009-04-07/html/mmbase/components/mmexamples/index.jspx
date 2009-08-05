@@ -1,0 +1,56 @@
+<mm:cloud
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          >
+  <jsp:output omit-xml-declaration="true" />
+  <div
+      class="mm_c c_mmexamples b_index ${requestScope['org.mmbase.componentClassName']}"
+      id="${requestScope['org.mmbase.componentId']}">
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+	<p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+
+
+    <h4>JSP/Taglib demo's</h4>
+    <dl>
+      <dt>
+        <a href="${mm:link('/mmexamples/mynews.jsp')}">MyNews</a>
+      </dt>
+      <dd>
+        Small example of a news/magazine system. A more recent version has been rewritten
+        to the component framework and can be found at
+        <a href="${mm:link('/mmbase/examples/mynews/magazine')}">/mmbase/examples/mynews/magazine</a>.
+      </dd>
+      <dt>
+        <a href="${mm:link('/mmexamples/taglib/')}">MMBase tag library examples</a>
+      </dt>
+      <dd>
+        A lot of different examples for the MMBase taglib.
+      </dd>
+      <dt>
+        <mm:link page="jsp-editors">
+          <a href="${_}">Editors</a>
+        </mm:link>
+      </dt>
+      <dd>All generic editors are of course very complex examples of jsp-pages. </dd>
+    </dl>
+
+    <h4>Other demo's</h4>
+    <dl>
+      <dt>
+        <mm:link page="/mmexamples/codings/">
+          <a href="${_}">Codings</a>
+        </mm:link>
+      </dt>
+      <dd>Shows text in different encodings.</dd>
+      <dt>
+        <mm:link>
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:frameworkparam name="block">datatypes</mm:frameworkparam>
+          <a href="${_}">Datatypes</a>
+        </mm:link>
+      </dt>
+      <dd>MMBase has powerful support for datatypes.</dd>
+    </dl>
+
+  </div>
+</mm:cloud>

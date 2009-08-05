@@ -1,0 +1,35 @@
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        version="2.0"
+        xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance"
+        ns0:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+  <tlib-version>1.0</tlib-version>
+  <short-name>mm-sr</short-name>
+  <uri>http://www.mmbase.org/tags/mm/searchrelate</uri>
+
+  <tag-file>
+    <name>relate</name>
+    <path>/META-INF/tags/mm/searchrelate/relate.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>relatednodes</name>
+    <path>/META-INF/tags/mm/searchrelate/relatednodes.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>delete</name>
+    <path>/META-INF/tags/mm/searchrelate/delete.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>tabs</name>
+    <path>/META-INF/tags/mm/searchrelate/tabs.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>button</name>
+    <path>/META-INF/tags/mm/searchrelate/button.tagx</path>
+  </tag-file>
+
+
+</taglib>

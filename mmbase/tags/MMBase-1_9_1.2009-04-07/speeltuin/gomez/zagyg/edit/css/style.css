@@ -1,0 +1,119 @@
+body {
+  font-family : Arial, Helvetica, sans-serif;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  font-size : 12px;
+  height: 800px;
+  background-color:white;
+}
+
+a {
+  color : #0681C7;
+  text-decoration: none;
+}
+
+a:hover {
+  color : #0681C7;
+  text-decoration: underline;
+}
+
+#navigation {
+  height: 15px;
+  width: 100%;  /* help IE */
+  text-align : left;
+  color : White;
+  font-size : 12px;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+  z-index: 20;
+  background-color:black;
+}
+
+#navigation div {
+  margin-left: 10px;
+}
+
+#navigation div span {
+  height: 20px;
+}
+
+#navigation a {
+  font-size: 12px;
+  font-family: Arial,Helvetica;
+  color : #fff;
+  text-decoration: none;
+  padding: 0 8px 0 6px;
+  margin: 8px 0 0 0;
+  font-weight : bold;
+}
+
+#navigation a:hover {
+  font-size: 12px;
+  font-family: Arial,Helvetica;
+  color : #fff;
+  text-decoration: underline;
+  font-weight : bold;
+}
+
+#navigation  img{
+
+}
+.actief {
+ background-color:#999999;
+}
+
+#content {
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+  voice-family: "\"}\"";
+  voice-family: inherit;
+  height: 80%;
+}
+
+#content h2 {
+  font-size: 12px;
+  font-family: Arial,Helvetica;
+  color : #000;
+  font-weight : bold;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+#content p {
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+#content table {
+  border-collapse: collapse;
+  margin: 0px 0px 0px 0px;
+  margin-left: 1ex;
+}
+
+#content img {
+  margin: 6px 6px 0 0;
+}
+
+#content tr td {
+  font-size : 12px;
+  text-align : left;
+  color : #4C4B4B;
+  letter-spacing : 0.8px;
+  vertical-align: top;
+}
+
+h1, h2 {
+  margin: 0 0 0 0;
+  color : #000;
+   font-size: 13px;
+        font-weight : bold;
+        padding-right: 0px;
+        padding-top: 0px;
+        border-bottom: solid 1px #BEBABA;
+        letter-spacing : 0.5;
+        line-height : 18px;
+}
+
+textarea {
+  width: 100%;
+}

@@ -1,0 +1,35 @@
+<mm:content
+    type="application/xml"
+     postprocessor="none"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <c:choose>
+    <c:when test="${di:setting('education', 'education_paragraphs')}">
+      <jsp:output omit-xml-declaration="no"
+                  doctype-public="-//MMBase/DTD editwizard 1.0//EN"
+                  doctype-system="http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+                  doctype-root-element="form-schema"
+                  />
+      <form-schema id="step2">
+        <title xml:lang="nl">Alineas invoeren</title>
+        <title xml:lang="en">Enter paragraphs</title>
+        <field name="name" ftype="data">
+          <prompt xml:lang="nl">Opleiding titel</prompt>
+          <prompt xml:lang="en">Education title</prompt>
+        </field>
+        <field name="showtitle" ftype="enum">
+          <prompt xml:lang="nl">Titel tonen</prompt>
+          <prompt xml:lang="en">Show title</prompt>
+          <optionlist select="boolean" />
+        </field>
+        <list extends="config/paragraphs/add_paragraphs_posrel.xml"/>
+      </form-schema>
+    </c:when>
+    <c:otherwise>
+      <nop />
+    </c:otherwise>
+  </c:choose>
+
+</mm:content>

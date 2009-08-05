@@ -1,0 +1,4 @@
+oscache.loc=http://www.mmbase.org/maven/opensymphony/jars/oscache-2.4.1.jar
+oscache.file=oscache-2.4.1.jar
+oscache.dest=${download.dir}/${oscache.file}
+oscache.jar=${oscache.dest}

@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<datatypes
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
+
+  <!-- @version $Id: datatypes.xml,v 1.4 2009-01-08 12:28:07 michiel Exp $
+
+  -->
+
+  <datatype base="integer"
+            id="didactor_assessment_troubles">
+    <default value="6" />
+    <required value="true" />
+    <enumeration>
+      <entry basename="nl.didactor.resources.troubles" />
+    </enumeration>
+  </datatype>
+
+
+  <!--
+  it is actually quite silly that didactor does not use actual resourcebundles for translations,
+  because in that case I simply could have referred to that here.
+  -->
+  <datatype base="string" id="didactor_assessment_problemtypes">
+    <default value="problemtype_solvable" />
+    <required value="true" />
+    <minLength value="12" />
+    <enumeration>
+      <entry value="problemtype_unimportant" xml:lang="en" display="Unimportant problems" />
+      <entry value="problemtype_solvable"    xml:lang="en" display="Solvable problems" />
+      <entry value="problemtype_notsolvable" xml:lang="en" display="Not solvable problems" />
+
+
+      <entry value="problemtype_unimportant" xml:lang="nl" display="Onbelangrijk" />
+      <entry value="problemtype_solvable"    xml:lang="nl" display="Oplosbaar" />
+      <entry value="problemtype_notsolvable" xml:lang="nl" display="Onoplosbaar" />
+
+    </enumeration>
+  </datatype>
+
+  <datatype base="yesno" id="didactor_assessment_field">
+    <default value="false" />
+    <setprocessor>
+      <class name="nl.didactor.component.assessment.AssessmentField$Set" />
+    </setprocessor>
+    <getprocessor>
+      <class name="nl.didactor.component.assessment.AssessmentField$Get" />
+    </getprocessor>
+  </datatype>
+
+</datatypes>

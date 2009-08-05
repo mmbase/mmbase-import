@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<field
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="intro">
+  <descriptions>
+    <description xml:lang="en">Intro</description>
+    <description xml:lang="nl">Intro</description>
+  </descriptions>
+  <gui>
+    <guiname xml:lang="nl">Intro</guiname>
+    <guiname xml:lang="en">Intro</guiname>
+  </gui>
+  <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <maxLength value="1024" />
+  </datatype>
+</field>

@@ -1,0 +1,60 @@
+<?xml version="1.0" ?>
+<builder
+  xmlns="http://www.mmbase.org/xmlns/builder"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                      http://www.mmbase.org/xmlns/builder.xsd"
+  name="mmbaseactions" maintainer="www.mmbase.org" version="0" extends="object"
+  defaultcontextintypedef="security"
+  >
+  <class>org.mmbase.security.implementation.cloudcontext.builders.Actions</class>
+  <names>
+    <singular xml:lang="en">Security Action</singular>
+    <singular xml:lang="nl">Security-actie</singular>
+    <singular xml:lang="eo">Sekereca ago</singular>
+    <plural xml:lang="en">Security Actions</plural>
+    <plural xml:lang="nl">Security-acties</plural>
+    <plural xml:lang="eo">Sekurecaj agoj</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="en">
+      Actions used by MMBase Framework Components
+    </description>
+  </descriptions>
+  <fieldlist>
+    <field name="component">
+      <gui>
+        <guiname xml:lang="nl">Component</guiname>
+        <guiname xml:lang="eo">Komponento</guiname>
+        <guiname xml:lang="en">Component</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="components" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+    <field name="action">
+      <gui>
+        <guiname xml:lang="nl">Actie</guiname>
+        <guiname xml:lang="eo">Ago</guiname>
+        <guiname xml:lang="en">Action</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="128" />
+      </datatype>
+    </field>
+  </fieldlist>
+  <indexlist>
+    <index name="main">
+      <indexfield name="component" />
+      <indexfield name="action" />
+    </index>
+  </indexlist>
+</builder>

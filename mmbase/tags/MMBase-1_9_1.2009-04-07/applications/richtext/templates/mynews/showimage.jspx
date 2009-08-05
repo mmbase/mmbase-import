@@ -1,0 +1,10 @@
+<mm:image 
+ xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+ xmlns:jsp="http://java.sun.com/JSP/Page"
+ template="s(800x800&gt;)"> 
+  <a 
+   title="${_node.title}"
+   href="javascript: void(0);" onclick="window.open('${_}', '${mm:escape('identifier', _node.title)}', 'width=${dimension.width + 20},height=${dimension.height + 20}');">
+    <mm:image template="$template" mode="img" />
+  </a>
+</mm:image>

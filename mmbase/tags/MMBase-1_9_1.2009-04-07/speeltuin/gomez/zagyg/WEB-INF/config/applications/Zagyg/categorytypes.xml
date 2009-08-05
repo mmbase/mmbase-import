@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<categorytypes exportsource="mmbase://www.mmbase.org/zagyg" timestamp="20020516170724">
+  <node number="11000" owner="admin" alias="categorytype_main">
+    <title>Meta Site</title>
+    <body></body>
+  </node>
+
+  <node number="11001" owner="admin" alias="categorytype_page">
+    <title>Page</title>
+    <body></body>
+  </node>
+
+</categorytypes>

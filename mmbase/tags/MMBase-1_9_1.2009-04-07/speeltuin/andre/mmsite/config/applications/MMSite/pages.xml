@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pages exportsource="mmbase://grgrijze.toly.net/null/v2" timestamp="20090210213553">
+	<node number="73" owner="default">
+		<title>Contact</title>
+		<description>De contactpagina van deze site.</description>
+		<template>70</template>
+		<path>/contact</path>
+	</node>
+
+</pages>

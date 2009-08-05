@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<themes exportsource="mmbase://www.mmbase.org/zagyg" timestamp="20020516170724">
+  <node number="4100" owner="default">
+    <name>General</name>
+    <description></description>
+    <code>general</code>
+  </node>
+
+</themes>

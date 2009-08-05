@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- DOCTYPE edittagtypes PUBLIC "-//MMBase//DTD edittagtypes 1.0//EN" "http://www.mmbase.org/dtd/edittagtypes_1_0.dtd" -->
+<!DOCTYPE	edittagtypes [
+<!ELEMENT	edittagtypes (editor) >
+<!ELEMENT	editor	(class*,info*) >
+<!ATTLIST	editor  
+	type	CDATA	#REQUIRED
+> 
+<!ELEMENT	class	(#PCDATA)>
+<!ELEMENT	info	(#PCDATA)>
+]>
+<edittagtypes>
+  <!--
+  It is not a good idea to change things in this XML (because this might cause portability issues), but
+  you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
+
+  version: $Id: edittagtypes.xml,v 1.1 2005-06-09 08:42:59 andre Exp $
+  -->
+
+  <!-- These are the available editors for use with the edittag
+  -->
+  <editor type="dummy">
+    <class>org.mmbase.bridge.jsp.taglib.EditTag</class>
+    <info>Does not work</info>
+  </editor>
+  <editor type="yammeditor">
+    <class>org.mmbase.bridge.jsp.taglib.YAMMe</class>
+    <info>An editor to directly edit content in pages</info>
+  </editor>
+  
+</edittagtypes>

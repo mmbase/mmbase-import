@@ -1,0 +1,52 @@
+<div
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    class="mm_c c_mynews b_magazine ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:cloud>
+    <mm:import externid="mag">default.mags</mm:import>
+    <mm:import externid="n" required="true" />
+    <mm:node number="$n">
+      <h1><mm:field name="title"/></h1>
+      <mm:field name="subtitle"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
+      <div class="intro">
+        <span class="date"><mm:field name="date"><mm:time format=":LONG" /></mm:field></span>
+        <mm:field  name="intro" escape="p,links" />
+      </div>
+      <mm:field  escape="p,links" name="body"/>
+      <mm:relatednodes type="images" role="posrel"  orderby="posrel.pos" max="3">
+        <mm:first><h2>Images</h2></mm:first>
+        <mm:image template="s(200)" mode="img" />
+      </mm:relatednodes>
+
+      <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos" max="3">
+        <mm:first><h2>Links</h2></mm:first>
+        <a href="${_node.url}"><mm:field name="description"/></a><br />
+      </mm:relatednodes>
+
+      <mm:relatednodes type="people">
+        <mm:first><h2>Authors</h2></mm:first>
+        <em><mm:field name="firstname" /><jsp:text> </jsp:text><mm:field name="lastname" /></em><br />
+      </mm:relatednodes>
+    </mm:node>
+    <mm:node number="$mag">
+    <h2>News articles</h2>
+    <ul>
+      <mm:relatednodes role="posrel" type="news" orderby="posrel.pos" max="10">
+        <li>
+          <mm:link page="article" referids="_node@n">
+            <a href="${_}"><mm:field name="title" /></a>
+          </mm:link>
+        </li>
+      </mm:relatednodes>
+    </ul>
+    <hr />
+    <mm:link page="magazine">
+      <a href="${_}">Back</a>
+    </mm:link>
+    </mm:node>
+  </mm:cloud>
+</div>

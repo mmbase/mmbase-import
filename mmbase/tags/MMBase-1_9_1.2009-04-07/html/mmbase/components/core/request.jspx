@@ -1,0 +1,117 @@
+<mm:content
+    type="application/xml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <mm:cloud>
+    <jsp:output omit-xml-declaration="true" />
+    <div
+        class="mm_c c_core b_browser ${requestScope['org.mmbase.componentClassName']}"
+        id="${requestScope['org.mmbase.componentId']}">
+
+      <table class="headerValues">
+        <caption>Request headers</caption>
+        <c:forEach items="${headerValues}" var="entry">
+          <tr>
+            <th>${entry.key}</th>
+            <td>
+              <c:choose>
+                <c:when test="${fn:length(entry.value) eq 1}">
+                  <jsp:text><mm:escape>${entry.value[0]}</mm:escape></jsp:text>
+                </c:when>
+                <c:otherwise>
+                  <ul>
+                    <c:forEach items="${entry.value}" var="value">
+                      <li><mm:escape>${value}</mm:escape></li>
+                    </c:forEach>
+                  </ul>
+                </c:otherwise>
+              </c:choose>
+            </td>
+          </tr>
+        </c:forEach>
+      </table>
+
+      <table class="requestScope">
+        <caption>Request attributes</caption>
+        <c:forEach items="${requestScope}" var="entry">
+          <tr>
+            <th>${entry.key}</th>
+            <td><mm:escape>${entry.value}</mm:escape></td>
+          </tr>
+        </c:forEach>
+      </table>
+
+      <table class="paramValues">
+        <caption>Request parameters</caption>
+        <c:forEach items="${paramValues}" var="entry">
+          <tr>
+            <th>${entry.key}</th>
+            <td>
+              <c:choose>
+                <c:when test="${fn:length(entry.value) eq 1}">
+                  <jsp:text><mm:escape>${entry.value[0]}</mm:escape></jsp:text>
+                </c:when>
+                <c:otherwise>
+                  <ul>
+                    <c:forEach items="${entry.value}" var="value">
+                      <li><mm:escape>${value}</mm:escape></li>
+                    </c:forEach>
+                  </ul>
+                </c:otherwise>
+              </c:choose>
+            </td>
+          </tr>
+        </c:forEach>
+      </table>
+
+      <table class="cookie">
+        <caption>Cookies</caption>
+        <c:forEach items="${cookie}" var="entry">
+          <tr>
+            <th rowspan="6">${entry.key}</th>
+            <th>value</th><td><mm:escape>${entry.value.value}</mm:escape></td>
+          </tr>
+          <tr><th>path</th><td>${entry.value.path}</td></tr>
+          <tr><th>secure</th><td>${entry.value.secure}</td></tr>
+          <tr><th>max age</th><td>${entry.value.maxAge}</td></tr>
+          <tr><th>comment</th><td><mm:escape>${entry.value.comment}</mm:escape></td></tr>
+          <tr><th>version</th><td>${entry.value.version}</td></tr>
+        </c:forEach>
+      </table>
+
+      <table class="sessionScope">
+        <caption>Session attributes</caption>
+        <c:forEach items="${sessionScope}" var="entry">
+          <tr>
+            <th>${entry.key}</th>
+            <td><mm:escape>${entry.value}</mm:escape></td>
+          </tr>
+        </c:forEach>
+      </table>
+
+      <table class="applicationScope">
+        <caption>Application attributes</caption>
+        <c:forEach items="${applicationScope}" var="entry">
+          <tr>
+            <th>${entry.key}</th>
+            <td><mm:escape>${entry.value}</mm:escape></td>
+          </tr>
+        </c:forEach>
+      </table>
+
+      <table class="pageScope">
+        <caption>Page attributes</caption>
+        <c:forEach items="${pageScope}" var="entry">
+          <tr>
+            <th>${entry.key}</th>
+            <td><mm:escape>${entry.value}</mm:escape></td>
+          </tr>
+        </c:forEach>
+      </table>
+    </div>
+  </mm:cloud>
+</mm:content>

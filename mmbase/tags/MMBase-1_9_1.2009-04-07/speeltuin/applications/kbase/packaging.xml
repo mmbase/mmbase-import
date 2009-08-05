@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE packaging PUBLIC "-//MMBase/DTD packaging config 1.0//EN" "http://www.mmbase.org/dtd/packaging_1_0.dtd">
+<packaging basedir=".">
+	<package name="apps1" type="data/apps1" file="packaging/kbase_data_apps1.xml" />
+	<package name="html" type="display/html" file="packaging/kbase_display_html.xml" />
+	<package name="model" type="cloud/model" file="packaging/kbase_cloud_model.xml" />
+	<bundle name="basic" type="bundle/basic" file="packaging/kbase_bundle_basic.xml" />
+</packaging>

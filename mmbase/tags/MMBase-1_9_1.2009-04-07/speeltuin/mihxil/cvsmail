@@ -1,0 +1,95 @@
+#!/usr/local/bin/perl -w
+
+#  Logs and mails CVS changes
+#
+#  @author Michiel Meeuwissen
+#  $Id: cvsmail,v 1.23 2003-01-07 15:15:37 michiel Exp $
+
+use strict;
+use FileHandle;
+
+# arguments
+my ($log_filename, $user, $files) = @ARGV;
+
+# configuration
+my $basedir     = "/home/michiel/";
+my $toaddress   = "cvs\@mmbase.org";
+my $cvs         = "/usr/local/bin/cvs";
+
+if (! defined $files) {
+    print "Needs three arguments\n";
+    exit 0;
+}
+
+my @files = split(" ", $files);
+my $dir = shift @files;
+
+
+my $child;
+if ($child = fork()) {
+    exit 0; # be 'ready' immediatiely, don't let the commiter wait
+} else { 
+    sleep 5;
+    # mesages are on  STDIN:
+    my @message = <stdin>;
+    
+    # determin user:
+    
+    my $cvsuser = `/usr/ucb/whoami`;
+    chomp $cvsuser;
+    
+    #{
+#	my ($fil, $oldversion, $newversion) = split(",", $files[0]);
+#	my $logline =  `$cvs log -r $fil | grep author:`;
+#	if ($logline =~ /author: (.*?);/) {
+#	    $cvsuser = $1;
+#	}
+#    }
+
+
+	
+    # mail subject:
+    my $subject = "[MMBASE CVS] ".$dir." ";
+    for my $file (@files) {
+	$subject .= (split(",", $file))[0] . " ";
+    }
+
+    # mail message           
+    my $message = "From: $user <wwwtech\@mmbase.org>\nSubject: $subject\n".join("", @message);
+
+    # also log this message:
+    my $logfile = new FileHandle(">>$log_filename");
+    
+    print $logfile "--------------------------------------------------------\n";
+    print $logfile "$user ($cvsuser) ". `date`. "\n";
+    print $logfile $message;
+    print $logfile "\n[$files]\n";
+    $logfile->close();
+    
+
+    # do the mailing
+    if (1) {
+	my $mail = new FileHandle("|mail -s \"$subject\" $toaddress");
+	
+	print $mail $message."\n";
+	
+	unless ($files =~ /New directory/) {
+	    chdir($basedir.$dir);
+	    for my $file (@files) {
+		my ($fil, $oldversion, $newversion) = split(",", $file);
+		print $mail "\n\n";
+		if (defined $oldversion) {
+		    if ($oldversion =~ /NONE/) {
+			print $mail "$fil is new\n\n";
+		    } else {
+			print $mail `$cvs diff -c -b -r$oldversion -r$newversion $fil`;
+		    }
+		}
+		
+	    }
+	}
+	
+	$mail->close();
+    }
+} 
+

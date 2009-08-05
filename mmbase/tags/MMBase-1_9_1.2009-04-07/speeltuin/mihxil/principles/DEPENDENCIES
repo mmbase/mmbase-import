@@ -1,0 +1,35 @@
+Number: 0
+Version: $Id: DEPENDENCIES,v 1.2 2006-04-06 14:55:34 pierre Exp $
+Architectural theme: Technical
+Principle: Dependencies
+Qualification:
+Explanation:
+      Dependencies should be minimal, and preferably on already existings ones (no redundancy).
+Argumentation:
+      It is easier for people not to have to know about several mutually similar functionalities.
+Consequence:
+      MMBase 1.8 depends on:
+        java 1.4
+        servlet api
+        backport-concurrency (dropped when migrating to java 1.5)
+        it's own logging framework (mapping to commons-logging, log4j, java logging exist)
+        xalan  (may be dropped when migrating to java 1.5)
+        commons-fileupload
+
+      Taglib also depends on:
+        jstl.jar, standard.jar
+
+      Other known (optional) dependencies:
+        imagemagick
+        JAI
+        activation and mail
+
+      You should not depend on libraries providing the same functionality.
+
+      Other dependencies can be introduced with reluctance and with good reason (e.g. several jakarta
+      commons libraries, commons-collections, commons-validator etc)
+	
+Allowed Implementations:
+Source:
+
+

@@ -1,0 +1,20 @@
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        version="2.0"
+        xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance"
+        ns0:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+  <tlib-version>1.0</tlib-version>
+  <short-name>mm-poll</short-name>
+  <uri>http://www.mmbase.org/tags/mm/security</uri>
+  <tag-file>
+    <name>table</name>
+    <path>/META-INF/tags/mm/security/table.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>tbody</name>
+    <path>/META-INF/tags/mm/security/tbody.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>commit</name>
+    <path>/META-INF/tags/mm/security/commit.tagx</path>
+  </tag-file>
+</taglib>

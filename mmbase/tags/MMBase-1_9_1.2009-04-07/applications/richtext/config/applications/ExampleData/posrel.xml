@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<posrel exportsource="mmbase://www.mmbase.org/richtext" timestamp="20050921221010">
+  <!-- menu structure -->
+  <node number="100000" owner="admin" snumber="1000" dnumber="1001" rtype="posrel" dir="bidirectional">
+    <pos>1</pos>
+	</node>
+	<node number="100001" owner="admin" snumber="1000" dnumber="1002" rtype="posrel" dir="bidirectional">
+    <pos>2</pos>
+  </node>
+	<node number="100002" owner="admin" snumber="1000" dnumber="1003" rtype="posrel" dir="bidirectional">
+    <pos>3</pos>
+  </node>
+
+  <!-- submenu -->
+	<node number="100003" owner="admin" snumber="1001" dnumber="1010" rtype="posrel" dir="bidirectional">
+    <pos>1</pos>
+  </node>
+
+
+</posrel>

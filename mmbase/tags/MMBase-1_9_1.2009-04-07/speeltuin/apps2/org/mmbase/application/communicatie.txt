@@ -1,0 +1,13 @@
+Communicatie tussen server en client.
+
+client stuurt:
+# Providernaam aan server (eventueel later extra dingen als een icoontje van de server).
+# Een lijst van applicaties die de server beschikbaar steld.
+- Een Applicatie
+- Een Deel van een applicatie
+- Later misschien een bestand, of een samengesteld bestand, dat door middel van een MD5Diff wordt samengesteld.
+
+server stuurt:
+- update naar servers die om een applicatie hebben gevraagd (of een deel daarvan).
+
+Voorlopig is dit de communicatie die we nodig hebben.

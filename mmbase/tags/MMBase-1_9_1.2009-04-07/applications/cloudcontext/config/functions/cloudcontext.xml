@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+
+  <description></description>
+
+  <function name="authentication">
+    <type>class</type>
+    <class>org.mmbase.security.implementation.cloudcontext.Authenticate</class>
+    <method>getInstance</method>
+  </function>
+
+  <function name="authorization">
+    <type>class</type>
+    <class>org.mmbase.security.implementation.cloudcontext.Verify</class>
+    <method>getInstance</method>
+  </function>
+
+</functionset>

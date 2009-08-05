@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<insrel exportsource="mmbase://grgrijze.toly.net/null/v2" timestamp="20090210213553">
+	<node number="72" owner="default" snumber="71" dnumber="70" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="74" owner="default" snumber="71" dnumber="73" rtype="related" dir="bidirectional">
+	</node>
+
+</insrel>

@@ -1,0 +1,65 @@
+<mm:cloud 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    rank="basic user">
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.util.*,java.util.concurrent.*" />
+  <div
+      class="mm_c c_mmget mmget ${requestScope.className}"
+      id="${requestScope['org.mmbase.componentId']}">
+
+    <p><em><mm:time time="now" format=":FULL.FULL" /></em></p>
+    <p>
+      ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
+    </p>
+    
+    <mm:import externid="url" />
+    <mm:import externid="dir" />
+    <mm:import externid="action" />
+        
+    <mm:present referid="action"> 
+      <mm:isnotempty referid="url"> 
+          <mm:function set="mmget" name="download" referids="url,dir">
+            <c:choose>
+              <c:when test="${fn:indexOf(_,'Finished') > -1}">
+                <p class="msg">${_}</p>
+              </c:when>
+              <c:when test="${fn:indexOf(_,'Error') > -1}">
+                <p class="err">${_} <mm:link page="mmget-status"><a href="${_}">Check status</a></mm:link> </p>
+              </c:when>
+              <c:otherwise>
+                <p class="msg">
+                  ${_} <mm:link page="mmget-status"><a href="${_}">Check status</a></mm:link>
+                </p>
+              </c:otherwise>
+            </c:choose>
+          </mm:function>
+      </mm:isnotempty>
+      <mm:isempty referid="url"> 
+        <p class="err">Error: No url!</p>
+      </mm:isempty>
+    </mm:present>
+
+    <form action="${mm:link('mmget')}" method="post">
+      <p>
+        <label for="link">URL to start from</label>
+        <input name="url" id="url" type="text" value="${url}" size="72" maxlength="255" />
+        <label for="dir">Directory to save in</label>
+        <input name="dir" id="dir" type="text" value="${dir}" size="72" maxlength="255" />
+      </p>
+      <p> 
+       <input type="submit" name="action" value="Start" />
+      </p>  
+    </form>
+
+    <mm:link page="mmget-status">
+      <p>
+        <img src="${mm:link('/mmbase/style/images/next.png')}" alt="view" width="21" height="20" />
+        <a href="${_}">MMGet status</a>
+      </p>
+    </mm:link>
+        
+  </div>
+</mm:cloud>

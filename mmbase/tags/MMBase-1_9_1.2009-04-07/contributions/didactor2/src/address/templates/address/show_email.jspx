@@ -1,0 +1,29 @@
+<!-- static include, to be used in a node of type people -->
+<di:getsetting 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    component="address" setting="show_internal_email">
+  <c:choose>
+    <c:when test="${_ eq 'true'}">
+      <mm:field name="username">
+        <mm:isnotempty>
+          <mm:write /><mm:write referid="emaildomain" />
+        </mm:isnotempty>
+        <mm:isempty>
+          <mm:field name="email"/>
+        </mm:isempty>
+      </mm:field>
+    </c:when>
+    <c:otherwise>
+      <mm:field name="email">
+        <mm:isnotempty>
+          <mm:write />
+        </mm:isnotempty>
+        <mm:isempty>
+          <mm:field name="username" /><mm:write referid="emaildomain" />
+        </mm:isempty>
+      </mm:field>
+    </c:otherwise>
+  </c:choose>
+</di:getsetting>

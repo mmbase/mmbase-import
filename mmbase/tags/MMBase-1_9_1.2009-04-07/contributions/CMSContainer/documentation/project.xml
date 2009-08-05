@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+    <extend>${basedir}/../../maven-base/project.xml</extend>
+    <artifactId>cmsc-documentation</artifactId>
+    <name>CMS Container documentation</name>
+    <shortDescription>CMS Container documentation</shortDescription>
+    <dependencies>
+        <dependency>
+            <groupId>mmapps</groupId>
+            <artifactId>uml2mmbase</artifactId>
+            <version>1.4</version>
+            <type>zip</type>
+            <url>http://mmapps.sourceforge.net/distributions/mmapps/zips/uml2mmbase-1.4.zip</url>
+	        <properties>
+	        	<uml2mmbase-app>true</uml2mmbase-app>
+	        </properties>
+        </dependency>
+    </dependencies>
+    
+</project>
+

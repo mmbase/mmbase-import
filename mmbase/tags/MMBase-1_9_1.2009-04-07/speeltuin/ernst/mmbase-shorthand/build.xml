@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<project name="ceportal" default="transform">
+
+	<property file="build.properties" />
+	<property name="xalan.file" value="xalan-j_2_7_0-bin-2jars" />
+	<property name="download.dir" location="${basedir}/download" />
+	<property name="xalan.expand.dir" location="${download.dir}/xalan-j_2_7_0" />
+	<property name="src.dir" location="${basedir}/src" />
+	<property name="bin.dir" location="${basedir}/bin" />
+	<property name="generated.dir" location="${basedir}/generated" />
+
+	<!-- these values serve the demo -->
+	<property name="inputfile" value="${basedir}/example.xml" />
+	<property name="application" value="wck" />
+
+	<path id="cp">
+		<fileset dir="${xalan.expand.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${bin.dir}" />
+	</path>
+
+
+	<!-- 
+		transform tasks
+	-->
+	<target name="transform" depends="compile" description="create an mmbase apps1 from an mmbase-shortand xml file">
+		<delete dir="${generated.dir}" />
+		<mkdir dir="${generated.dir}" />
+        <!--
+		<mkdir dir="${generated.dir}/${application}/builders" />
+        -->
+
+		<java classname="ebunders.mmbase.shorthand.Transform" classpathref="cp">
+			<arg value="${basedir}/mmbase-shorthand.xsl" />
+			<arg value="${inputfile}" />
+			<arg value="${basedir}/result.xml" />
+			<arg value="false" />
+		</java>
+
+		<delete file="${basedir}/result.xml" />
+
+		<java classname="ebunders.mmbase.shorthand.Indenter" classpathref="cp">
+			<arg value="${generated.dir}" />
+		</java>
+
+		<java classname="ebunders.mmbase.shorthand.Indenter" classpathref="cp">
+			<arg value="${generated.dir}/${application}/builders" />
+			<classpath refid="cp" />
+		</java>
+	</target>
+
+	<!-- 
+		compile tasks
+	-->
+	<target name="compile" depends="expand">
+		<mkdir dir="${bin.dir}" />
+		<javac srcdir="${src.dir}" destdir="${bin.dir}" classpathref="cp" debug="true" deprecation="false" optimize="false" />
+	</target>
+
+
+	<!-- 
+		cleaning tasks
+	-->
+	<target name="clean">
+		<delete dir="${generated.dir}" />
+		<delete dir="${bin.dir}" />
+	</target>
+
+	<!--
+		download tasks
+	-->
+	<target name="download" depends="test.download" unless="download.done">
+		<mkdir dir="${download.dir}" />
+		<echo message="${download.dir}ing xalan" />
+		<get dest="${download.dir}/${xalan.file}.zip" src="http://apache.nedmirror.nl/xml/xalan-j/binaries/${xalan.file}.zip" verbose="on" />
+	</target>
+
+	<target name="test.download">
+		<available file="${download.dir}/${xalan.file}.zip" property="download.done" />
+	</target>
+
+
+	<target name="expand" depends="download,test.expand" unless="expand.done">
+		<echo message="expanding xalan" />
+		<unzip src="${download.dir}/${xalan.file}.zip" dest="${download.dir}" />
+	</target>
+
+	<target name="test.expand">
+		<available type="dir" file="${xalan.expand.dir}" property="expand.done" />
+	</target>
+
+
+</project>

@@ -1,0 +1,79 @@
+<!-- ===================================================================== -->
+<!-- Chat build file (tested with Java 1.3 and Ant 1.4.1)                  -->
+<!-- ===================================================================== -->
+<project name="batchupload" default="jar" basedir=".">
+
+
+  <!-- =================================================================== -->
+  <!-- Init                                                                -->
+  <!-- =================================================================== -->
+  <!-- Read customized values if available -->
+  <property file="build.properties"/>
+  <!-- Default values for properties that can be customized -->
+  <property name="root" value="${basedir}" />
+
+  <property name="build.dir" value="${root}/build"/>
+
+  <target name="init">
+    <available property="nanoxml.present" file="${build.dir}/nanoxml-lite.jar"/>
+    <available property="jai.present" file="${build.dir}/jai_core.jar" />
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compile the source directory                                        -->
+  <!-- =================================================================== -->
+  <target name="compile" description="Compile the source directory" depends="init,libs">
+    <mkdir dir="${build.dir}/classes"/>
+    <javac srcdir="${root}/src/nl/"
+           destdir="${build.dir}/classes"
+           classpath="${build.dir}/nanoxml-lite.jar:${build.dir}/jai_core.jar:${build.dir}/jai_codec.jar"
+           debug="true">
+    </javac>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the jar file                                                 -->
+  <!-- =================================================================== -->
+  <target name="jar" description="Create the jar file"
+          depends="compile">
+    <jar jarfile="${build.dir}/batch.jar"
+         basedir="${build.dir}/classes"
+         manifest="${root}/src/nl/eo/batchupload/scripts/MANIFEST.MF" />
+  </target>
+
+  <!-- nanoxml -->
+  <property name="nanoxml.url" value="http://belnet.dl.sourceforge.net/sourceforge/nanoxml/nanoxml-lite-2.2.1.jar" />
+  <target name="nanoxml" unless="nanoxml.present">
+    <get src="${nanoxml.url}" dest="${build.dir}/nanoxml-lite.jar" />
+  </target>
+
+  <!-- JAI -->
+  <property name="jai.version" value="jai1_0_2-lib-solaris"/>
+  <property name="jai.url" value="http://www.mmbase.org/download/jars/jai/jai1_0_2-lib-solaris.tar.gz"/>
+  <property name="jai_codec.jar" value="${build.dir}/expand/${jai.version}/jre/lib/ext/jai_codec.jar"/>
+  <property name="jai_core.jar" value="${build.dir}/expand/${jai.version}/jre/lib/ext/jai_core.jar"/>
+
+  <target name="jai.get" unless="jai.present">
+    <mkdir dir="${build.dir}/download"/>
+    <get src="${jai.url}"
+         dest="${build.dir}/download/${jai.version}.tar.gz"
+         verbose="on"/>
+  </target>
+
+  <target name="jai.expand" depends="jai.get" unless="jai.present">
+    <mkdir dir="${build.dir}/expand"/>
+    <mkdir dir="${build.dir}/expand/${jai.version}"/>
+    <gunzip src="${build.dir}/download/${jai.version}.tar.gz" dest="${build.dir}/expand/${jai.version}"/>
+    <untar src="${build.dir}/expand/${jai.version}/${jai.version}.tar" dest="${build.dir}/expand/${jai.version}"/>
+    <delete file="${build.dir}/expand/${jai.version}/${jai.version}.tar"/>
+  </target>
+
+  <target name="jai" depends="jai.expand" unless="jai.present">
+    <copy file="${jai_codec.jar}" todir="${build.dir}/"/>
+    <copy file="${jai_core.jar}" todir="${build.dir}/"/>
+  </target>
+
+  <target name="libs" description="Download all libfiles" depends="jai,nanoxml" />
+
+
+</project>

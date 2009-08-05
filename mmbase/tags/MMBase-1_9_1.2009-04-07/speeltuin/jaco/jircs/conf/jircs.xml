@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<server>
+    <logger 
+        file="chatserver.log" 
+        level="debug" 
+        log-per-channel="true" 
+    />
+
+    <engine 
+        name="jircs.org" 
+        info="Jircs Chat Server" 
+        motd="Message of the day"
+        default-channel-modes="nt"
+        allow-channel-creation-by-user="false"
+        allow-channel-operation-when-not-on-channel="false"
+        allow-kick-operator="true"
+        ignore-ban-for-operator="false"
+        allow-operator-set-operator-status="true"
+        default-channel-userlimit="100"
+    >
+        <ircport>6667</ircport>
+        <flashport>5557</flashport>
+        <ircrepository
+            administrator-username="admin"
+            administrator-password="admin2k"
+            operator-username="oper"
+            operator-password="oper2k"
+            filter-file="conf/badwords.txt"
+            nick-filter-file="conf/badnicks.txt"
+        />
+    </engine>
+</server>

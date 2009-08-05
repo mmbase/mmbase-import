@@ -1,0 +1,43 @@
+
+
+<!-- check if we are done without problems
+<IF $MOD-MMADMIN-TASKMSG-$PARAM1-GETSTATE^==done>
+<GOTO ../../elementinfo.shtml?$MOD-MMADMIN-TASKMSG-$PARAM1-GETFIELD-APPNAME^+$MOD-MMADMIN-TASKMSG-$PARAM1-GETFIELD-COMPONENT^+$MOD-MMADMIN-TASKMSG-$PARAM1-GETFIELD-ELEMENT^>
+</IF>
+
+<!-- check if we are still running and display how far we are -->
+<IF $MOD-MMADMIN-TASKMSG-$PARAM1-GETSTATE^==run>
+	<HTML>
+	<HEAD>
+		<META HTTP-EQUIV="refresh" content="2; url=result.shtml?$PARAM1">
+		<BODY TEXT="#42BDAD" BGCOLOR="#00425a" LINK="#FFFFFF" ALINK="#FFFFFF" VLINK="#FFFFFF">
+	</HEAD>
+	<BR>
+	<TABLE width=90% cellspacing=1 cellpadding=3 border=0>
+	<TR>
+		<TD>
+			Im still running hold on
+		</TD>
+	</TR>
+	</TABLE>
+	</HTML>
+</IF>
+
+<!-- check for a error and ifso display it -->
+<IF $MOD-MMADMIN-TASKMSG-$PARAM1-GETSTATE^==error>
+	<HTML>
+	<HEAD>
+	<BODY TEXT="#42BDAD" BGCOLOR="#00425a" LINK="#FFFFFF" ALINK="#FFFFFF" VLINK="#FFFFFF">
+	</HEAD>
+	<BR>
+	<TABLE width=90% cellspacing=1 cellpadding=3 border=0>
+	<TR>
+		<TD>
+			Error message : <BR><BR>
+			$MOD-MMADMIN-TASKMSG-$PARAM1-GETFIELD-ERRORMSG
+		</TD>
+	</TR>
+	</TABLE>
+	</HTML>
+</IF>
+

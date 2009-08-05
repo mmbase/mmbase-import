@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="mailboxes" maintainer="didactor.nl" version="2" extends="object">
+
+  <searchage>31</searchage>
+  <names>
+    <singular xml:lang="nl">Mailbox</singular>
+    <singular xml:lang="en">Mailbox</singular>
+    <plural xml:lang="nl">Mailboxen</plural>
+    <plural xml:lang="en">Mailboxen</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="nl">Een mailbox waarin meerdere emails kunnen worden opgeslagen</description>
+    <description xml:lang="en">A mailbox where multiple emails can be stored</description>
+  </descriptions>
+
+  <fieldlist>
+    <field name="name">
+      <descriptions>
+        <description xml:lang="nl">Naam van de mailbox</description>
+        <description xml:lang="en">Name of the mailbox</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Naam</guiname>
+        <guiname xml:lang="en">Name</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+    <field name="type">
+      <descriptions>
+        <description xml:lang="nl">Type van de mailbox</description>
+        <description xml:lang="en">Type of the mailbox</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Type</guiname>
+        <guiname xml:lang="en">Type</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <enumeration>
+          <entry
+              javaconstants="org.mmbase.applications.email.MailBox$Type"
+              basename="org.mmbase.applications.email.resources.webmail"
+              />
+        </enumeration>
+      </datatype>
+    </field>
+  </fieldlist>
+</builder>

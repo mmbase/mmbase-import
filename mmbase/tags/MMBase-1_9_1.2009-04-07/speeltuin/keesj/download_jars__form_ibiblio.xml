@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project name="MMBase" default="download_jars" basedir=".">
+  <target name="download_jars">
+    <property name="lib.dir" value="lib"/>
+	 <property name="lib.compiletime.dir" value="${lib.dir}/compiletime"/>
+    <property name="lib.runtime.dir" value="${lib.dir}/runtime"/>
+    <property name="lib.test.dir" value="${lib.dir}/test"/>
+
+	 <mkdir dir="${lib.dir}"/>
+	 <mkdir dir="${lib.compiletime.dir}"/>
+	 <mkdir dir="${lib.runtime.dir}"/>
+	 <mkdir dir="${lib.test.dir}"/>
+
+    <property name="ibiblio.url" value="http://www.ibiblio.org/maven"/>
+
+	 <!-- get the servelt api and store it in the compiletime dir -->
+	 <get src="${ibiblio.url}/servletapi/jars/servletapi-2.3.jar" dest="${lib.compiletime.dir}/servletapi-2.3.jar" usetimestamp="true"/>
+	 <!-- get xalan/xerces and store it in the runtime dir -->
+    <get src="${ibiblio.url}/xalan/jars/xalan-2.5.1.jar" dest="${lib.runtime.dir}/xalan-2.5.1.jar" usetimestamp="true"/>
+    <get src="${ibiblio.url}/xerces/jars/xerces-2.4.0.jar" dest="${lib.runtime.dir}/xerces-2.4.0.jar" usetimestamp="true"/>
+
+	 <!-- get hsqldb and  junit and store it in the test dir -->
+    <get src="${ibiblio.url}/hsqldb/jars/hsqldb-1.7.1.jar" dest="${lib.test.dir}/hsqldb-1.7.1.jar" usetimestamp="true"/>
+    <get src="${ibiblio.url}/junit/jars/junit-3.8.jar" dest="${lib.test.dir}/junit-3.8.jar" usetimestamp="true"/>
+	 <get src="${ibiblio.url}/commons-fileupload/jars/commons-fileupload-1.0.jar" dest="${lib.test.dir}/commons-fileupload-1.0.jar" usetimestamp="true"/>
+  </target>
+</project>

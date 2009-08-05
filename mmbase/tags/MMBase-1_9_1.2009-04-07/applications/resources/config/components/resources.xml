@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="resources"
+    version="1"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <title xml:lang="nl">Resources</title>
+  <title xml:lang="en">Resources</title>
+
+  <dependency component="core" version="9" />
+
+  <block name="recent"
+         classification="mmbase.examples:90 resources"
+         mimetype="text/html">
+    <title xml:lang="en">Recent resources</title>
+    <title xml:lang="nl">Recente resources</title>
+    <description xml:lang="en">Displays recent resources in MMBase</description>
+    <description xml:lang="nl">Toont recent in MMBase ingevoerde resources</description>
+    <head jsp="head.jspx" />
+    <body jsp="recent.jspx">
+      <param name="nodetypes" />
+    </body>
+  </block>
+
+  <block name="imageupload"
+    classification="resources">
+    <description xml:lang="en">An image upload tool</description>
+    <body jsp="upload.jspx" />
+  </block>
+
+  <block name="captchamail"
+    classification="mmbase.examples:90 resources">
+    <title xml:lang="en">Captcha e-mail</title>
+    <title xml:lang="nl">Captcha e-mail</title>
+    <description xml:lang="en">
+      Mail form, with captcha Turing test. The email builder must be
+      installed for this to work.
+    </description>
+    <description xml:lang="nl">
+      Mail form, met een captcha Turing test. De 'email' builder moet 
+      geïnstalleerd zijn voor dit voorbeeld.
+    </description>
+    <body jsp="mail.jspx">
+      <param name="to" type="String" />
+      <param name="title" type="String" />
+    </body>
+  </block>
+
+</component>

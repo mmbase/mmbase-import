@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="tagcloud" maintainer="mmbase.org" version="1" auto-deploy="true">
+   <requirements>
+      <requires name="contentrepository" maintainer="finalist.com" version="3" type="application" />
+   </requirements>
+   <neededbuilderlist>
+      <builder maintainer="finalist.com" version="0">tag</builder>
+   </neededbuilderlist>
+   
+   <neededreldeflist>
+   </neededreldeflist>
+   <allowedrelationlist>
+      <relation from="contentelement" to="tag" type="related" />
+   </allowedrelationlist>
+
+   <datasourcelist>
+        <datasource builder="portletdefinition" path="tagcloud/portletdefinition.xml" />
+        <datasource builder="view" path="tagcloud/view.xml" />
+   </datasourcelist>
+
+   <relationsourcelist>
+      <relationsource builder="allowrel" path="tagcloud/allowrel.xml"/> 
+   </relationsourcelist>
+
+   <contextsourcelist>
+   </contextsourcelist>
+
+   <description><![CDATA[Installs the tagcloud. Included are all the builders.]]></description>
+   <install-notice><![CDATA[You have installed the tagcloud.]]></install-notice>
+</application>

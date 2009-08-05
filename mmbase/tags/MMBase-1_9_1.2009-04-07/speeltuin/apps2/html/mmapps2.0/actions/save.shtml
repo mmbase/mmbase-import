@@ -1,0 +1,5 @@
+<!-- if PARAM2=Displays than a Display Element will be saved.
+     if PARAM2=Datasets than a Dataset Element will be saved. -->
+<PROCESSOR MMADMIN>
+$MOD-MMADMIN-SAVE-$PARAM1-$PARAM2-$PARAM3
+<GOTO ../elementinfo.shtml?$PARAM1+$PARAM2+$PARAM3>

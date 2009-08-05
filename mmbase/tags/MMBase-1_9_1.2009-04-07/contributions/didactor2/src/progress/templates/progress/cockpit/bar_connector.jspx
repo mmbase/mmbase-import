@@ -1,0 +1,37 @@
+<mm:cloud
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    method="asis" >
+  <mm:content type="application/xml" expires="0">
+    <jsp:output omit-xml-declaration="yes" />
+    <div>
+      <!-- Always include the progress component -->
+      <div class="progress">
+        <mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids" write="false">
+          <a href="${_}" class="menubar"> <di:translate key="progress.progress" /><di:hasrole role="student">: </di:hasrole></a>
+        </mm:treefile>
+        <!-- spacers are evil! -->
+        <img src="${mm:treelink('/gfx/spacer.gif',includePath)}" width="1" height="15" alt="" />
+      </div>
+      <di:hasrole role="student">
+        <div class="progressMeter"  onclick="reloadProgress()">
+          <mm:import id="progress">
+            <mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids" escape="trimmer" />
+          </mm:import>
+          <c:if test="${progress ge 0.0}">
+            <img src="${mm:treelink('/gfx/bar_left.gif', includePath)}" width="4" height="13" alt="" />
+            <fmt:formatNumber var="length" value="${progress * 95}" maxFractionDigits="0"/>
+            <img src="${mm:treelink('/gfx/bar_center.gif', includePath)}"
+                 width="${length}" height="13" alt="" />
+            <img src="${mm:treelink('/gfx/bar_right.gif', includePath)}" width="4" height="13" alt="" />
+          </c:if>
+
+        </div>
+      </di:hasrole>
+    </div>
+  </mm:content>
+</mm:cloud>
+

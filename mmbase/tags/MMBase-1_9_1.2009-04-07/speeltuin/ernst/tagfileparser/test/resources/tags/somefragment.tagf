@@ -1,0 +1,2 @@
+<%@ attribute name="name" description="The title and so on"  %>
+<%@ attribute name="description" description="some describing words"  %>

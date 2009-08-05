@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <!-- configuration properties for the MMGet application -->
+  <properties>
+    <!-- directory in webroot to save the files in, starts with a / -->
+    <property name="directory">/mmget</property>
+    <!-- default homepage to use for saving -->
+    <property name="homepage">index.html</property>
+    <!-- contentheaders to be checked for links to other resources.
+         should be entered comma-seperated. there are css and html that can link ot other resources  -->
+<!-- 
+    <property name="htmlheaders">text/html,application/xhtml+xml,application/xml,text/xml</property>
+    <property name="cssheaders">text/css</property>
+ -->
+  </properties>
+</util>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <artifactId>cmsc-modules-messageoftheday</artifactId>
+    <name>messageoftheday module</name>
+    <shortDescription>Provides message of the day functionality</shortDescription>
+    <dependencies>
+    </dependencies>
+</project>
+

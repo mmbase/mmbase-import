@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="banner">
+   <title xml:lang="nl">Banner</title>
+   <title xml:lang="en">Banner</title>
+   <title xml:lang="zh">Banner</title>
+
+   <action include="config/banner/create_banner.xml"/>
+   <action include="config/banner/delete_banner.xml"/>
+   <action include="config/banner/load_banner.xml"/>
+
+   <lists>
+      <optionlist include="config/option_lists/boolean.xml" />
+      <optionlist include="config/option_lists/Legend.xml" />
+      <optionlist include="config/option_lists/ImagePosition.xml" />
+      <optionlist include="config/option_lists/ImageCrop.xml" />
+      <optionlist include="config/option_lists/banner/width.xml" />
+   </lists>
+
+   <steps>
+      <step form-schema="edit_banner"/>
+      <step form-schema="edit_contentfields"/>
+      <step form-schema="edit_contentinfo"/>
+   </steps>
+   <form-schema id="edit_banner" extends="config/banner/edit_banner.xml"/>
+   <form-schema id="edit_contentfields" extends="config/contentelement/edit_contentfields.xml"/>
+   <form-schema id="edit_contentinfo" extends="config/contentelement/edit_contentinfo.xml"/>
+</wizard-schema>

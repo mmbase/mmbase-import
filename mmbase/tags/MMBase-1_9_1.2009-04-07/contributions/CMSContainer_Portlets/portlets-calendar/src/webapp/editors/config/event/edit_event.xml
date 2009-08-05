@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_event">
+   <title xml:lang="nl">Evenement</title>
+   <title xml:lang="en">Event</title>
+   <title xml:lang="zh">事件</title>
+
+   <field name="title" dtmaxlength="255" ftype="line" dtrequired="true">
+      <prompt xml:lang="en">Title</prompt>
+      <prompt xml:lang="nl">Titel</prompt>
+      <prompt xml:lang="zh">标题</prompt>
+   </field>
+   <field name="intro" dtmaxlength="64000" ftype="html" dtrequired="false" rows="15">
+      <prompt xml:lang="en">Intro</prompt>
+      <prompt xml:lang="nl">Introductie</prompt>
+      <prompt xml:lang="zh">简介</prompt>
+   </field>
+   <field name="body" dtmaxlength="64000" ftype="html" dtrequired="false" rows="15">
+      <prompt xml:lang="en">Body</prompt>
+      <prompt xml:lang="nl">Tekst</prompt>
+      <prompt xml:lang="zh">主体</prompt>
+   </field>
+   <field name="starttime" ftype="datetime" dttype="datetime">
+      <prompt xml:lang="en">Starttime</prompt>
+      <prompt xml:lang="nl">Starttijd</prompt>
+      <prompt xml:lang="zh">开始时间</prompt>
+   </field>
+   
+   <field name="endtime" ftype="datetime" dttype="datetime">
+      <prompt xml:lang="en">Endtime</prompt>
+      <prompt xml:lang="nl">Eindtijd</prompt>
+      <prompt xml:lang="zh">终止时间</prompt>
+   </field>
+   
+   <field name="location" dtmaxlength="64000" ftype="line" dtrequired="false" rows="1">
+      <prompt xml:lang="en">Location</prompt>
+      <prompt xml:lang="nl">Locatie</prompt>
+      <prompt xml:lang="zh">位置</prompt>
+   </field>
+   
+   <field name="organizer" dtmaxlength="64000" ftype="html" dtrequired="false" rows="15">
+      <prompt xml:lang="en">Organizer</prompt>
+      <prompt xml:lang="nl">Organisator</prompt>
+      <prompt xml:lang="zh">创始人</prompt>
+   </field>
+   
+   <list include="config/images/search_event_imagerel_images.xml" />
+</form-schema>

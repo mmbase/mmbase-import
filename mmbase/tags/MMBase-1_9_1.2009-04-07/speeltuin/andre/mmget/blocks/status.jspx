@@ -1,0 +1,66 @@
+<mm:cloud 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    rank="basic user">
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.page import="org.mmbase.util.*,java.util.concurrent.*,org.mmbase.mmget.*" />
+  <div
+      class="mm_c c_mmget mmget ${requestScope.className}"
+      id="${requestScope['org.mmbase.componentId']}">
+    
+    <mm:import externid="cancel" />
+    
+    <p><em><mm:time time="now" format=":FULL.FULL" /></em></p>
+    <p>
+      ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
+    </p>
+    
+    <p class="msg">
+      <mm:present referid="cancel">
+        <jsp:scriptlet>
+            if (MMGet.future != null) {        
+                MMGet.future.cancel(true);
+            }
+        </jsp:scriptlet>
+      </mm:present>
+      <jsp:scriptlet>
+          StringBuilder status = new StringBuilder();
+          if (MMGet.future == null) {
+              status.append("No status yet.");
+          } else {
+              String fname = ThreadPools.getString(MMGet.future);
+              if (MMGet.future.isCancelled()) {
+                  status.append("Cancelled: ").append(fname).append(" is cancelled.");
+              } else if (MMGet.future.isDone()) {
+                  status.append("Done: ").append(fname).append(" is done.");
+              } else {
+                  status.append("Running: ").append(fname).append( " is still running...");
+              }
+          }
+      </jsp:scriptlet>
+      <jsp:expression>status.toString()</jsp:expression>
+    </p>
+    
+    <p>
+      <mm:link page="mmget-status">
+        <a href="${_}"><img src="${mm:link('/mmbase/style/images/reload.png')}" alt="reload" width="21" height="20" /></a>
+        <a href="${_}">Reload</a>
+      </mm:link>
+      or 
+      <mm:link page="mmget-status">
+        <mm:param name="cancel">please</mm:param>
+        <a href="${_}"><img src="${mm:link('/mmbase/style/images/delete.png')}" alt="cancel" width="21" height="20" /></a>
+        <a href="${_}">Cancel</a>
+      </mm:link>
+    </p>
+    
+    <mm:link page="mmget">
+      <p>
+        <img src="${mm:link('/mmbase/style/images/back.png')}" alt="back" width="21" height="20" />
+        <a href="${_}">Back to MMGet</a>
+      </p>
+    </mm:link>
+
+  </div>
+</mm:cloud>

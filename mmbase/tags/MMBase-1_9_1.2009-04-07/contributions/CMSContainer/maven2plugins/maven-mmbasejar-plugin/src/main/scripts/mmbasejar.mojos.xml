@@ -1,0 +1,66 @@
+<pluginMetadata>
+	<mojos>
+		<mojo>
+			<goal>mmbasejar</goal>
+			<call>copyapplications</call>
+			<description>Copy Resources</description>
+			<!--requiresProject>true</requiresProject-->
+			<parameters>
+				<parameter>
+					<name>projectTarget</name> 
+					<property>projectTarget</property> 
+					<required>true</required>
+					<readonly>true</readonly>
+					<defaultValue>${project.build.directory}</defaultValue>
+					<type>java.lang.String</type>
+					<description>The Target of the user to greet.</description>
+				</parameter>        
+				<parameter>
+					<name>projectArtifactId</name> 
+					<property>projectArtifactId</property>
+					<required>true</required>
+					<readonly>true</readonly>
+					<defaultValue>${project.artifactId}</defaultValue>
+					<type>java.lang.String</type>
+					<description>The name of the project currently being built.</description>
+				</parameter>
+				<parameter>
+					<name>projectVersion</name> 
+					<property>projectVersion</property>
+					<required>true</required>
+					<readonly>true</readonly>
+					<defaultValue>${project.version}</defaultValue>
+					<type>java.lang.String</type>
+					<description>The version of the project currently being built.</description>
+				</parameter>
+				<parameter>
+					<name>mmbaseVersion</name> 
+					<property>mmbaseVersion</property> 
+					<required>true</required>
+					<readonly>true</readonly>
+					<defaultValue>${mmbase.version}</defaultValue>
+					<type>java.lang.String</type>
+					<description>The Mmbae version.</description>
+				</parameter>
+				<!--parameter>
+					<name>name</name> 
+					<property>name</property> 
+					<required>true</required> 
+					<expression>${name}</expression>
+					<type>java.lang.String</type>
+					<description>The name of the user to greet.</description>
+				</parameter>
+        
+				<parameter>
+					<name>projectName</name> 
+					<property>projectName</property>
+					<required>true</required>
+					<readonly>true</readonly>
+					<defaultValue>${project.build.directory}</defaultValue>
+					<type>java.lang.String</type>
+					<description>The name of the project currently being built.</description>
+				</parameter-->
+			</parameters>
+		</mojo>		
+	</mojos>
+</pluginMetadata>

@@ -1,0 +1,45 @@
+<!-- shows specific information regarding to a DataSet Element 
+     it's the bottom of elementinfo.shtml?appliction?component?element -->
+<PROCESSOR MMADMIN>
+
+<TABLE width=90% cellspacing=1 cellpadding=3 border=0>
+<TR> 
+	<TD BGCOLOR="42BDAD" WIDTH="400" COLSPAN="2">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=3>
+	<B>Actions for DataSet Component: $PARAM3</B>
+	</TD>
+</TR>
+<TR>
+	<TD BGCOLOR="CCCCCC" WIDTH="400">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Description
+	</TD>
+	<TD BGCOLOR="CCCCCC" WIDTH="400">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Action
+	</TD>
+</TR>
+<TR>
+	<TD BGCOLOR="#000000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>
+	Import all data (nodes, and relations).
+	</TD>
+	<TD BGCOLOR="#000000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>
+	<A HREF="tasks/installDataSet/start.shtml?$PARAM1+$PARAM2+$PARAM3">import</a>
+	</TD>
+</TR>
+<TR>
+	<TD BGCOLOR="#000000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>
+	Export all data (nodes, relations, and configuration file).
+	</TD>
+	<TD BGCOLOR="#000000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>
+	<A HREF="actions/save.shtml?$PARAM1+$PARAM2+$PARAM3">export</A><BR>
+	</TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+

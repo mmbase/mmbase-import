@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title xml:lang="nl">Voer hier de wizard titel in</title>
+  <title xml:lang="en">Enter Wizard Title Here</title>
+
+
+  <action type="create">
+    <object type="news">
+      <field name="title">defaultvalue for this field</field>
+      <relation destination="$origin" role="posrel"  />
+    </object>
+  </action>
+
+  <action type="delete" />
+  <action type="unlink" />
+
+  <action type="load">
+    <relation destination="people" />
+    <relation destination="images" role="posrel" />
+    <relation destination="urls"   role="posrel" />
+  </action>
+
+  <form-schema id="step1">
+    <title>Enter form title here</title>
+    <title xml:lang="nl">Voer hier de formulier titel in</title>
+    <field name="title" />
+    <field name="subtitle" />
+    <field name="intro" ftype="text" rows="4" />
+    <field name="body"  ftype="html" rows="8" />
+    <field name="date" />
+
+    <list role="related" destination="people" minoccurs="0" maxoccurs="*">
+      <title xml:lang="nl">Auteurs</title>
+      <title xml:lang="en">Authors</title>
+
+      <item>
+        <field ftype="data" name="firstname" />
+        <field ftype="data" name="lastname" />
+      </item>
+
+      <command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname" age="-1">
+        <prompt xml:lang="nl">Personen</prompt>
+        <prompt xml:lang="en">People</prompt>
+        <search-filter>
+          <name>first name contains</name>
+          <name xml:lang="nl">voornaam bevat</name>
+          <search-fields>firstname</search-fields>
+        </search-filter>
+        <search-filter>
+          <name>last name contains</name>
+          <name xml:lang="nl">achternaam bevat</name>
+          <search-fields>lastname</search-fields>
+        </search-filter>
+      </command>
+
+      <action type="add">
+        <relation destinationtype="people" role="related" />
+      </action>
+    </list>
+
+    <list role="posrel" destination="images" orderby="field[@name='pos']">
+      <title xml:lang="nl">Gerelateerde plaatjes</title>
+      <title xml:lang="en">Related images</title>
+
+      <item>
+        <field name="title" ftype="image" />
+      </item>
+
+      <command name="search" nodepath="images" fields="title" age="-1">
+        <prompt>Images</prompt>
+        <prompt xml:lang="nl">Plaatjes</prompt>
+      </command>
+
+      <action type="add">
+        <relation destinationtype="images" role="posrel">
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and @source=/data/object/@number and object/@searchtype = 'images']/field[@name='pos'])+{$pos}}</field>
+        </relation>
+      </action>
+    </list>
+
+    <list role="posrel" destination="urls" orderby="field[@name='pos']">
+      <title xml:lang="nl">Gerelateerde Urls</title>
+      <title xml:lang="en">Related urls</title>
+
+      <item>
+        <field name="url" />
+      </item>
+
+      <command name="insert" />
+
+      <action type="create">
+        <relation destinationtype="urls" role="posrel">
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and @source=/data/object/@number and object/@searchtype = 'urls']/field[@name='pos'])+{$pos}}</field>
+          <object type="urls">
+            <field name="url">http://</field>
+          </object>
+        </relation>
+      </action>
+    </list>
+
+  </form-schema>
+</wizard-schema>

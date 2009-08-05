@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="MyNews" maintainer="mmbase.org" version="2" auto-deploy="true">
+  <requirements>
+    <requires name="Resources" maintainer="mmbase.org" version="1" />
+  </requirements>
+
+  <neededbuilderlist>
+    <builder maintainer="mmbase.org" version="1">mags</builder>
+    <builder maintainer="mmbase.org" version="1">urls</builder>
+    <builder maintainer="mmbase.org" version="1">news</builder>
+    <builder maintainer="mmbase.org" version="1">people</builder>
+    <builder maintainer="mmbase.org" version="1">attachments</builder>
+    <builder maintainer="mmbase.org" version="1">images</builder>
+    <builder maintainer="mmbase.org" version="1">posrel</builder>
+    <builder maintainer="mmbase.org" version="1">insrel</builder>
+    <!-- builder maintainer="mmbase.org" version="1">mmevents</builder-->
+
+  </neededbuilderlist>
+
+  <neededreldeflist>
+
+    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+    <reldef source="posrel"  target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
+    <reldef source="sorted"  target="sorted" direction="bidirectional" guisourcename="Sorted" guitargetname="Sorted" builder="posrel" />
+    <!-- sorted is used for tests where the role-name not equals builder name -->
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="mags"   to="news"     type="posrel" />
+    <relation from="news"   to="urls"     type="posrel" />
+    <relation from="news"   to="urls"     type="sorted" />
+    <relation from="news"   to="news"     type="sorted" />
+    <relation from="news"   to="images"   type="posrel" />
+    <relation from="news"   to="attachments"  type="posrel" />
+    <!-- relation from="news"   to="mmevents" type="related" /-->
+    <relation from="news"   to="people"   type="related" />
+    <relation from="people" to="images"   type="related" />
+  </allowedrelationlist>
+
+  <datasourcelist>
+    <datasource builder="mags"     path="MyNews/mags.xml" />
+    <datasource builder="news"     path="MyNews/news.xml" />
+    <datasource builder="people"   path="MyNews/people.xml" />
+    <datasource builder="urls"     path="MyNews/urls.xml" />
+    <datasource builder="attachments"  path="MyNews/attachments.xml" />
+    <datasource builder="images"   path="MyNews/images.xml" />
+    <!-- datasource builder="mmevents" path="MyNews/mmevents.xml" /-->
+  </datasourcelist>
+
+  <relationsourcelist>
+    <relationsource builder="insrel" path="MyNews/insrel.xml" />
+    <relationsource builder="posrel" path="MyNews/posrel.xml" />
+  </relationsourcelist>
+
+  <contextsourcelist>
+    <contextsource path="MyNews/backup.xml" type="depth" goal="backup"/>
+  </contextsourcelist>
+
+  <description>
+    <![CDATA[MyNews is an example of a magazine with news articles.
+It depends on the Resources application.]]>
+  </description>
+
+  <install-notice>
+    <![CDATA[The MyNews application is installed. Look at the MMBase demo page for the magazine.]]>
+  </install-notice>
+</application>

@@ -1,0 +1,25 @@
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c c_taglib b_test ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
+  <h2>MMBase taglib tests</h2>
+  <ol>
+    <li><mm:link page="test_attributes"><a href="${_}">attributes</a></mm:link></li>
+    <li><mm:link page="test_cloud"><a href="${_}">mm:cloud</a></mm:link></li>
+    <li><mm:link page="test_transaction"><a href="${_}">mm:transaction</a></mm:link></li>
+    <li><mm:link page="test_fieldinfo"><a href="${_}">mm:fieldinfo</a></mm:link></li>
+    <li><mm:link page="test_listcontainers"><a href="${_}">list containers</a></mm:link></li>
+    <li><mm:link page="test_vars"><a href="${_}">variables</a></mm:link></li>
+    <li><mm:link page="test_form"><a href="${_}">mm:form</a></mm:link></li>
+    <li><mm:link page="test_image"><a href="${_}">mm:image</a></mm:link></li>
+  </ol>
+
+</div>
+
+
+
+

@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<div
+    class="mm_c c_editwizard b_simple.example ${requestScope.componentClassName}"
+    id="${requestScope.componentId}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm:import externid="wizards"><mm:setting name="location" /></mm:import>
+  <mm:import id="jsps">${wizards}/jsp</mm:import>
+  <mm:link>
+    <mm:param name="wizards">/mmbase/edit/wizard.deprecated</mm:param>
+    <h1>Editwizard - samples (<a href="${_}">Deprecated look, if installed</a>)</h1>
+  </mm:link>
+  <p>
+    This example uses the default editwizard XSL's. It also uses some
+    default XML's which can be found in the editwizard directory under
+    data/samples/.
+  </p>
+  <mm:import id="templates">/mmbase/components/editwizard/</mm:import>
+  <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
+  <table>
+    <tr>
+      <td>
+        <mm:link referids="referrer,templates" page="$jsps/list.jsp">
+          <mm:param name="wizard">samples/people</mm:param>
+          <mm:param name="nodepath">people</mm:param>
+          <mm:param name="fields">firstname,lastname,owner</mm:param>
+          <a href="${_}">Person-Test</a>
+        </mm:link>
+      </td>
+      <td>A simple one-step person editor. First-name, last-name and related articles.</td>
+      <td>
+        <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">/mmbase/components/editwizard/samples/people.xml</mm:param>
+          <a href="${_}">See XML</a>
+        </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <mm:link referids="referrer,templates" page="$jsps/list.jsp">
+          <mm:param name="wizard">lib/createimage</mm:param>
+          <mm:param name="nodepath">images</mm:param>
+          <a href="${_}">Images</a>
+        </mm:link>
+      </td>
+      <td>You can also upload images with an editwizard. Here is shown how this can be done.</td>
+      <td>
+        <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">${wizards}/data/lib/createimage.xml</mm:param>
+          <a href="${_}">See XML</a>
+        </mm:link>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <mm:link referids="referrer,templates" page="$jsps/list.jsp">
+          <mm:param name="wizard">samples/news</mm:param>
+          <mm:param name="nodepath">news</mm:param>
+          <mm:param name="search">yes</mm:param>
+          <a href="${_}">News</a>
+        </mm:link>
+      </td>
+      <td>An editor for news articles. In the one step you can create or add a news article and relate people and images to it.</td>
+      <td>
+        <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">/mmbase/components/editwizard/samples/news.xml</mm:param>
+          <mm:param name="xml">true</mm:param>
+          <a href="${_}">See XML</a>
+        </mm:link>
+      </td>
+    </tr>
+    <tr><td>
+      <p>
+      <mm:link referids="referrer,templates" page="$jsps/list.jsp">
+        <mm:param name="wizard">samples/news_origin</mm:param>
+        <mm:param name="startnodes">default.mags</mm:param>
+        <mm:param name="origin">default.mags</mm:param>
+        <mm:param name="relationRole">posrel</mm:param>
+        <mm:param name="relationOriginNode">default.mags</mm:param>
+        <mm:param name="nodepath">mags,posrel,news</mm:param>
+        <mm:param name="orderby">posrel.pos</mm:param>
+        <mm:param name="directions">down</mm:param>
+        <mm:param name="search">yes</mm:param>
+        <a href="${_}">News (with origin = default.mags)</a>
+      </mm:link>
+      </p>
+      <p>
+        <mm:link referids="referrer,templates" page="$jsps/wizard.jsp">
+          <mm:param name="wizard">samples/news_origin</mm:param>
+          <mm:param name="origin">default.mags</mm:param>
+          <mm:param name="objectnumber">new</mm:param>
+          <a href="${_}">NEW</a>
+        </mm:link>
+      </p>
+      <p>
+
+        <mm:link referids="referrer,templates" page="$jsps/wizard.jsp">
+          <mm:param name="wizard">samples/news_implicitcreates</mm:param>
+          <mm:param name="parent">default.mags</mm:param>
+          <mm:param name="newPos"><mm:time time="now" /></mm:param>
+          <mm:param name="objectnumber">new</mm:param>
+          <a href="${_}">NEW (with parent in stead of origin, with implicitely created urls and people objects)</a>
+        </mm:link>
+      </p>
+    </td>
+    <td>
+      Only shows the news articles related to a specific node (the magazine, of course). This also
+      shows the 'new from list' functionality (new in MMBase- 1.8.5).
+    </td>
+      <td>
+        <mm:link page="view_source">
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:param name="page">/mmbase/components/editwizard/samples/news_origin.xml</mm:param>
+          <a href="${_}">See XML</a>
+        </mm:link>
+      </td>
+    </tr>
+  </table>
+  <hr />
+  <div class="link">
+    <mm:link page="examples">
+      <a href="${_}"><img alt="back" src="${mm:link('/mmbase/style/images/back.png')}" /></a>
+    </mm:link>
+  </div>
+</div>

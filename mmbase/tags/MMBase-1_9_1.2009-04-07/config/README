@@ -1,0 +1,166 @@
+MMBase configuration and 'Resource loading'
+-------------------------------------
+
+You have found this README in the mmbase configuration directory (WEB-INF/config)
+
+Configuration can be on multiple locations in MMBase. Every file found here, could also be found as
+a 'resource' in (in order of descending prevalence):
+
+
+- The location of any resource can be explicitely overriden with an application context setting like
+  this (in the server.xml of tomcat):
+  <Environment name="mmbase-config/utils/multicast.xml"  value="file://${catalina.base}/conf/multicast/nomulticast.xml"    type="java.lang.String" />
+
+- A node of the type 'resources' (if installed, and of course not valid for resources like modules/jdbc.xml,
+  buiders/core/object.xml , builders/resources.xml etc..)
+  This 'resources' builder is not widely used, new in 1.8, and should be considered an experimental feature.
+
+
+- Some other directory specified by the servlet context init parameter 'mmbase.config' (in web.xml) or
+  by a System property 'mmbase.config' (typically by the command line switch -Dmmbase.config=..)
+
+   The value of mmbase.config may start with $WEBROOT, to resolve relative to the web root of the
+   application.
+
+- This dir (WEB-INF/config) appears here in the prevalence chain. So, if no resources builder is installed, and
+  no specific mmbase.config setting was applied, this dir is the 'top' and being considered firstly.
+
+- By the java class-loader relative to org/mmbase/config
+   This means that everything can also be under WEB-INF/classes/org/mmbase/config
+   It also means that every jar in WEB-INF/lib can have its own piece of MMBase configuration (its
+   own builders, its own caches, its own datatypes, its own xstls etc..)
+   WEB-INF/classes has a highest prevalence, followed the rest of the class loader mechanism (See
+   e.g. http://jakarta.apache.org/tomcat/tomcat-5.5-doc/class-loader-howto.html)
+
+If a certain configuration resource is matched by more than one of the above mechanisms, then one of
+the following two things can happen, depending on the semantics of that resource.
+
+1. Only one of the representations is used, and the other ones are 'shadowed'.
+   There can e.g. be only one modules/jdbc.xml in use.
+   This is valid for resources in applications, builders, dtd, log, modules, security, util, xmlns,
+   xslt.
+
+   Sometimes, a resource with the same name can exist multiple times with the same 'prevalence',
+   e.g. the same builder xml can occur in different jars. In the case of builder xmls the one with
+   the highest version is then used (the 'version' attribution on the builder tag in the resource
+   itself). In most other cases more or less a random one will be used, it probably is better to not
+   depend on that, and make sure that the resource are equal, or that it does not happen.
+
+   Most resources have a well defined name. E.g. the logging configuration is in config/log/log.xml,
+   and log4j can be configured in the resource mentioned in _that_ resource (default
+   config/log/log4j.xml).
+
+   Some things are read as a 'lists of resources', where the individual resources are not known
+   beforehand in the code. These are applications, builders and modules. MMBase will try to use
+   _all_ resources in those directories. Since listing cannot be done by a class loader, in jar files
+   one may create a list of resource names in a resource with the name INDEX:
+   applications/INDEX
+   builders/INDEX
+   modules/INDEX
+   (so these INDEX'es are treated like in (2)).
+
+
+2. All representations are somehow used. Typical examples are 'datatypes.xml' and 'caches.xml'. If
+   more then one of those are found, then they are all read and used.
+   Though, if different instances of 'caches.xml' specify the same cache, then one of them will
+   'win'.
+   In this directory you may find empty versions of those resources for your convienience.
+
+
+More information about this 'resource loading' mechanism can be found in
+mmdocs/backenddevelopers/resourceloader.html
+and the apidoc of org.mmbase.util.ResourceLoader (www.mmbase.org/api/org/mmbase/util/ResourceLoader.html).
+
+
+Exceptions
+---------------------
+Some resources are (also) read on a different locatation than relative to org/mmbase/config. Most
+noticably dtds are often resolved relative to the java class which parses the associated XML.  That makes
+sense, because it is senseless to change a DTD without changing the parse-code. In other words, dtds
+should not be considered configuration, even though resolving of them false back to
+org/mmbase/config/dtd.
+
+
+How to know what is
+---------------------
+You can explore what resources are availabe in a certain jar like so:
+
+~/mmbase/head/build$ jar tf mmbase.jar org/mmbase/config
+org/mmbase/config/
+org/mmbase/config/applications/
+org/mmbase/config/builders/
+org/mmbase/config/builders/core/
+org/mmbase/config/dtd/
+org/mmbase/config/functions/
+org/mmbase/config/modules/
+org/mmbase/config/security/
+org/mmbase/config/storage/
+org/mmbase/config/storage/databases/
+org/mmbase/config/utils/
+org/mmbase/config/xmlns/
+org/mmbase/config/xslt/
+org/mmbase/config/xslt/common/
+org/mmbase/config/applications/Basics.xml
+org/mmbase/config/applications/INDEX
+org/mmbase/config/builders/INDEX
+org/mmbase/config/builders/core/daymarks.xml
+org/mmbase/config/builders/core/insrel.xml
+org/mmbase/config/builders/core/mmservers.xml
+org/mmbase/config/builders/core/oalias.xml
+org/mmbase/config/builders/core/object.xml
+org/mmbase/config/builders/core/reldef.xml
+org/mmbase/config/builders/core/syncnodes.xml
+org/mmbase/config/builders/core/typedef.xml
+org/mmbase/config/builders/core/typerel.xml
+org/mmbase/config/builders/core/versions.xml
+org/mmbase/config/caches.xml
+org/mmbase/config/datatypes.xml
+org/mmbase/config/dtd/XMLSchema.dtd
+org/mmbase/config/dtd/datatypes.dtd
+org/mmbase/config/dtd/objects_1_0.dtd
+org/mmbase/config/eventmanager.xml
+org/mmbase/config/functions/functionsets.xml
+org/mmbase/config/functions/utils.xml
+org/mmbase/config/magic.xml
+org/mmbase/config/modules/INDEX
+org/mmbase/config/modules/mmadmin.xml
+org/mmbase/config/modules/mmbaseroot.xml
+org/mmbase/config/security/classauthentication.xml
+org/mmbase/config/storage/databases/hsqldb.xml
+org/mmbase/config/storage/databases/hypersonic.xml
+org/mmbase/config/storage/databases/informix.xml
+org/mmbase/config/storage/databases/informix_without_fetchrel_function.xml
+org/mmbase/config/storage/databases/lookup.xml
+org/mmbase/config/storage/databases/mssql.xml
+org/mmbase/config/storage/databases/mysql.xml
+org/mmbase/config/storage/databases/oracle.xml
+org/mmbase/config/storage/databases/postgresql.xml
+org/mmbase/config/utils/censor.xml
+org/mmbase/config/utils/editors.xml
+org/mmbase/config/utils/linkfinder.xml
+org/mmbase/config/utils/multicast.xml
+org/mmbase/config/xmlns/xml.xsd
+org/mmbase/config/xslt/2xml.xslt
+org/mmbase/config/xslt/allbuilders.xsl
+org/mmbase/config/xslt/appview.xsl
+org/mmbase/config/xslt/builder2docbook.xsl
+org/mmbase/config/xslt/builderview.xsl
+org/mmbase/config/xslt/common/l10n.xsl
+org/mmbase/config/xslt/copy.xslt
+org/mmbase/config/xslt/dbview.xsl
+org/mmbase/config/xslt/formatteddate.xslt
+org/mmbase/config/xslt/indentxml.xslt
+org/mmbase/config/xslt/jdbcview.xsl
+org/mmbase/config/xslt/linkcheckerview.xsl
+org/mmbase/config/xslt/mmbaserootview.xsl
+org/mmbase/config/xslt/mmlanguageview.xsl
+org/mmbase/config/xslt/scancacheview.xsl
+org/mmbase/config/xslt/sendmailview.xsl
+org/mmbase/config/xslt/statsview.xsl
+org/mmbase/config/xslt/test.xslt
+org/mmbase/config/xslt/text.xslt
+org/mmbase/config/xslt/xmlindent.xslt
+~/mmbase/head/build$
+
+---------------------
+Version of this file: $Id: README,v 1.2 2008-09-12 06:06:10 michiel Exp $

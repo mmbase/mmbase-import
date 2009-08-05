@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+  <extend>${basedir}/../app-base/project.xml</extend>
+  <artifactId>mmbase-mynews</artifactId>
+  <name>MyNews</name>
+  <shortDescription>MMBase News example</shortDescription>
+  <description>
+    The MyNews application is one of the oldest MMBase examples that still exists. It shows you a very simple
+    approach to a news site, where you can see a list of news articles and click on one to view detail information.
+    In its simplicity it is a good example to see how the basic MMBase taglib works.
+  </description>
+  <properties>
+    <type>example</type>
+    <status>stable</status>
+  </properties>
+</project>
+

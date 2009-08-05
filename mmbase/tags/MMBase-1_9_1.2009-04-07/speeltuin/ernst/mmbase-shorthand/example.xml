@@ -1,0 +1,166 @@
+<?xml version="1.0" ?>
+<!-- 
+	This example is a random mmbase project. it assumes the following builders are present:
+	images, urls, attachments, posrel.
+	apart from that all builders and the apps1 file are generated, and can be deployed straight away
+ -->
+
+<application name="wck" autodeploy="true" defaultlanguage="nl" maintainer="dynasol.nl"
+	xmlns:dt="http://www.mmbase.org/xmlns/datatypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.dynasol.nl/xmlns/mmbase-shorthand"
+	xsi:schemaLocation="http://www.dynasol.nl/xmlns/mmbase-shorthand http://www.xs4all.nl/~ebunders/schema/mmbase-shorthand.xsd ">
+
+	<reldef role="biografierel" guiname="biografie van" />
+	<reldef role="boekbesprekingrel"  builder="boekbesprekingrel" guiname="boekbespreking" />
+	<reldef role="inforel"  guiname="informatie over" />
+	<reldef role="winnaarrel"  guiname="de winnaar" />
+	<reldef role="posrel"  guiname="positie relatie"/>
+
+	<builder name="artikel">
+		<field name="naam" datatype="line" flags="n" />
+		<field name="intro" datatype="string" />
+		<field name="tonen" type="BOOLEAN">
+			<dt:datatype base="boolean">
+				<dt:default value="true" />
+			</dt:datatype>
+		</field>
+		<field name="aanmaakdatum" state="system" datatype="created" input="-1" />
+		<field name="door" datatype="line" />
+		<relation role="posrel" target="paragraaf" />
+		<relation role="boekbesprekingrel" target="boek" />
+	</builder>
+
+	<builder name="paragraaf">
+		<field name="naam" datatype="line" />
+		<field name="tekst" datatype="string" />
+		<field name="attachmentlijstkop" datatype="line" description="Kop voor lijst gekoppede attachments" />
+		<field name="urllijstkop" datatype="line" description="Kop voor lijst gekoppede url's" />
+		<field name="attachmentlijststijl" datatype="liststyle" type="STRING" />
+		<field name="urllijststijl" datatype="liststyle" type="STRING" />
+		<relation role="orentationrel" target="images" />
+		<relation role="posrel" target="urls" />
+		<relation role="posrel" target="attachments" />
+		<relation role="posrel" target="template" />
+	</builder>
+
+	<builder name="template">
+		<field name="naam" datatype="line" />
+		<field name="bestand" datatype="line" />
+		<field name="omschrijving" datatype="string" />
+		<field name="params" datatype="line" />
+	</builder>
+
+	<builder name="boek">
+		<field name="titel" datatype="line" />
+		<field name="subtitel" datatype="line" />
+		<field name="omvang" datatype="integer" />
+		<field name="verschenen" datatype="datetime" />
+		<field name="serienaam" datatype="line" />
+		<field name="isbn" datatype="line" />
+		<field name="prijs" datatype="double" />
+		<relation role="biografierel" target="artikel" />
+		<relation role="related" target="uitgever" />
+		<relation role="related" target="auteur" />
+		<relation role="related" target="illustrator" />
+	</builder>
+    
+    <builder name="boekbesprekingrel">
+        <field name="test" datatype="line"/>
+    </builder>
+	
+	<builder name="uitgever">
+		<field name="naam" datatype="line"/>
+		<field name="omschrijving" datatype="string"/>
+	</builder>
+
+	<builder name="illustratie">
+		<field name="titel" datatype="line" />
+		<field name="subtitel" datatype="line" />
+		<field name="verschenen" datatype="datetime" />
+		<relation role="related" target="illustrator" />
+		<relation role="related" target="images" />
+	</builder>
+
+	<builder name="auteur">
+		<field name="voornaam" datatype="line" />
+		<field name="tussenvoegsels" datatype="line" />
+		<field name="achternaam" datatype="line" />
+		<field name="bibiliografie" datatype="string" />
+		<relation role="inforel" target="artikel" />
+	</builder>
+
+	<builder name="illustrator" extends="auteur" />
+
+	<builder name="boekenlijst">
+		<field name="naam" datatype="line"></field>
+		<field name="omschrijving" datatype="string"></field>
+		<relation role="posrel" target="artikel" />
+	</builder>
+
+	<builder name="lesbrievenlijst">
+		<field name="naam" datatype="line"></field>
+		<field name="omschrijving" datatype="string"></field>
+		<relation role="posrel" target="artikel" />
+	</builder>
+
+	<!-- 
+		de prijs builders
+	-->
+
+	<builder name="prijs">
+		<field name="nominatiegroepen" datatype="boolean" />
+		<field name="naam" datatype="line" />
+		<field name="omschrijving" datatype="string" />
+		<relation role="related" target="jaargang" />
+		<relation role="related" target="attachments" />
+		<relation role="winnaarrel" target="nominatie" />
+	</builder>
+
+	<builder name="jaargang">
+		<field name="jaar" datatype="integer" />
+		<relation role="related" target="nominatiegroep"/>
+		<relation role="posrel" target="nominatie"/>
+	</builder>
+	
+	<builder name="nominatiegroep">
+		<field name="naam" datatype="line" />
+		<field name="omschrijving" datatype="string" />
+		<relation role="posrel" target="nominatie"/>
+	</builder>
+	
+	<builder name="nominatie">
+		<relation role="related" target="boek"/>
+		<relation role="related" target="illustratie"/>
+	</builder>
+
+	<!-- 
+		de pagina builders
+	 -->
+	 
+	 <builder name="website">
+	 	<field name="titel" datatype="line"/>
+	 	<relation role="posrel" target="pagina"/>
+	 </builder>
+	 
+	 <builder name="pagina" extends="artikel">
+	 	<field name="menutekst" datatype="line"/>
+	 	<field name="alttekst" datatype="line"/>
+	 	<field name="gesloten" >
+	 		<dt:datatype base="boolean">
+	 			<dt:default value="true"/>
+	 		</dt:datatype>
+	 	</field>
+	 	<relation role="posrel" target="pagina"/>
+	 	<relation role="related" target="prijs"/>
+	 	<relation role="related" target="boekenlijst"/>
+	 	<relation role="related" target="lesbrievenlijst"/>
+	 </builder>
+
+
+	<!-- relation builders -->
+	<builder name="orientatierel">
+		<field name="orientatie" datatype="position" type="STRING" />
+	</builder>
+
+
+</application>

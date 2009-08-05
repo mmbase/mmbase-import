@@ -1,0 +1,30 @@
+<project name="LuceneTest" default="run.lucene" basedir=".">
+
+  <property name="mmbase.source.dir" location="../../../" />
+  <property name="source.dir"   location="../../../" />
+  <property name="build.dir"   location="../../../build" />
+  <property name="tests.source.dir"   location="." />
+
+  <property file="build.properties" />
+
+  <import file="../../../tests/tests.xml" />
+
+
+  <target name="compile" depends="compile.this" />
+
+  <target name="run.lucene" depends="mmbase,jar,init" description="Lucene tests">
+    <antcall target="clean.database" />
+    <java
+      classname="${ui.class}"
+      fork="true"
+      classpathref="run.classpath"
+      >
+      <arg value="org.mmbase.module.lucene.LuceneTest" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
+    </java>
+  </target>
+
+
+</project>

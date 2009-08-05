@@ -1,0 +1,78 @@
+#left {
+   width:350px;
+}
+#content {
+   margin-left: 360px;
+}
+table.centerData td {
+   text-align: center;
+   padding:0;
+   width:50px
+}
+table.centerData td.leftData {
+   text-align: left;
+   width:56px;
+}
+table.centerData td.indent {
+   width:19px;
+}
+
+a.sortup {
+   background: url( ../gfx/icons/sort_up.gif ) no-repeat right !important;
+   padding-right: 20px;
+}
+
+a.sortdown {
+   background: url( ../gfx/icons/sort_down.gif ) no-repeat right !important;
+   padding-right: 20px;
+}
+
+a {
+   text-decoration: underline;
+}
+
+.tip {
+   position: relative;
+   left: 5px;
+   padding: 0px;
+   align: center;
+   width: 2px;
+   height: 2px;
+   overflow: left;
+   vertical-align: middle;
+}
+
+.tip:hover {
+   text-decoration: none;
+   color: #000000;
+   display: block;
+}
+
+.tip span {
+   display: none;
+   text-decoration: none;
+   width: 1px;
+   height: 1px;
+   overflow: left;
+}
+
+.tip:visited {
+   color: #000000;
+   text-decoration: none;
+}
+
+.tip:hover #tip_info {
+   display: block;
+   border: 2px solid #5C5C5C;
+   background: #FFFFFF;
+   padding: 10px 10px;
+   position: absolute;
+   top: 10px;
+   left: 15px;
+   color: #000000;
+   width: 600px;
+   height: 300px;
+   overflow: scroll;
+}
+
+

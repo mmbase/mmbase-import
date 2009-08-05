@@ -1,0 +1,38 @@
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list destination="attachments" role="related" minoccurs="0" maxoccurs="*">
+    <title xml:lang="nl">Bijbehorende Bestanden</title>
+    <title xml:lang="en">Related files</title>
+
+    <item>
+        <field name="title" ftype="data">
+            <prompt xml:lang="nl">Titel</prompt>
+            <prompt xml:lang="en">Title</prompt>
+        </field>
+        <field ftype="data" name="description">
+            <prompt xml:lang="nl">Omschrijving</prompt>
+            <prompt xml:lang="en">Description</prompt>
+        </field>
+        <field wizardname="config/attachment/attachment" ftype="startwizard" />
+   </item>
+
+    <command name="startwizard" inline="true" wizardname="config/attachment/attachment" objectnumber="new" />
+
+    <command name="search" nodepath="attachments" fields="title" age="-1" orderby="number" directions="down" >
+        <prompt xml:lang="nl">Zoeken naar bestand</prompt>
+        <prompt xml:lang="en">Search files</prompt>
+        <search-filter>
+            <name xml:lang="nl">Titel bevat</name>
+            <name xml:lang="en">Title contains</name>
+            <search-fields>title</search-fields>
+        </search-filter>
+        <search-filter>
+            <name xml:lang="nl">Omschrijving bevat</name>
+            <name xml:lang="en">Description contains</name>
+            <search-fields>description</search-fields>
+        </search-filter>
+    </command>
+
+    <action type="create">
+        <relation destinationtype="attachments" role="related" />
+    </action>
+</list>

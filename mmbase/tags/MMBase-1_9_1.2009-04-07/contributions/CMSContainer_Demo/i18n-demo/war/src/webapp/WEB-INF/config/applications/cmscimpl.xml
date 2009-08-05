@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="cmscimpl" maintainer="finalist.com" version="1" auto-deploy="true">
+   <requirements>
+      <requires name="contentrepository" maintainer="finalist.com" version="3" type="application"/>
+      <requires name="sitemanagement" maintainer="finalist.com" version="1" type="application"/>
+      <requires name="cmscportlets" maintainer="finalist.com" version="1" type="application"/>
+      <requires name="basecontentelements" maintainer="finalist.com" version="1" type="application"/>
+   </requirements>
+
+   <neededbuilderlist>
+    </neededbuilderlist>
+
+    <neededreldeflist>
+   </neededreldeflist>
+
+   <allowedrelationlist>
+   </allowedrelationlist>
+
+   <datasourcelist>
+   <!-- A testdata/back up skelet is generated. If the testdata is not available, it will still work. -->
+      <datasource builder="portlet" path="cmscimpl/portlet.xml" />
+      <datasource builder="portletparameter" path="cmscimpl/portletparameter.xml" />
+      <datasource builder="view" path="cmscimpl/view.xml" />
+      <datasource builder="page" path="cmscimpl/page.xml" />
+      <datasource builder="layout" path="cmscimpl/layout.xml" />
+      <datasource builder="site" path="cmscimpl/site.xml" />
+      <datasource builder="stylesheet" path="cmscimpl/stylesheet.xml" />
+      <datasource builder="portletdefinition" path="cmscimpl/portletdefinition.xml" />
+      <datasource builder="nodeparameter" path="cmscimpl/nodeparameter.xml" />
+      <datasource builder="editwizards" path="cmscimpl/editwizards.xml" />
+      <datasource builder="properties" path="cmscimpl/properties.xml" />
+      <datasource builder="popupinfo" path="cmscimpl/popupinfo.xml" />
+   </datasourcelist>
+
+   <relationsourcelist>
+   <!-- A testdata/backup skelet is generated for relation data. If the testdata is not available, it will still work. -->
+      <relationsource builder="insrel" path="cmscimpl/insrel.xml"/>
+      <relationsource builder="posrel" path="cmscimpl/posrel.xml"/>
+      <relationsource builder="rolerel" path="cmscimpl/rolerel.xml"/>
+      <relationsource builder="navrel" path="cmscimpl/navrel.xml"/>
+      <relationsource builder="portletrel" path="cmscimpl/portletrel.xml"/>
+      <relationsource builder="layoutrel" path="cmscimpl/layoutrel.xml"/>
+      <relationsource builder="viewrel" path="cmscimpl/viewrel.xml"/>
+      <relationsource builder="definitionrel" path="cmscimpl/definitionrel.xml"/>
+      <relationsource builder="allowrel" path="cmscimpl/allowrel.xml"/>
+      <relationsource builder="parameterrel" path="cmscimpl/parameterrel.xml"/>
+      <relationsource builder="stylerel" path="cmscimpl/stylerel.xml"/>
+      <relationsource builder="namedallowrel" path="cmscimpl/namedallowrel.xml"/>
+   </relationsourcelist>
+
+   <contextsourcelist>
+      <contextsource goal="backup" type="depth" path="cmscimpl/backup.xml"/>
+   </contextsourcelist>
+
+   <description><![CDATA[Installs the application. Included are all the builders.]]></description>
+   <install-notice><![CDATA[You have installed the application.]]></install-notice>
+</application>

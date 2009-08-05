@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<module maintainer="mmbase.org" version="0">
+  <class>org.mmbase.module.core.MMBase</class>
+  <properties>
+    <property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
+    <property name="basename">mmbasetests</property>
+    <property name="language">zh</property>
+    <property name="encoding">UTF-8</property>
+    <property name="development">true</property>
+  </properties>
+</module>

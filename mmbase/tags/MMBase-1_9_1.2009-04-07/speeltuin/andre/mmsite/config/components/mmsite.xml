@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="mmsite"
+    defaultblock="page"
+    version="1"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
+                        http://www.mmbase.org/xmlns/component.xsd">
+
+  <description xml:lang="en">Components for a website</description>
+  <description xml:lang="nl">Componenten voor een website</description>
+
+  <block name="page"
+         classification="mmbase.mmsite"
+         mimetype="text/html">
+    <title xml:lang="en">Page</title>
+    <title xml:lang="nl">Pagina</title>
+    <description xml:lang="en">
+     Some page (or article) in the site with a certain path.
+    </description>
+    <description xml:lang="nl">
+      Een pagina (page) of artikel in de site met een bepaald pad.
+    </description>
+    <body jsp="page.jspx">
+      <param name="n" type="org.mmbase.bridge.Node" />
+    </body>
+  </block>
+
+</component>

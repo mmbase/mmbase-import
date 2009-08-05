@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<head
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+  <class name="org.mmbase.framework.StringRenderer">
+    <param name="string">
+      &lt;link href="{REQUEST.getContextPath}/mmbase/security/style/style.css" rel="stylesheet" title="Cloud Context Security" type="text/css" media="screen" /&gt;
+    </param>
+  </class>
+</head>

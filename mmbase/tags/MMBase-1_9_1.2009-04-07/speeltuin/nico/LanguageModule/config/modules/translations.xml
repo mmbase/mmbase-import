@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<module>
+
+	<status>active</status>
+
+	<classfile>nl.hcs.mmbase.TranslationModule</classfile>
+
+	<properties>
+	
+	    <!-- The sql exists. -->
+	    <property name="sql_exists">
+			SELECT count(*) FROM install_translationstable;
+	    </property>
+	
+	    <!-- The sql create. -->
+	    <property name="sql_create">
+			CREATE TABLE install_translationstable (
+			nodenumber integer NOT NULL,
+			fieldname varchar(50) NOT NULL,
+			languagecode varchar(2) NOT NULL,
+			countrycode varchar(2) NOT NULL,
+			body mediumblob NOT NULL,
+			KEY compoundKey (nodenumber,fieldname,languagecode));
+		</property>
+	
+	    <!-- The sql select. -->
+	    <property name="sql_select">
+			SELECT body 
+			FROM install_translationstable
+			WHERE nodenumber = ? AND 
+			fieldname = ? AND
+			languagecode = ? AND
+			countrycode = ?;
+		</property>
+
+	    <!-- The sql delete. -->
+	    <property name="sql_delete">
+			DELETE FROM install_translationstable
+			WHERE nodenumber = ? AND 
+			fieldname = ? AND
+			languagecode = ? AND
+			countrycode= ?;
+		</property>
+
+	    <!-- The sql update. -->
+	    <property name="sql_update">
+			UPDATE install_translationstable
+			SET body = ?
+			WHERE nodenumber = ? AND 
+			fieldname = ? AND
+			languagecode = ? AND
+			countrycode = ?;
+		</property>
+
+	    <!-- The sql insert. -->
+	    <property name="sql_insert">
+			INSERT INTO install_translationstable
+			(nodenumber,fieldname,languagecode,countrycode,body)
+			VALUES(?, ?, ?, ?, ?);
+		</property>
+
+	</properties>
+
+</module>

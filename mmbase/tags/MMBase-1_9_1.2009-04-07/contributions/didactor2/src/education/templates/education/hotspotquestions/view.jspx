@@ -1,0 +1,22 @@
+<mm:node number="${param.question}"
+         xmlns:c="http://java.sun.com/jsp/jstl/core"
+         xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+         xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+         xmlns:jsp="http://java.sun.com/JSP/Page"
+         >
+  <mm:relatednodes type="images" max="1">
+    <mm:image mode="src" border="0" />
+    <br/>
+  </mm:relatednodes>
+  <jsp:scriptlet>
+    int i = 1;
+  </jsp:scriptlet>
+  <mm:relatednodes type="hotspotanswers" orderby="x1,y1">
+    <a href="#" class="hotspot" 
+       style="position: absolute; left: ${_node.x1}px; top: ${_node.y1}px; width: ${_node.x2}px; height: ${_node.y2}px;">
+      <jsp:scriptlet>i++;</jsp:scriptlet>
+    </a>
+  </mm:relatednodes>
+  <b><di:translate key="education.givenanswer" />:</b> 
+  <mm:field name="text" escape="none"/>
+</mm:node>    

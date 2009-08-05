@@ -1,0 +1,119 @@
+@import url(style.css);
+body {
+  margin : 10px;
+}
+
+span.editintro {
+  display: inline-block;
+  width: 15em; /* does not work in mozilla? */
+  /* background-color: yellow; */
+  background-color: white;
+}
+
+
+th.number, td.number {
+  visibility: hidden;
+  width: 10px;
+}
+
+tr.itemrow-hover td	{
+  background-color: red;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+td#you {
+  margin-left: 100px;
+  background-color: white;
+  color: black;
+}
+
+
+a.bottombutton { font-weight:900; font-size:16px; cursor:pointer; cursor:hand; color:#18248C;  }
+a.bottombutton:hover	    {   font-weight:900; font-size:16px; cursor:pointer; cursor:hand; color: red;  }
+a.bottombutton-disabled		{ font-weight:900; font-size:16px; color:#CCCCCC; cursor:default; }
+
+.step a:hover {
+  color: red;
+  font-weight: bold;
+}
+
+img {
+ border: none;
+}
+
+/* security editors */
+div#security div#you {
+ display: none;
+}
+
+div#security div#navigate p {
+  display: inline;
+  margin: 0;
+  margin-right: 3ex;
+}
+
+
+div#security p.current {
+  background-color: #ffb;
+}
+
+div#security .group div {
+  width: 100%;
+  background-color: #eee;
+}
+
+div#security .environment, .users {
+  display: inline;
+  width: 50%;
+}
+
+div#security .environment p {
+  background-color: #eee;
+  margin: 0px;
+}
+div#security .environment .current {
+  background-color: #ccc;
+  padding-left: 5ex;
+}
+
+div#security .environment .parents {
+  padding-left: 1ex;
+}
+div#security .environment .childs {
+  padding-left: 9ex;
+}
+
+div#security table {
+  width: 100%;
+  background-color: #ccc;
+}
+
+div #security td {
+  background-color: #ddd;
+}
+
+div #security tr.even td {
+  background-color: #eee;
+}
+
+div#security table.rights  {
+}
+div#security table.rights  td {
+  text-align: center;
+}
+
+div#security table.rights  td.text {
+  text-align: left;
+}
+
+div#security table.rights td.parent {
+  background-color: #bfb;
+}
+
+
+span.contextedit {
+  margin-left: 3ex;
+}
+
