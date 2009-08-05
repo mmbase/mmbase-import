@@ -94,7 +94,11 @@
         <module>media</module>
         <module>notifications</module>
         <module>searchrelate</module>
+
         <module>richtext</module>
+        <module>richtext/content</module>
+        <module>richtext/wiki</module>
+
         <module>rmmci</module>
 
         <module>jumpers</module>
