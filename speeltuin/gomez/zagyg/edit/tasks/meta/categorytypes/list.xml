@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase//DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+  <list role="related" destination="categorytypes" maxoccurs="1" minoccurs="1">
+      <title xml:lang="en">Category type</title>
+      <title xml:lang="nl">Categorytype</title>
+
+      <item>
+          <field ftype="data" name="title" />
+      </item>
+
+      <command name="search" startnodes="{$origin}" nodepath="categories,categorytypes1,categorytypes2" fields="categorytypes2.title" searchdir="destination" orderby="categorytypes2.title" age="-1">
+          <prompt xml:lang="en">Search a category type</prompt>
+          <prompt xml:lang="nl">Zoek een categorytype</prompt>
+          <search-filter>
+              <name xml:lang="en">Contains</name>
+              <name xml:lang="nl">Bevat</name>
+              <search-fields>categorytypes2.title</search-fields>
+          </search-filter>
+      </command>
+
+      <action type="add">
+          <relation role="related" />
+      </action>
+  </list>
+

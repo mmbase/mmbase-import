@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="articles" maintainer="mmbase.org" version="1" extends="object">
+   
+   <!-- <status> what is the status of this builder options : active or inactive -->
+   <status>active</status>
+
+	<classfile>org.mmbase.application.wordfilter.BasicBuilder</classfile>
+   
+   <searchage>1000</searchage>
+   
+   <!-- <names>
+       names defines the different names used in user visible parts, singular for
+       for talking about 1 object (Url,Person) and plurar for talking about multiple
+       <Urls, people).
+   >-->
+   <names>
+       <!-- singles per language as defined by ISO 639 -->
+       <singular xml:lang="nl">Artikel</singular>
+       <singular xml:lang="en">Article</singular>
+       <!-- multiple per language as defined by ISO 639 -->
+       <plural xml:lang="nl">Artikelen</plural>
+       <plural xml:lang="en">Articles</plural>
+   </names>
+   
+   <!-- <descriptions>
+       small description of the builder for human reading
+   -->
+   <descriptions>
+   <!-- descriptions per language as defined by ISO 639  -->
+       <description xml:lang="en">Articles</description>
+       <description xml:lang="nl">Artikelen</description>
+   </descriptions>
+   
+   <!-- <properties>
+   you can define properties to be used by the classfile (if used) it uses
+   a key/value system. Its a optional tag.
+   -->
+   <properties>
+       <property name="cleanfields">intro,body</property>
+   </properties>
+   
+   <!-- <fieldlist>
+        defines the different fields in this object, be carefull the order is important
+       once defined keep them in the same order.
+       If you use number and owner (the 2 default fields, please check the docs for this)
+   -->
+   <fieldlist>
+
+      <field>
+         <descriptions>
+            <!-- descriptions per language as defined by ISO 639  -->
+            <description xml:lang="en">Title of the article</description>
+            <description xml:lang="nl">Titel van het artikel</description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="en">Title</guiname>
+            <guiname xml:lang="nl">Titel</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related  -->
+         <editor>
+            <positions>
+            <!-- position in the input area of the editor -->
+            <input>1</input>
+            <!-- position in list area of the editor -->
+            <list>1</list>
+            <!-- position in search area of the editor -->
+            <search>1</search>
+            </positions>
+         </editor>
+         <!-- database related  -->
+         <db>
+            <!-- name of the field in the database -->
+            <name>title</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" size="150" notnull="false" key="false">STRING</type>
+         </db>
+      </field>
+   
+      <field>
+         <descriptions>
+            <!-- descriptions per language as defined by ISO 639  -->
+            <description xml:lang="en">Subtitle of the article</description>
+            <description xml:lang="nl">Titel van het artikel</description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="en">Subtitle</guiname>
+            <guiname xml:lang="nl">Ondertitel</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related  -->
+         <editor>
+            <positions>
+            <!-- position in the input area of the editor -->
+            <input>2</input>
+            <!-- position in list area of the editor -->
+            <list>2</list>
+            <!-- position in search area of the editor -->
+            <search>2</search>
+            </positions>
+         </editor>
+         <!-- database related  -->
+         <db>
+            <!-- name of the field in the database -->
+            <name>subtitle</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" size="150" notnull="false" key="false">STRING</type>
+         </db>
+      </field>
+      
+      <field>
+         <descriptions>
+            <!-- descriptions per language as defined by ISO 639  -->
+            <description xml:lang="en">Introduction of the article</description>
+            <description xml:lang="nl">Introductie van het artikel</description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="en">Introduction</guiname>
+            <guiname xml:lang="nl">Introdctie</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related  -->
+         <editor>
+            <positions>
+            <!-- position in the input area of the editor -->
+            <input>3</input>
+            <!-- position in list area of the editor -->
+            <list>3</list>
+            <!-- position in search area of the editor -->
+            <search>3</search>
+            </positions>
+         </editor>
+         <!-- database related  -->
+         <db>
+            <!-- name of the field in the database -->
+            <name>intro</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" size="65536" notnull="false" key="false">STRING</type>
+         </db>
+      </field>
+      
+      <field>
+         <descriptions>
+            <!-- descriptions per language as defined by ISO 639  -->
+            <description xml:lang="en">Body of the article</description>
+            <description xml:lang="nl">Tekst van het artikel</description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="en">Body</guiname>
+            <guiname xml:lang="nl">Tekst</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <!-- editor related  -->
+         <editor>
+            <positions>
+            <!-- position in the input area of the editor -->
+            <input>4</input>
+            <!-- position in list area of the editor -->
+            <list>4</list>
+            <!-- position in search area of the editor -->
+            <search>4</search>
+            </positions>
+         </editor>
+         <!-- database related  -->
+         <db>
+            <!-- name of the field in the database -->
+            <name>body</name>
+            <!-- MMBase datatype and demands on it -->
+            <type state="persistent" size="65536" notnull="false" key="false">STRING</type>
+         </db>
+      </field>
+      
+   </fieldlist>
+
+</builder>

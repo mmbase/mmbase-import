@@ -1,0 +1,235 @@
+body
+{
+	background-color: #EEEEFF;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, sans-serif;
+	font-size: 0.85em;
+	color: #003;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: 4px 0px 4px 0px;
+	background-color: #EFEFEF;
+	font-weight: bold;
+}
+
+img
+{
+	display: inline;
+	border: 0;
+}
+
+.inline { display: inline; }
+
+.yammbutton
+{
+	display: inline;
+	float: left;
+	margin: 0px 6px 0px 2px;
+}
+
+a
+{
+	color: #900;
+	text-decoration: none;
+}
+
+a:visited
+{
+	color: #003333;
+	text-decoration: none;
+}
+
+a:hover { text-decoration: underline; }
+
+/* header stuff */
+#header
+{
+	padding: 5px;
+	margin: 0 0 15px 0;
+	background: #CCEB6F;
+	height: 20px;
+	font-size: 1.2em;
+}
+
+#titles { float: left; }
+#startnodes { float: right; }
+
+/* end header stuff */
+#content
+{
+	float: left;
+	width: 63%;
+	background: #E7E6DE;
+	padding: 5px;
+}
+
+/* sidebar stuff */
+#sidebar
+{
+	margin-left: 65%;
+	background: #F7FAEF;
+	padding: 5px;
+}
+
+.path
+{
+	background: #E7E6DE;
+	font-weight: bold;
+	padding: 4px;
+	border-color: #CCC;
+	border-width: 1px;
+	border-style: solid;
+}
+.fltleft {
+	float: left;
+}
+.fltright
+{
+	float: right;
+	padding: 0 2px 0 0;
+}
+
+
+.gui
+{
+	float: left;
+	padding: 2px;
+}
+
+.rel
+{
+	padding: 4px;
+	font-size: 0.8em;
+	border-color: #CCC;
+	border-width: 1px;
+	border-style: solid;
+}
+.rel0
+{
+	padding: 4px;
+	font-size: 0.8em;
+	border-color: #CCC;
+	border-width: 1px;
+	border-style: solid;
+}
+.rel1
+{
+	padding: 4px;
+	font-size: 0.8em;
+	border-color: #CCC;
+	border-width: 1px;
+	border-style: solid;
+}
+.rel2
+{
+	padding: 4px 4px 4px 20px;
+	font-size: 0.8em;
+	border-color: #CCC;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.reltxt
+{
+	float: left;
+	padding: 2px;
+}
+
+.relnode
+{
+	clear: both;
+	padding: 0 0 0 20px;
+}
+
+/* buttons */
+.buttonedit
+{
+	float: left;
+	margin: 0 4px 0 0;
+}
+
+.buttonrelate
+{
+	float: right;
+	margin: 0 0 4px 4px;
+	padding: 2px;
+}
+
+.buttons
+{
+	float: left;
+	margin: 1px 4px 1px 0;
+	display: block;
+}
+
+/* edit relation */
+.editrelation
+{
+	padding: 4px;
+	display: block;
+	background: #fff;
+	text-align: right;
+	text-transform: inherit;
+	clear: both;
+}
+
+.editrelation form { margin: 0; }
+.editrelation input {
+	width:52px;
+}
+
+
+/* end sidebar stuff*/
+#footer
+{
+	clear: both;
+	padding: 5px;
+	background: #CCEB6F;
+	font-size: 0.8em;
+}
+
+/* un-editable field */
+.fieldguivalue
+{
+	background-color: #fff;
+	border-color: #999;
+	border-width: 1px;
+	border-style: dotted;
+	padding: 2px;
+	width: 518px;
+	font-size: 0.85em;
+}
+
+.small
+{
+	font-family: Monaco, "Courier New", monospaced;
+	font-size: 0.8em;
+	width: 520px;
+}
+
+textarea
+{
+	font-family: Monaco, "Courier New", monospaced;
+	font-size: 0.8em;
+	width: 520px;
+}
+
+.formbutton
+{
+	font-size: 1em;
+	width: 100px;
+}
+
+.message
+{
+	background: #CCEB6F;
+	border-color: #C00;
+	border-width: 2px;
+	border-style: dotted;
+	padding: 5pt;
+	margin: 5pt 15% 5pt 15%;
+	width: 70%;
+}

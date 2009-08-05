@@ -40,9 +40,6 @@ public class CloudContext extends BridgeTest {
 
 
     public void testImplementation() {
-        assertNotNull(getCloud());
-        assertNotNull(getCloud().getCloudContext());
-        assertNotNull(getCloud().getCloudContext().getAuthentication());
         assertEquals(org.mmbase.security.implementation.cloudcontext.Authenticate.class,
                      getCloud().getCloudContext().getAuthentication().getClass());
         Cloud cloud = getCloud("foo");
@@ -72,7 +69,7 @@ public class CloudContext extends BridgeTest {
         Node context = cloud.getNodeManager("mmbasecontexts").getList(null).get(0);
         Node news = cloud.getNodeManager("news").getList(null).get(0);
         assertFalse(context.mayWrite());
-        assertTrue("May not write noded " + news.getNumber() + " with context " + news.getContext(), news.mayWrite());
+        assertTrue(news.mayWrite());
         try {
             context.setStringValue("name", "bla bla");
             fail("Should not have been allowed to write in an mmbasecontext node");

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronjobs exportsource="mmbase://127.0.0.1/registration" timestamp="20060704104198">
+   <node number="104991" owner="default">
+      <name>Register Clean Job</name>
+      <crontime>0 6 * * *</crontime>
+      <classfile>com.finalist.cmsc.login.RegisterCleanCronJob</classfile>
+      <config></config>
+      <type>2</type>
+   </node>
+</cronjobs>

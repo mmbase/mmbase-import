@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase//DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+  <form-schema>
+    <title xml:lang="en">News article</title>
+    <title xml:lang="nl">Nieuwsitem</title>
+    <field name="title" dtrequired="true" />
+    <field name="subtitle" />
+    <field name="intro" />
+    <field name="body" ftype="html" />
+    <field name="visible" ftype="enum" dtrequired="true">
+      <optionlist select="show" />
+    </field>
+    <field name="begin" />
+    <field name="end" />
+    <field name="sitestatteller" />
+
+    <field name="label" ftype="enum" dtrequired="true" >
+      <optionlist select="labels" />
+    </field>
+
+    <field name="theme" ftype="enum" dtrequired="true" >
+      <optionlist select="themes" />
+    </field>
+
+    <list include="tasks/images/list_posrel.xml" />
+
+  </form-schema>

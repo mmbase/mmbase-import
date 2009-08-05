@@ -1,0 +1,7 @@
+svn co http://codespeak.net/svn/kupu/trunk/kupu
+and then copy 'mmbase' in it. Type 'make' in this directory then.
+
+Furthermore you need: Tomcat 5, MMBase 1.8.
+Compile-time there are dependencies on xsltproc, msgfmt and msgen.
+
+

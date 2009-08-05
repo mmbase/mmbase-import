@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase//DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="intro">
+  <title xml:lang="en">Introduction</title>
+  <title xml:lang="nl">Inleidende tekst</title>
+
+  <form-schema id="basics">
+    <title xml:lang="en">Introduction</title>
+    <title xml:lang="nl">Inleidende tekst</title>
+
+    <field name="intro" />
+
+  </form-schema>
+</wizard-schema>

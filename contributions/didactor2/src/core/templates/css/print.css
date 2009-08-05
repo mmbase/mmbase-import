@@ -1,0 +1,19 @@
+
+.applicationMenubar {
+  display: none;
+}
+
+.mainContent {
+  margin-left: 0px;
+  left: 0%;
+  width: 100% !important;
+}
+
+
+.titlebar {
+  display: none;
+}
+
+.learnenvironment {
+  background-image: none !important;
+}

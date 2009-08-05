@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder extends="content" maintainer="mmbase.org" name="urls" version="0">
+  <status>active</status>
+  <classfile>Urls</classfile>
+  <searchage>14</searchage>
+  <names>
+    <singular xml:lang="nl">URLs</singular>
+    <singular xml:lang="en">URLs</singular>
+    <plural xml:lang="nl">URL</plural>
+    <plural xml:lang="en">URL</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="nl">Urls naar andere paginas</description>
+    <description xml:lang="en">Urls to other pages</description>
+  </descriptions>
+  <properties/>
+  <fieldlist>
+    <field>
+      <descriptions>
+        <description xml:lang="nl">Het internet adres van de link of website</description>
+        <description xml:lang="en">The link or site internet address</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="nl">Url</guiname>
+        <guiname xml:lang="en">Url</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>5</input>
+          <list>2</list>
+          <search>5</search>
+        </positions>
+      </editor>
+      <db>
+        <name>url</name>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+    <field>
+      <gui>
+        <guiname xml:lang="en">target</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>12</input>
+          <list>-1</list>
+          <search>12</search>
+        </positions>
+      </editor>
+      <db>
+        <name>target</name>
+        <type key="false" notnull="false" size="12" state="persistent">STRING</type>
+      </db>
+    </field>
+  </fieldlist>
+</builder>

@@ -23,7 +23,7 @@ import org.codehaus.classworlds.*;
 import org.mmbase.mojo.remote.*;
 
 /**
- * Generate interfaces and classes for the remote bridge
+ * Generate interfaces and classes for the remote bridge 
  *
  * @goal generate-remote
  * @phase generate-sources
@@ -33,7 +33,7 @@ public class RemoteGenerator extends AbstractMojo {
 
    /**
     * The current Maven project.
-    *
+    * 
     * @parameter default-value="${project}"
     * @readonly
     * @required
@@ -42,16 +42,16 @@ public class RemoteGenerator extends AbstractMojo {
 
    /**
     * Directory containing the classes and resource files that should be packaged into the JAR.
-    * The directory will be registered as a compile source root of the project such that the
+    * The directory will be registered as a compile source root of the project such that the 
     * generated files will participate in later build phases like compiling and packaging.
     * @parameter expression="${outputDirectory}" default-value="${project.build.directory}/generated-sources"
     */
    private File generatedSources;
-
+   
    /**
     * A set of Ant-like inclusion patterns used to select files from the source directory for processing. By default,
     * the patterns <code>**&#47;*</code> is used to select files.
-    *
+    * 
     * @parameter
     */
    private String[] includes;
@@ -59,12 +59,12 @@ public class RemoteGenerator extends AbstractMojo {
    /**
     * A set of Ant-like exclusion patterns used to prevent certain files from being processed. By default, this set is
     * empty such that no files are excluded.
-    *
+    * 
     * @parameter
     */
    private String[] excludes;
 
-
+   
    public void execute() throws MojoExecutionException {
       if (!generatedSources.exists()) {
          generatedSources.mkdirs();
@@ -75,7 +75,7 @@ public class RemoteGenerator extends AbstractMojo {
       rmiDir.mkdirs();
       File proxyDir = new File(remoteDir, "proxy");
       proxyDir.mkdirs();
-
+      
       List<Class<?>> objectsToWrap = new ArrayList<Class<?>>();
 
       Set<Artifact> arts = project.getDependencyArtifacts();
@@ -87,38 +87,32 @@ public class RemoteGenerator extends AbstractMojo {
             }
          }
       }
-
+     
       generateObjectWrapper(objectsToWrap, remoteDir);
-
+      
       addSourceRoot(generatedSources);
    }
 
    public ClassLoader getClassLoader(Set<Artifact> artifacts) throws MojoExecutionException {
       try {
          ClassWorld world = new ClassWorld();
-         ClassRealm realm = world.newRealm("plugin.mmbase.remote.generator", Thread.currentThread()
+         ClassRealm realm = world.newRealm("plugin.mmbase.remote.genrator", Thread.currentThread()
                .getContextClassLoader());
-         ClassRealm remoteGenRealm = realm.createChildRealm("mmbaseRemoteGenerator");
+         ClassRealm remoteGenRealm = realm.createChildRealm("mmbaseRemoteGenrator");
          Iterator<Artifact> itor = artifacts.iterator();
-         getLog().info("Remote Gen Realm " + remoteGenRealm);
          while (itor.hasNext()) {
-             Artifact artifact = itor.next();
-             File f = artifact.getFile();
-             if (f != null) {
-                 getLog().info("Adding constituent " + f);
-                 remoteGenRealm.addConstituent(f.toURL());
-             } else {
-                 getLog().error("Artifact " +  artifact + " has no file");
-             }
+            remoteGenRealm.addConstituent(itor.next().getFile().toURL());
          }
          return remoteGenRealm.getClassLoader();
-      } catch (DuplicateRealmException e) {
+      }
+      catch (DuplicateRealmException e) {
         throw new MojoExecutionException(e.getMessage(), e);
-      } catch (MalformedURLException e) {
+      }
+      catch (MalformedURLException e) {
          throw new MojoExecutionException(e.getMessage(), e);
       }
    }
-
+   
    private void generateBridgeClasses(ClassLoader loader, File jarPath, List<Class<?>> objectsToWrap, File remoteDir,
          File rmiDir, File proxyDir) {
 
@@ -133,7 +127,7 @@ public class RemoteGenerator extends AbstractMojo {
             scanner.setExcludes(excludes);
          }
          scanner.scan();
-
+         
          String[] classes = scanner.getIncludedFiles();
          for (String clazz : classes) {
             try {
@@ -162,12 +156,18 @@ public class RemoteGenerator extends AbstractMojo {
    }
 
    public void generateObjectWrapper(List<Class<?>> objectsToWrap, File remoteDir) {
+       try {
+          objectsToWrap.add(Class.forName("org.mmbase.bridge.BridgeList"));
+       }
+       catch (ClassNotFoundException e) {
+          getLog().debug("" + e.getMessage(), e);
+       }
        new ObjectWrapperGenerator(objectsToWrap).generate(remoteDir);
    }
-
+   
    /**
     * Registers the specified directory as a compile source root for the current project.
-    *
+    * 
     * @param directory The absolute path to the source root, must not be <code>null</code>.
     */
    private void addSourceRoot(File directory) {

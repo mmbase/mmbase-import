@@ -23,7 +23,7 @@ import org.mmbase.security.AuthenticationData;
  */
 public abstract class NodeTest extends BridgeTest {
     protected Node node;
-    protected final static String[] fieldTypes = {"float", "int", "long", "string", "xml", "node", "datetime", "boolean", "decimal", "double", "binary"}; //, "list"};
+    protected static String[] fieldTypes = {"binary", "double", "float", "int", "long", "string", "xml", "node", "datetime", "boolean", "decimal"}; //, "list"};
     //protected static String[] fieldTypes = {"datetime"};
 
     public NodeTest(String name) {
@@ -330,7 +330,6 @@ public abstract class NodeTest extends BridgeTest {
             assertEquals(node.getContext(), node.getValue("owner"));
             node.commit();
 
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getStringValue("owner") + "'", otherContext, node.getStringValue("owner"));
             assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
             assertEquals(node.getContext(), node.getValue("owner"));
         } else {
@@ -353,10 +352,9 @@ public abstract class NodeTest extends BridgeTest {
             // now, the new context must be equal to otherContext
             assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
             assertEquals(node.getContext(), node.getValue("owner"));
-            assertEquals(node.getContext(), node.getStringValue("owner"));
+
             node.commit();
 
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getStringValue("owner") + "'", otherContext, node.getStringValue("owner"));
             assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
             assertEquals(node.getContext(), node.getValue("owner"));
         } else {
@@ -365,29 +363,6 @@ public abstract class NodeTest extends BridgeTest {
 
 
     }
-
-
-    public void testSetContext2() {
-
-        if (Boolean.TRUE.equals(getCloudContext().getAuthentication().getAttribute(AuthenticationData.STORES_CONTEXT_IN_OWNER))) {
-            String context = node.getContext();
-            String otherContext = getOtherContext(node);
-
-            node.setStringValue("stringfield", "Setting something else too");
-            // set context to something different:
-            node.setContext(otherContext);
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-            assertEquals(node.getContext(), node.getValue("owner"));
-            node.commit();
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getStringValue("owner") + "'", otherContext, node.getStringValue("owner"));
-            assertEquals("Context did not change '" + otherContext + "' != '" + node.getContext() + "'", otherContext, node.getContext());
-            assertEquals(node.getContext(), node.getValue("owner"));
-        } else {
-            System.err.println("Warning: could not execute 'set owner' test, because security authorization implemention does not store context in owner field");
-        }
-    }
-
-
     public void testFieldGUI() {
         try {
             node.getStringValue("gui()");

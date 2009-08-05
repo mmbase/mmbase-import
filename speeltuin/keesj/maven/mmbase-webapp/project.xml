@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <pomVersion>3</pomVersion>
+    <id>mmbase:mmbase-webapp</id>
+    <artifactId>mmbase-webapp</artifactId>
+    <name>mmbase-webapp</name>
+    <groupId>mmbase</groupId>
+    <dependencies>
+        <dependency>
+            <groupId>mmbase</groupId>
+            <artifactId>mmbase-core</artifactId>
+            <version>${mmbase.version}</version>
+            <type>jar</type>
+            <properties>
+		        <eclipse.dependency>true</eclipse.dependency>
+    			<war.bundle>${war.bundle}</war.bundle>
+    		</properties>
+        </dependency>
+        <dependency>
+            <groupId>mmbase</groupId>
+            <artifactId>mmbase-core-config</artifactId>
+            <version>${mmbase.version}</version>
+            <type>jar</type>
+            <properties>
+		        <eclipse.dependency>true</eclipse.dependency>
+    			<war.bundle>false</war.bundle>
+            	<unjar-hack>true</unjar-hack>
+    		</properties>
+        </dependency>
+        <dependency>
+            <groupId>mmbase</groupId>
+            <artifactId>mmbase-taglib</artifactId>
+            <type>jar</type>
+            <version>${mmbase.version}</version>
+            <properties>
+		        <eclipse.dependency>true</eclipse.dependency>
+    			<war.bundle>${war.bundle}</war.bundle>
+    		</properties>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.0</version>
+            <url>http://jakarta.apache.org/commons/</url>
+            <properties>
+    			<war.bundle>${war.bundle}</war.bundle>
+    		</properties>
+        </dependency>
+    </dependencies>
+</project>

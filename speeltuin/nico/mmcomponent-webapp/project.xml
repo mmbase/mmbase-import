@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <artifactId>mmcomponent-webapp</artifactId>
+    <name>mmcomponent web application</name>
+    <shortDescription>mmcomponent web application</shortDescription>
+	<currentVersion>${application.version}</currentVersion>
+	<dependencies>
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-portlets-mmcomponent</artifactId>
+			<version>${cmsc.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-portlets-calendar-contrib</artifactId>
+			<version>${cmscportlets.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+		<dependency>
+			<groupId>mmbase</groupId>
+			<artifactId>mmbase-calendar</artifactId>
+			<version>${mmbase.version}</version>
+			<type>mmbase-module</type>
+			<properties>
+				<mmbase.templates.path>calendar</mmbase.templates.path>
+			</properties>
+		</dependency>
+
+	</dependencies>
+</project>

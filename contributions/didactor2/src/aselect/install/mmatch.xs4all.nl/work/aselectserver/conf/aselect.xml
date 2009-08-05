@@ -1,0 +1,87 @@
+<xml>
+    <aselect>
+      <server_id>aselectserver1</server_id>
+      <organization>didactor.org</organization>
+      <organization_friendly_name>A-Select 1.4.2 Server</organization_friendly_name>
+      <keystore_password>jelAfeHa</keystore_password>
+      <admin_gui>false</admin_gui>
+      <single_sign_on>true</single_sign_on>
+      <crypto>
+        <signature_algorithm provider="Cryptix" algorithm="SHA1withRSA"/>
+        <encryption_algorithm algorithm="DESede"/>
+        <random_generator_algorithm algorithm="SHA1PRNG"/>
+        <providers>
+            <provider id="Cryptix" class="cryptix.jce.provider.CryptixCrypto"/>
+        </providers>            
+      </crypto>
+      <logging id="system" target='file'>
+            <level>FINE</level>
+            <target id='file'>
+                <max_file_size>524288</max_file_size>
+                <nr_of_files>4</nr_of_files>
+                <directory>c:/data/aselect/A-Select/1.4.2/log/aselectserver/</directory>
+            </target>
+      </logging>
+      <logging id="authentication" target="file">           
+            <target id='file'>
+                <max_file_size>524288</max_file_size>
+                <nr_of_files>4</nr_of_files>
+                <directory>c:/data/aselect/A-Select/1.4.2/log/aselectserver/</directory>
+            </target>
+       </logging>
+    </aselect>
+    <storagemanager id="session">
+        <expire>600</expire>
+        <interval>10</interval>
+        <max>1000</max>
+        <handler class="org.aselect.system.storagemanager.handler.MemoryStorageHandler" id="memory"/>
+        <storagehandler id="memory"/>
+    </storagemanager>
+    <storagemanager id="tgt">
+        <expire>600</expire>
+        <interval>10</interval>
+        <max>1000</max>
+        <handler class="org.aselect.system.storagemanager.handler.MemoryStorageHandler" id="memory"/>       
+        <storagehandler id="memory"/>
+    </storagemanager>
+    <storagemanager id="crypto">
+        <expire>0</expire>
+        <interval>0</interval>          
+        <max>1</max>
+        <handler class="org.aselect.system.storagemanager.handler.MemoryStorageHandler" id="memory" />
+        <storagehandler id="memory" />
+    </storagemanager>
+    <applications require_signing="false">
+        <application id="mmbase" level="1">
+        </application>
+    </applications>
+    <udb connector="flatfile">
+        <connector id="flatfile" 
+           class="org.aselect.server.udb.flatfile.FlatFileConnector" 
+           resourcegroup="flatfile_resourcegroup"/>
+    </udb>
+    <authsps always_show_select_form="false">
+      <authsp id="Ldap"  resourcegroup="ldap_authsp_resources">
+        <level>30</level>
+        <friendly_name>Ldap Authentication (LdapAuthSP)</friendly_name>
+        <handler>org.aselect.server.authspprotocol.handler.Ldap</handler>
+        <popup>false</popup>
+        <type>local</type>
+      </authsp>
+    </authsps>
+    <sam>
+        <agent>
+            <resourcegroup id="flatfile_resourcegroup" interval="30">
+                <resource id="flatfile_1">
+                    <file>c:/data/aselect/A-Select/1.4.2/work/aselectserver/conf/flatfile/flatfile.udb</file>
+                </resource>
+            </resourcegroup>
+            <resourcegroup id="ldap_authsp_resources" interval="30">
+                <resource id="ldap_1">
+                    <url>http://mmatch.xs4all.nl/authspserver/ldap</url>
+                </resource> 
+            </resourcegroup>
+        </agent>
+    </sam>
+
+</xml>

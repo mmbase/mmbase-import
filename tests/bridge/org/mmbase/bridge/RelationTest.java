@@ -13,7 +13,7 @@ import org.mmbase.tests.*;
 /**
  * Test cases to test the creation of relations and the retrieval of them
  * @author Kees Jongenburger
- * @version $Id$
+ * @version $Id: RelationTest.java,v 1.8 2007-02-10 15:47:42 nklasens Exp $
  */
 public class RelationTest extends BridgeTest {
 

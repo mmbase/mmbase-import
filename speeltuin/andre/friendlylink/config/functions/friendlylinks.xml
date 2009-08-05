@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+<version>1</version>
+<description>friendlylinks and related functions</description>
+  
+  <function name="friendlylink">
+		<description>create a nice url to a page</description>
+		<type>class</type>
+		<class>org.mmbase.applications.friendlylink.PagesFunctions</class>
+		<method>convertToFriendlyLink</method>
+		<param name="cloud"   type="org.mmbase.bridge.Cloud" description="MMBase cloud" />
+		<param name="request" type="javax.servlet.http.HttpServletRequest" description="HTTP request" />
+		<param name="page"    type="Node"    description="A pages node" />
+		<param name="convert" type="Boolean" description="You might not want to, f.e. when testing">true</param>
+		<return type="String" /> 
+  </function>
+
+  <function name="flarticles">
+		<description>create a nice url to an article on a page</description>
+		<type>class</type>
+		<class>org.mmbase.applications.friendlylink.ArticlesFunctions</class>
+		<method>convertToFriendlyLink</method>
+		<param name="cloud" type="org.mmbase.bridge.Cloud" description="MMBase cloud" />
+		<param name="request" type="javax.servlet.http.HttpServletRequest" description="HTTP request" />
+		<param name="page" type="String" description="Nodenumber of a pages node" />
+		<param name="art" type="String" description="Nodenumber of the article" />
+		<param name="convert" type="Boolean" description="You might not want to, f.e. when testing">true</param>
+		<return type="String" /> 
+  </function>
+
+  <function name="pagestoroot">
+		<description>List the nodenumbers of pages forming a path to the root of the site.
+			#listPagesToRoot(org.mmbase.bridge.Node page)</description>
+		<type>class</type>
+		<class>org.mmbase.applications.friendlylink.PagesFunctions</class>
+		<method>listPagesToRoot</method>
+		<param name="page" type="Node" description="A pages node" />
+		<return type="java.util.List" /> 
+  </function>
+  
+  <function name="showcache">
+		<description>A utility or admin function to show all cache entries.</description>
+		<type>class</type>
+		<class>org.mmbase.applications.friendlylink.UrlConverter</class>
+		<method>showCache</method>
+		<return type="String" /> 
+  </function>
+
+</functionset>

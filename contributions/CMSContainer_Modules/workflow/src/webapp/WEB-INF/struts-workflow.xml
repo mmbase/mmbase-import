@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+
+	<!-- ========== Data Sources Definitions =================================== -->
+	<!-- ========== Form Bean Definitions =================================== -->
+	<form-beans>
+	</form-beans>
+
+	<!-- ========== Global Exceptions Definitions =================================== -->
+	<!-- ========== Global Forward Definitions =================================== -->
+	<!-- ========== Action Mapping Definitions =================================== -->
+	<action-mappings>
+      <action path="/editors/workflow/AllcontentWorkflowAction"
+         type="com.finalist.cmsc.workflow.forms.AllcontentWorkflowAction"
+         unknown="false" validate="false">
+         <forward name="success" path="/editors/workflow/workflow.jsp"
+            redirect="false" />
+      </action>
+		<action path="/editors/workflow/ContentWorkflowAction"
+			type="com.finalist.cmsc.workflow.forms.ContentWorkflowAction" unknown="false" validate="false">
+			<forward name="success" path="/editors/workflow/workflow.jsp" redirect="false" />
+		</action>
+      <action path="/editors/workflow/AssetWorkflowAction"
+         type="com.finalist.cmsc.workflow.forms.AssetWorkflowAction" unknown="false" validate="false">
+         <forward name="success" path="/editors/workflow/workflow.jsp" redirect="false" />
+      </action>
+		<action path="/editors/workflow/LinkWorkflowAction"
+			type="com.finalist.cmsc.workflow.forms.LinkWorkflowAction" unknown="false" validate="false">
+			<forward name="success" path="/editors/workflow/workflow.jsp" redirect="false" />
+		</action>
+		<action path="/editors/workflow/PageWorkflowAction"
+			type="com.finalist.cmsc.workflow.forms.PageWorkflowAction" unknown="false" validate="false">
+			<forward name="success" path="/editors/workflow/workflow.jsp" redirect="false" />
+		</action>
+		<action path="/editors/workflow/admin/WorkflowAdminAction"
+			type="com.finalist.cmsc.workflow.forms.WorkflowAdminAction" unknown="false" validate="false">
+			<forward name="success" path="/editors/workflow/admin/index.jsp" redirect="false" />
+		</action>
+		<action path="/editors/workflow/PageWorkflowPublishAction" type="com.finalist.cmsc.workflow.forms.PageWorkflowPublishAction" unknown="false" validate="false">
+			<forward name="success" path="/editors/site/pageediting.jsp" redirect="false"/>
+		</action>
+      <action path="/editors/workflow/WorkflowTreeStatusAction"
+         type="com.finalist.cmsc.workflow.forms.WorkflowTreeStatusAction"
+         unknown="false" validate="false">
+      </action>
+	</action-mappings>
+
+	<message-resources parameter="cmsc-workflow" key="WORKFLOW" />
+</struts-config>

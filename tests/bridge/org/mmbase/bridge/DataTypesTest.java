@@ -28,14 +28,10 @@ public class DataTypesTest extends BridgeTest {
     public DataTypesTest(String name) {
         super(name);
     }
-    protected static Map<Class, Object[][]> casesCache = new HashMap<Class, Object[][]>();
-
-    private Object[][] cases;
-
+    protected static Object[] cases = null;
 
 
     public void setUp() throws Exception {
-        cases = casesCache.get(this.getClass());
         if (cases == null) {
             Cloud cloud = getCloud();
             Node node1 = cloud.getNodeManager("datatypes");
@@ -45,7 +41,7 @@ public class DataTypesTest extends BridgeTest {
             Node node3 = aa.createNode();
             commit(node3);
 
-            cases = new Object[][] {
+            cases = new Object[] {
                 /*            {field,
                               {valid values},
                               {invalid values}} */
@@ -126,7 +122,7 @@ public class DataTypesTest extends BridgeTest {
                               new Object[] {new Double(Double.POSITIVE_INFINITY), "bla bla"
                               }},
                 new Object[] {"handle",
-                              new Object[] {getBinary(), null},
+                              new Object[] {new byte[] {4, 3, 2, 1}, getBinary(), null},
                               new Object[] {new byte[] {1, 2}}
                 },
                 new Object[] {"boolean",
@@ -178,7 +174,6 @@ public class DataTypesTest extends BridgeTest {
                 */
 
             };
-            casesCache.put(this.getClass(), cases);
         }
     }
 
@@ -199,7 +194,8 @@ public class DataTypesTest extends BridgeTest {
         Cloud cloud = getCloud();
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
         StringBuffer err = new StringBuffer();
-        for (Object[] kase : cases) {
+        for (Object element : cases) {
+            Object[] kase = (Object[]) element;
             Field field = nodeManager.getField((String)kase[0]);
             Object[] validValues = (Object[]) kase[1];
             Object[] invalidValues = (Object[]) kase[2];
@@ -297,11 +293,11 @@ public class DataTypesTest extends BridgeTest {
 
 
     protected Object getDefaultValue(Field field) {
-        Object defaultValue = field.getDataType().getDefaultValue(null, null, field);
-        if (defaultValue == null && field.isRequired()) {
-            defaultValue = Casting.toType(org.mmbase.core.util.Fields.typeToClass(field.getType()), "");
-        }
-        return defaultValue;
+       Object defaultValue = field.getDataType().getDefaultValue();
+       if (defaultValue == null && field.isRequired()) {
+           defaultValue = Casting.toType(org.mmbase.core.util.Fields.typeToClass(field.getType()), "");
+       }
+       return defaultValue;
     }
 
     protected boolean sufficientlyEqual(Object value1, Object value2) {
@@ -317,11 +313,12 @@ public class DataTypesTest extends BridgeTest {
     public void testDefaultValuesUncommited() {
         Node newNode = getNewNode();
         NodeManager nodeManager = newNode.getNodeManager();
-        for (Object[] kase : cases) {
+        for (Object element : cases) {
+            Object[] kase = (Object[]) element;
             Field field = nodeManager.getField((String)kase[0]);
             Object defaultValue = getDefaultValue(field);
             Object value = newNode.getValue(field.getName());
-            assertTrue("default value of uncommitted node is not as expected for field " + field + " " + defaultValue + " != " + value + " locale: " + newNode.getCloud().getLocale(),
+            assertTrue("default value of uncommitted node is not as expected for field " + field + " " + defaultValue + " != " + value,
                        sufficientlyEqual(value, defaultValue));
 
         }
@@ -332,7 +329,8 @@ public class DataTypesTest extends BridgeTest {
         Node newNode = getNewNode();
         NodeManager nodeManager = newNode.getNodeManager();
         commit(newNode);
-        for (Object[] kase : cases) {
+        for (Object element : cases) {
+            Object[] kase = (Object[]) element;
             Field field = nodeManager.getField((String)kase[0]);
             Object defaultValue = getDefaultValue(field);
             Object value = newNode.getValue(field.getName());
@@ -345,33 +343,34 @@ public class DataTypesTest extends BridgeTest {
     public void testValidValuesCommit() {
         Cloud cloud = getCloud();
         NodeManager nodeManager = cloud.getNodeManager("datatypes");
-        for (Object[] kase : cases) {
+        for (Object element : cases) {
+            Object[] kase = (Object[]) element;
             Field field = nodeManager.getField((String)kase[0]);
             Object[] validValues = (Object[]) kase[1];
-            for (Object validValue : validValues) {
+            for (int j = 0; j < validValues.length; j++) {
                 Node newNode = nodeManager.createNode();
                 try {
-                    newNode.setValue(field.getName(), validValue);
+                    newNode.setValue(field.getName(), validValues[j]);
                     newNode.setValue(field.getName(), null);
-                    newNode.setValue(field.getName(), validValue);
+                    newNode.setValue(field.getName(), validValues[j]);
                     newNode.commit(); // should not give exception
-                    if(field.getName().equals("handle") && validValue != null) {
+                    if(field.getName().equals("handle") && validValues[j] != null) {
                         assertFalse("Checksum is null", newNode.isNull("checksum"));
                     }
                     if (field.getDataType().isRequired() ||
                         (
-                         validValue != null &&
-                         (! (validValue.equals("") && (
-                                                       field.getDataType() instanceof NumberDataType
-                                                       || field.getDataType() instanceof NodeDataType)
+                         validValues[j] != null &&
+                         (! (validValues[j].equals("") && (
+                                                           field.getDataType() instanceof NumberDataType
+                                                           || field.getDataType() instanceof NodeDataType)
                              )) && // "" for numbers and nodes may be interpreted as null
-                         ! (field.getDataType() instanceof NodeDataType && validValue.equals(new Integer(-1))) // -1 casts to null for node-fields.
+                         ! (field.getDataType() instanceof NodeDataType && validValues[j].equals(new Integer(-1))) // -1 casts to null for node-fields.
                          )
                          ) {
-                        assertFalse("field " + field.getName() + " was null, after we set '" + validValue + "' in it", newNode.isNull(field.getName()));
+                        assertFalse("field " + field.getName() + " was null, after we set '" + validValues[j] + "' in it", newNode.isNull(field.getName()));
                     } else {
 
-                        assertTrue("field " + field.getName() + " was not null, after we set '" + validValue + "' in it", newNode.isNull(field.getName()));
+                        assertTrue("field " + field.getName() + " was not null, after we set '" + validValues[j] + "' in it", newNode.isNull(field.getName()));
                     }
                     if (! field.getDataType().isRequired()) {
                         // so, it must be possible to set field back to null.
@@ -384,12 +383,12 @@ public class DataTypesTest extends BridgeTest {
                     if (! field.getDataType().isRequired()) {
                         assertNull(newNode.getValue(field.getName()));
                         assertTrue(newNode.isNull(field.getName()));
-                        if(field.getName().equals("handle")) {
-                            assertTrue("valid value: '" + validValue + "' checksum of " + newNode.getNumber() + " is " + newNode.getValue("checksum") + " but expected null", newNode.isNull("checksum"));
-                        }
+                    }
+                    if(field.getName().equals("handle")) {
+                        assertTrue(newNode.isNull("checksum"));
                     }
                 } catch (Throwable t) {
-                    AssertionFailedError fail = new AssertionFailedError("During field " + field + " of " + newNode.getNumber() + " value: '" + validValue + "' " + t.getMessage());
+                    AssertionFailedError fail = new AssertionFailedError("During field " + field + " of " + newNode + " value: '" + validValues[j] + "'");
                     fail.initCause(t);
                     throw fail;
                 }
@@ -439,8 +438,6 @@ public class DataTypesTest extends BridgeTest {
     }
 
 
-    // There is a unique constraint on checksum.
-    // This method is overriden in -Transaction extension, to avoid the unique constraint exception
     protected  byte[] getBinary() {
         return new byte[] {1, 2, 3, 4};
     }
@@ -538,14 +535,5 @@ public class DataTypesTest extends BridgeTest {
         assertTrue(cp instanceof LastModifier);
 
     }
-
-    public void testClone() {
-        Cloud cloud = getCloud();
-        NodeManager nm = cloud.getNodeManager("datatypes");
-        DataType dt = nm.getField("lastmodifier").getDataType();
-        //assertEquals(dt.getGUIName(), "lastmodifier");
-    }
-
-
 
 }

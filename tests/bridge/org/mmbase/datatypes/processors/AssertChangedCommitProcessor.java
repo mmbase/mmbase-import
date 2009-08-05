@@ -12,11 +12,11 @@ package org.mmbase.datatypes.processors;
 import org.mmbase.bridge.*;
 
 /**
- * If you use this processor for a field, then commit will fail if the node is not 'changed'. Used
- * to assert it is changed  in test-cases.
+ * If you use this processor for a field, then setting it to an empty value will be ignored (the
+ * previous value will remain intact).
  *
  * @author Michiel Meeuwissen
- * @version $Id$
+ * @version $Id: AssertChangedCommitProcessor.java,v 1.1 2008-11-18 23:30:07 michiel Exp $
  * @since MMBase-1.9.1
  */
 

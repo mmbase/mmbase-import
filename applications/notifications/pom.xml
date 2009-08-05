@@ -10,9 +10,8 @@
   </parent>
 
   <artifactId>mmbase-notifications</artifactId>
-  <name>MMBase Notifications</name>
+  <name>MMBase Notification</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
 
   <description>
     The Notifications application provides basic functionality to implement a notification

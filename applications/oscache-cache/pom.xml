@@ -12,7 +12,6 @@
   <artifactId>mmbase-oscache-cache</artifactId>
   <name>MMBase OSCache-Cache</name>
   <packaging>jar</packaging>
-  <version>${mmbase.version}</version>
 
   <description>
     MMBase contains a pluggable architecture for it's caches, where you can write your own cache
@@ -33,10 +32,6 @@
           <!-- mmbase has a dependency on this already, we don't want 2 version of the same thing -->
           <groupId>log4j</groupId>
           <artifactId>log4j</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.servlet</groupId>
-          <artifactId>servlet-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id$
+ * @verion $Id: ParametersTest.java,v 1.5 2008-08-20 21:56:24 michiel Exp $
  */
 public class ParametersTest extends TestCase {
 
@@ -158,15 +158,5 @@ public class ParametersTest extends TestCase {
         assertEquals("C", subParams.get(C));
         assertEquals("C", subParams.get(1));
         assertEquals("C", subParams.get("c"));
-    }
-
-
-    public void testAutodefiningParameters() {
-        Parameters auto = new AutodefiningParameters();
-        auto.setIfDefined("a", "A");
-        auto.set("b", "B");
-
-        Parameters sub = auto.subList(0, 1);
-
     }
 }

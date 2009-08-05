@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_singleportletdefinition">
+	<title xml:lang="en">Single Portlet Definition</title>
+	<title xml:lang="nl">Single Portlet Definitie</title>
+	<title xml:lang="zh">单Portlet定义</title>
+
+	<field name="title" dtmaxlength="40">
+		<prompt xml:lang="en">Title</prompt>
+		<prompt xml:lang="nl">Titel</prompt>
+		<prompt xml:lang="zh">标题</prompt>
+	</field>
+	<field name="description" dtmaxlength="1024" ftype="text" rows="3">
+		<prompt xml:lang="en">Description</prompt>
+		<prompt xml:lang="nl">Omschrijving</prompt>
+		<prompt xml:lang="zh">描述</prompt>
+	</field>
+   	<field name="definition" dtmaxlength="255" ftype="line">
+		<prompt xml:lang="en">Definition</prompt>
+		<prompt xml:lang="nl">Definitie</prompt>
+		<prompt xml:lang="zh">定义</prompt>
+	</field>
+	<field name="expirationcache" />
+   <list include="config/portlet/search_portletdefinition_definitionrel_portlet.xml" />
+	<list include="config/typedef/search_portletdefinition_allowrel_typedef.xml" />
+	<list include="config/view/search_portletdefinition_allowrel_view.xml" />
+	<list include="config/mmbaseranks/search_portletdefinition_requiresrel_mmbaseranks.xml" />
+</form-schema>

@@ -69,7 +69,7 @@ public abstract class BridgeTest extends MMBaseTest {
             Map<String, Object> loginInfo = new HashMap<String, Object>();
             loginInfo.put("username", userName);
             Cloud c = getCloudContext().getCloud("mmbase", "class", loginInfo);
-            ensureDeployed(c);
+            ensureDeployed(c, "local cloud");
             CloudThreadLocal.bind(c);
             return c;
         } catch (Throwable t) {
@@ -87,7 +87,7 @@ public abstract class BridgeTest extends MMBaseTest {
      */
     protected Cloud getTransaction() {
         Cloud cloud = getCloudContext().getCloud("mmbase", "class", null);
-        ensureDeployed(cloud);
+        ensureDeployed(cloud, "local cloud");
         Cloud transaction = cloud.createTransaction(getClass().getName());
         CloudThreadLocal.unbind();
         CloudThreadLocal.bind(transaction);
@@ -119,7 +119,7 @@ public abstract class BridgeTest extends MMBaseTest {
                 System.out.println(t.getMessage());
             }
         }
-        ensureDeployed(c);
+        ensureDeployed(c, uri);
         return c;
 
     }
@@ -134,9 +134,8 @@ public abstract class BridgeTest extends MMBaseTest {
             }
         };
 
-    protected void ensureDeployed(Cloud cloud) {
+    protected void ensureDeployed(Cloud cloud, String uri) {
         if (ensuredDeployed) return;
-        String uri = cloud.getCloudContext().getUri();
         while(true) {
             // make sure basic app is deployed
             if (cloud.hasRelationManager("bb", "cc", "posrel") &&

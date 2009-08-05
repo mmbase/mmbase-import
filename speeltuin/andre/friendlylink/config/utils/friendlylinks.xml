@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<friendlylinks
+    xmlns="http://www.mmbase.org/xmlns/friendlylinks"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/friendlylinks friendlylinks.xsd">
+  <!--
+      version: $Id: friendlylinks.xml,v 1.4 2007-04-30 20:53:12 andre Exp $
+  -->
+  <!-- 
+      In this file the names and classes of the Friendlylinks need to be listed.
+ 			These map to nodetypes in YAFramework.
+  -->
+  <friendlylink name="pages">
+    <class>org.mmbase.applications.friendlylink.Pages</class>
+    <description>
+      Simple example for use with the nodetype 'pages'.
+    </description>
+		<parameter name="template">minisite/index.jsp</parameter>
+		<parameter name="parameter">nr</parameter>
+		<parameter name="separator">/</parameter>
+  </friendlylink>
+  
+  <friendlylink name="articles">
+    <class>org.mmbase.applications.friendlylink.Articles</class>
+    <description>
+      Simple example for use with the nodetype 'articles'.
+    </description>
+		<parameter name="template">minisite/article.jsp</parameter>
+		<parameter name="parameter">art</parameter>
+		<parameter name="separator">/</parameter>
+  </friendlylink>
+</friendlylinks>

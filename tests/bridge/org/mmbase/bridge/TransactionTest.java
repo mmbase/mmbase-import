@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id$
+ * @version $Id: TransactionTest.java,v 1.18 2008-12-22 17:38:19 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -183,17 +183,12 @@ public class TransactionTest extends BridgeTest {
         Transaction t = cloud.getTransaction("bar7");
         Node n = t.getNodeManager("news").createNode();
         n.setContext("non_default");
-        assertEquals("non_default", n.getStringValue("owner"));
         assertEquals("non_default", n.getContext());
-
         t.commit();
 
         Node n2 = cloud.getNode(n.getNumber());
-        assertEquals("non_default", n2.getStringValue("owner"));
         assertEquals("non_default", n2.getContext());
-
     }
-
     public void testSetContextSubTransaction() {
         Cloud cloud = getCloud();
 
@@ -409,8 +404,9 @@ public class TransactionTest extends BridgeTest {
         t2.commit();
         assertTrue(t2.isCommitted());
         assertTrue(t1.isCommitted());
-        // assertTrue(t1 == t2); // FAILS IN RMMCI. Perhaps we should simply implement .equals on transactions
+        assertTrue(t1 == t2);
     }
+
 
 
 }

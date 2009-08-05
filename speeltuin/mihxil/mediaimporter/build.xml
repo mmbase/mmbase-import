@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="MMBase Media Importer" default="jar" basedir=".">
+  <property name="project.name"    value="mediaimporter" />
+  <property name="project.package" value="nl/omroep/mediaimporter" />
+	<property name="project.jars.includes" value="media/build/mmbase-media.jar,crontab/build/mmbase-crontab.jar" />
+  <property name="test.class"   value="nl.omroep.mmbase.MediaImporter" />
+  <property name="test.arg"     value="aa bb" />
+  <property name="test.jvmarg"     value="-Dmmbase.defaultcloudcontext=rmi://localhost:1221/remotecontext" />
+  &base;
+</project>

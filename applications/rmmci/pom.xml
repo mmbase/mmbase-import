@@ -12,30 +12,30 @@
   <artifactId>mmbase-rmmci</artifactId>
   <name>MMBase RMMCI</name>
   <packaging>jar</packaging>
-  <version>${mmbase.version}</version>
 
   <build>
     <plugins>
       <plugin>
         <groupId>org.mmbase.maven</groupId>
         <artifactId>maven-mmbase-plugin</artifactId>
-        <version>${mmbase.version}</version>
+        <version>1.9-SNAPSHOT</version>
         <dependencies>
           <dependency>
             <groupId>org.mmbase</groupId>
             <artifactId>mmbase</artifactId>
-            <version>${mmbase.version}</version>
+            <version>${project.version}</version>
+            <!-- <classifier>classes</classifier> -->
           </dependency>
-          <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>${servlet.version}</version>
-          </dependency>
+        <dependency>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+          <version>${servlet.version}</version>
+        </dependency>
         </dependencies>
         <configuration>
           <includes>
             <include>org/mmbase/bridge/*.class</include>
-
+            
             <include>org/mmbase/storage/search/Constraint.class</include>
             <include>org/mmbase/storage/search/Step.class</include>
             <include>org/mmbase/storage/search/RelationStep.class</include>
@@ -52,9 +52,8 @@
             <include>org/mmbase/storage/search/LegacyConstraint.class</include>
             <include>org/mmbase/storage/search/CompositeConstraint.class</include>
             <include>org/mmbase/storage/search/SearchQuery.class</include>
-            <include>org/mmbase/storage/search/SearchQueryWrapper.class</include>
             <include>org/mmbase/storage/search/FieldCompareConstraint.class</include>
-
+            
             <include>org/mmbase/cache/Cacheable.class</include>
             <include>org/mmbase/security/UserContext.class</include>
             <include>org/mmbase/security/AuthenticationData.class</include>
@@ -73,7 +72,7 @@
           </execution>
         </executions>
       </plugin>
-
+      
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -95,14 +94,4 @@
 
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>${servlet.version}</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
-
 </project>

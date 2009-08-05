@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+        "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+
+    <!-- ========== Data Sources Definitions =================================== -->
+    <!-- ========== Form Bean Definitions =================================== -->
+    <form-beans>
+    </form-beans>
+
+    <!-- ========== Global Exceptions Definitions =================================== -->
+    <!-- ========== Global Forward Definitions =================================== -->
+    <!-- ========== Action Mapping Definitions =================================== -->
+    <action-mappings>
+
+        <action path="/editors/dataconversion/Init" type="com.finalist.cmsc.dataconversion.forms.InitAction"
+                unknown="false" validate="false">
+            <forward name="success" path="/editors/dataconversion/main.jsp"/>
+        </action>
+
+        <action path="/editors/dataconversion/Converse"
+                type="com.finalist.cmsc.dataconversion.forms.ConverseAction"
+                unknown="false" validate="false">
+            <forward name="success" path="/editors/dataconversion/fetchdata.jsp"/>
+        </action>
+
+
+        <action path="/editors/dataconversion/FetchData" type="com.finalist.cmsc.dataconversion.forms.FetchDataAction"
+                unknown="false" validate="false">
+            <forward name="success" path="/editors/dataconversion/fetchdata.jsp"/>
+        </action>
+
+    </action-mappings>
+    <message-resources parameter="cmcs-dataconversion" key="DATACONVERSION"/>
+</struts-config>

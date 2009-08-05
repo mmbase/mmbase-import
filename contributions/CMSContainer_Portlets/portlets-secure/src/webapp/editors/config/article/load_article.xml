@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<action type="load">
+	<field name="creationdate" />
+	<field name="lastmodifieddate" />
+	<field name="publishdate" />
+	<field name="expiredate" />
+	<field name="creator" />
+	<field name="lastmodifier" />
+	<field name="use_expirydate"/>
+	<field name="title" />
+	<field name="description" />
+	<field name="source" />
+	<field name="keywords" />
+	<field name="editor_note" />
+	<field name="notificationdate" />
+	<field name="status" />
+	<field name="subtitle" />
+	<field name="intro" />
+	<field name="body" />
+	<field name="archivedate" />
+
+	<field name="secure" />
+	
+	<relation destination="article" role="posrel" />
+	<relation destination="attachments" role="posrel" />
+	<relation destination="images" role="imagerel" />
+	<relation destination="urls" role="posrel" />
+<!-- 
+	<relation destination="newslettertheme" role="newslettercontent" />
+ -->
+	<!-- content info relations -->
+	<relation destination="contentchannel" role="creationrel" />
+	<relation destination="contentchannel" role="contentrel" />
+</action>

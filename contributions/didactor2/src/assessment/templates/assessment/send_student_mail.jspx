@@ -1,0 +1,37 @@
+<jsp:root
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    version="2.0">
+  <mm:import externid="user"   required="true"/>
+  <mm:import externid="lesson" required="true"/>
+  <mm:cloud>
+
+    <mm:node id="user" referid="user" />
+
+    <mm:node referid="lesson" id="lesson">
+
+      <c:if test="${di:setting('assessment', 'send_student_email') eq 'true'}">
+        <mm:relatednodescontainer type="emails" role="posrel">
+          <mm:constraint field="type" value="TYPE_TEMPLATE" />
+          <mm:sortorder  field="posrel.pos" />
+          <mm:relatednodes>
+            <mm:nodefunction name="clone">
+              <mm:setfield name="to">${user.email}</mm:setfield>
+              <mm:setfield name="type">TYPE_ONESHOT</mm:setfield>
+              <mm:import id="formatarguments" listdelimiter="\|" vartype="list">
+                <mm:field node="lesson" name="name" />
+                <jsp:text>|</jsp:text>
+                <mm:node referid="user"><di:person /></mm:node>
+              </mm:import>
+              <mm:function name="startmail" referids="formatarguments" />
+            </mm:nodefunction>
+          </mm:relatednodes>b
+        </mm:relatednodescontainer>
+      </c:if>
+
+
+    </mm:node>
+  </mm:cloud>
+</jsp:root>

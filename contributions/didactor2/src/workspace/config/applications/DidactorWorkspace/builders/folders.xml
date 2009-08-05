@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="folders" maintainer="didactor.nl" version="3" extends="object">
+  <status>active</status>
+
+  <classfile>Dummy</classfile>
+  <searchage>31</searchage>
+
+  <names>
+    <!-- singles per language as defined by ISO 639 -->
+    <singular xml:lang="nl">Map</singular>
+    <singular xml:lang="en">Folder</singular>
+    <!-- multiple per language as defined by ISO 639 -->
+    <plural xml:lang="nl">Mappen</plural>
+    <plural xml:lang="en">Folders</plural>
+  </names>
+
+  <descriptions>
+    <!-- descriptions per language as defined by ISO 639  -->
+    <description xml:lang="nl">Een map binnen een werkruimte waarin attachments kunnen worden opgeslagen</description>
+    <description xml:lang="en">A folder in a workspace, where attachments can be stored</description>
+  </descriptions>
+
+
+  <fieldlist>
+    <!-- POS 3 : <field> 'name'  -->
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl">Naam van de map</description>
+        <description xml:lang="en">Name of the workspace</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Naam</guiname>
+        <guiname xml:lang="en">Name</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>1</input>
+          <!-- position in list area of the editor -->
+          <list>1</list>
+          <!-- position in search area of the editor -->
+          <search>1</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>name</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
+    <!-- POS 3 : <field> 'type'  -->
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="nl">Type van de map. 
+          Mogelijke waarden:
+            0 = standaard (Alleen eigenaar mag posten &amp; lezen)
+            1 = publiek (Alleen eigenaar mag posten, iedereen mag lezen)
+            2 = docent (Docenten mogen posten, iedereen mag lezen)
+            3 = open (iedereen mag posten, iedereen mag lezen)
+        </description>
+        <description xml:lang="en">Type of the folder.
+          Possible values:
+            0 = standard (Only the owner may post &amp; read)
+            1 = public (Only the owner may post, everybody may read)
+            2 = teacher (Teachers may post, everybody may read)
+            3 = open (Everybody may post, everybody may read)
+        </description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Type</guiname>
+        <guiname xml:lang="en">Type</guiname>
+        <guitype>integer</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>2</input>
+          <!-- position in list area of the editor -->
+          <list>2</list>
+          <!-- position in search area of the editor -->
+          <search>2</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>type</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" notnull="true">INTEGER</type>
+      </db>
+    </field>
+  </fieldlist>
+</builder>

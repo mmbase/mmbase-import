@@ -15,7 +15,7 @@ import org.mmbase.util.functions.Parameters;
  * JUnit tests for convertimage-interface implementation.
  *
  * @author Michiel Meeuwissen
- * @version $Id$
+ * @version $Id: ConvertImageTest.java,v 1.11 2008-10-01 17:05:22 michiel Exp $
  */
 public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
 
@@ -27,6 +27,7 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         return Queries.count(nodeManager.createQuery());
     }
 
+
     public void testImportedJpegImage() {
         Cloud cloud = getCloud();
         Node node = cloud.getNode("jpeg.test.image");
@@ -35,7 +36,9 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         //node.delete();
     }
 
-    //test if an image can be converted using the getIntValue
+    /**
+     * test if an image can be converted using the getIntValue
+     */
     public void testGetInvalueCachedImage() {
         Cloud cloud = getCloud();
         Node node = cloud.getNode("jpeg.test.image");
@@ -47,7 +50,10 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         assertEquals(1, countIcaches());
     }
 
-    // test if an image can be converted using getFunctionValue
+    /**
+     * test if an image can be converted using getFunctionValue
+     *
+     */
     public void testFunctionValueCachedImage() {
         Cloud cloud = getCloud();
         Node node = cloud.getNode("jpeg.test.image");
@@ -76,7 +82,6 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         Factory.init(parameters);
     }
 
-
     public void testFailAnImage() {
         // MMB-495
         Map<String, String> originalParameters = breakImaging();
@@ -90,10 +95,8 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         assertEquals(3, countIcaches());
         assertTrue(icacheNumber > 0);
         Node icache = cloud.getNode(icacheNumber);
-        icache.getFunctionValue("wait", null); // this should fail because imaging is broken now
-
-        //hence:
-        assertTrue("Found icache: " + icache.getNumber() + " " + icache.getSize("handle") + " bytes", icache.isNull("handle"));
+        icache.getFunctionValue("wait", null); // this should fail.
+        assertTrue(icache.isNull("handle"));
         assertEquals(3, countIcaches());
 
         restoreImaging(originalParameters);
@@ -105,16 +108,15 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         assertEquals(3, countIcaches());
         assertFalse(icache.isNull("handle"));
 
-        assertTrue(icache.getSize("handle") > 0);
-
 
     }
 
-    // Java api to get access times is only available in java 7. This is a quick and dirty hack, at
-    // least working in linux. It does not actually try to determin the access times of individual
-    // files, it simply returns a string containing the access times. For test cases 'equals' on the
-    //string should suffice.
-
+    /**
+     * Java api to get access times is only available in java 7. This is a quick and dirty hack, at
+     * least working in linux. It does not actually try to determin the access times of individual
+     * files, it simply returns a string containing the access times. For test cases 'equals' on the
+     * string should suffice.
+     */
     public String getImagesAccessTimes() {
         CharTransformer accessTimes = new AbstractCommandStringTransformer() {
                 public String[] getCommand() {
@@ -144,8 +146,11 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         }
     }
 
-
-    //test what happens if template is errorneous
+    private static Cloud cloud;
+    /**
+     * test what happens if template is errorneous
+     *
+     */
     public void testErrorneousTemplate() {
         Cloud cloud = getCloud();
         Query q = cloud.getNodeManager("icaches").createQuery();
@@ -162,10 +167,9 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         // etc.
     }
 
-    private static Cloud cloud;
-
-
-    ///Sets up before each test.
+    /**
+     * Sets up before each test.
+     */
     public void setUp() throws Exception {
         if (cloud == null) {
             startMMBase();
@@ -202,9 +206,6 @@ public class ConvertImageTest extends org.mmbase.tests.BridgeTest {
         try {
             InputStream in = this.getClass().getResourceAsStream(name);
 
-            if (in == null) {
-                throw new Error("No such resource '" + name + "'");
-            }
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
             byte[] buffer = new byte[200];

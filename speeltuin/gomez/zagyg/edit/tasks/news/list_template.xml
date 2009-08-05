@@ -1,0 +1,48 @@
+<list role="templaterel" destination="news" maxoccurs="1">
+  <title xml:lang="en">Articles</title>
+  <title xml:lang="nl">Artikelen</title>
+
+  <item>
+    <field name="title" dtrequired="false" />
+    <field name="body" ftype="html" />
+
+    <field name="visible" ftype="enum" dtrequired="true">
+      <optionlist select="show" />
+    </field>
+    <field name="begin" />
+    <field name="end" />
+
+    <list include="tasks/images/list_posrel.xml" />
+  </item>
+
+  <command name="search" nodepath="news" fields="title" age="7" >
+    <prompt xml:lang="en">Search an article</prompt>
+    <prompt xml:lang="nl">Zoek een artikel</prompt>
+    <search-filter>
+      <name xml:lang="en">Contains</name>
+      <name xml:lang="nl">Bevat</name>
+      <search-fields>news.title</search-fields>
+    </search-filter>
+  </command>
+
+  <command name="insert" />
+
+  <action type="add">
+    <relation role="templaterel">
+      <field name="template">{$origin}</field>
+      <field name="pos">1</field>
+    </relation>
+  </action>
+
+  <action type="create">
+    <relation role="templaterel">
+      <field name="template">{$origin}</field>
+      <field name="pos">1</field>
+      <object type="news" >
+        <field name="visible">1</field>
+        <field name="end">4102441257</field>
+      </object>
+    </relation>
+  </action>
+</list>
+

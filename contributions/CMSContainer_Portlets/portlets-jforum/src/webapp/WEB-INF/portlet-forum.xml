@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portlet-app version="1.0">
+   <portlet>
+      <description>JForum Portlet</description>
+      <portlet-name>jforumportlet</portlet-name>
+      <portlet-class>org.jahia.portlet.jforum.JForumPortletBridge</portlet-class>
+      <expiration-cache>-1</expiration-cache>
+      <supports>
+         <mime-type>text/html</mime-type>
+         <portlet-mode>VIEW</portlet-mode>
+         <portlet-mode>HELP</portlet-mode>
+         <portlet-mode>DELETE</portlet-mode>
+      </supports>
+      <portlet-info>
+         <title>JForum</title>
+      </portlet-info>
+   </portlet>
+</portlet-app>

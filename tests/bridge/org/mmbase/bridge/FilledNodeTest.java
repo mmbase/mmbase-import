@@ -33,7 +33,6 @@ public class FilledNodeTest extends NodeTest {
     protected Date TEST_DATE = new Date(TEST_TIME);
     protected BigDecimal TEST_DECIMAL = new BigDecimal("123123123.123456789");
     protected Long TEST_LONG = Long.MAX_VALUE - 10;
-    protected Double TEST_DOUBLE = new Double(Double.MAX_VALUE);
 
     public FilledNodeTest(String name) {
         super(name);
@@ -61,9 +60,9 @@ public class FilledNodeTest extends NodeTest {
         node = cloud.getNodeManager(getNodeManager()).createNode();
         Node typedefNode = cloud.getNodeManager("bb");
         assertTrue(typedefNode != null);
-        byte[] bytes = { 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33 }; // 'Hello World!'
+        byte[] bytes = { 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33 };
         node.setValue("binaryfield", bytes);
-        node.setValue("doublefield", TEST_DOUBLE);
+        node.setValue("doublefield", new Double(Double.MAX_VALUE));
         node.setValue("floatfield", new Float(Float.MAX_VALUE));
         node.setValue("intfield", new Integer(Integer.MAX_VALUE));
         node.setValue("longfield", TEST_LONG);
@@ -71,7 +70,7 @@ public class FilledNodeTest extends NodeTest {
         node.setValue("stringfield", "Bridge testing!");
         node.setValue("xmlfield", getEmptyDocument());
         node.setValue("nodefield", typedefNode);
-        org.mmbase.datatypes.DataType<?> dt = node.getNodeManager().getField("datetimefield").getDataType();
+        org.mmbase.datatypes.DataType<Object> dt = node.getNodeManager().getField("datetimefield").getDataType();
         //assertTrue("Not a datetime-datatype but " + dt.getClass(), dt.getClass().equals(org.mmbase.datatypes.DateTimeDataType.class)); // would give error in Node#setValue otherwise
 
         node.setValue("datetimefield", TEST_DATE);
@@ -86,6 +85,7 @@ public class FilledNodeTest extends NodeTest {
     }
 
     public void tearDown() {
+        // Remove test node.
         node.delete();
     }
 
@@ -95,10 +95,10 @@ public class FilledNodeTest extends NodeTest {
             if (element.equals("binary")) {
                 byte[] bytes = (byte[])object;
                 assertTrue("getValue on byte field should give 'Hello World!' but gave '" + new String(bytes) + "'",
-                           "Hello world!".equals(new String(bytes)));
+                    "Hello world!".equals(new String(bytes)));
             } else if (element.equals("double")) {
-                assertTrue("getValue on double field should give " +  TEST_DOUBLE + " but gave " + object,
-                    TEST_DOUBLE.compareTo((Double)object) == 0);
+                assertTrue("getValue on double field should give " +  Double.MAX_VALUE + " but gave " + object,
+                    new Double(Double.MAX_VALUE).compareTo((Double)object) == 0);
             } else if (element.equals("float")) {
                 assertTrue("getValue on float field should give " +  Float.MAX_VALUE + " but gave " + object,
                     new Float(Float.MAX_VALUE).compareTo((Float)object) == 0);
@@ -140,7 +140,7 @@ public class FilledNodeTest extends NodeTest {
             }
         }
     }
-    @Override
+
     public void testGetBinaryValue() {
         for (String element : fieldTypes) {
             byte[] bytes = node.getByteValue(element + "field");
@@ -183,7 +183,7 @@ public class FilledNodeTest extends NodeTest {
             if (element.equals("binary")) {
                 assertTrue(d == -1);
             } else if (element.equals("double")) {
-                assertTrue(d == TEST_DOUBLE);
+                assertTrue(d == Double.MAX_VALUE);
             } else if (element.equals("float")) {
                 assertTrue(d == Float.MAX_VALUE);
             } else if (element.equals("int")) {
@@ -320,8 +320,8 @@ public class FilledNodeTest extends NodeTest {
             if (element.equals("binary")) {
                 assertTrue(element + "field queried as string did not return \"Hello world!\" but " + string, "Hello world!".equals(string));
             } else if (element.equals("double")) {
-                assertTrue(element + "field queried as string did not return " + TEST_DOUBLE + " but " + string,
-                    String.valueOf(TEST_DOUBLE).equals(string));
+                assertTrue(element + "field queried as string did not return " + Double.MAX_VALUE + " but " + string,
+                    String.valueOf(Double.MAX_VALUE).equals(string));
             } else if (element.equals("float")) {
                 // SQLDB causes some problems when rounding floats, which it stores internally as Doubles.
                 // so compare the resulting string to both Float.MAX_VALUE and Double(Float.MAX_VALUE )
@@ -401,7 +401,7 @@ public class FilledNodeTest extends NodeTest {
     }
 
     public void testGetDateTimeValue() {
-        for (final String element : fieldTypes) {
+        for (String element : fieldTypes) {
             Date value = null;
             if (element.equals("node")) {
                 value = node.getDateValue(element + "field");
@@ -413,14 +413,14 @@ public class FilledNodeTest extends NodeTest {
                             value.getTime()==TEST_TIME);
             } else if (element.equals("double")) {
                 value = node.getDateValue(element + "field");
-                Date time = Casting.toDate(TEST_DOUBLE);
-                assertTrue(element + " field queried as datetime did not return " + time + ", but " + value,
-                           value.getTime() == time.getTime());
+                long time = new Double(Double.MAX_VALUE).longValue() * 1000;
+                assertTrue(element + " field queried as datetime did not return "+new Date(time)+", but " + value,
+                            value.getTime()==time);
             } else if (element.equals("float")) {
                 value = node.getDateValue(element + "field");
-                Date time = Casting.toDate(Float.MAX_VALUE);
-                assertTrue(element + " field queried as datetime did not return "+ time +", but " + value,
-                           value.getTime() == time.getTime());
+                long time = new Float(Float.MAX_VALUE).longValue() * 1000;
+                assertTrue(element + " field queried as datetime did not return "+new Date(time)+", but " + value,
+                            value.getTime()==time);
             } else if (element.equals("int")) {
                 value = node.getDateValue(element + "field");
                 long time = new Integer(Integer.MAX_VALUE).longValue()*1000;
@@ -428,9 +428,9 @@ public class FilledNodeTest extends NodeTest {
                             value.getTime()==time);
             } else if (element.equals("long")) {
                 value = node.getDateValue(element + "field");
-                Date time = Casting.toDate(Long.MAX_VALUE);
-                assertTrue(element + " field queried as datetime did not return "+ time + ", but " + value,
-                           value.getTime() == time.getTime());
+                long time = Long.MAX_VALUE * 1000; // oddd..
+                assertTrue(element + " field queried as datetime did not return "+new Date(time) + ", but " + value,
+                            value.getTime()==time);
             } else if (element.equals("decimal")) {
                 value = node.getDateValue(element + "field");
                 long time = TEST_DECIMAL.longValue() * 1000;
@@ -441,12 +441,11 @@ public class FilledNodeTest extends NodeTest {
                     value = node.getDateValue(element + "field");
                     fail(element + " field 's value '" + node.getStringValue(element + "field") + "' cannot be queried as a date, should have thrown exception");
                 } catch (Throwable e) {
-                    continue;
+                    return;
                 }
             }
             assertTrue(element + " field queried as datetime returned null", value != null);
-        }
-
+       }
     }
 
     public void testGetDecimalValue() {
@@ -455,7 +454,7 @@ public class FilledNodeTest extends NodeTest {
             if (element.equals("binary")) {
                 assertTrue(new BigDecimal(-1).compareTo(l) == 0);
             } else if (element.equals("double")) {
-                assertTrue("" + l + " != " + TEST_DOUBLE, new BigDecimal(TEST_DOUBLE).compareTo(l) == 0);
+                assertTrue("" + l + " != " + Double.MAX_VALUE, new BigDecimal(Double.MAX_VALUE).compareTo(l) == 0);
             } else if (element.equals("float")) {
                 assertTrue(new BigDecimal(Float.MAX_VALUE).compareTo(l) == 0);
             } else if (element.equals("int")) {
@@ -488,52 +487,15 @@ public class FilledNodeTest extends NodeTest {
     public void testGetListValue() {
         for (String element : fieldTypes) {
             List value = node.getListValue(element + "field");
-            assertTrue(element + " field queried as list returned null", value != null);
+            assertTrue(element + " field queried as list returned null", value!=null);
             if (element.equals("list")) {
                 assertTrue(element + " field queried as list did not return [TRUE,TRUE], but " + value,
                     value.size()==2 && value.get(0).equals(Boolean.TRUE) && value.get(1).equals(Boolean.TRUE));
            } else {
                 assertTrue(element + " field queried as list did not return [<node>], but " + value,
-                           value.size() == 1);
-
+                            value.size() == 1);
             }
        }
-    }
-
-    public void testNodeFieldWithNewNode() {
-        try {
-            Cloud cloud = getCloud();
-            Node node1 = cloud.getNodeManager(getNodeManager()).createNode();
-            Node node2 = cloud.getNodeManager(getNodeManager()).createNode();
-            node1.setNodeValue("nodefield", node2);
-
-            node2.commit();
-            node1.commit();
-
-            assertEquals(node1.getIntValue("nodefield"), node2.getNumber());
-        } catch (Exception e)  {
-            //http://www.mmbase.org/jira/browse/MMB-1632
-
-            // fail("Should have worked " + e); FAILS
-        }
-    }
-
-    public void testNodeFieldWithNewNodeInverseOrder() {
-        //http://www.mmbase.org/jira/browse/MMB-1632
-        try {
-            Cloud cloud = getCloud();
-            Node node1 = cloud.getNodeManager(getNodeManager()).createNode();
-            Node node2 = cloud.getNodeManager(getNodeManager()).createNode();
-            node1.setNodeValue("nodefield", node2);
-
-            node1.commit();
-            node2.commit();
-
-            assertEquals(node1.getIntValue("nodefield"), node2.getNumber());
-        } catch (Exception e) {
-            //http://www.mmbase.org/jira/browse/MMB-1632
-            // fail("Should have worked " + e); FAILS
-        }
     }
 
 }

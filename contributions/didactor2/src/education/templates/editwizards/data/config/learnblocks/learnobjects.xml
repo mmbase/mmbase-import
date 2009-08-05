@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="learnobject">
+  <title xml:lang="nl">Bijbehorende leerobjecten</title>
+  <title xml:lang="en">Related learnobjects</title>
+
+  <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']"
+        destination="learnobjects"
+        searchdir="destination">
+    <item>
+      <field name="name" ftype="data">
+        <prompt xml:lang="nl">Naam</prompt>
+        <prompt xml:lang="en">Name</prompt>
+        <description xml:lang="nl">Naam van het leerobject</description>
+        <description xml:lang="en">Name of the learnobject</description>
+      </field>
+      <field fdatapath="field[@name='pos']" />
+      <field ftype="startwizard" inline="true" objectnumber="{object/@number}"  wizardname="config/{object/@type}/{object/@type}">
+
+      </field>
+    </item>
+
+    <action type="create">
+      <relation role="posrel" destinationtype="learnobjects" createdir="destination" >
+        <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and object/@searchtype='learnobjects']/field[@name='pos'])+{$pos}}</field>
+      </relation>
+    </action>
+
+    <command name="startwizard" inline="true" wizardname="config/learnblocks/learnblocks" objectnumber="new">
+      <prompt xml:lang="nl">Nieuw leerblok</prompt>
+      <prompt xml:lang="en">New learnblock</prompt>
+    </command>
+
+    <command name="startwizard" inline="true" wizardname="config/pages/pages" objectnumber="new">
+      <prompt xml:lang="nl">Nieuwe pagina</prompt>
+      <prompt xml:lang="en">New page</prompt>
+    </command>
+
+    <command name="startwizard" inline="true" wizardname="config/flashpages/flashpages" objectnumber="new">
+      <prompt xml:lang="nl">Nieuwe flash pagina</prompt>
+      <prompt xml:lang="en">New flash page</prompt>
+    </command>
+
+    <command name="startwizard" inline="true" wizardname="config/tests/tests" objectnumber="new">
+      <prompt xml:lang="nl">Nieuwe toets</prompt>
+      <prompt xml:lang="en">New test</prompt>
+    </command>
+
+    <command name="startwizard" inline="true" wizardname="config/htmlpages/htmlpages" objectnumber="new">
+      <prompt xml:lang="nl">Nieuwe htmlpagina</prompt>
+      <prompt xml:lang="en">New htmlpage</prompt>
+    </command>
+
+    <command name="search" nodepath="learnobjects"
+             fields="name" age="-1" orderby="number" >
+      <prompt xml:lang="nl">Zoeken naar leerobjecten</prompt>
+      <prompt xml:lang="en">Search for learnobjects</prompt>
+      <search-filter>
+        <name xml:lang="nl">Titel bevat</name>
+        <name xml:lang="en">Name contains</name>
+        <search-fields>name</search-fields>
+      </search-filter>
+    </command>
+  </list>
+</form-schema>

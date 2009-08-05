@@ -1,0 +1,16 @@
+
+/**
+
+  Editwizard cascading style sheet.
+  You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
+
+  @version  $Id: wysiwyg.css,v 1.1 2003-12-06 14:24:48 nico Exp $
+  
+*/
+
+
+table.wysiwyg {
+  border: 0;
+  cell-padding: 0;
+  cellspacing: 0;
+}

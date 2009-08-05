@@ -20,7 +20,7 @@ import org.mmbase.bridge.util.CollectionNodeList;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @since $Id$
+ * @since $Id: FunctionsTest.java,v 1.16 2008-11-18 23:33:31 michiel Exp $
  * @since MMBase-1.8
  */
 public class FunctionsTest extends BridgeTest {
@@ -260,34 +260,5 @@ public class FunctionsTest extends BridgeTest {
             assertTrue(e.getMessage() + " does not match " + NO_FUNCTION, NO_FUNCTION.matcher(e.getMessage()).matches());
         }
 
-    }
-
-    protected void testThisNode(String function) {
-        Cloud cloud = getCloud();
-        NodeManager nm = cloud.getNodeManager("datatypes");
-        Node node1 = nm.createNode();
-        node1.commit();
-
-        Function fun = node1.getFunction(function);
-        assertNotNull(fun);
-
-        FieldValue result = node1.getFunctionValue(function, null);
-        assertNotNull(result);
-
-        Node resultNode = result.toNode();
-
-        assertNotNull(resultNode);
-
-        assertEquals(node1, resultNode);
-
-        // calling it in a a 'legacy' way
-        Node resultNode2 = node1.getNodeValue(function + "()");
-
-        assertEquals(node1, resultNode2);
-    }
-
-    public void testThisNode() {
-        testThisNode("thisnode");
-        testThisNode("thisnode2");
     }
 }

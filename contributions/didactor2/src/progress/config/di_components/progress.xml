@@ -1,0 +1,31 @@
+<component
+    xmlns="http://www.mmbase.org/xmlns/didactor-component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/didactor-component http://www.mmbase.org/xmlns/didactor-component.xsd"
+    name="progress" templatepath="progress"
+    templatebar="education" barposition="10">
+  <scope name="component" referid="component">
+    <setting name="showeducationplan" type="boolean" default="true"/>
+    <setting name="showquestionamount" type="boolean" default="true"/>
+    <setting name="showscore" type="boolean" default="true"/>
+    <setting name="showcorrect" type="boolean" default="true"/>
+    <setting name="showneeded" type="boolean" default="true"/>
+    <setting name="showsucceeded" type="boolean" default="true"/>
+  </scope>
+  <scope name="providers" referid="provider">
+    <setting ref="showeducationplan" />
+    <setting ref="showquestionamount" />
+    <setting ref="showscore" />
+    <setting ref="showcorrect" />
+    <setting ref="showneeded" />
+    <setting ref="showsucceeded" />
+  </scope>
+  <scope name="educations" referid="education">
+    <setting ref="showeducationplan" />
+    <setting ref="showquestionamount" />
+    <setting ref="showscore" />
+    <setting ref="showcorrect" />
+    <setting ref="showneeded" />
+    <setting ref="showsucceeded" />
+  </scope>
+</component>

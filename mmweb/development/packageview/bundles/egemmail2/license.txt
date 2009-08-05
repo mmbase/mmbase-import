@@ -1,0 +1,3 @@
+Type : Public License<br />
+Name : EPL <br />
+Version : 1.0 <br />

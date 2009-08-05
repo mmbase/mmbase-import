@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id$
+ * @version $Id: SpaceReducerTest.java,v 1.2 2008-11-15 10:43:57 michiel Exp $
  */
 public class SpaceReducerTest  extends TestCase {
 

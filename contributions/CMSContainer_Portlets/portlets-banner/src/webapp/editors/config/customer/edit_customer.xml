@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_customer">
+   <title xml:lang="nl">Klant</title>
+   <title xml:lang="en">Customer</title>
+   <title xml:lang="zh">用户</title>
+
+   <field name="name" dtrequired="true" dtminlength="2">
+      <prompt xml:lang="en">Name</prompt>
+      <prompt xml:lang="nl">Naam</prompt>
+      <prompt xml:lang="zh">姓名</prompt>
+   </field>
+</form-schema>

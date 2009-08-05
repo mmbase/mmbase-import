@@ -1,0 +1,5 @@
+<!-- deinstalls a Display Element -->
+
+<PROCESSOR MMADMIN>
+$MOD-MMADMIN-DELETEAPPLICATION-$PARAM1
+<GOTO ../applications.jsp>

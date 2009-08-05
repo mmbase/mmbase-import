@@ -1,0 +1,11 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:directive.tag description="Show emailaddres as should be used for current user node" />
+  <mm:node>
+    <mm:field name="username" /><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath"/>
+  </mm:node>
+</jsp:root>

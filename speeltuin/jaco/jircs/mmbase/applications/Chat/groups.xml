@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<groups exportsource="mmbase://127.0.0.1/clouds/install" timestamp="20020925183417">
+	<node number="79" owner="admin" alias="ChatExampleGroupNode">
+		<name>Chat Example Group</name>
+		<description>Group node for the chat example users.</description>
+	</node>
+
+</groups>

@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 /**
  *
  * @author Michiel Meeuwissen
- * @verion $Id$
+ * @verion $Id: CastingTest.java,v 1.2 2008-09-12 13:10:43 michiel Exp $
  */
 public class CastingTest extends TestCase {
 
@@ -32,7 +32,6 @@ public class CastingTest extends TestCase {
         list.add("c");
         assertEquals(list, Casting.toList("a,b,c"));
         assertEquals(list, Casting.toList("a , b , c"));
-        assertEquals("a,b,c", Casting.toString(list));
     }
 
     public void testInt() {
@@ -48,8 +47,6 @@ public class CastingTest extends TestCase {
         assertEquals(8, Casting.toInt(null, 8));
         assertEquals(8, Casting.toInt("bla bloe", 8));
         assertEquals(15, Casting.toInt("15", 8));
-
-        assertEquals("15", Casting.toString(15));
     }
     public void testInteger() {
         assertEquals(new Integer(10), (Object) Casting.toInteger("10"));
@@ -69,10 +66,6 @@ public class CastingTest extends TestCase {
 
     public void testDouble() {
         assertEquals(new Double(-1.0), (Object) Casting.toDouble(null));
-    }
-
-    public void testBinary() {
-
     }
 
 

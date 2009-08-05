@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="couplingquestions" maintainer="didactor.nl" version="2" extends="questions">
+  <class>nl.didactor.education.builders.CouplingQuestionBuilder</class>
+  <names>
+    <singular xml:lang="nl">Koppelvraag</singular>
+    <singular xml:lang="en">Coupling Question</singular>
+    <plural xml:lang="nl">Koppelvragen</plural>
+    <plural xml:lang="en">Coupling Questions</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="nl">Koppel vraag, waar de antwoorden gekoppeld moeten worden</description>
+    <description xml:lang="en">Coupling questions, where answes need to be related to eachother</description>
+  </descriptions>
+
+  <properties>
+    <property name="key:new:name">education.createnewmcquestions</property>
+    <property name="key:new:description">education.createnewmcquestionsdescription</property>
+  </properties>
+</builder>

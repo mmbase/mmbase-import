@@ -13,28 +13,30 @@
   <artifactId>base-webapp</artifactId>
   <packaging>war</packaging>
   <name>MMBase Base webapp</name>
-  <version>${base.version}</version>
-
-  <properties>
-    <standard.scope>runtime</standard.scope>
-    <my.postfix>${mmbase.version.postfix}</my.postfix>
-    <base.version>${mmbase.version.number}${my.postfix}</base.version>
-  </properties>
 
   <description>
     This is a minimalistic war containing the essentials for an MMBase web applications. This can be used as initial war overlay for your own project.
   </description>
 
   <build>
+    <defaultGoal>install</defaultGoal>
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
-          <archiveClasses>false</archiveClasses>
-          <attachClasses>false</attachClasses>
+          <webXml>${basedir}/../html/WEB-INF/web.xml</webXml>
+          <webResources>
+            <resource>
+              <directory>${basedir}/../html/</directory>
+              <excludes>
+                <exclude>index.jsp</exclude>
+                <exclude>mmexamples/**</exclude>
+                <exclude>WEB-INF/web-2.3.xml</exclude>
+              </excludes>
+            </resource>
+          </webResources>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 
@@ -42,7 +44,7 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
-      <version>${mmbase.version}</version>
+      <version>${project.version}</version>
     </dependency>
 
     <!--
@@ -52,76 +54,9 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-taglib</artifactId>
-      <version>${mmbase.version}</version>
+      <version>${project.version}</version>
       <type>war</type>
     </dependency>
 
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>standard</artifactId>
-      <scope>${standard.scope}</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-    </dependency>
-
   </dependencies>
-
-
-  <profiles>
-    <profile>
-      <id>deploy</id>
-      <build>
-        <defaultGoal>deploy</defaultGoal>
-      </build>
-    </profile>
-    <profile>
-      <id>servlet25</id>
-      <activation>
-        <property>
-          <name>servlet.version</name>
-          <value>2.5</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>javax.servlet</groupId>
-          <artifactId>jstl</artifactId>
-          <version>1.2</version>
-        </dependency>
-      </dependencies>
-      <properties>
-        <base.version>${mmbase.version.number}-servlet25${mmbase.version.postfix}</base.version>
-        <standard.scope>provided</standard.scope>
-      </properties>
-    </profile>
-    <profile>
-      <id>development</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.mmbase.maven</groupId>
-            <artifactId>maven-mmbase-plugin</artifactId>
-            <version>1.9-SNAPSHOT</version>
-            <executions>
-              <execution>
-                <id>installsvnsr</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>include-default-excludes</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-  </profiles>
 </project>

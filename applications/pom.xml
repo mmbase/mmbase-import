@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
+  
   <parent>
     <groupId>org.mmbase</groupId>
     <artifactId>mmbase-parent</artifactId>
@@ -12,41 +12,57 @@
 
   <artifactId>mmbase-application-parent</artifactId>
   <packaging>pom</packaging>
-  <name>MMBase Applications</name>
-  <version>1.9-SNAPSHOT</version>
-
-  <description>
-    Applications are war overlays then can plug in some functionality into an existing MMBase installation.
-    This would normally contain at least a 'component', but it can e.g. also be only a security implementation.
-   </description>
+  <name>MMBase Application Parent</name>
 
   <dependencies>
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
-      <version>${mmbase.version}</version>
+      <version>${project.version}</version>
+<!--      <classifier>classes</classifier> -->
       <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>${jsp.groupId}</groupId>
-      <artifactId>jsp-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>${basedir}/src</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.dtd</include>
+          <include>**/*.xsd</include>
+          <include>**/*.properties</include>
+          <include>INDEX</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${basedir}/target/generated-resources/xml/xslt/</directory>
+        <includes>
+          <include>**/*.tld</include>
+        </includes>
+      </resource>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${basedir}/META-INF</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </resource>
+      <resource>
+        <targetPath>org/mmbase/config</targetPath>
+        <directory>${basedir}/config</directory>
+      </resource>
+      <resource>
+        <directory>${basedir}/target/generated-resources</directory>
+        <includes>
+          <include>org/**</include>
+        </includes>
+      </resource>
+    </resources>
+  
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
@@ -76,84 +92,29 @@
     </plugins>
   </build>
 
+  <modules>
+    <module>resources</module>
+    <module>taglib</module>
+    <module>cloudcontext</module>
+    <module>crontab</module>
+    <module>dove</module>
+    <module>editwizard</module>
+    <module>email</module>
+    <module>media</module>
+    <module>notifications</module>
+    <module>searchrelate</module>
+    <module>richtext</module>
+    <module>rmmci</module>
+    
+    <module>jumpers</module>
+    <module>xmlimporter</module>
+    <module>largeobjects</module>
+    <module>oscache-cache</module>
+    <module>clustering</module>
+    <module>commandserver</module>
+    <module>cloudsecurity</module>
+    
+    <module>mynews</module>
 
-  <profiles>
-    <profile>
-      <id>mmapplications_all</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <modules>
-        <module>resources</module>
-        <module>taglib</module>
-        <module>cloudcontext</module>
-        <module>crontab</module>
-        <module>dove</module>
-        <module>editwizard</module>
-        <module>email</module>
-        <module>media</module>
-        <module>notifications</module>
-        <module>searchrelate</module>
-
-        <module>richtext</module>
-        <module>richtext/content</module>
-        <module>richtext/wiki</module>
-
-        <module>rmmci</module>
-
-        <module>jumpers</module>
-        <module>xmlimporter</module>
-        <module>largeobjects</module>
-        <module>oscache-cache</module>
-        <module>clustering</module>
-        <module>commandserver</module>
-        <module>cloudsecurity</module>
-        <module>streams</module>
-
-        <module>mynews</module>
-        <module>vpro-wizards</module>
-
-
-        <!-- deprecated-->
-        <module>vwms</module>
-        <module>scan</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>mmapplications_subset1</id>
-      <!--
-          No deprecated and experimental stuff, no rmmci.
-      -->
-      <modules>
-        <module>resources</module>
-        <module>taglib</module>
-        <module>cloudcontext</module>
-        <module>crontab</module>
-        <module>dove</module>
-        <module>editwizard</module>
-        <module>email</module>
-        <module>media</module>
-        <module>searchrelate</module>
-        <module>richtext</module>
-        <module>jumpers</module>
-        <module>clustering</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>test_build</id>
-      <!--
-          Very few applications, to speed up things when testing the build process itself.
-      -->
-      <modules>
-        <module>resources</module>
-        <module>editwizard</module>
-        <module>largeobjects</module>
-        <module>mynews</module>
-        <module>oscache-cache</module>
-      </modules>
-    </profile>
-  </profiles>
-
-
+  </modules>
 </project>

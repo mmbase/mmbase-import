@@ -1,0 +1,70 @@
+# -----------------------------------------------------------------------------
+# build.properties.default
+#
+# This is the default build.properties file.
+# It contains all required packages.
+# If you'd like to customize some of the settings, create a build.properties in
+# the root of this directory.
+#
+# $Id: build-documentation.properties.default,v 1.1 2008-03-25 21:03:08 nklasens Exp $
+# -----------------------------------------------------------------------------
+
+
+# ----- Proxy setup -----
+#proxy.host=proxy.domain
+#proxy.port=8080
+#proxy.use=on
+
+# ----- Default build dir -----
+documentation.build.dir=${basedir}/build
+
+# ----- Default Base Path for required Packages -----
+# download.dir=${documentation.build.dir}/download
+
+
+# --------------------------------------------------
+#                REQUIRED LIBRARIES
+# --------------------------------------------------
+
+
+# Nwalsh sucks, because depends on xalan.
+# ----- Xalan and Xerces ----------
+xalan.version=xalan-j_2_7_0
+xalan.fullversion=${xalan.version}
+xalan.file=${xalan.version}-bin.tar.gz
+xalan.dest=${download.dir}/${xalan.file}
+xalan.loc=${mmbase.loc}/xalan/${xalan.file}
+xalan.jar=${expand.dir}/${xalan.fullversion}/xalan.jar
+serializer.jar=${expand.dir}/${xalan.fullversion}/serializer.jar
+xerces.jar=${expand.dir}/${xalan.fullversion}/xercesImpl.jar
+xml-apis.jar=${expand.dir}/${xalan.fullversion}/xml-apis.jar
+
+# ----- Docbook stylesheets ----------
+
+# ----- Docbook stylesheets ----------
+docbook-xsl.version=docbook-xsl-1.72.0
+docbook-xsl.file=${docbook-xsl.version}.tar.gz
+docbook-xsl.dest=${download.dir}/${docbook-xsl.file}
+docbook-xsl.loc=http://www.mmbase.org/download/docbook/${docbook-xsl.file}
+docbook-xsl.exp=${expand.dir}/${docbook-xsl.version}
+
+# ---- Fop is a terrible system to produces PDFs ----
+fop.version=fop-0.94
+fop.file=${fop.version}-bin-jdk1.4.tar.gz
+fop.loc=http://archive.apache.org/dist/xmlgraphics/fop/binaries/${fop.file}
+fop.dest=${download.dir}/${fop.file}
+fop.exp=${expand.dir}/${fop.version}
+
+
+# ---- Jai, version 1.0.2 ----
+# It's a very old version, but the only one that can be download
+# without expiring urls.
+
+jai-old.version=jai1_0_2-beta
+jai.file=${jai-old.version}-lib-linux-i386.tar.bz2
+#jai.home=${download.dir}/${jai-old.version}
+jai.home=${expand.dir}/${jai-old.version}
+
+jai.loc=ftp://ftp.nluug.nl/pub/languages/java/jdk/JAI/1.0.2/i386/${jai.file}
+jai.codec.jar=${jai.home}/jre/lib/ext/jai_codec.jar
+jai.core.jar=${jai.home}/jre/lib/ext/jai_core.jar

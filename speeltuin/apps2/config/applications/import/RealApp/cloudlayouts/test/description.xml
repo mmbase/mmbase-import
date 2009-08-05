@@ -1,0 +1,19 @@
+<cloudlayout name="test" version="-1" create-date="Dec 18, 2001 2:05:54 PM" md5="fb3fb9 000000 df2b9f ffffff">
+
+	<description></description>
+
+	<requires>
+	</requires>
+
+	<neededbuilderlist>
+		<builder maintainer="mmbase.org ###" version="0" md5="fc7f7dfb ffffffff e82faf6b 00000000">typerel</builder>
+		<builder maintainer="mmbase.org ###" version="0" md5="d7b52fe6 00000000 edb7f6f5 ffffffff">insrel</builder>
+		<builder maintainer="mmbase.org ###" version="0" md5="7edde9fb 00000000 fe2defbc ffffffff">oalias</builder>
+	</neededbuilderlist>
+
+	<neededreldeflist>
+	</neededreldeflist>
+
+	<allowedrelationlist>
+	</allowedrelationlist>
+</cloudlayout>

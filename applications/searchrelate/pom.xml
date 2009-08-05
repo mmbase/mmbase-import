@@ -12,15 +12,6 @@
   <artifactId>mmbase-searchrelate</artifactId>
   <name>MMBase Search and Relate</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
-
-  <description>
-    This applictions provides various tag-files and javascript libraries to make modern editors ('web 2.0').
-  </description>
-
-  <properties>
-    <project.name>searchrelate</project.name>
-  </properties>
 
   <build>
     <plugins>

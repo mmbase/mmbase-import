@@ -12,40 +12,17 @@
   <artifactId>mmbase-editwizard</artifactId>
   <name>MMBase Editwizard</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
-
-  <description>
-    The Editwizards allow you to write task-based wizards for data entry. This application provides
-    the required tools and software, and some example wizards.
-  </description>
 
   <properties>
     <templatesTarget>mmbase/edit/wizard</templatesTarget>
-    <project.name>editwizard</project.name>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-dove</artifactId>
-      <version>${mmbase.version}</version>
+      <version>${project.version}</version>
     </dependency>
-
-<!-- html editors or versions
-
-    <dependency>
-      <groupId>org.mmbase.editwizards</groupId>
-      <artifactId>htmlarea</artifactId>
-      <version>3.0-rc1-mm19</version>
-      <type>zip</type>
-    </dependency>
-    <dependency>
-      <groupId>org.xinha</groupId>
-      <artifactId>xinha</artifactId>
-      <version>0.96beta2</version>
-      <type>zip</type>
-    </dependency>
-    -->
   </dependencies>
 
   <build>

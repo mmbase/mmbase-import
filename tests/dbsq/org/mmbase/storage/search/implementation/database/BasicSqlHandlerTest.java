@@ -52,7 +52,6 @@ public class BasicSqlHandlerTest extends TestCase {
     /**
      * Sets up before each test.
      */
-    @Override
     public void setUp() throws Exception {
         MMBaseContext.init();
         mmbase = MMBase.getMMBase();
@@ -72,7 +71,6 @@ public class BasicSqlHandlerTest extends TestCase {
     /**
      * Tears down after each test.
      */
-    @Override
     public void tearDown() throws Exception {}
 
     /** Test of init method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
@@ -793,26 +791,31 @@ public class BasicSqlHandlerTest extends TestCase {
         query = new BasicSearchQuery(true);
         step1 = query.addStep(images).setAlias(null);
         BasicAggregatedField field4a
-            = (BasicAggregatedField) query.addAggregatedField(step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT)
-            .setAlias(null);
+            = (BasicAggregatedField) query.addAggregatedField(
+                step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT)
+                    .setAlias(null);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assertTrue(strSql, strSql.equalsIgnoreCase("COUNT(TITLE) " + "FROM " + prefix + "images IMAGES"));
+        assertTrue(strSql, strSql.equalsIgnoreCase(
+        "COUNT(TITLE) " + "FROM " + prefix + "images IMAGES"));
 
-        field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT);
+        field4a.setAggregationType(
+        AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assertTrue(strSql, strSql.equalsIgnoreCase("COUNT(DISTINCT TITLE) "
-                                                   + "FROM " + prefix + "images IMAGES"));
+        assertTrue(strSql, strSql.equalsIgnoreCase(
+        "COUNT(DISTINCT TITLE) "
+        + "FROM " + prefix + "images IMAGES"));
 
         field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_MIN);
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assertTrue(strSql, strSql.equalsIgnoreCase("MIN(TITLE) "
-                                                   + "FROM " + prefix + "images IMAGES"));
+        assertTrue(strSql, strSql.equalsIgnoreCase(
+        "MIN(TITLE) "
+        + "FROM " + prefix + "images IMAGES"));
 
         field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_MAX);
         sb.setLength(0);
@@ -837,9 +840,10 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         instance.appendQueryBodyToSql(sb, query, instance);
         strSql = sb.toString();
-        assertTrue(strSql, strSql.equalsIgnoreCase("MAX(TITLE) AS maxTitle,"
-                                                   + "COUNT(NUMBER) "
-                                                   + "FROM " + prefix + "images IMAGES"));
+        assertTrue(strSql, strSql.equalsIgnoreCase(
+        "MAX(TITLE) AS maxTitle,"
+        + "COUNT(NUMBER) "
+        + "FROM " + prefix + "images IMAGES"));
 
         field4b.setAggregationType(AggregatedField.AGGREGATION_TYPE_GROUP_BY);
         sb.setLength(0);
@@ -1397,11 +1401,11 @@ public class BasicSqlHandlerTest extends TestCase {
             String allowedValue = entry.getValue();
 
             // Disallowed value.
-            assertTrue(instance.getAllowedValue(disallowedValue) + " was expected to equal " + allowedValue,
+            assertTrue(instance.getAllowedValue(disallowedValue) + " was expected to equal " + allowedValue, 
                        instance.getAllowedValue(disallowedValue).equalsIgnoreCase(allowedValue));
 
             // Allowed values.
-            assertTrue(instance.getAllowedValue(allowedValue) + " was expected to equal " + allowedValue,
+            assertTrue(instance.getAllowedValue(allowedValue) + " was expected to equal " + allowedValue, 
                        instance.getAllowedValue(allowedValue).equalsIgnoreCase(allowedValue));
             allowedValue += "_must_be_allowed_as_well";
             assertTrue(instance.getAllowedValue(allowedValue).equalsIgnoreCase(allowedValue));
@@ -1425,7 +1429,8 @@ public class BasicSqlHandlerTest extends TestCase {
         CoreField newsNumber = news.getField("number");
         StepField field2 = query.addField(step2, newsNumber);
 
-        BasicFieldValueConstraint constraint1 = new BasicFieldValueConstraint(field1, new Integer(9876));
+        BasicFieldValueConstraint constraint1
+        = new BasicFieldValueConstraint(field1, new Integer(9876));
         constraint1.setOperator(FieldCompareConstraint.LESS);
         constraint1.setOperator(FieldCompareConstraint.GREATER);
         constraint1.setInverse(true); // set inverse
@@ -1524,60 +1529,6 @@ public class BasicSqlHandlerTest extends TestCase {
         + "(NOT (IMAGES.NUMBER>NEWS.NUMBER) AND IMAGES.NUMBER>9876)"));
     }
 
-    public void testAppendCompositeInCompositeConstraintToSql() throws Exception {
-        BasicSearchQuery query = new BasicSearchQuery();
-        Step step1 = query.addStep(images).setAlias(null);
-        CoreField imagesNumber = images.getField("number");
-        StepField field1 = query.addField(step1, imagesNumber);
-
-
-        BasicFieldValueConstraint constraint11 = new BasicFieldValueConstraint(field1, new Integer(1234));
-        BasicFieldValueConstraint constraint12 = new BasicFieldValueConstraint(field1, new Integer(4321));
-
-        BasicFieldValueConstraint constraint21  = new BasicFieldValueConstraint(field1, new Integer(0));
-
-        BasicFieldValueConstraint constraint31 = new BasicFieldValueConstraint(field1, new Integer(5678));
-        BasicFieldValueConstraint constraint32 = new BasicFieldValueConstraint(field1, new Integer(8765));
-
-        {
-            BasicCompositeConstraint compositeConstraint1 = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
-            BasicCompositeConstraint compositeConstraint2 = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-            BasicCompositeConstraint compositeConstraint3 = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
-            compositeConstraint1.addChild(constraint11);
-            compositeConstraint1.addChild(constraint12);
-            compositeConstraint1.addChild(compositeConstraint2);
-            compositeConstraint2.addChild(constraint21);
-            compositeConstraint2.addChild(compositeConstraint3);
-            compositeConstraint3.addChild(constraint31);
-            compositeConstraint3.addChild(constraint32);
-
-            StringBuilder sb = new StringBuilder();
-            instance.appendCompositeConstraintToSql(sb, compositeConstraint1, query, false, false, instance);
-            assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("NUMBER=1234 OR NUMBER=4321 OR (NUMBER=0 AND (NUMBER=5678 OR NUMBER=8765))"));
-        }
-
-        {   // MMB-1832
-            BasicCompositeConstraint compositeConstraint1 = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_OR);
-            BasicCompositeConstraint compositeConstraint2 = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-            BasicCompositeConstraint compositeConstraint3 = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-            compositeConstraint1.addChild(constraint11);
-            compositeConstraint1.addChild(constraint12);
-            compositeConstraint1.addChild(compositeConstraint2);
-            compositeConstraint2.addChild(compositeConstraint3);
-            compositeConstraint3.addChild(constraint31);
-            compositeConstraint3.addChild(constraint32);
-
-            StringBuilder sb = new StringBuilder();
-            instance.appendCompositeConstraintToSql(sb, compositeConstraint1, query, false, false, instance);
-            assertTrue(sb.toString(), sb.toString().equalsIgnoreCase("NUMBER=1234 OR NUMBER=4321 OR (NUMBER=5678 AND NUMBER=8765)"));
-            // FAILS in MMBase < 1.9.2
-        }
-
-
-
-
-    }
-
     /** Test of appendFieldValue method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testAppendFieldValue() {
         StringBuilder sb = new StringBuilder();
@@ -1626,19 +1577,12 @@ public class BasicSqlHandlerTest extends TestCase {
     /** Test of appendLikeOperator method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testAppendLikeOperator() {
         // Should always append " LIKE ".
-        BasicSearchQuery query = new BasicSearchQuery();
-        Step step = query.addStep(images);
-        CoreField imagesField = images.getField("owner");
-        StepField field = query.addField(step, imagesField);
-        BasicFieldConstraint constraint = new BasicFieldValueConstraint(field, "123");
         StringBuilder sb = new StringBuilder();
-        constraint.setCaseSensitive(true);
-        instance.appendLikeOperator(sb, constraint);
+        instance.appendLikeOperator(sb, true);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(" LIKE "));
 
         sb.setLength(0);
-        constraint.setCaseSensitive(false);
-        instance.appendLikeOperator(sb, constraint);
+        instance.appendLikeOperator(sb, false);
         assertTrue(sb.toString(), sb.toString().equalsIgnoreCase(" LIKE "));
     }
 

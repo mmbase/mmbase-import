@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="translatewizards" maintainer="mmbase.org" version="1" extends="object">
+   
+  <status>active</status>
+
+  <searchage>9999</searchage>
+
+  <names>
+    <singular xml:lang="nl">translate wizard</singular>
+    <singular xml:lang="fr">translate wizard</singular>
+    <singular xml:lang="en">translate wizard</singular>
+    <singular xml:lang="us">translate wizard</singular>
+
+    <plural xml:lang="nl">translate wizards</plural>
+    <plural xml:lang="fr">translate wizards</plural>
+    <plural xml:lang="en">translate wizards</plural>
+    <plural xml:lang="us">translate wizards</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="nl">translate wizards</description>
+    <description xml:lang="en">translate wizards</description>
+    <description xml:lang="us">translate wizards</description>
+  </descriptions>
+
+  <properties/>
+  <fieldlist>
+
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Titel</guiname>
+        <guiname xml:lang="en">Title</guiname>
+        <guiname xml:lang="us">Title</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>1</input>
+          <!-- position in the list area of the editor -->
+          <list>1</list>
+          <!-- position in the search area of the editor -->
+          <search>1</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>title</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
+
+    <!-- field definition for field 6 : description -->
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Omschrijving</guiname>
+        <guiname xml:lang="en">Description</guiname>
+        <guiname xml:lang="us">Description</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>description</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="1024" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+    
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">Jsp pagina</guiname>
+        <guiname xml:lang="en">Jsp page</guiname>
+        <guiname xml:lang="us">Jsp page</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>jsppage</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">builder</guiname>
+        <guiname xml:lang="en">builder</guiname>
+        <guiname xml:lang="us">builder</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>builder</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">constraints</guiname>
+        <guiname xml:lang="en">constraints</guiname>
+        <guiname xml:lang="us">constraints</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>constraints</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">fields</guiname>
+        <guiname xml:lang="en">fields</guiname>
+        <guiname xml:lang="us">fields</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>fields</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">orderby</guiname>
+        <guiname xml:lang="en">orderby</guiname>
+        <guiname xml:lang="us">orderby</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>orderby</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">directions</guiname>
+        <guiname xml:lang="en">directions</guiname>
+        <guiname xml:lang="us">directions</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>directions</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">translationfields</guiname>
+        <guiname xml:lang="en">translationfields</guiname>
+        <guiname xml:lang="us">translationfields</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>translationfields</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">translationinput</guiname>
+        <guiname xml:lang="en">translationinput</guiname>
+        <guiname xml:lang="us">translationinput</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>translationinput</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="nl">show</guiname>
+        <guiname xml:lang="en">show</guiname>
+        <guiname xml:lang="us">show</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in the list area of the editor -->
+          <list>-1</list>
+          <!-- position in the search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>display</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
+      </db>
+    </field>
+
+  </fieldlist>
+</builder>

@@ -1,0 +1,49 @@
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list destination="metadefinition" role="related" minoccurs="0" maxoccurs="*">
+  <title xml:lang="nl">Bijbehorende Metadata definities</title>
+  <title xml:lang="en">Related Metadata definitions</title>
+  <item>
+    <field name="name" ftype="data">
+      <prompt xml:lang="nl">Naam</prompt>
+      <prompt xml:lang="en">Name</prompt>
+    </field>
+    <field name="type" ftype="data">
+      <prompt xml:lang="nl">Type</prompt>
+      <prompt xml:lang="en">Type</prompt>
+    </field>
+    <field name="maxvalues" ftype="data">
+      <prompt xml:lang="nl">Maxvalues</prompt>
+      <prompt xml:lang="en">Maxvalues</prompt>
+    </field>
+    </field>
+    <field name="handler" ftype="data">
+      <prompt xml:lang="nl">Handler</prompt>
+      <prompt xml:lang="en">Handler</prompt>
+    </field>
+  </item>
+
+
+  <action type="create">
+    <relation destinationtype="metadefinition" role="related" />
+  </action>
+
+   <command name="search" nodepath="metadefinition" fields="name,type,handler" age="-1" orderby="number" directions="down" >
+      <prompt xml:lang="nl">Zoeken naar metadata definities</prompt>
+      <prompt xml:lang="en">Search for metadata definitions</prompt>
+      <search-filter>
+        <name xml:lang="nl">Naam bevat</name>
+        <name xml:lang="en">Name contains</name>
+        <search-fields>name</search-fields>
+      </search-filter>
+      <search-filter>
+        <name xml:lang="nl">Type bevat</name>
+        <name xml:lang="en">Type contains</name>
+        <search-fields>type</search-fields>
+      </search-filter>
+    <search-filter>
+        <name xml:lang="nl">Handler</name>
+        <name xml:lang="en">Handler</name>
+        <search-fields>handler</search-fields>
+    </search-filter>
+   </command>
+</list>

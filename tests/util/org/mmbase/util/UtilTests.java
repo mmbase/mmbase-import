@@ -31,17 +31,14 @@ public class UtilTests {
         TestSuite suite = new TestSuite("Util Tests");
         suite.addTestSuite(CastingTest.class);
         suite.addTestSuite(ResourceLoaderTest.class);
-        suite.addTestSuite(FileWatcherTest.class);
         suite.addTestSuite(EncodeTest.class);
         suite.addTestSuite(DateParserTest.class);
         suite.addTestSuite(org.mmbase.util.transformers.XmlFieldTest.class);
         suite.addTestSuite(org.mmbase.util.transformers.SpaceReducerTest.class);
         suite.addTestSuite(org.mmbase.util.transformers.TagStripperTest.class);
         suite.addTestSuite(LocalizedEntryListFactoryTest.class);
-        suite.addTestSuite(LocalizedStringTest.class);
         suite.addTestSuite(org.mmbase.util.xml.DocumentReaderTest.class);
         suite.addTestSuite(org.mmbase.util.functions.ParametersTest.class);
-        suite.addTestSuite(SerializableInputStreamTest.class);
         return suite;
     }
 }

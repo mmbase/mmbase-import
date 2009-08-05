@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="editwizard"
+    version="9"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component
+                        http://www.mmbase.org/xmlns/component.xsd">
+
+  <description xml:lang="en">MMBase Editwizards</description>
+  <description xml:lang="nl">MMBase Editwizards</description>
+
+  <setting name="location">
+    <description xml:lang="en">Where the editwizards are installed</description>
+    <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <default value="/mmbase/edit/wizard/" />
+    </datatype>
+  </setting>
+
+  <block name="examples"
+         classification="mmbase.examples"
+         mimetype="text/html">
+    <title xml:lang="en">Editwizard examples</title>
+    <title xml:lang="nl">Editwizard voorbeelden</title>
+    <body jsp="examples.jspx" />
+  </block>
+
+  <block name="simple.example">
+    <title xml:lang="en">Simple examples</title>
+    <title xml:lang="nl">Eenvoudige voorbeelden</title>
+    <body jsp="simple.example.jspx">
+      <param name="wizards" />
+    </body>
+  </block>
+
+
+  <block name="dutch.example">
+    <title xml:lang="en">I18N examples</title>
+    <title xml:lang="nl">Internationalisatie-voorbeelden</title>
+    <body jsp="dutch.example.jspx">
+      <param name="language" />
+    </body>
+  </block>
+
+  <block name="logo.example">
+    <title xml:lang="en">Simple XSL example</title>
+    <title xml:lang="nl">Eenvoudig XSL-voorbeeld</title>
+    <body jsp="logo/example.jspx" />
+  </block>
+
+  <block name="newftype.example">
+    <title xml:lang="en">XSL example</title>
+    <title xml:lang="nl">XSL-voorbeeld</title>
+    <body jsp="newftype/example.jspx" />
+  </block>
+
+  <block name="advanced.example">
+    <title xml:lang="en">Advanced example</title>
+    <title xml:lang="nl">Een meer geavanceerd voorbeeld</title>
+    <body jsp="advanced/example.jspx" />
+  </block>
+
+  <block name="startwizard.example">
+    <title xml:lang="en">Example with all kind of 'startwizard's</title>
+    <title xml:lang="nl">Een meer geavanceerd voorbeeld met 'startwizard'</title>
+    <body jsp="startwizard/example.jspx" />
+  </block>
+
+  <block name="components.example">
+    <title xml:lang="en">Example with &lt;blocks&gt;</title>
+    <title xml:lang="nl">Een voorbeeld met &lt;blocks&gt;</title>
+    <body jsp="components/example.jspx" />
+  </block>
+
+
+  <block
+      name="testwizards"
+      classification="editwizard.block.schema.test"
+      mimetype="application/xml">
+    <body>
+      <class name="org.mmbase.framework.ResourceRenderer">
+        <param name="resource">samples/test.schema.xml</param>
+      </class>
+    </body>
+  </block>
+
+
+  <block
+      name="editwizardtests"
+      classification="mmbase.test"
+      mimetype="application/xml">
+    <title xml:lang="en">Editward tests</title>
+    <body jsp="test/index.jspx" />
+  </block>
+
+
+
+  <block name="style.po.example">
+    <body jsp="po/example.jspx" />
+  </block>
+
+  <block name="style.preditor.example">
+    <body jsp="preditor/example.jspx" />
+  </block>
+
+  <block name="style.finalist.example">
+    <body jsp="finalist/example.jspx" />
+  </block>
+
+</component>

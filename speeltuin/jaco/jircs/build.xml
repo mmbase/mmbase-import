@@ -1,0 +1,302 @@
+<!-- ===================================================================== -->
+<!-- Jircs build file                                                      -->
+<!-- ===================================================================== -->
+<project name="jircs" default="jar" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Init                                                                -->
+  <!-- =================================================================== -->
+  <!-- Read customized values if available -->
+  <property file="build.properties"/>
+  <!-- Default values for properties that can be customized -->
+  <property name="build.dir" value="${basedir}/build"/>
+  <property name="download.dir" value="${build.dir}/download"/>
+  <property name="expand.dir" value="${download.dir}/expand"/> 
+  <property name="srcdist.dir" value="${build.dir}/srcdist"/>
+  <property name="bindist.dir" value="${build.dir}/bindist"/>
+  <property name="debug" value="on"/>
+  <property name="optimize" value="on"/>
+  <property name="deprecation" value="off"/>
+  <property name="minimal.java.version" value="1.4"/> <!-- Change this version in readme.txt also -->
+  <property name="minimal.ant.version" value="Apache Ant version 1.5 compiled on July 9 2002"/>
+  <property name="version" value="1.4.dev"/> <!-- Change this version in ChatEngine.java also -->
+  <property name="srcdist.name" value="jircs-src-${version}"/>
+  <property name="bindist.name" value="jircs-${version}"/>
+  <patternset id="docs">
+    <include name="changes.txt"/>
+    <include name="jircs.png"/>
+    <include name="jircs.dia"/>
+    <include name="readme.txt"/>
+  </patternset>
+  <patternset id="license">
+    <include name="LICENSE"/>
+  </patternset>
+  <patternset id="config.files">
+    <include name="badnicknames.txt"/>
+    <include name="badwords.txt"/>
+    <include name="jircs.xml"/>
+    <include name="jircs_mmbase.xml"/>
+    <include name="jircs_multiple.xml"/>
+  </patternset>
+
+  <!-- =================================================================== -->
+  <!-- Compile the java sources                                            -->
+  <!-- =================================================================== -->
+  <target name="compile" description="Compile the java sources"
+          depends="get.nanoxml-lite,expand.mmbase,expand.servlet,expand.jakarta-commons-digester,expand.jakarta-commons-beanutils">
+    <mkdir dir="${build.dir}/classes"/>
+    <javac srcdir="${basedir}/java"
+           destdir="${build.dir}/classes"
+           classpath="${nanoxml-lite.jar}:${mmbase.jar}:${servlet.jar}:${jakarta-commons-digester.jar}:${beenutils.jar}"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}">
+    </javac>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the jar file                                                 -->
+  <!-- =================================================================== -->
+  <target name="jar" description="Create the jar file"
+          depends="compile">
+    <jar jarfile="${build.dir}/jircs.jar"
+         basedir="${build.dir}/classes"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the java documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="javadoc" description="Create the java documentation"
+          depends="get.nanoxml-lite,expand.mmbase">
+    <mkdir dir="${build.dir}/javadoc"/>
+    <javadoc packagenames="nl.eo.chat.*,nl.eo.chat.repository.*,nl.eo.chat.repository.irc.*,nl.eo.chat.repository.mmbase.*"
+             sourcepath="${basedir}/java"
+             destdir="${build.dir}/javadoc"
+             classpath="${nanoxml-lite.jar}:${mmbase.jar}:${jakarta-commons-digester.jar}:${jakarta-commons-beanutils.jar}"
+             author="true"
+             windowtitle="Chat Java documentation"
+             doctitle="Chat"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Check the Java and Ant version                                      -->
+  <!-- =================================================================== -->
+  <target name="check.versions"  description="Check the Java and Ant version">
+    <condition property="correct.java.version">
+      <equals arg1="${ant.java.version}" arg2="${minimal.java.version}" />
+    </condition>
+    <fail unless="correct.java.version"
+          message="Use the correct Java version, ${minimal.java.version} instead of ${ant.java.version}, to build a distro!"/>
+    <condition property="correct.ant.version">
+      <equals arg1="${ant.version}" arg2="${minimal.ant.version}" />
+    </condition>
+    <fail unless="correct.ant.version"
+          message="Use the correct Ant version, ${minimal.ant.version} instead of ${ant.version}, to build a distro!"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the source distribution                                      -->
+  <!-- =================================================================== -->
+  <target name="srcdist"  description="Create the source distribution"
+          depends="check.versions">
+    <copy todir="${srcdist.dir}/${srcdist.name}">
+      <fileset dir="${basedir}">
+        <include name="build.xml"/>
+        <patternset refid="docs"/>
+        <patternset refid="license"/>
+      </fileset>
+    </copy>
+    <copy todir="${srcdist.dir}/${srcdist.name}/conf">
+      <fileset dir="${basedir}/conf">
+        <patternset refid="config.files"/>
+      </fileset>
+    </copy>
+    <copy todir="${srcdist.dir}/${srcdist.name}/java">
+      <fileset dir="${basedir}/java">
+        <include name="**/*.java"/>
+      </fileset>
+    </copy>
+    <copy todir="${srcdist.dir}/${srcdist.name}/mmbase">
+      <fileset dir="${basedir}/mmbase">
+        <include name="**/*.xml"/>
+      </fileset>
+    </copy>
+    <zip zipfile="${srcdist.dir}/${srcdist.name}.zip">
+      <fileset dir="${srcdist.dir}">
+        <include name="${srcdist.name}/**"/>
+      </fileset>
+    </zip>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the binary distribution                                      -->
+  <!-- =================================================================== -->
+  <target name="bindist" description="Create the binary distribution"
+          depends="srcdist">
+    <!-- Build the bindist from the srcdist (this way we check that the    -->
+    <!-- srcdist is correct.                                               -->
+    <unzip src="${srcdist.dir}/${srcdist.name}.zip" dest="${bindist.dir}/build"/>
+    <copy file="${basedir}/build.properties"
+          todir="${bindist.dir}/build/${srcdist.name}"/>
+    <ant antfile="${bindist.dir}/build/${srcdist.name}/build.xml" inheritAll="false" target="bindist.external">
+      <property name="bindist.dir" value="${bindist.dir}"/>
+    </ant>
+  </target>
+  
+  <target name="bindist.external" depends="check.versions,jar,expand.servlet,expand.jakarta-commons-logging">
+    <copy todir="${bindist.dir}/${bindist.name}">
+      <fileset dir="${basedir}">
+        <patternset refid="docs"/>
+        <patternset refid="license"/>
+      </fileset>
+    </copy>
+    <copy todir="${bindist.dir}/${bindist.name}/conf">
+      <fileset dir="${basedir}/conf">
+        <patternset refid="config.files"/>
+      </fileset>
+    </copy>
+    <copy file="${build.dir}/jircs.jar"
+          todir="${bindist.dir}/${bindist.name}/lib"/>
+    <copy file="${nanoxml-lite.jar}"
+          todir="${bindist.dir}/${bindist.name}/lib"/>
+    <copy file="${servlet.jar}"
+          todir="${bindist.dir}/${bindist.name}/lib"/>
+    <copy file="${jakarta-commons-digester.jar}"
+          todir="${bindist.dir}/${bindist.name}/lib"/>
+    <copy file="${jakarta-commons-beanutils.jar}"
+          todir="${bindist.dir}/${bindist.name}/lib"/>
+    <copy file="${jakarta-commons-logging.jar}"
+          todir="${bindist.dir}/${bindist.name}/lib"/>
+    <mkdir dir="${bindist.dir}/${bindist.name}/logs"/>
+    <copy todir="${bindist.dir}/${bindist.name}/mmbase">
+      <fileset dir="${basedir}/mmbase">
+        <include name="**/*.xml"/>
+      </fileset>
+    </copy>
+    <zip zipfile="${bindist.dir}/${bindist.name}.zip">
+      <fileset dir="${bindist.dir}">
+        <include name="${bindist.name}/**"/>
+      </fileset>
+    </zip>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the classfiles dir                                            -->
+  <!-- =================================================================== -->
+  <target name="clean.classes" description="Clean the classfiles dir">
+    <delete dir="${build.dir}/classes"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Various targets for automated downloads                             -->
+  <!-- =================================================================== -->
+  <target name="init.get">
+    <!-- Servlet -->
+    <property name="servlet.version" value="2.3"/>
+    <property name="servlet.url" value="http://www.mmbase.org/download/jars/jakarta-servletapi/jakarta-servletapi-4.tar.gz"/>
+    <property name="servlet.jar" value="${expand.dir}/servlet/${servlet.version}/jakarta-servletapi-4/lib/servlet.jar"/>
+    <available property="servlet.present" file="${download.dir}/servlet/${servlet.version}/jakarta-servletapi-4.tar.gz"/>
+    <available property="servlet.expanded" file="${servlet.jar}"/>
+    <!-- MMBase -->
+    <property name="mmbase.version" value="1.7.0"/> <!-- Change this version in readme.txt also -->
+    <property name="mmbase.url" value="http://development.mmbase.org/development/download/releases/mmbase-${mmbase.version}.zip"/>
+    <property name="mmbase.zip" value="${download.dir}/mmbase/${mmbase.version}/mmbase-${mmbase.version}.zip"/>
+    <property name="mmbase.dir" value="${expand.dir}/mmbase/${mmbase.version}"/>
+    <property name="mmbase.jar" value="${mmbase.dir}/mmbase-${mmbase.version}/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
+    <available property="mmbase.present" file="${mmbase.zip}"/>
+    <available property="mmbase.expanded" file="${mmbase.dir}"/>
+    <!-- NanoXML Lite -->
+    <property name="nanoxml-lite.version" value="2.2.1"/>
+    <property name="nanoxml-lite.url" value="http://belnet.dl.sourceforge.net/sourceforge/nanoxml/nanoxml-lite-${nanoxml-lite.version}.jar"/>
+    <property name="nanoxml-lite.jar" value="${download.dir}/nanoxml-lite/${nanoxml-lite.version}/nanoxml-lite-${nanoxml-lite.version}.jar"/>
+    <available property="nanoxml-lite.present" file="${nanoxml-lite.jar}"/>
+    
+    <!-- Digester -->
+    <property name="jakarta-commons-digester.version" value="1.6"/>
+    <property name="jakarta-commons-digester.url" value="http://apache.mirror.intouch.nl/jakarta/commons/digester/binaries/commons-digester-${jakarta-commons-digester.version}.zip"/>
+    <property name="jakarta-commons-digester.zip" value="${download.dir}/jakarta-commons-digester/${jakarta-commons-digester.version}/commons-digester-${jakarta-commons-digester.version}.zip"/>
+    <property name="jakarta-commons-digester.dir" value="${expand.dir}/jakarta-commons-digester/${jakarta-commons-digester.version}"/>
+    <property name="jakarta-commons-digester.jar" value="${expand.dir}/jakarta-commons-digester/${jakarta-commons-digester.version}/commons-digester-${jakarta-commons-digester.version}/commons-digester.jar"/>
+    <available property="jakarta-commons-digester.present" file="${jakarta-commons-digester.zip}"/>
+    <available property="jakarta-commons-digester.expanded" file="${jakarta-commons-digester.jar}"/>
+ 
+    <property name="jakarta-commons-beanutils.version" value="1.7.0"/>
+    <property name="jakarta-commons-beanutils.url" value="http://apache.mirror.intouch.nl/jakarta/commons/beanutils/binaries/commons-beanutils-${jakarta-commons-beanutils.version}.zip"/>
+    <property name="jakarta-commons-beanutils.zip" value="${download.dir}/jakarta-commons-beanutils/${jakarta-commons-beanutils.version}/commons-beanutils-${jakarta-commons-beanutils.version}.zip"/>
+    <property name="jakarta-commons-beanutils.dir" value="${expand.dir}/jakarta-commons-beanutils/${jakarta-commons-beanutils.version}"/>
+    <property name="jakarta-commons-beanutils.jar" value="${expand.dir}/jakarta-commons-beanutils/${jakarta-commons-beanutils.version}/commons-beanutils-${jakarta-commons-beanutils.version}/commons-beanutils.jar"/>
+    <available property="jakarta-commons-beanutils.present" file="${jakarta-commons-beanutils.zip}"/>
+    <available property="jakarta-commons-beanutils.expanded" file="${jakarta-commons-beanutils.jar}"/>
+ 
+    <property name="jakarta-commons-logging.version" value="1.0.4"/>
+    <property name="jakarta-commons-logging.url" value="http://apache.mirror.intouch.nl/jakarta/commons/logging/binaries/commons-logging-${jakarta-commons-logging.version}.zip"/>
+    <property name="jakarta-commons-logging.zip" value="${download.dir}/jakarta-commons-logging/${jakarta-commons-logging.version}/commons-logging-${jakarta-commons-logging.version}.zip"/>
+    <property name="jakarta-commons-logging.dir" value="${expand.dir}/jakarta-commons-logging/${jakarta-commons-logging.version}"/>
+    <property name="jakarta-commons-logging.jar" value="${expand.dir}/jakarta-commons-logging/${jakarta-commons-logging.version}/commons-logging-${jakarta-commons-logging.version}/commons-logging.jar"/>
+    <available property="jakarta-commons-logging.present" file="${jakarta-commons-logging.zip}"/>
+    <available property="jakarta-commons-logging.expanded" file="${jakarta-commons-logging.jar}"/>
+    
+    
+    <!-- Init actions -->
+    <mkdir dir="${download.dir}"/>
+    <mkdir dir="${expand.dir}"/>
+  </target>
+
+  <target name="get.servlet" depends="init.get" unless="servlet.present">
+    <mkdir dir="${download.dir}/servlet/${servlet.version}"/>
+    <get src="${servlet.url}"
+         dest="${download.dir}/servlet/${servlet.version}/jakarta-servletapi-4.tar.gz"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.servlet" depends="get.servlet" unless="servlet.expanded">
+    <mkdir dir="${expand.dir}/servlet/${servlet.version}"/>
+    <gunzip src="${download.dir}/servlet/${servlet.version}/jakarta-servletapi-4.tar.gz"
+            dest="${expand.dir}/servlet/${servlet.version}"/>
+    <untar src="${expand.dir}/servlet/${servlet.version}/jakarta-servletapi-4.tar"
+           dest="${expand.dir}/servlet/${servlet.version}"/>
+    <delete file="${expand.dir}/servlet/${servlet.version}/jakarta-servletapi-4.tar"/>
+  </target>
+
+  <target name="get.mmbase" depends="init.get" unless="mmbase.present">
+    <mkdir dir="${download.dir}/mmbase/${mmbase.version}"/>
+    <get src="${mmbase.url}" dest="${mmbase.zip}" verbose="on"/>
+  </target>
+
+  <target name="expand.mmbase" depends="get.mmbase" unless="mmbase.expanded">
+    <unzip src="${mmbase.zip}" dest="${mmbase.dir}"/>
+  </target>
+
+  <target name="get.nanoxml-lite" depends="init.get" unless="nanoxml-lite.present">
+    <mkdir dir="${download.dir}/nanoxml-lite/${nanoxml-lite.version}"/>
+    <get src="${nanoxml-lite.url}" dest="${nanoxml-lite.jar}" verbose="on"/>
+  </target>
+
+  <target name="get.jakarta-commons-digester" depends="init.get" unless="jakarta-commons-digester.present">
+    <mkdir dir="${download.dir}/jakarta-commons-digester/${jakarta-commons-digester.version}"/>
+    <get src="${jakarta-commons-digester.url}" dest="${jakarta-commons-digester.zip}" verbose="on"/>
+  </target>
+
+  <target name="expand.jakarta-commons-digester" depends="get.jakarta-commons-digester" unless="jakarta-commons-digester.expanded">
+    <unzip src="${jakarta-commons-digester.zip}" dest="${jakarta-commons-digester.dir}"/>
+  </target>
+
+  <target name="get.jakarta-commons-beanutils" depends="init.get" unless="jakarta-commons-beanutils.present">
+    <mkdir dir="${download.dir}/jakarta-commons-beanutils/${jakarta-commons-beanutils.version}"/>
+    <get src="${jakarta-commons-beanutils.url}" dest="${jakarta-commons-beanutils.zip}" verbose="on"/>
+  </target>
+
+  <target name="expand.jakarta-commons-beanutils" depends="get.jakarta-commons-beanutils" unless="jakarta-commons-beanutils.expanded">
+    <unzip src="${jakarta-commons-beanutils.zip}" dest="${jakarta-commons-beanutils.dir}"/>
+  </target>
+
+  <target name="get.jakarta-commons-logging" depends="init.get" unless="jakarta-commons-logging.present">
+    <mkdir dir="${download.dir}/jakarta-commons-logging/${jakarta-commons-logging.version}"/>
+    <get src="${jakarta-commons-logging.url}" dest="${jakarta-commons-logging.zip}" verbose="on"/>
+  </target>
+
+  <target name="expand.jakarta-commons-logging" depends="get.jakarta-commons-logging" unless="jakarta-commons-logging.expanded">
+    <unzip src="${jakarta-commons-logging.zip}" dest="${jakarta-commons-logging.dir}"/>
+  </target>
+
+</project>

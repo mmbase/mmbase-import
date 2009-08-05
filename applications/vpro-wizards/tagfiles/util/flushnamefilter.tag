@@ -4,19 +4,20 @@
     This tag is used to alter the flushname value(s), by replacing place holders with dynamic values.
     This is done in the list result, and the purpose is to be able to create cache identifiers with specific
     node values.
-    for instance: a cache identifier
+    for instance: a cache idenitfier
         page_[page]
     will be converted to
         page_[page:13455]
     where 13455 is the value of the number field of the current page node in the list.
     this is only done when the type of the nodes listed by the caller list is matching the type
-    in the place holder.
+    in the placeholder.
 
     The template is preserved in the cache identifier, so if you go back to the same list later
-    the identifier is still recognized as a place holder, and it can be reused.
+    the idenitifier is still recognized as a placeholder, and it can be reused.
 
-    The template will finally be cleaned out of the identifier,
-    So the above example will turn out as:
+    Thet template will finally be cleaned out of the identifier in
+    nl.vpro.mmbase.applications.portalettes.util.ThemasitesOSCachenameResolver
+    So the abouve example will turn out as:
         page_13455
 
 --%>
@@ -25,8 +26,7 @@
 <%@ attribute name="nodenr"  required="true" %>
 <%@ attribute name="type"  required="true" %>
 <%@ variable name-given="result" scope="AT_END" %>
-
-<%@tag import="org.mmbase.applications.vprowizards.spring.cache.FlushNameTemplateBean"%><c:if test="${ not empty flushname}">
+<c:if test="${ not empty flushname}">
     <mm:cloud jspvar="cloud">
         <%jspContext.setAttribute("cloud", cloud);%>
         <mm:node number="${nodenr}" notfound="skipbody">

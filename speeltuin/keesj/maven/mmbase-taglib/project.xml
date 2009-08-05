@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <pomVersion>3</pomVersion>
+    <id>mmbase:mmbase-taglib</id>
+    <artifactId>mmbase-taglib</artifactId>
+    <name>mmbase-taglib</name>
+    <groupId>mmbase</groupId>
+    <package>org.mmbase.bridge.jsp.taglib</package>
+    <shortDescription>JSP taglib for MMBase</shortDescription>
+    <dependencies>
+        <dependency>
+            <groupId>mmbase</groupId>
+            <artifactId>mmbase-core</artifactId>
+            <version>${mmbase.version}</version>
+            <url>http://www.mmbase.org/</url>
+            <properties>
+		        <eclipse.dependency>true</eclipse.dependency>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>maven-taglib</groupId>
+            <artifactId>maven-taglib-plugin</artifactId>
+            <version>1.2.2</version>
+            <type>plugin</type>
+            <url>http://maven-taglib.sourceforge.net</url>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.0</version>
+            <url>http://jakarta.apache.org/commons/</url>
+        </dependency>
+    </dependencies>
+    <reports>
+        <!-- report>taglib</report -->
+    </reports>
+    <build>
+        <resources>
+            <resource>
+                <directory>${maven.build.dir}/generated-tld/</directory>
+                <targetPath>META-INF</targetPath>
+                <includes>
+                    <include>**/*.tld</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/java/</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.dtd</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+</project>
+

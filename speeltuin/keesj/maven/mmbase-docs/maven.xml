@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project
+  xmlns:j="jelly:core"
+  xmlns:ant="jelly:ant"
+  xmlns:maven="jelly:maven"
+  xmlns:util="jelly:util"
+>
+
+    <preGoal name="site">
+        <attainGoal name="sdocbook:generate-html"/>
+    	<!-- Generating pdf's in subdirs requires a different HACK then for html -->
+        <!-- attainGoal name="sdocbook:generate-pdf"/ -->
+    </preGoal>
+
+    <postGoal name="sdocbook:prepare-filesystem">
+        <maven:get var="maven.sdocbook.stylesheets.dir"
+            plugin="maven-sdocbook-plugin"
+            property="maven.sdocbook.stylesheets.dir"/>
+
+        <!-- use a custom html stylesheet -->
+        <copy todir="${maven.sdocbook.stylesheets.dir}/html">
+            <fileset dir="${maven.sdocbook.src.dir}/style"/>
+        </copy>
+
+        <!-- copy images -->
+        <copy todir="${maven.sdocbook.stylesheets.dir}/images">
+            <fileset dir="${maven.sdocbook.src.dir}/style"/>
+        </copy>
+    </postGoal>
+
+	<!-- Add support for subdirs in output folder -->
+	<preGoal name="sdocbook:transform">
+        <maven:get var="srcdir"
+            plugin="maven-sdocbook-plugin"
+            property="maven.sdocbook.src.dir"/>
+        <maven:get var="docfile"
+            plugin="maven-sdocbook-plugin"
+            property="file"/>
+
+        <maven:get var="userparams"
+            plugin="maven-sdocbook-plugin"
+            property="maven.sdocbook.userparams"/>
+		<j:if test="${empty(userparams)}">
+	        <maven:get var="userparams"
+	            plugin="maven-sdocbook-plugin"
+	            property="maven.sdocbook.params"/>
+			<maven:set plugin="maven-sdocbook-plugin"
+		        property="maven.sdocbook.userparams"
+		        value="${userparams}"/>
+		</j:if>
+
+    	<j:set var="rootString" value="./"/>
+
+		<j:if test="${docfile.parent.length() > srcdir.length()}">
+	        <maven:get var="generatedir"
+	            plugin="maven-sdocbook-plugin"
+	            property="maven.sdocbook.generated"/>
+		    <maven:get var="outpath"
+		        plugin="maven-sdocbook-plugin"
+		        property="maven.sdocbook.out"/>
+		
+			<j:set var="inputdir" value="${docfile.parent.substring(srcdir.length())}"/>
+			<j:set var="outputname" value="${outpath.substring(generatedir.length())}"/>
+
+			<mkdir dir="${generatedir}${inputdir}"/>
+
+		    <util:tokenize delim="${inputdir.substring(0,1)}" var="tokens">${inputdir}</util:tokenize>
+		    <j:forEach var="token" items="${tokens}">
+		    	<j:set var="rootString" value="${rootString}../"/>
+		    </j:forEach>
+		    
+			<maven:set plugin="maven-sdocbook-plugin"
+		        property="maven.sdocbook.out" 
+		        value="${generatedir}${inputdir}${outputname}"/>
+		</j:if>
+		<maven:set plugin="maven-sdocbook-plugin"
+	        property="maven.sdocbook.params"
+	        value="${userparams} -param root ${rootString}"/>
+	</preGoal>
+
+</project>

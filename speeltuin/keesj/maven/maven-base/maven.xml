@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+	<!--
+	 These goals and pre/post goals are inherited by
+	 any subproject that extends the POM in maven-base
+	-->
+	    
+	<!--
+	 This pregoal takes any simple html docs in the xdocs folder and turns them 
+	 into xdoc xml,	 before they are turned back into maven-style html docs.  
+	 Why?  html is easier to write in a WYSIWIG editor than xdoc xml
+	-->
+	<preGoal name="xdoc:jelly-transform">
+	    <attainGoal name="html2xdoc"/>
+	</preGoal>
+</project>

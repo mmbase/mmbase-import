@@ -12,9 +12,9 @@
   <artifactId>mmbase-taglib</artifactId>
   <name>MMBase Taglib</name>
   <packaging>war</packaging>
-  <version>${mmbase.version}</version>
 
   <properties>
+    <projectName>taglib</projectName>
   </properties>
 
   <description>
@@ -23,28 +23,6 @@
   </description>
 
   <build>
-	<resources>
-		<resource>
-			<directory>${basedir}/target/generated-resources/xml/xslt</directory>
-			<targetPath>META-INF</targetPath>
-			<includes>
-				<include>**</include>
-			</includes>
-		</resource>
-		<resource>
-			<directory>${basedir}/src/main/resources</directory>
-			<includes>
-				<include>**/*</include>
-			</includes>
-		</resource>
-		<resource>
-			<directory>${basedir}/src/main/config</directory>
-			<targetPath>org/mmbase/config</targetPath>
-			<includes>
-				<include>**/*</include>
-			</includes>
-		</resource>
-	</resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -76,13 +54,13 @@
         <configuration>
           <transformationSets>
             <transformationSet>
-              <dir>${basedir}/src/main/resources/</dir>
+              <dir>${basedir}/src/org/mmbase/bridge/jsp/taglib</dir>
               <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
               <parameters>
                 <parameter><name>version</name><value>2.0</value></parameter>
                 <parameter><name>uri</name><value>http://www.mmbase.org/mmbase-taglib-2.0</value></parameter>
               </parameters>
-              <includes><include>mmbase-taglib.xml</include></includes>
+              <includes><include>*.xml</include></includes>
               <fileMappers>
                 <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                   <targetName>mmbase-taglib-2.tld</targetName>
@@ -90,9 +68,9 @@
               </fileMappers>
             </transformationSet>
             <transformationSet>
-              <dir>${basedir}/src/main/resources/</dir>
+              <dir>${basedir}/src/org/mmbase/bridge/jsp/taglib</dir>
               <stylesheet>${basedir}/../share/xslt/xml2tld.xslt</stylesheet>
-              <includes><include>mmbase-taglib.xml</include></includes>
+              <includes><include>*.xml</include></includes>
               <fileMappers>
                 <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                   <targetName>mmbase-taglib.tld</targetName>
@@ -131,9 +109,11 @@
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <scope>provided</scope>
     </dependency>
 
-
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+    </dependency>
   </dependencies>
 </project>

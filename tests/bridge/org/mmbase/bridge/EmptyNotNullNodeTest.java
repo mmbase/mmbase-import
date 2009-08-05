@@ -21,7 +21,7 @@ import org.w3c.dom.Document;
  * an empty node with 'notnull' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id$
+ * @version $Id: EmptyNotNullNodeTest.java,v 1.15 2008-12-01 22:41:58 michiel Exp $
  */
 public class EmptyNotNullNodeTest extends EmptyNodeTest {
 

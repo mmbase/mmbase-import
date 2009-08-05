@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <pomVersion>3</pomVersion>
+    <id>mmbase:mmbase-core</id>
+    <artifactId>mmbase-core</artifactId>
+    <name>mmbase-core</name>
+    <groupId>mmbase</groupId>
+    <dependencies>
+        <dependency>
+            <artifactId>mmbase-core-config</artifactId>
+            <type>jar</type>
+            <groupId>mmbase</groupId>
+            <version>${mmbase.version}</version>
+            <properties>
+		        <eclipse.dependency>true</eclipse.dependency>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+    </dependencies>
+</project>
+

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" [
+  <!ENTITY mmlevel    "org.mmbase.util.logging.log4j.Log4jLevel" >
+  <!ENTITY logdir   "${mmbase.logdir}">
+  <!ENTITY logfile   "${mmbase.logfile}">
+]>
+
+<log4j:configuration  debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <!-- Primary MMBase logfile -->
+  <appender name="logfile" class="org.apache.log4j.DailyRollingFileAppender" >
+    <param name="File"   value="&logdir;/&logfile;.log" />
+    <param name="DatePattern" value="'.'yyyy-MM-dd" />
+    <param name="Append" value="true" />
+    <layout class="org.mmbase.util.logging.log4j.MMPatternLayout">
+      <!--
+      <param name="ConversionPattern" value="%d %q %c{4} %M.%L %x - %m%n" />
+      -->
+      <param name="ConversionPattern" value="%N %d %q %c{4} - %m%n" />
+    </layout>
+  </appender>
+
+  <!-- Logfile for SQL logging (be careful with this, it will impact performance!) -->
+  <appender name="sqllog" class="org.apache.log4j.DailyRollingFileAppender" >
+    <param name="File"   value="&logdir;/&logfile;-sql.log" />
+    <param name="DatePattern" value="'.'yyyy-MM-dd" />
+    <param name="Append" value="true" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%N %d - %m%n" />
+    </layout>
+  </appender>
+
+
+  <logger name="org.mmbase.storage.implementation.database.DatabaseStorageManager">
+    <!-- warnings are about non-corresponding datatypes. May occur some after upgrade.
+         Not so important.
+         If you fixed the errors, you can lower this and concentrate on warnings, if you like.
+         -->
+    <level class="&mmlevel;" value ="error" />
+  </logger>
+
+  <!-- make sure that <mm:log> messages from webpages are visible -->
+  <logger name="org.mmbase.PAGE.LOGTAG" >
+    <level class="&mmlevel;" value ="service" />
+  </logger>
+
+  <logger name="org.mmbase.PAGE" >
+    <level class="&mmlevel;" value ="warn" />
+  </logger>
+
+  <logger name="org.mmbase.module.database.MultiConnection" additivity="false">
+    <level class="&mmlevel;" value ="service" />
+    <appender-ref ref="sqllog" />
+  </logger>
+
+
+  <logger name="STDERR">
+    <level class="&mmlevel;" value ="fatal" />
+    <!-- if not fatal, stderr is directed to mmbase log -->
+  </logger>
+
+  <root>
+    <level class="&mmlevel;" value ="service" />
+    <appender-ref ref="logfile" />
+  </root>
+
+</log4j:configuration>

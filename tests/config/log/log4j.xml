@@ -15,7 +15,7 @@
   </appender>
 
   <logger name="STDERR">
-    <level class="&mmlevel;" value ="fatal" />
+    <level class="&mmlevel;" value ="fatal" />	
   </logger>
 
   <root>

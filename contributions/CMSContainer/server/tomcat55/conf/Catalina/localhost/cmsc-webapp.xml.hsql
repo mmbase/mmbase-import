@@ -1,0 +1,58 @@
+<!--
+	Context configuration file for the Tomcat CMSC Web App
+-->
+<Context debug="5" reloadable="true">
+
+	<!--
+		Remove this if you want to use the default StandarManager. The standard 
+		manager try to save the the session when you restart the tomcat it may cause
+		problem as not all of your session attribute is not serializable
+	-->
+	<Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false" />
+
+	<!-- 
+		mail.smtp.host			The SMTP server to connect to.
+		mail.smtp.port			The SMTP server port to connect to, if the connect() method doesn't explicitly specify one. Defaults to 25.
+		mail.smtp.localhost 	Local host name used in the SMTP HELO or EHLO command.
+		Defaults to InetAddress.getLocalHost().getHostName().
+		Should not normally need to be set if your JDK and your
+		name service are configured properly.
+		mail.debug				The initial debug mode. Default is false.
+	-->
+	<Resource name="mail/Session" auth="Container" type="javax.mail.Session"
+		mail.smtp.host="MISSING.MAILSERVER" />
+
+	<Resource name="jdbc/cmsc" auth="Container" type="javax.sql.DataSource"
+		removeAbandoned="true" 
+		removeAbandonedTimeout="60"
+		logAbandoned="true" 
+		maxActive="10"
+		maxIdle="1" 
+		maxWait="10000" 
+		username="sa" 
+		password=""
+		driverClassName="org.hsqldb.jdbcDriver" 
+		url="jdbc:hsqldb:file:../temp/data/cmsc" />
+
+	<Environment name="mmbase/mmbaseroot/datasource-context" value="java:comp/env" type="java.lang.String" />
+	<Environment name="mmbase/mmbaseroot/datasource" value="jdbc/cmsc" type="java.lang.String" />
+	<!-- <Environment name="mmbase/mmbaseroot/basename" value="mm" type="java.lang.String" /> -->
+
+	<Environment name="mmbase/imaging/ImageConvertClass"
+		value="org.mmbase.module.builders.ConvertImageMagick" type="java.lang.String" />
+	<Environment name="mmbase/imaging/ImageConvert.ConverterCommand" value="convert" type="java.lang.String" />
+	<Environment name="mmbase/imaging/ImageConvert.ConverterRoot" value="" type="java.lang.String" />
+
+	<Environment name="mmbase/rmmci/port" value="1111" type="java.lang.String" />
+	<Environment name="mmbase/rmmci/stubport" value="1112" type="java.lang.String" />
+	<Environment name="mmbase/rmmci/bindname" value="remotecontext" type="java.lang.String" />
+	<!-- if RMIRegistryServer is not set RemoteMMCI looks for a RMIRegistryServer
+		on the host defined in the mmbaseroot.xml module. -->
+	<!-- <Environment name="mmbase/rmmci/RMIRegistryServer" value="localhost" type="java.lang.String" /> -->
+
+	<!-- Contains value 'live' or 'staging' to determine whether this server is Live or Staging. -->
+	<Environment name="server/LiveOrStaging" value="staging" type="java.lang.String" />
+	<!-- This entry defines whether this server includes the servername to lookup portal pages. -->
+	<Environment name="server/useServerName" value="false" type="java.lang.String" />
+
+</Context>

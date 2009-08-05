@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article class="specification">
+  <articleinfo>
+    <title>Installation of Karma, the CMS Container on MMBase</title>
+
+    <date>2005-12-20</date>
+
+    <edition>$Id: karma-installation.xml,v 1.2 2005-12-22 10:43:10 henk Exp $</edition>
+
+    <authorgroup>
+      <author>
+        <firstname>Nico</firstname>
+
+        <surname>Klasens</surname>
+      </author>
+
+      <author>
+        <firstname>Henk</firstname>
+
+        <surname>Hangyi</surname>
+      </author>
+    </authorgroup>
+
+    <revhistory>
+      <revision>
+        <revnumber>[0.1]</revnumber>
+
+        <date>[2005-12-20 ]</date>
+
+        <authorinitials>[HH]</authorinitials>
+
+        <revremark>[Newly created]</revremark>
+      </revision>
+    </revhistory>
+
+    <abstract>
+      <para>This document describes how to build and install Karma, the CMS
+      Container on MMBase.</para>
+    </abstract>
+
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
+
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink
+      url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+
+    <productnumber>from MMBase 1.8</productnumber>
+  </articleinfo>
+
+  <section id="introduction">
+    <title>Introduction</title>
+
+    <para>This document describes how to install Karma, the CMS Container on
+    MMBase. Note this document is all but finished, so if you have comments
+    please send them to hangyi@xs4all.nl.</para>
+  </section>
+
+  <section id="architecture">
+    <title>Software</title>
+
+    <para>Karma is tested on the following configuration.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Java 1.5 (of 1.4)</para>
+      </listitem>
+      <listitem>
+        <para>Maven 1.0.2</para>
+      </listitem>
+      <listitem>
+        <para>Tomcat 5.5</para>
+      </listitem>
+      <listitem>
+        <para>Mysql 4</para>
+      </listitem>
+      <listitem>
+        <para>MMbase HEAD</para>
+      </listitem>
+      <listitem>
+        <para>Pluto 1.0.1-rc4</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="interfaces">
+    <title>Environment settings</title>
+
+    <para>Below you find an example of the build settings:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>BUILD_OPTS= JAVA_HOME=c:\java\1.5.0_03</para>
+      </listitem>
+
+      <listitem>
+        <para>JAVA_OPTS=-Xmx256M -Dfile.encoding=utf-8</para>
+      </listitem>
+
+      <listitem>
+        <para>JPDA_ADDRESS=8000</para>
+      </listitem>
+
+      <listitem>
+        <para>JPDA_TRANSPORT=dt_socket</para>
+      </listitem>
+
+      <listitem>
+        <para>MAVEN_HOME=C:\java\maven-1.0.2</para>
+      </listitem>
+
+      <listitem>
+        <para>MAVEN_HOME_LOCAL=c:\projects\.maven</para>
+      </listitem>
+
+      <listitem>
+        <para>Path=%PATH%;C:\java\maven-1.0.2\bin</para>
+      </listitem>
+
+      <listitem>
+        <para>TOMCAT_HOME=C:\servers\tomcat-5.5.9</para>
+      </listitem>
+
+      <listitem>
+        <para>CATALINA_HOME=C:\servers\tomcat-5.5.9</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="abstract_classes">
+    <title>How to build</title>
+
+    <para>Before Karma can be build you need all the Maven files from the head
+    of MMBase. The MMBase CVS can be found at (the password is "guest". Don't
+    forget to cvs logout when you are done):</para>
+
+    <para>pserver:guest@cvs.mmbase.org:/var/cvs</para>
+
+    <para>Checking out the ALL module and then "maven multiproject:install"
+    should work.</para>
+
+    <para>After that you can use the batch files in the cmsc/scripts
+    directory. If the building does not work because of missing dependencies,
+    please contact Nico and he will send them to you.</para>
+
+    <para>Karma uses a J2EE datasource for the connections of MMBase. You have
+    to copy a number of jars to the directory
+    &lt;TOMCAT_HOME&gt;/common/lib.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>commons-collections-3.1.jar</para>
+      </listitem>
+
+      <listitem>
+        <para>commons-dbcp-1.2.1.jar</para>
+      </listitem>
+
+      <listitem>
+        <para>commons-pool-1.2.jar</para>
+      </listitem>
+
+      <listitem>
+        <para>hsqldb-1.7.3.0.jar</para>
+      </listitem>
+
+      <listitem>
+        <para>mysql-connector-java-3.1.10-bin.jar</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>In the cmsc/tomcat directory there is a xml file, which you have to
+    copy to &lt;TOMCAT_HOME&gt;/conf/Catalina/localhost. This is the file with
+    the database settings.</para>
+  </section>
+
+  <section id="classes">
+    <title>Karma is alive!</title>
+
+    <para>You can view Karma by using the following urls.</para>
+
+    <para>http://localhost:8080/cmsc/editors/
+    http://localhost:8080/cmsc/portal/&lt;site-path&gt;/&lt;nav-path&gt;</para>
+  </section>
+</article>

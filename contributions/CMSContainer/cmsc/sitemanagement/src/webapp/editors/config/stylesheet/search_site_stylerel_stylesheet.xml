@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="stylerel" destination="stylesheet" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']" ordertype="number">
+	<title xml:lang="nl">Style Sheet</title>
+	<title xml:lang="en">Style Sheet</title>
+	<title xml:lang="zh">样式表</title>
+
+	<item>
+		<field ftype="data" name="title">
+			<prompt xml:lang="en">Title</prompt>
+			<prompt xml:lang="nl">Titel</prompt>
+			<prompt xml:lang="zh">标题</prompt>
+		</field>
+		<field ftype="data" name="resource">
+			<prompt xml:lang="en">Resource</prompt>
+			<prompt xml:lang="nl">Stylesheet</prompt>
+			<prompt xml:lang="zh">资源</prompt>
+		</field>
+	</item>
+	
+	<command name="search" nodepath="stylesheet" age="-1" fields="title" orderby="title">
+		<prompt xml:lang="en">Search Style Sheet</prompt>
+		<prompt xml:lang="nl">Zoek Style Sheet</prompt>
+		<prompt xml:lang="zh">查找样式表</prompt>
+		<search-filter>
+			<name xml:lang="en">Title contains</name>
+			<name xml:lang="nl">Titel bevat</name>
+			<name xml:lang="zh">标题包含</name>
+			<search-fields>[title]</search-fields>
+		</search-filter>
+	</command>
+
+	<action type="create">
+		<relation destinationtype="stylesheet" role="stylerel">
+			<field name="pos">{sum(//relation[@role='stylerel' and @lastitem='true']/object[@type='stylesheet']/../field[@name='pos'])+{$pos}}</field>
+		</relation>
+	</action>
+</list>
