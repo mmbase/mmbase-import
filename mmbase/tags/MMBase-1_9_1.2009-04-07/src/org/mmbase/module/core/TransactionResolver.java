@@ -71,21 +71,23 @@ class TransactionResolver {
     private void check(final Collection<MMObjectNode> nodes) throws TransactionManagerException {
 
         // Check now whether resolving was completely successfull
-        for (MMObjectNode node : nodes) {
-            MMObjectBuilder bul = mmbase.getMMObject(node.getName());
-            for (CoreField fd : bul.getFields()) {
-                int dbtype = fd.getType();
-                if ((dbtype == Field.TYPE_INTEGER)||
-                    (dbtype == Field.TYPE_NODE)) {
-
-                    String field = fd.getName();
-                    String tmpField = "_" + field;
-                    if (node.getDBState(tmpField) == Field.STATE_VIRTUAL) {
-                        int number = node.getIntValue(field);
-                        if (number == -1) {
-                            String key = node.getStringValue(tmpField);
-                            if (key != null && key.length() > 0) {
-                                throw new TransactionManagerException("For node " + node + " and field " + field + ". Found value for " + tmpField + ": " + key + ". Should be empty.");
+        synchronized(nodes) {
+            for (MMObjectNode node : nodes) {
+                MMObjectBuilder bul = mmbase.getMMObject(node.getName());
+                for (CoreField fd : bul.getFields()) {
+                    int dbtype = fd.getType();
+                    if ((dbtype == Field.TYPE_INTEGER)||
+                        (dbtype == Field.TYPE_NODE)) {
+                        
+                        String field = fd.getName();
+                        String tmpField = "_" + field;
+                        if (node.getDBState(tmpField) == Field.STATE_VIRTUAL) {
+                            int number = node.getIntValue(field);
+                            if (number == -1) {
+                                String key = node.getStringValue(tmpField);
+                                if (key != null && key.length() > 0) {
+                                    throw new TransactionManagerException("For node " + node + " and field " + field + ". Found value for " + tmpField + ": " + key + ". Should be empty.");
+                                }
                             }
                         }
                     }
