@@ -54,8 +54,12 @@ public class NodeEvent extends Event {
         super(machineName, eventType);
         this.builderName = builderName;
         this.nodeNumber = nodeNumber;
-        this.oldValues = oldValues == null ? EMPTY : Collections.unmodifiableMap(new HashMap<String, Object>(oldValues));
-        this.newValues = newValues == null ? EMPTY : Collections.unmodifiableMap(new HashMap<String, Object>(newValues));
+        synchronized(oldValues) {
+            this.oldValues = oldValues == null ? EMPTY : Collections.unmodifiableMap(new HashMap<String, Object>(oldValues));
+        }
+        synchronized(newValues) {
+            this.newValues = newValues == null ? EMPTY : Collections.unmodifiableMap(new HashMap<String, Object>(newValues));
+        }
     }
 
 
