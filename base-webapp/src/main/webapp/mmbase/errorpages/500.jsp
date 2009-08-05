@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@page isErrorPage="true" import="org.mmbase.bridge.*,java.util.*" 
+<%@page isErrorPage="true" import="org.mmbase.bridge.*,java.util.*,javax.mail.*,javax.mail.internet.*" 
 %><% response.setStatus(500); 
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %>
@@ -101,6 +101,22 @@ StringBuffer msg = new StringBuffer();
 
 // write errors to mmbase log
 if (status == 500) {
+ try {
+  Map<String, String> props = org.mmbase.util.ApplicationContextReader.getProperties("mmbase_errorpage");
+  if (props.get("to") != null) {
+    javax.naming.Context initCtx = new javax.naming.InitialContext();
+    javax.naming.Context envCtx = (javax.naming.Context)initCtx.lookup("java:comp/env");
+    Session mailSession = (Session) envCtx.lookup("mail/Session");
+    MimeMessage mail = new MimeMessage(mailSession);
+    mail.addRecipients(Message.RecipientType.TO, InternetAddress.parse(props.get("to")));
+    mail.setSubject(ticket);
+    mail.setText(msg.toString());
+    Transport.send(mail);
+    msg.append("mailed to (" + props + ")");
+  }
+} catch (Throwable nnfe) {
+   msg.append("not mailed (" + nnfe + ")");
+}
   log.error(ticket + ":\n" + msg);
 }
 
