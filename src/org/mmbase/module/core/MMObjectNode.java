@@ -58,7 +58,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * it can be used to optimise cacheing
      * @since MMBase-1.8
      */
-    private Map<String, Object> oldValues = new HashMap<String, Object>();
+    private Map<String, Object> oldValues = Collections.synchronizedMap(new HashMap<String, Object>());
 
     /**
      * Holds the name - value pairs of this node (the node's fields).
