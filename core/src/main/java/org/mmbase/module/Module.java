@@ -334,14 +334,19 @@ public abstract class Module extends DescribedFunctionProvider {
      */
     protected void loadInitParameters(String contextPath) {
         Map<String, String> contextMap = addInitParameters(contextPath, properties);
-        log.info("Put for " + getName() + " " + contextMap);
+        if (contextMap.size() > 0) {
+            log.info("Put for " + getName() + " " + contextMap);
+        } else {
+            log.debug("Put for " + getName() + " " + contextMap);
+        }
     }
 
     /**
      * Returns an iterator of all the modules that are currently active.
      * This function <code>null</code> if no attempt has the modules have (not) yet been to loaded.
      * Unlike {@link #getModule}, this method does not automatically load modules if this hadn't occurred yet.
-     * @return an <code>Iterator</code> with all active modules
+     * Synchorinze on Module.class.
+     * @return an <code>Iterator</code> with all active modules.
      */
     public static final Iterator<Module> getModules() {
         if (modules == null) {
@@ -382,48 +387,52 @@ public abstract class Module extends DescribedFunctionProvider {
      *
      * @since MMBase-1.6.2
      */
-    public static synchronized final void shutdownModules() {
+    public static final void shutdownModules() {
         if (modules != null) {
-            for (Module m : modules.values()) {
-                log.service("Shutting down " + m.getName());
-                m.shutdown();
-                log.service("Shut down " + m.getName());
+            synchronized(Module.class) {
+                for (Module m : modules.values()) {
+                    log.service("Shutting down " + m.getName());
+                    m.shutdown();
+                    log.service("Shut down " + m.getName());
+                }
+                modules.clear();
             }
-            modules.clear();
         }
     }
 
-    public static synchronized final void startModules() {
+    public static final void startModules() {
         // call the onload to get properties
-        log.service("Starting modules " + modules.keySet());
-        for (Module mod : modules.values()) {
-            if (Thread.currentThread().isInterrupted()) {
-                log.info("Interrupted");
-                return;
-            }
-            if( log.isDebugEnabled() ) {
-                log.debug("Starting module " + mod + "");
-            }
-            try {
-                mod.onload();
-            } catch (Exception f) {
+        synchronized(Module.class) {
+            log.service("Starting modules " + modules.keySet());
+            for (Module mod : modules.values()) {
+                if (Thread.currentThread().isInterrupted()) {
+                    log.info("Interrupted");
+                    return;
+                }
+                if( log.isDebugEnabled() ) {
+                    log.debug("Starting module " + mod + "");
+                }
+                try {
+                    mod.onload();
+                } catch (Exception f) {
                 log.warn("Exception in onload of module '" + mod + "' ! " + f.getMessage(), f);
             }
-        }
-        // so now really give em their init
-        if (log.isDebugEnabled()) {
-            log.debug("Initing the modules " + modules + "");
-        }
-        for (Module mod : modules.values()) {
-            if (Thread.currentThread().isInterrupted()) {
-                log.info("Interrupted");
-                return;
             }
-            log.info("Starting module " + mod.getName());
-            try {
-                mod.startModule();
-            } catch (Exception f) {
-                log.error("Exception in startModule of module '" + mod + "' ! " + f.getMessage(), f);
+            // so now really give em their init
+            if (log.isDebugEnabled()) {
+                log.debug("Initing the modules " + modules + "");
+            }
+            for (Module mod : modules.values()) {
+                if (Thread.currentThread().isInterrupted()) {
+                    log.info("Interrupted");
+                    return;
+                }
+                log.info("Starting module " + mod.getName());
+                try {
+                    mod.startModule();
+                } catch (Exception f) {
+                    log.error("Exception in startModule of module '" + mod + "' ! " + f.getMessage(), f);
+                }
             }
         }
     }
