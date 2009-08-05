@@ -12,6 +12,7 @@ package org.mmbase.cache;
 import java.util.*;
 
 import org.mmbase.storage.search.*;
+import org.mmbase.bridge.implementation.BasicQuery;
 import org.mmbase.module.core.MMObjectNode;
 
 /**
@@ -39,54 +40,13 @@ public class RelatedNodesCache extends QueryResultCache {
         relatedNodesCache.putCache();
     }
 
+    @Override
     public String getName() {
         return "RelatedNodesCache";
     }
+    @Override
     public String getDescription() {
         return "Caches related nodes of a certain node";
-    }
-
-    // nodenumber -> set of keys
-    // Used to sync this cache with node-cache. If node not any more in node-cache, then we decide to also remove its related nodes.
-    // This seems a plausible thing to do.
-
-    private Map<Integer, Set<SearchQuery>> numberToKeys = new HashMap<Integer, Set<SearchQuery>>();
-
-
-    public synchronized List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
-        // test cache policy before caching
-        if (!checkCachePolicy(query)) return null;
-        Integer number = (query.getSteps().get(0)).getNodes().first();
-        Set<SearchQuery> keys = numberToKeys.get(number);
-        if (keys == null) {
-            keys = new HashSet<SearchQuery>();
-            numberToKeys.put(number, keys);
-        }
-        keys.add(query);
-        return super.put(query, queryResult);
-    }
-
-
-    public synchronized List<MMObjectNode> remove(Object key) {
-        SearchQuery query = (SearchQuery) key;
-        Integer number = (query.getSteps().get(0)).getNodes().first();
-        Set<SearchQuery> keys = numberToKeys.get(number);
-        if (keys != null) {
-            keys.remove(query);
-            if (keys.size() == 0) numberToKeys.remove(number);
-        }
-        return super.remove(key);
-    }
-
-    synchronized void removeNode(Integer number) {
-        Set<SearchQuery>  keys = numberToKeys.get(number);
-        if (keys != null) {
-            Iterator<SearchQuery> i = keys.iterator();
-            while (i.hasNext()) {
-                super.remove(i.next());
-            }
-            numberToKeys.remove(number);
-        }
     }
 
     /**
@@ -96,8 +56,4 @@ public class RelatedNodesCache extends QueryResultCache {
         super(size);
     }
 
-    public void clear(){
-        super.clear();
-        numberToKeys.clear();
-    }
 }

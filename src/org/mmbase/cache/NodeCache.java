@@ -31,9 +31,11 @@ public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEvent
         cache.putCache();
     }
 
+    @Override
     public String getName() {
         return "Nodes";
     }
+    @Override
     public String getDescription() {
         return "Node number -> MMObjectNodes";
     }
@@ -45,13 +47,6 @@ public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEvent
         super(CACHE_SIZE);
         // node cache is registered as a Listener in MMBase.java.
     }
-
-
-    public MMObjectNode remove(Object key) {
-        RelatedNodesCache.getCache().removeNode((Integer) key);
-        return super.remove(key);
-    }
-
 
     public void notify(NodeEvent event) {
         int type = event.getType();
