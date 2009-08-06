@@ -44,18 +44,27 @@ function List(d) {
 
 
     var listinfos  = this.find("listinfo");
-
+    this.seq       = listinfos.find("input[name = 'seq']")[0].value;
     this.type      = listinfos.find("input[name = 'type']")[0].value;
     this.item      = listinfos.find("input[name = 'item']")[0].value;
     this.source    = listinfos.find("input[name = 'source']")[0].value;
     this.icondir   = listinfos.find("input[name = 'icondir']")[0].value;
     this.createpos = listinfos.find("input[name = 'createpos']")[0].value;
     this.formtag   = listinfos.find("input[name = 'formtag']")[0].value;
-    this.sortable   = listinfos.find("input[name = 'sortable']")[0].value == 'true';
+    this.sortable  = listinfos.find("input[name = 'sortable']")[0].value == 'true';
 
     if (this.sortable) {
         $(this.div).find("ol").sortable({
                 update: function(event, ui) { self.saveOrder(event, ui); }
+            });
+    }
+
+    this.search   = listinfos.find("input[name = 'search']")[0].value == 'true';
+
+    if (this.search) {
+        //console.log("Searchable" + $(this.div).find("div.mm_related"));
+        $(this.div).find("div.mm_related").bind("mmsrRelate", function (e, relate, relater) {
+                self.relate(e, relate, relater);
             });
     }
 
@@ -218,46 +227,12 @@ List.prototype.bindCreate = function(a) {
         if (this.source != undefined) {
             params.source = this.source;
         }
-        params.createpos = this.parentNode.list.createpos;
 
         $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
                 complete: function(res, status){
                     try {
                         if ( status == "success" || status == "notmodified" ) {
-                            var r = null;
-                            try {
-                                r = document.importNode(res.responseXML.documentElement, true);
-                            } catch (e) {
-                                // IE 6 sucks.
-                                r = $(res.responseText)[0];
-                            }
-                            // remove default value on focus
-                            $(r).find("input").one("focus", function() {
-                                this.value = "";
-                                if (a.list.validator != null) {
-                                    a.list.validator.validateElement(this);
-                                }
-                            });
-                            if (params.createpos == 'top') {
-                                a.list.find(null, "ol").prepend(r);
-                            } else {
-                                a.list.find(null, "ol").append(r);
-                            }
-                            if (a.list.validator != null) {
-                                a.list.validator.addValidation(r);
-                            }
-                            a.list.find("delete", "a", r).each(function() {
-                                a.list.bindDelete(this);
-                            });
-                            $(r).find("* div.list").each(function() {
-                                var div = this;
-                                if (div.list == null) {
-                                    div.list = new List(div);
-                                }
-                            });
-                            a.list.executeCallBack("create", r); // I think this may be deprecated. Custom events are nicer
-                            $(a.list.div).trigger("mmsrCreated", [r]);
-
+                            a.list.addItem(res);
                         } else {
                             alert(status + " with " + url);
 
@@ -270,6 +245,42 @@ List.prototype.bindCreate = function(a) {
                });
         return false;
     });
+}
+List.prototype.addItem = function(res) {
+    var list = this;
+    var r = null;
+    try {
+        r = document.importNode(res.responseXML.documentElement, true);
+    } catch (e) {
+        // IE 6 sucks.
+        r = $(res.responseText)[0];
+    }
+    // remove default value on focus
+    $(r).find("input").one("focus", function() {
+            this.value = "";
+            if (list.validator != null) {
+                list.validator.validateElement(this);
+            }
+        });
+    if (this.createpos == 'top') {
+        list.find(null, "ol").prepend(r);
+    } else {
+        list.find(null, "ol").append(r);
+    }
+    if (list.validator != null) {
+        list.validator.addValidation(r);
+    }
+    list.find("delete", "a", r).each(function() {
+            list.bindDelete(this);
+        });
+    $(r).find("* div.list").each(function() {
+            var div = this;
+            if (div.list == null) {
+                div.list = new List(div);
+            }
+        });
+    list.executeCallBack("create", r); // I think this may be deprecated. Custom events are nicer
+    $(list.div).trigger("mmsrCreated", [r]);
 }
 
 List.prototype.bindDelete = function(a) {
@@ -336,14 +347,14 @@ List.prototype.status = function(message, fadeout) {
 
 
 List.prototype.getListParameters = function() {
-                var params = {};
-                params.item   = this.item;
-                params.seq    = this.seq;
-                params.source = this.source;
-                params.icondir = this.icondir;
-                params.createpos = this.createpos;
-                params.formtag = this.formtag;
-                return params;
+    var params = {};
+    params.item   = this.item;
+    params.seq    = this.seq;
+    params.source = this.source;
+    params.icondir = this.icondir;
+    params.createpos = this.createpos;
+    params.formtag = this.formtag;
+    return params;
 }
 
 /**
@@ -428,6 +439,27 @@ List.prototype.saveOrder = function(event, ui) {
         });
 
     //console.log(order);
+}
+
+List.prototype.relate = function(event, relate, relater) {
+    var list = this;
+    var params = this.getListParameters();
+    var url = "${mm:link('/mmbase/searchrelate/list/relate.jspx')}";
+    params.destination = relater.getNumber(relate);
+    $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+            complete: function(res, status){
+                try {
+                    if ( status == "success" || status == "notmodified" ) {
+                        list.addItem(res);
+                    } else {
+                        alert(status + " with " + url);
+                    }
+                } catch (ex) {
+                    alert(ex);
+                }
+
+            }
+        });
 }
 
 </mm:content>
