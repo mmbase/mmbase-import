@@ -413,4 +413,29 @@ public class TransactionTest extends BridgeTest {
     }
 
 
+
+    // MMB-1857
+    public void testGetNodes() {
+        Cloud cloud = getCloud();
+        Transaction t = cloud.getTransaction("testgetnodes");
+        Node n = t.getNode(newNode);
+        Node url = t.getNodeManager("urls").createNode();
+        RelationManager rm = t.getRelationManager("urls", "news", "posrel");
+        Relation r = url.createRelation(n, rm);
+
+        assertEquals(3, t.getNodes().size()); // 2 nodes and one relation
+
+        for (Node rn : t.getNodes()) {
+            // should occur no exceptions
+            rn.commit(); // should have little effect in trans
+
+            // FAILS for relation!
+        }
+        t.cancel();
+
+
+
+    }
+
+
 }
