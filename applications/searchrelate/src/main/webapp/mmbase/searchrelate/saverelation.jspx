@@ -14,9 +14,9 @@
           <mm:import externid="${status.current.name}" />
         </mm:fieldlist>
       </mm:node>
-      
+
       <mm:import externid="transaction" />
-      
+
       <mm:isempty referid="transaction">
         <mm:node number="$id">
           <mm:fieldlist type="edit" fields="owner" varStatus="status">
@@ -28,7 +28,7 @@
           </mm:fieldlist>
         </mm:node>
       </mm:isempty>
-      
+
       <mm:isnotempty referid="transaction">
         <mm:form mode="transaction" id="${transaction}">
           <mm:node number="$id">

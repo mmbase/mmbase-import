@@ -50,6 +50,7 @@ function List(d) {
     this.source    = listinfos.find("input[name = 'source']")[0].value;
     this.icondir   = listinfos.find("input[name = 'icondir']")[0].value;
     this.createpos = listinfos.find("input[name = 'createpos']")[0].value;
+    this.formtag   = listinfos.find("input[name = 'formtag']")[0].value;
 
     this.lastCommit = null;
 
@@ -343,6 +344,7 @@ List.prototype.commit = function(stale, leavePage) {
                 params.source = this.source;
                 params.icondir = this.icondir;
                 params.createpos = this.createpos;
+                params.formtag = this.formtag;
                 params.leavePage = leavePage ? true : false;
 
                 $(this.find("listinfo", "div")[0]).find("input[type='hidden']").each(function() {

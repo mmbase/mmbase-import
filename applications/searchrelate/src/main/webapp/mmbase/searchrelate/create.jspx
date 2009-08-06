@@ -10,7 +10,10 @@
   <mm:import externid="id"  />
   <mm:import externid="context"  />
   <mm:import externid="sessionname"  />
+  <mm:import externid="formtag"  />
   <mm:import from="session" externid="${queryid}" id="query" required="true" />
+
+  <mm:import externid="formtagid">${empty formtag ? 'create' : formtag}</mm:import>
 
   <mm:cloud
       sessionname="${sessionname}"
@@ -19,7 +22,9 @@
       <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
         <mm:import from="session" externid="mm_related_${id}_extracreate" id="extracreate"   required="false" />
 
-        <mm:form name="create"
+        <mm:log> FORMTAG ${formtag}</mm:log>
+        <mm:form
+                 id="${formtag}"
                  page="/mmbase/searchrelate/create.jspx" commitonclose="false">
           <fmt:message key="createsummary" var="summary">
             <fmt:param><mm:nodeinfo nodetype="${query.nodeManager.name}" type="guinodemanager" /></fmt:param>
@@ -37,6 +42,7 @@
                   <input type="hidden" name="context" value="${context}" />
                   <input type="hidden" name="sessionname" value="${sessionname}" />
                   <input type="hidden" name="nodemanager" id="nodemanager" value="${query.nodeManager.name}" />
+                  <input type="hidden" name="formtag"  value="${formtag}" />
                 </td>
               </tr>
             </tfoot>
@@ -64,7 +70,7 @@
               <mm:log> Using ${extracreate} </mm:log>
 
               <c:if test="${! empty extracreate}">
-                <mm:include page="${extracreate}" attributes="newnode,context" />
+                <mm:include page="${extracreate}" attributes="newnode,context,formtag" />
               </c:if>
               <tr><td> OWNER ${_node.owner}</td>
               <td><mm:cloudinfo type="user" /></td>
@@ -73,24 +79,26 @@
 
             </mm:createnode>
           </table>
-          <mm:import externid="s" />
-          <mm:present referid="s">
-            <mm:valid>
-              <mm:commit />
-              <mm:node referid="newnode">
-                <mm:log>Created new node ${_node}</mm:log>
+          <c:if test="${empty formtag}">
+            <mm:import externid="s" />
+            <mm:present referid="s">
+              <mm:valid>
+                <mm:commit />
+                <mm:node referid="newnode">
+                  <mm:log>Created new node ${_node}</mm:log>
 
-                Created <span class="newnode">${_node}</span> with owner ${_node.owner}.
-              </mm:node>
-            </mm:valid>
-            <mm:valid inverse="true">
-              NOT VALID
+                  Created <span class="newnode">${_node}</span> with owner ${_node.owner}.
+                </mm:node>
+              </mm:valid>
+              <mm:valid inverse="true">
+                NOT VALID
+                <mm:cancel />
+              </mm:valid>
+            </mm:present>
+            <mm:present referid="s" inverse="true">
               <mm:cancel />
-            </mm:valid>
-          </mm:present>
-          <mm:present referid="s" inverse="true">
-            <mm:cancel />
-          </mm:present>
+            </mm:present>
+          </c:if>
         </mm:form>
       </fmt:bundle>
     </mm:content>
