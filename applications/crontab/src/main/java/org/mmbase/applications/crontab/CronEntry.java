@@ -387,10 +387,12 @@ public class CronEntry implements java.io.Serializable {
         return dayOfWeek;
     }
 
+    @Override
     public String toString() {
         return id + ":" + cronTime + ":" + name + ": " + className + ":" + configuration + ": count" + count + " type " + type + " on servers " + servers;
     }
 
+    @Override
     public int hashCode() {
         int result = 0;
         result = HashCodeUtil.hashCode(result, id);
@@ -400,6 +402,7 @@ public class CronEntry implements java.io.Serializable {
         return result;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof CronEntry)) {
             return false;
