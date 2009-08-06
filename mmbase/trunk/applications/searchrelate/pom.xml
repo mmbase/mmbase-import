@@ -44,5 +44,13 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.mmbase.jquery</groupId>
+      <artifactId>jquery-ui</artifactId>
+      <version>1.7.2</version>
+      <type>war</type>
+    </dependency>
+  </dependencies>
 
 </project>
