@@ -13,34 +13,44 @@
   <mm:import id="query" externid="mm_list_query_${seq}" from="session" jspvar="query" vartype="org.mmbase.bridge.Query" />
 
   <div class="saveresult">
-    <mm:listnodescontainer referid="query">
-      <mm:listnodes>
-        <mm:import id="formtagid" externid="formtag">node${_node}</mm:import>
-        <mm:form id="${formtagid}">
-          <mm:include page="${item}" referids="source" />
-          <c:if test="${empty formtag}">
-            <mm:valid>
-              <mm:import externid="submit" />
-              <mm:present referid="submit">
-                <mm:log level="debug">Submitting form</mm:log>
-                <mm:commit />
-              </mm:present>
-            </mm:valid>
-            <span class="status">
-              <mm:valid inverse="true">
-                <mm:log level="debug">Form not valid</mm:log>
-                <jsp:text>Form not valid</jsp:text>
+    <mm:escape escape="swallow">
+      <mm:listnodescontainer referid="query">
+        <mm:listnodes>
+          <mm:import id="formtagid" externid="formtag">node${_node}</mm:import>
+          <mm:form id="${formtagid}"
+                 name="${formtagid}"
+                 >
+            <mm:include page="${item}" referids="source" />
+            <c:if test="${empty formtag}">
+              <mm:valid>
+                <mm:import externid="submit" />
+                <mm:present referid="submit">
+                  <mm:log level="debug">Submitting form</mm:log>
+                  <mm:commit />
+                </mm:present>
               </mm:valid>
-            </span>
-          </c:if>
-        </mm:form>
-      </mm:listnodes>
-    </mm:listnodescontainer>
+              <span class="status">
+                <mm:valid inverse="true">
+                  <mm:log level="debug">Form not valid</mm:log>
+                  <jsp:text>Form not valid</jsp:text>
+                </mm:valid>
+              </span>
+            </c:if>
+          </mm:form>
+        </mm:listnodes>
+      </mm:listnodescontainer>
+    </mm:escape>
     <c:if test="${! empty formtag}">
-      <mm:form id="${formtag}">
-        <c:forEach items="${requestScope['org.mmbase.transaction'].nodes}" var="tn">
-          <p>${tn.number}</p>
-        </c:forEach>
+      <mm:form id="${formtag}"
+               name="${formtag}"
+               >
+        <c:set value="${requestScope['org.mmbase.transaction'].nodes}" var="tn"  />
+        <mm:listnodes referid="tn">
+          <c:if test="${_node.number lt 0}">
+            <mm:include page="${item}" referids="source" />
+            <p>${_node.number}${_node._number}</p>
+          </c:if>
+        </mm:listnodes>
       </mm:form>
     </c:if>
 

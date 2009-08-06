@@ -23,7 +23,11 @@
           <jsp:directive.include file="create.body.jspx" />
         </c:when>
         <c:otherwise>
-          <mm:transaction id="${formtag}">
+          &lt;!-- transaction: ${formtag} --&gt;
+          <mm:transaction id="${formtag}"
+                          name="${formtag}"
+                          commitonclose="false"
+                          >
             <jsp:directive.include file="create.body.jspx" />
           </mm:transaction>
         </c:otherwise>
