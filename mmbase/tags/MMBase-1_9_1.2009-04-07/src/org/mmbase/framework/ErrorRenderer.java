@@ -14,6 +14,8 @@ import java.util.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import javax.servlet.*;
+import javax.mail.*;
+import javax.mail.internet.*;
 import java.io.*;
 import org.mmbase.bridge.NotFoundException;
 import org.mmbase.util.functions.*;
@@ -228,6 +230,22 @@ public class ErrorRenderer extends AbstractRenderer {
             }
             // write errors to mmbase log
             if (status == 500) {
+                try {
+                    Map<String, String> props = org.mmbase.util.ApplicationContextReader.getProperties("mmbase_errorpage");
+                    if (props.get("to") != null) {
+                        javax.naming.Context initCtx = new javax.naming.InitialContext();
+                        javax.naming.Context envCtx = (javax.naming.Context)initCtx.lookup("java:comp/env");
+                        Session mailSession = (Session) envCtx.lookup("mail/Session");
+                        MimeMessage mail = new MimeMessage(mailSession);
+                        mail.addRecipients(Message.RecipientType.TO, InternetAddress.parse(props.get("to")));
+                        mail.setSubject(ticket);
+                        mail.setText(msg.toString());
+                        Transport.send(mail);
+                        msg.append("mailed to (" + props + ")");
+                    }
+                } catch (Throwable nnfe) {
+                    msg.append("not mailed (" + nnfe + ")");
+                }
                 log.error("TICKET " + ticket + ":\n" + logMsg);
             }
             return to;
