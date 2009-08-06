@@ -36,7 +36,8 @@
 
 
           <mm:node number="default.mags">
-            <h2><mm:field name="title" /></h2>
+            <h2>1</h2>
+            <h3><mm:field name="title" /></h3>
 
             <mm-sr:relatednodes type="news" role="posrel"
                                 item="/item.jspx" />
@@ -48,10 +49,16 @@
             <mm:param name="cancel"></mm:param>
             <a href="${_}">cancel</a>
           </mm:link>
-          <jsp:text>|</jsp:text>
+          <jsp:text> | </jsp:text>
           <mm:link>
             <a href="${_}">reload</a>
           </mm:link>
+          <jsp:text> | </jsp:text>
+          <mm:link page=".">
+            <a href="${_}">back</a>
+          </mm:link>
+
+
           <mm:import externid="submit" />
           <mm:valid>
             <p>Valid</p>
