@@ -67,9 +67,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
 
     protected UserContext userContext = null;
 
-    private HashMap<Object, Object> properties = new HashMap<Object, Object>();
+    HashMap<Object, Object> properties = new HashMap<Object, Object>();
 
-    private Locale locale;
+    Locale locale;
 
     public int getByteSize() {
         return getByteSize(new SizeOf());
@@ -219,6 +219,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     // check if anode exists.
     // if isrelation is true, the method returns false if the node is not a relation
     private boolean hasNode(String nodeNumber, boolean isrelation) {
+        if (nodeNumber == null) {
+            return false;
+        }
         MMObjectNode node;
         try {
             node = BasicCloudContext.tmpObjectManager.getNode(getAccount(), nodeNumber);
@@ -565,7 +568,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     * @return <code>true</code> if access is granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID) {
-        return BasicCloudContext.mmb.getMMBaseCop().getAuthorization().check(userContext, nodeID, operation);
+        return userContext != null && BasicCloudContext.mmb.getMMBaseCop().getAuthorization().check(userContext, nodeID, operation);
     }
 
     /**
@@ -723,10 +726,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
 
                 if (bquery.queryCheck == null) { // not set already, do it now.
                     Authorization.QueryCheck check = auth.check(userContext, query, Operation.READ);
-                    if (log.isDebugEnabled()) {
-                        log.debug("FOUND security check " + check + " FOR " + query);
-                    }
                     bquery.setSecurityConstraint(check);
+                    if (log.isDebugEnabled()) {
+                        log.debug("FOUND security check " + check + " FOR " + query + " -> " + bquery.toSql());
+                    }
                 }
                 return constraintsSecure && bquery.isSecure();
             }
@@ -929,9 +932,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
 
     /**
      * Compares this cloud to the passed object.
-
-     * @todo There is no specific order in which clouds are ordered at this moment.
-     *       Currently, all clouds within one CloudContext are treated as being equal.
      * @param o the object to compare it with
      */
     public int compareTo(Cloud o) {
@@ -946,8 +946,14 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
      */
     @Override public boolean equals(Object o) {
         if (o instanceof Cloud) {
-            Cloud oc = (Cloud) o;
-            return cloudContext.equals(oc.getCloudContext()) && userContext.equals(oc.getUser());
+            if (userContext != null) {
+                Cloud oc = (Cloud) o;
+                return cloudContext.equals(oc.getCloudContext()) &&
+                    userContext.equals(oc.getUser());
+
+            } else {
+                return super.equals(o);
+            }
         } else {
             return false;
         }
@@ -1167,5 +1173,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     protected void setValue(BasicNode node, String fieldName, Object value) {
         node.getNode().setValue(fieldName, value);
     }
+
 
 }
