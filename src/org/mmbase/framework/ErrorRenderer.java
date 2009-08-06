@@ -239,12 +239,12 @@ public class ErrorRenderer extends AbstractRenderer {
                         MimeMessage mail = new MimeMessage(mailSession);
                         mail.addRecipients(Message.RecipientType.TO, InternetAddress.parse(props.get("to")));
                         mail.setSubject(ticket);
-                        mail.setText(msg.toString());
+                        mail.setText(logMsg.toString());
                         Transport.send(mail);
-                        msg.append("mailed to (" + props + ")");
+                        tee.append("\nmailed to (" + props + ")");
                     }
                 } catch (Throwable nnfe) {
-                    msg.append("not mailed (" + nnfe + ")");
+                    tee.append("\nnot mailed (" + nnfe + ")");
                 }
                 log.error("TICKET " + ticket + ":\n" + logMsg);
             }
