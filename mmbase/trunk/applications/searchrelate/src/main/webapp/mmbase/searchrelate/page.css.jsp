@@ -20,10 +20,10 @@ table.searchform {
 
 input.searching
 {
-	background-image: url("${mm:link('/mmbase/style/ajax-loader-16.gif')}");
-	background-color: #fff;
-	background-position: right 1px;
-	background-repeat: no-repeat;
+  background-image: url("${mm:link('/mmbase/style/ajax-loader-16.gif')}");
+  background-color: #fff;
+  background-position: right 1px;
+  background-repeat: no-repeat;
 }
 
 .searchresult table {
@@ -121,7 +121,7 @@ input.searching
   background-color: #e8d8d8;
 }
 
-.mm_related .searchable table tfoot.notneeded, 
+.mm_related .searchable table tfoot.notneeded,
 .mm_related .searchable table thead.notneeded {
   display: none;
 }
