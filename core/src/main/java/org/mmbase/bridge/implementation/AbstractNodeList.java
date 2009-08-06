@@ -214,9 +214,10 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
         int n = coreNode.getNumber();
         if (n == -1) {
             String[] na  = coreNode.getStringValue("_number").split("_");
-            if (na.length == 2) {
-                if (cloud.hasNode(na[1])) {
-                    return cloud.getNode(na[1]);
+            //U-4_testform123_-127
+            if (na.length > 1) {
+                if (cloud.hasNode(na[na.length -1])) {
+                    return cloud.getNode(na[na.length - 1]);
                 } else {
                     return new BasicNode(coreNode, (BasicCloud) cloud);
                 }
