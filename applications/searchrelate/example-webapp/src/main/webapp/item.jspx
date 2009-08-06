@@ -11,7 +11,7 @@
 
   <mm:field name="number" />
   <jsp:text>: </jsp:text>
-  <mm:field id="node_${mm:escape('identifier', _node)}" name="title">
+  <mm:field id="${requestScope['org.mmbase.cloud'].name}_node_${mm:escape('identifier', _node)}" name="title">
     <mm:fieldinfo type="input" />
     <mm:fieldinfo type="errors" />
   </mm:field>
