@@ -64,6 +64,12 @@ public class RunningCronEntry  implements Delayed, java.io.Serializable {
         return message;
     }
 
+    @Override
+    public int hashCode() {
+        return getCronEntry().hashCode();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o instanceof RunningCronEntry) {
             RunningCronEntry e = (RunningCronEntry) o;
@@ -83,6 +89,7 @@ public class RunningCronEntry  implements Delayed, java.io.Serializable {
         return (int) (getDelay(TimeUnit.MILLISECONDS) - d.getDelay(TimeUnit.MILLISECONDS));
     }
 
+    @Override
     public String toString() {
         return  getMachine() + ":" + thread + ":" + entry.getId();
     }
