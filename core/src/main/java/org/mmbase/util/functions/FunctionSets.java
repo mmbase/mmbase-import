@@ -47,14 +47,15 @@ public class FunctionSets {
     public static final String PUBLIC_ID_FUNCTIONSET_1_0  = "-//MMBase//DTD functionset config 1.0//EN";
     public static final String PUBLIC_ID_FUNCTIONSETS_1_0 = "-//MMBase//DTD functionsets config 1.0//EN";
 
-    public static final String FUNCTIONSET_NS  = "http://www.mmbase.org/xmlns/functionset";
+    private static final String XSD_FUNCTIONSET       = "functionset.xsd";
+    public static  final String FUNCTIONSET_NS  = "http://www.mmbase.org/xmlns/functionset";
 
     private static final Logger log = Logging.getLoggerInstance(FunctionSets.class);
 
     private static final Map<String, FunctionSet> functionSets = new TreeMap<String, FunctionSet>();
 
     static {
-        org.mmbase.util.xml.EntityResolver.registerSystemID(FUNCTIONSET_NS + ".xsd", FUNCTIONSET_NS, FunctionSets.class);
+        org.mmbase.util.xml.EntityResolver.registerSystemID(FUNCTIONSET_NS + ".xsd", XSD_FUNCTIONSET, FunctionSets.class);
 
         org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSET_1_0,  DTD_FUNCTIONSET_1_0,  FunctionSets.class);
         org.mmbase.util.xml.EntityResolver.registerPublicID(PUBLIC_ID_FUNCTIONSETS_1_0, DTD_FUNCTIONSETS_1_0, FunctionSets.class);
@@ -178,8 +179,10 @@ public class FunctionSets {
      * @param
      * @param
      */
-    private static void decodeFunctionSet(ResourceLoader loader, String setResource, String setName) throws IOException {
-        DocumentReader reader = new DocumentReader(loader.getInputSource(setResource), FunctionSets.class);
+    private static void decodeFunctionSet(ResourceLoader loader, String setResource, String setName) throws IOException, org.xml.sax.SAXException {
+
+        org.w3c.dom.Document doc = loader.getDocument(setResource, true, FunctionSets.class);
+        DocumentReader reader = new DocumentReader(doc);
 
         log.service("Parsing " + reader.getSystemId());
         String setDescription = reader.getElementValue("functionset.description");
