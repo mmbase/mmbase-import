@@ -1,0 +1,33 @@
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xml:lang="en"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <mm:content
+      type="application/xhtml+xml"
+      expires="0"
+      language="en">
+    <mm:cloud rank="administrator">
+
+      <head>
+        <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+      </head>
+      <body>
+        <h1>Search and Relate examples/tests</h1>
+        <h2>1</h2>
+        <mm:node number="default.mags">
+          <mm:field name="title" />
+          <mm-sr:relatednodes type="news" icondir="" item="/item.jspx" />
+        </mm:node>
+        <h2>2</h2>
+        <mm:node number="nondefault.mags">
+          <mm:field name="title" />
+          <mm-sr:relatednodes type="news" icondir="" item="/item.jspx" />
+        </mm:node>
+      </body>
+    </mm:cloud>
+
+  </mm:content>
+</html>
