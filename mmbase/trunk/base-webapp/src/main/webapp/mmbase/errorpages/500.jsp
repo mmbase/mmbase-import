@@ -112,10 +112,10 @@ if (status == 500) {
     mail.setSubject(ticket);
     mail.setText(msg.toString());
     Transport.send(mail);
-    msg.append("mailed to (" + props + ")");
+    msg.append("\nmailed to (" + props + ")");
   }
 } catch (Throwable nnfe) {
-   msg.append("not mailed (" + nnfe + ")");
+   msg.append("\nnot mailed (" + nnfe + ")");
 }
   log.error(ticket + ":\n" + msg);
 }
