@@ -78,23 +78,18 @@
   -->
 
   <mm:import id="itemjsp">
-    <c:choose>
-      <c:when test="${! empty li}">
-        <mm:log>Using li, change to item please</mm:log>
-        <jsp:text>${empty li ? '/mmbase/searchrelate/list/item.jspx' : li}</jsp:text>
-      </c:when>
-      <c:otherwise>
-        <jsp:text>${empty item ? '/mmbase/searchrelate/list/item.jspx' : item}</jsp:text>
-      </c:otherwise>
-    </c:choose>
+    <jsp:text>${empty item ? '/mmbase/searchrelate/list/item.jspx' : item}</jsp:text>
   </mm:import>
 
-  <mm:import id="r">${empty role and empty path? 'posrel' : role}</mm:import>
-  <mm:import id="orderdirection">${empty direction? 'UP' : direction}</mm:import>
+  <mm:import id="r">${empty role and empty path ? 'posrel' : role}</mm:import><!-- role defaults to 'posrel' -->
+
+  <mm:import id="orderdirection">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
+
   <mm:import id="createpos">${empty createposition? 'bottom' : createposition}</mm:import>
+
   <mm:import id="formtag">${requestScope['org.mmbase.bridge.jsp.taglib.form'].id}</mm:import>
 
-  <mm:import id="order">${empty orderby ? r : orderby}${empty orderby ? '.pos' : ''}</mm:import>
+  <mm:import id="order">${empty orderby ? r : orderby}${empty orderby ? (r eq 'posrel' ? '.pos' : '.number') : ''}</mm:import>
   <mm:import id="f">${fields}</mm:import>
 
   <mm:import from="request" id="javascript_loaded" externid="mm_list_javascript" />

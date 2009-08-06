@@ -15,7 +15,10 @@
   <mm:import externid="fields" />
   <mm:import externid="confirm" />
   <mm:import externid="icondir" />
-  <mm:fieldlist type="${empty fields ? 'list' : ''}" fields="${fields}" varStatus="status">
+
+  <mm:fieldlist
+      id="${requestScope['org.mmbase.cloud'].name}_node_${mm:escape('identifier', _node)}"
+      type="${empty fields ? 'list' : ''}" fields="${fields}" varStatus="status">
     <c:if test="${status.current.state ne 3}"> <!-- don't show system fields on default -->
       <mm:fieldinfo type="input" />
       <c:if test="${status.first}">
