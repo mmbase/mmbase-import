@@ -121,7 +121,9 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         if (administrate) {
             resourceWatchers.put(this, null);
         }
-        log.debug(" " + this + " for " + rl, new Exception());
+        if (log.isDebugEnabled()) {
+            log.debug(" " + this + " for " + rl);
+        }
     }
 
     /**
@@ -228,7 +230,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
             case NodeEvent.TYPE_DELETE: {
                 // hard..
                 String name = nodeNumberToResourceName.get(number);
-                if (name != null && resources.contains(name)) {
+                if (name != null && getResources().contains(name)) {
                     nodeNumberToResourceName.remove(number);
                     log.service("Resource " + name + " changed (node removed)");
                     onChange(name);
@@ -239,7 +241,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
                 Node node = ResourceLoader.getResourceBuilder().getCloud().getNode(number);
                 int contextPrefix = resourceLoader.getContext().getPath().length() - 1;
                 String name = node.getStringValue(ResourceLoader.RESOURCENAME_FIELD);
-                if (name.length() > contextPrefix && resources.contains(name.substring(contextPrefix))) {
+                if (name.length() > contextPrefix && getResources().contains(name.substring(contextPrefix))) {
                     log.service("Resource " + name + " changed (node added or changed)");
                     nodeNumberToResourceName.put(number, name);
                     onChange(name);
@@ -252,7 +254,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
     public synchronized void start() {
         if (! running) {
             // create and start all filewatchers.
-            for (String resource : resources) {
+            for (String resource : getResources()) {
                 //resourceLoader.checkShadowedNewerResources(resource);
                 mapNodeNumber(resource);
                 createFileWatcher(resource);
@@ -276,7 +278,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
      * Calls {@link #onChange(String)} for every added resource.
      */
     public final void onChange() {
-        for (String resource : resources) {
+        for (String resource : getResources()) {
             onChange(resource);
         }
     }
@@ -299,7 +301,7 @@ public abstract class ResourceWatcher implements NodeEventListener  {
         if (running) { // it's simplest like this.
             exit();
         }
-        resources.remove(resourceName);
+        getResources().remove(resourceName);
         if (wasRunning) {
             start();
         }
