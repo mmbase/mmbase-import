@@ -14,6 +14,7 @@
         <Array type="java.lang.String">
           <Item>src/main/webapp</Item>
           <Item>../src/main/webapp</Item>
+          <Item>../target/war/work/org.mmbase.jquery/jquery-ui</Item>
           <Item>../src/main/examples</Item>
           <Item>../../../base-webapp/src/main/webapp</Item>
         </Array>
