@@ -232,6 +232,12 @@ See http://www.MMBase.org/license
       <type>jar</type>
     </dependency>
     <dependency>
+      <groupId>servletapi</groupId>
+      <artifactId>servletapi</artifactId>
+      <version>2.4</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.13</version>
@@ -262,6 +268,12 @@ See http://www.MMBase.org/license
       <artifactId>junit</artifactId>
       <version>4.3</version>
       <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>javamail</groupId>
+      <artifactId>mailapi</artifactId>
+      <version>1.4.1</version>
     </dependency>
 
     <dependency>
