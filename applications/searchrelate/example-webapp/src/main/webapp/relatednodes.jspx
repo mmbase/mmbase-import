@@ -2,7 +2,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xml:lang="en"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate" 
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <mm:content
@@ -20,16 +20,26 @@
       </head>
       <body>
         <h1>Search and Relate examples/tests</h1>
+        <p>The default use of mm-sr:relatednodes, is 'transactionless'. You don't even need a submit button.</p>
         <h2>1</h2>
         <mm:node number="default.mags">
-          <mm:field name="title" />
+          <h3><mm:field name="title" /></h3>
           <mm-sr:relatednodes type="news" icondir="" item="/item.jspx" />
         </mm:node>
         <h2>2</h2>
-        <mm:node number="nondefault.mags">
-          <mm:field name="title" />
-          <mm-sr:relatednodes type="news" icondir="" item="/item.jspx" />
-        </mm:node>
+        <mm:listnodes type="news" max="1">
+          <h3><mm:field name="title" /></h3>
+          <mm-sr:relatednodes type="people" role="related" fields="email" />
+        </mm:listnodes>
+
+        <hr />
+        <mm:link>
+          <a href="${_}">reload</a>
+        </mm:link>
+        <jsp:text> | </jsp:text>
+        <mm:link page=".">
+          <a href="${_}">back</a>
+        </mm:link>
       </body>
     </mm:cloud>
 
