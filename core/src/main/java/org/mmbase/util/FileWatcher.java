@@ -150,7 +150,9 @@ public abstract class FileWatcher {
 
     public void start() {
         stop = false;
-        fileWatchers.add(this);
+        if (fileWatchers != null) {
+            fileWatchers.add(this);
+        }
     }
     /**
      * Put here the stuff that has to be executed, when a file has been changed.
