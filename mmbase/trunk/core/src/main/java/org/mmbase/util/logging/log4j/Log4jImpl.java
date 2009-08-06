@@ -52,6 +52,8 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
 
     private static ResourceWatcher configWatcher;
 
+    private static PrintStream stderr;
+
     /**
      * Constructor, like the constructor of {@link org.apache.log4j.Logger}.
      */
@@ -98,7 +100,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
                     doConfigure(resourceLoader.getResourceAsStream(s));
                 }
             };
-        
+
         configWatcher.clear();
         configWatcher.add(s);
 
@@ -112,6 +114,9 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         // a trick: if the level of STDERR is FATAL, then stderr will not be captured at all.
         if(err.getLevel() != Log4jLevel.FATAL) {
             log.service("Redirecting stderr to MMBase logging (If you don't like this, then put the STDER logger to 'fatal')");
+            if (stderr == null) {
+                stderr = System.err;
+            }
             System.setErr(new LoggerStream(err));
         }
     }
@@ -224,8 +229,13 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
      public static void shutdown() {
         Log4jImpl err = getLoggerInstance("STDERR");
         if(err.getLevel() != Log4jLevel.FATAL) {
-            log.service("System stderr now going to stdout");
-            System.setErr(System.out);
+            if (stderr != null) {
+                log.service("System stderr now going to stdout");
+                System.setErr(System.out);
+            } else {
+                log.service("System stderr now going to stderr");
+                System.setErr(stderr);
+            }
         }
         log4jRepository.shutdown();
     }
