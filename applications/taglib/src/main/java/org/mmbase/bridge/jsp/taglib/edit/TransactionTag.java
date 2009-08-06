@@ -85,6 +85,10 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
             throw new JspTagException("Did not find transaction in context, and no name for transaction supplied");
         }
         transaction = super.getCloudVar().getTransaction(n);
+
+        pageContext.setAttribute(CloudTag.KEY, transaction, CloudTag. SCOPE);
+        pageContext.setAttribute(TransactionTag.KEY, transaction, TransactionTag. SCOPE);
+
         if (getId() != null && putInContext) { // put it in context
             log.debug("putting transaction in context");
             getContextProvider().getContextContainer().register(getId(), transaction);
@@ -119,16 +123,19 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
             } catch (JspTagException e) { }
         }
         putInContext = ! foundThis;
-        if (transaction == null) { // not found in context
-            refreshTransaction();
-        }
         prevCloud = pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE);
         prevTransaction = pageContext.getAttribute(TransactionTag.KEY, TransactionTag.SCOPE);
+
         if (prevCloud != null) {
             log.debug("Found previous cloud " + prevCloud);
        }
-        pageContext.setAttribute(CloudTag.KEY, transaction, CloudTag. SCOPE);
-        pageContext.setAttribute(TransactionTag.KEY, transaction, TransactionTag. SCOPE);
+
+        if (transaction == null) { // not found in context
+            refreshTransaction();
+        } else {
+            pageContext.setAttribute(CloudTag.KEY, transaction, CloudTag. SCOPE);
+            pageContext.setAttribute(TransactionTag.KEY, transaction, TransactionTag. SCOPE);
+        }
 
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, transaction);
