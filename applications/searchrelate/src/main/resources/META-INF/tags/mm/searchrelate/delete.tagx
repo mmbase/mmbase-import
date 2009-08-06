@@ -20,8 +20,11 @@
   <jsp:directive.attribute name="confirm"      type="java.lang.Boolean"
                            description="Whether deleting must be confirmed"
                            />
+  <jsp:directive.attribute name="formtag"      type="java.lang.String"
+                           />
 
-  <mm:link page="/mmbase/searchrelate/list/delete.jspx" referids="_node@n,source">
+  <mm:link page="/mmbase/searchrelate/list/delete.jspx" 
+           referids="_node@n,source,formtag?">
     <a class="delete ${empty confirm or ! confirm ? '' : 'confirm'}"
        href="${_}">
       <mm-sr:button alt="-" type="delete" icondir="${icondir}" />

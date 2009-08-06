@@ -6,6 +6,7 @@
     version="2.0"
     >
   <!--
+
       xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
       @author Michiel Meeuwissen
@@ -13,8 +14,12 @@
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
-      description="This tag produces 1 ol with nodes of certain type, related to the current node. The nodes can be edited, and added.
-                   The user interface is very minimalistic. Without any commit button or so. Everything is arranged using javascript." />
+      description="
+                   This tag produces 1 ol with nodes of certain type, related to the current node. The nodes can be edited, and added.
+                   If this tag is used outside an mm:form tag, then the user interface can be very minimalistic. Without any commit button or so. Everything is arranged using javascript.
+                   If this tag _is_ used in an mm:form tag, then you a normal submit button must be added to commit the transaction.
+                   In the mean time, though, the changes are changed in the transaction. (So a browser crash could preserve all work).
+                   " />
 
 
   <jsp:directive.attribute name="type"        type="java.lang.String"
@@ -44,9 +49,11 @@
   <jsp:directive.attribute name="item"           type="java.lang.String"
                            description="Jsp to use to present one li-item, can be empty for a default presentation."
                            />
+  <!--
   <jsp:directive.attribute name="li"           type="java.lang.String"
                            description="DEPRECATED, will be removed soon, use item"
                            />
+  -->
   <jsp:directive.attribute name="precreate"           type="java.lang.String"
                            description="Jsp to call just before commit of the created node."
                            />
@@ -85,6 +92,7 @@
   <mm:import id="r">${empty role and empty path? 'posrel' : role}</mm:import>
   <mm:import id="orderdirection">${empty direction? 'UP' : direction}</mm:import>
   <mm:import id="createpos">${empty createposition? 'bottom' : createposition}</mm:import>
+  <mm:import id="formtag">${requestScope['org.mmbase.bridge.jsp.taglib.form'].id}</mm:import>
 
   <mm:import id="order">${empty orderby ? r : orderby}${empty orderby ? '.pos' : ''}</mm:import>
   <mm:import id="f">${fields}</mm:import>
@@ -106,26 +114,27 @@
 
     <div class="list ${type}">
       <div id="${type}_${seq}" class="listinfo">
-        <input type="hidden" name="type" value="${type}" />
-        <input type="hidden" name="path" value="${path}" />
-        <input type="hidden" name="role" value="${r}" />
-        <input type="hidden" name="submit" value="${_node}" />
-        <input type="hidden" name="fields" value="${fields}" />
-        <input type="hidden" name="item"   value="${itemjsp}" />
-        <input type="hidden" name="seq"   value="${seq}" />
-        <input type="hidden" name="source"   value="${_node}" />
-        <input type="hidden" name="icondir"   value="${icondir}" />
-        <input type="hidden" name="createpos"   value="${createpos}" />
+        <input type="hidden" name="type"       value="${type}" />
+        <input type="hidden" name="path"       value="${path}" />
+        <input type="hidden" name="role"       value="${r}" />
+        <input type="hidden" name="submit"     value="${_node}" />
+        <input type="hidden" name="fields"     value="${fields}" />
+        <input type="hidden" name="item"       value="${itemjsp}" />
+        <input type="hidden" name="seq"        value="${seq}" />
+        <input type="hidden" name="source"     value="${_node}" />
+        <input type="hidden" name="icondir"    value="${icondir}" />
+        <input type="hidden" name="createpos"  value="${createpos}" />
+        <input type="hidden" name="formtag"    value="${formtag}" />
       </div>
       <c:if test="${createpos eq 'top'}">
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                 referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
+                 referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item,formtag?">
           <mm:param name="referrer"><mm:url absolute="context" /></mm:param>
           <a href="${_}"  class="create">
             <mm-sr:button alt="+" type="create" icondir="${icondir}" />
           </a>
         </mm:link>
-      <span class="status">...</span>
+        <span class="status">...</span>
       </c:if>
       <ol>
         <mm:node id="source" />
@@ -135,7 +144,7 @@
           <mm:relatednodes>
             <mm:include
                 page="/mmbase/searchrelate/list/li.jspx"
-                referids="source,f@fields,icondir?,confirm?,itemjsp@item,seq" />
+                referids="source,f@fields,icondir?,confirm?,itemjsp@item,seq,formtag?" />
           </mm:relatednodes>
 
         </mm:relatednodescontainer>
@@ -143,7 +152,7 @@
       </ol>
       <c:if test="${createpos eq 'bottom'}">
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                 referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item">
+                 referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item,formtag?">
           <mm:param name="referrer"><mm:url absolute="context" /></mm:param>
           <a href="${_}"  class="create">
             <mm-sr:button alt="+" type="create" icondir="${icondir}" />

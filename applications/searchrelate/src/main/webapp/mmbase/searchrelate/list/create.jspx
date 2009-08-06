@@ -10,6 +10,7 @@
   <mm:import externid="source" required="true" />
   <mm:import externid="type" required="true" />
   <mm:import externid="seq" required="true" />
+  <mm:import externid="formtag" />
 
   <mm:import id="query" externid="mm_list_query_${seq}" from="session" jspvar="query" vartype="org.mmbase.bridge.Query" />
   <mm:import externid="fields" />
@@ -17,21 +18,16 @@
   <mm:import externid="precreate" />
   <mm:content expires="0" type="application/xml">
     <mm:cloud method="asis">
-      <mm:node id="source" referid="source" />
-      <mm:createnode type="${type}" id="d" >
-        <c:if test="${! empty precreate}">
-          <mm:include page="${precreate}" />
-        </c:if>
-      </mm:createnode>
-      
-      <mm:node referid="d" jspvar="d">
-        <jsp:scriptlet>org.mmbase.bridge.util.Queries.addToResult(query, d);</jsp:scriptlet>
-      </mm:node>
-      <mm:node referid="d">
-        <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="source,fields,item">
-          <mm:param name="new">true</mm:param>
-        </mm:include>
-      </mm:node>
+      <c:choose>
+        <c:when test="${empty formtag}">
+          <jsp:directive.include file="create.body.jspx" />
+        </c:when>
+        <c:otherwise>
+          <mm:transaction id="${formtag}">
+            <jsp:directive.include file="create.body.jspx" />
+          </mm:transaction>
+        </c:otherwise>
+      </c:choose>
     </mm:cloud>
   </mm:content>
 </jsp:root>
