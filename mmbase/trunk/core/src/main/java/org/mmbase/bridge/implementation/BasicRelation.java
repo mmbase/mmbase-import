@@ -79,7 +79,6 @@ public class BasicRelation extends BasicNode implements Relation {
         }
         snum = getIntValue("snumber");
         dnum = getIntValue("dnumber");
-
     }
 
 
@@ -135,7 +134,7 @@ public class BasicRelation extends BasicNode implements Relation {
                 log.debug(stypenum + ", " + dtypenum + ", " + getNode().getIntValue("rnumber"));
             }
 
-            relationManager=cloud.getRelationManager(stypenum,dtypenum, getNode().getIntValue("rnumber"));
+            relationManager = cloud.getRelationManager(stypenum,dtypenum, getNode().getIntValue("rnumber"));
         }
         return relationManager;
     }
@@ -154,11 +153,25 @@ public class BasicRelation extends BasicNode implements Relation {
         
         if (sourceNodeType == UNSET) {
             sourceNodeType = -1;
-            if (snum != -1) sourceNodeType = BasicCloudContext.mmb.getTypeDef().getNodeType(snum);
+            if (snum != -1) {
+                sourceNodeType = BasicCloudContext.mmb.getTypeDef().getNodeType(snum);
+            } else {
+                String _snum = getStringValue("_snumber");
+                if (_snum != null && _snum.length() > 0) {
+                    sourceNodeType = getCloud().getNode(_snum).getNodeManager().getNumber();
+                }
+            }
         }
         if (destinationNodeType == UNSET) {
             destinationNodeType = -1;
-            if (dnum != -1) destinationNodeType = BasicCloudContext.mmb.getTypeDef().getNodeType(dnum);
+            if (dnum != -1) {
+                destinationNodeType = BasicCloudContext.mmb.getTypeDef().getNodeType(dnum);
+            } else {
+                String _dnum = getStringValue("_dnumber");
+                if (_dnum != null && _dnum.length() > 0) {
+                    destinationNodeType = getCloud().getNode(_dnum).getNodeManager().getNumber();
+                }
+            }
         }
 
         int rnumber = getNode().getIntValue("rnumber");

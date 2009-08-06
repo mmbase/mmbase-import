@@ -285,14 +285,17 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
     protected BasicNode createBasicNode() {
         NodeAndId n = createMMObjectNode();
         MMObjectBuilder bul = getMMObjectBuilder();
+        BasicNode result;
         if (bul instanceof TypeDef) {
             // I wonder if this is necessary.
-            return new BasicNodeManager(n.node, cloud, n.id);
+            result = new BasicNodeManager(n.node, cloud, n.id);
         } else if (bul instanceof TypeRel) {
-            return new BasicRelationManager(n.node, cloud, n.id);
+            result = new BasicRelationManager(n.node, cloud, n.id);
         } else {
-            return new BasicNode(n.node, cloud, n.id);
+            result = new BasicNode(n.node, cloud, n.id);
         }
+        cloud.add(result);
+        return result;
     }
     public final Node createNode() {
         return createBasicNode();
