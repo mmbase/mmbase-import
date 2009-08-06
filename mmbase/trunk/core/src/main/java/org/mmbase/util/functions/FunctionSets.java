@@ -256,7 +256,7 @@ public class FunctionSets {
                     if (prev != null && ! (prev.equals(fun))) {
                         log.warn("Replaced " + prev + " with " + fun + " in function set " + functionSet);
                     } else {
-                        log.service("Found " + fun);
+                        log.debug("Found " + fun);
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
