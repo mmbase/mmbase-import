@@ -6,22 +6,20 @@
     >
   <jsp:output omit-xml-declaration="true" />
   <li>
-    <mm:import externid="n" required="true" />
-    <mm:import externid="source" required="true" />
+    <mm:import externid="n"       required="true" />
+    <mm:import externid="source"  required="true" />
+    <mm:import externid="formtag" />
     <mm:cloud method="asis">
-      <mm:hasnode number="$n">
-        <mm:node referid="n" id="n" />
-        <mm:node id="source" referid="source">
-          <mm:relatednodescontainer type="object">
-            <mm:constraint field="number" value="${n}" />
-            <mm:maxnumber value="1" />
-            <mm:relatednodes>
-              <jsp:text>Deleting ${_node}</jsp:text>
-              <mm:deletenode deleterelations="true" />
-            </mm:relatednodes>
-          </mm:relatednodescontainer>
-        </mm:node>
-      </mm:hasnode>
+      <c:choose>
+        <c:when test="${empty formtag}">
+          <jsp:directive.include file="delete.body.jspx" />
+        </c:when>
+        <c:otherwise>
+          <mm:transaction id="${formtag}">
+            <jsp:directive.include file="delete.body.jspx" />
+          </mm:transaction>
+        </c:otherwise>
+      </c:choose>
     </mm:cloud>
   </li>
 </jsp:root>
