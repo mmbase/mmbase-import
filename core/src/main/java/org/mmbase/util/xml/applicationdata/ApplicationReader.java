@@ -107,14 +107,14 @@ public class ApplicationReader extends org.mmbase.util.xml.DocumentReader {
      * Get the applicationlist required by this application
      * @since MMBase-1.7
      */
-    public List<Map<String,String>> getRequirements() {
-        List<Map<String,String>> results = new ArrayList<Map<String,String>>();
+    public List<Map<String, String>> getRequirements() {
+        List<Map<String, String>> results = new ArrayList<Map<String,String>>();
         for (Element n3: getChildElements("application.requirements","requires")) {
-            Map<String,String> bset = new HashMap<String,String>();
-            bset.put("name",getElementAttributeValue(n3,"name"));
-            addAttribute(bset,n3,"maintainer");
-            addAttribute(bset,n3,"version");
-            addAttribute(bset,n3,"type");
+            Map<String, String> bset = new HashMap<String, String>();
+            bset.put("name",getElementAttributeValue(n3, "name"));
+            addAttribute(bset, n3, "maintainer");
+            addAttribute(bset, n3, "version");
+            addAttribute(bset, n3, "type");
             results.add(bset);
         }
         return results;
