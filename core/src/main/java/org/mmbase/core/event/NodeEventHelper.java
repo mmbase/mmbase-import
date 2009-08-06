@@ -41,7 +41,9 @@ public class NodeEventHelper {
      * @return new instance of NodeEvent
      */
     public static NodeEvent createNodeEventInstance(MMObjectNode node, int eventType, String machineName){
-        if(machineName == null) machineName = MMBase.getMMBase().getMachineName();
+        if(machineName == null) {
+            machineName = MMBase.getMMBase().getMachineName();
+        }
         Map<String, Object> oldEventValues;
         Map<String, Object> newEventValues;
 
