@@ -43,6 +43,8 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     private final Set<String> commitProcessed = new HashSet<String>();
     private final Set<String> deleteProcessed = new HashSet<String>();
 
+    private final Map<String, BasicNode> nodes = Collections.synchronizedMap(new HashMap<String, BasicNode>());
+
     /**
      * @since MMBase 1.9
      */
@@ -103,8 +105,12 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         return transactionName;
     }
 
+    /**
+     * @since MMBase-1.9
+     */
     public NodeList getNodes() {
-        return new BasicNodeList(getCoreNodes(), this);
+        return new BasicNodeList(nodes.values(), this);
+        //return new BasicNodeList(getCoreNodes(), this);
     }
 
 
@@ -130,7 +136,8 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             // do nothing
         } else {
             try {
-                assert BasicCloudContext.transactionManager.getTransaction(transactionName).size() == getNodes().size();
+                assert BasicCloudContext.transactionManager.getTransaction(transactionName).size() == getNodes().size()
+                    : "" + nodes + "/" + BasicCloudContext.transactionManager.getTransaction(transactionName);
 
                 if (log.isDebugEnabled()) {
                     log.debug("Resolving transaction '" + transactionName + "' with " + getCoreNodes().size() + " nodes");
@@ -228,12 +235,20 @@ public class BasicTransaction extends BasicCloud implements Transaction {
      */
     @Override
     int add(BasicNode node) {
-        String id = "" + node.getNumber();
-        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(getAccount(), id);
-        // store new temporary node in transaction
-        add(currentObjectContext);
-        node.setNode(BasicCloudContext.tmpObjectManager.getNode(getAccount(), id));
-        //  check nodetype afterwards?
+        synchronized(nodes) {
+            nodes.remove(node.getStringValue("_number"));
+            String id = "" + node.getNumber();
+            String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(getAccount(), id);
+            // store new temporary node in transaction
+            add(currentObjectContext);
+            node.setNode(BasicCloudContext.tmpObjectManager.getNode(getAccount(), id));
+            //  check nodetype afterwards?
+
+            if (! nodes.containsKey(node.getStringValue("_number"))) {
+                nodes.put(node.getStringValue("_number"), node);
+            }
+
+        }
         return  node.getNumber();
     }
 
@@ -279,6 +294,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(getAccount(),  oMmbaseId);
         add(currentObjectContext);
         delete(currentObjectContext);
+        nodes.remove(node.getStringValue("_number"));
     }
 
     void delete(String currentObjectContext, MMObjectNode node) {
@@ -426,6 +442,34 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         // changed, so commit processor _must_ be called again
         String tempId = node.getStringValue("_number");
         commitProcessed.remove(tempId);
+    }
+
+    @Override
+    public boolean hasNode(String nodeNumber) {
+        if (nodeNumber == null) {
+            return false;
+        }
+        String[] na  = nodeNumber.split("_");
+        if (na.length > 1) {
+            if (super.hasNode(na[na.length -1])) {
+                return true;
+            }
+        }
+        return super.hasNode(nodeNumber);
+    }
+
+    @Override
+    public Node getNode(String nodeNumber) throws NotFoundException {
+        if (nodeNumber == null) {
+            return super.getNode(nodeNumber);
+        }
+        String[] na  = nodeNumber.split("_");
+        if (na.length > 1) {
+            if (super.hasNode(na[na.length -1])) {
+                return super.getNode(na[na.length - 1]);
+            }
+        }
+        return super.getNode(nodeNumber);
     }
 }
 

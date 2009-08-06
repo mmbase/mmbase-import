@@ -186,6 +186,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
        relation.setDestination(destinationNode);
        relation.checkValid();
        // relation.commit();
+       cloud.add(relation);
        return relation;
     }
 
