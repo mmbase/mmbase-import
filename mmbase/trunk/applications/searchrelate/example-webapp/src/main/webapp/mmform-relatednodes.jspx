@@ -1,0 +1,52 @@
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xml:lang="en"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <mm:content
+      type="application/xhtml+xml"
+      expires="0"
+      language="en">
+    <mm:cloud rank="administrator">
+
+      <head>
+        <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+      </head>
+      <body>
+        <h1>Search and Relate examples/tests</h1>
+
+        <script type="text/javascript" src="test.js" />
+        <mm:form id="testform123">
+          <mm:import externid="cancel" />
+          <mm:present referid="cancel">
+            <mm:cancel />
+            <p>Canceled</p>
+            <mm:refresh />
+          </mm:present>
+          <mm:node number="default.mags">
+            <mm:include page="item.jspx" />
+
+            <mm-sr:relatednodes type="news" icondir="" item="/item.jspx" />
+
+          </mm:node>
+          <input type="submit" name="submit" value="submit" />
+          <input type="submit" name="cancel" value="cancel" />
+          <mm:import externid="submit" />
+          <mm:valid>
+            <p>Valid</p>
+            <mm:present referid="submit">
+              <mm:commit />
+              <p>Committed</p>
+              <mm:refresh />
+            </mm:present>
+          </mm:valid>
+          <p>Number of nodes in transaction: ${fn:length(requestScope['org.mmbase.transaction'].nodes)}</p>
+        </mm:form>
+
+      </body>
+    </mm:cloud>
+
+  </mm:content>
+</html>
