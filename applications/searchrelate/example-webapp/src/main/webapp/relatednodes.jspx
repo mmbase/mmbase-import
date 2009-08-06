@@ -2,7 +2,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xml:lang="en"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:mm-sr="http://www.mmbase.org/searchrelate" 
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate" 
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <mm:content
@@ -12,6 +12,7 @@
     <!--
         xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
         -->
+
     <mm:cloud rank="administrator">
 
       <head>
