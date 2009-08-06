@@ -12,8 +12,8 @@ package org.mmbase.util.transformers;
 import java.io.*;
 
 /**
- * Abstract implmenetation of {@link ByteTransformer}. This only leave {@link
- * #transform(InputStream, OutputStream} to implement.
+ * Abstract implementation of {@link ByteTransformer}. This only leaves {@link
+ * #transform(InputStream, OutputStream)} to implement.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.2
