@@ -51,6 +51,13 @@ function List(d) {
     this.icondir   = listinfos.find("input[name = 'icondir']")[0].value;
     this.createpos = listinfos.find("input[name = 'createpos']")[0].value;
     this.formtag   = listinfos.find("input[name = 'formtag']")[0].value;
+    this.sortable   = listinfos.find("input[name = 'sortable']")[0].value == 'true';
+
+    if (this.sortable) {
+        $(this.div).find("ol").sortable({
+                update: function(event, ui) { self.saveOrder(event, ui); }
+            });
+    }
 
     this.lastCommit = null;
 
@@ -327,6 +334,18 @@ List.prototype.status = function(message, fadeout) {
     });
 }
 
+
+List.prototype.getListParameters = function() {
+                var params = {};
+                params.item   = this.item;
+                params.seq    = this.seq;
+                params.source = this.source;
+                params.icondir = this.icondir;
+                params.createpos = this.createpos;
+                params.formtag = this.formtag;
+                return params;
+}
+
 /**
  * @param stale Number of millisecond the content may be aut of date. Defaults to 5 s. But on unload it is set to 0.
  */
@@ -338,13 +357,7 @@ List.prototype.commit = function(stale, leavePage) {
             if (stale == null) stale = this.defaultStale; //
             if (now.getTime() - this.lastChange.getTime() > stale) {
                 this.lastCommit = now;
-                var params = {};
-                params.item   = this.item;
-                params.seq    = this.seq;
-                params.source = this.source;
-                params.icondir = this.icondir;
-                params.createpos = this.createpos;
-                params.formtag = this.formtag;
+                var params = this.getListParameters();
                 params.leavePage = leavePage ? true : false;
 
                 $(this.find("listinfo", "div")[0]).find("input[type='hidden']").each(function() {
@@ -395,7 +408,27 @@ List.prototype.commit = function(stale, leavePage) {
 }
 
 
+List.prototype.saveOrder = function(event, ui) {
+    var order = "";
+    $(event.target).find("li").each(function() {
+            if (order != "") order += ",";
+            order += $(this).attr("class");
+        });
+    var params = this.getListParameters();
+    params.order = order;
+    var self = this;
+    this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
+    $.ajax({ type: "POST",
+                async: true,
+                url: "${mm:link('/mmbase/searchrelate/list/order.jspx')}",
+                data: params,
+                complete: function(req, textStatus) {
+                self.status('<fmt:message key="saved" />', true);
+            }
+        });
 
+    //console.log(order);
+}
 
 </mm:content>
 </fmt:bundle>

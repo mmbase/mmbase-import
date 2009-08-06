@@ -73,6 +73,10 @@
                                         e.g. if you use this tag again in the 'item', then you may want to put this explicitely to false"
                            />
 
+  <jsp:directive.attribute name="sortable"      type="java.lang.Boolean"
+                           description="Using jquery-ui to sort"
+                           />
+
   <!--
 
   -->
@@ -98,6 +102,7 @@
   <mm:write session="org.mmbase.searchrelate.relatednodes.sequence" value="${seq + 1}" />
 
   <c:if test="${(empty javascript_loaded and empty load) or load}">
+    <mm:include page="/mmbase/jquery/jquery-ui.jspx" />
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.timer.js')}"><jsp:text>&lt;!-- IE sucks --&gt;</jsp:text></script>
     <!-- TODO time js is more generic, of course -->
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/List.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
@@ -120,6 +125,7 @@
         <input type="hidden" name="icondir"    value="${icondir}" />
         <input type="hidden" name="createpos"  value="${createpos}" />
         <input type="hidden" name="formtag"    value="${formtag}" />
+        <input type="hidden" name="sortable"    value="${sortable}" />
       </div>
       <c:if test="${createpos eq 'top'}">
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
