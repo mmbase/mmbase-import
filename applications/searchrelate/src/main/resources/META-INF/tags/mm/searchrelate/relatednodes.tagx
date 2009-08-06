@@ -2,12 +2,13 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
     version="2.0"
     >
   <!--
 
-      xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+
 
       @author Michiel Meeuwissen
       @version $Id: relatednodes.tagx,v 1.29 2009-04-09 11:06:58 michiel Exp $
@@ -77,6 +78,10 @@
                            description="Using jquery-ui to sort"
                            />
 
+  <jsp:directive.attribute name="search"      type="java.lang.Boolean"
+                           description="Include also the possibility to search existing nodes"
+                           />
+
   <!--
 
   -->
@@ -102,7 +107,14 @@
   <mm:write session="org.mmbase.searchrelate.relatednodes.sequence" value="${seq + 1}" />
 
   <c:if test="${(empty javascript_loaded and empty load) or load}">
-    <mm:include page="/mmbase/jquery/jquery-ui.jspx" />
+    <c:choose>
+      <c:when test="${sortable}">
+        <mm:include page="/mmbase/jquery/jquery-ui.jspx" />
+      </c:when>
+      <c:otherwise>
+        <mm:include page="/mmbase/jquery/jquery.jspx" />
+      </c:otherwise>
+    </c:choose>
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.timer.js')}"><jsp:text>&lt;!-- IE sucks --&gt;</jsp:text></script>
     <!-- TODO time js is more generic, of course -->
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/List.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
@@ -125,8 +137,13 @@
         <input type="hidden" name="icondir"    value="${icondir}" />
         <input type="hidden" name="createpos"  value="${createpos}" />
         <input type="hidden" name="formtag"    value="${formtag}" />
-        <input type="hidden" name="sortable"    value="${sortable}" />
+        <input type="hidden" name="sortable"   value="${sortable}" />
+        <input type="hidden" name="search"     value="${search}" />
       </div>
+
+      <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${r}" id="q" />
+
+
       <c:if test="${createpos eq 'top'}">
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
                  referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item,formtag?">
@@ -136,10 +153,13 @@
           </a>
         </mm:link>
         <span class="status">...</span>
+        <c:if test="${search}">
+          <mm-sr:search type="${q.nodeManager.name}" />
+        </c:if>
       </c:if>
       <ol>
         <mm:node id="source" />
-        <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${r}" id="q">
+        <mm:relatednodescontainer referid="q">
           <mm:sortorder field="${order}" direction="${orderdirection}" />
           <jsp:invoke fragment="constraints" />
           <mm:relatednodes>
@@ -160,6 +180,9 @@
           </a>
         </mm:link>
         <span class="status">...</span>
+        <c:if test="${search}">
+          <mm-sr:search type="${q.nodeManager.name}" />
+        </c:if>
       </c:if>
     </div>
   </fmt:bundle>
