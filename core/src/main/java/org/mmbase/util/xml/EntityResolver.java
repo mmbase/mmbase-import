@@ -149,6 +149,7 @@ public class EntityResolver implements org.xml.sax.EntityResolver {
      */
     public static void registerSystemID(String systemID, String xsd, Class<?> c) {
         systemIDtoResource.put(systemID, new FileResource(c, xsd));
+        if (log.isDebugEnabled()) log.debug("systemIDtoResource: " + systemID + " " + xsd + c.getName() + " " + systemIDtoResource.get(systemID));
     }
 
     private final String definitionPath;
