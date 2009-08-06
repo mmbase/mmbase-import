@@ -119,6 +119,7 @@ See http://www.MMBase.org/license
     </dependency>
     -->
 
+
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
@@ -158,6 +159,15 @@ See http://www.MMBase.org/license
       <artifactId>jstl</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4.1</version>
+      <scope>provided</scope>
+    </dependency>
+
+
     <!--
     <dependency>
       <groupId>javax.portlet</groupId>
