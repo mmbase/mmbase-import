@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
+<article id="frontenddevelopers-editwizard-index">
+	<articleinfo>
+		<title>MMBase Search &amp; Relate Tags</title>
+		<date>2009-08-08</date>
+		<edition>$Id: index.xml 35281 2009-05-18 18:45:35Z michiel $</edition>
+		<authorgroup>
+			<author>
+				<firstname>Michiel</firstname>
+				<surname>Meeuwissen</surname>
+			</author>
+		</authorgroup>
+		<legalnotice>
+			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+		</legalnotice>
+	</articleinfo>
+	<section id="introduction">
+		<title>Introduction</title>
+		<para>The Search &amp; Relate tags are an addition to the MMBase taglib, and add more sophisticated functionality mainly target at interaction with users who want to create <emphasis>relations</emphasis> between MMBase nodes</para>
+
+		<para>The creation of simple form based editors is quite simple</para>
+    <programlisting format="linespecific"><![CDATA[
+    <mm:form>
+     <mm:node>
+      <mm:field name="title">
+         <mm:input />
+      </mm:field>
+      </mm:node>
+      <mm:valid>
+         <mm:commit />
+      </mm:valid>
+    ]]></programlisting>
+		<para>So there is no need for some extra servlet receiving the post. The JSP itself can handle
+		everthing.</para> <para>MMBase-taglib does not however provide a way to add simple 'relation'
+		editors to this formalism. It can be made, but it is not simple, and needs a lot of customized
+		code. This 'Search &amp; Relate Component fixes that.</para>
+	</section>
+	<section id="installation">
+		<title>Installation</title> <para>Search &amp; Relate is distributed as a 'war
+		overlay'. Installation only requires overlaying this war. The only prequisites is the 'base'
+		mmbase war, i.e. mmbase and mmbase taglib, and the templates of /mmbase which belong to
+		those.</para>
+    <para>After Installation this documentation and examples can be found in the MMBase admin pages /mmbase/admin</para>
+  </section>
+  <section id="ajax">
+    <title>AJAX &amp; JQuery</title>
+    <para>In contradiction to the tags of the mmbase taglib, which are all completely self contained,
+    most, if not all, the functionality of the tags of this application heavily depends on AJAX
+    calls. This means that a bunch of server side JSP servlets and javascript libraries (based on
+    JQuery and JQuery-UI) are needed. Those can be found in the /mmbase/searchrelate
+    directory.</para>
+
+  </section>
+  <section id="relatednodes">
+    <title>mm-sr:relatednodes</title>
+    <para>
+    </para>
+    <section id="transactionless">
+      <title>Transactionless editing</title>
+      <para>
+      </para>
+    </section>
+    <section id="delete">
+      <title>mm-sr:delete</title>
+      <para>
+      </para>
+    </section>
+    <section id="transaction">
+      <title>Using a transaction (mm:form)</title>
+      <para>
+      </para>
+    </section>
+    <section id="listjs">
+      <title>List</title>
+      <para>The javascript associated with mm-sr:relatednodes can be found in /mmbase/searchrelate/List.js.jsp, and the jsps associated with that, are found
+      in /mmbase/searchrelate/list/.
+      </para>
+    </section>
+  </section>
+  <section id="search">
+    <title>mm-sr:search</title>
+    <para>mm-sr:search is actually just a simplified version of mm-sr:relate (it only shows the 'search' part).
+    </para>
+  </section>
+  <section id="relate">
+    <title>mm-sr:relate</title>
+    <para>Current and Repository Queries</para>
+    <section id="searcherjs">
+      <title>Javascript</title>
+      <para>The javascript associated with mm-sr:relate can be found in /mmbase/searchrelate/Searcher.js.jsp, and the jsps associated with that, are found
+      in /mmbase/searchrelate/.
+      </para>
+      <section id="searcherjs1">
+        <title>MMBaseSearcher</title>
+        <para>
+        </para>
+      </section>
+      <section id="searcherjs2">
+        <title>MMBaseRelater</title>
+        <para>
+        </para>
+      </section>
+    </section>
+  </section>
+  <section id="tabs">
+    <title>mm-sr:tabs</title>
+    <para>
+    </para>
+  </section>
+</article>
+
