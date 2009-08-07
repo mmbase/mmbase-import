@@ -19,7 +19,7 @@ import org.mmbase.util.functions.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9.2
- * @version $Id: ParameterizedTransformerFactory.java 34900 2009-05-01 16:29:42Z michiel $
+ * @version $Id$
  */
 
 public class BeanTransformerFactory<T extends Transformer> implements ParameterizedTransformerFactory<T>  {
