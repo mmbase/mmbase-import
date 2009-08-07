@@ -149,6 +149,98 @@ public class BeanFunction extends AbstractFunction<Object> {
         return claz.newInstance();
     }
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    public static Parameter<?>[] getParameterDefinition(Object sampleInstance, List<Method> setMethods) throws IllegalAccessException, InvocationTargetException {
+        Class claz = sampleInstance.getClass();
+        List<Parameter> parameters = new ArrayList<Parameter>();
+        Method nodeParameter = null;
+        for (Method m : claz.getMethods()) {
+            String methodName = m.getName();
+            Class[] parameterTypes = m.getParameterTypes();
+            if (parameterTypes.length == 1 && methodName.startsWith("set")) {
+                String parameterName = methodName.substring(3);
+                boolean required = false;
+                Required requiredAnnotation = m.getAnnotation(Required.class);
+                required = requiredAnnotation != null;
+
+                // find a corresponding getter method, which can be used for a default value;
+                Object defaultValue;
+                try {
+                    Method getter = claz.getMethod("get" + parameterName);
+                    defaultValue = getter.invoke(sampleInstance);
+                } catch (NoSuchMethodException nsme) {
+                    defaultValue = null;
+                }
+                if (Character.isUpperCase(parameterName.charAt(0))) {
+                    if (parameterName.length() > 1) {
+                        if (! Character.isUpperCase(parameterName.charAt(1))) {
+                            parameterName = "" + Character.toLowerCase(parameterName.charAt(0)) + parameterName.substring(1);
+                        }
+                    } else {
+                        parameterName = parameterName.toLowerCase();
+                    }
+                }
+                if (parameterName.equals("node") && org.mmbase.bridge.Node.class.isAssignableFrom(parameterTypes[0])) {
+                    nodeParameter = m;
+                } else {
+                    if(defaultValue != null) {
+                        if (required) {
+                            log.warn("Required annotation ignored, because a default value is present");
+                        }
+                        parameters.add(new Parameter<Object>(parameterName, parameterTypes[0], defaultValue));
+                    } else {
+                        parameters.add(new Parameter(parameterName, parameterTypes[0], required));
+                    }
+                    if (setMethods != null) {
+                        setMethods.add(m);
+                    }
+                }
+
+            }
+        }
+        if (nodeParameter != null) {
+            parameters.add(Parameter.NODE);
+            if (setMethods != null) {
+                setMethods.add(nodeParameter);
+            }
+        }
+
+        return parameters.toArray(Parameter.emptyArray());
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public static void setParameters(Object b, Parameters parameters, List<Method> setMethods) throws IllegalAccessException, InvocationTargetException {
+        int count = 0;
+        Iterator<?> i = parameters.iterator();
+        Iterator<Method> j = setMethods.iterator();
+        while(i.hasNext() && j.hasNext()) {
+            Object value  = i.next();
+            Method setter = j.next();
+            try {
+                if (value == null) {
+                    if (setter.getParameterTypes()[0].isPrimitive()) {
+                        log.debug("Tried to sed null in in primitive setter method");
+                        //primitive types cannot be null, never mind.
+                        continue;
+                    }
+                }
+                Object defaultValue = parameters.getDefinition()[count].getDefaultValue();
+                if ((defaultValue == null && value != null) ||
+                    (defaultValue != null && (! defaultValue.equals(value)))) {
+                    setter.invoke(b, value);
+                }
+                count++;
+            } catch (Exception e) {
+                throw new RuntimeException("" + setter + " value: " + value + " " + e.getMessage(), e);
+            }
+
+        }
+    }
+
 
     /* ================================================================================
        Instance methods
@@ -196,55 +288,8 @@ public class BeanFunction extends AbstractFunction<Object> {
         // need a sample instance to get the default values from.
         Object sampleInstance = producer.getInstance();
 
-        List<Parameter> parameters = new ArrayList<Parameter>();
-        Method nodeParameter = null;
-        for (Method m : claz.getMethods()) {
-            String methodName = m.getName();
-            Class[] parameterTypes = m.getParameterTypes();
-            if (parameterTypes.length == 1 && methodName.startsWith("set")) {
-                String parameterName = methodName.substring(3);
-                boolean required = false;
-                Required requiredAnnotation = m.getAnnotation(Required.class);
-                required = requiredAnnotation != null;
-
-                // find a corresponding getter method, which can be used for a default value;
-                Object defaultValue;
-                try {
-                    Method getter = claz.getMethod("get" + parameterName);
-                    defaultValue = getter.invoke(sampleInstance);
-                } catch (NoSuchMethodException nsme) {
-                    defaultValue = null;
-                }
-                if (Character.isUpperCase(parameterName.charAt(0))) {
-                    if (parameterName.length() > 1) {
-                        if (! Character.isUpperCase(parameterName.charAt(1))) {
-                            parameterName = "" + Character.toLowerCase(parameterName.charAt(0)) + parameterName.substring(1);
-                        }
-                    } else {
-                        parameterName = parameterName.toLowerCase();
-                    }
-                }
-                if (parameterName.equals("node") && org.mmbase.bridge.Node.class.isAssignableFrom(parameterTypes[0])) {
-                    nodeParameter = m;
-                } else {
-                    if(defaultValue != null) {
-                        if (required) {
-                            log.warn("Required annotation ignored, because a default value is present");
-                        }
-                        parameters.add(new Parameter<Object>(parameterName, parameterTypes[0], defaultValue));
-                    } else {
-                        parameters.add(new Parameter(parameterName, parameterTypes[0], required));
-                    }
-                    setMethods.add(m);
-                }
-
-            }
-        }
-        if (nodeParameter != null) {
-            parameters.add(Parameter.NODE);
-            setMethods.add(nodeParameter);
-        }
-        setParameterDefinition(parameters.toArray(Parameter.emptyArray()));
+        Parameter<?>[] definition = getParameterDefinition(sampleInstance, setMethods);
+        setParameterDefinition(definition);
         ReturnType returnType = new ReturnType(method.getReturnType(), "");
         setReturnType(returnType);
 
@@ -271,32 +316,9 @@ public class BeanFunction extends AbstractFunction<Object> {
      */
     public Object getFunctionValue(Parameters parameters) {
         Object b = getProducer().getInstance();
-        int count = 0;
-        Iterator<?> i = parameters.iterator();
-        Iterator<Method> j = setMethods.iterator();
-        while(i.hasNext() && j.hasNext()) {
-            Object value  = i.next();
-            Method setter = j.next();
-            try {
-                if (value == null) {
-                    if (setter.getParameterTypes()[0].isPrimitive()) {
-                        log.debug("Tried to sed null in in primitive setter method");
-                        //primitive types cannot be null, never mind.
-                        continue;
-                    }
-                }
-                Object defaultValue = parameters.getDefinition()[count].getDefaultValue();
-                if ((defaultValue == null && value != null) ||
-                    (defaultValue != null && (! defaultValue.equals(value)))) {
-                    setter.invoke(b, value);
-                }
-                count++;
-            } catch (Exception e) {
-                throw new RuntimeException("" + setter + " value: " + value + " " + e.getMessage(), e);
-            }
-
-        }
         try {
+            setParameters(b, parameters, setMethods);
+
             Object ret =  method.invoke(b);
             return ret;
         } catch (Exception e) {
