@@ -513,6 +513,14 @@
     <param name="escapeamps" value="true" />
   </parameterizedescaper>
 
+  <parameterizedescaper id="radix">
+    <class>org.mmbase.util.transformers.RadixTransformer</class>
+    <param name="radix" />
+    <info>
+      Can be used to convert number to use an another radix (and back).
+    </info>
+  </parameterizedescaper>
+
 
   <!-- The content-tag then can 'postprocess' everything in its body.
        These are meant to be simple transformations, like throwing
