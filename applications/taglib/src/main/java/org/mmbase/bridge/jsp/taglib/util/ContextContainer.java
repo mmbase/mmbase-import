@@ -428,7 +428,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
                 }
             }
             if (! valid) {
-                JspTagException exception = new TaglibException ("'" + newId + "' is not a valid Context identifier", new Throwable());
+                JspTagException exception = new TaglibException ("'" + newId + "' is not a valid Context identifier");
                 throw exception;
             }
 
