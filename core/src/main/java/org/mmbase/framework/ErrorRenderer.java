@@ -163,19 +163,26 @@ public class ErrorRenderer extends AbstractRenderer {
 
 
             if (request != null) {
-                msg.append("Headers\n----------\n");
-                // request properties
-                Enumeration en = request.getHeaderNames();
-                while (en.hasMoreElements()) {
-                    String name = (String) en.nextElement();
-                    msg.append(escape.transform(name + ": "+ escape.transform(request.getHeader(name)) + "\n"));
+                {
+                    msg.append("Headers\n----------\n");
+                    // request properties
+                    for (Object name : Collections.list(request.getHeaderNames())) {
+                        msg.append(escape.transform(name + ": "+ escape.transform(request.getHeader((String) name)) + "\n"));
+                    }
                 }
+                {
+                    msg.append("\nAttributes\n----------\n");
+                    for (Object name : Collections.list(request.getAttributeNames())) {
+                        msg.append(escape.transform(name + ": " + request.getAttribute((String) name) + "\n"));
+                    }
+                }
+                HttpSession ses = request.getSession(false);
+                if (ses != null) {
+                    msg.append("\nSession\n----------\n");
+                    for (Object name : Collections.list(ses.getAttributeNames())) {
+                        msg.append(escape.transform(name + ": " + ses.getAttribute((String) name) + "\n"));
+                    }
 
-                msg.append("\nAttributes\n----------\n");
-                Enumeration en2 = request.getAttributeNames();
-                while (en2.hasMoreElements()) {
-                    String name = (String) en2.nextElement();
-                    msg.append(escape.transform(name + ": " + request.getAttribute(name) + "\n"));
                 }
             }
             msg.append("\n");
