@@ -87,22 +87,33 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         this.wrapped = new FileInputStream(file);
     }
 
-    SerializableInputStream(SerializableInputStream is) {
+    SerializableInputStream(SerializableInputStream is) throws IOException {
         if (is.file == null) {
             is.supportMark();
         }
         this.size = is.size;
-        this.file = is.file;
         this.tempFile = is.tempFile;
         this.name = is.name;
         this.contentType =  is.contentType;
-        this.wrapped = is.wrapped;
         this.used = is.used;
+
+        if (this.tempFile) {
+            this.file = File.createTempFile(getClass().getName(), name);
+            FileOutputStream os = new FileOutputStream(this.file);
+            FileInputStream  in = new FileInputStream(is.file);
+            IOUtil.copy(in, os);
+            os.close();
+            is.close();
+	    this.wrapped = in;
+	    reset();
+	    
+        } else {
+            this.file = is.file;
+	    this.wrapped = is.wrapped;
+        }
 
 
     }
-
-
 
     private synchronized void use() {
         if (! used) {
@@ -330,11 +341,21 @@ public class SerializableInputStream  extends InputStream implements Serializabl
 
     @Override
     public String toString() {
-        long filePos = -1;
+        String filePos;
         try {
-            filePos = wrapped instanceof FileInputStream ? ((FileInputStream) wrapped).getChannel().position() : 0;
+	    if (wrapped instanceof FileInputStream) {
+		java.nio.channels.FileChannel chan = ((FileInputStream) wrapped).getChannel();
+		if (chan.isOpen()) {
+		    filePos = "" + chan.position();
+		} else {
+		    filePos = "close";
+		}
+
+	    } else {
+		filePos = "?";
+	    }
         } catch (IOException ioe) {
-            log.warn(ioe.getMessage(), ioe);
+	    filePos = ioe.getMessage();
         }
         return "SERIALIZABLE " + wrapped +
             (tempFile ? (" (tempfile: " + file + ") ") : (file != null ? ("(" + file + ")") : "")) +
@@ -343,7 +364,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             ", " +
             (contentType == null ? "[no contenttype]" : contentType) +
             (fileMark > 0 ? (" mark: " + fileMark) : "") +
-            (filePos > 0 ? (" position: " + filePos) : "") +
+            (filePos.equals("0") ? "" :  (" position: " + filePos)) +
             ")";
     }
 
