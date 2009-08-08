@@ -438,7 +438,11 @@ public class Casting {
         } else if (o instanceof CharSequence) {
             return new StringWrapper((CharSequence) o, escaper);
         } else if (o instanceof InputStream) {
-            return new StringSerializableInputStream(toSerializableInputStream(o), escaper);
+	    try {
+		return new StringSerializableInputStream(toSerializableInputStream(o), escaper);
+	    } catch (IOException ioe) {
+		return ioe.getMessage();
+	    }
         } else {
             return o;
         }
@@ -1301,7 +1305,7 @@ public class Casting {
         private static final long serialVersionUID = 2L;
 
         CharTransformer escaper;
-        StringSerializableInputStream(SerializableInputStream is, CharTransformer e) {
+        StringSerializableInputStream(SerializableInputStream is, CharTransformer e) throws IOException {
             super(is);
             escaper = e;
         }
