@@ -180,6 +180,14 @@ public class SerializableInputStreamTest extends TestCase {
         testReset(getDiskItemInstanceBig());
     }
 
+    public void testCopyConstructor() throws IOException {
+        SerializableInputStream is1 = getInputStreamInstance();
+        SerializableInputStream is2 = new SerializableInputStream(is1);
+        is1.finalize();
+        testSerializableMany(is2);
+
+    }
+
 
 
 }
