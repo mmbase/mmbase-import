@@ -40,7 +40,6 @@ public class RadixTransformer extends StringTransformer {
         try {
             long l = Long.parseLong(r);
             String result = Long.toString(l, radix);
-            log.info("Transforming " + l + " with radix " + radix + " -> " + result);
             return result;
         } catch (Exception e) {
             return r;
