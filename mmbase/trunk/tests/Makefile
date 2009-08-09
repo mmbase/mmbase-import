@@ -6,7 +6,8 @@ mvn=/home/nightly/maven2/bin/mvn
 ant=ant -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib target/dependency:. -Dnoconnection=true
 #ant=ant -lib lib:. -Dnoconnection=true
 
-.PHONY: all bridge rmmci dbsq util datatypes clustering convert typerel richtext cloudcontext transactions
+.PHONY: all bridge rmmci dbsq util datatypes clustering convert typerel richtext cloudcontext transactions releasestrategies
+
 all: compile dependencies
 	$(ant) run.all | tee work/all.log
 
@@ -54,6 +55,10 @@ convert: dependencies
 #ok
 typerel: dependencies
 	$(ant) run.typerel | tee work/typerel.log
+
+#ok
+releasestrategies: dependencies
+	$(ant) run.releasestrategies | tee work/releastrategies.log
 
 # not yet checked in
 transactions:
