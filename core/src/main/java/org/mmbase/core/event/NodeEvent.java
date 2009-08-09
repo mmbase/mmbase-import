@@ -46,16 +46,20 @@ public class NodeEvent extends Event {
     /**
     *@param machineName (MMBase) name of the server
     *@param builderName name of builder of node event is about
-    *@param oldValues map with fields and their values that have been changed by the event
+    *@param oldValues map with fields and their values that have been changed by the event. This may be <code>null</code>
     *@param newValues map with new values of changed fields
     *@param eventType the type of event
     **/
-    public NodeEvent(String machineName, String builderName, int nodeNumber, Map<String, Object> oldValues, Map<String, Object> newValues, int eventType ){
+    public NodeEvent(String machineName, String builderName, int nodeNumber, final Map<String, Object> oldValues, final Map<String, Object> newValues, int eventType ){
         super(machineName, eventType);
         this.builderName = builderName;
         this.nodeNumber = nodeNumber;
-        synchronized(oldValues) {
-            this.oldValues = oldValues == null ? EMPTY : Collections.unmodifiableMap(new HashMap<String, Object>(oldValues));
+        if (oldValues == null) {
+            this.oldValues = EMPTY;
+        } else {
+            synchronized(oldValues) {
+                this.oldValues = Collections.unmodifiableMap(new HashMap<String, Object>(oldValues));
+            }
         }
         synchronized(newValues) {
             this.newValues = newValues == null ? EMPTY : Collections.unmodifiableMap(new HashMap<String, Object>(newValues));
