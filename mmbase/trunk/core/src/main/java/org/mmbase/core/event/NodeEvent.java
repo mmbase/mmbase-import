@@ -61,8 +61,12 @@ public class NodeEvent extends Event {
                 this.oldValues = Collections.unmodifiableMap(new HashMap<String, Object>(oldValues));
             }
         }
-        synchronized(newValues) {
-            this.newValues = newValues == null ? EMPTY : Collections.unmodifiableMap(new HashMap<String, Object>(newValues));
+        if (newValues == null) {
+            this.newValues = EMPTY;
+        } else {
+            synchronized(newValues) {
+                this.newValues =  Collections.unmodifiableMap(new HashMap<String, Object>(newValues));
+            }
         }
     }
 
