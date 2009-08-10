@@ -76,7 +76,8 @@ public class FunctionFactory {
     /**
      * Gets a function object for a Bean
      */
-    public static Function<Object> getFunction(Class<?> claz, String functionName) throws java.lang.IllegalAccessException, InstantiationException, InvocationTargetException {
+    public static Function<Object> getFunction(Class<?> claz, String functionName) throws java.lang.IllegalAccessException, InstantiationException, InvocationTargetException,
+                                                                                          org.mmbase.datatypes.util.xml.DependencyException {
         return BeanFunction.getFunction(claz, functionName);
     }
 
