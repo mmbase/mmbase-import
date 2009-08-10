@@ -96,7 +96,7 @@ public final class AnalyzerUtils {
             log.service("Fixing mime type " + actualMimeType + "-> " + newType) ;
 
         } else {
-            log.debug("MimType " + actualMimeType + " is correct");
+            log.debug("MimeType " + actualMimeType + " is correct");
         }
     }
 
@@ -182,9 +182,9 @@ public final class AnalyzerUtils {
     private static final Pattern IMAGE    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
     /*
     use this in stead for image matching and do height and width in other method ?
-    private static final Pattern IMAGE    = Pattern.compile("^Input #\\d+, image.*"); 
+    private static final Pattern IMAGE    = Pattern.compile("^Input #\\d+, image.*");
     */
-        
+
     public boolean image(String l, Node source, Node dest) {
         if (! source.isNull("bitrate")) {
             // already has a bitrate

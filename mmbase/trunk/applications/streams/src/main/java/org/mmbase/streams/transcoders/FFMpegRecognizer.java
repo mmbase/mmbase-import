@@ -71,7 +71,7 @@ public class FFMpegRecognizer implements Recognizer {
 
     public static void main(String[] argv) throws Exception {
         Logger logger = Logging.getLoggerInstance("RECOGNIZER");
-        logger.setLevel(Level.WARN);
+        logger.setLevel(Level.DEBUG);
         Recognizer recognizer = new FFMpegRecognizer().clone();
         Analyzer a = new FFMpegAnalyzer();
         Node source = AnalyzerUtils.getTestNode();
