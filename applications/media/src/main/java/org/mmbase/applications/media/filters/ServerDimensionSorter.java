@@ -55,12 +55,12 @@ public class ServerDimensionSorter extends  PreferenceSorter {
 
     protected int getPreference(URLComposer ri) {
         Dimension dimension = ri.getDimension();
-
+        if (dimension == null) dimension = Dimension.UNDETERMINED;
         int index;
         for (index = 0; index <= preferredDimensions.size(); index++) {
             if (index< preferredDimensions.size()) {
                 Dimension dim = preferredDimensions.get(index);
-
+                if (dim == null) dim = Dimension.UNDETERMINED;
                 if ((dim.getHeight() == -1 || dimension.getHeight() == dim.getHeight()) &&
                     (dim.getWidth() == -1 || dimension.getWidth() == dim.getWidth())) {
                     log.debug("Comparing " + dim + " with " + dimension + " -> matched");
