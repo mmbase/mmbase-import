@@ -10,7 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import org.mmbase.cache.Cache;
-
+import org.mmbase.util.xml.DocumentReader;
+import org.mmbase.datatypes.util.xml.*;
+import org.xml.sax.InputSource;
+import java.util.regex.*;
 import java.lang.reflect.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
@@ -93,7 +96,7 @@ public class BeanFunction extends AbstractFunction<Object> {
      * <code>claz</code>. Defaults to a producer that simply calls {@link Class#newInstance()}.
      * @since MMBase-1.8.5
      */
-    public static BeanFunction getFunction(final Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    public static BeanFunction getFunction(final Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException, InvocationTargetException, DependencyException  {
         String key = claz.getName() + '.' + name + '.' + producer;
         BeanFunction result = beanFunctionCache.get(key);
         if (result == null) {
@@ -106,7 +109,7 @@ public class BeanFunction extends AbstractFunction<Object> {
      * This defaulting version of {@link #getFunction(Class, String, Producer)} uses a producer that uses {@link Class#newInstance()}.
      * Called from {@link FunctionFactory}
      */
-    public static BeanFunction getFunction(final Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    public static BeanFunction getFunction(final Class claz, String name) throws IllegalAccessException, InstantiationException, InvocationTargetException, DependencyException  {
         return getFunction(claz, name, new Producer() {
             public Object getInstance()  {
                 try {
@@ -152,7 +155,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     /**
      * @since MMBase-1.9.2
      */
-    public static Parameter<?>[] getParameterDefinition(Object sampleInstance, List<Method> setMethods) throws IllegalAccessException, InvocationTargetException {
+    public static Parameter<?>[] getParameterDefinition(Object sampleInstance, List<Method> setMethods) throws IllegalAccessException, InvocationTargetException, DependencyException {
         Class claz = sampleInstance.getClass();
         List<Parameter> parameters = new ArrayList<Parameter>();
         Method nodeParameter = null;
@@ -161,18 +164,32 @@ public class BeanFunction extends AbstractFunction<Object> {
             Class[] parameterTypes = m.getParameterTypes();
             if (parameterTypes.length == 1 && methodName.startsWith("set")) {
                 String parameterName = methodName.substring(3);
-                boolean required = false;
-                Required requiredAnnotation = m.getAnnotation(Required.class);
-                required = requiredAnnotation != null;
+
+                final org.mmbase.datatypes.DataType dataType;
+                Type annotatedDataType =  m.getAnnotation(Type.class);
+                if (annotatedDataType != null) {
+                    dataType = getDataType(annotatedDataType.value(), org.mmbase.datatypes.DataTypes.createDataType(parameterName, parameterTypes[0]));
+                } else {
+                    dataType = org.mmbase.datatypes.DataTypes.createDataType(parameterName, parameterTypes[0]);
+                }
+                {
+                    boolean required = false;
+                    Required requiredAnnotation = m.getAnnotation(Required.class);
+                    if (requiredAnnotation != null) {
+                        dataType.setRequired(true);
+                    }
+                }
 
                 // find a corresponding getter method, which can be used for a default value;
-                Object defaultValue;
                 try {
+                    Object defaultValue;
                     Method getter = claz.getMethod("get" + parameterName);
                     defaultValue = getter.invoke(sampleInstance);
+                    dataType.setDefaultValue(defaultValue);
                 } catch (NoSuchMethodException nsme) {
-                    defaultValue = null;
+                    //defaultValue = null;
                 }
+
                 if (Character.isUpperCase(parameterName.charAt(0))) {
                     if (parameterName.length() > 1) {
                         if (! Character.isUpperCase(parameterName.charAt(1))) {
@@ -185,14 +202,7 @@ public class BeanFunction extends AbstractFunction<Object> {
                 if (parameterName.equals("node") && org.mmbase.bridge.Node.class.isAssignableFrom(parameterTypes[0])) {
                     nodeParameter = m;
                 } else {
-                    if(defaultValue != null) {
-                        if (required) {
-                            log.warn("Required annotation ignored, because a default value is present");
-                        }
-                        parameters.add(new Parameter<Object>(parameterName, parameterTypes[0], defaultValue));
-                    } else {
-                        parameters.add(new Parameter(parameterName, parameterTypes[0], required));
-                    }
+                    parameters.add(new Parameter<Object>(parameterName, dataType));
                     if (setMethods != null) {
                         setMethods.add(m);
                     }
@@ -242,6 +252,30 @@ public class BeanFunction extends AbstractFunction<Object> {
     }
 
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    public static final Pattern NCName = Pattern.compile("[\\p{L}_][\\p{L}_\\-\\.0-9]*");
+
+    /**
+     * Given a string and a 'base' datatype, produces a new {@link #DataType}. If the string matches
+     * {@link #NCName} then the datatype is looked up in the MMBase DataType repository at {@link
+     * org.mmbase.datatypes.DataTypes#getDataType}. Otherwise the String is interpreted as a piece
+     * of XML.
+     *
+     * @since MMBase-1.9.2
+     */
+    public static org.mmbase.datatypes.DataType getDataType(String value, org.mmbase.datatypes.BasicDataType base) throws org.mmbase.datatypes.util.xml.DependencyException {
+        if (NCName.matcher(value).matches()) {
+            return org.mmbase.datatypes.DataTypes.getDataType(value);
+        } else {
+            DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(value)), true, org.mmbase.datatypes.util.xml.DataTypeReader.class);
+            return org.mmbase.datatypes.util.xml.DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), base, null).dataType;
+
+        }
+    }
+
+
     /* ================================================================================
        Instance methods
        ================================================================================
@@ -262,7 +296,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     /**
      * The constructor! Performs reflection to fill 'method' and 'setMethods' members.
      */
-    private  BeanFunction(Class<?> claz, String name, Producer producer) throws IllegalAccessException, InstantiationException,  InvocationTargetException {
+    private  BeanFunction(Class<?> claz, String name, Producer producer) throws IllegalAccessException, InstantiationException,  InvocationTargetException, DependencyException  {
         super(name, null, null);
         this.producer = producer;
 
@@ -298,7 +332,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     /**
      * @since MMBase-1.8.5
      */
-    public BeanFunction(final Object bean, String name) throws IllegalAccessException, InstantiationException,  InvocationTargetException {
+    public BeanFunction(final Object bean, String name) throws IllegalAccessException, InstantiationException,  InvocationTargetException, DependencyException {
         this(bean.getClass(), name, new Producer() { public Object getInstance() { return bean; }});
     }
 
