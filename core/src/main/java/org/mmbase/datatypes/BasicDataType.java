@@ -751,8 +751,19 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
         addRestriction(parent, "unique",   "name,description,class,property,default,unique", uniqueRestriction);
         addRestriction(parent, "required",   "name.description,class,property,default,unique,required", requiredRestriction);
-        getElement(parent, "enumeration", "name,description,class,property,default,unique,required,enumeration");
-        /// set this here...
+        {
+            Element factoryXml  = getEnumerationFactory().toXml();
+            if (factoryXml != null) {
+                Element enumElement = getElement(parent, "enumeration", "name,description,class,property,default,unique,required,enumeration");
+                if (enumElement.getChildNodes().getLength() == 0) {
+                    Element imported = (Element) enumElement.getOwnerDocument().importNode(factoryXml, true);
+                    org.w3c.dom.NodeList childs = imported.getChildNodes();
+                    for (int i = 0; i < childs.getLength(); i++) {
+                        enumElement.appendChild(childs.item(i));
+                    }
+                }
+            }
+        }
 
         /**
            End up in the wrong place, and not needed for javascript, so commented out for the moment.
@@ -1427,16 +1438,23 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         @Override
         protected String valueString(Node node, Field field) {
             Collection<Map.Entry<C, String>> col = getEnumeration(null, null, node, field);
-            if(col.size() == 0) return "";
+            if (col.size() == 0) {
+                return "";
+            }
             StringBuilder buf = new StringBuilder();
             Iterator<Map.Entry<C, String>> it = col.iterator();
             int i = 0;
-            while (it.hasNext() && ++i < 10) {
+            while (it.hasNext() && i < 10) {
+                i++;
                 Map.Entry<C, String> ent = it.next();
                 buf.append(Casting.toString(ent));
-                if (it.hasNext()) buf.append(", ");
+                if (it.hasNext()) {
+                    buf.append(", ");
+                }
             }
-            if (i < col.size()) buf.append(".(" + (col.size() - i) + " more ..");
+            if (i < col.size()) {
+                buf.append(".(" + col.size() + " " + (col.size() - i) + " more ..");
+            }
             return buf.toString();
         }
 
