@@ -19,7 +19,7 @@ import java.lang.annotation.*;
  * @since MMBase-1.9
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER, ElementType.METHOD})
 public @interface Name {
     String value();
 
