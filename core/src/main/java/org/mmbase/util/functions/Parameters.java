@@ -576,7 +576,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
     /**
      * Gets the value of a parameter, cast to a String.
      * @param parameter the parameter to get
-     * @return value the parameter value as a <code>STring</code>
+     * @return value the parameter value as a <code>String</code>
      */
 
     public String getString(Parameter<?> parameter) {
