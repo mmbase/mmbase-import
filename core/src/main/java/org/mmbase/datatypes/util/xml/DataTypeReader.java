@@ -95,9 +95,14 @@ public class DataTypeReader {
 
     /**
      * Reads a datatype.
+     * @param typeElement   The xml Element defining the datatype.
+     * @param baseDataType  Datatype on which this must be based
+     * @param collector
      */
     public static DataTypeDefinition readDataType(Element typeElement, BasicDataType baseDataType, DataTypeCollector collector) throws DependencyException {
-        DataTypeDefinition definition = collector.getDataTypeDefinition();
+        DataTypeDefinition definition = collector == null ?
+            (new DataTypeCollector(typeElement)).getDataTypeDefinition() :
+            collector.getDataTypeDefinition();
         definition.configure(typeElement, baseDataType);
         definition.dataType.setXml(typeElement);
         return definition;
