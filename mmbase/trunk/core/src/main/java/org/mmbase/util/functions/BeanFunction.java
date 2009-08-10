@@ -156,7 +156,22 @@ public class BeanFunction extends AbstractFunction<Object> {
      * @since MMBase-1.9.2
      */
     public static Parameter<?>[] getParameterDefinition(Object sampleInstance, List<Method> setMethods) throws IllegalAccessException, InvocationTargetException, DependencyException {
-        Class claz = sampleInstance.getClass();
+        Class<?> claz = sampleInstance.getClass();
+
+        boolean mustBeAnnotated = false;
+        List<String> setters;
+        {
+            FunctionParameters fp = claz.getAnnotation(FunctionParameters.class);
+            if (fp != null) {
+                mustBeAnnotated = fp.annotated();
+                setters =  Arrays.asList(fp.value());
+                if (setters.size() == 1 && setters.get(0).length() == 0) {
+                    setters = null;
+                }
+            } else {
+                setters = null;
+            }
+        }
         List<Parameter> parameters = new ArrayList<Parameter>();
         Method nodeParameter = null;
         for (Method m : claz.getMethods()) {
@@ -164,12 +179,14 @@ public class BeanFunction extends AbstractFunction<Object> {
             Class[] parameterTypes = m.getParameterTypes();
             if (parameterTypes.length == 1 && methodName.startsWith("set")) {
                 String parameterName = methodName.substring(3);
+                if (setters != null && ! setters.contains(parameterName)) continue;
 
                 final org.mmbase.datatypes.DataType dataType;
                 Type annotatedDataType =  m.getAnnotation(Type.class);
                 if (annotatedDataType != null) {
                     dataType = getDataType(annotatedDataType.value(), org.mmbase.datatypes.DataTypes.createDataType(parameterName, parameterTypes[0]));
                 } else {
+                    if (mustBeAnnotated) continue;
                     dataType = org.mmbase.datatypes.DataTypes.createDataType(parameterName, parameterTypes[0]);
                 }
                 {
@@ -202,6 +219,9 @@ public class BeanFunction extends AbstractFunction<Object> {
                 if (parameterName.equals("node") && org.mmbase.bridge.Node.class.isAssignableFrom(parameterTypes[0])) {
                     nodeParameter = m;
                 } else {
+                    if (m.getAnnotation(Name.class) != null) {
+                        parameterName = m.getAnnotation(Name.class).value();
+                    }
                     parameters.add(new Parameter<Object>(parameterName, dataType));
                     if (setMethods != null) {
                         setMethods.add(m);
@@ -266,13 +286,18 @@ public class BeanFunction extends AbstractFunction<Object> {
      * @since MMBase-1.9.2
      */
     public static org.mmbase.datatypes.DataType getDataType(String value, org.mmbase.datatypes.BasicDataType base) throws org.mmbase.datatypes.util.xml.DependencyException {
+        org.mmbase.datatypes.DataType dt;
         if (NCName.matcher(value).matches()) {
-            return org.mmbase.datatypes.DataTypes.getDataType(value);
+             dt = org.mmbase.datatypes.DataTypes.getDataType(value);
         } else {
             DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(value)), true, org.mmbase.datatypes.util.xml.DataTypeReader.class);
-            return org.mmbase.datatypes.util.xml.DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), base, null).dataType;
-
+            dt = org.mmbase.datatypes.util.xml.DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), base, null).dataType;
         }
+        if (dt == null) {
+            log.warn("Could not parse '" + value + "  taking " + base, new Exception());
+            dt = base;
+        }
+        return dt;
     }
 
 
