@@ -29,7 +29,8 @@ public class BeanTransformerFactory<T extends Transformer> implements Parameteri
     private final Parameter<?>[] definition;
     private final List<Method> setMethods = new ArrayList<Method>();
 
-    public BeanTransformerFactory(Class<T> clazz) throws IllegalAccessException, InstantiationException, java.lang.reflect.InvocationTargetException {
+    public BeanTransformerFactory(Class<T> clazz) throws IllegalAccessException, InstantiationException, java.lang.reflect.InvocationTargetException,
+        org.mmbase.datatypes.util.xml.DependencyException {
         implementation = clazz;
         definition = BeanFunction.getParameterDefinition(implementation.newInstance(), setMethods);
     }
