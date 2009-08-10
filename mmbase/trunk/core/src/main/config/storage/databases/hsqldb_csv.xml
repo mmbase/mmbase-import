@@ -58,7 +58,8 @@
 
   <!-- HSQLdb disallowed fields are retrieved from the database -->
   <disallowed-fields>
-    <disallowed-field name="number" replacement="m_number"/>
+    <disallowed-field name="number" replacement="m_number" />
+    <disallowed-field name="show"   replacement="m_show" />
   </disallowed-fields>
 
 </storage>
