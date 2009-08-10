@@ -41,7 +41,8 @@ test.recognize: samples/mahnamahna.mpg samples/mahnamahna.broken
 #	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/test.mp3
 #	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/test.jpeg
 #	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/mahnamahna.broken
-	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/odd.ogg
+#	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/odd.ogg
+	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/testaudio.ogg
 
 
 transcode:
