@@ -31,7 +31,7 @@ function MMBaseValidator(root) {
     this.sessionName   = null;
     this.id = MMBaseValidator.validators.push(this);
     if (MMBaseValidator.validators.length == 1) {
-	    setTimeout(MMBaseValidator.watcher, 500);
+        setTimeout(MMBaseValidator.watcher, 500);
     }
     this.activeElement = null;
     this.checkAfter    = 600;
@@ -49,9 +49,9 @@ MMBaseValidator.watcher = function() {
 	var now = new Date().getTime();
         if (el != null) {
             if (! el.serverValidated) {
-		        if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
+                if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
                     MMBaseValidator.validators[i].validateElement(MMBaseValidator.validators[i].activeElement, true);
-		        }
+                }
             }
         }
     }
@@ -63,12 +63,12 @@ MMBaseValidator.watcher = function() {
 
 MMBaseValidator.prototype.setup = function(el) {
     if (el != null) {
-	    this.root = el;
-	    if (this.root == window) this.root = this.root.document;
+        this.root = el;
+        if (this.root == window) this.root = this.root.document;
     }
     if (this.root != null) {
-	    var self = this;
-	    $(document).ready(function(event) {
+        var self = this;
+        $(document).ready(function(event) {
 	        self.onLoad(event);
 	    });
     }
@@ -686,17 +686,17 @@ MMBaseValidator.prototype.serverValidation = function(el) {
     if (el == null) return;
     try {
         if (this.isBinary(el)) {
-		    el.serverValidated = true;
+            el.serverValidated = true;
             return $("<result valid='true' class='implicit_binary' />")[0];
         }
         if (this.isCheckEquality(el)) { // Not yet supported
-		    el.serverValidated = true;
+            el.serverValidated = true;
             return $("<result valid='true' class='implicit_checkequality' />")[0];
         }
 
 
         var key = this.getDataTypeKey(el);
-        var value = this.getDateValue(el);
+        var value = this.getValue(el);
 
         var validationUrl = '<mm:url page="/mmbase/validation/valid.jspx" />';
             this.getDataTypeArguments(key) +
@@ -775,28 +775,35 @@ MMBaseValidator.prototype.serverValidate = function(event) {
 
 MMBaseValidator.prototype.validateElement = function(element, server) {
     var valid;
+    var prevValue = element.prevValue;
+    var curValue  = this.getValue(element);
+    if (curValue == prevValue) {
+        element.lastChange = new Date();
+        return;
+    }
+    element.prevValue = curValue;
     this.log("Validating " + element);
-    this.activeElement = element;
     element.lastChange = new Date();
+    this.activeElement = element;
     if (server) {
         var serverXml = this.serverValidation(element);
         valid = this.validResult(serverXml);
         if (element.id) {
             var errorDiv = document.getElementById("mm_check_" + element.id.substring(3));
 	        if (errorDiv != null) {
-		        errorDiv.className = valid ? "mm_check_noerror mm_check_updated" : "mm_check_error mm_check_updated";
-		        if (errorDiv) {
-                    $(errorDiv).empty();
-                    var errors = serverXml.documentElement ? serverXml.documentElement.childNodes : [];
-                    this.log("errors for " + element.id + " " +  serverXml + " " + errors.length);
+                    errorDiv.className = valid ? "mm_check_noerror mm_check_updated" : "mm_check_error mm_check_updated";
+                    if (errorDiv) {
+                        $(errorDiv).empty();
+                        var errors = serverXml.documentElement ? serverXml.documentElement.childNodes : [];
+                        this.log("errors for " + element.id + " " +  serverXml + " " + errors.length);
 
 
-                    for (var  i = 0; i < errors.length; i++) {
-			            var span = document.createElement("span");
-			            span.innerHTML = errors[i].childNodes[0].nodeValue; // IE does not support textContent
-			            errorDiv.appendChild(span);
+                        for (var  i = 0; i < errors.length; i++) {
+                            var span = document.createElement("span");
+                            span.innerHTML = errors[i].childNodes[0].nodeValue; // IE does not support textContent
+                            errorDiv.appendChild(span);
+                        }
                     }
-		        }
 	        }
         }
     } else {
