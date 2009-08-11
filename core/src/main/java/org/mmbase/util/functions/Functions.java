@@ -60,6 +60,9 @@ public class Functions {
         for (Parameter d : def) {
             if (d instanceof Parameter.Wrapper) {
                 define(((Parameter.Wrapper) d).arguments, list);
+                while (firstPattern < list.size() && ! (list.get(firstPattern) instanceof PatternParameter)) {
+                    firstPattern++;
+                }
             } else if (d instanceof PatternParameter) {
                 list.add(d);
                 patterns = true;
