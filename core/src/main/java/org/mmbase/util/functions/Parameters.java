@@ -343,7 +343,11 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         Collection<LocalizedString> errors = new ArrayList<LocalizedString>();
         for (int i = fromIndex; i < toIndex && i < patternLimit; i++) {
             Parameter<?> a = definition[i];
-            errors.addAll(a.getDataType().castAndValidate(get(a), null, null));
+            for (LocalizedString ls : a.getDataType().castAndValidate(get(a), null, null)) {
+                ReplacingLocalizedString replacing = new ReplacingLocalizedString(ls);
+                replacing.replaceAll("\\A", a.getName() + ": ");
+                errors.add(replacing);
+            }
         }
         return errors;
     }
