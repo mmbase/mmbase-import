@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.Parameter;
 /**
  * A piece of 'action check' functionality. Provided by actions themselves, but security
  * implementations can perhaps also use this interface to administer their implementation of {@link
@@ -23,6 +24,8 @@ public interface ActionChecker extends java.io.Serializable {
 
     boolean check(UserContext user, Action ac, Parameters parameters);
 
+    Parameter[] getParameterDefinition();
+
 
     /**
      * The ActionChecker that always allows every action to to everybody.
@@ -32,6 +35,9 @@ public interface ActionChecker extends java.io.Serializable {
             private static final long serialVersionUID = 1L;
             public boolean check(UserContext user, Action ac, Parameters parameters) {
                 return true;
+            }
+            public Parameter[] getParameterDefinition() {
+                return Parameter.EMPTY;
             }
             @Override
             public String toString() {
@@ -52,6 +58,9 @@ public interface ActionChecker extends java.io.Serializable {
         }
         public boolean check(UserContext user, Action ac, Parameters parameters) {
             return user.getRank().getInt() >= rank.getInt();
+        }
+        public Parameter[] getParameterDefinition() {
+            return Parameter.EMPTY;
         }
         @Override
         public String toString() {
