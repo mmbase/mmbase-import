@@ -65,6 +65,11 @@ public class  RequestActionChecker implements ActionChecker  {
         return PARAMS;
     }
 
+    @Override
+    public String toString() {
+        return rank.toString() + "@" + allowedSchemes + "://" + allowedIps;
+    }
+
 
 
 }
