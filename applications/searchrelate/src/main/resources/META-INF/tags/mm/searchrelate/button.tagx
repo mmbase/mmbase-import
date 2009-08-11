@@ -12,32 +12,25 @@
       example="See /mmexamples/searchrelate"
       description="" />
 
-  <jsp:directive.attribute name="icondir"      type="java.lang.String" />
-  <jsp:directive.attribute name="type"         required="true" />
-  <jsp:directive.attribute name="alt"           />
+  <jsp:directive.attribute name="parameters"      type="java.util.Map"  />
+  <jsp:directive.attribute name="type"      type="java.lang.String" required="true"  />
+  <jsp:directive.attribute name="alt"      type="java.lang.String"   />
 
-  <mm:import id="icons">
-    <c:choose>
-      <c:when test="${empty icondir}">
-        <mm:treefile page="/mmbase/style/images" objectlist="${requestScope['org.mmbase.includePath']}" absolute="context" />
-      </c:when>
-      <c:otherwise>${icondir}</c:otherwise>
-    </c:choose>
-  </mm:import>
+  <c:if test="${empty parameters}">
+    <c:set var="parameters" value="${requestScope['org.mmbase.sr.relatednodes.parameters']}" />
+  </c:if>
 
-
-
-  <mm:haspage page="${icons}/${type}.jspx">
-    <c:set var="alt"><mm:include page="${icons}/${type}.jspx" /></c:set>
+  <mm:haspage page="${parameters.icondir}/${type}.jspx">
+    <c:set var="alt"><mm:include page="${parameters.icondir}/${type}.jspx" /></c:set>
   </mm:haspage>
-  <mm:haspage page="${icons}/${type}.png">
-    <mm:link page="${icons}/${type}.png">
+  <mm:haspage page="${parameters.icondir}/${type}.png">
+    <mm:link page="${parameters.icondir}/${type}.png">
       <img class="icon"
            alt="${empty alt ? '+' : mm:escape('tagstripper(NONE)', alt)}"
            src="${_}" />
     </mm:link>
   </mm:haspage>
-  <mm:haspage page="${icons}/${type}.png" inverse="true">
+  <mm:haspage page="${parameters.icondir}/${type}.png" inverse="true">
     <jsp:text>${alt}</jsp:text>
   </mm:haspage>
 </jsp:root>

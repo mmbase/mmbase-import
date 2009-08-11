@@ -7,12 +7,7 @@
     >
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="order" required="true" />
-  <mm:import externid="seq"  required="true" />
-  <mm:import externid="source"  required="true" />
-  <mm:import externid="formtag" />
-
-  <mm:import id="query" externid="mm_list_query_${seq}" from="session" jspvar="query" vartype="org.mmbase.bridge.Query" />
-
+  <jsp:directive.include file="parameters.jspf" />
   <div class="saveresult">
     NOT YET IMPLEMENTED ${order}
   </div>

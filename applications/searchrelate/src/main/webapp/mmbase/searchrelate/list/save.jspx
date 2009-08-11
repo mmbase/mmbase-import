@@ -6,21 +6,17 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="item" required="true" />
-  <mm:import externid="seq"  required="true" />
-  <mm:import externid="source"  required="true" />
-  <mm:import externid="formtag" />
-  <mm:import id="query" externid="mm_list_query_${seq}" from="session" jspvar="query" vartype="org.mmbase.bridge.Query" />
+  <jsp:directive.include file="parameters.jspf" />
 
   <div class="saveresult">
     <mm:escape escape="swallow">
-      <mm:listnodescontainer referid="query">
+      <mm:listnodescontainer referid="parameters.query">
         <mm:listnodes>
           <mm:import id="formtagid" externid="formtag">node${_node}</mm:import>
           <mm:form id="${formtagid}"
                  name="${formtagid}"
                  >
-            <mm:include page="${item}" referids="source" />
+            <mm:include page="${parameters.item}" referids="id" />
             <c:if test="${empty formtag}">
               <mm:valid>
                 <mm:import externid="submit" />
@@ -40,14 +36,14 @@
         </mm:listnodes>
       </mm:listnodescontainer>
     </mm:escape>
-    <c:if test="${! empty formtag}">
-      <mm:form id="${formtag}"
-               name="${formtag}"
+    <c:if test="${! empty parameters.formtag}">
+      <mm:form id="${parameters.formtag}"
+               name="${parameters.formtag}"
                >
         <c:set value="${requestScope['org.mmbase.transaction'].nodes}" var="tn"  />
         <mm:listnodes referid="tn">
           <c:if test="${_node.number lt 0}">
-            <mm:include page="${item}" referids="source" />
+            <mm:include page="${parameters.item}" referids="id" />
             <p>${_node.number}${_node._number}</p>
           </c:if>
         </mm:listnodes>
