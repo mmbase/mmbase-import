@@ -175,9 +175,13 @@
     <mm:write request="mm_list_javascript" value="yes" />
   </c:if>
 
+  <mm-sr:heartbeat />
+
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
+
+
 
 
     <div class="list ${q.nodeManager.name}">
