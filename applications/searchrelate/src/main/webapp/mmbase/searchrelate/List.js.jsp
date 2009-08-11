@@ -242,7 +242,9 @@ List.prototype.bindCreate = function(a) {
         return false;
     });
 }
-List.prototype.addItem = function(res) {
+
+
+List.prototype.addItem = function(res, cleanOnFocus) {
     var list = this;
     var r = null;
     try {
@@ -251,13 +253,15 @@ List.prototype.addItem = function(res) {
         // IE 6 sucks.
         r = $(res.responseText)[0];
     }
-    // remove default value on focus
-    $(r).find("input").one("focus", function() {
-            this.value = "";
-            if (list.validator != null) {
-                list.validator.validateElement(this);
-            }
-        });
+    if (cleanOnFocus == null || cleanOnFocus) {
+        // remove default value on focus
+        $(r).find("input").one("focus", function() {
+                this.value = "";
+                if (list.validator != null) {
+                    list.validator.validateElement(this);
+                }
+            });
+    }
     if (this.createposition == 'top') {
         list.find(null, "ol").prepend(r);
     } else {
@@ -441,7 +445,7 @@ List.prototype.relate = function(event, relate, relater) {
             complete: function(res, status){
                 try {
                     if ( status == "success" || status == "notmodified" ) {
-                        list.addItem(res);
+                        list.addItem(res, false);
                     } else {
                         alert(status + " with " + url);
                     }
