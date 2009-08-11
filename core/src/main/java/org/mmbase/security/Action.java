@@ -75,6 +75,6 @@ public class Action implements java.io.Serializable {
      * @see Authorization#check(UserContext, Action, Parameters)
      */
     public Parameters createParameters() {
-        return new Parameters();
+        return new Parameters(getDefault().getParameterDefinition());
     }
 }
