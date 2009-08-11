@@ -7,25 +7,18 @@
     >
   <jsp:output omit-xml-declaration="true" />
 
-  <mm:import externid="source" required="true" />
-  <mm:import externid="type" required="true" />
-  <mm:import externid="seq" required="true" />
-  <mm:import externid="formtag" />
+  <jsp:directive.include file="parameters.jspf" />
 
-  <mm:import id="query" externid="mm_list_query_${seq}" from="session" jspvar="query" vartype="org.mmbase.bridge.Query" />
-  <mm:import externid="fields" />
-  <mm:import externid="item" />
-  <mm:import externid="precreate" />
   <mm:content expires="0" type="application/xml">
     <mm:cloud method="asis">
       <c:choose>
-        <c:when test="${empty formtag}">
+        <c:when test="${empty parameters.formtag}">
           <jsp:directive.include file="create.body.jspx" />
         </c:when>
         <c:otherwise>
-          &lt;!-- transaction: ${formtag} --&gt;
-          <mm:transaction id="${formtag}"
-                          name="${formtag}"
+          &lt;!-- transaction: ${parameters.formtag} --&gt;
+          <mm:transaction id="${parameters.formtag}"
+                          name="${parameters.formtag}"
                           commitonclose="false"
                           >
             <jsp:directive.include file="create.body.jspx" />

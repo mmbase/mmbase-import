@@ -7,7 +7,7 @@
     >
   <!--
 
-xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+     xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
 
       @author Michiel Meeuwissen
@@ -82,30 +82,84 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
                            description="Include also the possibility to search existing nodes"
                            />
 
+  <jsp:directive.attribute name="delete"      type="java.lang.Boolean"
+                           description="Wether to inform the items to create delete buttons (defaults to inverse value of 'search')"
+                           />
+
+  <jsp:directive.attribute name="create"      type="java.lang.Boolean"
+                           description="Wether to add a create button"
+                           />
+
+  <jsp:directive.attribute name="unlink"      type="java.lang.Boolean"
+                           description="Wether to inform the items to create unlink buttons (defaults to same value as 'search')"
+                           />
+
   <!--
 
   -->
 
-  <mm:import id="itemjsp">
-    <jsp:text>${empty item ? '/mmbase/searchrelate/list/item.jspx' : item}</jsp:text>
+  <mm:import id="_item">${empty item ? '/mmbase/searchrelate/list/item.jspx' : item}</mm:import>
+  <mm:import id="_role">${empty role and empty path ? 'posrel' : role}</mm:import><!-- role defaults to 'posrel' -->
+  <mm:import id="_direction">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
+  <mm:import id="_createposition">${empty createposition? 'bottom' : createposition}</mm:import>
+  <mm:import id="_formtag">${requestScope['org.mmbase.bridge.jsp.taglib.form'].id}</mm:import>
+  <mm:import id="_orderby">${empty orderby ? _role : orderby}${empty orderby ? (_role eq 'posrel' ? '.pos' : '.number') : ''}</mm:import>
+  <mm:import id="_fields">${fields}</mm:import>
+  <mm:import id="_search">${empty search ? false : search}</mm:import>
+  <mm:import id="_delete">${empty delete ? (! _search) : delete}</mm:import>
+  <mm:import id="_confirm">${empty confirm ? false : confirm}</mm:import>
+  <mm:import id="_create">${empty create ? 'true' : create}</mm:import>
+  <mm:import id="_unlink">${empty unlink ? (empty search ? 'false' : search) : unlink}</mm:import>
+  <mm:import id="_icondir">
+    <c:choose>
+      <c:when test="${empty icondir}">
+        <mm:treefile page="/mmbase/style/images" objectlist="${requestScope['org.mmbase.includePath']}" absolute="context" />
+      </c:when>
+      <c:otherwise>${icondir}</c:otherwise>
+    </c:choose>
   </mm:import>
 
-  <mm:import id="r">${empty role and empty path ? 'posrel' : role}</mm:import><!-- role defaults to 'posrel' -->
 
-  <mm:import id="orderdirection">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
 
-  <mm:import id="createpos">${empty createposition? 'bottom' : createposition}</mm:import>
+  <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}?${pageContext.request.queryString}</mm:escape></mm:import>
+  <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
+  <mm:write session="${requestid}_sequence" value="${seq + 1}" />
 
-  <mm:import id="formtag">${requestScope['org.mmbase.bridge.jsp.taglib.form'].id}</mm:import>
+  <mm:import id="id">${requestid}_${seq}</mm:import>
 
-  <mm:import id="order">${empty orderby ? r : orderby}${empty orderby ? (r eq 'posrel' ? '.pos' : '.number') : ''}</mm:import>
-  <mm:import id="f">${fields}</mm:import>
+  <mm:write session="${id}_context" value="" />
+
+  <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${_role}" id="query" />
+
+  <mm:context scope="session" id="${id}_context">
+
+    <mm:import from="parent" id="seq"       externid="seq" />
+    <mm:import from="parent" externid="id"   />
+    <mm:import from="parent" id="item"      externid="_item" />
+    <mm:import from="parent" id="role"      externid="_role" />
+    <mm:import from="parent" id="direction" externid="_direction" />
+    <mm:import from="parent" id="createposition" externid="_createposition" />
+    <mm:import from="parent" id="formtag"   externid="_formtag" />
+    <mm:import from="parent" id="fields"    externid="_fields" />
+    <mm:import from="parent" id="delete"    externid="_delete" />
+    <mm:import from="parent" id="confirm"    externid="_confirm" />
+    <mm:import from="parent" id="create"    externid="_create" />
+    <mm:import from="parent" id="unlink"    externid="_unlink" />
+
+    <mm:import from="parent" externid="type" />
+    <mm:import from="parent" externid="path" />
+    <mm:import from="parent" id="source"   externid="_node" />
+    <mm:import from="parent" id="icondir" externid="_icondir" />
+    <mm:import from="parent" externid="sortable" />
+    <mm:import from="parent" id="search" externid="_search" />
+    <mm:import from="parent" externid="query" />
+
+    <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
+  </mm:context>
+
+  <mm:import from="session" id="parameters" externid="${id}_context" />
 
   <mm:import from="request" id="javascript_loaded" externid="mm_list_javascript" />
-
-  <mm:import from="session" id="seq" externid="org.mmbase.searchrelate.relatednodes.sequence" vartype="integer">0</mm:import>
-  <mm:write session="org.mmbase.searchrelate.relatednodes.sequence" value="${seq + 1}" />
-
   <c:if test="${(empty javascript_loaded and empty load) or load}">
     <c:choose>
       <c:when test="${sortable}">
@@ -120,68 +174,59 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/List.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <mm:write request="mm_list_javascript" value="yes" />
   </c:if>
+
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
 
-    <div class="list ${type}">
-      <div id="${type}_${seq}" class="listinfo">
-        <input type="hidden" name="type"       value="${type}" />
-        <input type="hidden" name="path"       value="${path}" />
-        <input type="hidden" name="role"       value="${r}" />
-        <input type="hidden" name="submit"     value="${_node}" />
-        <input type="hidden" name="fields"     value="${fields}" />
-        <input type="hidden" name="item"       value="${itemjsp}" />
-        <input type="hidden" name="seq"        value="${seq}" />
-        <input type="hidden" name="source"     value="${_node}" />
-        <input type="hidden" name="icondir"    value="${icondir}" />
-        <input type="hidden" name="createpos"  value="${createpos}" />
-        <input type="hidden" name="formtag"    value="${formtag}" />
-        <input type="hidden" name="sortable"   value="${sortable}" />
-        <input type="hidden" name="search"     value="${search}" />
+
+    <div class="list ${q.nodeManager.name}">
+
+      <div id="${type}_${id}" class="listinfo">
+        <!-- This div contains all necessary settings, the javascript can easily access this data, in case it want to know it too.  -->
+        <c:forEach items="${parameters}" var="entry">
+          <input type="hidden" name="${entry.key}"       value="${entry.value}" />
+        </c:forEach>
       </div>
 
-      <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${r}" id="q" />
 
 
-      <c:if test="${createpos eq 'top'}">
+
+      <c:if test="${_create and _createposition eq 'top'}">
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                 referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item,formtag?">
-          <mm:param name="referrer"><mm:url absolute="context" /></mm:param>
+                 referids="id">
           <a href="${_}"  class="create">
-            <mm-sr:button alt="+" type="create" icondir="${icondir}" />
+            <mm-sr:button alt="+" type="create" parameters="${parameters}" />
           </a>
         </mm:link>
         <span class="status">...</span>
         <c:if test="${search}">
-          <mm-sr:search type="${q.nodeManager.name}" />
+          <mm-sr:search type="${query.nodeManager.name}" />
         </c:if>
       </c:if>
       <ol>
         <mm:node id="source" />
-        <mm:relatednodescontainer referid="q">
-          <mm:sortorder field="${order}" direction="${orderdirection}" />
+        <mm:relatednodescontainer referid="query">
+          <mm:sortorder field="${_orderby}" direction="${_direction}" />
           <jsp:invoke fragment="constraints" />
           <mm:relatednodes>
             <mm:include
                 page="/mmbase/searchrelate/list/li.jspx"
-                referids="source,f@fields,icondir?,confirm?,itemjsp@item,seq,formtag?" />
+                referids="id" />
           </mm:relatednodes>
 
         </mm:relatednodescontainer>
-        <mm:write session="mm_list_query_${seq}" referid="q" />
       </ol>
-      <c:if test="${createpos eq 'bottom'}">
+      <c:if test="${_create and _createposition eq 'bottom'}">
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                 referids="type?,seq,_node@source,default?,f@fields,icondir?,precreate?,confirm?,itemjsp@item,formtag?">
-          <mm:param name="referrer"><mm:url absolute="context" /></mm:param>
+                 referids="id">
           <a href="${_}"  class="create">
-            <mm-sr:button alt="+" type="create" icondir="${icondir}" />
+            <mm-sr:button alt="+" type="create" parameters="${parameters}" />
           </a>
         </mm:link>
         <span class="status">...</span>
         <c:if test="${search}">
-          <mm-sr:search type="${q.nodeManager.name}" />
+          <mm-sr:search type="${query.nodeManager.name}" />
         </c:if>
       </c:if>
     </div>

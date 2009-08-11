@@ -13,13 +13,8 @@
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
-      description="Used in li's of mm-sr:relatednodes. Produces the 'delete this item' button." />
+      description="Used in li's of mm-sr:relatednodes. Produces the 'unlink this item' button." />
 
-  <jsp:directive.attribute name="icondir"      type="java.lang.String" description="deprecated" />
-  <jsp:directive.attribute name="source"        description="deprecated" />
-  <jsp:directive.attribute name="confirm"      type="java.lang.Boolean"
-                           description="DEPRECATED. Whether deleting must be confirmed"
-                           />
   <jsp:directive.attribute name="parameters"      type="java.util.Map" />
 
   <c:if test="${empty parameters}">
@@ -27,12 +22,11 @@
   </c:if>
 
 
-  <mm:link page="/mmbase/searchrelate/list/delete.jspx" referids="_node@n">
+  <mm:link page="/mmbase/searchrelate/list/unlink.jspx" referids="_node@n">
     <mm:param name="id">${parameters.id}</mm:param>
-
-    <a class="delete ${!parameters.confirm ? '' : 'confirm'}"
+    <a class="delete ${empty confirm or ! confirm ? '' : 'confirm'}"
        href="${_}">
-      <mm-sr:button alt="-" type="delete"  />
+      <mm-sr:button alt="-" type="unlink"  />
     </a>
   </mm:link>
 
