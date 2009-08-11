@@ -5,10 +5,10 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     >
-  <mm:node id="source" referid="source" />
-  <mm:createnode type="${type}" id="d" >
-    <c:if test="${! empty precreate}">
-      <mm:include page="${precreate}" />
+  <mm:node id="source" referid="parameters.source" />
+  <mm:createnode type="${parameters.type}" id="d" >
+    <c:if test="${! empty parameters.precreate}">
+      <mm:include page="${parameters.precreate}" />
     </c:if>
   </mm:createnode>
 
@@ -16,7 +16,7 @@
     <jsp:scriptlet>org.mmbase.bridge.util.Queries.addToResult(query, d);</jsp:scriptlet>
   </mm:node>
   <mm:node referid="d">
-    <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="source,fields,item">
+    <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="id">
       <mm:param name="new">true</mm:param>
     </mm:include>
   </mm:node>

@@ -6,16 +6,17 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="item" required="true" />
-  <mm:import externid="referrer" />
-  <mm:import externid="formtag">node${_node}</mm:import>
+  <jsp:directive.include file="parameters.jspf" />
+
   <li
       class="node_${_node}"
       xmlns="http://www.w3.org/1999/xhtml">
-    <mm:form id="${formtag}"
-             name="${formtag}"
-             page="${referrer}">
-      <mm:include debug="html" page="${item}" />
+    <mm:form id="${parameters.formtag}"
+             name="${parameters.formtag}"
+             page="${parameters.referrer}">
+      <mm:include debug="html" page="${parameters.item}">
+        <mm:param name="source" value="${parameters.source}" />
+      </mm:include>
     </mm:form>
   </li>
 </jsp:root>

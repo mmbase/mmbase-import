@@ -7,12 +7,11 @@
     >
 
   <mm:node id="d" number="${destination}" />
-  <mm:node id="source" referid="source" />
   <mm:node referid="d" jspvar="d">
     <jsp:scriptlet>org.mmbase.bridge.util.Queries.addToResult(query, d);</jsp:scriptlet>
   </mm:node>
   <mm:node referid="d">
-    <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="source,fields,item">
+    <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="id">
       <mm:param name="new">true</mm:param>
     </mm:include>
   </mm:node>

@@ -43,15 +43,10 @@ function List(d) {
     this.callBack = null; // called on delete and create
 
 
-    var listinfos  = this.find("listinfo");
-    this.seq       = listinfos.find("input[name = 'seq']")[0].value;
-    this.type      = listinfos.find("input[name = 'type']")[0].value;
-    this.item      = listinfos.find("input[name = 'item']")[0].value;
-    this.source    = listinfos.find("input[name = 'source']")[0].value;
-    this.icondir   = listinfos.find("input[name = 'icondir']")[0].value;
-    this.createpos = listinfos.find("input[name = 'createpos']")[0].value;
-    this.formtag   = listinfos.find("input[name = 'formtag']")[0].value;
-    this.sortable  = listinfos.find("input[name = 'sortable']")[0].value == 'true';
+    var listinfos       = this.find("listinfo");
+    $(listinfos).find("input[type=hidden]").each(function() {
+            self[this.name] = $(this).val();
+        });
 
     if (this.sortable) {
         $(this.div).find("ol").sortable({
@@ -206,7 +201,7 @@ List.prototype.find = function(clazz, elname, parent) {
  */
 List.prototype.setTabIndices = function() {
     var i = 0;
-    $(this.div).find("input").each(function() {
+    $(this.div).find("input[type != hidden]").each(function() {
         this.tabIndex = i;
         i++;
     });
@@ -262,7 +257,7 @@ List.prototype.addItem = function(res) {
                 list.validator.validateElement(this);
             }
         });
-    if (this.createpos == 'top') {
+    if (this.createposition == 'top') {
         list.find(null, "ol").prepend(r);
     } else {
         list.find(null, "ol").append(r);
@@ -348,12 +343,7 @@ List.prototype.status = function(message, fadeout) {
 
 List.prototype.getListParameters = function() {
     var params = {};
-    params.item   = this.item;
-    params.seq    = this.seq;
-    params.source = this.source;
-    params.icondir = this.icondir;
-    params.createpos = this.createpos;
-    params.formtag = this.formtag;
+    params.id          = this.id;
     return params;
 }
 
@@ -413,7 +403,7 @@ List.prototype.commit = function(stale, leavePage) {
     }
     if (leavePage && ! List.prototype.leftPage) {
         List.prototype.leftPage = true;
-        $.ajax({ type: "GET", async: false, url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
+        $.ajax({ type: "GET", async: false, data: this.getListParameters(), url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
     }
     return result;
 }
