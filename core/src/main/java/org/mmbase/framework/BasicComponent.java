@@ -132,32 +132,8 @@ public class BasicComponent implements Component {
                 settings.put(s.getName(), s);
             }
         }
-        {
-            NodeList actionElements = el.getElementsByTagName("action");
-            for (int i = 0; i < actionElements.getLength(); i++) {
-                try {
-                    Element element = (Element) actionElements.item(i);
-                    String actionName = element.getAttribute("name");
-                    String rank = element.getAttribute("rank");
-                    Object c = Instantiator.getInstanceWithSubElement(element);
-                    Action a;
-                    if (c != null) {
-                        if (! "".equals(rank)) {
-                            log.warn("Rank attribute ignored");
-                        }
-                        a = new Action(name, actionName, (ActionChecker) c);
-                    } else {
-                        if ("".equals(rank)) { rank = "basic user"; }
-                        a = new Action(name, actionName, new ActionChecker.Rank(Rank.getRank(rank)));
-                    }
-                    a.getDescription().fillFromXml("description", element);
-                    log.service("Registering action " + a);
-                    ActionRepository.getInstance().add(a);
-                } catch (Exception e) {
-                    log.error(e);
-                }
-            }
-        }
+
+        ActionRepository.getInstance().fillFromXml(el, name);
 
         {
             NodeList blockElements = el.getElementsByTagName("block");
