@@ -221,7 +221,7 @@ public class ComponentRepository {
                             String name = documentElement.getAttribute("name");
                             String fileName = ResourceLoader.getName(resource);
                             if (! fileName.equals(name)) {
-                                log.warn("Component " + url + " is defined in resource with name " + resource);
+                                log.warn("Component " + url + " is defined in resource with name " + resource + " but its name is '" + name + "'");
                             } else {
                                 log.service("Instantiating component '" + url + "' " + namespace);
                             }
