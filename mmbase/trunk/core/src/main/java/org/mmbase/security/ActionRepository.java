@@ -9,6 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 import java.util.*;
+import org.w3c.dom.*;
+import org.mmbase.util.xml.Instantiator;
+
+import org.mmbase.util.logging.*;
 
 /**
  * The defined 'actions' are maintained by the 'action' repository. The security implementation can
@@ -22,6 +26,7 @@ import java.util.*;
  * @since MMBase-1.9
  */
 public abstract class ActionRepository extends Configurable {
+    private static final Logger log = Logging.getLoggerInstance(ActionRepository.class);
 
     protected static ActionRepository bootstrap = new MemoryActionRepository();
 
@@ -34,6 +39,36 @@ public abstract class ActionRepository extends Configurable {
                 return mmbc.getActionRepository();
             } else {
                 return new MemoryActionRepository();
+            }
+        }
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public void fillFromXml(Element el, String name) {
+        NodeList actionElements = el.getElementsByTagName("action");
+        for (int i = 0; i < actionElements.getLength(); i++) {
+            try {
+                Element element = (Element) actionElements.item(i);
+                String actionName = element.getAttribute("name");
+                String rank = element.getAttribute("rank");
+                Object c = Instantiator.getInstanceWithSubElement(element);
+                Action a;
+                if (c != null) {
+                    if (! "".equals(rank)) {
+                        log.warn("Rank attribute ignored");
+                    }
+                    a = new Action(name, actionName, (ActionChecker) c);
+                } else {
+                    if ("".equals(rank)) { rank = "basic user"; }
+                    a = new Action(name, actionName, new ActionChecker.Rank(Rank.getRank(rank)));
+                }
+                a.getDescription().fillFromXml("description", element);
+                log.service("Registering action " + a);
+                add(a);
+            } catch (Exception e) {
+                log.error(e);
             }
         }
     }
