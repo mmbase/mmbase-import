@@ -597,8 +597,7 @@ MMBaseValidator.prototype.getValue = function(el) {
         if( this.isNumeric(el)) {
             value = parseFloat(value);
         }
-
-        return el.value;
+        return value;
     }
 }
 
@@ -775,13 +774,15 @@ MMBaseValidator.prototype.serverValidate = function(event) {
 
 MMBaseValidator.prototype.validateElement = function(element, server) {
     var valid;
-    var prevValue = element.prevValue;
-    var curValue  = this.getValue(element);
-    if (curValue == prevValue) {
-        element.lastChange = new Date();
-        return;
+
+    if (server) {
+        var prevValue = element.prevValue;
+        var curValue  = "" + this.getValue(element);
+        if (curValue == prevValue) {
+            server = false;
+        }
+        element.prevValue = "" + curValue;
     }
-    element.prevValue = curValue;
     this.log("Validating " + element);
     element.lastChange = new Date();
     this.activeElement = element;
