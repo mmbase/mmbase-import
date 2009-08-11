@@ -82,8 +82,9 @@ function List(d) {
         };
     }
     $.timer(1000, function(timer) {
-        self.commit();
-    });
+            self.commit();
+        });
+
 
     this.find("create", "a").each(function() {
         self.bindCreate(this);
@@ -413,7 +414,7 @@ List.prototype.saveOrder = function(event, ui) {
     var order = "";
     $(event.target).find("li").each(function() {
             if (order != "") order += ",";
-            order += $(this).attr("class");
+            order += $(this).attr("class").substring("node_".length);
         });
     var params = this.getListParameters();
     params.order = order;
