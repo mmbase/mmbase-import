@@ -515,10 +515,10 @@
 
   <parameterizedescaper id="radix">
     <class>org.mmbase.util.transformers.RadixTransformer</class>
-    <param name="radix" />
     <info>
       Can be used to convert number to use an another radix (and back).
     </info>
+    <param name="radix" />
   </parameterizedescaper>
 
 
