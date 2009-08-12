@@ -182,9 +182,17 @@ public class TransactionTest extends BridgeTest {
         Cloud cloud = getCloud();
         Transaction t = cloud.getTransaction("bar7");
         Node n = t.getNodeManager("news").createNode();
+
+        assertEquals(1, t.getNodes().size());
+
         n.setContext("non_default");
+
+        assertEquals(1, t.getNodes().size());
+
         assertEquals("non_default", n.getStringValue("owner"));
         assertEquals("non_default", n.getContext());
+
+        assertEquals(1, t.getNodes().size());
 
         t.commit();
 
@@ -423,13 +431,18 @@ public class TransactionTest extends BridgeTest {
         RelationManager rm = t.getRelationManager("urls", "news", "posrel");
         Relation r = url.createRelation(n, rm);
 
+        {
+            // should not give NPE's or so
+            n.commit();
+            url.commit();
+            r.commit();
+        }
+
         assertEquals(3, t.getNodes().size()); // 2 nodes and one relation
 
         for (Node rn : t.getNodes()) {
             // should occur no exceptions
             rn.commit(); // should have little effect in trans
-
-            // FAILS for relation!
         }
         t.cancel();
 
