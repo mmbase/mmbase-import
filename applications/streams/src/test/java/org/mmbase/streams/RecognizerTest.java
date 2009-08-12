@@ -7,7 +7,8 @@ import static org.junit.Assert.*;
 import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.*;
-import org.mmbase.datatypes.*;
+import org.mmbase.datatypes.DataType;
+import static org.mmbase.datatypes.Constants.*;
 import org.mmbase.bridge.virtual.*;
 import org.mmbase.streams.transcoders.*;
 import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
@@ -67,10 +68,10 @@ public class RecognizerTest {
 
     private static Map<String, DataType> getParent() {
         Map<String, DataType> undef = new LinkedHashMap<String, DataType>();
-        undef.put("number", Constants.DATATYPE_INTEGER);
-        undef.put("mimetype", Constants.DATATYPE_STRING);
-        undef.put("mediafragment", Constants.DATATYPE_NODE);
-        undef.put("url", Constants.DATATYPE_STRING);
+        undef.put("number", DATATYPE_INTEGER);
+        undef.put("mimetype", DATATYPE_STRING);
+        undef.put("mediafragment", DATATYPE_NODE);
+        undef.put("url", DATATYPE_STRING);
         return undef;
     }
 
@@ -82,28 +83,28 @@ public class RecognizerTest {
         }
         {
             Map<String, DataType> images = getParent();
-            images.put("height", Constants.DATATYPE_INTEGER);
-            images.put("width", Constants.DATATYPE_INTEGER);
+            images.put("height", DATATYPE_INTEGER);
+            images.put("width", DATATYPE_INTEGER);
 
             VirtualCloudContext.addNodeManager(IMAGE, images);
             VirtualCloudContext.addNodeManager(IMAGEC,images);
         }
         {
             Map<String, DataType> audio = getParent();
-            audio.put("bitrate", Constants.DATATYPE_INTEGER);
-            audio.put("bitrate", Constants.DATATYPE_INTEGER);
-            audio.put("length", Constants.DATATYPE_INTEGER);
+            audio.put("bitrate", DATATYPE_INTEGER);
+            audio.put("bitrate", DATATYPE_INTEGER);
+            audio.put("length", DATATYPE_INTEGER);
 
             VirtualCloudContext.addNodeManager(AUDIO, audio);
             VirtualCloudContext.addNodeManager(AUDIOC, audio);
         }
         {
             Map<String, DataType> video = getParent();
-            video.put("height", Constants.DATATYPE_INTEGER);
-            video.put("width", Constants.DATATYPE_INTEGER);
-            video.put("bitrate", Constants.DATATYPE_INTEGER);
-            video.put("channels", Constants.DATATYPE_INTEGER);
-            video.put("length", Constants.DATATYPE_INTEGER);
+            video.put("height", DATATYPE_INTEGER);
+            video.put("width", DATATYPE_INTEGER);
+            video.put("bitrate", DATATYPE_INTEGER);
+            video.put("channels", DATATYPE_INTEGER);
+            video.put("length", DATATYPE_INTEGER);
 
             VirtualCloudContext.addNodeManager(VIDEO, video);
             VirtualCloudContext.addNodeManager(VIDEOC, video);
