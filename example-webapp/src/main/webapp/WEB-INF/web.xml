@@ -212,6 +212,7 @@
     <load-on-startup>3</load-on-startup>
   </servlet>
 
+  <!--
   <servlet>
     <servlet-name>servscan</servlet-name>
     <display-name>Servscan Servlet</display-name>
@@ -219,6 +220,7 @@
     <servlet-class>org.mmbase.servlet.servscan</servlet-class>
     <load-on-startup>6</load-on-startup>
   </servlet>
+  -->
 
   <!-- mapping for version-request -->
   <servlet-mapping>
@@ -239,10 +241,12 @@
   </servlet-mapping>
 
 
+  <!--
   <servlet-mapping>
     <servlet-name>servscan</servlet-name>
     <url-pattern>*.shtml</url-pattern>
   </servlet-mapping>
+  -->
 
 
   <welcome-file-list>

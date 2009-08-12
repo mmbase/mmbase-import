@@ -60,7 +60,7 @@
     <param name="Target" value="System.out" />
     <param name="Encoding"   value="UTF-8" />
     <layout class="org.apache.log4j.PatternLayout">
-       <param name="ConversionPattern" value="%d{ISO8601} %-7p %c{4} - %m%n" />
+       <param name="ConversionPattern" value="%d{ISO8601} %M.%L %-7p %c{4} - %m%n" />
     </layout>
     <!-- for debugging, logging memory use, method and line-number is
     often useful
@@ -137,6 +137,9 @@
   </logger>
 
   <logger name="org.mmbase.module.core.MMBaseContext" >
+    <level class="&mmlevel;" value ="info" />
+  </logger>
+  <logger name="org.mmbase.module.core.MMBase" >
     <level class="&mmlevel;" value ="info" />
   </logger>
 
