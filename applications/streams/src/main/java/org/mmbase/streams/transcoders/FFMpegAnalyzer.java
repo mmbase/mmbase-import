@@ -68,8 +68,11 @@ public class FFMpegAnalyzer implements Analyzer {
         if (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0) {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an image");
             util.toImage(sourceNode, destNode);
-        } else if ((! sourceNode.getNodeManager().hasField("width")) || sourceNode.isNull("width")) {
-            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an audio");
+        } else if ((! sourceNode.getNodeManager().hasField("width"))) {
+            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an audio because nodemanager " + sourceNode.getNodeManager());
+            util.toAudio(sourceNode, destNode);
+        } else if (sourceNode.isNull("width")) {
+            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an audio because with is null " + sourceNode);
             util.toAudio(sourceNode, destNode);
         } else {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an video");

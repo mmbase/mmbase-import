@@ -170,6 +170,21 @@ public final class AnalyzerUtils {
 
     private static final Pattern VIDEO_PATTERN    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*?([0-9]+)\\s+kb/s.*");
 
+    // Not all video's have bitrate. E.g. basic.mov:
+    //Stream #0.1(eng): Video: h264, yuv420p, 640x480, 29.97 tb(r)
+    private static final Pattern VIDEO_PATTERN2    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
+
+    protected void incChannels(Node source, Node dest) {
+        if (source.isNull("channels") || source.getIntValue("channels") <= 0) {
+            source.setIntValue("channels", 1);
+        } else if (source.getIntValue("channels") == 1) {
+            source.setIntValue("channels", 2);
+        }
+        if (dest != null) {
+            dest.setIntValue("channels", source.getIntValue("channels"));
+        }
+    }
+
     public boolean video(String l, Node source, Node dest) {
         Matcher m = VIDEO_PATTERN.matcher(l);
         if (m.matches()) {
@@ -178,21 +193,23 @@ public final class AnalyzerUtils {
             log.debug("width: "  + m.group(1));
             log.debug("height: " + m.group(2));
             log.debug("BitRate: " + m.group(3));
-            if (source.isNull("channels") || source.getIntValue("channels") <= 0) {
-                source.setIntValue("channels", 1);
-            } else if (source.getIntValue("channels") == 1) {
-                source.setIntValue("channels", 2);
-            }
-            if (dest != null) {
-                dest.setIntValue("channels", source.getIntValue("channels"));
-            }
+            incChannels(source, dest);
+
             source.setIntValue("width", Integer.parseInt(m.group(1)));
             source.setIntValue("height", Integer.parseInt(m.group(2)));
+            source.setIntValue("bitrate", Integer.parseInt(m.group(3)));
 
             return true;
-        } else {
-            return false;
         }
+        m = VIDEO_PATTERN2.matcher(l);
+        if (m.matches()) {
+            toVideo(source, dest);
+            incChannels(source, dest);
+            source.setIntValue("width", Integer.parseInt(m.group(1)));
+            source.setIntValue("height", Integer.parseInt(m.group(2)));
+            return true;
+        }
+        return false;
     }
 
     private static final Pattern IMAGE_PATTERN    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
