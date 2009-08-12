@@ -27,6 +27,7 @@ import org.codehaus.plexus.util.FileUtils;
  * @goal install-resources
  * @requiresProject
  * @author Michiel Meeuwissen
+ * @deprecated Simply move the jsp to the correct location in src/main/webapp. That's easy with svn.
  */
 
 public class WebResourcesMojo extends AbstractMojo {

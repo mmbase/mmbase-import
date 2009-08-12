@@ -29,6 +29,7 @@ import org.codehaus.plexus.util.FileUtils;
  * @goal include-default-excludes
  * @requiresProject
  * @author Michiel Meeuwissen
+ * @deprecated At least if you have fixes for: MWAR-205 and  MWAR-128
  */
 
 public class IncludeDefaultExcludesMojo extends AbstractMojo {
