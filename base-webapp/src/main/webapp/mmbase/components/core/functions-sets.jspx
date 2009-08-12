@@ -10,7 +10,7 @@
   <div class="codesample">
     <p>Simple example of how to use a set-function in JSP</p>
     <pre>
-      <mm:escape><![CDATA[
+      <mm:escape escape="text/xml"><![CDATA[
     <mm:function set="caches" name="list" id="caches" write="false" />
     <c:forEach items="${'$'}{caches}" var="entry">
       ...
