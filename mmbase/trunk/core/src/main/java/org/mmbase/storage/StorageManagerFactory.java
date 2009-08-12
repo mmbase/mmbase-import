@@ -182,7 +182,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         int loadTries = 0;
 
 
-        while(! mmbase.isShutdown()) { // keep tryin
+        while(! mmbase.isShutdown()) { // keep trying
             try {
                 log.debug("loading Storage Manager factory " + this.getClass().getName());
                 loadTries++;
@@ -546,7 +546,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
     }
 
     /**
-     * Given a {@lang java.text.Collator} return a String such as the storage
+     * Given a {@link java.text.Collator} return a String such as the storage
      * implemetnation may use to identify a collation. E.g. MySql would like something like
      * 'utf8_danish_ci'. Internally, MMBase uses strings as defined by {@link
      * org.mmbase.util.LocaleCollator} to identify collators.

@@ -20,7 +20,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * Implementors can opt to simply implement the to be produced {@link Transformer}s, and use
  * 'setters' for the parameters. The transformer can then be wrapped into a {@link
- * #BeanTransformerFactory} (which is done in {@link Transformers#getTransformerFactory}.
+ * BeanTransformerFactory} (which is done in {@link Transformers#getTransformerFactory}.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8

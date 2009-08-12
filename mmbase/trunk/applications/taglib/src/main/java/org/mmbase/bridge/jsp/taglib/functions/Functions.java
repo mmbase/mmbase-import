@@ -81,7 +81,7 @@ public class Functions {
 
 
     /**
-     * This version of {@link escape(String, Object} simply asks for a string. This often work
+     * This version of {@link #escape(String, Object)} simply asks for a string. This often work
      * better in XSL {taglib:escape('text/xml', @link)} may otherwise give e.g. the toString of a
      * NodeIterator, which we cannot recognize withouth introducing dependencies.
      * @since MMBase-1.8.7

@@ -12,8 +12,8 @@ import java.lang.annotation.*;
 
 /**
  * This annotation can be used on a Bean which is to be wrapped in a {@link BeanFunction} to
- * explicitely defined which setters must be interpreted as function parameters. Sometimes the class
- * as more general use, and not all setter methods must be exposed.
+ * explicitely define which setters must be interpreted as function parameters. Sometimes a class
+ * has more general use, and not all setter methods must be exposed as function parameters.
  *
  * You can explicitely state all parameter names, or say that only the with {@link Type} annotated setters must be considered (or both).
  *
@@ -30,7 +30,7 @@ public @interface FunctionParameters {
     String[] value() default {""};
 
     /**
-     * If set to true, only setters annotated with {@link #Type} are considered function parameters
+     * If set to true, only setters annotated with {@link Type} are considered function parameters
      */
     boolean annotated() default false;
 

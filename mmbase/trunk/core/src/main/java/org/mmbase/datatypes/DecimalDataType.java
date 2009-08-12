@@ -109,7 +109,7 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
     }
 
     /**
-     * @see getPrecision()
+     * @see #getPrecision()
      */
     public void setPrecision(int p) {
         precisionRestriction.setValue((long) p);

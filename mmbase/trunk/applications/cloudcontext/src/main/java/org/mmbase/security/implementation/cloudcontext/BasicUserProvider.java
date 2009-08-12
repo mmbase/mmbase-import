@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This is a basic implemention of {@link Provider} that implements all the methods in a default way.
+ * This is a basic implemention of {@link UserProvider} that implements all the methods in a default way.
  *
  * @author Michiel Meeuwissen
  * @version $Id$

@@ -14,7 +14,7 @@ import java.lang.reflect.*;
 import org.mmbase.util.functions.*;
 
 /**
- * BeanTransformerFactory takes simple {@link #Transformer}s class-es and wraps them into parameterixed transformer factories.
+ * BeanTransformerFactory takes simple {@link Transformer}s class-es and wraps them into parameterixed transformer factories.
  *
  *
  * @author Michiel Meeuwissen

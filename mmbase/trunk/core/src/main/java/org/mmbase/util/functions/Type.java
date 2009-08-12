@@ -11,7 +11,7 @@ package org.mmbase.util.functions;
 import java.lang.annotation.*;
 
 /**
- * This annotation can be used on methods, to attribute a {@link org.mmbase.datatypes.Datatype}, e.g.  to the parameter of
+ * This annotation can be used on methods, to attribute a {@link org.mmbase.datatypes.DataType}, e.g.  to the parameter of
  * the corresponding {@link BeanFunction}.
  *
  * @author Michiel Meeuwissen
