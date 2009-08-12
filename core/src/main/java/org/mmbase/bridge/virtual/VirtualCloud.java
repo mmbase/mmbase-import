@@ -113,12 +113,16 @@ public class VirtualCloud implements Cloud {
     }
 
     public NodeManagerList getNodeManagers() {
-        return new BasicNodeManagerList(cloudContext.nodeManagers.values(), this);
+        List<NodeManager> list = new ArrayList<NodeManager>();
+        for (String name : cloudContext.nodeManagers.keySet()) {
+            list.add(getNodeManager(name));
+        }
+        return new BasicNodeManagerList(list, this);
     }
 
     public NodeManager getNodeManager(String name) throws NotFoundException {
         Map<String, DataType> nm = cloudContext.nodeManagers.get(name);
-        if (nm == null) throw new NotFoundException();
+        if (nm == null) throw new NotFoundException(name);
         return new VirtualNodeManager(this, name, nm);
     }
 
