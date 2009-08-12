@@ -70,6 +70,8 @@
       <!--
            Impossible, nekohtml and code using it has a lot of dependency on org.apache.xerces shit.
 
+           Btw, the included xerces is _still not the latest version_
+
       <exclusions>
         <exclusion>
           <groupId>xerces</groupId>
