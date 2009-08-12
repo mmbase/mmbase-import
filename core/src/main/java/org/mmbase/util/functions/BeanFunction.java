@@ -278,7 +278,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     public static final Pattern NCName = Pattern.compile("[\\p{L}_][\\p{L}_\\-\\.0-9]*");
 
     /**
-     * Given a string and a 'base' datatype, produces a new {@link #DataType}. If the string matches
+     * Given a string and a 'base' datatype, produces a new {@link org.mmbase.datatypes.DataType}. If the string matches
      * {@link #NCName} then the datatype is looked up in the MMBase DataType repository at {@link
      * org.mmbase.datatypes.DataTypes#getDataType}. Otherwise the String is interpreted as a piece
      * of XML.

@@ -13,7 +13,7 @@ import java.util.regex.*;
 import org.mmbase.util.logging.*;
 
 /**
- * This straight-forward transformer wraps {@link Long.toString(long, int)} and {@link
+ * This straight-forward transformer wraps {@link Long#toString(long, int)} and {@link
  * Long#parseLong(String, int)}. This means that it only works on simple strings that actually
  * represent long values. Other strings are left untransformed.
  *
