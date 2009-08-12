@@ -125,8 +125,8 @@ public class RecognizerTest {
         a.ready(source, dest);
         chain.removeLogger(an);
 
-        assertEquals(source.getNodeManager().getName(), c.sourceType);
-        assertEquals(dest.getNodeManager().getName(), c.destType);
+        assertEquals(c.sourceType, source.getNodeManager().getName());
+        assertEquals(c.destType,   dest.getNodeManager().getName());
 
         System.out.println("" + source + " -> " + dest);
 
