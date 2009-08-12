@@ -106,8 +106,9 @@
                                   <mm:frameworkparam name="component">${b.component.name}</mm:frameworkparam>
                                   <mm:frameworkparam name="block">${b.name}</mm:frameworkparam>
                                   <li class="${b.name eq block and subcat.component.name eq component ? 'current' : ''}">
-                                    <a title="${mm:string(b.description)}" href="${_}">${mm:escape('text/xml', mm:string(b.title))}
-                                    <span class="component">(${b.component.name})</span>
+                                    <a title="${mm:string(b.description)}" href="${_}">
+                                      <mm:escape escape="text/xml">${mm:string(b.title)}</mm:escape>
+                                      <span class="component">(${b.component.name})</span>
                                     </a>
                                   </li>
                                 </mm:link>
