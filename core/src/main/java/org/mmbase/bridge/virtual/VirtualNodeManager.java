@@ -25,7 +25,7 @@ import org.mmbase.bridge.*;
 
 public class VirtualNodeManager extends AbstractNodeManager  {
 
-    protected final Map<String, Field> map = new HashMap<String, Field>();
+    protected final Map<String, Field> map = new LinkedHashMap<String, Field>();
     protected final String name;
     protected final VirtualCloud vcloud;
 
@@ -60,7 +60,7 @@ public class VirtualNodeManager extends AbstractNodeManager  {
 
     @Override
     public String toString() {
-        return getClass().getName() + " " +  map;
+        return getClass().getName() + " " +  map.keySet();
     }
 
 }
