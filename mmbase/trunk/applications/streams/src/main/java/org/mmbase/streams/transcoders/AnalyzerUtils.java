@@ -76,8 +76,11 @@ public final class AnalyzerUtils {
     public boolean duration(String l, Node source, Node des) {
         Matcher m = DURATION.matcher(l);
         if (m.matches()) {
-            System.out.println("MATCHED");
             Node fragment = source.getNodeValue("mediafragment");
+
+            if (! source.getNodeManager().hasField("length")) {
+                toVideo(source, des);
+            }
             long length = getLength(m.group(1));
             source.setLongValue("length", length);
 
