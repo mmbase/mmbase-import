@@ -16,7 +16,7 @@ import javax.servlet.jsp.JspTagException;
  * compare. These tags are similar, therefore all implement this ConditionTag interface.
  *
  * @author Michiel Meeuwissen
- * @version $Id$ 
+ * @version $Id$
  */
 
 public interface Condition {
@@ -25,6 +25,6 @@ public interface Condition {
      * This attribute inverses the sense of the condition.
      *
      */
-    public void setInverse(String b) throws JspTagException;
+    void setInverse(String b) throws JspTagException;
     // public void setInverse(Boolean b) throws JspTagException;
 }
