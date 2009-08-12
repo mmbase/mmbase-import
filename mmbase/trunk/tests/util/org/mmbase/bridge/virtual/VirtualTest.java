@@ -72,6 +72,9 @@ public class VirtualTest extends TestCase {
         Node a2 = cloud.getNode(number);
         assertEquals("bloe", a2.getStringValue("title"));
 
+
+        assertEquals(1, cloud.getNodeManagers().size());
+
     }
 
 }
