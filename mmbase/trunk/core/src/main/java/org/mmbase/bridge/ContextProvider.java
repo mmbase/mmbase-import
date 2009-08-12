@@ -21,7 +21,7 @@ public class ContextProvider {
     private static final Logger log = Logging.getLoggerInstance(ContextProvider.class);
    /**
     * When no system property mmbase.defaultcloudcontext is set
-    * the default cloud context is the context returned when 
+    * the default cloud context is the context returned when
     * DEFAULT_CLOUD_CONTEXT_NAME is fed to getCloudContext(String)<BR>
     * DEFAULT_CLOUD_CONTEXT_NAME="local"
     **/
@@ -47,11 +47,13 @@ public class ContextProvider {
         if (uri == null || (uri != null && uri.trim().length() == 0)){
             uri = getDefaultCloudContextName();
 	}
-        
+
         if (uri.startsWith("rmi")){
             return RemoteContext.getCloudContext(uri);
         } else if (uri.startsWith("local")){
             return LocalContext.getCloudContext();
+        } else if (uri.startsWith("virtual")) {
+            return org.mmbase.bridge.virtual.VirtualCloudContext.getCloudContext();
         }
 	throw new BridgeException("cloudcontext with name {" + uri + "} is not known to MMBase");
     }
@@ -74,10 +76,10 @@ public class ContextProvider {
          }
          return defaultCloudContextName;
      }
-    
+
     /**
      * @since MMBase-1.7
-     * @return the default cloud context This is the local cloud if mmbase is running or could be started (with mmbase.config system property), 
+     * @return the default cloud context This is the local cloud if mmbase is running or could be started (with mmbase.config system property),
      *         Otherwise a default rmmci cloud, or specified with mmbase.defaultcloudtext.property
      **/
     public static CloudContext getDefaultCloudContext() {
@@ -90,7 +92,7 @@ public class ContextProvider {
             log.debug(se);
         }
 
-        try {        
+        try {
             return getCloudContext(getDefaultCloudContextName());
         } catch (NotFoundException nfe) {
             return getCloudContext("rmi://127.0.0.1:1111/remotecontext");
