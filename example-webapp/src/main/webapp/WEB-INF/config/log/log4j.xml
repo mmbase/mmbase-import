@@ -127,8 +127,7 @@
     <level class="&mmlevel;" value ="info" />
     <appender-ref ref="sqllog" />
   </logger>
-   -->
-
+  -->
   <!-- examples: different level for a few subtrees -->
 
 
@@ -136,6 +135,11 @@
   <logger name="nl.omroep" >
     <level class="&mmlevel;" value ="trace" />
   </logger>
+
+  <logger name="org.mmbase.module.core.MMBaseContext" >
+    <level class="&mmlevel;" value ="info" />
+  </logger>
+
 
 
   <!--
@@ -146,11 +150,11 @@
   -->
 
   <logger name="STDERR">
-    <level class="&mmlevel;" value ="info" />
+    <level class="&mmlevel;" value ="fatal" />
   </logger>
 
   <root>
-    <level class="&mmlevel;" value ="service" />
+    <level class="&mmlevel;" value ="warn" />
     <appender-ref ref="logfile" />
   </root>
 
