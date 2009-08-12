@@ -8,20 +8,16 @@ export CLASSPATH = target/classes:$(M2)/org/mmbase/mmbase/$(mmbase)/mmbase-$(mmb
 
 
 .PHONY:
-samples: samples/mahnamahna.mpg samples/Kort-stormpje.mov samples
+samples: samples/mahnamahna.mpg samples/Kort-stormpje.mov samples/Snaar.mp3 samples/presto.mp4
 
 
-samples/mahnamahna.mpg:
+samples/%:
 	mkdir -p samples
-	(cd samples ; wget http://www.toly.net/downloads/mahnamahna.mpg)
+	(cd samples ; wget http://www.toly.net/downloads-oip/$*)
 
 samples/mahnamahna.broken: samples/mahnamahna.mpg
 	cp samples/mahnamahna.mpg samples/mahnamahna.broken
 
-
-samples/Kort-stormpje.mov:
-	mkdir -p samples
-	(cd samples ; wget http://www.toly.net/downloads/Kort-stormpje.mov)
 
 .PHONY:
 test.theora: samples/mahnamahna.mpg
@@ -42,7 +38,7 @@ test.recognize: samples/mahnamahna.mpg samples/mahnamahna.broken
 #	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/test.jpeg
 #	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/mahnamahna.broken
 #	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/odd.ogg
-	java org.mmbase.streams.transcoders.FFMpegRecognizer samples/testaudio.ogg
+	java org.mmbase.streams.transcoders.FFMpegRecognizer audio:samples/testaudio.ogg
 
 
 transcode:
