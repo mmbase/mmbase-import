@@ -102,7 +102,7 @@ public abstract class FileWatcher {
                     String delay = props.get("delay");
                     if (delay != null) {
                         THREAD_DELAY = Integer.parseInt(delay);
-                        log.info("Set thread delay time to " + THREAD_DELAY);
+                        log.service("Set thread delay time to " + THREAD_DELAY);
                     }
                 } catch (Exception e) {
                     log.error(e);
