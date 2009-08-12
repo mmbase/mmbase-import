@@ -320,3 +320,17 @@ div.codesample pre {
 div.mm_c.iframe iframe {
   width: 100%;
 }
+
+.b_mmbase_microblog_uncached li img {
+  float: right;
+  margin-bottom: 5px;
+}
+.b_mmbase_microblog_uncached li {
+  list-style: none;
+  clear: both;
+  margin-bottom: 2ex;
+}
+
+.b_mmbase_microblog_uncached li a {
+  display: block;
+}
