@@ -23,7 +23,7 @@ public class BasicFieldList extends BasicList<Field> implements FieldList {
     private static final long serialVersionUID = 0L;
     NodeManager nodemanager = null;
 
-    BasicFieldList() {
+    public BasicFieldList() {
         super();
     }
 
