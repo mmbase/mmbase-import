@@ -8,7 +8,7 @@ export CLASSPATH = target/classes:$(M2)/org/mmbase/mmbase/$(mmbase)/mmbase-$(mmb
 
 
 .PHONY:
-samples: samples/basic.mpg samples/basic.mov samples/basic.mp3 samples/basic.mp4
+samples: samples/basic.mpg samples/basic.mov samples/basic.mp3 samples/basic.mp4 samples/basic.png
 
 
 samples/%:
