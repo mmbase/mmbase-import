@@ -22,11 +22,11 @@ import org.mmbase.bridge.*;
  */
 public class BasicRelationManagerList extends AbstractNodeList<RelationManager> implements RelationManagerList {
 
-    BasicRelationManagerList() {
+    public BasicRelationManagerList() {
         super();
     }
 
-    BasicRelationManagerList(Collection c, Cloud cloud) {
+    public BasicRelationManagerList(Collection c, Cloud cloud) {
         super(c, cloud);
     }
 

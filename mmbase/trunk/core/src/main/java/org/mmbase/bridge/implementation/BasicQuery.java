@@ -86,12 +86,12 @@ public class BasicQuery implements Query  {
      */
     protected List<StepField> explicitFields = new ArrayList<StepField>();
 
-    BasicQuery(Cloud c) {
+    public BasicQuery(Cloud c) {
         query = new BasicSearchQuery();
         cloud = c;
     }
 
-    BasicQuery(Cloud c, boolean aggregating) {
+    public BasicQuery(Cloud c, boolean aggregating) {
         query = new BasicSearchQuery(aggregating);
         this.aggregating = aggregating;
         cloud = c;

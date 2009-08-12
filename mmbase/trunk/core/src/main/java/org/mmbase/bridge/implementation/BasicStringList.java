@@ -24,11 +24,11 @@ public class BasicStringList extends BasicList<String> implements StringList {
 
     static final StringList EMPTY = org.mmbase.bridge.util.BridgeCollections.EMPTY_STRINGLIST;
 
-    BasicStringList() {
+    public BasicStringList() {
         super();
     }
 
-    BasicStringList(Collection<String> c) {
+    public BasicStringList(Collection<String> c) {
         super(c);
     }
 

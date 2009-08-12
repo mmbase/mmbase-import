@@ -38,7 +38,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
     protected Step step = null;
 
-    BasicNodeQuery(Cloud c) {
+    public BasicNodeQuery(Cloud c) {
         super(c);
     }
 
