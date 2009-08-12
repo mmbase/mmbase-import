@@ -50,10 +50,15 @@ public class VirtualCloud implements Cloud {
             @Override
             public  void commit() {
                 if (! m.containsKey("number")) {
-                    int number = VirtualCloudContext.addNode(values, nm.getName());
+                    int number = VirtualCloudContext.addNode(values, getNodeManager().getName());
                     values.put("number", number);
                 }
                 m.putAll(values);
+            }
+            @Override
+            public Object getValueWithoutProcess(String fieldName) {
+                if (!getNodeManager().hasField(fieldName))  throw new NotFoundException("No field '" + fieldName + "' in " + nm);
+                return super.getValueWithoutProcess(fieldName);
             }
         };
     }
