@@ -24,6 +24,9 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     <mmbase.version.postfix>-SNAPSHOT</mmbase.version.postfix>
     <mmbase.version>${mmbase.version.number}${mmbase.version.postfix}</mmbase.version>
     <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
+
+    <project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
+
   </properties>
 
   <description>
@@ -235,7 +238,212 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
 
   <build>
     <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <maxmemory>1024</maxmemory>
+          <!--
+              Very nice, but mvn site fails on it.
+              The maven site does not work anyway.
+          -->
+          <stylesheetfile>${basedir}/documentation/javadoc.css</stylesheetfile>
+
+          <doctitle>MMBase ${project.version}</doctitle>
+          <windowtitle>MMBase ${project.artifactId} ${project.version} - API</windowtitle>
+          <bottom>${project.name} ${project.version} - ${timestamp}</bottom>
+          <links>
+            <link>http://download.java.net/jdk7/docs/api/</link>
+            <link>http://java.sun.com/javaee/5/docs/api/</link>
+            <link>http://java.sun.com/products/jsp/jstl/1.1/docs/api/</link>
+            <link>http://logging.apache.org/log4j/docs/api/</link>
+            <link>http://commons.apache.org/fileupload/apidocs/</link>
+            <link>http://lucene.apache.org/java/2_4_1/api/</link>
+          </links>
+            <tags>
+              <tag>
+                <head>To Do:</head>
+                <name>todo</name>
+                <placement>a</placement>
+              </tag>
+              <tag>
+                <head>Classifies the class as an APPLICATION class, belonging to the application with name application-name</head>
+                <name>application</name>
+              </tag>
+              <tag>
+                <head>Section contains hard-coded values, which should be made configurable.</head>
+                <name>bad-constant</name>
+              </tag>
+              <tag>
+                <head>Section contains literals (numeric or string constants), where constants (public final static identifiers) should be used.</head>
+                <name>bad-literal</name>
+              </tag>
+              <tag>
+                <head>The class needs to be adapted to the MMBase Coding Standards.</head>
+                <name>code-conventions</name>
+              </tag>
+              <tag>
+                <head>Classifies the class as a CORE class</head>
+                <name>core</name>
+              </tag>
+              <tag>
+                <head>Section is deprecated and will be removed from the code. If this is a Class, the entire Class will be removed.</head>
+                <name>deprecated-now</name>
+              </tag>
+              <tag>
+                <head>Section uses deprecated (java) code, which will be fixed</head>
+                <name>deprecation-used</name>
+              </tag>
+              <tag>
+                <head>Section contains code which is depedent on a class, where it is undesirable. The code will be adapated to be more generic or moved to a more appropriate class.</head>
+                <name>dependency</name>
+              </tag>
+              <tag>
+                <head>Section contains code which will be moved to an higher (possibly abstract) class, identified with &lt;classname></head>
+                <name>duplicate</name>
+              </tag>
+              <tag>
+                <head>Section needs Javadoc..</head>
+                <name>javadoc</name>
+              </tag>
+              <tag>
+                <head>Section needs to be altered to use internationalization, using english ('en') as a default.</head>
+                <name>language</name>
+              </tag>
+              <tag>
+                <head>The code for this class falls under a different (and conflicting) license, such as GPL. The code needs to be replaced or moved out of the core.</head>
+                <name>license</name>
+              </tag>
+              <tag>
+                <head>Class will be moved to package &lt;packagename&amp;lg;</head>
+                <name>move</name>
+              </tag>
+              <tag>
+                <head>Section need be improved for performance reasons.</head>
+                <name>performance</name>
+              </tag>
+              <tag>
+                <head>Class wil be renamed to &lt;classname></head>
+                <name>rename</name>
+              </tag>
+              <tag>
+                <head>This Class needs the indicated version of the MMBase core.</head>
+                <name>requires</name>
+              </tag>
+              <!--
+                  These seems to conflict with something and fails to complete mvn javadoc:jar  build
+                  -->
+              <tag>
+                <head>Section scope will be narrowed to &lt;scope> (i.e. private, package, protected)</head>
+                <name>scope</name>
+              </tag>
+              <tag>
+                <name>sql</name>
+                <head>Section uses (direct) SQL queries, which will be removed or fixed:</head>
+              </tag>
+              <tag>
+                <name>vpro</name>
+                <head>Section contains VPRO-specific code, which will be removed or fixed:</head>
+              </tag>
+
+            </tags>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <maxmemory>1024</maxmemory>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <id>aggregate</id>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>javadoc</id>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <!-- disabled because fails on RMMCI
+           /home/michiel/mmbase/trunk/applications/rmmci/target/generated-sources/org/mmbase/bridge/remote/proxy/RemoteRelation_Proxy.java:[37,75] cannot access net.sourceforge.cobertura.coveragedata.HasBeenInstrumented
+           file net/sourceforge/cobertura/coveragedata/HasBeenInstrumented.class not found
+           org.mmbase.bridge.Node retval = (org.mmbase.bridge.Node)ObjectWrapper.rmiObjectToRemoteProxy(getWrappedObject().getSource());
+           WTF, what can I say.
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+      -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javancss-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>project-team</report>
+              <report>mailing-list</report>
+              <report>cim</report>
+              <report>issue-tracking</report>
+              <report>license</report>
+              <report>scm</report>
+              <report>index</report>
+              <report>aggregate</report>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <!--
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>${basedir}/maven-base/checkstyle-mmbase.xml</configLocation>
+          <headerLocation>${basedir}/maven-base/LICENSE.txt</headerLocation>
+        </configuration>
+      </plugin>
+      -->
+      <!--
+      <plugin>
+        <artifactId>maven-changes-plugin</artifactId>
+        <configuration>
+          <xmlPath>${basedir}/xdocs/changes.xml</xmlPath>
+        </configuration>
+      </plugin>
+      -->
+    </plugins>
+
+  </reporting>
 
 
   <distributionManagement>
