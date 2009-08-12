@@ -30,7 +30,11 @@ public class RecognizerTest {
         Case(String f, String e) {
             file = f;
             sourceType = e;
-            destType = sourceType + "caches";
+            if (!sourceType.equals(AnalyzerUtils.IMAGE)) {
+                destType = sourceType + "caches";
+            } else {
+                destType = null;
+            }
         }
         public String toString() {
             return sourceType + ":" + file;
@@ -73,6 +77,7 @@ public class RecognizerTest {
             images.put("width", Constants.DATATYPE_INTEGER);
 
             VirtualCloudContext.addNodeManager(AnalyzerUtils.IMAGE, images);
+            VirtualCloudContext.addNodeManager(AnalyzerUtils.IMAGEC,images);
         }
         {
             Map<String, DataType> audio = getParent();
@@ -134,7 +139,9 @@ public class RecognizerTest {
         chain.removeLogger(an);
 
         assertEquals(c.toString(), c.sourceType, source.getNodeManager().getName());
-        assertEquals(c.toString(), c.destType,   dest.getNodeManager().getName());
+        if (c.destType != null) {
+            assertEquals(c.toString(), c.destType,   dest.getNodeManager().getName());
+        }
 
         System.out.println("" + source + " -> " + dest);
 
