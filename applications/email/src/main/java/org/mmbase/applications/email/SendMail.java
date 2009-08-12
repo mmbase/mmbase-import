@@ -343,71 +343,73 @@ public class SendMail extends AbstractSendMail {
                     return;
                 }
                 log.info("Module SendMail started (datasource = " + dataSource + " -> " + session.getProperties() + ")");
+            } catch (javax.naming.NameNotFoundException e) {
+                log.warn(e.toString() + ". Ignoring (Will try to create a mail session myself)");
             } catch (javax.naming.NamingException e) {
-                log.error("SendMail failure: " + e.getMessage());
-                log.debug(Logging.stackTrace(e));
+                log.error("SendMail failure: " + e.getMessage(), e);
             }
         }
 
         if (session == null) {
             String smtpHost = getInitParameter("mailhost");
-            if (smtpHost != null && ! "".equals(smtpHost)) {
+            if (smtpHost == null ||  "".equals(smtpHost)) {
+                smtpHost = "localhost";
+            } else {
                 if (context != null) {
-                    log.error("It does not make sense to have both properties 'context' and 'mailhost' in email module");
+                    log.warn("It does not make sense to have both properties 'context' and 'mailhost' in email module");
                 }
                 if (dataSource != null) {
-                    log.error("It does not make sense to have both properties 'datasource' and 'mailhost' in email module");
+                    log.warn("It does not make sense to have both properties 'datasource' and 'mailhost' in email module");
                 }
-                String smtpPort = getInitParameter("mailport");
-                String userName  = getInitParameter("user");
-                String password  = getInitParameter("password");
-
-                log.service("EMail module is configured using 'mailhost' property. Consider using J2EE compliant 'context' and 'datasource' properties.");
-
-                Properties prop = System.getProperties();
-                prop.put("mail.transport.protocol", "smtp");
-                prop.put("mail.smtp.starttls.enable","true");
-
-                prop.put("mail.smtp.connectiontimeout", "10000");
-                prop.put("mail.smtp.timeout", "10000");
-
-                Map parameters = getInitParameters();
-                for (Iterator i = parameters.entrySet().iterator(); i.hasNext();) {
-                    Map.Entry entry = (Map.Entry) i.next();
-                    String key = (String) entry.getKey();
-                    if (key.startsWith("mail.")) {
-                        prop.put(key, entry.getValue());
-                    }
-                }
-                StringBuilder buf = new StringBuilder(smtpHost);
-                prop.put("mail.smtp.host", smtpHost);
-
-                if (smtpPort != null && smtpPort.trim().length() > 0) {
-                    prop.put("mail.smtp.port", smtpPort);
-                    buf.append(':').append(smtpPort);
-                }
-                // When username and password are specified, turn on smtp authentication.
-                boolean smtpAuth = userName != null && userName.trim().length() != 0 && password != null;
-                prop.setProperty("mail.smtp.auth", Boolean.toString(smtpAuth));
-                if (smtpAuth) {
-                    buf.insert(0, userName + "@");
-                }
-
-                session = Session.getInstance(prop, new SimpleAuthenticator(userName, password));
-                Map<Object, Object> mailProps = new HashMap<Object, Object>();
-                for (Map.Entry<Object, Object> e : prop.entrySet()) {
-                    if (e.getKey().toString().startsWith("mail")) {
-                        mailProps.put(e.getKey(), e.getValue());
-                    }
-                }
-                log.info("Module SendMail started SMTP: " + buf + "(" + mailProps + ")");
-            } else {
-                log.fatal("Could not create Mail session");
             }
+            String smtpPort = getInitParameter("mailport");
+            String userName  = getInitParameter("user");
+            String password  = getInitParameter("password");
+
+            log.service("EMail module is configured using 'mailhost' property. Consider using J2EE compliant 'context' and 'datasource' properties.");
+
+            Properties prop = System.getProperties();
+            prop.put("mail.transport.protocol", "smtp");
+            prop.put("mail.smtp.starttls.enable","true");
+
+            prop.put("mail.smtp.connectiontimeout", "10000");
+            prop.put("mail.smtp.timeout", "10000");
+
+            Map parameters = getInitParameters();
+            for (Iterator i = parameters.entrySet().iterator(); i.hasNext();) {
+                Map.Entry entry = (Map.Entry) i.next();
+                String key = (String) entry.getKey();
+                if (key.startsWith("mail.")) {
+                    prop.put(key, entry.getValue());
+                }
+            }
+            StringBuilder buf = new StringBuilder(smtpHost);
+            prop.put("mail.smtp.host", smtpHost);
+
+            if (smtpPort != null && smtpPort.trim().length() > 0) {
+                prop.put("mail.smtp.port", smtpPort);
+                buf.append(':').append(smtpPort);
+            }
+            // When username and password are specified, turn on smtp authentication.
+            boolean smtpAuth = userName != null && userName.trim().length() != 0 && password != null;
+            prop.setProperty("mail.smtp.auth", Boolean.toString(smtpAuth));
+            if (smtpAuth) {
+                buf.insert(0, userName + "@");
+            }
+
+            session = Session.getInstance(prop, new SimpleAuthenticator(userName, password));
+            Map<Object, Object> mailProps = new HashMap<Object, Object>();
+            for (Map.Entry<Object, Object> e : prop.entrySet()) {
+                if (e.getKey().toString().startsWith("mail")) {
+                    mailProps.put(e.getKey(), e.getValue());
+                }
+            }
+            log.info("Module SendMail started SMTP: " + buf + "(" + mailProps + ") " + session);
+        } else {
+            log.info("Module SendMail started: " + session);
         }
-
-
     }
+
 
     protected static final Set<String> RECOGNIZED_HEADERS = new HashSet<String>(Arrays.asList(new String[] {"CC", "BCC", "Reply-To", "Subject", "Content-Type", "Mime-Version"}));
 
@@ -600,7 +602,6 @@ public class SendMail extends AbstractSendMail {
                     byte[] handle = attachment.getByteValue("handle");
                     if (handle == null) handle = new byte[0];
                     MimeBodyPart mbp = new MimeBodyPart();
-
 
                     log.debug("Found a part " + attachmentMimeType);
                     // If our attached file is text/html, we will create a new 'normal'
