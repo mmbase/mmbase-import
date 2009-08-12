@@ -97,7 +97,7 @@ public class FFMpegTranscoder extends CommandTranscoder {
         File outFile = new File(out.getPath());
 
         List<String> args = new ArrayList<String>();
-        
+
         args.add("-i");
         args.add(inFile.toString());
 
@@ -151,25 +151,5 @@ public class FFMpegTranscoder extends CommandTranscoder {
     }
 
 
-    public static void main(String[] argv) throws Exception {
-        CommandTranscoder transcoder = new FFMpegTranscoder("1").clone();
-        Logger logger = Logging.getLoggerInstance("FFMPEG");
 
-        ChainedLogger chain = new ChainedLogger(logger);
-        Analyzer a = new FFMpegAnalyzer();
-
-        Node source = AnalyzerUtils.getTestNode();
-        Node dest   = AnalyzerUtils.getTestNode();
-
-        chain.addLogger(new AnalyzerLogger(a, source, dest));
-
-        chain.setLevel(Level.DEBUG);
-
-
-        transcoder.transcode(new File(argv[0]).toURI(), new File(argv[1]).toURI(), chain);
-        a.ready(source, dest);
-
-        System.out.println("" + source + " -> " + dest);
-
-    }
 }
