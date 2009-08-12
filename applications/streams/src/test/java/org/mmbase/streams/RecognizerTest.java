@@ -10,7 +10,10 @@ import org.mmbase.bridge.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.bridge.virtual.*;
 import org.mmbase.streams.transcoders.*;
+import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
 import org.mmbase.util.logging.*;
+
+
 
 /**
  * @author Michiel Meeuwissen
@@ -27,14 +30,18 @@ public class RecognizerTest {
         final String file;
         final String sourceType;
         final String destType;
-        Case(String f, String e) {
+        final int    sourceHeight;
+        final int    sourceWidth;
+        Case(String f, String e, int x, int y) {
             file = f;
             sourceType = e;
-            if (!sourceType.equals(AnalyzerUtils.IMAGE)) {
+            if (!sourceType.equals(IMAGE)) {
                 destType = sourceType + "caches";
             } else {
                 destType = null;
             }
+            sourceHeight = y;
+            sourceWidth  = x;
         }
         public String toString() {
             return sourceType + ":" + file;
@@ -48,13 +55,13 @@ public class RecognizerTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return  Arrays.asList(new Object[][] {
-                {new Case("basic.mpg", AnalyzerUtils.VIDEO)}
+                {new Case("basic.mpg", VIDEO, 320, 240)}
                 ,
-                {new Case("basic.mov", AnalyzerUtils.VIDEO)}
+                {new Case("basic.mov", VIDEO, 640, 480)}
                 ,
-                {new Case("basic.mp3", AnalyzerUtils.AUDIO)}
+                {new Case("basic.mp3", AUDIO, -1, -1)}
                 ,
-                {new Case("basic.png", AnalyzerUtils.IMAGE)}
+                {new Case("basic.png", IMAGE, 88, 31)}
         });
     }
 
@@ -71,15 +78,15 @@ public class RecognizerTest {
     public static void setUp() {
         {
             Map<String, DataType> undef = getParent();
-            VirtualCloudContext.addNodeManager(AnalyzerUtils.MEDIA, undef);
+            VirtualCloudContext.addNodeManager(MEDIA, undef);
         }
         {
             Map<String, DataType> images = getParent();
             images.put("height", Constants.DATATYPE_INTEGER);
             images.put("width", Constants.DATATYPE_INTEGER);
 
-            VirtualCloudContext.addNodeManager(AnalyzerUtils.IMAGE, images);
-            VirtualCloudContext.addNodeManager(AnalyzerUtils.IMAGEC,images);
+            VirtualCloudContext.addNodeManager(IMAGE, images);
+            VirtualCloudContext.addNodeManager(IMAGEC,images);
         }
         {
             Map<String, DataType> audio = getParent();
@@ -87,8 +94,8 @@ public class RecognizerTest {
             audio.put("bitrate", Constants.DATATYPE_INTEGER);
             audio.put("length", Constants.DATATYPE_INTEGER);
 
-            VirtualCloudContext.addNodeManager(AnalyzerUtils.AUDIO, audio);
-            VirtualCloudContext.addNodeManager(AnalyzerUtils.AUDIOC, audio);
+            VirtualCloudContext.addNodeManager(AUDIO, audio);
+            VirtualCloudContext.addNodeManager(AUDIOC, audio);
         }
         {
             Map<String, DataType> video = getParent();
@@ -98,8 +105,8 @@ public class RecognizerTest {
             video.put("channels", Constants.DATATYPE_INTEGER);
             video.put("length", Constants.DATATYPE_INTEGER);
 
-            VirtualCloudContext.addNodeManager(AnalyzerUtils.VIDEO, video);
-            VirtualCloudContext.addNodeManager(AnalyzerUtils.VIDEOC, video);
+            VirtualCloudContext.addNodeManager(VIDEO, video);
+            VirtualCloudContext.addNodeManager(VIDEOC, video);
         }
         File baseDir = new File(System.getProperty("user.dir"));
         File samples = new File(baseDir, "samples");
@@ -110,7 +117,7 @@ public class RecognizerTest {
 
 
     Node getTestNode() {
-        Node n = cloudContext.getCloud("mmbase").getNodeManager(AnalyzerUtils.MEDIA).createNode();
+        Node n = cloudContext.getCloud("mmbase").getNodeManager(MEDIA).createNode();
         n.commit();
         return n;
     }
@@ -141,6 +148,10 @@ public class RecognizerTest {
         chain.removeLogger(an);
 
         assertEquals(c.toString(), c.sourceType, source.getNodeManager().getName());
+        if (source.getNodeManager().hasField("height")) {
+            assertEquals(c.toString(), c.sourceHeight, source.getIntValue("height"));
+            assertEquals(c.toString(), c.sourceWidth, source.getIntValue("width"));
+        }
         if (c.destType != null) {
             assertEquals(c.toString(), c.destType,   dest.getNodeManager().getName());
         }
