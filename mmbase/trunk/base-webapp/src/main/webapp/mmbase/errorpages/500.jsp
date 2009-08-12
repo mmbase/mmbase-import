@@ -21,7 +21,7 @@
   </script>
 </head>
 <body class="basic">
-  <h1><mm:escape escape="text/xml">${requestScope['javax.servlet.error.status_code']}</mm:escape> - Er is een fout opgetreden</h1>
+  <h1><mm:escape escape="text/xml">Error ${requestScope['javax.servlet.error.status_code']} -  ${requestScope['javax.servlet.error.exception_type']}</mm:escape></h1>
   <h2><mm:escape escape="text/xml">${requestScope['javax.servlet.error.message']}</mm:escape></h2>
   <a id="show" href="javascript:show();">Show error</a>
   <div id="error" style="background-color:yellow; display: none;">
