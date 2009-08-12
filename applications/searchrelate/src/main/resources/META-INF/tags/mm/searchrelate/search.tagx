@@ -13,7 +13,7 @@
       example="See /mmexamples/searchrelate"
       description="This is a simplified view on the mm-rs:relate tag" />
 
-  <jsp:directive.attribute name="type"        type="String"  required="true"
+  <jsp:directive.attribute name="type"        type="java.lang.String"  required="true"
                            description="Node type to search" />
 
   <mm:listnodescontainer type="${type}" id="repository" />
