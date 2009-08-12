@@ -118,7 +118,7 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
         return w;
     }
 
-
+    /*
     public static void main(String[] argv) throws Exception {
         FFMpeg2TheoraTranscoder ff = new FFMpeg2TheoraTranscoder("1");
         ff.setHeight(100);
@@ -138,4 +138,5 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
 
         System.out.println("" + source + " -> " + dest);
     }
+    */
 }

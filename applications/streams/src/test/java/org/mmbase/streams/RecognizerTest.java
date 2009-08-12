@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  */
 
 @RunWith(Parameterized.class)
-public class Test {
+public class RecognizerTest {
 
     private final static CloudContext cloudContext = VirtualCloudContext.getCloudContext();
 
@@ -34,7 +34,7 @@ public class Test {
         }
     }
     private final Case c;
-    public Test(Case c) {
+    public RecognizerTest(Case c) {
         this.c = c;
     }
 
@@ -129,11 +129,6 @@ public class Test {
         assertEquals(dest.getNodeManager().getName(), c.destType);
 
         System.out.println("" + source + " -> " + dest);
-
-    }
-
-    @org.junit.Test
-    public void anotherTest() {
 
     }
 
