@@ -29,6 +29,15 @@ public final class AnalyzerUtils {
     private static final Logger LOG = Logging.getLoggerInstance(AnalyzerUtils.class);
 
 
+    public static final String VIDEO = "videostreamsources";
+    public static final String AUDIO = "audiostreamsources";
+    public static final String IMAGE = "imagestreamsources";
+    public static final String MEDIA = "mediastreamsources";
+
+    public static final String VIDEOC = "videostreamsourcescaches";
+    public static final String AUDIOC = "audiostreamsourcescaches";
+    public static final String MEDAC  = "mediastreamsourcescaches";
+
     private final ChainedLogger log = new ChainedLogger(LOG);
     AnalyzerUtils(Logger l) {
         log.addLogger(l);
@@ -67,6 +76,7 @@ public final class AnalyzerUtils {
     public boolean duration(String l, Node source, Node des) {
         Matcher m = DURATION.matcher(l);
         if (m.matches()) {
+            System.out.println("MATCHED");
             Node fragment = source.getNodeValue("mediafragment");
             long length = getLength(m.group(1));
             source.setLongValue("length", length);
@@ -105,18 +115,18 @@ public final class AnalyzerUtils {
         fixMimeType("video", source);
         fixMimeType("video", dest);
         if (cloud != null) {
-            if (! source.getNodeManager().getName().equals("videostreamsources")) {
+            if (! source.getNodeManager().getName().equals(VIDEO)) {
                 log.info("This is video, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
-                source.setNodeManager(cloud.getNodeManager("videostreamsources"));
+                source.setNodeManager(cloud.getNodeManager(VIDEO));
                 source.commit();
             }
-            assert source.getNodeManager().getName().equals("videostreamsources");
+            assert source.getNodeManager().getName().equals(VIDEO);
             if (dest != null) {
-                if (! source.getNodeManager().getName().equals("videostreamsourcescaches")) {
-                    dest.setNodeManager(cloud.getNodeManager("videostreamsourcescaches"));
+                if (! source.getNodeManager().getName().equals(VIDEOC)) {
+                    dest.setNodeManager(cloud.getNodeManager(VIDEOC));
                     dest.commit();
                 }
-                assert dest.getNodeManager().getName().equals("videostreamsourcescaches");
+                assert dest.getNodeManager().getName().equals(VIDEOC);
 
             }
 
@@ -128,13 +138,13 @@ public final class AnalyzerUtils {
         fixMimeType("audio", dest);
         if (cloud != null) {
             log.service("This is audio, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
-            source.setNodeManager(cloud.getNodeManager("audiostreamsources"));
+            source.setNodeManager(cloud.getNodeManager(AUDIO));
             source.commit();
-            assert source.getNodeManager().getName().equals("audiostreamsources");
+            assert source.getNodeManager().getName().equals(AUDIO);
             if (dest != null) {
-                dest.setNodeManager(cloud.getNodeManager("audiostreamsourcescaches"));
+                dest.setNodeManager(cloud.getNodeManager(AUDIOC));
                 dest.commit();
-                assert dest.getNodeManager().getName().equals("audiostreamsourcescaches");
+                assert dest.getNodeManager().getName().equals(AUDIOC);
 
             }
 
@@ -146,16 +156,16 @@ public final class AnalyzerUtils {
         fixMimeType("image", source);
         if (cloud != null) {
             log.info("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""), new Exception());
-            source.setNodeManager(cloud.getNodeManager("imagesources"));
+            source.setNodeManager(cloud.getNodeManager(IMAGE));
             source.commit();
         }
     }
 
 
-    private static final Pattern VIDEO    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*?([0-9]+)\\s+kb/s.*");
+    private static final Pattern VIDEO_PATTERN    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*?([0-9]+)\\s+kb/s.*");
 
     public boolean video(String l, Node source, Node dest) {
-        Matcher m = VIDEO.matcher(l);
+        Matcher m = VIDEO_PATTERN.matcher(l);
         if (m.matches()) {
             toVideo(source, dest);
 
@@ -179,7 +189,7 @@ public final class AnalyzerUtils {
         }
     }
 
-    private static final Pattern IMAGE    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
+    private static final Pattern IMAGE_PATTERN    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
     /*
     use this in stead for image matching and do height and width in other method ?
     private static final Pattern IMAGE    = Pattern.compile("^Input #\\d+, image.*");
@@ -190,7 +200,7 @@ public final class AnalyzerUtils {
             // already has a bitrate
             return false;
         }
-        Matcher m = IMAGE.matcher(l);
+        Matcher m = IMAGE_PATTERN.matcher(l);
         if (m.matches()) {
             log.debug("Image match! ");
             toImage(source, dest);
@@ -207,15 +217,7 @@ public final class AnalyzerUtils {
     }
 
 
-    public static Node getTestNode() {
-        Map<String, Object> sourceNode = new HashMap<String, Object>();
-        sourceNode.put("width", null);
-        sourceNode.put("height", null);
-        sourceNode.put("bitrate", null);
-        sourceNode.put("channels", null);
-        sourceNode.put("length", null);
-        sourceNode.put("mimetype", null);
-        return new MapNode(sourceNode);
 
-    }
+
+
 }
