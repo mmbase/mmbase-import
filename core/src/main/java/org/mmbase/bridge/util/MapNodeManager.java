@@ -95,4 +95,9 @@ public class MapNodeManager extends AbstractNodeManager  {
         return f;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getName() + " " +  map;
+    }
+
 }
