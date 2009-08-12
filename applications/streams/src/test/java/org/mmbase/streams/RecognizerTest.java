@@ -32,6 +32,9 @@ public class RecognizerTest {
             sourceType = e;
             destType = sourceType + "caches";
         }
+        public String toString() {
+            return sourceType + ":" + file;
+        }
     }
     private final Case c;
     public RecognizerTest(Case c) {
@@ -125,8 +128,8 @@ public class RecognizerTest {
         a.ready(source, dest);
         chain.removeLogger(an);
 
-        assertEquals(c.sourceType, source.getNodeManager().getName());
-        assertEquals(c.destType,   dest.getNodeManager().getName());
+        assertEquals(c.toString(), c.sourceType, source.getNodeManager().getName());
+        assertEquals(c.toString(), c.destType,   dest.getNodeManager().getName());
 
         System.out.println("" + source + " -> " + dest);
 
