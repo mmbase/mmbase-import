@@ -50,6 +50,8 @@ public class RecognizerTest {
         return  Arrays.asList(new Object[][] {
                 {new Case("basic.mpg", AnalyzerUtils.VIDEO)}
                 ,
+                {new Case("basic.mov", AnalyzerUtils.VIDEO)}
+                ,
                 {new Case("basic.mp3", AnalyzerUtils.AUDIO)}
                 ,
                 {new Case("basic.png", AnalyzerUtils.IMAGE)}
