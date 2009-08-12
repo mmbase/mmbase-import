@@ -44,46 +44,52 @@ public class RecognizerTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return  Arrays.asList(new Object[][] {
-                {new Case("basic.mpg", AnalyzerUtils.VIDEO)},
-                {new Case("basic.mp3", AnalyzerUtils.AUDIO)},
+                {new Case("basic.mpg", AnalyzerUtils.VIDEO)}
+                ,
+                {new Case("basic.mp3", AnalyzerUtils.AUDIO)}
+                ,
                 {new Case("basic.png", AnalyzerUtils.IMAGE)}
         });
+    }
+
+    private static Map<String, DataType> getParent() {
+        Map<String, DataType> undef = new LinkedHashMap<String, DataType>();
+        undef.put("number", Constants.DATATYPE_INTEGER);
+        undef.put("mimetype", Constants.DATATYPE_STRING);
+        undef.put("mediafragment", Constants.DATATYPE_NODE);
+        undef.put("url", Constants.DATATYPE_STRING);
+        return undef;
     }
 
     @BeforeClass
     public static void setUp() {
         {
-            Map<String, DataType> undef = new HashMap<String, DataType>();
-            undef.put("number", Constants.DATATYPE_INTEGER);
-            undef.put("mimetype", Constants.DATATYPE_STRING);
-
+            Map<String, DataType> undef = getParent();
             VirtualCloudContext.addNodeManager(AnalyzerUtils.MEDIA, undef);
         }
         {
-            Map<String, DataType> images = new HashMap<String, DataType>();
-            images.put("number", Constants.DATATYPE_INTEGER);
+            Map<String, DataType> images = getParent();
             images.put("height", Constants.DATATYPE_INTEGER);
             images.put("width", Constants.DATATYPE_INTEGER);
-            images.put("mimetype", Constants.DATATYPE_STRING);
 
             VirtualCloudContext.addNodeManager(AnalyzerUtils.IMAGE, images);
         }
         {
-            Map<String, DataType> audio = new HashMap<String, DataType>();
-            audio.put("number", Constants.DATATYPE_INTEGER);
+            Map<String, DataType> audio = getParent();
             audio.put("bitrate", Constants.DATATYPE_INTEGER);
-            audio.put("mimetype", Constants.DATATYPE_STRING);
+            audio.put("bitrate", Constants.DATATYPE_INTEGER);
+            audio.put("length", Constants.DATATYPE_INTEGER);
 
             VirtualCloudContext.addNodeManager(AnalyzerUtils.AUDIO, audio);
             VirtualCloudContext.addNodeManager(AnalyzerUtils.AUDIOC, audio);
         }
         {
-            Map<String, DataType> video = new HashMap<String, DataType>();
-            video.put("number", Constants.DATATYPE_INTEGER);
+            Map<String, DataType> video = getParent();
             video.put("height", Constants.DATATYPE_INTEGER);
             video.put("width", Constants.DATATYPE_INTEGER);
             video.put("bitrate", Constants.DATATYPE_INTEGER);
-            video.put("mimetype", Constants.DATATYPE_STRING);
+            video.put("channels", Constants.DATATYPE_INTEGER);
+            video.put("length", Constants.DATATYPE_INTEGER);
 
             VirtualCloudContext.addNodeManager(AnalyzerUtils.VIDEO, video);
             VirtualCloudContext.addNodeManager(AnalyzerUtils.VIDEOC, video);
@@ -93,7 +99,6 @@ public class RecognizerTest {
         for (File sample : samples.listFiles()) {
             files.put(sample.getName(), sample);
         }
-        System.out.println("" + files);
     }
 
 
