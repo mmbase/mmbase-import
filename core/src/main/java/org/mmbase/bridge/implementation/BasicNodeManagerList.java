@@ -21,18 +21,18 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 public class BasicNodeManagerList extends AbstractNodeList<NodeManager> implements NodeManagerList {
-    
+
     private static final Logger log = Logging.getLoggerInstance(BasicNodeManagerList.class);
 
     BasicNodeManagerList() {
         super();
     }
 
-    BasicNodeManagerList(Collection c, Cloud cloud) {
+    public BasicNodeManagerList(Collection c, Cloud cloud) {
         super(c, cloud);
     }
 
-    
+
     protected NodeManager convert(Object o) {
         if (o == null) return null;
         if (o instanceof CharSequence) {

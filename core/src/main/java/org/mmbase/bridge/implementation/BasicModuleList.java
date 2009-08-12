@@ -21,11 +21,11 @@ import org.mmbase.bridge.*;
  */
 public class BasicModuleList extends BasicList<Module> implements ModuleList {
 
-    BasicModuleList() {
+    public BasicModuleList() {
         super();
     }
 
-    BasicModuleList(Collection<? extends Module> c) {
+    public BasicModuleList(Collection<? extends Module> c) {
         super(c);
     }
 
