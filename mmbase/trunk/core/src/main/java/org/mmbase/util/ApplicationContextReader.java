@@ -44,6 +44,9 @@ public class ApplicationContextReader {
             } catch (javax.naming.NameNotFoundException nfe) {
                 log.service(nfe);
                 m =  Collections.emptyMap();
+            } catch (javax.naming.NoInitialContextException nie) {
+                log.service(nie);
+                m =  Collections.emptyMap();
             } catch (javax.naming.NamingException ne) {
                 log.error(ne);
                 m =  Collections.emptyMap();
