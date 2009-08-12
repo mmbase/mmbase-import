@@ -5,7 +5,11 @@
   <class>org.mmbase.applications.email.SendMail</class>
   <properties>
     <!--
-         some explanation about the encoding property would be welcome here
+        This is the encoding in which non-multipart message are sent.
+        This  defaults to ISO-8859-1. Probabably mainly to please Hotmail.
+
+        But I think it's 2009, and even 'livemail' nowadays supports UTF-8, and it may be a good idea to change the default.
+
     -->
     <property name="encoding">ISO-8859-1</property>
 
