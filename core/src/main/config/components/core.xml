@@ -507,7 +507,7 @@
          mimetype="text/html">
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
-        <param name="url">http://twitter.com/statuses/user_timeline/42594291.rss</param>
+        <param name="url">http://search.twitter.com/search.atom?q=mmbase</param>
         <param name="xslt">xslt/rss.xslt</param>
       </class>
     </body>
@@ -606,6 +606,18 @@
       <class name="org.mmbase.framework.DocumentationRenderer">
         <param name="docbook">index.xml</param>
         <param name="includeRenderTime">xml-comments</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="apidoc"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <title xml:lang="nl">Java API-documentatie</title>
+    <title xml:lang="en">Java API documentation</title>
+    <body>
+      <class name="org.mmbase.framework.IFrameRenderer">
+        <param name="url">http://www.mmbase.org/api/overview-summary.html</param>
       </class>
     </body>
   </block>
