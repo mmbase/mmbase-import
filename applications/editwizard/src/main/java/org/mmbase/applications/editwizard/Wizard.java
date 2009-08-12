@@ -162,7 +162,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * Constructor. Setup initial variables and connects to mmbase to load the data structure.
      *
      * @deprecated use Wizard(String, URIResolver, Config.WizardConfig, Cloud)
-     * @param context the editwizard context path
+     * @param request Associated servlet request, sometimes needed for URL generation
      * @param uri  the URIResolver with which the wizard schema's and the xsl's will be loaded
      * @param wizardname name of teh wizard
      * @param dataid the objectnumber
@@ -179,7 +179,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     /**
      * Constructor. Setup initial variables and connects to mmbase to load the data structure.
      *
-     * @param context the editwizard context path
+     * @param request Associated servlet request, sometimes needed for URL generation
      * @param uri  the URIResolver with which the wizard schema's and the xsl's will be loaded
      * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
      * @param cloud the Cloud to use
