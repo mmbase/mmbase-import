@@ -1,6 +1,8 @@
 package org.mmbase.streams;
 
 import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 import static org.junit.Assert.*;
 import java.util.*;
 import java.io.*;
@@ -14,6 +16,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  */
 
+@RunWith(Parameterized.class)
 public class Test {
 
     private final static CloudContext cloudContext = VirtualCloudContext.getCloudContext();
@@ -30,11 +33,19 @@ public class Test {
             destType = sourceType + "caches";
         }
     }
-    static Case[] CASES = new Case[] {
-        new Case("basic.mpg", AnalyzerUtils.VIDEO),
-        new Case("basic.mp3", AnalyzerUtils.AUDIO),
-        new Case("basic.png", AnalyzerUtils.IMAGE)
-    };
+    private final Case c;
+    public Test(Case c) {
+        this.c = c;
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return  Arrays.asList(new Object[][] {
+                {new Case("basic.mpg", AnalyzerUtils.VIDEO)},
+                {new Case("basic.mp3", AnalyzerUtils.AUDIO)},
+                {new Case("basic.png", AnalyzerUtils.IMAGE)}
+        });
+    }
 
     @BeforeClass
     public static void setUp() {
@@ -61,6 +72,7 @@ public class Test {
             audio.put("mimetype", Constants.DATATYPE_STRING);
 
             VirtualCloudContext.addNodeManager(AnalyzerUtils.AUDIO, audio);
+            VirtualCloudContext.addNodeManager(AnalyzerUtils.AUDIOC, audio);
         }
         {
             Map<String, DataType> video = new HashMap<String, DataType>();
@@ -71,6 +83,7 @@ public class Test {
             video.put("mimetype", Constants.DATATYPE_STRING);
 
             VirtualCloudContext.addNodeManager(AnalyzerUtils.VIDEO, video);
+            VirtualCloudContext.addNodeManager(AnalyzerUtils.VIDEOC, video);
         }
         File baseDir = new File(System.getProperty("user.dir"));
         File samples = new File(baseDir, "samples");
@@ -89,7 +102,7 @@ public class Test {
 
 
     @org.junit.Test
-    public void testRecognizer()  throws Exception {
+    public void test()  throws Exception {
         CommandTranscoder transcoder = new FFMpegTranscoder("1").clone();
         Logger logger = Logging.getLoggerInstance("FFMPEG");
 
@@ -99,27 +112,23 @@ public class Test {
 
         chain.setLevel(Level.WARN);
 
-        for (Case c : CASES) {
-            Node source = getTestNode();
-            Node dest   = getTestNode();
-            AnalyzerLogger an = new AnalyzerLogger(a, source, dest);
-            chain.addLogger(an);
-            File f = files.get(c.file);
-            if (f == null || ! f.exists()) {
-                throw new Error("The file " + c.file  + " does not exist. Please download these first (use the Makefile)");
-            }
-            transcoder.transcode(f.toURI(), null, chain);
-            a.ready(source, dest);
-            chain.removeLogger(an);
-
-            assertEquals(source.getNodeManager().getName(), c.sourceType);
-            assertEquals(dest.getNodeManager().getName(), c.destType);
-
-            System.out.println("" + source + " -> " + dest);
-
+        Node source = getTestNode();
+        Node dest   = getTestNode();
+        AnalyzerLogger an = new AnalyzerLogger(a, source, dest);
+        chain.addLogger(an);
+        File f = files.get(c.file);
+        if (f == null || ! f.exists()) {
+            throw new Error("The file " + c.file  + " does not exist. Please download these first (use the Makefile)");
         }
+        File out = File.createTempFile(Test.class.getName(), null);
+        transcoder.transcode(f.toURI(), out.toURI(), chain);
+        a.ready(source, dest);
+        chain.removeLogger(an);
 
+        assertEquals(source.getNodeManager().getName(), c.sourceType);
+        assertEquals(dest.getNodeManager().getName(), c.destType);
 
+        System.out.println("" + source + " -> " + dest);
 
     }
 
