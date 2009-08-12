@@ -155,7 +155,9 @@ public final class AnalyzerUtils {
         Cloud cloud = source.getCloud();
         fixMimeType("image", source);
         if (cloud != null) {
-            log.info("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""), new Exception());
+            if (log.isDebugEnabled()) {
+                log.debug("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""), new Exception());
+            }
             source.setNodeManager(cloud.getNodeManager(IMAGE));
             source.commit();
         }
