@@ -8,12 +8,12 @@ export CLASSPATH = target/classes:$(M2)/org/mmbase/mmbase/$(mmbase)/mmbase-$(mmb
 
 
 .PHONY:
-samples: samples/mahnamahna.mpg samples/Kort-stormpje.mov samples/Snaar.mp3 samples/presto.mp4
+samples: samples/basic.mpg samples/basic.mov samples/basic.mp3 samples/basic.mp4
 
 
 samples/%:
 	mkdir -p samples
-	(cd samples ; wget http://www.toly.net/downloads-oip/$*)
+	(cd samples ; wget http://openbeelden1.tuxic.nl/beta/files/TESTS/$*)
 
 samples/mahnamahna.broken: samples/mahnamahna.mpg
 	cp samples/mahnamahna.mpg samples/mahnamahna.broken
