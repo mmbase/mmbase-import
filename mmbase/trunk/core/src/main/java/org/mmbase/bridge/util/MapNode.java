@@ -31,7 +31,7 @@ public class MapNode<V> extends AbstractNode implements Node {
      * This is normally, but not always, a VirtualBuilder. It is not for some builders which have
      * besides real nodes also virtual nodes, like typedef (cluster nodes) and typerel (allowed relations because of inheritance).
      */
-    final protected NodeManager nodeManager;
+    protected NodeManager nodeManager;
     final protected Map<String, V> values;
     final protected Map<String, Long> sizes = new HashMap<String, Long>();
     final protected Map<String, V> wrapper;
@@ -260,6 +260,11 @@ public class MapNode<V> extends AbstractNode implements Node {
     @Override
     protected Function getNodeFunction(String functionName) {
         return nodeManager.getFunction(functionName);
+    }
+
+    @Override
+    public void setNodeManager(NodeManager nm) {
+        nodeManager = nm;
     }
 }
 
