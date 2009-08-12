@@ -34,9 +34,10 @@ public final class AnalyzerUtils {
     public static final String IMAGE = "imagestreamsources";
     public static final String MEDIA = "mediastreamsources";
 
-    public static final String VIDEOC = "videostreamsourcescaches";
-    public static final String AUDIOC = "audiostreamsourcescaches";
-    public static final String MEDAC  = "mediastreamsourcescaches";
+    public static final String VIDEOC = VIDEO + "caches";
+    public static final String AUDIOC = AUDIO + "caches";
+    public static final String IMAGEC = IMAGE + "caches";
+    public static final String MEDIAC = MEDIA + "caches";
 
     private final ChainedLogger log = new ChainedLogger(LOG);
     AnalyzerUtils(Logger l) {
