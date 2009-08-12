@@ -1847,7 +1847,7 @@ public class ResourceLoader extends ClassLoader {
                 classWeights.put(Pattern.compile(entry.getKey()), Integer.parseInt(entry.getValue()));
             }
         }
-        log.info("Found classWeights " + classWeights);
+        log.service("Found classWeights " + classWeights);
     }
     static {
         readClassWeights();
