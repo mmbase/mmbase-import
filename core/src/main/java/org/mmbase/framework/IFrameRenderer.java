@@ -66,8 +66,11 @@ public class IFrameRenderer extends AbstractRenderer {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             String sc = getStyleClass();
             decorateIntro(hints, w, "iframe" + (sc == null ? "" : " " + sc));
-            String url = response.encodeUrl(request.getContextPath() + getIFrameUrl(blockParameters));
-            w.write("<iframe src=\"" + url + "\" />");
+            String u = getIFrameUrl(blockParameters);
+            if (u.startsWith("/")) {
+                u = response.encodeUrl(request.getContextPath() + u);
+            }
+            w.write("<iframe src=\"" + u + "\" />");
             decorateOutro(hints, w);
         } catch (IOException eio) {
             throw new FrameworkException(eio.getMessage(), eio);
