@@ -70,6 +70,14 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
     }
 
 
+    @Override
+    public boolean isNodeManager() {
+        return true;
+    }
+    @Override
+    public NodeManager toNodeManager() {
+        return this;
+    }
     public Node createNode() { throw new UnsupportedOperationException();}
     public NodeList getList(String where, String sorted, boolean direction) { throw new UnsupportedOperationException(); }
     public NodeList getList(String where, String sorted, String direction) { throw new UnsupportedOperationException(); }
