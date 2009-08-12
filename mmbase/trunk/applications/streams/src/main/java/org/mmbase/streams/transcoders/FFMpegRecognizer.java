@@ -68,7 +68,7 @@ public class FFMpegRecognizer implements Recognizer {
         return getClass().getName();
     }
 
-
+    /*
     public static void main(String[] argv) throws Exception {
         Logger logger = Logging.getLoggerInstance("RECOGNIZER");
         logger.setLevel(Level.DEBUG);
@@ -85,4 +85,5 @@ public class FFMpegRecognizer implements Recognizer {
 
 
     }
+    */
 }
