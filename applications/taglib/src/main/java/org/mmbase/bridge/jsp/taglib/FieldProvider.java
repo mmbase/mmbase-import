@@ -20,6 +20,8 @@ import org.mmbase.bridge.Node;
  * @version $Id$
  */
 public interface FieldProvider extends TagIdentifier {
+
+
     // Since a field cannot exist alone, it must also implement NodeProvider.
     // To get the value of a field, you always need a Node too. A 'Field' is only
     // a description.
@@ -27,10 +29,10 @@ public interface FieldProvider extends TagIdentifier {
      * @return the field contained in the tag
      *
      */
-    public Field getFieldVar() throws JspTagException;
+    Field getFieldVar() throws JspTagException;
 
-    public Node getNodeVar() throws JspTagException;
+    Node getNodeVar() throws JspTagException;
 
 
-    
+
 }
