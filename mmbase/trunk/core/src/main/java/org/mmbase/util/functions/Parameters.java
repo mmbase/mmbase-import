@@ -86,7 +86,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         if (log.isDebugEnabled()) {
             log.debug("Found definition " + Arrays.asList(definition));
         }
-        backing = new HashMap<String, Object>();
+        backing = new LinkedHashMap<String, Object>();
         List<Map.Entry<String, Object>> pb = null;
         // fill with default values, and check for non-unique keys.
         int i = fromIndex;
@@ -272,6 +272,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
             return definition;
         }
     }
+
 
     /**
      * Whether this Parameters object is 'automaticly casting'. If it is, that means that you can set e.g.
