@@ -36,11 +36,13 @@
             <xsl:value-of select="a:published" />
           </em>
           <xsl:text> </xsl:text>
-          <xsl:if test="not(a:author/a:uri = 'http://twitter.com/mmbase')">
-            <xsl:value-of select="a:author/a:name" /><xsl:text>:</xsl:text>
-          </xsl:if>
-          <xsl:text> </xsl:text>
-          <a href="{a:link[@type='text/html']/@href}"><xsl:value-of select="a:title" /></a>
+          <span class="message">
+            <xsl:if test="not(a:author/a:uri = 'http://twitter.com/mmbase')">
+              <xsl:text>[</xsl:text><xsl:value-of select="a:author/a:name" /><xsl:text>] </xsl:text>
+            </xsl:if>
+            <xsl:text> </xsl:text>
+            <a href="{a:link[@type='text/html']/@href}"><xsl:value-of select="a:title" /></a>
+          </span>
         </li>
       </xsl:for-each>
     </ul>
