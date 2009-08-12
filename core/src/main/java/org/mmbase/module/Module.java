@@ -376,7 +376,7 @@ public abstract class Module extends DescribedFunctionProvider {
      *
      * @deprecated Method name is not correct english. And btw the complete
      * method is dubious. It is called once an hour for every
-     * module. But I know of now modules which actually do something useful here,
+     * module. But I know of no modules which actually do something useful here,
      * because an hours is always either too short, or too long.
      */
     public void maintainance() {

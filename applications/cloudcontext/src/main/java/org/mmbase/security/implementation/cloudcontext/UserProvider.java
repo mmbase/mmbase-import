@@ -33,7 +33,7 @@ public interface UserProvider {
     /**
      * Returns the node associated with a certain username/password combination,
      * or <code>null</code>
-     * @param encode Whether or not the user is requested usering the username/encodedpassword login
+     * @param encoded Whether or not the user is requested usering the username/encodedpassword login
      * 'type' see {@link Authenticate#login}.
      */
     MMObjectNode getUser(String user, String pw, boolean encoded);

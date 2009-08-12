@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * This is basicly a Map, and it also implements {@link java.util.Map}. This map is however not
- * completely normal, because its {@link #get(String)} method can return non-null for keys it does
+ * completely normal, because its {@link #get(Object)} method can return non-null for keys it does
  * not actually contain (as e.g. returend by {@link #entrySet}.
  *
  * Firstly, the keys can contain 'dots', in which case this key is 'split' by the dot, and the

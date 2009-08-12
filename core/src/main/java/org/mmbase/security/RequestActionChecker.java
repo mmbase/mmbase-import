@@ -15,9 +15,9 @@ import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.functions.Parameter;
 
 /**
- * This action checker can deny a action based on property of the request made by the
+ * This action checker can deny an action based on properties of the request made by the
  * user. E.g. access may be denied from certain IP's or e.g. you may want to allow a certain action
- * only when done via HTTPs.
+ * only when done via HTTPS.
  *
  * @author Michiel Meeuwissen
  * @version $Id$

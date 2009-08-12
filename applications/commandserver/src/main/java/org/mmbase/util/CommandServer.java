@@ -47,7 +47,7 @@ commandserver	stream	tcp		nowait	nobody	/usr/bin/java java -jar /home/michiel/mm
  * {@link Runtime#exec(String[], String[])}), followed by the stdin for the command. It will return stdout of the process.
  * </p>
  *
- * You can use {@link org.mmbase.util.externalcommands.CommandExector} to connecto to the commandserver.
+ * You can use {@link org.mmbase.util.externalprocess.CommandExecutor} to connecto to the commandserver.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.2
