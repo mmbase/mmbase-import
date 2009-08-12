@@ -331,6 +331,6 @@ div.mm_c.iframe iframe {
   margin-bottom: 2ex;
 }
 
-.b_mmbase_microblog_uncached li a {
+.b_mmbase_microblog_uncached li span.message {
   display: block;
 }
