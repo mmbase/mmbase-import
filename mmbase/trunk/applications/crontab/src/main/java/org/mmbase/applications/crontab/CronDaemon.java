@@ -357,6 +357,19 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
     }
 
     /**
+     * Clears all queues
+     * @since MMBase-1.9.2
+     */
+    public void clear() {
+        if (proposedJobs != null) {
+            proposedJobs.clear();
+        }
+        if (runningJobs != null) {
+            runningJobs.clear();
+        }
+    }
+
+    /**
      * @since MMBase-1.8
      */
     public Set<CronEntry> getEntries() {
