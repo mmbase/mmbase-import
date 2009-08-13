@@ -27,7 +27,11 @@
         <c:forEach items="${parameters.query.steps}" var="step">
           <mm:listnodes referid="tn" commitonclose="false">
             <c:if test="${_node._exists eq 'nolonger' or _node._exists eq 'no' or empty _node._number}"> <!-- DELETED! -->
-              <mm:constraint field="${step.alias}.number" inverse="true" value="${_node.number}" />
+              <mm:hasnode number="${_node.number}">
+                <c:catch>
+                  <mm:constraint field="${step.alias}.number" inverse="true" value="${_node.number}" />
+                </c:catch>
+              </mm:hasnode>
             </c:if>
           </mm:listnodes>
         </c:forEach>

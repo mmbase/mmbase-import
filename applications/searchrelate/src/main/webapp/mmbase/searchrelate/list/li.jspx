@@ -8,15 +8,34 @@
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.include file="parameters.jspf" />
 
-  <li
-      class="node_${_node}"
-      xmlns="http://www.w3.org/1999/xhtml">
-    <mm:form id="${parameters.formtag}"
-             name="${parameters.formtag}"
-             page="${parameters.referrer}">
-      <mm:include debug="html" page="${parameters.item}">
-        <mm:param name="source" value="${parameters.source}" />
-      </mm:include>
-    </mm:form>
-  </li>
+  <mm:locale language="${parameters.language}">
+    <li
+        class="node_${_node}"
+        xmlns="http://www.w3.org/1999/xhtml">
+      <c:choose>
+        <c:when test="${! empty parameters.formtag}">
+          <mm:include debug="html"
+                      page="${parameters.item}"
+                      referids="id">
+            <mm:param name="source" value="${parameters.source}" />
+            <mm:param name="fields" value="${parameters.fields}" />
+            <mm:param name="fieldlistType" value="${parameters.fieldlistType}" />
+          </mm:include>
+        </c:when>
+        <c:otherwise>
+          <mm:import id="formtagid">node${_node}</mm:import>
+          <mm:form id="${formtagid}"
+                   name="${formtagid}">
+            <mm:include debug="html"
+                        page="${parameters.item}"
+                        referids="id">
+              <mm:param name="source" value="${parameters.source}" />
+              <mm:param name="fields" value="${parameters.fields}" />
+              <mm:param name="fieldlistType" value="${parameters.fieldlistType}" />
+            </mm:include>
+          </mm:form>
+        </c:otherwise>
+      </c:choose>
+    </li>
+  </mm:locale>
 </jsp:root>
