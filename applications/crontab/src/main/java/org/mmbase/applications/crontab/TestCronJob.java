@@ -33,7 +33,7 @@ public class TestCronJob extends AbstractCronJob implements CronJob {
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null); // testing Class Security
         //Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "anonymous", null);
         log.info("found cloud " + cloud.getUser().getIdentifier() + "/" + cloud.getUser().getRank());
-        int duration = properties.containsKey("duration") ? Integer.valueOf(properties.get("duration")) : 128 * 1000;
+        long duration = properties.containsKey("duration") ? Long.valueOf(properties.get("duration")) : 128 * 1000;
         try {
             log.info("sleeping");
             if ("true".equals(properties.get("exceptions")) && cronEntry.getCount() % 2 == 0) {
