@@ -18,16 +18,18 @@
   </c:if>
 
   <c:if test="${! empty parameters.formtag}">
-    <c:set value="${requestScope['org.mmbase.transaction'].nodes}" var="tn"  />
-    <c:forEach items="${parameters.query.steps}" var="step">
-      <mm:listnodes referid="tn" commitonclose="false">
-        <c:if test="${_node._exists eq 'nolonger'}"> <!-- DELETED! -->
-          <mm:constraint field="${step.alias}.number" inverse="true" value="${_node.number}" />
-        </c:if>
-      </mm:listnodes>
-    </c:forEach>
-
-
+    <mm:transaction
+        name="${parameters.formtag}"
+        id="${parameters.formtag}" commitonclose="false">
+      <c:set value="${requestScope['org.mmbase.transaction'].nodes}" var="tn"  />
+      <c:forEach items="${parameters.query.steps}" var="step">
+        <mm:listnodes referid="tn" commitonclose="false">
+          <c:if test="${_node._exists eq 'nolonger'}"> <!-- DELETED! -->
+            <mm:constraint field="${step.alias}.number" inverse="true" value="${_node.number}" />
+          </c:if>
+        </mm:listnodes>
+      </c:forEach>
+    </mm:transaction>
   </c:if>
 
 

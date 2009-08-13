@@ -7,7 +7,9 @@
     >
   <!--
 
-      xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+       xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+
+
 
       @author Michiel Meeuwissen
       @version $Id: relatednodes.tagx,v 1.29 2009-04-09 11:06:58 michiel Exp $
@@ -214,11 +216,19 @@
         <mm:node id="source" />
         <mm:relatednodescontainer clone="query">
           <mm-sr:deletedConstraint parameters="${parameters}" />
+
+          <c:if test="${_create and _createposition eq 'top'}">
+            <mm-sr:newNodes />
+          </c:if>
+
           <mm:relatednodes>
             <mm:include
                 page="/mmbase/searchrelate/list/li.jspx"
                 referids="id" />
           </mm:relatednodes>
+          <c:if test="${_create and _createposition eq 'bottom'}">
+            <mm-sr:newNodes />
+          </c:if>
 
         </mm:relatednodescontainer>
       </ol>
