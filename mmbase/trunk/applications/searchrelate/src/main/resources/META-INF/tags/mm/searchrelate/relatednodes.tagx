@@ -7,8 +7,7 @@
     >
   <!--
 
-     xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
-
+      xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
       @author Michiel Meeuwissen
       @version $Id: relatednodes.tagx,v 1.29 2009-04-09 11:06:58 michiel Exp $
@@ -129,7 +128,10 @@
 
   <mm:write session="${id}_context" value="" />
 
-  <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${_role}" id="query" />
+  <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${_role}" id="query">
+    <mm:sortorder field="${_orderby}" direction="${_direction}" />
+    <jsp:invoke fragment="constraints" />
+  </mm:relatednodescontainer>
 
   <mm:context scope="session" id="${id}_context">
 
@@ -210,9 +212,8 @@
       </c:if>
       <ol>
         <mm:node id="source" />
-        <mm:relatednodescontainer referid="query">
-          <mm:sortorder field="${_orderby}" direction="${_direction}" />
-          <jsp:invoke fragment="constraints" />
+        <mm:relatednodescontainer clone="query">
+          <mm-sr:deletedConstraint parameters="${parameters}" />
           <mm:relatednodes>
             <mm:include
                 page="/mmbase/searchrelate/list/li.jspx"
