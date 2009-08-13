@@ -9096,6 +9096,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>nodemanager</name>
       <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
       <name>descendants</name>
@@ -9209,5 +9210,18 @@ The 0 is just counter, which starts at 0 on every page.
     <path>/META-INF/tags/mm/u/virtualnode.tagx</path>
     <since>MMBase-1.9.2</since>
   </tag-file>
-
+  <!--
+  <tag-file>
+    <type>mmbase.basic</type>
+    <name>input</name>
+    <path>/META-INF/tags/mm/u/input.tagx</path>
+    <since>MMBase-1.9.2</since>
+  </tag-file>
+  <tag-file>
+    <type>mmbase.basic</type>
+    <name>label</name>
+    <path>/META-INF/tags/mm/u/label.tagx</path>
+    <since>MMBase-1.9.2</since>
+  </tag-file>
+  -->
 </taglib>
