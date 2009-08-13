@@ -155,7 +155,7 @@
         </td>
       </tr>
       <tr>
-        <th>Reload configuration</th>
+        <th>Reload module</th>
         <td><mm:link><mm:param name="reload" value="" /><a href="${_}" class="navigate"><img src="${ok}" alt="reload"  /></a></mm:link></td>
       </tr>
       <tr>
