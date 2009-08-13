@@ -148,6 +148,7 @@ public class CrontabModule extends WatchedReloadableModule {
         for (CronEntry e : myEntries) {
             cronDaemon.remove(e);
         }
+        cronDaemon.clear();
         myEntries.clear();
         CronJobs cronJobs = CronJobs.getBuilder();
         if (cronJobs != null) {
