@@ -18,4 +18,5 @@
     <mm:fieldinfo type="errors" />
   </mm:field>
   <mm-sr:unlink  />
+  <mm-sr:delete  />
 </span>
