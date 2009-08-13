@@ -42,7 +42,6 @@ public class UtilTests {
         suite.addTestSuite(org.mmbase.util.xml.DocumentReaderTest.class);
         suite.addTestSuite(org.mmbase.util.functions.ParametersTest.class);
         suite.addTestSuite(SerializableInputStreamTest.class);
-        suite.addTestSuite(org.mmbase.bridge.virtual.VirtualTest.class);
         return suite;
     }
 }
