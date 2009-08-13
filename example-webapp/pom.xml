@@ -18,6 +18,11 @@
   <properties>
     <my.postfix>${mmbase.version.postfix}</my.postfix>
     <base.version>${mmbase.version.number}${my.postfix}</base.version>
+    <jdbcUrl>jdbc:hsqldb:file:data/mmbase</jdbcUrl>
+    <!-- E.g. use
+         -DjdbcUrl=jdbc:hsqldb:hsql://localhost/testb
+         to connect to a running hsql, e.g. needed when testing clustering
+    -->
   </properties>
 
   <build>
@@ -35,6 +40,12 @@
         <artifactId>maven-jetty-plugin</artifactId>
         <configuration>
           <jettyEnvXml>${basedir}/jetty-env.xml</jettyEnvXml>
+          <systemProperties>
+            <systemProperty>
+              <name>jdbcUrl</name>
+              <value>${jdbcUrl}</value>
+            </systemProperty>
+          </systemProperties>
         </configuration>
         <dependencies>
           <dependency>
@@ -117,6 +128,13 @@
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase-crontab</artifactId>
+      <version>${mmbase.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase-clustering</artifactId>
       <version>${mmbase.version}</version>
       <type>war</type>
     </dependency>
