@@ -72,7 +72,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         jspvar = jv;
     }
 
-    protected String getName() throws JspTagException {
+    public String getName() throws JspTagException {
         return (String) name.getValue(this);
     }
 
