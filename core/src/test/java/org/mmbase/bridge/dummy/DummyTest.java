@@ -8,29 +8,28 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.virtual;
+package org.mmbase.bridge.dummy;
 
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.*;
 import java.util.*;
-import junit.framework.*;
+import org.junit.*;
+import static org.junit.Assert.*;
 
 
 /**
- * Test class <code>CloudContext</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudContextTest.java 37077 2009-07-21 17:28:12Z michiel $
+ * @version $Id$
  */
-public class VirtualTest extends TestCase {
+public class DummyTest  {
 
-    public VirtualTest(String name) {
-        super(name);
-    }
     public CloudContext getCloudContext() {
-        return VirtualCloudContext.getCloudContext();
+        return DummyCloudContext.getCloudContext();
     }
 
+
+    @Test
     public void testListClouds() {
         CloudContext cloudContext = getCloudContext();
         boolean defaultCloudFound = false;
@@ -43,6 +42,7 @@ public class VirtualTest extends TestCase {
         }
         assertTrue(defaultCloudFound);
     }
+    @Test
     public void testUri() {
 
         CloudContext cloudContext = getCloudContext();
@@ -53,12 +53,13 @@ public class VirtualTest extends TestCase {
 
     }
 
+    @Test
     public void testNodeManager() {
         Cloud cloud = getCloudContext().getCloud("mmbase");
         Map<String, DataType> map = new HashMap<String, DataType>();
         map.put("number", Constants.DATATYPE_INTEGER);
         map.put("title", Constants.DATATYPE_STRING);
-        VirtualCloudContext.addNodeManager("aa", map);
+        DummyCloudContext.addNodeManager("aa", map);
 
         NodeManager aa = cloud.getNodeManager("aa");
         Node a = aa.createNode();
