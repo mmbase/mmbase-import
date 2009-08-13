@@ -10,10 +10,9 @@
   <mm:content
       type="application/xhtml+xml"
       expires="0"
-      language="en">
+      language="nl">
     <!--
     xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
-
 
 
     -->
@@ -21,6 +20,9 @@
 
       <head>
         <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+        <mm:link page="/mmbase/searchrelate/page.css.jsp">
+          <link rel="stylesheet" href="${_}" type="text/css" />
+        </mm:link>
       </head>
       <body>
         <h1>Search and Relate examples/tests</h1>
@@ -42,7 +44,9 @@
             <h3><mm:field name="title" /></h3>
 
             <mm-sr:relatednodes type="news" role="posrel"
-                                item="/item.jspx" />
+                                sortable="true"
+                                search="true"
+                                 />
 
           </mm:node>
 

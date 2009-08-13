@@ -6,9 +6,7 @@
     version="2.0"
     >
   <!--
-
-       xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
-
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
 
       @author Michiel Meeuwissen
@@ -43,7 +41,14 @@
                            description="Direction of orderby of  mm:relatednodes, but default to &lt;UP&gt;.pos"
                            />
 
-  <jsp:directive.attribute name="fields"      type="java.lang.String" />
+  <jsp:directive.attribute name="fields"      type="java.lang.String"
+                           description="List of fields to show. Defaults to 'use only fieldlistType'."
+                           />
+
+  <jsp:directive.attribute name="fieldlistType"      type="java.lang.String"
+                           description="Like 'type' of mm:fieldlist. Default to 'list'."
+
+                           />
 
   <jsp:directive.attribute name="icondir"      type="java.lang.String"
                            description="Directory from which to take create/delete icons, can be empty for default icons."
@@ -99,6 +104,14 @@
 
   -->
 
+  <!--
+  <c:if test="${! empty item and ! empty delete}">
+    <div class="WARNING">WARNING: It makes no sense to use both 'item' and 'delete' attributes. If you use item="", you should use mm-sr:delete in that jsp (or not)</div>
+  </c:if>
+  <c:if test="${! empty item and ! empty unlink}">
+    <div class="WARNING">WARNING: It makes no sense to use both 'item' and 'unlink' attributes. If you use item="", you should use mm-sr:unlink in that jsp (or not)</div>
+  </c:if>
+  -->
   <mm:import id="_item">${empty item ? '/mmbase/searchrelate/list/item.jspx' : item}</mm:import>
   <mm:import id="_role">${empty role and empty path ? 'posrel' : role}</mm:import><!-- role defaults to 'posrel' -->
   <mm:import id="_direction">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
@@ -122,7 +135,7 @@
 
 
 
-  <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}?${pageContext.request.queryString}</mm:escape></mm:import>
+  <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape></mm:import>
   <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
   <mm:write session="${requestid}_sequence" value="${seq + 1}" />
 
@@ -149,6 +162,7 @@
     <mm:import from="parent" id="confirm"    externid="_confirm" />
     <mm:import from="parent" id="create"    externid="_create" />
     <mm:import from="parent" id="unlink"    externid="_unlink" />
+    <mm:import from="parent" externid="fieldlistType" />
 
     <mm:import from="parent" externid="type" />
     <mm:import from="parent" externid="path" />
@@ -158,6 +172,7 @@
     <mm:import from="parent" id="search" externid="_search" />
     <mm:import from="parent" externid="query" />
 
+    <mm:import id="language">${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}</mm:import>
     <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
   </mm:context>
 
@@ -185,15 +200,20 @@
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
 
-
-
-
-    <div class="list ${q.nodeManager.name}">
+    <h2>${id}</h2>
+    <div id="${id}" class="list ${q.nodeManager.name}">
 
       <div id="${type}_${id}" class="listinfo">
         <!-- This div contains all necessary settings, the javascript can easily access this data, in case it want to know it too.  -->
         <c:forEach items="${parameters}" var="entry">
-          <input type="hidden" name="${entry.key}"       value="${entry.value}" />
+          <c:choose>
+            <c:when test="${entry.key eq 'query'}">
+              <input type="hidden" name="${entry.key}"       value="${entry.value.sql}" />
+            </c:when>
+            <c:otherwise>
+              <input type="hidden" name="${entry.key}"       value="${entry.value}" />
+            </c:otherwise>
+          </c:choose>
         </c:forEach>
       </div>
 
@@ -212,8 +232,10 @@
           <mm-sr:search type="${query.nodeManager.name}" />
         </c:if>
       </c:if>
-      <ol>
-        <mm:node id="source" />
+
+      <!-- ================================================================================ -->
+      <ol class="${query.nodeManager.name}">
+
         <mm:relatednodescontainer clone="query">
           <mm-sr:deletedConstraint parameters="${parameters}" />
 
@@ -226,12 +248,15 @@
                 page="/mmbase/searchrelate/list/li.jspx"
                 referids="id" />
           </mm:relatednodes>
+
           <c:if test="${_create and _createposition eq 'bottom'}">
             <mm-sr:newNodes />
           </c:if>
 
         </mm:relatednodescontainer>
       </ol>
+      <!-- ================================================================================ -->
+
       <c:if test="${_create and _createposition eq 'bottom'}">
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
                  referids="id">

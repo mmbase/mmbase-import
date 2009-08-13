@@ -17,19 +17,31 @@
 
   <mm:fieldlist
       id="${requestScope['org.mmbase.cloud'].name}_node_${mm:escape('identifier', _node)}"
-      type="${empty fields ? 'list' : ''}" fields="${fields}" varStatus="status">
+      type="${empty parameter.fieldlistType ? (empty parameters.fields ? 'list' : '') : parameters.fieldlistType}"
+      fields="${parameters.fields}"
+      varStatus="status">
+
     <c:if test="${status.current.state ne 3}"> <!-- don't show system fields on default -->
-      <mm:fieldinfo type="input" />
-      <c:if test="${status.first}">
+      <div class="mm_field ${status.current.name} mm_state_${status.current.state}">
+
+        <mm:fieldinfo type="forid">
+          <label forid="${_}"><mm:fieldinfo type="guiname" /></label>
+        </mm:fieldinfo>
         <jsp:text> </jsp:text>
-        <c:if test="${parameters.delete}">
-          <mm-sr:delete />
+
+        <mm:fieldinfo type="input" />
+        <c:if test="${status.first}">
+          <jsp:text> </jsp:text>
+          <c:if test="${parameters.delete}">
+            <mm-sr:delete />
+          </c:if>
+          <c:if test="${parameters.unlink}">
+            <mm-sr:unlink  />
+          </c:if>
         </c:if>
-        <c:if test="${parameters.unlink}">
-          <mm-sr:unlink  />
-        </c:if>
-      </c:if>
-      <mm:fieldinfo type="errors" />
+        <mm:fieldinfo type="errors" />
+      </div>
     </c:if>
+
   </mm:fieldlist>
 </jsp:root>

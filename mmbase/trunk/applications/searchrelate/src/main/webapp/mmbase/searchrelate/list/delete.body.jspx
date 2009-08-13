@@ -6,7 +6,7 @@
     >
   <mm:hasnode number="$n">
     <mm:node referid="n" id="n" />
-    <mm:node id="source" referid="source">
+    <mm:node id="source" referid="parameters.source">
       <mm:relatednodescontainer type="object">
         <mm:constraint field="number" value="${n}" />
         <mm:maxnumber value="1" />
