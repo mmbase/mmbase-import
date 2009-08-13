@@ -402,6 +402,10 @@ public class CronEntry implements java.io.Serializable {
         return result;
     }
 
+
+    /**
+     * Two CronEntrys as considered equal if they have the same id, name, classname and configuration.
+     */
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof CronEntry)) {
@@ -410,8 +414,8 @@ public class CronEntry implements java.io.Serializable {
         CronEntry other = (CronEntry)o;
         //
         return id.equals(other.id) && name.equals(other.name) &&
-            className.equals(other.className) && cronTime.equals(other.cronTime) && servers.pattern().equals(other.servers.pattern())
-            && (configuration == null ? other.configuration == null : configuration.equals(other.configuration));
+            className.equals(other.className) && cronTime.equals(other.cronTime) &&
+            (configuration == null ? other.configuration == null : configuration.equals(other.configuration));
     }
 
 
