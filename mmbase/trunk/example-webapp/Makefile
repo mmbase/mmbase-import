@@ -5,7 +5,7 @@
 # - Start 3 terminals
 # - In terminal 1 type: make
 # - In terminal 2 type: mvn jetty:run -DjdbcUrl=jdbc:hsqldb:hsql://localhost/mmbase
-# - In terminal 3 type: mvn jetty:run -DjdbcUrl=jdbc:hsqldb:hsql://localhost/mmbase -Djetty.port=8081
+# - In terminal 3 type: mvn jetty:run -DjdbcUrl=jdbc:hsqldb:hsql://localhost/mmbase -Djetty.port=8081 -Dmmbaseroot.machinename=webapp2
 
 # And then you have the 'example webapp' running in a mini mmbase cluster.
 
