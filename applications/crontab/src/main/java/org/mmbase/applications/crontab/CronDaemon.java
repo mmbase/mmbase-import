@@ -9,9 +9,12 @@ package org.mmbase.applications.crontab;
 
 import java.util.*;
 import org.mmbase.util.DynamicDate;
+import org.mmbase.util.ThreadPools;
 import org.mmbase.core.event.EventManager;
 import org.mmbase.util.logging.*;
 import java.util.concurrent.DelayQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * CronDaemon is a "crontab" clone written in java.
@@ -27,12 +30,15 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
     private static final Logger log = Logging.getLoggerInstance(CronDaemon.class);
 
     private static CronDaemon cronDaemon;
-    private Timer cronTimer;
     private Set<CronEntry> cronEntries;
     private Set<CronEntry> removedCronEntries;
     private Set<CronEntry> addedCronEntries;
 
     private DelayQueue<ProposedJobs.Event> proposedJobs = null;
+
+    private ScheduledFuture proposedFuture;
+    private ScheduledFuture failedFuture;
+    private ScheduledFuture future;
     private final DelayQueue<RunningCronEntry> runningJobs = new DelayQueue<RunningCronEntry>();
 
     /**
@@ -120,8 +126,8 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         synchronized(proposedJobs) {
 
             for (ProposedJobs.Event event = proposedJobs.poll(); event != null; event = proposedJobs.poll()) {
-                log.service("Consuming " + event);
                 if (event.isLocal()) {
+                    log.service("Consuming " + event + " locally");
                     CronEntry proposed = event.getCronEntry();
                     CronEntry local = getById(cronEntries, event.getCronEntry().getId());
                     if (local == null) {
@@ -130,9 +136,13 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
                     }
                     if (local.equals(proposed)) {
                         //local.setLastRun(event.getCronStart());
+                        log.debug("Executing " + local.getExecutable());
                         org.mmbase.util.ThreadPools.jobsExecutor.execute(local.getExecutable());
+                    } else {
+                        log.warn("Not executing " + proposed + " because it does not equal the locally found " + local);
                     }
                 } else {
+                    log.service("Consuming " + event + " by ignoring it, because it is executed on " + event.getMachine());
                     /// event will be execute somewhere else
                     /// could administrate this, and perhaps watch if it sucessfully succeeds
                 }
@@ -205,10 +215,13 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         if ((entry.getType() == CronEntry.Type.BALANCE || entry.getType() == CronEntry.Type.BALANCE_MUSTBEONE)
              && proposedJobs == null) {
             proposedJobs = new DelayQueue<ProposedJobs.Event>();
-            cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.consumeJobs();} }, getFirst(), 60 * 1000);
+            proposedFuture = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() { public void run() {CronDaemon.this.consumeJobs();} }, getFirst(), 60 * 1000, TimeUnit.MILLISECONDS);
+            ThreadPools.identify(proposedFuture, "Crontab's poposed balanced job consumer");
         }
-
-        cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.detectFailedJobs();} }, getFirst(), 60 * 1000);
+        if (failedFuture == null) {
+            failedFuture = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() { public void run() {CronDaemon.this.detectFailedJobs();} }, getFirst(), 60 * 1000, TimeUnit.MILLISECONDS);
+            ThreadPools.identify(failedFuture, "Crontab's failed job detector (unfinished)");
+        }
         cronEntries.add(entry);
         log.service("Added entry " + entry);
     }
@@ -238,7 +251,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
         log.service("Removed entry " + entry);
     }
 
-    protected Date getFirst() {
+    protected long getFirst() {
         Date first;
         try {
             first = DynamicDate.eval(DynamicDate.getInstance("tominute next minute"));
@@ -246,7 +259,7 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
             log.fatal(parseException); // could not happen
             first = new Date();
         }
-        return first;
+        return first.getTime() - System.currentTimeMillis();
     }
 
     /**
@@ -255,10 +268,10 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
      */
     public void start() {
         log.info("Starting CronDaemon");
-        cronTimer = new Timer(true);
-        Date first = getFirst();
+        long first = getFirst();
         log.debug("First run at " + first);
-        cronTimer.scheduleAtFixedRate(new TimerTask() { public void run() {CronDaemon.this.run();} }, first, 60 * 1000);
+        future = ThreadPools.scheduler.scheduleAtFixedRate(new Runnable() { public void run() {CronDaemon.this.run();} }, first, 60 * 1000, TimeUnit.MILLISECONDS);
+        ThreadPools.identify(future, "Crontab's job kicker");
     }
 
     /**
@@ -266,15 +279,22 @@ public class CronDaemon  implements ProposedJobs.Listener, Events.Listener {
      */
     public void stop() {
         log.info("Stopping CronDaemon");
-        cronTimer.cancel();
-        cronTimer = null;
+        if (future != null) {
+            future.cancel(true);
+        }
+        if (proposedFuture != null) {
+            proposedFuture.cancel(true);
+        }
+        if (failedFuture != null) {
+            failedFuture.cancel(true);
+        }
         for (CronEntry entry : cronEntries) {
             entry.stop();
         }
     }
 
     public boolean isAlive() {
-        return cronTimer != null;
+        return future != null;
     }
 
     /**
