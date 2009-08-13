@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.virtual;
+package org.mmbase.bridge.dummy;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -29,16 +29,16 @@ import org.mmbase.util.functions.*;
  * @todo    EXPERIMENTAL
  */
 
-public class VirtualCloud implements Cloud {
+public class DummyCloud implements Cloud {
 
     private final Map<Object, Object> properties = new ConcurrentHashMap<Object, Object>();
     private Locale locale = Locale.getDefault();
 
     private final String name;
-    private final VirtualCloudContext cloudContext;
+    private final DummyCloudContext cloudContext;
     private final UserContext userContext;
 
-    VirtualCloud(String n, VirtualCloudContext cc, UserContext uc) {
+    DummyCloud(String n, DummyCloudContext cc, UserContext uc) {
         name = n;
         cloudContext = cc;
         userContext = uc;
@@ -46,21 +46,7 @@ public class VirtualCloud implements Cloud {
 
 
     Node getNode(final Map<String, Object> m, final NodeManager nm) {
-        return new MapNode(new HashMap<String, Object>(m), nm) {
-            @Override
-            public  void commit() {
-                if (! m.containsKey("number")) {
-                    int number = VirtualCloudContext.addNode(values, getNodeManager().getName());
-                    values.put("number", number);
-                }
-                m.putAll(values);
-            }
-            @Override
-            public Object getValueWithoutProcess(String fieldName) {
-                if (!getNodeManager().hasField(fieldName))  throw new NotFoundException("No field '" + fieldName + "' in " + nm);
-                return super.getValueWithoutProcess(fieldName);
-            }
-        };
+        return new DummyNode(m, nm);
     }
 
     public Node getNode(int number) throws NotFoundException {
@@ -128,7 +114,7 @@ public class VirtualCloud implements Cloud {
     public NodeManager getNodeManager(String name) throws NotFoundException {
         Map<String, DataType> nm = cloudContext.nodeManagers.get(name);
         if (nm == null) throw new NotFoundException(name);
-        return new VirtualNodeManager(this, name, nm);
+        return new DummyNodeManager(this, name, nm);
     }
 
 

@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.virtual;
+package org.mmbase.bridge.dummy;
 
 import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.util.*;
@@ -23,13 +23,13 @@ import org.mmbase.bridge.*;
  * @since   MMBase-1.9.2
  */
 
-public class VirtualNodeManager extends AbstractNodeManager  {
+public class DummyNodeManager extends AbstractNodeManager  {
 
     protected final Map<String, Field> map = new LinkedHashMap<String, Field>();
     protected final String name;
-    protected final VirtualCloud vcloud;
+    protected final DummyCloud vcloud;
 
-    public VirtualNodeManager(VirtualCloud cloud, String name, Map<String, DataType> m) {
+    public DummyNodeManager(DummyCloud cloud, String name, Map<String, DataType> m) {
         super(cloud);
         this.vcloud = cloud;
         this.name = name;
