@@ -103,7 +103,7 @@
   <mm:import id="_role">${empty role and empty path ? 'posrel' : role}</mm:import><!-- role defaults to 'posrel' -->
   <mm:import id="_direction">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
   <mm:import id="_createposition">${empty createposition? 'bottom' : createposition}</mm:import>
-  <mm:import id="_formtag">${requestScope['org.mmbase.bridge.jsp.taglib.form'].id}</mm:import>
+  <mm:import id="_formtag">${requestScope['org.mmbase.bridge.jsp.taglib.form'].name}</mm:import>
   <mm:import id="_orderby">${empty orderby ? _role : orderby}${empty orderby ? (_role eq 'posrel' ? '.pos' : '.number') : ''}</mm:import>
   <mm:import id="_fields">${fields}</mm:import>
   <mm:import id="_search">${empty search ? false : search}</mm:import>
