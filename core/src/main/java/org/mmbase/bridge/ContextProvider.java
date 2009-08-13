@@ -52,8 +52,8 @@ public class ContextProvider {
             return RemoteContext.getCloudContext(uri);
         } else if (uri.startsWith("local")){
             return LocalContext.getCloudContext();
-        } else if (uri.startsWith("virtual")) {
-            return org.mmbase.bridge.virtual.VirtualCloudContext.getCloudContext();
+        } else if (uri.startsWith("dummy")) {
+            return org.mmbase.bridge.dummy.DummyCloudContext.getCloudContext();
         }
 	throw new BridgeException("cloudcontext with name {" + uri + "} is not known to MMBase");
     }

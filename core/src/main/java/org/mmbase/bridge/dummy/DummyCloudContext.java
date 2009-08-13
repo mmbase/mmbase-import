@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.virtual;
+package org.mmbase.bridge.dummy;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -26,9 +26,9 @@ import org.mmbase.util.functions.*;
  * @todo    EXPERIMENTAL
  */
 
-public class VirtualCloudContext implements CloudContext {
+public class DummyCloudContext implements CloudContext {
 
-    private static final VirtualCloudContext virtual = new VirtualCloudContext();
+    private static final DummyCloudContext virtual = new DummyCloudContext();
     private static int lastNodeNumber = 0;
 
     public static CloudContext getCloudContext() {
@@ -44,7 +44,7 @@ public class VirtualCloudContext implements CloudContext {
     final Map<String,  Map<String, DataType>> nodeManagers       = new ConcurrentHashMap<String, Map<String, DataType>>();
 
 
-    private VirtualCloudContext() {
+    private DummyCloudContext() {
         clouds.add("mmbase");
     }
 
@@ -71,15 +71,15 @@ public class VirtualCloudContext implements CloudContext {
     }
 
     public Cloud getCloud(String name) {
-        return new VirtualCloud(name, this, new BasicUser("anonymous"));
+        return new DummyCloud(name, this, new BasicUser("anonymous"));
     }
 
     public Cloud getCloud(String name, String authenticationType, Map<String, ?> loginInfo) throws NotFoundException {
-        return new VirtualCloud(name, this, new BasicUser(authenticationType));
+        return new DummyCloud(name, this, new BasicUser(authenticationType));
     }
 
     public Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException {
-        return new VirtualCloud(name, this, user);
+        return new DummyCloud(name, this, user);
     }
 
     public StringList getCloudNames() {
@@ -146,6 +146,6 @@ public class VirtualCloudContext implements CloudContext {
 
 
     public String getUri() {
-        return "virtual://localhost";
+        return "dummy://localhost";
     }
  }
