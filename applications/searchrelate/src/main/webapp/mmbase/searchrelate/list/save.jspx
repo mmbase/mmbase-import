@@ -9,6 +9,10 @@
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.include file="parameters.jspf" />
 
+  <!--
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+
+  -->
   <div class="saveresult">
     <mm:escape escape="swallow">
       <mm:listnodescontainer clone="parameters.query">
@@ -42,13 +46,7 @@
       <mm:form id="${parameters.formtag}"
                name="${parameters.formtag}"
                >
-        <c:set value="${requestScope['org.mmbase.transaction'].nodes}" var="tn"  />
-        <mm:listnodes referid="tn">
-          <c:if test="${_node.number lt 0}">
-            <mm:include page="${parameters.item}" referids="id" />
-            <p>${_node.number}${_node._number}</p>
-          </c:if>
-        </mm:listnodes>
+        <mm-sr:newNodes parameters="${parameters}" />
       </mm:form>
     </c:if>
 
