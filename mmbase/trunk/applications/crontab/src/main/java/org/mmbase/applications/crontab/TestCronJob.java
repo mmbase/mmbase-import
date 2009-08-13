@@ -7,6 +7,7 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.applications.crontab;
 
+import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
@@ -19,13 +20,30 @@ public class TestCronJob extends AbstractCronJob implements CronJob {
 
     private static final Logger log = Logging.getLoggerInstance(TestCronJob.class);
 
+
+    Map<String, String> properties;
+
+    @Override
+    protected void init() {
+        properties = org.mmbase.util.StringSplitter.map(cronEntry.getConfiguration());
+    }
+
+
     public void run() {
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null); // testing Class Security
         //Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "anonymous", null);
         log.info("found cloud " + cloud.getUser().getIdentifier() + "/" + cloud.getUser().getRank());
+        int duration = properties.containsKey("duration") ? Integer.valueOf(properties.get("duration")) : 128 * 1000;
         try {
             log.info("sleeping");
-            Thread.sleep(130 * 1000);
+            if ("true".equals(properties.get("exceptions")) && cronEntry.getCount() % 2 == 0) {
+                Thread.sleep(duration / 8);
+                log.info("Will throw an exception now");
+                throw new RuntimeException("This job throws sometimes an exception");
+                //Thread.sleep(7 * duration / 8);
+            } else {
+                Thread.sleep(duration);
+            }
             log.info("sleeped");
         } catch (InterruptedException e) {
             log.info("Interrupted");
