@@ -11,6 +11,7 @@ import org.mmbase.applications.crontab.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.RelationEvent;
 import org.mmbase.core.event.Event;
 import org.mmbase.util.logging.*;
 import java.util.*;
@@ -22,7 +23,7 @@ import java.util.*;
  * @author Kees Jongenburger
  * @version $Id$
  */
-public class CronJobs extends MMObjectBuilder  {
+public class CronJobs extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(CronJobs.class);
 
@@ -72,7 +73,25 @@ public class CronJobs extends MMObjectBuilder  {
         }
     }
 
-    @Override public void notify(NodeEvent event) {
+    @Override
+    public void notify(RelationEvent event) {
+        try {
+            Node node = getCloud().getNode(event.getRelationSourceNumber());
+            CronEntry newEntry = new NodeCronEntry(node);
+
+            String number = "" + node.getNumber();
+            CronDaemon cronDaemon = CronDaemon.getInstance();
+            CronEntry entry = cronDaemon.getCronEntry(number);
+            cronDaemon.remove(entry);
+
+            cronDaemon.add(newEntry);
+        } catch (Exception e) {
+            throw new RuntimeException("" + event + ": " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void notify(NodeEvent event) {
         log.debug("Received " + event);
         CronDaemon cronDaemon = CronDaemon.getInstance();
         switch(event.getType()) {
