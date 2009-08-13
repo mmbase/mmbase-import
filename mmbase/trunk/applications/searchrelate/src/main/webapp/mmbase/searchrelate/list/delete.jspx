@@ -7,15 +7,16 @@
   <jsp:output omit-xml-declaration="true" />
   <li>
     <mm:import externid="n"       required="true" />
-    <mm:import externid="source"  required="true" />
-    <mm:import externid="formtag" />
+    <jsp:directive.include file="parameters.jspf" />
     <mm:cloud method="asis">
       <c:choose>
-        <c:when test="${empty formtag}">
+        <c:when test="${empty parameters.formtag}">
           <jsp:directive.include file="delete.body.jspx" />
         </c:when>
         <c:otherwise>
-          <mm:transaction id="${formtag}">
+          <mm:transaction id="${parameters.formtag}"
+                          name="${parameters.formtag}"
+                          commitonclose="false">
             <jsp:directive.include file="delete.body.jspx" />
           </mm:transaction>
         </c:otherwise>

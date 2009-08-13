@@ -15,7 +15,9 @@
           <jsp:directive.include file="unlink.body.jspx" />
         </c:when>
         <c:otherwise>
-          <mm:transaction id="${parameters.formtag}">
+          <mm:transaction id="${parameters.formtag}"
+                          name="${parameters.formtag}"
+                          commitonclose="false">
             <jsp:directive.include file="unlink.body.jspx" />
           </mm:transaction>
         </c:otherwise>

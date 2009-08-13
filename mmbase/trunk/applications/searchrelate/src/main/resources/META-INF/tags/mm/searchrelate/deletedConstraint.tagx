@@ -18,18 +18,21 @@
   </c:if>
 
   <c:if test="${! empty parameters.formtag}">
-    <mm:transaction
-        name="${parameters.formtag}"
-        id="${parameters.formtag}" commitonclose="false">
-      <c:set value="${requestScope['org.mmbase.transaction'].nodes}" var="tn"  />
-      <c:forEach items="${parameters.query.steps}" var="step">
-        <mm:listnodes referid="tn" commitonclose="false">
-          <c:if test="${_node._exists eq 'nolonger'}"> <!-- DELETED! -->
-            <mm:constraint field="${step.alias}.number" inverse="true" value="${_node.number}" />
-          </c:if>
-        </mm:listnodes>
-      </c:forEach>
-    </mm:transaction>
+
+    <mm:cloud method="asis"> <!-- makes sure the current cloud is not already the tranaction -->
+      <mm:transaction
+          name="${parameters.formtag}"
+          id="${parameters.formtag}" commitonclose="false">
+        <c:set value="${requestScope['org.mmbase.transaction'].nodes}" var="tn"  />
+        <c:forEach items="${parameters.query.steps}" var="step">
+          <mm:listnodes referid="tn" commitonclose="false">
+            <c:if test="${_node._exists eq 'nolonger' or _node._exists eq 'no' or empty _node._number}"> <!-- DELETED! -->
+              <mm:constraint field="${step.alias}.number" inverse="true" value="${_node.number}" />
+            </c:if>
+          </mm:listnodes>
+        </c:forEach>
+      </mm:transaction>
+    </mm:cloud>
   </c:if>
 
 
