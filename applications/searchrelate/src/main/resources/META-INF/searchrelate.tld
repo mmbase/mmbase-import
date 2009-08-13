@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <taglib xmlns="http://java.sun.com/xml/ns/j2ee"
         version="2.0"
         xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance"
@@ -48,6 +49,11 @@
   <tag-file>
     <name>deletedConstraint</name>
     <path>/META-INF/tags/mm/searchrelate/deletedConstraint.tagx</path>
+  </tag-file>
+
+  <tag-file>
+    <name>newNodes</name>
+    <path>/META-INF/tags/mm/searchrelate/newNodes.tagx</path>
   </tag-file>
 
 
