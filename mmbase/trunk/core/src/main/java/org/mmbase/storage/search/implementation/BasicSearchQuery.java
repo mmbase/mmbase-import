@@ -387,7 +387,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
            throw new IllegalStateException("No previous step.");
         }
         BasicStep previous = (BasicStep) steps.get(nrOfSteps - 1);
-        BasicStep next = new BasicStep(nextBuilder.getTableName());
+        BasicStep next = new BasicStep(nextBuilder == null ? null : nextBuilder.getTableName());
         BasicRelationStep relationStep = new BasicRelationStep(builder, previous, next);
         steps.add(relationStep);
         steps.add(next);
