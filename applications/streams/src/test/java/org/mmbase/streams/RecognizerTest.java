@@ -4,6 +4,7 @@ import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.*;
@@ -52,9 +53,11 @@ public class RecognizerTest {
     public RecognizerTest(Case c) {
         this.c = c;
     }
+    static File samples;
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
+	
         return  Arrays.asList(new Object[][] {
                 {new Case("basic.mpg", VIDEO, 320, 240)}
                 ,
@@ -110,10 +113,15 @@ public class RecognizerTest {
             DummyCloudContext.addNodeManager(VIDEOC, video);
         }
         File baseDir = new File(System.getProperty("user.dir"));
-        File samples = new File(baseDir, "samples");
-        for (File sample : samples.listFiles()) {
-            files.put(sample.getName(), sample);
-        }
+        samples = new File(baseDir, "samples");
+	if (samples.exists()) {
+	    for (File sample : samples.listFiles()) {
+		files.put(sample.getName(), sample);
+	    }
+	} else {
+	    System.err.println("No " + samples + " found, tests will not be done");
+
+	}
     }
 
 
@@ -126,6 +134,7 @@ public class RecognizerTest {
 
     @Test
     public void test()  throws Exception {
+	assumeTrue(samples.exists());
         CommandTranscoder transcoder = new FFMpegTranscoder("1").clone();
         Logger logger = Logging.getLoggerInstance("FFMPEG");
 
