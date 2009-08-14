@@ -167,7 +167,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                         log.debug("Node not changed, not calling commit processors");
                         continue;
                     }
-                    if (TransactionManager.EXISTS_NOLONGER.equals(n.getStringValue("_exists"))) {
+                    if (TransactionManager.Exists.NOLONGER == TransactionManager.Exists.toExists(n.getStringValue("_exists"))) {
                         log.debug("Deleted");
                         processDeleteProcessors(n);
                     } else {
@@ -276,35 +276,35 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             throw new BridgeException(e.getMessage(), e);
         }
     }
-    /*
-     * Transaction-notification: remove a temporary (not yet committed) node in a transaction.
-     * @param currentObjectContext the context of the object to remove
-     */
+
     @Override
-    void remove(String currentObjectContext) {
+    void deleteNewNode(int temporaryNodeId, MMObjectNode node) {
+        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(getAccount(),  "" + temporaryNodeId);
         try {
-            BasicCloudContext.transactionManager.removeNode(transactionName, getAccount(), currentObjectContext);
+            BasicCloudContext.transactionManager.deleteObject(transactionName, getAccount(), "" + temporaryNodeId);
         } catch (TransactionManagerException e) {
             throw new BridgeException(e.getMessage(), e);
         }
-    }
-    @Override
-    void remove(MMObjectNode node) {
-        String oMmbaseId = "" + node.getValue("number");
-        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(getAccount(),  oMmbaseId);
-        add(currentObjectContext);
-        delete(currentObjectContext);
-        nodes.remove(node.getStringValue("_number"));
+        //nodes.remove(node.getStringValue("_number"));
     }
 
-    void delete(String currentObjectContext, MMObjectNode node) {
-        delete(currentObjectContext);
+    @Override
+    void deleteNode(int temporaryNodeId, MMObjectNode node) {
+        String key = node.getStringValue("_number");
+        int existingNumber = node.getNumber();
+        if (existingNumber < 0) {
+            Node n = nodes.remove(key);
+            assert n != null;
+        }
+        delete("" + temporaryNodeId);
+
+
     }
     /*
      * Transaction-notification: remove an existing node in a transaction.
      * @param currentObjectContext the context of the object to remove
      */
-    void delete(String currentObjectContext) {
+    private void delete(String currentObjectContext) {
         try {
             BasicCloudContext.transactionManager.deleteObject(transactionName, getAccount(), currentObjectContext);
         } catch (TransactionManagerException e) {
