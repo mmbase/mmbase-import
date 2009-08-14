@@ -9,15 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.core;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.*;
 import org.mmbase.util.*;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  * @since MMBase-1.8
@@ -91,7 +91,48 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
     }
 
     public NodeManager getNodeManager() {
-        throw new UnsupportedOperationException("Core fields currently do not support calls to getNodeManager.");
+        return new AbstractNodeManager(null) {
+
+            @Override
+            public String getName() {
+                return CoreField.this.parent.getTableName();
+            }
+
+            @Override
+            public Node createNode() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+             protected Map<String, Field> getFieldTypes() {
+                return new AbstractMap<String, Field>() {
+                    public Set<Map.Entry<String, Field>> entrySet() {
+                        return new AbstractSet<Map.Entry<String, Field>>() {
+                            public int size() {
+                                return CoreField.this.parent.getFieldNames().size();
+                            }
+                            public Iterator<Map.Entry<String, Field>> iterator() {
+                                final Iterator<String> i = CoreField.this.parent.getFieldNames().iterator();
+                                return new Iterator<Map.Entry<String, Field>>() {
+                                    public boolean hasNext() {
+                                        return i.hasNext();
+                                    }
+                                    public Map.Entry<String, Field> next() {
+                                        String fn = i.next();
+                                        return new org.mmbase.util.Entry<String, Field>(fn, CoreField.this.parent.getField(fn));
+                                    }
+                                    public void remove() {
+                                        throw new UnsupportedOperationException();
+                                    }
+                                };
+                            }
+                        };
+                    }
+
+                };
+            }
+
+        };
     }
 
     public final CoreField clone() {
