@@ -84,6 +84,11 @@ public class DummyTest  {
         Cloud cloud = getCloudContext().getCloud("mmbase");
 
         assertTrue(cloud.hasNodeManager("object"));
+
+        NodeManager object = cloud.getNodeManager("object");
+        assertTrue("" + DummyCloudContext.getInstance().nodeManagers.get("object"), object.hasField("number"));
+        assertTrue(object.hasField("otype"));
+        assertTrue(object.hasField("owner"));
     }
 
     @Test
@@ -93,6 +98,12 @@ public class DummyTest  {
 
         Cloud cloud = cc.getCloud("mmbase");
         assertTrue("" + cc.nodeManagers + " " + cc.builders, cloud.hasNodeManager("object"));
+
+        NodeManager object = cloud.getNodeManager("object");
+        assertTrue(object.hasField("number"));
+        assertTrue(object.hasField("otype"));
+        assertTrue(object.hasField("owner"));
+
     }
 
 
