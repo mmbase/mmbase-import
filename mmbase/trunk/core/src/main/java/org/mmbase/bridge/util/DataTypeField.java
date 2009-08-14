@@ -49,6 +49,16 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
         field = null;
         setLocalizedGUIName(dataType.getLocalizedGUIName());
     }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public DataTypeField(final NodeManager nm, final DataType<? extends Object> dataType)  {
+        super(dataType.getName(), dataType.getBaseType(), TYPE_UNKNOWN, Field.STATE_VIRTUAL, dataType);
+        nodeManager = nm;
+        field = null;
+        setLocalizedGUIName(dataType.getLocalizedGUIName());
+    }
     /**
      * This constructor only wraps the given field to have another datatype.
      * @since MMBase-1.9
