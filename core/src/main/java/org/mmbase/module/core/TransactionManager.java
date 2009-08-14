@@ -389,11 +389,13 @@ public class TransactionManager {
             for (MMObjectNode node : nodes) {
                 NodeState state = stati.get(node.getNumber());
                 if (node.getBuilder() instanceof InsRel && state.exists == Exists.NOLONGER) {
-                    // no return information
-                    if (user instanceof UserContext) {
-                        node.remove((UserContext)user);
-                    } else {
-                        node.parent.removeNode(node);
+                    if (node.getNumber() > 0) { // related to hack in ditchRelations
+                        // no return information
+                        if (user instanceof UserContext) {
+                            node.remove((UserContext)user);
+                        } else {
+                            node.parent.removeNode(node);
+                        }
                     }
                     state.state = State.COMMITED;
                 }
