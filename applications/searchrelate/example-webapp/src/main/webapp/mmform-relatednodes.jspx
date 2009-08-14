@@ -38,9 +38,7 @@
           <mm:present referid="cancel">
             <mm:cancel />
             <p>Canceled</p>
-            ${requestScope['org.mmbase.transaction'].nodes} -
             <mm:refresh />
-            ${requestScope['org.mmbase.transaction'].nodes}
           </mm:present>
 
 
