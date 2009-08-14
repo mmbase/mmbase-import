@@ -47,6 +47,9 @@ public class BasicStep implements Step {
         this.builder = builder;
     }
     BasicStep(MMObjectBuilder builder) {
+        if (builder == null) {
+            throw new IllegalArgumentException("Invalid builder value: " + builder);
+        }
         this(builder.getTableName());
     }
 
