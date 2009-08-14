@@ -40,6 +40,7 @@
             </mm:valid>
             <span class="status">
               <mm:valid inverse="true">
+                <mm:cancel />
                 <mm:log level="debug">Form not valid</mm:log>
                 <jsp:text>Form not valid</jsp:text>
               </mm:valid>

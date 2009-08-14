@@ -6,7 +6,9 @@
     version="2.0"
     >
   <!--
-    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+
+xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+
 
 
       @author Michiel Meeuwissen
@@ -100,6 +102,8 @@
                            description="Wether to inform the items to create unlink buttons (defaults to same value as 'search')"
                            />
 
+  <jsp:directive.attribute name="idvar"      type="java.lang.String" />
+
   <!--
 
   -->
@@ -136,6 +140,7 @@
 
 
   <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape></mm:import>
+
   <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
   <mm:write session="${requestid}_sequence" value="${seq + 1}" />
 
@@ -152,6 +157,7 @@
 
     <mm:import from="parent" id="seq"       externid="seq" />
     <mm:import from="parent" externid="id"   />
+    <mm:import from="parent" externid="requestid"   />
     <mm:import from="parent" id="item"      externid="_item" />
     <mm:import from="parent" id="role"      externid="_role" />
     <mm:import from="parent" id="direction" externid="_direction" />
@@ -200,8 +206,12 @@
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
 
-    <h2>${id}</h2>
     <div id="${id}" class="list ${q.nodeManager.name}">
+
+      <c:if test="${! empty idvar}">
+        <mm:write request="${idvar}" referid="id" />
+        <jsp:doBody />
+      </c:if>
 
       <div id="${type}_${id}" class="listinfo">
         <!-- This div contains all necessary settings, the javascript can easily access this data, in case it want to know it too.  -->
@@ -249,6 +259,7 @@
                 referids="id" />
           </mm:relatednodes>
 
+          <hr />
           <c:if test="${_create and _createposition eq 'bottom'}">
             <mm-sr:newNodes />
           </c:if>
