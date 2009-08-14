@@ -43,6 +43,10 @@ public class DummyField extends DataTypeField  {
         super(f, dt);
     }
 
+    DummyField(String n, DataType dt) {
+        super(n, dt);
+    }
+
 
     @Override public int getSearchPosition() {
         return searchPosition;
