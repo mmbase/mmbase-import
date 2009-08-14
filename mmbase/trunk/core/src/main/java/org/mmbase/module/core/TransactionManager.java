@@ -27,12 +27,27 @@ public class TransactionManager {
 
     private static final Logger log = Logging.getLoggerInstance(TransactionManager.class);
 
-    static final String        EXISTS_NO         = "no";
-    private static final int   I_EXISTS_NO       = 0;
-    static final String        EXISTS_YES        = "yes";
-    private static final int   I_EXISTS_YES      = 1;
-    public static final String        EXISTS_NOLONGER   = "nolonger";
-    private static final int   I_EXISTS_NOLONGER = 2;
+
+    /**
+     * NO:   The node does not exists yet, but will be created on commit
+     * YES:  The node already existed befor the transaction started.
+     * NOLONGER: The node alreayd existed, but will be deleted by the transaction. Or, it was created and deleted in the transaction.
+     * UNDEFINED: Just a value used to indicte that the corresponding _exists field is not filled
+     */
+    public static enum Exists {
+        NO,
+        YES,
+        NOLONGER,
+        UNDEFINED;
+
+        public String toString() {
+            return super.toString().toLowerCase();
+        }
+        public static Exists toExists(String s) {
+            if (s == null || s.length() == 0) return UNDEFINED;
+            return Exists.valueOf(s.toUpperCase());
+        }
+    }
 
     private TemporaryNodeManager tmpNodeManager;
     private TransactionResolver transactionResolver;
@@ -105,7 +120,7 @@ public class TransactionManager {
      */
     synchronized public Collection<MMObjectNode> createTransaction(String transactionName) throws TransactionManagerException {
         if (!transactions.containsKey(transactionName)) {
-            List<MMObjectNode> transactionNodes = new Vector<MMObjectNode>(); 
+            List<MMObjectNode> transactionNodes = new Vector<MMObjectNode>();
             // a syncrhonized list, returned by getTransaction
             // It must be Vector, because the class is use to test if it is commited yet (in resolve())
             // That is a hack.
@@ -168,7 +183,7 @@ public class TransactionManager {
         if (node != null) {
             if (transaction.contains(node)) {
                 // Mark it as deleted
-                node.storeValue(MMObjectBuilder.TMP_FIELD_EXISTS, EXISTS_NOLONGER);
+                node.storeValue(MMObjectBuilder.TMP_FIELD_EXISTS, Exists.NOLONGER.toString());
              } else {
                 throw new TransactionManagerException("Node " + tmpnumber + " is not in transaction " + transactionName);
             }
@@ -251,9 +266,13 @@ public class TransactionManager {
 
 
     private class NodeState {
-        public int exists;
+        public Exists exists;
         public State state;
         public boolean changed = true;
+
+        public String toString() {
+            return state + ":" + exists + ":" + changed;
+        }
     }
 
     /**
@@ -261,7 +280,8 @@ public class TransactionManager {
      */
     private void commitNode(Object user, MMObjectNode node, NodeState state) {
 
-        if (state.exists == I_EXISTS_YES ) {
+        log.debug("Committing " + node + " " + state);
+        if (state.exists == Exists.YES) {
             if (! state.changed) return;
             // Commit also if not changed, because the node may have been deleted or changed by
             // someone else. It is like this in the transaction it should be saved like this.
@@ -283,7 +303,7 @@ public class TransactionManager {
             } else {
                 state.state = State.FAILED;
             }
-        } else if (state.exists == I_EXISTS_NO ) {
+        } else if (state.exists == Exists.NO) {
             int insertOK;
             if (user instanceof UserContext) {
                 insertOK = node.insert((UserContext)user);
@@ -298,6 +318,8 @@ public class TransactionManager {
                 state.state = State.FAILED;
                 throw new RuntimeException("When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])");
             }
+        } else if (state.exists == Exists.NOLONGER) {
+            log.debug("Nothing to do, the node was deleted again");
         }
     }
 
@@ -318,17 +340,9 @@ public class TransactionManager {
                 NodeState state = new NodeState();
                 state.state = State.UNCOMMITED;
                 state.changed = node.isChanged() || node.isNew();
-                String exists = (String) node.getValue(MMObjectBuilder.TMP_FIELD_EXISTS);
-                if (exists == null) {
+                state.exists = Exists.toExists((String) node.getValue(MMObjectBuilder.TMP_FIELD_EXISTS));
+                if (state.exists == Exists.UNDEFINED) {
                     throw new IllegalStateException("The _exists field does not exist on node "+node);
-                } else if (exists.equals(EXISTS_NO)) {
-                    state.exists  = I_EXISTS_NO;
-                } else if (exists.equals(EXISTS_YES)) {
-                    state.exists = I_EXISTS_YES;
-                } else if (exists.equals(EXISTS_NOLONGER)) {
-                    state.exists = I_EXISTS_NOLONGER;
-                } else {
-                    throw new IllegalStateException("Invalid value for _exists '" + exists + "' on node " + node);
                 }
                 stati.put(node.getNumber(), state);
             }
@@ -374,7 +388,7 @@ public class TransactionManager {
             // Then commit all the RELATIONS that must be deleted
             for (MMObjectNode node : nodes) {
                 NodeState state = stati.get(node.getNumber());
-                if (node.getBuilder() instanceof InsRel && state.exists == I_EXISTS_NOLONGER) {
+                if (node.getBuilder() instanceof InsRel && state.exists == Exists.NOLONGER) {
                     // no return information
                     if (user instanceof UserContext) {
                         node.remove((UserContext)user);
@@ -389,7 +403,7 @@ public class TransactionManager {
             // Then commit all the NODES that must be deleted
             for (MMObjectNode node : nodes) {
                 NodeState state = stati.get(node.getNumber());
-                if (!(node.getBuilder() instanceof InsRel) && (state.exists== I_EXISTS_NOLONGER)) {
+                if (!(node.getBuilder() instanceof InsRel) && (state.exists == Exists.NOLONGER)) {
                     // no return information
                     if (user instanceof UserContext) {
                         node.remove((UserContext)user);
