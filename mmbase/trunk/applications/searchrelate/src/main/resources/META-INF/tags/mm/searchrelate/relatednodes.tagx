@@ -259,7 +259,6 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
                 referids="id" />
           </mm:relatednodes>
 
-          <hr />
           <c:if test="${_create and _createposition eq 'bottom'}">
             <mm-sr:newNodes />
           </c:if>
