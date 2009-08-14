@@ -45,7 +45,7 @@ public class DummyCloudContext implements CloudContext {
     final Map<Integer, String>                nodeTypes          = new ConcurrentHashMap<Integer, String>();
     final Map<String,  Map<String, DataType>> nodeManagers       = new ConcurrentHashMap<String, Map<String, DataType>>();
 
-    final Map<String, Document>               builders           = new ConcurrentHashMap<String, Document>();
+    final Map<String,  DummyBuilderReader>    builders           = new ConcurrentHashMap<String, DummyBuilderReader>();
 
 
     private DummyCloudContext() {
@@ -72,8 +72,15 @@ public class DummyCloudContext implements CloudContext {
                 map.put(f.getName(), f.getDataType());
             }
             addNodeManager(reader.getName(), map);
-            builders.put(reader.getName(), reader.getDocument());
+            builders.put(reader.getName(), reader);
 
+        }
+    }
+    public void addNodeManagers(ResourceLoader directory) throws java.io.IOException {
+        for (String builder : directory.getResourcePaths(ResourceLoader.XML_PATTERN, true)) {
+            synchronized(builders) {
+                addNodeManager(directory.getInputSource(builder));
+            }
         }
     }
 
