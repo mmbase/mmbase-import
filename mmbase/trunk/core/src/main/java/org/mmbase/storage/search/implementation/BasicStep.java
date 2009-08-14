@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  */
 public class BasicStep implements Step {
 
-    protected final MMObjectBuilder builder;
+    protected final String builder;
 
     protected String alias = null;
     /**
@@ -40,11 +40,14 @@ public class BasicStep implements Step {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     // package visibility!
-    BasicStep(MMObjectBuilder builder) {
+    BasicStep(String builder) {
         if (builder == null) {
             throw new IllegalArgumentException("Invalid builder value: " + builder);
         }
         this.builder = builder;
+    }
+    BasicStep(MMObjectBuilder builder) {
+        this(builder.getTableName());
     }
 
     /**
@@ -86,12 +89,12 @@ public class BasicStep implements Step {
      * @return The builder.
      */
     public MMObjectBuilder getBuilder() {
-        return builder;
+        return org.mmbase.module.core.MMBase.getMMBase().getBuilder(builder);
     }
 
     // javadoc is inherited
     public String getTableName() {
-        return builder.getTableName();
+        return builder;
     }
 
     // javadoc is inherited
@@ -121,7 +124,7 @@ public class BasicStep implements Step {
 
     // javadoc is inherited
     public int hashCode() {
-        return 41 * builder.getTableName().hashCode()
+        return 41 * builder.hashCode()
             + (alias == null? 0: 43 * alias.hashCode()) + 47 * (nodes == null ? 1 : nodes.hashCode());
     }
 
