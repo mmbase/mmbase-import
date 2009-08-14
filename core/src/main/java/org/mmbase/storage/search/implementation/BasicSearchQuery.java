@@ -357,9 +357,11 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicStep addStep(MMObjectBuilder builder) {
+        if (builder == null) throw new IllegalArgumentException();
         return addStep(builder.getTableName());
     }
     public BasicStep addStep(String name) {
+        if (name == null) throw new IllegalArgumentException();
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
         BasicStep step = new BasicStep(name);
         steps.add(step);
