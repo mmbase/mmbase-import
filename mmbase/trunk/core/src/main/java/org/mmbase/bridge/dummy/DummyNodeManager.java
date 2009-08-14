@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.dummy;
 
 import org.mmbase.datatypes.DataType;
+import static org.mmbase.datatypes.Constants.*;
 import org.mmbase.bridge.util.*;
 import java.util.*;
 import org.mmbase.bridge.*;
@@ -36,6 +37,8 @@ public class DummyNodeManager extends AbstractNodeManager  {
         for (Map.Entry<String, DataType> entry : m.entrySet()) {
             map.put(entry.getKey(), new DataTypeField(this, entry.getValue()));
         }
+        map.put("_number", new DataTypeField(this, DATATYPE_INTEGER));
+        map.put("_exists", new DataTypeField(this, DATATYPE_STRING));
     }
     public DummyNodeManager(DummyCloud cloud, DummyBuilderReader reader) {
         super(cloud);
