@@ -39,7 +39,8 @@ public class DummyNode extends MapNode  {
     @Override
     public  void commit() {
         if (! originalMap.containsKey("number")) {
-            int number = DummyCloudContext.addNode(values, getNodeManager().getName());
+            // This is a new node, so generate a number first
+            int number = DummyCloudContext.getInstance().addNode(values, getNodeManager().getName());
             values.put("number", number);
         }
         originalMap.putAll(values);
