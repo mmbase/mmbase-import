@@ -86,4 +86,14 @@ public class DummyTest  {
         assertTrue(cloud.hasNodeManager("object"));
     }
 
+    @Test
+    public void testAddNodeManagers() throws Exception {
+        DummyCloudContext cc = new DummyCloudContext();
+        cc.addNodeManagers(DummyBuilderReader.getBuilderLoader().getChildResourceLoader("core"));
+
+        Cloud cloud = cc.getCloud("mmbase");
+        assertTrue("" + cc.nodeManagers + " " + cc.builders, cloud.hasNodeManager("object"));
+    }
+
+
 }

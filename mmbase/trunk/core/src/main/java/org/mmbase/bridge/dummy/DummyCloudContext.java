@@ -48,7 +48,7 @@ public class DummyCloudContext implements CloudContext {
     final Map<String,  DummyBuilderReader>    builders           = new ConcurrentHashMap<String, DummyBuilderReader>();
 
 
-    private DummyCloudContext() {
+    DummyCloudContext() {
         clouds.add("mmbase");
     }
 
@@ -61,7 +61,7 @@ public class DummyCloudContext implements CloudContext {
     }
 
     public void addNodeManager(String name, Map<String, DataType> map) {
-        virtual.nodeManagers.put(name, map);
+        nodeManagers.put(name, map);
     }
 
     public void addNodeManager(InputSource source) {
@@ -84,7 +84,6 @@ public class DummyCloudContext implements CloudContext {
         for (String builder : directory.getResourcePaths(ResourceLoader.XML_PATTERN, true)) {
             synchronized(builders) {
                 DummyBuilderReader reader = new DummyBuilderReader(directory.getInputSource(builder));
-                System.out.println("" + reader.getRootElement().getTagName()  + " " + reader.getName() + " " + reader.getStatus());
                 if (reader.getRootElement().getTagName().equals("builder")) {
                     try {
                         addNodeManager(reader);
