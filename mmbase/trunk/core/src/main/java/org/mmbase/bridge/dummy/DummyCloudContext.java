@@ -67,19 +67,31 @@ public class DummyCloudContext implements CloudContext {
     public void addNodeManager(InputSource source) {
         synchronized(builders) {
             DummyBuilderReader reader = new DummyBuilderReader(source);
-            Map<String, DataType> map = new HashMap<String, DataType>();
-            for (Field f : reader.getFields()) {
-                map.put(f.getName(), f.getDataType());
-            }
-            addNodeManager(reader.getName(), map);
-            builders.put(reader.getName(), reader);
+            addNodeManager(reader);
 
         }
+    }
+
+    protected void addNodeManager(DummyBuilderReader reader) {
+        Map<String, DataType> map = new HashMap<String, DataType>();
+        for (Field f : reader.getFields()) {
+            map.put(f.getName(), f.getDataType());
+        }
+        addNodeManager(reader.getName(), map);
+        builders.put(reader.getName(), reader);
     }
     public void addNodeManagers(ResourceLoader directory) throws java.io.IOException {
         for (String builder : directory.getResourcePaths(ResourceLoader.XML_PATTERN, true)) {
             synchronized(builders) {
-                addNodeManager(directory.getInputSource(builder));
+                DummyBuilderReader reader = new DummyBuilderReader(directory.getInputSource(builder));
+                System.out.println("" + reader.getRootElement().getTagName()  + " " + reader.getName() + " " + reader.getStatus());
+                if (reader.getRootElement().getTagName().equals("builder")) {
+                    try {
+                        addNodeManager(reader);
+                    } catch (Exception e) {
+                        System.err.println(e.getMessage());
+                    }
+                }
             }
         }
     }
