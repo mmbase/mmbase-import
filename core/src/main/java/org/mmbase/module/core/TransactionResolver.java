@@ -124,6 +124,7 @@ class TransactionResolver {
                     log.debug("Node was resolved already");
                     continue;
                 }
+                final TransactionManager.Exists exists = TransactionManager.Exists.toExists(node.getStringValue(MMObjectBuilder.TMP_FIELD_EXISTS));
                 for (CoreField fd : bul.getFields()) {
                     int dbtype = fd.getType();
                     if (log.isDebugEnabled()) {
@@ -156,8 +157,8 @@ class TransactionResolver {
                                     } else if (log.isDebugEnabled()) {
                                         log.debug("TransactionResolver - Can't find key for field " + tmpField + " node " + node + " (warning)");
                                     }
-                                    if (field.equals("number")) {
-                                        node.storeValue(MMObjectBuilder.TMP_FIELD_EXISTS, TransactionManager.EXISTS_NO);
+                                    if (field.equals("number") && exists != TransactionManager.Exists.NOLONGER) {
+                                        node.storeValue(MMObjectBuilder.TMP_FIELD_EXISTS, TransactionManager.Exists.NO.toString());
                                     }
                                 } else {
                                     // Key is already set
@@ -166,9 +167,8 @@ class TransactionResolver {
                                     // Mark it as existing
                                     if (field.equals("number")) {
                                         // test for remove here
-                                        String exists = node.getStringValue(MMObjectBuilder.TMP_FIELD_EXISTS);
-                                        if (exists == null || !exists.equals(TransactionManager.EXISTS_NOLONGER)) {
-                                            node.storeValue(MMObjectBuilder.TMP_FIELD_EXISTS, TransactionManager.EXISTS_YES);
+                                        if (exists != TransactionManager.Exists.NOLONGER) {
+                                            node.storeValue(MMObjectBuilder.TMP_FIELD_EXISTS, TransactionManager.Exists.YES.toString());
                                         }
                                         String key = node.getStringValue(tmpField);
                                         if (key != null) {
