@@ -140,7 +140,7 @@ public class TransactionTest extends BridgeTest {
 
         Transaction t = cloud.getTransaction("bar4");
         Node node = t.getNode(newNode);
-
+        assertEquals(1, t.getNodes().size());
         node.setStringValue("title", "zzzzz");
         node.commit(); // committing inside transaction
 
@@ -153,7 +153,9 @@ public class TransactionTest extends BridgeTest {
     public void testReuseTransaction() {
         Cloud cloud = getCloud();
         Transaction t = cloud.getTransaction("bar4");
+        assertEquals(0, t.getNodes().size());
         Node node = t.getNode(newNode);
+        assertEquals(1, t.getNodes().size());
         node.setStringValue("title", "wwwwww");
         node.commit();
         t.cancel();
