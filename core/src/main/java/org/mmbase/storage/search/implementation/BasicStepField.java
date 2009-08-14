@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import org.mmbase.bridge.Field;
-import org.mmbase.core.CoreField;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.SizeMeasurable;
 import org.mmbase.util.SizeOf;
@@ -25,7 +24,7 @@ import org.mmbase.util.SizeOf;
  */
 public class BasicStepField implements StepField, SizeMeasurable {
 
-    private final CoreField field;
+    private final Field field;
 
     private final Step step;
 
@@ -126,7 +125,7 @@ public class BasicStepField implements StepField, SizeMeasurable {
      * @param field The associated field.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicStepField(Step step, CoreField field) {
+    public BasicStepField(Step step, Field field) {
         if (step == null) {
             throw new IllegalArgumentException("Invalid step value: " + step);
         }
@@ -136,8 +135,8 @@ public class BasicStepField implements StepField, SizeMeasurable {
             throw new IllegalArgumentException("Invalid field value: " + field + " for " + step);
         }
         // Check field belongs to step
-        if (!step.getTableName().equals(field.getParent().getTableName())) {
-            throw new IllegalArgumentException("Invalid field value, belongs to step " + field.getParent().getTableName()
+        if (!step.getTableName().equals(field.getNodeManager().getName())) {
+            throw new IllegalArgumentException("Invalid field value, belongs to step " + field.getNodeManager().getName()
                                                + " instead of step " +  step.getTableName() + ": "
                                                + field);
         }
@@ -173,7 +172,7 @@ public class BasicStepField implements StepField, SizeMeasurable {
      *
      * @return The field.
      */
-    public CoreField getField() {
+    public Field getField() {
         return field;
     }
 
