@@ -130,16 +130,20 @@ public class DocumentReader  {
      * @param source the input source from which to read the document
      * @param validating whether to validate the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
+     * @since MMBase-1.9.2
      */
-    public DocumentReader(InputSource source, boolean validating, Class<?> resolveBase) {
+    public DocumentReader(InputSource source, boolean xsd, boolean validating, Class<?> resolveBase) {
         if (source == null) {
             throw new IllegalArgumentException("InputSource cannot be null");
         }
         try {
             systemId = source.getSystemId();
             org.xml.sax.EntityResolver resolver = null;
-            if (resolveBase != null) resolver = new EntityResolver(validating, resolveBase);
-            DocumentBuilder dbuilder = getDocumentBuilder(validating, null/* no error handler */, resolver);
+            if (resolveBase != null) {
+                resolver = new EntityResolver(validating, resolveBase);
+            }
+
+            DocumentBuilder dbuilder = getDocumentBuilder(validating, xsd, null/* no error handler */, resolver);
             if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
             if (log != null && log.isDebugEnabled()) {
                 log.debug("Reading " + source.getSystemId());
@@ -150,6 +154,9 @@ public class DocumentReader  {
         } catch(java.io.IOException ioe) {
             throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe, ioe);
         }
+    }
+    public DocumentReader(InputSource source, boolean validating, Class<?> resolveBase) {
+        this(source, false, validating, resolveBase);
     }
 
     /**
