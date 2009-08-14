@@ -370,6 +370,7 @@ public class TransactionManager {
                 if (!(node.getBuilder() instanceof InsRel)) {
                     NodeState state = stati.get(node.getNumber());
                     commitNode(user, node, state);
+                    node.setValue("_exists", null);
                 }
             }
 
@@ -380,6 +381,7 @@ public class TransactionManager {
                 if (node.getBuilder() instanceof InsRel) {
                     NodeState state = stati.get(node.getNumber());
                     commitNode(user, node, state);
+                    node.setValue("_exists", null);
                 }
             }
 
