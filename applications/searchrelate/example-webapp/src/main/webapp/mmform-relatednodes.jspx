@@ -12,7 +12,7 @@
       expires="0"
       language="nl">
     <!--
-    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+        xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
 
 
     -->
@@ -43,9 +43,10 @@
             <h2>1</h2>
             <h3><mm:field name="title" /></h3>
 
-            <mm-sr:relatednodes type="news" role="posrel"
+            <mm-sr:relatednodes type="news"
+                                role="posrel"
+                                fields="number,title"
                                 sortable="true"
-                                search="true"
                                  />
 
           </mm:node>
