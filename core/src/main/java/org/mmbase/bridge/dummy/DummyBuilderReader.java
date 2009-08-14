@@ -56,7 +56,12 @@ public class DummyBuilderReader extends org.mmbase.util.xml.AbstractBuilderReade
                 }
                 return false;
             }
-            resolveInheritanceByXML(getDocument(), p.getDocument());
+
+            Document inherit = (Document) this.document.cloneNode(true);
+            Element root = (Element) (this.document.importNode(p.getDocument().getDocumentElement(), true));
+            this.document.removeChild(this.document.getDocumentElement());
+            this.document.appendChild( root);
+            resolveInheritanceByXML(this.document, inherit);
             parent = p;
             inheritanceResolved = true;
             return true;
