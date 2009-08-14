@@ -12,7 +12,9 @@
       expires="0"
       language="nl">
     <!--
-        xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+
 
 
     -->
@@ -29,13 +31,16 @@
         <!--
         <script type="text/javascript" src="test.js" />
         -->
-        <mm:form name="testform123">
+        <mm:form
+            name="testform123">
 
           <mm:import externid="cancel" />
           <mm:present referid="cancel">
             <mm:cancel />
             <p>Canceled</p>
+            ${requestScope['org.mmbase.transaction'].nodes} -
             <mm:refresh />
+            ${requestScope['org.mmbase.transaction'].nodes}
           </mm:present>
 
 
@@ -43,11 +48,15 @@
             <h2>1</h2>
             <h3><mm:field name="title" /></h3>
 
-            <mm-sr:relatednodes type="news"
-                                role="posrel"
-                                fields="number,title"
-                                sortable="true"
-                                 />
+            <mm-sr:relatednodes
+                idvar="id"
+                type="news"
+                role="posrel"
+                fields="number,title"
+                sortable="true"
+                >
+              <h4>${id}</h4>
+            </mm-sr:relatednodes>
 
           </mm:node>
 
@@ -81,7 +90,7 @@
           <c:set value="${requestScope['org.mmbase.transaction'].nodes}" var="tn"  />
           <p>Number of nodes in transaction: ${fn:length(tn)}</p>
           <table>
-            <tr><th>#</th><th>real number</th><th>temporary number</th><th>_exists</th><th>new</th><th>deleted</th></tr>
+            <tr><th>#</th><th>real number</th><th>temporary number</th><th>_exists</th><th>new</th><th>deleted</th><th>gui</th></tr>
             <mm:listnodes referid="tn" commitonclose="false">
               <tr>
                 <th><mm:index /></th>
@@ -89,7 +98,8 @@
                 <td>${_node._number}</td>
                 <td>${_node._exists}</td>
                 <td>${_node.number lt 0}</td>
-                <td>${_node._exists eq 'nolonger' or _node._exists eq 'no' or empty _node._number}</td>
+                <td>${_node._exists eq 'nolonger'}</td>
+                <td><mm:nodeinfo type="gui" /></td>
               </tr>
             </mm:listnodes>
           </table>

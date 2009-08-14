@@ -6,15 +6,25 @@
     >
   <mm:hasnode number="$n">
     <mm:node referid="n" id="n" />
-    <mm:node id="source" referid="parameters.source">
-      <mm:relatednodescontainer type="object">
-        <mm:constraint field="number" value="${n}" />
-        <mm:maxnumber value="1" />
-        <mm:relatednodes>
-          <jsp:text>Deleting ${_node}</jsp:text>
+    <c:choose>
+      <c:when test="${empty parameters.formtag}">
+        <!-- Transactionless. Let's make sure the node is indeed related -->
+        <mm:node id="source" referid="parameters.source">
+          <mm:relatednodescontainer type="object">
+            <mm:constraint field="number" value="${n}" />
+            <mm:maxnumber value="1" />
+            <mm:relatednodes>
+              <jsp:text>Deleting ${_node}</jsp:text>
+              <mm:deletenode deleterelations="true" />
+            </mm:relatednodes>
+          </mm:relatednodescontainer>
+        </mm:node>
+      </c:when>
+      <c:otherwise>
+        <mm:node referid="n">
           <mm:deletenode deleterelations="true" />
-        </mm:relatednodes>
-      </mm:relatednodescontainer>
-    </mm:node>
+        </mm:node>
+      </c:otherwise>
+    </c:choose>
   </mm:hasnode>
 </jsp:root>
