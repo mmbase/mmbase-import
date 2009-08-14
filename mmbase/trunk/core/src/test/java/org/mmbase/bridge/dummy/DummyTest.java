@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 public class DummyTest  {
 
     public CloudContext getCloudContext() {
-        return DummyCloudContext.getCloudContext();
+        return DummyCloudContext.getInstance();
     }
 
 
@@ -59,7 +59,7 @@ public class DummyTest  {
         Map<String, DataType> map = new HashMap<String, DataType>();
         map.put("number", Constants.DATATYPE_INTEGER);
         map.put("title", Constants.DATATYPE_STRING);
-        DummyCloudContext.addNodeManager("aa", map);
+        DummyCloudContext.getInstance().addNodeManager("aa", map);
 
         NodeManager aa = cloud.getNodeManager("aa");
         Node a = aa.createNode();
@@ -76,6 +76,14 @@ public class DummyTest  {
 
         assertEquals(1, cloud.getNodeManagers().size());
 
+    }
+
+    @Test
+    public void testBuilderReader() throws Exception {
+        DummyCloudContext.getInstance().addCore();
+        Cloud cloud = getCloudContext().getCloud("mmbase");
+
+        assertTrue(cloud.hasNodeManager("object"));
     }
 
 }

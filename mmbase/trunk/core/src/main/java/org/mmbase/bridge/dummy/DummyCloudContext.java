@@ -18,6 +18,8 @@ import org.mmbase.bridge.implementation.*;
 import org.mmbase.security.*;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
+import org.xml.sax.InputSource;
+import org.w3c.dom.Document;
 
 /**
  * @author  Michiel Meeuwissen
@@ -31,7 +33,7 @@ public class DummyCloudContext implements CloudContext {
     private static final DummyCloudContext virtual = new DummyCloudContext();
     private static int lastNodeNumber = 0;
 
-    public static CloudContext getCloudContext() {
+    public static DummyCloudContext getInstance() {
         return virtual;
     }
 
@@ -43,15 +45,41 @@ public class DummyCloudContext implements CloudContext {
     final Map<Integer, String>                nodeTypes          = new ConcurrentHashMap<Integer, String>();
     final Map<String,  Map<String, DataType>> nodeManagers       = new ConcurrentHashMap<String, Map<String, DataType>>();
 
+    final Map<String, Document>               builders           = new ConcurrentHashMap<String, Document>();
+
 
     private DummyCloudContext() {
         clouds.add("mmbase");
     }
 
-    public static void addNodeManager(String name, Map<String, DataType> map) {
+    public void addCore() throws java.io.IOException {
+        DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/typedef.xml"));
+        DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/typerel.xml"));
+        DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/reldef.xml"));
+        DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/object.xml"));
+        DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/insrel.xml"));
+    }
+
+    public void addNodeManager(String name, Map<String, DataType> map) {
         virtual.nodeManagers.put(name, map);
     }
-    public static synchronized int addNode(Map<String, Object> map, String type) {
+
+    public void addNodeManager(InputSource source) {
+        synchronized(builders) {
+            DummyBuilderReader reader = new DummyBuilderReader(source);
+            Map<String, DataType> map = new HashMap<String, DataType>();
+            for (Field f : reader.getFields()) {
+                map.put(f.getName(), f.getDataType());
+            }
+            addNodeManager(reader.getName(), map);
+            builders.put(reader.getName(), reader.getDocument());
+
+        }
+    }
+
+
+
+    public synchronized int addNode(Map<String, Object> map, String type) {
         int number = ++lastNodeNumber;
         virtual.nodes.put(number, map);
         virtual.nodeTypes.put(number, type);
