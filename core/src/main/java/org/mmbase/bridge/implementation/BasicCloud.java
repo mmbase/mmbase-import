@@ -1053,13 +1053,30 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         }
     }
 
+
     /**
-     * Ignored by basic cloud. See {@link BasicTransaction#remove(String)}.
+     * Instructs core to reomve the Node
      */
-    void remove(String currentObjectContext) {
-    }
-    void remove(MMObjectNode node) {
+    final void remove(MMObjectNode node) {
         node.remove(getUser());
+    }
+
+
+    /**
+     */
+    void deleteNewNode(int temporaryNodeId, MMObjectNode node) {
+        BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
+    }
+
+    /**
+     * Ignored by basic cloud. See {@link BasicTransaction#delete(String)}.
+     */
+    void deleteNode(int temporaryNodeId, MMObjectNode node) {
+        // remove the node
+        if (temporaryNodeId != -1) {
+            BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
+        }
+        remove(node);
     }
 
 

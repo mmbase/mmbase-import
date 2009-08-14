@@ -69,12 +69,13 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * The account this node is edited under.
      * This is needed to check whether people have not switched users during an edit.
      */
-    protected String account = null;
+    private final String account;
 
 
 
     BasicNode(BasicCloud cloud) {
         this.cloud = cloud;
+        account = cloud.getAccount();
     }
     /**
      * Instantiates a node, linking it to a specified node manager.
@@ -85,7 +86,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @throws IllegalArgumentException If node is null
      */
     BasicNode(MMObjectNode node, BasicNodeManager nodeManager) {
-        cloud = nodeManager.cloud;
+        this(nodeManager.cloud);
         this.nodeManager = nodeManager;
         setNode(node);
         init();
@@ -99,7 +100,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @throws IllegalArgumentException If node is null
      */
     BasicNode(MMObjectNode node, BasicCloud cloud) {
-        this.cloud =  cloud;
+        this(cloud);
         setNode(node);
         setNodeManager(node);
         init();
@@ -112,7 +113,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @param id the id of the node in the temporary cloud
      */
     BasicNode(MMObjectNode node, BasicCloud cloud, int id) {
-        this.cloud = cloud;
+        this(cloud);
         setNode(node);
         setNodeManager(node);
         temporaryNodeId = id;
@@ -169,6 +170,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     protected void invalidateNode() {
         org.mmbase.module.core.VirtualNode n = new org.mmbase.module.core.VirtualNode(noderef.getBuilder());
         n.setValue("number", noderef.getNumber());
+        n.setValue("_exists", noderef.getStringValue("_exists"));
+        n.setValue("_number", noderef.getStringValue("_number"));
         n.clearChanged();
         noderef = n;
     }
@@ -239,9 +242,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
 
     protected void checkAccount()  {
-        if (account == null) {
-            account = cloud.getAccount();
-        } else if (!account.equals(cloud.getAccount())) {
+        if (!account.equals(cloud.getAccount())) {
             throw new BridgeException("User context changed. Cannot proceed to edit this node .");
         }
     }
@@ -556,14 +557,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         checkDelete();
         cloud.processDeleteProcessors(this);
         if (isNew()) {
-            // remove from the Transaction
-            // note that the node is immediately destroyed !
-            // possibly older edits will fail if they refernce this node
-            cloud.remove("" + temporaryNodeId);
-
-            // remove a temporary node (no true instantion yet, no relations)
-            BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
+            cloud.deleteNewNode(temporaryNodeId, getNode());
         } else {
+
             // remove a node that is edited, i.e. that already exists
             // check relations first!
             if (deleteRelations) {
@@ -577,24 +573,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             }
             // remove aliases
             deleteAliases(null);
-            // in transaction:
-            if (cloud instanceof BasicTransaction) {   // WTF WTF
-                // let the transaction remove the node (as well as its temporary counterpart).
-                // note that the node still exists until the transaction completes
-                // a getNode() will still retrieve the node and make edits possible
-                // possibly 'older' edits will fail if they reference this node
-                ((BasicTransaction)cloud).delete("" + temporaryNodeId);
-            } else {
-                // remove the node
-                if (temporaryNodeId != -1) {
-                    BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
-                }
-
-                MMObjectNode node = getNode();
-                //node.getBuilder().removeNode(node);
-                node.remove(cloud.getUser());
-                //cloud.removeSecurityInfo(number);
-            }
+            cloud.deleteNode(temporaryNodeId, getNode());
         }
         // the node does not exist anymore, so invalidate all references.
         temporaryNodeId = -1;
