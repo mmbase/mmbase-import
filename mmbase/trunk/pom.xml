@@ -341,11 +341,11 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
               </tag>
               <tag>
                 <name>sql</name>
-                <head>Section uses (direct) SQL queries, which will be removed or fixed:</head>
+                <head>Section uses (direct) SQL queries, which will be removed or fixed</head>
               </tag>
               <tag>
                 <name>vpro</name>
-                <head>Section contains VPRO-specific code, which will be removed or fixed:</head>
+                <head>Section contains VPRO-specific code, which will be removed or fixed</head>
               </tag>
 
             </tags>
