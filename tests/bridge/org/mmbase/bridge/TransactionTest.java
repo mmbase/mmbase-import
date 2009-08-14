@@ -347,6 +347,7 @@ public class TransactionTest extends BridgeTest {
 
     public void testGetNodeTwiceWhileChanged() {
         Cloud cloud1 = getCloud();
+        String originalTitleValue = cloud1.getNode(newNode2).getStringValue("title");
         {
             Node node = cloud1.getNode(newNode2);
             String title1 = node.getStringValue("title");
@@ -467,6 +468,29 @@ public class TransactionTest extends BridgeTest {
         assertEquals(urlCount, urlCountAfter);
 
     }
+
+    // MMB-1860 (2)
+    public void testCreateRelateAndDelete() {
+        Cloud cloud = getCloud();
+        int urlCount = Queries.count(cloud.getNodeManager("urls").createQuery());
+
+        Transaction t = cloud.getTransaction("testcreateandelete");
+
+        Node news = t.getNode(newNode);
+        Node url = t.getNodeManager("urls").createNode();
+        RelationManager rm = t.getRelationManager("urls", "news", "posrel");
+        Relation r = url.createRelation(news, rm);
+
+        url.delete(true);
+
+        t.commit();
+
+        int urlCountAfter = Queries.count(cloud.getNodeManager("urls").createQuery());
+
+        assertEquals(urlCount, urlCountAfter);
+
+    }
+
 
 
 }
