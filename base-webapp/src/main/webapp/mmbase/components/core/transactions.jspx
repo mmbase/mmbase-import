@@ -2,6 +2,7 @@
 <div
     class="mm_c c_core b_transactions ${requestScope['org.mmbase.componentClassName']}"
     id="${requestScope['org.mmbase.componentId']}"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
@@ -14,7 +15,7 @@
       <mm:notpresent referid="transaction">
         <table summary="current transactions" border="0" cellspacing="0" cellpadding="3">
           <caption>
-            ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}        
+            ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
           </caption>
           <tr>
             <th>Transaction</th>
@@ -38,19 +39,29 @@
           </mm:listfunction>
         </table>
       </mm:notpresent>
-      
+
       <mm:present referid="transaction">
         <h1>'${transaction}'</h1>
-        <ul>
-          <mm:nodelistfunction set="transactions" name="get" referids="transaction@name">
-            <li>${_node} <mm:nodeinfo type="gui" /></li>
-          </mm:nodelistfunction>
-        </ul>
+        <mm:function id="trans" set="transactions" name="get" referids="transaction@name" write="false" />
+        <table>
+          <tr><th>#</th><th>real number</th><th>temporary number</th><th>_exists</th><th>new</th><th>deleted</th></tr>
+          <c:forEach items="${trans}" var="node">
+            <c:set var="tn" value="${node.values}" />
+            <tr>
+              <th><mm:index /></th>
+              <td>${tn.number}</td>
+              <td>${tn._number}</td>
+              <td>${tn._exists}</td>
+              <td>${tn.number lt 0 or tn._exists eq 'no'}</td>
+              <td>${tn._exists eq 'nolonger' or empty tn._number}</td>
+            </tr>
+          </c:forEach>
+        </table>
         <mm:link>
           <a href="${_}">back</a>
         </mm:link>
       </mm:present>
-      
+
     </mm:cloud>
   </mm:content>
 </div>
