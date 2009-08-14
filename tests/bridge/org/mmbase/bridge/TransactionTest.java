@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import org.mmbase.tests.*;
+import org.mmbase.bridge.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -53,6 +54,7 @@ public class TransactionTest extends BridgeTest {
             newNode2 = node.getNumber();
         }
     }
+
 
     public void testCancel() {
         Cloud cloud = getCloud();
@@ -445,8 +447,24 @@ public class TransactionTest extends BridgeTest {
             rn.commit(); // should have little effect in trans
         }
         t.cancel();
+    }
 
+    // MMB-1860
+    public void testCreateAndDelete() {
+        Cloud cloud = getCloud();
+        int urlCount = Queries.count(cloud.getNodeManager("urls").createQuery());
 
+        Transaction t = cloud.getTransaction("testcreateandelete");
+        Node url = t.getNodeManager("urls").createNode();
+        url.commit();
+        assertEquals(1, t.getNodes().size());
+        url.delete();
+        assertEquals(1, t.getNodes().size()); // 0 would also be an option, but the node remaisn in the transaction as 'NOLONGER'
+        t.commit();
+
+        int urlCountAfter = Queries.count(cloud.getNodeManager("urls").createQuery());
+
+        assertEquals(urlCount, urlCountAfter);
 
     }
 
