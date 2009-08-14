@@ -21,7 +21,7 @@
       fields="${parameters.fields}"
       varStatus="status">
 
-    <c:if test="${status.current.state ne 3}"> <!-- don't show system fields on default -->
+    <c:if test="${status.current.state ne 3 or (! empty parameters.fields)}"> <!-- don't show system fields on default -->
       <div class="mm_field ${status.current.name} mm_state_${status.current.state}">
 
         <mm:fieldinfo type="forid">

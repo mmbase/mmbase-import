@@ -409,6 +409,7 @@ List.prototype.commit = function(stale, leavePage) {
     if (leavePage && ! List.prototype.leftPage) {
         List.prototype.leftPage = true;
         $.ajax({ type: "GET", async: false, data: this.getListParameters(), url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
+
     }
     return result;
 }

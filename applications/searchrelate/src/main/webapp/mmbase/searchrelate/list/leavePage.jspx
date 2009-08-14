@@ -13,9 +13,9 @@
     <jsp:directive.include file="parameters.jspf" />
     <seq>
       <old>${parameters.seq}</old>
-      <mm:write session="${requestid}_${seq}_context" value="" />
-      <mm:write session="${requestid}_sequence" value="0" />
-      <mm:import from="session" externid="${requestid}_sequence" id="newseq" />
+      <mm:write session="${id}_context" value="" />
+      <mm:write session="${parameters.requestid}_sequence" value="0" />
+      <mm:import from="session" externid="${parameters.requestid}_sequence" id="newseq" />
       <new>${newseq}</new>
     </seq>
   </mm:content>
