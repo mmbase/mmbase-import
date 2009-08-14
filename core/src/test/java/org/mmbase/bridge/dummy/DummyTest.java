@@ -89,6 +89,7 @@ public class DummyTest  {
         assertTrue("" + DummyCloudContext.getInstance().nodeManagers.get("object"), object.hasField("number"));
         assertTrue(object.hasField("otype"));
         assertTrue(object.hasField("owner"));
+        assertTrue(object.hasField("_number"));
     }
 
     @Test
