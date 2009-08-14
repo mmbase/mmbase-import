@@ -8,9 +8,11 @@
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.include file="parameters.jspf" />
 
+  <mm:import externid="className"></mm:import>
+
   <mm:locale language="${parameters.language}">
     <li
-        class="node_${_node}"
+        class="node_${_node} ${className}"
         xmlns="http://www.w3.org/1999/xhtml">
       <c:choose>
         <c:when test="${! empty parameters.formtag}">
@@ -33,9 +35,11 @@
               <mm:param name="fields" value="${parameters.fields}" />
               <mm:param name="fieldlistType" value="${parameters.fieldlistType}" />
             </mm:include>
+            <mm:cancel />
           </mm:form>
         </c:otherwise>
       </c:choose>
     </li>
   </mm:locale>
+
 </jsp:root>
