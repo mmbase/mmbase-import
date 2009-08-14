@@ -12,6 +12,7 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -33,6 +34,10 @@ class TransactionResolver {
     /**
      * Given a map where the keys are temporary identifiers, sets the values to actual new node
      * numbers, unless this was already done.
+     * The numbers map constains as key:
+     * - a negative number for non existing nodes
+     * - a string ending in the real node for existing nodes
+
      */
     private void getNewNumbers(final Map<String, Integer> numbers) {
         // Get the numbers
@@ -58,11 +63,36 @@ class TransactionResolver {
         for (Map.Entry<MMObjectNode, Collection<String>> nnodeEntry : nnodes.entrySet()) {
             MMObjectNode node = nnodeEntry.getKey();
             Collection<String> changedFields = nnodeEntry.getValue();
+
             for (String field : changedFields) {
                 String tmpField = "_" + field;
                 String key = node.getStringValue(tmpField);
-                int number = numbers.get(key);
-                node.setValue(field, number);
+                Integer number = numbers.get(key);
+                if (number != null) {
+                    node.setValue(field, number.intValue());
+                }
+            }
+        }
+    }
+
+    /**
+     * If you made a relation to a new node, and then delete the new node. The relation cannot be made any more.
+     * The 'deleteRelations' code in bridge does not work for new nodes. For now, simply implicelty drop these kind of dangling relationss too.
+     * @since MMBase-1.9.2
+     */
+    private void ditchDanglingRelations(final Collection<MMObjectNode> nodes) throws TransactionManagerException {
+
+        synchronized(nodes) {
+
+            for (MMObjectNode node : nodes) {
+                MMObjectBuilder bul = mmbase.getMMObject(node.getName());
+                if (bul instanceof InsRel) {
+                    if (node.isNull("snumber") || node.isNull("dnumber")) {
+                        log.debug("Will drop unresolved relation " + node);
+                        node.setValue("_exists", TransactionManager.Exists.NOLONGER.toString());
+                        node.setValue("number", -1);
+                    }
+                }
             }
         }
     }
@@ -88,7 +118,8 @@ class TransactionResolver {
                             int number = node.getIntValue(field);
                             if (number == -1) {
                                 String key = node.getStringValue(tmpField);
-                                if (key != null && key.length() > 0) {
+
+                                if (key != null && key.length() > 0 && TransactionManager.Exists.toExists(node.getStringValue("_exists")) != TransactionManager.Exists.NOLONGER) {
                                     throw new TransactionManagerException("For node " + node + " and field " + field + ". Found value for " + tmpField + ": " + key + ". Should be empty.");
                                 }
                             }
@@ -141,10 +172,6 @@ class TransactionResolver {
                                     if (! node.isNull(tmpField)) {
                                         String key = node.getStringValue(tmpField);
                                         log.debug("TransactionResolver - key,field " + field + " - " + key);
-                                        // keep fieldnumber key
-                                        if (! numbers.containsKey(key)) {
-                                            numbers.put(key, null);
-                                        }
                                         // keep node + field to change
                                         Collection<String> changedFields = nnodes.get(node);
                                         if (changedFields != null) {
@@ -153,6 +180,15 @@ class TransactionResolver {
                                             changedFields = new ArrayList<String>();
                                             changedFields.add(field);
                                             nnodes.put(node, changedFields);
+                                        }
+                                        if (field.equals("number")) {
+                                            if (exists == TransactionManager.Exists.NOLONGER) {
+                                                numbers.remove(key);
+                                            } else {
+                                                if (! numbers.containsKey(key)) {
+                                                    numbers.put(key, null);                                                }
+
+                                            }
                                         }
                                     } else if (log.isDebugEnabled()) {
                                         log.debug("TransactionResolver - Can't find key for field " + tmpField + " node " + node + " (warning)");
@@ -169,12 +205,13 @@ class TransactionResolver {
                                         // test for remove here
                                         if (exists != TransactionManager.Exists.NOLONGER) {
                                             node.storeValue(MMObjectBuilder.TMP_FIELD_EXISTS, TransactionManager.Exists.YES.toString());
-                                        }
-                                        String key = node.getStringValue(tmpField);
-                                        if (key != null) {
-                                            numbers.put(key, ikey);
-                                        } else if (log.isDebugEnabled()) {
-                                            log.debug("TransactionResolver - Can't find key for field " + tmpField + " node " + node);
+                                            String key = node.getStringValue(tmpField);
+                                            if (key != null) {
+                                                numbers.put(key, ikey);
+                                            } else if (log.isDebugEnabled()) {
+                                                log.debug("TransactionResolver - Can't find key for field " + tmpField + " node " + node);
+                                            }
+                                        } else {
                                         }
                                     }
                                 }
@@ -195,7 +232,12 @@ class TransactionResolver {
 
             getNewNumbers(numbers);
 
+            assert numbers != null;
             setNewNumbers(nnodes, numbers);
+
+
+            ditchDanglingRelations(nodes);
+
 
             check(nodes);
 
