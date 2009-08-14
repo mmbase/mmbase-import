@@ -450,8 +450,34 @@ public class TransactionTest extends BridgeTest {
         t.cancel();
     }
 
+    public void testGetNode() {
+        // Create new node. Request the node again.
+        // Should work
+
+        Cloud cloud = getCloud();
+        int urlCount = Queries.count(cloud.getNodeManager("urls").createQuery());
+
+        Transaction t = cloud.getTransaction("testgetnode");
+        Node url = t.getNodeManager("urls").createNode();
+        url.setStringValue("url", "http://bla");
+        url.commit();
+
+        Node reurl = t.getNode(url.getNumber());
+
+
+        assertEquals("http://bla", reurl.getStringValue("url"));
+
+
+
+
+    }
+
+
     // MMB-1860
     public void testCreateAndDelete() {
+        // Create new node. Delete it. Commit the transaction.
+        // The new node must not exist.
+
         Cloud cloud = getCloud();
         int urlCount = Queries.count(cloud.getNodeManager("urls").createQuery());
 
@@ -469,8 +495,37 @@ public class TransactionTest extends BridgeTest {
 
     }
 
+    public void testCreateAndDelete2() {
+        // Create new node. Request the node again. Delete  that. Commit the transaction.
+        // The new node must not exist.
+
+        Cloud cloud = getCloud();
+        int urlCount = Queries.count(cloud.getNodeManager("urls").createQuery());
+
+        Transaction t = cloud.getTransaction("testcreateandelete");
+        Node url = t.getNodeManager("urls").createNode();
+        url.commit();
+        assertEquals(1, t.getNodes().size());
+
+        Node reurl = t.getNode(url.getNumber());
+        reurl.delete();
+
+        assertEquals(1, t.getNodes().size()); // 0 would also be an option, but the node remaisn in the transaction as 'NOLONGER'
+
+        t.commit();
+
+        int urlCountAfter = Queries.count(cloud.getNodeManager("urls").createQuery());
+
+        assertEquals(urlCount, urlCountAfter);
+
+    }
+
     // MMB-1860 (2)
     public void testCreateRelateAndDelete() {
+
+        // Create new node. Make a relation to it. Delete the node again. Commit the transaction.
+        // The new node must not exist, but the relation shouldn't have caused errors
+
         Cloud cloud = getCloud();
         int urlCount = Queries.count(cloud.getNodeManager("urls").createQuery());
 
@@ -489,6 +544,40 @@ public class TransactionTest extends BridgeTest {
 
         assertEquals(urlCount, urlCountAfter);
 
+    }
+
+    // MMB-1860 (3)
+    public void testCreateRelateAndDeleteRelation() {
+
+        // Create new node. Make a relation to it. Delete the relation again. Commit the transaction.
+        // The new node must exist, but the relation shouldn't.
+
+        Cloud cloud = getCloud();
+        int urlCount = Queries.count(cloud.getNodeManager("urls").createQuery());
+        int relCount = Queries.count(cloud.getNodeManager("insrel").createQuery());
+
+        Transaction t = cloud.getTransaction("testcreateandelete");
+
+        Node news = t.getNode(newNode);
+        Node url = t.getNodeManager("urls").createNode();
+        RelationManager rm = t.getRelationManager("urls", "news", "posrel");
+        Relation r = url.createRelation(news, rm);
+        r.commit();
+
+        r.delete();
+
+        t.commit();
+
+        int urlCountAfter = Queries.count(cloud.getNodeManager("urls").createQuery());
+
+        assertEquals(urlCount + 1, urlCountAfter);
+
+
+        // Bit the relation should not exist, because it was deleted angain
+
+        int relCountAfter = Queries.count(cloud.getNodeManager("insrel").createQuery());
+
+        assertEquals(relCount, relCountAfter);
     }
 
 
