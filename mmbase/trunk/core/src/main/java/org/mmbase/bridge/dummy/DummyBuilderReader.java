@@ -49,15 +49,15 @@ public class DummyBuilderReader extends org.mmbase.util.xml.AbstractBuilderReade
             inheritanceResolved = true;
             return true;
         } else {
-            Document p = DummyCloudContext.getInstance().builders.get(parentBuilder);
+            DummyBuilderReader p  = DummyCloudContext.getInstance().builders.get(parentBuilder);
             if (p == null) {
                 if (DummyCloudContext.getInstance().nodeManagers.containsKey(parentBuilder)) {
                     throw new UnsupportedOperationException("Parent was not configured with XML");
                 }
                 return false;
             }
-            resolveInheritanceByXML(getDocument(), p);
-            parent = new DummyBuilderReader(p);
+            resolveInheritanceByXML(getDocument(), p.getDocument());
+            parent = p;
             inheritanceResolved = true;
             return true;
         }
