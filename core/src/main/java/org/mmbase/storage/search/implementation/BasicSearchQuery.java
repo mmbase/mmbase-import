@@ -357,8 +357,11 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicStep addStep(MMObjectBuilder builder) {
+        return addStep(builder.getTableName());
+    }
+    public BasicStep addStep(String name) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
-        BasicStep step = new BasicStep(builder);
+        BasicStep step = new BasicStep(name);
         steps.add(step);
         return step;
     }
@@ -382,7 +385,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
            throw new IllegalStateException("No previous step.");
         }
         BasicStep previous = (BasicStep) steps.get(nrOfSteps - 1);
-        BasicStep next = new BasicStep(nextBuilder);
+        BasicStep next = new BasicStep(nextBuilder.getTableName());
         BasicRelationStep relationStep = new BasicRelationStep(builder, previous, next);
         steps.add(relationStep);
         steps.add(next);
@@ -399,7 +402,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @throws UnsupportedOperationException when called
      *         on an aggregating query.
      */
-    public BasicStepField addField(Step step, CoreField fieldDefs) {
+    public BasicStepField addField(Step step, Field fieldDefs) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
         if (aggregating) {
             throw new UnsupportedOperationException("Adding non-aggregated field to aggregating query.");
@@ -413,7 +416,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     /**
      * @since MMBase-1.8.2
      */
-    public BasicStepField addFieldUnlessPresent(Step step, CoreField fieldDefs) {
+    public BasicStepField addFieldUnlessPresent(Step step, Field fieldDefs) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
         if (aggregating) {
             throw new UnsupportedOperationException("Adding non-aggregated field to aggregating query.");
