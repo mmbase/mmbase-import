@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 @RunWith(Parameterized.class)
 public class RecognizerTest {
 
-    private final static CloudContext cloudContext = DummyCloudContext.getCloudContext();
+    private final static CloudContext cloudContext = DummyCloudContext.getInstance();
 
     private final static Map<String, File> files = new HashMap<String, File>();
 
@@ -82,15 +82,15 @@ public class RecognizerTest {
     public static void setUp() {
         {
             Map<String, DataType> undef = getParent();
-            DummyCloudContext.addNodeManager(MEDIA, undef);
+            DummyCloudContext.getInstance().addNodeManager(MEDIA, undef);
         }
         {
             Map<String, DataType> images = getParent();
             images.put("height", DATATYPE_INTEGER);
             images.put("width", DATATYPE_INTEGER);
 
-            DummyCloudContext.addNodeManager(IMAGE, images);
-            DummyCloudContext.addNodeManager(IMAGEC,images);
+            DummyCloudContext.getInstance().addNodeManager(IMAGE, images);
+            DummyCloudContext.getInstance().addNodeManager(IMAGEC,images);
         }
         {
             Map<String, DataType> audio = getParent();
@@ -98,8 +98,8 @@ public class RecognizerTest {
             audio.put("bitrate", DATATYPE_INTEGER);
             audio.put("length", DATATYPE_INTEGER);
 
-            DummyCloudContext.addNodeManager(AUDIO, audio);
-            DummyCloudContext.addNodeManager(AUDIOC, audio);
+            DummyCloudContext.getInstance().addNodeManager(AUDIO, audio);
+            DummyCloudContext.getInstance().addNodeManager(AUDIOC, audio);
         }
         {
             Map<String, DataType> video = getParent();
@@ -109,8 +109,8 @@ public class RecognizerTest {
             video.put("channels", DATATYPE_INTEGER);
             video.put("length", DATATYPE_INTEGER);
 
-            DummyCloudContext.addNodeManager(VIDEO, video);
-            DummyCloudContext.addNodeManager(VIDEOC, video);
+            DummyCloudContext.getInstance().addNodeManager(VIDEO, video);
+            DummyCloudContext.getInstance().addNodeManager(VIDEOC, video);
         }
         File baseDir = new File(System.getProperty("user.dir"));
         samples = new File(baseDir, "samples");
