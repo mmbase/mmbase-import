@@ -92,7 +92,8 @@ public class DummyBuilderReader extends org.mmbase.util.xml.AbstractBuilderReade
                 String fieldName = getElementAttributeValue(field, "name");
                 DataType dt = decodeDataType(getName(), org.mmbase.datatypes.DataTypes.getSystemCollector(),
                                              fieldName, field, Field.TYPE_UNKNOWN, Field.TYPE_UNKNOWN, true);
-                Field newField = new DummyField((NodeManager) null, dt);
+
+                Field newField = new DummyField(fieldName, dt);
                 results.add(newField);
             }
         }
