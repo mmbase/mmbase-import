@@ -50,6 +50,8 @@
                 idvar="id"
                 type="news"
                 role="posrel"
+		unlink="true"
+		delete="true"
                 fields="number,title"
                 sortable="true"
                 >
@@ -113,6 +115,8 @@
           <li style="text-decoration: line-through;">Since <em>new</em> nodes are not yet in the query-result, they cannot be edited, and disapper on reload.</li>
           <li style="text-decoration: line-through;">This is also valid, but inversely, for <em>deleted</em> nodes and relations. They still are in de query result.</li>
           <li>'Sortable' is not yet saved.</li>
+	  <li>Not yet tested what happens when you create images or so (multipart forms)</li>
+	  <li>Nested mm-sr:relatednodes should work too, but are not tested here</li>
         </ul>
 
       </body>
