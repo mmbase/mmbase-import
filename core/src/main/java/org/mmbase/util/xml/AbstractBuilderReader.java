@@ -128,7 +128,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
     }
     /**
      */
-    private AbstractBuilderReader(Document doc, int maxVersion) {
+    protected AbstractBuilderReader(Document doc, int maxVersion) {
         super(doc);
         if (this.getVersion() <= maxVersion) {
             if (getRootElement().getTagName().equals("builder")) {
@@ -144,6 +144,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
      * @param doc The receiving builder xml document. This one will be changed.
      * @param overrides The builder xml document that provided overriding information. This one will only
      * be read.
+     * @param override  If true, the 'overrides' takes precedence, if false, then 'doc'.
      * @since MMBase-1.9
      */
     protected static void resolveInheritanceByXML(Document doc, Document overrides) {
@@ -434,7 +435,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
         // Backwards compatible 'guitype' support
         if (guiTypeElement != null && collector != null) {
             if (baseDataType == null) {
-                throw new IllegalArgumentException("No type defined");
+                throw new IllegalArgumentException(getDocument().getDocumentURI() + ": No type defined in field " + fieldName);
             }
             String guiType = getElementValue(guiTypeElement);
             if (!guiType.equals("")) {
@@ -513,7 +514,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
                     log.debug("No base defined, using '" + baseDataType + "'");
                 }
                 if (baseDataType == null) {
-                    throw new IllegalArgumentException("No base datatype given, and no field type defined");
+                    throw new IllegalArgumentException(getDocument().getDocumentURI() + ":'" + fieldName + "'. No base datatype given, and no field type defined");
                 }
                 requestedBaseDataType = baseDataType;
             } else {
@@ -696,7 +697,9 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
      * @return the name of the parent builder
      */
     public String getName() {
-        return getElementAttributeValue("builder", "name");
+        String n = getElementAttributeValue("builder", "name");
+        return n;
+
     }
 
     protected abstract boolean hasParent();
@@ -760,7 +763,8 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
                 getPluralNames().equals(b.getPluralNames()) &&
                 getDescriptions().equals(b.getDescriptions()) &&
                 getProperties().equals(b.getProperties()) &&
-                getClassName().equals(b.getClassName())
+                getClassName().equals(b.getClassName()) &&
+                getName().equals(b.getName())
                 ;
         } else {
             return false;
