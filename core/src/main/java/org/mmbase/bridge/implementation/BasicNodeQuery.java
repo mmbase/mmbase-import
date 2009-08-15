@@ -45,9 +45,9 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     /**
      * node query.
      */
-    BasicNodeQuery(BasicNodeManager nodeManager) {
-        super(nodeManager.cloud);
-        query = new NodeSearchQuery(nodeManager.getMMObjectBuilder());
+    public BasicNodeQuery(NodeManager nodeManager) {
+        super(nodeManager.getCloud());
+        query = new NodeSearchQuery(nodeManager);
         this.step = getSteps().get(0); // the only step
     }
     BasicNodeQuery(BasicNodeManager nodeManager, NodeSearchQuery q) {
@@ -141,7 +141,7 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     }
 
 
-    public List<StepField> getExtraFields() {
+    public List<? extends StepField> getExtraFields() {
         return Collections.unmodifiableList(explicitFields);
     }
 
@@ -149,10 +149,8 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     /**
      * Adds all fields of the gives collection, unless it is a field of the 'step' itself
      */
-    protected void addFields(Collection<StepField> c) {
-        Iterator<StepField> i = c.iterator();
-        while (i.hasNext()) {
-            BasicStepField sf = (BasicStepField) i.next();
+    protected void addFields(Collection<BasicStepField> c) {
+        for (BasicStepField sf : c) {
             Step addedStep = sf.getStep();
             if (addedStep.equals(step)) continue; // these are among the node-fields already
             query.addField(addedStep, sf.getField());
@@ -180,7 +178,9 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         // Make sure the query _starts_ with the Node-fields.
         // otherwise BasicQueryHandler.getNodes could do it wrong...
         query.removeFields();
-        query.addFields(step);
+        for (Field f : getCloud().getNodeManager(step.getTableName()).getFields(NodeManager.ORDER_CREATE)) {
+            query.addField(step, f);
+        }
         addFields(explicitFields);
         Step prevStep = this.step;
         this.step = step;
