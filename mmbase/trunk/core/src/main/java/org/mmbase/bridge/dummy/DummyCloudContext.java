@@ -22,6 +22,18 @@ import org.xml.sax.InputSource;
 import org.w3c.dom.Document;
 
 /**
+ * The 'dummy' cloud context is mainly meant for useage in junit test cases. It provides a
+ * functional bridge implementation, without the backing of the MMBase core classes. This means on
+ * one hand that it takes much less time to initialize, on the other hand that all data created is only
+ * availabe in memory and is in no way persistent.
+ *
+ * Also, at the moment, it is only <em>partially</em> working. You will easily encounter many {@link
+ * UnsupportedOperationExceptions}s and other kind of errors. For several simple tests it is however useful already.
+
+ * The object model must be manually set up using the several <code>addNodeManager</code>
+ * methods. The 'core' model is created with {@link #addCore}. Current implementation will basicly allow all 'related' and 'posrel' relations, but this
+ * part has still to be elaborated on. This may change in future versions of this.
+ *
  * @author  Michiel Meeuwissen
  * @version $Id: MapNode.java 36154 2009-06-18 22:04:40Z michiel $
  * @since   MMBase-1.9.2
@@ -59,6 +71,10 @@ public class DummyCloudContext implements CloudContext {
         builders.clear();
     }
 
+    /**
+     * Adds the 'core' builders to the object model.
+     * It may also add a core relation model. Like 'related' and 'posrel' roles.
+     */
     public void addCore() throws java.io.IOException {
         DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/typedef.xml"));
         DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/typerel.xml"));
