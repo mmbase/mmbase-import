@@ -43,7 +43,8 @@ public class QueriesTest  {
         Cloud cloud = getCloudContext().getCloud("mmbase");
         NodeManager object  = cloud.getNodeManager("object");
         NodeQuery q = object.createQuery();
-        assertEquals(object.getFields().size(), q.getFields().size());
+        assertEquals("" + q.getFields(), object.getFields(NodeManager.ORDER_CREATE).size(), q.getFields().size());
+        assertEquals("" + object.getFields(NodeManager.ORDER_CREATE), 3, q.getFields().size());
         StepField f = q.getStepField(object.getField("number"));
         assertNotNull(f);
 
