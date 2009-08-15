@@ -35,10 +35,10 @@ public class DummyNodeManager extends AbstractNodeManager  {
         this.vcloud = cloud;
         this.name = name;
         for (Map.Entry<String, DataType> entry : m.entrySet()) {
-            map.put(entry.getKey(), new DataTypeField(this, entry.getValue()));
+            map.put(entry.getKey(), new DataTypeField(entry.getKey(), this, entry.getValue()));
         }
-        map.put("_number", new DataTypeField(this, DATATYPE_INTEGER));
-        map.put("_exists", new DataTypeField(this, DATATYPE_STRING));
+        map.put("_number", new DataTypeField("_number", this, DATATYPE_INTEGER));
+        map.put("_exists", new DataTypeField("_exists", this, DATATYPE_STRING));
     }
     public DummyNodeManager(DummyCloud cloud, DummyBuilderReader reader) {
         super(cloud);

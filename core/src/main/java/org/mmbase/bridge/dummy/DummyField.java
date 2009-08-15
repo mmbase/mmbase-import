@@ -32,8 +32,8 @@ public class DummyField extends DataTypeField  {
 
     private int searchPosition = -1;
     private int listPosition = -1;
-    private int editPosition = -1;
-    private int storagePosition = -1;
+    private int editPosition = 1;
+    private int storagePosition = 1;
 
     DummyField(NodeManager nm, DataType dt) {
         super(nm, dt);
@@ -43,8 +43,8 @@ public class DummyField extends DataTypeField  {
         super(f, dt);
     }
 
-    DummyField(String n, DataType dt) {
-        super(n, dt);
+    DummyField(String n, NodeManager nm, DataType dt) {
+        super(n, nm, dt);
     }
 
 
