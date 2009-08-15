@@ -66,8 +66,10 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
     }
     public NodeSearchQuery(NodeManager  builder) {
         Step step = super.addStep(builder.getName());
-        for (Field f : builder.getFields()) {
-            addField(step, f);
+        for (Field f : builder.getFields(NodeManager.ORDER_CREATE)) {
+            if (! f.isVirtual() && f.getType() != Field.TYPE_BINARY) {
+                addField(step, f);
+            }
         }
         this.builder = builder.getName();
     }
