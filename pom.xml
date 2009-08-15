@@ -25,6 +25,11 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
     <mmbase.version>${mmbase.version.number}${mmbase.version.postfix}</mmbase.version>
     <!-- Cannot be project.version, because then an extension of this cannot have it's own version any more -->
 
+    <surefire.fork.mode>once</surefire.fork.mode>
+    <surefire.format>brief</surefire.format>
+    <surefire.usefile>false</surefire.usefile>
+    <surefire.fork.vmargs>-ea</surefire.fork.vmargs>
+
     <project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
 
   </properties>
@@ -351,6 +356,49 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
             </tags>
         </configuration>
       </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <includes>
+              <include>**/*Test.java</include>
+              <include>**/*TestCase.java</include>
+              <include>**/*TestCases.java</include>
+            </includes>
+            <!-- do not exclude **/Abstract*Test.java **/Abstract*TestCase.java -->
+            <excludes>
+              <exclude>**/*$*</exclude>
+            </excludes>
+            <reportFormat>${surefire.format}</reportFormat>
+            <useFile>${surefire.usefile}</useFile>
+            <forkMode>${surefire.fork.mode}</forkMode>
+            <childDelegation>false</childDelegation>
+            <argLine>${surefire.fork.vmargs}</argLine>
+            <systemProperties>
+              <property>
+                <name>java.awt.headless</name>
+                <value>${java.awt.headless}</value>
+              </property>
+              <property>
+                <name>java.util.logging.config.file</name>
+                <value>${basedir}/target/test-classes/logging.properties</value>
+              </property>
+              <property>
+                <name>surefire.fork.vmargs</name>
+                <value>${surefire.fork.vmargs}</value>
+              </property>
+            </systemProperties>
+            <check>
+              <branchRate>80</branchRate>
+              <lineRate>80</lineRate>
+              <haltOnFailure>true</haltOnFailure>
+              <totalBranchRate>80</totalBranchRate>
+              <totalLineRate>80</totalLineRate>
+              <packageLineRate>80</packageLineRate>
+              <packageBranchRate>80</packageBranchRate>
+            </check>
+          </configuration>
+        </plugin>
     </plugins>
   </build>
   <reporting>
