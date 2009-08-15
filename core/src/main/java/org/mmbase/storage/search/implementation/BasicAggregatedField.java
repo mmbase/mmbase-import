@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation;
 
-import org.mmbase.core.CoreField;
+import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
 
 /**
@@ -31,7 +31,7 @@ public class BasicAggregatedField extends BasicStepField implements AggregatedFi
      * @param aggregationType The aggregation type.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicAggregatedField(Step step, CoreField fieldDefs, int aggregationType) {
+    public BasicAggregatedField(Step step, Field fieldDefs, int aggregationType) {
         super(step, fieldDefs);
         setAggregationType(aggregationType);
     }
