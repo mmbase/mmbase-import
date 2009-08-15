@@ -556,23 +556,24 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     public void delete(boolean deleteRelations) {
         checkDelete();
         cloud.processDeleteProcessors(this);
+
+        // remove a node that is edited, i.e. that already exists
+        // check relations first!
+        if (deleteRelations) {
+            // option set, remove relations
+            deleteRelations(-1);
+        } else {
+            // option unset, fail if any relations exit
+            if (getNode().hasRelations()) {
+                throw new BridgeException("This node (" + getNode().getNumber() + ") cannot be deleted. It still has relations attached to it.");
+            }
+        }
+        deleteAliases(null);
+
         if (isNew()) {
             cloud.deleteNewNode(temporaryNodeId, getNode());
         } else {
-
-            // remove a node that is edited, i.e. that already exists
-            // check relations first!
-            if (deleteRelations) {
-                // option set, remove relations
-                deleteRelations(-1);
-            } else {
-                // option unset, fail if any relations exit
-                if (getNode().hasRelations()) {
-                    throw new BridgeException("This node (" + getNode().getNumber() + ") cannot be deleted. It still has relations attached to it.");
-                }
-            }
             // remove aliases
-            deleteAliases(null);
             cloud.deleteNode(temporaryNodeId, getNode());
         }
         // the node does not exist anymore, so invalidate all references.
@@ -662,7 +663,9 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             return BridgeCollections.EMPTY_RELATIONLIST;
         }
 
-        if ("".equals(otherNodeManager)) otherNodeManager = null;
+        if ("".equals(otherNodeManager)) {
+            otherNodeManager = null;
+        }
         NodeManager otherManager = otherNodeManager == null ? cloud.getNodeManager("object") : cloud.getNodeManager(otherNodeManager);
 
         TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
