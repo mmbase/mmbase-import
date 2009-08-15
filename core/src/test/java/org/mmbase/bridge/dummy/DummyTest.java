@@ -27,10 +27,14 @@ public class DummyTest  {
     public CloudContext getCloudContext() {
         return DummyCloudContext.getInstance();
     }
+    @BeforeClass()
+    public static void setUp() {
+        DummyCloudContext.getInstance().clear();
+    }
 
 
     @Test
-    public void testListClouds() {
+    public void listClouds() {
         CloudContext cloudContext = getCloudContext();
         boolean defaultCloudFound = false;
         StringList stringList = cloudContext.getCloudNames();
@@ -43,7 +47,7 @@ public class DummyTest  {
         assertTrue(defaultCloudFound);
     }
     @Test
-    public void testUri() {
+    public void uri() {
 
         CloudContext cloudContext = getCloudContext();
         Cloud cloud = cloudContext.getCloud("mmbase");
@@ -54,7 +58,7 @@ public class DummyTest  {
     }
 
     @Test
-    public void testNodeManager() {
+    public void nodeManager() {
         Cloud cloud = getCloudContext().getCloud("mmbase");
         Map<String, DataType> map = new HashMap<String, DataType>();
         map.put("number", Constants.DATATYPE_INTEGER);
@@ -79,7 +83,7 @@ public class DummyTest  {
     }
 
     @Test
-    public void testBuilderReader() throws Exception {
+    public void builderReader() throws Exception {
         DummyCloudContext.getInstance().addCore();
         Cloud cloud = getCloudContext().getCloud("mmbase");
 
@@ -93,7 +97,7 @@ public class DummyTest  {
     }
 
     @Test
-    public void testAddNodeManagers() throws Exception {
+    public void addNodeManagers() throws Exception {
         DummyCloudContext cc = new DummyCloudContext();
         cc.addNodeManagers(DummyBuilderReader.getBuilderLoader().getChildResourceLoader("core"));
 
@@ -105,6 +109,7 @@ public class DummyTest  {
         assertTrue(object.hasField("otype"));
         assertTrue(object.hasField("owner"));
 
+        assertEquals("number", object.getField("number").getName());
     }
 
 
