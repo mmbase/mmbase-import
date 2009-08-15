@@ -39,8 +39,8 @@ public class ClassGeneratorTest {
     public void appendType() throws Exception {
         assertEquals(0, generator.buffer.length());
         Method m = A.class.getMethod("list");
-        generator.appendTypeInfo(m.getReturnType());
-        assertEquals("java.util.List<? extends String>", generator.buffer.toString());
+        generator.appendTypeInfo(m.getGenericReturnType());
+        assertEquals("java.util.List<? extends java.lang.String>", generator.buffer.toString());
 
     }
 
