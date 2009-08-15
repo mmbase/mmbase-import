@@ -35,32 +35,40 @@ public class DummyField extends DataTypeField  {
     private int editPosition = 1;
     private int storagePosition = 1;
 
-    DummyField(NodeManager nm, DataType dt) {
-        super(nm, dt);
+    DummyField(NodeManager nm, Field f) {
+        super(nm, f);
+        storagePosition = f.isVirtual() ? -1 : 1;
     }
 
     DummyField(Field f, DataType dt) {
         super(f, dt);
+        storagePosition = f.isVirtual() ? -1 : 1;
     }
 
     DummyField(String n, NodeManager nm, DataType dt) {
         super(n, nm, dt);
+        setState(STATE_PERSISTENT);
+        storagePosition = n.startsWith("_") ? -1 : 1;
     }
 
 
-    @Override public int getSearchPosition() {
+    @Override
+    public int getSearchPosition() {
         return searchPosition;
     }
 
-    @Override public int getListPosition() {
+    @Override
+    public int getListPosition() {
         return listPosition;
     }
 
-    @Override public int getEditPosition() {
+    @Override
+    public int getEditPosition() {
         return editPosition;
     }
 
-    @Override public int getStoragePosition() {
+    @Override
+    public int getStoragePosition() {
         return storagePosition;
     }
 

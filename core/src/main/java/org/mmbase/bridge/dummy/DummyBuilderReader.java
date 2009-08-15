@@ -12,6 +12,7 @@ package org.mmbase.bridge.dummy;
 
 import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.util.*;
+import org.mmbase.core.util.Fields;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.xml.sax.InputSource;
@@ -94,6 +95,12 @@ public class DummyBuilderReader extends org.mmbase.util.xml.AbstractBuilderReade
                                              fieldName, field, Field.TYPE_UNKNOWN, Field.TYPE_UNKNOWN, true);
 
                 DummyField newField = new DummyField(fieldName, null, dt);
+                String fieldState = getElementAttributeValue(field, "state");
+                if ("".equals(fieldState)) {
+                    newField.setState(Field.STATE_PERSISTENT);
+                } else {
+                    newField.setState(Fields.getState(fieldState));
+                }
                 results.add(newField);
             }
         }
