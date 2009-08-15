@@ -53,10 +53,10 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
     /**
      * @since MMBase-1.9.2
      */
-    public DataTypeField(final NodeManager nm, final DataType<? extends Object> dataType)  {
-        super(dataType.getName(), dataType.getBaseType(), TYPE_UNKNOWN, Field.STATE_VIRTUAL, dataType);
+    public DataTypeField(final NodeManager nm, final Field f) {
+        super(f.getName(), f.getDataType().getBaseType(), f.getType(), f.getState(), f.getDataType());
         nodeManager = nm;
-        field = null;
+        field = f;
         setLocalizedGUIName(dataType.getLocalizedGUIName());
     }
     /**

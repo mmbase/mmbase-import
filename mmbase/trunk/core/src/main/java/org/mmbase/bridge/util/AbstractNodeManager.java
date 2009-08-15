@@ -131,8 +131,26 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
         return getFields(NodeManager.ORDER_NONE);
     }
 
-    public final FieldList getFields(int order) {
-        return new BasicFieldList(getFieldTypes().values(), this);
+    public final FieldList getFields(int sortOrder) {
+        if (sortOrder == ORDER_NONE) {
+            return new BasicFieldList(getFieldTypes().values(), this);
+        } else {
+            List<Field> orderedFields = new ArrayList<Field>();
+            for (Field field : getFieldTypes().values()) {
+                // include only fields which have been assigned a valid position, and are
+                if (
+                    ((sortOrder == ORDER_CREATE) && (field.getStoragePosition() > -1)) ||
+                    ((sortOrder == ORDER_EDIT) && (field.getEditPosition() > -1)) ||
+                    ((sortOrder == ORDER_SEARCH) && (field.getSearchPosition() > -1)) ||
+                    ((sortOrder == ORDER_LIST) && (field.getListPosition() > -1))
+                    ) {
+                    orderedFields.add(field);
+                }
+            }
+            org.mmbase.core.util.Fields.sort(orderedFields, sortOrder);
+
+            return new BasicFieldList(orderedFields, this);
+        }
     }
 
     public Field getField(String fieldName) throws NotFoundException {
