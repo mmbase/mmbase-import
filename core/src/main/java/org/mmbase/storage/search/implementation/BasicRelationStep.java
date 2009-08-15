@@ -50,6 +50,9 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
      */
     // package visibility!
     BasicRelationStep(InsRel builder, Step previous, Step next) {
+        this(builder.getTableName(), previous, next);
+    }
+    BasicRelationStep(String builder, Step previous, Step next) {
         super(builder);
         if (previous == null) {
             throw new IllegalArgumentException("Invalid previous value: " + previous);
