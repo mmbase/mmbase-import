@@ -79,12 +79,12 @@ public class BasicQuery implements Query  {
      * The implicitely added 'extra' fields. These are removed if the query becomes 'distinct'. So,
      * you can e.g. not do element= on a distinct query result.
      */
-    protected List<StepField> implicitFields = new ArrayList<StepField>();
+    protected List<BasicStepField> implicitFields = new ArrayList<BasicStepField>();
 
     /**
      * The explicitely added 'extra' fields. Because you explicitely added those, they will not be removed if the query becomes 'distinct'.
      */
-    protected List<StepField> explicitFields = new ArrayList<StepField>();
+    protected List<BasicStepField> explicitFields = new ArrayList<BasicStepField>();
 
     public BasicQuery(Cloud c) {
         query = new BasicSearchQuery();
@@ -262,9 +262,9 @@ public class BasicQuery implements Query  {
         if (used) throw new BridgeException("Query was used already");
 
         removeSecurityConstraint(); // if present
-        MMObjectBuilder builder = MMBase.getMMBase().getBuilder(nm.getName());
+        NodeManager builder = getCloud().getNodeManager(nm.getName());
         if (builder == null) throw new BridgeException("No builder with name " + nm.getName() + " (perhaps " + nm + " is virtual?)");
-        BasicStep step = query.addStep(builder);
+        BasicStep step = query.addStep(builder.getName());
         setAlias(step, ""); // "": generate alias
         if (! aggregating) {
             addFieldImplicit(step, nm.getField("number"));
@@ -371,9 +371,7 @@ public class BasicQuery implements Query  {
     public void removeFields() {
         query.removeFields();
         explicitFields.clear();
-        Iterator<StepField> i = implicitFields.iterator();
-        while (i.hasNext()) {
-            BasicStepField sf = (BasicStepField) i.next();
+        for (BasicStepField sf : implicitFields) {
             Step addedStep = sf.getStep();
             query.addField(addedStep, sf.getField());
         }
@@ -415,8 +413,7 @@ public class BasicQuery implements Query  {
     protected void addFieldImplicit(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
         if (! query.isDistinct()) {
-            org.mmbase.core.CoreField coreField = BasicField.getCoreField(field);
-            StepField sf = query.addFieldUnlessPresent(step, coreField);
+            BasicStepField sf = query.addFieldUnlessPresent(step, field);
             if (! implicitFields.contains(sf)) {
                 implicitFields.add(sf);
             }
@@ -476,9 +473,7 @@ public class BasicQuery implements Query  {
     public void removeImplicitFields() {
        query.removeFields();
        implicitFields.clear();
-       Iterator<StepField> i = explicitFields.iterator();
-       while (i.hasNext()) {
-           BasicStepField sf = (BasicStepField) i.next();
+       for (BasicStepField sf : explicitFields) {
            query.addField(sf.getStep(), sf.getField());
        }
     }
