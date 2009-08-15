@@ -52,6 +52,13 @@ public class DummyCloudContext implements CloudContext {
         clouds.add("mmbase");
     }
 
+    public void clear() {
+        nodes.clear();
+        nodeTypes.clear();
+        nodeManagers.clear();
+        builders.clear();
+    }
+
     public void addCore() throws java.io.IOException {
         DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/typedef.xml"));
         DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/typerel.xml"));
