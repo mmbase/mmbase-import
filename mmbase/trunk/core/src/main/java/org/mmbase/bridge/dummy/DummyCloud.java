@@ -63,7 +63,7 @@ public class DummyCloud extends AbstractCloud {
     }
 
     public NodeManager getNodeManager(String name) throws NotFoundException {
-        Map<String, DataType> nm = cloudContext.nodeManagers.get(name);
+        Map<String, Field> nm = cloudContext.nodeManagers.get(name);
         if (nm == null) throw new NotFoundException(name);
         return new DummyNodeManager(this, name, nm);
     }
