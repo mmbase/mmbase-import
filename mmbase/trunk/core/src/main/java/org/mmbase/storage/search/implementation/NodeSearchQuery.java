@@ -11,6 +11,7 @@ package org.mmbase.storage.search.implementation;
 
 import java.util.*;
 import org.mmbase.core.*;
+import org.mmbase.bridge.*;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.VirtualBuilder;
 import org.mmbase.module.corebuilders.InsRel;
@@ -40,9 +41,9 @@ import org.mmbase.storage.search.*;
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
 
-    private final MMObjectBuilder builder;
+    private final String builder;
 
-    private final Map<CoreField, BasicStepField> stepFields = new HashMap<CoreField, BasicStepField>();
+    private final Map<Field, BasicStepField> stepFields = new HashMap<Field, BasicStepField>();
 
 
     /**
@@ -59,9 +60,16 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
         if (builder instanceof VirtualBuilder) {
             throw new IllegalArgumentException("Invalid builder type, because this is a virtual builder: " + builder.getClass().getName());
         }
-        Step step = super.addStep(builder);
+        Step step = super.addStep(builder.getTableName());
         addFields(step, builder);
-        this.builder = builder;
+        this.builder = builder.getTableName();
+    }
+    public NodeSearchQuery(NodeManager  builder) {
+        Step step = super.addStep(builder.getName());
+        for (Field f : builder.getFields()) {
+            addField(step, f);
+        }
+        this.builder = builder.getName();
     }
 
     /*
@@ -92,11 +100,11 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
      * @throws IllegalArgumentException When the field is not a
      *         persistent field of the associated nodetype.
      */
-    public BasicStepField getField(CoreField field) {
+    public BasicStepField getField(Field field) {
         BasicStepField stepField = stepFields.get(field);
         if (stepField == null) {
             // Not found.
-            throw new IllegalArgumentException("Not a persistent field of builder " + builder.getTableName() + ": " + field);
+            throw new IllegalArgumentException("Not a persistent field of builder " + builder + ": " + field);
         }
         return stepField;
     }
@@ -107,7 +115,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
      * @return The builder.
      */
     public MMObjectBuilder getBuilder() {
-        return builder;
+        return org.mmbase.module.core.MMBase.getMMBase().getBuilder(builder);
     }
 
     // javadoc is inherited
@@ -129,7 +137,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
         }
     }
     // MM
-    protected void mapField(CoreField field, BasicStepField stepField) {
+    protected void mapField(Field field, BasicStepField stepField) {
         stepFields.put(field, stepField);
     }
 
