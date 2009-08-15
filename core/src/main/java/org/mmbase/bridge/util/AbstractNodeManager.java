@@ -101,7 +101,9 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
 
     public NodeList getList(NodeQuery query) { throw new UnsupportedOperationException(); }
 
-    public NodeQuery createQuery() { throw new UnsupportedOperationException(); }
+    public NodeQuery createQuery() {
+        return new org.mmbase.bridge.implementation.BasicNodeQuery(this);
+    }
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp){ throw new UnsupportedOperationException();}
 
     public NodeList getList(String command, Map parameters){ throw new UnsupportedOperationException();}

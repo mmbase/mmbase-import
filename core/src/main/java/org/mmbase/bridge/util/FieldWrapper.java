@@ -75,4 +75,8 @@ public class FieldWrapper implements Field {
     public Field getField() {
         return field;
     }
+
+    public String toString() {
+        return getClass().getName() + ":" + getNodeManager().getName() + ":" + getName();
+    }
 }
