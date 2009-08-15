@@ -206,7 +206,7 @@ public class Fields {
     }
 
 
-    public static void sort(List<CoreField> fields, int order) {
+    public static void sort(List<? extends Field> fields, int order) {
         Collections.sort(fields, new FieldComparator(order));
     }
 
@@ -215,7 +215,7 @@ public class Fields {
      * Comparator to sort CoreFields by creation order, or by position
      * specified in one of the GUIPos fields.
      */
-    private static class FieldComparator implements Comparator<CoreField> {
+    private static class FieldComparator implements Comparator<Field> {
 
         private int order = NodeManager.ORDER_CREATE;
 
@@ -230,7 +230,7 @@ public class Fields {
         /**
          * Retrieve the postion of a CoreField object according to the order to sort on
          */
-        private int getPos(CoreField o) {
+        private int getPos(Field o) {
             switch (order) {
             case NodeManager.ORDER_EDIT: {
                 return o.getEditPosition();
@@ -248,9 +248,9 @@ public class Fields {
         }
 
         /**
-         * Compare two objects (should be CoreFields)
+         * Compare two objects.
          */
-        public int compare(CoreField o1, CoreField o2) {
+        public int compare(Field o1, Field o2) {
             int pos1 = getPos(o1);
             int pos2 = getPos(o2);
 
