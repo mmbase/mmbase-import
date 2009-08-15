@@ -48,7 +48,7 @@ public class DummyCloudContext implements CloudContext {
     final Map<String,  DummyBuilderReader>    builders           = new ConcurrentHashMap<String, DummyBuilderReader>();
 
 
-    DummyCloudContext() {
+    public DummyCloudContext() {
         clouds.add("mmbase");
     }
 
