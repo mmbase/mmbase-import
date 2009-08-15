@@ -44,5 +44,14 @@ public class ClassGeneratorTest {
 
     }
 
+    @Test
+    public void proxyGenerator() throws Exception  {
+        ProxyGenerator proxy = new ProxyGenerator(A.class);
+        Method m = A.class.getMethod("list");
+        proxy.appendMethod(m);
+        String begin = "public java.util.List<? extends java.lang.String>";
+        assertEquals(begin, proxy.buffer.toString().trim().substring(0, begin.length()));
+    }
+
 }
 
