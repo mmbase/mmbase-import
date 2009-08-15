@@ -13,6 +13,7 @@ package org.mmbase.bridge.util;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.dummy.*;
 import org.mmbase.datatypes.*;
+import org.mmbase.storage.search.*;
 import java.util.*;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -36,10 +37,16 @@ public class QueriesTest  {
     }
 
 
+
     @Test
     public void nodeQuery1() {
         Cloud cloud = getCloudContext().getCloud("mmbase");
-        NodeQuery q = cloud.getNodeManager("object").createQuery();
+        NodeManager object  = cloud.getNodeManager("object");
+        NodeQuery q = object.createQuery();
+        assertEquals(object.getFields().size(), q.getFields().size());
+        StepField f = q.getStepField(object.getField("number"));
+        assertNotNull(f);
+
     }
 
     @Test
@@ -55,6 +62,13 @@ public class QueriesTest  {
         Node node = cloud.getNodeManager("object").createNode();
         node.commit();
         Queries.createNodeQuery(node);
+    }
+
+    @Test
+    public void createConstraint() {
+        Cloud cloud = getCloudContext().getCloud("mmbase");
+        NodeQuery q = cloud.getNodeManager("object").createQuery();
+        Queries.createConstraint(q, "number", Queries.getOperator("LT"), new Integer(1));
     }
 
 }
