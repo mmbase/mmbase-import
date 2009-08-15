@@ -141,8 +141,8 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     }
 
 
-    public List<? extends StepField> getExtraFields() {
-        return Collections.unmodifiableList(explicitFields);
+    public List<StepField> getExtraFields() {
+        return Collections.unmodifiableList(new ArrayList<StepField>(explicitFields));
     }
 
 
