@@ -77,6 +77,6 @@ public class FieldWrapper implements Field {
     }
 
     public String toString() {
-        return getClass().getName() + ":" + getNodeManager().getName() + ":" + getName();
+        return getClass().getName() + ":" + org.mmbase.core.util.Fields.getStateDescription(getState()) + ":" + getStoragePosition() + ":" + getNodeManager().getName() + ":" + getName();
     }
 }
