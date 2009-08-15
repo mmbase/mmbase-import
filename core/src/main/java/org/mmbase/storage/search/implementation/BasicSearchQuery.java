@@ -360,6 +360,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         if (builder == null) throw new IllegalArgumentException();
         return addStep(builder.getTableName());
     }
+
     public BasicStep addStep(String name) {
         if (name == null) throw new IllegalArgumentException();
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
@@ -412,6 +413,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         BasicStepField field = new BasicStepField(step, fieldDefs);
         assert ! fields.contains(field) : "" + field + " is already one of " + fields;
         fields.add(field);
+        mapField(fieldDefs, field);
         return field;
     }
 
@@ -427,6 +429,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         int i = fields.indexOf(field);
         if (i == -1) {
             fields.add(field);
+            mapField(fieldDefs, field);
         } else {
             field = (BasicStepField) fields.get(i);
         }
@@ -434,7 +437,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
     }
 
     // only sensible for NodeSearchQuery
-    protected void mapField(CoreField field, BasicStepField stepField) {
+    protected void mapField(Field field, BasicStepField stepField) {
 
     }
 

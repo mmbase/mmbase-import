@@ -43,7 +43,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
 
     private final String builder;
 
-    private final Map<Field, BasicStepField> stepFields = new HashMap<Field, BasicStepField>();
+    private final Map<String, BasicStepField> stepFields = new HashMap<String, BasicStepField>();
 
 
     /**
@@ -101,10 +101,10 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
      *         persistent field of the associated nodetype.
      */
     public BasicStepField getField(Field field) {
-        BasicStepField stepField = stepFields.get(field);
+        BasicStepField stepField = stepFields.get(field.getName());
         if (stepField == null) {
             // Not found.
-            throw new IllegalArgumentException("Not a persistent field of builder " + builder + ": " + field);
+            throw new IllegalArgumentException("Not a persistent field of builder " + builder + ": " + field + " " + stepFields);
         }
         return stepField;
     }
@@ -118,30 +118,30 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
         return org.mmbase.module.core.MMBase.getMMBase().getBuilder(builder);
     }
 
-    // javadoc is inherited
+    @Override
     public BasicStep addStep(MMObjectBuilder builder) {
         throw new UnsupportedOperationException("Adding more steps to NodeSearchQuery not supported.");
     }
 
-    // javadoc is inherited
+    @Override
     public BasicRelationStep addRelationStep(InsRel builder, MMObjectBuilder nextBuilder) {
         throw new UnsupportedOperationException("Adding more steps to NodeSearchQuery not supported.");
     }
 
-    // javadoc is inherited
-    public BasicStepField addField(Step step, CoreField fieldDefs) {
+    @Override
+    public BasicStepField addField(Step step, Field fieldDefs) {
         if (builder != null) { // this means: inited already.
             throw new UnsupportedOperationException("Adding more fields to NodeSearchQuery not supported.");
         } else {
             return super.addField(step, fieldDefs);
         }
     }
-    // MM
+    @Override
     protected void mapField(Field field, BasicStepField stepField) {
-        stepFields.put(field, stepField);
+        stepFields.put(field.getName(), stepField);
     }
 
-    // javadoc is inherited
+    @Override
     public BasicAggregatedField addAggregatedField(Step step, CoreField fieldDefs, int aggregationType) {
         throw new UnsupportedOperationException("Adding more fields to NodeSearchQuery not supported.");
     }
