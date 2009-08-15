@@ -113,7 +113,7 @@ abstract public class AbstractField<D extends Object> extends AbstractDescriptor
         return state;
     }
 
-    protected void setState(int state) {
+    public void setState(int state) {
         if (this.state == STATE_UNKNOWN) {
           readOnly = state == STATE_SYSTEM || state == STATE_SYSTEM_VIRTUAL;
         }
