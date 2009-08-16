@@ -72,6 +72,8 @@ public class DummyTest  {
 
         assertTrue(a.getNumber() > 0);
 
+        assertTrue(cloud.hasNode(a.getNumber()));
+
         int number = a.getNumber();
 
         Node a2 = cloud.getNode(number);
