@@ -139,6 +139,7 @@ public abstract class AbstractTranscoder implements Transcoder {
         buf.append(" ");
         boolean appendedSetting = false;
         Settings settings = getClass().getAnnotation(Settings.class);
+        if (settings == null) throw new RuntimeException("Class " + getClass() + " is not annotated with " + Settings.class);
         for (String setting : settings.value()) {
             Object value = null;
 
