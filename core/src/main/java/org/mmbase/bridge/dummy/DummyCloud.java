@@ -40,7 +40,7 @@ public class DummyCloud extends AbstractCloud {
 
 
     Node getNode(final Map<String, Object> m, final NodeManager nm) {
-        return new DummyNode(m, nm);
+        return new DummyNode(m, cloudContext, nm);
     }
 
     public Node getNode(int number) throws NotFoundException {
