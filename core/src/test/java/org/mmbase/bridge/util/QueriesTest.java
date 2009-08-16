@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: DummyTest.java 37837 2009-08-14 21:45:04Z michiel $
+ * @version $Id$
  */
 public class QueriesTest  {
 
@@ -34,31 +34,46 @@ public class QueriesTest  {
     public static void setup() throws Exception {
         DummyCloudContext.getInstance().clear();
         DummyCloudContext.getInstance().addCore();
+        DummyCloudContext.getInstance().addNodeManagers(DummyBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
     }
+
+
+
+
 
 
 
     @Test
     public void nodeQuery1() {
         Cloud cloud = getCloudContext().getCloud("mmbase");
-        NodeManager object  = cloud.getNodeManager("object");
-        NodeQuery q = object.createQuery();
-        assertEquals("" + q.getFields(), object.getFields(NodeManager.ORDER_CREATE).size(), q.getFields().size());
-        assertEquals("" + object.getFields(NodeManager.ORDER_CREATE), 3, q.getFields().size());
-        StepField f = q.getStepField(object.getField("number"));
-        assertNotNull(f);
+        {
+            NodeManager object  = cloud.getNodeManager("object");
+            NodeQuery q = object.createQuery();
+            assertEquals("" + q.getFields(), object.getFields(NodeManager.ORDER_CREATE).size(), q.getFields().size());
+            assertEquals("" + object.getFields(NodeManager.ORDER_CREATE), 3, q.getFields().size());
+            StepField f = q.getStepField(object.getField("number"));
+            assertNotNull(f);
+        }
+        {
+            // making sure there is a virtual field (and it is virtual)
+            NodeManager news = cloud.getNodeManager("news");
+            assertTrue(news.getField("security_context").isVirtual());
+        }
 
+    }
+
+    @Test
+    public void nodeNodeQuery() {
+        Cloud cloud = getCloudContext().getCloud("mmbase");
+        NodeQuery q = cloud.createNodeQuery();
+        NodeManager object  = cloud.getNodeManager("object");
+        Step s = q.addStep(object);
+        q.setNodeStep(s);
+        assertEquals("" + q.getFields(), object.getFields(NodeManager.ORDER_CREATE).size(), q.getFields().size());
     }
 
     @Test
     public void nodeQuery2() {
-        Cloud cloud = getCloudContext().getCloud("mmbase");
-        NodeQuery q = cloud.createNodeQuery();
-        q.addStep(cloud.getNodeManager("object"));
-    }
-
-    @Test
-    public void nodeQuery() {
         Cloud cloud = getCloudContext().getCloud("mmbase");
         Node node = cloud.getNodeManager("object").createNode();
         node.commit();
