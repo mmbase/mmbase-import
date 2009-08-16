@@ -188,7 +188,7 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
 
 
     public String getProperty(String name) {
-        return null;
+        return getProperties().get(name);
     }
     public Map<String, String> getProperties() {
         return Collections.emptyMap();
