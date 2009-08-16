@@ -74,7 +74,7 @@ public class DummyNodeManager extends AbstractNodeManager  {
 
     @Override
     public String toString() {
-        return getClass().getName() + " " +  map.keySet();
+        return getName() + " " +  map.keySet();
     }
 
 }
