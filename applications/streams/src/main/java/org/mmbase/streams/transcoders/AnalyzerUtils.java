@@ -162,8 +162,10 @@ public final class AnalyzerUtils {
             if (log.isDebugEnabled()) {
                 log.debug("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""), new Exception());
             }
-            source.setNodeManager(cloud.getNodeManager(IMAGE));
-            source.commit();
+            if (cloud.hasNodeManager(IMAGE)) { // happens for example during junit tests
+                source.setNodeManager(cloud.getNodeManager(IMAGE));
+                source.commit();
+            }
         }
     }
 
