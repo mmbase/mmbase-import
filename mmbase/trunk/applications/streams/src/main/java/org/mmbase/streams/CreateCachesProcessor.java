@@ -64,6 +64,13 @@ public class CreateCachesProcessor implements CommitProcessor {
     protected Map<String, JobDefinition> list = Collections.synchronizedMap(new LinkedHashMap<String, JobDefinition>());
 
 
+    private  String[] cacheManagers = new String[] {"streamsourcescaches", "videostreamsourcescaches", "audiostreamsourcescaches"};
+
+
+    public void setCacheManagers(String... cm) {
+        cacheManagers = cm;
+    }
+
     private static int transSeq = 0;
     public final ThreadPoolExecutor transcoderExecutor = new ThreadPoolExecutor(3, 3, 5 * 60 , TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
             public Thread newThread(Runnable r) {
@@ -629,6 +636,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                                     LOG.warn("Could not create cache node from " + node.getNodeManager().getName() + " " + node.getNumber() + " for " + jd.transcoder.getKey());
                                     continue;
                                 }
+                                System.out.println("Created " + dest);
                                 URI outFile = new File(FileServlet.getDirectory(), dest.getStringValue("url")).toURI();
                                 result = new Result(jd, dest, inFile, outFile);
                                 break;
@@ -706,7 +714,7 @@ public class CreateCachesProcessor implements CommitProcessor {
         protected Node getCacheNode(final String key) {
             String ct = node.getNodeManager().getProperty("org.mmbase.streams.cachestype");
             if (ct != null) {
-                for (String cacheManager : new String[] {"streamsourcescaches", "videostreamsourcescaches", "audiostreamsourcescaches"}) {
+                for (String cacheManager : cacheManagers) {
                     if (node.getCloud().hasNodeManager(cacheManager)) { // may not be the case during junit tests e.g.
                         final NodeManager caches = node.getCloud().getNodeManager(cacheManager);
                         NodeQuery q = caches.createQuery();
