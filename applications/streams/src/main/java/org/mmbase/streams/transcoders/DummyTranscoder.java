@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * This is a transcoder that does nothing. It will simply stall infinitely, and log some bogus. This is for testing only.
+ * This is a transcoder simply copies the file, and does not transcode anything. This is for testing only.
  *
  * @author Michiel Meeuwissen
  * @version $Id: InfiniteTranscoder.java 36518 2009-07-02 12:52:01Z michiel $
@@ -33,8 +33,8 @@ public class DummyTranscoder extends AbstractTranscoder {
     }
 
     protected void transcode(final Logger log) throws Exception {
-        org.mmbase.util.IOUtil.copy(in.toURL().openConnection().getInputStream(),
-                                    out.toURL().openConnection().getOutputStream());
+        org.mmbase.util.IOUtil.copy(new FileInputStream(new File(in.getPath())),
+                                    new FileOutputStream(new File(out.getPath())));
 
     }
 
