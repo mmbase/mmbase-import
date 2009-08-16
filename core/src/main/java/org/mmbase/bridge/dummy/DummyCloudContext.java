@@ -13,6 +13,7 @@ package org.mmbase.bridge.dummy;
 import java.util.*;
 import java.util.concurrent.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.BridgeCollections;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.security.*;
@@ -49,19 +50,20 @@ public class DummyCloudContext implements CloudContext {
         return virtual;
     }
 
+    public static final String CLOUD = "mmbase";
+
     private final Authentication authentication = new NoAuthentication();
-    private final BasicStringList clouds = new BasicStringList();
+    private final BasicStringList clouds        = new BasicStringList();
 
 
-    final Map<Integer, Map<String, Object>>   nodes              = new ConcurrentHashMap<Integer, Map<String, Object>>();
-    final Map<Integer, String>                nodeTypes          = new ConcurrentHashMap<Integer, String>();
-    final Map<String,  Map<String, Field>> nodeManagers       = new ConcurrentHashMap<String, Map<String, Field>>();
-
-    final Map<String,  DummyBuilderReader>    builders           = new ConcurrentHashMap<String, DummyBuilderReader>();
+    final Map<Integer, Map<String, Object>>  nodes              = new ConcurrentHashMap<Integer, Map<String, Object>>();
+    final Map<Integer, String>               nodeTypes          = new ConcurrentHashMap<Integer, String>();
+    final Map<String,  Map<String, Field>>   nodeManagers       = new ConcurrentHashMap<String, Map<String, Field>>();
+    final Map<String,  DummyBuilderReader>   builders           = new ConcurrentHashMap<String, DummyBuilderReader>();
 
 
     public DummyCloudContext() {
-        clouds.add("mmbase");
+        clouds.add(CLOUD);
     }
 
     public void clear() {
@@ -76,11 +78,9 @@ public class DummyCloudContext implements CloudContext {
      * It may also add a core relation model. Like 'related' and 'posrel' roles.
      */
     public void addCore() throws java.io.IOException {
-        DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/typedef.xml"));
-        DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/typerel.xml"));
-        DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/reldef.xml"));
-        DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/object.xml"));
-        DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/insrel.xml"));
+        for (String buil : new String[] {"typedef", "typerel", "reldef", "object", "insrel"}) {
+            DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/" + buil + ".xml"));
+        }
     }
 
     public void addNodeManager(String name, Map<String, DataType> map) {
@@ -132,7 +132,7 @@ public class DummyCloudContext implements CloudContext {
     }
 
     public ModuleList getModules() {
-        return new BasicModuleList();
+        return BridgeCollections.EMPTY_MODULELIST;
     }
 
     public Module getModule(String name) throws NotFoundException {
@@ -156,13 +156,12 @@ public class DummyCloudContext implements CloudContext {
     }
 
     public StringList getCloudNames() {
-        return clouds;
+        return BridgeCollections.unmodifiableStringList(clouds);
     }
 
     public String getDefaultCharacterEncoding() {
         return "UTF-8";
     }
-
 
     public Locale getDefaultLocale() {
         return Locale.getDefault();
@@ -178,20 +177,20 @@ public class DummyCloudContext implements CloudContext {
     }
 
     public NodeList createNodeList() {
-        return getCloud("mmbase").createNodeList();
+        return getCloud(CLOUD).createNodeList();
     }
 
     public RelationList createRelationList() {
-        return getCloud("mmbase").createRelationList();
+        return getCloud(CLOUD).createRelationList();
     }
 
 
     public NodeManagerList createNodeManagerList() {
-        return getCloud("mmbase").createNodeManagerList();
+        return getCloud(CLOUD).createNodeManagerList();
     }
 
     public RelationManagerList createRelationManagerList() {
-        return getCloud("mmbase").createRelationManagerList();
+        return getCloud(CLOUD).createRelationManagerList();
     }
     public ModuleList createModuleList() {
         return new BasicModuleList();
