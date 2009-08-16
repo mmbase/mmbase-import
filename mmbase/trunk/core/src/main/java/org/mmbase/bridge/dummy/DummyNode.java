@@ -31,16 +31,18 @@ import org.mmbase.util.functions.*;
 public class DummyNode extends MapNode  {
 
     private final Map<String, Object> originalMap;
+    private final DummyCloudContext cloudContext;
 
-    DummyNode(Map<String, Object> map, NodeManager nm) {
+    DummyNode(Map<String, Object> map, DummyCloudContext cc, NodeManager nm) {
         super(new HashMap<String, Object>(map), nm);
         originalMap = map;
+        cloudContext = cc;
     }
     @Override
     public  void commit() {
         if (! originalMap.containsKey("number")) {
             // This is a new node, so generate a number first
-            int number = DummyCloudContext.getInstance().addNode(values, getNodeManager().getName());
+            int number = cloudContext.addNode(values, getNodeManager().getName());
             values.put("number", number);
         }
         originalMap.putAll(values);
