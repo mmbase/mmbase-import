@@ -114,7 +114,7 @@ public class DummyTest  {
     }
 
     @Test
-    public void createNode() throws Exception {
+    public void createNodeInNonDefaultCloudContext() throws Exception {
         DummyCloudContext cc = new DummyCloudContext();
         Cloud c = cc.getCloud("mmbase");
 
@@ -126,6 +126,21 @@ public class DummyTest  {
         n.commit();
         assertTrue(c.hasNode(n.getNumber()));
 
+    }
+
+    @Test
+    public void nodeManagerProperties() throws Exception {
+        DummyCloudContext cc = new DummyCloudContext();
+        Cloud c = cc.getCloud("mmbase");
+
+        Map<String, DataType> map = new HashMap<String, DataType>();
+        map.put("number", Constants.DATATYPE_INTEGER);
+        map.put("title", Constants.DATATYPE_STRING);
+        cc.addNodeManager("aa", map);
+
+        c.getNodeManager("aa").getProperties().put("a", "A");
+
+        assertEquals("A", cc.getCloud("mmbase").getNodeManager("aa").getProperty("a"));
     }
 
 }

@@ -62,6 +62,9 @@ public class DummyNodeManager extends AbstractNodeManager  {
     }
 
 
+    public Map<String, String> getProperties() {
+        return vcloud.cloudContext.nodeManagerProperties.get(getName());
+    }
 
     @Override
     protected Map<String, Field> getFieldTypes() {

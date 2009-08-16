@@ -56,10 +56,11 @@ public class DummyCloudContext implements CloudContext {
     private final BasicStringList clouds        = new BasicStringList();
 
 
-    final Map<Integer, Map<String, Object>>  nodes              = new ConcurrentHashMap<Integer, Map<String, Object>>();
-    final Map<Integer, String>               nodeTypes          = new ConcurrentHashMap<Integer, String>();
-    final Map<String,  Map<String, Field>>   nodeManagers       = new ConcurrentHashMap<String, Map<String, Field>>();
-    final Map<String,  DummyBuilderReader>   builders           = new ConcurrentHashMap<String, DummyBuilderReader>();
+    final Map<Integer, Map<String, Object>>  nodes                 = new ConcurrentHashMap<Integer, Map<String, Object>>();
+    final Map<Integer, String>               nodeTypes             = new ConcurrentHashMap<Integer, String>();
+    final Map<String,  Map<String, Field>>   nodeManagers          = new ConcurrentHashMap<String, Map<String, Field>>();
+    final Map<String,  DummyBuilderReader>   builders              = new ConcurrentHashMap<String, DummyBuilderReader>();
+    final Map<String,  Map<String, String>>  nodeManagerProperties = new ConcurrentHashMap<String, Map<String, String>>();
 
 
     public DummyCloudContext() {
@@ -94,6 +95,7 @@ public class DummyCloudContext implements CloudContext {
             m.put(e.getKey(), new DummyField(e.getKey(), null, e.getValue()));
         }
         nodeManagers.put(name, m);
+        nodeManagerProperties.put(name, new HashMap<String, String>());
     }
 
     public void addNodeManager(InputSource source) {
@@ -110,6 +112,7 @@ public class DummyCloudContext implements CloudContext {
             map.put(f.getName(), f);
         }
         nodeManagers.put(reader.getName(), map);
+        nodeManagerProperties.put(reader.getName(), reader.getProperties());
         builders.put(reader.getName(), reader);
     }
     public void addNodeManagers(ResourceLoader directory) throws java.io.IOException {
