@@ -75,6 +75,7 @@ public class DummyCloudContext implements CloudContext {
         nodeTypes.clear();
         nodeManagers.clear();
         builders.clear();
+        lastNodeNumber = 0;
     }
 
     /**
@@ -83,7 +84,7 @@ public class DummyCloudContext implements CloudContext {
      */
     public void addCore() throws java.io.IOException {
         for (String buil : new String[] {"typedef", "typerel", "reldef", "object", "insrel"}) {
-            DummyCloudContext.getInstance().addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/" + buil + ".xml"));
+            addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/" + buil + ".xml"));
         }
     }
 
@@ -130,8 +131,8 @@ public class DummyCloudContext implements CloudContext {
 
     public synchronized int addNode(Map<String, Object> map, String type) {
         int number = ++lastNodeNumber;
-        virtual.nodes.put(number, map);
-        virtual.nodeTypes.put(number, type);
+        nodes.put(number, map);
+        nodeTypes.put(number, type);
         return number;
     }
 
