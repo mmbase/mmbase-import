@@ -42,7 +42,7 @@ public class DummyNode extends MapNode  {
     public  void commit() {
         if (! originalMap.containsKey("number")) {
             // This is a new node, so generate a number first
-            int number = cloudContext.addNode(values, getNodeManager().getName());
+            int number = cloudContext.addNode(getNodeManager().getName(), values);
             values.put("number", number);
         }
         originalMap.putAll(values);
@@ -53,5 +53,10 @@ public class DummyNode extends MapNode  {
             throw new NotFoundException("No field '" + fieldName + "' in " + getNodeManager());
         }
         return super.getValueWithoutProcess(fieldName);
+    }
+
+    @Override
+    public String toString() {
+        return getNodeManager().toString() + values;
     }
 }

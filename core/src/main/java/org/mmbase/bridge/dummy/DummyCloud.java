@@ -44,10 +44,10 @@ public class DummyCloud extends AbstractCloud {
     }
 
     public Node getNode(int number) throws NotFoundException {
-        Map<String, Object> n = cloudContext.nodes.get(number);
-        if (n == null) throw new NotFoundException();
-        NodeManager nm = getNodeManager(cloudContext.nodeTypes.get(number));
-        return getNode(n, nm);
+        DummyCloudContext.NodeDescription nd = cloudContext.nodes.get(number);
+        if (nd == null) throw new NotFoundException();
+        NodeManager nm = getNodeManager(nd.type);
+        return getNode(nd.values, nm);
     }
 
     public boolean hasNode(int number) {

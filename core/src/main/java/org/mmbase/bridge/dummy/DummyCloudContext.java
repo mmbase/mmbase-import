@@ -64,6 +64,17 @@ public class DummyCloudContext implements CloudContext {
             return name + ":" + fields;
         }
     }
+    public static class NodeDescription {
+        public final String type;
+        public final Map<String, Object> values;
+        public NodeDescription(String t, Map<String, Object> v) {
+            type = t;
+            values = v;
+        }
+        public String toString() {
+            return type + ":" + values;
+        }
+    }
 
 
     private int lastNodeNumber = 0;
@@ -72,22 +83,20 @@ public class DummyCloudContext implements CloudContext {
 
 
 
-    final Map<Integer, Map<String, Object>>  nodes                 = new ConcurrentHashMap<Integer, Map<String, Object>>();
-    final Map<Integer, String>               nodeTypes             = new ConcurrentHashMap<Integer, String>();
-    final Map<String,  NodeManagerDescription> nodeManagers          = new ConcurrentHashMap<String, NodeManagerDescription>();
+    final Map<Integer, NodeDescription>  nodes                 = new ConcurrentHashMap<Integer, NodeDescription>();
+    final Map<String,  NodeManagerDescription> nodeManagers    = new ConcurrentHashMap<String, NodeManagerDescription>();
 
 
     public DummyCloudContext() {
         clouds.add(CLOUD);
     }
 
-    public Map<Integer, Map<String, Object>>  getNodes() {
+    public Map<Integer, NodeDescription>  getNodes() {
         return nodes;
     }
 
     public void clear() {
         nodes.clear();
-        nodeTypes.clear();
         nodeManagers.clear();
         lastNodeNumber = 0;
     }
@@ -143,10 +152,9 @@ public class DummyCloudContext implements CloudContext {
 
 
 
-    public synchronized int addNode(Map<String, Object> map, String type) {
+    public synchronized int addNode(String type, Map<String, Object> map) {
         int number = ++lastNodeNumber;
-        nodes.put(number, map);
-        nodeTypes.put(number, type);
+        nodes.put(number, new NodeDescription(type, map));
         return number;
     }
 
