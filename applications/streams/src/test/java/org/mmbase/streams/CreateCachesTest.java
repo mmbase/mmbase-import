@@ -91,6 +91,7 @@ public class CreateCachesTest {
     @Test
     public  void test1() throws Exception {
         CreateCachesProcessor proc = new CreateCachesProcessor("dummycreatecaches_1.xml");
+        proc.setCacheManagers("dummy");
         Cloud cloud = cloudContext.getCloud("mmbase");
 
         Node container = cloud.getNodeManager("container").createNode();
@@ -108,6 +109,7 @@ public class CreateCachesTest {
         assertTrue("" + newSource + "  " + cloudContext.getNodes(), cloud.hasNode(newSource.getNumber()));
 
         newSource.setStringValue("url", FILE);
+
 
         int nodeCount = cloudContext.getNodes().size();
 
