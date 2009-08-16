@@ -44,14 +44,14 @@ import org.w3c.dom.Document;
 public class DummyCloudContext implements CloudContext {
 
     private static final DummyCloudContext virtual = new DummyCloudContext();
-    private static int lastNodeNumber = 0;
-
     public static DummyCloudContext getInstance() {
         return virtual;
     }
 
     public static final String CLOUD = "mmbase";
 
+
+    private int lastNodeNumber = 0;
     private final Authentication authentication = new NoAuthentication();
     private final BasicStringList clouds        = new BasicStringList();
 
@@ -64,6 +64,10 @@ public class DummyCloudContext implements CloudContext {
 
     public DummyCloudContext() {
         clouds.add(CLOUD);
+    }
+
+    public Map<Integer, Map<String, Object>>  getNodes() {
+        return nodes;
     }
 
     public void clear() {
