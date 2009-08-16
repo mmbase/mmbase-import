@@ -52,6 +52,7 @@ public class LanguageDataType extends StringDataType {
                 loc = field.getNodeManager().getCloud().getLocale();
             } catch (UnsupportedOperationException uoe) {
                 // Core field can do this
+                // BTW, Not any more, so I think this try/catch can be removed.
                 loc = org.mmbase.util.LocalizedString.getDefault();
             }
         } else {
