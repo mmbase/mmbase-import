@@ -71,7 +71,6 @@ public class DummyTest  {
         a.commit();
 
         assertTrue(a.getNumber() > 0);
-
         assertTrue(cloud.hasNode(a.getNumber()));
 
         int number = a.getNumber();
@@ -114,5 +113,19 @@ public class DummyTest  {
         assertEquals("number", object.getField("number").getName());
     }
 
+    @Test
+    public void createNode() throws Exception {
+        DummyCloudContext cc = new DummyCloudContext();
+        Cloud c = cc.getCloud("mmbase");
+
+        Map<String, DataType> map = new HashMap<String, DataType>();
+        map.put("number", Constants.DATATYPE_INTEGER);
+        map.put("title", Constants.DATATYPE_STRING);
+        cc.addNodeManager("aa", map);
+        Node n = c.getNodeManager("aa").createNode();
+        n.commit();
+        assertTrue(c.hasNode(n.getNumber()));
+
+    }
 
 }
