@@ -103,7 +103,7 @@ public class DummyTest  {
         cc.addNodeManagers(DummyBuilderReader.getBuilderLoader().getChildResourceLoader("core"));
 
         Cloud cloud = cc.getCloud("mmbase");
-        assertTrue("" + cc.nodeManagers + " " + cc.builders, cloud.hasNodeManager("object"));
+        assertTrue("" + cc.nodeManagers, cloud.hasNodeManager("object"));
 
         NodeManager object = cloud.getNodeManager("object");
         assertTrue(object.hasField("number"));
