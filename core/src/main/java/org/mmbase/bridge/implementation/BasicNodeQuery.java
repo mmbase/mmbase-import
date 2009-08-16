@@ -179,7 +179,9 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
         // otherwise BasicQueryHandler.getNodes could do it wrong...
         query.removeFields();
         for (Field f : getCloud().getNodeManager(step.getTableName()).getFields(NodeManager.ORDER_CREATE)) {
-            query.addField(step, f);
+            if (! f.isVirtual()) {
+                query.addField(step, f);
+            }
         }
         addFields(explicitFields);
         Step prevStep = this.step;
