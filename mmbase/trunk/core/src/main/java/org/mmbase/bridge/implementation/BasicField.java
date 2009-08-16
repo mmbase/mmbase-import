@@ -28,24 +28,6 @@ public class BasicField extends FieldWrapper implements Field {
     private final NodeManager nodeManager;
 
 
-    /**
-     * Converts a Field to a CoreField.
-     * @todo Should this method be here?
-
-     * @since MMBase-1.9.2
-     */
-     static CoreField getCoreField(Field f) {
-        while (f instanceof FieldWrapper) {
-            f  = ((FieldWrapper) f).getField();
-        }
-        if (f instanceof CoreField) {
-            return (CoreField) f;
-        } else {
-            return BasicCloudContext.mmb.getBuilder(f.getNodeManager().getName()).getField(f.getName());
-        }
-    }
-
-
     public BasicField(Field field, NodeManager nodeManager) {
         super(field);
         this.nodeManager = nodeManager;

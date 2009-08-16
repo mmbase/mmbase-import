@@ -381,11 +381,10 @@ public class BasicQuery implements Query  {
 
     public StepField addField(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
-        org.mmbase.core.CoreField cf = BasicField.getCoreField(field);
-        BasicStepField sf = new BasicStepField(step, cf);
+        BasicStepField sf = new BasicStepField(step, field);
         if (! implicitFields.remove(sf)) {// it's explicitly added now
-            if (cf.inStorage()) {
-                sf = query.addField(step, cf);
+            if (! field.isVirtual()) {
+                sf = query.addField(step, field);
             } else {
                 log.debug("Not adding the field " + field + " because it is not in storage (this is a virtual field)");
             }
@@ -422,8 +421,7 @@ public class BasicQuery implements Query  {
 
     public StepField createStepField(Step step, Field field) {
         if (field == null) throw new BridgeException("Field is null");
-        return
-            new BasicStepField(step, BasicField.getCoreField(field));
+        return new BasicStepField(step, field);
     }
 
     public StepField createStepField(Step step, String fieldName) {
@@ -451,7 +449,7 @@ public class BasicQuery implements Query  {
 
     public AggregatedField addAggregatedField(Step step, Field field, int aggregationType) {
         if (used) throw new BridgeException("Query was used already");
-        BasicAggregatedField aggregatedField =  query.addAggregatedField(step, BasicField.getCoreField(field), aggregationType); /// XXX Casting is wrong
+        BasicAggregatedField aggregatedField =  query.addAggregatedField(step, field, aggregationType);
         // aggregatedField.setAlias(field.getName());
 
         if (this instanceof NodeQuery) { // UGLY!
