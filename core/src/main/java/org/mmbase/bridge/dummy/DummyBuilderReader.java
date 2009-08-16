@@ -37,9 +37,15 @@ public class DummyBuilderReader extends org.mmbase.util.xml.AbstractBuilderReade
 
     DummyBuilderReader(InputSource s) {
         super(s);
+        if (getRootElement().getTagName().equals("builder")) {
+            resolveInheritance();
+        }
     }
     DummyBuilderReader(Document d) {
         super(d);
+        if (getRootElement().getTagName().equals("builder")) {
+            resolveInheritance();
+        }
     }
 
     @Override
