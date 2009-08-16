@@ -747,6 +747,7 @@ public class CreateCachesProcessor implements CommitProcessor {
 
         public synchronized void setThread(Thread t) {
             thread = t;
+            notifyAll();
             if (t != null) {
                 interrupted = t.isInterrupted();
             }
@@ -771,9 +772,17 @@ public class CreateCachesProcessor implements CommitProcessor {
         public boolean isReady() {
             return ready;
         }
-        public void ready() {
-            ready = true;
+        public synchronized void ready() {
+                ready = true;
+                notifyAll();
+            }
 
+        public void waitUntilReady() throws InterruptedException {
+            while (! isReady()) {
+                synchronized(this) {
+                    wait();
+                }
+            }
         }
 
         public String getProgress() {
