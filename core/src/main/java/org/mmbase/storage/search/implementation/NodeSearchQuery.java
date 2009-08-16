@@ -144,7 +144,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
     }
 
     @Override
-    public BasicAggregatedField addAggregatedField(Step step, CoreField fieldDefs, int aggregationType) {
+    public BasicAggregatedField addAggregatedField(Step step, Field fieldDefs, int aggregationType) {
         throw new UnsupportedOperationException("Adding more fields to NodeSearchQuery not supported.");
     }
 

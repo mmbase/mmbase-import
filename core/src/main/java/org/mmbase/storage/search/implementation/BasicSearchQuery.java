@@ -457,7 +457,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         // right order, which is important for microsoft JDBC.
 
         for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
-            if (field.inStorage()) {
+            if (! field.isVirtual()) {
                 BasicStepField stepField = addField(step, field);
                 mapField(field, stepField);
             }
@@ -480,7 +480,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
      * @throws UnsupportedOperationException when called
      *         on an non-aggregating query.
      */
-    public BasicAggregatedField addAggregatedField(Step step, CoreField field, int aggregationType) {
+    public BasicAggregatedField addAggregatedField(Step step, Field field, int aggregationType) {
         if (! modifiable) {
             throw new IllegalStateException("Unmodifiable");
         }
