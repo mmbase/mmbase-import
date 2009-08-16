@@ -34,15 +34,18 @@ public class DummyBuilderReader extends org.mmbase.util.xml.AbstractBuilderReade
         org.mmbase.datatypes.DataTypes.initialize();
     }
     DummyBuilderReader parent;
+    DummyCloudContext  cloudContext;
 
-    DummyBuilderReader(InputSource s) {
+    DummyBuilderReader(InputSource s, DummyCloudContext cc) {
         super(s);
+        this.cloudContext = cc;
         if (getRootElement().getTagName().equals("builder")) {
             resolveInheritance();
         }
     }
-    DummyBuilderReader(Document d) {
+    DummyBuilderReader(Document d, DummyCloudContext cc) {
         super(d);
+        this.cloudContext = cc;
         if (getRootElement().getTagName().equals("builder")) {
             resolveInheritance();
         }
@@ -56,20 +59,21 @@ public class DummyBuilderReader extends org.mmbase.util.xml.AbstractBuilderReade
             inheritanceResolved = true;
             return true;
         } else {
-            DummyBuilderReader p  = DummyCloudContext.getInstance().builders.get(parentBuilder);
+            DummyCloudContext.NodeManagerDescription  p  = cloudContext.nodeManagers.get(parentBuilder);
             if (p == null) {
-                if (DummyCloudContext.getInstance().nodeManagers.containsKey(parentBuilder)) {
-                    throw new UnsupportedOperationException("Parent was not configured with XML");
-                }
                 return false;
             }
+            if (p.reader == null) {
+                throw new UnsupportedOperationException("Parent was not configured with XML");
+            }
+
 
             Document inherit = (Document) this.document.cloneNode(true);
-            Element root = (Element) (this.document.importNode(p.getDocument().getDocumentElement(), true));
+            Element root = (Element) (this.document.importNode(p.reader.getDocument().getDocumentElement(), true));
             this.document.removeChild(this.document.getDocumentElement());
             this.document.appendChild( root);
             resolveInheritanceByXML(this.document, inherit);
-            parent = p;
+            parent = p.reader;
             inheritanceResolved = true;
             return true;
         }

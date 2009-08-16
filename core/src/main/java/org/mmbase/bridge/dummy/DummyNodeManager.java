@@ -63,7 +63,7 @@ public class DummyNodeManager extends AbstractNodeManager  {
 
 
     public Map<String, String> getProperties() {
-        return vcloud.cloudContext.nodeManagerProperties.get(getName());
+        return vcloud.cloudContext.nodeManagers.get(getName()).properties;
     }
 
     @Override
