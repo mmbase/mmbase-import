@@ -72,6 +72,7 @@ public abstract class BridgeCollections {
     public static final RelationManagerList EMPTY_RELATIONMANAGERLIST = new EmptyRelationManagerList();
     public static final RelationList        EMPTY_RELATIONLIST        = new EmptyRelationList();
     public static final StringList          EMPTY_STRINGLIST          = new EmptyStringList();
+    public static final ModuleList          EMPTY_MODULELIST          = new EmptyModuleList();
 
     // IMPLEMENTATIONS follow below.
 
@@ -134,6 +135,15 @@ public abstract class BridgeCollections {
         public String previousString() { return ((StringIterator) i).previousString(); }
 
     }
+
+    static class UnmodifiableModuleIterator extends UnmodifiableListIterator<Module> implements ModuleIterator {
+        UnmodifiableModuleIterator(ModuleIterator i) {
+            super(i);
+        }
+        public Module nextModule() { return ((ModuleIterator) i).nextModule(); }
+        public Module previousModule() { return ((ModuleIterator) i).previousModule(); }
+    }
+
 
     /* --------------------------------------------------------------------------------
      * Unmodifiable Lists.
@@ -441,6 +451,27 @@ public abstract class BridgeCollections {
             };
         }
         protected Object readResolve() { return EMPTY_STRINGLIST; }
+    }
+
+    static class EmptyModuleList extends EmptyBridgeList<Module> implements ModuleList {
+        private static final long serialVersionUID = 0L;
+        public Module getModule(int index) {
+            throw new IndexOutOfBoundsException("Index: "+index);
+        }
+
+        public ModuleIterator moduleIterator() {
+            return new UnmodifiableModuleIterator(null) {
+                @Override
+                public boolean hasNext() { return false; }
+                @Override
+                public boolean hasPrevious() { return false; }
+                @Override
+                public Module nextModule() { throw new NoSuchElementException(); }
+                @Override
+                public Module previousModule() { throw new NoSuchElementException(); }
+            };
+        }
+        protected Object readResolve() { return EMPTY_MODULELIST; }
     }
 
 }
