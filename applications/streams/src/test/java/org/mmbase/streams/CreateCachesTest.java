@@ -50,6 +50,7 @@ public class CreateCachesTest {
             map.put("key",       DATATYPE_STRING);
             map.put("format",    DATATYPE_INTEGER);
             map.put("codec",     DATATYPE_INTEGER);
+            map.put("state",     DATATYPE_INTEGER);
             map.put("mediafragment",     DATATYPE_NODE);
             map.put("mediaprovider",     DATATYPE_NODE);
             cloudContext.addNodeManager("dummy", map);
@@ -113,7 +114,7 @@ public class CreateCachesTest {
         CreateCachesProcessor.Job job = proc.createCaches(cloud, newSource.getNumber());
         newSource.commit();
 
-        Thread.sleep(1000);
+        job.waitUntilReady();
 
         // 2 nodes should have been created
         assertEquals("" + cloudContext.getNodes(), nodeCount + 2, cloudContext.getNodes().size());
