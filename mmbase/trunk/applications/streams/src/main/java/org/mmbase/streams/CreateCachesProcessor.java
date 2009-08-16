@@ -60,9 +60,8 @@ public class CreateCachesProcessor implements CommitProcessor {
     }
 
     /**
-     * @todo Should not be static
      */
-    private static Map<String, JobDefinition> list = Collections.synchronizedMap(new LinkedHashMap<String, JobDefinition>());
+    protected Map<String, JobDefinition> list = Collections.synchronizedMap(new LinkedHashMap<String, JobDefinition>());
 
 
     private static int transSeq = 0;
@@ -83,7 +82,7 @@ public class CreateCachesProcessor implements CommitProcessor {
     }
 
     private String configFile = "streams/createcaches.xml";
-    private final ResourceWatcher watcher = new ResourceWatcher() {
+    protected final ResourceWatcher watcher = new ResourceWatcher() {
             @Override
             public void onChange(String resource) {
                 try {
@@ -179,9 +178,13 @@ public class CreateCachesProcessor implements CommitProcessor {
         watcher.onChange();
         watcher.start();
     }
-    {
+    public CreateCachesProcessor() {
         initWatcher();
     }
+    CreateCachesProcessor(final String configFile) {
+        setConfigFile(configFile);
+    }
+
 
     public void setConfigFile(final String configFile) {
         LOG.info("Addding " + configFile);
@@ -319,12 +322,13 @@ public class CreateCachesProcessor implements CommitProcessor {
 
     /**
      */
-    void createCaches(final Cloud ntCloud, final int node) {
+    Job createCaches(final Cloud ntCloud, final int node) {
         if (ntCloud.hasNode(node)) {
             final ChainedLogger logger = new ChainedLogger(LOG);
             final Node ntNode = ntCloud.getNode(node);
             ntNode.getStringValue("title"); // This triggers RelatedField$Creator to create a
-            LOG.info("Triggering caches for " + list + " Mediaframent " + ntNode.getNodeValue("mediafragment").getNumber());
+            Node mediafragment = ntNode.getNodeValue("mediafragment");
+            LOG.info("Triggering caches for " + list + " Mediaframent " + (mediafragment != null ? mediafragment.getNumber() : "NULL"));
 
             final Job thisJob = createJob(ntNode, logger);
             if (thisJob != null) {
@@ -345,8 +349,9 @@ public class CreateCachesProcessor implements CommitProcessor {
                         }
                     });
             }
+            return thisJob;
         } else {
-            LOG.warn("Node " + node  + " is not real.");
+            throw new IllegalStateException("There is no node " + node  + " in " + ntCloud);
         }
     }
 
@@ -438,7 +443,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                 dest.setIntValue("state",  State.REQUEST.getValue());
                 dest.commit();
             }
-            LOG.info("Created " + this + " " + definition.transcoder.getClass().getName(), new Exception());
+            LOG.info("Created " + this + " " + definition.transcoder.getClass().getName());
 
         }
         public JobDefinition getJobDefinition() {
@@ -702,16 +707,18 @@ public class CreateCachesProcessor implements CommitProcessor {
             String ct = node.getNodeManager().getProperty("org.mmbase.streams.cachestype");
             if (ct != null) {
                 for (String cacheManager : new String[] {"streamsourcescaches", "videostreamsourcescaches", "audiostreamsourcescaches"}) {
-                    final NodeManager caches = node.getCloud().getNodeManager(cacheManager);
-                    NodeQuery q = caches.createQuery();
-                    Queries.addConstraint(q, Queries.createConstraint(q, "id",  FieldCompareConstraint.EQUAL, node));
-                    Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
+                    if (node.getCloud().hasNodeManager(cacheManager)) { // may not be the case during junit tests e.g.
+                        final NodeManager caches = node.getCloud().getNodeManager(cacheManager);
+                        NodeQuery q = caches.createQuery();
+                        Queries.addConstraint(q, Queries.createConstraint(q, "id",  FieldCompareConstraint.EQUAL, node));
+                        Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
 
-                    LOG.debug("Executing " + q.toSql());
-                    NodeList nodes = caches.getList(q);
-                    if (nodes.size() > 0) {
-                        logger.service("Found existing node for " + key + "(" + node.getNumber() + "): " + nodes.getNode(0).getNumber());
-                        return nodes.getNode(0);
+                        LOG.debug("Executing " + q.toSql());
+                        NodeList nodes = caches.getList(q);
+                        if (nodes.size() > 0) {
+                            logger.service("Found existing node for " + key + "(" + node.getNumber() + "): " + nodes.getNode(0).getNumber());
+                            return nodes.getNode(0);
+                        }
                     }
                 }
 
@@ -723,7 +730,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                 logger.service("Created new node for " + key + "(" + node.getNumber() + "): " + newNode.getNumber());
                 return newNode;
             } else {
-                return null;
+                throw new IllegalStateException("No property 'org.mmbase.streams.cachestype' in " + node.getNodeManager());
             }
         }
 
