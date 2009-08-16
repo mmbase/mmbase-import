@@ -31,7 +31,7 @@ import org.mmbase.util.functions.*;
 
 public class DummyCloud extends AbstractCloud {
 
-    private final DummyCloudContext cloudContext;
+    final DummyCloudContext cloudContext;
 
     DummyCloud(String n, DummyCloudContext cc, UserContext uc) {
         super(n, uc);
