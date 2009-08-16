@@ -83,8 +83,8 @@ public class DummyCloudContext implements CloudContext {
 
 
 
-    final Map<Integer, NodeDescription>  nodes                 = new ConcurrentHashMap<Integer, NodeDescription>();
-    final Map<String,  NodeManagerDescription> nodeManagers    = new ConcurrentHashMap<String, NodeManagerDescription>();
+    final Map<Integer, NodeDescription>  nodes                 = Collections.synchronizedMap(new LinkedHashMap<Integer, NodeDescription>());
+    final Map<String,  NodeManagerDescription> nodeManagers    = Collections.synchronizedMap(new LinkedHashMap<String, NodeManagerDescription>());
 
 
     public DummyCloudContext() {
