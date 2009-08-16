@@ -94,6 +94,11 @@ public class CoreField extends AbstractField<Object> implements Field, Storable 
         return new AbstractNodeManager(null) {
 
             @Override
+            public Cloud getCloud() {
+                return org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
+            }
+
+            @Override
             public String getName() {
                 return CoreField.this.parent.getTableName();
             }
