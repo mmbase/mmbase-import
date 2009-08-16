@@ -112,29 +112,11 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
     protected SortedSet<Integer> searchPositions = new TreeSet<Integer>();
     protected SortedSet<Integer> inputPositions  = new TreeSet<Integer>();
 
-    /**
-     */
-    public AbstractBuilderReader(InputSource source) {
+    protected  AbstractBuilderReader(InputSource source) {
         super(source, true, true, AbstractBuilderReader.class);
-        if (getRootElement().getTagName().equals("builder")) {
-            resolveInheritance();
-        }
     }
-
-    /**
-     */
-    public AbstractBuilderReader(Document doc) {
-        this(doc, Integer.MAX_VALUE);
-    }
-    /**
-     */
-    protected AbstractBuilderReader(Document doc, int maxVersion) {
+    protected AbstractBuilderReader(Document doc) {
         super(doc);
-        if (this.getVersion() <= maxVersion) {
-            if (getRootElement().getTagName().equals("builder")) {
-                resolveInheritance();
-            }
-        }
     }
 
     /**
