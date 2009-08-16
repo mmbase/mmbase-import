@@ -76,6 +76,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     BasicNode(BasicCloud cloud) {
         this.cloud = cloud;
         account = cloud.getAccount();
+        assert this.cloud != null;
     }
     /**
      * Instantiates a node, linking it to a specified node manager.
