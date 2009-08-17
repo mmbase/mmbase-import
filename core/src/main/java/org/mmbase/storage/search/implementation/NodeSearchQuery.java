@@ -31,8 +31,8 @@ import org.mmbase.storage.search.*;
  * <ul>
  * <li>{@link #addStep(MMObjectBuilder) addStep()}
  * <li>{@link #addRelationStep(InsRel,MMObjectBuilder) addRelationStep()}
- * <li>{@link #addField(Step,CoreField) addField()}
- * <li>{@link #addAggregatedField(Step,Field,int) addAggregatedField()}
+ * <li>{@link #addField(Step, Field) addField()}
+ * <li>{@link #addAggregatedField(Step, Field,int) addAggregatedField()}
  * </ul>
  *
  * @author  Rob van Maris
