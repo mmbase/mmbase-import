@@ -38,6 +38,7 @@ public class FileServlet extends BridgeServlet {
 
     private static File files = null;
     private static final UrlEscaper URL = new UrlEscaper();
+    private static final String SESSION_EXTENSION  = ".SESSION";
 
     private Pattern ignore = Pattern.compile("");
 
@@ -110,9 +111,45 @@ public class FileServlet extends BridgeServlet {
         }
     }
 
+    protected static File getSessionFile(File f) {
+        if (f.getName().endsWith(SESSION_EXTENSION)) return f;
+        return new File(f.getParentFile(), f.getName() + SESSION_EXTENSION);
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public static void protectFile(HttpServletRequest req, File f) throws IOException {
+        File sessionFile = getSessionFile(f);
+        Writer w = new FileWriter(sessionFile);
+        w.write(req.getSession(true).getId());
+        w.close();
+    }
+
+
+    /**
+     * Returns whether the given file can be served out for the given request. You can use {@link
+     * #protectFile} to make the file only accessible to the current http session.
+     */
     protected boolean canRead(HttpServletRequest req, File f) {
+        if (! f.canRead()) return false;
+
         // something with mmbase security ?
-        return f.canRead();
+        File sessionFile = getSessionFile(f);
+        if (sessionFile.exists()) {
+            if (! sessionFile.canRead()) return true;
+            try {
+                BufferedReader r = new BufferedReader(new FileReader(sessionFile));
+                String sessionId = r.readLine();
+                r.close();
+                return sessionId.equals(req.getSession(true).getId());
+            } catch (IOException ioe) {
+                log.warn(ioe);
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 
     protected boolean ignores(String pi) {
