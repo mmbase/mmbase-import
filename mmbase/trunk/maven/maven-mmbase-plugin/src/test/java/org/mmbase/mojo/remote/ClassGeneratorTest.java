@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: AbstractClassGenerator.java 37080 2009-07-22 07:32:08Z michiel $
+ * @version $Id$
  */
 public class ClassGeneratorTest {
 
@@ -50,6 +50,10 @@ public class ClassGeneratorTest {
         Method m = A.class.getMethod("list");
         proxy.appendMethod(m);
         String begin = "public java.util.List<? extends java.lang.String>";
+        // Gave it up, for some reason the proxy generator want to generate List<?> and it seems that if you fix that
+        // RMMCI will give many more problems.
+        // For now simply no such return types are used in the bridge.
+
         //assertEquals(begin, proxy.buffer.toString().trim().substring(0, begin.length()));
     }
 
