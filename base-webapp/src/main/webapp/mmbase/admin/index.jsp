@@ -61,7 +61,9 @@
         <mm:function id="blockObject" set="components" name="block" referids="component,block" write="false" />
         <body>
           <div id="header">
-            <div id="logo"><a href="."><mm:link page="/mmbase/style/logo_trans.png"><img src="${_}" alt="MMBase" width="40" height="50" /></mm:link></a></div>
+            <div id="logo">
+              <a href="${mm:link('/mmbase')}"><mm:link page="/mmbase/style/logo_trans.png"><img src="${_}" alt="MMBase" width="40" height="50" /></mm:link></a>
+            </div>
             <div id="head">
               <h1>MMBase</h1>
               <p>
