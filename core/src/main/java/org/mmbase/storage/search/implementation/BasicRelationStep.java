@@ -50,7 +50,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
      */
     // package visibility!
     BasicRelationStep(InsRel builder, Step previous, Step next) {
-        this(builder.getTableName(), previous, next);
+        this(builder == null ? null : builder.getTableName(), previous, next);
     }
     BasicRelationStep(String builder, Step previous, Step next) {
         super(builder);
