@@ -5,6 +5,8 @@
 <mm:write referid="style" escape="none" />
 <!-- mm:timer name="search_node"-->
 <title><%=m.getString("search_node.search")%></title>
+  <meta name="MMBase-NodeType"     content="${param.node_type}" />
+  <meta name="MMBase-SessionName"     content="${config.session}" />
 </head>
 <mm:write referid="config.liststyle" vartype="string" jspvar="liststyle" >
 <mm:context id="edit">
