@@ -48,6 +48,12 @@
       <version>1.7.2</version>
       <type>war</type>
     </dependency>
+    <dependency>
+      <groupId>org.mmbase.jquery</groupId>
+      <artifactId>ajaxfileupload</artifactId>
+      <version>1.0-beta1</version>
+      <type>war</type>
+    </dependency>
   </dependencies>
 
 </project>

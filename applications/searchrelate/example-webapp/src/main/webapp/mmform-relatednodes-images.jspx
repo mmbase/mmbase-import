@@ -12,7 +12,6 @@
       expires="0"
       language="nl">
     <!--
-
     xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
 
 
@@ -27,12 +26,13 @@
         </mm:link>
       </head>
       <body>
-        <h1>Search and Relate examples/tests</h1>
+        <h1>Search and Relate examples/tests. Images.</h1>
         <!--
         <script type="text/javascript" src="test.js" />
         -->
         <mm:form
             name="testform123">
+
 
           <mm:import externid="cancel" />
           <mm:present referid="cancel">
@@ -41,22 +41,23 @@
             <mm:refresh />
           </mm:present>
 
-
           <mm:node number="default.mags">
             <h2>1</h2>
             <h3><mm:field name="title" /></h3>
 
-            <mm-sr:relatednodes
-                idvar="id"
-                type="news"
-                role="posrel"
-                unlink="true"
-                delete="true"
-                fields="number,title"
-                sortable="true"
-                >
-              <h4>${id}</h4>
-            </mm-sr:relatednodes>
+            <mm:relatednodes type="news" max="1">
+
+              <mm-sr:relatednodes
+                  idvar="id"
+                  type="images"
+                  role="posrel"
+                  unlink="true"
+                  delete="true"
+                  sortable="true"
+                  >
+                <h4>${id}</h4>
+              </mm-sr:relatednodes>
+            </mm:relatednodes>
 
           </mm:node>
 

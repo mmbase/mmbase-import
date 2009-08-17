@@ -26,7 +26,13 @@
           </li>
           <li>
             <mm:link page="mmform-relatednodes.jspx">
-              <a href="${_}">mm-sr:relatednodes In an mm:form</a>
+              <a href="${_}">mm-sr:relatednodes in an mm:form</a>
+            </mm:link>
+          </li>
+
+          <li>
+            <mm:link page="mmform-relatednodes-images.jspx">
+              <a href="${_}">mm-sr:relatednodes in an mm:form with image uploads</a>
             </mm:link>
           </li>
         </ul>

@@ -8,7 +8,6 @@
   For 'rapid development' of used overlays, this can come in handy.
   -->
 
-  <!--
   <Set name="baseResource">
     <New class="org.mortbay.resource.ResourceCollection">
       <Arg>
@@ -16,13 +15,13 @@
           <Item>src/main/webapp</Item>
           <Item>../src/main/webapp</Item>
           <Item>../target/war/work/org.mmbase.jquery/jquery-ui</Item>
+          <Item>../target/war/work/org.mmbase.jquery/ajaxfileupload</Item>
           <Item>../src/main/examples</Item>
           <Item>../../../base-webapp/src/main/webapp</Item>
         </Array>
       </Arg>
     </New>
   </Set>
-  -->
   <!--
 
       <Item><SystemProperty name="jetty.home" default="."/>/webapps/foo</Item>
@@ -51,7 +50,7 @@
     <Arg>
       <New class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <Set name="driverClass">org.hsqldb.jdbcDriver</Set>
-        <Set name="jdbcUrl">jdbc:hsqldb:file:data/searchrelate</Set>
+        <Set name="jdbcUrl"><SystemProperty name="jdbcUrl" default="jdbc:hsqldb:file:data/searchrelate" /></Set>
         <Set name="user">sa</Set>
         <Set name="password"></Set>
       </New>
