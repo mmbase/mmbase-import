@@ -10,16 +10,23 @@ See http://www.MMBase.org/license
 
 package org.mmbase.datatypes;
 
+import org.mmbase.datatypes.util.xml.*;
 import java.util.Locale;
 import org.mmbase.bridge.Field;
 import org.mmbase.util.LocalizedString;
+import org.mmbase.util.xml.DocumentReader;
+import org.mmbase.util.xml.XMLWriter;
+
+import org.xml.sax.InputSource;
+import org.w3c.dom.*;
 import junit.framework.*;
 
 /**
- * Test cases for DataTypes which can be done stand alone, with usage of an actually running MMBase.
+ * Test cases for DataTypes which can be done stand alone, without usage of an actually running MMBase.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
+ * @version $Id$
  */
 public class DataTypesTest extends TestCase {
 
@@ -186,6 +193,67 @@ public class DataTypesTest extends TestCase {
 
     public void testGetProcessor() {
         // TODO
+    }
+
+    protected boolean equals(String s1, String s2) {
+        return s1 == null ? s2 == null : s1.equals(s2);
+    }
+    protected boolean xmlEquivalent(Node el1, Node el2) {
+        if (! equals(el1.getNodeName(), el2.getNodeName())) {
+            return false;
+        }
+        NodeList nl1 = el1.getChildNodes();
+        NodeList nl2 = el2.getChildNodes();
+        if (nl1.getLength() != nl2.getLength()) return false;
+        for (int i = 0 ; i < nl1.getLength(); i++) {
+            Node child1 = nl1.item(i);
+            Node child2 = nl2.item(i);
+            if (! xmlEquivalent(child1, child2)) return false;
+        }
+        return true;
+    }
+
+    protected void testXml(String xml, boolean mustBeEqual) throws Exception {
+        DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(xml)), true, DataTypeReader.class);
+        DataType dt = DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), null, null).dataType.clone();
+        Element toXml = dt.toXml();
+        boolean equiv = xmlEquivalent(reader.getDocument().getDocumentElement(), toXml);;
+
+        if (mustBeEqual) {
+            assertTrue("" + xml + " != " + XMLWriter.write(toXml), equiv);
+        } else {
+            assertFalse("" + xml + " == " + XMLWriter.write(toXml), equiv);
+        }
+        if (equiv) {
+            System.out.println("" + xml + " " + XMLWriter.write(toXml));
+        }
+    }
+
+
+    public void testXml1() throws Exception {
+        testXml("<datatype base='string' />", true);
+    }
+    public void testXml2() throws Exception {
+        testXml("<datatype base='string'><name>foo</name></datatype>", true);
+    }
+    public void testXml3() throws Exception {
+        testXml("<datatype base='string'><description>bar</description></datatype>", true);
+    }
+
+    public void testXml4() throws Exception {
+        testXml("<datatype base='string'><description>bar</description><enumeration><entry value='a' /></enumeration></datatype>", true);
+    }
+
+    public void testXml5() throws Exception {
+        testXml("<datatype base='string'><description>bar</description><default value='bar' /><unique value='true' /></datatype>", true);
+    }
+
+    public void testXml6() throws Exception {
+        testXml("<datatype base='string'><description>bar</description><default value='bar' /><unique value='true' /><required value='true' /></datatype>", true);
+    }
+
+    public void testXml7() throws Exception {
+        testXml("<datatype base='string'><description>bar</description><default value='bar' /><required value='true' /><unique value='true' /></datatype>", false);
     }
 
 
