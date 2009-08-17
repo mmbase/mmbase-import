@@ -18,8 +18,8 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * Abstract implementation of a ImageConverter. Override either {@link convertImage(byte[], String,
- * List)} or {@link convertImage(InputStream, String, OutputStream, List)}.
+ * Abstract implementation of a ImageConverter. Override either {@link #convertImage(byte[], String,
+ * List)} or {@link #convertImage(InputStream, String, OutputStream, List)}.
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
