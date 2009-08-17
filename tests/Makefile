@@ -1,12 +1,12 @@
 
-export JAVA_HOME=/home/nightly/jdk
+#export JAVA_HOME=/home/nightly/jdk
 
-mvn=/home/nightly/maven2/bin/mvn
-#mvn=mvn
+#mvn=/home/nightly/maven2/bin/mvn
+mvn=mvn
 ant=ant -quiet -listener org.apache.tools.ant.listener.Log4jListener -lib target/dependency:. -Dnoconnection=true
 #ant=ant -lib lib:. -Dnoconnection=true
 
-.PHONY: all bridge rmmci dbsq util datatypes clustering convert typerel richtext cloudcontext transactions releasestrategies
+.PHONY: all bridge rmmci dbsq util datatypes clustering convert typerel richtext cloudcontext transactions releasestrategy
 
 all: compile dependencies
 	$(ant) run.all | tee work/all.log
@@ -57,8 +57,8 @@ typerel: dependencies
 	$(ant) run.typerel | tee work/typerel.log
 
 #ok
-releasestrategies: dependencies
-	$(ant) run.releasestrategies | tee work/releastrategies.log
+releasestrategy: dependencies
+	$(ant) run.releasestrategy | tee work/releastrategy.log
 
 # not yet checked in
 transactions:
