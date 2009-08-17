@@ -352,11 +352,40 @@ List.prototype.getListParameters = function() {
     return params;
 }
 
+
+
+List.prototype.upload = function(fileid) {
+    var self = this;
+    $.ajaxFileUpload ({
+            url: "${mm:link('/mmbase/searchrelate/upload.jspx')}" + "?id=" + self.id + "&n=" + $("#" + fileid).attr("name"),
+            secureuri: false,
+            fileElementId: fileid,
+            dataType: 'xml',
+            success: function (data, status) {
+                if(typeof(data.error) != 'undefined') {
+                    if(data.error != '') {
+                        alert(data.error);
+                    } else {
+                        alert(data.msg);
+                    }
+                }
+            },
+            error: function (data, status, e) {
+                alert(e);
+            }
+        }
+        )
+
+    return false;
+
+}
+
 /**
  * @param stale Number of millisecond the content may be aut of date. Defaults to 5 s. But on unload it is set to 0.
  */
 List.prototype.commit = function(stale, leavePage) {
     var result;
+    var self = this;
     if(this.needsCommit()) {
         if (this.valid) {
             var now = new Date();
@@ -373,7 +402,13 @@ List.prototype.commit = function(stale, leavePage) {
                     if (this.checked || this.type == 'text' || this.type == 'hidden' || this.type == 'password') {
                         params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
                     }
+                    if (this.type == 'file') {
+                        if ($(this).val().length > 0) {
+                            self.upload(this.id);
+                        }
+                    }
                 });
+
                 this.find(null, "option").each(function() {
                     if (this.selected) {
                         params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
@@ -382,6 +417,8 @@ List.prototype.commit = function(stale, leavePage) {
                 this.find(null, "textarea").each(function() {
                     params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
                 });
+
+
 
 
                 var self = this;

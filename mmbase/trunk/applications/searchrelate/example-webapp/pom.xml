@@ -61,6 +61,11 @@
   <dependencies>
     <dependency>
       <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${mmbase.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
       <artifactId>base-webapp</artifactId>
       <version>${base.version}</version>
       <type>war</type>
