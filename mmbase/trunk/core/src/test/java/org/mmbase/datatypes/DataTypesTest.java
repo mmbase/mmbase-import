@@ -11,8 +11,9 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes;
 
 import org.mmbase.datatypes.util.xml.*;
-import java.util.Locale;
+import java.util.*;
 import org.mmbase.bridge.Field;
+import org.mmbase.bridge.dummy.*;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.xml.XMLWriter;
@@ -50,6 +51,11 @@ public class DataTypesTest  {
 
     private StringDataType getStringClone() {
         return getString().clone("clone");
+    }
+
+    @Test
+    public void testSetup(){
+        assertEquals(new Locale("dk"), LocalizedString.getDefault());
     }
 
     @Test
@@ -272,8 +278,28 @@ public class DataTypesTest  {
 
     public void testXml7() throws Exception {
         //FAILS
-        // testXml("<datatype base='string'><description>bar</description><default value='bar' /><required value='true' /><unique value='true' /></datatype>", false);
+        testXml("<datatype base='string'><description>bar</description><default value='bar' /><required value='true' /><unique value='true' /></datatype>", false);
     }
+
+
+    @Test
+    public void filesize() throws Exception {
+        DataType<?> dt = DataTypes.getDataType("filesize");
+        DummyCloudContext cc = new DummyCloudContext();
+        Map<String, DataType> map = new HashMap<String, DataType>();
+        map.put("filesize", dt);
+        cc.addNodeManager("testfilesize", map);
+
+        org.mmbase.bridge.Node n = cc.getCloud("mmbase").getNodeManager("testfilesize").createNode();
+        n.setIntValue("filesize", 100);
+        n.commit();
+
+        assertEquals(100, n.getIntValue("filesize"));
+        assertEquals("100 B", n.getStringValue("filesize"));
+
+    }
+
+
 
 
 
