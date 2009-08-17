@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  * <p>
  * The constructor creates the query with all persistent fields belonging to
  * the specified nodetype excluding byte[] type fields.
- * Use {@link #getField(CoreField) getField()} to retrieve each of these fields.
+ * Use {@link #getField(Field) getField()} to retrieve each of these fields.
  * <p>
  * Once an instance is constructed, it is not possible to add more fields/steps.
  * Consequently calling one of these methods always results in an
@@ -32,7 +32,7 @@ import org.mmbase.storage.search.*;
  * <li>{@link #addStep(MMObjectBuilder) addStep()}
  * <li>{@link #addRelationStep(InsRel,MMObjectBuilder) addRelationStep()}
  * <li>{@link #addField(Step,CoreField) addField()}
- * <li>{@link #addAggregatedField(Step,CoreField,int) addAggregatedField()}
+ * <li>{@link #addAggregatedField(Step,Field,int) addAggregatedField()}
  * </ul>
  *
  * @author  Rob van Maris
