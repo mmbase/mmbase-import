@@ -157,7 +157,7 @@ public class LocaleCollator  extends Collator implements Serializable {
 
     /**
      * Wether a string matches this Collator. It's the same string as in
-     * {@see #getInstance(String)}. Unspecified values never make the result false.
+     * {@link #getInstance(String)}. Unspecified values never make the result false.
      */
     public boolean matches(String s) {
         String[] elements = s.split(":", -1);
