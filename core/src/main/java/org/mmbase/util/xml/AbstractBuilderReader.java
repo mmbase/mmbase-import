@@ -29,7 +29,7 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Abstraction of {@link #BuilderReader} with no dependencies on core classes.
+ * Abstraction of {@link BuilderReader} with no dependencies on core classes.
  *
  * @since MMBase 1.9.2
  * @author Case Roole
@@ -126,7 +126,6 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
      * @param doc The receiving builder xml document. This one will be changed.
      * @param overrides The builder xml document that provided overriding information. This one will only
      * be read.
-     * @param override  If true, the 'overrides' takes precedence, if false, then 'doc'.
      * @since MMBase-1.9
      */
     protected static void resolveInheritanceByXML(Document doc, Document overrides) {
