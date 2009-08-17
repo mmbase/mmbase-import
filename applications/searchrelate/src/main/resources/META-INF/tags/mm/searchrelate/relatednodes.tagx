@@ -186,6 +186,7 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
   <mm:import from="request" id="javascript_loaded" externid="mm_list_javascript" />
   <c:if test="${(empty javascript_loaded and empty load) or load}">
+    <mm:include page="/mmbase/jquery/ajaxfileupload.jspx" />
     <c:choose>
       <c:when test="${sortable}">
         <mm:include page="/mmbase/jquery/jquery-ui.jspx" />
