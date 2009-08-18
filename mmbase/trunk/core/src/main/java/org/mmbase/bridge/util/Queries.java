@@ -1115,7 +1115,7 @@ abstract public class Queries {
      */
     public static NodeList getRelatedNodes(Node node, NodeManager otherNodeManager, String role, String direction, String relationFields, String sortOrders) {
         NodeQuery q = Queries.createRelatedNodesQuery(node, otherNodeManager, role, direction);
-        addRelationFields(q, role, relationFields, sortOrders);
+        Queries.addRelationFields(q, role, relationFields, sortOrders);
         return q.getCloud().getList(q);
     }
 
@@ -1509,6 +1509,92 @@ abstract public class Queries {
     public static Constraint createMakeEmptyConstraint(Query q) {
         StepField sf = q.createStepField(q.getSteps().get(0), "number");
         return q.createConstraint(sf, new Integer(-1));
+    }
+
+
+
+    /**
+     * Will 'reorder' the result of a query with a sort order.
+     *
+     * E.g.:
+     *
+        <pre>
+        NodeQuery q = Queries.createRelatedNodesQuery(node, cloud.getNodeManager("news"), "posrel", "destination");
+        Queries.addRelationFields(q, "posrel", "pos", "UP");
+        Queries.reorderResult(q, nodeNumbers);
+        </pre>
+     * A test-case for this in QueriesTest#reorderResult.
+     *
+     * @param q The query which defines the existing order
+     * @param desiredOrder The node numbers of the nodes in the query result of q. These are the actual nodes, not the nodes which define the order (like the posrel)
+     *
+     * @since MMBase-1.9.2
+     */
+    public static void reorderResult(NodeQuery q, List<Integer> desiredOrder) {
+        List<SortOrder> sos = q.getSortOrders();
+        if (sos == null || sos.size() == 0) throw new IllegalArgumentException("The query " + q + " is not sorted");
+        SortOrder so = sos.get(0);
+        StepField orderField = so.getField();
+        Step orderStep = orderField.getStep();
+        Step nodeStep  = q.getNodeStep();
+
+        // We require that:
+        // - The orderStep IS the node step
+        // or
+        // - The orderStep is a RelationStep and either source or destination is the node step
+
+        List<AnnotatedNode<Integer>> list = new ArrayList<AnnotatedNode<Integer>>();
+
+        NodeQuery clone = (NodeQuery) q.clone();
+        Transaction t = clone.getCloud().getTransaction(Queries.class.getName() + ".orderResults");
+
+        if (! orderStep.equals(nodeStep)) {
+            Field f = t.getNodeManager(orderStep.getTableName()).getField("number");
+            clone.addField(orderStep, f);
+        }
+
+        List<Integer> desiredOrderCopy = new ArrayList<Integer>(desiredOrder);
+
+        for (Node n : t.getList(clone)) {
+            AnnotatedNode<Integer> an = new AnnotatedNode<Integer>(n);
+            int index = desiredOrderCopy.indexOf(n.getIntValue(nodeStep.getTableName() + ".number"));
+            if (index == -1) {
+                log.warn("number not found in " + n);
+                continue;
+            }
+            desiredOrderCopy.set(index, null); // make sure it isn't found again
+            an.putAnnotation("desired", index);
+            list.add(an);
+        }
+        if (list.size() <= 1) {
+            // 0 or 1 long only, that's always correctly ordered
+            return;
+        }
+
+        //Bubble sort
+        boolean madeChanges = true;
+        while (madeChanges) {
+            madeChanges = false;
+            for (int i = 0; i < list.size() - 1; i++) {
+                AnnotatedNode<Integer> n1 = list.get(i);
+                AnnotatedNode<Integer> n2 = list.get(i + 1);
+                if (n1.getAnnotation("desired") > n2.getAnnotation("desired")) {
+                    Node n1order = n1.getNodeValue(orderStep.getTableName() + ".number");
+                    Node n2order = n2.getNodeValue(orderStep.getTableName() + ".number");
+                    Object pos1 = n1order.getValue(orderField.getFieldName());
+                    Object pos2 = n2order.getValue(orderField.getFieldName());
+                    if (! (pos1 == null ? pos2 == null : pos1.equals(pos2))) {
+                        n1order.setValue(orderField.getFieldName(), pos2);
+                        n2order.setValue(orderField.getFieldName(), pos1);
+                        list.set(i, n2);
+                        list.set(i + 1, n1);
+                        madeChanges = true;
+                    }
+                }
+            }
+        }
+        t.commit();
+
     }
 
 
