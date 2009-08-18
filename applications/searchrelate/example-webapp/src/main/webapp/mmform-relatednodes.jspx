@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
 <mm-sre:html
-    cancel="true"
     title="Basic mm:form"
     xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
