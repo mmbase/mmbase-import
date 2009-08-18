@@ -36,8 +36,8 @@
 
   <field name="length">
     <descriptions>
-      <description xml:lang="nl">Duur van dit fragment (ms)</description>
-      <description xml:lang="en">Duration of this fragment (ms)</description>
+      <description xml:lang="nl">Duur van dit fragment (in millisecondes)</description>
+      <description xml:lang="en">Duration of this fragment (in milliseconds)</description>
     </descriptions>
     <gui>
       <guiname xml:lang="nl">Lengte</guiname>
