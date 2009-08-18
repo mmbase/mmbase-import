@@ -24,6 +24,13 @@
               <a href="${_}">mm-sr:relatednodes</a>
             </mm:link>
           </li>
+
+          <li>
+            <mm:link page="relatednodes-nested.jspx">
+              <a href="${_}">mm-sr:relatednodes nested</a>
+            </mm:link>
+          </li>
+
           <li>
             <mm:link page="mmform-relatednodes.jspx">
               <a href="${_}">mm-sr:relatednodes in an mm:form</a>
@@ -38,14 +45,20 @@
 
           <li>
             <mm:link page="mmform-relatednodes-nested.jspx">
-              <a href="${_}">mm-sr:relatednodes nested</a>
+              <a href="${_}">mm-sr:relatednodes in a form and nested</a>
             </mm:link>
           </li>
         </ul>
+
+        <h1>TODO</h1>
+        <ul>
+          <li style="text-decoration: line-through;">Since <em>new</em> nodes are not yet in the query-result, they cannot be edited, and disapper on reload.</li>
+          <li style="text-decoration: line-through;">This is also valid, but inversely, for <em>deleted</em> nodes and relations. They still are in de query result.</li>
+          <li>'Sortable' is not yet saved.</li>
+          <li>Not clear what happens when you create images or so (multipart forms). Some work with ajaxupload/jquery was done, but this is now disable.</li>
+          <li>Nested mm-sr:relatednodes should work too</li>
+        </ul>
       </body>
-      <mm:form name="test123">
-        <mm:commit />
-      </mm:form>
     </mm:cloud>
 
   </mm:content>

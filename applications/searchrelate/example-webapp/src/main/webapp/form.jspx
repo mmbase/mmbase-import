@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <html
     xmlns="http://www.w3.org/1999/xhtml"
     xml:lang="nl"
@@ -16,15 +17,20 @@
       <body>
         <h1>Search and Relate examples/tests</h1>
 
-        <script type="text/javascript" src="test.js" />
-        <mm:form id="testform123">
-          <mm:node number="default.mags">
-            <mm:setfield name="title">aaa</mm:setfield>
-            <mm:commit />
+        <mm:form name="testform123">
 
-            <mm:setfield name="title">aaa</mm:setfield>
-            <mm:commit />
+          <mm:cancel />
+
+          <mm:refresh />
+
+
+          <mm:node number="default.mags">
+            <mm:relatednodes type="news" max="1">
+              <mm:setfield name="title">aaa</mm:setfield>
+            </mm:relatednodes>
           </mm:node>
+
+          <mm:commit />
         </mm:form>
 
 
