@@ -36,7 +36,7 @@
 
   <field name="length">
     <descriptions>
-      <description xml:lang="nl">Duur van dit clipje (ms)</description>
+      <description xml:lang="nl">Duur van dit fragment (ms)</description>
       <description xml:lang="en">Duration of this fragment (ms)</description>
     </descriptions>
     <gui>
