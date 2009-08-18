@@ -754,7 +754,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         {
             Element factoryXml  = getEnumerationFactory().toXml();
             if (factoryXml != null) {
-                Element enumElement = getElement(parent, "enumeration", "name,description,class,property,default,unique,required,enumeration");
+                Element enumElement = getElement(parent, "enumeration", "name,description,class,property,default,unique,required,(maxInclusive|maxExclusive),precision,scale,minLength,maxLength,length,pattern,password,enumeration");
                 if (enumElement.getChildNodes().getLength() == 0) {
                     Element imported = (Element) enumElement.getOwnerDocument().importNode(factoryXml, true);
                     org.w3c.dom.NodeList childs = imported.getChildNodes();
@@ -951,6 +951,17 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                 processor =  setProcessors == null ? null : setProcessors[processingType];
             }
             return processor == null ? getProcessor(action) : processor;
+        }
+    }
+
+    public Processor getProcessorWithoutDefault(int action, int processingType) {
+        if (processingType == -1) {
+            processingType = 0;
+        }
+        if (action == PROCESS_GET) {
+            return getProcessors == null ? null : getProcessors[processingType];
+        } else {
+            return setProcessors == null ? null : setProcessors[processingType];
         }
     }
 
