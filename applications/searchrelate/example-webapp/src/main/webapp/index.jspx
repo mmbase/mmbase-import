@@ -13,7 +13,11 @@
     <mm:cloud rank="administrator">
 
       <head>
-
+        <style>
+          .done {
+          text-decoration: line-through;
+          }
+        </style>
       </head>
       <body>
         <h1>Search and Relate examples/tests</h1>
@@ -52,11 +56,27 @@
 
         <h1>TODO</h1>
         <ul>
-          <li style="text-decoration: line-through;">Since <em>new</em> nodes are not yet in the query-result, they cannot be edited, and disapper on reload.</li>
-          <li style="text-decoration: line-through;">This is also valid, but inversely, for <em>deleted</em> nodes and relations. They still are in de query result.</li>
-          <li>'Sortable' is not yet saved.</li>
-          <li>Not clear what happens when you create images or so (multipart forms). Some work with ajaxupload/jquery was done, but this is now disable.</li>
-          <li>Nested mm-sr:relatednodes should work too</li>
+          <li class="done">Since <em>new</em> nodes are not yet in the query-result, they cannot be edited, and disapper on reload.</li>
+          <li class="done">This is also valid, but inversely, for <em>deleted</em> nodes and relations. They still are in de query result.</li>
+          <li>'Sortable' is not yet saved.
+          <ul>
+            <li>In transaction</li>
+            <li class="done">Transactionless</li>
+          </ul>
+          </li>
+          <li>Not clear what happens when you create images or so (multipart forms). Some work with ajaxupload/jquery was done, but this is now disabled.
+          <ul>
+            <li class="done">Form itself should upload the images</li>
+            <li>Use ajax-upload to conserve upload during transaction</li>
+            <li>Generate thumbnails for images which are not yet submitted</li>
+          </ul>
+          </li>
+          <li>Nested mm-sr:relatednodes should work too
+          <ul>
+            <li>In transaction</li>
+            <li>Transactionless</li>
+          </ul>
+          </li>
         </ul>
       </body>
     </mm:cloud>
