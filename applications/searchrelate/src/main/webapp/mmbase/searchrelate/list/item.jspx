@@ -16,7 +16,7 @@
   <jsp:directive.include file="parameters.jspf" />
 
   <mm:fieldlist
-      id="${requestScope['org.mmbase.cloud'].name}_node_${mm:escape('identifier', _node)}"
+      id="${mm:escape('identifier', requestScope['org.mmbase.cloud'].name)}_node_${mm:escape('identifier', _node)}"
       type="${empty parameter.fieldlistType ? (empty parameters.fields ? 'list' : '') : parameters.fieldlistType}"
       fields="${parameters.fields}"
       varStatus="status">
