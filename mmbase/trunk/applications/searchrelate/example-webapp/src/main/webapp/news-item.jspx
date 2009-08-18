@@ -3,6 +3,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
   <mm:field name="number" />
@@ -13,5 +14,14 @@
   </mm:field>
   <mm-sr:unlink  />
   <mm-sr:delete  />
-  <mm-sr:relatednodes type="people"  role="related" fields="number,firstname" search="false" />
+
+
+  <mm-srt:relatednodes
+      idvar="pid"
+      type="people"
+      role="related"
+      fields="number,firstname" search="false">
+    <h4>${pid}</h4>
+  </mm-srt:relatednodes>
+
 </span>
