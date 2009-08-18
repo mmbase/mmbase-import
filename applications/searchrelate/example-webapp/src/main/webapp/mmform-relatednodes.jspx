@@ -28,4 +28,7 @@
     the database, but in the mean time the data keep existing. <em>Even if you leave the
     page</em>.</p>
   </mm-sre:form>
+
+  <hr />
+  <mm:escape escape="links">$URL$</mm:escape>
 </mm-sre:html>
