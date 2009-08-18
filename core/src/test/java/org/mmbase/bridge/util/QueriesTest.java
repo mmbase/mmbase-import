@@ -17,6 +17,7 @@ import org.mmbase.storage.search.*;
 import java.util.*;
 import org.junit.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 
 /**
@@ -87,4 +88,42 @@ public class QueriesTest  {
         Queries.createConstraint(q, "number", Queries.getOperator("LT"), new Integer(1));
     }
 
+
+    @Test
+    public void reorderResults() {
+        CloudContext c = null;
+        try {
+            c =  ContextProvider.getCloudContext("rmi://127.0.0.1:1111/remotecontext");
+        } catch (Exception e) {
+            System.err.println("Skipping while " + e.getMessage());
+            assumeNoException(e);
+        }
+        Cloud cloud = c.getCloud("mmbase", "class", null);
+        Node node = cloud.getNode("default.mags");
+
+        NodeQuery q = Queries.createRelatedNodesQuery(node, cloud.getNodeManager("news"), "posrel", "destination");
+        Queries.addRelationFields(q, "posrel", "pos", "UP");
+
+        List<Integer> nodeNumbers = new ArrayList<Integer>();
+
+        for (Node n : q.getNodeManager().getList(q)) {
+            nodeNumbers.add(n.getNumber());
+        }
+
+        assumeTrue(nodeNumbers.size() > 1);
+
+        Collections.reverse(nodeNumbers);
+
+        Queries.reorderResult(q, nodeNumbers);
+
+
+        List<Integer> nodeNumbers2 = new ArrayList<Integer>();
+        for (Node n : q.getNodeManager().getList(q)) {
+            nodeNumbers2.add(n.getNumber());
+        }
+
+        assertEquals(nodeNumbers, nodeNumbers2);
+
+
+    }
 }
