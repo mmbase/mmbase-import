@@ -685,7 +685,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             setSize(fieldName, fi.getSize());
         } else if (fieldValue instanceof SerializableInputStream) {
             SerializableInputStream si = (SerializableInputStream) fieldValue;
-            log.info("Setting '" + fieldName + "' to " + si + " " + si.getSize());
+            log.debug("Setting '" + fieldName + "' to " + si + " " + si.getSize());
             setSize(fieldName, si.getSize());
         }
 
