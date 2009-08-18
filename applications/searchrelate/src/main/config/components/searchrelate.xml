@@ -36,4 +36,17 @@
     </body>
   </block>
 
+  <block name="searchrelate-taglib"
+         classification="mmbase.documentation"
+         mimetype="text/html">
+    <title xml:lang="nl">mm-sr:documentatie</title>
+    <title xml:lang="en">mm-sr:documentation</title>
+    <body>
+      <class name="org.mmbase.framework.IFrameRenderer">
+        <param name="url">http://www.mmbase.org/tags/mm/searchrelate/</param>
+      </class>
+    </body>
+  </block>
+
+
 </component>
