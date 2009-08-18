@@ -72,11 +72,9 @@ function List(d) {
         //console.log("Searchable" + $(this.div).find("div.mm_related"));
         $(this.div).find("div.mm_related").bind("mmsrRelate", function (e, relate, relater) {
                 self.relate(e, relate, relater);
-                console.log(relate)
-                console.log(relater)
                 relater.repository.searcher.dec();
                 $(relate).addClass("removed");
-                relater.repository.resetTrClasses();
+                relater.repository.searcher.resetTrClasses();
             });
     }
 
@@ -529,7 +527,6 @@ List.prototype.saveOrder = function(event, ui) {
 List.prototype.relate = function(event, relate, relater) {
     var list = this;
     var params = this.getListParameters();
-    console.log(params);
     var url = "${mm:link('/mmbase/searchrelate/list/relate.jspx')}";
     params.destination = relater.getNumber(relate);
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
