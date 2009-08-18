@@ -79,6 +79,7 @@
         <configuration>
           <descriptors>
             <descriptor>assembly/client.xml</descriptor>
+            <descriptor>assembly/client-skinny.xml</descriptor>
             <descriptor>examples-assembly.xml</descriptor>
           </descriptors>
         </configuration>
