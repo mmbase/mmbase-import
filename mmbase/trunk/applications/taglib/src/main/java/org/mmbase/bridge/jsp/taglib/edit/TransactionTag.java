@@ -84,7 +84,11 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
         if (name == null) {
             throw new JspTagException("Did not find transaction in context, and no name for transaction supplied");
         }
-        transaction = super.getCloudVar().getTransaction(n);
+        if (transaction == null) {
+            transaction = super.getCloudVar().getTransaction(n);
+        } else {
+            transaction = transaction.getNonTransactionalCloud().getTransaction(n);
+        }
 
         pageContext.setAttribute(CloudTag.KEY, transaction, CloudTag. SCOPE);
         pageContext.setAttribute(TransactionTag.KEY, transaction, TransactionTag. SCOPE);
