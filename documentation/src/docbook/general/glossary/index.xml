@@ -540,8 +540,8 @@
         <acronym>CVS</acronym>
 
         <glossdef>
-          <para>Open Source version system, which is used to administrate
-          MMBase source codes. Typical for CVS is that it is possible to use
+          <para>Open Source version system, which was until april 2009 used to administrate
+          MMBase source codes. Now it is subversion. Typical for CVS is that it is possible to use
           it without acquiring locks on files (which is the way it is used for
           MMBase). This means that files can be edited simultaneously by
           different people, but also that the risk for 'conflicts' arises (if
@@ -553,6 +553,23 @@
           <glossseealso otherterm="vote"></glossseealso>
 
           <glossseealso otherterm="module"></glossseealso>
+          <glossseealso otherterm="subversion"></glossseealso>
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="subversion">
+        <glossterm>Subversion</glossterm>
+        <glossdef>
+          <para>Open Source version constrolsystem, which is used to administrate
+          <ulink url="https://scm.mmbase.org/mmbase/trunk">MMBase source codes</ulink>.
+          </para>
+          <para>Subversion is comparable with CVS, but it has a few advantages. First of all it
+          supports moving and copying of resources, something we did a lot when we converted the
+          build system to maven.  Also it supports adminstration of special properties like symlinks, executable bits and 'externals'.
+          </para>
+
+          <glossseealso otherterm="cvs"></glossseealso>
+          <glossseealso otherterm="maven"></glossseealso>
         </glossdef>
       </glossentry>
 
@@ -1337,6 +1354,55 @@
             or both. Or even in the database. The admin-pages provide an overview, to check how a
             certain configuration was loaded.
           </para>
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="maven">
+        <glossterm>maven</glossterm>
+        <glossdef>
+          <para>
+            Maven is a framework which can be used to compile you application from sources.
+          </para>
+          <para>
+            MMBase uses a maven 2 structure which most of the time generate 'wars' or 'war overlays'
+          </para>
+          <glossseealso otherterm="war" />
+          <glossseealso otherterm="war_overlay" />
+        </glossdef>
+      </glossentry>
+
+
+      <glossentry id="war">
+        <glossterm>WAR</glossterm>
+        <glossdef>
+          <para>
+            Web Application Archive. A web application packed into one zip file, which has a
+            structure which can be understood by Java application servers, like Tomcat, Jetty or
+            Glasfish.
+          </para>
+          <para>
+            MMBase is mainly meant to be used in  your own web application. MMBase is shipped as an example war and also as several war overlays.
+          </para>
+          <glossseealso otherterm="war_overlay" />
+
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="war_overlay">
+        <glossterm>War overlay</glossterm>
+        <glossdef>
+          <para>
+            To construct one complete web application, you an add several 'war overlays' to your own code.
+          </para>
+          <para>
+            Most MMBase 'components' are shipped as a war overlay. A 'base webapp' overlay is
+            available which assembles the most basic MMBase compoennts together with a bunch of
+            standard templates. It is a useful dependency of your own web site.
+          </para>
+          <glossseealso otherterm="war" />
+          <glossseealso otherterm="maven" />
+          <glossseealso otherterm="component" />
+
         </glossdef>
       </glossentry>
     </glosslist>
