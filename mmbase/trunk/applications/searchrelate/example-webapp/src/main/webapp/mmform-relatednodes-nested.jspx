@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<mm-sre:html
+    title="Nested"
+    xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+
+  <mm-sre:form>
+    <h2><mm:field name="title" /></h2>
+
+    <mm-sr:relatednodes
+        type="news"
+        role="posrel"
+        item="/news-item.jspx"
+        delete="true"
+        search="true"
+        max="3"
+        />
+  </mm-sre:form>
+</mm-sre:html>
