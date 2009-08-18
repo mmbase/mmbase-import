@@ -12,7 +12,7 @@
       @version $Id$
   -->
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="id" required="true" />
+  <mm:import externid="id" from="parameters" required="true" />
   <mm:import from="session" externid="${id}" id="query" required="true" />
   <mm:content expires="0" type="application/xml" language="${query.cloud.locale}">
     <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">

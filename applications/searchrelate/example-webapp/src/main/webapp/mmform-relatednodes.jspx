@@ -5,6 +5,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm-sr-t="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <mm:content
@@ -12,8 +13,6 @@
       expires="0"
       language="nl">
     <!--
-
-    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
 
 
 
@@ -32,7 +31,7 @@
         <script type="text/javascript" src="test.js" />
         -->
         <mm:form
-            name="testform123">
+            name="testform.123">
 
           <mm:import externid="cancel" />
           <mm:present referid="cancel">
@@ -47,15 +46,16 @@
             <h3><mm:field name="title" /></h3>
 
             <mm-sr:relatednodes
-                idvar="id"
+                idvar="rid"
                 type="news"
                 role="posrel"
                 unlink="true"
                 delete="true"
                 fields="number,title"
+                search="true"
                 sortable="true"
                 >
-              <h4>${id}</h4>
+              <h4>${rid}</h4>
             </mm-sr:relatednodes>
 
           </mm:node>

@@ -23,7 +23,7 @@
 
 
   <mm:link page="/mmbase/searchrelate/list/unlink.jspx" referids="_node@n">
-    <mm:param name="id">${parameters.id}</mm:param>
+    <mm:param name="rid">${parameters.rid}</mm:param>
     <a class="delete ${empty confirm or ! confirm ? '' : 'confirm'}"
        href="${_}">
       <mm-sr:button alt="-" type="unlink"  />

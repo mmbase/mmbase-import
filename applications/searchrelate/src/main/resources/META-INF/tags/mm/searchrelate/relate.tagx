@@ -186,7 +186,8 @@
           </c:otherwise>
         </c:choose>
 
-        <mm:include page="/mmbase/searchrelate/page.jspx" referids="customizedir?,relations?,fields?">
+        <mm:include page="/mmbase/searchrelate/page.jspx"
+                    referids="customizedir?,relations?,fields?">
           <c:if test="${! empty pagesize}">
             <mm:param name="pagesize" referid="pagesize" />
           </c:if>

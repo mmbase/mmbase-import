@@ -17,10 +17,8 @@
   </appender>
 
 
-
-
-  <logger name="org.mmbase.datatypes.processors.FormatQuantity" >
-    <level class="&mmlevel;" value ="debug" />
+  <logger name="org.mmbase.PAGE" >
+    <level class="&mmlevel;" value ="warn" />
   </logger>
 
   <logger name="STDERR">

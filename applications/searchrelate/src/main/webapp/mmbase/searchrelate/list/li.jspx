@@ -18,7 +18,7 @@
         <c:when test="${! empty parameters.formtag}">
           <mm:include debug="html"
                       page="${parameters.item}"
-                      referids="id">
+                      referids="rid">
             <mm:param name="source" value="${parameters.source}" />
             <mm:param name="fields" value="${parameters.fields}" />
             <mm:param name="fieldlistType" value="${parameters.fieldlistType}" />
@@ -26,11 +26,10 @@
         </c:when>
         <c:otherwise>
           <mm:import id="formtagid">node${_node}</mm:import>
-          <mm:form id="${formtagid}"
-                   name="${formtagid}">
+          <mm:form name="${formtagid}">
             <mm:include debug="html"
                         page="${parameters.item}"
-                        referids="id">
+                        referids="rid">
               <mm:param name="source" value="${parameters.source}" />
               <mm:param name="fields" value="${parameters.fields}" />
               <mm:param name="fieldlistType" value="${parameters.fieldlistType}" />
