@@ -9,7 +9,7 @@
   <field name="title">
     <descriptions>
       <description xml:lang="nl">Een beschrijvende titel voor dit fragment</description>
-      <description xml:lang="en">A descriptive title</description>
+      <description xml:lang="en">A descriptive title of this fragment</description>
     </descriptions>
     <gui>
       <guiname xml:lang="nl">Titel</guiname>
@@ -31,6 +31,10 @@
   </field>
 
   <field name="subtitle">
+    <descriptions>
+      <description xml:lang="nl">Een eventuele ondertitel</description>
+      <description xml:lang="en">A secondary title</description>
+    </descriptions>
     <gui>
       <guiname xml:lang="nl">Ondertitel</guiname>
       <guiname xml:lang="en">Subtitle</guiname>
@@ -43,8 +47,12 @@
 
 
   <field name="intro">
+    <descriptions>
+      <description xml:lang="nl">Korte inleidende beschrijving</description>
+      <description xml:lang="en">Short introductionary title</description>
+    </descriptions>
     <gui>
-      <guiname xml:lang="nl">Introduktie</guiname>
+      <guiname xml:lang="nl">Introductie</guiname>
       <guiname xml:lang="en">Introduction</guiname>
     </gui>
     <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -53,15 +61,17 @@
   </field>
 
   <field name="body">
+    <descriptions>
+      <description xml:lang="nl">Volledig beschrijving of tekst van dit item</description>
+      <description xml:lang="en">Complete description or text of this item</description>
+    </descriptions>
     <gui>
       <guiname xml:lang="nl">Tekst</guiname>
-      <guiname xml:lang="en">Body text</guiname>
+      <guiname xml:lang="en">Text</guiname>
     </gui>
     <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <maxLength value="64000" enforce="never"/>
     </datatype>
   </field>
-
-
 
 </fieldlist>
