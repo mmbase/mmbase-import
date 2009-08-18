@@ -43,7 +43,7 @@
     <title xml:lang="en">mm-sr:documentation</title>
     <body>
       <class name="org.mmbase.framework.IFrameRenderer">
-        <param name="url">http://www.mmbase.org/tags/mm/searchrelate/</param>
+        <param name="url">http://www.mmbase.org/tags/mm/searchrelate/mm-sr/tld-summary.html</param>
       </class>
     </body>
   </block>
