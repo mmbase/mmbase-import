@@ -18,11 +18,18 @@ import static org.junit.Assert.*;
 
 
  * @author Michiel Meeuwissen
- * @version $Id: FormatQuantity.java 36903 2009-07-13 22:12:52Z michiel $
+ * @version $Id$
  * @since MMBase-1.9
  */
 
 public class FormatQuantityTest {
+
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        org.mmbase.util.LocalizedString.setDefault(new java.util.Locale("dk"));
+    }
+
 
     @Test
     public void fileSize() {
