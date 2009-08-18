@@ -22,7 +22,7 @@
     <mm:cloud method="asis"> <!-- makes sure the current cloud is not already the tranaction -->
       <mm:transaction
           name="${parameters.formtag}"
-          id="${parameters.formtag}" commitonclose="false">
+          commitonclose="false">
         <c:set value="${requestScope['org.mmbase.transaction'].nodes}" var="tn"  />
         <c:forEach items="${parameters.query.steps}" var="step">
           <mm:listnodes referid="tn" commitonclose="false">
