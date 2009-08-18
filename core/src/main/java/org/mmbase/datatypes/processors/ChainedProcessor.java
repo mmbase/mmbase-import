@@ -26,10 +26,13 @@ public class ChainedProcessor implements Processor {
 
     private final List<Processor> processors = new ArrayList<Processor>();
 
-    public ChainedProcessor add(Processor proc) {
+    public ChainedProcessor add(final Processor proc) {
         if (proc instanceof ChainedCommitProcessor) {
-            processors.addAll(((ChainedProcessor) proc).getProcessors());
+            for (Processor p : ((ChainedProcessor) proc).getProcessors()) {
+                add(p);
+            }
         } else {
+            assert ! processors.contains(proc) : toString() + " already contains " + proc;
             processors.add(proc);
         }
         return this;
