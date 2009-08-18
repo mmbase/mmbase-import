@@ -28,7 +28,7 @@
                  name="${formtagid}"
                  >
           <mm:escape escape="swallow">
-            <mm:include page="${parameters.item}" referids="id" />
+            <mm:include page="${parameters.item}" referids="rid" />
           </mm:escape>
           <c:if test="${empty parameters.formtag}">
             <mm:valid>

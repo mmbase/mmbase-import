@@ -23,7 +23,7 @@
       <mm:instanceof nodemanager="${parameters.query.nodeManager.name}">
         <c:if test="${_node.number lt 0 and _node._exists ne 'nolonger'}"> <!-- NEW and not DELETED again-->
           <mm:include page="/mmbase/searchrelate/list/li.jspx">
-            <mm:param name="id">${parameters.id}</mm:param>
+            <mm:param name="rid">${parameters.rid}</mm:param>
             <mm:param name="className">new</mm:param>
           </mm:include>
         </c:if>

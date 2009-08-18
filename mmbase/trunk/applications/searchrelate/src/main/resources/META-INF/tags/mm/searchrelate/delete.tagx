@@ -28,7 +28,7 @@
 
 
   <mm:link page="/mmbase/searchrelate/list/delete.jspx" referids="_node@n">
-    <mm:param name="id">${parameters.id}</mm:param>
+    <mm:param name="rid">${parameters.rid}</mm:param>
 
     <a class="delete ${!parameters.confirm ? '' : 'confirm'}"
        href="${_}">

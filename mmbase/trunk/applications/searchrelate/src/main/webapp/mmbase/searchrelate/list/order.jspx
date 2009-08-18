@@ -9,6 +9,6 @@
   <mm:import externid="order" required="true" />
   <jsp:directive.include file="parameters.jspf" />
   <div class="saveresult">
-    NOT YET IMPLEMENTED ${order}
+    <mm:write session="${rid}_order" value="${order}" />
   </div>
 </mm:cloud>

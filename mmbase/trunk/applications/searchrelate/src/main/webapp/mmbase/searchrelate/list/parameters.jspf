@@ -1,5 +1,5 @@
-<mm:import externid="id" required="true" />
-<mm:import id="parameters" externid="${id}_context" from="session" />
+<mm:import externid="rid" required="true" />
+<mm:import id="parameters" externid="${rid}_context" from="session" />
 <mm:write request="org.mmbase.sr.relatednodes.parameters" referid="parameters" />
 <jsp:scriptlet>org.mmbase.bridge.Query query = null;</jsp:scriptlet>
 <mm:write referid="parameters.query"  jspvar="q" vartype="org.mmbase.bridge.Query" write="false">

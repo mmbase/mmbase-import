@@ -49,6 +49,16 @@ function List(d) {
         });
 
     if (this.sortable) {
+        if (this.order != "") {
+            var o = this.order.split(",");
+            for (node in o) {
+                console.log(o[node]);
+            }
+            $(this.div).find("ol li").each(function() {
+                    console.log(this);
+                });
+
+        }
         $(this.div).find("ol").sortable({
                 update: function(event, ui) { self.saveOrder(event, ui); }
             });
@@ -60,6 +70,11 @@ function List(d) {
         //console.log("Searchable" + $(this.div).find("div.mm_related"));
         $(this.div).find("div.mm_related").bind("mmsrRelate", function (e, relate, relater) {
                 self.relate(e, relate, relater);
+                console.log(relate)
+                console.log(relater)
+                relater.repository.searcher.dec();
+                $(relate).addClass("removed");
+                relater.repository.resetTrClasses();
             });
     }
 
@@ -94,6 +109,7 @@ function List(d) {
         self.bindDelete(this);
     });
 
+    this.checkForSize();
 
     $(window).bind("beforeunload",
                    function(ev) {
@@ -279,9 +295,41 @@ List.prototype.addItem = function(res, cleanOnFocus) {
                 div.list = new List(div);
             }
         });
+
+    this.incSize();
     list.executeCallBack("create", r); // I think this may be deprecated. Custom events are nicer
     $(list.div).trigger("mmsrCreated", [r]);
 }
+
+List.prototype.incSize = function() {
+    this.cursize++;
+    this.checkForSize();
+}
+
+List.prototype.decSize = function() {
+    this.cursize--;
+    this.checkForSize();
+}
+
+List.prototype.checkForSize = function() {
+    $(this.find("listinfo")).find("input[name=cursize]").val(this.cursize);
+    var createVisible = this.cursize < this.max;
+    this.find("create", "a").each(function() {
+            if (createVisible) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    this.find("mm_related", "div").each(function() {
+            if (createVisible) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+}
+
 
 List.prototype.bindDelete = function(a) {
     a.list = this;
@@ -307,6 +355,7 @@ List.prototype.bindDelete = function(a) {
                             if (ol != null) { // seems to happen in IE sometimes?
                                 ol.removeChild(li);
                             }
+                            a.list.decSize();
                             a.list.executeCallBack("delete", li);
                         } else {
                             alert(status + " " + res);
@@ -348,7 +397,7 @@ List.prototype.status = function(message, fadeout) {
 
 List.prototype.getListParameters = function() {
     var params = {};
-    params.id          = this.id;
+    params.rid          = this.rid;
     return params;
 }
 
@@ -356,6 +405,7 @@ List.prototype.getListParameters = function() {
 
 List.prototype.upload = function(fileid) {
     var self = this;
+    /*
     $.ajaxFileUpload ({
             url: "${mm:link('/mmbase/searchrelate/upload.jspx')}" + "?id=" + self.id + "&n=" + $("#" + fileid).attr("name"),
             secureuri: false,
@@ -375,7 +425,7 @@ List.prototype.upload = function(fileid) {
             }
         }
         )
-
+    */
     return false;
 
 }
@@ -477,6 +527,7 @@ List.prototype.saveOrder = function(event, ui) {
 List.prototype.relate = function(event, relate, relater) {
     var list = this;
     var params = this.getListParameters();
+    console.log(params);
     var url = "${mm:link('/mmbase/searchrelate/list/relate.jspx')}";
     params.destination = relater.getNumber(relate);
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
