@@ -47,6 +47,8 @@ function List(d) {
     $(listinfos).find("input[type=hidden]").each(function() {
             self[this.name] = $(this).val();
         });
+    this.max = parseInt(this.max);
+    this.cursize = parseInt(this.cursize);
 
     if (this.sortable) {
         if (this.order != "") {
