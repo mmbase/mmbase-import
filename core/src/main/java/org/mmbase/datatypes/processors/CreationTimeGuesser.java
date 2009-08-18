@@ -41,7 +41,7 @@ public class CreationTimeGuesser implements Processor {
                     node.commit();
                 }
             }
-            value = 
+            value =
                 value == null ?
                 creationTime :
                 org.mmbase.util.Casting.toType(value.getClass(), node.getCloud(), creationTime); // return in similar type
@@ -54,6 +54,14 @@ public class CreationTimeGuesser implements Processor {
     @Override
     public String toString() {
         return "CreationTime";
+    }
+
+    public int hashCode() {
+        return CreationTimeGuesser.class.hashCode();
+    }
+
+    public boolean equals(Object o) {
+        return o != null && o instanceof CreationTimeGuesser;
     }
 }
 
