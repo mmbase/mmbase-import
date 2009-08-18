@@ -25,20 +25,20 @@ import org.mmbase.util.logging.*;
  * @since   MMBase-1.9
  */
 
-public class AnnotatedNode extends NodeWrapper  {
+public class AnnotatedNode<A> extends NodeWrapper  {
 
     private static final Logger log = Logging.getLoggerInstance(AnnotatedNode.class);
 
 
-    private final Map<String, Object> annotations = new ConcurrentHashMap<String, Object>();
+    private final Map<String, A> annotations = new ConcurrentHashMap<String, A>();
     public AnnotatedNode(Node n) {
         super(n);
     }
 
-    public Object getAnnotation(String a) {
+    public A getAnnotation(String a) {
         return annotations.get(a);
     }
-    public Object putAnnotation(String a, Object o) {
+    public A putAnnotation(String a, A o) {
         return annotations.put(a, o);
     }
 
