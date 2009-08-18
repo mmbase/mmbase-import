@@ -86,7 +86,7 @@ public class DataTypeReader {
                     de.setCollector(collector);
                     failed.add(de);
                 } catch (Exception e) {
-                    log.error("Error while parsing element  '" + org.mmbase.util.xml.XMLWriter.write(childElement, true, true) + "': " + e.getMessage(), e);
+                    log.error("Error while parsing element  '" + childElement.getOwnerDocument().getDocumentURI() + ": " + org.mmbase.util.xml.XMLWriter.write(childElement, true, true) + "': " + e.getMessage(), e);
                 }
             }
         }
