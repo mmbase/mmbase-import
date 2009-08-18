@@ -14,8 +14,12 @@
   <jsp:directive.attribute name="node"
                            type="java.lang.String"
                            description=""/>
+
+  <jsp:directive.attribute name="name"
+                           type="java.lang.String"
+                           description=""/>
   <mm:form
-      name="testform1234">
+      name="${name}">
 
 
     <mm:import externid="cancel" />
@@ -42,7 +46,12 @@
 
     <mm:log level="info"> 3</mm:log>
     <input type="submit" name="submit" value="submit" />
-
+    <jsp:text> | </jsp:text>
+    <mm:link>
+      <mm:param name="cancel"></mm:param>
+      <a href="${_}">cancel</a>
+    </mm:link>
+    
     <mm:import externid="submit" />
     <mm:valid>
       <p>Valid</p>
@@ -54,14 +63,14 @@
     </mm:valid>
 
 
-    <c:set value="${requestScope['org.mmbase.transaction'].nodes}" var="tn"  />
+    <c:set value="${requestScope['org.mmbase.transaction']}"  var="t"  />
   </mm:form>
   <h2>Debugging</h2>
-
-  <p>Number of nodes in transaction: ${fn:length(tn)}</p>
+  <p>Transaction: ${t.name}</p>
+  <p>Number of nodes in transaction: ${fn:length(t.nodes)}</p>
   <table>
     <tr><th>#</th><th>real number</th><th>temporary number</th><th>_exists</th><th>new</th><th>deleted</th><th>gui</th></tr>
-    <mm:listnodes referid="tn" commitonclose="false">
+    <mm:listnodes referid="t.nodes" commitonclose="false">
       <tr>
         <th><mm:index /></th>
         <td>${_node.number}</td>

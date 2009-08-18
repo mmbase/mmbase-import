@@ -74,12 +74,15 @@
           <li>Nested mm-sr:relatednodes should work too
           <ul>
             <li>In transaction</li>
-            <li>Transactionless</li>
+            <li>Transactionless (used to work, but is broken now)</li>
           </ul>
           </li>
         </ul>
 	<hr />
-	  <mm:escape escape="links">$URL$</mm:escape>
+	<p>
+	  <a href="http://www.mmbase.org/tags/mm/searchrelate">Taglib documentation</a>
+	</p>
+	<mm:escape escape="links">$URL$</mm:escape>
 	<hr />
 	<mm:component name="searchrelate" 
 		      block="searchrelate-documentation" />
