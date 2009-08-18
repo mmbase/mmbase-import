@@ -21,4 +21,6 @@
       <h3>${rid}</h3>
     </mm-sr:relatednodes>
   </mm-sre:form>
+  <hr />
+  <mm:escape escape="links">$URL$</mm:escape>
 </mm-sre:html>

@@ -20,4 +20,6 @@
       <h3>${rid}</h3>
     </mm-sr:relatednodes>
   </mm:node>
+  <hr />
+  <mm:escape escape="links">$URL$</mm:escape>
 </mm-sre:html>
