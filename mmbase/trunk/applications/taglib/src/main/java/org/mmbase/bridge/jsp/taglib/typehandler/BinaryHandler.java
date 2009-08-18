@@ -49,7 +49,8 @@ public class BinaryHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
-    @Override public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    @Override
+    public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         StringBuilder show = new StringBuilder();
         if (node != null) {
             Function<?> gui = node.getFunction("gui");
@@ -84,7 +85,8 @@ public class BinaryHandler extends AbstractTypeHandler {
         }
     }
 
-    @Override public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
+    @Override
+    public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
         Object fieldValue = getFieldValue(node, field);
 
         if (fieldValue != null) {
@@ -93,8 +95,9 @@ public class BinaryHandler extends AbstractTypeHandler {
             if (col.size() == 0) {
                 // do actually set the field, because some datatypes need cross-field checking
                 // also in an mm:form, you can simply commit.
-                if (node != null && ! field.isReadOnly()) {
-                    setValue(node, field.getName(), (SerializableInputStream) fieldValue);
+                SerializableInputStream bytes = (SerializableInputStream) fieldValue;
+                if (node != null && ! field.isReadOnly() && ! bytes.getName().equals("")) {
+                    setValue(node, field.getName(), bytes);
                 }
                 if (errors) {
                     return "<div id=\"" + prefixError(field.getName()) + "\" class=\"mm_check_noerror\"> </div>";
@@ -133,14 +136,18 @@ public class BinaryHandler extends AbstractTypeHandler {
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
-    @Override public boolean useHtmlInput(Node node, Field field) throws JspTagException {
+    @Override
+    public boolean useHtmlInput(Node node, Field field) throws JspTagException {
         SerializableInputStream bytes = (SerializableInputStream) getFieldValue(node, field);
         if (bytes == null) {
             throw new BridgeException("getBytes(" + prefix(field.getName()) + ") returned null (node= " +  node.getNumber() +") field=(" + field + ") (Was your form  enctype='multipart/form-data' ?");
         }
+        log.debug("Found " + bytes.getName());
         if ("".equals(bytes.getName())) {
+            log.debug("Nothing uploaded for " + field + ", hence not changed");
             return false;
         } else {
+            log.debug("Uploaded for " + field + ": " + bytes);
             node.setValue(field.getName(), bytes);
             return true;
         }
