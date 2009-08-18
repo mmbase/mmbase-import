@@ -1,13 +1,14 @@
 <jsp:root
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+
     version="2.0"
     >
   <!--
 
-xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
 
 
@@ -102,7 +103,16 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
                            description="Wether to inform the items to create unlink buttons (defaults to same value as 'search')"
                            />
 
-  <jsp:directive.attribute name="idvar"      type="java.lang.String" />
+  <jsp:directive.attribute name="max"        type="java.lang.Integer"
+                           description="Maximum size of the list"
+                           />
+
+
+  <jsp:directive.attribute name="idvar"      type="java.lang.String"
+                           description="If specified the current 'id' of this list will be made available in the variable. For debugging mainly."
+
+                           />
+
 
   <!--
 
@@ -128,6 +138,7 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
   <mm:import id="_confirm">${empty confirm ? false : confirm}</mm:import>
   <mm:import id="_create">${empty create ? 'true' : create}</mm:import>
   <mm:import id="_unlink">${empty unlink ? (empty search ? 'false' : search) : unlink}</mm:import>
+  <mm:import id="_max">${empty max ? 1000000 : max}</mm:import>
   <mm:import id="_icondir">
     <c:choose>
       <c:when test="${empty icondir}">
@@ -144,19 +155,22 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
   <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
   <mm:write session="${requestid}_sequence" value="${seq + 1}" />
 
-  <mm:import id="id">${requestid}_${seq}</mm:import>
+  <mm:import id="rid">${requestid}_${seq}</mm:import>
 
-  <mm:write session="${id}_context" value="" />
+  <mm:write session="${rid}_context" value="" />
 
   <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${_role}" id="query">
     <mm:sortorder field="${_orderby}" direction="${_direction}" />
     <jsp:invoke fragment="constraints" />
+    <mm:size id="cursize" />
   </mm:relatednodescontainer>
 
-  <mm:context scope="session" id="${id}_context">
+
+
+  <mm:context scope="session" id="${rid}_context">
 
     <mm:import from="parent" id="seq"       externid="seq" />
-    <mm:import from="parent" externid="id"   />
+    <mm:import from="parent" externid="rid"   />
     <mm:import from="parent" externid="requestid"   />
     <mm:import from="parent" id="item"      externid="_item" />
     <mm:import from="parent" id="role"      externid="_role" />
@@ -168,6 +182,7 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
     <mm:import from="parent" id="confirm"    externid="_confirm" />
     <mm:import from="parent" id="create"    externid="_create" />
     <mm:import from="parent" id="unlink"    externid="_unlink" />
+    <mm:import from="parent" id="max"       externid="_max" />
     <mm:import from="parent" externid="fieldlistType" />
 
     <mm:import from="parent" externid="type" />
@@ -178,11 +193,20 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
     <mm:import from="parent" id="search" externid="_search" />
     <mm:import from="parent" externid="query" />
 
+    <mm:import id="order"    from="session" externid="${rid}_order" />
+
     <mm:import id="language">${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}</mm:import>
     <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
   </mm:context>
 
-  <mm:import from="session" id="parameters" externid="${id}_context" />
+  <mm:import from="session" id="parameters" externid="${rid}_context" />
+
+  <mm:relatednodescontainer id="clonedquery" clone="query">
+    <mm-sr:deletedConstraint parameters="${parameters}" />
+    <mm:context referid="parameters">
+      <mm:size id="cursize" />
+    </mm:context>
+  </mm:relatednodescontainer>
 
   <mm:import from="request" id="javascript_loaded" externid="mm_list_javascript" />
   <c:if test="${(empty javascript_loaded and empty load) or load}">
@@ -207,14 +231,14 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
 
-    <div id="${id}" class="list ${q.nodeManager.name}">
+    <div id="${rid}" class="list ${q.nodeManager.name}">
 
       <c:if test="${! empty idvar}">
-        <mm:write request="${idvar}" referid="id" />
+        <mm:write request="${idvar}" referid="rid" />
         <jsp:doBody />
       </c:if>
 
-      <div id="${type}_${id}" class="listinfo">
+      <div id="${type}_${rid}" class="listinfo">
         <!-- This div contains all necessary settings, the javascript can easily access this data, in case it want to know it too.  -->
         <c:forEach items="${parameters}" var="entry">
           <c:choose>
@@ -233,7 +257,7 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
       <c:if test="${_create and _createposition eq 'top'}">
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                 referids="id">
+                 referids="rid">
           <a href="${_}"  class="create">
             <mm-sr:button alt="+" type="create" parameters="${parameters}" />
           </a>
@@ -247,7 +271,7 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
       <!-- ================================================================================ -->
       <ol class="${query.nodeManager.name}">
 
-        <mm:relatednodescontainer clone="query">
+        <mm:relatednodescontainer referid="clonedquery">
           <mm-sr:deletedConstraint parameters="${parameters}" />
 
           <c:if test="${_create and _createposition eq 'top'}">
@@ -257,7 +281,7 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
           <mm:relatednodes>
             <mm:include
                 page="/mmbase/searchrelate/list/li.jspx"
-                referids="id" />
+                referids="rid" />
           </mm:relatednodes>
 
           <c:if test="${_create and _createposition eq 'bottom'}">
@@ -270,7 +294,7 @@ xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
 
       <c:if test="${_create and _createposition eq 'bottom'}">
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                 referids="id">
+                 referids="rid">
           <a href="${_}"  class="create">
             <mm-sr:button alt="+" type="create" parameters="${parameters}" />
           </a>

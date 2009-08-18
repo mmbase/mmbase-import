@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
 <article id="frontenddevelopers-editwizard-index">
-	<articleinfo>
-		<title>MMBase Search &amp; Relate Tags</title>
-		<date>2009-08-08</date>
-		<edition>$Id: index.xml 35281 2009-05-18 18:45:35Z michiel $</edition>
-		<authorgroup>
-			<author>
-				<firstname>Michiel</firstname>
-				<surname>Meeuwissen</surname>
-			</author>
-		</authorgroup>
-		<legalnotice>
-			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
-			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
-		</legalnotice>
-	</articleinfo>
-	<section id="introduction">
-		<title>Introduction</title>
-		<para>The Search &amp; Relate tags are an addition to the MMBase taglib, and add more sophisticated functionality mainly target at interaction with users who want to create <emphasis>relations</emphasis> between MMBase nodes</para>
+  <articleinfo>
+    <title>MMBase Search &amp; Relate Tags</title>
+    <date>2009-08-08</date>
+    <edition>$Id: index.xml 35281 2009-05-18 18:45:35Z michiel $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
+  <section id="introduction">
+    <title>Introduction</title>
+    <para>The Search &amp; Relate tags are an addition to the MMBase taglib, and add more sophisticated functionality mainly target at interaction with users who want to create <emphasis>relations</emphasis> between MMBase nodes</para>
 
-		<para>The creation of simple form based editors is quite simple</para>
+    <para>The creation of simple form based editors is quite simple</para>
     <programlisting format="linespecific"><![CDATA[
     <mm:form>
      <mm:node>
@@ -32,16 +32,16 @@
          <mm:commit />
       </mm:valid>
     ]]></programlisting>
-		<para>So there is no need for some extra servlet receiving the post. The JSP itself can handle
-		everthing.</para> <para>MMBase-taglib does not however provide a way to add simple 'relation'
-		editors to this formalism. It can be made, but it is not simple, and needs a lot of customized
-		code. This 'Search &amp; Relate Component fixes that.</para>
-	</section>
-	<section id="installation">
-		<title>Installation</title> <para>Search &amp; Relate is distributed as a 'war
-		overlay'. Installation only requires overlaying this war. The only prequisites is the 'base'
-		mmbase war, i.e. mmbase and mmbase taglib, and the templates of /mmbase which belong to
-		those.</para>
+    <para>So there is no need for some extra servlet receiving the post. The JSP itself can handle
+    everthing.</para> <para>MMBase-taglib does not however provide a way to add simple 'relation'
+    editors to this formalism. It can be made, but it is not simple, and needs a lot of customized
+    code. This 'Search &amp; Relate Component fixes that.</para>
+  </section>
+  <section id="installation">
+    <title>Installation</title> <para>Search &amp; Relate is distributed as a 'war
+    overlay'. Installation only requires overlaying this war. The only prequisites is the 'base'
+    mmbase war, i.e. mmbase and mmbase taglib, and the templates of /mmbase which belong to
+    those.</para>
     <para>After Installation this documentation and examples can be found in the MMBase admin pages /mmbase/admin</para>
   </section>
   <section id="ajax">
