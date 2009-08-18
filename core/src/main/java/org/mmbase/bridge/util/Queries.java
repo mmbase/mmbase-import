@@ -1557,11 +1557,19 @@ abstract public class Queries {
 
         for (Node n : t.getList(clone)) {
             AnnotatedNode<Integer> an = new AnnotatedNode<Integer>(n);
-            int index = desiredOrderCopy.indexOf(n.getIntValue(nodeStep.getTableName() + ".number"));
-            if (index == -1) {
-                log.warn("number not found in " + n);
+            String a = nodeStep.getAlias();
+            if (a == null) a = nodeStep.getTableName();
+            int number = n.getIntValue(a + ".number");
+            if (number == -1) {
+                log.warn(a + ".number  not found in " + n);
                 continue;
             }
+            int index = desiredOrderCopy.indexOf(number);
+            if (index == -1) {
+                log.warn(number + "number  not found in " + desiredOrder);
+                continue;
+            }
+
             desiredOrderCopy.set(index, null); // make sure it isn't found again
             an.putAnnotation("desired", index);
             list.add(an);
@@ -1571,6 +1579,8 @@ abstract public class Queries {
             return;
         }
 
+        String orderAlias = orderStep.getAlias();
+        if (orderAlias == null) orderAlias = orderStep.getTableName();
         //Bubble sort
         boolean madeChanges = true;
         while (madeChanges) {
@@ -1579,12 +1589,14 @@ abstract public class Queries {
                 AnnotatedNode<Integer> n1 = list.get(i);
                 AnnotatedNode<Integer> n2 = list.get(i + 1);
                 if (n1.getAnnotation("desired") > n2.getAnnotation("desired")) {
-                    Node n1order = n1.getNodeValue(orderStep.getTableName() + ".number");
-                    Node n2order = n2.getNodeValue(orderStep.getTableName() + ".number");
+                    Node n1order = n1.getNodeValue(orderAlias + ".number");
+                    Node n2order = n2.getNodeValue(orderAlias + ".number");
                     Object pos1 = n1order.getValue(orderField.getFieldName());
                     Object pos2 = n2order.getValue(orderField.getFieldName());
                     if (! (pos1 == null ? pos2 == null : pos1.equals(pos2))) {
+                        log.debug("Setting " + n1order + " " + orderField.getFieldName() + " to " + pos2);
                         n1order.setValue(orderField.getFieldName(), pos2);
+                        log.debug("Setting " + n2order + " " + orderField.getFieldName() + " to " + pos1);
                         n2order.setValue(orderField.getFieldName(), pos1);
                         list.set(i, n2);
                         list.set(i + 1, n1);
