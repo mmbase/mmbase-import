@@ -10,7 +10,7 @@
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
-      description=""
+      description="Returns the newly create nodes, which are not yet in the database"
       />
   <jsp:directive.attribute name="parameters"      type="java.util.Map" />
   <c:if test="${empty parameters}">
