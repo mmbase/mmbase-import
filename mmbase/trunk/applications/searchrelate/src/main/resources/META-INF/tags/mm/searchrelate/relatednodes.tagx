@@ -162,7 +162,6 @@
   <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${_role}" id="query">
     <mm:sortorder field="${_orderby}" direction="${_direction}" />
     <jsp:invoke fragment="constraints" />
-    <mm:size id="cursize" />
   </mm:relatednodescontainer>
 
 
@@ -204,7 +203,7 @@
   <mm:relatednodescontainer id="clonedquery" clone="query">
     <mm-sr:deletedConstraint parameters="${parameters}" />
     <mm:context referid="parameters">
-      <mm:size id="cursize" />
+      <mm:size id="cursize" write="false" />
     </mm:context>
   </mm:relatednodescontainer>
 
@@ -278,10 +277,15 @@
             <mm-sr:newNodes />
           </c:if>
 
-          <mm:relatednodes>
-            <mm:include
-                page="/mmbase/searchrelate/list/li.jspx"
-                referids="rid" />
+          <mm:relatednodes id="related">
+            <c:catch var="e">
+              <mm:include
+                  page="/mmbase/searchrelate/list/li.jspx"
+                  referids="rid">
+              </mm:include>
+
+            </c:catch>
+            <mm:escape>${e}</mm:escape>
           </mm:relatednodes>
 
           <c:if test="${_create and _createposition eq 'bottom'}">
@@ -300,9 +304,13 @@
           </a>
         </mm:link>
         <span class="status">...</span>
-        <c:if test="${search}">
-          <mm-sr:search type="${query.nodeManager.name}" />
-        </c:if>
+      </c:if>
+      <c:if test="${search}">
+        <mm:cloud>
+          <mm-sr:search type="${query.nodeManager.name}">
+            <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
+          </mm-sr:search>
+        </mm:cloud>
       </c:if>
     </div>
   </fmt:bundle>
