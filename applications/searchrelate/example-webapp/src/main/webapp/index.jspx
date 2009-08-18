@@ -35,6 +35,12 @@
               <a href="${_}">mm-sr:relatednodes in an mm:form with image uploads</a>
             </mm:link>
           </li>
+
+          <li>
+            <mm:link page="mmform-relatednodes-nested.jspx">
+              <a href="${_}">mm-sr:relatednodes nested</a>
+            </mm:link>
+          </li>
         </ul>
       </body>
       <mm:form name="test123">
