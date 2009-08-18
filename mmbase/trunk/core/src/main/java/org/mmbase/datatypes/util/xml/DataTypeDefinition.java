@@ -263,7 +263,6 @@ public class DataTypeDefinition {
             }
         }
 
-        log.warn(" " + dataType + " " + getters);
 
         // Now consider the processors with type="*", they only are valid for the _remaining_ types.
         for (int k = 0; k < childNodes.getLength(); k++) {
