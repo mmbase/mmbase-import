@@ -1,126 +1,31 @@
 <?xml version="1.0" ?>
-<html
-    xmlns="http://www.w3.org/1999/xhtml"
-    xml:lang="en"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+<mm-sre:html
+    xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
-    xmlns:mm-sr-t="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
-    xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  <mm:content
-      type="application/xhtml+xml"
-      expires="0"
-      language="nl">
-    <!--
 
+  <mm-sre:form>
+    <h3><mm:field name="title" /></h3>
 
+    <mm-sr:relatednodes
+        idvar="rid"
+        type="news"
+        role="posrel"
+        unlink="true"
+        delete="true"
+        fields="number,title"
+        search="true"
+        create="false"
+        sortable="true"
+        >
+      <h4>${rid}</h4>
+    </mm-sr:relatednodes>
 
-    -->
-    <mm:cloud rank="administrator">
-
-      <head>
-        <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
-        <mm:link page="/mmbase/searchrelate/page.css.jsp">
-          <link rel="stylesheet" href="${_}" type="text/css" />
-        </mm:link>
-      </head>
-      <body>
-        <h1>Search and Relate examples/tests</h1>
-        <!--
-        <script type="text/javascript" src="test.js" />
-        -->
-        <mm:form
-            name="testform.123">
-
-          <mm:import externid="cancel" />
-          <mm:present referid="cancel">
-            <mm:cancel />
-            <p>Canceled</p>
-            <mm:refresh />
-          </mm:present>
-
-
-          <mm:node number="default.mags">
-            <h2>1</h2>
-            <h3><mm:field name="title" /></h3>
-
-            <mm-sr:relatednodes
-                idvar="rid"
-                type="news"
-                role="posrel"
-                unlink="true"
-                delete="true"
-                fields="number,title"
-                search="true"
-                sortable="true"
-                >
-              <h4>${rid}</h4>
-            </mm-sr:relatednodes>
-
-          </mm:node>
-
-          <input type="submit" name="submit" value="submit" />
-          <mm:link>
-            <mm:param name="cancel"></mm:param>
-            <a href="${_}">cancel</a>
-          </mm:link>
-          <jsp:text> | </jsp:text>
-          <mm:link>
-            <a href="${_}">reload</a>
-          </mm:link>
-          <jsp:text> | </jsp:text>
-          <mm:link page=".">
-            <a href="${_}">back</a>
-          </mm:link>
-
-
-          <mm:import externid="submit" />
-          <mm:valid>
-            <p>Valid</p>
-            <mm:present referid="submit">
-              <mm:commit />
-              <p>Committed</p>
-              <mm:refresh />
-            </mm:present>
-          </mm:valid>
-
-
-          <h2>Debugging</h2>
-          <c:set value="${requestScope['org.mmbase.transaction'].nodes}" var="tn"  />
-          <p>Number of nodes in transaction: ${fn:length(tn)}</p>
-          <table>
-            <tr><th>#</th><th>real number</th><th>temporary number</th><th>_exists</th><th>new</th><th>deleted</th><th>gui</th></tr>
-            <mm:listnodes referid="tn" commitonclose="false">
-              <tr>
-                <th><mm:index /></th>
-                <td>${_node.number}</td>
-                <td>${_node._number}</td>
-                <td>${_node._exists}</td>
-                <td>${_node.number lt 0}</td>
-                <td>${_node._exists eq 'nolonger'}</td>
-                <td><mm:nodeinfo type="gui" /></td>
-              </tr>
-            </mm:listnodes>
-          </table>
-        </mm:form>
-        <hr />
-        <h2>Remarks</h2>
-        <p>During typing, and when leaving or reloading the page, the data is implicitely saved
-        <em>in the transaction</em>. So only when actually pushing on 'submit' the data is saved to
-        the database, but in the mean time the data keep existing. <em>Even if you leave the
-        page</em>.</p>
-        <h3>TODO</h3>
-        <ul>
-          <li style="text-decoration: line-through;">Since <em>new</em> nodes are not yet in the query-result, they cannot be edited, and disapper on reload.</li>
-          <li style="text-decoration: line-through;">This is also valid, but inversely, for <em>deleted</em> nodes and relations. They still are in de query result.</li>
-          <li>'Sortable' is not yet saved.</li>
-	  <li>Not yet tested what happens when you create images or so (multipart forms)</li>
-	  <li>Nested mm-sr:relatednodes should work too, but are not tested here</li>
-        </ul>
-
-      </body>
-    </mm:cloud>
-
-  </mm:content>
-</html>
+    <hr />
+    <h2>Remarks</h2>
+    <p>During typing, and when leaving or reloading the page, the data is implicitely saved
+    <em>in the transaction</em>. So only when actually pushing on 'submit' the data is saved to
+    the database, but in the mean time the data keep existing. <em>Even if you leave the
+    page</em>.</p>
+  </mm-sre:form>
+</mm-sre:html>
