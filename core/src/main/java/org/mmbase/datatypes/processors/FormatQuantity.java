@@ -14,6 +14,9 @@ import java.text.*;
 import java.util.regex.*;
 import java.math.*;
 
+import org.mmbase.util.logging.*;
+import org.mmbase.util.HashCodeUtil;
+
 /**
  * A processor that gets a number as a file-size, that is, rounded with kbytes and Mb's and so on.
  *
@@ -27,6 +30,8 @@ import java.math.*;
  */
 
 public class FormatQuantity implements Processor {
+
+    private static final Logger log = Logging.getLoggerInstance(FormatQuantity.class);
 
     private static final long serialVersionUID = 1L;
     protected static final BigDecimal KILO     = new BigDecimal(1000); // 10^3
@@ -123,6 +128,8 @@ public class FormatQuantity implements Processor {
         if (value == null) return null;
 
         BigDecimal v = org.mmbase.util.Casting.toDecimal(value);
+        log.debug("Formatting " + value + " -> " + v);
+
         BigDecimal av = v.abs();
         BigDecimal factor = BigDecimal.ONE;
         int power  = 0;
@@ -183,6 +190,34 @@ public class FormatQuantity implements Processor {
     public String toString() {
         return "[" + unit + "]";
     }
+
+    @Override
+    public boolean equals(Object o ) {
+        if (o == null) return false;
+        if (! o.getClass().equals(this.getClass())) return false;
+        FormatQuantity f = (FormatQuantity) o;
+        return k.equals(f.k) &&
+            prefixes.equals(f.prefixes) &&
+            unit.equals(f.unit) &&
+            lowFormat.equals(f.lowFormat) &&
+            highFormat.equals(f.highFormat) &&
+            lowLimit.equals(f.lowLimit) &&
+            limit.equals(f.limit);
+    }
+
+    @Override
+    public int hashCode() {
+        int hc = HashCodeUtil.hashCode(3, k);
+        hc = HashCodeUtil.hashCode(hc, prefixes);
+        hc = HashCodeUtil.hashCode(hc, unit);
+        hc = HashCodeUtil.hashCode(hc, lowFormat);
+        hc = HashCodeUtil.hashCode(hc, highFormat);
+        hc = HashCodeUtil.hashCode(hc, lowLimit);
+        hc = HashCodeUtil.hashCode(hc, limit);
+        return hc;
+
+    }
+
 
 
     public static final String PREFIX_PATTERN = "(Ki|Mi|Ti|Gi|Pi|Ei|Zi|Yi|da|[hkMGTPEZYcdm\u00b5npfazy])";
