@@ -1,5 +1,7 @@
 <?xml version="1.0" ?>
 <mm-sre:html
+    cancel="true"
+    title="Basic mm:form"
     xmlns:mm-sre="urn:jsptagdir:/WEB-INF/tags/mm/searchrelateexample"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
@@ -14,8 +16,6 @@
         unlink="true"
         delete="true"
         fields="number,title"
-        search="true"
-        create="false"
         sortable="true"
         >
       <h4>${rid}</h4>

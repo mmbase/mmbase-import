@@ -6,7 +6,7 @@
     xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
 
-  <mm-sre:form>
+  <mm:node number="default.mags">
     <h2><mm:field name="title" /></h2>
 
     <mm-sr:relatednodes
@@ -15,10 +15,9 @@
         role="posrel"
         item="/news-item.jspx"
         delete="true"
-        search="true"
         max="3"
         >
       <h3>${rid}</h3>
     </mm-sr:relatednodes>
-  </mm-sre:form>
+  </mm:node>
 </mm-sre:html>
