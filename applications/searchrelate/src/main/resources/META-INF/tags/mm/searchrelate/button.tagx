@@ -10,7 +10,7 @@
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
-      description="" />
+      description="Creates buttons as used in mm-sr:relatednodes" />
 
   <jsp:directive.attribute name="parameters"      type="java.util.Map"  />
   <jsp:directive.attribute name="type"      type="java.lang.String" required="true"  />
