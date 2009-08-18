@@ -163,10 +163,11 @@ public class DataTypeDefinition {
         configureConditions(dataTypeElement);
         configureHandlers(dataTypeElement);
         configureStyleClasses(dataTypeElement);
+        configureProcessors(dataTypeElement);
         return this;
     }
 
-    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class|name|description|handler|styleClass");
+    private static final java.util.regex.Pattern nonConditions   = java.util.regex.Pattern.compile("specialization|datatype|class|name|description|handler|styleClass|getprocessor|setprocessor|commitprocessor|deleteprocessor");
 
     /**
      * Configures the conditions of a datatype definition, using data from a DOM element
@@ -231,6 +232,55 @@ public class DataTypeDefinition {
     }
 
     /**
+     * @since MMBase-1.9.2
+     */
+    protected void configureProcessors(Element dataTypeElement) {
+        log.debug("Now going to configure processors for  " + dataType);
+        NodeList childNodes = dataTypeElement.getChildNodes();
+        Set<Integer> getters = new HashSet<Integer>();
+        Set<Integer> setters = new HashSet<Integer>();
+        getters.add(Field.TYPE_UNKNOWN);
+        setters.add(Field.TYPE_UNKNOWN);
+        for (int i = Fields.TYPE_MINVALUE; i <= Fields.TYPE_MAXVALUE; i++) {
+            if (! Fields.getTypeDescription(i).equals("UNKNOWN")) { // i != 3  // WTF!, that one doesn't exist
+                getters.add(i);
+                setters.add(i);
+            }
+        }
+        for (int k = 0; k < childNodes.getLength(); k++) {
+            if (childNodes.item(k) instanceof Element) {
+                Element childElement = (Element) childNodes.item(k);
+                String childTag = childElement.getLocalName();
+                if ("getprocessor".equals(childTag) && ! childElement.getAttribute("type").equals("*")) {
+                    addProcessor(DataType.PROCESS_GET, childElement, getters);
+                } else if ("setprocessor".equals(childTag) && ! childElement.getAttribute("type").equals("*")) {
+                    addProcessor(DataType.PROCESS_SET, childElement, setters);
+                } else if ("commitprocessor".equals(childTag)) {
+                    addCommitProcessor(childElement);
+                } else if ("deleteprocessor".equals(childTag)) {
+                    addDeleteProcessor(childElement);
+                }
+            }
+        }
+
+        log.warn(" " + dataType + " " + getters);
+
+        // Now consider the processors with type="*", they only are valid for the _remaining_ types.
+        for (int k = 0; k < childNodes.getLength(); k++) {
+            if (childNodes.item(k) instanceof Element) {
+                Element childElement = (Element) childNodes.item(k);
+                String childTag = childElement.getLocalName();
+                if ("getprocessor".equals(childTag) && childElement.getAttribute("type").equals("*")) {
+                    addProcessor(DataType.PROCESS_GET, childElement, getters);
+                } else if ("setprocessor".equals(childTag) &&  childElement.getAttribute("type").equals("*")) {
+                    addProcessor(DataType.PROCESS_SET, childElement, setters);
+                }
+
+            }
+        }
+    }
+
+    /**
      * Uses one subelement of a datatype xml configuration element and interpret it. Possibly this
      * method is a good candidate to override.
      * @return whether successfully read the element.
@@ -249,18 +299,6 @@ public class DataTypeDefinition {
             boolean value = DataTypeXml.getBooleanValue(childElement, false);
             dataType.setUnique(value);
             setRestrictionData(dataType.getUniqueRestriction(), childElement);
-            return true;
-        } else if ("getprocessor".equals(childTag)) {
-            addProcessor(DataType.PROCESS_GET, childElement);
-            return true;
-        } else if ("setprocessor".equals(childTag)) {
-            addProcessor(DataType.PROCESS_SET, childElement);
-            return true;
-        } else if ("commitprocessor".equals(childTag)) {
-            addCommitProcessor(childElement);
-            return true;
-        } else if ("deleteprocessor".equals(childTag)) {
-            addDeleteProcessor(childElement);
             return true;
         } else if ("enumeration".equals(childTag)) {
             addEnumeration(childElement);
@@ -285,28 +323,36 @@ public class DataTypeDefinition {
 
 
     private void addProcessor(int action, int processingType, Processor newProcessor) {
-        Processor oldProcessor = dataType.getProcessor(action, processingType);
+
+        Processor oldProcessor = dataType.getProcessorWithoutDefault(action, processingType);
         newProcessor = DataTypeXml.chainProcessors(oldProcessor, newProcessor);
-        log.debug(dataType + " Found processor " + oldProcessor + "--> " + newProcessor);
+        log.debug("Adding processro to " + processingType + " " + dataType + " Found processor " + oldProcessor + "--> " + newProcessor);
         dataType.setProcessor(action, newProcessor, processingType);
     }
 
 
-    protected  void addProcessor(int action, Element processorElement) {
+    protected  void addProcessor(int action, Element processorElement, Collection<Integer> unsetTypes) {
         Processor newProcessor = DataTypeXml.createProcessor(processorElement);
         if (newProcessor != null) {
             String type = processorElement.getAttribute("type");
             if (type.equals("")) {
                 addProcessor(action, Field.TYPE_UNKNOWN, newProcessor);
+                unsetTypes.remove(Field.TYPE_UNKNOWN);
             } else if (type.equals("*")) {
-                for (int i = Fields.TYPE_MINVALUE; i <= Fields.TYPE_MAXVALUE; i++) {
+                for (int i : unsetTypes) {
                     DataType<?> basicDataType = DataTypes.getDataType(i);
                     int processingType = Fields.classToType(basicDataType.getTypeAsClass());
                     addProcessor(action, processingType, newProcessor);
                 }
+                unsetTypes.clear();
             } else {
                 int processingType = Fields.getType(type);
-                addProcessor(action, processingType, newProcessor);
+                if (! unsetTypes.contains(processingType)) {
+                    log.error("Already set " + processingType + " Ignoring");
+                } else {
+                    addProcessor(action, processingType, newProcessor);
+                    unsetTypes.remove(processingType);
+                }
             }
         }
     }
