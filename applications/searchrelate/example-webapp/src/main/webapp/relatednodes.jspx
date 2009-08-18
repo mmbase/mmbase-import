@@ -11,6 +11,7 @@
     <mm-sr:relatednodes type="news"
 			fields="number,title"
 			unlink="true"
+			max="6"
                         sortable="true" search="true" />
 
   </mm:node>
