@@ -18,7 +18,9 @@
   <jsp:directive.attribute name="type"        type="java.lang.String"  required="true"
                            description="Node type to search" />
 
-  <mm:listnodescontainer type="${type}" id="repository" />
+  <mm:listnodescontainer type="${type}" id="repository">
+    <jsp:doBody />
+  </mm:listnodescontainer>
 
   <mm-sr:relate repository="${repository}" />
 </jsp:root>
