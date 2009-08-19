@@ -1527,10 +1527,12 @@ abstract public class Queries {
      *
      * @param q The query which defines the existing order
      * @param desiredOrder The node numbers of the nodes in the query result of q. These are the actual nodes, not the nodes which define the order (like the posrel)
+
+     * @return The number of alterations which are done. Depends on the used algorithm (currently Bubble sort). <code>0</code> if the list was correctly ordered allready.
      *
      * @since MMBase-1.9.2
      */
-    public static void reorderResult(NodeQuery q, List<Integer> desiredOrder) {
+    public static int reorderResult(NodeQuery q, List<Integer> desiredOrder) {
         List<SortOrder> sos = q.getSortOrders();
         if (sos == null || sos.size() == 0) throw new IllegalArgumentException("The query " + q + " is not sorted");
         SortOrder so = sos.get(0);
@@ -1576,11 +1578,13 @@ abstract public class Queries {
         }
         if (list.size() <= 1) {
             // 0 or 1 long only, that's always correctly ordered
-            return;
+            return 0;
         }
 
         String orderAlias = orderStep.getAlias();
         if (orderAlias == null) orderAlias = orderStep.getTableName();
+
+        int numberOfChanges = 0;
         //Bubble sort
         boolean madeChanges = true;
         while (madeChanges) {
@@ -1600,12 +1604,17 @@ abstract public class Queries {
                         n2order.setValue(orderField.getFieldName(), pos1);
                         list.set(i, n2);
                         list.set(i + 1, n1);
+                        numberOfChanges++;
                         madeChanges = true;
                     }
                 }
             }
         }
-        t.commit();
+        if (t.commit()) {
+            return numberOfChanges;
+        } else {
+            return -1;
+        }
 
     }
 
