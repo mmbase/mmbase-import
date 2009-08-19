@@ -17,8 +17,8 @@
           for (Object o : order) {
             iorder.add(org.mmbase.util.Casting.toInt(o));
           }
-          org.mmbase.bridge.util.Queries.reorderResult(query, iorder);
         </jsp:scriptlet>
+        <jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression>
       </c:when>
       <c:otherwise>
         <!-- do it later, there is little point, it won't work any way in a transaction -->
