@@ -199,8 +199,11 @@ public class FormTag extends TransactionTag implements Writer {
         return false;
     }
 
+    @Override
     public String getName() throws JspTagException {
-        if (name == Attribute.NULL) return "org.mmbase.taglib.form";
+        if (name == Attribute.NULL)  {
+            return "org.mmbase.taglib.form";
+        }
         return (String) name.getValue(this);
     }
 
