@@ -59,6 +59,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      */
     protected Attribute constraints = Attribute.NULL;
 
+    protected Attribute usetransaction = Attribute.NULL;
+
     final protected NodeListHelper listHelper = new NodeListHelper(this, nodeHelper);
 
     private Query generatingQuery;
@@ -146,6 +148,16 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         constraints = getAttribute(where);
     }
 
+    /**
+     *
+     * @since MMBase-1.9.2
+     */
+    public void setUsetransaction(String u) throws JspTagException {
+        usetransaction = getAttribute(u, true);
+    }
+
+
+
     protected static class NodesAndTrim {
         boolean  needsTrim;
         BridgeList<Node> nodeList;
@@ -153,6 +165,23 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     protected final NodesAndTrim getNodesAndTrim(Query query) throws JspTagException {
         return getNodesAndTrim(query, 0);
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    protected NodeList getNodeList(Query query) throws JspTagException {
+        if (query instanceof NodeQuery) {
+            NodeQuery nq = (NodeQuery) query;
+            if (usetransaction.getString(this).equals("true") && nq.getSteps().size() >= 3) {
+                Node startNode = getNode();
+                return new org.mmbase.bridge.implementation.BasicNodeList(Queries.getRelatedNodesInTransaction(startNode, nq), nq.getNodeManager());
+            } else {
+                return nq.getNodeManager().getList(nq);
+            }
+        } else {
+            return  query.getCloud().getList(query);
+        }
     }
 
     /**
@@ -177,22 +206,11 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (listHelper.getOffset() != Attribute.NULL) {
                 query.setOffset(listHelper.getOffset().getInt(this, 0));
             }
-
-            if (query instanceof NodeQuery) {
-                NodeQuery nq = (NodeQuery) query;
-                result.nodeList = nq.getNodeManager().getList(nq);
-            } else {
-                result.nodeList = query.getCloud().getList(query);
-            }
+            result.nodeList = getNodeList(query);
             result.needsTrim = more > 0;
         } else {
             // using comparator, doing max and offset programmaticly, otherwise the comparator is loosing most of its use
-            if (query instanceof NodeQuery) {
-                NodeQuery nq = (NodeQuery) query;
-                result.nodeList = nq.getNodeManager().getList(nq);
-            } else {
-                result.nodeList = query.getCloud().getList(query);
-            }
+            result.nodeList = getNodeList(query);
 
             // give a warning if what you are doing right now is not very smart
             if(result.nodeList.size() > QUERY_WARN_SIZE) {
