@@ -19,9 +19,9 @@
         </c:when>
         <c:otherwise>
           &lt;!-- transaction: ${parameters.formtag} --&gt;
-          <mm:transaction id="${parameters.formtag}"
-                          name="${parameters.formtag}"
-                          commitonclose="false"
+          <mm:transaction
+              name="${parameters.formtag}"
+              commitonclose="false"
                           >
             <jsp:directive.include file="relate.body.jspx" />
           </mm:transaction>
