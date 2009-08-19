@@ -12,9 +12,11 @@
       example="See /mmexamples/searchrelate"
       description="Creates buttons as used in mm-sr:relatednodes" />
 
-  <jsp:directive.attribute name="parameters"      type="java.util.Map"  />
-  <jsp:directive.attribute name="type"      type="java.lang.String" required="true"  />
-  <jsp:directive.attribute name="alt"      type="java.lang.String"   />
+  <jsp:directive.attribute name="parameters" type="java.util.Map"
+                           description="These are the parameters as specified by the attributes of mm-sr:relatednodes. This is a subtag of that, and may need some of its information."
+                           />
+  <jsp:directive.attribute name="type"       type="java.lang.String" required="true"  />
+  <jsp:directive.attribute name="alt"        type="java.lang.String"   />
 
   <c:if test="${empty parameters}">
     <c:set var="parameters" value="${requestScope['org.mmbase.sr.relatednodes.parameters']}" />

@@ -12,7 +12,9 @@
       example="See /mmexamples/searchrelate"
       description="This tag constraints the current query to remove all nodes that were deleted (in a transaction, so they would still be returned by the query)"
       />
-  <jsp:directive.attribute name="parameters"      type="java.util.Map" />
+  <jsp:directive.attribute name="parameters"      type="java.util.Map"
+                           description="These are the parameters as specified by the attributes of mm-sr:relatednodes. This is a subtag of that, and may need some of its information."
+                           />
   <c:if test="${empty parameters}">
     <c:set var="parameters" value="${requestScope['org.mmbase.sr.relatednodes.parameters']}" />
   </c:if>

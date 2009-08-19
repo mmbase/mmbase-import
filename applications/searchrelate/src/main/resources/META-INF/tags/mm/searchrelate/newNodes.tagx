@@ -12,24 +12,27 @@
       example="See /mmexamples/searchrelate"
       description="Returns the newly create nodes, which are not yet in the database"
       />
-  <jsp:directive.attribute name="parameters"      type="java.util.Map" />
+  <jsp:directive.attribute name="parameters"      type="java.util.Map"
+                           description="These are the parameters as specified by the attributes of mm-sr:relatednodes. This is a subtag of that, and may need some of its information."
+                           />
   <c:if test="${empty parameters}">
     <c:set var="parameters" value="${requestScope['org.mmbase.sr.relatednodes.parameters']}" />
   </c:if>
 
-  <c:if test="${! empty parameters.formtag}">
+  <c:if test="${! parameters.autosubmit}">
     <c:set value="${requestScope['org.mmbase.transaction'].nodes}" var="tn"  />
-    <mm:listnodes referid="tn" commitonclose="false">
-      <mm:instanceof nodemanager="${parameters.query.nodeManager.name}">
-        <c:if test="${_node.number lt 0 and _node._exists ne 'nolonger'}"> <!-- NEW and not DELETED again-->
-          <mm:include page="/mmbase/searchrelate/list/li.jspx">
-            <mm:param name="rid">${parameters.rid}</mm:param>
-            <mm:param name="className">new</mm:param>
-          </mm:include>
-        </c:if>
-      </mm:instanceof>
-    </mm:listnodes>
-
+    <c:if test="${! empty tn}">
+      <mm:listnodes referid="tn" commitonclose="false">
+        <mm:instanceof nodemanager="${parameters.query.nodeManager.name}">
+          <c:if test="${_node.number lt 0 and _node._exists ne 'nolonger'}"> <!-- NEW and not DELETED again-->
+            <mm:include page="/mmbase/searchrelate/list/li.jspx">
+              <mm:param name="rid">${parameters.rid}</mm:param>
+              <mm:param name="className">new</mm:param>
+            </mm:include>
+          </c:if>
+        </mm:instanceof>
+      </mm:listnodes>
+    </c:if>
   </c:if>
 
 

@@ -12,15 +12,15 @@
   <mm:content expires="0" type="application/xml">
     <mm:cloud method="asis">
       <c:choose>
-        <c:when test="${empty parameters.formtag}">
+        <c:when test="${empty parameter.autosubmit}">
           <jsp:directive.include file="create.body.jspx" />
         </c:when>
         <c:otherwise>
           &lt;!-- transaction: ${parameters.formtag} --&gt;
-          <mm:transaction 
-	      name="${parameters.formtag}"
-	      commitonclose="false"
-	      >
+          <mm:transaction
+              name="${parameters.formtag}"
+              commitonclose="false"
+              >
             <jsp:directive.include file="create.body.jspx" />
           </mm:transaction>
         </c:otherwise>

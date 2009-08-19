@@ -3,12 +3,12 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-
     version="2.0"
     >
   <!--
 
-    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+
+
 
 
 
@@ -114,9 +114,11 @@
                            />
 
 
-  <!--
+  <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape></mm:import>
+  <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
+  <mm:write session="${requestid}_sequence" value="${seq + 1}" />
+  <mm:import id="rid">${requestid}_${seq}</mm:import>
 
-  -->
 
   <!--
   <c:if test="${! empty item and ! empty delete}">
@@ -130,6 +132,12 @@
   <mm:import id="_role">${empty role and empty path ? 'posrel' : role}</mm:import><!-- role defaults to 'posrel' -->
   <mm:import id="_direction">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
   <mm:import id="_createposition">${empty createposition? 'bottom' : createposition}</mm:import>
+
+  <mm:import from="request" externid="org.mmbase.searchrelate.relatednodes" id="parent" />
+  <mm:write request="org.mmbase.searchrelate.relatednodes" value="${rid}" />
+  <mm:import id="parentparameters" externid="${parent}_context" from="session" />
+  <mm:import id="parentformtag">${parentparameters.formtag}</mm:import>
+
   <mm:import id="_formtag">${requestScope['org.mmbase.bridge.jsp.taglib.form'].name}</mm:import>
   <mm:import id="_orderby">${empty orderby ? _role : orderby}${empty orderby ? (_role eq 'posrel' ? '.pos' : '.number') : ''}</mm:import>
   <mm:import id="_fields">${fields}</mm:import>
@@ -148,14 +156,6 @@
     </c:choose>
   </mm:import>
 
-
-
-  <mm:import id="requestid">R<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}</mm:escape></mm:import>
-
-  <mm:import from="session" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
-  <mm:write session="${requestid}_sequence" value="${seq + 1}" />
-
-  <mm:import id="rid">${requestid}_${seq}</mm:import>
 
   <mm:write session="${rid}_context" value="" />
 
@@ -191,11 +191,16 @@
     <mm:import from="parent" externid="sortable" />
     <mm:import from="parent" id="search" externid="_search" />
     <mm:import from="parent" externid="query" />
+    <mm:import from="parent" externid="parent" />
+    <mm:import from="parent" externid="parentformtag" />
+
+    <mm:import id="autosubmit">${! empty parent ? parentparameters.autosubmit : empty _formtag}</mm:import>
 
     <mm:import id="order"    from="session" externid="${rid}_order" />
 
     <mm:import id="language">${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}</mm:import>
     <mm:import id="referrer"><mm:url absolute="context" /></mm:import>
+    <mm:import id="fieldlistidprefix">${rid}_N${mm:escape('identifier', _node)}</mm:import>
   </mm:context>
 
   <mm:import from="session" id="parameters" externid="${rid}_context" />
@@ -223,6 +228,9 @@
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/List.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <mm:write request="mm_list_javascript" value="yes" />
   </c:if>
+
+
+
 
   <mm-sr:heartbeat />
 
@@ -314,4 +322,5 @@
       </c:if>
     </div>
   </fmt:bundle>
+  <mm:write request="org.mmbase.searchrelate.relatednodes" referid="parameters.parent" />
 </jsp:root>
