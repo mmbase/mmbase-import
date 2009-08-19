@@ -21,7 +21,6 @@
   <mm:form
       name="${name}">
 
-
     <mm:import externid="cancel" />
 
     <mm:present referid="cancel">
@@ -33,15 +32,8 @@
 
     </mm:present>
 
-    <mm:log level="info">
-      ${requestScope['org.mmbase.transaction'].nodes}
-    NODE</mm:log>
-
     <mm:node number="${empty node ? 'default.mags' : node}">
-      <mm:log level="info"> 1</mm:log>
       <jsp:doBody />
-      <mm:log level="info"> 2</mm:log>
-
     </mm:node>
 
     <mm:log level="info"> 3</mm:log>
@@ -51,7 +43,7 @@
       <mm:param name="cancel"></mm:param>
       <a href="${_}">cancel</a>
     </mm:link>
-    
+
     <mm:import externid="submit" />
     <mm:valid>
       <p>Valid</p>
@@ -69,7 +61,7 @@
   <p>Transaction: ${t.name}</p>
   <p>Number of nodes in transaction: ${fn:length(t.nodes)}</p>
   <table>
-    <tr><th>#</th><th>real number</th><th>temporary number</th><th>_exists</th><th>new</th><th>deleted</th><th>gui</th></tr>
+    <tr><th>#</th><th>real number</th><th>temporary number</th><th>_exists</th><th>new</th><th>deleted</th><th>gui</th><th>snumber</th><th>dnumber</th></tr>
     <mm:listnodes referid="t.nodes" commitonclose="false">
       <tr>
         <th><mm:index /></th>
@@ -79,6 +71,8 @@
         <td>${_node.number lt 0}</td>
         <td>${_node._exists eq 'nolonger'}</td>
         <td><mm:nodeinfo type="gui" /></td>
+        <td><mm:hasfield name="snumber">${_node.snumber} / ${_node._snumber}</mm:hasfield></td>
+        <td><mm:hasfield name="dnumber">${_node.dnumber} / ${_node._dnumber}</mm:hasfield></td>
       </tr>
     </mm:listnodes>
   </table>
