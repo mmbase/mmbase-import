@@ -25,8 +25,7 @@
         </mm:import>
         <span>${formtagid}</span>
         <mm:form name="${formtagid}" >
-
-          <mm:import id="fieldlistid">${parameters.fieldlistidprefix}_${_node}</mm:import>
+          <mm:import id="fieldlistid">${parameters.fieldlistidprefix}_<mm:escape escape="identifier">${_node}</mm:escape></mm:import>
           <mm:include page="${parameters.item}"
                       referids="rid,fieldlistid" />
 
