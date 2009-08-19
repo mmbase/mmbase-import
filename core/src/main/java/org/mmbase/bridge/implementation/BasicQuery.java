@@ -329,6 +329,7 @@ public class BasicQuery implements Query  {
         // a bit silly that two lookups are needed
         int relationDir = Queries.getRelationStepDirection(direction);
 
+        if (BasicCloudContext.mmb == null) throw new IllegalStateException("MMBase is not started!");
         TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
         if (role == null) {
             InsRel insrel =  BasicCloudContext.mmb.getInsRel();
@@ -716,7 +717,9 @@ public class BasicQuery implements Query  {
 
     public String toSql() {
         try {
-            return MMBase.getMMBase().getSearchQueryHandler().createSqlString(query);
+             return MMBase.getMMBase().getSearchQueryHandler().createSqlString(query);
+
+            //return cloud.getCloudContext().getSearchQueryHandler().createSqlString(query);
         } catch (org.mmbase.storage.search.SearchQueryException sqe) {
             return sqe.getMessage() + ": " + toString();
         } catch (Exception ise) {
