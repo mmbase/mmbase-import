@@ -278,6 +278,12 @@
     <location>/mmbase/errorpages/503.jsp</location>
   </error-page>
 
+  <env-entry>
+    <env-entry-name>mmbase/rmmci/bindname</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>exampleremotecontext</env-entry-value>
+  </env-entry>
+
   <resource-ref>
     <description>
       Datasource for the MMBase Database. This datasource must be
