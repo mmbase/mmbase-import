@@ -1315,6 +1315,29 @@ abstract public class Queries {
         return new QueryComparator(q);
     }
 
+    // The start node is hacked in the query when it is new, and hence query object forbids it to be an actual startnode.
+
+    private static final Node getStartNodeTaglibHack(Query query) {
+        Step firstStep = query.getSteps().get(0);
+        // probably this startNode is _new_ See remarks in RelatedNodesConstainer
+        Constraint c = query.getConstraint();
+        if (c instanceof CompositeConstraint) {
+            for (Constraint sub : ((CompositeConstraint) c).getChilds()) {
+                if (sub instanceof FieldValueConstraint) {
+                    FieldValueConstraint fvc = (FieldValueConstraint) sub;
+                    if (fvc.getField().getStep().equals(firstStep) && fvc.getField().getFieldName().equals("owner")) {
+                        c = fvc;
+                        break;
+                    }
+                }
+            }
+        }
+        FieldValueConstraint fvc = (FieldValueConstraint) c;
+        String value = (String) fvc.getValue();
+        return query.getCloud().getNode(value);
+    }
+
+
     /**
      * Explores a query object, and creates a certain new relation object, which would make the
      * given node appear in the query's result.
@@ -1360,7 +1383,9 @@ abstract public class Queries {
                 if (nodeInStep2 && startNode == null && nodes1 != null) {
                     startNode = cloud.getNode(nodes1.iterator().next());
                 }
-                if (startNode == null) throw new UnsupportedOperationException();
+                if (startNode == null) {
+                    startNode = getStartNodeTaglibHack(q);
+                }
 
 
                 RelationStep rel = (RelationStep) steps.get(start + 1);
