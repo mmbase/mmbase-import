@@ -39,6 +39,25 @@
           </execution>
         </executions>
       </plugin>
+      <!--
+      <plugin>
+        <groupId>net.sourceforge.maven-taglib</groupId>
+        <artifactId>maven-taglib-plugin</artifactId>
+        <version>2.3.2-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>tldgenerate</goal>
+              <goal>taglibdocjar</goal>
+            </goals>
+            <configuration>
+              <uri>http://www.mmbase.org/tags/mm/searchrelate</uri>
+              <shortName>mm-sr</shortName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      -->
     </plugins>
   </build>
   <dependencies>

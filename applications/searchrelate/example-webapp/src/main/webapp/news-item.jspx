@@ -6,6 +6,7 @@
     xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
+
   <mm:field name="number" />
   <jsp:text>: </jsp:text>
   <mm:field id="${requestScope['org.mmbase.cloud'].name}_node_${mm:escape('identifier', _node)}" name="title">
