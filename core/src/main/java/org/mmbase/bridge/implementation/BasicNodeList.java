@@ -30,7 +30,7 @@ public class BasicNodeList extends AbstractNodeList<Node> implements NodeList  {
         super(c, cloud);
     }
 
-    BasicNodeList(Collection c, NodeManager nodeManager) {
+    public BasicNodeList(Collection c, NodeManager nodeManager) {
         super(c, nodeManager);
     }
 
@@ -40,7 +40,7 @@ public class BasicNodeList extends AbstractNodeList<Node> implements NodeList  {
         if (o instanceof Node || o == null) {
             return (Node) o;
         }
-        return super.convert(o); 
+        return super.convert(o);
     }
 
     public Node getNode(int index) {
