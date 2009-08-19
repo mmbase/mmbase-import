@@ -673,8 +673,7 @@ abstract public class Queries {
         if (directions == null) {
             directions = "";
         }
-        List<SortOrder> list = query.getSortOrders();
-        int initialSize = list.size();
+        int initialSize = query.getSortOrders().size();
 
         StringTokenizer sortedTokenizer = new StringTokenizer(sorted, ",");
         StringTokenizer directionsTokenizer = new StringTokenizer(directions, ",");
@@ -698,7 +697,7 @@ abstract public class Queries {
             }
             query.addSortOrder(sf, dir);
         }
-
+        List<SortOrder> list = query.getSortOrders();
         return list.subList(initialSize, list.size());
     }
 
@@ -1194,7 +1193,10 @@ abstract public class Queries {
      */
     public static Object getSortOrderFieldValue(Node node, SortOrder sortOrder) {
         String fieldName = sortOrder.getField().getFieldName();
-        if (node == null) throw new IllegalArgumentException("No node given");
+        if (node == null) {
+            throw new IllegalArgumentException("No node given");
+        }
+
         Object value = node.getValue(fieldName);
         if (value == null) {
             Step step = sortOrder.getField().getStep();
@@ -1231,9 +1233,9 @@ abstract public class Queries {
      */
     public static int compare(Object value, Object value2, SortOrder sortOrder) {
         int result;
-        // compare values - if they differ, detemrine whether
+        // compare values - if they differ, determine whether
         // they are bigger or smaller and return the result
-        // remaining fields are not of interest ionce a difference is found
+        // remaining fields are not of interest once a difference is found
         if (value == null) {
             if (value2 != null) {
                 return 1;
@@ -1272,14 +1274,45 @@ abstract public class Queries {
     public static int compare(Node node1, Node node2, List<SortOrder> sortOrders) {
         if (node1 == null) return -1;
         if (node2 == null) return +1;
-        int result = 0;
-        Iterator<SortOrder> i = sortOrders.iterator();
-        while (result == 0 && i.hasNext()) {
-            SortOrder order = i.next();
-            result = compare(node1, node2, order);
+
+        for (SortOrder order : sortOrders) {
+            int result = compare(node1, node2, order);
+            if (result != 0) return result;
         }
         // if all fields match - return 0 as if equal
-        return result;
+        return 0;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    private static class QueryComparator implements Comparator<Node> {
+        private final Query query;
+        public QueryComparator(Query q) {
+            query = q;
+        }
+
+        public int compare(Node node1, Node node2) {
+            for (SortOrder so : query.getSortOrders()) {
+            }
+            return Queries.compare(node1, node2, query.getSortOrders());
+        }
+
+        public boolean equals(Object o) {
+            return o != null && o.getClass().equals(QueryComparator.class) &&
+                ((QueryComparator) o).query.equals(query);
+        }
+        public int hashCode() {
+            return query.hashCode();
+        }
+    }
+
+    /**
+     * Returns a Node comparator associated with the {@link SortOrder}s of the given {@link Query} (See {@link Query#getSortOrders}).
+     * @since MMBase-1.9.2
+     */
+    public static Comparator<Node> getComparator(final Query q) {
+        return new QueryComparator(q);
     }
 
     /**
@@ -1619,8 +1652,125 @@ abstract public class Queries {
     }
 
 
-    public static void main(String[] argv) {
-        System.out.println(ConstraintParser.convertClauseToDBS("(([cpsettings.status]='[A]' OR [cpsettings.status]='I') AND [users.account] != '') and (lower([users.account]) LIKE '%t[est%' OR lower([users.email]) LIKE '%te]st%' OR lower([users.firstname]) LIKE '%t[e]st%' OR lower([users.lastname]) LIKE '%]test%')"));
+    protected static Node clusterNode(Relation relation, String relationAlias, Node node) {
+        Map<String, Object> values = new HashMap<String, Object>();
+        values.putAll(new NodeMap(node));
+        for (Map.Entry<String, Object> entry : new NodeMap(relation).entrySet()) {
+            values.put(relationAlias + "." + entry.getKey(), entry.getValue());
+        }
+        values.put("_number", node.getStringValue("_number"));
+        return new MapNode(values, node.getNodeManager());
     }
+
+    /**
+     * Returns the related nodes of a certain node (defined by the query), <em>including</em> the one that where related to it in the current transaction.
+     *
+     * This code understand how the MMBase 'transactions' work.  If the transaction implementation
+     * changes, (which seems a good idea) this will get broken, but well, we'll fix this too, then,
+     * hopefully.
+     * @since MMBase-1.9.2
+     */
+    public static List<Node> getRelatedNodesInTransaction(Node startNode, NodeQuery q) {
+
+        List<Node> newNodes = new ArrayList<Node>();
+
+        if (! (startNode.getCloud() instanceof Transaction)) {
+            // Only if the cloud is a transaction there can be uncommited new relations in the query result.
+            newNodes.addAll(q.getNodeManager().getList(q));
+            return newNodes;
+        }
+        List<Step> steps = q.getSteps();
+        if (steps.size() != 3) {
+            throw new IllegalArgumentException("Only implemented for related nodes queries (those have excactly 3 steps)");
+        }
+
+        NodeQuery clone = (NodeQuery) q.clone();
+        Queries.addSortedFields(clone);
+
+        Transaction t = (Transaction) startNode.getCloud();
+
+        if (startNode.getNumber() > 0) {
+            newNodes.addAll(t.getList(clone));
+        }
+
+        log.debug("" + newNodes.size());
+
+        Step sourceStep = steps.get(0);
+        RelationStep relStep = (RelationStep) steps.get(1);
+
+        NodeManager insrel = t.getNodeManager(relStep.getTableName());
+        int         role   = relStep.getRole();
+
+        Step destStep = steps.get(2);
+
+
+        String number;
+        if (startNode.getNumber() < 0) { // The start node _itself_ is new
+            number = startNode.getStringValue("_number");
+        } else {
+            number = startNode.getStringValue("number");
+        }
+
+        int directionality = relStep.getDirectionality();
+
+        // The transaction code is horribly convoluted.
+        for (Node n : t.getNodes()) {
+            if (n.getNumber() < 0 && ! n.getStringValue("_exists").equals("nolonger")) { // NEW and not DELETED again
+                String tempNumber = n.getStringValue("_number");
+                if (n instanceof Relation) {
+                    Relation r = (Relation) n;
+                    log.debug("Considering" + r);
+                    if (r.getIntValue("rnumber") != role) {
+                        log.debug("Role of " + r + "  is not " + role);
+                        continue;
+                    }
+
+                    // Make sure the relation obeys the relation step
+                    if (! (insrel.equals(r.getNodeManager()) || insrel.getDescendants().contains(r.getNodeManager()))) {
+                        log.debug("Nodemanaager of " + r + "  is not " + insrel);
+                        continue;
+                    }
+                    String sNumber = r.getIntValue("snumber") < 0 ? r.getStringValue("_snumber") : r.getStringValue("snumber");
+                    String dNumber = r.getIntValue("dnumber") < 0 ? r.getStringValue("_dnumber") : r.getStringValue("dnumber");
+
+
+
+                    if (sNumber.equals(number) && directionality != RelationStep.DIRECTIONS_SOURCE) {
+                        log.debug("snumber " + sNumber + " = " + number + " adding " + dNumber + " " + directionality);
+                        newNodes.add(0, Queries.clusterNode(r, relStep.getAlias(), t.getNode(dNumber)));
+                    } else if (dNumber.equals(number)  && directionality != RelationStep.DIRECTIONS_DESTINATION) {
+                        System.out.print("dnumber " + sNumber + " = " + number + " adding " + sNumber + " " + directionality);
+                        newNodes.add(0, Queries.clusterNode(r, relStep.getAlias(), t.getNode(sNumber)));
+                    } else {
+                        log.debug(sNumber + " -> " + dNumber + "Is not a relation from start node " + number + " " + directionality);
+                    }
+
+                } else {
+                    log.debug("" + n + " is not a relation");
+
+                }
+            } else {
+                log.debug("" + n + " is deleted or not new");
+            }
+        }
+
+        // newNodes now contain the correct nodes. Now make sure these nodes are in the _correct order_.
+
+        Collections.sort(newNodes, getComparator(clone));
+
+        // make the nodes 'normal' again (there are odd 'MapNodes' used now)
+        for (int i = 0; i < newNodes.size(); i++) {
+            Node n = newNodes.get(i);
+            String nn = n.getStringValue(destStep.getAlias() + ".number");
+            if (nn.length() == 0) nn = n.getStringValue("_number");
+            assert t.hasNode(nn) : "Node: " + n.getClass() + n;
+            newNodes.set(i, t.getNode(nn));
+        }
+
+        return newNodes;
+
+    }
+
+
 
 }

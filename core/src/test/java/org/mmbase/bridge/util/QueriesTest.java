@@ -27,6 +27,9 @@ import static org.junit.Assume.*;
  */
 public class QueriesTest  {
 
+    private static final String REMOTE_URI = "rmi://127.0.0.1:1111/remotecontext";
+    private static Cloud remoteCloud;
+
     public DummyCloudContext getCloudContext() {
         return DummyCloudContext.getInstance();
     }
@@ -36,6 +39,15 @@ public class QueriesTest  {
         DummyCloudContext.getInstance().clear();
         DummyCloudContext.getInstance().addCore();
         DummyCloudContext.getInstance().addNodeManagers(DummyBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
+        try {
+            CloudContext c =  ContextProvider.getCloudContext(REMOTE_URI);
+            remoteCloud = c.getCloud("mmbase", "class", null);
+            System.out.println("Found remote cloud " + remoteCloud);
+        } catch (Exception e) {
+            System.err.println("Cannot get RemoteCloud. (" + e.getMessage() + "). Some tests will be skipped. (but reported as succes: see http://jira.codehaus.org/browse/SUREFIRE-542)");
+            System.err.println("You can start up a test-environment for remote tests: trunk/example-webapp$ mvn jetty:run");
+            remoteCloud = null;
+        }
     }
 
 
@@ -89,7 +101,7 @@ public class QueriesTest  {
     }
 
     @Test
-    public void getSortOrderFieldValue() {
+    public void getSortOrderFieldValueSimple() {
         Cloud cloud = getCloudContext().getCloud("mmbase");
         Node node = cloud.getNodeManager("object").createNode();
         node.commit();
@@ -99,17 +111,54 @@ public class QueriesTest  {
         assertEquals("" + node.getNumber(), Queries.getSortOrderFieldValue(node, so).toString());
     }
 
+    // ================================================================================
+    // Tests below this assume an RMMCI connection
+    // ================================================================================
+
+
+    @Test
+    public void nodeComparationsAndSorting() {
+        assumeNotNull(remoteCloud);
+        Cloud cloud = remoteCloud;
+        Node node = cloud.getNode("default.mags");
+        NodeQuery q = Queries.createRelatedNodesQuery(node, cloud.getNodeManager("news"), "posrel", "destination");
+        String before = q.toSql();
+        List<SortOrder> sos = Queries.addSortOrders(q, "posrel.pos,number", "UP");
+        assertEquals(q.toSql() + sos, 2, sos.size());
+        assertEquals("" + node.getNumber(), Queries.getSortOrderFieldValue(node, sos.get(1)).toString());
+
+
+        NodeQuery clone = (NodeQuery) q.clone();
+        Queries.addSortedFields(clone);
+
+        assertEquals(clone.getNodeManager().getList(clone), q.getNodeManager().getList(q));
+
+        NodeList nl = cloud.getList(clone);
+        assertTrue(nl.size() >= 2);
+
+        Node multi1 = nl.get(0);
+        assertEquals("" + multi1.getStringValue("posrel.pos"), Queries.getSortOrderFieldValue(multi1, sos.get(0)).toString());
+
+        Node multi2 = nl.get(1);
+
+        List<Node> multis = new ArrayList<Node>();
+        multis.add(multi2);
+        multis.add(multi1);
+
+        Comparator<Node> comp = Queries.getComparator(q);
+
+        Collections.sort(multis, comp);
+
+        assertEquals(multi1, multis.get(0));
+        assertEquals(multi2, multis.get(1));
+
+    }
+
 
     @Test
     public void reorderResults() {
-        CloudContext c = null;
-        try {
-            c =  ContextProvider.getCloudContext("rmi://127.0.0.1:1111/remotecontext");
-        } catch (Exception e) {
-            System.err.println("Skipping while " + e.getMessage());
-            assumeNoException(e);
-        }
-        Cloud cloud = c.getCloud("mmbase", "class", null);
+        assumeNotNull(remoteCloud);
+        Cloud cloud = remoteCloud;
         Node node = cloud.getNode("default.mags");
 
         NodeQuery q = Queries.createRelatedNodesQuery(node, cloud.getNodeManager("news"), "posrel", "destination");
@@ -134,6 +183,80 @@ public class QueriesTest  {
         }
 
         assertEquals(nodeNumbers, nodeNumbers2);
+
+    }
+
+
+    String toString(List<Node> list, String pref) {
+        StringBuilder b = new StringBuilder();
+        for (Node n : list) {
+            if (b.length() > 0) b.append(",");
+            int i = n.getNumber();
+            if (i != -1) {
+                b.append("" + i);
+            } else {
+                b.append(n.getStringValue(pref + ".number"));
+            }
+        }
+        return b.toString();
+    }
+
+    void assertListEqual(List<Node> list1, String pref1, List<Node> list2, String pref2) {
+        assertEquals(list1.size(), list2.size());
+
+        for (int i = 0; i < list1.size(); i++) {
+            Node n1 = list1.get(i);
+            Node n2 = list2.get(i);
+            if (pref1 != null) n1 = n1.getNodeValue(pref1 + ".number");
+            if (pref2 != null) n2 = n2.getNodeValue(pref2 + ".number");
+
+            assertEquals(n1, n2);
+        }
+    }
+
+    @Test
+    public void getRelatedNodes() {
+        assumeNotNull(remoteCloud);
+        Cloud cloud = remoteCloud;
+        Node node = cloud.getNode("default.mags");
+
+        // must basic implementation used by e.g. mm:relatednodes
+        NodeList relatedNodes =  Queries.getRelatedNodes(node, cloud.getNodeManager("news"), "posrel", "destination", "pos", "DOWN");
+
+
+        // implemetnation based on NodeQuery
+        NodeQuery q = Queries.createRelatedNodesQuery(node, cloud.getNodeManager("news"), "posrel", "destination");
+        Queries.addSortOrders(q, "posrel.pos,number", "DOWN");
+        List<Node> relatedNodes2 = Queries.getRelatedNodesInTransaction(node, q); // outside a transaction it works too
+
+        System.out.println(toString(relatedNodes, "news") + " =? " + toString(relatedNodes2, null));
+        assertListEqual(relatedNodes, "news", relatedNodes2, (String) null);
+
+        int sizeBefore = relatedNodes2.size();
+
+        // Now for the really insteresting stuff.
+        {
+            Transaction t = cloud.getTransaction("relatednodes");
+            Node magNode = t.getNode("default.mags");
+            Node newNode = t.getNodeManager("news").createNode();
+            newNode.setStringValue("title", "Test node of " + QueriesTest.class.getName());
+
+            Queries.addToResult(q, newNode);
+
+            //
+            List<Node> relatedNodesInTransaction = Queries.getRelatedNodesInTransaction(magNode, q);
+
+            assertEquals(sizeBefore + 1, relatedNodesInTransaction.size());
+
+            assertTrue(relatedNodesInTransaction.contains(newNode));
+
+            // order of posrel was DOWN, so this newNode should even be the first one in this list:
+
+            assertEquals(newNode, relatedNodesInTransaction.get(0));
+        }
+
+
+
 
 
     }
