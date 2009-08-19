@@ -62,6 +62,7 @@ public class DummyNodeManager extends AbstractNodeManager  {
     }
 
 
+    @Override
     public Map<String, String> getProperties() {
         return vcloud.cloudContext.nodeManagers.get(getName()).properties;
     }
@@ -69,6 +70,15 @@ public class DummyNodeManager extends AbstractNodeManager  {
     @Override
     protected Map<String, Field> getFieldTypes() {
         return Collections.unmodifiableMap(map);
+    }
+
+    @Override
+    public NodeList getList(NodeQuery query) {
+        NodeList result = cloud.createNodeList();
+        for (DummyCloudContext.NodeDescription nd : vcloud.cloudContext.nodes.values()) {
+        }
+        return result;
+
     }
 
 
