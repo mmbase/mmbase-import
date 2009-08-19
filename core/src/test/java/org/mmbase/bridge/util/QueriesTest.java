@@ -27,7 +27,7 @@ import static org.junit.Assume.*;
  */
 public class QueriesTest  {
 
-    private static final String REMOTE_URI = "rmi://127.0.0.1:1111/remotecontext";
+    private static final String REMOTE_URI = "rmi://127.0.0.1:1111/exampleremotecontext";
     private static Cloud remoteCloud;
 
     public DummyCloudContext getCloudContext() {
