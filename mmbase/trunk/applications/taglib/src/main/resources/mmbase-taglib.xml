@@ -1779,6 +1779,15 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
+    <attribute>
+      <name>usetransaction</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.9.2</since>
+      <info>Whether the result must mirror the changes made in the current transaction. This currently defaults to false, because the code is a bit experimental.
+      You can set it to true though, if you need something like this, and it may just work! If you really _dont_ want this to happen, you may explicitely set this to false already.
+      </info>
+    </attribute>
     <example>&lt;mm:node number="Magazine" &gt;
 &lt;mm:relatednodes type="news" &gt;
   &lt;mm:first&gt;news in this magazine&lt;/mm:first&gt;
