@@ -174,7 +174,32 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         if (query instanceof NodeQuery) {
             NodeQuery nq = (NodeQuery) query;
             if (usetransaction.getString(this).equals("true") && nq.getSteps().size() >= 3) {
-                Node startNode = getNode();
+                Step firstStep = nq.getSteps().get(0);
+                Set<Integer> nodes = firstStep.getNodes();
+                Node startNode;
+                if (nodes == null || nodes.size() == 0) {
+                    // probably this startNode is _new_ See remarks in RelatedNodesConstainer
+                    Constraint c = query.getConstraint();
+                    if (c instanceof CompositeConstraint) {
+                        for (Constraint sub : ((CompositeConstraint) c).getChilds()) {
+                            if (sub instanceof FieldValueConstraint) {
+                                FieldValueConstraint fvc = (FieldValueConstraint) sub;
+                                if (fvc.getField().getStep().equals(firstStep) && fvc.getField().getFieldName().equals("owner")) {
+                                    c = fvc;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    FieldValueConstraint fvc = (FieldValueConstraint) c;
+                    String value = (String) fvc.getValue();
+                    startNode = query.getCloud().getNode(value);
+                } else {
+                    startNode = query.getCloud().getNode(nodes.iterator().next());
+                }
+
+
+
                 return new org.mmbase.bridge.implementation.BasicNodeList(Queries.getRelatedNodesInTransaction(startNode, nq), nq.getNodeManager());
             } else {
                 return nq.getNodeManager().getList(nq);
