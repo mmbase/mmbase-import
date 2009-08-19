@@ -180,6 +180,15 @@ See http://www.MMBase.org/license
       <artifactId>junit</artifactId>
       <version>4.4</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.mmbase.tests</groupId>
+      <artifactId>mmbase-rmmci</artifactId>
+      <version>1.9.2.0</version>
+      <classifier>client-skinny</classifier>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <reporting>
