@@ -7,9 +7,7 @@
     >
   <!--
 
-
-
-
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
 
 
       @author Michiel Meeuwissen
@@ -165,7 +163,6 @@
   </mm:relatednodescontainer>
 
 
-
   <mm:context scope="session" id="${rid}_context">
 
     <mm:import from="parent" id="seq"       externid="seq" />
@@ -281,24 +278,16 @@
         <mm:relatednodescontainer referid="clonedquery">
           <mm-sr:deletedConstraint parameters="${parameters}" />
 
-          <c:if test="${_create and _createposition eq 'top'}">
-            <mm-sr:newNodes />
-          </c:if>
-
-          <mm:relatednodes id="related">
+          <mm:relatednodes id="related" usetransaction="true">
             <c:catch var="e">
               <mm:include
                   page="/mmbase/searchrelate/list/li.jspx"
                   referids="rid">
               </mm:include>
-
             </c:catch>
             <mm:escape>${e}</mm:escape>
-          </mm:relatednodes>
 
-          <c:if test="${_create and _createposition eq 'bottom'}">
-            <mm-sr:newNodes />
-          </c:if>
+          </mm:relatednodes>
 
         </mm:relatednodescontainer>
       </ol>
