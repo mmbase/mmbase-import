@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.BridgeCollections;
+import org.mmbase.storage.search.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.security.*;
@@ -29,7 +30,7 @@ import org.w3c.dom.Document;
  * availabe in memory and is in no way persistent.
  *
  * Also, at the moment, it is only <em>partially</em> working. You will easily encounter many {@link
- * UnsupportedOperationExceptions}s and other kind of errors. For several simple tests it is however useful already.
+ * UnsupportedOperationException}s and other kind of errors. For several simple tests it is however useful already.
 
  * The object model must be manually set up using the several <code>addNodeManager</code>
  * methods. The 'core' model is created with {@link #addCore}. Current implementation will basicly allow all 'related' and 'posrel' relations, but this
@@ -49,6 +50,23 @@ public class DummyCloudContext implements CloudContext {
     }
 
     public static final String CLOUD = "mmbase";
+
+    private static SearchQueryHandler searchQueryHandler =
+        new org.mmbase.storage.search.implementation.database.BasicQueryHandler(new org.mmbase.storage.search.implementation.database.BasicSqlHandler() {
+                @Override
+                public String getAllowedValue(String value) {
+                    return value;
+                }
+                @Override
+                protected void appendTableName(StringBuilder sb, Step step) {
+                    sb.append(step.getTableName());
+                    appendTableAlias(sb, step);
+                }
+                @Override
+                public String forceEncode(String st) {
+                    return st;
+                }
+            });
 
     static class NodeManagerDescription {
         public final String name;
@@ -246,5 +264,8 @@ public class DummyCloudContext implements CloudContext {
 
     public String getUri() {
         return "dummy://localhost";
+    }
+    public org.mmbase.storage.search.SearchQueryHandler getSearchQueryHandler() {
+        return searchQueryHandler;
     }
  }
