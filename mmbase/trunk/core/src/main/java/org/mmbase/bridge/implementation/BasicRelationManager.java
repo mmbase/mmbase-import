@@ -172,10 +172,10 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         // maybe should be made more flexible?
         //
         if (sourceNode.getCloud() != cloud) {
-            throw new BridgeException("Relationmanager and source node are not in the same transaction or in different clouds." + sourceNode.getCloud() + " != " + cloud);
+            throw new BridgeException("Relationmanager and source node are not in the same transaction or in different clouds. " + sourceNode.getCloud() + "(source node) != " + cloud + " (relationmanager)");
         }
         if (destinationNode.getCloud() != cloud) {
-            throw new BridgeException("Relationmanager and destination node are not in the same transaction or in different clouds.");
+            throw new BridgeException("Relationmanager and destination node are not in the same transaction or in different clouds. " + destinationNode.getCloud() + "(destination node) != " + cloud + " (relationmanager)");
         }
         if (!(cloud instanceof Transaction)  && (sourceNode.isNew() || destinationNode.isNew())) {
             throw new BridgeException("Cannot add a relation to a new node that has not been committed.");
