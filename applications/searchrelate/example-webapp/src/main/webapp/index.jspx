@@ -14,8 +14,14 @@
 
       <head>
         <style>
-          .done {
-          text-decoration: line-through;
+          li a {
+          color: #500;
+          }
+          li.done a {
+          color: #050;
+          }
+          .todo .done {
+            text-decoration: line-through;
           }
         </style>
       </head>
@@ -24,19 +30,19 @@
         <h1>Search and Relate examples/tests</h1>
 
         <ul>
-          <li>
+          <li class="done">
             <mm:link page="relatednodes.jspx">
               <a href="${_}">mm-sr:relatednodes</a>
             </mm:link>
           </li>
 
-          <li>
+          <li class="done">
             <mm:link page="relatednodes-nested.jspx">
               <a href="${_}">mm-sr:relatednodes nested</a>
             </mm:link>
           </li>
 
-          <li>
+          <li class="done">
             <mm:link page="mmform-relatednodes.jspx">
               <a href="${_}">mm-sr:relatednodes in an mm:form</a>
             </mm:link>
@@ -56,7 +62,7 @@
         </ul>
 
         <h1>TODO</h1>
-        <ul>
+        <ul class="todo">
           <li class="done">In transaction: Since <em>new</em> nodes are not yet in the query-result, they cannot be edited, and disapper on reload.</li>
           <li class="done">In transaction: This is also valid, but inversely, for <em>deleted</em> nodes and relations. They still are in de query result.</li>
           <li>'Sortable' is not yet saved.

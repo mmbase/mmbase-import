@@ -8,11 +8,12 @@
   <mm:node number="default.mags">
     <h3><mm:field name="title" /></h3>
 
-    <mm-sr:relatednodes type="news"
-			fields="number,title"
-			unlink="true"
-			max="6"
-                        sortable="true" search="true" />
+    <mm-sr:relatednodes
+        type="news"
+        fields="number,title"
+        unlink="true"
+        max="6"
+        sortable="true" search="true" />
 
   </mm:node>
   <h2>2</h2>

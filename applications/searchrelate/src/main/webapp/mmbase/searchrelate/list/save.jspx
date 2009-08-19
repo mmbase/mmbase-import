@@ -14,9 +14,9 @@
 
   -->
   <div class="saveresult">
-    <mm:listnodescontainer clone="parameters.query">
+    <mm:relatednodescontainer clone="parameters.query">
       <mm-sr:deletedConstraint parameters="${parameters}" />
-      <mm:listnodes>
+      <mm:relatednodes usetransaction="true">
         <mm:import id="formtagid">
           <c:choose>
             <c:when test="${empty parameters.formtag}">node${_node}</c:when>
@@ -47,13 +47,9 @@
             </span>
           </c:if>
         </mm:form>
-      </mm:listnodes>
-    </mm:listnodescontainer>
-    <c:if test="${! parameters.autosubmit}">
-      <mm:form name="${parameters.formtag}" >
-        <mm-sr:newNodes parameters="${parameters}" />
-      </mm:form>
-    </c:if>
+      </mm:relatednodes>
+    </mm:relatednodescontainer>
+
 
   </div>
 </mm:cloud>

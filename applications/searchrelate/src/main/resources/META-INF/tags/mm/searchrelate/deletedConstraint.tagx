@@ -19,7 +19,7 @@
     <c:set var="parameters" value="${requestScope['org.mmbase.sr.relatednodes.parameters']}" />
   </c:if>
 
-  <c:if test="${! empty parameters.formtag}">
+  <c:if test="${! parameters.autosubmit}">
 
     <mm:cloud method="asis"> <!-- makes sure the current cloud is not already the tranaction -->
       <mm:transaction

@@ -16,7 +16,8 @@
         class="node_${_node} ${className}"
         xmlns="http://www.w3.org/1999/xhtml">
 
-      <mm:import id="fieldlistid">${parameters.fieldlistidprefix}_${_node}</mm:import>
+      <mm:import id="fieldlistid">${parameters.fieldlistidprefix}_<mm:escape escape="identifier">${_node}</mm:escape></mm:import>
+
       <c:choose>
         <c:when test="${! empty parameters.formtag}">
           <mm:include debug="html"
