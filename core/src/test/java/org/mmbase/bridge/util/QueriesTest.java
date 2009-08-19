@@ -27,7 +27,7 @@ import static org.junit.Assume.*;
  */
 public class QueriesTest  {
 
-    public CloudContext getCloudContext() {
+    public DummyCloudContext getCloudContext() {
         return DummyCloudContext.getInstance();
     }
 
@@ -86,6 +86,17 @@ public class QueriesTest  {
         Cloud cloud = getCloudContext().getCloud("mmbase");
         NodeQuery q = cloud.getNodeManager("object").createQuery();
         Queries.createConstraint(q, "number", Queries.getOperator("LT"), new Integer(1));
+    }
+
+    @Test
+    public void getSortOrderFieldValue() {
+        Cloud cloud = getCloudContext().getCloud("mmbase");
+        Node node = cloud.getNodeManager("object").createNode();
+        node.commit();
+
+        NodeQuery q = cloud.getNodeManager("object").createQuery();
+        SortOrder so = Queries.addSortOrders(q, "number", "UP").get(0);
+        assertEquals("" + node.getNumber(), Queries.getSortOrderFieldValue(node, so).toString());
     }
 
 
