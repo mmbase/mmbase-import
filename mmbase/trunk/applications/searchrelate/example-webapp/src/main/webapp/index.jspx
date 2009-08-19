@@ -20,6 +20,7 @@
         </style>
       </head>
       <body>
+        <jsp:scriptlet>((HttpServletRequest) pageContext.getRequest()).getSession(true).invalidate();</jsp:scriptlet>
         <h1>Search and Relate examples/tests</h1>
 
         <ul>
@@ -74,7 +75,7 @@
           <li>Nested mm-sr:relatednodes should work too
           <ul>
             <li>In transaction</li>
-            <li>Transactionless (used to work, but is broken now)</li>
+            <li class="done">Transactionless (used to work, but is broken now)</li>
           </ul>
           </li>
 	  <li>It should be somehow visible that a list is 'sortable'</li>
@@ -85,7 +86,7 @@
 	</p>
 	<mm:escape escape="links">$URL$</mm:escape>
 	<hr />
-	<mm:component name="searchrelate" 
+	<mm:component name="searchrelate"
 		      block="searchrelate-documentation" />
       </body>
     </mm:cloud>

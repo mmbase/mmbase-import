@@ -9,19 +9,19 @@
   <jsp:directive.include file="parameters.jspf" />
 
   <mm:import externid="className"></mm:import>
+  <mm:import id="inform">false</mm:import>
 
   <mm:locale language="${parameters.language}">
     <li
         class="node_${_node} ${className}"
         xmlns="http://www.w3.org/1999/xhtml">
+
+      <mm:import id="fieldlistid">${parameters.fieldlistidprefix}_${_node}</mm:import>
       <c:choose>
         <c:when test="${! empty parameters.formtag}">
           <mm:include debug="html"
                       page="${parameters.item}"
-                      referids="rid">
-            <mm:param name="source" value="${parameters.source}" />
-            <mm:param name="fields" value="${parameters.fields}" />
-            <mm:param name="fieldlistType" value="${parameters.fieldlistType}" />
+                      referids="rid,fieldlistid">
           </mm:include>
         </c:when>
         <c:otherwise>
@@ -29,10 +29,7 @@
           <mm:form name="${formtagid}">
             <mm:include debug="html"
                         page="${parameters.item}"
-                        referids="rid">
-              <mm:param name="source" value="${parameters.source}" />
-              <mm:param name="fields" value="${parameters.fields}" />
-              <mm:param name="fieldlistType" value="${parameters.fieldlistType}" />
+                        referids="rid,fieldlistid">
             </mm:include>
             <mm:cancel />
           </mm:form>
