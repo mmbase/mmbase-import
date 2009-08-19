@@ -76,7 +76,7 @@ public class BasicSqlHandler implements SqlHandler {
         }
         return forceEncode(result);
     }
-    public static String forceEncode(String st) {
+    public String forceEncode(String st) {
         DatabaseStorageManagerFactory factory = (DatabaseStorageManagerFactory) MMBase.getMMBase().getStorageManagerFactory();
         if (factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
             String encoding = factory.getMMBase().getEncoding();
