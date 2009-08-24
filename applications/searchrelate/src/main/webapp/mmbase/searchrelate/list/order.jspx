@@ -7,11 +7,10 @@
     >
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.include file="parameters.jspf" />
-  <mm:import externid="post" />
   <div class="saveresult">
     <query>${parameters.query.sql}</query>
     <c:choose>
-      <c:when test="${parameters.autosubmit or ! empty post}">
+      <c:when test="${parameters.autosubmit}">
         <mm:import externid="order" required="true" jspvar="order" vartype="list" />
 
         <jsp:scriptlet>
@@ -21,9 +20,6 @@
           }
         </jsp:scriptlet>
         <jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression>
-        <mm:present referid="post">
-          <mm:write session="${rid}_order" value="" />
-        </mm:present>
       </c:when>
       <c:otherwise>
         <mm:import externid="order" required="true" jspvar="order" vartype="string" />
