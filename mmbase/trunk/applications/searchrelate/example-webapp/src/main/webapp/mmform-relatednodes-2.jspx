@@ -18,18 +18,16 @@
           role="posrel"
           unlink="true"
           delete="true"
-          fields="number,url"
+          fields="url"
           sortable="true"
-          search="true"
           >
-        <h4>${rid}</h4>
+        <h4>${rid}: urls </h4>
       </mm-sr:relatednodes>
 
-      <h3><mm:field name="title" /></h3>
       <mm-sr:relatednodes
           idvar="rid2"
           type="images" fields="title,handle">
-        <h4>${rid2}</h4>
+        <h4>${rid2}: images</h4>
       </mm-sr:relatednodes>
     </mm:listnodes>
 
