@@ -51,6 +51,7 @@ function List(d) {
     this.cursize = parseInt(this.cursize);
 
     if (this.sortable) {
+        /*
         if (this.order != "") {
             var o = this.order.split(",");
             for (node in o) {
@@ -61,6 +62,7 @@ function List(d) {
                 });
 
         }
+        */
         $(this.div).find("ol").sortable({
                 update: function(event, ui) { self.saveOrder(event, ui); }
             });
