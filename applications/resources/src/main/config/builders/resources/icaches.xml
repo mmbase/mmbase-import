@@ -10,21 +10,21 @@
   <searchage>14</searchage>
 
   <names>
-     <singular xml:lang="en">Cached Image</singular>
-     <singular xml:lang="nl">Gebufferd Plaatje</singular>
-     <singular xml:lang="fr">Image Antémémoire</singular>
-     <singular xml:lang="eo">Kaŝmemorita Bildo</singular>
+     <singular xml:lang="en">Cached image</singular>
+     <singular xml:lang="nl">Gebufferde afbeelding</singular>
+     <singular xml:lang="fr">Image antémémoire</singular>
+     <singular xml:lang="eo">Kaŝmemorita bildo</singular>
      <singular xml:lang="it">Immagine nella memoria nascosta</singular>
 
-     <plural xml:lang="en">Cached Images</plural>
-     <plural xml:lang="nl">Gebufferde Plaatjes</plural>
+     <plural xml:lang="en">Cached images</plural>
+     <plural xml:lang="nl">Gebufferde afbeeldingen</plural>
      <plural xml:lang="fr">Images antémémoire</plural>
-     <plural xml:lang="eo">Kaŝmemoritaj Bildoj</plural>
+     <plural xml:lang="eo">Kaŝmemoritaj bildoj</plural>
      <plural xml:lang="it">Immagini nella memoria nascosta</plural>
   </names>
   <descriptions>
      <description xml:lang="en">Cache for rendered images</description>
-     <description xml:lang="nl">Buffer  voor bewerkte plaatjes</description>
+     <description xml:lang="nl">Buffer voor bewerkte afbeeldingen</description>
      <description xml:lang="fr">Cachant la table pour rendues des images</description>
      <description xml:lang="eo">Kaŝmemoranta tabelo por konvertitaj bildoj</description>
      <description xml:lang="it">Memoria nascosta per le immagini elaborate</description>
@@ -52,7 +52,7 @@
     <field name="ckey" state="system">
       <descriptions>
         <description xml:lang="en">Unique key for accessing cached image</description>
-        <description xml:lang="nl">Unieke sleutel om een gecached plaatje op te halen</description>
+        <description xml:lang="nl">Unieke sleutel om een gecachede afbeelding op te halen</description>
         <description xml:lang="eo">Unike identigas, kaj difinas, la kaŝmemoritan bildon</description>
       </descriptions>
       <gui>
@@ -99,11 +99,11 @@
     <field name="handle">
       <descriptions>
         <description xml:lang="en">The cached image</description>
-        <description xml:lang="nl">Het gecachte plaatje</description>
+        <description xml:lang="nl">De gecachte afbeelding</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Image</guiname>
-        <guiname xml:lang="nl">Plaatje</guiname>
+        <guiname xml:lang="nl">Afbeelding</guiname>
         <guiname xml:lang="fr">Image</guiname>
         <guiname xml:lang="eo">Bildo</guiname>
         <guiname xml:lang="it">Immagine</guiname>
@@ -124,11 +124,11 @@
         <description xml:lang="nl">Mimetype van de afbeelding</description>
       </descriptions>
       <gui>
-        <guiname xml:lang="en">ImageType</guiname>
-        <guiname xml:lang="fr">ImageTapent</guiname>
-        <guiname xml:lang="nl">PlaatjesType</guiname>
-        <guiname xml:lang="eo">Bildotipo</guiname>
-        <guiname xml:lang="it">ImmagineTipo</guiname>
+        <guiname xml:lang="en">Image type</guiname>
+        <guiname xml:lang="fr">Image tapent</guiname>
+        <guiname xml:lang="nl">Afbeeldingstype</guiname>
+        <guiname xml:lang="eo">Bildo tipo</guiname>
+        <guiname xml:lang="it">Immagine tipo</guiname>
       </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
          <required value="true" enforce="never" />
@@ -139,7 +139,7 @@
     <field name="filesize" state="system">
       <descriptions>
         <description xml:lang="en">Filesize of the cached image</description>
-        <description xml:lang="nl">Filegrootte van het gecachte plaatje</description>
+        <description xml:lang="nl">Filegrootte van de gecachede afbeelding</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Size</guiname>
@@ -154,7 +154,7 @@
     <field name="width" state="system">
       <descriptions>
         <description xml:lang="en">Width of the image in pixels</description>
-        <description xml:lang="nl">Breedte van het plaatje in pixels</description>
+        <description xml:lang="nl">Breedte van de afbeelding in pixels</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Width</guiname>
@@ -167,7 +167,7 @@
     <field name="height" state="system">
       <descriptions>
         <description xml:lang="en">Height of the image in pixels</description>
-        <description xml:lang="nl">Hoogte van het plaatje in pixels</description>
+        <description xml:lang="nl">Hoogte van de afbeelding in pixels</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Height</guiname>
