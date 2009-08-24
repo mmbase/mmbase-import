@@ -61,7 +61,7 @@ function List(d) {
                     var nodeli = self.getLiForNode(o[node]);
                     var ol = $(this.div).find("ol")[0];
                     if (nodeli.length > 0) {
-                        $(nodeli[0]).addClass("pos_" + node);
+                        $(nodeli[0]).addClass("pos-" + node);
                         ol.appendChild(nodeli[0]);
                     }
                 }
@@ -569,25 +569,38 @@ List.prototype.getNodeForLi  = function(li) {
     return $(li).attr("id").substring(("node_" + this.rid + "_").length);
 }
 
+List.prototype.getOriginalPosition  = function(li) {
+    var classes = $(li).attr("class").split(' ');
+    for (var i in classes) {
+        var cl = classes[i];
+        if (cl.indexOf("origPos-") == 0) {
+            return cl.substring("origPos-".length);
+        }
+    }
+}
+
 List.prototype.afterPost = function() {
     //console.log("posted!" + this.order);
     if (this.sortable) {
         var order = "";
+        var originalOrder = "";
         var self = this;
         $(self.div).find("li").each(function() {
                 if (order != "") {
                     order += ",";
+                    originalOrder += ",";
                 }
                 order += self.getNodeForLi(this);
+                originalOrder += self.getOriginalPosition(this);
             });
         var params = this.getListParameters();
         params.order = order;
-        params.post = "true";
+        params.originalOrder = originalOrder;
         var self = this;
         this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
         $.ajax({ type: "POST",
                     async: true,
-                    url: "${mm:link('/mmbase/searchrelate/list/order.jspx')}",
+                    url: "${mm:link('/mmbase/searchrelate/list/submitOrder.jspx')}",
                     data: params,
                     complete: function(req, textStatus) {
                     self.status('<fmt:message key="saved" />', true);

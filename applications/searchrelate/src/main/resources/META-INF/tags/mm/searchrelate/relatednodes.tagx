@@ -287,7 +287,7 @@
               <mm:include
                   page="/mmbase/searchrelate/list/li.jspx"
                   referids="rid">
-                <mm:param name="className">origPos_<mm:index offset="0"/></mm:param>
+                <mm:param name="className">origPos-<mm:index offset="0"/></mm:param>
               </mm:include>
             </c:catch>
             <mm:escape>${e}</mm:escape>
