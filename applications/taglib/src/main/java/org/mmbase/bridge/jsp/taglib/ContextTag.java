@@ -167,7 +167,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                     }
                 }
                 o = pageContext.getAttribute(id, s);
-                log.info("picking up from " + id + " in " + scope.getString(this) + " ->" + o);
+                log.debug("picking up from " + id + " in " + scope.getString(this) + " ->" + o);
             }
             if (o == null || "".equals(o)) { // that means, lets ignore it.
                 log.debug("Nothing foudn");
@@ -213,7 +213,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
                 }
             }
             ContextContainer storedContainer =  new StandaloneContextContainer(id, container.getBacking().getOriginalMap(), container.getBacking().isELIgnored());
-            log.info("Using " + id + " to store in " + scope.getString(this) + " " + storedContainer);
+            log.debug("Using " + id + " to store in " + scope.getString(this) + " " + storedContainer);
 
             pageContext.setAttribute(id, storedContainer, s);
         }
