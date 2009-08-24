@@ -283,13 +283,12 @@
       <ol class="${query.nodeManager.name}">
 
         <mm:relatednodescontainer referid="clonedquery">
-          <mm-sr:deletedConstraint parameters="${parameters}" />
-
           <mm:relatednodes id="related" usetransaction="true">
             <c:catch var="e">
               <mm:include
                   page="/mmbase/searchrelate/list/li.jspx"
                   referids="rid">
+                <mm:param name="className">origPos_<mm:index offset="0"/></mm:param>
               </mm:include>
             </c:catch>
             <mm:escape>${e}</mm:escape>
