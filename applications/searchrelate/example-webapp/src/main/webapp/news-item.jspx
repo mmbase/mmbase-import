@@ -9,7 +9,7 @@
 
   <mm:field name="number" />
   <jsp:text>: </jsp:text>
-  <mm:field id="${parameter.fieldlistid}" name="title">
+  <mm:field id="${param.fieldlistid}" name="title">
     <mm:fieldinfo type="input" />
     <mm:fieldinfo type="errors" />
   </mm:field>
