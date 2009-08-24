@@ -9,20 +9,22 @@
 
   <mm:field name="number" />
   <jsp:text>: </jsp:text>
+
   <mm:field id="${param.fieldlistid}" name="title">
     <mm:fieldinfo type="input" />
     <mm:fieldinfo type="errors" />
   </mm:field>
+
   <mm-sr:unlink  />
   <mm-sr:delete  />
 
 
-  <mm-srt:relatednodes
+  <mm-sr:relatednodes
       idvar="pid"
       type="people"
       role="related"
       fields="number,firstname" search="false">
     <h4>${pid}</h4>
-  </mm-srt:relatednodes>
+  </mm-sr:relatednodes>
 
 </span>
