@@ -15,7 +15,6 @@
   -->
   <div class="saveresult">
     <mm:relatednodescontainer clone="parameters.query">
-      <mm-sr:deletedConstraint parameters="${parameters}" />
       <mm:relatednodes usetransaction="true">
         <mm:import id="formtagid">
           <c:choose>

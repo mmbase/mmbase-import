@@ -46,9 +46,4 @@
     <path>/META-INF/tags/mm/searchrelate/heartbeat.tagx</path>
   </tag-file>
 
-  <tag-file>
-    <name>deletedConstraint</name>
-    <path>/META-INF/tags/mm/searchrelate/deletedConstraint.tagx</path>
-  </tag-file>
-
 </taglib>
