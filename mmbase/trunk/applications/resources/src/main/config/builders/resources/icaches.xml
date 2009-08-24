@@ -99,7 +99,7 @@
     <field name="handle">
       <descriptions>
         <description xml:lang="en">The cached image</description>
-        <description xml:lang="nl">De gecachte afbeelding</description>
+        <description xml:lang="nl">De gecachede afbeelding</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Image</guiname>
