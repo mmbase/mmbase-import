@@ -6,11 +6,12 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="order" required="true" jspvar="order" vartype="list" />
   <jsp:directive.include file="parameters.jspf" />
   <div class="saveresult">
     <c:choose>
       <c:when test="${parameter.autosubmit}">
+        <mm:import externid="order" required="true" jspvar="order" vartype="list" />
+
         <jsp:scriptlet>
           java.util.List&lt;Integer&gt; iorder = new java.util.ArrayList&lt;Integer&gt;();
           for (Object o : order) {
@@ -20,8 +21,10 @@
         <jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression>
       </c:when>
       <c:otherwise>
+        <mm:import externid="order" required="true" jspvar="order" vartype="string" />
         <!-- do it later, there is little point, it won't work any way in a transaction -->
         <mm:write session="${rid}_order" value="${order}" />
+        <jsp:text>${rid}_order: ${order}</jsp:text>
       </c:otherwise>
     </c:choose>
   </div>
