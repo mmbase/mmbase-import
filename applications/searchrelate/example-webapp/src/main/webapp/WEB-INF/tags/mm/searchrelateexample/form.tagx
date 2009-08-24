@@ -36,7 +36,6 @@
       <jsp:doBody />
     </mm:node>
 
-    <mm:log level="info"> 3</mm:log>
     <input type="submit" name="submit" value="submit" />
     <jsp:text> | </jsp:text>
     <mm:link>
