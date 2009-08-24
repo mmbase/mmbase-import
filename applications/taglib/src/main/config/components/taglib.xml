@@ -75,9 +75,27 @@
     </body>
   </block>
 
+  <block name="test_import" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/import.jspx">
+    </body>
+  </block>
+
   <block name="test_image" mimetype="text/html"
          classification="taglib.test">
     <body jsp="test/image.jspx">
+    </body>
+  </block>
+
+  <block name="test_compare" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/compare.jspx">
+    </body>
+  </block>
+
+  <block name="test_include" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/include.jspx">
     </body>
   </block>
 
@@ -89,6 +107,8 @@
       </class>
     </body>
   </block>
+
+
 
 
   <block name="taglib-documentation"
@@ -128,10 +148,12 @@
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
         <param name="url">http://scm.mmbase.org/view/*checkout*/mmbase/trunk/applications/taglib/src/main/resources/mmbase-taglib.xml</param>
-        <param name="xslt">http://scm.mmbase.org/view/*checkout*/mmbase/trunk/applications/share/xslt/xml2block.xslt</param>
         <!--
-        <param name="xslt">file:///home/michiel/mmbase/trunk/applications/share/xslt/xml2block.xslt</param>
+        <param name="xslt">http://scm.mmbase.org/view/*checkout*/mmbase/trunk/applications/share/xslt/xml2block.xslt</param>
+
         -->
+
+        <param name="xslt">file:///home/michiel/mmbase/trunk/applications/share/xslt/xml2block.xslt</param>
       </class>
     </body>
   </block>
