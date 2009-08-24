@@ -50,19 +50,17 @@ function List(d) {
     this.max = parseInt(this.max);
     this.cursize = parseInt(this.cursize);
 
-    if (this.sortable) {
-        /*
+    if (this.sortable && this.autosubmit == 'false') {
         if (this.order != "") {
             var o = this.order.split(",");
             for (node in o) {
-                console.log(o[node]);
+                var nodeli = self.getLiForNode(o[node]);
+                var ol = $(this.div).find("ol")[0];
+                if (nodeli.length > 0) {
+                    ol.appendChild(nodeli[0]);
+                }
             }
-            $(this.div).find("ol li").each(function() {
-                    console.log(this);
-                });
-
         }
-        */
         $(this.div).find("ol").sortable({
                 update: function(event, ui) { self.saveOrder(event, ui); }
             });
@@ -155,6 +153,8 @@ List.prototype.log = function(msg) {
         }
     }
 };
+
+
 
 
 List.prototype.find = function(clazz, elname, parent) {
@@ -373,6 +373,7 @@ List.prototype.executeCallBack = function(type, element) {
 
 }
 
+
 List.prototype.needsCommit = function() {
     return this.lastChange != null &&
         (this.lastCommit == null || this.lastCommit.getTime() < this.lastChange.getTime());
@@ -501,9 +502,12 @@ List.prototype.commit = function(stale, leavePage) {
 
 List.prototype.saveOrder = function(event, ui) {
     var order = "";
+    var self = this;
     $(event.target).find("li").each(function() {
-            if (order != "") order += ",";
-            order += $(this).attr("class").substring("node_".length);
+            if (order != "") {
+                order += ",";
+            }
+            order += $(this).attr("id").substring(("node_" + self.rid + "_").length);
         });
     var params = this.getListParameters();
     params.order = order;
@@ -540,6 +544,14 @@ List.prototype.relate = function(event, relate, relater) {
 
             }
         });
+}
+
+List.prototype.getLiForNode = function(nodenumber) {
+    try {
+        return $("#node_" + this.rid + "_" + nodenumber);
+    } catch (ex) {
+        console.log(ex);
+    }
 }
 
 </mm:content>
