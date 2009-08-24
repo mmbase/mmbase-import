@@ -20,11 +20,20 @@
 
 
   <mm-sr:relatednodes
-      idvar="pid"
+      idvar="rid"
       type="people"
       role="related"
-      fields="number,firstname" search="false">
-    <h4>${pid}</h4>
+      fields="number,firstname">
+    <h3>${rid} authors</h3>
+
   </mm-sr:relatednodes>
+  <mm-sr:relatednodes
+      idvar="rid"
+      type="urls"
+      sortable="true"
+      fields="url">
+    <h3>${rid} urls</h3>
+  </mm-sr:relatednodes>
+
 
 </span>
