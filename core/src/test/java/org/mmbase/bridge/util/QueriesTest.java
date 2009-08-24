@@ -236,7 +236,9 @@ public class QueriesTest  {
 
         // Now for the really insteresting stuff.
         {
-            Transaction t = cloud.getTransaction("relatednodes");
+            // Adding a node
+
+            Transaction t = cloud.getTransaction("relatednodes1");
             Node magNode = t.getNode("default.mags");
             Node newNode = t.getNodeManager("news").createNode();
             newNode.setStringValue("title", "Test node of " + QueriesTest.class.getName());
@@ -253,6 +255,24 @@ public class QueriesTest  {
             // order of posrel was DOWN, so this newNode should even be the first one in this list:
 
             assertEquals(newNode, relatedNodesInTransaction.get(0));
+            t.cancel();
+        }
+
+        {
+            // Deleting a node
+            Transaction t = cloud.getTransaction("relatednodes2");
+            Node magNode = t.getNode("default.mags");
+            Node news = magNode.getRelatedNodes("news", "posrel", "destination").get(0);
+            news.delete(true);
+
+            List<Node> relatedNodesInTransaction = Queries.getRelatedNodesInTransaction(magNode, q);
+
+            assertEquals(sizeBefore - 1, relatedNodesInTransaction.size());
+
+            assertFalse(relatedNodesInTransaction.contains(news));
+
+            t.cancel();
+
         }
 
 

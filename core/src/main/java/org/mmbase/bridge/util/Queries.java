@@ -1723,11 +1723,10 @@ abstract public class Queries {
 
         Transaction t = (Transaction) startNode.getCloud();
 
-        if (startNode.getNumber() > 0) {
-            newNodes.addAll(t.getList(clone));
-        }
+        // The transaction code is rather convoluted.
 
-        log.debug("" + newNodes.size());
+
+
 
         Step sourceStep = steps.get(0);
         RelationStep relStep = (RelationStep) steps.get(1);
@@ -1745,9 +1744,34 @@ abstract public class Queries {
             number = startNode.getStringValue("number");
         }
 
+        // Make sure _deleted_ nodes don't appear in the query result
+
+        SortedSet<Integer> deletedNodes = new TreeSet<Integer>();
+        for (Node n : t.getNodes()) {
+            if (n.getNumber() > 0 && n.getStringValue("_exists").equals("nolonger")) { // DELETED
+                log.warn("" + n.getNumber() + " was deleted");
+                deletedNodes.add(n.getNumber());
+            }
+        }
+        if (deletedNodes.size() > 0) {
+            Queries.addConstraint(clone, clone.setInverse(clone.createConstraint(clone.createStepField(destStep.getAlias() + ".number"), deletedNodes), true));
+            Queries.addConstraint(clone, clone.setInverse(clone.createConstraint(clone.createStepField(relStep.getAlias() + ".number"), deletedNodes), true));
+        }
+
+
+        if (startNode.getNumber() > 0) {
+            newNodes.addAll(t.getList(clone));
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("" + newNodes.size() + " clone " + clone.toSql());
+        }
+
+
         int directionality = relStep.getDirectionality();
 
-        // The transaction code is horribly convoluted.
+
+        // The following code finds the newly made relations for this query, and adds them to the result
         for (Node n : t.getNodes()) {
             if (n.getNumber() < 0 && ! n.getStringValue("_exists").equals("nolonger")) { // NEW and not DELETED again
                 String tempNumber = n.getStringValue("_number");
