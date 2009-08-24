@@ -21,5 +21,7 @@
     </mm-sr:relatednodes>
   </mm:node>
   <hr />
-  <mm:escape escape="links">$URL$</mm:escape>
+  <p>
+    <mm:escape escape="links">$URL$</mm:escape>
+  </p>
 </mm-sre:html>
