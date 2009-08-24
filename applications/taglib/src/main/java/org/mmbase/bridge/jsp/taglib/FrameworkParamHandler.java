@@ -21,5 +21,5 @@ import javax.servlet.jsp.JspTagException;
 
 public interface FrameworkParamHandler {
 
-    public void addFrameworkParameter(String key, Object value) throws JspTagException;
+    void addFrameworkParameter(String key, Object value) throws JspTagException;
 }
