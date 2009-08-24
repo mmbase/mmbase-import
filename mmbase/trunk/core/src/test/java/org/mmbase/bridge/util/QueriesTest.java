@@ -274,9 +274,8 @@ public class QueriesTest  {
             t.cancel();
 
         }
-
-
-
+        // TODO test-case for relating a node to the source node of a different type. Should not appear in the result.
+        // It doesn't now, btw. but it used to be a bug..
 
 
     }
