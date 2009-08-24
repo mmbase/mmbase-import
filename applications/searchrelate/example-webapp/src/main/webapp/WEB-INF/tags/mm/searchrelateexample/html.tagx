@@ -41,6 +41,10 @@
           .searchresult.implicit {
           display: none;
           }
+          .ui-sortable li {
+          border: dashed 1px green;
+          margin-bottom: 2px;
+          }
         </style>
         <meta name="ContentRoot" content="${mm:link('/')}" />
       </head>
