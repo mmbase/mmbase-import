@@ -577,6 +577,7 @@ List.prototype.getOriginalPosition  = function(li) {
             return cl.substring("origPos-".length);
         }
     }
+    alert(li);
 }
 
 List.prototype.afterPost = function() {
