@@ -4,6 +4,7 @@
 This will arrange the mimetype mapping according to the format/codec.
 You can use wildcards, the most strict mapping will have priority.
 i.e. format"ogg" codec="vorbis" will be prefered to format="*" codec="*"
+refer f.e. to http://wiki.whatwg.org/wiki/Video_type_parameters for media types and media tags
  -->
 <mimemapping>
   <map format="ra"  codec="*">audio/x-pn-realaudio</map>
@@ -13,6 +14,7 @@ i.e. format"ogg" codec="vorbis" will be prefered to format="*" codec="*"
   <map format="ogg" codec="theora">video/ogg</map>
   <map format="ogg" codec="*">application/x-ogg</map>
   <map format="asf" codec="*">video/x-ms-asf</map>
+  <map format="avi" codec="*">video/avi</map>
   <map format="avi" codec="*">video/x-msvideo</map>
   <map format="wmp" codec="*">video/x-ms-wmp</map>
 
@@ -30,8 +32,13 @@ i.e. format"ogg" codec="vorbis" will be prefered to format="*" codec="*"
   <map format="mp4" codec="*">video/mp4</map>
 
   <map format="mpg" codec="*">video/mpeg</map>
+  
+  <map format="3gp" codec="*">video/3gpp</map>
+  
+  <map format="flv" codec="*">video/x-flv</map>
 
+  <map format="oga" codec="*">audio/ogg</map>
   <map format="ogv" codec="*">video/ogg</map>
-
+  <map format="ogx" codec="*">application/ogg</map>
 
 </mimemapping>
