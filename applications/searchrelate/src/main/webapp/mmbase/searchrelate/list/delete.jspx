@@ -10,11 +10,11 @@
     <jsp:directive.include file="parameters.jspf" />
     <mm:cloud method="asis">
       <c:choose>
-        <c:when test="${empty parameters.autosubmit}">
+        <c:when test="${parameters.autosubmit}">
           <jsp:directive.include file="delete.body.jspx" />
         </c:when>
         <c:otherwise>
-          <jsp:text>${parameters.formtag}</jsp:text>
+          <jsp:text>Form: ${parameters.formtag}</jsp:text>
           <mm:transaction
               name="${parameters.formtag}"
               commitonclose="false">

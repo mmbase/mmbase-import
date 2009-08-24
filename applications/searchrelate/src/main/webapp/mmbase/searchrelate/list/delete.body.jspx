@@ -7,7 +7,7 @@
   <mm:hasnode number="$n">
     <mm:node referid="n" id="n" />
     <c:choose>
-      <c:when test="${empty parameters.formtag}">
+      <c:when test="${parameters.autosubmit}">
         <!-- Transactionless. Let's make sure the node is indeed related -->
         <mm:node id="source" referid="parameters.source">
           <mm:relatednodescontainer type="object">
