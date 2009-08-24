@@ -1735,6 +1735,7 @@ abstract public class Queries {
         int         role   = relStep.getRole();
 
         Step destStep = steps.get(2);
+        NodeManager destManager = t.getNodeManager(destStep.getTableName());
 
 
         String number;
@@ -1785,23 +1786,30 @@ abstract public class Queries {
 
                     // Make sure the relation obeys the relation step
                     if (! (insrel.equals(r.getNodeManager()) || insrel.getDescendants().contains(r.getNodeManager()))) {
-                        log.debug("Nodemanaager of " + r + "  is not " + insrel);
+                        log.debug("Nodemanager of " + r + "  is not " + insrel);
                         continue;
                     }
                     String sNumber = r.getIntValue("snumber") < 0 ? r.getStringValue("_snumber") : r.getStringValue("snumber");
                     String dNumber = r.getIntValue("dnumber") < 0 ? r.getStringValue("_dnumber") : r.getStringValue("dnumber");
 
 
-
+                    Node destNode;
                     if (sNumber.equals(number) && directionality != RelationStep.DIRECTIONS_SOURCE) {
                         log.debug("snumber " + sNumber + " = " + number + " adding " + dNumber + " " + directionality);
-                        newNodes.add(0, Queries.clusterNode(r, relStep.getAlias(), t.getNode(dNumber)));
+                        destNode = t.getNode(dNumber);
                     } else if (dNumber.equals(number)  && directionality != RelationStep.DIRECTIONS_DESTINATION) {
-                        System.out.print("dnumber " + sNumber + " = " + number + " adding " + sNumber + " " + directionality);
-                        newNodes.add(0, Queries.clusterNode(r, relStep.getAlias(), t.getNode(sNumber)));
+                        log.debug("dnumber " + sNumber + " = " + number + " adding " + sNumber + " " + directionality);
+                        destNode = t.getNode(sNumber);
                     } else {
                         log.debug(sNumber + " -> " + dNumber + "Is not a relation from start node " + number + " " + directionality);
+                        continue;
                     }
+                    // now check also the type of this other node
+                    if (! (destManager.equals(destNode.getNodeManager()) || destManager.getDescendants().contains(destNode.getNodeManager()))) {
+                        log.debug("Nodemananager of " + destNode + "  is not " + destManager);
+                        continue;
+                    }
+                    newNodes.add(0, Queries.clusterNode(r, relStep.getAlias(), destNode));
 
                 } else {
                     log.debug("" + n + " is not a relation");
