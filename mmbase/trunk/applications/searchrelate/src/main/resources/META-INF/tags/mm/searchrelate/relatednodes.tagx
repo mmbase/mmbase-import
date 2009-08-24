@@ -290,7 +290,9 @@
                 <mm:param name="className">origPos-<mm:index offset="0"/></mm:param>
               </mm:include>
             </c:catch>
-            <mm:escape>${rid}:  ${e}</mm:escape>
+	    <c:if test="${! empty e}">
+	      <mm:escape>${rid}:  ${e}</mm:escape>
+	    </c:if>
 
           </mm:relatednodes>
 
