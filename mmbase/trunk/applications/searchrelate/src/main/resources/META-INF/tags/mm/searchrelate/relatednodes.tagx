@@ -210,7 +210,6 @@
   <mm:import from="session" id="parameters" externid="${rid}_context" />
 
   <mm:relatednodescontainer id="clonedquery" clone="query">
-    <mm-sr:deletedConstraint parameters="${parameters}" />
     <mm:context referid="parameters">
       <mm:size id="cursize" write="false" />
     </mm:context>
