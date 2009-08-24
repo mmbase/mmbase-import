@@ -61,6 +61,7 @@ function List(d) {
                     var nodeli = self.getLiForNode(o[node]);
                     var ol = $(this.div).find("ol")[0];
                     if (nodeli.length > 0) {
+                        $(nodeli[0]).addClass("pos_" + node);
                         ol.appendChild(nodeli[0]);
                     }
                 }
