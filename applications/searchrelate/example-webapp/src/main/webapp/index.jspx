@@ -97,7 +97,9 @@
             <li class="done">Transactionless (used to work, but is broken now)</li>
           </ul>
           </li>
-          <li>It should be somehow visible that a list is 'sortable'</li>
+          <li>It should be somehow better. visible that a list is 'sortable'. It can already be seen by the class 'ui-sortable', which is used in these tests.</li>
+          <li>Create mm:input</li>
+          <li>Update documentation (see below for current version)</li>
         </ul>
 	<hr />
 	<p>
