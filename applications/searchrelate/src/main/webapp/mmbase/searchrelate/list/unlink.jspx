@@ -11,13 +11,13 @@
 
     <mm:cloud method="asis">
       <c:choose>
-        <c:when test="${empty parameters.formtag}">
+        <c:when test="${parameters.autosubmit}">
           <jsp:directive.include file="unlink.body.jspx" />
         </c:when>
         <c:otherwise>
-          <mm:transaction id="${parameters.formtag}"
-                          name="${parameters.formtag}"
-                          commitonclose="false">
+          <mm:transaction
+              name="${parameters.formtag}"
+              commitonclose="false">
             <jsp:directive.include file="unlink.body.jspx" />
           </mm:transaction>
         </c:otherwise>
