@@ -20,6 +20,10 @@
   <field name="url">
     <datatype base="file" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <unique value="true" />
+      <required value="true">
+        <description xml:lang="en">A file is required</description>
+        <description xml:lang="nl">Een bestand is verplicht</description>
+      </required>
       <commitprocessor>
         <class name="org.mmbase.datatypes.processors.BinaryCommitProcessor">
           <param name="setContentTypeIfNotRecognized">false</param>
