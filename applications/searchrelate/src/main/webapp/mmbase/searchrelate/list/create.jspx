@@ -11,18 +11,23 @@
 
   <mm:content expires="0" type="application/xml">
     <mm:cloud method="asis">
+
+      <!-- Make sure the 'current' list is identified on the request -->
+      <mm:write request="org.mmbase.searchrelate.relatednodes" value="${parameters.rid}" />
+
       <c:choose>
         <c:when test="${parameters.autosubmit}">
           <jsp:directive.include file="create.body.jspx" />
         </c:when>
         <c:otherwise>
           &lt;!-- transaction: ${parameters.formtag} --&gt;
-          <mm:transaction
+          <mm:form
+              mode="transaction"
               name="${parameters.formtag}"
               commitonclose="false"
               >
             <jsp:directive.include file="create.body.jspx" />
-          </mm:transaction>
+          </mm:form>
         </c:otherwise>
       </c:choose>
     </mm:cloud>
