@@ -233,12 +233,7 @@ List.prototype.bindCreate = function(a) {
     $(a).click(function(ev) {
         var url = a.href;
         var params = {};
-        if (this.item != undefined) {
-            params.item   = this.item;
-        }
-        if (this.source != undefined) {
-            params.source = this.source;
-        }
+
 
         $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
                 complete: function(res, status){
