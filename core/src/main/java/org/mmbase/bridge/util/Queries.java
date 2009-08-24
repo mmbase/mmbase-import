@@ -1583,7 +1583,7 @@ abstract public class Queries {
         </pre>
      * A test-case for this in QueriesTest#reorderResult.
      *
-     * @param q The query which defines the existing order
+     * @param q The query which defines the existing order. The cloud of this object will be used, unless this is a committed transaction, then the parent {@link Cloud#getNonTransactionCloud} will be used to create the sub-transction.
      * @param desiredOrder The node numbers of the nodes in the query result of q. These are the actual nodes, not the nodes which define the order (like the posrel)
 
      * @return The number of alterations which are done. Depends on the used algorithm (currently Bubble sort). <code>0</code> if the list was correctly ordered allready.
@@ -1606,7 +1606,16 @@ abstract public class Queries {
         List<AnnotatedNode<Integer>> list = new ArrayList<AnnotatedNode<Integer>>();
 
         NodeQuery clone = (NodeQuery) q.clone();
-        Transaction t = clone.getCloud().getTransaction(Queries.class.getName() + ".orderResults");
+
+        Cloud cloud = clone.getCloud();
+        if (cloud instanceof Transaction) {
+            Transaction trans = (Transaction) cloud;
+            if (trans.isCommitted()) {
+                cloud = trans.getNonTransactionalCloud();
+            }
+        }
+
+        Transaction t = cloud.getTransaction(Queries.class.getName() + ".orderResults");
 
         if (! orderStep.equals(nodeStep)) {
             Field f = t.getNodeManager(orderStep.getTableName()).getField("number");
