@@ -54,6 +54,12 @@
             </mm:link>
           </li>
 
+          <li class="done">
+            <mm:link page="mmform-relatednodes-2.jspx">
+              <a href="${_}">2 mm-sr:relatednodes in one mm:form</a>
+            </mm:link>
+          </li>
+
           <li>
             <mm:link page="mmform-relatednodes-images.jspx">
               <a href="${_}">mm-sr:relatednodes in an mm:form with image uploads</a>
@@ -71,9 +77,10 @@
         <ul class="todo">
           <li class="done">In transaction: Since <em>new</em> nodes are not yet in the query-result, they cannot be edited, and disapper on reload.</li>
           <li class="done">In transaction: This is also valid, but inversely, for <em>deleted</em> nodes and relations. They still are in de query result.</li>
-          <li>'Sortable' is not yet saved.
+          <li class="done">'Sortable' is not yet saved.
           <ul>
-            <li>In transaction</li>
+            <li class="done">In transaction (existing nodes only)</li>
+            <li class="done">In transaction (new nodes too)</li>
             <li class="done">Transactionless</li>
           </ul>
           </li>
