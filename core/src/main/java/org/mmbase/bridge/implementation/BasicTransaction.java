@@ -113,6 +113,14 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         //return new BasicNodeList(getCoreNodes(), this);
     }
 
+    @Override
+    public BasicTransaction createTransaction(String name, boolean overwrite) throws AlreadyExistsException {
+        if (committed) {
+            throw new BridgeException("Cannot create a sub-transaction of an already committed transacation .'" + name + "' (" + transactionName +")");
+        }
+        return super.createTransaction(name, overwrite);
+    }
+
 
     boolean verify() {
         return BasicCloudContext.transactionManager.getTransactions().containsKey(transactionName);
