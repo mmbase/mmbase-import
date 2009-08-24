@@ -10,8 +10,7 @@
   <jsp:directive.include file="parameters.jspf" />
   <div class="saveresult">
     <c:choose>
-      <c:when test="${empty parameters.formtag}">
-
+      <c:when test="${parameter.autosubmit}">
         <jsp:scriptlet>
           java.util.List&lt;Integer&gt; iorder = new java.util.ArrayList&lt;Integer&gt;();
           for (Object o : order) {
