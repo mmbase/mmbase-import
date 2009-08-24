@@ -50,7 +50,10 @@ function List(d) {
     this.max = parseInt(this.max);
     this.cursize = parseInt(this.cursize);
 
-    if (this.sortable && this.autosubmit == 'false') {
+    this.sortable   = listinfos.find("input[name = 'sortable']")[0].value == 'true';
+    this.autosubmit = listinfos.find("input[name = 'autosubmit']")[0].value == 'true';
+
+    if (this.sortable && this.autosubmit) {
         if (this.order != "") {
             var o = this.order.split(",");
             for (node in o) {
@@ -135,6 +138,11 @@ function List(d) {
     $(this.div).trigger("mmsrRelatedNodesReady", [self]);
 
     this.logEnabled = false;
+
+    if ($(this.div).hasClass("POST")) {
+        $(this.div).trigger("mmsrRelatedNodesPost", [self]);
+        this.afterPost();
+    }
 }
 
 List.prototype.leftPage = false;
@@ -551,6 +559,33 @@ List.prototype.getLiForNode = function(nodenumber) {
         return $("#node_" + this.rid + "_" + nodenumber);
     } catch (ex) {
         console.log(ex);
+    }
+}
+
+List.prototype.afterPost = function() {
+    console.log("posted!" + this.order);
+    if (this.sortable) {
+        var order = "";
+        var self = this;
+        $(self.div).find("li").each(function() {
+                if (order != "") {
+                    order += ",";
+                }
+                order += $(this).attr("id").substring(("node_" + self.rid + "_").length);
+            });
+        var params = this.getListParameters();
+        params.order = order;
+        params.post = "true";
+        var self = this;
+        this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
+        $.ajax({ type: "POST",
+                    async: false,
+                    url: "${mm:link('/mmbase/searchrelate/list/order.jspx')}",
+                    data: params,
+                    complete: function(req, textStatus) {
+                    self.status('<fmt:message key="saved" />', true);
+                }
+            });
     }
 }
 
