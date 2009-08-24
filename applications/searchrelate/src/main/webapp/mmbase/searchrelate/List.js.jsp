@@ -53,14 +53,16 @@ function List(d) {
     this.sortable   = listinfos.find("input[name = 'sortable']")[0].value == 'true';
     this.autosubmit = listinfos.find("input[name = 'autosubmit']")[0].value == 'true';
 
-    if (this.sortable && this.autosubmit) {
-        if (this.order != "") {
-            var o = this.order.split(",");
-            for (node in o) {
-                var nodeli = self.getLiForNode(o[node]);
-                var ol = $(this.div).find("ol")[0];
-                if (nodeli.length > 0) {
-                    ol.appendChild(nodeli[0]);
+    if (this.sortable) {
+        if (! this.autosubmit) {
+            if (this.order != "") {
+                var o = this.order.split(",");
+                for (node in o) {
+                    var nodeli = self.getLiForNode(o[node]);
+                    var ol = $(this.div).find("ol")[0];
+                    if (nodeli.length > 0) {
+                        ol.appendChild(nodeli[0]);
+                    }
                 }
             }
         }
@@ -579,7 +581,7 @@ List.prototype.afterPost = function() {
         var self = this;
         this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
         $.ajax({ type: "POST",
-                    async: false,
+                    async: true,
                     url: "${mm:link('/mmbase/searchrelate/list/order.jspx')}",
                     data: params,
                     complete: function(req, textStatus) {
