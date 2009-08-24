@@ -54,7 +54,7 @@
             </mm:link>
           </li>
 
-          <li>
+          <li class="done">
             <mm:link page="mmform-relatednodes-nested.jspx">
               <a href="${_}">mm-sr:relatednodes in a form and nested</a>
             </mm:link>
