@@ -12,14 +12,20 @@
   <mm:import externid="order"     from="parameters" vartype="list" required="true" jspvar="order" />
   -->
   <mm:import externid="originalOrder" from="parameters" vartype="list" required="true" jspvar="origOrder" />
+
+  <!--
+      Because there can be new nodes, which received a new number after commit, the node number is not useable.
+      We use the 'original position' here.
+  -->
   <div class="saveresult">
     <query>${parameters.query.sql}</query>
     <jsp:scriptlet>
+      // convert parameters to a list of integers
       List&lt;Integer&gt; iorigOrder = new ArrayList&lt;Integer&gt;();
       for (Object o : origOrder) {
         iorigOrder.add(org.mmbase.util.Casting.toInt(o));
       }
-      List&lt;Integer&gt; iorder = new ArrayList&lt;Integer&gt;(origOrder);
+      List&lt;Integer&gt; iorder = new ArrayList&lt;Integer&gt;(origOrder); // the only reason for the copy is that it has the right length already then
     </jsp:scriptlet>
     <mm:relatednodescontainer clone="parameters.query">
       <mm:relatednodes usetransaction="true" jspvar="n">
