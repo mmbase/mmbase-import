@@ -78,13 +78,13 @@
             <li>Generate thumbnails for images which are not yet submitted</li>
           </ul>
           </li>
-          <li>Nested mm-sr:relatednodes should work too
+          <li class="done">Nested mm-sr:relatednodes should work too
           <ul>
-            <li>In transaction</li>
+            <li class="done">In transaction</li>
             <li class="done">Transactionless (used to work, but is broken now)</li>
           </ul>
           </li>
-	  <li>It should be somehow visible that a list is 'sortable'</li>
+          <li>It should be somehow visible that a list is 'sortable'</li>
         </ul>
 	<hr />
 	<p>
