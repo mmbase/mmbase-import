@@ -166,7 +166,7 @@
       <gui>
         <guiname xml:lang="en">Image</guiname>
         <guiname xml:lang="fr">Image</guiname>
-        <guiname xml:lang="nl">Plaatje</guiname>
+        <guiname xml:lang="nl">Afbeelding</guiname>
         <guiname xml:lang="eo">Bildo</guiname>
         <guiname xml:lang="it">Immagine</guiname>
       </gui>
@@ -193,11 +193,11 @@
         <description xml:lang="nl">Mimetype van de afbeelding</description>
       </descriptions>
       <gui>
-        <guiname xml:lang="en">ImageType</guiname>
-        <guiname xml:lang="fr">ImageTapent</guiname>
-        <guiname xml:lang="nl">PlaatjesType</guiname>
+        <guiname xml:lang="en">Imagetype</guiname>
+        <guiname xml:lang="fr">Imagetapent</guiname>
+        <guiname xml:lang="nl">Afbeeldingstype</guiname>
         <guiname xml:lang="eo">Bildotipo</guiname>
-        <guiname xml:lang="it">ImmagineTipo</guiname>
+        <guiname xml:lang="it">Immaginetipo</guiname>
       </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="32" enforce="never"/>
