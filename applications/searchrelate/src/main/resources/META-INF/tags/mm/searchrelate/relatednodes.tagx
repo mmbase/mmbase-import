@@ -54,10 +54,17 @@
   <jsp:directive.attribute name="icondir"      type="java.lang.String"
                            description="Directory from which to take create/delete icons, can be empty for default icons."
                            />
+
   <jsp:directive.attribute name="item"           type="java.lang.String"
-                           description="Jsp to use to present one li-item, can be empty for a default presentation."
-                           />
+                           description="Jsp to use to present one li-item, can be empty for a default presentation.
+                                        This jsp will be called with 2 parameteters.
+                                        The value of the parameter 'fieldlistid' can used as an id on the mm:fieldlist you probably use, to make sure the fields inside it have unique ids too.
+                                        Furthermore there is a 'rid' parameter, which uniquely identifies the list in request. It can be used to obtain all other settings from the session.
+                                        Staticly include /mmbase/searchrelate/list/paramters.jspf to get 'parameters' as Map.
+                                        Default implementation is &lt;a href='https://scm.mmbase.org/mmbase/trunk/applications/searchrelate/src/main/webapp/mmbase/searchrelate/list/item.jspx'&gt;/mmbase/searchrelate/list/item.jspx&lt;/a&gt;, and could be used as a template for a customized version." />
+
   <!--
+
   <jsp:directive.attribute name="li"           type="java.lang.String"
                            description="DEPRECATED, will be removed soon, use item"
                            />
