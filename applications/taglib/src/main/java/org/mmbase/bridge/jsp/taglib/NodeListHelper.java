@@ -422,23 +422,27 @@ public class NodeListHelper implements ListProvider {
                 if (nodeIterator.hasNext()) {
                     next = nodeIterator.next();
                 } else {
-                    return;
+                    break;
                 }
             }
-            NodeManager nextNodeManager = next.getNodeManager();
-            if (nextNodeManager == null) throw new RuntimeException("Found node " + next + " has no NodeManager");
-            String orderField = getFirstOrderedField(returnList, nextNodeManager);
-            if (orderField != null) {
-                String value =  "" + next.getValue(orderField);
-                if (previousValue != null) {
-                    if (value.equals(previousValue)) {
-                        changed = false;
-                    } else {
-                        changed = true;
-                    }
+            if (next != null) { // next == null can happen in errorneous situations (the break in the above while)
+                NodeManager nextNodeManager = next.getNodeManager();
+                if (nextNodeManager == null) {
+                    throw new RuntimeException("Found node " + next + " has no NodeManager");
                 }
-                previousValue = value;
+                String orderField = getFirstOrderedField(returnList, nextNodeManager);
+                if (orderField != null) {
+                    String value =  "" + next.getValue(orderField);
+                    if (previousValue != null) {
+                        if (value.equals(previousValue)) {
+                            changed = false;
+                        } else {
+                            changed = true;
+                        }
+                    }
+                    previousValue = value;
 
+                }
             }
             nodeHelper.setNodeVar(next);
             nodeHelper.fillVars();
