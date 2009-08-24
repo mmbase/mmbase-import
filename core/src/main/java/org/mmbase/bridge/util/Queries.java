@@ -1749,7 +1749,7 @@ abstract public class Queries {
         SortedSet<Integer> deletedNodes = new TreeSet<Integer>();
         for (Node n : t.getNodes()) {
             if (n.getNumber() > 0 && n.getStringValue("_exists").equals("nolonger")) { // DELETED
-                log.warn("" + n.getNumber() + " was deleted");
+                log.debug("" + n.getNumber() + " was deleted");
                 deletedNodes.add(n.getNumber());
             }
         }
