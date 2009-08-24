@@ -517,7 +517,7 @@ List.prototype.saveOrder = function(event, ui) {
             if (order != "") {
                 order += ",";
             }
-            order += $(this).attr("id").substring(("node_" + self.rid + "_").length);
+            order += self.getNodeForLi(this);
         });
     var params = this.getListParameters();
     params.order = order;
@@ -564,8 +564,12 @@ List.prototype.getLiForNode = function(nodenumber) {
     }
 }
 
+List.prototype.getNodeForLi  = function(li) {
+    return $(li).attr("id").substring(("node_" + this.rid + "_").length);
+}
+
 List.prototype.afterPost = function() {
-    console.log("posted!" + this.order);
+    //console.log("posted!" + this.order);
     if (this.sortable) {
         var order = "";
         var self = this;
@@ -573,7 +577,7 @@ List.prototype.afterPost = function() {
                 if (order != "") {
                     order += ",";
                 }
-                order += $(this).attr("id").substring(("node_" + self.rid + "_").length);
+                order += self.getNodeForLi(this);
             });
         var params = this.getListParameters();
         params.order = order;
