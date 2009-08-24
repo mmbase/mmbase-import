@@ -31,8 +31,14 @@
 
         <ul>
           <li class="done">
-            <mm:link page="relatednodes.jspx">
-              <a href="${_}">mm-sr:relatednodes</a>
+            <mm:link page="relatednodes-1.jspx">
+              <a href="${_}">mm-sr:relatednodes (max, sortable, search)</a>
+            </mm:link>
+          </li>
+
+          <li class="done">
+            <mm:link page="relatednodes-2.jspx">
+              <a href="${_}">mm-sr:relatednodes (role, field)</a>
             </mm:link>
           </li>
 

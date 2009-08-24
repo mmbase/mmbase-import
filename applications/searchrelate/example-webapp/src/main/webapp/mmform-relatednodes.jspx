@@ -17,6 +17,7 @@
         delete="true"
         fields="number,title"
         sortable="true"
+        search="true"
         >
       <h4>${rid}</h4>
     </mm-sr:relatednodes>
