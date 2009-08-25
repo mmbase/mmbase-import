@@ -8,7 +8,7 @@
 
 
 .PHONY:
-samples: samples/basic.mpg samples/basic.mov samples/basic.mp3 samples/basic.mp4 samples/basic.png
+samples: samples/basic.mpg samples/basic.mov samples/basic.mp3 samples/basic.mp4 samples/basic.png samples/basic.flv samples/basic.jpg
 
 
 samples/%:
