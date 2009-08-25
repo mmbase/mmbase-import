@@ -56,7 +56,60 @@
   <section id="relatednodes">
     <title>mm-sr:relatednodes</title>
     <para>
+      The relatednodes tag is a bit like the mm:relatednodes tag, but it produces a list of to the
+      current node related nodes which can be <emphasis>edited</emphasis>. It can work in 2 ways. It
+      can work stand alone, and then it works completely 'transactionless'. Every change is
+      submitted implicetely. If you use it inside an mm:form, it will also submit implicetly to the
+      server, but <emphasis>to the transaction</emphasis>, which means that to actually store the
+      information this form/transaction must be submitted with a mm:commit.
     </para>
+    <para>
+      The must basic use is exactly as a mm:relatednodes tag.
+    </para>
+    <programlisting format="linespecific"><![CDATA[
+    <mm:node>
+       <mm-sr:relatednodes role="posrel" type="news" orderby="posrel.pos" />
+       ...
+]]></programlisting>
+    <para>
+      There are however a few extra attributes, and a few which behave a bit differently. They can be found in the
+      <ulink url="http://www.mmbase.org/tags/mm/searchrelate/">reference</ulink>.
+    </para>
+    <section id="items">
+      <title>mm-sr:relatednodes items</title>
+      <para>
+        We must say a bit more about the 'item' attribute.  The item attribute is used if you want to customize one item in the list beyond the options provided by e.g. the 'fields', 'delete', and 'unlink' attributes.
+        Noticeably, it can be used to make <emphasis>nested</emphasis> lists.
+      </para>
+      <para>
+        The idea is that you point with this attribute to your own JSP which is to be used in stead of the default one in /mmbase/searchrelated/item.jspx.
+      </para>
+      <para>
+        You can suppose a current node ("${_node}" in EL) in this JSP. The JSP will further receive
+        parameters 'rid' and 'fieldlistid'. The 'rid' can be used to pick up all settings of the
+        current mm-sr:relatednodes which you might need from the session. This goes easiest by including this:
+      </para>
+      <programlisting format="linespecific"><![CDATA[
+      <jsp:directive.include file="/mmbase/searchrelate/list/parameters.jspf" />
+
+      Now I can use ${parameters.source}, ${parameters.search} etc.
+     <mm:import externid="fieldlistid" />
+
+     <mm:fieldlist id="${fieldlistid}"
+      ...
+]]></programlisting>
+      <para>
+        The fieldlistid can help you to produce unique name's on the input widgets , which is important if the form gets complicated.
+      </para>
+      <note>
+        <title>Backwards compatibility</title>
+        <para>Previously these item jsps, received other parameters, like 'source', 'fields',
+        'confirm' and 'icondir'. This is currently dropped, because they were getting more and more,
+        and it was decided to summarize everything in 'rid'. This is backwards incompatible, we may
+        add some of these parameters again, to fix that.
+        </para>
+      </note>
+    </section>
     <section id="transactionless">
       <title>Transactionless editing</title>
       <para>
