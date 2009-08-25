@@ -21,6 +21,7 @@
 
   <mm:listnodescontainer type="${type}" id="repository">
     <jsp:doBody />
+    <mm:sortorder field="number" direction="down" />
   </mm:listnodescontainer>
 
   <mm-sr:relate repository="${repository}" />
