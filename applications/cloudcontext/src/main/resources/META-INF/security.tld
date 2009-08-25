@@ -24,7 +24,7 @@
   </tag-file>
 
   <tag-file>
-    <name>verifyEmail</name>
+    <name>waitForCacheInvalidation</name>
     <path>/META-INF/tags/mm/security/waitForCacheInvalidation.tagx</path>
   </tag-file>
 
