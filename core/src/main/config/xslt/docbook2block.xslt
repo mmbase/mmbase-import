@@ -95,6 +95,12 @@
     </div>
   </xsl:template>
 
+  <xsl:template match="emphasis">
+    <em>
+      <xsl:apply-templates select="*" />
+    </em>
+  </xsl:template>
+
   <xsl:template match="programlisting">
     <pre id="{@id}">
       <xsl:apply-templates  />
