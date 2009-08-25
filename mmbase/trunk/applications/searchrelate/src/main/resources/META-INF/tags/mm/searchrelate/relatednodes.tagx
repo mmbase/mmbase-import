@@ -52,7 +52,7 @@
                            />
 
   <jsp:directive.attribute name="icondir"      type="java.lang.String"
-                           description="Directory from which to take create/delete icons, can be empty for default icons."
+                           description="Directory from which to take create/delete icons, can be empty for default icons (in which case it defaults to /mmbase/style/images/)"
                            />
 
   <jsp:directive.attribute name="item"           type="java.lang.String"

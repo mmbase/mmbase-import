@@ -10,12 +10,14 @@
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
-      description="Creates buttons as used in mm-sr:relatednodes" />
+      description="Creates buttons as used in mm-sr:relatednodes. You can use this tag yourself, but it is mainly used by the implementations of other tags such as mm-sr:unlink and mm-sr:delete." />
 
   <jsp:directive.attribute name="parameters" type="java.util.Map"
                            description="These are the parameters as specified by the attributes of mm-sr:relatednodes. This is a subtag of that, and may need some of its information."
                            />
-  <jsp:directive.attribute name="type"       type="java.lang.String" required="true"  />
+  <jsp:directive.attribute name="type"       type="java.lang.String" required="true"
+                           description="The type is e.g. 'delete' or 'create' or 'unlink'. It corresponds with a PNG or JSP file in the 'icondir'." />
+
   <jsp:directive.attribute name="alt"        type="java.lang.String"   />
 
   <c:if test="${empty parameters}">
