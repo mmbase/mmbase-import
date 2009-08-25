@@ -28,7 +28,8 @@
         <c:if test="${! empty search}">
           <mm:composite operator="OR">
             <mm:fieldlist container="b" type="search" varStatus="field">
-              <mm:write value="${field.current.dataType.class.name}">
+              <mm:import id="datatypeclass">${field.current.dataType.class.name}</mm:import> <!-- may contain $'s so don't use mm:write value=" -->
+              <mm:write referid="datatypeclass">
                 <mm:compare regexp="org\.mmbase\.datatypes\.(.*StringDataType|XmlDataType)">
                   <mm:constraint field="${field.current.name}" operator="LIKE" value="%${search}%" casesensitive="false"/>
                 </mm:compare>
