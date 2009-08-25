@@ -171,9 +171,24 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @since MMBase-1.9.2
      */
     protected NodeList getNodeList(Query query) throws JspTagException {
+        Cloud cloud = query.getCloud();
+        // In case this query was created in a transaction, don't bother, and still work.
+        boolean inTransaction;
+        if (cloud instanceof Transaction) {
+            Transaction t = (Transaction) cloud;
+            if (t.isCommitted() || t.isCanceled()) {
+                cloud = t.getNonTransactionalCloud();
+                inTransaction = false;
+            } else {
+                inTransaction = true;
+            }
+        } else {
+            inTransaction = false;
+        }
         if (query instanceof NodeQuery) {
             NodeQuery nq = (NodeQuery) query;
-            if (usetransaction.getString(this).equals("true") && nq.getSteps().size() >= 3) {
+
+            if (inTransaction && usetransaction.getString(this).equals("true") && nq.getSteps().size() >= 3) {
                 Step firstStep = nq.getSteps().get(0);
                 Set<Integer> nodes = firstStep.getNodes();
                 Node startNode;
@@ -193,19 +208,16 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
                     }
                     FieldValueConstraint fvc = (FieldValueConstraint) c;
                     String value = (String) fvc.getValue();
-                    startNode = query.getCloud().getNode(value);
+                    startNode = cloud.getNode(value);
                 } else {
-                    startNode = query.getCloud().getNode(nodes.iterator().next());
+                    startNode = cloud.getNode(nodes.iterator().next());
                 }
-
-
-
                 return new org.mmbase.bridge.implementation.BasicNodeList(Queries.getRelatedNodesInTransaction(startNode, nq), nq.getNodeManager());
             } else {
-                return nq.getNodeManager().getList(nq);
+                return cloud.getNodeManager(nq.getNodeManager().getName()).getList(nq);
             }
         } else {
-            return  query.getCloud().getList(query);
+            return  cloud.getList(query);
         }
     }
 
