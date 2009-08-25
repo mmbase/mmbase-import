@@ -289,13 +289,13 @@ public class BeanFunction extends AbstractFunction<Object> {
         org.mmbase.datatypes.DataType dt;
         if (NCName.matcher(value).matches()) {
              dt = org.mmbase.datatypes.DataTypes.getDataType(value);
-             log.warn("No such datatype '" + value + "' taking " + base, new Exception());
         } else {
             DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(value)), true, org.mmbase.datatypes.util.xml.DataTypeReader.class);
             dt = org.mmbase.datatypes.util.xml.DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), base, null).dataType;
             log.warn("Could not parse '" + value + "' taking " + base, new Exception());
         }
         if (dt == null) {
+            log.warn("No such datatype '" + value + "' taking " + base, new Exception());
             dt = base;
         }
         return dt;
