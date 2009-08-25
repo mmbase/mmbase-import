@@ -1666,15 +1666,16 @@ abstract public class Queries {
                 Object posValue = node.getValue(orderField.getFieldName());
                 if (posValue instanceof Comparable) {
                     Comparable comparable = (Comparable) posValue;
-                    if (pos == null) {
-                        pos = comparable;
-                    } else {
+                    if (comparable == null) {
+                        log.warn("Value of " + orderField + " is null");
+                        continue;
+                    }
+                    if (pos != null) {
                         if (so.getDirection() == SortOrder.ORDER_ASCENDING) {
                             if (comparable.compareTo(pos) <= 0) {
                                 comparable = increaseValue(pos);
                                 log.debug("Setting " + node.getNumber() + " " + orderField + " from " + posValue + " to " + comparable);
                                 node.setValue(orderField.getFieldName(), comparable);
-                                pos = comparable;
                                 numberOfChanges++;
                             }
                         } else {
@@ -1682,11 +1683,12 @@ abstract public class Queries {
                                 comparable = decreaseValue(pos);
                                 log.debug("Setting " + node.getNumber() + " " + orderField + " from " + posValue + " to " + comparable);
                                 node.setValue(orderField.getFieldName(), comparable);
-                                pos = comparable;
                                 numberOfChanges++;
                             }
                         }
                     }
+                    pos = comparable;
+                    log.debug("" + node.getNumber() + ": " + pos);
                 } else {
                     log.warn("Value of " + orderField + " is not comparable but " + posValue);
                     break;
@@ -1872,6 +1874,11 @@ abstract public class Queries {
                         destNode = t.getNode(sNumber);
                     } else {
                         log.debug(sNumber + " -> " + dNumber + "Is not a relation from start node " + number + " " + directionality);
+                        continue;
+                    }
+                    // check whether not this node happens to be deleted in the transaction
+                    if (destNode.getStringValue("_exists").equals("nolonger")) { // DELETED again
+                        log.debug("" + destNode + " was deleted again");
                         continue;
                     }
                     // now check also the type of this other node
