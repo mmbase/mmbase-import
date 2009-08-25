@@ -1581,7 +1581,10 @@ abstract public class Queries {
         Queries.addRelationFields(q, "posrel", "pos", "UP");
         Queries.reorderResult(q, nodeNumbers);
         </pre>
-     * A test-case for this in QueriesTest#reorderResult.
+     * If the values of 'pos' are equal to start with, they well be fixed to, and will have an increasing order.
+     * If all values are different already, values will simply be interchanged.
+     *
+     * A test-case for this is in QueriesTest#reorderResult.
      *
      * @param q The query which defines the existing order. The cloud of this object will be used, unless this is a committed transaction, then the parent {@link Cloud#getNonTransactionCloud} will be used to create the sub-transction.
      * @param desiredOrder The node numbers of the nodes in the query result of q. These are the actual nodes, not the nodes which define the order (like the posrel)
@@ -1652,27 +1655,70 @@ abstract public class Queries {
         if (orderAlias == null) orderAlias = orderStep.getTableName();
 
         int numberOfChanges = 0;
-        //Bubble sort
-        boolean madeChanges = true;
-        while (madeChanges) {
-            madeChanges = false;
-            for (int i = 0; i < list.size() - 1; i++) {
-                AnnotatedNode<Integer> n1 = list.get(i);
-                AnnotatedNode<Integer> n2 = list.get(i + 1);
-                if (n1.getAnnotation("desired") > n2.getAnnotation("desired")) {
-                    Node n1order = n1.getNodeValue(orderAlias + ".number");
-                    Node n2order = n2.getNodeValue(orderAlias + ".number");
-                    Object pos1 = n1order.getValue(orderField.getFieldName());
-                    Object pos2 = n2order.getValue(orderField.getFieldName());
-                    if (! (pos1 == null ? pos2 == null : pos1.equals(pos2))) {
-                        log.debug("Setting " + n1order + " " + orderField.getFieldName() + " to " + pos2);
-                        n1order.setValue(orderField.getFieldName(), pos2);
-                        log.debug("Setting " + n2order + " " + orderField.getFieldName() + " to " + pos1);
-                        n2order.setValue(orderField.getFieldName(), pos1);
-                        list.set(i, n2);
-                        list.set(i + 1, n1);
-                        numberOfChanges++;
-                        madeChanges = true;
+
+        {
+            // First we make one iteration over all nodes to make sure all the 'orderFields' are different.
+            // TODO, this code makes changes to existing data (rather then just interchanging that), and perhaps this should be made configurable?
+            //       (on the other hand, of course the 'orderField' is nearly always posrel.pos, in which case it wouldn't matter)
+            Comparable pos = null;
+            for (AnnotatedNode n : list) {
+                Node node = n.getNodeValue(orderAlias + ".number");
+                Object posValue = node.getValue(orderField.getFieldName());
+                if (posValue instanceof Comparable) {
+                    Comparable comparable = (Comparable) posValue;
+                    if (pos == null) {
+                        pos = comparable;
+                    } else {
+                        if (so.getDirection() == SortOrder.ORDER_ASCENDING) {
+                            if (comparable.compareTo(pos) <= 0) {
+                                comparable = increaseValue(pos);
+                                log.debug("Setting " + node.getNumber() + " " + orderField + " from " + posValue + " to " + comparable);
+                                node.setValue(orderField.getFieldName(), comparable);
+                                pos = comparable;
+                                numberOfChanges++;
+                            }
+                        } else {
+                            if (comparable.compareTo(pos) >= 0) {
+                                comparable = decreaseValue(pos);
+                                log.debug("Setting " + node.getNumber() + " " + orderField + " from " + posValue + " to " + comparable);
+                                node.setValue(orderField.getFieldName(), comparable);
+                                pos = comparable;
+                                numberOfChanges++;
+                            }
+                        }
+                    }
+                } else {
+                    log.warn("Value of " + orderField + " is not comparable but " + posValue);
+                    break;
+                }
+            }
+        }
+
+
+        {
+            //Bubble sort now, the make the order as desired
+            boolean madeChanges = true;
+            while (madeChanges) {
+                madeChanges = false;
+                for (int i = 0; i < list.size() - 1; i++) {
+                    AnnotatedNode<Integer> n1 = list.get(i);
+                    AnnotatedNode<Integer> n2 = list.get(i + 1);
+                    if (n1.getAnnotation("desired") > n2.getAnnotation("desired")) {
+                        Node n1order = n1.getNodeValue(orderAlias + ".number");
+                        Node n2order = n2.getNodeValue(orderAlias + ".number");
+                        Object pos1 = n1order.getValue(orderField.getFieldName());
+                        Object pos2 = n2order.getValue(orderField.getFieldName());
+                        if (! (pos1 == null ? pos2 == null : pos1.equals(pos2))) {
+                            log.debug("Setting " + n1order + " " + orderField.getFieldName() + " to " + pos2);
+                            n1order.setValue(orderField.getFieldName(), pos2);
+                            log.debug("Setting " + n2order + " " + orderField.getFieldName() + " to " + pos1);
+                            n2order.setValue(orderField.getFieldName(), pos1);
+                            list.set(i, n2);
+                            list.set(i + 1, n1);
+                            numberOfChanges++;
+                            madeChanges = true;
+                        }
+
                     }
                 }
             }
@@ -1683,6 +1729,30 @@ abstract public class Queries {
             return -1;
         }
 
+    }
+
+    /**
+     * Used by {@link #reorderResult} to 'increase' the value of position determining field.
+     */
+    private static Comparable increaseValue(Comparable pos) {
+        if (pos instanceof Integer) {
+            return (Integer) pos + 1;
+        } else if (pos instanceof Long) {
+            return (Long) pos + 1;
+        } else {
+            log.warn("Don't know how to increase " + pos);
+            return pos;
+        }
+    }
+    private static Comparable decreaseValue(Comparable pos) {
+        if (pos instanceof Integer) {
+            return (Integer) pos - 1;
+        } else if (pos instanceof Long) {
+            return (Long) pos - 1;
+        } else {
+            log.warn("Don't know how to decrease " + pos);
+            return pos;
+        }
     }
 
 
