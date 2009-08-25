@@ -6,15 +6,20 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="source" required="true" />
-  <mm:import externid="fields" />
-  <mm:import externid="confirm" />
-  <mm:import externid="icondir" />
-  <mm:fieldlist type="${empty fields ? 'list' : ''}" fields="${fields}" varStatus="status">
+
+  <jsp:directive.include file="/mmbase/searchrelate/list/parameters.jspf" />
+  <mm:import externid="fieldlistid" />
+  <mm:fieldlist
+      id="${fieldlistid}"
+      type="${empty parameters.fields ? 'list' : ''}" fields="${parameters.fields}" varStatus="status">
     <c:if test="${status.current.state ne 3}"> <!-- don't show system fields on default -->
+      <mm:fieldinfo type="forid">
+        <label forid="${_}"><mm:fieldinfo type="guiname" /></label>
+      </mm:fieldinfo>
+      <jsp:text> </jsp:text>
       <mm:fieldinfo type="input" />
       <c:if test="${status.first}">
-        <mm-sr:delete source="${source}" confirm="${confirm}" icondir="${icondir}" />
+        <mm-sr:delete  />
       </c:if>
       <mm:fieldinfo type="errors" />
     </c:if>
