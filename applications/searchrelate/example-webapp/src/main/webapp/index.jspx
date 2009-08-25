@@ -29,6 +29,7 @@
         <jsp:scriptlet>((HttpServletRequest) pageContext.getRequest()).getSession(true).invalidate();</jsp:scriptlet>
         <h1>Search and Relate examples/tests</h1>
 
+        <h2>mm-sr:relatednodes</h2>
         <ul>
           <li class="done">
             <mm:link page="relatednodes-1.jspx">
@@ -73,7 +74,7 @@
           </li>
         </ul>
 
-        <h1>TODO</h1>
+        <h3>TODO</h3>
         <ul class="todo">
           <li class="done">In transaction: Since <em>new</em> nodes are not yet in the query-result, they cannot be edited, and disapper on reload.</li>
           <li class="done">In transaction: This is also valid, but inversely, for <em>deleted</em> nodes and relations. They still are in de query result.</li>
@@ -97,18 +98,32 @@
             <li class="done">Transactionless (used to work, but is broken now)</li>
           </ul>
           </li>
+          <li>
+            In a transaction the 'commitprocessor' of posrel doesn't work so well. Every new relation will end up with the same pos.
+            <ul>
+              <li>Fix that processor</li>
+              <li>Fix Queries#reorderResult to also be able to deal with the situation that 2 or more values are the same</li>
+            </ul>
+
+          </li>
           <li>It should be somehow better. visible that a list is 'sortable'. It can already be seen by the class 'ui-sortable', which is used in these tests.</li>
           <li>Create mm:input</li>
           <li>Update documentation (see below for current version)</li>
         </ul>
-	<hr />
-	<p>
-	  <a href="http://www.mmbase.org/tags/mm/searchrelate">Taglib documentation</a>
-	</p>
-	<mm:escape escape="links">$URL$</mm:escape>
-	<hr />
-	<mm:component name="searchrelate"
-		      block="searchrelate-documentation" />
+
+        <h2>mm-sr:relate</h2>
+        <h3>TODO</h3>
+        <ul class="todo">
+          <li>Make test-cases for this tag too</li>
+        </ul>
+        <hr />
+        <p>
+          <a href="http://www.mmbase.org/tags/mm/searchrelate">Taglib documentation</a>
+        </p>
+        <mm:escape escape="links">$URL$</mm:escape>
+        <hr />
+        <mm:component name="searchrelate"
+                      block="searchrelate-documentation" />
       </body>
     </mm:cloud>
 
