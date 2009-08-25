@@ -9,7 +9,7 @@
   <mm-sre:form>
     <h2><mm:field name="title" /></h2>
 
-    <mm-srt:relatednodes
+    <mm-sr:relatednodes
         idvar="rid"
         type="news"
         role="posrel"
@@ -19,7 +19,7 @@
         max="3"
         >
       <h3>${rid}</h3>
-    </mm-srt:relatednodes>
+    </mm-sr:relatednodes>
   </mm-sre:form>
   <hr />
   <mm:escape escape="links">$URL$</mm:escape>
