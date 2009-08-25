@@ -67,6 +67,8 @@ public class RecognizerTest {
                 ,
                 {new Case("basic.png", IMAGE, 88, 31)}
                 ,
+                {new Case("basic.flv", VIDEO, 480, 360)}
+                ,
                 {new Case("basic.jpg", IMAGE, 218, 218)}
         });
     }
