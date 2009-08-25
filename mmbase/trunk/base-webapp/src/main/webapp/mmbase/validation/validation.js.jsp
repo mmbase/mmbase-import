@@ -19,8 +19,6 @@ function MMBaseValidator(root) {
     this.logEnabled   = false;
     this.traceEnabled = false;
 
-
-    this.dataTypeCache   = new Object();
     this.invalidElements = 0;
     //this.changedElements  = 0;
     this.elements        = [];
@@ -39,7 +37,9 @@ function MMBaseValidator(root) {
 
 }
 
+MMBaseValidator.dataTypeCache   = {};
 MMBaseValidator.validators = [];
+MMBaseValidator.prefetchedNodeManagers = {};
 
 
 MMBaseValidator.watcher = function() {
@@ -455,7 +455,8 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
     if (el.mm_key == null) {
         el.mm_key = key.string();
     }
-    var dataType = this.dataTypeCache[el.mm_key];
+    this.log(MMBaseValidator.dataTypeCache);
+    var dataType = MMBaseValidator.dataTypeCache[el.mm_key];
     if (dataType == null) {
 
 	    var url = '<mm:url page="/mmbase/validation/datatype.jspx" />';
@@ -466,7 +467,7 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
 		        complete: function(res, status){
 		            if (status == "success" || res.status == '404') {
 			            dataType = res.responseXML;
-			            self.dataTypeCache[el.mm_key] = dataType;
+			            MMBaseValidator.dataTypeCache[el.mm_key] = dataType;
                     }
 		        }
 	           });
@@ -530,25 +531,31 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
  */
 MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
 
-    var url = '<mm:url page="/mmbase/validation/datatypes.jspx" />';
-    var params = {nodemanager: nodemanager };
-    var self = this;
-    $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
-	    complete: function(res, status){
-		if (status == "success") {
-		    var dataTypes = res.responseXML;
+    if (MMBaseValidator.prefetchedNodeManagers[nodemanager] != "success") {
+        this.log("prefetching " + nodemanager);
+        var url = '<mm:url page="/mmbase/validation/datatypes.jspx" />';
+        var params = {nodemanager: nodemanager };
+        var self = this;
+        $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+                    complete: function(res, status){
+                    if (status == "success") {
+                        var dataTypes = res.responseXML;
 
-		    var fields = dataTypes.documentElement.childNodes;
-		    for (var i = 0; i < fields.length; i++) {
-			var key = new Key();
-			key.nodeManager = nodemanager;
-			key.field = fields[i].getAttribute("name");
-			self.dataTypeCache[key.string()] = fields[i];
-		    }
-		    //console.log("" + res);
-		}
-	    }
-	   });
+                        var fields = dataTypes.documentElement.childNodes;
+                        for (var i = 0; i < fields.length; i++) {
+                            var key = new Key();
+                            key.nodeManager = nodemanager;
+                            key.field = fields[i].getAttribute("name");
+                            MMBaseValidator.dataTypeCache[key.string()] = fields[i];
+                        }
+                        //console.log("" + res);
+                    }
+                    MMBaseValidator.prefetchedNodeManagers[nodemanager] = status;
+                }
+            });
+    } else {
+        this.log(nodemanager + " was already prefetched");
+    }
 
 }
 
