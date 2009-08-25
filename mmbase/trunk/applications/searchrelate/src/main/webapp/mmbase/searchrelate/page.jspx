@@ -22,7 +22,7 @@
       <mm:import externid="offset" vartype="integer">0</mm:import>
       <mm:import externid="customizedir" />
       <mm:import externid="relations" id="editrelations" />
-      <mm:import externid="fields" id="flds" />
+      <mm:import externid="fields" from="parameters" id="flds" />
 
       <mm:listnodescontainer id="b" clone="query" jspvar="bq">
         <c:if test="${! empty search}">
