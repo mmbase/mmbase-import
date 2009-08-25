@@ -28,7 +28,7 @@
       List&lt;Integer&gt; iorder = new ArrayList&lt;Integer&gt;(origOrder); // the only reason for the copy is that it has the right length already then
     </jsp:scriptlet>
     <mm:relatednodescontainer clone="parameters.query">
-      <mm:relatednodes usetransaction="true" jspvar="n">
+      <mm:relatednodes usetransaction="false" jspvar="n">
         <mm:index offset="0" jspvar="i">
           <jsp:expression>iorder.set(iorigOrder.indexOf(i), n.getNumber())</jsp:expression>
         </mm:index>
