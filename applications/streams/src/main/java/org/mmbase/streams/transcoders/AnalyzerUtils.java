@@ -71,11 +71,13 @@ public final class AnalyzerUtils {
         return len;
     }
 
-    private static final Pattern DURATION = Pattern.compile("\\s*Duration: (.*?), start: (.*?), bitrate: (.*?) kb/s.*");
-
+    
+    private static final Pattern PATTERN_DURATION = Pattern.compile("\\s*Duration: (.*?), start: (.*?), bitrate:.*");
+    /* ffmpeg reports on some video's bitrate: N/A */ 
+    private static final Pattern PATTERN_BITRATE =  Pattern.compile("\\s*Duration: .* bitrate: (.*?) kb/s.*?");
 
     public boolean duration(String l, Node source, Node des) {
-        Matcher m = DURATION.matcher(l);
+        Matcher m = PATTERN_DURATION.matcher(l);
         if (m.matches()) {
             Node fragment = source.getNodeValue("mediafragment");
 
@@ -87,8 +89,13 @@ public final class AnalyzerUtils {
 
             log.debug("Duration: " + m.group(1));
             log.debug("Start: " + m.group(2));
-            log.debug("BitRate: " + m.group(3));
-            source.setIntValue("bitrate", 1000 * Integer.parseInt(m.group(3)));
+            
+            Matcher m2 = PATTERN_BITRATE.matcher(l);
+            if (m2.matches()) {
+                log.debug("BitRate: " + m2.group(1));
+                source.setIntValue("bitrate", 1000 * Integer.parseInt(m2.group(1)));
+            }
+            
             return true;
         } else {
             return false;
@@ -219,18 +226,20 @@ public final class AnalyzerUtils {
     use this in stead for image matching and do height and width in other method ?
     private static final Pattern IMAGE    = Pattern.compile("^Input #\\d+, image.*");
     */
-
+    
     public boolean image(String l, Node source, Node dest) {
+        /* not true: flv's do not seem to report a bitrate
         if (! source.isNull("bitrate")) {
             // already has a bitrate
             return false;
         }
+        */
         Matcher m = IMAGE_PATTERN.matcher(l);
         if (m.matches()) {
-            log.debug("Image match! ");
+            log.debug("Image match!");
             toImage(source, dest);
 
-            log.debug("width: "  + m.group(1));
+            log.debug("width:  " + m.group(1));
             log.debug("height: " + m.group(2));
             source.setIntValue("width", Integer.parseInt(m.group(1)));
             source.setIntValue("height", Integer.parseInt(m.group(2)));
@@ -241,8 +250,19 @@ public final class AnalyzerUtils {
         }
     }
 
-
-
-
+    private static final Pattern INPUT_PATTERN = Pattern.compile("^Input #\\d+?, (.+?), from '([^']+)?.*");
+    private static final Pattern INPUT_PATTERN2 = Pattern.compile("^Input #\\d+?, (image\\d*), from.*?");
+    
+    public boolean image2(String l, Node source, Node dest) {
+        Matcher m = INPUT_PATTERN2.matcher(l);
+        if (m.matches()) {
+            log.debug("## Input matches an image! Match: " + m.group(1));
+            
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
 
 }
