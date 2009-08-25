@@ -102,7 +102,7 @@
             In a transaction the 'commitprocessor' of posrel doesn't work so well. Every new relation will end up with the same pos.
             <ul>
               <li>Fix that processor</li>
-              <li>Fix Queries#reorderResult to also be able to deal with the situation that 2 or more values are the same</li>
+              <li class="done">Fix Queries#reorderResult to also be able to deal with the situation that 2 or more values are the same</li>
             </ul>
 
           </li>
