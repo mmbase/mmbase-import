@@ -44,14 +44,17 @@ function List(d) {
 
 
     var listinfos       = this.find("listinfo");
+
     $(listinfos).find("input[type=hidden]").each(function() {
             self[this.name] = $(this).val();
         });
-    this.max = parseInt(this.max);
-    this.cursize = parseInt(this.cursize);
-
-    this.sortable   = listinfos.find("input[name = 'sortable']")[0].value == 'true';
-    this.autosubmit = listinfos.find("input[name = 'autosubmit']")[0].value == 'true';
+    // fix integers
+    this.max        = parseInt(this.max);
+    this.cursize    = parseInt(this.cursize);
+    // and booleans
+    this.sortable   = this.sortable   == 'true';
+    this.autosubmit = this.autosubmit == 'true';
+    this.search     = this.search     == 'true';
 
     if (this.sortable) {
         if (! this.autosubmit) {
@@ -68,11 +71,13 @@ function List(d) {
             }
         }
         $(this.div).find("ol").sortable({
-                update: function(event, ui) { self.saveOrder(event, ui); }
+                update: function(event, ui) {
+                    self.saveOrder(self.getOrder(event.target));
+                }
             });
     }
 
-    this.search   = listinfos.find("input[name = 'search']")[0].value == 'true';
+
 
     if (this.search) {
         //console.log("Searchable" + $(this.div).find("div.mm_related"));
@@ -305,6 +310,9 @@ List.prototype.addItem = function(res, cleanOnFocus) {
         });
 
     this.incSize();
+    if (this.sortable) {
+        this.saveOrder(this.getOrder());
+    }
     list.executeCallBack("create", r); // I think this may be deprecated. Custom events are nicer
     $(list.div).trigger("mmsrCreated", [r]);
 }
@@ -511,16 +519,29 @@ List.prototype.commit = function(stale, leavePage) {
 }
 
 
-List.prototype.saveOrder = function(event, ui) {
+/**
+ * The order of li's as currently visible by the user, returned as a comma seperated list of node numbers
+ */
+List.prototype.getOrder = function(ol) {
+    if (ol == null) {
+        ol = $(this.div).find("ol")[0];
+    }
     var order = "";
     var self = this;
-    $(event.target).find("li").each(function() {
+    $(ol).find("li").each(function() {
             if (order != "") {
                 order += ",";
             }
             order += self.getNodeForLi(this);
         });
-    var params = this.getListParameters();
+    return order;
+}
+
+
+
+ List.prototype.saveOrder = function(order) {
+    var self = this;
+    var params   = this.getListParameters();
     params.order = order;
     var self = this;
     this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
@@ -541,6 +562,7 @@ List.prototype.relate = function(event, relate, relater) {
     var params = this.getListParameters();
     var url = "${mm:link('/mmbase/searchrelate/list/relate.jspx')}";
     params.destination = relater.getNumber(relate);
+    params.order = this.getOrder(event.target);
     $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
             complete: function(res, status){
                 try {
@@ -555,6 +577,7 @@ List.prototype.relate = function(event, relate, relater) {
 
             }
         });
+
 }
 
 List.prototype.getLiForNode = function(nodenumber) {
