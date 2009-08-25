@@ -4,10 +4,16 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
          version="2.4">
   <description>
-    WebService tests and examples
+    Search &amp; Relate tests and examples
   </description>
 
-  <display-name>MMBase WebService</display-name>
+  <display-name>MMBase Search &amp; Relate examples</display-name>
+
+  <context-param>
+    <param-name>mmbase.taglib.eval_body_include</param-name>
+    <param-value>true</param-value>
+  </context-param>
+
   <filter>
     <filter-name>FrameworkFilter</filter-name>
     <filter-class>org.mmbase.framework.FrameworkFilter</filter-class>
