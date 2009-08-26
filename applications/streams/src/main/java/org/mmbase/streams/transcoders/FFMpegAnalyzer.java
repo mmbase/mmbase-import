@@ -76,7 +76,11 @@ public class FFMpegAnalyzer implements Analyzer {
         
         if (util.audio(l, source, des)) {
             log.info("Found audio: " + source);
-            canbe = util.AUDIO;
+            
+            if (! canbe.equals(util.VIDEO)) {
+                /* no video seen yet, thus it can be audio */
+                canbe = util.AUDIO;
+            }
         }
         
         if (util.image(l, source, des)) {
