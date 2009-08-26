@@ -18,6 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
+ * @author Andre van Toly
  * @version $Id$
  */
 
@@ -45,43 +46,49 @@ public class FFMpegAnalyzer implements Analyzer {
         log.addLogger(logger);
     }
     
-    private String probably = util.MEDIA;
-
-/*
-
-Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'presto.mp4':
-  Duration: 00:00:10.56, start: 0.000000, bitrate: 389 kb/s
-    Stream #0.0(eng): Audio: aac, 44100 Hz, 2 channels, s16
-    Stream #0.1(eng): Video: mpeg4, yuv420p, 352x288 [PAR 1:1 DAR 11:9], 30 tbr, 600 tbn, 1k tbc
-
-*/
+    private String canbe = util.MEDIA;
 
     public void analyze(String l, Node source, Node des) {
         Cloud cloud = source.getCloud();
         
         if (util.image2(l, source, des)) {
-            log.service("Probably an image " + source);
-            probably = util.IMAGE;
+            log.info("Probably an image " + source);
+            canbe = util.IMAGE;
             return;
         }
 
         if (util.duration(l, source, des)) {
-            log.service("Found length " + source);
+            log.info("Found length " + source);
             return;
         }
+        
+        /*
         if (util.video(l, source, des)) {
-            log.service("Found video " + source);
+            log.info("Found video " + source);
             return;
         }
+        */
+        
+        if (util.dimensions(l, source, des)) {
+            log.info("Found dimensions " + source);
+            return;
+        }
+        
+        if (util.audio(l, source, des)) {
+            log.info("Found audio: " + source);
+            canbe = util.AUDIO;
+        }
+        
         if (util.image(l, source, des)) {
-            log.service("Found image " + source);
+            log.info("Found image " + source);
             return;
         }
     }
 
     public void ready(Node sourceNode, Node destNode) {
         log.service("Ready() " + sourceNode.getNumber() + (destNode == null ? "" : (" -> " + destNode.getNumber())));
-        if (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0) {
+        log.info("canbe: " + canbe);
+        if ((sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0) && canbe.equals(util.IMAGE)) {
             /* BUG: this is incorrect, on some video's like flv ffmpeg does not report bitrate */
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an image");
             util.toImage(sourceNode, destNode);
@@ -92,7 +99,7 @@ Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'presto.mp4':
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an audio because width is null " + sourceNode);
             util.toAudio(sourceNode, destNode);
         } else {
-            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an video");
+            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is a video");
             util.toVideo(sourceNode, destNode);
         }
         //

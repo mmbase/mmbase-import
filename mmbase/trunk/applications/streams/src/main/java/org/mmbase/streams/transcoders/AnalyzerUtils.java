@@ -21,6 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
+ * @author Andre van Toly
  * @version $Id$
  */
 
@@ -28,10 +29,9 @@ public final class AnalyzerUtils {
 
     private static final Logger LOG = Logging.getLoggerInstance(AnalyzerUtils.class);
 
-
     public static final String VIDEO = "videostreamsources";
     public static final String AUDIO = "audiostreamsources";
-    public static final String IMAGE = "imagestreamsources";
+    public static final String IMAGE = "imagesources";
     public static final String MEDIA = "mediastreamsources";
 
     public static final String VIDEOC = VIDEO + "caches";
@@ -44,10 +44,7 @@ public final class AnalyzerUtils {
         log.addLogger(l);
     }
 
-
-
-
-    public  long getLength(String l) {
+    public long getLength(String l) {
         String[] duration = l.split(":");
         int i = duration.length - 1;
         long len = (long) (Float.parseFloat(duration[i]) * 1000L); // secs
@@ -70,32 +67,54 @@ public final class AnalyzerUtils {
         }
         return len;
     }
-
     
-    private static final Pattern PATTERN_DURATION = Pattern.compile("\\s*Duration: (.*?), start: (.*?), bitrate:.*");
-    /* ffmpeg reports on some video's bitrate: N/A */ 
-    private static final Pattern PATTERN_BITRATE =  Pattern.compile("\\s*Duration: .* bitrate: (.*?) kb/s.*?");
+    public long getStart(String s) {
+        long l = 0;
+        try {
+            double dValue = Double.parseDouble(s);
+            Double d = new Double(dValue * 1000);
+            l = d.longValue();
+        } catch (NumberFormatException e) {
+            log.warn("Start '" + s + "' is not a valid number: " + e);
+        }
+        return l;
+    }
+
+    /* ffmpeg reports sometimes no start and on some video's bitrate: N/A */ 
+    private static final Pattern PATTERN_DURATION = Pattern.compile("\\s*Duration: (.*?),.* bitrate:.*?");
+    private static final Pattern PATTERN_BITRATE  = Pattern.compile("\\s*Duration: .* bitrate: (.*?) kb/s.*?");
+    private static final Pattern PATTERN_START    = Pattern.compile("\\s*Duration: .* start: (.*?), bitrate:.*?");
 
     public boolean duration(String l, Node source, Node des) {
         Matcher m = PATTERN_DURATION.matcher(l);
         if (m.matches()) {
+            log.info(l);
+            
             Node fragment = source.getNodeValue("mediafragment");
-
             if (! source.getNodeManager().hasField("length")) {
                 toVideo(source, des);
             }
+            log.info("Duration: " + m.group(1));
             long length = getLength(m.group(1));
             source.setLongValue("length", length);
 
-            log.debug("Duration: " + m.group(1));
-            log.debug("Start: " + m.group(2));
-            
-            Matcher m2 = PATTERN_BITRATE.matcher(l);
-            if (m2.matches()) {
-                log.debug("BitRate: " + m2.group(1));
-                source.setIntValue("bitrate", 1000 * Integer.parseInt(m2.group(1)));
+            m = PATTERN_BITRATE.matcher(l);
+            if (m.matches()) {
+                log.info("BitRate: " + m.group(1));
+                source.setIntValue("bitrate", 1000 * Integer.parseInt(m.group(1)));
             }
-            
+
+            m = PATTERN_START.matcher(l);
+            if (m.matches()) {
+                log.info("Start: " + m.group(1));
+                long start = getStart(m.group(1));
+                if (fragment != null) {
+                    fragment.setLongValue("start", start);
+                } else {
+                    log.warn("mediafragment still null");
+                }
+            }
+
             return true;
         } else {
             return false;
@@ -178,7 +197,6 @@ public final class AnalyzerUtils {
 
 
     private static final Pattern VIDEO_PATTERN    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*?([0-9]+)\\s+kb/s.*");
-
     // Not all video's have bitrate. E.g. basic.mov:
     //Stream #0.1(eng): Video: h264, yuv420p, 640x480, 29.97 tb(r)
     private static final Pattern VIDEO_PATTERN2    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
@@ -264,5 +282,47 @@ public final class AnalyzerUtils {
         }
         
     }
+    
+    private static final Pattern PATTERN_DIMENSIONS = Pattern.compile(".*?\\sVideo: (.*?), (.*?), ([0-9]+)x([0-9]+).*");
+    
+    public boolean dimensions(String l, Node source, Node dest) {
+        Matcher m = PATTERN_DIMENSIONS.matcher(l);
+        if (m.matches()) {
+            log.info(l);
+            toVideo(source, dest);
+            
+            log.debug("  codec: " + m.group(1));
+            log.debug(" format: " + m.group(2));
+            log.info("  width: " + m.group(3));
+            log.info(" height: " + m.group(4));
+            incChannels(source, dest);
+            
+            source.setIntValue("width", Integer.parseInt(m.group(3)));
+            source.setIntValue("height", Integer.parseInt(m.group(4)));
+            
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    private static final Pattern PATTERN_AUDIO = Pattern.compile(".*?\\sAudio: (.*?), (.*?) Hz, (stereo|mono|([0-9]+) channels), .*?");
+
+    public boolean audio(String l, Node source, Node dest) {
+        Matcher m = PATTERN_AUDIO.matcher(l);
+        if (m.matches()) {
+            log.info(l);
+            
+            log.debug("   codec: " + m.group(1));
+            log.debug("   freq.: " + m.group(2));
+            log.debug("channels: " + m.group(3));
+            
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    
 
 }
