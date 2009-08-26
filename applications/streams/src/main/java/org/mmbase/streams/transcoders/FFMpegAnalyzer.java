@@ -17,6 +17,15 @@ import org.mmbase.util.logging.*;
 
 /**
  *
+ * An implementation of Analyzer that uses FFmpeg to analyze files. It tries to recognize
+ * images, audio and video - in that order. FFmpeg reports various information when you throw a file
+ * at it with 'ffmpeg -i file.ext' some of these lines are examined f.e.:
+ * <pre>
+ *  Input #0, wav, from 'basic.wav':
+ *    Duration: 00:00:02.94, bitrate: 384 kb/s
+ *      Stream #0.0: Audio: pcm_s24le, 8000 Hz, 2 channels, s16, 384 kb/s
+ * </pre>
+ *
  * @author Michiel Meeuwissen
  * @author Andre van Toly
  * @version $Id$
@@ -78,7 +87,7 @@ public class FFMpegAnalyzer implements Analyzer {
             log.info("Found audio: " + source);
             
             if (! canbe.equals(util.VIDEO)) {
-                /* no video seen yet, thus it can be audio */
+                /* no video seen yet, so it can be audio */
                 canbe = util.AUDIO;
             }
         }
@@ -96,10 +105,10 @@ public class FFMpegAnalyzer implements Analyzer {
             /* BUG: this is incorrect, on some video's like flv ffmpeg does not report bitrate */
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an image");
             util.toImage(sourceNode, destNode);
-        } else if ((! sourceNode.getNodeManager().hasField("width"))) {
+        } else if (canbe.equals(util.AUDIO) && !sourceNode.getNodeManager().hasField("width") ) {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an audio because nodemanager " + sourceNode.getNodeManager());
             util.toAudio(sourceNode, destNode);
-        } else if (sourceNode.isNull("width")) {
+        } else if (canbe.equals(util.AUDIO) && sourceNode.isNull("width")) {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an audio because width is null " + sourceNode);
             util.toAudio(sourceNode, destNode);
         } else {
