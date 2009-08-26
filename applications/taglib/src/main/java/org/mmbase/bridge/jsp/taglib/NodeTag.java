@@ -54,7 +54,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         if (log.isDebugEnabled()) {
             log.debug("setting number to " + number);
         }
-        this.number = getAttribute(number, true);
+        this.number = getAttribute(number, false);
     }
 
 
@@ -133,8 +133,8 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 log.debug("node is null, number attribute: '" + n + "'");
             }
             // if (! n.length() == 0) {
-            // if empty string should mean 'not present'. Not sure what is most conventient
-            // We don't change this, becuase it was always like follows.
+            // if empty string should mean 'not present'. Not sure what is most convenient
+            // We don't change this, because it was always like follows.
             // It would not be backwards compatible.
 
             if (number != Attribute.NULL) {
@@ -176,7 +176,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 } else {
                     node = (Node) org.mmbase.util.Casting.unWrap(node);
                 }
-
+                
                 String elString = element.getString(this);
                 if (elString.length() != 0) {
                     try {
