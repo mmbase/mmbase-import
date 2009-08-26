@@ -16,9 +16,9 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.util.logging.*;
 
-
-
 /**
+ * Utility methods common for the analyzers that look for several media audio, video and images,
+ * try to extract information, convert nodetypes to the matching kind etc.
  *
  * @author Michiel Meeuwissen
  * @author Andre van Toly
@@ -84,6 +84,7 @@ public final class AnalyzerUtils {
 
         }
     }
+    
     public void toAudio(Node source, Node dest) {
         Cloud cloud = source.getCloud();
         fixMimeType("audio", source);
@@ -195,11 +196,10 @@ public final class AnalyzerUtils {
         }
     }
     
-    private static final Pattern VIDEO_PATTERN    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*?([0-9]+)\\s+kb/s.*");
-    // Not all video's have bitrate. E.g. basic.mov:
-    //Stream #0.1(eng): Video: h264, yuv420p, 640x480, 29.97 tb(r)
-    private static final Pattern VIDEO_PATTERN2    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
-
+    /**
+     * Does +1 on channels in a 'mediasources' to keep count of the number of video channels.
+     *
+     */
     protected void incChannels(Node source, Node dest) {
         if (source.isNull("channels") || source.getIntValue("channels") <= 0) {
             source.setIntValue("channels", 1);
@@ -210,6 +210,11 @@ public final class AnalyzerUtils {
             dest.setIntValue("channels", source.getIntValue("channels"));
         }
     }
+
+    private static final Pattern VIDEO_PATTERN    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*?([0-9]+)\\s+kb/s.*");
+    // Not all video's have bitrate. E.g. basic.mov:
+    //Stream #0.1(eng): Video: h264, yuv420p, 640x480, 29.97 tb(r)
+    private static final Pattern VIDEO_PATTERN2    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
 
     public boolean video(String l, Node source, Node dest) {
         Matcher m = VIDEO_PATTERN.matcher(l);
@@ -270,11 +275,15 @@ public final class AnalyzerUtils {
     private static final Pattern INPUT_PATTERN = Pattern.compile("^Input #\\d+?, (.+?), from '([^']+)?.*");
     private static final Pattern INPUT_PATTERN2 = Pattern.compile("^Input #\\d+?, (image\\d*), from.*?");
     
+    /**
+     * Matches on INPUT and looks for the 'image2' format which indicates that the input could 
+     * be an image.
+     *
+     */
     public boolean image2(String l, Node source, Node dest) {
         Matcher m = INPUT_PATTERN2.matcher(l);
         if (m.matches()) {
             log.debug("## Input matches an image! Match: " + m.group(1));
-            
             return true;
         } else {
             return false;
@@ -284,6 +293,10 @@ public final class AnalyzerUtils {
     
     private static final Pattern PATTERN_DIMENSIONS = Pattern.compile(".*?\\sVideo: (.*?), (.*?), ([0-9]+)x([0-9]+).*");
     
+    /**
+     * Looks for width and height when it finds a match for VIDEO, works for video and images.
+     *
+     */
     public boolean dimensions(String l, Node source, Node dest) {
         Matcher m = PATTERN_DIMENSIONS.matcher(l);
         if (m.matches()) {
@@ -307,6 +320,10 @@ public final class AnalyzerUtils {
     
     private static final Pattern PATTERN_AUDIO = Pattern.compile(".*?\\sAudio: (.*?), (.*?) Hz, (stereo|mono|([0-9]+) channels), .*?");
 
+    /**
+     * Looks for audio channel(s).
+     *
+     */
     public boolean audio(String l, Node source, Node dest) {
         Matcher m = PATTERN_AUDIO.matcher(l);
         if (m.matches()) {
