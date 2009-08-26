@@ -12,7 +12,6 @@ package org.mmbase.bridge.implementation;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.FieldWrapper;
-import org.mmbase.core.CoreField;
 import org.mmbase.util.logging.*;
 
 /**
@@ -38,5 +37,9 @@ public class BasicField extends FieldWrapper implements Field {
         return nodeManager;
     }
 
-
+    public int compareTo(Field f) {
+       int compared = getName().compareTo(f.getName());
+       if (compared == 0) compared = getDataType().compareTo(f.getDataType());
+       return compared;
+   }
 }
