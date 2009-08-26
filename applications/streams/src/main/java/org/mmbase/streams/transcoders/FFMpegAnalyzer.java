@@ -61,13 +61,13 @@ public class FFMpegAnalyzer implements Analyzer {
         Cloud cloud = source.getCloud();
         
         if (util.image2(l, source, des)) {
-            log.info("Probably an image " + source);
+            log.debug("Probably an image " + source);
             canbe = util.IMAGE;
             return;
         }
 
         if (util.duration(l, source, des)) {
-            log.info("Found length " + source);
+            log.debug("Found length " + source);
             return;
         }
         
@@ -79,12 +79,12 @@ public class FFMpegAnalyzer implements Analyzer {
         */
         
         if (util.dimensions(l, source, des)) {
-            log.info("Found dimensions " + source);
+            log.debug("Found dimensions " + source);
             return;
         }
         
         if (util.audio(l, source, des)) {
-            log.info("Found audio: " + source);
+            log.debug("Found audio: " + source);
             
             if (! canbe.equals(util.VIDEO)) {
                 /* no video seen yet, so it can be audio */
@@ -93,26 +93,29 @@ public class FFMpegAnalyzer implements Analyzer {
         }
         
         if (util.image(l, source, des)) {
-            log.info("Found image " + source);
+            log.debug("Found image " + source);
             return;
         }
     }
 
     public void ready(Node sourceNode, Node destNode) {
         log.service("Ready() " + sourceNode.getNumber() + (destNode == null ? "" : (" -> " + destNode.getNumber())));
-        log.info("canbe: " + canbe);
-        if ((sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0) && canbe.equals(util.IMAGE)) {
-            /* BUG: this is incorrect, on some video's like flv ffmpeg does not report bitrate */
-            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an image");
+        log.debug("canbe: " + canbe);
+        
+        if (canbe.equals(util.IMAGE) && (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0)) {
+            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an image " + sourceNode);
             util.toImage(sourceNode, destNode);
+        
         } else if (canbe.equals(util.AUDIO) && !sourceNode.getNodeManager().hasField("width") ) {
-            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an audio because nodemanager " + sourceNode.getNodeManager());
+            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
             util.toAudio(sourceNode, destNode);
+        
         } else if (canbe.equals(util.AUDIO) && sourceNode.isNull("width")) {
-            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an audio because width is null " + sourceNode);
+            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
             util.toAudio(sourceNode, destNode);
+        
         } else {
-            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is a video");
+            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is a video " + sourceNode);
             util.toVideo(sourceNode, destNode);
         }
         //

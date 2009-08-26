@@ -166,6 +166,8 @@ public final class AnalyzerUtils {
             log.info(l);
             
             Node fragment = source.getNodeValue("mediafragment");
+            log.debug("mediafragment: " + source.getNodeValue("mediafragment"));
+            
             if (! source.getNodeManager().hasField("length")) {
                 toVideo(source, des);
             }
@@ -219,13 +221,14 @@ public final class AnalyzerUtils {
     public boolean video(String l, Node source, Node dest) {
         Matcher m = VIDEO_PATTERN.matcher(l);
         if (m.matches()) {
-            toVideo(source, dest);
+            if (! source.getNodeManager().getName().equals(IMAGE)) {
+                toVideo(source, dest);
+            }
 
             log.debug("width: "  + m.group(1));
             log.debug("height: " + m.group(2));
             log.debug("BitRate: " + m.group(3));
             incChannels(source, dest);
-
             source.setIntValue("width", Integer.parseInt(m.group(1)));
             source.setIntValue("height", Integer.parseInt(m.group(2)));
             source.setIntValue("bitrate", Integer.parseInt(m.group(3)));
@@ -234,10 +237,13 @@ public final class AnalyzerUtils {
         }
         m = VIDEO_PATTERN2.matcher(l);
         if (m.matches()) {
-            toVideo(source, dest);
+            if (! source.getNodeManager().getName().equals(IMAGE)) {
+                toVideo(source, dest);
+            }
             incChannels(source, dest);
             source.setIntValue("width", Integer.parseInt(m.group(1)));
             source.setIntValue("height", Integer.parseInt(m.group(2)));
+            
             return true;
         }
         return false;
@@ -272,8 +278,8 @@ public final class AnalyzerUtils {
         }
     }
 
-    private static final Pattern INPUT_PATTERN = Pattern.compile("^Input #\\d+?, (.+?), from '([^']+)?.*");
-    private static final Pattern INPUT_PATTERN2 = Pattern.compile("^Input #\\d+?, (image\\d*), from.*?");
+    //private static final Pattern INPUT_PATTERN = Pattern.compile("^Input #\\d+?, (.+?), from '([^']+)?.*");
+    private static final Pattern IMAGE2_PATTERN = Pattern.compile("^Input #\\d+?, (image\\d*), from.*?");
     
     /**
      * Matches on INPUT and looks for the 'image2' format which indicates that the input could 
@@ -281,9 +287,10 @@ public final class AnalyzerUtils {
      *
      */
     public boolean image2(String l, Node source, Node dest) {
-        Matcher m = INPUT_PATTERN2.matcher(l);
+        Matcher m = IMAGE2_PATTERN.matcher(l);
         if (m.matches()) {
             log.debug("## Input matches an image! Match: " + m.group(1));
+            toImage(source, dest);
             return true;
         } else {
             return false;
@@ -301,7 +308,10 @@ public final class AnalyzerUtils {
         Matcher m = PATTERN_DIMENSIONS.matcher(l);
         if (m.matches()) {
             log.info(l);
-            toVideo(source, dest);
+            
+            if (!source.getNodeManager().getName().equals(IMAGE)) {
+                toVideo(source, dest);
+            }
             
             log.debug("  codec: " + m.group(1));
             log.debug(" format: " + m.group(2));
@@ -327,7 +337,7 @@ public final class AnalyzerUtils {
     public boolean audio(String l, Node source, Node dest) {
         Matcher m = PATTERN_AUDIO.matcher(l);
         if (m.matches()) {
-            log.info(l);
+            //log.info(l);
             
             log.debug("   codec: " + m.group(1));
             log.debug("   freq.: " + m.group(2));

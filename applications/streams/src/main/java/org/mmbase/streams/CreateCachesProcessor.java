@@ -251,7 +251,7 @@ public class CreateCachesProcessor implements CommitProcessor {
 
 
     /**
-     * Creates and submits a jobs transcoding everytthing as configured for one source object, this
+     * Creates and submits a job transcoding everything as configured for one source object, this
      * produces all new 'caches' as configured in createcaches.xml.
      */
     private Job createJob(final Node node, final ChainedLogger logger) {
@@ -352,7 +352,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                             }
                         }
                         public String toString() {
-                            return "Job canceler for " + node;
+                            return "Job canceled for " + node;
                         }
                     });
             }
@@ -501,6 +501,11 @@ public class CreateCachesProcessor implements CommitProcessor {
      * A Job is associated with a 'source' node, and describes what is currently happening to create
      * 'caches' nodes for it. Such a Job object is created everytime somebody create a new source
      * object, or explictely triggers the associated 'cache' objects to be (re)created.
+     *
+     * BUG: This is done very early in the process based upon the mimetype a source gets during 
+     * upload, which is very often incorrect. F.e. a realmedia stream gets marked as real audio while
+     * in fact it's a real video stream, thus creating a bunch of audiostreamsources that never gets
+     * deleted later on when the source is correctly marked as video.
      */
     public class Job implements Iterable<Result> {
 
@@ -536,8 +541,35 @@ public class CreateCachesProcessor implements CommitProcessor {
             mediaprovider = node.getNodeValue("mediaprovider");
             assert mediafragment != null;
             assert mediaprovider != null;
+            
+            recognizeMimetype(node, chain);
         }
-
+        
+        /**
+         * Runs ffmpeg to do a check on format and mimetype, anlyzing if its type is correct mainly: 
+         * video, audio or image. FFMPegAnalyzer's ready method changes its nodetype.
+         */
+        protected void recognizeMimetype(Node node, ChainedLogger chain) {
+            //CommandTranscoder transcoder = new FFMpegTranscoder("1").clone();
+            if (list.containsKey("recognizer")) {
+                JobDefinition recognizerJob = list.get("recognizer");
+                
+                Analyzer a = new FFMpegAnalyzer();
+                AnalyzerLogger an = new AnalyzerLogger(a, node, null);
+                chain.addLogger(an);
+    
+                File f = new File(FileServlet.getDirectory(), node.getStringValue("url"));
+                File out = new File(FileServlet.getDirectory(), "dummy");
+                try {
+                    recognizerJob.transcoder.transcode(f.toURI(), out.toURI(), chain);
+                } catch (Exception e) {
+                    logger.error("" + e); 
+                }
+                a.ready(node, null);
+                chain.removeLogger(an);
+            }
+        }
+        
         /**
          * The several stream cache nodes (which are certain already) get created here.
          */
@@ -708,7 +740,8 @@ public class CreateCachesProcessor implements CommitProcessor {
         }
 
         /**
-         * Gets the node representing the 'cached' stream (the result of a conversion).
+         * Gets and creates the node representing the 'cached' stream (the result of a conversion),
+         * see the builder property 'org.mmbase.streams.cachestype'.
          * @param key   representation of the way the stream was created from its source
          */
         protected Node getCacheNode(final String key) {
