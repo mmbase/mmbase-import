@@ -70,7 +70,7 @@ function List(d) {
                 }
             }
         }
-        $(this.div).find("ol").sortable({
+        this.find(null, "ol").sortable({
                 update: function(event, ui) {
                     self.saveOrder(self.getOrder(event.target));
                 }
@@ -81,7 +81,7 @@ function List(d) {
 
     if (this.search) {
         //console.log("Searchable" + $(this.div).find("div.mm_related"));
-        $(this.div).find("div.mm_related").bind("mmsrRelate", function (e, relate, relater) {
+        this.find("mm_related", "div").bind("mmsrRelate", function (e, relate, relater) {
                 self.relate(e, relate, relater);
                 relater.repository.searcher.dec();
                 $(relate).addClass("removed");
@@ -135,8 +135,8 @@ function List(d) {
                        }
                    });
     // automaticly make the entries empty on focus if they evidently contain the default value only
-    $(this.div).find("input[type='text']").filter(function() {
-        return this.value.match(/^<.*>$/); }).one("focus", function() {
+    this.find(null, "input").filter(function() {
+        return this.type == 'text' && this.value.match(/^<.*>$/); }).one("focus", function() {
             this.value = "";
             if (self.validator != null) {
                 self.validator.validateElement(this);
@@ -172,7 +172,9 @@ List.prototype.log = function(msg) {
 
 
 
-
+/**
+ * This methods does not find anything in _nested_ lists.
+ */
 List.prototype.find = function(clazz, elname, parent) {
 
     this.log("---------Finding " + clazz + " " + elname + " in " + parent);
@@ -524,7 +526,7 @@ List.prototype.commit = function(stale, leavePage) {
  */
 List.prototype.getOrder = function(ol) {
     if (ol == null) {
-        ol = $(this.div).find("ol")[0];
+        ol = this.find(null, "ol")[0];
     }
     var order = "";
     var self = this;
