@@ -667,9 +667,9 @@ public class CreateCachesProcessor implements CommitProcessor {
                             inNode = prevResult.getNode();
                         }
 
-                        if (jd.transcoder.getKey() != null ) {
-                            LOG.info("matching " +  jd.getMimeType() + " of " + jd.transcoder + " with " + new MimeType(inNode.getStringValue("mimetype")));
+                        if (jd.transcoder.getKey() != null) {
                             if (jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
+                                LOG.info("Matched " +  jd.getMimeType() + " of " + jd.transcoder + " with " + new MimeType(inNode.getStringValue("mimetype")));
                                 Node dest = getCacheNode(jd.transcoder.getKey());
                                 if (dest == null) {
                                     LOG.warn("Could not create cache node from " + node.getNodeManager().getName() + " " + node.getNumber() + " for " + jd.transcoder.getKey());
