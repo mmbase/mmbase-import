@@ -253,10 +253,10 @@
         <c:forEach items="${parameters}" var="entry">
           <c:choose>
             <c:when test="${entry.key eq 'query'}">
-              <input type="hidden" name="${entry.key}"       value="${entry.value.sql}" />
+              <input type="hidden" name="${entry.key}"       value="${mm:escape('text/xml', entry.value.sql)}" />
             </c:when>
             <c:otherwise>
-              <input type="hidden" name="${entry.key}"       value="${entry.value}" />
+              <input type="hidden" name="${entry.key}"       value="${mm:escape('text/xml', entry.value)}" />
             </c:otherwise>
           </c:choose>
         </c:forEach>
