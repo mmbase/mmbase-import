@@ -30,7 +30,7 @@
   <mm:haspage page="${parameters.icondir}/${type}.png">
     <mm:link page="${parameters.icondir}/${type}.png">
       <img class="icon"
-           alt="${empty alt ? '+' : mm:escape('tagstripper(NONE)', alt)}"
+           alt="${empty alt ? '+' : mm:escape('tagstripper(NONE),trimmer', alt)}"
            src="${_}" />
     </mm:link>
   </mm:haspage>
