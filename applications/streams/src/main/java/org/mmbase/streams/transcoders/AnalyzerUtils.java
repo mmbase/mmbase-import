@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * Utility methods common for the analyzers that look for several media audio, video and images,
- * try to extract information, convert nodetypes to the matching kind etc.
+ * that try to extract information, convert nodetypes to the matching kind etc.
  *
  * @author Michiel Meeuwissen
  * @author Andre van Toly
@@ -36,8 +36,8 @@ public final class AnalyzerUtils {
 
     public static final String VIDEOC = VIDEO + "caches";
     public static final String AUDIOC = AUDIO + "caches";
-    public static final String IMAGEC = IMAGE + "caches";
-    public static final String MEDIAC = MEDIA + "caches";
+    public static final String IMAGEC = IMAGE + "caches";   /* only for testing, does not exist */
+    public static final String MEDIAC = "streamsourcescaches";
 
     private final ChainedLogger log = new ChainedLogger(LOG);
     AnalyzerUtils(Logger l) {
@@ -155,6 +155,29 @@ public final class AnalyzerUtils {
         return l;
     }
 
+    /* 
+    browserevent.ram: Unknown format 
+    [NULL @ 0x1804800]Unsupported video codec
+    */
+    private static final Pattern PATTERN_UNKNOWN     = Pattern.compile("\\s*(.*)\\s?: Unknown format.*?");
+    private static final Pattern PATTERN_UNSUPPORTED = Pattern.compile("\\s*(.*)Unsupported video codec.*?");
+    
+    public boolean unsupported(String l, Node source, Node des) {
+        Matcher m = PATTERN_UNKNOWN.matcher(l);
+        if (m.matches()) {
+            log.info("UNKNOWN !!");
+            log.info("file: " + m.group(1));
+            return true;
+        }
+        m = PATTERN_UNSUPPORTED.matcher(l);
+        if (m.matches()) {
+            log.info("UNSUPPORTED !!");
+            log.info("error?: " + m.group(1));
+            return true;
+        }
+        return false;
+    }
+
     /* ffmpeg reports sometimes no start and on some video's bitrate: N/A */ 
     private static final Pattern PATTERN_DURATION = Pattern.compile("\\s*Duration: (.*?),.* bitrate:.*?");
     private static final Pattern PATTERN_BITRATE  = Pattern.compile("\\s*Duration: .* bitrate: (.*?) kb/s.*?");
@@ -181,7 +204,6 @@ public final class AnalyzerUtils {
 
             m = PATTERN_BITRATE.matcher(l);
             if (m.matches()) {
-                log.debug("BitRate: " + m.group(1));
                 source.setIntValue("bitrate", 1000 * Integer.parseInt(m.group(1)));
             }
 
@@ -232,7 +254,7 @@ public final class AnalyzerUtils {
             log.debug("width: "  + m.group(1));
             log.debug("height: " + m.group(2));
             
-            incChannels(source, dest);
+            //incChannels(source, dest);
             source.setIntValue("width", Integer.parseInt(m.group(1)));
             source.setIntValue("height", Integer.parseInt(m.group(2)));
 
@@ -284,7 +306,7 @@ public final class AnalyzerUtils {
             log.debug(" format: " + m.group(2));
             log.debug("  width: " + m.group(3));
             log.debug(" height: " + m.group(4));
-            incChannels(source, dest);
+            //incChannels(source, dest);
             
             source.setIntValue("width", Integer.parseInt(m.group(3)));
             source.setIntValue("height", Integer.parseInt(m.group(4)));
@@ -317,7 +339,7 @@ public final class AnalyzerUtils {
             log.debug("channels: " + m.group(3));
             
             String channels = m.group(3);
-            if (source.getNodeManager().equals(AUDIO)) {
+            if (source.getNodeManager().hasField("channels")) {
                 if (channels.equals("stereo") || channels.equals("2")) {
                     source.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.STEREO);
                 } else {

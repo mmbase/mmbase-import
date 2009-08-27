@@ -60,6 +60,12 @@ public class FFMpegAnalyzer implements Analyzer {
     public void analyze(String l, Node source, Node des) {
         Cloud cloud = source.getCloud();
         
+        if (util.unsupported(l, source, des)) {
+            // TODO: make something to report this to user
+            log.warn("Not supported! " + l);
+            return;
+        }
+        
         if (util.image2(l, source, des)) {
             log.debug("Found an image " + source);
             canbe = util.IMAGE;
@@ -107,7 +113,7 @@ public class FFMpegAnalyzer implements Analyzer {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is video " + sourceNode);
             util.toVideo(sourceNode, destNode);
         }
-        //
+
     }
 
     public FFMpegAnalyzer clone() {
