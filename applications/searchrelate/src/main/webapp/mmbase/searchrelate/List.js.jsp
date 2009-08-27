@@ -304,7 +304,17 @@ List.prototype.addItem = function(res, cleanOnFocus) {
     list.find("delete", "a", r).each(function() {
             list.bindDelete(this);
         });
-    $(r).find("* div.list").each(function() {
+
+    /*
+    console.log($(r).find("div").filter(function() { return $(this).hasClass("list"); }));
+    console.log($(r).find("div.list"));
+    console.log($(r).find("div[class^=list]"));
+    console.log($(r).find("div.answers"));
+    console.log($(r).find("* div.list"));
+    */
+    // For some reason I encountered a situation where div.list simply does not match (see PMS-3681@EO)
+    // This is a odd work around. I suspect it a bug in jquery.
+    $(r).find("div").filter(function() { return $(this).hasClass("list"); }).each(function() {
             var div = this;
             if (div.list == null) {
                 div.list = new List(div);
