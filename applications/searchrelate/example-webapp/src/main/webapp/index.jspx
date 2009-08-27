@@ -6,8 +6,9 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <mm:import externid="ct" />
   <mm:content
-      type="application/xhtml+xml"
+      type="${empty ct ? 'application/xhtml+xml' : ct}"
       expires="0"
       language="en">
     <mm:cloud rank="administrator">
@@ -29,46 +30,47 @@
         <jsp:scriptlet>((HttpServletRequest) pageContext.getRequest()).getSession(true).invalidate();</jsp:scriptlet>
         <h1>Search and Relate examples/tests</h1>
 
+
         <h2>mm-sr:relatednodes</h2>
         <ul>
           <li class="done">
-            <mm:link page="relatednodes-1.jspx">
+            <mm:link page="relatednodes-1.jspx" referids="ct?">
               <a href="${_}">mm-sr:relatednodes (max, sortable, search)</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="relatednodes-2.jspx">
+            <mm:link page="relatednodes-2.jspx" referids="ct?">
               <a href="${_}">mm-sr:relatednodes (role, field)</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="relatednodes-nested.jspx">
+            <mm:link page="relatednodes-nested.jspx" referids="ct?">
               <a href="${_}">mm-sr:relatednodes nested</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="mmform-relatednodes.jspx">
+            <mm:link page="mmform-relatednodes.jspx" referids="ct?">
               <a href="${_}">mm-sr:relatednodes in an mm:form</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="mmform-relatednodes-2.jspx">
+            <mm:link page="mmform-relatednodes-2.jspx" referids="ct?">
               <a href="${_}">2 mm-sr:relatednodes in one mm:form</a>
             </mm:link>
           </li>
 
           <li>
-            <mm:link page="mmform-relatednodes-images.jspx">
+            <mm:link page="mmform-relatednodes-images.jspx" referids="ct?">
               <a href="${_}">mm-sr:relatednodes in an mm:form with image uploads</a>
             </mm:link>
           </li>
 
           <li class="done">
-            <mm:link page="mmform-relatednodes-nested.jspx">
+            <mm:link page="mmform-relatednodes-nested.jspx" referids="ct?">
               <a href="${_}">mm-sr:relatednodes in a form and nested</a>
             </mm:link>
           </li>
