@@ -160,6 +160,10 @@ public final class AnalyzerUtils {
     private static final Pattern PATTERN_BITRATE  = Pattern.compile("\\s*Duration: .* bitrate: (.*?) kb/s.*?");
     private static final Pattern PATTERN_START    = Pattern.compile("\\s*Duration: .* start: (.*?), bitrate:.*?");
 
+    /**
+     * Matches duration, records that and tries to match bitrate and start on that same line.
+     *
+     */
     public boolean duration(String l, Node source, Node des) {
         Matcher m = PATTERN_DURATION.matcher(l);
         if (m.matches()) {
@@ -200,7 +204,7 @@ public final class AnalyzerUtils {
     }
     
     /**
-     * Does +1 on channels in a 'mediasources' to keep count of the number of video channels.
+     * Does a +1 on channels in the source en destination node to keep count of the number of channels.
      *
      */
     protected void incChannels(Node source, Node dest) {
@@ -234,7 +238,7 @@ public final class AnalyzerUtils {
 
             m = VIDEOBITRATE_PATTERN.matcher(l);
             if (m.matches()) {
-                log.debug("BitRate: " + m.group(3));
+                log.info("BitRate: " + m.group(1));
                 source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
             }
             
@@ -243,41 +247,10 @@ public final class AnalyzerUtils {
         return false;
     }
 
-    private static final Pattern IMAGE_PATTERN    = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
-    /*
-    use this in stead for image matching and do height and width in other method ?
-    private static final Pattern IMAGE    = Pattern.compile("^Input #\\d+, image.*");
-    */
-    
-    public boolean image(String l, Node source, Node dest) {
-        /* not true: flv's do not seem to report a bitrate
-        if (! source.isNull("bitrate")) {
-            // already has a bitrate
-            return false;
-        }
-        */
-        Matcher m = IMAGE_PATTERN.matcher(l);
-        if (m.matches()) {
-            log.info("### Image match: " + l);
-            toImage(source, dest);
-
-            log.debug("width:  " + m.group(1));
-            log.debug("height: " + m.group(2));
-            source.setIntValue("width", Integer.parseInt(m.group(1)));
-            source.setIntValue("height", Integer.parseInt(m.group(2)));
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    //private static final Pattern INPUT_PATTERN = Pattern.compile("^Input #\\d+?, (.+?), from '([^']+)?.*");
     private static final Pattern IMAGE2_PATTERN = Pattern.compile("^Input #\\d+?, (image\\d*), from.*?");
     
     /**
-     * Matches on INPUT and looks for the 'image2' format which indicates that the input could 
-     * be an image.
+     * Matches on Input and looks for the 'image2' format which indicates that the input is an image.
      *
      */
     public boolean image2(String l, Node source, Node dest) {
@@ -295,8 +268,8 @@ public final class AnalyzerUtils {
     private static final Pattern PATTERN_DIMENSIONS = Pattern.compile(".*?\\sVideo: (.*?), (.*?), ([0-9]+)x([0-9]+).*");
     
     /**
-     * Looks for width and height when it finds a match for VIDEO, works for video and images.
-     *
+     * Looks for width and height when it finds a match for Video, and looks for bitrate after that. 
+     * Works also for images.
      */
     public boolean dimensions(String l, Node source, Node dest) {
         Matcher m = PATTERN_DIMENSIONS.matcher(l);
@@ -315,6 +288,12 @@ public final class AnalyzerUtils {
             
             source.setIntValue("width", Integer.parseInt(m.group(3)));
             source.setIntValue("height", Integer.parseInt(m.group(4)));
+
+            m = VIDEOBITRATE_PATTERN.matcher(l);
+            if (m.matches()) {
+                log.info("BitRate: " + m.group(1));
+                source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
+            }
             
             return true;
         } else {
@@ -327,7 +306,6 @@ public final class AnalyzerUtils {
 
     /**
      * Looks for audio channel(s).
-     *
      */
     public boolean audio(String l, Node source, Node dest) {
         Matcher m = PATTERN_AUDIO.matcher(l);

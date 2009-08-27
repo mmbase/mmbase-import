@@ -61,7 +61,7 @@ public class FFMpegAnalyzer implements Analyzer {
         Cloud cloud = source.getCloud();
         
         if (util.image2(l, source, des)) {
-            log.debug("Probably an image " + source);
+            log.debug("Found an image " + source);
             canbe = util.IMAGE;
             return;
         }
@@ -70,13 +70,6 @@ public class FFMpegAnalyzer implements Analyzer {
             log.debug("Found length " + source);
             return;
         }
-        
-        /*
-        if (util.video(l, source, des)) {
-            log.info("Found video " + source);
-            return;
-        }
-        */
         
         if (util.dimensions(l, source, des)) {
             log.debug("Found dimensions " + source);
@@ -92,10 +85,6 @@ public class FFMpegAnalyzer implements Analyzer {
             }
         }
         
-        if (util.image(l, source, des)) {
-            log.debug("Found image " + source);
-            return;
-        }
     }
 
     public void ready(Node sourceNode, Node destNode) {
