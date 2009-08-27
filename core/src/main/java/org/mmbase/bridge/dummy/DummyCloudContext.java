@@ -51,6 +51,7 @@ public class DummyCloudContext implements CloudContext {
 
     public static final String CLOUD = "mmbase";
 
+    /*
     private static SearchQueryHandler searchQueryHandler =
         new org.mmbase.storage.search.implementation.database.BasicQueryHandler(new org.mmbase.storage.search.implementation.database.BasicSqlHandler() {
                 @Override
@@ -67,7 +68,7 @@ public class DummyCloudContext implements CloudContext {
                     return st;
                 }
             });
-
+    */
     static class NodeManagerDescription {
         public final String name;
         public final Map<String, Field> fields;
@@ -265,7 +266,9 @@ public class DummyCloudContext implements CloudContext {
     public String getUri() {
         return "dummy://localhost";
     }
+    /*
     public org.mmbase.storage.search.SearchQueryHandler getSearchQueryHandler() {
         return searchQueryHandler;
     }
+    */
  }
