@@ -611,7 +611,7 @@ List.prototype.afterPost = function() {
         var order = "";
         var originalOrder = "";
         var self = this;
-        $(self.div).find("li").each(function() {
+        self.find(null, "li").each(function() {
                 if (order != "") {
                     order += ",";
                     originalOrder += ",";
