@@ -91,13 +91,13 @@
 
   <xsl:template match="section">
     <div id="{@id}">
-      <xsl:apply-templates select="*" />
+      <xsl:apply-templates />
     </div>
   </xsl:template>
 
   <xsl:template match="emphasis">
     <em>
-      <xsl:apply-templates select="*" />
+      <xsl:apply-templates  />
     </em>
   </xsl:template>
 
@@ -105,6 +105,12 @@
     <pre id="{@id}">
       <xsl:apply-templates  />
     </pre>
+  </xsl:template>
+
+  <xsl:template match="note">
+    <div class="note">
+      <xsl:apply-templates  />
+    </div>
   </xsl:template>
 
   <xsl:template match="para">
