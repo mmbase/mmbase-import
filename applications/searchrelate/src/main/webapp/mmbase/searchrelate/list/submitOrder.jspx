@@ -18,6 +18,22 @@
       We use the 'original position' here.
   -->
   <div class="saveresult">
+    <c:choose>
+      <c:when test="${parameters.source_was_new}">
+        <source>
+          <!-- Fix  The damn query hacks again (See RelatedNodesContainerTag) -->
+          <mm:node referid="parameters.source" jspvar="source">
+            <jsp:scriptlet>
+              org.mmbase.bridge.util.Queries.setStartNode(query, source);
+            </jsp:scriptlet>
+          </mm:node>
+          <mm:escape>${parameters._number} / ${parameters.source}</mm:escape>
+        </source>
+      </c:when>
+      <c:otherwise>
+        <source><mm:escape>${parameters.source}</mm:escape></source>
+      </c:otherwise>
+    </c:choose>
     <query><mm:escape>${parameters.query.sql}</mm:escape></query>
     <jsp:scriptlet>
       // convert parameters to a list of integers
