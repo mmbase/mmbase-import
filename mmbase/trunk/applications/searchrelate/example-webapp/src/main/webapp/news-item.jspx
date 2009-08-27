@@ -23,10 +23,11 @@
       idvar="rid"
       type="people"
       role="related"
+      search="true"
       fields="number,firstname">
     <h3>${rid} authors</h3>
-
   </mm-sr:relatednodes>
+
   <mm-sr:relatednodes
       idvar="rid"
       type="urls"
