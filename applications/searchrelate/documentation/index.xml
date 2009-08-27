@@ -82,7 +82,7 @@
         Noticeably, it can be used to make <emphasis>nested</emphasis> lists.
       </para>
       <para>
-        The idea is that you point with this attribute to your own JSP which is to be used in stead of the default one in /mmbase/searchrelated/item.jspx.
+        The idea is that you point with this attribute to your own JSP which is to be used in stead of the default one in /mmbase/searchrelate/list/item.jspx.
       </para>
       <para>
         You can suppose a current node ("${_node}" in EL) in this JSP. The JSP will further receive
@@ -90,6 +90,9 @@
         current mm-sr:relatednodes which you might need from the session. This goes easiest by including this:
       </para>
       <programlisting format="linespecific"><![CDATA[
+
+      <jsp:output omit-xml-declaration="true" />
+
       <jsp:directive.include file="/mmbase/searchrelate/list/parameters.jspf" />
 
       Now I can use ${parameters.source}, ${parameters.search} etc.
@@ -101,6 +104,12 @@
       <para>
         The fieldlistid can help you to produce unique name's on the input widgets , which is important if the form gets complicated.
       </para>
+      <note>
+        <para>Your item is not a standalone XML, (it is included by
+        /mmbase/searchrelate/list/li.jspx) so it should omit the xml-declaration. This practicly (if
+        JSPx) means that you may have to add a jsp:output.
+        </para>
+      </note>
       <note>
         <title>Backwards compatibility</title>
         <para>Previously these item jsps, received other parameters, like 'source', 'fields',
