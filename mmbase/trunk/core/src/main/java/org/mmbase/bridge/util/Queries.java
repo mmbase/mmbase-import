@@ -1406,7 +1406,9 @@ abstract public class Queries {
                 }
             }
         }
-        if (result.size() == 0) throw new UnsupportedOperationException("Cannot relate " + n + " in "  + q.toSql());
+        if (result.size() == 0) {
+            throw new UnsupportedOperationException("Could relate " + n + " in "  + q.toSql());
+        }
         return result;
 
     }
@@ -1664,12 +1666,18 @@ abstract public class Queries {
             for (AnnotatedNode n : list) {
                 Node node = n.getNodeValue(orderAlias + ".number");
                 Object posValue = node.getValue(orderField.getFieldName());
-                if (posValue instanceof Comparable) {
-                    Comparable comparable = (Comparable) posValue;
-                    if (comparable == null) {
+                if (posValue == null) {
+                    posValue = getFirstValue(node.getNodeManager().getField(orderField.getFieldName()).getDataType().getTypeAsClass());
+                    log.debug("Value of " + orderField + " is null. Substituted 'first' value " + posValue);
+                    node.setValue(orderField.getFieldName(), posValue);
+                }
+                if (posValue == null) {
+                    if (posValue == null) {
                         log.warn("Value of " + orderField + " is null");
                         continue;
                     }
+                } else if (posValue instanceof Comparable) {
+                    Comparable comparable = (Comparable) posValue;
                     if (pos != null) {
                         if (so.getDirection() == SortOrder.ORDER_ASCENDING) {
                             if (comparable.compareTo(pos) <= 0) {
@@ -1733,6 +1741,10 @@ abstract public class Queries {
 
     }
 
+
+
+    // TODO, 'increase', 'decrease' and 'first' are perhaps properties of the datatype.
+    // we may move this stuff to DataType implementations
     /**
      * Used by {@link #reorderResult} to 'increase' the value of position determining field.
      */
@@ -1754,6 +1766,15 @@ abstract public class Queries {
         } else {
             log.warn("Don't know how to decrease " + pos);
             return pos;
+        }
+    }
+    private static Comparable getFirstValue(Class<Comparable> c) {
+        if (Integer.class.isAssignableFrom(c)) {
+            return 0;
+        } else if (Long.class.isAssignableFrom(c)) {
+            return 0L;
+        } else {
+            return org.mmbase.util.Casting.toType(c, "");
         }
     }
 
