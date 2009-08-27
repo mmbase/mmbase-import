@@ -64,8 +64,9 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
             log.info("Found length " + source);
             return;
         }
-        if (util.video(l, source, des)) {
-            log.info("Found video " + source);
+        
+        if (util.dimensions(l, source, des)) {
+            log.info("Found dimensions " + source);
             return;
         }
 
