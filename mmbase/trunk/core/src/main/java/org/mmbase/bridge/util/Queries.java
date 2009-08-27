@@ -1789,6 +1789,115 @@ abstract public class Queries {
         return new MapNode(values, node.getNodeManager());
     }
 
+
+    /**
+     * Used by {@link #setStartNode}/{@link #getStartNode}
+     * @since MMBase-1.9.2
+     */
+    private static boolean matchesHelpConstraint(Step firstStep, FieldValueConstraint fvc) {
+        return fvc.getField().getStep().equals(firstStep) && fvc.getField().getFieldName().equals("owner");
+    }
+
+    /**
+     * Used by {@link #setStartNode}/{@link #getStartNode}
+     * @since MMBase-1.9.2
+     */
+    private static FieldValueConstraint getStartNodeConstraint(NodeQuery query) {
+        Step firstStep = query.getSteps().get(0);
+        Constraint c = query.getConstraint();
+        if (c instanceof CompositeConstraint) {
+            for (Constraint sub : ((CompositeConstraint) c).getChilds()) {
+                if (sub instanceof FieldValueConstraint) {
+                    FieldValueConstraint fvc = (FieldValueConstraint) sub;
+                    if (matchesHelpConstraint(firstStep, fvc)) {
+                        c = fvc;
+                        break;
+                    }
+                }
+            }
+        }
+        return  (FieldValueConstraint) c;
+    }
+    /**
+     * Used by {@link #setStartNode}/{@link #getStartNode}
+     * @since MMBase-1.9.2
+     */
+    private static void dropStartNodeConstraint(NodeQuery query) {
+        Constraint c = query.getConstraint();
+        if (c == null) return;
+        if (c instanceof CompositeConstraint) {
+            Step firstStep = query.getSteps().get(0);
+            org.mmbase.storage.search.implementation.BasicCompositeConstraint composite =
+                (org.mmbase.storage.search.implementation.BasicCompositeConstraint) c;
+            List<Constraint> removes = new ArrayList<Constraint>();
+            for (Constraint sub : composite.getChilds()) {
+                if (sub instanceof FieldValueConstraint) {
+                    FieldValueConstraint fvc = (FieldValueConstraint) sub;
+                    if (matchesHelpConstraint(firstStep, fvc)) {
+                        removes.add(sub);
+                    }
+                    if (fvc.getField().getStep().equals(firstStep) && fvc.getField().getFieldName().equals("number") && fvc.getValue().equals(new Integer(-1))) {
+                        // drop the make empty constraint
+                        removes.add(sub);
+                    }
+                }
+            }
+            for (Constraint sub : removes) {
+                composite.removeChild(sub);
+            }
+            if (composite.getChilds().size() == 0) {
+                query.setConstraint(null);
+            }
+        } else if (c instanceof FieldValueConstraint) {
+            if (matchesHelpConstraint(query.getSteps().get(0), (FieldValueConstraint) c)) {
+                query.setConstraint(null);
+            }
+        }
+    }
+
+    /**
+     * This puts the node as 'startnode' in the query (propably a 'related nodes' query.
+     * If the node is uncommited yet, this cannot be don with the normal {@link Query#addNode} method.
+     * The information will be put in the query in another way then, so that at least {@link #getStartNode} will give the correct result.
+
+     * If the Query object is changed such that it can contain uncommitted nodes, then this method can be made deprecated.
+     *
+     * @since MMBase-1.9.2
+     */
+    public static void setStartNode(NodeQuery query, Node startNode) {
+        if (startNode.getNumber() < 0) { // new node does not have relations, we know that.
+
+            // The query must be made empty on one hand, and on the other hand it must store the inforrmation about this startNode.
+            // The start-node is needed in #getNodeList(Query) when usetransaction="true"
+
+            // This hack stores the tempory node in a constraint on owner, and can be picked up again in #getNodeList(Query)
+            Queries.addConstraint(query, Queries.createMakeEmptyConstraint(query)); // to make absolutely sure nothing is found
+            StepField f = query.createStepField(query.getSteps().get(0), startNode.getNodeManager().getField("owner"));
+            Queries.addConstraint(query, query.createConstraint(f, Queries.getOperator("="), startNode.getStringValue("_number")));
+
+        } else {
+            dropStartNodeConstraint(query);
+            query.addNode(query.getSteps().get(0), startNode);
+        }
+    }
+    /**
+     * This method is the counterpart of {@link #setStartNode} and receives 'the' startnode from the Query (which may not be committed).
+     * @since MMBase-1.9.2
+     */
+    public static Node getStartNode(NodeQuery nq, Cloud cloud) {
+        Step firstStep = nq.getSteps().get(0);
+        Set<Integer> nodes = firstStep.getNodes();
+
+        if (nodes == null || nodes.size() == 0) {
+            // probably this startNode is _new_ See remarks in #setStartNode
+            FieldValueConstraint fvc = getStartNodeConstraint(nq);
+            String value = (String) fvc.getValue();
+            return cloud.getNode(value);
+        } else {
+            return cloud.getNode(nodes.iterator().next());
+        }
+    }
+
     /**
      * Returns the related nodes of a certain node (defined by the query), <em>including</em> the one that where related to it in the current transaction.
      *
