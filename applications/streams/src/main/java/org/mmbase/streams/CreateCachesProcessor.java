@@ -41,6 +41,9 @@ import org.w3c.dom.*;
  * This commit-processor is used on nodes of type 'streamsources' and is used to initiate the
  * conversions to other formats which are saved in 'streamsourcescaches'. Its analogy is derived
  * from the conversion of 'images' in MMBase to their resulting 'icaches' nodes.
+ * Several transcodings of media files can be configured with recognizers and transcoders. The
+ * recognizer with id 'recognizer' can be configured before the transcodings start to look
+ * if the sources contain the correct type (video, audio or image).
  *
  * @author Michiel Meeuwissen
  * @version $Id$
@@ -502,10 +505,6 @@ public class CreateCachesProcessor implements CommitProcessor {
      * 'caches' nodes for it. Such a Job object is created everytime somebody create a new source
      * object, or explictely triggers the associated 'cache' objects to be (re)created.
      *
-     * BUG: This is done very early in the process based upon the mimetype a source gets during 
-     * upload, which is very often incorrect. F.e. a realmedia stream gets marked as real audio while
-     * in fact it's a real video stream, thus creating a bunch of audiostreamsources that never gets
-     * deleted later on when the source is correctly marked as video.
      */
     public class Job implements Iterable<Result> {
 
@@ -546,11 +545,10 @@ public class CreateCachesProcessor implements CommitProcessor {
         }
         
         /**
-         * Runs ffmpeg to do a check on format and mimetype, anlyzing if its type is correct mainly: 
+         * Runs ffmpeg to do a check on format and mimetype, mainly analyzing if its type is correct: 
          * video, audio or image. FFMPegAnalyzer's ready method changes its nodetype.
          */
         protected void recognizeMimetype(Node node, ChainedLogger chain) {
-            //CommandTranscoder transcoder = new FFMpegTranscoder("1").clone();
             if (list.containsKey("recognizer")) {
                 JobDefinition recognizerJob = list.get("recognizer");
                 
@@ -559,9 +557,10 @@ public class CreateCachesProcessor implements CommitProcessor {
                 chain.addLogger(an);
     
                 File f = new File(FileServlet.getDirectory(), node.getStringValue("url"));
-                File out = new File(FileServlet.getDirectory(), "dummy");
+                //File out = new File(FileServlet.getDirectory(), "dummy");
+                LOG.info("*** Starting recognition with FFMpegAnalyzer for: " + f);
                 try {
-                    recognizerJob.transcoder.transcode(f.toURI(), out.toURI(), chain);
+                    recognizerJob.transcoder.transcode(f.toURI(), null, chain);
                 } catch (Exception e) {
                     logger.error("" + e); 
                 }
@@ -577,10 +576,11 @@ public class CreateCachesProcessor implements CommitProcessor {
             synchronized(list) {
                 for (Map.Entry<String, JobDefinition> entry : list.entrySet()) {
 
-                    // TODO check only create if always must be created or, if mimetype matches with input.
                     JobDefinition jd = entry.getValue();
                     String id = entry.getKey();
+                    
                     if (jd.transcoder.getKey() != null) {
+                        
                         String inId = jd.transcoder.getInId();
                         if ((inId == null || results.containsKey(inId))) {
 
@@ -644,6 +644,13 @@ public class CreateCachesProcessor implements CommitProcessor {
                     Result result = null;
                     while (i.hasNext()) {
                         Map.Entry<String, JobDefinition> n = i.next();
+                        
+                        String id = n.getKey();
+                        if (id.equals("recognizer")) {
+                            LOG.info("*** Skipping recognizer...");
+                            continue;
+                        }
+                        
                         JobDefinition jd = n.getValue();
                         URI inFile;
                         Node inNode;
@@ -660,7 +667,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                             inNode = prevResult.getNode();
                         }
 
-                        if (jd.transcoder.getKey() != null) {
+                        if (jd.transcoder.getKey() != null ) {
                             LOG.info("matching " +  jd.getMimeType() + " of " + jd.transcoder + " with " + new MimeType(inNode.getStringValue("mimetype")));
                             if (jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
                                 Node dest = getCacheNode(jd.transcoder.getKey());
