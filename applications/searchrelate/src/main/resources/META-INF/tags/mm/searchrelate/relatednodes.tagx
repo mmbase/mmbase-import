@@ -241,7 +241,7 @@
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
 
-    <div id="${rid}" class="list ${q.nodeManager.name} ${pageContext.request.method}">
+    <div id="${rid}" class="list ${parameters.query.nodeManager.name} ${pageContext.request.method}">
 
       <c:if test="${! empty idvar}">
         <mm:write request="${idvar}" referid="rid" />
