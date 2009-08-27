@@ -277,12 +277,19 @@ List.prototype.bindCreate = function(a) {
 
 List.prototype.addItem = function(res, cleanOnFocus) {
     var list = this;
-    var r = $(res.responseText)[0];
-
+    var r = $(res.responseText);
     // This seems nicer, but it would give problems if the content types don't match
     // And anyway, it of course never works in IE.
     //r = document.importNode(res.responseXML.documentElement, true);
 
+    var ol = list.find(null, "ol");
+    if (this.createposition == 'top') {
+        ol.prepend(r);
+        r = ol.find("li:first")[0];
+    } else {
+        ol.append(r);
+        r = ol.find("li:last")[0];
+    }
     if (cleanOnFocus == null || cleanOnFocus) {
         // remove default value on focus
         $(r).find("input").one("focus", function() {
@@ -292,11 +299,7 @@ List.prototype.addItem = function(res, cleanOnFocus) {
                 }
             });
     }
-    if (this.createposition == 'top') {
-        list.find(null, "ol").prepend(r);
-    } else {
-        list.find(null, "ol").append(r);
-    }
+
     if (list.validator != null) {
         list.validator.addValidation(r);
     }
