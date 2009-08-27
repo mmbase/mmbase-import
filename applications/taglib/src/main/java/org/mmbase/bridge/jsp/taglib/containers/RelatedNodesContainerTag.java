@@ -71,23 +71,12 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
                 CloudProvider cloudProvider = findCloudProvider(false);
                 cloud = cloudProvider != null ? cloudProvider.getCloudVar() : node.getCloud();
             }
-            query = new NodeQueryWrapper( cloud.createNodeQuery());
+            query = new NodeQueryWrapper(cloud.createNodeQuery());
 
             Step step = query.addStep(node.getNodeManager());
             query.setAlias(step, node.getNodeManager().getName() + "0");
-            if (node.getNumber() < 0) { // new node does not have relations, we know that.
 
-                // The query must be made empty on one hand, and on the other hand it must store the inforrmation about this startNode.
-                // The start-node is needed in #getNodeList(Query) when usetransaction="true"
-
-                // This hack stores the tempory node in a constraint on owner, and can be picked up again in #getNodeList(Query)
-                Queries.addConstraint(query, Queries.createMakeEmptyConstraint(query)); // to make absolutely sure nothing is found
-                StepField f = query.createStepField(query.getSteps().get(0), node.getNodeManager().getField("owner"));
-                Queries.addConstraint(query, query.createConstraint(f, Queries.getOperator("="), node.getStringValue("_number")));
-
-            } else {
-                query.addNode(step, node);
-            }
+            Queries.setStartNode(query, node);
 
             if (nodeManager != Attribute.NULL || role != Attribute.NULL) {
 
