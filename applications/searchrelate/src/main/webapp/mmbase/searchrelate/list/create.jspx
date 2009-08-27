@@ -21,7 +21,7 @@
         </c:when>
         <c:otherwise>
           <mm:log level="debug">Cloud:  ${parameters.formtag} </mm:log>
-          &lt;!-- transaction: ${parameters.formtag} --&gt;
+          &lt;!-- transaction: <mm:escape>${parameters.formtag}</mm:escape> --&gt;
           <mm:form
               mode="transaction"
               name="${parameters.formtag}"
