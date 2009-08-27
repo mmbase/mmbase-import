@@ -2,7 +2,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"  %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-<mm:content type="text/javascript" expires="0">
+<mm:content type="text/javascript">
 
 /**
  * This javascript binds to a div.list.
@@ -277,13 +277,12 @@ List.prototype.bindCreate = function(a) {
 
 List.prototype.addItem = function(res, cleanOnFocus) {
     var list = this;
-    var r = null;
-    try {
-        r = document.importNode(res.responseXML.documentElement, true);
-    } catch (e) {
-        // IE 6 sucks.
-        r = $(res.responseText)[0];
-    }
+    var r = $(res.responseText)[0];
+
+    // This seems nicer, but it would give problems if the content types don't match
+    // And anyway, it of course never works in IE.
+    //r = document.importNode(res.responseXML.documentElement, true);
+
     if (cleanOnFocus == null || cleanOnFocus) {
         // remove default value on focus
         $(r).find("input").one("focus", function() {
@@ -305,16 +304,8 @@ List.prototype.addItem = function(res, cleanOnFocus) {
             list.bindDelete(this);
         });
 
-    /*
-    console.log($(r).find("div").filter(function() { return $(this).hasClass("list"); }));
-    console.log($(r).find("div.list"));
-    console.log($(r).find("div[class^=list]"));
-    console.log($(r).find("div.answers"));
-    console.log($(r).find("* div.list"));
-    */
-    // For some reason I encountered a situation where div.list simply does not match (see PMS-3681@EO)
-    // This is a odd work around. I suspect it a bug in jquery.
-    $(r).find("div").filter(function() { return $(this).hasClass("list"); }).each(function() {
+
+    $(r).find("div.list").each(function() {
             var div = this;
             if (div.list == null) {
                 div.list = new List(div);
