@@ -60,11 +60,30 @@
   <block name="myjobs"
          classification="mmbase.examples:90 mmbase.streams"
          mimetype="text/html">
-    <body jsp="myjobs.jspx" />
+    <title xml:lang="en">My jobs</title>
+    <title xml:lang="nl">Mijn jobs</title>
+    <description xml:lang="en">
+      Displays your current, running media transcodings to other formats.
+    </description>
+    <description xml:lang="nl">
+      Toont jouw huidige, lopende transcoderingen van media naar andere formaten.
+    </description>
+    <body jsp="myjobs.jspx">
+      <param name="cancel" />
+    </body>
   </block>
+  
   <block name="alljobs"
          classification="mmbase.streams"
          mimetype="text/html">
+    <title xml:lang="en">All jobs</title>
+    <title xml:lang="nl">Alle jobs</title>
+    <description xml:lang="en">
+      Displays current, running media transcodings to other formats.
+    </description>
+    <description xml:lang="nl">
+      Toont huidige, lopende transcoderingen van media naar andere formaten.
+    </description>
     <body jsp="alljobs.jspx">
       <param name="cancel" />
     </body>
