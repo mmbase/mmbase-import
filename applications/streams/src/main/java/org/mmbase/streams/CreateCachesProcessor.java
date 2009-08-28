@@ -836,6 +836,9 @@ public class CreateCachesProcessor implements CommitProcessor {
         public String getProgress() {
             return "" + busy + "/" + results.size();
         }
+        public int getBusy() {
+            return busy;
+        }
         public String getUser() {
             return user;
         }
@@ -845,7 +848,10 @@ public class CreateCachesProcessor implements CommitProcessor {
         public Node getNode() {
             return node;
         }
-
+        public Node getMediafragment() {
+            return mediafragment;
+        }
+        
         @Override
         public String toString() {
             if (current == null) {
