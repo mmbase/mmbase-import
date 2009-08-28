@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.streams.transcoders;
 
 import org.mmbase.applications.media.MimeType;
+import org.mmbase.applications.media.State;
 import java.util.*;
 import java.util.regex.*;
 import org.mmbase.bridge.*;
@@ -167,12 +168,16 @@ public final class AnalyzerUtils {
         if (m.matches()) {
             log.info("UNKNOWN !!");
             log.info("file: " + m.group(1));
+            
+            source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
             return true;
         }
         m = PATTERN_UNSUPPORTED.matcher(l);
         if (m.matches()) {
             log.info("UNSUPPORTED !!");
             log.info("error?: " + m.group(1));
+            
+            source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
             return true;
         }
         return false;
