@@ -9,23 +9,20 @@
 
   <jsp:output omit-xml-declaration="true" />
 
-  <ul>
-    <mm:listfunction set="streams" name="myJobs">
-      <li>
-        <span>${_} ${_.transcoder} (${_.progress})</span>
-        <p>
-          <span class="in">${_.transcoder.in}</span>
-          <jsp:text> -&amp;gt; </jsp:text>
-          <span class="out">${_.transcoder.out}</span>
-        </p>
-        <div class="log">
-          <pre>
-            <jsp:text>${_.logger.debugList}</jsp:text>
-          </pre>
-        </div>
-      </li>
-    </mm:listfunction>
-  </ul>
+  <mm:import externid="cancel" />
 
+  <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
+  <p>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}</p>
+  
+
+  <c:if test="${! empty cancel}">
+    <mm:function set="streams" name="cancelJob" referids="cancel@node">
+      <p>${_}</p>
+    </mm:function>
+  </c:if>
+
+  <mm:listfunction set="streams" name="myJobs" >
+    <jsp:directive.include file="job.jspx" />
+  </mm:listfunction>
 
 </div>
