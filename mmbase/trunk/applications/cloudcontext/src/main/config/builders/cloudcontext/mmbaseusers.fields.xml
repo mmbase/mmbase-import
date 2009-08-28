@@ -12,6 +12,7 @@
     <editor>
       <positions>
         <list>1</list>
+        <input>1</input>
       </positions>
     </editor>
     <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -31,6 +32,7 @@
     <editor>
       <positions>
         <list>-1</list>
+        <input>2</input>
         <search>-1</search>
       </positions>
     </editor>
@@ -54,6 +56,7 @@
     <editor>
       <positions>
         <list>-1</list>
+        <input>3</input>
         <search>-1</search>
       </positions>
     </editor>
@@ -68,6 +71,7 @@
     <editor>
       <positions>
         <list>2</list>
+        <input>4</input>
       </positions>
     </editor>
     <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -87,6 +91,7 @@
     <editor>
       <positions>
         <list>11</list>
+        <input>5</input>
         <search>11</search>
       </positions>
     </editor>
@@ -109,6 +114,7 @@
     <editor>
       <positions>
         <list>12</list>
+        <input>6</input>
         <search>12</search>
       </positions>
     </editor>
@@ -128,6 +134,7 @@
     <editor>
       <positions>
         <list>13</list>
+        <input>7</input>
         <search>13</search>
       </positions>
     </editor>
@@ -147,6 +154,7 @@
     <editor>
       <positions>
         <list>14</list>
+        <input>8</input>
         <search>14</search>
       </positions>
     </editor>
