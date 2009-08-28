@@ -61,7 +61,7 @@
   </field>
   <field name="defaultcontext">
     <gui>
-      <guiname xml:lang="nl">Default Context</guiname>
+      <guiname xml:lang="nl">Default context</guiname>
       <guiname xml:lang="en">Default Context</guiname>
       <guiname xml:lang="eo">Defaŭlta konteksto</guiname>
     </gui>
@@ -86,7 +86,8 @@
     </gui>
     <editor>
       <positions>
-        <list>3</list>
+        <list>11</list>
+        <search>11</search>
       </positions>
     </editor>
     <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -107,7 +108,8 @@
     </gui>
     <editor>
       <positions>
-        <list>4</list>
+        <list>12</list>
+        <search>12</search>
       </positions>
     </editor>
     <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -125,7 +127,8 @@
     </gui>
     <editor>
       <positions>
-        <list>5</list>
+        <list>13</list>
+        <search>13</search>
       </positions>
     </editor>
     <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -143,8 +146,8 @@
     </gui>
     <editor>
       <positions>
-        <list>6</list>
-        <search>6</search>
+        <list>14</list>
+        <search>14</search>
       </positions>
     </editor>
     <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
