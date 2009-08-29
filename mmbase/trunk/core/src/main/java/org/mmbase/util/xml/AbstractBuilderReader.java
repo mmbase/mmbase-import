@@ -327,7 +327,7 @@ public abstract class AbstractBuilderReader<F extends Field> extends DocumentRea
      * Alter a specified, named FieldDef object using information obtained from the buidler configuration.
      * Only GUI information is retrieved and stored (name and type of the field sg=hould already be specified).
      * @since MMBase-1.6
-     * @param elm The element containing the field information acc. to the buidler xml format
+     * @param field The element containing the field information according to the buidler xml format
      * @param def The field definition to alter
      */
     protected void decodeFieldDef(Element field, CoreField def, DataTypeCollector collector) {
