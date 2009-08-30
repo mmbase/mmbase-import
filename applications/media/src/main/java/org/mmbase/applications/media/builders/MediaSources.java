@@ -53,7 +53,7 @@ public class MediaSources extends MMObjectBuilder {
     public static final String FUNCTION_MIMETYPE       = "mimetype";
 
 
-    // parameter definitions (making use of reflection utitility for functions)
+    // parameter definitions (making use of reflection utility for functions)
     public final static Parameter[] URLS_PARAMETERS         = { new Parameter("node",  org.mmbase.bridge.Node.class),
                                                                 new Parameter.Wrapper(MediaFragments.URLS_PARAMETERS) };
     public final static Parameter[] FILTEREDURLS_PARAMETERS = URLS_PARAMETERS;
@@ -144,7 +144,7 @@ public class MediaSources extends MMObjectBuilder {
 
 
     /**
-     * resolve the url of the mediasource. (e.g. pnm://www.mmbase.org/test/test.ra)
+     * Resolve the url of the mediasource. (e.g. pnm://www.mmbase.org/test/test.ra)
      *
      * @param source the media source
      * @param info extra info (i.e. HttpRequestIno, bitrate, etc.)
@@ -172,10 +172,10 @@ public class MediaSources extends MMObjectBuilder {
 
 
     /**
-     * used in the editors
+     * Used in the editors
      */
     public String getGUIIndicator(MMObjectNode source) {
-	return "" + Format.get(source.getIntValue("format")) + "/" + source.getStringValue("bitrate") + "/" + source.getStringValue("channels");
+	    return "" + Format.get(source.getIntValue("format")) + "/" + source.getStringValue("bitrate") + "/" + source.getStringValue("channels");
 	/*
         List urls = getFilteredURLs(source, null, null);
         if (urls.size() == 0) return "[could not compose URL]";
@@ -358,7 +358,6 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * Returns all possible URLs for this source. (A source can be on different providers)
      */
-
     protected List<URLComposer> getURLs(MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, List<URLComposer> urls, Set<MMObjectNode> cacheExpireObjects) {
         if (urls == null) urls = new ArrayList<URLComposer>();
         log.debug("Getting urls for source " + source.getNumber());
@@ -387,6 +386,7 @@ public class MediaSources extends MMObjectBuilder {
         }
         return urls;
     }
+    
     /**
      * Returns all URLs for this source, but filtered, with the best ones on top.
      */
@@ -396,13 +396,12 @@ public class MediaSources extends MMObjectBuilder {
     }
 
     /**
-     * relates a source with given provider. Only if there is one provider matching.
+     * Relates a source with given provider. Only if there is one provider matching.
      *
      * @param source the media source.
      * @param providername the name of the provider that is going to be related.
      * @param owner the owner name that is creating the relation.
      */
-
     public void addProvider(MMObjectNode source, String providername, String owner) {
         MMObjectBuilder providers = mmb.getMMObject("mediaproviders");
 
@@ -450,7 +449,7 @@ public class MediaSources extends MMObjectBuilder {
 
 
     /**
-     * get all mediaproviders belonging to this mediasource
+     * Get all mediaproviders belonging to this mediasource
      * @param source the mediasource
      * @return All mediaproviders related to the given mediasource
      */
