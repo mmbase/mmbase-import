@@ -576,6 +576,11 @@ public class CreateCachesProcessor implements CommitProcessor {
          * The several stream cache nodes (which are certain already) get created here.
          */
         protected void createCacheNodes() {
+            LOG.debug("state: " + node.getIntValue("state") + " nodenr: " + node.getNumber());
+            if ( node.getIntValue("state") == State.SOURCE_UNSUPPORTED.getValue() ) {
+                LOG.error("Not supported");
+                return;
+            }
             synchronized(list) {
                 for (Map.Entry<String, JobDefinition> entry : list.entrySet()) {
 
