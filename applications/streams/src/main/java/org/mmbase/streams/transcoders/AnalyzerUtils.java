@@ -33,12 +33,12 @@ public final class AnalyzerUtils {
     public static final String VIDEO = "videostreamsources";
     public static final String AUDIO = "audiostreamsources";
     public static final String IMAGE = "imagesources";
-    public static final String MEDIA = "mediastreamsources";
+    public static final String MEDIA = "streamsources";
 
     public static final String VIDEOC = VIDEO + "caches";
     public static final String AUDIOC = AUDIO + "caches";
     public static final String IMAGEC = IMAGE + "caches";   /* only for testing, does not exist */
-    public static final String MEDIAC = "streamsourcescaches";
+    public static final String MEDIAC = MEDIA + "caches";
 
     private final ChainedLogger log = new ChainedLogger(LOG);
     AnalyzerUtils(Logger l) {
@@ -75,14 +75,12 @@ public final class AnalyzerUtils {
             }
             assert source.getNodeManager().getName().equals(VIDEO);
             if (dest != null) {
-                if (! source.getNodeManager().getName().equals(VIDEOC)) {
+                if (! dest.getNodeManager().getName().equals(VIDEOC)) {
                     dest.setNodeManager(cloud.getNodeManager(VIDEOC));
                     dest.commit();
                 }
                 assert dest.getNodeManager().getName().equals(VIDEOC);
-
             }
-
         }
     }
     
@@ -91,17 +89,19 @@ public final class AnalyzerUtils {
         fixMimeType("audio", source);
         fixMimeType("audio", dest);
         if (cloud != null) {
-            log.service("This is audio, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
-            source.setNodeManager(cloud.getNodeManager(AUDIO));
-            source.commit();
+            if (! source.getNodeManager().getName().equals(AUDIO)) {
+                log.service("This is audio, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
+                source.setNodeManager(cloud.getNodeManager(AUDIO));
+                source.commit();
+            }
             assert source.getNodeManager().getName().equals(AUDIO);
             if (dest != null) {
-                dest.setNodeManager(cloud.getNodeManager(AUDIOC));
-                dest.commit();
+                if (! dest.getNodeManager().getName().equals(AUDIOC)) {
+                    dest.setNodeManager(cloud.getNodeManager(AUDIOC));
+                    dest.commit();
+                }
                 assert dest.getNodeManager().getName().equals(AUDIOC);
-
             }
-
         }
     }
 
@@ -156,28 +156,29 @@ public final class AnalyzerUtils {
         return l;
     }
 
-    /* 
-    browserevent.ram: Unknown format 
-    [NULL @ 0x1804800]Unsupported video codec
-    */
-    private static final Pattern PATTERN_UNKNOWN     = Pattern.compile("\\s*(.*)\\s?: Unknown format.*?");
+    private static final Pattern PATTERN_UNKNOWN     = Pattern.compile("\\s*(.*): Unknown format.*?");
     private static final Pattern PATTERN_UNSUPPORTED = Pattern.compile("\\s*(.*)Unsupported video codec.*?");
     
+    /* Looks for messages from ffmpeg that it does not support this kind of file.
+     * browserevent.ram: Unknown format 
+     * [NULL @ 0x1804800]Unsupported video codec
+    */
     public boolean unsupported(String l, Node source, Node des) {
         Matcher m = PATTERN_UNKNOWN.matcher(l);
         if (m.matches()) {
-            log.info("UNKNOWN !!");
-            log.info("file: " + m.group(1));
+            // BUG: This never matches cause the last line of ffmpeg does not reach the analyzer
+            log.warn("### UNKNOWN format: " + m.group(1) + " : " + source.getNumber());
             
             source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
+            source.commit();
             return true;
         }
         m = PATTERN_UNSUPPORTED.matcher(l);
         if (m.matches()) {
-            log.info("UNSUPPORTED !!");
-            log.info("error?: " + m.group(1));
+            log.warn("### UNSUPPORTED " + m.group(1) + " : " + source.getNumber());
             
             source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
+            source.commit();
             return true;
         }
         return false;
@@ -230,21 +231,6 @@ public final class AnalyzerUtils {
         }
     }
     
-    /**
-     * Does a +1 on channels in the source en destination node to keep count of the number of channels.
-     *
-     */
-    protected void incChannels(Node source, Node dest) {
-        if (source.isNull("channels") || source.getIntValue("channels") <= 0) {
-            source.setIntValue("channels", 1);
-        } else if (source.getIntValue("channels") == 1) {
-            source.setIntValue("channels", 2);
-        }
-        if (dest != null) {
-            dest.setIntValue("channels", source.getIntValue("channels"));
-        }
-    }
-
     private static final Pattern VIDEO_PATTERN        = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
     private static final Pattern VIDEOBITRATE_PATTERN = Pattern.compile(".*?\\sVideo: .* bitrate: (.*?) kb/s.*");
     
@@ -258,8 +244,6 @@ public final class AnalyzerUtils {
 
             log.debug("width: "  + m.group(1));
             log.debug("height: " + m.group(2));
-            
-            //incChannels(source, dest);
             source.setIntValue("width", Integer.parseInt(m.group(1)));
             source.setIntValue("height", Integer.parseInt(m.group(2)));
 
@@ -311,8 +295,6 @@ public final class AnalyzerUtils {
             log.debug(" format: " + m.group(2));
             log.debug("  width: " + m.group(3));
             log.debug(" height: " + m.group(4));
-            //incChannels(source, dest);
-            
             source.setIntValue("width", Integer.parseInt(m.group(3)));
             source.setIntValue("height", Integer.parseInt(m.group(4)));
 
@@ -342,7 +324,6 @@ public final class AnalyzerUtils {
             log.debug("   codec: " + m.group(1));
             log.debug("   freq.: " + m.group(2));
             log.debug("channels: " + m.group(3));
-            
             String channels = m.group(3);
             if (source.getNodeManager().hasField("channels")) {
                 if (channels.equals("stereo") || channels.equals("2")) {
