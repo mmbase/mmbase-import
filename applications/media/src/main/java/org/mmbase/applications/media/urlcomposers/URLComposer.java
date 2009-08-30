@@ -142,13 +142,26 @@ public class URLComposer  {
         }
         return buff;
     }
+    
     /**
      * Returns the URL as a String. To encourage efficient coding,
      * this method is final. Override getURLBuffer instead.
      */
-
-    public final String  getURL() {
+    public final String getURL() {
         return getURLBuffer().toString();
+    }
+
+    /**
+     * Returns the 'short' url (typically the filename) for display purposes, 
+     * just the source field value url.
+     */
+    public final String getFilename() {
+        String sourceUrl = source.getStringValue("url");
+        if (sourceUrl.length() > 0) {
+            return sourceUrl;
+        } else {
+            return "#nourlyet";
+        }
     }
 
     /**
