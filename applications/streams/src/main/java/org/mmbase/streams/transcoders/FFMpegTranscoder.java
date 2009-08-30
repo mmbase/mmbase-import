@@ -24,7 +24,7 @@ import java.util.regex.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-@Settings({"format", "acodec", "vcodec", "ab", "b", "async", "r", "ac"})
+@Settings({"format", "acodec", "vcodec", "aq", "ab", "b", "async", "r", "ac"})
 public class FFMpegTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpegTranscoder.class);
@@ -32,6 +32,7 @@ public class FFMpegTranscoder extends CommandTranscoder {
     String acodec = null;
     String vcodec = null;
     String ab = null;
+    String aq = null;
     String b = null;
     String async = null;
     String r = null;
@@ -49,6 +50,11 @@ public class FFMpegTranscoder extends CommandTranscoder {
     }
     public void setAbitrate(String a) {
         ab = a;
+    }
+    
+    /* audio quality variable bit rate (VBR): 0-255 (0 = highest, 255 = lowest) */
+    public void setAq(String a) {
+        aq = a;
     }
 
     public void setB(String b) {
@@ -109,6 +115,10 @@ public class FFMpegTranscoder extends CommandTranscoder {
             args.add("-vcodec");
             args.add(vcodec);
         }
+        if (aq != null) {
+            args.add("-aq");
+            args.add(aq);
+        }
         if (ab != null) {
             args.add("-ab");
             args.add(ab);
@@ -149,7 +159,5 @@ public class FFMpegTranscoder extends CommandTranscoder {
         log.debug("Returning " + w);
         return w;
     }
-
-
 
 }
