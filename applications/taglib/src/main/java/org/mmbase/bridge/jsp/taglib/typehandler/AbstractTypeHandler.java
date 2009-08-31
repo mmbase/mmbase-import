@@ -269,6 +269,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                         }
                     } catch (Throwable t) {
                         // may throw exception like 'You cannot change the field"
+                        log.warn(t);
                     }
                 } else {
                     if (log.isDebugEnabled()) {
