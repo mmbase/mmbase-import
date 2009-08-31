@@ -163,7 +163,7 @@ public final class AnalyzerUtils {
      * browserevent.ram: Unknown format 
      * [NULL @ 0x1804800]Unsupported video codec
     */
-    public boolean unsupported(String l, Node source, Node des) {
+    public boolean unsupported(String l, Node source, Node dest) {
         Matcher m = PATTERN_UNKNOWN.matcher(l);
         if (m.matches()) {
             // BUG: This never matches cause the last line of ffmpeg does not reach the analyzer
@@ -193,24 +193,28 @@ public final class AnalyzerUtils {
      * Matches duration, records that and tries to match bitrate and start on that same line.
      *
      */
-    public boolean duration(String l, Node source, Node des) {
+    public boolean duration(String l, Node source, Node dest) {
         Matcher m = PATTERN_DURATION.matcher(l);
         if (m.matches()) {
             log.info("### Duration match: " + l);
             
             Node fragment = source.getNodeValue("mediafragment");
-            log.debug("mediafragment: " + source.getNodeValue("mediafragment"));
+            // log.debug("mediafragment: " + source.getNodeValue("mediafragment"));
             
             if (! source.getNodeManager().hasField("length")) {
-                toVideo(source, des);
+                toVideo(source, dest);
             }
-            log.debug("Duration: " + m.group(1));
+            log.debug("duration: " + m.group(1));
             long length = getLength(m.group(1));
             source.setLongValue("length", length);
+            dest.setLongValue("length", length);
 
             m = PATTERN_BITRATE.matcher(l);
             if (m.matches()) {
-                source.setIntValue("bitrate", 1000 * Integer.parseInt(m.group(1)));
+                log.debug("bitrate: " + m.group(1));
+                int bitrate = 1000 * Integer.parseInt(m.group(1));
+                source.setIntValue("bitrate", bitrate);
+                dest.setIntValue("bitrate", bitrate);
             }
 
             m = PATTERN_START.matcher(l);
@@ -249,8 +253,10 @@ public final class AnalyzerUtils {
 
             m = VIDEOBITRATE_PATTERN.matcher(l);
             if (m.matches()) {
-                log.info("BitRate: " + m.group(1));
-                source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
+                log.debug("bitrate: " + m.group(1));
+                int bitrate = 1000 * Integer.parseInt(m.group(1));
+                source.setIntValue("bitrate", bitrate);
+                dest.setIntValue("bitrate", bitrate);
             }
             
             return true;
@@ -298,10 +304,14 @@ public final class AnalyzerUtils {
             source.setIntValue("width", Integer.parseInt(m.group(3)));
             source.setIntValue("height", Integer.parseInt(m.group(4)));
 
+            dest.setIntValue("width", Integer.parseInt(m.group(3)));
+            dest.setIntValue("height", Integer.parseInt(m.group(4)));
+
             m = VIDEOBITRATE_PATTERN.matcher(l);
             if (m.matches()) {
                 log.info("BitRate: " + m.group(1));
                 source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
+                dest.setIntValue("bitrate", Integer.parseInt(m.group(1)));
             }
             
             return true;
@@ -328,8 +338,10 @@ public final class AnalyzerUtils {
             if (source.getNodeManager().hasField("channels")) {
                 if (channels.equals("stereo") || channels.equals("2")) {
                     source.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.STEREO);
+                    dest.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.STEREO);
                 } else {
                     source.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.MONO);
+                    dest.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.MONO);
                 }
             }
             

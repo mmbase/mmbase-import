@@ -93,7 +93,6 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
                     des.setIntValue("width", Integer.parseInt(n.group(1)));
                     des.setIntValue("height", Integer.parseInt(n.group(2)));
                     des.commit();
-
                 }
             }
         }

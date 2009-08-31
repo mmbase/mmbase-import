@@ -67,23 +67,23 @@ public class FFMpegAnalyzer implements Analyzer {
         }
         
         if (util.image2(l, source, des)) {
-            log.debug("Found an image " + source);
+            if (log.isDebugEnabled()) log.debug("Found an image " + source);
             canbe = util.IMAGE;
             return;
         }
 
         if (util.duration(l, source, des)) {
-            log.debug("Found length " + source);
+            if (log.isDebugEnabled()) log.debug("Found length " + source);
             return;
         }
         
         if (util.dimensions(l, source, des)) {
-            log.debug("Found dimensions " + source);
+            if (log.isDebugEnabled()) log.debug("Found dimensions " + source);
             return;
         }
         
         if (util.audio(l, source, des)) {
-            log.debug("Found audio: " + source);
+            if (log.isDebugEnabled()) log.debug("Found audio: " + source);
             
             if (! canbe.equals(util.VIDEO)) {
                 /* no video seen yet, so it can be audio */
