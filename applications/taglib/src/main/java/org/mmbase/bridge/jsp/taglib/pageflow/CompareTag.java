@@ -152,7 +152,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                     if (compare2 instanceof String) {
                         if ("".equals(compare2)) { // do something reasonable in IsEmpty
                             compare2 = new BigDecimal("0");
-                        }else if("true".equals(((String)compare2).toLowerCase()) || "false".equals((((String)compare2).toLowerCase()))) {
+                        } else if("true".equals(((String)compare2).toLowerCase()) || "false".equals((((String)compare2).toLowerCase()))) {
                             //if compare1 was a boolean it will be a number by now, and we will have to change compare2 to a number too.
                             compare2 = new BigDecimal(Casting.toInteger(new Boolean((String)compare2)));
                         } else {
@@ -195,7 +195,12 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                             } else if ("false".equals(compare1)) {
                                 compare1n = new BigDecimal(0);
                             } else {
-                                compare1n = new BigDecimal((String)compare1);
+                                try {
+                                    compare1n = new BigDecimal((String)compare1);
+                                } catch (NumberFormatException nfe) {
+                                    // never mind
+                                    compare1n = new BigDecimal(0);
+                                }
                             }
                         }
                         if (doCompare((Comparable<Comparable>)compare1n, (Comparable)compare2)) {
