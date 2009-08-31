@@ -194,13 +194,14 @@ public class Related {
     public static class Setter extends AbstractProcessor {
 
         private static final long serialVersionUID = 1L;
-        public Object process(Node node, Field field, Object value) {
+        public Object process(final Node node, final Field field, final Object value) {
             if (log.isDebugEnabled()) {
                 log.debug("Setting "  + value);
             }
 
             NodeQuery relations = getRelationsQuery(node);
             NodeList rl = relations.getNodeManager().getList(relations);
+            log.debug("Found " + rl.size() + " existing relations");
             if (value != null) {
                 Cloud cloud = node.getCloud();
                 Node dest = Casting.toNode(value, cloud);
@@ -225,24 +226,40 @@ public class Related {
                     log.debug("" + dest + " already correctly related");
                     // nothing changed
                 } else {
+                    log.debug("" + dest + " not correctly related");
                     RelationManager rel = getRelationManager(node);
                     if (node.isNew()) {
+                        log.debug("Cannot make relations to new nodes");
                         node.commit(); // Silly, but you cannot make relations to new nodes.
                     } else {
+                        log.debug("Deleting " + rl.size() + " existing relations");
                         for (Node r : rl) {
                             log.debug("Deleting " + r);
                             r.delete();
                         }
                     }
+                    log.debug("Creating new relation ");
                     Relation newrel = node.createRelation(dest, rel);
-                    for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
-                        newrel.setStringValue(entry.getKey(), entry.getValue());
+
+                    try {
+                        for (Map.Entry<String, String> entry : relationConstraints.entrySet()) {
+                            log.debug("Setting " + entry);
+                            String key = entry.getKey();
+                            int dot = key.indexOf(".");
+                            if (dot >= 0) {
+                                key = key.substring(dot + 1, key.length());
+                            }
+                            newrel.setStringValue(key, entry.getValue());
+                        }
+                    } catch (Throwable e) {
+                        log.warn(e.getMessage(), e);
                     }
                     log.debug("Created " + newrel);
                     newrel.commit();
                 }
                 return dest;
             } else {
+                log.debug("value is null, deleting existing relations");
                 for (Node r : rl) {
                     r.delete();
                 }
