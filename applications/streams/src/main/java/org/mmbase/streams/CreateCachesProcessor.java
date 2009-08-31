@@ -260,6 +260,7 @@ public class CreateCachesProcessor implements CommitProcessor {
     private Job createJob(final Node node, final ChainedLogger logger) {
         Job job = runningJobs.get(node.getNumber());
         if (job != null) {
+            LOG.warn("This job is already running: " + node.getNumber());
             // already running
             return null;
         }
