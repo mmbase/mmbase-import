@@ -26,7 +26,10 @@
     <mm:param name="org.mmbase.richtext.wiki.load_relations" value="true" />
     <mm:param name="org.mmbase.richtext.wiki.load_related"   value="false" />
     <mm:param name="org.mmbase.richtext.wiki.undecorateids"  value="true" />
-    <mm:form id="transaction"  commitonclose="false">
+    <mm:import externid="page" />
+    <mm:form id="transaction"
+             page="${page}"
+             commitonclose="false">
 
 
       <mm:node number="${n}">
@@ -100,14 +103,14 @@
             </mm:redirect>
           </mm:present>
           <mm:valid>
-              <mm:import externid="submit" />
-              <mm:present referid="submit">
-                <mm:import externid="comments" />
-                <mm:param name="org.mmbase.versioning.comments" referid="comments" />
-                <h1>Committing ${_} for ${transaction.cloudVar}</h1>
-                <mm:commit />
-                <mm:redirect  referids="n" />
-              </mm:present>
+            <mm:import externid="submit" />
+            <mm:present referid="submit">
+              <mm:import externid="comments" />
+              <mm:param name="org.mmbase.versioning.comments" referid="comments" />
+              <h1>Committing ${_} for ${transaction.cloudVar}</h1>
+              <mm:commit />
+              <mm:redirect  referids="n" />
+            </mm:present>
           </mm:valid>
           <mm:valid inverse="true">
             <mm:log>Could not save while object invalid</mm:log>
