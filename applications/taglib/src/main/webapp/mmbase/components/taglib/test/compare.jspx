@@ -31,4 +31,17 @@
     <mm:compare  referid="a" value="${b}">Ok ${a} eq ${b}</mm:compare>
     <mm:compare  referid="a" value="${b}" inverse="true">NOT Ok ${a} eq ${b}</mm:compare>
   </p>
+
+  <p>
+    <c:catch var="e">
+      <mm:import id="c">A</mm:import>
+      <mm:compare referid="c" value="true">NOT ok ${c} eq true</mm:compare>
+    </c:catch>
+    <c:if test="${! empty e}">
+      <jsp:text>NOT ok ${e}</jsp:text>
+    </c:if>
+    <c:if test="${empty e}">
+      <jsp:text>Ok. No exception</jsp:text>
+    </c:if>
+  </p>
 </div>
