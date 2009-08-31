@@ -98,7 +98,7 @@
         <c:forEach items="${applicationScope}" var="entry">
           <tr>
             <th>${entry.key}</th>
-            <td><mm:escape>${entry.value}</mm:escape></td>
+            <td><mm:escape><c:catch var="e">${entry.value}</c:catch>${e}</mm:escape></td>
           </tr>
         </c:forEach>
       </table>
