@@ -8,20 +8,16 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.dummy;
+package org.mmbase.bridge.mock;
 
 import java.util.*;
-import java.util.concurrent.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.BridgeCollections;
-import org.mmbase.storage.search.*;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.security.*;
 import org.mmbase.util.*;
-import org.mmbase.util.functions.*;
 import org.xml.sax.InputSource;
-import org.w3c.dom.Document;
 
 /**
  * The 'dummy' cloud context is mainly meant for useage in junit test cases. It provides a
@@ -42,10 +38,10 @@ import org.w3c.dom.Document;
  * @todo    EXPERIMENTAL
  */
 
-public class DummyCloudContext implements CloudContext {
+public class MockCloudContext implements CloudContext {
 
-    private static final DummyCloudContext virtual = new DummyCloudContext();
-    public static DummyCloudContext getInstance() {
+    private static final MockCloudContext virtual = new MockCloudContext();
+    public static MockCloudContext getInstance() {
         return virtual;
     }
 
@@ -72,9 +68,9 @@ public class DummyCloudContext implements CloudContext {
     static class NodeManagerDescription {
         public final String name;
         public final Map<String, Field> fields;
-        public final DummyBuilderReader reader;
+        public final MockBuilderReader reader;
         public final Map<String, String> properties = new HashMap<String, String>();
-        public NodeManagerDescription(String n, Map<String, Field> f, DummyBuilderReader r) {
+        public NodeManagerDescription(String n, Map<String, Field> f, MockBuilderReader r) {
             name = n;
             fields = f;
             reader = r;
@@ -106,7 +102,7 @@ public class DummyCloudContext implements CloudContext {
     final Map<String,  NodeManagerDescription> nodeManagers    = Collections.synchronizedMap(new LinkedHashMap<String, NodeManagerDescription>());
 
 
-    public DummyCloudContext() {
+    public MockCloudContext() {
         clouds.add(CLOUD);
     }
 
@@ -126,27 +122,27 @@ public class DummyCloudContext implements CloudContext {
      */
     public void addCore() throws java.io.IOException {
         for (String buil : new String[] {"typedef", "typerel", "reldef", "object", "insrel"}) {
-            addNodeManager(DummyBuilderReader.getBuilderLoader().getInputSource("core/" + buil + ".xml"));
+            addNodeManager(MockBuilderReader.getBuilderLoader().getInputSource("core/" + buil + ".xml"));
         }
     }
 
     public void addNodeManager(String name, Map<String, DataType> map) {
         Map<String, Field> m = new HashMap<String, Field>();
         for (Map.Entry<String, DataType> e : map.entrySet()) {
-            m.put(e.getKey(), new DummyField(e.getKey(), null, e.getValue()));
+            m.put(e.getKey(), new MockField(e.getKey(), null, e.getValue()));
         }
         nodeManagers.put(name, new NodeManagerDescription(name, m, null));
     }
 
     public void addNodeManager(InputSource source) {
         synchronized(nodeManagers) {
-            DummyBuilderReader reader = new DummyBuilderReader(source, this);
+            MockBuilderReader reader = new MockBuilderReader(source, this);
             addNodeManager(reader);
 
         }
     }
 
-    protected void addNodeManager(DummyBuilderReader reader) {
+    protected void addNodeManager(MockBuilderReader reader) {
         Map<String, Field> map = new HashMap<String, Field>();
         for (Field f : reader.getFields()) {
             map.put(f.getName(), f);
@@ -157,7 +153,7 @@ public class DummyCloudContext implements CloudContext {
     public void addNodeManagers(ResourceLoader directory) throws java.io.IOException {
         for (String builder : directory.getResourcePaths(ResourceLoader.XML_PATTERN, true)) {
             synchronized(nodeManagers) {
-                DummyBuilderReader reader = new DummyBuilderReader(directory.getInputSource(builder), this);
+                MockBuilderReader reader = new MockBuilderReader(directory.getInputSource(builder), this);
                 if (reader.getRootElement().getTagName().equals("builder")) {
                     try {
                         addNodeManager(reader);
@@ -190,15 +186,15 @@ public class DummyCloudContext implements CloudContext {
     }
 
     public Cloud getCloud(String name) {
-        return new DummyCloud(name, this, new BasicUser("anonymous"));
+        return new MockCloud(name, this, new BasicUser("anonymous"));
     }
 
     public Cloud getCloud(String name, String authenticationType, Map<String, ?> loginInfo) throws NotFoundException {
-        return new DummyCloud(name, this, new BasicUser(authenticationType));
+        return new MockCloud(name, this, new BasicUser(authenticationType));
     }
 
     public Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException {
-        return new DummyCloud(name, this, user);
+        return new MockCloud(name, this, user);
     }
 
     public StringList getCloudNames() {
