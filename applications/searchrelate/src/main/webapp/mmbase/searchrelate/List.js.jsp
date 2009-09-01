@@ -312,6 +312,12 @@ List.prototype.addItem = function(res, cleanOnFocus) {
             var div = this;
             if (div.list == null) {
                 div.list = new List(div);
+                if (div.list.search) {
+                    // Later added, MMBaseRelater is not automaticly set up.
+                    div.list.find("mm_related", "div").each(function() {
+                            new MMBaseRelater(this);
+                        });
+                }
             }
         });
 
