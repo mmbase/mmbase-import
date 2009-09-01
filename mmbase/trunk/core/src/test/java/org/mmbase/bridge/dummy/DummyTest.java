@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.dummy;
 
+import org.mmbase.bridge.mock.MockCloudContext;
+import org.mmbase.bridge.mock.MockBuilderReader;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.*;
 import java.util.*;
@@ -25,11 +27,11 @@ import static org.junit.Assert.*;
 public class DummyTest  {
 
     public CloudContext getCloudContext() {
-        return DummyCloudContext.getInstance();
+        return MockCloudContext.getInstance();
     }
     @BeforeClass()
     public static void setUp() {
-        DummyCloudContext.getInstance().clear();
+        MockCloudContext.getInstance().clear();
     }
 
 
@@ -63,7 +65,7 @@ public class DummyTest  {
         Map<String, DataType> map = new HashMap<String, DataType>();
         map.put("number", Constants.DATATYPE_INTEGER);
         map.put("title", Constants.DATATYPE_STRING);
-        DummyCloudContext.getInstance().addNodeManager("aa", map);
+        MockCloudContext.getInstance().addNodeManager("aa", map);
 
         NodeManager aa = cloud.getNodeManager("aa");
         Node a = aa.createNode();
@@ -85,13 +87,13 @@ public class DummyTest  {
 
     @Test
     public void builderReader() throws Exception {
-        DummyCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addCore();
         Cloud cloud = getCloudContext().getCloud("mmbase");
 
         assertTrue(cloud.hasNodeManager("object"));
 
         NodeManager object = cloud.getNodeManager("object");
-        assertTrue("" + DummyCloudContext.getInstance().nodeManagers.get("object"), object.hasField("number"));
+        assertTrue("" + MockCloudContext.getInstance().nodeManagers.get("object"), object.hasField("number"));
         assertTrue(object.hasField("otype"));
         assertTrue(object.hasField("owner"));
         assertTrue(object.hasField("_number"));
@@ -99,8 +101,8 @@ public class DummyTest  {
 
     @Test
     public void addNodeManagers() throws Exception {
-        DummyCloudContext cc = new DummyCloudContext();
-        cc.addNodeManagers(DummyBuilderReader.getBuilderLoader().getChildResourceLoader("core"));
+        MockCloudContext cc = new MockCloudContext();
+        cc.addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("core"));
 
         Cloud cloud = cc.getCloud("mmbase");
         assertTrue("" + cc.nodeManagers, cloud.hasNodeManager("object"));
@@ -115,7 +117,7 @@ public class DummyTest  {
 
     @Test
     public void createNodeInNonDefaultCloudContext() throws Exception {
-        DummyCloudContext cc = new DummyCloudContext();
+        MockCloudContext cc = new MockCloudContext();
         Cloud c = cc.getCloud("mmbase");
 
         Map<String, DataType> map = new HashMap<String, DataType>();
@@ -130,7 +132,7 @@ public class DummyTest  {
 
     @Test
     public void nodeManagerProperties() throws Exception {
-        DummyCloudContext cc = new DummyCloudContext();
+        MockCloudContext cc = new MockCloudContext();
         Cloud c = cc.getCloud("mmbase");
 
         Map<String, DataType> map = new HashMap<String, DataType>();
