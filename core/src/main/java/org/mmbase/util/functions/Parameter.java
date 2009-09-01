@@ -131,7 +131,11 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
 
         // check for a default value
         if (element.getFirstChild() != null && ! dataTypeDefined) {
-            parameter.setDefaultValue(parameter.autoCast(org.mmbase.util.xml.DocumentReader.getNodeTextValue(element)));
+            try {
+                parameter.setDefaultValue(parameter.autoCast(org.mmbase.util.xml.DocumentReader.getNodeTextValue(element)));
+            } catch (CastException ce) {
+                log.error(ce);
+            }
         }
         return parameter;
     }
@@ -344,8 +348,13 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * parameter is of type Integer, then the string can be parsed to Integer.
      * @param value The value to be filled in in this Parameter.
      */
-    protected C autoCast(Object value) {
-        return dataType.cast(value, null, null);
+    protected C autoCast(Object value) throws CastException {
+        Collection<LocalizedString> errors = dataType.castAndValidate(value, null, null);
+        if (errors.size() == 0) {
+            return dataType.cast(value, null, null);
+        } else {
+            throw new CastException("" + errors);
+        }
     }
 
     /**
