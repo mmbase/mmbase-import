@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util.functions;
+import org.mmbase.datatypes.*;
 import java.util.*;
 import java.util.regex.*;
 import org.junit.*;
@@ -20,12 +21,18 @@ import static org.junit.Assert.*;
  */
 public class ParametersTest {
 
+    static {
+        DataTypes.initialize();
+    }
+
     private static final Parameter<String> A = new Parameter<String>("a", String.class, "A");
     private static final Parameter<Integer> B = new Parameter<Integer>("b", Integer.class, true);
     private static final Parameter<String> C = new Parameter<String>("c", String.class, "C");
     private static final Parameter<String> D = new Parameter<String>("d", String.class, "D");
     private static final Parameter<String> E = new Parameter<String>("e", String.class, "E");
     private static final Parameter<String> F = new Parameter<String>("f", String.class, "F");
+
+    private static final Parameter G = new Parameter("g", DataTypes.getDataType("decimal"));
 
     private static final Parameter<Integer> PB = new PatternParameter<Integer>(Pattern.compile("b+"), Integer.class);
     private static final Parameter<Integer> PC = new PatternParameter<Integer>(Pattern.compile("c+"), Integer.class);
@@ -177,10 +184,17 @@ public class ParametersTest {
 
     @Test
     public void autoCast() {
-        Parameters params = new Parameters(B);
+        Parameters params = new Parameters(B, G);
         params.set(B, 5); // OK
+        params.set(G, new java.math.BigDecimal(5));
         try {
             params.set("b", "5");
+            fail("Should have given IllegalArgumentException");
+        } catch (IllegalArgumentException ia) {
+            // ok this is expected
+        }
+        try {
+            params.set("g", "5");
             fail("Should have given IllegalArgumentException");
         } catch (IllegalArgumentException ia) {
             // ok this is expected
@@ -188,10 +202,19 @@ public class ParametersTest {
 
         params.setAutoCasting(true);
         params.set("b", "5");
+        params.set("g", "5");
 
         try {
             params.set("b", "a");
             fail("Should have given IllegalArgumentException since 'a' is not a valid integer");
+        } catch (IllegalArgumentException ia) {
+            // ok this is expected
+
+        }
+
+        try {
+            params.set("g", "a");
+            fail("Should have given IllegalArgumentException since 'a' is not a valid decimal");
         } catch (IllegalArgumentException ia) {
             // ok this is expected
 
