@@ -13,7 +13,8 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.io.*;
 import java.util.*;
-import junit.framework.TestCase;
+import org.junit.*;
+import static org.junit.Assert.*;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 
 
@@ -22,7 +23,7 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
  * @author Michiel Meeuwissen
  * @verion $Id$
  */
-public class SerializableInputStreamTest extends TestCase {
+public class SerializableInputStreamTest  {
 
 
 
@@ -40,7 +41,7 @@ public class SerializableInputStreamTest extends TestCase {
         while (is.read() != -1) {
             size++;
         }
-        System.out.println("Found " + size + " byte for " + is);
+        //System.out.println("Found " + size + " byte for " + is);
         return new SerializableInputStream(getClass().getClassLoader().getResourceAsStream(getResourceName()), size);
     }
 
@@ -60,10 +61,11 @@ public class SerializableInputStreamTest extends TestCase {
             os.write( (i % 100) + 20);
         }
         os.close();
-        System.out.println("Found size " + di.getSize());
+        //System.out.println("Found size " + di.getSize());
         return new SerializableInputStream(di);
     }
 
+    @Test
     public void testBasic() {
         SerializableInputStream instance = getByteArrayInstance();
         assertEquals(3, instance.getSize());
@@ -72,6 +74,7 @@ public class SerializableInputStreamTest extends TestCase {
 
     }
 
+    @Test
     public void testEquals() throws IOException {
         //assertEquals(new byte[] {0, 1, 2}, new byte[] {0, 1, 2});
         assertEquals(getByteArrayInstance(), getByteArrayInstance());
@@ -81,7 +84,6 @@ public class SerializableInputStreamTest extends TestCase {
         assertTrue(Arrays.equals(new byte[] { 0, 1, 2}, i.get()));
         assertTrue(Arrays.equals(i.get(), i.get()));
     }
-
 
 
     protected void testSerializable(SerializableInputStream l) throws IOException, java.lang.ClassNotFoundException {
@@ -117,7 +119,7 @@ public class SerializableInputStreamTest extends TestCase {
         l.moveTo(f);
         testSerializable(l);
         testSerializable(l);
-        System.out.println("" + f + " of " + l);
+        //System.out.println("" + f + " of " + l);
         after = l.get();
         assertTrue("" + before.length + " " + after.length, Arrays.equals(before, after));
         l.close();
@@ -130,19 +132,23 @@ public class SerializableInputStreamTest extends TestCase {
     }
 
 
+    @Test
     public void testSerializableA() throws IOException, ClassNotFoundException {
         SerializableInputStream a = getByteArrayInstance();
         testSerializableMany(a);
     }
+    @Test
     public void testSerializableB() throws IOException, ClassNotFoundException {
         SerializableInputStream b = getInputStreamInstance();
         testSerializableMany(b);
 
     }
+    @Test
     public void testSerializableC() throws IOException, ClassNotFoundException {
         SerializableInputStream c = getDiskItemInstance();
         testSerializableMany(c);
     }
+    @Test
     public void testSerializableD() throws IOException, ClassNotFoundException {
         SerializableInputStream c = getDiskItemInstanceBig();
         testSerializableMany(c);
@@ -151,7 +157,7 @@ public class SerializableInputStreamTest extends TestCase {
     public File testCopy(SerializableInputStream l) throws IOException {
         File f = File.createTempFile("oof", ".bar");
         IOUtil.copy(l, new FileOutputStream(f));
-        l.close();
+        //l.close();
         return f;
     }
 
@@ -165,21 +171,26 @@ public class SerializableInputStreamTest extends TestCase {
         assertEquals(length, file2.length());
     }
 
+    @Test
     public void testResetA() throws IOException, ClassNotFoundException {
         testReset(getByteArrayInstance());
     }
 
+    @Test
     public void testResetB() throws IOException, ClassNotFoundException {
         testReset(getInputStreamInstance());
     }
 
+    @Test
     public void testResetC() throws IOException, ClassNotFoundException {
         testReset(getDiskItemInstance());
     }
+    @Test
     public void testResetD() throws IOException, ClassNotFoundException {
         testReset(getDiskItemInstanceBig());
     }
 
+    @Test
     public void testCopyConstructor() throws IOException, ClassNotFoundException  {
         SerializableInputStream is1 = getInputStreamInstance();
         SerializableInputStream is2 = new SerializableInputStream(is1);
