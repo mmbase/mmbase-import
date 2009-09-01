@@ -314,9 +314,9 @@
       </c:if>
       <c:if test="${search}">
         <mm:cloud>
-          <mm-srt:search type="${query.nodeManager.name}" load="${empty load or load}">
+          <mm-sr:search type="${query.nodeManager.name}" load="${empty load or load}">
             <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
-          </mm-srt:search>
+          </mm-sr:search>
         </mm:cloud>
       </c:if>
     </div>
