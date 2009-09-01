@@ -10,14 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 import java.util.*;
 import java.util.regex.*;
-import junit.framework.TestCase;
+import org.junit.*;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Michiel Meeuwissen
  * @verion $Id$
  */
-public class ParametersTest extends TestCase {
+public class ParametersTest {
 
     private static final Parameter<String> A = new Parameter<String>("a", String.class, "A");
     private static final Parameter<Integer> B = new Parameter<Integer>("b", Integer.class, true);
@@ -28,8 +29,8 @@ public class ParametersTest extends TestCase {
 
     private static final Parameter<Integer> PB = new PatternParameter<Integer>(Pattern.compile("b+"), Integer.class);
     private static final Parameter<Integer> PC = new PatternParameter<Integer>(Pattern.compile("c+"), Integer.class);
-    /**
-     */
+
+    @Test
     public void testSimple() {
         Parameters params = new Parameters(A, B);
         assertEquals(2, params.size());
@@ -64,6 +65,7 @@ public class ParametersTest extends TestCase {
         assertTrue(5 == params.get(B));
 
     }
+    @Test
     public void testIllegalPatterns() {
         try {
             Parameters params = new Parameters(PB, A);
@@ -71,6 +73,7 @@ public class ParametersTest extends TestCase {
         } catch (IllegalArgumentException iae) {
         }
     }
+    @Test
     public void testPatterns() {
         Parameters params = new Parameters(A, PB);
         assertEquals(1, params.size());
@@ -111,6 +114,7 @@ public class ParametersTest extends TestCase {
         assertEquals(7, params.get("bb"));
     }
 
+    @Test
     public void testWrapper() {
         Parameters params = new Parameters(A, B, new Parameter.Wrapper(C, D));
         assertEquals(4, params.size());
@@ -132,6 +136,7 @@ public class ParametersTest extends TestCase {
         assertEquals("D", params.get(3));
     }
 
+    @Test
     public void testWrapperPatterns() {
         Parameter[] params1 = new Parameter[] {A, PB};
         Parameter[] params2 = new Parameter[]{ B, PC};
@@ -144,7 +149,7 @@ public class ParametersTest extends TestCase {
 
 
     }
-
+    @Test
     public void testSubList() {
         Parameters params = new Parameters(A, B, new Parameter.Wrapper(C, D));
         params.set(B, 5);
@@ -160,7 +165,7 @@ public class ParametersTest extends TestCase {
         assertEquals("C", subParams.get("c"));
     }
 
-
+    @Test
     public void testAutodefiningParameters() {
         Parameters auto = new AutodefiningParameters();
         auto.setIfDefined("a", "A");
