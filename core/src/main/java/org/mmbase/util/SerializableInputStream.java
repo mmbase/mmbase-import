@@ -63,6 +63,9 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         this.size = s;
         this.name = null;
         if (wrapped == null) throw new NullPointerException();
+        if (wrapped.markSupported()) {
+            wrapped.mark(Integer.MAX_VALUE);
+        }
     }
 
     public SerializableInputStream(byte[] array) {
@@ -106,7 +109,7 @@ public class SerializableInputStream  extends InputStream implements Serializabl
             is.close();
 	    this.wrapped = in;
 	    reset();
-	    
+
         } else {
             this.file = is.file;
 	    this.wrapped = is.wrapped;
