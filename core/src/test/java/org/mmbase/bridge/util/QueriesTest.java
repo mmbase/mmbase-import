@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.dummy.*;
+import org.mmbase.bridge.mock.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.storage.search.*;
 import java.util.*;

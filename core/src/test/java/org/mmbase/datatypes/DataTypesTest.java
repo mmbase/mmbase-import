@@ -13,7 +13,7 @@ package org.mmbase.datatypes;
 import org.mmbase.datatypes.util.xml.*;
 import java.util.*;
 import org.mmbase.bridge.Field;
-import org.mmbase.bridge.dummy.*;
+import org.mmbase.bridge.mock.*;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.xml.XMLWriter;
@@ -285,7 +285,7 @@ public class DataTypesTest  {
     @Test
     public void filesize() throws Exception {
         DataType<?> dt = DataTypes.getDataType("filesize");
-        DummyCloudContext cc = new DummyCloudContext();
+        MockCloudContext cc = new MockCloudContext();
         Map<String, DataType> map = new HashMap<String, DataType>();
         map.put("filesize1", dt);
         map.put("filesize2", dt.clone());
