@@ -54,7 +54,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     protected int port = 1679;
 
     protected Set<String> excludeFormats = new TreeSet<String>();
-    private  final Set<String> validFormats = new TreeSet<String>();
+    final Set<String> validFormats = new TreeSet<String>();
 
 
 
@@ -292,7 +292,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
             log.error("Converting an empty image does not make sense.");
             return -1;
         }
-        if (excludeFormats.contains(sourceFormat)) {
+        if (sourceFormat != null && excludeFormats.contains(sourceFormat)) {
             log.debug("Conversion is excluded for image format: " + sourceFormat);
             return -1;
         }
