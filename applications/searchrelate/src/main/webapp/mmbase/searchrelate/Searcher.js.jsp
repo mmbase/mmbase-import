@@ -592,7 +592,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
         this.totalsize = -1;
         this.last = -1;
     } else {
-        if ($(rep).hasClass("implicit")) {
+        if ($(rep).hasClass("implicit") ||  this.offset != offset) {
             $(rep).removeClass("implicit");
         } else {
             $(rep).addClass("implicit");
