@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.dummy;
+package org.mmbase.bridge.mock;
 
 import org.mmbase.bridge.mock.MockCloudContext;
 import org.mmbase.bridge.mock.MockBuilderReader;
@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-public class DummyTest  {
+public class MockTest  {
 
     public CloudContext getCloudContext() {
         return MockCloudContext.getInstance();
