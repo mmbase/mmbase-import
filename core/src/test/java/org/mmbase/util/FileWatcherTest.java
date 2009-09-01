@@ -38,11 +38,19 @@ public class FileWatcherTest extends TestCase {
                     System.out.println("Changed " + file);
                 }
             };
+        FileWatcher.THREAD_DELAY = 50;
+        FileWatcher.scheduleFileWatcherRunner();
         watcher.setDelay(100);
         watcher.start();
         assertEquals("Found " + FileWatcher.getFileWatchers(), baseSize + 1, FileWatcher.getFileWatchers().size());
         watcher.exit();
-        Thread.currentThread().sleep(20000);
+        synchronized(watcher.fileWatchers) {
+            System.out.println("Waring for end");
+            while (watcher.isRunning()) {
+                watcher.fileWatchers.wait();
+            }
+        }
+        //Thread.currentThread().sleep(20000);
         assertEquals("Found " + FileWatcher.getFileWatchers(), baseSize, FileWatcher.getFileWatchers().size());
     }
 
