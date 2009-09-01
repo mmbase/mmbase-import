@@ -30,15 +30,15 @@ public class QueriesTest  {
     private static final String REMOTE_URI = "rmi://127.0.0.1:1111/exampleremotecontext";
     private static Cloud remoteCloud;
 
-    public DummyCloudContext getCloudContext() {
-        return DummyCloudContext.getInstance();
+    public MockCloudContext getCloudContext() {
+        return MockCloudContext.getInstance();
     }
 
     @BeforeClass
     public static void setup() throws Exception {
-        DummyCloudContext.getInstance().clear();
-        DummyCloudContext.getInstance().addCore();
-        DummyCloudContext.getInstance().addNodeManagers(DummyBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
+        MockCloudContext.getInstance().clear();
+        MockCloudContext.getInstance().addCore();
+        MockCloudContext.getInstance().addNodeManagers(MockBuilderReader.getBuilderLoader().getChildResourceLoader("mynews"));
         try {
             CloudContext c =  ContextProvider.getCloudContext(REMOTE_URI);
             remoteCloud = c.getCloud("mmbase", "class", null);
