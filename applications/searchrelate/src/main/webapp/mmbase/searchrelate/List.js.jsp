@@ -417,6 +417,10 @@ List.prototype.status = function(message, fadeout) {
     });
 }
 
+List.prototype.loader = function() {
+    this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
+}
+
 
 List.prototype.getListParameters = function() {
     var params = {};
@@ -495,7 +499,7 @@ List.prototype.commit = function(stale, leavePage) {
 
 
                 var self = this;
-                this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
+                this.loader();
                 $.ajax({ type: "POST",
                          async: leavePage == null ? true : !leavePage,
                          url: "${mm:link('/mmbase/searchrelate/list/save.jspx')}",
@@ -550,7 +554,7 @@ List.prototype.getOrder = function(ol) {
     var params   = this.getListParameters();
     params.order = order;
     var self = this;
-    this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
+    this.loader();
     $.ajax({ type: "POST",
                 async: true,
                 url: "${mm:link('/mmbase/searchrelate/list/order.jspx')}",
@@ -627,9 +631,9 @@ List.prototype.afterPost = function() {
         params.order = order;
         params.originalOrder = originalOrder;
         var self = this;
-        this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
+        this.loader();
         $.ajax({ type: "POST",
-                    async: true,
+                    async: false,
                     url: "${mm:link('/mmbase/searchrelate/list/submitOrder.jspx')}",
                     data: params,
                     complete: function(req, textStatus) {
