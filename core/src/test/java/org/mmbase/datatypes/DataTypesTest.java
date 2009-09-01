@@ -304,4 +304,22 @@ public class DataTypesTest  {
 
     }
 
+
+    @Test
+    public void integer() {
+        DataType<?> dt = DataTypes.getDataType("integer").clone();
+        dt.setRequired(true);
+        assertFalse(dt.castAndValidate("", null, null).size() == 0);
+
+    }
+
+    @Test
+    public void decimal() {
+        DataType<?> dt = DataTypes.getDataType("decimal").clone();
+        dt.setRequired(true);
+        assertFalse(dt.castAndValidate("", null, null).size() == 0);
+
+    }
+
+
 }
