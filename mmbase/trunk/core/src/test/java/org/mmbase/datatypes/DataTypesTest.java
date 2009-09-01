@@ -309,8 +309,8 @@ public class DataTypesTest  {
     public void required_integer() {
         DataType<?> dt = DataTypes.getDataType("integer").clone();
         dt.setRequired(true);
-        //assertFalse(dt.castAndValidate("", null, null).size() == 0);
-        //assertFalse(dt.castAndValidate(null, null, null).size() == 0);
+        assertFalse(dt.castAndValidate("", null, null).size() == 0);
+        assertFalse(dt.castAndValidate(null, null, null).size() == 0);
         assertFalse(dt.castAndValidate("aaa", null, null).size() == 0);
         assertFalse(dt.castAndValidate("NaN", null, null).size() == 0);
 
