@@ -70,7 +70,8 @@ function List(d) {
                 }
             }
         }
-        this.find(null, "ol").sortable({
+        var sortables = this.find(null, "ol");
+        sortables.sortable({
                 update: function(event, ui) {
                     self.saveOrder(self.getOrder(event.target));
                 }
@@ -80,7 +81,10 @@ function List(d) {
 
 
     if (this.search) {
-        //console.log("Searchable" + $(this.div).find("div.mm_related"));
+        this.find("mm_related", "div").each(function() {
+                new MMBaseRelater(this);
+            });
+
         this.find("mm_related", "div").bind("mmsrRelate", function (e, relate, relater) {
                 self.relate(e, relate, relater);
                 relater.repository.searcher.dec();
@@ -277,6 +281,7 @@ List.prototype.bindCreate = function(a) {
 
 List.prototype.addItem = function(res, cleanOnFocus) {
     var list = this;
+    //console.log(res.responseText);
     var r = $(res.responseText);
     // This seems nicer, but it would give problems if the content types don't match
     // And anyway, it of course never works in IE.
@@ -306,18 +311,10 @@ List.prototype.addItem = function(res, cleanOnFocus) {
     list.find("delete", "a", r).each(function() {
             list.bindDelete(this);
         });
-
-
     $(r).find("div.list").each(function() {
             var div = this;
             if (div.list == null) {
                 div.list = new List(div);
-                if (div.list.search) {
-                    // Later added, MMBaseRelater is not automaticly set up.
-                    div.list.find("mm_related", "div").each(function() {
-                            new MMBaseRelater(this);
-                        });
-                }
             }
         });
 

@@ -19,10 +19,15 @@
   <jsp:directive.attribute name="type"        type="java.lang.String"  required="true"
                            description="Node type to search" />
 
+
+  <jsp:directive.attribute name="load"        type="java.lang.Boolean"
+                           />
+
+
   <mm:listnodescontainer type="${type}" id="repository">
     <jsp:doBody />
     <mm:sortorder field="number" direction="down" />
   </mm:listnodescontainer>
 
-  <mm-sr:relate repository="${repository}" />
+  <mm-sr:relate repository="${repository}" load="${load}" />
 </jsp:root>
