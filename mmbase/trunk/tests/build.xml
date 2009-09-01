@@ -251,19 +251,8 @@
     </java>
   </target>
 
-  <target name="run.util" depends="init" description="Various tests on utitilies (org.mmbase.util)">
-    <java
-        classname="${ui.class}"
-        fork="true"
-        timeout="300000"
-        classpathref="run.classpath">
-      <arg value="org.mmbase.util.UtilTests" />
-      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-      <jvmarg value="-Duser.dir=${tests.work.dir}" />
-      <assertions><enable /></assertions>
-    </java>
-  </target>
 
+  <!-- Don't know how to do this -->
   <target name="run.rmmciutil" depends="init" description="Various tests on utitilies (org.mmbase.util)">
     <java
         classname="${ui.class}"
@@ -278,19 +267,6 @@
   </target>
 
 
-  <target name="run.datatypes" depends="init" description="Various tests on org.mmbase.datatypes">
-    <java
-        classname="${ui.class}"
-        fork="true"
-        timeout="300000"
-        classpathref="run.classpath">
-      <arg value="org.mmbase.datatypes.DataTypesTest" />
-      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
-      <jvmarg value="-Duser.dir=${tests.work.dir}" />
-      <jvmarg value="-Dnostartmmbase=" />
-      <assertions><enable /></assertions>
-    </java>
-  </target>
 
   <target name="run.richtext" depends="init" description="Richtext tests">
     <antcall target="clean.database" />
@@ -436,11 +412,6 @@
     <antcall target="run.all.bridge" inheritRefs="true"/>
     <echo message="sleeping.." />
     <sleep seconds="10" />
-
-    <echo message="========================================UTIL========================================" />
-    <antcall target="run.util" inheritRefs="true"/>
-    <echo message="========================================RMMCI UTIL========================================" />
-    <antcall target="run.rmmciutil" inheritRefs="true"/>
 
     <echo message="========================================DATATYPES========================================" />
     <antcall target="run.datatypes" inheritRefs="true"/>
