@@ -578,7 +578,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
 
     public final Collection<LocalizedString> castAndValidate(final Object value, final Node node, final Field field) {
-        return validate(cast(value, node, field), node, field);
+        return validate(value, node, field, true);
     }
 
     public int getEnforceStrength() {
