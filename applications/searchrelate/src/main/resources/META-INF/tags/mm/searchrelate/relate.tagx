@@ -70,6 +70,9 @@
   <jsp:directive.attribute name="customizedir"        type="java.lang.String"
                            description="Enables the specification of the location of a directory with extra actions on nodes in the lists which will become visible in the td.action." />
 
+  <jsp:directive.attribute name="load"                type="java.lang.Boolean"
+                           description="" />
+
 
   <mm:import externid="current" from="this" />
   <mm:import from="request" id="seq" externid="mm_relate_sequence" vartype="integer">0</mm:import>
@@ -77,7 +80,7 @@
   <mm:write session="mm_related_${seq}_repository" referid="repository" />
   <mm:write session="mm_related_${seq}_current"    referid="current" />
   <mm:write session="mm_related_${seq}_extracreate"  value="${extracreate}" />
-  <c:if test="${seq eq 0}">
+  <c:if test="${seq eq 0 and (empty load or ! load)}">
     <mm:include page="/mmbase/jquery/jquery.jspx" />
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.form.js')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <mm:link page="/mmbase/searchrelate/Searcher.js.jsp">

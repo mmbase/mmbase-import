@@ -2,14 +2,11 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     version="2.0"
     >
   <!--
-
-    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
-
-
       @author Michiel Meeuwissen
       @version $Id: relatednodes.tagx,v 1.29 2009-04-09 11:06:58 michiel Exp $
   -->
@@ -138,7 +135,9 @@
   <mm:import id="_direction">${empty direction? 'UP' : direction}</mm:import><!-- defaults to UP -->
   <mm:import id="_createposition">${empty createposition? 'bottom' : createposition}</mm:import>
 
-  <mm:import from="request" externid="org.mmbase.searchrelate.relatednodes" id="parent" />
+  <mm:import from="request"
+             externid="org.mmbase.searchrelate.relatednodes"
+             id="parent" />
   <mm:write request="org.mmbase.searchrelate.relatednodes" value="${rid}" />
   <mm:import id="parentparameters" externid="${parent}_context" from="session" />
   <mm:import id="parentformtag">${parentparameters.formtag}</mm:import>
@@ -218,7 +217,8 @@
   </mm:relatednodescontainer>
 
   <mm:import from="request" id="javascript_loaded" externid="mm_list_javascript" />
-  <c:if test="${(empty javascript_loaded and empty load) or load}">
+
+  <c:if test="${empty parent and ((empty javascript_loaded and empty load) or load)}">
     <mm:include page="/mmbase/jquery/ajaxfileupload.jspx" />
     <c:choose>
       <c:when test="${sortable}">
@@ -231,13 +231,14 @@
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.timer.js')}"><jsp:text>&lt;!-- IE sucks --&gt;</jsp:text></script>
     <!-- TODO time js is more generic, of course -->
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/List.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
+    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Searcher.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <mm:write request="mm_list_javascript" value="yes" />
+
+    <mm-sr:heartbeat />
   </c:if>
 
 
 
-
-  <mm-sr:heartbeat />
 
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
@@ -313,9 +314,9 @@
       </c:if>
       <c:if test="${search}">
         <mm:cloud>
-          <mm-sr:search type="${query.nodeManager.name}">
+          <mm-srt:search type="${query.nodeManager.name}" load="${empty load or load}">
             <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
-          </mm-sr:search>
+          </mm-srt:search>
         </mm:cloud>
       </c:if>
     </div>
