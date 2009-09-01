@@ -83,11 +83,22 @@ public abstract class FileWatcher {
 
     static ScheduledFuture<?> future;
     static FileWatcherRunner fileWatchers = new FileWatcherRunner();
-    static {
+
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    static void scheduleFileWatcherRunner() {
+        if (future != null) {
+            future.cancel(true);
+        }
         future = org.mmbase.util.ThreadPools.scheduler.scheduleAtFixedRate(fileWatchers, THREAD_DELAY, THREAD_DELAY, TimeUnit.MILLISECONDS);
         org.mmbase.util.ThreadPools.identify(future, "File Watcher");
     }
 
+    static {
+        scheduleFileWatcherRunner();
+    }
 
 
     private static Map<String, String> props;
@@ -102,6 +113,7 @@ public abstract class FileWatcher {
                     String delay = props.get("delay");
                     if (delay != null) {
                         THREAD_DELAY = Integer.parseInt(delay);
+                        scheduleFileWatcherRunner();
                         log.service("Set thread delay time to " + THREAD_DELAY);
                     }
                 } catch (Exception e) {
@@ -136,6 +148,7 @@ public abstract class FileWatcher {
     private Set<File> fileSet = new FileSet(); // (automaticly) wraps 'files'.
     private Set<File> removeFiles = new HashSet<File>();
     private boolean stop = false;
+    private boolean running = false;
     private boolean continueAfterChange = false;
     private long lastCheck = System.currentTimeMillis();
 
@@ -153,6 +166,7 @@ public abstract class FileWatcher {
         if (fileWatchers != null) {
             fileWatchers.add(this);
         }
+        running = true;
     }
     /**
      * Put here the stuff that has to be executed, when a file has been changed.
@@ -183,7 +197,7 @@ public abstract class FileWatcher {
      * @since MMBase-1.9.2
      */
     public boolean isRunning() {
-        return ! stop;
+        return running;
     }
 
     /**
@@ -320,6 +334,7 @@ public abstract class FileWatcher {
                 }
             }
             removeFiles.clear();
+            running = false;
         }
     }
 
@@ -376,7 +391,7 @@ public abstract class FileWatcher {
      * The one thread to handle all FileWatchers. In earlier implementation every FileWatcher had
      * it's own thread, but that is avoided now.
      */
-    private static class FileWatcherRunner implements Runnable {
+    static class FileWatcherRunner implements Runnable {
 
         /*
          * Set of file-watchers, which are currently active.
@@ -423,9 +438,12 @@ public abstract class FileWatcher {
                 }
                 if (removed.size() > 0) {
                     log.debug("Now removing " + removed);
-                    int sizeBefore = watchers.size();
-                    watchers.removeAll(removed);
-                    log.debug("Size " + sizeBefore + " -> " +  watchers.size());
+                    synchronized(this) {
+                        int sizeBefore = watchers.size();
+                        watchers.removeAll(removed);
+                        log.debug("Size " + sizeBefore + " -> " +  watchers.size());
+                        notifyAll();
+                    }
                 }
             } catch (Throwable ex) {
                 // unexpected exception?? This run method should never interrupt, so we catch everything.
