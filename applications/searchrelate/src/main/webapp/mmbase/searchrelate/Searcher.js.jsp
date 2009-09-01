@@ -582,13 +582,21 @@ MMBaseSearcher.prototype.search = function(val, offset) {
     }
     val = $(this.div).find("input.search").val();
 
-    $(this.div).removeClass("implicit");
     var newSearch = val;
+    var rep = this.getResultDiv();
+
     if (newSearch != this.value) {
+        $(rep).removeClass("implicit");
         this.searchResults = {};
         this.value = newSearch;
         this.totalsize = -1;
         this.last = -1;
+    } else {
+        if ($(rep).hasClass("implicit")) {
+            $(rep).removeClass("implicit");
+        } else {
+            $(rep).addClass("implicit");
+        }
     }
     if (this.offset != offset) {
         this.last = -1;
