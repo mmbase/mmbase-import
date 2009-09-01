@@ -174,4 +174,30 @@ public class ParametersTest {
         Parameters sub = auto.subList(0, 1);
 
     }
+
+    @Test
+    public void autoCast() {
+        Parameters params = new Parameters(B);
+        params.set(B, 5); // OK
+        try {
+            params.set("b", "5");
+            fail("Should have given IllegalArgumentException");
+        } catch (IllegalArgumentException ia) {
+            // ok this is expected
+        }
+
+        params.setAutoCasting(true);
+        params.set("b", "5");
+
+        try {
+            params.set("b", "a");
+            fail("Should have given IllegalArgumentException since 'a' is not a valid integer");
+        } catch (IllegalArgumentException ia) {
+            // ok this is expected
+
+        }
+
+    }
+
+
 }
