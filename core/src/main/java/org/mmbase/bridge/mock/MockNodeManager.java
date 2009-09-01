@@ -8,9 +8,8 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.dummy;
+package org.mmbase.bridge.mock;
 
-import org.mmbase.datatypes.DataType;
 import static org.mmbase.datatypes.Constants.*;
 import org.mmbase.bridge.util.*;
 import java.util.*;
@@ -24,23 +23,23 @@ import org.mmbase.bridge.*;
  * @since   MMBase-1.9.2
  */
 
-public class DummyNodeManager extends AbstractNodeManager  {
+public class MockNodeManager extends AbstractNodeManager  {
 
     protected final Map<String, Field> map = new LinkedHashMap<String, Field>();
     protected final String name;
-    protected final DummyCloud vcloud;
+    protected final MockCloud vcloud;
 
-    public DummyNodeManager(DummyCloud cloud, String name, Map<String, Field> m) {
+    public MockNodeManager(MockCloud cloud, String name, Map<String, Field> m) {
         super(cloud);
         this.vcloud = cloud;
         this.name = name;
         for (Map.Entry<String, Field> entry : m.entrySet()) {
-            map.put(entry.getKey(), new DummyField(this, entry.getValue()));
+            map.put(entry.getKey(), new MockField(this, entry.getValue()));
         }
         map.put("_number", new DataTypeField("_number", this, DATATYPE_INTEGER));
         map.put("_exists", new DataTypeField("_exists", this, DATATYPE_STRING));
     }
-    public DummyNodeManager(DummyCloud cloud, DummyBuilderReader reader) {
+    public MockNodeManager(MockCloud cloud, MockBuilderReader reader) {
         super(cloud);
         this.vcloud = cloud;
         this.name = reader.getName();
@@ -75,7 +74,7 @@ public class DummyNodeManager extends AbstractNodeManager  {
     @Override
     public NodeList getList(NodeQuery query) {
         NodeList result = cloud.createNodeList();
-        for (DummyCloudContext.NodeDescription nd : vcloud.cloudContext.nodes.values()) {
+        for (MockCloudContext.NodeDescription nd : vcloud.cloudContext.nodes.values()) {
         }
         return result;
 

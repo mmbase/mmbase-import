@@ -8,17 +8,11 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.dummy;
+package org.mmbase.bridge.mock;
 
-import java.util.*;
-import java.util.concurrent.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
-import org.mmbase.bridge.implementation.*;
-import org.mmbase.security.*;
 import org.mmbase.datatypes.DataType;
-import org.mmbase.util.*;
-import org.mmbase.util.functions.*;
 
 /**
 
@@ -28,24 +22,24 @@ import org.mmbase.util.functions.*;
  * @todo    EXPERIMENTAL
  */
 
-public class DummyField extends DataTypeField  {
+public class MockField extends DataTypeField  {
 
     private int searchPosition = -1;
     private int listPosition = -1;
     private int editPosition = 1;
     private int storagePosition = 1;
 
-    DummyField(NodeManager nm, Field f) {
+    MockField(NodeManager nm, Field f) {
         super(nm, f);
         storagePosition = f.isVirtual() ? -1 : 1;
     }
 
-    DummyField(Field f, DataType dt) {
+    MockField(Field f, DataType dt) {
         super(f, dt);
         storagePosition = f.isVirtual() ? -1 : 1;
     }
 
-    DummyField(String n, NodeManager nm, DataType dt) {
+    MockField(String n, NodeManager nm, DataType dt) {
         super(n, nm, dt);
         setState(STATE_PERSISTENT);
         storagePosition = n.startsWith("_") ? -1 : 1;

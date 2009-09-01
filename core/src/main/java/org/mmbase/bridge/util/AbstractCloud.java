@@ -8,16 +8,13 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.dummy;
+package org.mmbase.bridge.util;
 
 import java.util.*;
 import java.util.concurrent.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.security.*;
-import org.mmbase.datatypes.DataType;
-import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 
 /**
@@ -38,7 +35,7 @@ public abstract class AbstractCloud implements Cloud {
     private final String name;
     private final UserContext userContext;
 
-    AbstractCloud(String n,  UserContext uc) {
+    public AbstractCloud(String n,  UserContext uc) {
         name = n;
         userContext = uc;
     }
