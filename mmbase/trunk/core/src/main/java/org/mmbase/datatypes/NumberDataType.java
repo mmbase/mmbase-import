@@ -29,6 +29,8 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
     private static final Logger log = Logging.getLoggerInstance(NumberDataType.class);
 
     private static final long serialVersionUID = 1L;
+
+    private boolean allowSpecialNumbers = false;
     /**
      * Constructor for Number field.
      */
@@ -36,9 +38,17 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
         super(name, classType);
     }
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    public void setAllowSpecialNumbers(boolean sn) {
+        allowSpecialNumbers = sn;
+    }
 
-    protected Number castString(Object preCast, Cloud cloud) throws CastException {
+
+    protected Number castString(final Object preCast, final Cloud cloud) throws CastException {
         if (preCast == null || "".equals(preCast)) return null;
+
         if (preCast instanceof CharSequence) {
             String s = preCast.toString();
             Locale l = cloud != null ? cloud.getLocale() : Locale.getDefault();
@@ -64,7 +74,14 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
                         throw new CastException("Not a number: '" + s + "'");
                     } else {
                         log.debug("Casting to decimal " + s);
-                        return Casting.toDecimal(s);
+                        double d = Casting.toDouble(s);
+
+                        if (! allowSpecialNumbers) {
+                            if (Double.isNaN(d) || Double.isInfinite(d)) {
+                                throw new CastException("Special numbers not allowed: '" + d + "'");
+                            }
+                        }
+                        return new java.math.BigDecimal(d).stripTrailingZeros();
                     }
                 }
                 return number;
@@ -82,8 +99,8 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
                 // not supported by decimal
                 return (Double) preCast;
             }
+        } else {
         }
-
         return Casting.toDecimal(preCast); // this makes it e.g. possible to report that 1e20 is too big for an integer.
     }
 
