@@ -27,31 +27,48 @@ import static org.junit.Assume.*;
 @RunWith(Parameterized.class)
 public class ImagingTest {
 
+    private static final int JAI = 1 << 0;
+    private static final int IM  = 1 << 1;
+
+    private boolean I_understand_how_to_use_JAI_in_JUNIT_Test = false;
+
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
-        String[] templates = {
-            "s(100x60)+f(jpeg)",
-            "part(10x10x30x50)",
-            "part(10x10x2000x2000)",
-            "s(10000@)",  "s(100x100@)",
-            "s(10000x2000>)", "s(100000x2000<)",
-            "s(4x5<)", "s(4x5>)",
-            "r(90)", "r(45)", "r(198)", "r(-30)",
-            "border(5)", "border(5x8)",
-            "r(45)+border(10x20)",
-            "flip",
-            "s(100)", "s(x100)", "s(10x70)", "s(70x10)",  "s(60x70!)", "s(80%x150%)", 
-            "s(100x100>)",
-            // "s(100x100&gt;)", Fails
-            "s(x100)",
-            "s(100)+f(png)+r(20)+s(400x400)"
+        Object[][] templates = {
+            new Object[] {"s(100x60)+f(jpeg)", IM | JAI},
+            new Object[] {"part(10x10x30x50)", IM | JAI},
+            new Object[] {"part(10x10x2000x2000)", IM | JAI},
+            new Object[] {"s(10000@)", IM},  
+            new Object[] {"s(100x100@)", IM},
+            new Object[] {"s(10000x2000>)", IM | JAI}, 
+            new Object[] {"s(100000x2000<)", IM | JAI},
+            new Object[] {"s(4x5<)", IM | JAI}, 
+            new Object[] {"s(4x5>)", IM | JAI},
+            new Object[] {"r(90)", IM}, 
+            new Object[] {"r(45)", IM}, 
+            new Object[] {"r(198)", IM}, 
+            new Object[] {"r(-30)", IM},
+            new Object[] {"border(5)", IM}, 
+            new Object[] {"border(5x8)", IM},
+            new Object[] {"r(45)+border(10x20)", IM},
+            new Object[] {"flip", IM | JAI},
+            new Object[] {"s(100)", IM | JAI}, 
+            new Object[] {"s(x100)", IM | JAI}, 
+            new Object[] {"s(10x70)", IM | JAI},
+            new Object[] {"s(70x10)", IM | JAI},  
+            new Object[] {"s(60x70!)", IM}, 
+            new Object[] {"s(80%x150%)", IM}, 
+            new Object[] {"s(100x100>)", IM},
+            //new Object[]  "s(100x100&gt;)", Fails
+            new Object[] {"s(x100)", IM | JAI},
+            new Object[] {"s(100)+f(png)+r(20)+s(400x400)", IM}
         };
         File dir = new File("src" + File.separator + "test" + File.separator + "images");
         List<Object[]> data = new ArrayList<Object[]>();
         for (File f : dir.listFiles()) {
             if (f.canRead() && f.isFile()) {
-                for (String t : templates) {
-                    data.add(new Object[] { f, t});
+                for (Object[] t : templates) {
+                    data.add(new Object[] { f, t[0], t[1]});
                 }
             }
         }
@@ -67,9 +84,11 @@ public class ImagingTest {
 
     private final String template;
     private final File file;
-    public ImagingTest(File f, String t) {
+    private final int  converters;
+    public ImagingTest(File f, String t, int c) {
         file = f;
         template = t;
+        converters = c;
     }
 
     public String info() {
@@ -99,13 +118,16 @@ public class ImagingTest {
         assertTrue(info() + ":" + originalSize + "->" + predictedSize + " != " + convertSize, 
                    predictedSize.equalsIgnoreRound(convertSize, 1));
     }
-    //@Test
+    @Test
     public void jai() throws IOException {
+        assumeTrue(I_understand_how_to_use_JAI_in_JUNIT_Test);
+        assumeTrue((converters & JAI) > 0);
         test(new JAIImageConverter());
     }
 
     @Test
     public void imageMagick() throws IOException  {
+        assumeTrue((converters & IM) > 0);
         assumeTrue(imageMagick.validFormats.size() > 0);
         test(imageMagick);
     }
