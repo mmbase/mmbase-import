@@ -335,6 +335,7 @@ public abstract class FileWatcher {
             }
             removeFiles.clear();
             running = false;
+            notifyAll();
         }
     }
 
@@ -425,7 +426,6 @@ public abstract class FileWatcher {
                             log.trace("Filewatcher " + f + " with " + f.delay  + " ms <= " + staleness  + " ms is expired. Currently it's watching: " + f.getClass().getName() + " " + f.toString());
                         }
                         // System.out.print(".");
-                        f.removeFiles();
                         //changed returns true if we can stop watching
                         if (f.changed() || f.mustStop()) {
                             if (log.isDebugEnabled()) {
@@ -442,7 +442,9 @@ public abstract class FileWatcher {
                         int sizeBefore = watchers.size();
                         watchers.removeAll(removed);
                         log.debug("Size " + sizeBefore + " -> " +  watchers.size());
-                        notifyAll();
+                        for (FileWatcher w : removed) {
+                            w.removeFiles();
+                        }
                     }
                 }
             } catch (Throwable ex) {
