@@ -233,7 +233,7 @@ public class DataTypesTest  {
     }
 
     protected void testXml(String xml, boolean mustBeEqual) throws Exception {
-        DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(xml)), true, DataTypeReader.class);
+        DocumentReader reader = new DocumentReader(new InputSource(new java.io.StringReader(xml)), false, DataTypeReader.class);
         DataType dt = DataTypeReader.readDataType(reader.getDocument().getDocumentElement(), null, null).dataType.clone();
         Element toXml = dt.toXml();
         boolean equiv = xmlEquivalent(reader.getDocument().getDocumentElement(), toXml);;
@@ -244,7 +244,7 @@ public class DataTypesTest  {
             assertFalse("" + xml + " == " + XMLWriter.write(toXml), equiv);
         }
         if (equiv) {
-            System.out.println("" + xml + " " + XMLWriter.write(toXml));
+            //System.out.println("" + xml + " " + XMLWriter.write(toXml));
         }
     }
 
@@ -306,18 +306,24 @@ public class DataTypesTest  {
 
 
     @Test
-    public void integer() {
+    public void required_integer() {
         DataType<?> dt = DataTypes.getDataType("integer").clone();
         dt.setRequired(true);
-        assertFalse(dt.castAndValidate("", null, null).size() == 0);
+        //assertFalse(dt.castAndValidate("", null, null).size() == 0);
+        //assertFalse(dt.castAndValidate(null, null, null).size() == 0);
+        assertFalse(dt.castAndValidate("aaa", null, null).size() == 0);
+        assertFalse(dt.castAndValidate("NaN", null, null).size() == 0);
 
     }
 
     @Test
-    public void decimal() {
+    public void required_decimal() {
         DataType<?> dt = DataTypes.getDataType("decimal").clone();
         dt.setRequired(true);
         assertFalse(dt.castAndValidate("", null, null).size() == 0);
+        assertFalse(dt.castAndValidate(null, null, null).size() == 0);
+        assertFalse(dt.castAndValidate("aaa", null, null).size() == 0);
+        assertFalse(dt.castAndValidate("NaN", null, null).size() == 0);
 
     }
 
