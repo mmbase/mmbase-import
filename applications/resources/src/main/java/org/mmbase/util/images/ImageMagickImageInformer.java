@@ -51,19 +51,21 @@ public class ImageMagickImageInformer implements ImageInformer {
             CommandLauncher launcher = new CommandLauncher("ImageMagick's identify");
             ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
+            assert file.exists();
             launcher.execute(identifyPath, new String[] {file.getCanonicalPath()});
             launcher.waitAndRead(outputStream, errorStream);
             String result =  new String(outputStream.toByteArray()).trim();
             Matcher matcher = IDENTIFY_PATTERN.matcher(result);
-            if (! matcher.matches()) throw new IOException("'" + result + "' doesn't match " + IDENTIFY_PATTERN);
+            if (! matcher.matches()) {
+                throw new IOException(identifyPath + " " + file.getCanonicalPath() + "'" + result + "' doesn't match " + IDENTIFY_PATTERN + " Errors: " + new String(errorStream.toByteArray()));
+            }
             return  new Dimension(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)));
         } catch (UnsupportedEncodingException uee) {
             log.error(uee.toString());
         } catch (ProcessException pe) {
             log.error(pe.toString());
         } finally {
-            file.delete();
+            //file.delete();
         }
         return  new Dimension(0, 0);
     }
