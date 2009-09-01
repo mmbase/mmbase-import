@@ -11,20 +11,22 @@ package org.mmbase.util;
 import org.mmbase.util.Casting;
 import org.mmbase.util.transformers.*;
 import java.util.*;
-import junit.framework.TestCase;
-
+import org.junit.*;
+import static org.junit.Assert.*;
 /**
  *
  * @author Michiel Meeuwissen
  * @verion $Id$
  */
-public class CastingTest extends TestCase {
+public class CastingTest  {
 
 
+    @Test
     public void testNull() {
         assertEquals("", Casting.toString(null));
         assertEquals("", Casting.wrap(null, new Xml()).toString());
     }
+    @Test
     public void testList() {
         List<String> list = new ArrayList<String>();
         list.add("a");
@@ -34,7 +36,7 @@ public class CastingTest extends TestCase {
         assertEquals(list, Casting.toList("a , b , c"));
         assertEquals("a,b,c", Casting.toString(list));
     }
-
+    @Test
     public void testInt() {
         assertEquals(1, Casting.toInt("1"));
         assertEquals(-1, Casting.toInt("asdfasdf"));
@@ -51,26 +53,29 @@ public class CastingTest extends TestCase {
 
         assertEquals("15", Casting.toString(15));
     }
+    @Test
     public void testInteger() {
         assertEquals(new Integer(10), (Object) Casting.toInteger("10"));
         assertEquals(new Integer(10), (Object) Casting.toInteger("1e1"));
         assertEquals(new Integer(-1), (Object) Casting.toInteger(null));
     }
-
+    @Test
     public void testLong() {
         assertEquals(new Long(10), (Object) Casting.toLong("10"));
         assertEquals(new Long(10), (Object) Casting.toLong("1e1"));
         assertEquals(new Long(-1), (Object) Casting.toLong(null));
     }
 
+    @Test
     public void testFloat() {
         assertEquals(new Float(-1.0), (Object) Casting.toFloat(null));
     }
 
+    @Test
     public void testDouble() {
         assertEquals(new Double(-1.0), (Object) Casting.toDouble(null));
     }
-
+    @Test
     public void testBinary() {
 
     }
