@@ -8,17 +8,11 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.dummy;
+package org.mmbase.bridge.mock;
 
 import java.util.*;
-import java.util.concurrent.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
-import org.mmbase.bridge.implementation.*;
-import org.mmbase.security.*;
-import org.mmbase.datatypes.DataType;
-import org.mmbase.util.*;
-import org.mmbase.util.functions.*;
 
 /**
 
@@ -28,12 +22,12 @@ import org.mmbase.util.functions.*;
  * @todo    EXPERIMENTAL
  */
 
-public class DummyNode extends MapNode  {
+public class MockNode extends MapNode  {
 
     private final Map<String, Object> originalMap;
-    private final DummyCloudContext cloudContext;
+    private final MockCloudContext cloudContext;
 
-    DummyNode(Map<String, Object> map, DummyCloudContext cc, NodeManager nm) {
+    MockNode(Map<String, Object> map, MockCloudContext cc, NodeManager nm) {
         super(new HashMap<String, Object>(map), nm);
         originalMap = map;
         cloudContext = cc;

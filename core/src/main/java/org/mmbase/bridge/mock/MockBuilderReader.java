@@ -8,10 +8,9 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.dummy;
+package org.mmbase.bridge.mock;
 
 import org.mmbase.datatypes.DataType;
-import org.mmbase.bridge.util.*;
 import org.mmbase.core.util.Fields;
 import java.util.*;
 import org.mmbase.bridge.*;
@@ -20,30 +19,30 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * This class can read builder XML's. For the moment it's main use is to parse to a Map of DataType's, which is used by {@link DummyCloudContext} to create NodeManagers.
+ * This class can read builder XML's. For the moment it's main use is to parse to a Map of DataType's, which is used by {@link MockCloudContext} to create NodeManagers.
  *
  * @author  Michiel Meeuwissen
  * @version $Id: MapNodeManager.java 36154 2009-06-18 22:04:40Z michiel $
  * @since   MMBase-1.9.2
  */
 
-public class DummyBuilderReader extends org.mmbase.util.xml.AbstractBuilderReader<Field>  {
+public class MockBuilderReader extends org.mmbase.util.xml.AbstractBuilderReader<Field>  {
 
 
     static {
         org.mmbase.datatypes.DataTypes.initialize();
     }
-    DummyBuilderReader parent;
-    DummyCloudContext  cloudContext;
+    MockBuilderReader parent;
+    MockCloudContext  cloudContext;
 
-    DummyBuilderReader(InputSource s, DummyCloudContext cc) {
+    MockBuilderReader(InputSource s, MockCloudContext cc) {
         super(s);
         this.cloudContext = cc;
         if (getRootElement().getTagName().equals("builder")) {
             resolveInheritance();
         }
     }
-    DummyBuilderReader(Document d, DummyCloudContext cc) {
+    MockBuilderReader(Document d, MockCloudContext cc) {
         super(d);
         this.cloudContext = cc;
         if (getRootElement().getTagName().equals("builder")) {
@@ -59,7 +58,7 @@ public class DummyBuilderReader extends org.mmbase.util.xml.AbstractBuilderReade
             inheritanceResolved = true;
             return true;
         } else {
-            DummyCloudContext.NodeManagerDescription  p  = cloudContext.nodeManagers.get(parentBuilder);
+            MockCloudContext.NodeManagerDescription  p  = cloudContext.nodeManagers.get(parentBuilder);
             if (p == null) {
                 return false;
             }
@@ -93,7 +92,7 @@ public class DummyBuilderReader extends org.mmbase.util.xml.AbstractBuilderReade
         int pos = 1;
         if (hasParent()) {
             for (Field f : parent.getFields()) {
-                Field newField = new DummyField(f, f.getDataType().clone());
+                Field newField = new MockField(f, f.getDataType().clone());
                 results.add(newField);
             }
         }
@@ -104,7 +103,7 @@ public class DummyBuilderReader extends org.mmbase.util.xml.AbstractBuilderReade
                 DataType dt = decodeDataType(getName(), org.mmbase.datatypes.DataTypes.getSystemCollector(),
                                              fieldName, field, Field.TYPE_UNKNOWN, Field.TYPE_UNKNOWN, true);
 
-                DummyField newField = new DummyField(fieldName, null, dt);
+                MockField newField = new MockField(fieldName, null, dt);
                 String fieldState = getElementAttributeValue(field, "state");
                 if ("".equals(fieldState)) {
                     newField.setState(Field.STATE_PERSISTENT);

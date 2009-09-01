@@ -53,7 +53,7 @@ public class ContextProvider {
         } else if (uri.startsWith("local")){
             return LocalContext.getCloudContext();
         } else if (uri.startsWith("dummy")) {
-            return org.mmbase.bridge.dummy.DummyCloudContext.getInstance();
+            return org.mmbase.bridge.mock.MockCloudContext.getInstance();
         }
 	throw new BridgeException("cloudcontext with name {" + uri + "} is not known to MMBase");
     }

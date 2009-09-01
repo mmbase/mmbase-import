@@ -8,17 +8,12 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.bridge.dummy;
-
-import java.util.*;
-import java.util.concurrent.*;
+package org.mmbase.bridge.mock;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.implementation.*;
 import org.mmbase.security.*;
-import org.mmbase.datatypes.DataType;
-import org.mmbase.util.*;
-import org.mmbase.util.functions.*;
+import java.util.*;
 
 /**
  * Straight forward (partial) implementation of Cloud, which maintains everything in memory.
@@ -29,22 +24,22 @@ import org.mmbase.util.functions.*;
  * @todo    EXPERIMENTAL
  */
 
-public class DummyCloud extends AbstractCloud {
+public class MockCloud extends AbstractCloud {
 
-    final DummyCloudContext cloudContext;
+    final MockCloudContext cloudContext;
 
-    DummyCloud(String n, DummyCloudContext cc, UserContext uc) {
+    MockCloud(String n, MockCloudContext cc, UserContext uc) {
         super(n, uc);
         cloudContext = cc;
     }
 
 
     Node getNode(final Map<String, Object> m, final NodeManager nm) {
-        return new DummyNode(m, cloudContext, nm);
+        return new MockNode(m, cloudContext, nm);
     }
 
     public Node getNode(int number) throws NotFoundException {
-        DummyCloudContext.NodeDescription nd = cloudContext.nodes.get(number);
+        MockCloudContext.NodeDescription nd = cloudContext.nodes.get(number);
         if (nd == null) throw new NotFoundException();
         NodeManager nm = getNodeManager(nd.type);
         return getNode(nd.values, nm);
@@ -65,7 +60,7 @@ public class DummyCloud extends AbstractCloud {
     public NodeManager getNodeManager(String name) throws NotFoundException {
         Map<String, Field> nm = cloudContext.nodeManagers.get(name).fields;
         if (nm == null) throw new NotFoundException(name);
-        return new DummyNodeManager(this, name, nm);
+        return new MockNodeManager(this, name, nm);
     }
 
 
