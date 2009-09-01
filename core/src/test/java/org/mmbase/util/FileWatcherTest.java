@@ -27,27 +27,27 @@ import junit.framework.TestCase;
  */
 public class FileWatcherTest extends TestCase {
 
-    public static int baseSize = FileWatcher.getFileWatchers().size();
-
     /**
      * perform lookup of non existing resource
      */
     public void test1() throws InterruptedException {
+        FileWatcher.THREAD_DELAY = 50;
+        FileWatcher.scheduleFileWatcherRunner();
+        int baseSize = FileWatcher.getFileWatchers().size();
+
         FileWatcher watcher = new FileWatcher() {
                 public void onChange(File file) {
                     System.out.println("Changed " + file);
                 }
             };
-        FileWatcher.THREAD_DELAY = 50;
-        FileWatcher.scheduleFileWatcherRunner();
         watcher.setDelay(100);
         watcher.start();
         assertEquals("Found " + FileWatcher.getFileWatchers(), baseSize + 1, FileWatcher.getFileWatchers().size());
         watcher.exit();
-        synchronized(watcher.fileWatchers) {
-            System.out.println("Waring for end");
+        synchronized(watcher) {
+            System.out.println("Waiting for end");
             while (watcher.isRunning()) {
-                watcher.fileWatchers.wait();
+                watcher.wait();
             }
         }
         //Thread.currentThread().sleep(20000);
