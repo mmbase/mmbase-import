@@ -123,7 +123,7 @@ public abstract class AbstractTranscoder implements Transcoder {
      *
      * The implemetation depends on {@link Settings} annotations to be set on the classes.
      */
-    public  final String getKey() {
+    public final String getKey() {
         StringBuilder buf = new StringBuilder();
         if (getId() != null && getId().length() > 0) {
             buf.append(getId());

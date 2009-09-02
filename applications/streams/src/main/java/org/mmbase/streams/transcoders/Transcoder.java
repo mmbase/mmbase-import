@@ -16,29 +16,34 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * Representation of one transcoding action. Instances should cloned before useage, so the transcoder
+ * Representation of one transcoding action. Instances should cloned before usage, so the transcoder
  * needs not be stateless.
  *
  * @author Michiel Meeuwissen
  */
 
-public interface Transcoder  extends org.mmbase.util.PublicCloneable<Transcoder> {
+public interface Transcoder extends org.mmbase.util.PublicCloneable<Transcoder> {
 
     String getKey();
 
     Format getFormat();
 
     Codec getCodec();
-
+    
+    /* Id of transcoder in config */
     String getId();
 
     MimeType getMimeType();
 
+    /* Id of another transcoder's result to use as input */
     String getInId();
     void setInId(String i);
 
     /**
-     *
+     * Transcode a file to another, follow the process with a logger.
+     * @param in
+     * @param out
+     * @param logger
      */
     void transcode(URI in, URI out, Logger logger) throws Exception;
 

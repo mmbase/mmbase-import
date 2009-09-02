@@ -118,7 +118,8 @@ public class CreateCachesProcessor implements CommitProcessor {
                                     }
                                     String in = el.getAttribute("in");
                                     if (in.length() > 0) {
-                                        transcoder.setInId(in);
+                                         /* get key of a cached stream and make it inId */
+                                        transcoder.setInId(newList.get(in).transcoder.getKey());
                                     } else {
                                         transcoder.setInId(null);
                                     }
@@ -256,6 +257,9 @@ public class CreateCachesProcessor implements CommitProcessor {
     /**
      * Creates and submits a job transcoding everything as configured for one source object, this
      * produces all new 'caches' as configured in createcaches.xml.
+     * @param node      source stream
+     * @param logger    a logger that keeps track
+     * @return job trans coding a source stream in (an)other stream(s)
      */
     private Job createJob(final Node node, final ChainedLogger logger) {
         Job job = runningJobs.get(node.getNumber());
@@ -332,7 +336,7 @@ public class CreateCachesProcessor implements CommitProcessor {
 
 
     /**
-     * Triggers caches 
+     * Creates caches nodes when not existing 
      * @param ntCloud   cloud
      * @param int       node number
      */
@@ -457,7 +461,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                 dest.setIntValue("state",  State.REQUEST.getValue());
                 dest.commit();
             }
-            LOG.info("Created " + this + " " + definition.transcoder.getClass().getName());
+            LOG.info("Created Result " + this + " " + definition.transcoder.getClass().getName());
 
         }
         public JobDefinition getJobDefinition() {
@@ -487,7 +491,6 @@ public class CreateCachesProcessor implements CommitProcessor {
                 dest.setLongValue("filesize", outFile.length());
                 dest.setIntValue("state", State.DONE.getValue());
                 dest.commit();
-
             }
         }
 
@@ -575,11 +578,12 @@ public class CreateCachesProcessor implements CommitProcessor {
         
         /**
          * The several stream cache nodes (which are certain already) get created here.
+         * It checks if the source node is not of state 'SOURCE_UNSUPPORTED'.
          */
         protected void createCacheNodes() {
             LOG.debug("state: " + node.getIntValue("state") + " nodenr: " + node.getNumber());
             if ( node.getIntValue("state") == State.SOURCE_UNSUPPORTED.getValue() ) {
-                LOG.error("Not supported");
+                LOG.warn("Source not supported: " + node.getNumber());
                 return;
             }
             synchronized(list) {
@@ -592,12 +596,12 @@ public class CreateCachesProcessor implements CommitProcessor {
                         
                         String inId = jd.transcoder.getInId();
                         if ((inId == null || results.containsKey(inId))) {
-
+                            Node srcNode = node;
                             MimeType inMimeType;
                             if (inId == null) {
                                 inMimeType = new MimeType(node.getStringValue("mimetype"));
                             } else {
-                                inMimeType = results.get(id).getMimeType();
+                                inMimeType = results.get(inId).getMimeType();
                             }
                             if (! jd.getMimeType().matches(inMimeType)) {
                                 continue;
@@ -618,12 +622,12 @@ public class CreateCachesProcessor implements CommitProcessor {
                             } else {
                                 resultNode.setIntValue("codec", c.toInt());
                             }
-                            resultNode.setNodeValue("id",    node);
+                            resultNode.setNodeValue("id", srcNode);
 
-                            File inFile  = new File(FileServlet.getDirectory(), node.getStringValue("url").replace("/", File.separator));
+                            File inFile  = new File(FileServlet.getDirectory(), srcNode.getStringValue("url").replace("/", File.separator));
 
                             StringBuilder buf = new StringBuilder();
-                            org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, node.getNumber(), "/");
+                            org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, srcNode.getNumber(), "/");
                             buf.append("/");
                             buf.append(resultNode.getNumber()).append('.').append(ResourceLoader.getName(inFile.getName())).append(".").append(jd.transcoder.getFormat().toString().toLowerCase());
                             String outFileName = buf.toString();
@@ -666,10 +670,10 @@ public class CreateCachesProcessor implements CommitProcessor {
                         if (jd.transcoder.getInId() == null) {
                             inFile = new File(FileServlet.getDirectory(), node.getStringValue("url")).toURI();
                             inNode = node;
-                        } else {
-                            Result prevResult = results.get(n.getKey());
+                        } else { 
+                            Result prevResult = results.get(jd.transcoder.getInId());
                             if (prevResult == null) {
-                                logger.error("No result with id " + n.getKey() + " in " + results + ". Misconfiguration?");
+                                logger.error("No result with id " + jd.transcoder.getInId() + " in " + results + ". Misconfiguration? The configuration of a transcoder as 'in' should precede present transcoder.");
                                 continue;
                             }
                             inFile = prevResult.getOut();
@@ -687,6 +691,8 @@ public class CreateCachesProcessor implements CommitProcessor {
                                 System.out.println("Created " + dest);
                                 URI outFile = new File(FileServlet.getDirectory(), dest.getStringValue("url")).toURI();
                                 result = new Result(jd, dest, inFile, outFile);
+                                LOG.info("Added result to results list with key: " + dest.getStringValue("key"));
+                                addResult(dest.getStringValue("key"), result);
                                 break;
                             } else {
                                 logger.info("Skipping " + jd + " because " + inFile + " of (" + inNode.getNumber() + ", " + inNode.getStringValue("mimetype") + ") does not match mimetype.");
@@ -694,6 +700,7 @@ public class CreateCachesProcessor implements CommitProcessor {
                         } else {
                             // recognizers;
                             result = new Result(jd, null, inFile, null);
+                            addResult(jd.transcoder.getKey(), result);
                             break;
                         }
                     }
@@ -756,38 +763,52 @@ public class CreateCachesProcessor implements CommitProcessor {
         }
 
         /**
-         * Gets and creates the node representing the 'cached' stream (the result of a conversion),
-         * see the builder property 'org.mmbase.streams.cachestype'.
+         * Gets and/or creates the node representing the 'cached' stream.
+         *
          * @param key   representation of the way the stream was created from its source
+         * @return cached stream node
          */
         protected Node getCacheNode(final String key) {
-            String ct = node.getNodeManager().getProperty("org.mmbase.streams.cachestype");
+            return getCacheNode(node, key);
+        }
+        
+        /**
+         * Gets and/or creates the node representing the 'cached' stream (the result of a conversion),
+         * see the builder property 'org.mmbase.streams.cachestype'. It first looks if it already
+         * exists in the cloud or otherwise will create one.
+         *
+         * @param src   source node to create stream from
+         * @param key   representation of the way the stream was created from its source
+         * @return cached stream node
+         */
+        protected Node getCacheNode(Node src, final String key) {
+            String ct = src.getNodeManager().getProperty("org.mmbase.streams.cachestype");
             if (ct != null) {
                 for (String cacheManager : cacheManagers) {
-                    if (node.getCloud().hasNodeManager(cacheManager)) { // may not be the case during junit tests e.g.
-                        final NodeManager caches = node.getCloud().getNodeManager(cacheManager);
+                    if (src.getCloud().hasNodeManager(cacheManager)) { // may not be the case during junit tests e.g.
+                        final NodeManager caches = src.getCloud().getNodeManager(cacheManager);
                         NodeQuery q = caches.createQuery();
-                        Queries.addConstraint(q, Queries.createConstraint(q, "id",  FieldCompareConstraint.EQUAL, node));
+                        Queries.addConstraint(q, Queries.createConstraint(q, "id",  FieldCompareConstraint.EQUAL, src));
                         Queries.addConstraint(q, Queries.createConstraint(q, "key", FieldCompareConstraint.EQUAL, key));
 
                         LOG.debug("Executing " + q.toSql());
                         NodeList nodes = caches.getList(q);
                         if (nodes.size() > 0) {
-                            logger.service("Found existing node for " + key + "(" + node.getNumber() + "): " + nodes.getNode(0).getNumber());
+                            logger.service("Found existing node for " + key + "(" + src.getNumber() + "): " + nodes.getNode(0).getNumber());
                             return nodes.getNode(0);
                         }
                     }
                 }
 
-                final NodeManager caches = node.getCloud().getNodeManager(node.getNodeManager().getProperty("org.mmbase.streams.cachestype"));
+                final NodeManager caches = src.getCloud().getNodeManager(src.getNodeManager().getProperty("org.mmbase.streams.cachestype"));
                 Node newNode =  caches.createNode();
-                newNode.setNodeValue("id", node);
+                newNode.setNodeValue("id", src);
                 newNode.setStringValue("key", key);
                 newNode.commit();
-                logger.service("Created new node for " + key + "(" + node.getNumber() + "): " + newNode.getNumber());
+                logger.service("Created new node for " + key + "(" + src.getNumber() + "): " + newNode.getNumber());
                 return newNode;
             } else {
-                throw new IllegalStateException("No property 'org.mmbase.streams.cachestype' in " + node.getNodeManager());
+                throw new IllegalStateException("No property 'org.mmbase.streams.cachestype' in " + src.getNodeManager());
             }
         }
 
@@ -795,6 +816,10 @@ public class CreateCachesProcessor implements CommitProcessor {
             return current;
         }
 
+        protected void addResult(String key, Result result) {
+            if ( !results.containsKey(key) ) results.put(key, result);
+        }
+        
         /**
          * The Thread in which this Job is running.
          */
@@ -832,7 +857,7 @@ public class CreateCachesProcessor implements CommitProcessor {
         public synchronized void ready() {
                 ready = true;
                 notifyAll();
-            }
+        }
 
         public void waitUntilReady() throws InterruptedException {
             while (! isReady()) {
