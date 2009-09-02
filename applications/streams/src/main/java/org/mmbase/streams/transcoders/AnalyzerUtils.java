@@ -59,7 +59,7 @@ public final class AnalyzerUtils {
             log.service("Fixing mime type " + actualMimeType + "-> " + newType) ;
 
         } else {
-            log.debug("MimeType " + actualMimeType + " is correct");
+            if (log.isDebugEnabled()) log.debug("MimeType " + actualMimeType + " is correct");
         }
     }
 
@@ -110,7 +110,7 @@ public final class AnalyzerUtils {
         fixMimeType("image", source);
         if (cloud != null) {
             if (log.isDebugEnabled()) {
-                log.debug("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""), new Exception());
+                log.service("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""), new Exception());
             }
             if (cloud.hasNodeManager(IMAGE)) { // happens for example during junit tests
                 source.setNodeManager(cloud.getNodeManager(IMAGE));
@@ -196,7 +196,7 @@ public final class AnalyzerUtils {
     public boolean duration(String l, Node source, Node dest) {
         Matcher m = PATTERN_DURATION.matcher(l);
         if (m.matches()) {
-            log.info("### Duration match: " + l);
+            //log.debug("### Duration match: " + l);
             
             Node fragment = source.getNodeValue("mediafragment");
             // log.debug("mediafragment: " + source.getNodeValue("mediafragment"));
@@ -204,22 +204,22 @@ public final class AnalyzerUtils {
             if (! source.getNodeManager().hasField("length")) {
                 toVideo(source, dest);
             }
-            log.debug("duration: " + m.group(1));
+            if (log.isDebugEnabled()) log.debug("duration: " + m.group(1));
             long length = getLength(m.group(1));
             source.setLongValue("length", length);
-            dest.setLongValue("length", length);
+            if (dest != null) dest.setLongValue("length", length);
 
             m = PATTERN_BITRATE.matcher(l);
             if (m.matches()) {
-                log.debug("bitrate: " + m.group(1));
+                if (log.isDebugEnabled()) log.debug("bitrate: " + m.group(1));
                 int bitrate = 1000 * Integer.parseInt(m.group(1));
                 source.setIntValue("bitrate", bitrate);
-                dest.setIntValue("bitrate", bitrate);
+                if (dest != null) dest.setIntValue("bitrate", bitrate);
             }
 
             m = PATTERN_START.matcher(l);
             if (m.matches()) {
-                log.debug("Start: " + m.group(1));
+                if (log.isDebugEnabled()) log.debug("start: " + m.group(1));
                 long start = getStart(m.group(1));
                 if (fragment != null) {
                     fragment.setLongValue("start", start);
@@ -241,19 +241,17 @@ public final class AnalyzerUtils {
     public boolean video(String l, Node source, Node dest) {
         Matcher m = VIDEO_PATTERN.matcher(l);
         if (m.matches()) {
-            log.info("### VIDEO match: " + l);
+            //log.info("### VIDEO match: " + l);
             if (! source.getNodeManager().getName().equals(IMAGE)) {
                 toVideo(source, dest);
             }
 
-            log.debug("width: "  + m.group(1));
-            log.debug("height: " + m.group(2));
             source.setIntValue("width", Integer.parseInt(m.group(1)));
             source.setIntValue("height", Integer.parseInt(m.group(2)));
 
             m = VIDEOBITRATE_PATTERN.matcher(l);
             if (m.matches()) {
-                log.debug("bitrate: " + m.group(1));
+                if (log.isDebugEnabled()) log.debug("bitrate: " + m.group(1));
                 int bitrate = 1000 * Integer.parseInt(m.group(1));
                 source.setIntValue("bitrate", bitrate);
                 dest.setIntValue("bitrate", bitrate);
@@ -273,7 +271,7 @@ public final class AnalyzerUtils {
     public boolean image2(String l, Node source, Node dest) {
         Matcher m = IMAGE2_PATTERN.matcher(l);
         if (m.matches()) {
-            log.info("### image2 match: " + l);
+            log.info("image2 match: " + l);
             toImage(source, dest);
             return true;
         } else {
@@ -291,25 +289,24 @@ public final class AnalyzerUtils {
     public boolean dimensions(String l, Node source, Node dest) {
         Matcher m = PATTERN_DIMENSIONS.matcher(l);
         if (m.matches()) {
-            log.info("### Dimensions match: " + l);
+            //log.info("### Dimensions match: " + l);
             
             if (!source.getNodeManager().getName().equals(IMAGE)) {
                 toVideo(source, dest);
             }
             
-            log.debug("  codec: " + m.group(1));
-            log.debug(" format: " + m.group(2));
-            log.debug("  width: " + m.group(3));
-            log.debug(" height: " + m.group(4));
+            //log.debug("  codec: " + m.group(1));
+            //log.debug(" format: " + m.group(2));
+            if (log.isDebugEnabled()) log.debug("width: "  + m.group(3));
+            if (log.isDebugEnabled()) log.debug("height: " + m.group(4));
             source.setIntValue("width", Integer.parseInt(m.group(3)));
             source.setIntValue("height", Integer.parseInt(m.group(4)));
-
             dest.setIntValue("width", Integer.parseInt(m.group(3)));
             dest.setIntValue("height", Integer.parseInt(m.group(4)));
 
             m = VIDEOBITRATE_PATTERN.matcher(l);
             if (m.matches()) {
-                log.info("BitRate: " + m.group(1));
+                if (log.isDebugEnabled()) log.debug("bitRate: " + m.group(1));
                 source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
                 dest.setIntValue("bitrate", Integer.parseInt(m.group(1)));
             }
@@ -329,11 +326,11 @@ public final class AnalyzerUtils {
     public boolean audio(String l, Node source, Node dest) {
         Matcher m = PATTERN_AUDIO.matcher(l);
         if (m.matches()) {
-            log.info("### Audio match: " + l);
+            //log.info("### Audio match: " + l);
             
-            log.debug("   codec: " + m.group(1));
-            log.debug("   freq.: " + m.group(2));
-            log.debug("channels: " + m.group(3));
+            //log.debug("   codec: " + m.group(1));
+            //log.debug("   freq.: " + m.group(2));
+            //log.debug("channels: " + m.group(3));
             String channels = m.group(3);
             if (source.getNodeManager().hasField("channels")) {
                 if (channels.equals("stereo") || channels.equals("2")) {
