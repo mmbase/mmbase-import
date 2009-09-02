@@ -32,6 +32,7 @@
           <include>org/mmbase/security/Rank.class</include>              <!-- security classes are bridge -->
           <include>org/mmbase/security/SecurityException.class</include> <!-- security classes are bridge -->
           <include>org/mmbase/security/Action*.class</include> <!-- security classes are bridge -->
+          <include>org/mmbase/security/Operation*.class</include> <!-- security classes are bridge -->
           <include>org/mmbase/security/Configurable*.class</include> <!-- security classes are bridge -->
 
           <include>org/mmbase/util/functions/**</include>               <!-- functions are bridge -->
@@ -74,6 +75,7 @@
           <include>org/mmbase/util/SerializableInputStream*</include>        <!-- Representation of binaries-->
           <include>org/mmbase/util/ThreadPools*</include>
           <include>org/mmbase/util/IOUtil*</include>
+          <include>org/mmbase/util/SizeOf*</include>
 
           <include>org/mmbase/storage/Storable.class</include>              <!-- DataTypes uses .. -->
           <include>org/mmbase/storage/StorageException.class</include>      <!--  -->
@@ -90,6 +92,7 @@
           <include>org/mmbase/util/RandomPool*</include>          <!-- Used in test cases .. -->
           <include>org/mmbase/util/PasswordGenerator*</include>            <!-- Used in test cases .. -->
           <include>org/mmbase/config/functions/**</include>                  <!-- Used in test cases .. -->
+          <include>org/mmbase/config/datatypes.xml</include>                  <!-- Used in test cases .. -->
         </includes>
         <excludes>
           <exclude>org/mmbase/storage/search/SearchQueryHandler*</exclude>   <!-- Has a dependency on MMObjectNode -->
