@@ -80,6 +80,14 @@ See http://www.MMBase.org/license
             </manifestSections>
           </archive>
         </configuration>
+	<executions>
+	  <execution>
+	    <id>attach-test</id>
+	    <goals>
+	      <goal>test-jar</goal>
+	    </goals>
+	  </execution>
+	</executions>
       </plugin>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
@@ -178,7 +186,6 @@ See http://www.MMBase.org/license
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.4</version>
     </dependency>
 
     <dependency>
