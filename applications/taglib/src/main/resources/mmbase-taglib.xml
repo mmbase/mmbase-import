@@ -4957,7 +4957,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>writer</extends>
     <extends>contextwriter</extends>
     <type>mmbase.basic</type>
-    <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
+    <tagclass>org.mmbase.bridge.jsp.taglib.AttachmentTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <attribute>
