@@ -40,20 +40,6 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.media</groupId>
-      <artifactId>jai-core</artifactId>
-      <version>${jai.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.media</groupId>
-      <artifactId>jai_codec</artifactId>
-      <version>${jai.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
