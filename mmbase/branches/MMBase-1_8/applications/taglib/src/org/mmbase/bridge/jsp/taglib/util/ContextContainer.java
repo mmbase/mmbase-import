@@ -326,20 +326,16 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         return null;
     }
 
-    public Set keySet() {
-        HashSet result = new HashSet(getBacking().keySet());
-        if (parent != null) {
-            result.addAll(parent.keySet());
-        }
-        return result;
-    }
-
     /**
      * @since MMBase-1.7
      */
     Set keySet(boolean checkParent) {
         if (checkParent) {
-            return keySet();
+            HashSet result = new HashSet(getBacking().keySet());
+            if (parent != null) {
+                result.addAll(parent.keySet());
+            }
+            return result;
         } else {
             return getBacking().keySet();
         }
@@ -352,7 +348,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      */
     public Object getObject(String key) throws JspTagException {
         if (! containsKey(key, true)) { // do check parent.
-            throw new JspTagException("Object '" + key + "' is not registered. Registered are " + keySet());
+            throw new JspTagException("Object '" + key + "' is not registered. Registered are " + keySet(true));
         }
         if (log.isDebugEnabled()) {
             log.debug("Getting '" + key + "' from container " + this);
