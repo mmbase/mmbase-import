@@ -24,13 +24,14 @@ import java.util.regex.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-@Settings({"format", "acodec", "vcodec", "aq", "ab", "b", "async", "r", "ac"})
+@Settings({"format", "acodec", "vcodec", "vpre", "aq", "ab", "b", "async", "r", "ac"})
 public class FFMpegTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpegTranscoder.class);
 
     String acodec = null;
     String vcodec = null;
+    String vpre = null;
     String ab = null;
     String aq = null;
     String b = null;
@@ -38,11 +39,17 @@ public class FFMpegTranscoder extends CommandTranscoder {
     String r = null;
     String ac = null;
 
+    /* Audio codec to use -acodec */
     public void setAcodec(String a) {
         acodec = a;
     }
+    /* Video codec to use -vcodec */
     public void setVcodec(String v) {
         vcodec = v;
+    }
+    /* Video codec preset file, f.e. '-vcodec libx264 -vpre hq' http://ffmpeg.org/ffmpeg-doc.html#SEC16 */
+    public void setVpre(String vp) {
+        vpre = vp;
     }
 
     public void setAb(String a) {
@@ -52,7 +59,7 @@ public class FFMpegTranscoder extends CommandTranscoder {
         ab = a;
     }
     
-    /* audio quality variable bit rate (VBR): 0-255 (0 = highest, 255 = lowest) */
+    /* Audio quality variable bit rate (VBR): 0-255 (0 = highest, 255 = lowest) */
     public void setAq(String a) {
         aq = a;
     }
@@ -114,6 +121,10 @@ public class FFMpegTranscoder extends CommandTranscoder {
         if (vcodec != null) {
             args.add("-vcodec");
             args.add(vcodec);
+        }
+        if (vpre != null) {
+            args.add("-vpre");
+            args.add(vpre);
         }
         if (aq != null) {
             args.add("-aq");
