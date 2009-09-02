@@ -10,7 +10,7 @@ import java.io.*;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.DataType;
 import static org.mmbase.datatypes.Constants.*;
-import org.mmbase.bridge.dummy.*;
+import org.mmbase.bridge.mock.*;
 import org.mmbase.streams.transcoders.*;
 import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
 import org.mmbase.util.logging.*;
@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 @RunWith(Parameterized.class)
 public class RecognizerTest {
 
-    private final static CloudContext cloudContext = DummyCloudContext.getInstance();
+    private final static CloudContext cloudContext = MockCloudContext.getInstance();
 
     private final static Map<String, File> files = new HashMap<String, File>();
 
@@ -88,15 +88,15 @@ public class RecognizerTest {
     public static void setUp() {
         {
             Map<String, DataType> undef = getParent();
-            DummyCloudContext.getInstance().addNodeManager(MEDIA, undef);
+            MockCloudContext.getInstance().addNodeManager(MEDIA, undef);
         }
         {
             Map<String, DataType> images = getParent();
             images.put("height", DATATYPE_INTEGER);
             images.put("width", DATATYPE_INTEGER);
 
-            DummyCloudContext.getInstance().addNodeManager(IMAGE, images);
-            DummyCloudContext.getInstance().addNodeManager(IMAGEC,images);
+            MockCloudContext.getInstance().addNodeManager(IMAGE, images);
+            MockCloudContext.getInstance().addNodeManager(IMAGEC,images);
         }
         {
             Map<String, DataType> audio = getParent();
@@ -104,8 +104,8 @@ public class RecognizerTest {
             audio.put("bitrate", DATATYPE_INTEGER);
             audio.put("length", DATATYPE_INTEGER);
 
-            DummyCloudContext.getInstance().addNodeManager(AUDIO, audio);
-            DummyCloudContext.getInstance().addNodeManager(AUDIOC, audio);
+            MockCloudContext.getInstance().addNodeManager(AUDIO, audio);
+            MockCloudContext.getInstance().addNodeManager(AUDIOC, audio);
         }
         {
             Map<String, DataType> video = getParent();
@@ -115,8 +115,8 @@ public class RecognizerTest {
             video.put("channels", DATATYPE_INTEGER);
             video.put("length", DATATYPE_INTEGER);
 
-            DummyCloudContext.getInstance().addNodeManager(VIDEO, video);
-            DummyCloudContext.getInstance().addNodeManager(VIDEOC, video);
+            MockCloudContext.getInstance().addNodeManager(VIDEO, video);
+            MockCloudContext.getInstance().addNodeManager(VIDEOC, video);
         }
         File baseDir = new File(System.getProperty("user.dir"));
         samples = new File(baseDir, "samples");
