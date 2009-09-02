@@ -26,16 +26,6 @@ public class QueriesTest extends BridgeTest {
     }
 
 
-    public void testConstants() {
-
-        assertTrue(Queries.getRelationStepDirection("destination") == RelationStep.DIRECTIONS_DESTINATION);
-        assertTrue(Queries.getRelationStepDirection("SOURCE") == RelationStep.DIRECTIONS_SOURCE);
-        try {
-            Queries.getRelationStepDirection("bla");
-            fail("Should have thrown exception");
-        } catch (BridgeException be) {};
-
-    }
 
     public void testAddToResultCreateOneRelation() {
         Node mag =  getCloud().getNodeManager("mags").createNode();

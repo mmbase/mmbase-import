@@ -53,7 +53,17 @@ public class QueriesTest  {
 
 
 
+    @Test
+    public void constants() {
 
+        assertTrue(Queries.getRelationStepDirection("destination") == RelationStep.DIRECTIONS_DESTINATION);
+        assertTrue(Queries.getRelationStepDirection("SOURCE") == RelationStep.DIRECTIONS_SOURCE);
+        try {
+            Queries.getRelationStepDirection("bla");
+            fail("Should have thrown exception");
+        } catch (BridgeException be) {};
+
+    }
 
 
     @Test
