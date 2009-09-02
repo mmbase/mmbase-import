@@ -413,9 +413,6 @@
     <echo message="sleeping.." />
     <sleep seconds="10" />
 
-    <echo message="========================================DATATYPES========================================" />
-    <antcall target="run.datatypes" inheritRefs="true"/>
-    <sleep seconds="10" />
     <echo message="========================================CLUSTERING========================================" />
     <antcall target="run.clustering" inheritRefs="true"/>
     <sleep seconds="10" />
