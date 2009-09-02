@@ -9,7 +9,7 @@ import java.io.*;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.DataType;
 import static org.mmbase.datatypes.Constants.*;
-import org.mmbase.bridge.dummy.*;
+import org.mmbase.bridge.mock.*;
 import org.mmbase.streams.transcoders.*;
 import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
 import org.mmbase.util.logging.*;
@@ -23,7 +23,7 @@ import org.mmbase.servlet.FileServlet;
 
 public class CreateCachesTest {
 
-    private final static DummyCloudContext cloudContext = new DummyCloudContext();
+    private final static MockCloudContext cloudContext = new MockCloudContext();
     private final static String FILE = "foo.input";
     private static File  testFile;
 
