@@ -1,0 +1,22 @@
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c c_taglib b_test_even ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="abcde">ABC</mm:import>
+
+  <mm:import id="list" vartype="list">odd,even,odd</mm:import>
+
+  <h2>MMB-1865</h2>
+  <mm:stringlist referid="list">
+    <p><mm:even>${_ eq 'even' ? 'ok' : 'NOT ok'}: ${_}</mm:even></p>
+    <p><mm:odd>${_ eq 'odd' ? 'ok' : 'NOT ok'}: ${_}</mm:odd></p>
+  </mm:stringlist>
+  <hr />
+  <p>
+    <mm:link page="test"><a href="${_}">Back</a></mm:link>
+  </p>
+</div>
