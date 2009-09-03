@@ -12,9 +12,19 @@
 
   <h2>MMB-1865</h2>
   <mm:stringlist referid="list">
-    <p><mm:even>${_ eq 'even' ? 'ok' : 'NOT ok'}: ${_}</mm:even></p>
-    <p><mm:odd>${_ eq 'odd' ? 'ok' : 'NOT ok'}: ${_}</mm:odd></p>
+    <p>
+      <mm:index />:
+      <mm:even>${_ eq 'even' ? 'ok' : 'NOT ok'}: ${_}</mm:even>
+      <mm:odd>${_ eq 'odd' ? 'ok' : 'NOT ok'}: ${_}</mm:odd>
+    </p>
   </mm:stringlist>
+
+  <mm:import id="test1"><mm:listnodes type="object" max="2"><mm:even>even</mm:even><mm:odd>odd</mm:odd></mm:listnodes></mm:import>
+  <p>${test1 eq 'oddeven' ? 'ok' : 'NOT ok'}: ${test1}</p>
+
+  <mm:import id="test2"><mm:listnodes type="object" max="2" offset="1"><mm:even>even</mm:even><mm:odd>odd</mm:odd></mm:listnodes></mm:import>
+  <p>${test2 eq 'oddeven' ? 'ok' : 'NOT ok'}: ${test2}</p>
+
   <hr />
   <p>
     <mm:link page="test"><a href="${_}">Back</a></mm:link>
