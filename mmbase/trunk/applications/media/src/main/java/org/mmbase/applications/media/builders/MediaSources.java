@@ -296,7 +296,7 @@ public class MediaSources extends MMObjectBuilder {
                     String val = node.getStringValue("state");
                     ResourceBundle bundle;
                     if (args.size() > 1) {
-                        bundle = ResourceBundle.getBundle(STATES_RESOURCE,  new Locale((String) args.get(1), ""), getClass().getClassLoader());
+                        bundle = ResourceBundle.getBundle(STATES_RESOURCE, new Locale((String) args.get(1), ""), getClass().getClassLoader());
                     } else {
                         bundle = ResourceBundle.getBundle(STATES_RESOURCE, new Locale(mmb.getLanguage(), ""), getClass().getClassLoader());
                     }
