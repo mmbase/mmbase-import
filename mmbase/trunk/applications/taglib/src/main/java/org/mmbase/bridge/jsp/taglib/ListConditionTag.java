@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id$ 
+ * @version $Id$
  */
 
 public class ListConditionTag extends ListReferrerTag implements Condition {
@@ -84,11 +84,11 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
         switch(j) {
         case CONDITION_LAST:   result = list.getLoopStatus().isLast() != i; break;
         case CONDITION_FIRST:  result = list.getLoopStatus().isFirst() != i; break;
-        case CONDITION_EVEN:   result = ((list.getLoopStatus().getIndex() + 1) % 2 == 0) != i; break;
-        case CONDITION_ODD:    result = ((list.getLoopStatus().getIndex() + 1) % 2 != 0) != i; break;
-        case CONDITION_CHANGED: 
+        case CONDITION_EVEN:   result = ((list.getLoopStatus().getIndex()) % 2 == 0) != i; break;
+        case CONDITION_ODD:    result = ((list.getLoopStatus().getIndex()) % 2 != 0) != i; break;
+        case CONDITION_CHANGED:
             if (list instanceof ListProvider) {
-                result = ((ListProvider) list).isChanged() != i; 
+                result = ((ListProvider) list).isChanged() != i;
             } else {
                 result = ! i;
             }
@@ -110,13 +110,13 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             try{
-                if(bodyContent != null) { 
+                if(bodyContent != null) {
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());
                 }
             } catch(java.io.IOException e){
                 throw new TaglibException(e);
             }
-            
+
         }
         return EVAL_PAGE;
     }
