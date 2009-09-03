@@ -33,14 +33,13 @@ public class FragmentTypeFixer implements CommitProcessor {
             if (targetType == null) {
                 throw new IllegalStateException("No such node manager " + ntNode.getNodeManager().getProperty("org.mmbase.media.containertype") + " (container type of " + ntNode.getNodeManager().getName() + ", node " + node.getNumber() + ")");
             }
-            log.info("Fixing fragment type for " + node.getNumber() + " " + fragments) ;
             for (Node fragment : fragments) {
                 if (fragment == null) {
                     log.error("Fragment is null?");
                     continue;
                 }
                 if (! fragment.getNodeManager().equals(targetType)) {
-                    log.service("Fixing type of " + node.getNumber() + " fragment " + fragment + " Setting from " + fragment.getNodeManager().getName() + " " + targetType.getName() + " (because " + ntNode.getNodeManager().getName() + " " + ntNode.getNumber() + ")");
+                    log.info("Fixing fragment type of " + node.getNumber() + " fragment " + fragment + " Setting from " + fragment.getNodeManager().getName() + " " + targetType.getName() + " (because " + ntNode.getNodeManager().getName() + " " + ntNode.getNumber() + ")");
                     fragment.setNodeManager(targetType);
                     fragment.commit();
                 } else {
