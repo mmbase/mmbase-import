@@ -99,6 +99,12 @@
     </body>
   </block>
 
+   <block name="test_even" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/even.jspx">
+    </body>
+  </block>
+
   <block name="taglib_examples" mimetype="text/html"
          classification="mmbase.examples">
     <body>

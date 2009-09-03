@@ -20,7 +20,7 @@
     <li><mm:link page="test_context"><a href="${_}">mm:context</a></mm:link></li>
     <li><mm:link page="test_import"><a href="${_}">mm:import</a></mm:link></li>
     <li><mm:link page="test_compare"><a href="${_}">mm:compare</a></mm:link></li>
-
+    <li><mm:link page="test_even"><a href="${_}">mm:even/mm:odd</a></mm:link></li>
   </ol>
   <h3>MMB-1844</h3>
   <mm:import id="list" vartype="list">a,b</mm:import>
