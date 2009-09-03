@@ -301,14 +301,16 @@ public final class AnalyzerUtils {
             if (log.isDebugEnabled()) log.debug("height: " + m.group(4));
             source.setIntValue("width", Integer.parseInt(m.group(3)));
             source.setIntValue("height", Integer.parseInt(m.group(4)));
-            dest.setIntValue("width", Integer.parseInt(m.group(3)));
-            dest.setIntValue("height", Integer.parseInt(m.group(4)));
+            if (dest != null) {
+                dest.setIntValue("width", Integer.parseInt(m.group(3)));
+                dest.setIntValue("height", Integer.parseInt(m.group(4)));
+            }
 
             m = VIDEOBITRATE_PATTERN.matcher(l);
             if (m.matches()) {
                 if (log.isDebugEnabled()) log.debug("bitRate: " + m.group(1));
                 source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
-                dest.setIntValue("bitrate", Integer.parseInt(m.group(1)));
+                if (dest != null) dest.setIntValue("bitrate", Integer.parseInt(m.group(1)));
             }
             
             return true;
