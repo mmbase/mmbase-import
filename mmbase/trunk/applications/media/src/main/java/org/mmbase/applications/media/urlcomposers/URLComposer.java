@@ -72,11 +72,11 @@ public class URLComposer  {
      * The format of the produced URL. This is not necessarily the format of the source.
      * (Though it normally would be)
      */
-    public Format       getFormat()   {
+    public Format getFormat() {
         return Format.get(source.getIntValue("format"));
     }
 
-    public Codec       getCodec()   {
+    public Codec getCodec() {
         return Codec.get(source.getIntValue("codec"));
     }
     public int getBitrate() {
@@ -109,13 +109,10 @@ public class URLComposer  {
 
     public Dimension getDimension() {
         if (source.getBuilder().hasField("height")) {
-            return new Dimension(source.getIntValue("width"),
-                                 source.getIntValue("height"));
-
+            return new Dimension(source.getIntValue("width"), source.getIntValue("height"));
         } else {
             return null;
         }
-
     }
 
     /**
@@ -169,18 +166,20 @@ public class URLComposer  {
      * This means that the provider must be 'on', and the source must be either an original ({@link
      * State#SOURCE}), or its a generated source and its generation is done.
      */
-    public boolean      isAvailable() {
-        boolean sourceAvailable    = (source != null &&
+    public boolean isAvailable() {
+        boolean sourceAvailable = (source != null &&
                                       (source.getIntValue("state") == State.DONE.getValue() ||
                                        source.getIntValue("state") == State.SOURCE.getValue()));
         boolean providerAvailable  = (provider.getIntValue("state") == MediaProviders.STATE_ON);
         return providerAvailable && sourceAvailable;
     }
 
+    /* The source */
     public boolean isMain() {
         return source != null && source.getIntValue("state") == State.SOURCE.getValue();
     }
 
+    /* State of this source */
     public State getState() {
         return source == null ? null : State.get(source.getIntValue("state"));
     }
