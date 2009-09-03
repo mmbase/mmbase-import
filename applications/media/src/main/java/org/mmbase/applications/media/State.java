@@ -44,6 +44,6 @@ public enum State {
                 return et;
             }
         }
-        throw new IllegalArgumentException("" + value + " is not an  state");
+        throw new IllegalArgumentException("" + value + " is not a state");
     }
 }
