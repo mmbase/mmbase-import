@@ -39,7 +39,7 @@ public class AnalyzerUtilsTest {
     }
 
     @Test
-    public void unsupported() throws Exception {
+    public void unknown() throws Exception {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "unknown.wav");
         assumeTrue(testFile.exists());
 
@@ -57,7 +57,7 @@ public class AnalyzerUtilsTest {
     }
 
     @Test
-    public void supported() throws Exception {
+    public void known() throws Exception {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "basic.wav");
         assumeTrue(testFile.exists());
 
@@ -71,6 +71,25 @@ public class AnalyzerUtilsTest {
             };
         getFFMpegTranscoder().transcode(testFile.toURI(), null, test);
         assertFalse(test.success);
+
+    }
+
+
+    @Test
+    public void unsupported() throws Exception {
+        File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "unsupported.rm");
+        assumeTrue(testFile.exists());
+
+        Logger test = new Logger() {
+                @Override
+                protected void log(String s) {
+                    if (util.unsupported(s, source, destination)) {
+                        this.success = true;
+                    }
+                }
+            };
+        getFFMpegTranscoder().transcode(testFile.toURI(), null, test);
+        assertTrue(test.success);
 
     }
 
