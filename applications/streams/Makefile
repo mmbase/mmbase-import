@@ -9,6 +9,7 @@
 
 .PHONY:
 samples: samples/basic.mpg samples/basic.mov samples/basic.mp3 samples/basic.mp4 samples/basic.png samples/basic.flv samples/basic.jpg samples/basic.wav \
+	samples/unknown.wav \
 	samples/testbestanden/audio/wav_logic_trans.wav \
 	samples/testbestanden/audio/m4a_itunes_trans.m4a \
 	samples/testbestanden/audio/ogg_audacity_trans.ogg \
