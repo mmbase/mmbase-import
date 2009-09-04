@@ -23,9 +23,9 @@ public class AnalyzerLogger  extends AbstractSimpleImpl {
 
     public static final Logger LOG = Logging.getLoggerInstance(AnalyzerLogger.class);
 
-    private final Analyzer analyzer;
-    private final Node source;
-    private final Node destination;
+    protected  final Analyzer analyzer;
+    protected final Node source;
+    protected final Node destination;
 
     private int line = 0;
     private boolean commited = false;
@@ -37,6 +37,7 @@ public class AnalyzerLogger  extends AbstractSimpleImpl {
         setLevel(Level.SERVICE);
     }
 
+    @Override
     protected void log(String s, Level level) {
         if (line++ < analyzer.getMaxLines()) {
             try {
