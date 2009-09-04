@@ -52,6 +52,8 @@ public class FFMpegRecognizer implements Recognizer {
         //log.service("Calling (" + method + ") " + getCommand() + " " + Arrays.asList(getArguments()));
         File inFile = new File(in.getPath());
         CommandExecutor.execute(outStream, errStream, new CommandExecutor.Method(), p + "ffmpeg", "-i", inFile.toString());
+        outStream.close();
+        errStream.close();
     }
 
 
