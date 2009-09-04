@@ -88,6 +88,9 @@ public class CreateCachesTest {
     }
 
     protected Cloud getCloud() {
+        if (remoteCloud != null) {
+            remoteCloud.setProperty(CreateCachesProcessor.NOT, "no implicit processesing please");
+        }
         return remoteCloud;
     }
 
@@ -147,7 +150,7 @@ public class CreateCachesTest {
         return source.getCloud().getNode(source.getNumber());
 
     }
-    void checkSource(Node source) {
+    void checkSource(Node source, int sourceCount) {
         assertEquals("videostreamsources", source.getNodeManager().getName());
         assertNotNull(source.getValue("width"));
         assertNotNull(source.getValue("height"));
@@ -155,6 +158,11 @@ public class CreateCachesTest {
         assertEquals(288, source.getIntValue("height"));
         assertEquals(1, source.getRelatedNodes("mediaproviders").size());
         assertEquals(1, source.getRelatedNodes("mediafragments").size());
+
+        Node mediafragment = source.getNodeValue("mediafragment");
+        assertEquals("videofragments", mediafragment.getNodeManager().getName());
+        //assertEquals("" + mediafragment.getNumber() + " is supposed to have " + sourceCount + " source", sourceCount, mediafragment.getRelatedNodes("mediasources").size()); // why does this not work?
+        assertEquals("" + mediafragment.getNumber() + " is supposed to have " + sourceCount + " source", sourceCount, mediafragment.getRelatedNodes("object", "related", "destination").size());
     }
 
 
@@ -167,7 +175,7 @@ public class CreateCachesTest {
 
         job.waitUntilReady();
         source = refresh(source);
-        checkSource(source);
+        checkSource(source, 1);
     }
 
     @Test
@@ -180,7 +188,7 @@ public class CreateCachesTest {
 
         job.waitUntilReady();
         source = refresh(source);
-        checkSource(source);
+        checkSource(source, 2);
     }
 
 
@@ -192,7 +200,7 @@ public class CreateCachesTest {
         source.commit();
         job.waitUntilReady();
         source = refresh(source);
-        checkSource(source);
+        checkSource(source, 3);
     }
 }
 
