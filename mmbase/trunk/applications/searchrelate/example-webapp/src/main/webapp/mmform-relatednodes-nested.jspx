@@ -6,10 +6,26 @@
     xmlns:mm-srt="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
 
+
+  <div id="test">
+  </div>
+
+  <!--
+  <script type="text/javascript">
+    $(document).ready(function() {
+    console.log("Testing sortable on new thing");
+    var t = "<ol><li>a</li><li>b</li></ol>";
+     var a = $(t);
+     $("#test").append(a);
+     a.sortable();
+    });
+  </script>
+  -->
+
   <mm-sre:form>
     <h2><mm:field name="title" /></h2>
 
-    <mm-sr:relatednodes
+    <mm-srt:relatednodes
         idvar="rid"
         type="news"
         role="posrel"
@@ -19,8 +35,9 @@
         max="3"
         >
       <h3>${rid}</h3>
-    </mm-sr:relatednodes>
+    </mm-srt:relatednodes>
   </mm-sre:form>
+
   <hr />
   <mm:escape escape="links">$URL$</mm:escape>
 </mm-sre:html>

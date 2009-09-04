@@ -18,10 +18,12 @@
           <Item>../target/war/work/org.mmbase.jquery/ajaxfileupload</Item>
           <Item>../src/main/examples</Item>
           <Item>../../../base-webapp/src/main/webapp</Item>
+          <Item>../../../base-webapp/src/main/webapp</Item>
         </Array>
       </Arg>
     </New>
   </Set>
+
   <!--
 
       <Item><SystemProperty name="jetty.home" default="."/>/webapps/foo</Item>
