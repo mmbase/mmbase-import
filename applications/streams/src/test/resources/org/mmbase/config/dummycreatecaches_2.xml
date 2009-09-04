@@ -18,4 +18,10 @@
     </class>
   </transcoder>
 
+  <transcoder in="v1" id="v2">
+    <class name="org.mmbase.streams.transcoders.DummyTranscoder">
+      <param name="format">MP3</param>
+    </class>
+  </transcoder>
+
 </createcaches>
