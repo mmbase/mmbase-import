@@ -39,7 +39,7 @@
     </editor>
     <datatype base="nodenumber" xmlns="http://www.mmbase.org/xmlns/datatypes">
       <required value="true" enforce="never" />
-      <enumeration>
+      <enumeration enforce="never"> <!-- enforcing is very bad for performance -->
         <query type="mediasources" xmlns="http://www.mmbase.org/xmlns/searchquery" />
       </enumeration>
     </datatype>
