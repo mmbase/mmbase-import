@@ -65,6 +65,8 @@ public class RecognizerTest {
                 ,
                 {new Case("basic.mp3", AUDIO, -1, -1)}
                 ,
+                {new Case("basic.mp4", VIDEO, 352, 288)}
+                ,
                 {new Case("basic.wav", AUDIO, -1, -1)}
                 ,
                 {new Case("basic.jpg", IMAGE, 218, 218)}
