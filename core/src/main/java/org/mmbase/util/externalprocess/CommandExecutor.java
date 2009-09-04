@@ -31,7 +31,8 @@ public class CommandExecutor {
         CONNECTOR;
     }
 
-    public static class Method {
+    public static class Method implements Serializable {
+        private static final long serialVersionUID = 0L;
         private final String host;
         private final int port;
         private final Type type;

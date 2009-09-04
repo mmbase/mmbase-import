@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.logging;
 
 import java.util.*;
+import java.io.*;
 import java.util.concurrent.*;
 
 /**
@@ -20,11 +21,14 @@ import java.util.concurrent.*;
  * @since	MMBase-1.9.1
  * @version $Id$
  */
-public class ChainedLogger implements Logger {
+public class ChainedLogger implements Logger, Externalizable {
 
     private static final Logger LOG = Logging.getLoggerInstance(ChainedLogger.class);
 
     private final List<Logger> loggers = new CopyOnWriteArrayList<Logger>();
+
+    public ChainedLogger() {
+    }
     public ChainedLogger(Logger... ls) {
         for (Logger l : ls) {
             addLogger(l);
@@ -164,5 +168,23 @@ public class ChainedLogger implements Logger {
     public String toString() {
         return "" + loggers;
     }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        List<Logger> serializableLoggers = (List<Logger>) in.readObject();
+        loggers.addAll(serializableLoggers);
+    }
+
+    public void writeExternal(ObjectOutput stream) throws IOException {
+        List<Logger> serializableLoggers = new ArrayList<Logger>();
+        for (Logger l : loggers) {
+            if (l instanceof Serializable) {
+                serializableLoggers.add(l);
+            } else {
+                LOG.warn(" " + l + " is not serializable");
+            }
+        }
+        stream.writeObject(serializableLoggers);
+    }
+
 
 }
