@@ -83,6 +83,8 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 }
                 assert dest.getNodeManager().getName().equals(VIDEOC);
             }
+        } else {
+            log.warn("No cloud");
         }
     }
 

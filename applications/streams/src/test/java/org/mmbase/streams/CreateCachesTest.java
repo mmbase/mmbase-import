@@ -128,6 +128,7 @@ public class CreateCachesTest {
 
 
         newSource.setStringValue("url", tempFile.getName());
+        newSource.commit();
         return newSource;
     }
 
@@ -142,12 +143,18 @@ public class CreateCachesTest {
         return proc;
     }
 
+    Node refresh(Node source) {
+        return source.getCloud().getNode(source.getNumber());
+
+    }
     void checkSource(Node source) {
         assertEquals("videostreamsources", source.getNodeManager().getName());
         assertNotNull(source.getValue("width"));
         assertNotNull(source.getValue("height"));
         assertEquals(352, source.getIntValue("width"));
         assertEquals(288, source.getIntValue("height"));
+        assertEquals(1, source.getRelatedNodes("mediaproviders").size());
+        assertEquals(1, source.getRelatedNodes("mediafragments").size());
     }
 
 
@@ -156,8 +163,10 @@ public class CreateCachesTest {
         CreateCachesProcessor proc = get("dummycreatecaches_0.xml");
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
-        source.commit();
+
+
         job.waitUntilReady();
+        source = refresh(source);
         checkSource(source);
     }
 
@@ -167,32 +176,23 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
+
+
         job.waitUntilReady();
-
+        source = refresh(source);
         checkSource(source);
-        // 2 nodes should have been created
-        //assertEquals("" + cloud.getCloudContext().getNodes(), nodeCount + 2, cloudContext.getNodes().size());
-
-
-
-
     }
 
-    @Test
+
+    @Test //fails?
     public  void twoSteps() throws Exception {
         CreateCachesProcessor proc = get("dummycreatecaches_2.xml");
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
         job.waitUntilReady();
-
+        source = refresh(source);
         checkSource(source);
-        // 2 nodes should have been created
-        //assertEquals("" + cloud.getCloudContext().getNodes(), nodeCount + 2, cloudContext.getNodes().size());
-
-
-
-
     }
 }
 
