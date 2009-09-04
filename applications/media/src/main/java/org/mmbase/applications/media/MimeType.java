@@ -18,7 +18,8 @@ import org.mmbase.bridge.*;
  * @author Michiel Meeuwissen
  */
 
-public class MimeType {
+public class MimeType implements java.io.Serializable {
+    private static long serialVersionUID = 0L;
 
     public static final String STAR = "*";
     public static final MimeType ANY = new MimeType(STAR, STAR);
