@@ -14,7 +14,7 @@ $(document).ready(function(ev) {
     validator.sessionName = $("html head meta[name='MMBase-SessionName']").attr("content");
 
     var nt = $("html head meta[name='MMBase-NodeType']");
-    if (nt) {
+    if (nt.length > 0) {
         validator.prefetchNodeManager(nt.attr("content"));
     }
     validator.onLoad(ev);
