@@ -75,6 +75,13 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.mmbase.tests</groupId>
+      <artifactId>mmbase-rmmci</artifactId>
+      <version>1.9.2.0</version>
+      <classifier>client-skinny</classifier>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <repositories>

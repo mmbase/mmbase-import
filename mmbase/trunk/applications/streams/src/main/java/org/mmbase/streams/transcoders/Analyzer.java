@@ -21,7 +21,7 @@ import org.mmbase.bridge.*;
  * @author Michiel Meeuwissen
  */
 
-public interface Analyzer extends org.mmbase.util.PublicCloneable<Analyzer> {
+public interface Analyzer extends org.mmbase.util.PublicCloneable<Analyzer>, java.io.Serializable {
 
 
     void addThrowable(Throwable t);
