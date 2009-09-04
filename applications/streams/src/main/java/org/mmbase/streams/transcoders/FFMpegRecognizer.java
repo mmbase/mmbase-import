@@ -43,16 +43,15 @@ public class FFMpegRecognizer implements Recognizer {
     }
 
     public void analyze(URI in, Logger logger) throws Exception {
+        log.debug("Analyzing to " + logger);
         Writer writer = new LoggerWriter(logger, Level.SERVICE);
         OutputStream outStream = new WriterOutputStream(writer, System.getProperty("file.encoding"));
+        OutputStream errStream = new WriterOutputStream(writer, System.getProperty("file.encoding"));
         String p = path;
         if (p == null) p = "";
         //log.service("Calling (" + method + ") " + getCommand() + " " + Arrays.asList(getArguments()));
         File inFile = new File(in.getPath());
-        CommandExecutor.execute(outStream, new CommandExecutor.Method(), p + "ffmpeg", new String[] {
-                "-i", inFile.toString(),
-            }
-            );
+        CommandExecutor.execute(outStream, errStream, new CommandExecutor.Method(), p + "ffmpeg", "-i", inFile.toString());
     }
 
 
