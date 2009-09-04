@@ -68,7 +68,13 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
         OutputStream outStream = new WriterOutputStream(getOutputWriter(log), System.getProperty("file.encoding"));
         String p = path;
 
-        if (p == null) p = "";
+        if (p == null) {
+            p = "";
+        }
+        if (p.length() > 0 && ! p.endsWith(File.separator)) {
+            p += File.separator;
+        }
+
         if (log.isServiceEnabled()) {
             log.service("Calling (" + method + ") " + p + getCommand() + " " + Arrays.asList(getArguments()));
         }
