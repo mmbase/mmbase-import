@@ -19,7 +19,7 @@ import org.mmbase.applications.media.MimeType;
  * @author Michiel Meeuwissen
  */
 
-public interface Recognizer extends org.mmbase.util.PublicCloneable<Recognizer> {
+public interface Recognizer extends org.mmbase.util.PublicCloneable<Recognizer>, java.io.Serializable {
 
 
     MimeType getMimeType();

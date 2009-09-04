@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * @version $Id$
  */
 
-public final class AnalyzerUtils {
+public final class AnalyzerUtils implements java.io.Serializable {
 
     private static final Logger LOG = Logging.getLoggerInstance(AnalyzerUtils.class);
 

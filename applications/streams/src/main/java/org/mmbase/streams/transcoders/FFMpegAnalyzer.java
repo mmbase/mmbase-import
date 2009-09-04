@@ -54,18 +54,18 @@ public class FFMpegAnalyzer implements Analyzer {
     public void addLogger(Logger logger) {
         log.addLogger(logger);
     }
-    
+
     private String canbe = util.MEDIA;
 
     public void analyze(String l, Node source, Node des) {
         Cloud cloud = source.getCloud();
-        
+
         if (util.unsupported(l, source, des)) {
             // TODO: make something to report this to user
             log.warn("Not supported! " + l);
             return;
         }
-        
+
         if (util.image2(l, source, des)) {
             if (log.isDebugEnabled()) log.debug("Found an image " + source);
             canbe = util.IMAGE;
@@ -76,38 +76,38 @@ public class FFMpegAnalyzer implements Analyzer {
             if (log.isDebugEnabled()) log.debug("Found length " + source);
             return;
         }
-        
+
         if (util.dimensions(l, source, des)) {
             if (log.isDebugEnabled()) log.debug("Found dimensions " + source);
             return;
         }
-        
+
         if (util.audio(l, source, des)) {
             if (log.isDebugEnabled()) log.debug("Found audio: " + source);
-            
+
             if (! canbe.equals(util.VIDEO)) {
                 /* no video seen yet, so it can be audio */
                 canbe = util.AUDIO;
             }
         }
-        
+
     }
 
     public void ready(Node sourceNode, Node destNode) {
         log.service("Ready() " + sourceNode.getNumber() + (destNode == null ? "" : (" -> " + destNode.getNumber())));
-        
+
         if (canbe.equals(util.IMAGE) && (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0)) {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an image " + sourceNode);
             util.toImage(sourceNode, destNode);
-        
+
         } else if (canbe.equals(util.AUDIO) && !sourceNode.getNodeManager().hasField("width") ) {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
             util.toAudio(sourceNode, destNode);
-        
+
         } else if (canbe.equals(util.AUDIO) && sourceNode.isNull("width")) {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
             util.toAudio(sourceNode, destNode);
-        
+
         } else {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is video " + sourceNode);
             util.toVideo(sourceNode, destNode);

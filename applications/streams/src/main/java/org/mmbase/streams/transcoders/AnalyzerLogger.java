@@ -19,7 +19,7 @@ import org.mmbase.bridge.Node;
  * @author Michiel Meeuwissen
  */
 
-public class AnalyzerLogger  extends AbstractSimpleImpl {
+public class AnalyzerLogger  extends AbstractSimpleImpl implements java.io.Serializable {
 
     public static final Logger LOG = Logging.getLoggerInstance(AnalyzerLogger.class);
 

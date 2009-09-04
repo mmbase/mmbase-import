@@ -22,14 +22,14 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  */
 
-public interface Transcoder extends org.mmbase.util.PublicCloneable<Transcoder> {
+public interface Transcoder extends org.mmbase.util.PublicCloneable<Transcoder>, java.io.Serializable {
 
     String getKey();
 
     Format getFormat();
 
     Codec getCodec();
-    
+
     /* Id of transcoder in config */
     String getId();
 

@@ -4,6 +4,7 @@ import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.*;
@@ -23,8 +24,12 @@ import org.mmbase.servlet.FileServlet;
 
 public class CreateCachesTest {
 
+    private static final String REMOTE_URI = "rmi://127.0.0.1:1111/remotecontext";
+    private static Cloud remoteCloud;
+
+
     private final static MockCloudContext cloudContext = new MockCloudContext();
-    private final static String FILE = "foo.input";
+    private final static String FILE = "basic.mp4";
     private static File  testFile;
 
     public CreateCachesTest() {
@@ -32,6 +37,16 @@ public class CreateCachesTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        try {
+            CloudContext c =  ContextProvider.getCloudContext(REMOTE_URI);
+            remoteCloud = c.getCloud("mmbase", "class", null);
+            System.out.println("Found remote cloud " + remoteCloud);
+        } catch (Exception e) {
+            System.err.println("Cannot get RemoteCloud. (" + e.getMessage() + "). Some tests will be skipped. (but reported as succes: see http://jira.codehaus.org/browse/SUREFIRE-542)");
+            System.err.println("You can start up a test-environment for remote tests: trunk/example-webapp$ mvn jetty:run");
+            remoteCloud = null;
+        }
+
         //cloudContext.clear();
         /*
         cloudContext.addCore();
@@ -40,6 +55,7 @@ public class CreateCachesTest {
         cloudContext.addNodeManagers(DummyBuilderReader.getBuilderLoader().getChildResourceLoader("streams"));
         */
 
+        /* Mock stuff not yet sufficiently useable
         {
             Map<String, DataType> map = new HashMap<String, DataType>();
             map.put("number",    DATATYPE_INTEGER);
@@ -66,14 +82,13 @@ public class CreateCachesTest {
             cloudContext.addNodeManager("container", map);
         }
 
-        {
-            testFile = new File(FileServlet.getDirectory(), FILE);
+        */
+        testFile = new File("samples", FILE);
 
-            // touch te file, contents is not important.
-            FileOutputStream fo = new FileOutputStream(testFile);
-            fo.close();
-        }
+    }
 
+    protected Cloud getCloud() {
+        return remoteCloud;
     }
 
 
@@ -81,9 +96,12 @@ public class CreateCachesTest {
 
     @Test
     public void node() {
-        Cloud cloud = cloudContext.getCloud("mmbase");
-        //NodeManager nm = cloud.getNodeManager("streamsources");
-        //Node newSource = nm.createNode(); // Dummy not yet ready enough
+        Cloud cloud = getCloud();
+        assumeNotNull(cloud);
+        NodeManager nm = cloud.getNodeManager("streamsources");
+        assumeNotNull(nm);
+        Node newSource = nm.createNode(); //
+        newSource.commit();
 
     }
 
@@ -91,41 +109,39 @@ public class CreateCachesTest {
     @Test
     public  void test1() throws Exception {
         CreateCachesProcessor proc = new CreateCachesProcessor("dummycreatecaches_1.xml");
-        proc.setCacheManagers("dummy");
-        Cloud cloud = cloudContext.getCloud("mmbase");
+        //proc.setCacheManagers("dummy");
+        Cloud cloud = getCloud();
+        assumeNotNull(cloud);
 
-        Node container = cloud.getNodeManager("container").createNode();
+
+        Node container = cloud.getNodeManager("mediafragments").createNode();
         container.commit();
 
-        NodeManager nm = cloud.getNodeManager("dummy");
+        NodeManager nm = cloud.getNodeManager("streamsources");
+
+        System.out.println("DATATYPE " + nm.getField("url").getDataType());
 
         Node newSource = nm.createNode();
         newSource.setNodeValue("mediafragment", container);
-        newSource.setNodeValue("mediaprovider", container);
+        newSource.setNodeValue("mediaprovider", cloud.getNode("default.provider"));
         newSource.commit();
 
-        assertEquals(cloudContext, newSource.getCloud().getCloudContext());
+        assertTrue(testFile.exists());
 
-        assertTrue("" + newSource + "  " + cloudContext.getNodes(), cloud.hasNode(newSource.getNumber()));
+        System.out.println("DATATYPE " + newSource.getNodeManager().getField("url").getDataType());
 
-        newSource.setStringValue("url", FILE);
-
-
-        int nodeCount = cloudContext.getNodes().size();
+        newSource.setStringValue("url", testFile.toURL().toString());
 
 
 
         // FAILS ('getList' not working yet on Dummy))
-        //CreateCachesProcessor.Job job = proc.createCaches(cloud, newSource.getNumber());
-        
-
-
+        CreateCachesProcessor.Job job = proc.createCaches(cloud, newSource.getNumber());
         newSource.commit();
 
-        //job.waitUntilReady();
+        job.waitUntilReady();
 
         // 2 nodes should have been created
-        //assertEquals("" + cloudContext.getNodes(), nodeCount + 2, cloudContext.getNodes().size());
+        //assertEquals("" + cloud.getCloudContext().getNodes(), nodeCount + 2, cloudContext.getNodes().size());
 
 
 
