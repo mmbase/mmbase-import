@@ -155,4 +155,8 @@ abstract public class AbstractSimpleImpl  implements Logger {
         return level <= Level.SERVICE_INT;
     }
 
+    public boolean isEnabledFor(Level l) {
+        return level <= l.toInt();
+    }
+
 }

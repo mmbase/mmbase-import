@@ -159,6 +159,13 @@ public class ChainedLogger implements Logger, Externalizable {
         return false;
     }
 
+    public boolean isEnabledFor(Level l) {
+        for (Logger log : loggers) {
+            if (log.isEnabledFor(l)) return true;
+        }
+        return false;
+    }
+
     public void setLevel(Level p) {
         for (Logger log : loggers) {
             log.setLevel(p);

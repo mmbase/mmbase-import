@@ -186,4 +186,10 @@ public interface Logger {
 
     public void setLevel(Level p);
 
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public boolean isEnabledFor(Level l);
+
 }
