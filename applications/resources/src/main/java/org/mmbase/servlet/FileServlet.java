@@ -233,11 +233,11 @@ public class FileServlet extends BridgeServlet {
             if (! pathInfo.equals("/")) {
                 result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.getParentFile().lastModified()))  +"</td><td class='filesize'> </td><td class='filename'><a href='..'>../</a></td></tr>");
             }
-            List<File> files = Arrays.asList(directory.listFiles());
+            List<File> list = Arrays.asList(directory.listFiles());
             if (comparator != null) {
-                Collections.sort(files, comparator);
+                Collections.sort(list, comparator);
             }
-            for (File file : files) {
+            for (File file : list) {
                 String name = file.getName() + (file.isDirectory() ? "/" : "");
                 if (ignores(pathInfo + name)) continue;
 
@@ -305,6 +305,35 @@ public class FileServlet extends BridgeServlet {
     protected long getLastModified(HttpServletRequest req) {
         return getFile(req.getPathInfo(), null).lastModified();
     }
+
+    /**
+     * The directory as a function. This can makes the information available via RMMCI.
+     */
+    public static class DirectoryFunction  extends org.mmbase.util.functions.AbstractFunction<String> {
+        public DirectoryFunction() {
+            super("fileServletDirectory");
+        }
+        String dir = null;
+        public String getFunctionValue(org.mmbase.util.functions.Parameters parameters) {
+            if (dir != null) {
+                return dir;
+            } else {
+                return FileServlet.getDirectory().toString();
+            }
+
+        }
+        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+            dir = in.readUTF();
+        }
+        private void writeObject(ObjectOutputStream out) throws IOException {
+            if (dir != null) {
+                out.writeUTF(dir);
+            } else {
+                out.writeUTF(FileServlet.getDirectory().toString());
+            }
+        }
+    }
+
 }
 
 
