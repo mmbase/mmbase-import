@@ -19,7 +19,7 @@
 
   <field name="url">
     <datatype base="file" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      <unique value="true" />
+      <unique value="false" />
       <required value="true">
         <description xml:lang="en">A file is required</description>
         <description xml:lang="nl">Een bestand is verplicht</description>
