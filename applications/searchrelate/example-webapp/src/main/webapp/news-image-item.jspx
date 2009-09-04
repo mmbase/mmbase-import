@@ -19,22 +19,13 @@
   <mm-sr:delete  />
 
 
-  <mm-srt:relatednodes
+  <mm-sr:relatednodes
       idvar="rid"
-      type="people"
-      role="related"
-      search="true"
-      fields="number,firstname">
-    <h3>${rid} authors</h3>
-  </mm-srt:relatednodes>
+      type="images"
+      fields="number,handle">
+    <h3>${rid} images</h3>
+  </mm-sr:relatednodes>
 
-  <mm-srt:relatednodes
-      idvar="rid"
-      type="urls"
-      sortable="true"
-      fields="url">
-    <h3>${rid} urls</h3>
-  </mm-srt:relatednodes>
 
 
 </span>

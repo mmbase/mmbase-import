@@ -69,6 +69,12 @@
             </mm:link>
           </li>
 
+          <li>
+            <mm:link page="mmform-relatednodes-images-nested.jspx" referids="ct?">
+              <a href="${_}">mm-sr:relatednodes in an mm:form with image uploads (nested)</a>
+            </mm:link>
+          </li>
+
           <li class="done">
             <mm:link page="mmform-relatednodes-nested.jspx" referids="ct?">
               <a href="${_}">mm-sr:relatednodes in a form and nested</a>

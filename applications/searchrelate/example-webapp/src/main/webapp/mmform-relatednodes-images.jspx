@@ -15,12 +15,13 @@
           role="posrel"
           unlink="true"
           delete="true"
-          search="true"
+          search="false"
           sortable="true"
           max="3"
           >
       </mm-sr:relatednodes>
     </mm:relatednodes>
+
 
   </mm-sre:form>
   <hr />

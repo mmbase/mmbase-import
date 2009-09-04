@@ -60,7 +60,7 @@
   <p>Transaction: ${t.name}</p>
   <p>Number of nodes in transaction: ${fn:length(t.nodes)}</p>
   <table>
-    <tr><th>#</th><th>real number</th><th>temporary number</th><th>_exists</th><th>new</th><th>deleted</th><th>gui</th><th>snumber</th><th>dnumber</th></tr>
+    <tr><th>#</th><th>real number</th><th>temporary number</th><th>_exists</th><th>new</th><th>deleted</th><th>gui</th><th>snumber</th><th>dnumber</th><th>handle</th></tr>
     <mm:listnodes referid="t.nodes" commitonclose="false">
       <tr>
         <th><mm:index /></th>
@@ -72,6 +72,7 @@
         <td><mm:nodeinfo type="gui" /></td>
         <td><mm:hasfield name="snumber">${_node.snumber} / ${_node._snumber}</mm:hasfield></td>
         <td><mm:hasfield name="dnumber">${_node.dnumber} / ${_node._dnumber}</mm:hasfield></td>
+        <td><mm:hasfield name="handle"><mm:escape><c:catch var="e">${_node.handle}</c:catch>${e}</mm:escape></mm:hasfield></td>
       </tr>
     </mm:listnodes>
   </table>
