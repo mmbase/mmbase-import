@@ -48,7 +48,9 @@
       <body>
         <h1><mm:escape>${_title}</mm:escape></h1>
         <mm:link page="/mmbase/upload/upload.js">
-          <script type="text/javascript" src="${_}" />
+          <script type="text/javascript" src="${_}">
+            <jsp:text> </jsp:text>
+          </script>
         </mm:link>
 
         <div class="progressInfo" />

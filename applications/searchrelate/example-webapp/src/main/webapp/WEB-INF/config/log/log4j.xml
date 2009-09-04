@@ -26,6 +26,14 @@
     <level class="&mmlevel;" value ="service" />
   </logger>
 
+  <logger name="org.mmbase.bridge.jsp.taglib.ImageTag" >
+    <level class="&mmlevel;" value ="debug" />
+  </logger>
+
+  <logger name="org.mmbase.module.builders.AbstractImages" >
+    <level class="&mmlevel;" value ="debug" />
+  </logger>
+
   <logger name="STDERR">
     <level class="&mmlevel;" value ="fatal" />
   </logger>
