@@ -29,23 +29,26 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SimpleImpl extends AbstractSimpleImpl implements Logger {
 
-    private static SimpleImpl root = new SimpleImpl();
+    private static SimpleImpl root = new SimpleImpl("");
     private static PrintStream ps = System.out;
 
     private static Map<String, SimpleImpl> loggers  = new ConcurrentHashMap<String, SimpleImpl>();
 
-    private SimpleImpl() {
 
-    }
+    private final String name;
 
     public static  SimpleImpl getLoggerInstance(String name) {
         SimpleImpl impl = loggers.get(name);
         if (impl == null) {
-            impl = new SimpleImpl();
+            impl = new SimpleImpl(name);
             impl.level = root.level;
             loggers.put(name, impl);
         }
         return impl;
+    }
+
+    private SimpleImpl(String n) {
+        name = n;
     }
 
     /**
@@ -95,8 +98,8 @@ public class SimpleImpl extends AbstractSimpleImpl implements Logger {
     }
 
     @Override
-    protected final void log (String s) {
-        ps.println(s);
+    protected final void log(String s) {
+        ps.println(name + ":" + s);
     }
 
 }

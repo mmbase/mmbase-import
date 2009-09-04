@@ -133,5 +133,8 @@ public class LoggerWrapper implements Logger {
     final public void setLevel(Level p) {
         log.setLevel(p);
     }
+    final public boolean isEnabledFor(Level l) {
+        return log.isEnabledFor(l);
+    }
 
 }

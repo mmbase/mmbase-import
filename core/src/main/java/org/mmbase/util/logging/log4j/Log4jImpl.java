@@ -226,6 +226,10 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         return Log4jLevel.TRACE.isGreaterOrEqual(this.getEffectiveLevel());
     }
 
+    public final boolean isEnabledFor(Level l) {
+        return ! log4jRepository.isDisabled(l.toInt());
+    }
+
      public static void shutdown() {
         Log4jImpl err = getLoggerInstance("STDERR");
         if(err.getLevel() != Log4jLevel.FATAL) {
