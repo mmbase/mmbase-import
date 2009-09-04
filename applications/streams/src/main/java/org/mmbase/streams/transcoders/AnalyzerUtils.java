@@ -41,8 +41,10 @@ public final class AnalyzerUtils {
     public static final String MEDIAC = MEDIA + "caches";
 
     private final ChainedLogger log = new ChainedLogger(LOG);
-    AnalyzerUtils(Logger l) {
-        log.addLogger(l);
+    AnalyzerUtils(Logger... loggers) {
+        for (Logger l : loggers) {
+            log.addLogger(l);
+        }
     }
 
     /**
@@ -83,7 +85,7 @@ public final class AnalyzerUtils {
             }
         }
     }
-    
+
     public void toAudio(Node source, Node dest) {
         Cloud cloud = source.getCloud();
         fixMimeType("audio", source);
@@ -143,7 +145,7 @@ public final class AnalyzerUtils {
         }
         return len;
     }
-    
+
     public long getStart(String s) {
         long l = 0;
         try {
@@ -158,9 +160,9 @@ public final class AnalyzerUtils {
 
     private static final Pattern PATTERN_UNKNOWN     = Pattern.compile("\\s*(.*): Unknown format.*?");
     private static final Pattern PATTERN_UNSUPPORTED = Pattern.compile("\\s*(.*)Unsupported video codec.*?");
-    
+
     /* Looks for messages from ffmpeg that it does not support this kind of file.
-     * browserevent.ram: Unknown format 
+     * browserevent.ram: Unknown format
      * [NULL @ 0x1804800]Unsupported video codec
     */
     public boolean unsupported(String l, Node source, Node dest) {
@@ -168,7 +170,7 @@ public final class AnalyzerUtils {
         if (m.matches()) {
             // BUG: This never matches cause the last line of ffmpeg does not reach the analyzer
             log.warn("### UNKNOWN format: " + m.group(1) + " : " + source.getNumber());
-            
+
             source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
             source.commit();
             return true;
@@ -176,7 +178,7 @@ public final class AnalyzerUtils {
         m = PATTERN_UNSUPPORTED.matcher(l);
         if (m.matches()) {
             log.warn("### UNSUPPORTED " + m.group(1) + " : " + source.getNumber());
-            
+
             source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
             source.commit();
             return true;
@@ -184,7 +186,7 @@ public final class AnalyzerUtils {
         return false;
     }
 
-    /* ffmpeg reports sometimes no start and on some video's bitrate: N/A */ 
+    /* ffmpeg reports sometimes no start and on some video's bitrate: N/A */
     private static final Pattern PATTERN_DURATION = Pattern.compile("\\s*Duration: (.*?),.* bitrate:.*?");
     private static final Pattern PATTERN_BITRATE  = Pattern.compile("\\s*Duration: .* bitrate: (.*?) kb/s.*?");
     private static final Pattern PATTERN_START    = Pattern.compile("\\s*Duration: .* start: (.*?), bitrate:.*?");
@@ -197,17 +199,19 @@ public final class AnalyzerUtils {
         Matcher m = PATTERN_DURATION.matcher(l);
         if (m.matches()) {
             //log.debug("### Duration match: " + l);
-            
+
             Node fragment = source.getNodeValue("mediafragment");
             // log.debug("mediafragment: " + source.getNodeValue("mediafragment"));
-            
+
             if (! source.getNodeManager().hasField("length")) {
                 toVideo(source, dest);
             }
             if (log.isDebugEnabled()) log.debug("duration: " + m.group(1));
             long length = getLength(m.group(1));
             source.setLongValue("length", length);
-            if (dest != null) dest.setLongValue("length", length);
+            if (dest != null) {
+                dest.setLongValue("length", length);
+            }
 
             m = PATTERN_BITRATE.matcher(l);
             if (m.matches()) {
@@ -229,15 +233,15 @@ public final class AnalyzerUtils {
                 }
             }
             return true;
-            
+
         } else {
             return false;
         }
     }
-    
+
     private static final Pattern VIDEO_PATTERN        = Pattern.compile(".*?\\sVideo: .*?, .*?, ([0-9]+)x([0-9]+).*");
     private static final Pattern VIDEOBITRATE_PATTERN = Pattern.compile(".*?\\sVideo: .* bitrate: (.*?) kb/s.*");
-    
+
     public boolean video(String l, Node source, Node dest) {
         Matcher m = VIDEO_PATTERN.matcher(l);
         if (m.matches()) {
@@ -256,14 +260,14 @@ public final class AnalyzerUtils {
                 source.setIntValue("bitrate", bitrate);
                 dest.setIntValue("bitrate", bitrate);
             }
-            
+
             return true;
         }
         return false;
     }
 
     private static final Pattern IMAGE2_PATTERN = Pattern.compile("^Input #\\d+?, (image\\d*), from.*?");
-    
+
     /**
      * Matches on Input and looks for the 'image2' format which indicates that the input is an image.
      *
@@ -277,24 +281,24 @@ public final class AnalyzerUtils {
         } else {
             return false;
         }
-        
+
     }
-    
+
     private static final Pattern PATTERN_DIMENSIONS = Pattern.compile(".*?\\sVideo: (.*?), (.*?), ([0-9]+)x([0-9]+).*");
-    
+
     /**
-     * Looks for width and height when it finds a match for Video, and looks for bitrate after that. 
+     * Looks for width and height when it finds a match for Video, and looks for bitrate after that.
      * Works also for images.
      */
     public boolean dimensions(String l, Node source, Node dest) {
         Matcher m = PATTERN_DIMENSIONS.matcher(l);
         if (m.matches()) {
             //log.info("### Dimensions match: " + l);
-            
+
             if (!source.getNodeManager().getName().equals(IMAGE)) {
                 toVideo(source, dest);
             }
-            
+
             //log.debug("  codec: " + m.group(1));
             //log.debug(" format: " + m.group(2));
             if (log.isDebugEnabled()) log.debug("width: "  + m.group(3));
@@ -312,13 +316,13 @@ public final class AnalyzerUtils {
                 source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
                 if (dest != null) dest.setIntValue("bitrate", Integer.parseInt(m.group(1)));
             }
-            
+
             return true;
         } else {
             return false;
         }
     }
-    
+
     private static final Pattern PATTERN_AUDIO = Pattern.compile(".*?\\sAudio: (.*?), (.*?) Hz, (stereo|mono|([0-9]+) channels), .*?");
     private static final Pattern PATTERN_BITRATE2  = Pattern.compile("\\s*Audio: .* bitrate: (.*?) kb/s.*?");
 
@@ -329,7 +333,7 @@ public final class AnalyzerUtils {
         Matcher m = PATTERN_AUDIO.matcher(l);
         if (m.matches()) {
             //log.info("### Audio match: " + l);
-            
+
             //log.debug("   codec: " + m.group(1));
             //log.debug("   freq.: " + m.group(2));
             //log.debug("channels: " + m.group(3));
@@ -337,19 +341,23 @@ public final class AnalyzerUtils {
             if (source.getNodeManager().hasField("channels")) {
                 if (channels.equals("stereo") || channels.equals("2")) {
                     source.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.STEREO);
-                    dest.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.STEREO);
+                    if (dest != null) {
+                        dest.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.STEREO);
+                    }
                 } else {
                     source.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.MONO);
-                    dest.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.MONO);
+                    if (dest != null) {
+                        dest.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.MONO);
+                    }
                 }
             }
-            
+
             return true;
         } else {
             return false;
         }
     }
-    
-    
+
+
 
 }
