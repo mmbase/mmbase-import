@@ -57,7 +57,7 @@ public class RecognizerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
-	
+
         return  Arrays.asList(new Object[][] {
                 {new Case("basic.mpg", VIDEO, 320, 240)}
                 ,
@@ -142,7 +142,7 @@ public class RecognizerTest {
     public void test()  throws Exception {
 	assumeTrue(samples.exists());
         CommandTranscoder transcoder = new FFMpegTranscoder("1").clone();
-        Logger logger = Logging.getLoggerInstance("FFMPEG");
+        org.mmbase.util.logging.Logger logger = Logging.getLoggerInstance("FFMPEG");
 
         ChainedLogger chain = new ChainedLogger(logger);
         Analyzer a = new FFMpegAnalyzer();
