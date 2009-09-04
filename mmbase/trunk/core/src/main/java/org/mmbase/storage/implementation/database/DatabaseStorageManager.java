@@ -1681,6 +1681,20 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         commitChange(node, "d");
     }
 
+
+    protected void setNodeTypeRememberRelations(MMObjectNode node, MMObjectBuilder buil) throws StorageException {
+
+    }
+
+    protected void  setNodeTypeLeaveRelations(MMObjectNode node, MMObjectBuilder buil) throws StorageException {
+        delete(node, node.getOldBuilder());
+        typeCache.remove(node.getNumber());
+
+        MMObjectBuilder oldBuilder = node.getOldBuilder();
+        log.service("Recreating " + node + " " + (oldBuilder == null ? "NULL" : oldBuilder.getTableName()) + " -> " + buil.getTableName());
+        createWithoutEvent(node);
+    }
+
     public int setNodeType(MMObjectNode node, MMObjectBuilder bul) throws StorageException {
 
 
@@ -1688,23 +1702,22 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         try {
 
             getActiveConnection();
-
-            if (! inTransaction) beginTransaction();
-            delete(node, node.getOldBuilder());
-            typeCache.remove(node.getNumber());
-            log.service("Recreating " + node + " " + node.getOldBuilder().getTableName() + " -> " + bul.getTableName());
-            createWithoutEvent(node);
-            if (! wasinTransaction) {
-                commit();
+            if (! inTransaction) {
+                beginTransaction();
             }
+
+            setNodeTypeLeaveRelations(node, bul);
             commitChange(node, "dn");
+
             Enumeration<MMObjectNode> en = node.getRelations();
             if (en != null) {
                 for (MMObjectNode r : Collections.list(en)) {
                     commitChange(r, "dn");
                 }
             }
-
+            if (! wasinTransaction) {
+                commit();
+            }
             // nothing wrong.
             return bul.getNumber();
         } catch (SQLException sqe) {
