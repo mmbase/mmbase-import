@@ -105,18 +105,22 @@ public final class Impl implements Logger {
         }
     }
 
+    protected java.util.logging.Level getJavaLevel(Level p) {
+        switch (p.toInt()) {
+        case Level.TRACE_INT:   return java.util.logging.Level.FINER;
+        case Level.DEBUG_INT:   return java.util.logging.Level.FINE;
+        case Level.SERVICE_INT: return java.util.logging.Level.CONFIG;
+        case Level.INFO_INT:   return java.util.logging.Level.INFO;
+        case Level.WARN_INT:   return java.util.logging.Level.WARNING;
+        case Level.ERROR_INT:   return java.util.logging.Level.SEVERE;
+        case Level.FATAL_INT:   return java.util.logging.Level.SEVERE;
+        default: return java.util.logging.Level.FINE;
+        }
+    }
+
     // javadoc inherited
     public void setLevel(Level p) {
-        switch (p.toInt()) {
-        case Level.TRACE_INT:   logger.setLevel(java.util.logging.Level.FINER);   break;
-        case Level.DEBUG_INT:   logger.setLevel(java.util.logging.Level.FINE);   break;
-        case Level.SERVICE_INT:   logger.setLevel(java.util.logging.Level.CONFIG);   break;
-        case Level.INFO_INT:   logger.setLevel(java.util.logging.Level.INFO);   break;
-        case Level.WARN_INT:   logger.setLevel(java.util.logging.Level.WARNING);   break;
-        case Level.ERROR_INT:   logger.setLevel(java.util.logging.Level.SEVERE);   break;
-        case Level.FATAL_INT:   logger.setLevel(java.util.logging.Level.SEVERE);   break;
-        }
-
+        logger.setLevel(getJavaLevel(p));
     }
 
 
@@ -177,13 +181,17 @@ public final class Impl implements Logger {
     public boolean isTraceEnabled() {
         return (getLevel().intValue() <= java.util.logging.Level.FINER.intValue());
     }
-    
+
     public boolean isDebugEnabled() {
         return (getLevel().intValue() <= java.util.logging.Level.FINE.intValue());
     }
 
     public boolean isServiceEnabled() {
         return (getLevel().intValue() <= java.util.logging.Level.CONFIG.intValue());
+    }
+
+    public boolean isEnabledFor(Level l) {
+        return (getLevel().intValue() <= getJavaLevel(l).intValue());
     }
 
 }
