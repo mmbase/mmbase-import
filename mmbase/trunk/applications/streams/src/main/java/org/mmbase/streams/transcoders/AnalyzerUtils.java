@@ -168,14 +168,14 @@ public final class AnalyzerUtils implements java.io.Serializable {
     public boolean unsupported(String l, Node source, Node dest) {
         Matcher m = PATTERN_UNKNOWN.matcher(l.trim());
         if (m.matches()) {
-            log.warn("### UNKNOWN format: " + m.group(1) + " : " + source.getNumber());
+            log.warn("UNKNOWN format: " + m.group(1) + " : " + source.getNumber() + " " + source.getStringValue("url") + " matched on " + l);
             source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
             source.commit();
             return true;
         }
         m = PATTERN_UNSUPPORTED.matcher(l);
         if (m.matches()) {
-            log.warn("### UNSUPPORTED " + m.group(1) + " : " + source.getNumber());
+            log.warn("UNSUPPORTED " + m.group(1) + " : " + source.getNumber());
 
             source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
             source.commit();

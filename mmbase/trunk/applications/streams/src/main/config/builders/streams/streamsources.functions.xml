@@ -5,7 +5,11 @@
                         http://www.mmbase.org/xmlns/builder.xsd"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     >
-    <function name="trigger">
-      <class>org.mmbase.streams.CreateCachesFunction</class>
-    </function>
+  <function name="trigger">
+    <class>org.mmbase.streams.CreateCachesFunction</class>
+  </function>
+
+  <function name="fileServletDirectory">
+    <class>org.mmbase.servlet.FileServlet$DirectoryFunction</class>
+  </function>
 </functionlist>

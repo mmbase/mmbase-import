@@ -105,11 +105,7 @@ public class CreateCachesTest {
 
     }
 
-
-    @Test
-    public  void test1() throws Exception {
-        CreateCachesProcessor proc = new CreateCachesProcessor("dummycreatecaches_1.xml");
-        //proc.setCacheManagers("dummy");
+    Node getNode(File dir) throws Exception {
         Cloud cloud = getCloud();
         assumeNotNull(cloud);
 
@@ -118,8 +114,10 @@ public class CreateCachesTest {
         container.commit();
 
         NodeManager nm = cloud.getNodeManager("streamsources");
+        File tempFile = File.createTempFile(getClass().getName() + ".", FILE, dir);
+        org.mmbase.util.IOUtil.copy(new FileInputStream(testFile), new FileOutputStream(tempFile));
 
-        System.out.println("DATATYPE " + nm.getField("url").getDataType());
+        System.out.println("DIR " + dir);
 
         Node newSource = nm.createNode();
         newSource.setNodeValue("mediafragment", container);
@@ -128,18 +126,67 @@ public class CreateCachesTest {
 
         assertTrue(testFile.exists());
 
-        System.out.println("DATATYPE " + newSource.getNodeManager().getField("url").getDataType());
 
-        newSource.setStringValue("url", testFile.toURL().toString());
+        newSource.setStringValue("url", tempFile.getName());
+        return newSource;
+    }
+
+    CreateCachesProcessor get(String config) {
+        Cloud cloud = getCloud();
+        assumeNotNull(cloud);
+
+        NodeManager nm = cloud.getNodeManager("streamsources");
+        CreateCachesProcessor proc = new CreateCachesProcessor(config);
+        File dir = new File(nm.getFunctionValue("fileServletDirectory", null).toString());
+        proc.setDirectory(dir);
+        return proc;
+    }
+
+    void checkSource(Node source) {
+        assertEquals("videostreamsources", source.getNodeManager().getName());
+        assertNotNull(source.getValue("width"));
+        assertNotNull(source.getValue("height"));
+        assertEquals(352, source.getIntValue("width"));
+        assertEquals(288, source.getIntValue("height"));
+    }
 
 
+    @Test
+    public void recognizerOnly() throws Exception  {
+        CreateCachesProcessor proc = get("dummycreatecaches_0.xml");
+        Node source = getNode(proc.getDirectory());
+        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        source.commit();
+        job.waitUntilReady();
+        checkSource(source);
+    }
 
-        // FAILS ('getList' not working yet on Dummy))
-        CreateCachesProcessor.Job job = proc.createCaches(cloud, newSource.getNumber());
-        newSource.commit();
-
+    @Test
+    public  void simple() throws Exception {
+        CreateCachesProcessor proc = get("dummycreatecaches_1.xml");
+        Node source = getNode(proc.getDirectory());
+        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        source.commit();
         job.waitUntilReady();
 
+        checkSource(source);
+        // 2 nodes should have been created
+        //assertEquals("" + cloud.getCloudContext().getNodes(), nodeCount + 2, cloudContext.getNodes().size());
+
+
+
+
+    }
+
+    @Test
+    public  void twoSteps() throws Exception {
+        CreateCachesProcessor proc = get("dummycreatecaches_2.xml");
+        Node source = getNode(proc.getDirectory());
+        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        source.commit();
+        job.waitUntilReady();
+
+        checkSource(source);
         // 2 nodes should have been created
         //assertEquals("" + cloud.getCloudContext().getNodes(), nodeCount + 2, cloudContext.getNodes().size());
 

@@ -5,6 +5,7 @@
     >
   <localhost max_simultaneous_transcoders="1" />
 
+  <!-- No caches at all, recognizing only -->
 
   <recognizer id="recognizer">
     <class name="org.mmbase.streams.transcoders.FFMpegRecognizer">
@@ -12,10 +13,5 @@
     <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
   </recognizer>
 
-  <transcoder id="v1">
-    <class name="org.mmbase.streams.transcoders.DummyTranscoder">
-      <param name="format">MP2</param>
-    </class>
-  </transcoder>
 
 </createcaches>
