@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util;
 
 import java.util.*;
+import java.io.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
@@ -25,13 +26,15 @@ import org.mmbase.util.functions.*;
  * @since   MMBase-1.8
  */
 
-public class MapNode<V> extends AbstractNode implements Node {
+public class MapNode<V> extends AbstractNode implements Node, Serializable {
+
+    private static final long serialVersionUID = 0L;
 
     /**
      * This is normally, but not always, a VirtualBuilder. It is not for some builders which have
      * besides real nodes also virtual nodes, like typedef (cluster nodes) and typerel (allowed relations because of inheritance).
      */
-    protected NodeManager nodeManager;
+    transient protected NodeManager nodeManager;
     final protected Map<String, V> values;
     final protected Map<String, Long> sizes = new HashMap<String, Long>();
     final protected Map<String, V> wrapper;
@@ -265,6 +268,16 @@ public class MapNode<V> extends AbstractNode implements Node {
     @Override
     public void setNodeManager(NodeManager nm) {
         nodeManager = nm;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeUTF(nodeManager.getName());
+    }
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        String nm = in.readUTF();
+        nodeManager = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null).getNodeManager(nm);
     }
 }
 
