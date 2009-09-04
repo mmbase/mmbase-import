@@ -49,7 +49,7 @@ import org.w3c.dom.*;
  * @version $Id$
  */
 
-public class CreateCachesProcessor implements CommitProcessor {
+public class CreateCachesProcessor implements CommitProcessor, java.io.Externalizable {
     private static final long serialVersionUID = 0L;
 
     public static String NOT = CreateCachesProcessor.class.getName() + ".DONOT";
@@ -336,7 +336,7 @@ public class CreateCachesProcessor implements CommitProcessor {
 
 
     /**
-     * Creates caches nodes when not existing 
+     * Creates caches nodes when not existing
      * @param ntCloud   cloud
      * @param int       node number
      */
@@ -410,7 +410,7 @@ public class CreateCachesProcessor implements CommitProcessor {
      * The description or definition of one 'transcoding' sub job that's doing the transcoding. This
      * combines a transcoder, with a mime type for which it must be valid, and a list of analyzers.
      */
-    public class JobDefinition {
+    public class JobDefinition implements Serializable {
         final Transcoder transcoder;
         final List<Analyzer> analyzers;
         final MimeType mimeType;
@@ -545,37 +545,37 @@ public class CreateCachesProcessor implements CommitProcessor {
             // mediafragment if it does not yet exist
             mediafragment = node.getNodeValue("mediafragment");
             mediaprovider = node.getNodeValue("mediaprovider");
-            assert mediafragment != null;
-            assert mediaprovider != null;
-            
-            recognizeMimetype(node, chain);
+            assert mediafragment != null : "Mediafragment should not be null";
+            assert mediaprovider != null : "Mediaprovider should not be null";
+
+            //            recognizeMimetype(node, chain);
         }
-        
+
         /**
-         * Runs ffmpeg to do a check on format and mimetype, mainly analyzing if its type is correct: 
+         * Runs ffmpeg to do a check on format and mimetype, mainly analyzing if its type is correct:
          * video, audio or image. FFMPegAnalyzer's ready method changes its nodetype.
          */
         protected void recognizeMimetype(Node node, ChainedLogger chain) {
             if (list.containsKey("recognizer")) {
                 JobDefinition recognizerJob = list.get("recognizer");
-                
+
                 Analyzer a = new FFMpegAnalyzer();
                 AnalyzerLogger an = new AnalyzerLogger(a, node, null);
                 chain.addLogger(an);
-    
+
                 File f = new File(FileServlet.getDirectory(), node.getStringValue("url"));
                 //File out = new File(FileServlet.getDirectory(), "dummy");
                 LOG.info("*** Starting recognition with FFMpegAnalyzer for: " + f);
                 try {
                     recognizerJob.transcoder.transcode(f.toURI(), null, chain);
                 } catch (Exception e) {
-                    logger.error("" + e); 
+                    logger.error("" + e);
                 }
                 a.ready(node, null);
                 chain.removeLogger(an);
             }
         }
-        
+
         /**
          * The several stream cache nodes (which are certain already) get created here.
          * It checks if the source node is not of state 'SOURCE_UNSUPPORTED'.
@@ -591,9 +591,9 @@ public class CreateCachesProcessor implements CommitProcessor {
 
                     JobDefinition jd = entry.getValue();
                     String id = entry.getKey();
-                    
+
                     if (jd.transcoder.getKey() != null) {
-                        
+
                         String inId = jd.transcoder.getInId();
                         if ((inId == null || results.containsKey(inId))) {
                             Node srcNode = node;
@@ -657,20 +657,15 @@ public class CreateCachesProcessor implements CommitProcessor {
                     Result result = null;
                     while (i.hasNext()) {
                         Map.Entry<String, JobDefinition> n = i.next();
-                        
-                        String id = n.getKey();
-                        if (id.equals("recognizer")) {
-                            LOG.info("*** Skipping recognizer...");
-                            continue;
-                        }
-                        
+
+
                         JobDefinition jd = n.getValue();
                         URI inFile;
                         Node inNode;
                         if (jd.transcoder.getInId() == null) {
                             inFile = new File(FileServlet.getDirectory(), node.getStringValue("url")).toURI();
                             inNode = node;
-                        } else { 
+                        } else {
                             Result prevResult = results.get(jd.transcoder.getInId());
                             if (prevResult == null) {
                                 logger.error("No result with id " + jd.transcoder.getInId() + " in " + results + ". Misconfiguration? The configuration of a transcoder as 'in' should precede present transcoder.");
@@ -771,7 +766,7 @@ public class CreateCachesProcessor implements CommitProcessor {
         protected Node getCacheNode(final String key) {
             return getCacheNode(node, key);
         }
-        
+
         /**
          * Gets and/or creates the node representing the 'cached' stream (the result of a conversion),
          * see the builder property 'org.mmbase.streams.cachestype'. It first looks if it already
@@ -819,7 +814,7 @@ public class CreateCachesProcessor implements CommitProcessor {
         protected void addResult(String key, Result result) {
             if ( !results.containsKey(key) ) results.put(key, result);
         }
-        
+
         /**
          * The Thread in which this Job is running.
          */
@@ -885,7 +880,7 @@ public class CreateCachesProcessor implements CommitProcessor {
         public Node getMediafragment() {
             return mediafragment;
         }
-        
+
         @Override
         public String toString() {
             if (current == null) {
@@ -894,6 +889,12 @@ public class CreateCachesProcessor implements CommitProcessor {
                 return number + ": " + user + ":" + current + ":" + getProgress() + ":" + thread;
             }
         }
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    }
+
+    public void writeExternal(ObjectOutput stream) throws IOException {
     }
 
 }
