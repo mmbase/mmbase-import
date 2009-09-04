@@ -18,7 +18,12 @@ public abstract class Logger  extends AbstractSimpleImpl {
         mock.put("mimetype", null);
         mock.put("length", null);
         mock.put("bitrate", null);
-        return new MapNode(mock);
+        mock.put("state", null);
+        return new MapNode(mock) {
+            public void commit() {
+                // ok
+            }
+        };
     }
 
     public boolean success = false;

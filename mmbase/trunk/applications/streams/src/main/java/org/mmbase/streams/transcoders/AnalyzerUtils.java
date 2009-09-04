@@ -158,7 +158,7 @@ public final class AnalyzerUtils {
         return l;
     }
 
-    private static final Pattern PATTERN_UNKNOWN     = Pattern.compile("\\s*(.*): Unknown format.*?");
+    private static final Pattern PATTERN_UNKNOWN     = Pattern.compile("(.*?): Unknown format.*");
     private static final Pattern PATTERN_UNSUPPORTED = Pattern.compile("\\s*(.*)Unsupported video codec.*?");
 
     /* Looks for messages from ffmpeg that it does not support this kind of file.
@@ -166,11 +166,9 @@ public final class AnalyzerUtils {
      * [NULL @ 0x1804800]Unsupported video codec
     */
     public boolean unsupported(String l, Node source, Node dest) {
-        Matcher m = PATTERN_UNKNOWN.matcher(l);
+        Matcher m = PATTERN_UNKNOWN.matcher(l.trim());
         if (m.matches()) {
-            // BUG: This never matches cause the last line of ffmpeg does not reach the analyzer
             log.warn("### UNKNOWN format: " + m.group(1) + " : " + source.getNumber());
-
             source.setIntValue("state", State.SOURCE_UNSUPPORTED.getValue());
             source.commit();
             return true;

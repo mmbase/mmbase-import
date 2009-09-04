@@ -46,7 +46,6 @@ public class AnalyzerUtilsTest {
         Logger test = new Logger() {
                 @Override
                 protected void log(String s) {
-                    System.out.println("Testing " + s);
                     if (util.unsupported(s, source, destination)) {
                         this.success = true;
                     }
@@ -54,6 +53,24 @@ public class AnalyzerUtilsTest {
             };
         getFFMpegTranscoder().transcode(testFile.toURI(), null, test);
         assertTrue(test.success);
+
+    }
+
+    @Test
+    public void supported() throws Exception {
+        File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "basic.wav");
+        assumeTrue(testFile.exists());
+
+        Logger test = new Logger() {
+                @Override
+                protected void log(String s) {
+                    if (util.unsupported(s, source, destination)) {
+                        this.success = true;
+                    }
+                }
+            };
+        getFFMpegTranscoder().transcode(testFile.toURI(), null, test);
+        assertFalse(test.success);
 
     }
 
