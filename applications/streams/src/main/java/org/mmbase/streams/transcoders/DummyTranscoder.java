@@ -33,6 +33,9 @@ public class DummyTranscoder extends AbstractTranscoder {
     }
 
     protected void transcode(final Logger log) throws Exception {
+        log.info("Copying " + in + " to " + out);
+        File outFile = new File(out.getPath());
+        outFile.getParentFile().mkdirs();
         org.mmbase.util.IOUtil.copy(new FileInputStream(new File(in.getPath())),
                                     new FileOutputStream(new File(out.getPath())));
 

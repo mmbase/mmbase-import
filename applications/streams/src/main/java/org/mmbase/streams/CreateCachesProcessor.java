@@ -69,6 +69,18 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
     private  String[] cacheManagers = new String[] {"streamsourcescaches", "videostreamsourcescaches", "audiostreamsourcescaches"};
 
+    private File fileServletDirectory;
+
+    public void setDirectory(File dir) {
+        fileServletDirectory = dir;
+    }
+    public File getDirectory() {
+        if (fileServletDirectory == null) {
+            return FileServlet.getDirectory();
+        } else {
+            return fileServletDirectory;
+        }
+    }
 
     public void setCacheManagers(String... cm) {
         cacheManagers = cm;
@@ -487,7 +499,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         public void ready() {
             if (dest != null) {
                 LOG.info("Setting " + dest.getNumber() + " to done");
-                File outFile = new File(FileServlet.getDirectory(), dest.getStringValue("url").replace("/", File.separator));
+                File outFile = new File(getDirectory(), dest.getStringValue("url").replace("/", File.separator));
                 dest.setLongValue("filesize", outFile.length());
                 dest.setIntValue("state", State.DONE.getValue());
                 dest.commit();
@@ -563,7 +575,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                 AnalyzerLogger an = new AnalyzerLogger(a, node, null);
                 chain.addLogger(an);
 
-                File f = new File(FileServlet.getDirectory(), node.getStringValue("url"));
+                File f = new File(getDirectory(), node.getStringValue("url"));
                 //File out = new File(FileServlet.getDirectory(), "dummy");
                 LOG.info("*** Starting recognition with FFMpegAnalyzer for: " + f);
                 try {
@@ -583,7 +595,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         protected void createCacheNodes() {
             LOG.debug("state: " + node.getIntValue("state") + " nodenr: " + node.getNumber());
             if ( node.getIntValue("state") == State.SOURCE_UNSUPPORTED.getValue() ) {
-                LOG.warn("Source not supported: " + node.getNumber());
+                LOG.warn("Source not supported: " + node.getNumber() + " " + node.getStringValue("url") + " " + node.getStringValue("format"));
                 return;
             }
             synchronized(list) {
@@ -624,7 +636,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                             }
                             resultNode.setNodeValue("id", srcNode);
 
-                            File inFile  = new File(FileServlet.getDirectory(), srcNode.getStringValue("url").replace("/", File.separator));
+                            File inFile  = new File(getDirectory(), srcNode.getStringValue("url").replace("/", File.separator));
 
                             StringBuilder buf = new StringBuilder();
                             org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, srcNode.getNumber(), "/");
@@ -634,6 +646,8 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                             if (outFileName.startsWith("/")) {
                                 outFileName = outFileName.substring(1);
                             }
+                            assert outFileName != null;
+                            assert outFileName.length() > 0;
                             resultNode.setStringValue("url", outFileName);
 
                             resultNode.commit();
@@ -663,7 +677,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                         URI inFile;
                         Node inNode;
                         if (jd.transcoder.getInId() == null) {
-                            inFile = new File(FileServlet.getDirectory(), node.getStringValue("url")).toURI();
+                            inFile = new File(getDirectory(), node.getStringValue("url")).toURI();
                             inNode = node;
                         } else {
                             Result prevResult = results.get(jd.transcoder.getInId());
@@ -684,7 +698,10 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                     continue;
                                 }
                                 System.out.println("Created " + dest);
-                                URI outFile = new File(FileServlet.getDirectory(), dest.getStringValue("url")).toURI();
+                                String destFile = dest.getStringValue("url");
+                                assert destFile != null;
+                                assert destFile.length() > 0;
+                                URI outFile = new File(getDirectory(), destFile).toURI();
                                 result = new Result(jd, dest, inFile, outFile);
                                 LOG.info("Added result to results list with key: " + dest.getStringValue("key"));
                                 addResult(dest.getStringValue("key"), result);
