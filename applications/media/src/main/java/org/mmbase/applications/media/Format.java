@@ -69,8 +69,20 @@ public enum Format {
     M4A(60),
     M4V(61),
     GGP(70),
-   FLASH(80),
-
+    H264(71),
+    FLASH(80),
+    FLV(81),
+    /* image formats */
+    JPG(100),
+    JPEG(101),
+    GIF(102),
+    BMP(103),
+    PNG(104),
+    TIFF(105),
+    /* a few more audio formats */
+    AAC(200),
+    FLAC(201),
+    
     ANY(10000);
 
 
