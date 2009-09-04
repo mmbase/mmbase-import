@@ -308,7 +308,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                     }
                                     resultCount++;
                                     result.ready();
-                                    logger.info("READY " + thisJob + ":" + result);
+                                    logger.info("RESULT " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + "):" + result);
                                     if (thisJob.isInterrupted() || Thread.currentThread().isInterrupted()){
                                         logger.info("Interrupted");
                                         break;
@@ -327,13 +327,15 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
                             }
                             if (! thisJob.isInterrupted()) {
-                                thisJob.ready();
+                                logger.info("READY " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + ")");
+                                thisJob.getNode().commit();
+                                thisJob.ready(); // notify waiters
                             }
                         } catch (RuntimeException e) {
                             logger.error(e.getMessage(), e);
                             throw e;
                         } finally {
-                            logger.info("READY " + resultCount);
+                            logger.info("FINALLY " + resultCount);
                             runningJobs.remove(thisJob.getNode().getNumber());
                         }
                         return resultCount;
@@ -901,7 +903,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         @Override
         public String toString() {
             if (current == null) {
-                return number + ":" + user + ":SCHEDULED:" + results;
+                return number + ": " + user + ":SCHEDULED:" + results;
             } else {
                 return number + ": " + user + ":" + current + ":" + getProgress() + ":" + thread;
             }
