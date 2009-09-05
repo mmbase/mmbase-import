@@ -242,7 +242,6 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 validFormats.add(format.toUpperCase());
             }
         }
-        log.info("Found ImageMagick supported formats " + validFormats);
 
 
         // Cant do more checking then this, i think....
@@ -268,7 +267,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
         } else {
             log.debug("ModulateScaleBase property not found, ignoring the modulateScaleBase.");
         }
-        log.info("Using " + converterPath +  " " + this);
+        log.info("Found ImageMagick supported formats " + validFormats + ". Using " + this);
     }
 
     private static class ParseResult {
@@ -319,7 +318,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                 }
                 in.reset();
             }
-            log.info("Now converting " + in + " to " + out.getClass() + " " + out);
+            log.service("Now converting " + commands + " " + in + " to " + out.getClass() + " " + out);
             result = convertImage(in, out, sourceFormat, parsedCommands.args, parsedCommands.format, parsedCommands.cwd);
             for (File tempFile : parsedCommands.temporaryFiles) {
                 try {
@@ -492,8 +491,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
                             }
                             result.cwd = fontDir;
                         } else {
-                            log.debug(
-                            "Using named font without MMBase 'fonts' directory, using ImageMagick defaults only");
+                            log.debug("Using named font without MMBase 'fonts' directory, using ImageMagick defaults only");
                         }
                     }
 
