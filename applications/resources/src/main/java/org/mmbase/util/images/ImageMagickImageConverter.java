@@ -785,7 +785,7 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     }
 
     public String toString() {
-        return super.toString() + " " + converterPath;
+        return super.toString() + " " + converterPath + " (version " + imVersionMajor + "." + imVersionMinor + "." + imVersionPatch + ")";
     }
 
     public static void main(String[] args) throws Exception {
