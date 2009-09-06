@@ -279,7 +279,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                         thisJob.setThread(Thread.currentThread());
                         int resultCount = 0;
                         try {
-                            LOG.service("Using " + thisJob.results);
+                            LOG.info("Executing " + thisJob);
                             for (final Result result : thisJob) {
                                 LOG.info("NOW doing " + result);
                                 URI in  = result.getIn();
@@ -354,9 +354,11 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             final Node ntNode = ntCloud.getNode(node);
             ntNode.getStringValue("title"); // This triggers RelatedField$Creator to create a
             Node mediafragment = ntNode.getNodeValue("mediafragment");
-            LOG.info("Triggering caches for " + list + " Mediaframent " + (mediafragment != null ? mediafragment.getNumber() : "NULL"));
-
             final Job thisJob = createJob(ntNode, logger);
+
+            LOG.info("Triggering caches for " + list + " Mediaframent " + (mediafragment != null ? mediafragment.getNumber() : "NULL") + " -> " + thisJob);
+
+
             if (thisJob != null) {
 
                 // If the node happens to be deleted before the future with cache creations is ready, cancel the future
@@ -388,6 +390,10 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             return;
         }
         if (node.getNumber() > 0) {
+
+            // Trigger creating of mediafragment if that doesn't exist yet
+            node.getStringValue("title");
+
             if (node.isChanged(field.getName())) {
 
                 final Cloud ntCloud = node.getCloud().getNonTransactionalCloud();
@@ -685,7 +691,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                         String url = node.getStringValue("url");
                         assert url.length() > 0;
                         File f = new File(getDirectory(), url);
-                        assert f.exists();
+                        assert f.exists() : "No such file " + f;
                         inURI = f.toURI();
                         inNode = node;
                     } else {
