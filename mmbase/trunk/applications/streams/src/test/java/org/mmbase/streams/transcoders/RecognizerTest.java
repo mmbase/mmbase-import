@@ -1,4 +1,4 @@
-package org.mmbase.streams;
+package org.mmbase.streams.transcoders;
 
 import org.junit.*;
 import org.junit.runner.*;
