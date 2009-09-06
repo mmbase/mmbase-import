@@ -90,6 +90,11 @@ public class FFMpegTranscoder extends CommandTranscoder {
         ac = a;
     }
 
+    @Override
+    protected LoggerWriter getErrorWriter(Logger log) {
+        return super.getErrorWriter(new ChainedLogger(log, new ErrorDetector(Pattern.compile("\\s*Unknown encoder.*"))));
+    }
+
     public FFMpegTranscoder() {
         format = Format.AVI;
     }
@@ -168,6 +173,11 @@ public class FFMpegTranscoder extends CommandTranscoder {
 
         log.debug("Returning " + w);
         return w;
+    }
+
+    @Override
+    public FFMpegTranscoder clone() {
+        return (FFMpegTranscoder) super.clone();
     }
 
 }
