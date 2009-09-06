@@ -149,8 +149,8 @@ public class RecognizerTest {
             org.mmbase.util.logging.Logger logger = Logging.getLoggerInstance("FFMPEG");
 
             ChainedLogger chain = new ChainedLogger(logger);
-            Analyzer a = new FFMpegAnalyzer();
-
+            FFMpegAnalyzer a = new FFMpegAnalyzer();
+            a.setUpdateSource(true);
 
             chain.setLevel(Level.WARN);
 

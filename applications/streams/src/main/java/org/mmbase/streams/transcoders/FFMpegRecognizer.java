@@ -22,7 +22,6 @@ import java.util.regex.*;
 
 
 /**
- * Executes ffmpeg and analyzes its outcome
  *
  * @author Michiel Meeuwissen
  * @version $Id: FFMpegRecognizer.java 36518 2009-07-02 12:52:01Z michiel $
