@@ -14,18 +14,13 @@
     </loganalyzer>
   </recognizer>
 
-  <transcoder in="recognizer" id="v1">
-    <class name="org.mmbase.streams.transcoders.DummyTranscoder">
-      <param name="format">MP2</param>
-      <param name="empty">true</param>
-    </class>
-  </transcoder>
-
-  <transcoder in="v1" id="v2">
+  <transcoder mimetype="audio/*" id="a1" in="recognizer">
     <class name="org.mmbase.streams.transcoders.DummyTranscoder">
       <param name="format">MP3</param>
       <param name="empty">true</param>
+      <param name="setting">a1</param>
     </class>
   </transcoder>
+
 
 </createcaches>

@@ -64,7 +64,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
     /**
      */
-    protected Map<String, JobDefinition> list = Collections.synchronizedMap(new LinkedHashMap<String, JobDefinition>());
+    protected final Map<String, JobDefinition> list = Collections.synchronizedMap(new LinkedHashMap<String, JobDefinition>());
 
 
     private  String[] cacheManagers = new String[] {"streamsourcescaches", "videostreamsourcescaches", "audiostreamsourcescaches"};
@@ -108,13 +108,14 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             @Override
             public void onChange(String resource) {
                 try {
-                    LOG.service("Reading " + resource);
+                    LOG.debug("Reading " + resource);
                     Map<String, JobDefinition> newList = new LinkedHashMap<String, JobDefinition>();
                     List<CommandExecutor.Method> newExecutors = new ArrayList<CommandExecutor.Method>();
                     Document document = getResourceLoader().getDocument(resource);
+                    int totalTranscoders = 0;
+
                     if (document != null) {
                         org.w3c.dom.NodeList ellist = document.getDocumentElement().getChildNodes();
-                        int totalTranscoders = 0;
 
                         for (int i = 0; i <= ellist.getLength(); i++) {
                             if (ellist.item(i) instanceof Element) {
@@ -123,21 +124,15 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                     String id = el.getAttribute("id");
                                     Transcoder transcoder;
                                     if (el.getTagName().equals("transcoder")) {
-                                        transcoder = (Transcoder) Instantiator.getInstanceWithSubElement(el, id);
+                                        transcoder = (Transcoder) Instantiator.getInstanceWithSubElement(el);
                                     } else {
                                         Recognizer recognizer = (Recognizer) Instantiator.getInstanceWithSubElement(el);
-                                        transcoder = new RecognizerTranscoder(recognizer, id);
+                                        transcoder = new RecognizerTranscoder(recognizer);
                                     }
                                     String in = el.getAttribute("in");
-                                    if (in.length() > 0) {
-                                         /* get key of a cached stream and make it inId */
-                                        transcoder.setInId(newList.get(in).transcoder.getKey());
-                                    } else {
-                                        transcoder.setInId(null);
-                                    }
                                     MimeType mimeType = new MimeType(el.getAttribute("mimetype"));
                                     LOG.debug("Created " + transcoder);
-                                    JobDefinition def = new JobDefinition(transcoder, mimeType);
+                                    JobDefinition def = new JobDefinition(id, in.length() > 0 ? in : null, transcoder, mimeType);
                                     org.w3c.dom.NodeList childs = el.getChildNodes();
                                     for (int j = 0; j <= childs.getLength(); j++) {
                                         if (childs.item(j) instanceof Element) {
@@ -174,7 +169,6 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                 }
                             }
                         }
-                        LOG.info("Set max simultaneous transcoders to " + totalTranscoders);
                         transcoderExecutor.setCorePoolSize(totalTranscoders);
                         transcoderExecutor.setMaximumPoolSize(totalTranscoders);
                     } else {
@@ -186,15 +180,15 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                         executors.clear();
                         executors.addAll(newExecutors);
                     }
-                    LOG.info("Reading of configuration file successfull. Transcoders now " + list + ". Executors " + executors);
+                    LOG.service("Reading of configuration file " + resource + " successfull. Transcoders now " + list + ". Executors " + executors + ". Max simultaneous transcoders: " + totalTranscoders);
                 } catch (Exception e)  {
-                    LOG.error(e.getClass() + " " + e.getMessage() + " Transcoders now " + list + " (not changed)", e);
+                    LOG.error(e.getClass() + " " + e.getMessage() + " In " + resource + " Transcoders now " + list + " (not changed)", e);
                 }
             }
         };
 
     protected void initWatcher() {
-        LOG.info("Adding for " + this + " " + configFile);
+        LOG.service("Adding for " + this + " " + configFile);
         watcher.exit();
         watcher.add(configFile);
         watcher.setDelay(10000);
@@ -210,13 +204,10 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
 
     public void setConfigFile(final String configFile) {
-        LOG.info("Addding " + configFile);
+        LOG.service("Adding " + configFile);
         this.configFile = configFile;
         initWatcher();
     }
-
-
-
 
     private static final Map<Integer, Job> runningJobs = Collections.synchronizedMap(new LinkedHashMap<Integer, Job>());
 
@@ -290,21 +281,23 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                         try {
                             LOG.service("Using " + thisJob.results);
                             for (final Result result : thisJob) {
-                                logger.service("NOW doing " + result);
+                                LOG.info("NOW doing " + result);
                                 URI in  = result.getIn();
                                 URI out = result.getOut();
 
                                 JobDefinition jd = result.getJobDefinition();
                                 final List<AnalyzerLogger> analyzerLoggers = new ArrayList<AnalyzerLogger>();
                                 for (Analyzer a: jd.analyzers) {
-                                    AnalyzerLogger al = new AnalyzerLogger(a.clone(), thisJob.getNode(), result.getNode());
+                                    AnalyzerLogger al = new AnalyzerLogger(a.clone(), thisJob.getNode(), result.getDestination());
                                     analyzerLoggers.add(al);
                                     logger.addLogger(al);
                                 }
+                                assert in != null;
+
                                 try {
                                     jd.transcoder.transcode(in, out, logger);
                                     for (AnalyzerLogger al : analyzerLoggers) {
-                                        al.getAnalyzer().ready(thisJob.getNode(), result.getNode());
+                                        al.getAnalyzer().ready(thisJob.getNode(), result.getDestination());
                                     }
                                     resultCount++;
                                     result.ready();
@@ -324,18 +317,19 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                         logger.removeLogger(al);
                                     }
                                 }
+                                thisJob.findResults();
 
                             }
                             if (! thisJob.isInterrupted()) {
                                 logger.info("READY " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + ")");
                                 thisJob.getNode().commit();
-                                thisJob.ready(); // notify waiters
                             }
                         } catch (RuntimeException e) {
                             logger.error(e.getMessage(), e);
                             throw e;
                         } finally {
                             logger.info("FINALLY " + resultCount);
+                            thisJob.ready(); // notify waiters
                             runningJobs.remove(thisJob.getNode().getNumber());
                         }
                         return resultCount;
@@ -376,6 +370,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                 */
                             }
                         }
+                    @Override
                         public String toString() {
                             return "Job canceled for " + node;
                         }
@@ -418,24 +413,34 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         return clone;
     }
 
+   public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    }
 
+    public void writeExternal(ObjectOutput stream) throws IOException {
+    }
 
     /**
      * The description or definition of one 'transcoding' sub job that's doing the transcoding. This
      * combines a transcoder, with a mime type for which it must be valid, and a list of analyzers.
      */
     public class JobDefinition implements Serializable {
+        private static final long serialVersionUID = 0L;
         final Transcoder transcoder;
         final List<Analyzer> analyzers;
         final MimeType mimeType;
 
+        final String inId;
+        final String id;
         /**
          * Creates an JobDefinition template (used in the configuration container).
          */
-        JobDefinition(Transcoder t, MimeType mt) {
+        JobDefinition(String id, String inId, Transcoder t, MimeType mt) {
+            assert id != null;
             transcoder = t.clone();
             analyzers = new ArrayList<Analyzer>();
             mimeType = mt;
+            this.id = id;
+            this.inId = inId;
         }
 
         public Transcoder getTranscoder() {
@@ -449,6 +454,12 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         public MimeType getMimeType() {
             return mimeType;
         }
+        public String getId() {
+            return id;
+        }
+        public String getInId() {
+            return inId;
+        }
 
         @Override
         public String toString() {
@@ -457,48 +468,68 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
     }
 
 
-    /**
-     * Container for the result of a JobDefinition
-     */
-    public class Result {
+    public abstract class Result {
         final JobDefinition definition;
-        final Node dest;
         final URI in;
-        final URI out;
-        Result(JobDefinition def, Node dest, URI in, URI out) {
+        boolean ready = false;
+        Result(JobDefinition def, URI in) {
+            assert in != null;
             definition = def;
-            this.dest = dest;
             this.in = in;
-            this.out = out;
-            if (this.dest != null) {
-                LOG.info("Setting " + dest.getNumber() + " to request");
-                dest.setIntValue("state",  State.REQUEST.getValue());
-                dest.commit();
-            }
-            LOG.info("Created Result " + this + " " + definition.transcoder.getClass().getName());
-
         }
+
         public JobDefinition getJobDefinition() {
             return definition;
         }
-        public Node getNode() {
-            return dest;
-        }
-        public MimeType getMimeType() {
-            if (dest == null) {
-                return null;
-            } else {
-                return new MimeType(dest.getStringValue("mimetype"));
-            }
-        }
+
+        public abstract Node getDestination();
+
+        //public abstract Node getNode();
+
+        public abstract URI getOut();
 
         public URI getIn() {
             return in;
         }
+        public void ready() {
+            ready = true;
+
+        }
+        public boolean isReady() {
+            return ready;
+        }
+        public abstract MimeType getMimeType();
+
+    }
+
+    /**
+     * Container for the result of a JobDefinition
+     * @TODO constructors correspond to more or less essentially different situation, perhaps clearer to use 2 extensions
+     */
+    public class TranscoderResult extends Result {
+        final Node dest;
+        final URI out;
+
+        TranscoderResult(JobDefinition def, Node dest, URI in, URI out) {
+            super(def, in);
+            assert out != null;
+            this.dest = dest;
+            this.out = out;
+            LOG.info("Setting " + dest.getNumber() + " to request");
+            dest.setIntValue("state",  State.REQUEST.getValue());
+            dest.commit();
+            LOG.info("Created Result " + this + " " + definition.transcoder.getClass().getName());
+        }
+
+        public Node getDestination() {
+            return dest;
+        }
+
         public URI getOut() {
             return out;
         }
         public void ready() {
+            super.ready();
             if (dest != null) {
                 LOG.info("Setting " + dest.getNumber() + " to done");
                 File outFile = new File(getDirectory(), dest.getStringValue("url").replace("/", File.separator));
@@ -508,14 +539,57 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             }
         }
 
+        @Override
         public String toString() {
             if (dest != null) {
                 return dest.getNumber() + ":" + out;
             } else {
-                return "(NO RESULT:" + definition.toString();
+                return "(NO RESULT:" + definition.toString() + ")";
             }
+
+        }
+        public MimeType getMimeType() {
+            return new MimeType(getDestination().getStringValue("mimetype"));
         }
 
+
+    }
+    public class RecognizerResult extends Result {
+        final Node source;
+        RecognizerResult(JobDefinition def, Node source, URI in) {
+            super(def, in);
+            this.source = source;
+        }
+        public Node getSource() {
+            return source;
+        }
+        public Node getDestination() {
+            return null;
+        }
+        public URI getOut() {
+            return getIn();
+        }
+        public MimeType getMimeType() {
+            return new MimeType(getSource().getStringValue("mimetype"));
+        }
+    }
+    public class SkippedResult extends Result {
+        SkippedResult(JobDefinition def, URI in) {
+            super(def, in);
+        }
+        public Node getDestination() {
+            return null;
+        }
+        public URI getOut() {
+            return null;
+        }
+        public MimeType getMimeType() {
+            return null;
+
+        }
+        public boolean isReady() {
+            return true;
+        }
     }
 
 
@@ -534,9 +608,9 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         private final Node mediaprovider;
         private final Node mediafragment;
         private final BufferedLogger logger;
-        private final Map<String, Result> results = new LinkedHashMap<String, Result>();
+        private final Map<String, Result> lookup = new LinkedHashMap<String, Result>();
+        private final List<Result>        results = new ArrayList<Result>();
         private final long number = lastJobNumber++;
-
         private int busy = 0;
 
         private Future<Integer> future;
@@ -560,34 +634,11 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             mediafragment = node.getNodeValue("mediafragment");
             mediaprovider = node.getNodeValue("mediaprovider");
             assert mediafragment != null : "Mediafragment should not be null";
-            assert mediaprovider != null : "Mediaprovider should not be null";
-
-            //            recognizeMimetype(node, chain);
-        }
-
-        /**
-         * Runs ffmpeg to do a check on format and mimetype, mainly analyzing if its type is correct:
-         * video, audio or image. FFMPegAnalyzer's ready method changes its nodetype.
-         */
-        protected void recognizeMimetype(Node node, ChainedLogger chain) {
-            if (list.containsKey("recognizer")) {
-                JobDefinition recognizerJob = list.get("recognizer");
-
-                Analyzer a = new FFMpegAnalyzer();
-                AnalyzerLogger an = new AnalyzerLogger(a, node, null);
-                chain.addLogger(an);
-
-                File f = new File(getDirectory(), node.getStringValue("url"));
-                //File out = new File(FileServlet.getDirectory(), "dummy");
-                LOG.info("*** Starting recognition with FFMpegAnalyzer for: " + f);
-                try {
-                    recognizerJob.transcoder.transcode(f.toURI(), null, chain);
-                } catch (Exception e) {
-                    logger.error("" + e);
-                }
-                a.ready(node, null);
-                chain.removeLogger(an);
+            //assert mediaprovider != null : "Mediaprovider should not be null";
+            for (Map.Entry<String, JobDefinition> n : CreateCachesProcessor.this.list.entrySet()) {
+                results.add(null);
             }
+            findResults();
         }
 
         /**
@@ -600,141 +651,149 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                 LOG.warn("Source not supported: " + node.getNumber() + " " + node.getStringValue("url") + " " + node.getStringValue("format"));
                 return;
             }
-            synchronized(list) {
-                for (Map.Entry<String, JobDefinition> entry : list.entrySet()) {
+            LOG.info("Results are now " + results);
+            synchronized(CreateCachesProcessor.this.list) {
+                for (Map.Entry<String, JobDefinition> entry : CreateCachesProcessor.this.list.entrySet()) {
 
                     JobDefinition jd = entry.getValue();
                     String id = entry.getKey();
 
                     if (jd.transcoder.getKey() != null) {
 
-                        String inId = jd.transcoder.getInId();
-                        if ((inId == null || results.containsKey(inId))) {
-                            Node srcNode = node;
-                            MimeType inMimeType;
-                            if (inId == null) {
-                                inMimeType = new MimeType(node.getStringValue("mimetype"));
-                            } else {
-                                inMimeType = results.get(inId).getMimeType();
-                            }
-                            if (! jd.getMimeType().matches(inMimeType)) {
-                                continue;
-                            }
+                        String inId = jd.getInId();
+                        LOG.info(jd + ": " + inId);
+                        if ((inId == null || lookup.containsKey(inId))) {
 
-                            Node resultNode = getCacheNode(jd.transcoder.getKey());
+                        } else {
 
-                            // virtual field actually creates relation
-                            resultNode.setNodeValue("mediaprovider", mediaprovider);
-                            resultNode.setNodeValue("mediafragment", mediafragment);
-
-                            resultNode.setStringValue("key", jd.transcoder.getKey());
-                            Format f = jd.transcoder.getFormat();
-                            resultNode.setIntValue("format", f.toInt());
-                            Codec c = jd.transcoder.getCodec();
-                            if (c == null || c == Codec.UNKNOWN) {
-                                resultNode.setValue("codec", null);
-                            } else {
-                                resultNode.setIntValue("codec", c.toInt());
-                            }
-                            resultNode.setNodeValue("id", srcNode);
-
-                            File inFile  = new File(getDirectory(), srcNode.getStringValue("url").replace("/", File.separator));
-
-                            StringBuilder buf = new StringBuilder();
-                            org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, srcNode.getNumber(), "/");
-                            buf.append("/");
-                            buf.append(resultNode.getNumber()).append('.').append(ResourceLoader.getName(inFile.getName())).append(".").append(jd.transcoder.getFormat().toString().toLowerCase());
-                            String outFileName = buf.toString();
-                            if (outFileName.startsWith("/")) {
-                                outFileName = outFileName.substring(1);
-                            }
-                            assert outFileName != null;
-                            assert outFileName.length() > 0;
-                            resultNode.setStringValue("url", outFileName);
-
-                            resultNode.commit();
+                            LOG.info("Skipping " + jd + " because inid '" + inId + "' is not yet in " + results);
                         }
                     }
                 }
             }
         }
+        protected void findResults() {
+            // createCacheNodes();
+            int i = -1;
+            for (Map.Entry<String, JobDefinition> n : CreateCachesProcessor.this.list.entrySet()) {
+                i++;
+                if (results.get(i) == null) {
+                    JobDefinition jd = n.getValue();
+                    URI inURI;
+                    Node inNode;
+                    if (jd.getInId() == null) {
+                        String url = node.getStringValue("url");
+                        assert url.length() > 0;
+                        File f = new File(getDirectory(), url);
+                        assert f.exists();
+                        inURI = f.toURI();
+                        inNode = node;
+                    } else {
+                        if (! CreateCachesProcessor.this.list.containsKey(jd.getInId())) {
+                            LOG.warn("Configuration error, no such job definition with id '" + jd.getInId());
+                            continue;
+                        }
+                        Result prevResult = lookup.get(jd.getInId());
+                        if (prevResult == null || ! prevResult.isReady()) {
+                            // no result possible yet.
+                            continue;
+                        }
+                        inURI = prevResult.getOut();
+                        inNode = prevResult.getDestination();
+                        if (inNode == null) {
+                            inNode = node;
+                        }
+
+                    }
+
+                    if (! jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
+                        LOG.info("SKIPPING " + jd);
+                        results.set(i, new SkippedResult(jd, inURI));
+                        continue;
+                    } else {
+                        LOG.info("NOT SKIPPING " + jd);
+                    }
+
+                    assert inURI != null;
+                    if (jd.transcoder.getKey() != null) {
+                        LOG.info(jd.getMimeType());
+                        LOG.info("" + inNode);
+                        Node dest = getCacheNode(jd.transcoder.getKey());
+                        if (dest == null) {
+                            LOG.warn("Could not create cache node from " + node.getNodeManager().getName() + " " + node.getNumber() + " for " + jd.transcoder.getKey());
+                            continue;
+                        }
+
+                        assert mediafragment != null;
+                        // virtual field actually creates relation
+                        dest.setNodeValue("mediaprovider", mediaprovider);
+                        dest.setNodeValue("mediafragment", mediafragment);
+
+                        Format f = jd.transcoder.getFormat();
+                        dest.setIntValue("format", f.toInt());
+                        Codec c = jd.transcoder.getCodec();
+                        if (c == null || c == Codec.UNKNOWN) {
+                            dest.setValue("codec", null);
+                        } else {
+                            dest.setIntValue("codec", c.toInt());
+                        }
+                        dest.setNodeValue("id", Job.this.node);
+
+                        File inFile  = new File(getDirectory(), Job.this.node.getStringValue("url").replace("/", File.separator));
+
+                        StringBuilder buf = new StringBuilder();
+                        org.mmbase.storage.implementation.database.DatabaseStorageManager.appendDirectory(buf, Job.this.node.getNumber(), "/");
+                        buf.append("/");
+                        buf.append(dest.getNumber()).append('.').append(ResourceLoader.getName(inFile.getName())).append(".").append(jd.transcoder.getFormat().toString().toLowerCase());
+                        String outFileName = buf.toString();
+                        if (outFileName.startsWith("/")) {
+                            outFileName = outFileName.substring(1);
+                        }
+                        assert outFileName != null;
+                        assert outFileName.length() > 0;
+                        dest.setStringValue("url", outFileName);
+
+                        dest.commit();
+
+                        System.out.println("Created " + dest);
+                        String destFile = dest.getStringValue("url");
+                        assert destFile != null;
+                        assert destFile.length() > 0;
+                        URI outURI = new File(getDirectory(), destFile).toURI();
+                        Result result = new TranscoderResult(jd, dest, inURI, outURI);
+                        LOG.info("Added result to results list with key: " + dest.getStringValue("key"));
+                        results.set(i, result);
+                        lookup.put(jd.getId(), result);
+                    } else {
+                        // recognizers;
+                        Result result = new RecognizerResult(jd, inNode, inURI);
+                        results.set(i, result);
+                        lookup.put(jd.getId(), result);
+                    }
+
+                }
+            }
+            LOG.info("RESULTS now " + results);
+
+        }
 
         public Iterator<Result> iterator() {
-            final Iterator<Map.Entry<String, JobDefinition>> i = CreateCachesProcessor.this.list.entrySet().iterator();
             return new Iterator<Result>() {
-                Result next = null;
-                boolean foundNext = false;
-                {
-                    LOG.info("Iterating "+ CreateCachesProcessor.this.list.entrySet());
-                }
-
-                protected Result findResult() {
-                    createCacheNodes();
-                    Result result = null;
-                    while (i.hasNext()) {
-                        Map.Entry<String, JobDefinition> n = i.next();
-
-
-                        JobDefinition jd = n.getValue();
-                        URI inFile;
-                        Node inNode;
-                        if (jd.transcoder.getInId() == null) {
-                            inFile = new File(getDirectory(), node.getStringValue("url")).toURI();
-                            inNode = node;
-                        } else {
-                            Result prevResult = results.get(jd.transcoder.getInId());
-                            if (prevResult == null) {
-                                logger.error("No result with id " + jd.transcoder.getInId() + " in " + results + ". Misconfiguration? The configuration of a transcoder as 'in' should precede present transcoder.");
-                                continue;
-                            }
-                            inFile = prevResult.getOut();
-                            inNode = prevResult.getNode();
-                        }
-
-                        if (jd.transcoder.getKey() != null) {
-                            if (jd.getMimeType().matches(new MimeType(inNode.getStringValue("mimetype")))) {
-                                LOG.info("Matched " +  jd.getMimeType() + " of " + jd.transcoder + " with " + new MimeType(inNode.getStringValue("mimetype")));
-                                Node dest = getCacheNode(jd.transcoder.getKey());
-                                if (dest == null) {
-                                    LOG.warn("Could not create cache node from " + node.getNodeManager().getName() + " " + node.getNumber() + " for " + jd.transcoder.getKey());
-                                    continue;
-                                }
-                                System.out.println("Created " + dest);
-                                String destFile = dest.getStringValue("url");
-                                assert destFile != null;
-                                assert destFile.length() > 0;
-                                URI outFile = new File(getDirectory(), destFile).toURI();
-                                result = new Result(jd, dest, inFile, outFile);
-                                LOG.info("Added result to results list with key: " + dest.getStringValue("key"));
-                                addResult(dest.getStringValue("key"), result);
-                                break;
-                            } else {
-                                logger.info("Skipping " + jd + " because " + inFile + " of (" + inNode.getNumber() + ", " + inNode.getStringValue("mimetype") + ") does not match mimetype.");
-                            }
-                        } else {
-                            // recognizers;
-                            result = new Result(jd, null, inFile, null);
-                            addResult(jd.transcoder.getKey(), result);
-                            break;
-                        }
-                    }
-                    return result;
-                }
-
+                int i = -1;
                 public boolean hasNext() {
-                    if (! foundNext) {
-                        next = findResult();
-                        foundNext = true;
+                    for (int j = i + 1 ; j < results.size(); j++) {
+                        if (results.get(j) != null && ! results.get(j).isReady()) {
+                            return true;
+                        }
                     }
-                    return next != null;
+                    return false;
                 }
                 public void remove() {
                     throw new UnsupportedOperationException();
                 }
                 public Result next() {
-                    current = next;
-                    next = null;
-                    foundNext = false;
+                    i++;
+                    current = results.get(i);
                     if (current.definition.transcoder instanceof CommandTranscoder) {
                         // Get free method
                         CommandExecutor.Method m = null;
@@ -742,8 +801,8 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                             for (CommandExecutor.Method e : executors) {
                                 if (! e.isInUse()) {
                                     e.setInUse(true);
-                                    m = e;
-                                    break;
+                                        m = e;
+                                        break;
                                 }
                             }
                         }
@@ -753,11 +812,12 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                             ((CommandTranscoder) current.definition.transcoder).setMethod(m);
                         }
                     }
-                    if (current.getNode() != null) {
+                    Node destination = current.getDestination();
+                    if (destination != null) {
                         try {
-                            LOG.info("Setting " + current.getNode().getNodeManager().getName() + " " + current.getNode().getNumber() + " to BUSY");
-                            current.getNode().setIntValue("state", State.BUSY.getValue());
-                            current.getNode().commit();
+                            LOG.info("Setting " + destination.getNodeManager().getName() + " " + destination.getNumber() + " to BUSY");
+                            destination.setIntValue("state", State.BUSY.getValue());
+                            destination.commit();
                         } catch (Exception e) {
                             LOG.error(e);
                         }
@@ -776,15 +836,17 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             return logger;
         }
 
-        /**
-         * Gets and/or creates the node representing the 'cached' stream.
-         *
-         * @param key   representation of the way the stream was created from its source
+            /**
+             * Gets and/or creates the node representing the 'cached' stream.
+             *
+             * @param key   representation of the way the stream was created from its source
          * @return cached stream node
          */
         protected Node getCacheNode(final String key) {
             return getCacheNode(node, key);
         }
+
+
 
         /**
          * Gets and/or creates the node representing the 'cached' stream (the result of a conversion),
@@ -818,7 +880,10 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                 Node newNode =  caches.createNode();
                 newNode.setNodeValue("id", src);
                 newNode.setStringValue("key", key);
+
                 newNode.commit();
+                LOG.info("CREATED " + src.getNumber() + " " + key);
+
                 logger.service("Created new node for " + key + "(" + src.getNumber() + "): " + newNode.getNumber());
                 return newNode;
             } else {
@@ -830,9 +895,6 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             return current;
         }
 
-        protected void addResult(String key, Result result) {
-            if ( !results.containsKey(key) ) results.put(key, result);
-        }
 
         /**
          * The Thread in which this Job is running.
@@ -849,7 +911,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             }
         }
         public synchronized void interrupt() {
-            Node cacheNode = current.getNode();
+            Node cacheNode = current.getDestination();
             if (cacheNode != null) {
                 cacheNode.setIntValue("state", State.INTERRUPTED.getValue());
                 cacheNode.commit();
@@ -871,7 +933,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         public synchronized void ready() {
                 ready = true;
                 notifyAll();
-        }
+            }
 
         public void waitUntilReady() throws InterruptedException {
             while (! isReady()) {
@@ -908,12 +970,6 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                 return number + ": " + user + ":" + current + ":" + getProgress() + ":" + thread;
             }
         }
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-    }
-
-    public void writeExternal(ObjectOutput stream) throws IOException {
     }
 
 }

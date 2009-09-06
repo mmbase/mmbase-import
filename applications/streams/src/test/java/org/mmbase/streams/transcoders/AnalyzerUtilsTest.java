@@ -15,7 +15,7 @@ public class AnalyzerUtilsTest {
 
     Transcoder getFFMpegTranscoder() {
         FFMpegRecognizer rec = new FFMpegRecognizer();
-        Transcoder trans = new RecognizerTranscoder(rec, "TEST");
+        Transcoder trans = new RecognizerTranscoder(rec);
         return trans;
     }
 

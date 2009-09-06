@@ -58,7 +58,7 @@ public class FFMpegTranscoder extends CommandTranscoder {
     public void setAbitrate(String a) {
         ab = a;
     }
-    
+
     /* Audio quality variable bit rate (VBR): 0-255 (0 = highest, 255 = lowest) */
     public void setAq(String a) {
         aq = a;
@@ -90,8 +90,7 @@ public class FFMpegTranscoder extends CommandTranscoder {
         ac = a;
     }
 
-    public FFMpegTranscoder(String id) {
-        super(id);
+    public FFMpegTranscoder() {
         format = Format.AVI;
     }
 

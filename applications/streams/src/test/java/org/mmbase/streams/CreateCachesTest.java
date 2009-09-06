@@ -10,6 +10,7 @@ import java.io.*;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.DataType;
 import static org.mmbase.datatypes.Constants.*;
+import org.mmbase.datatypes.processors.*;
 import org.mmbase.bridge.mock.*;
 import org.mmbase.streams.transcoders.*;
 import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
@@ -35,6 +36,12 @@ public class CreateCachesTest {
     public CreateCachesTest() {
     }
 
+
+    @AfterClass
+    public static void shutdown() {
+        System.out.println("Ready testing ");
+        org.mmbase.util.ThreadPools.shutdown();
+    }
     @BeforeClass
     public static void setUp() throws Exception {
         try {
@@ -90,6 +97,8 @@ public class CreateCachesTest {
     protected Cloud getCloud() {
         if (remoteCloud != null) {
             remoteCloud.setProperty(CreateCachesProcessor.NOT, "no implicit processesing please");
+            //remoteCloud.setProperty(BinaryCommitProcessor.NOT, "no implicit processesing please");
+            //remoteCloud.setProperty(org.mmbase.applications.media.FragmentTypeFixer.NOT, "no implicit processesing please");
         }
         return remoteCloud;
     }
@@ -113,12 +122,16 @@ public class CreateCachesTest {
         assumeNotNull(cloud);
 
 
-        Node container = cloud.getNodeManager("mediafragments").createNode();
+        Node container = cloud.getNodeManager("videofragments").createNode();
         container.commit();
 
         NodeManager nm = cloud.getNodeManager("streamsources");
-        File tempFile = File.createTempFile(getClass().getName() + ".", FILE, dir);
-        org.mmbase.util.IOUtil.copy(new FileInputStream(testFile), new FileOutputStream(tempFile));
+        File tempFile = new File(dir, getClass().getName() + "." + FILE);
+        if (! tempFile.exists()) {
+            org.mmbase.util.IOUtil.copy(new FileInputStream(testFile), new FileOutputStream(tempFile));
+        }
+
+        assertEquals(513965, tempFile.length());
 
         System.out.println("DIR " + dir);
 
@@ -130,7 +143,7 @@ public class CreateCachesTest {
         assertTrue(testFile.exists());
 
 
-        newSource.setStringValue("url", tempFile.getName());
+        newSource.setValueWithoutProcess("url", tempFile.getName());
         newSource.commit();
         return newSource;
     }
@@ -146,13 +159,18 @@ public class CreateCachesTest {
         return proc;
     }
 
-    Node refresh(Node source) {
+    Node refresh(Node source) throws InterruptedException {
+        //Thread.sleep(100);
         return source.getCloud().getNode(source.getNumber());
 
     }
     void checkSource(Node source, int sourceCount) {
-        assertEquals("videostreamsources", source.getNodeManager().getName());
-        assertNotNull(source.getValue("width"));
+        checkSource(source, sourceCount, "");
+    }
+    void checkSource(Node source, int sourceCount, String message) {
+        assertEquals(source.getNumber() + " " + message, "videostreamsources", source.getNodeManager().getName());
+        assertTrue(source.getNumber() + " " + message, source.getStringValue("mimetype").startsWith("video/"));
+        assertNotNull(source.getNumber() + " " + message, source.getValue("width"));
         assertNotNull(source.getValue("height"));
         assertEquals(352, source.getIntValue("width"));
         assertEquals(288, source.getIntValue("height"));
@@ -168,14 +186,16 @@ public class CreateCachesTest {
 
     @Test
     public void recognizerOnly() throws Exception  {
-        CreateCachesProcessor proc = get("dummycreatecaches_0.xml");
-        Node source = getNode(proc.getDirectory());
-        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        for (int i = 0; i < 1; i++) {
+            CreateCachesProcessor proc = get("dummycreatecaches_0.xml");
+            Node source = getNode(proc.getDirectory());
+            CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
 
 
-        job.waitUntilReady();
-        source = refresh(source);
-        checkSource(source, 1);
+            job.waitUntilReady();
+            source = refresh(source);
+            checkSource(source, 1, "" + i);
+        }
     }
 
     @Test
@@ -192,7 +212,7 @@ public class CreateCachesTest {
     }
 
 
-    @Test //fails?
+    @Test
     public  void twoSteps() throws Exception {
         CreateCachesProcessor proc = get("dummycreatecaches_2.xml");
         Node source = getNode(proc.getDirectory());
@@ -201,6 +221,39 @@ public class CreateCachesTest {
         job.waitUntilReady();
         source = refresh(source);
         checkSource(source, 3);
+    }
+
+    @Test
+    public  void twoStepsTwoResults() throws Exception {
+        CreateCachesProcessor proc = get("dummycreatecaches_3.xml");
+        Node source = getNode(proc.getDirectory());
+        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        source.commit();
+        job.waitUntilReady();
+        source = refresh(source);
+        checkSource(source, 4);
+    }
+
+    @Test
+    public  void ignoreByMimeType() throws Exception {
+        CreateCachesProcessor proc = get("dummycreatecaches_4.xml");
+        Node source = getNode(proc.getDirectory());
+        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        source.commit();
+        job.waitUntilReady();
+        source = refresh(source);
+        checkSource(source, 1);
+    }
+
+    @Test
+    public  void twoStepsTwoResultsIgnoreAudio() throws Exception {
+        CreateCachesProcessor proc = get("dummycreatecaches_5.xml");
+        Node source = getNode(proc.getDirectory());
+        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        source.commit();
+        job.waitUntilReady();
+        source = refresh(source);
+        checkSource(source, 4);
     }
 }
 

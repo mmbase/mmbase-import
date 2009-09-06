@@ -64,15 +64,7 @@ public abstract class AbstractTranscoder implements Transcoder {
 
     }
 
-    private final String id;
-    private String inId = null;
-
-    protected AbstractTranscoder(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
+    protected AbstractTranscoder() {
     }
 
     protected boolean clone = false;
@@ -108,13 +100,6 @@ public abstract class AbstractTranscoder implements Transcoder {
     public void setMimeType(String m) {
         mimeType = new MimeType(m);
     }
-    public String getInId() {
-        return inId;
-    }
-    public void setInId(String i) {
-        inId = i;
-
-    }
 
     /**
      * Default and generic implementation of the key. It can be parsed back to the same transcoder
@@ -125,10 +110,6 @@ public abstract class AbstractTranscoder implements Transcoder {
      */
     public final String getKey() {
         StringBuilder buf = new StringBuilder();
-        if (getId() != null && getId().length() > 0) {
-            buf.append(getId());
-            buf.append(":");
-        }
         {
             String cn = getClass().getName();
             if (cn.startsWith(PACKAGE)) {
@@ -175,8 +156,8 @@ public abstract class AbstractTranscoder implements Transcoder {
     }
 
     public final void transcode(final URI in, final URI out, final Logger log) throws Exception {
-        if (in == null) throw new IllegalArgumentException();
-        if (out == null) throw new IllegalArgumentException();
+        if (in == null) throw new IllegalArgumentException(toString());
+        if (out == null) throw new IllegalArgumentException(toString());
         this.in = in;
         this.out = out;
         if (! clone) {
