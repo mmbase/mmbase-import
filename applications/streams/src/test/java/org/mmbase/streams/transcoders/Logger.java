@@ -37,6 +37,7 @@ public abstract class Logger  extends AbstractSimpleImpl {
 
     public Logger() {
         setLevel(Level.DEBUG);
+        util.setUpdateSource(true);
     }
 
 

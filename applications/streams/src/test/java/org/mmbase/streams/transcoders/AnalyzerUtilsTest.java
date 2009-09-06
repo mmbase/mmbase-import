@@ -47,7 +47,11 @@ public class AnalyzerUtilsTest {
                 @Override
                 protected void log(String s) {
                     if (util.unsupported(s, source, destination)) {
+                        System.out.println("UNSUPPORT " + s);
+
                         this.success = true;
+                    } else {
+                        System.out.println("SUPPORT " + s);
                     }
                 }
             };
@@ -56,7 +60,7 @@ public class AnalyzerUtilsTest {
 
     }
 
-    @Test
+    //@Test
     public void known() throws Exception {
         File testFile = new File(System.getProperty("user.dir"), "samples" + File.separator + "basic.wav");
         assumeTrue(testFile.exists());
