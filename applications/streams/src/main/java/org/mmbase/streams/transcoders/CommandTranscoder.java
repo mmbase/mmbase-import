@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  */
 
 public abstract class CommandTranscoder extends AbstractTranscoder {
-    private static final Logger log = Logging.getLoggerInstance(CommandTranscoder.class);
+    private static final Logger LOG = Logging.getLoggerInstance(CommandTranscoder.class);
 
     private CommandExecutor.Method method = new CommandExecutor.Method();
 
@@ -37,7 +37,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
     private Map<String, String> moreOptions = new HashMap<String, String>();
 
     public CommandTranscoder() {
-        log.service("" + getClass().getName() + " path:" + path);
+        LOG.service("" + getClass().getName() + " path:" + path);
     }
 
     public void setProperty(String key, String value) {
@@ -63,8 +63,13 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
         return new LoggerWriter(log, Level.SERVICE);
     }
 
+    protected LoggerWriter getErrorWriter(Logger log) {
+        return new LoggerWriter(log, Level.ERROR);
+    }
+
     protected void transcode(final Logger log) throws Exception {
         OutputStream outStream = new WriterOutputStream(getOutputWriter(log), System.getProperty("file.encoding"));
+        OutputStream errStream = new WriterOutputStream(getErrorWriter(log), System.getProperty("file.encoding"));
         String p = path;
 
         if (p == null) {
@@ -74,14 +79,16 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
             p += File.separator;
         }
 
-        if (log.isServiceEnabled()) {
-            log.service("Calling (" + method + ") " + p + getCommand() + " " + Arrays.asList(getArguments()));
+        if (LOG.isServiceEnabled()) {
+            LOG.service("Calling (" + method + ") " + p + getCommand() + " " + Arrays.asList(getArguments()));
         }
 
         // TODO Add support for 'moreOptions'
         // Here, but also in getKey.
 
-        CommandExecutor.execute(outStream, method, p + getCommand(), getArguments());
+        CommandExecutor.execute(outStream, errStream, method, p + getCommand(), getArguments());
+        outStream.close();
+        errStream.close();
     }
 
 
