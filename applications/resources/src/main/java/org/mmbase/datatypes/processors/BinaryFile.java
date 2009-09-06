@@ -177,8 +177,10 @@ public class BinaryFile {
                 String[] parts = fileName.split("\\.", 2);
                 File file = new File(dir, fileName);
                 File to = getFile(node, field, parts[1]);
-                if (! (to.getParentFile().mkdirs())) {
+                if (! to.getParentFile().exists()) {
+                    if (! (to.getParentFile().mkdirs())) {
                     log.warn("Could not make directories " + to.getParentFile());
+                    }
                 }
                 log.debug("Fixing file");
                 if (file.renameTo(to)) {
