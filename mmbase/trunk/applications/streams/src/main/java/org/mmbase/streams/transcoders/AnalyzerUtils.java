@@ -86,7 +86,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 source.setNodeManager(cloud.getNodeManager(VIDEO));
                 source.commit();
             }
-            assert source.getNodeManager().getName().equals(VIDEO);
+            assert source.getNodeManager().getName().equals(VIDEO) : "" + updateSource;
             if (dest != null) {
                 if (! dest.getNodeManager().getName().equals(VIDEOC)) {
                     dest.setNodeManager(cloud.getNodeManager(VIDEOC));
