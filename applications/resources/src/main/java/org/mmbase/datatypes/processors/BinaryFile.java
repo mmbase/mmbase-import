@@ -35,8 +35,10 @@ public class BinaryFile {
 
     private static final Logger log = Logging.getLoggerInstance(BinaryFile.class);
 
+    static File directory = null;
 
     private static File getDirectory() {
+        if (directory != null) return directory;
         File servletDir = FileServlet.getDirectory();
         if (servletDir == null) throw new IllegalArgumentException("No FileServlet directory found (FileServlet not (yet) active)?");
         return servletDir;
@@ -175,14 +177,19 @@ public class BinaryFile {
                 String[] parts = fileName.split("\\.", 2);
                 File file = new File(dir, fileName);
                 File to = getFile(node, field, parts[1]);
-                to.getParentFile().mkdirs();
+                if (! (to.getParentFile().mkdirs())) {
+                    log.warn("Could not make directories " + to.getParentFile());
+                }
                 log.debug("Fixing file");
-                file.renameTo(to);
-                fileName = to.toString().substring(dir.toString().length() + 1);
-                log.debug("Setting file name to " + fileName);
-                node.setValueWithoutProcess(field.getName(), fileName);
-                log.debug("Canched " + node.getChanged() + " " + node.getCloud());
-                node.commit();
+                if (file.renameTo(to)) {
+                    fileName = to.toString().substring(dir.toString().length() + 1);
+                    log.debug("Setting file name to " + fileName);
+                    node.setValueWithoutProcess(field.getName(), fileName);
+                    log.debug("Chached " + node.getChanged() + " " + node.getCloud());
+                    node.commit();
+                } else {
+                    log.warn("Could not rename " + file + " to " + to);
+                }
             }
 
             return fileName;
