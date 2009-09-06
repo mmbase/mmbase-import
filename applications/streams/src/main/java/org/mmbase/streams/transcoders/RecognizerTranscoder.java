@@ -29,14 +29,8 @@ import org.mmbase.util.logging.*;
 public class RecognizerTranscoder implements Transcoder {
 
     final Recognizer recognizer;
-    final String id;
-    public RecognizerTranscoder(Recognizer rec, String id) {
+    public RecognizerTranscoder(Recognizer rec) {
         recognizer = rec;
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
     }
 
     protected boolean clone = false;
@@ -81,7 +75,9 @@ public class RecognizerTranscoder implements Transcoder {
         }
     }
 
-
+    /**
+     * The key of recognizes must be null, that avoid that any subsequent caches are created
+     */
     public  final String getKey() {
         return null;
 

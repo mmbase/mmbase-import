@@ -41,10 +41,21 @@ public final class AnalyzerUtils implements java.io.Serializable {
     public static final String MEDIAC = MEDIA + "caches";
 
     private final ChainedLogger log = new ChainedLogger(LOG);
+
+    private boolean updateSource;
+
     AnalyzerUtils(Logger... loggers) {
         for (Logger l : loggers) {
             log.addLogger(l);
         }
+    }
+
+
+    public void setUpdateSource(boolean b) {
+        updateSource = b;
+    }
+    public boolean getUpdateSource() {
+        return updateSource;
     }
 
     /**
@@ -70,7 +81,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
         fixMimeType("video", source);
         fixMimeType("video", dest);
         if (cloud != null) {
-            if (! source.getNodeManager().getName().equals(VIDEO)) {
+            if (updateSource && (! source.getNodeManager().getName().equals(VIDEO))) {
                 log.service("This is video, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
                 source.setNodeManager(cloud.getNodeManager(VIDEO));
                 source.commit();
@@ -93,7 +104,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
         fixMimeType("audio", source);
         fixMimeType("audio", dest);
         if (cloud != null) {
-            if (! source.getNodeManager().getName().equals(AUDIO)) {
+            if (updateSource && ! source.getNodeManager().getName().equals(AUDIO)) {
                 log.service("This is audio, now converting type. source: " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""));
                 source.setNodeManager(cloud.getNodeManager(AUDIO));
                 source.commit();
@@ -116,7 +127,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
             if (log.isDebugEnabled()) {
                 log.service("This is image, now converting type. source: " + source.getNodeManager().getName() + " " + source.getNumber() + (dest != null ? " dest:" +  dest.getNumber() : ""), new Exception());
             }
-            if (cloud.hasNodeManager(IMAGE)) { // happens for example during junit tests
+            if (updateSource && cloud.hasNodeManager(IMAGE)) { // happens for example during junit tests
                 source.setNodeManager(cloud.getNodeManager(IMAGE));
                 source.commit();
             }
@@ -168,6 +179,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
      * [NULL @ 0x1804800]Unsupported video codec
     */
     public boolean unsupported(String l, Node source, Node dest) {
+        if (! updateSource) return false;
         Matcher m = PATTERN_UNKNOWN.matcher(l.trim());
         if (m.matches()) {
             log.warn("UNKNOWN format: " + m.group(1) + " : " + source.getNumber() + " " + source.getStringValue("url") + " matched on " + l);
@@ -208,7 +220,9 @@ public final class AnalyzerUtils implements java.io.Serializable {
             }
             if (log.isDebugEnabled()) log.debug("duration: " + m.group(1));
             long length = getLength(m.group(1));
-            source.setLongValue("length", length);
+            if (updateSource) {
+                source.setLongValue("length", length);
+            }
             if (dest != null) {
                 dest.setLongValue("length", length);
             }
@@ -217,7 +231,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
             if (m.matches()) {
                 if (log.isDebugEnabled()) log.debug("bitrate: " + m.group(1));
                 int bitrate = 1000 * Integer.parseInt(m.group(1));
-                source.setIntValue("bitrate", bitrate);
+                if (updateSource) source.setIntValue("bitrate", bitrate);
                 if (dest != null) dest.setIntValue("bitrate", bitrate);
             }
 
@@ -250,15 +264,17 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 toVideo(source, dest);
             }
 
-            source.setIntValue("width", Integer.parseInt(m.group(1)));
-            source.setIntValue("height", Integer.parseInt(m.group(2)));
+            if (updateSource) {
+                source.setIntValue("width", Integer.parseInt(m.group(1)));
+                source.setIntValue("height", Integer.parseInt(m.group(2)));
+            }
 
             m = VIDEOBITRATE_PATTERN.matcher(l);
             if (m.matches()) {
                 if (log.isDebugEnabled()) log.debug("bitrate: " + m.group(1));
                 int bitrate = 1000 * Integer.parseInt(m.group(1));
-                source.setIntValue("bitrate", bitrate);
-                dest.setIntValue("bitrate", bitrate);
+                if (updateSource) source.setIntValue("bitrate", bitrate);
+                if (dest != null) dest.setIntValue("bitrate", bitrate);
             }
 
             return true;
@@ -303,8 +319,10 @@ public final class AnalyzerUtils implements java.io.Serializable {
             //log.debug(" format: " + m.group(2));
             if (log.isDebugEnabled()) log.debug("width: "  + m.group(3));
             if (log.isDebugEnabled()) log.debug("height: " + m.group(4));
-            source.setIntValue("width", Integer.parseInt(m.group(3)));
-            source.setIntValue("height", Integer.parseInt(m.group(4)));
+            if (updateSource) {
+                source.setIntValue("width", Integer.parseInt(m.group(3)));
+                source.setIntValue("height", Integer.parseInt(m.group(4)));
+            }
             if (dest != null) {
                 dest.setIntValue("width", Integer.parseInt(m.group(3)));
                 dest.setIntValue("height", Integer.parseInt(m.group(4)));
@@ -313,7 +331,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
             m = VIDEOBITRATE_PATTERN.matcher(l);
             if (m.matches()) {
                 if (log.isDebugEnabled()) log.debug("bitRate: " + m.group(1));
-                source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
+                if (updateSource) source.setIntValue("bitrate", Integer.parseInt(m.group(1)));
                 if (dest != null) dest.setIntValue("bitrate", Integer.parseInt(m.group(1)));
             }
 
@@ -340,12 +358,12 @@ public final class AnalyzerUtils implements java.io.Serializable {
             String channels = m.group(3);
             if (source.getNodeManager().hasField("channels")) {
                 if (channels.equals("stereo") || channels.equals("2")) {
-                    source.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.STEREO);
+                    if (updateSource) source.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.STEREO);
                     if (dest != null) {
                         dest.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.STEREO);
                     }
                 } else {
-                    source.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.MONO);
+                    if (updateSource) source.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.MONO);
                     if (dest != null) {
                         dest.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.MONO);
                     }

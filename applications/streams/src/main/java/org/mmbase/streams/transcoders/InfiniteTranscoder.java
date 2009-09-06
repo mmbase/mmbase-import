@@ -27,8 +27,7 @@ public class InfiniteTranscoder extends AbstractTranscoder {
     private static final Logger LOG = Logging.getLoggerInstance(InfiniteTranscoder.class);
     private int seq = 0;
 
-    public InfiniteTranscoder(String id) {
-        super(id);
+    public InfiniteTranscoder() {
         format = Format.UNKNOWN;
     }
 

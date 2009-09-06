@@ -143,38 +143,41 @@ public class RecognizerTest {
     @Test
     public void test()  throws Exception {
 	assumeTrue(samples.exists());
-        CommandTranscoder transcoder = new FFMpegTranscoder("1").clone();
-        org.mmbase.util.logging.Logger logger = Logging.getLoggerInstance("FFMPEG");
 
-        ChainedLogger chain = new ChainedLogger(logger);
-        Analyzer a = new FFMpegAnalyzer();
+        for (int i = 0; i < 1; i++) {
+            CommandTranscoder transcoder = new FFMpegTranscoder().clone();
+            org.mmbase.util.logging.Logger logger = Logging.getLoggerInstance("FFMPEG");
+
+            ChainedLogger chain = new ChainedLogger(logger);
+            Analyzer a = new FFMpegAnalyzer();
 
 
-        chain.setLevel(Level.WARN);
+            chain.setLevel(Level.WARN);
 
-        Node source = getTestNode();
-        Node dest   = getTestNode();
-        AnalyzerLogger an = new AnalyzerLogger(a, source, dest);
-        chain.addLogger(an);
-        File f = files.get(c.file);
-        if (f == null || ! f.exists()) {
-            throw new Error("The file " + c.file  + " does not exist. Please download these first (use the Makefile)");
+            Node source = getTestNode();
+            Node dest   = getTestNode();
+            AnalyzerLogger an = new AnalyzerLogger(a, source, dest);
+            chain.addLogger(an);
+            File f = files.get(c.file);
+            if (f == null || ! f.exists()) {
+                throw new Error("The file " + c.file  + " does not exist. Please download these first (use the Makefile)");
+            }
+            File out = File.createTempFile(Test.class.getName(), null);
+            transcoder.transcode(f.toURI(), out.toURI(), chain);
+            a.ready(source, dest);
+            chain.removeLogger(an);
+
+            assertEquals(c.toString(), c.sourceType, source.getNodeManager().getName());
+            if (source.getNodeManager().hasField("height")) {
+                assertEquals(c.toString(), c.sourceHeight, source.getIntValue("height"));
+                assertEquals(c.toString(), c.sourceWidth, source.getIntValue("width"));
+            }
+            if (c.destType != null) {
+                assertEquals(c.toString(), c.destType,   dest.getNodeManager().getName());
+            }
+
+            System.out.println("" + source + " -> " + dest);
         }
-        File out = File.createTempFile(Test.class.getName(), null);
-        transcoder.transcode(f.toURI(), out.toURI(), chain);
-        a.ready(source, dest);
-        chain.removeLogger(an);
-
-        assertEquals(c.toString(), c.sourceType, source.getNodeManager().getName());
-        if (source.getNodeManager().hasField("height")) {
-            assertEquals(c.toString(), c.sourceHeight, source.getIntValue("height"));
-            assertEquals(c.toString(), c.sourceWidth, source.getIntValue("width"));
-        }
-        if (c.destType != null) {
-            assertEquals(c.toString(), c.destType,   dest.getNodeManager().getName());
-        }
-
-        System.out.println("" + source + " -> " + dest);
 
     }
 

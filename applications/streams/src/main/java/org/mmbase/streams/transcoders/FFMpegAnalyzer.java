@@ -13,6 +13,7 @@ import java.util.regex.*;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
+import static org.mmbase.streams.transcoders.AnalyzerUtils.*;
 
 
 /**
@@ -41,21 +42,26 @@ public class FFMpegAnalyzer implements Analyzer {
     private final AnalyzerUtils util = new AnalyzerUtils(log);
 
 
-    private List<Throwable> errors =new ArrayList<Throwable>();
+    private List<Throwable> errors = new ArrayList<Throwable>();
+
+
+    public void setUpdateSource(boolean b) {
+        util.setUpdateSource(b);
+    }
 
     public void addThrowable(Throwable t) {
         errors.add(t);
     }
 
     public int getMaxLines() {
-        return 100;
+        return 1000;
     }
 
     public void addLogger(Logger logger) {
         log.addLogger(logger);
     }
 
-    private String canbe = util.MEDIA;
+    private String canbe = MEDIA;
 
     public void analyze(String l, Node source, Node des) {
         Cloud cloud = source.getCloud();
@@ -68,7 +74,7 @@ public class FFMpegAnalyzer implements Analyzer {
 
         if (util.image2(l, source, des)) {
             if (log.isDebugEnabled()) log.debug("Found an image " + source);
-            canbe = util.IMAGE;
+            canbe = AnalyzerUtils.IMAGE;
             return;
         }
 
@@ -85,9 +91,9 @@ public class FFMpegAnalyzer implements Analyzer {
         if (util.audio(l, source, des)) {
             if (log.isDebugEnabled()) log.debug("Found audio: " + source);
 
-            if (! canbe.equals(util.VIDEO)) {
+            if (! canbe.equals(VIDEO)) {
                 /* no video seen yet, so it can be audio */
-                canbe = util.AUDIO;
+                canbe = AUDIO;
             }
         }
 
@@ -96,24 +102,24 @@ public class FFMpegAnalyzer implements Analyzer {
     public void ready(Node sourceNode, Node destNode) {
         log.service("Ready() " + sourceNode.getNumber() + (destNode == null ? "" : (" -> " + destNode.getNumber())));
 
-        if (canbe.equals(util.IMAGE) && (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0)) {
+        if (canbe.equals(IMAGE) && (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0)) {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an image " + sourceNode);
             util.toImage(sourceNode, destNode);
 
-        } else if (canbe.equals(util.AUDIO) && !sourceNode.getNodeManager().hasField("width") ) {
+        } else if (canbe.equals(AUDIO) && !sourceNode.getNodeManager().hasField("width") ) {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
             util.toAudio(sourceNode, destNode);
 
-        } else if (canbe.equals(util.AUDIO) && sourceNode.isNull("width")) {
+        } else if (canbe.equals(AUDIO) && sourceNode.isNull("width")) {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
             util.toAudio(sourceNode, destNode);
 
         } else {
             util.toVideo(sourceNode, destNode);
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is video " + sourceNode + " -> " + sourceNode.getNodeManager().getName());
-            assert sourceNode.getNodeManager().getName().equals(AnalyzerUtils.VIDEO);
+            assert sourceNode.getNodeManager().getName().equals(VIDEO);
         }
-        log.info("READY for " + sourceNode.getNodeManager().getName() + " " + sourceNode.hashCode() + sourceNode.getNumber());
+        log.info("READY for " + sourceNode.getNodeManager().getName() + " " + sourceNode.hashCode() + " " + sourceNode.getNumber());
 
     }
 

@@ -14,16 +14,23 @@
     </loganalyzer>
   </recognizer>
 
-  <transcoder in="recognizer" id="v1">
+  <transcoder id="v1" mimetype="video/*" in="recognizer">
     <class name="org.mmbase.streams.transcoders.DummyTranscoder">
       <param name="format">MP2</param>
       <param name="empty">true</param>
     </class>
   </transcoder>
 
-  <transcoder in="v1" id="v2">
+  <transcoder in="v1" id="v2" mimetype="video/*">
     <class name="org.mmbase.streams.transcoders.DummyTranscoder">
       <param name="format">MP3</param>
+      <param name="empty">true</param>
+    </class>
+  </transcoder>
+
+  <transcoder in="v1" id="v3" mimetype="video/*">
+    <class name="org.mmbase.streams.transcoders.DummyTranscoder">
+      <param name="format">MPEG</param>
       <param name="empty">true</param>
     </class>
   </transcoder>
