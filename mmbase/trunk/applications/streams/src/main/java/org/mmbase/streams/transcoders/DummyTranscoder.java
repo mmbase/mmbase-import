@@ -22,23 +22,37 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @version $Id: InfiniteTranscoder.java 36518 2009-07-02 12:52:01Z michiel $
  */
-@Settings({"format"})
+@Settings({"format", "setting"})
 public class DummyTranscoder extends AbstractTranscoder {
     private static final Logger LOG = Logging.getLoggerInstance(DummyTranscoder.class);
     private int seq = 0;
 
-    public DummyTranscoder(String id) {
-        super(id);
+    protected boolean empty = false;
+    protected String setting = "";
+
+    public DummyTranscoder() {
         format = Format.UNKNOWN;
+    }
+
+    public void setEmpty(boolean e) {
+        empty = e;
+    }
+    public void setSetting(String s) {
+        setting = s;
     }
 
     protected void transcode(final Logger log) throws Exception {
         log.info("Copying " + in + " to " + out);
         File outFile = new File(out.getPath());
         outFile.getParentFile().mkdirs();
-        org.mmbase.util.IOUtil.copy(new FileInputStream(new File(in.getPath())),
-                                    new FileOutputStream(new File(out.getPath())));
+        if (empty ) {
+            org.mmbase.util.IOUtil.copy(new ByteArrayInputStream(new byte[0]),
+                                        new FileOutputStream(new File(out.getPath())));
 
+        } else {
+            org.mmbase.util.IOUtil.copy(new FileInputStream(new File(in.getPath())),
+                                        new FileOutputStream(new File(out.getPath())));
+        }
     }
 
 

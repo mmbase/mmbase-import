@@ -35,8 +35,7 @@ public class FFMpeg2TheoraTranscoder extends CommandTranscoder {
     private static final Logger log = Logging.getLoggerInstance(FFMpeg2TheoraTranscoder.class);
 
 
-    public FFMpeg2TheoraTranscoder(String id) {
-        super(id);
+    public FFMpeg2TheoraTranscoder() {
         format = Format.OGV;
         codec  = Codec.THEORA;
     }

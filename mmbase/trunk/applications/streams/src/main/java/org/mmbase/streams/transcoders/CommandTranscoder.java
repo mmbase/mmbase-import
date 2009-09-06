@@ -36,8 +36,7 @@ public abstract class CommandTranscoder extends AbstractTranscoder {
     // TODO
     private Map<String, String> moreOptions = new HashMap<String, String>();
 
-    public CommandTranscoder(String id) {
-        super(id);
+    public CommandTranscoder() {
         log.service("" + getClass().getName() + " path:" + path);
     }
 

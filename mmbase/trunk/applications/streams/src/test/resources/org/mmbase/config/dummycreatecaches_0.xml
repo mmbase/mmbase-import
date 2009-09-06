@@ -10,7 +10,9 @@
   <recognizer id="recognizer">
     <class name="org.mmbase.streams.transcoders.FFMpegRecognizer">
     </class>
-    <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer" />
+    <loganalyzer name="org.mmbase.streams.transcoders.FFMpegAnalyzer">
+      <param name="updateSource">true</param>
+    </loganalyzer>
   </recognizer>
 
 
