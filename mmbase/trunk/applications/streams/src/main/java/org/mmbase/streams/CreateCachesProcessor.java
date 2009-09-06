@@ -310,7 +310,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                     thisJob.interrupt();
                                     logger.info("Interrupted");
                                     break;
-                                } catch (Exception e) {
+                                } catch (Throwable e) {
                                     logger.error(e.getMessage(), e);
                                 } finally {
                                     for (AnalyzerLogger al : analyzerLoggers) {
