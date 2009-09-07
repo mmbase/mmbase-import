@@ -181,7 +181,7 @@ public class BeanFunction extends AbstractFunction<Object> {
                 String parameterName = methodName.substring(3);
                 if (setters != null && ! setters.contains(parameterName)) continue;
 
-                final org.mmbase.datatypes.DataType dataType;
+                org.mmbase.datatypes.DataType dataType;
                 Type annotatedDataType =  m.getAnnotation(Type.class);
                 if (annotatedDataType != null) {
                     dataType = getDataType(annotatedDataType.value(), org.mmbase.datatypes.DataTypes.createDataType(parameterName, parameterTypes[0]));
@@ -189,22 +189,27 @@ public class BeanFunction extends AbstractFunction<Object> {
                     if (mustBeAnnotated) continue;
                     dataType = org.mmbase.datatypes.DataTypes.createDataType(parameterName, parameterTypes[0]);
                 }
+
                 {
                     boolean required = false;
                     Required requiredAnnotation = m.getAnnotation(Required.class);
                     if (requiredAnnotation != null) {
+                        dataType = dataType.clone();
                         dataType.setRequired(true);
                     }
                 }
 
-                // find a corresponding getter method, which can be used for a default value;
-                try {
-                    Object defaultValue;
-                    Method getter = claz.getMethod("get" + parameterName);
-                    defaultValue = getter.invoke(sampleInstance);
-                    dataType.setDefaultValue(defaultValue);
-                } catch (NoSuchMethodException nsme) {
-                    //defaultValue = null;
+                if (annotatedDataType == null) {
+                    // If no datatype annotated (which would define a default),
+                    // find a corresponding getter method, which can be used for a default value;
+                    try {
+                        Object defaultValue;
+                        Method getter = claz.getMethod("get" + parameterName);
+                        defaultValue = getter.invoke(sampleInstance);
+                        dataType.setDefaultValue(defaultValue);
+                    } catch (NoSuchMethodException nsme) {
+                        //defaultValue = null;
+                    }
                 }
 
                 if (Character.isUpperCase(parameterName.charAt(0))) {
