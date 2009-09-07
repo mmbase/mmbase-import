@@ -4,7 +4,7 @@
 
 // $Id$
 
-package org.mmbase.util.xml;
+package org.mmbase.util.xml.filter;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
