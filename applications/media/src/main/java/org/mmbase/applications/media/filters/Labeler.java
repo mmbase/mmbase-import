@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  *
  * @author  Michiel Meeuwissen
  * @since MMBase-1.9.2
- * @version $Id: $
+ * @version $Id$
  */
 abstract public class Labeler implements  Filter {
 
