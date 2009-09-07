@@ -15,7 +15,7 @@
   </recognizer>
 
   <transcoder in="recognizer" id="v1">
-    <class name="org.mmbase.streams.transcoders.DummyTranscoder">
+    <class name="org.mmbase.streams.transcoders.MockTranscoder">
       <param name="format">MP2</param>
       <param name="empty">true</param>
     </class>

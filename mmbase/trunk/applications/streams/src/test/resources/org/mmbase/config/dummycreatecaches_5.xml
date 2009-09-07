@@ -15,28 +15,28 @@
   </recognizer>
 
   <transcoder id="v1" in="recognizer" mimetype="video/*">
-    <class name="org.mmbase.streams.transcoders.DummyTranscoder">
+    <class name="org.mmbase.streams.transcoders.MockTranscoder">
       <param name="format">MP2</param>
       <param name="empty">true</param>
     </class>
   </transcoder>
 
   <transcoder in="v1" id="v2" mimetype="video/*">
-    <class name="org.mmbase.streams.transcoders.DummyTranscoder">
+    <class name="org.mmbase.streams.transcoders.MockTranscoder">
       <param name="format">MP3</param>
       <param name="empty">true</param>
     </class>
   </transcoder>
 
   <transcoder in="v1" id="v3" mimetype="video/*">
-    <class name="org.mmbase.streams.transcoders.DummyTranscoder">
+    <class name="org.mmbase.streams.transcoders.MockTranscoder">
       <param name="format">MPEG</param>
       <param name="empty">true</param>
     </class>
   </transcoder>
 
   <transcoder mimetype="audio/*" id="a1" in="recognizer">
-    <class name="org.mmbase.streams.transcoders.DummyTranscoder">
+    <class name="org.mmbase.streams.transcoders.MockTranscoder">
       <param name="format">MP3</param>
       <param name="empty">true</param>
       <param name="setting">a1</param>
@@ -44,7 +44,7 @@
   </transcoder>
 
   <transcoder mimetype="audio/*" id="a2" in="recognizer">
-    <class name="org.mmbase.streams.transcoders.DummyTranscoder">
+    <class name="org.mmbase.streams.transcoders.MockTranscoder">
       <param name="format">MP3</param>
       <param name="empty">true</param>
       <param name="setting">a2</param>
