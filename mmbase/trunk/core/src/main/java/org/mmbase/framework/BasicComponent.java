@@ -108,7 +108,7 @@ public class BasicComponent implements Component {
                 Element element = (Element) depElements.item(i);
                 String name = element.getAttribute("component");
                 float version = Float.parseFloat(element.getAttribute("version"));
-                Component comp = ComponentRepository.getInstance().getComponent(name);
+                Component comp = ComponentRepository.repository.getComponent(name);
                 if (comp != null && comp.getVersion() >= version) {
                     dependencies.add(comp);
                 } else {
