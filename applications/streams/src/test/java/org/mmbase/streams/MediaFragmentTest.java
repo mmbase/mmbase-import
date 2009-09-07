@@ -68,20 +68,33 @@ public class MediaFragmentTest {
 
 
 
-
-    @Test
-    public void node() {
+    Node newNode() {
         Cloud cloud = getCloud();
         assumeNotNull(cloud);
         NodeManager nm = cloud.getNodeManager("streamsources");
         assumeNotNull(nm);
         Node newSource = nm.createNode(); //
+        return newSource;
+    }
+
+
+    @Test
+    public void commitGetSetCommit() {
+        Node newSource = newNode();
         newSource.commit();
         assertTrue(newSource.getNumber() > 0);
-
-        assertNull(newSource.getNodeValue("mediafragment"));
         newSource.getStringValue("title");
-        assertNotNull(newSource.getNodeValue("mediafragment"));
+        newSource.setStringValue("title", "test test");
+        newSource.commit();
+
+        assertEquals("test test", newSource.getStringValue("title"));
+    }
+
+    @Test
+    public void commitSetCommit() {
+        Node newSource = newNode();
+        newSource.commit();
+        assertTrue(newSource.getNumber() > 0);
         newSource.setStringValue("title", "test test");
         newSource.commit();
 
