@@ -28,6 +28,7 @@ public class  BitrateLabeler  extends Labeler  {
 
     private final Map<String, BitrateInfo> bitrates= new LinkedHashMap<String, BitrateInfo>();
 
+    @Override
     public void configure(DocumentReader reader, Element element) {
         bitrates.clear();
         try {

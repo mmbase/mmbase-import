@@ -26,18 +26,21 @@ public class NodeTypeSorter extends  PreferenceSorter {
 
     private final List<String> nodeTypes = new ArrayList<String>();
 
+
+    public  NodeTypeSorter() {
+    }
+
     public void setList(String nt) {
         nodeTypes.addAll(org.mmbase.util.StringSplitter.split(nt));
         Collections.reverse(nodeTypes);
-    }
-
-    public  NodeTypeSorter() {
+        log.service("Found list " + nodeTypes);
     }
 
     protected int getPreference(MMObjectBuilder buil) {
         return nodeTypes.indexOf(buil.getTableName());
     }
 
+    @Override
     protected int getPreference(URLComposer ri) {
         MMObjectBuilder buil = ri.getSource().getBuilder();
         int p = getPreference(buil);
