@@ -220,6 +220,17 @@ public class ParametersTest {
 
         }
 
+        params.set("g", new String[] {"6"});
+        assertEquals("6", params.get(G).toString());
+
+        try {
+            params.set("g", new String[] {"list"});
+            fail("Should have given IllegalArgumentException since 'list' is not a valid decimal");
+        } catch (IllegalArgumentException ia) {
+            // ok this is expected
+
+        }
+
     }
 
 
