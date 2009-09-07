@@ -67,10 +67,19 @@ public class MediaFragmentTest {
     }
 
 
-
     Node newNode() {
         Cloud cloud = getCloud();
         assumeNotNull(cloud);
+        return newNode(cloud);
+    }
+
+    Transaction getTransaction() {
+        Cloud cloud = getCloud();
+        assumeNotNull(cloud);
+        return cloud.getTransaction(getClass().getName());
+    }
+
+    Node newNode(Cloud cloud) {
         NodeManager nm = cloud.getNodeManager("streamsources");
         assumeNotNull(nm);
         Node newSource = nm.createNode(); //
@@ -88,19 +97,28 @@ public class MediaFragmentTest {
         newSource.commit();
 
         assertEquals("test test", newSource.getStringValue("title"));
+        assertNotNull(newSource.getNodeValue("mediafragment"));
+    }
+
+
+
+    @Test
+    public void commitSetCommitInTranaction() {
+        Transaction t = getTransaction();
+        Node newSource = newNode(t);
+        newSource.setStringValue("title", "test test");
+        newSource.commit();
+        t.commit();
+        assertEquals("test test", newSource.getStringValue("title"));
+
     }
 
     @Test
     public void commitSetCommit() {
         Node newSource = newNode();
-        newSource.commit();
-        assertTrue(newSource.getNumber() > 0);
         newSource.setStringValue("title", "test test");
         newSource.commit();
-
         assertEquals("test test", newSource.getStringValue("title"));
-
-
 
     }
 }

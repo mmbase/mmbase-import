@@ -352,7 +352,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         if (ntCloud.hasNode(node)) {
             final ChainedLogger logger = new ChainedLogger(LOG);
             final Node ntNode = ntCloud.getNode(node);
-            ntNode.getStringValue("title"); // This triggers RelatedField$Creator to create a
+            ntNode.getStringValue("title"); // This triggers RelatedField$Creator to create a mediafragment
             Node mediafragment = ntNode.getNodeValue("mediafragment");
             final Job thisJob = createJob(ntNode, logger);
 
@@ -390,9 +390,6 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             return;
         }
         if (node.getNumber() > 0) {
-
-            // Trigger creating of mediafragment if that doesn't exist yet
-            node.getStringValue("title");
 
             if (node.isChanged(field.getName())) {
 
