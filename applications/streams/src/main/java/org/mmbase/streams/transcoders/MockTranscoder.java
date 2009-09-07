@@ -12,6 +12,7 @@ package org.mmbase.streams.transcoders;
 import org.mmbase.applications.media.Format;
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 import org.mmbase.util.logging.*;
 
@@ -29,6 +30,10 @@ public class MockTranscoder extends AbstractTranscoder {
 
     protected boolean empty = false;
     protected String setting = "";
+    protected int x = 100;
+    protected int y = 100;
+
+    private final Map<String, Object> props = new HashMap<String, Object>();
 
     public MockTranscoder() {
         format = Format.UNKNOWN;
@@ -39,6 +44,16 @@ public class MockTranscoder extends AbstractTranscoder {
     }
     public void setSetting(String s) {
         setting = s;
+    }
+    public void setProperty(String value, String key) {
+        props.put(value, key);
+    }
+
+    public void setWidth(int x) {
+        this.x = x;
+    }
+    public void setHeight(int y) {
+        this.y = y;
     }
 
     protected void transcode(final Logger log) throws Exception {

@@ -32,6 +32,18 @@ public class MockAnalyzer implements Analyzer {
         util.setUpdateSource(true);
     }
 
+    protected int x = -1;
+    protected int y = -1;
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+
     private List<Throwable> errors = new ArrayList<Throwable>();
 
     public void addThrowable(Throwable t) {
@@ -47,9 +59,13 @@ public class MockAnalyzer implements Analyzer {
     }
 
     public void analyze(String l, Node source, Node des) {
+
     }
 
     public void ready(Node sourceNode, Node destNode) {
+        destNode.setValue("height", y);
+        destNode.setValue("width", x);
+        destNode.commit();
         util.toVideo(sourceNode, destNode);
         log.info("READY for " + sourceNode.getNodeManager().getName() + " " + sourceNode.hashCode() + " " + sourceNode.getNumber());
 
