@@ -32,7 +32,7 @@ public class ParametersTest {
     private static final Parameter<String> E = new Parameter<String>("e", String.class, "E");
     private static final Parameter<String> F = new Parameter<String>("f", String.class, "F");
 
-    private static final Parameter G = new Parameter("g", DataTypes.getDataType("decimal"));
+    private static final Parameter G = new Parameter("g", DataTypes.getDataType("currency_enforcescale"));
 
     private static final Parameter<Integer> PB = new PatternParameter<Integer>(Pattern.compile("b+"), Integer.class);
     private static final Parameter<Integer> PC = new PatternParameter<Integer>(Pattern.compile("c+"), Integer.class);
@@ -184,6 +184,7 @@ public class ParametersTest {
 
     @Test
     public void autoCast() {
+
         Parameters params = new Parameters(B, G);
         params.set(B, 5); // OK
         params.set(G, new java.math.BigDecimal(5));
@@ -230,6 +231,24 @@ public class ParametersTest {
             // ok this is expected
 
         }
+
+        params.set("g", new String[] {"6.12345"});
+        assertEquals("6.12345", params.get(G).toString());
+
+        params.set("g", new String[] {"123.1"});
+        assertEquals("123.1", params.get(G).toString());
+
+        try {
+            params.set("g", "7.123456789");
+
+            // FAILS!
+            //fail("Should have given IllegalArgumentException since '7.123456789' hs too many digits");
+        } catch (IllegalArgumentException ia) {
+            // ok this is expected
+
+        }
+
+        params.set("g", new String[] {"1.1"});
 
     }
 
