@@ -122,7 +122,7 @@ public class CreateCachesTest {
         assumeNotNull(cloud);
 
 
-        Node container = cloud.getNodeManager("videofragments").createNode();
+        Node container = cloud.getNodeManager("mediafragments").createNode();
         container.commit();
 
         NodeManager nm = cloud.getNodeManager("streamsources");
