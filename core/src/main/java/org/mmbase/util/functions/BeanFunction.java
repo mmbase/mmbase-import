@@ -241,6 +241,9 @@ public class BeanFunction extends AbstractFunction<Object> {
     }
 
     /**
+     * @param  b The 'bean' on which the setter methods must be invoked
+     * @param  parameters The object containing the parameter values
+     * @param  setMethods  The setter methods
      * @since MMBase-1.9.2
      */
     public static void setParameters(Object b, Parameters parameters, List<Method> setMethods) throws IllegalAccessException, InvocationTargetException {
@@ -258,10 +261,26 @@ public class BeanFunction extends AbstractFunction<Object> {
                         continue;
                     }
                 }
-                Object defaultValue = parameters.getDefinition()[count].getDefaultValue();
-                if ((defaultValue == null && value != null) ||
-                    (defaultValue != null && (! defaultValue.equals(value)))) {
+                Type annotatedDataType = setter.getAnnotation(Type.class);
+                boolean resetDefaults = annotatedDataType != null;
+                if (resetDefaults) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Invoking " + b + " " + setter + "(" + value + ")");
+                    }
                     setter.invoke(b, value);
+                } else {
+                    Object defaultValue = parameters.getDefinition()[count].getDefaultValue();
+                    if ((defaultValue == null && value != null) ||
+                        (defaultValue != null && (! defaultValue.equals(value)))) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Invoking " + b + " " + setter + "(" + value + ")");
+                        }
+                        setter.invoke(b, value);
+                    } else {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Not Invoking " + b + " " + setter + "(" + value + "), it already has the default value");
+                        }
+                    }
                 }
                 count++;
             } catch (Exception e) {
