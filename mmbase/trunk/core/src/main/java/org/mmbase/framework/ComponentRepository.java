@@ -45,29 +45,50 @@ public class ComponentRepository {
 
     private static final Logger log = Logging.getLoggerInstance(ComponentRepository.class);
 
-    private static final ComponentRepository repository = new ComponentRepository();
+    static final ComponentRepository repository = new ComponentRepository();
 
 
+    /**
+     * Returns the (ready configured) instance of the repository
+     */
     public static ComponentRepository getInstance() {
+
+        if (Thread.currentThread() == repository.configuringThread) {
+            return repository;
+        }
+        try {
+            synchronized(repository) {
+                while (! repository.isConfigured()) {
+                    repository.wait();
+                }
+            }
+        } catch (InterruptedException ie) {
+            log.info(ie);
+        }
         return repository;
     }
-    static {
-        ResourceWatcher rw = new ResourceWatcher() {
-                public void onChange(String r) {
-                    getInstance().readConfiguration(r);
-                    Framework.framework = null; // invalidate also the framework configuration,
-                                                // because e.g. UrlConverters may have referrences to components
-                }
-            };
-        rw.add("components");
-        rw.onChange();
-        rw.setDelay(2 * 1000); // 2 s
-        rw.start();
 
+    static {
+        synchronized(repository) {
+            ResourceWatcher rw = new ResourceWatcher() {
+                    public void onChange(String r) {
+                        repository.readConfiguration(r);
+                        Framework.framework = null; // invalidate also the framework configuration,
+                        // because e.g. UrlConverters may have referrences to components
+                    }
+                };
+            rw.add("components");
+            rw.onChange();
+            rw.setDelay(2 * 1000); // 2 s
+            rw.start();
+        }
     }
 
     private final Map<String, Component> rep = new TreeMap<String, Component>();
     private final List<Component> failed     = new ArrayList<Component>();
+
+    private boolean isConfigured = false;
+    private Thread configuringThread = null;
 
     private ComponentRepository() { }
 
@@ -178,6 +199,10 @@ public class ComponentRepository {
         failed.clear();
     }
 
+    protected boolean isConfigured() {
+        return isConfigured;
+    }
+
     /**
      */
     private void readBlockTypes(Element root) {
@@ -198,66 +223,72 @@ public class ComponentRepository {
     /**
      * Reads all component xmls
      */
-    protected void readConfiguration(String child) {
-        clear();
+    protected synchronized void readConfiguration(String child) {
+        configuringThread = Thread.currentThread();
+        try {
+            clear();
 
-        ResourceLoader loader =  ResourceLoader.getConfigurationRoot().getChildResourceLoader(child);
-        Collection<String> components = loader.getResourcePaths(ResourceLoader.XML_PATTERN, true /* recursive*/);
-        log.debug("In " + loader + " the following components XML's were found " + components);
-        for (String resource : components) {
-            for (URL url : loader.getResourceList(resource)) {
-                try {
-                    if (url.openConnection().getDoInput()) {
-                        String namespace = ResourceLoader.getDocument(url, false, null).getDocumentElement().getNamespaceURI();
+            ResourceLoader loader =  ResourceLoader.getConfigurationRoot().getChildResourceLoader(child);
+            Collection<String> components = loader.getResourcePaths(ResourceLoader.XML_PATTERN, true /* recursive*/);
+            log.debug("In " + loader + " the following components XML's were found " + components);
+            for (String resource : components) {
+                for (URL url : loader.getResourceList(resource)) {
+                    try {
+                        if (url.openConnection().getDoInput()) {
+                            String namespace = ResourceLoader.getDocument(url, false, null).getDocumentElement().getNamespaceURI();
 
-                        if (namespace == null || ! RECOGNIZED_NAMESPACES.contains(namespace)) {
-                            log.debug("Ignoring " + url  + " because namespace is not one of  " + RECOGNIZED_NAMESPACES + ", but " + namespace);
-                            continue;
-                        }
-                        Document doc = ResourceLoader.getDocument(url, true, getClass());
-                        Element documentElement = doc.getDocumentElement();
-
-                        if (documentElement.getTagName().equals("component")) {
-                            String name = documentElement.getAttribute("name");
-                            String fileName = ResourceLoader.getName(resource);
-                            if (! fileName.equals(name)) {
-                                log.warn("Component " + url + " is defined in resource with name " + resource + " but its name is '" + name + "'");
-                            } else {
-                                log.service("Instantiating component '" + url + "' " + namespace);
+                            if (namespace == null || ! RECOGNIZED_NAMESPACES.contains(namespace)) {
+                                log.debug("Ignoring " + url  + " because namespace is not one of  " + RECOGNIZED_NAMESPACES + ", but " + namespace);
+                                continue;
                             }
-                            if (rep.containsKey(name)) {
-                                Component org = rep.get(name);
-                                log.debug("There is already a component with name '" + name + "' (" + org.getUri() + "), " + doc.getDocumentURI() + " defines another one, which is now ignored");
+                            Document doc = ResourceLoader.getDocument(url, true, getClass());
+                            Element documentElement = doc.getDocumentElement();
+
+                            if (documentElement.getTagName().equals("component")) {
+                                String name = documentElement.getAttribute("name");
+                                String fileName = ResourceLoader.getName(resource);
+                                if (! fileName.equals(name)) {
+                                    log.warn("Component " + url + " is defined in resource with name " + resource + " but its name is '" + name + "'");
+                                } else {
+                                    log.service("Instantiating component '" + url + "' " + namespace);
+                                }
+                                if (rep.containsKey(name)) {
+                                    Component org = rep.get(name);
+                                    log.debug("There is already a component with name '" + name + "' (" + org.getUri() + "), " + doc.getDocumentURI() + " defines another one, which is now ignored");
+                                } else {
+                                    Component newComponent = getComponent(name, doc);
+                                    rep.put(name, newComponent);
+                                }
+                            } else if (documentElement.getTagName().equals("blocktypes")) {
+                                log.service("Reading block types from '" + url + "' " + namespace);
+                                readBlockTypes(documentElement);
+                            } else if (documentElement.getTagName().equals("head")
+                                       || documentElement.getTagName().equals("body")) {
+                                log.debug("Resource '" + url + "' " + documentElement.getTagName() + "' used for include");
                             } else {
-                                Component newComponent = getComponent(name, doc);
-                                rep.put(name, newComponent);
+                                log.warn("Resource '" + url + "' " + namespace + " and entry '" + documentElement.getTagName() + "' cannot be recognized");
                             }
-                        } else if (documentElement.getTagName().equals("blocktypes")) {
-                            log.service("Reading block types from '" + url + "' " + namespace);
-                            readBlockTypes(documentElement);
-                        } else if (documentElement.getTagName().equals("head")
-                                || documentElement.getTagName().equals("body")) {
-                            log.debug("Resource '" + url + "' " + documentElement.getTagName() + "' used for include");
                         } else {
-                            log.warn("Resource '" + url + "' " + namespace + " and entry '" + documentElement.getTagName() + "' cannot be recognized");
+                            log.debug("" + url + " does not exist");
                         }
-                    } else {
-                        log.debug("" + url + " does not exist");
+                    } catch (ClassNotFoundException cnfe) {
+                        log.error("For " + url + ": " + cnfe.getClass() + " " + cnfe.getMessage());
+                    } catch (Throwable e) {
+                        log.error("For " + url + ": " + e.getMessage(), e);
                     }
-                } catch (ClassNotFoundException cnfe) {
-                    log.error("For " + url + ": " + cnfe.getClass() + " " + cnfe.getMessage());
-                } catch (Throwable e) {
-                    log.error("For " + url + ": " + e.getMessage(), e);
+
                 }
-
             }
-        }
 
-        if (! resolve()) {
-            log.error("Not all components satisfied their dependencies");
+            if (! resolve()) {
+                log.error("Not all components satisfied their dependencies");
+            }
+            log.info("Found the following components " + getComponents());
+        } finally {
+            isConfigured = true;
+            configuringThread = null;
+            notifyAll();
         }
-        log.info("Found the following components " + getComponents());
-
     }
 
 
