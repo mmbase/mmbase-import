@@ -47,7 +47,16 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
 
 
     protected Number castString(final Object preCast, final Cloud cloud) throws CastException {
-        if (preCast == null || "".equals(preCast)) return null;
+        if (preCast == null || "".equals(preCast)) {
+            return null;
+        }
+
+        if (preCast instanceof String[]) {
+            String[] sa = (String[]) preCast;
+            if (sa.length == 1) {
+                return castString(sa[0], cloud);
+            }
+        }
 
         if (preCast instanceof CharSequence) {
             String s = preCast.toString();
@@ -112,7 +121,12 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
     @Override protected Object castToValidate(Object value, Node node, Field field) throws CastException {
         if (value == null) return null;
         Object preCast = preCast(value, node, field); // resolves enumerations
-        return castString(preCast, getCloud(getCloud(node, field)));
+
+        Object cs = castString(preCast, getCloud(getCloud(node, field)));
+        if (log.isDebugEnabled()) {
+            log.debug("" + this + " precast " + value + " -> " + preCast + " -> " + cs);
+        }
+        return cs;
     }
 
     @Override protected E cast(Object value, Cloud cloud, Node node, Field field) throws CastException {
