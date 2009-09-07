@@ -11,7 +11,9 @@ package org.mmbase.sms.cmtelecom;
 
 import org.mmbase.sms.*;
 import org.mmbase.bridge.*;
-import org.mmbase.util.xml.*;
+import org.mmbase.util.xml.UtilReader;
+import org.mmbase.util.xml.filter.*;
+
 import java.util.*;
 import java.io.*;
 import java.net.*;
