@@ -15,7 +15,7 @@
   </recognizer>
 
   <transcoder mimetype="audio/*" id="a1" in="recognizer">
-    <class name="org.mmbase.streams.transcoders.DummyTranscoder">
+    <class name="org.mmbase.streams.transcoders.MockTranscoder">
       <param name="format">MP3</param>
       <param name="empty">true</param>
       <param name="setting">a1</param>

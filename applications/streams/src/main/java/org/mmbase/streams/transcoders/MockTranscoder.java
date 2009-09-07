@@ -23,14 +23,14 @@ import org.mmbase.util.logging.*;
  * @version $Id: InfiniteTranscoder.java 36518 2009-07-02 12:52:01Z michiel $
  */
 @Settings({"format", "setting"})
-public class DummyTranscoder extends AbstractTranscoder {
-    private static final Logger LOG = Logging.getLoggerInstance(DummyTranscoder.class);
+public class MockTranscoder extends AbstractTranscoder {
+    private static final Logger LOG = Logging.getLoggerInstance(MockTranscoder.class);
     private int seq = 0;
 
     protected boolean empty = false;
     protected String setting = "";
 
-    public DummyTranscoder() {
+    public MockTranscoder() {
         format = Format.UNKNOWN;
     }
 
@@ -53,6 +53,10 @@ public class DummyTranscoder extends AbstractTranscoder {
             org.mmbase.util.IOUtil.copy(new FileInputStream(new File(in.getPath())),
                                         new FileOutputStream(new File(out.getPath())));
         }
+    }
+    @Override
+    public MockTranscoder clone() {
+        return (MockTranscoder) super.clone();
     }
 
 
