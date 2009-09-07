@@ -945,6 +945,12 @@
           Need a getprocessor to round to scale 2 for displaying.
       -->
     </specialization>
+
+    <specialization id="currency_enforcescale">
+      <property name="roundingMode" value="HALF_UP" />
+      <precision value="20" />
+      <scale     value="5"  />
+    </specialization>
   </datatype>
 
   <datatype id="list">
