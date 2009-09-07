@@ -89,11 +89,27 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
         setPrecision((int) value);
     }
 
+    @Override
+    protected Number toNumber(String s) throws CastException {
+        if (! allowSpecialNumbers) {
+            double d = org.mmbase.util.Casting.toDouble(s);
+            if (Double.isNaN(d) || Double.isInfinite(d)) {
+                throw new CastException("Special numbers not allowed: '" + d + "'");
+            }
+        }
+        return org.mmbase.util.Casting.toDecimal(s);
+    }
+
     @Override protected BigDecimal castString(Object preCast, Cloud cloud) throws CastException {
         if (preCast == null || "".equals(preCast)) return null;
         Number su = super.castString(preCast, cloud);
         if (su instanceof BigDecimal) {
-            return ((BigDecimal) su).round(new MathContext(Integer.MAX_VALUE, roundingMode));
+            BigDecimal rounded = ((BigDecimal) su).round(new MathContext(Integer.MAX_VALUE, roundingMode));
+            if (log.isDebugEnabled()) {
+                log.debug("Found " + preCast + " -> " + su + " -> " + rounded);
+            }
+            return rounded;
+
         } else {
             throw new CastException("Not a big decimal " + preCast);
         }
@@ -206,6 +222,9 @@ public class DecimalDataType extends NumberDataType<BigDecimal> implements Lengt
             if ((v == null) || (getValue() == null)) return true;
             BigDecimal compare = (BigDecimal) v;
             int max = getValue();
+            if (log.isDebugEnabled()) {
+                log.debug("Comparing " + compare);
+            }
             return compare.scale() <= max;
         }
     }
