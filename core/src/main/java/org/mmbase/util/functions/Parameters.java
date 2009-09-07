@@ -307,6 +307,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         int j = i + fromIndex;
         if (j < patternLimit) {
             Parameter<?> a = definition[j];
+            log.debug("Setting " + i + "( " + a.getName() + ")");
             if (autoCasting) {
                 try {
                     value = a.autoCast(value);
@@ -318,6 +319,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
             return backing.put(a.getName(), value);
         } else {
             if (patternBacking == null) throw new IndexOutOfBoundsException("No index " + i + " (" + j + "). Patternlimit " + patternLimit + " " + this);
+            log.debug("Setting " + i + "(by pattern)");
             return patternBacking.get(j - patternLimit).setValue(value);
         }
     }
