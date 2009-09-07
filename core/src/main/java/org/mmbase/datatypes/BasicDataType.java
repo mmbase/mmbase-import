@@ -869,7 +869,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      */
     public String getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key) {
         String value = null;
-        if (key != null) {
+        if (key != null && ! getEnumerationFactory().isEmpty()) {
             // cast to the appropriate datatype value.
             // Note that for now it is assumed that the keys are of the same type.
             // I'm not 100% sure that this is always the case.
