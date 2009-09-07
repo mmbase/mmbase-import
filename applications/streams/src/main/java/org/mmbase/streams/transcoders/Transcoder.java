@@ -35,7 +35,7 @@ public interface Transcoder extends org.mmbase.util.PublicCloneable<Transcoder>,
      * @param in
      * @param out
      * @param logger
-     * @return Wether transcoding was sucessfull
+     * @exception If transcoding was unsucessfull, an <code>Error</code> may be thrown.
      */
     void transcode(URI in, URI out, Logger logger) throws Exception;
 
