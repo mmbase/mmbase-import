@@ -30,7 +30,7 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
 
     private static final long serialVersionUID = 1L;
 
-    private boolean allowSpecialNumbers = false;
+    boolean allowSpecialNumbers = false;
     /**
      * Constructor for Number field.
      */
@@ -45,6 +45,19 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
         allowSpecialNumbers = sn;
     }
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    protected Number toNumber(String s) throws CastException {
+        double d = Casting.toDouble(s);
+
+        if (! allowSpecialNumbers) {
+            if (Double.isNaN(d) || Double.isInfinite(d)) {
+                throw new CastException("Special numbers not allowed: '" + d + "'");
+            }
+        }
+        return new java.math.BigDecimal(d).stripTrailingZeros();
+    }
 
     protected Number castString(final Object preCast, final Cloud cloud) throws CastException {
         if (preCast == null || "".equals(preCast)) {
@@ -83,14 +96,7 @@ abstract public class NumberDataType<E extends Number & Comparable<E>> extends C
                         throw new CastException("Not a number: '" + s + "'");
                     } else {
                         log.debug("Casting to decimal " + s);
-                        double d = Casting.toDouble(s);
-
-                        if (! allowSpecialNumbers) {
-                            if (Double.isNaN(d) || Double.isInfinite(d)) {
-                                throw new CastException("Special numbers not allowed: '" + d + "'");
-                            }
-                        }
-                        return new java.math.BigDecimal(d).stripTrailingZeros();
+                        return toNumber(s);
                     }
                 }
                 return number;
