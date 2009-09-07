@@ -132,6 +132,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
             }
             if (coreNode instanceof org.mmbase.module.core.VirtualNode) {
                 node = new org.mmbase.bridge.implementation.VirtualNode((org.mmbase.module.core.VirtualNode) coreNode, cloud);
+                log.debug("Core node is virtual, taking bridge node " + node);
             } else {
                 int number = coreNode.getNumber();
                 if (number == -1) {
@@ -139,6 +140,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
                     String tmpNumber = coreNode.getStringValue(MMObjectBuilder.TMP_FIELD_NUMBER);
                     if (cloud.hasNode(tmpNumber)) {
                         node = cloud.getNode(tmpNumber);
+                        log.debug("Found transactional (?) node " + node + " from "  + cloud);
                     } else {
                         // last resort..., we're really desperate now.
                         // This happens when calling gui() in transaction.
@@ -148,10 +150,12 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
                             virtual.storeValue(entry.getKey(), entry.getValue());
                         }
                         node = new org.mmbase.bridge.implementation.VirtualNode(virtual, cloud);
+                        log.debug("Found transaction (?) node " + node + ". Not in cloud " + cloud + " taking"  + node);
                     }
                 } else {
                     if (cloud.mayRead(number)) {
                         node = cloud.getNode(number);
+                        log.debug("Node exists, taking " + node + " from " + cloud);
                     } else {
                         log.warn("Could not produce Bridge Node for '" + number + "', cannot execute node function.");
                         return null;
@@ -159,7 +163,10 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
                 }
             }
             parameters.set(Parameter.NODE, node);
+        } else {
+            log.debug("node as param: " + node);
         }
+
         return getFunctionValue(node, parameters);
 
     }
@@ -169,9 +176,13 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
      */
     protected final MMObjectNode getCoreNode(final MMObjectBuilder builder, final Node node) {
         if (node instanceof org.mmbase.bridge.implementation.VirtualNode) {
-            return ((org.mmbase.bridge.implementation.VirtualNode) node).getNodeRef();
+            MMObjectNode n = ((org.mmbase.bridge.implementation.VirtualNode) node).getNodeRef();
+            log.debug("" + node + " -> " + n);
+            return n;
         } else {
-            return builder.getNode(node.getNumber());
+            MMObjectNode n = builder.getNode(node.getNumber());
+            log.debug("" + node + " -> " + n);
+            return n;
         }
 
     }
