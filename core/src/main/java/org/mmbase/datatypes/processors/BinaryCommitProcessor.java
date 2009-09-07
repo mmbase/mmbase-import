@@ -30,6 +30,8 @@ public class BinaryCommitProcessor implements CommitProcessor {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String NOT = BinaryCommitProcessor.class.getName() + ".NOT";
+
     private String filenameField = "filename";
     private String filesizeField = "filesize";
     private String contenttypeField = "mimetype";
@@ -98,6 +100,11 @@ public class BinaryCommitProcessor implements CommitProcessor {
     }
 
     public void commit(Node node, Field field) {
+
+        if (node.getCloud().getProperty(NOT) != null) {
+            log.debug("Skipped because of proeprty " + NOT);
+            return;
+        }
         if (log.isDebugEnabled()) {
             log.debug("Committing" + node);
         }
