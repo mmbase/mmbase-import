@@ -158,105 +158,117 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
      * @throws IOException thrown when an exception occurs
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        Object prevIp = Logging.mdcGet("IP");
+        try {
 
-        if (mmbase == null) {
-            if (log.isDebugEnabled()) log.debug("Still waiting for MMBase (not initialized)");
-            chained++;
-            chain.doFilter(request, response);
-            return;
-        }
-
-        if (request instanceof HttpServletRequest) {
-
-
-            HttpServletRequest req = (HttpServletRequest) request;
-            if (log.isTraceEnabled()) {
-                log.trace("Request URI: " + req.getRequestURI());
-                log.trace("Request URL: " + req.getRequestURL());
-                Enumeration e = request.getAttributeNames();
-                while (e.hasMoreElements()) {
-                    String att = (String) e.nextElement();
-                    log.trace("attribute " + att + ": " + request.getAttribute(att));
+            if (request instanceof HttpServletRequest) {
+                HttpServletRequest req = (HttpServletRequest) request;
+                HttpServletResponse res = (HttpServletResponse) response;
+                String ip = req.getHeader("X-Forwarded-For");
+                if (ip == null || "".equals(ip)) {
+                    ip = req.getRemoteAddr();
                 }
-            }
+                Logging.mdcPut("IP", ip);
+                res.addHeader("X-Powered-By", org.mmbase.Version.get());
 
-            HttpServletResponse res = (HttpServletResponse) response;
-            String path = getPath(req);
-            if (log.isDebugEnabled()) log.debug("Processing path: " + path);
-            if (path != null) {
-                if (excludePattern != null && excludePattern.matcher(path).find()) {
-                    chained++;
-                    chain.doFilter(request, response);  // url is excluded from further actions
-                    return;
-                }
-            }
-
-            // URL is not excluded, pass it to UrlConverter to process and forward the request
-            Framework fw =  Framework.getInstance();
-            if (fw == null) {
-                log.error("No MMBase framework found");
-                chained++;
-                chain.doFilter(request, response);
-                return;
-            }
-            Parameters frameworkParameters = fw.createParameters();
-            if (frameworkParameters.containsParameter(Parameter.REQUEST)) {
-                frameworkParameters.set(Parameter.REQUEST, req);
-            }
-            if (frameworkParameters.containsParameter(Parameter.RESPONSE)) {
-                frameworkParameters.set(Parameter.RESPONSE, res);
-            }
-            if (frameworkParameters.containsParameter(Parameter.CLOUD)) {
-                frameworkParameters.set(Parameter.CLOUD, org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase"));
-            }
-            try {
-                @SuppressWarnings("unchecked")
-                String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), frameworkParameters);
-
-                if (log.isDebugEnabled()) {
-                    log.debug("Received '" + forwardUrl + "' from framework, forwarding. rp:" + req.getParameterMap() + " fwp:" + frameworkParameters);
-                }
-
-                if (forwardUrl != null && !forwardUrl.equals("")) {
-                    res.setHeader("X-MMBase-forward", forwardUrl);
-                    req.setAttribute(PARAMS_KEY, frameworkParameters);
-                    /*
-                     * RequestDispatcher: If the path begins with a "/" it is interpreted
-                     * as relative to the current context root.
-                     */
-                    RequestDispatcher rd = request.getRequestDispatcher(forwardUrl);
-                    if(response.isCommitted()){
-                        log.debug("** response committed, including");
-                        included++;
-                        rd.include(request, response);
-                    }else{
-                        log.debug("** response not committed, forwarding");
-                        forwarded++;
-                        rd.forward(request, response);
-                    }
-                    log.debug("Ready");
-                } else {
-                    if (log.isDebugEnabled()) log.debug("No matching technical URL, just forwarding: " + path);
+                if (mmbase == null) {
+                    if (log.isDebugEnabled()) log.debug("Still waiting for MMBase (not initialized)");
                     chained++;
                     chain.doFilter(request, response);
+                    return;
                 }
-            } catch (FrameworkException fe) {
-                errors++;
-                throw new ServletException(fe);
-            } catch (ServletException se) {
-                errors++;
-                throw se;
-            } catch (IOException ioe) {
-                errors++;
-                throw ioe;
-            } catch (RuntimeException re) {
-                errors++;
-                throw re;
+
+
+                if (log.isTraceEnabled()) {
+                    log.trace("Request URI: " + req.getRequestURI());
+                    log.trace("Request URL: " + req.getRequestURL());
+                    Enumeration e = request.getAttributeNames();
+                    while (e.hasMoreElements()) {
+                        String att = (String) e.nextElement();
+                        log.trace("attribute " + att + ": " + request.getAttribute(att));
+                    }
+                }
+
+
+                String path = getPath(req);
+                if (log.isDebugEnabled()) log.debug("Processing path: " + path);
+                if (path != null) {
+                    if (excludePattern != null && excludePattern.matcher(path).find()) {
+                        chained++;
+                        chain.doFilter(request, response);  // url is excluded from further actions
+                        return;
+                    }
+                }
+
+                // URL is not excluded, pass it to UrlConverter to process and forward the request
+                Framework fw =  Framework.getInstance();
+                if (fw == null) {
+                    log.error("No MMBase framework found");
+                    chained++;
+                    chain.doFilter(request, response);
+                    return;
+                }
+                Parameters frameworkParameters = fw.createParameters();
+                if (frameworkParameters.containsParameter(Parameter.REQUEST)) {
+                    frameworkParameters.set(Parameter.REQUEST, req);
+                }
+                if (frameworkParameters.containsParameter(Parameter.RESPONSE)) {
+                    frameworkParameters.set(Parameter.RESPONSE, res);
+                }
+                if (frameworkParameters.containsParameter(Parameter.CLOUD)) {
+                    frameworkParameters.set(Parameter.CLOUD, org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getCloud("mmbase"));
+                }
+                try {
+                    @SuppressWarnings("unchecked")
+                        String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), frameworkParameters);
+
+                    if (log.isDebugEnabled()) {
+                        log.debug("Received '" + forwardUrl + "' from framework, forwarding. rp:" + req.getParameterMap() + " fwp:" + frameworkParameters);
+                    }
+
+                    if (forwardUrl != null && !forwardUrl.equals("")) {
+                        res.setHeader("X-MMBase-forward", forwardUrl);
+                        req.setAttribute(PARAMS_KEY, frameworkParameters);
+                        /*
+                         * RequestDispatcher: If the path begins with a "/" it is interpreted
+                         * as relative to the current context root.
+                         */
+                        RequestDispatcher rd = request.getRequestDispatcher(forwardUrl);
+                        if(response.isCommitted()){
+                            log.debug("** response committed, including");
+                            included++;
+                            rd.include(request, response);
+                        }else{
+                            log.debug("** response not committed, forwarding");
+                            forwarded++;
+                            rd.forward(request, response);
+                        }
+                        log.debug("Ready");
+                    } else {
+                        if (log.isDebugEnabled()) log.debug("No matching technical URL, just forwarding: " + path);
+                        chained++;
+                        chain.doFilter(request, response);
+                    }
+                } catch (FrameworkException fe) {
+                    errors++;
+                    throw new ServletException(fe);
+                } catch (ServletException se) {
+                    errors++;
+                    throw se;
+                } catch (IOException ioe) {
+                    errors++;
+                    throw ioe;
+                } catch (RuntimeException re) {
+                    errors++;
+                    throw re;
+                }
+            } else {
+                if (log.isDebugEnabled()) log.debug("Request not an instance of HttpServletRequest, therefore no url forwarding");
+                chained++;
+                chain.doFilter(request, response);
             }
-        } else {
-            if (log.isDebugEnabled()) log.debug("Request not an instance of HttpServletRequest, therefore no url forwarding");
-            chained++;
-            chain.doFilter(request, response);
+        } finally {
+            Logging.mdcPut("IP", prevIp);
         }
     }
 
