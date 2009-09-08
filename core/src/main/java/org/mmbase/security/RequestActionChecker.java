@@ -106,7 +106,19 @@ public class  RequestActionChecker implements ActionChecker  {
 
     @Override
     public String toString() {
-        return rank.toString() + " | " + users + "@" + allowedSchemes + "://" + allowedIps;
+        StringBuilder buf = new StringBuilder();
+        if (rank != ActionChecker.ALLOWS) {
+            buf.append(rank.toString());
+        }
+        if (users != null) {
+            if (buf.length() > 0) {
+                buf.append(" | ");
+            }
+            buf.append(users.toString());
+        }
+
+        buf.append('@').append(allowedSchemes.toString()).append("://").append(allowedIps.toString());
+        return buf.toString();
     }
 
 
