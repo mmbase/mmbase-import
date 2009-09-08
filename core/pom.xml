@@ -118,7 +118,6 @@ See http://www.MMBase.org/license
           </execution>
         </executions>
       </plugin>
-
     </plugins>
   </build>
   <dependencies>
@@ -251,4 +250,26 @@ See http://www.MMBase.org/license
       <url>http://www.mmbase.org/snapshots</url>
     </pluginRepository>
   </pluginRepositories>
+
+  <profiles>
+    <profile>
+      <id>deploy</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
