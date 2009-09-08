@@ -35,6 +35,10 @@ See http://www.MMBase.org/license
     <base.version>${mmbase.version}</base.version>
   </properties>
 
+  <scm>
+    <url>https://scm.mmbase.org/mmbase/trunk/core/</url>
+  </scm>
+
   <build>
     <plugins>
 
