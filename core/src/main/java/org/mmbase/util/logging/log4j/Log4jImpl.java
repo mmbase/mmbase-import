@@ -75,6 +75,18 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         }
     }
 
+    public static void mdcPut(String key, Object value) {
+        if (value != null) {
+            org.apache.log4j.MDC.put(key, value);
+        } else {
+            org.apache.log4j.MDC.remove(key);
+        }
+    }
+
+    public static Object mdcGet(String key) {
+        return org.apache.log4j.MDC.get(key);
+    }
+
 
     /**
      * Calls the configure method of DOMConfigurator, and redirect
