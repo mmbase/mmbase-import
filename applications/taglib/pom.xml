@@ -25,6 +25,8 @@
 
   <scm>
     <url>https://scm.mmbase.org/mmbase/trunk/applications/taglib</url>
+    <connection>scm:svn:${project.scm.url}</connection>
+    <developerConnection>${project.scm.connection}</developerConnection>
   </scm>
 
   <build>
