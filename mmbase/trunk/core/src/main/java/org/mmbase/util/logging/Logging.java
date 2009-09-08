@@ -213,6 +213,7 @@ public class Logging {
             log.debug("Replaced logger " + wrapper.getName());
         }
 
+        mdc = null;
         ResourceLoader.initLogging();
     }
 
@@ -269,7 +270,7 @@ public class Logging {
     /**
      * @since MMBase-1.9.2
      */
-    private static ThreadLocal<Map<String, Object>> MDC = new ThreadLocal<Map<String, Object>>() {
+    private static ThreadLocal<Map<String, Object>> MDC_MAP = new ThreadLocal<Map<String, Object>>() {
           @Override
           protected Map<String, Object> initialValue() {
               return new HashMap<String, Object>();
@@ -277,39 +278,37 @@ public class Logging {
 
     };
 
-    private static boolean warnedMDC = false;
+    private static MDC mdc = null;
+
     /**
      * MDC stands for <em>mapped diagnostic contexts</em> See also <a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/MDC.html">log4j.MDC</a>
      * @since MMBase-1.9.2
      */
-    public static void mdcPut(String key, Object value) {
-        try {
-            Method getIns = logClass.getMethod("mdcPut", String.class, Object.class);
-            getIns.invoke(null, key, value);
-        } catch (Exception e) {
-            if (! warnedMDC) {
-                log.warn("Logging implementation  does not support MDC " + e.getMessage());
-                warnedMDC = true;
+    public static MDC getMDC() {
+        if (mdc == null) {
+            try {
+                Method getIns = logClass.getMethod("getMDC");
+                mdc = (MDC) getIns.invoke(null);
+            } catch (Exception e) {
+                mdc = new MDC() {
+                        public void put(String key, Object value) {
+                            if (value != null) {
+                                MDC_MAP.get().put(key, value);
+                            } else {
+                                MDC_MAP.get().remove(key);
+                            }
+                        }
+
+                        public Object get(String key) {
+                            return MDC_MAP.get().get(key);
+                        }
+                    };
+
             }
-            MDC.get().put(key, value);;
         }
+        return mdc;
     }
-    /**
-     * MDC stands for <em>mapped diagnostic contexts</em> See also <a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/MDC.html">log4j.MDC</a>
-     * @since MMBase-1.9.2
-     */
-    public static Object mdcGet(String key) {
-        try {
-            Method getIns = logClass.getMethod("mdcGet", String.class);
-            return getIns.invoke(null, key);
-        } catch (Exception e) {
-            if (! warnedMDC) {
-                log.warn("Logging implementation  does not support MDC " + e.getMessage());
-                warnedMDC = true;
-            }
-            return MDC.get().get(key);
-        }
-    }
+
 
     /**
      * Most Logger categories in MMBase are based on class name.
@@ -352,6 +351,7 @@ public class Logging {
                     Method shutdown = logClass.getMethod("shutdown");
                     shutdown.invoke(null);
                 }
+                mdc = null;
                 configured = false;
             }
         } catch (NoSuchMethodException e) {
