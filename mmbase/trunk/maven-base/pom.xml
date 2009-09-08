@@ -258,6 +258,7 @@ See http://www.MMBase.org/license
             <links>
               <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
               <link>http://java.sun.com/javaee/5/docs/api/</link>
+              <link>http://www.mmbase.org/api/</link>
             </links>
             <source>1.5</source>
 
@@ -572,6 +573,8 @@ See http://www.MMBase.org/license
                Completely ridiculous.
 
                 for now disable the whole thing
+          -->
+          <!--
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
