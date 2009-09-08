@@ -38,6 +38,7 @@
       </table>
       
       <div class="log">
+        <h4>Job ${_.number} log</h4>
         <pre>
           <jsp:text>${_.logger.debugList}</jsp:text>
         </pre>
