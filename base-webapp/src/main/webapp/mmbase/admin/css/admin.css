@@ -315,7 +315,25 @@ div.codesample pre {
   background-color: #fff;
 }
 
+div.log { margin: 8px 0; }
 
+div.log h4
+{
+	background-color: #e6e9dd;
+	padding: 4px 8px;
+	margin: 0;
+}
+
+div.log pre
+{
+	color: #fff;
+	background-color: #002828;
+	height: 240px;
+	overflow: auto;
+	border: 2px solid #e6e9dd;
+	padding: 6px;
+	margin: 0;
+}
 
 div.mm_c.iframe iframe {
   width: 100%;
