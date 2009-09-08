@@ -46,6 +46,10 @@
 
   </dependencies>
 
+  <scm>
+    <url>https://scm.mmbase.org/mmbase/trunk/applications/</url>
+  </scm>
+
   <build>
     <plugins>
       <plugin>
@@ -94,6 +98,7 @@
         <module>media</module>
         <module>notifications</module>
         <module>searchrelate</module>
+        <module>searchrelate/example-webapp</module>
 
         <module>richtext</module>
         <module>richtext/content</module>

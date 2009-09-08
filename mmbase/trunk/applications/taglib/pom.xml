@@ -22,6 +22,11 @@
     from MMBase. You will probably always use this component.
   </description>
 
+
+  <scm>
+    <url>https://scm.mmbase.org/mmbase/trunk/applications/taglib</url>
+  </scm>
+
   <build>
 	<resources>
 		<resource>
@@ -116,6 +121,19 @@
           </transformationSets>
         </configuration>
       </plugin>
+      <!--
+      <plugin>
+        <groupId>net.sourceforge.maven-taglib</groupId>
+        <artifactId>maven-taglib-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>taglibdocjar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      -->
     </plugins>
   </build>
 
