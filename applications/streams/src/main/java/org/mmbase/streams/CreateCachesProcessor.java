@@ -239,7 +239,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             } else {
                 job.interrupt();
                 if (job.future.cancel(true)) {
-                    String message = "Canceled " + job.future;
+                    String message = "Canceled job for node #" + node.getNumber() + " (" + job.future + ")";
                     job.logger.info(message);
                     return message;
                 } else {
@@ -267,7 +267,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
     private Job createJob(final Node node, final ChainedLogger logger) {
         Job job = runningJobs.get(node.getNumber());
         if (job != null) {
-            LOG.warn("This job is already running: " + node.getNumber());
+            LOG.warn("This job is already running, node #" + node.getNumber());
             // already running
             return null;
         }
