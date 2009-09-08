@@ -40,6 +40,7 @@ public class CloudThreadLocal {
         cleanupAnyOrphanedCloud();
         if (cloud != null) {
             context.set(cloud);
+            Logging.getMDC().put("user", cloud.getUser().getIdentifier());
         }
     }
 
@@ -52,6 +53,7 @@ public class CloudThreadLocal {
         Cloud cloud = context.get();
         if (cloud != null) {
             context.set(null);
+            Logging.getMDC().put("user", null);
         }
         return cloud;
     }
