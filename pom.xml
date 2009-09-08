@@ -562,6 +562,7 @@ Version $Id: pom.xml,v 1.8 2009/02/20 15:21:28 michiel Exp $
       <modules>
         <module>maven</module>
         <module>maven-base</module>
+        <module>maven-base/applications</module>
         <module>core</module>
         <module>applications</module>
         <module>contributions</module>
