@@ -158,7 +158,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
      * @throws IOException thrown when an exception occurs
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        Object prevIp = Logging.mdcGet("IP");
+        Object prevIp = Logging.getMDC().get("IP");
         try {
 
             if (request instanceof HttpServletRequest) {
@@ -168,7 +168,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 if (ip == null || "".equals(ip)) {
                     ip = req.getRemoteAddr();
                 }
-                Logging.mdcPut("IP", ip);
+                Logging.getMDC().put("IP", ip);
                 res.addHeader("X-Powered-By", org.mmbase.Version.get());
 
                 if (mmbase == null) {
@@ -268,7 +268,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 chain.doFilter(request, response);
             }
         } finally {
-            Logging.mdcPut("IP", prevIp);
+            Logging.getMDC().put("IP", prevIp);
         }
     }
 

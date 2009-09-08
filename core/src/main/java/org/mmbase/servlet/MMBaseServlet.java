@@ -495,17 +495,17 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
             return;
         }
         incRefCount(req);
-        Object prevIp = Logging.mdcGet("IP");
+        Object prevIp = Logging.getMDC().get("IP");
         try {
             String ip = req.getHeader("X-Forwarded-For");
             if (ip == null || "".equals(ip)) {
                 ip = req.getRemoteAddr();
             }
-            Logging.mdcPut("IP", ip);
+            Logging.getMDC().put("IP", ip);
             res.addHeader("X-Powered-By", org.mmbase.Version.get());
             super.service(req, res);
         } finally { // whatever happens, decrease the refcount:
-            Logging.mdcPut("IP", prevIp);
+            Logging.getMDC().put("IP", prevIp);
             decRefCount(req);
         }
     }

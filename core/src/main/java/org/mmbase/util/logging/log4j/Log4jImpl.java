@@ -12,6 +12,7 @@ package org.mmbase.util.logging.log4j;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Level;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.MDC;
 
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.ResourceLoader;
@@ -73,18 +74,23 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             root.error("ClassCastException, probably you've forgotten a class attribute in your configuration file. It must say class=\"" + Log4jImpl.class.getName() + "\"");
             return root;
         }
-    }
 
-    public static void mdcPut(String key, Object value) {
-        if (value != null) {
-            org.apache.log4j.MDC.put(key, value);
-        } else {
-            org.apache.log4j.MDC.remove(key);
-        }
     }
+    public MDC getMDC() {
+        return new MDC() {
 
-    public static Object mdcGet(String key) {
-        return org.apache.log4j.MDC.get(key);
+            public void put(String key, Object value) {
+                if (value != null) {
+                    org.apache.log4j.MDC.put(key, value);
+                } else {
+                    org.apache.log4j.MDC.remove(key);
+                }
+            }
+
+            public Object get(String key) {
+                return org.apache.log4j.MDC.get(key);
+            }
+        };
     }
 
 
