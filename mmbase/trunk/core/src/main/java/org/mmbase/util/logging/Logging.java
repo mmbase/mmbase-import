@@ -250,7 +250,7 @@ public class Logging {
      * @param s A string describing the `category' of the Logger. This is a log4j concept.
      */
 
-    public  static Logger getLoggerInstance (String s) {
+    public  static Logger getLoggerInstance(String s) {
         // call the getLoggerInstance static method of the logclass:
         try {
             Method getIns = logClass.getMethod("getLoggerInstance", String.class);
@@ -263,6 +263,51 @@ public class Logging {
         } catch (Exception e) {
             log.warn(e);
             return  SimpleImpl.getLoggerInstance(s);
+        }
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    private static ThreadLocal<Map<String, Object>> MDC = new ThreadLocal<Map<String, Object>>() {
+          @Override
+          protected Map<String, Object> initialValue() {
+              return new HashMap<String, Object>();
+          }
+
+    };
+
+    private static boolean warnedMDC = false;
+    /**
+     * MDC stands for <em>mapped diagnostic contexts</em> See also <a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/MDC.html">log4j.MDC</a>
+     * @since MMBase-1.9.2
+     */
+    public static void mdcPut(String key, Object value) {
+        try {
+            Method getIns = logClass.getMethod("mdcPut", String.class, Object.class);
+            getIns.invoke(null, key, value);
+        } catch (Exception e) {
+            if (! warnedMDC) {
+                log.warn("Logging implementation  does not support MDC " + e.getMessage());
+                warnedMDC = true;
+            }
+            MDC.get().put(key, value);;
+        }
+    }
+    /**
+     * MDC stands for <em>mapped diagnostic contexts</em> See also <a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/MDC.html">log4j.MDC</a>
+     * @since MMBase-1.9.2
+     */
+    public static Object mdcGet(String key) {
+        try {
+            Method getIns = logClass.getMethod("mdcGet", String.class);
+            return getIns.invoke(null, key);
+        } catch (Exception e) {
+            if (! warnedMDC) {
+                log.warn("Logging implementation  does not support MDC " + e.getMessage());
+                warnedMDC = true;
+            }
+            return MDC.get().get(key);
         }
     }
 
