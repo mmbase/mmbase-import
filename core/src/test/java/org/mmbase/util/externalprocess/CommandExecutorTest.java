@@ -19,11 +19,17 @@ import static org.junit.Assert.*;
 public class CommandExecutorTest {
 
 
+    String getJava() {
+	String java_home = System.getenv("JAVA_HOME");
+	return java_home == null ? "java" : java_home + File.separator + "bin" + File.separator + "java";
+    }
+
+
     @Test
     public void stdout() throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ByteArrayOutputStream err = new ByteArrayOutputStream();
-        CommandExecutor.execute(out, err, new CommandExecutor.Method(), "java", "-cp", "target" + File.separator + "test-classes",  CommandExecutorTest.class.getName(), "stdout", "hello");
+        CommandExecutor.execute(out, err, new CommandExecutor.Method(), getJava(), "-cp", "target" + File.separator + "test-classes",  CommandExecutorTest.class.getName(), "stdout", "hello");
         assertEquals("hello", out.toString().trim());
         assertEquals("", err.toString());
     }
@@ -31,7 +37,7 @@ public class CommandExecutorTest {
     public void stderr() throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ByteArrayOutputStream err = new ByteArrayOutputStream();
-        CommandExecutor.execute(out, err, new CommandExecutor.Method(), "java", "-cp", "target" + File.separator + "test-classes", CommandExecutorTest.class.getName(), "stderr", "hello");
+        CommandExecutor.execute(out, err, new CommandExecutor.Method(), getJava(), "-cp", "target" + File.separator + "test-classes", CommandExecutorTest.class.getName(), "stderr", "hello");
         assertEquals("", out.toString().trim());
         assertEquals("hello", err.toString().trim());
     }
