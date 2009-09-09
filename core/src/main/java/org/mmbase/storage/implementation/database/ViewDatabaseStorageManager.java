@@ -72,7 +72,7 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      */
     @Override public void create(MMObjectBuilder builder) throws StorageException {
         if(!viewExists(builder)){
-             viewCreate(builder);
+            viewCreate(builder);
         }
     }
 
@@ -87,7 +87,9 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 super.create(node, builder);
             } else {
                 // insert in parent tables (from parents to childs) (especially because foreign keys on object's number may exist)
+                assert node.getNumber() > 0;
                 for (MMObjectBuilder b : builder.getAncestors()) {
+                    assert node.getNumber() > 0 : "" + node;
                     createObject(node, b);
                 }
                 createObject(node, builder);
@@ -181,6 +183,9 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
                 super.delete(node, builder);
             } else {
                 do {
+                    assert node.getIntValue("otype") > 0;
+                    assert node.getNumber() > 0;
+
                     deleteObject(node, builder);
                     builder = builder.getParentBuilder();
                 } while (builder!=null);
@@ -205,7 +210,13 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
             }
         }
         String tablename = getTableName(builder);
+        assert node.getIntValue("otype") > 0;
+        assert node.getNumber() > 0;
+
         super.delete(node, builder, blobFileField, tablename);
+        assert node.getIntValue("otype") > 0;
+        assert node.getNumber() > 0;
+
     }
 
     protected String getFieldName(CoreField field) {
@@ -256,7 +267,8 @@ public class ViewDatabaseStorageManager extends DatabaseStorageManager {
      * Override the default version. An index should only be created if
      * all the fields are in this builder. Otherwise this will fail horrably.
      */
-    @Override protected void create(Index index) throws StorageException {
+    @Override
+    protected void create(Index index) throws StorageException {
         for (int i=0; i<index.size(); i++) {
             CoreField f = (CoreField)index.get(i);
             if (!isPartOfBuilderDefinition(f)) {
