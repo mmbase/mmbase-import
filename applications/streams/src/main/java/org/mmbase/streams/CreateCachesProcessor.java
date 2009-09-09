@@ -130,9 +130,10 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                         transcoder = new RecognizerTranscoder(recognizer);
                                     }
                                     String in = el.getAttribute("in");
+                                    String label = el.getAttribute("label");
                                     MimeType mimeType = new MimeType(el.getAttribute("mimetype"));
                                     LOG.debug("Created " + transcoder);
-                                    JobDefinition def = new JobDefinition(id, in.length() > 0 ? in : null, transcoder, mimeType);
+                                    JobDefinition def = new JobDefinition(id, in.length() > 0 ? in : null, label.length() > 0 ? label : null, transcoder, mimeType);
                                     org.w3c.dom.NodeList childs = el.getChildNodes();
                                     for (int j = 0; j <= childs.getLength(); j++) {
                                         if (childs.item(j) instanceof Element) {
@@ -436,16 +437,18 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
         final String inId;
         final String id;
+        final String label;
         /**
          * Creates an JobDefinition template (used in the configuration container).
          */
-        JobDefinition(String id, String inId, Transcoder t, MimeType mt) {
+        JobDefinition(String id, String inId, String label, Transcoder t, MimeType mt) {
             assert id != null;
             transcoder = t.clone();
             analyzers = new ArrayList<Analyzer>();
             mimeType = mt;
             this.id = id;
             this.inId = inId;
+            this.label = label;
         }
 
         public Transcoder getTranscoder() {
@@ -464,6 +467,9 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         }
         public String getInId() {
             return inId;
+        }
+        public String getLabel() {
+            return label;
         }
 
         @Override
@@ -540,6 +546,9 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                 File outFile = new File(getDirectory(), dest.getStringValue("url").replace("/", File.separator));
                 dest.setLongValue("filesize", outFile.length());
                 dest.setIntValue("state", State.DONE.getValue());
+                if (definition.getLabel() != null && dest.getNodeManager().hasField("label")) {
+                    dest.setStringValue("label", definition.getLabel());
+                }
                 dest.commit();
             }
         }
@@ -576,6 +585,14 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         }
         public MimeType getMimeType() {
             return new MimeType(getSource().getStringValue("mimetype"));
+        }
+        @Override
+        public void ready() {
+            super.ready();
+            if (definition.getLabel() != null && source.getNodeManager().hasField("label")) {
+                source.setStringValue("label", definition.getLabel());
+            }
+
         }
     }
     public class SkippedResult extends Result {

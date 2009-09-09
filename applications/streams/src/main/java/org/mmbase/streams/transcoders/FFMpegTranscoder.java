@@ -92,7 +92,9 @@ public class FFMpegTranscoder extends CommandTranscoder {
 
     @Override
     protected LoggerWriter getErrorWriter(Logger log) {
-        return super.getErrorWriter(new ChainedLogger(log, new ErrorDetector(Pattern.compile("\\s*Unknown encoder.*"))));
+        // ffmpeg write also non-errors to stderr, so lets not log on ERROR, but on SERVICE.
+        // also pluging an error-detector here.
+        return new LoggerWriter(new ChainedLogger(log, new ErrorDetector(Pattern.compile("\\s*Unknown encoder.*"))), Level.SERVICE);
     }
 
     public FFMpegTranscoder() {
