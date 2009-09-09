@@ -95,6 +95,12 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
      */
     protected boolean supportsTransactions = false;
 
+    /**
+
+     * @since MMBase-1.9.2
+     */
+    protected boolean supportsForeignKeys= true;
+
 
     private static final File BASE_PATH_UNSET = new File("UNSET");
     /**
@@ -332,6 +338,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
             // First, determine the database name from the parameter set in mmbaseroot
             String databaseName = mmbase.getInitParameter("database");
             if (databaseName != null && ! "".equals(databaseName)) {
+                log.info("No database specified, using lookup.xml");
                 // if databasename is specified, attempt to use the database resource of that name
                 if (databaseName.endsWith(".xml")) {
                     databaseResourcePath = databaseName;
@@ -521,9 +528,10 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     }
 
     /**
+     * @return whether logged
      * @since MMBase-1.9.1
      */
-    protected void logQuery(String query, long duration) {
+    protected boolean logQuery(String query, long duration) {
         count++;
         Logger qlog = getLogger(query);
         Logger slog = getStackTraceLogger(query);
@@ -534,6 +542,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
             if (slog.isTraceEnabled()) {
                 slog.trace("trace for #" + count, getTraceException());
             }
+            return qlog.isTraceEnabled();
         } else if (duration < serviceDuration) {
             if (qlog.isDebugEnabled()) {
                 qlog.debug(getLogSqlMessage(query, count, duration));
@@ -541,6 +550,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
             if (slog.isDebugEnabled()) {
                 slog.debug("trace for #" + count, getTraceException());
             }
+            return qlog.isDebugEnabled();
         } else if (duration < infoDuration) {
             if (qlog.isServiceEnabled()) {
                 qlog.service(getLogSqlMessage(query, count, duration));
@@ -548,18 +558,23 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
             if (slog.isServiceEnabled()) {
                 slog.service("trace for #" + count, getTraceException());
             }
+            return qlog.isServiceEnabled();
         } else if (duration < warnDuration) {
             qlog.info(getLogSqlMessage(query, count, duration));
             slog.info("trace for #" + count, getTraceException());
+            return qlog.isEnabledFor(Level.INFO);
         } else if (duration < errorDuration) {
             qlog.warn(getLogSqlMessage(query, count, duration));
             slog.warn("trace for #" + count, getTraceException());
+            return qlog.isEnabledFor(Level.WARN);
         } else if (duration < fatalDuration) {
             qlog.error(getLogSqlMessage(query, count, duration));
             slog.error("trace for #" + count, getTraceException());
+            return qlog.isEnabledFor(Level.ERROR);
         } else {
             qlog.fatal(getLogSqlMessage(query, count, duration));
             slog.fatal("trace for #" + count, getTraceException());
+            return qlog.isEnabledFor(Level.FATAL);
         }
     }
 
