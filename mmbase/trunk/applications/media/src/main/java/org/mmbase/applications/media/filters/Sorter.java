@@ -36,21 +36,7 @@ abstract public class Sorter implements Comparator<URLComposer>, Filter {
      * Configure with setters on default
      */
     public void configure(DocumentReader reader, Element e) {
-        NodeList params = e.getChildNodes();
-        for (int i = 0 ; i < params.getLength(); i++) {
-            try {
-                Node node = params.item(i);
-                if (node instanceof Element && node.getNodeName().equals("property")) {
-                    Element param = (Element)node;
-                    String name = param.getAttribute("name");
-                    String value = org.mmbase.util.xml.DocumentReader.getNodeTextValue(param);
-                    org.mmbase.util.xml.Instantiator.setProperty(name, this.getClass(), this, value);
-
-                }
-            } catch (Exception ex) {
-                log.error(ex.getMessage(), ex);
-            }
-        }
+        FilterUtils.propertiesConfigure(this, reader, e);
     }
 
     final public int compare(URLComposer ri1, URLComposer ri2) {

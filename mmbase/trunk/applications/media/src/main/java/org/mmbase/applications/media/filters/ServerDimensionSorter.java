@@ -26,7 +26,7 @@ import org.mmbase.util.xml.DocumentReader;
  * can be combined with this one).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatSorter.java 36047 2009-06-14 14:44:44Z michiel $
+ * @version $Id$
  * @see     ClientFormatSorter
  */
 public class ServerDimensionSorter extends  PreferenceSorter {

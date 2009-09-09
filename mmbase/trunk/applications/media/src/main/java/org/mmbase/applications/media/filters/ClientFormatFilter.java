@@ -1,11 +1,11 @@
  /*
-  
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-  
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-  
+
   */
 
 package org.mmbase.applications.media.filters;
@@ -26,20 +26,20 @@ import org.w3c.dom.Element;
  */
 public class ClientFormatFilter implements Filter {
     private static Logger log = Logging.getLoggerInstance(ClientFormatFilter.class);
-    
+
     public void configure(DocumentReader reader, Element e) {
         // nothing to be configured on default.
     }
-    
+
     final public List<URLComposer> filter(List<URLComposer> urlcomposers) {
         List<URLComposer> filteredUrlcomposers = new ArrayList<URLComposer>();
-        
+
         for (URLComposer urlcomposer : urlcomposers) {
             Object format = urlcomposer.getInfo().get("format");
             if (log.isDebugEnabled()) {
                 log.debug("Client specified format = " + format);
             }
-          
+
             if(format==null) {
                 if (log.isDebugEnabled()) {
                     log.debug("Client did not specify format.");
@@ -54,7 +54,7 @@ public class ClientFormatFilter implements Filter {
                     }
                     return urlcomposers;
 		}
-            } 
+            }
 
             if (format instanceof Format) {
                 if (format == urlcomposer.getFormat()) filteredUrlcomposers.add(urlcomposer);
