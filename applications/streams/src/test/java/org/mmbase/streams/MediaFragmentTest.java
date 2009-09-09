@@ -102,7 +102,7 @@ public class MediaFragmentTest {
 
 
 
-    @Test
+    //@Test
     public void commitSetCommitInTranaction() {
         Transaction t = getTransaction();
         Node newSource = newNode(t);
@@ -113,7 +113,7 @@ public class MediaFragmentTest {
 
     }
 
-    @Test
+    //@Test
     public void commitSetCommit() {
         Node newSource = newNode();
         newSource.setStringValue("title", "test test");
