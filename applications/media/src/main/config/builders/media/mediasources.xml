@@ -202,6 +202,6 @@
 
   </fieldlist>
 
-
+  <xi:include href="http://www.mmbase.org/builders/media/mediasources.extra.fields.xml" />
   <xi:include href="http://www.mmbase.org/builders/media/mediasources.virtual.fields.xml" />
 </builder>
