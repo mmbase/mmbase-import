@@ -84,6 +84,26 @@
     </profile>
 
     <profile>
+      <id>mmapplications_subset_media</id>
+      <!--
+          Media oriented (e.g. suffices for open images project)
+      -->
+      <modules>
+        <module>resources</module>
+        <module>taglib</module>
+        <module>cloudcontext</module>
+        <module>crontab</module>
+        <module>email</module>
+        <module>media</module>
+        <module>streams</module>
+        <module>searchrelate</module>
+        <module>richtext</module>
+        <module>jumpers</module>
+        <module>clustering</module>
+      </modules>
+    </profile>
+
+    <profile>
       <id>test_build</id>
       <!--
           Very few applications, to speed up things when testing the build process itself.
