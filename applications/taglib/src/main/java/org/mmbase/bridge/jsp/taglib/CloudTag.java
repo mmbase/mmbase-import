@@ -1063,9 +1063,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
             }
             return SKIP_BODY;
         } catch (javax.servlet.ServletException ioe) {
-            throw new TaglibException("error sending redirect", ioe);
+            throw new TaglibException("error sending redirect " + ioe.getMessage(), ioe);
         } catch (java.io.IOException ioe) {
-            throw new TaglibException("error sending redirect", ioe);
+            throw new TaglibException("error sending redirect " + ioe.getMessage(), ioe);
         }
     }
 
