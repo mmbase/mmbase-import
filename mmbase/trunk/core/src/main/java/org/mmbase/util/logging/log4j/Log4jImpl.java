@@ -76,7 +76,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         }
 
     }
-    public MDC getMDC() {
+    public static MDC getMDC() {
         return new MDC() {
 
             public void put(String key, Object value) {
