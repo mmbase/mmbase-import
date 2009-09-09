@@ -49,6 +49,8 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
 
     private static final Logger log     = Logging.getLoggerInstance(DatabaseStorageManager.class);
 
+    private static final Logger valuesLogger =  Logging.getLoggerInstance("org.mmbase.QUERIES.VALUES");
+
 
     private static final Blob BLOB_SHORTED = new InputStreamBlob(null, -1);
 
@@ -135,9 +137,9 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
 
-    protected final void logQuery(String query, long startTime) {
+    protected final boolean logQuery(String query, long startTime) {
         long duration = System.nanoTime() - startTime;
-        getFactory().logQuery(query, duration);
+        return getFactory().logQuery(query, duration);
     }
 
     // javadoc is inherited
@@ -964,10 +966,14 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             nodeNumber = createKey();
             node.setValue(MMObjectBuilder.FIELD_NUMBER, nodeNumber);
         }
+        assert node.getNumber() > 0;
+        assert node.getIntValue("otype") > 0;
+
         MMObjectBuilder builder = node.getBuilder();
         // precommit call, needed to convert or add things before a save
         // Should be done in MMObjectBuilder
         builder.preCommit(node);
+
         create(node, builder);
         unloadShortedFields(node, builder);
         typeCache.put(nodeNumber, builder.getNumber());
@@ -1016,7 +1022,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         fieldValues.append('?');
     }
 
-    protected void create(MMObjectNode node, List<CoreField> createFields, String tablename) {
+    protected void create(MMObjectNode node, final List<CoreField> createFields, String tablename) {
         // Create a String that represents the fields and values to be used in the insert.
         StringBuilder fieldNames = null;
         StringBuilder fieldValues = null;
@@ -1043,17 +1049,18 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         if (log.isDebugEnabled()) {
             log.debug("insert field values " + fieldNames + " " + fieldValues);
         }
-        if (fields.size() > 0) {
-            Scheme scheme = factory.getScheme(Schemes.INSERT_NODE, Schemes.INSERT_NODE_DEFAULT);
-            String query = scheme.format(this, tablename, fieldNames.toString(), fieldValues.toString());
-            try {
-                getActiveConnection();
-                executeUpdateCheckConnection(query, node, fields);
-            } catch (SQLException se) {
-                throw new StorageException(se.getMessage() + " during creation of " + UNICODE_ESCAPER.transform(node.toString()) + " using query " + query, se);
-            } finally {
-                releaseActiveConnection();
-            }
+
+        assert fields.size() > 0;
+        assert node.getNumber() > 0;
+        Scheme scheme = factory.getScheme(Schemes.INSERT_NODE, Schemes.INSERT_NODE_DEFAULT);
+        String query = scheme.format(this, tablename, fieldNames.toString(), fieldValues.toString());
+        try {
+            getActiveConnection();
+            executeUpdateCheckConnection(query, node, fields);
+        } catch (SQLException se) {
+            throw new StorageException(se.getMessage() + " during creation of " + UNICODE_ESCAPER.transform(node.toString()) + " using query " + query, se);
+        } finally {
+            releaseActiveConnection();
         }
     }
 
@@ -1130,7 +1137,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             try {
                 setValue(ps, fieldNumber + 1, node, field);
             } catch (StorageException e) {
-                SQLException sqle = new SQLException(node.toString() + "/" + field + " " + e.getMessage());
+                SQLException sqle = new SQLException(node.toString() + "/" + field.getName() + " " + e.getMessage());
                 sqle.initCause(e);
                 throw sqle;
             }
@@ -1138,8 +1145,15 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         long startTime = getLogStartTime();
         ps.executeUpdate();
         ps.close();
-        logQuery(query, startTime);
-
+        boolean logged = logQuery(query, startTime);
+        if (logged) {
+            StringBuilder values = new StringBuilder();
+            for (CoreField field : fields) {
+                values.append("\n");
+                values.append(field.getName() + ":" + node.getStringValue(field.getName()));
+            }
+            valuesLogger.info(values);
+        }
     }
 
     // javadoc is inherited
@@ -1413,7 +1427,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     protected void setNodeValue(PreparedStatement statement, int index, Object nodeValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
         if (!setNullValue(statement, index, nodeValue, field, java.sql.Types.INTEGER)) {
             if (nodeValue == null && field.isNotNull()) {
-                throw new StorageException("The NODE field with name " + field.getClass() + " " + field.getName() + " of type " + field.getParent().getTableName() + " can not be NULL.");
+                throw new StorageException("The NODE field with  " + field.getClass() + " " + field.getName() + " of type " + field.getParent().getTableName() + " can not be NULL.");
             }
             int nodeNumber;
             if (nodeValue instanceof MMObjectNode) {
@@ -1687,10 +1701,25 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     protected void  setNodeTypeLeaveRelations(MMObjectNode node, MMObjectBuilder buil) throws StorageException {
-        delete(node, node.getOldBuilder());
-        typeCache.remove(node.getNumber());
+
+        assert node.getIntValue("otype") > 0;
+        assert node.getNumber() > 0;
 
         MMObjectBuilder oldBuilder = node.getOldBuilder();
+        // delete from database but do not delete blobs on disk
+        /*
+
+        String tablename = (String) factory.getStorageIdentifier(oldBuilder);
+        delete(node, oldBuilder, new ArrayList<CoreField>(), tablename);
+        */
+        delete(node, oldBuilder);
+
+        assert node.getIntValue("otype") > 0;
+
+
+        typeCache.remove(node.getNumber());
+
+
         log.service("Recreating " + node + " " + (oldBuilder == null ? "NULL" : oldBuilder.getTableName()) + " -> " + buil.getTableName());
         createWithoutEvent(node);
     }
@@ -1721,6 +1750,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             // nothing wrong.
             return bul.getNumber();
         } catch (SQLException sqe) {
+            log.warn(sqe);
             if (! wasinTransaction) {
                 rollback();
             } else {
@@ -1732,7 +1762,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
 
     /**
      * Delete a node from a specific builder
-     * This method makes it easier to implement relational databses, where you may need to remove the node
+     * This method makes it easier to implement relational databases, where you may need to remove the node
      * in more than one builder.
      * Call this method for all involved builders if you use a relational database.
      * @param node The node to delete
@@ -1749,10 +1779,18 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             }
         }
         String tablename = (String) factory.getStorageIdentifier(builder);
+        assert node.getIntValue("otype") > 0;
+        assert node.getNumber() > 0;
         delete(node, builder, blobFileField, tablename);
+        assert node.getIntValue("otype") > 0;
+        assert node.getNumber() > 0;
+
     }
 
-    protected void delete(MMObjectNode node, MMObjectBuilder builder, List<CoreField> blobFileField, String tablename) {
+    protected void delete(final MMObjectNode node, final MMObjectBuilder builder, final List<CoreField> blobFileField, final String tablename) {
+        assert node.getIntValue("otype") > 0;
+        assert node.getNumber() > 0;
+
         try {
             Scheme scheme = factory.getScheme(Schemes.DELETE_NODE, Schemes.DELETE_NODE_DEFAULT);
             String query = scheme.format(this, tablename, builder.getField("number"), node);
@@ -1790,6 +1828,9 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         } catch (SQLException se) {
             throw new StorageException(se);
         } finally {
+            assert node.getIntValue("otype") > 0;
+            assert node.getNumber() > 0;
+
             releaseActiveConnection();
         }
     }
@@ -1927,13 +1968,11 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                             String id = (String)factory.getStorageIdentifier(field);
                             value = getValue(result, result.findColumn(id), field, true);
                         }
-                        if (value == null) {
-                            node.storeValue(field.getName(), null);
-                        } else {
-                            node.storeValue(field.getName(), value);
-                        }
+                        node.storeValue(field.getName(), value);
                     }
                 }
+                assert node.getNumber() > 0;
+                assert node.getIntValue("otype") > 0;
                 // clear the changed signal on the node
                 node.clearChanged();
                 return;
