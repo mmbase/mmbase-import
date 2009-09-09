@@ -35,13 +35,13 @@ import org.mmbase.util.xml.DocumentReader;
  *         Logging.configure(<font color=#FF0000>"log.xml"</font>);
  *     }
  *
- *     <b><font color=#0000FF>static</font></b> Logger log = Logging.getLoggerInstance(test.<b><font color=#0000FF>class</font></b>.getName());
+ *     <b><font color=#0000FF>static</font></b> Logger log = Logging.getLoggerInstance(test.<b><font color=#0000FF>class</font></b>);
  *
  *     <b><font color=#0000FF>public</font></b> <b><font color=#0000FF>static</font></b> <font color=#009900>void</font> main(String[] args) {
  *         log.debug(<font color=#FF0000>"start"</font>);
  *         log.info(<font color=#FF0000>"Entering application."</font>);
  *
- *         log.setPriority(Level.TRACE);
+ *         log.setLevel(Level.TRACE);
  *         <b><font color=#0000FF>if</font></b> (log.isDebugEnabled()) {
  *             log.debug(<font color=#FF0000>"debug een"</font>);
  *             log.trace(<font color=#FF0000>"trace twee"</font>);
@@ -290,6 +290,7 @@ public class Logging {
                 Method getIns = logClass.getMethod("getMDC");
                 mdc = (MDC) getIns.invoke(null);
             } catch (Exception e) {
+                log.warn(e);
                 mdc = new MDC() {
                         public void put(String key, Object value) {
                             if (value != null) {
@@ -305,6 +306,7 @@ public class Logging {
                     };
 
             }
+            log.service("Found MDC " + mdc);
         }
         return mdc;
     }

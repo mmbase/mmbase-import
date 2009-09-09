@@ -11,7 +11,7 @@ package org.mmbase.util.logging;
 
 /**
  * MDC stands for <em>mapped diagnostic contexts</em> See also <a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/MDC.html">log4j.MDC</a>
- * The implementation depends on the Logger implemtentation. An instance can be obtained with {@link Logging#getMDC}.
+ * The implementation depends on the Logger implementation. An instance can be obtained with {@link Logging#getMDC}.
  * @since MMBase-1.9.2
  */
 
