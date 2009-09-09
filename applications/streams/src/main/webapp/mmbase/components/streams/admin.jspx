@@ -22,10 +22,13 @@
         <caption>Configuration</caption>
         <c:forEach items="${status.current.dataType.commitProcessor.processors[2].configuration}" var="jobdef">
           <tr>
-            <td>${jobdef.value.transcoder}</td><td>${jobdef.value.mimeType}</td>
+            <td>${jobdef.value.label}</td>
+            <td>${jobdef.value.transcoder}</td>
+            <td>${jobdef.value.mimeType}</td>
           </tr>
           <tr>
-          <td>${jobdef.value.analyzers}</td>
+            <td />
+            <td colspan="2">${jobdef.value.analyzers}</td>
           </tr>
         </c:forEach>
       </table>
