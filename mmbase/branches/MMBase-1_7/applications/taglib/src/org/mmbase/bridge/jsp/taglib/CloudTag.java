@@ -381,9 +381,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private int denyHTTP(String message) throws JspTagException {
         log.debug("sending deny");
         if (response.isCommitted()) {
-            throw new JspTagException("Response is commited already, cannot send a deny");            
+            throw new JspTagException("Response is commited already, cannot send a deny");
         }
-        
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         if (getRealm() == null) {
@@ -595,13 +595,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             cloud = (Cloud) c;
             if (cloud != null) {
                 if (cloud.getUser().isValid()) {
-                    if (log.isDebugEnabled()) {                        
+                    if (log.isDebugEnabled()) {
                         log.debug("Created/found a session. Cloud in it is of: " + cloud.getUser());
-                    }                    
+                    }
                 } else {
-                    if (log.isDebugEnabled()) {                        
+                    if (log.isDebugEnabled()) {
                         log.debug("Found invalid cloud in session of '" + cloud.getUser() + "'. Discarding.");
-                    }                    
+                    }
                     cloud = null;
                 }
             } else {
@@ -877,7 +877,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
 
             /*
-            if (1 == 0) { 
+            if (1 == 0) {
                 // XXXXX hmm, should test this in freeze
                 // making relative urls'.
 
@@ -939,9 +939,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             rd.forward(request, response);
             return SKIP_BODY;
         } catch (javax.servlet.ServletException ioe) {
-            throw new TaglibException("error sending redirect", ioe);
+            throw new TaglibException("error sending redirect " + ioe.getMessage(), ioe);
         } catch (java.io.IOException ioe) {
-            throw new TaglibException("error sending redirect", ioe);
+            throw new TaglibException("error sending redirect" + ioe.getMessage(), ioe);
         }
     }
 
@@ -1136,7 +1136,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
         if (checkAnonymous()) { // check if requested, and create
             if (cloud == null) { // could not be created!
-                // what can we do now?                
+                // what can we do now?
                 return SKIP_BODY;
             } else {
                 // yes, found
@@ -1165,7 +1165,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             return SKIP_BODY;
         }
-        if (checkLogoutMethod()) { 
+        if (checkLogoutMethod()) {
             return evalBody();
         }
 
