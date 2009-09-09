@@ -474,7 +474,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
         @Override
         public String toString() {
-            return "" + transcoder + " " + analyzers;
+            return "" + transcoder + " " + analyzers + "(" + label + ")";
         }
     }
 
