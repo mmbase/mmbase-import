@@ -47,8 +47,6 @@ public class BasicQueryHandler implements SearchQueryHandler {
     /** Sql handler used to generate SQL statements. */
     private final SqlHandler sqlHandler;
 
-    private final MMBase mmbase;
-
     /**
      * Default constructor.
      *
@@ -57,7 +55,6 @@ public class BasicQueryHandler implements SearchQueryHandler {
      */
     public BasicQueryHandler(SqlHandler sqlHandler) {
         this.sqlHandler = sqlHandler;
-        mmbase = MMBase.getMMBase();
     }
 
 
@@ -86,7 +83,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
             log.debug("sql: " + sqlString);
         }
 
-        final DatabaseStorageManager manager = ((DatabaseStorageManagerFactory) mmbase.getStorageManagerFactory()).getStorageManager();
+        final DatabaseStorageManager manager = ((DatabaseStorageManagerFactory) MMBase.getMMBase().getStorageManagerFactory()).getStorageManager();
         try {
             manager.executeQuery(sqlString, new ResultSetReader() {
                     public void read(ResultSet rs) throws SQLException {
