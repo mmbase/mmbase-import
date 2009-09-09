@@ -13,7 +13,7 @@
 
 	<!-- jakarta commons FileUpload -->
 	<property name="fileupload.file" value="commons-fileupload-1.0" />
-	<property name="fileupload.url" value="http://apache.mirror.rokscom.nl/jakarta/commons/fileupload/binaries/${fileupload.file}.tar.gz" />
+	<property name="fileupload.url" value="http://www.mmbase.org/download/${fileupload.file}.tar.gz" />
 	<property name="fileupload.jar" value="${expand.dir}/commons-fileupload-1.0/commons-fileupload-1.0.jar" />
 
 
