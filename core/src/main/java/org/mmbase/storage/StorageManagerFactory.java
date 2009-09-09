@@ -186,6 +186,10 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
             try {
                 log.debug("loading Storage Manager factory " + this.getClass().getName());
                 loadTries++;
+                if (Thread.currentThread().isInterrupted()) {
+                    log.info("Interrupted");
+                    return;
+                }
                 load();
                 break;
             } catch (StorageException se) {
