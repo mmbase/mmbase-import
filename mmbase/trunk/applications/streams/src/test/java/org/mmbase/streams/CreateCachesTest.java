@@ -186,7 +186,7 @@ public class CreateCachesTest {
 
     @Test
     public void recognizerOnly() throws Exception  {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 300; i++) {
             CreateCachesProcessor proc = get("dummycreatecaches_0.xml");
             Node source = getNode(proc.getDirectory());
             CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
@@ -198,7 +198,7 @@ public class CreateCachesTest {
         }
     }
 
-    @Test
+    //@Test
     public  void simple() throws Exception {
         CreateCachesProcessor proc = get("dummycreatecaches_1.xml");
         Node source = getNode(proc.getDirectory());
@@ -212,7 +212,7 @@ public class CreateCachesTest {
     }
 
 
-    @Test
+    //@Test
     public  void twoSteps() throws Exception {
         CreateCachesProcessor proc = get("dummycreatecaches_2.xml");
         Node source = getNode(proc.getDirectory());
@@ -223,7 +223,7 @@ public class CreateCachesTest {
         checkSource(source, 3);
     }
 
-    @Test
+    //@Test
     public  void twoStepsTwoResults() throws Exception {
         CreateCachesProcessor proc = get("dummycreatecaches_3.xml");
         Node source = getNode(proc.getDirectory());
@@ -234,7 +234,7 @@ public class CreateCachesTest {
         checkSource(source, 4);
     }
 
-    @Test
+    //@Test
     public  void ignoreByMimeType() throws Exception {
         CreateCachesProcessor proc = get("dummycreatecaches_4.xml");
         Node source = getNode(proc.getDirectory());
@@ -245,7 +245,7 @@ public class CreateCachesTest {
         checkSource(source, 1);
     }
 
-    @Test
+    //@Test
     public  void twoStepsTwoResultsIgnoreAudio() throws Exception {
         CreateCachesProcessor proc = get("dummycreatecaches_5.xml");
         Node source = getNode(proc.getDirectory());
