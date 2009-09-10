@@ -24,7 +24,7 @@ import java.util.regex.*;
  * @author Michiel Meeuwissen
  * @version $Id$
  */
-@Settings({"format", "acodec", "vcodec", "vpre", "aq", "ab", "b", "async", "r", "ac"})
+@Settings({"format", "acodec", "vcodec", "vpre", "aq", "ab", "b", "async", "r", "ac", "width", "height"})
 public class FFMpegTranscoder extends CommandTranscoder {
 
     private static final Logger log = Logging.getLoggerInstance(FFMpegTranscoder.class);
@@ -38,6 +38,9 @@ public class FFMpegTranscoder extends CommandTranscoder {
     String async = null;
     String r = null;
     String ac = null;
+
+    String width = null;
+    String height = null;
 
     /* Audio codec to use -acodec */
     public void setAcodec(String a) {
@@ -151,6 +154,10 @@ public class FFMpegTranscoder extends CommandTranscoder {
         if (ac != null) {
             args.add("-ac");
             args.add(ac);
+        }
+        if (width != null && height != null) {
+            args.add("-s");
+            args.add(width + "x" height);
         }
 
         args.add(outFile.toString());
