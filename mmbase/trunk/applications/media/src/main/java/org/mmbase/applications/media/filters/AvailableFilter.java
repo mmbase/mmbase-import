@@ -1,4 +1,4 @@
- /*
+/*
  
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
  
- */
+*/
 
 package org.mmbase.applications.media.filters;
 
@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 import java.util.List;
 
 /**
- * This removes all URLComposers wich are not available.
+ * This removes all URLComposers which are not available.
  * @author  Michiel Meeuwissen
  * @version $Id$
  */
@@ -27,6 +27,7 @@ public class AvailableFilter implements Filter {
         ListIterator<URLComposer> i = urlcomposers.listIterator();
         while (i.hasNext()) {
             URLComposer uc = i.next();
+            /* TODO: do something here with State SOURCE_UNSUPPORTED ? */
             if (! uc.isAvailable()) {
                 i.remove();
             }
