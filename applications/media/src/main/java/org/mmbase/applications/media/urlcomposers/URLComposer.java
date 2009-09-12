@@ -176,7 +176,12 @@ public class URLComposer  {
 
     /* The source */
     public boolean isMain() {
-        return source != null && source.getIntValue("state") == State.SOURCE.getValue();
+        if (source != null && (source.getIntValue("state") == State.SOURCE.getValue() || 
+                source.getIntValue("state") == State.SOURCE_UNSUPPORTED.getValue()) ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /* State of this source */
