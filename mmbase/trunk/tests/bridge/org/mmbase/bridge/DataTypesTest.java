@@ -546,6 +546,18 @@ public class DataTypesTest extends BridgeTest {
         //assertEquals(dt.getGUIName(), "lastmodifier");
     }
 
+    public void testRequiredButNoDefaultValue() {
+        Cloud cloud = getCloud();
+        NodeManager nm = cloud.getNodeManager("invalid_defaults");
+        Node n = nm.createNode();
+        try {
+            n.commit();
+            fail("Default value of " + n + ".required_line is not valid, so this node could not have been committed");
+        } catch (Exception e) {
+            // ok
+        }
+    }
+
 
 
 }
