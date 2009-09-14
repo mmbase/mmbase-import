@@ -44,13 +44,20 @@ public abstract class MMBaseTest extends TestCase {
      * If your test needs a running MMBase. Call this.
      */
     static public void startMMBase(boolean startDatabase) throws Exception {
-        if (startDatabase) startDatabase();
-        MMBaseContext.init();
-        mmb = MMBase.getMMBase();
+        if (startDatabase) {
+            startDatabase();
+        }
+        try {
+            MMBaseContext.init();
+            mmb = MMBase.getMMBase();
 
-        MMAdmin mmadmin = (MMAdmin) Module.getModule("mmadmin", true);
-        while (! mmadmin.getState()) {
-            Thread.sleep(1000);
+            MMAdmin mmadmin = (MMAdmin) Module.getModule("mmadmin", true);
+            while (! mmadmin.getState()) {
+                Thread.sleep(1000);
+            }
+        } catch (Throwable e) {
+            System.out.println("Error during startMMBase" + e.getMessage() + " " + Logging.stackTrace(e));
+            throw new Exception(e);
         }
         System.out.println("--------------------------------------------------------------------------------");
         System.out.println("Starting test");
