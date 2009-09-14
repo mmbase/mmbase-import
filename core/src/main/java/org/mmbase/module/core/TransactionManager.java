@@ -409,10 +409,14 @@ public class TransactionManager {
                 NodeState state = stati.get(node.getNumber());
                 if (!(node.getBuilder() instanceof InsRel) && (state.exists == Exists.NOLONGER)) {
                     // no return information
-                    if (user instanceof UserContext) {
-                        node.remove((UserContext)user);
+                    if (node.getNumber() > 0) {
+                        if (user instanceof UserContext) {
+                            node.remove((UserContext)user);
+                        } else {
+                            node.parent.removeNode(node);
+                        }
                     } else {
-                        node.parent.removeNode(node);
+                        log.debug("Node " + node + " was never committed to the database, so does not need to be removed from it");
                     }
                     state.state = State.COMMITED;
                 }
