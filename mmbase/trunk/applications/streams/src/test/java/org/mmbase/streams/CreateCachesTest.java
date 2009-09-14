@@ -186,7 +186,7 @@ public class CreateCachesTest {
 
     @Test
     public void recognizerOnly() throws Exception  {
-        for (int i = 0; i < 300; i++) {
+        for (int i = 0; i < 3; i++) {
             CreateCachesProcessor proc = get("dummycreatecaches_0.xml");
             Node source = getNode(proc.getDirectory());
             CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
