@@ -39,8 +39,8 @@ public class FFMpegTranscoder extends CommandTranscoder {
     String r = null;
     String ac = null;
 
-    int width = -1;
-    int height = -1;
+    Integer width = null;
+    Integer height = null;
 
     /* Audio codec to use -acodec */
     public void setAcodec(String a) {
@@ -163,7 +163,7 @@ public class FFMpegTranscoder extends CommandTranscoder {
             args.add("-ac");
             args.add(ac);
         }
-        if (width > 0 && height > 0) {
+        if (width != null && height != null) {
             args.add("-s");
             args.add(width + "x" + height);
         }
