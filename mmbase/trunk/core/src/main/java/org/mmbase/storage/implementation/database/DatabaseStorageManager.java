@@ -236,6 +236,8 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             }
             activeConnection = null;
         }
+
+
     }
 
     // javadoc is inherited
@@ -335,6 +337,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             } else {
                 String query = "";
                 try {
+
                     getActiveConnection();
                     Statement s;
                     Scheme scheme = factory.getScheme(Schemes.UPDATE_SEQUENCE, Schemes.UPDATE_SEQUENCE_DEFAULT);
@@ -1753,10 +1756,10 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             log.warn(sqe);
             if (! wasinTransaction) {
                 rollback();
-            } else {
-                releaseActiveConnection();
             }
             throw new StorageException(sqe);
+        } finally {
+            releaseActiveConnection();
         }
     }
 
@@ -1780,7 +1783,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         }
         String tablename = (String) factory.getStorageIdentifier(builder);
         assert node.getIntValue("otype") > 0;
-        assert node.getNumber() > 0;
+        assert node.getNumber() > 0 : "node should have positive number" + node;
         delete(node, builder, blobFileField, tablename);
         assert node.getIntValue("otype") > 0;
         assert node.getNumber() > 0;
@@ -1828,10 +1831,9 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         } catch (SQLException se) {
             throw new StorageException(se);
         } finally {
+            releaseActiveConnection();
             assert node.getIntValue("otype") > 0;
             assert node.getNumber() > 0;
-
-            releaseActiveConnection();
         }
     }
 
@@ -2239,8 +2241,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             try {
                 s = activeConnection.prepareStatement(query);
                 s.executeUpdate();
-            }
-            finally {
+            } finally {
                 if (s != null) {
                     s.close();
                 }
@@ -3405,6 +3406,8 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             }
         } catch (SQLException sqe) {
             log.warn(sqe);
+        } finally {
+            releaseActiveConnection();
         }
     }
 
