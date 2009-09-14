@@ -814,8 +814,10 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                     throw new UnsupportedOperationException();
                 }
                 public Result next() {
-                    i++;
-                    current = results.get(i);
+                    while(current == null || current.isReady()) {
+                        i++;
+                        current = results.get(i);
+                    }
                     if (current.definition.transcoder instanceof CommandTranscoder) {
                         // Get free method
                         CommandExecutor.Method m = null;
