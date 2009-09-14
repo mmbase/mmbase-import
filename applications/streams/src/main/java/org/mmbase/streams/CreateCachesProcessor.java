@@ -934,7 +934,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         }
         public synchronized void interrupt() {
             Node cacheNode = current.getDestination();
-            if (cacheNode != null) {
+            if (cacheNode != null && node.getCloud().hasNode(cacheNode.getNumber())) {
                 cacheNode.setIntValue("state", State.INTERRUPTED.getValue());
                 cacheNode.commit();
             }
