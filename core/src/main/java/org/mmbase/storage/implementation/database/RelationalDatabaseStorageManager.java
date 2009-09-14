@@ -111,6 +111,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      */
     @Override public void delete(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
+        boolean localTransactionCommitted = false;
         if (localTransaction) {
             beginTransaction();
         }
@@ -120,10 +121,17 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
                 super.delete(node, builder);
                 builder = builder.getParentBuilder();
             } while (builder!=null);
-            if (localTransaction) commit();
-        } catch (StorageException se) {
-            if (localTransaction && inTransaction) rollback();
-            throw se;
+
+            if (localTransaction) {
+                commit();
+                localTransactionCommitted = true;
+            }
+        } finally {
+            if (localTransaction) {
+                if (! localTransactionCommitted) {
+                    rollback();
+                }
+            }
         }
     }
 
