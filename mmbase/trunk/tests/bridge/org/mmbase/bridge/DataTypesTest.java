@@ -550,6 +550,9 @@ public class DataTypesTest extends BridgeTest {
         Cloud cloud = getCloud();
         NodeManager nm = cloud.getNodeManager("invalid_defaults");
         Node n = nm.createNode();
+        assertNull(n.getNodeManager().getField("required_line").getDataType().getDefaultValue());
+        assertNull(n.getValueWithoutProcess("required_line"));
+        assertNull(n.getValue("required_line"));
         try {
             n.commit();
             fail("Default value of " + n + ".required_line is not valid, so this node could not have been committed");
