@@ -30,8 +30,20 @@ public class OtherField {
 
         protected String fieldName;
 
+        protected boolean onlyIfEmpty = false;
+
         public void setField(String fn) {
             fieldName = fn;
+        }
+        /**
+         * For setters, the other field will only be set if it is currently empty. For getters, the
+         * other field will only be used, if this value is empty.
+         */
+        public void setOnlyIfEmpty(boolean b) {
+            onlyIfEmpty = b;
+        }
+        protected boolean empty(Node n, String field) {
+            return n.isNull(field) || "".equals(n.getValue(field));
         }
     }
 
@@ -40,6 +52,9 @@ public class OtherField {
 
         private static final long serialVersionUID = 1L;
         public Object process(final Node node, final Field field, final Object value) {
+            if (onlyIfEmpty && ! empty(node, fieldName)) {
+                return value;
+            }
             node.setValue(fieldName, value);
             return value;
         }
@@ -49,7 +64,15 @@ public class OtherField {
         private static final long serialVersionUID = 1L;
 
         public Object process(Node node, Field field, Object value) {
-            return node.getValue(fieldName);
+            if (onlyIfEmpty) {
+                if (value == null || "".equals(value)) {
+                    return node.getValue(fieldName);
+                } else {
+                    return value;
+                }
+            } else {
+                return node.getValue(fieldName);
+            }
         }
     }
 
