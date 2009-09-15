@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="datatypes" maintainer="mmbase.org" version="0" extends="object">
+  <names>
+    <singular xml:lang="en">datatypes</singular>
+    <plural xml:lang="en">datatypes</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="nl">Builder voor het testen van de bridge classes, met allerlei types velden</description>
+    <description xml:lang="en">Builder to test the bridge classes, with a lot of different typed fields </description>
+  </descriptions>
+
+  <fieldlist>
+
+    <field name="string">
+      <db>
+        <type size="255">STRING</type>
+      </db>
+    </field>
+    <field name="field">
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type size="255">STRING</type>
+      </db>
+    </field>
+    <field name="line">
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type size="255">STRING</type>
+      </db>
+    </field>
+    <field name="zipcode">
+      <datatype  base="dutch-zipcode" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="1234 AA" />
+      </datatype>
+      <db>
+        <type size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+    <field name="pattern">
+      <descriptions>
+        <description>Example of String pattern.</description>
+      </descriptions>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="a" />
+        <pattern value="(?i)[ab]{1,5}" />
+      </datatype>
+      <db>
+        <type size="255" notnull="false">STRING</type>
+      </db>
+    </field>
+    <field name="email">
+      <descriptions>
+        <description>Example of String pattern.</description>
+      </descriptions>
+      <datatype base="emailaddress" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+    <field name="stringrange">
+      <descriptions>
+        <description>Example of String range</description>
+      </descriptions>
+      <datatype base ="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="b" />
+        <minInclusive value="a" />
+        <maxInclusive value="zzzzz" />
+        <maxLength value="255" />
+      </datatype>
+    </field>
+    <field name="stringlength">
+      <descriptions>
+        <description>Example of String length</description>
+      </descriptions>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="aaa" />
+        <required value="false" />
+        <minLength value="1" />
+        <maxLength value="10" />
+      </datatype>
+      <db>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="required_stringlength">
+      <descriptions>
+        <description>Example of String length</description>
+      </descriptions>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="aaa" />
+        <required value="true" />
+        <minLength value="3" />
+        <maxLength value="10" />
+      </datatype>
+      <db>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="required_legacy">
+      <descriptions>
+        <description>Required by db notnull</description>
+      </descriptions>
+      <db>
+        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="languages">
+      <descriptions>
+        <description>Example of String enumeration</description>
+      </descriptions>
+      <datatype base="iso639" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type  size="2" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="integer">
+      <db>
+        <type  state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+    <field name="duration">
+      <datatype  base="duration" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+    <field name="duration_required">
+      <datatype  base="duration" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
+        <required value="true" />
+      </datatype>
+    </field>
+
+    <field name="range">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="6" />
+        <minInclusive value="1" />
+        <maxExclusive value="10" />
+      </datatype>
+    </field>
+
+    <field name="enumeration">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="6" />
+        <enumeration>
+          <entry value="2" />
+          <entry value="4" />
+          <entry value="6" />
+          <entry value="8" />
+        </enumeration>
+      </datatype>
+    </field>
+    <field name="localized_weak_enumeration">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="6" />
+        <enumeration enforce="onchange">
+          <entry value="2" xml:lang="en" display="two" />
+          <entry value="2" xml:lang="nl" display="twee" />
+          <entry value="8" xml:lang="nl" display="acht" />
+          <entry value="4" />
+          <entry value="6" xml:lang="eo" display="ses" />
+          <entry value="8" xml:lang="eo" display="ok" />
+          <entry value="8" xml:lang="en" display="eight" />
+        </enumeration>
+      </datatype>
+    </field>
+    <field name="weakest_enumeraton">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="6" />
+        <enumeration enforce="never">
+          <entry value="2" />
+          <entry value="4" />
+          <entry value="6" />
+          <entry value="8" />
+        </enumeration>
+      </datatype>
+
+    </field>
+
+    <field name="restricted_ordinals">
+      <datatype base="ordinals" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="2" />
+        <maxExclusive value="10" />
+      </datatype>
+    </field>
+
+    <field name="mmbase_state_enumeration">
+      <datatype base="integer"
+                xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="ERROR" />
+        <enumeration >
+          <entry basename="org.mmbase.datatypes.resources.states"
+                 javaconstants="org.mmbase.datatypes.resources.StateConstants"
+                 />
+        </enumeration>
+      </datatype>
+    </field>
+
+
+    <field name="float">
+      <datatype base="float"
+                xmlns="http://www.mmbase.org/xmlns/datatypes" />
+
+    </field>
+
+    <field name="datetime">
+      <datatype base="datetime"
+                xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="period">
+      <datatype
+          base="datetime"
+          xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="2005-10-05" />
+        <minInclusive value="2005-01-01" />
+        <maxExclusive value="2050-01-01" />
+      </datatype>
+    </field>
+
+    <field>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="now" />
+        <minExclusive value="today - 3 day"    enforce="oncreate"/>
+        <maxInclusive value="today + 100 year" enforce="onchange"/>
+      </datatype>
+      <db>
+        <name>dynamic_period</name>
+        <type  state="persistent">DATETIME</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype base="weeknumbers" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="now" />
+        <minExclusive value="today - 3 day"    enforce="oncreate" />
+        <maxInclusive value="today + 100 year" enforce="onchange" />
+      </datatype>
+      <db>
+        <name>weeknumbers</name>
+        <type  state="persistent">DATETIME</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>integer_datetime</name>
+        <type  state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+    <field name="handle">
+      <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minLength value="3" />
+        <maxLength value="10000" />
+      </datatype>
+    </field>
+
+    <field name="checksum">
+      <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <unique value="true" />
+      </datatype>
+    </field>
+
+    <field name="boolean">
+      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field>
+      <db>
+        <name>node</name>
+        <type state="persistent">NODE</type>
+      </db>
+    </field>
+    <field>
+      <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>typedef</name>
+        <type state="persistent">NODE</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="true" />
+      </datatype>
+      <db>
+        <name>yesno</name>
+        <type state="persistent" >BOOLEAN</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>integer_boolean</name>
+        <type state="persistent"  >INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>string_boolean</name>
+        <type state="persistent" size="255" >STRING</type>
+      </db>
+    </field>
+    <field>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>boolean_string</name>
+        <type state="persistent"  >BOOLEAN</type>
+      </db>
+    </field>
+    <field>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>integer_string</name>
+        <type state="persistent" >INTEGER</type>
+      </db>
+    </field>
+    <field>
+      <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery">
+          </query>
+        </enumeration>
+      </datatype>
+      <db>
+        <name>typedef</name>
+        <type state="persistent">NODE</type>
+      </db>
+    </field>
+    <field>
+      <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <query type="typedef" xmlns="http://www.mmbase.org/xmlns/searchquery">
+            <constraint field="number" operator="less"  value="10" />
+          </query>
+        </enumeration>
+      </datatype>
+      <db>
+        <name>small_typedef</name>
+        <type state="persistent">NODE</type>
+      </db>
+    </field>
+    <field name="nonode_typedef">
+      <datatype  base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+        <enumeration>
+          <query path="typedef" element="" xmlns="http://www.mmbase.org/xmlns/searchquery">
+            <distinct />
+            <field name="typedef.name" />
+          </query>
+        </enumeration>
+      </datatype>
+    </field>
+
+    <field>
+      <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <setprocessor>
+          <class name="org.mmbase.datatypes.processors.LastModifiedProcessorFactory">
+            <param name="field">relevant_lastmodified</param>
+          </class>
+        </setprocessor>
+      </datatype>
+      <db>
+        <name>relevant_string</name>
+        <type state="persistent" size="255">STRING</type>
+      </db>
+    </field>
+    <field>
+      <db>
+        <name>relevant_lastmodified</name>
+        <type state="system">DATETIME</type>
+      </db>
+    </field>
+    <field>
+      <db>
+        <name>xml</name>
+        <type state="persistent" size="64000">XML</type>
+      </db>
+    </field>
+
+    <field name="lastmodifier">
+      <datatype  base="lastmodifier" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
+    </field>
+
+    <field name="age" state="virtual">
+      <gui>
+        <guiname xml:lang="nl">Leeftijd</guiname>
+        <guiname xml:lang="en">Ages</guiname>
+      </gui>
+      <datatype base="age" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="5" />
+        <maxInclusive value="120" />
+      </datatype>
+    </field>
+
+    <field name="birthdate">
+      <gui>
+        <guiname xml:lang="nl">Geboortedatum</guiname>
+        <guiname xml:lang="en">Birthdate</guiname>
+      </gui>
+      <datatype base="living-birthdate" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="commitcounter">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <commitprocessor>
+          <class name="org.mmbase.datatypes.processors.CountCommitProcessor" />
+        </commitprocessor>
+      </datatype>
+    </field>
+
+    <field name="decimal">
+      <datatype base="decimal" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+    <field name="currency">
+      <datatype base="currency" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="gender">
+      <datatype base="gender" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <styleClass>mm_widgets_boxes</styleClass>
+      </datatype>
+    </field>
+
+  </fieldlist>
+
+  <functionlist>
+    <!-- provide a function for the nodes by pattern -->
+    <function name="test" key="[{NODE.number}]"> <!-- key of pattern function provider is interpreted as a pattern -->
+      <class>org.mmbase.util.functions.PatternNodeFunctionProvider</class>
+    </function>
+    <!-- provide  functions by bean -->
+    <function key="integerFunction" name="aaa"><!-- key of bean function is interpreted as a method name-->
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <function key="stringFunction" name="bbb">
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <!-- this one needs a node argument, and therefore is certainly a node-function -->
+    <function name="successor"> <!-- no key given, default to name of function -->
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <function name="mapFunction">
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <function name="nodeFunction1">
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <function name="nodeFunction2">
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <function name="nodeListFunction">
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+    <function name="nodeListFunction1">
+      <class>org.mmbase.util.functions.ExampleBean</class>
+    </function>
+
+    <function name="thisnode2" key="thisNode">
+      <class>org.mmbase.bridge.TestFunctionSet</class>
+    </function>
+
+    <function name="thisnode">
+      <class>org.mmbase.bridge.ThisNodeFunction</class>
+    </function>
+
+  </functionlist>
+
+</builder>
