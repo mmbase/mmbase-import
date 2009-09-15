@@ -20,6 +20,7 @@ See http://www.MMBase.org/license
   <name>MMBase Tests</name>
 
   <properties>
+    <mmbase.version.test>1.9-SNAPSHOT</mmbase.version.test>
     <mmbase.version>1.9-SNAPSHOT</mmbase.version>
   </properties>
 
@@ -126,7 +127,13 @@ See http://www.MMBase.org/license
     <dependency>
       <groupId>org.mmbase</groupId>
       <artifactId>mmbase</artifactId>
-      <version>${mmbase.version}</version>
+      <version>${mmbase.version.test}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mmbase</groupId>
+      <artifactId>mmbase</artifactId>
+      <version>${mmbase.version.test}</version>
+      <classifier>tests</classifier>
     </dependency>
     <dependency>
       <groupId>org.mmbase</groupId>
