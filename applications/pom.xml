@@ -116,7 +116,58 @@
         <module>oscache-cache</module>
       </modules>
     </profile>
+
+
+    <profile>
+      <id>privaterelease</id>
+      <!--
+          This profile makes it possible to build a release with a different version number.
+          This is valid for all (sub) modules which would otherwise use '${mmbase.version}'.
+      -->
+      <activation>
+        <property>
+          <name>my.version</name>
+        </property>
+      </activation>
+
+      <properties>
+        <mmbase.version.postfix>-${my.version}</mmbase.version.postfix>
+      </properties>
+      <distributionManagement>
+        <repository>
+          <id>${my.repository.id}</id>
+          <name>Corporate repository</name>
+          <url>${my.repository.url}</url>
+          <uniqueVersion>false</uniqueVersion> <!-- hmm? -->
+        </repository>
+        <snapshotRepository>
+          <id>${my.repository.id}</id>
+          <name>Corporate snapshot repository</name>
+          <url>${my.repository.url}</url>
+          <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+      </distributionManagement>
+    </profile>
+
   </profiles>
+
+  <distributionManagement>
+    <repository>
+      <id>mmbase</id>
+      <name>MMBase maven 2 repository</name>
+      <url>scp://mmbase.org/home/mmweb/web/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>mmbase-snapshots</id>
+      <name>MMBase Maven2 Snapshot Repository</name>
+      <url>scp://mmbase.org/home/mmweb/web/snapshots</url>
+      <uniqueVersion>false</uniqueVersion>
+    </snapshotRepository>
+    <site>
+      <id>mmbase-website</id>
+      <url>scp://mmbase.org/home/mmweb/web/mm2/</url>
+    </site>
+  </distributionManagement>
 
 
 </project>
