@@ -668,6 +668,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public boolean commit(MMObjectNode node) {
         if (node.getOldBuilder() != null) {
+            assert node.getNumber() > 0;
+            assert node.getIntValue("otype") > 0;
             mmb.getStorageManager().setNodeType(node, node.getBuilder());
         }
         mmb.getStorageManager().change(node);
@@ -826,7 +828,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return node;
     }
     /**
-     * Sets defaults for a node. Fields "number", "owner" and "otype" are not set by this method.
+     * Sets defaults for a node. Fields "number", "owner" and "otype", 'node' typed fields  and virtual fields are not set by this method.
      * @param node The node to set the defaults of.
      */
     public void setDefaults(MMObjectNode node) {
@@ -839,7 +841,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
             DataType dt = field.getDataType();
             Object defaultValue = dt.getDefaultValue(null, null, field);
+
             if ((defaultValue == null) && field.isNotNull()) {
+                // This makes the value non-null if that may not be stored in the database because the field is 'not null'.
+                // This more or less break value-validation on 'required'.
+                // I suggest that this is moved to the database layer itself.
+
                 Class  clazz  = Fields.typeToClass(field.getType());
                 if (clazz != null) {
                     defaultValue = Casting.toType(clazz, null, "");
@@ -847,6 +854,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     log.warn("No class found for type of " + field);
                 }
             }
+
             node.setValue(field.getName(), defaultValue);
         }
     }
@@ -1031,7 +1039,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             if (node.getNumber() > 0 ) {
                 nodeCache.remove(node.getNumber());
             }
-
+            assert node.getIntValue("otype") > 0;
+            assert node.getNumber() > 0;
             res = node.commit();
         } finally {
             synchronized(nodeCache) {
@@ -1236,6 +1245,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public Set<String> getFieldNames() {
         return Collections.unmodifiableSet(fields.keySet());
     }
+
 
     /**
      * Return a field's definition
