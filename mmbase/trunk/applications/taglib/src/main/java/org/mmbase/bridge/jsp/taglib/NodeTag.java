@@ -38,6 +38,8 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     private Attribute element   = Attribute.NULL;
     private Attribute notfound  = Attribute.NULL;
 
+    private Attribute emptyNumberIsCurrentNode  = Attribute.NULL;
+
     /**
      * Release all allocated resources.
      */
@@ -55,6 +57,13 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             log.debug("setting number to " + number);
         }
         this.number = getAttribute(number, false);
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public void setEmptynumberiscurrentnode(String e) throws JspTagException {
+        this.emptyNumberIsCurrentNode = getAttribute(e, false);
     }
 
 
@@ -137,34 +146,8 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             // We don't change this, because it was always like follows.
             // It would not be backwards compatible.
 
-            if (number != Attribute.NULL) {
-                // explicity indicated which node (by number or alias)
-                Cloud c = getCloudVar();
-                if (! c.hasNode(n) || ! c.mayRead(n)) {
-                    switch(Notfound.get(notfound, this)) {
-                    case Notfound.MESSAGE:
-                        try {
-                            getPageContext().getOut().write("Node '" + n + "' does not exist or may not be read");
-                        } catch (java.io.IOException ioe) {
-                            log.warn(ioe);
-                        }
-                    case Notfound.SKIP:
-                        return SKIP_BODY;
-                    case Notfound.PROVIDENULL:
-                        node = null;
-                        break;
-                    default:
-                        node = c.getNode(n); // throws Exception
-                    }
-                } else {
-                    node = c.getNode(n); // does not throw Exception
-                }
-                if (node != null) {
-                    if (node.getCloud().hasNodeManager(node.getNodeManager().getName())) { // rather clumsy way to check virtuality
-                        nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
-                    }
-                }
-            } else {
+            if (number == Attribute.NULL ||
+                (n.length() == 0 && emptyNumberIsCurrentNode.getBoolean(this, false))) {
                 // get the node from a parent element.
                 NodeProvider nodeProvider = null;
 
@@ -176,7 +159,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                 } else {
                     node = (Node) org.mmbase.util.Casting.unWrap(node);
                 }
-                
+
                 String elString = element.getString(this);
                 if (elString.length() != 0) {
                     try {
@@ -210,6 +193,33 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                         }
                     }
                 } else {
+                    if (node.getCloud().hasNodeManager(node.getNodeManager().getName())) { // rather clumsy way to check virtuality
+                        nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
+                    }
+                }
+            } else {
+                // explicity indicated which node (by number or alias)
+                Cloud c = getCloudVar();
+                if (! c.hasNode(n) || ! c.mayRead(n)) {
+                    switch(Notfound.get(notfound, this)) {
+                    case Notfound.MESSAGE:
+                        try {
+                            getPageContext().getOut().write("Node '" + n + "' does not exist or may not be read");
+                        } catch (java.io.IOException ioe) {
+                            log.warn(ioe);
+                        }
+                    case Notfound.SKIP:
+                        return SKIP_BODY;
+                    case Notfound.PROVIDENULL:
+                        node = null;
+                        break;
+                    default:
+                        node = c.getNode(n); // throws Exception
+                    }
+                } else {
+                    node = c.getNode(n); // does not throw Exception
+                }
+                if (node != null) {
                     if (node.getCloud().hasNodeManager(node.getNodeManager().getName())) { // rather clumsy way to check virtuality
                         nodeHelper.setGeneratingQuery(Queries.createNodeQuery(node));
                     }
