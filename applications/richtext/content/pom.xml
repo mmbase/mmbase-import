@@ -9,7 +9,7 @@
     <version>1.9-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.mmbase.richtext</groupId>
+  <groupId>org.mmbase</groupId>
   <artifactId>mmbase-richtext-content</artifactId>
   <name>MMBase Richtext Content</name>
   <packaging>war</packaging>
