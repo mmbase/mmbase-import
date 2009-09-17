@@ -2436,9 +2436,20 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
         <value>log</value>
         <info>
           Like 'skip' but also logs a message.
-          <since>MMBase-1.9</since>
         </info>
+        <since>MMBase-1.9</since>
       </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>emptynumberiscurrentnode</name>
+      <required>false</required>
+      <info>
+        If the number attribute is specified empty, and the value of this attribute is 'true' (it
+        defaults to false), then the tag will behave as if the number attribute as not used at
+        all. On default it will look for a node with the number or alias ''. which will not be
+        found. (The 'notfound' attribute can be used to skip the entire node then).
+      </info>
+      <since>MMBase-1.9.2</since>
     </attribute>
     <attribute>
       <name>element</name>
