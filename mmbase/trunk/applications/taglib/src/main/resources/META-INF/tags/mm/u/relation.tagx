@@ -11,7 +11,7 @@
   <jsp:directive.attribute name="searchdir" type="java.lang.String"  />
   <jsp:directive.attribute name="notfound" type="java.lang.String"   />
 
-  <mm:node number="${from}"> <!-- so, if from is empty, then current node -->
+  <mm:node number="${from}" emptynumberiscurrentnode="true">
 
     <mm:listrelationscontainer role="${role}" type="object" searchdir="${searchdir}" >
       <mm:addnode element="object" number="${to}" />
