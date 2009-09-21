@@ -13,9 +13,9 @@ $(document).ready(function(ev) {
     validator.lang = $("html head meta[name='MMBase-Language']").attr("content");
     validator.sessionName = $("html head meta[name='MMBase-SessionName']").attr("content");
 
-    var nt = $("html head meta[name='MMBase-NodeType']");
+    var nt = $("html head meta[name='MMBase-NodeType']").attr("content");
     if (nt.length > 0) {
-        validator.prefetchNodeManager(nt.attr("content"));
+        validator.prefetchNodeManager(nt);
     }
     validator.onLoad(ev);
 });
