@@ -18,6 +18,7 @@ import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.MimeType;
 import org.mmbase.applications.media.State;
 import org.mmbase.applications.media.urlcomposers.*;
+import org.mmbase.streams.builders.ImageSources;
 import org.mmbase.module.builders.*;
 import org.mmbase.util.images.*;
 import java.util.*;
@@ -51,26 +52,28 @@ public class ImagesURLComposer extends FragmentURLComposer {
     public State getState() {
         return State.DONE;
     }
-    
+
+    ImageSources getBuilder() {
+        ImageSources imageCaches = (ImageSources) MMBase.getMMBase().getBuilder("imagesources");
+        return imageCaches;
+    }
+
     @Override
     public MimeType getMimeType() {
-        ImageCaches imageCaches = (ImageCaches) MMBase.getMMBase().getBuilder("icaches");
-        MMObjectNode icacheNode = imageCaches.getCachedNode(source.getNumber(), template);
+        MMObjectNode icacheNode = getBuilder().getCachedNode(source, template);
         String itype = icacheNode.getStringValue("itype");
         return new MimeType(itype);
     }
 
     @Override
     public Format getFormat() {
-        ImageCaches imageCaches = (ImageCaches) MMBase.getMMBase().getBuilder("icaches");
-        MMObjectNode icacheNode = imageCaches.getCachedNode(source.getNumber(), template);
+        MMObjectNode icacheNode = getBuilder().getCachedNode(source, template);
         return Format.get(icacheNode.getStringValue("itype"));
     }
-    
+
     @Override
     public Dimension getDimension() {
-        ImageCaches imageCaches = (ImageCaches) MMBase.getMMBase().getBuilder("icaches");
-        MMObjectNode icacheNode = imageCaches.getCachedNode(source.getNumber(), template);
+        MMObjectNode icacheNode = getBuilder().getCachedNode(source, template);
         return new Dimension(icacheNode.getIntValue("width"), icacheNode.getIntValue("height"));
     }
 
