@@ -13,7 +13,7 @@
 
     <script type="text/javascript" src="validation.js" />
 
-    <mm-srt:relatednodes
+    <mm-sr:relatednodes
         idvar="rid"
         type="news"
         role="posrel"

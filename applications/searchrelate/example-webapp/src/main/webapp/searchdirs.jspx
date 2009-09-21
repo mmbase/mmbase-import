@@ -17,8 +17,7 @@
           unlink="true"
           max="6"
           sortable="true"
-          search="true
-                  " />
+          search="true" />
     </mm:relatednodes>
   </mm:node>
   <hr />
