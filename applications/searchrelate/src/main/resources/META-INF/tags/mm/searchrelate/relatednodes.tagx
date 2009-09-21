@@ -113,6 +113,10 @@
                            description="Maximum size of the list"
                            />
 
+  <jsp:directive.attribute name="min"        type="java.lang.Integer"
+                           description="Minimum size of the list. This mainly has effect on the mmsrValidateHook event."
+                           />
+
 
   <jsp:directive.attribute name="idvar"      type="java.lang.String"
                            description="If specified the current 'id' of this list will be made available in the variable. For debugging mainly."
@@ -155,6 +159,7 @@
   <mm:import id="_create">${empty create ? 'true' : create}</mm:import>
   <mm:import id="_unlink">${empty unlink ? (empty search ? 'false' : search) : unlink}</mm:import>
   <mm:import id="_max">${empty max ? 1000000 : max}</mm:import>
+  <mm:import id="_min">${empty min ? 0 : min}</mm:import>
   <mm:import id="_icondir">
     <c:choose>
       <c:when test="${empty icondir}">
@@ -191,6 +196,7 @@
     <mm:import from="parent" id="create"    externid="_create" />
     <mm:import from="parent" id="unlink"    externid="_unlink" />
     <mm:import from="parent" id="max"       externid="_max" />
+    <mm:import from="parent" id="min"       externid="_min" />
     <mm:import from="parent" externid="fieldlistType" />
 
     <mm:import from="parent" externid="type" />
@@ -219,7 +225,9 @@
 
   <mm:relatednodescontainer id="clonedquery" clone="query">
     <mm:context referid="parameters">
-      <mm:size id="cursize" write="false" />
+      <mm:relatednodes usetransaction="true">
+        <mm:last><mm:import id="cursize"><mm:index /></mm:import></mm:last>
+      </mm:relatednodes>
     </mm:context>
   </mm:relatednodescontainer>
 
@@ -283,6 +291,7 @@
           </a>
         </mm:link>
         <span class="status">...</span>
+        <span class="errors"></span>
         <c:if test="${search}">
           <mm-sr:search type="${query.nodeManager.name}" />
         </c:if>
@@ -318,6 +327,7 @@
           </a>
         </mm:link>
         <span class="status">...</span>
+        <span class="errors"></span>
       </c:if>
       <c:if test="${search}">
         <mm:cloud>
