@@ -55,7 +55,7 @@ MMBaseLogger.prototype.debug = function (msg) {
 /**
  * The 'relater' encapsulated 1 or 2 'searchers', and is responsible for moving elements from one to the other.
  */
-function MMBaseRelater(d) {
+function MMBaseRelater(d, validator) {
     this.div           = d;
     this.related       = {};
     this.unrelated     = {};
@@ -71,8 +71,12 @@ function MMBaseRelater(d) {
         this.logger.debug("No current rep found");
     }
 
-    if (typeof MMBaseValidator == "function") {
-        this.validator = new MMBaseValidator(this.div);
+    if (typeof validator == "undefined") {
+        if (typeof MMBaseValidator == "function") {
+            this.validator = new MMBaseValidator(this.div);
+        }
+    } else {
+        this.validator = validator;
     }
     this.logger.debug("setting up repository");
     this.repository    = $(d).find(".mm_relate_repository")[0];
