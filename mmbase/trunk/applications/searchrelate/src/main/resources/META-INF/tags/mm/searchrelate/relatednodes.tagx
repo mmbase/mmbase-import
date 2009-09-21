@@ -39,6 +39,10 @@
                            description="Direction of orderby of  mm:relatednodes, but default to &lt;UP&gt;.pos"
                            />
 
+  <jsp:directive.attribute name="searchdirs"     type="java.lang.String"
+                           description="Like 'searchdirs' of mm:relatednodes"
+                           />
+
   <jsp:directive.attribute name="fields"      type="java.lang.String"
                            description="List of fields to show. Defaults to 'use only fieldlistType'."
                            />
@@ -163,7 +167,9 @@
 
   <mm:write session="${rid}_context" value="" />
 
-  <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${_role}" id="query">
+  <mm:relatednodescontainer path="${path}" type="${empty path ? type : ''}" role="${_role}"
+                            searchdirs="${searchdirs}"
+                            id="query">
     <mm:sortorder field="${_orderby}" direction="${_direction}" />
     <jsp:invoke fragment="constraints" />
   </mm:relatednodescontainer>
@@ -189,6 +195,7 @@
 
     <mm:import from="parent" externid="type" />
     <mm:import from="parent" externid="path" />
+    <mm:import from="parent" externid="searchdirs" />
     <mm:import from="parent" id="source"   externid="_node" />
     <mm:import from="parent" id="icondir" externid="_icondir" />
     <mm:import from="parent" externid="sortable" />
