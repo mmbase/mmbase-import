@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java 36531 2009-07-03 07:03:20Z michiel $
+ * @version $Id$
  * @since MMBase-1.9.2
  */
 public class ImageSources extends MediaSources implements ImagesInterface {
