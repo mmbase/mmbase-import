@@ -25,7 +25,11 @@
   </c:if>
 
   <mm:haspage page="${parameters.icondir}/${type}.jspx">
-    <c:set var="alt"><mm:include page="${parameters.icondir}/${type}.jspx" /></c:set>
+    <c:set var="alt">
+      <mm:include page="${parameters.icondir}/${type}.jspx">
+        <mm:param name="rid">${parameters.rid}</mm:param>
+      </mm:include>
+    </c:set>
   </mm:haspage>
   <mm:haspage page="${parameters.icondir}/${type}.png">
     <mm:link page="${parameters.icondir}/${type}.png">
