@@ -119,6 +119,13 @@ public class FFMpegAnalyzer implements Analyzer {
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is video " + sourceNode + " -> " + sourceNode.getNodeManager().getName());
             assert sourceNode.getNodeManager().getName().equals(VIDEO);
         }
+        if (util.getUpdateSource()) {
+            sourceNode.commit();
+        }
+        if (destNode != null) {
+            destNode.commit();
+        }
+
         log.info("READY for " + sourceNode.getNodeManager().getName() + " " + sourceNode.hashCode() + " " + sourceNode.getNumber());
 
     }
