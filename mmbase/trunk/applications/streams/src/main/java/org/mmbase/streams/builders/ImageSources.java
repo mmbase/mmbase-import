@@ -103,15 +103,13 @@ public class ImageSources extends MediaSources implements ImagesInterface {
         }
     }
 
-
+    private static ReturnType<MMObjectNode> MMOBJECTNODE_RT = new ReturnType<MMObjectNode>(MMObjectNode.class, "mmobjectnode");
     private static Parameter<String> TEMPLATE = new Parameter<String>("template", String.class);
     private static Parameter<?>[] PARAMS = new Parameter<?>[] { TEMPLATE };
     {
-        /* BUG: this method gives an error when getting gui value, like in generic editors -> icaches:
-                java.lang.Integer cannot be cast to org.mmbase.module.core.MMObjectNode */
-        addFunction(new NodeFunction<Integer>("cachednode", PARAMS , ReturnType.INTEGER) {
-                public Integer getFunctionValue(Node node, Parameters parameters) {
-                    return ImageSources.this.getCachedNode(ImageSources.this.getNode(node.getNumber()), parameters.get(TEMPLATE)).getNumber();
+        addFunction(new NodeFunction<MMObjectNode>("cachednode", PARAMS , MMOBJECTNODE_RT) {
+                public MMObjectNode getFunctionValue(Node node, Parameters parameters) {
+                    return ImageSources.this.getCachedNode(ImageSources.this.getNode(node.getNumber()), parameters.get(TEMPLATE));
                 }
             });
     }
