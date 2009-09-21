@@ -61,6 +61,13 @@ public class ImagesURLComposer extends FragmentURLComposer {
     }
 
     @Override
+    public Format getFormat() {
+        ImageCaches imageCaches = (ImageCaches) MMBase.getMMBase().getBuilder("icaches");
+        MMObjectNode icacheNode = imageCaches.getCachedNode(source.getNumber(), template);
+        return Format.get(icacheNode.getStringValue("itype"));
+    }
+    
+    @Override
     public Dimension getDimension() {
         ImageCaches imageCaches = (ImageCaches) MMBase.getMMBase().getBuilder("icaches");
         MMObjectNode icacheNode = imageCaches.getCachedNode(source.getNumber(), template);
