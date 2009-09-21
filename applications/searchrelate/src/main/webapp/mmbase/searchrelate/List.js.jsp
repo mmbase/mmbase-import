@@ -7,7 +7,7 @@
 /**
  * This javascript binds to a div.list.
  *
- * This div is suppose to contain an <ol> with <a class="delete" />, and a <a class="create" />
+ * This div is supposed to contain an <ol> with <a class="delete" />, and a <a class="create" />
  *
  * Items in the list can be added and deleted. They can also be edited (with validation).
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
@@ -56,6 +56,11 @@ function List(d) {
     this.autosubmit = this.autosubmit == 'true';
     this.search     = this.search     == 'true';
 
+    if (this.formtag.length > 0) {
+        this.form = $(this.div).parents("form")[0];
+        this.form.valids = {};
+    }
+
     if (this.sortable) {
         if (! this.autosubmit) {
             if (this.order != "") {
@@ -80,19 +85,6 @@ function List(d) {
 
 
 
-    if (this.search) {
-        this.find("mm_related", "div").each(function() {
-                new MMBaseRelater(this);
-            });
-
-        this.find("mm_related", "div").bind("mmsrRelate", function (e, relate, relater) {
-                self.relate(e, relate, relater);
-                relater.repository.searcher.dec();
-                $(relate).addClass("removed");
-                relater.repository.searcher.resetTrClasses();
-            });
-    }
-
     this.lastCommit = null;
 
     this.defaultStale = 1000;
@@ -103,14 +95,35 @@ function List(d) {
         this.validator.lang = "${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}";
         this.validator.prefetchNodeManager(this.type);
         this.validator.setup(this.div);
+        var validator = this.validator;
         this.validator.validateHook =  function(valid, element) {
             self.valid = valid;
             self.lastChange = new Date();
             if (self.lastCommit == null && element == null) {
                 self.lastCommit = self.lastChange;
             }
+            if (self.form != null) {
+                self.form.valids[self.rid] = valid;
+                self.triggerValidateHook();
+            }
         };
+        this.validator.validatePage(false);
     }
+
+    if (this.search) {
+        this.find("mm_related", "div").each(function() {
+                new MMBaseRelater(this, self.validator);
+            });
+
+        this.find("mm_related", "div").bind("mmsrRelate", function (e, relate, relater) {
+                self.relate(e, relate, relater);
+                relater.repository.searcher.dec();
+                $(relate).addClass("removed");
+                relater.repository.searcher.resetTrClasses();
+            });
+    }
+
+
     $.timer(1000, function(timer) {
             self.commit();
         });
@@ -159,6 +172,26 @@ function List(d) {
 
 List.prototype.leftPage = false;
 
+List.prototype.triggerValidateHook = function() {
+    var reason = "";
+    var self = this;
+    var valid = true;
+    for (var rid in self.form.valids) {
+        if (! self.form.valids[rid] ) {
+            valid = false;
+            reason += rid;
+        }
+    }
+    if (this.cursize < this.min) {
+        reason += " list too short";
+        valid = false;
+    }
+    if (this.cursize > this.max) {
+        reason += " list too long";
+        valid = false;
+    }
+    $(this.form).trigger("mmsrValidateHook", [self, valid, reason, self.form]);
+}
 
 List.prototype.log = function(msg) {
     if (this.logEnabled) {
@@ -339,6 +372,7 @@ List.prototype.decSize = function() {
 List.prototype.checkForSize = function() {
     $(this.find("listinfo")).find("input[name=cursize]").val(this.cursize);
     var createVisible = this.cursize < this.max;
+    var self = this;
     this.find("create", "a").each(function() {
             if (createVisible) {
                 $(this).show();
@@ -353,6 +387,17 @@ List.prototype.checkForSize = function() {
                 $(this).hide();
             }
         });
+    this.find("errors", "span").each(function() {
+            var text = "";
+            if (self.cursize > self.max) {
+                text += "<fmt:message key='listtoolong' />";
+            }
+            if (self.cursize < self.min) {
+                text += "<fmt:message key='listtooshort' />";
+            }
+            $(this).text(text);
+        });
+    this.triggerValidateHook();
 }
 
 
