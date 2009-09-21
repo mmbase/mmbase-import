@@ -255,7 +255,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (oldBuilder == null) {
             oldBuilder = builder;
         }
-        storeValue("otype", bul.getNumber());
+        assert bul.getNumber() > 0;
+        storeValue(MMObjectBuilder.FIELD_OBJECT_TYPE, bul.getNumber());
         delRelationsCache();
         builder = bul;
         parent = bul;
@@ -292,7 +293,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * changed Vector as its base of what to commit/change.
      * @return <code>true</code> if the commit was succesfull, <code>false</code> is it failed
      */
-    public boolean commit() {
+    public synchronized boolean commit() {
         boolean success = parent.commit(this);
         if (success) {
             isNew = false; // perhaps it is always already false (otherwise insert is called, I think), but no matter, now it certainly isn't new!
@@ -317,7 +318,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @param userName the name of the user who inserts the node. This value is ignored
      * @return the new node key (number field), or -1 if the insert failed
      */
-    public int insert(String userName) {
+    public synchronized int insert(String userName) {
         return parent.insert(userName, this);
     }
 
@@ -328,7 +329,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the new node key (number field), or -1 if the insert failed
      * @since MMBase-1.7
      */
-    public int insert(UserContext user) {
+    public synchronized int insert(UserContext user) {
         String nc = newContext;
         int nodeID = parent.safeInsert(this, user.getIdentifier());
         if (nodeID != -1) {
@@ -357,7 +358,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return <code>true</code> if successful
      * @since MMBase-1.7
      */
-    public boolean commit(UserContext user) {
+    public synchronized boolean commit(UserContext user) {
         boolean success = parent.safeCommit(this);
         if (success) {
             MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
@@ -379,7 +380,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      *        Used to set security-related information
      * @since MMBase-1.7
      */
-    public void remove(UserContext user) {
+    public synchronized void remove(UserContext user) {
         if (log.isDebugEnabled()) {
             log.debug("Deleting node " + getNumber() + " because " + Logging.stackTrace(5));
         }
@@ -570,6 +571,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (checkFieldExistance(fieldName)) {
             values.put(fieldName, fieldValue);
         }
+        //assert (!fieldName.equals("otype") || Casting.toInt(fieldValue) > 0) : "Set otype to an invalid value " + fieldValue;
     }
 
     /**
@@ -814,6 +816,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         // get the value from the values table
         Object value = values.get(fieldName);
 
+        //System.out.println(" " + value + " from " + values);
         // explicitly load byte values if they are 'shortened'
         if (VALUE_SHORTED.equals(value)) {   // could use == if we are sure that everybody uses the constant
 
@@ -1482,7 +1485,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (e!=null) {
             while (e.hasMoreElements()) {
                 MMObjectNode tnode = e.nextElement();
-                if (tnode.getOType()==otype) {
+                if (tnode.getOType() == otype) {
                     result.addElement(tnode);
                 }
             }
@@ -1749,7 +1752,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("related("+parent.getTableName()+"("+getNumber()+")) -> "+type+" = size("+result.size()+")");
+            log.debug("related(" + parent.getTableName() + "("+getNumber() + ")) -> " + type + " = size(" + result.size() + ")");
         }
 
         return result;
@@ -1804,6 +1807,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 MMObjectNode convert = new MMObjectNode(parent.mmb.getBuilder(builderName), false);
                 // parent needs to be set or else mmbase does nag nag nag on a setValue()
                 convert.setValue(MMObjectBuilder.FIELD_NUMBER, node.getValue(type + ".number"));
+                assert ootype > 0;
                 convert.setValue(MMObjectBuilder.FIELD_OBJECT_TYPE, ootype);
                 list.add(convert);
             }
