@@ -22,7 +22,7 @@
       <c:when test="${parameters.source_was_new}">
         <source>
           <!-- Fix  The damn query hacks again (See RelatedNodesContainerTag) -->
-          <mm:node referid="parameters.source" jspvar="source">
+          <mm:node referid="parameters.source" jspvar="source" commitonclose="${parameters.autosubmit}">
             <jsp:scriptlet>
               org.mmbase.bridge.util.Queries.setStartNode(query, source);
             </jsp:scriptlet>
@@ -44,7 +44,7 @@
       List&lt;Integer&gt; iorder = new ArrayList&lt;Integer&gt;(origOrder); // the only reason for the copy is that it has the right length already then
     </jsp:scriptlet>
     <mm:relatednodescontainer clone="parameters.query">
-      <mm:relatednodes usetransaction="false" jspvar="n">
+      <mm:relatednodes usetransaction="false" jspvar="n" commitonclose="${parameters.autosubmit}">
         <mm:index offset="0" jspvar="i">
           <jsp:expression>iorder.set(iorigOrder.indexOf(i), n.getNumber())</jsp:expression>
         </mm:index>
