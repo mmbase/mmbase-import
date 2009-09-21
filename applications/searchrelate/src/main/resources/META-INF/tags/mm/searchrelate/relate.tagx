@@ -71,7 +71,7 @@
                            description="Enables the specification of the location of a directory with extra actions on nodes in the lists which will become visible in the td.action." />
 
   <jsp:directive.attribute name="load"                type="java.lang.Boolean"
-                           description="" />
+                           description="Wether or not to load the javascript. Default should be ok, but sometimes it isn't (e.g. when using in ajax-included pieces of HTML)" />
 
 
   <mm:import externid="current" from="this" />
