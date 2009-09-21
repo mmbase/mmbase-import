@@ -66,7 +66,10 @@ public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEvent
             } else {
                 NodeReference ref = weak.get(key);
                 if (ref != null) {
-                    return ref.get();
+                    MMObjectNode n = ref.get();
+                    if (n != null) {
+                        super.put((Integer) key, n);
+                    }
                 } else {
                     return null;
                 }
