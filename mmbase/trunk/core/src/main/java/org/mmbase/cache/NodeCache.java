@@ -70,6 +70,7 @@ public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEvent
                     if (n != null) {
                         super.put((Integer) key, n);
                     }
+                    return n;
                 } else {
                     return null;
                 }
