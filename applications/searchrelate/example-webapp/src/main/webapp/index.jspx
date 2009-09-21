@@ -86,6 +86,25 @@
               <a href="${_}">Using different buttons</a>
             </mm:link>
           </li>
+
+
+          <li class="done">
+            <mm:link page="searchdirs.jspx" referids="ct?">
+              <a href="${_}">Searchdirs</a>
+            </mm:link>
+          </li>
+
+          <li class="done">
+            <mm:link page="mmform-searchdirs.jspx" referids="ct?">
+              <a href="${_}">Searchdirs in an mm:form</a>
+            </mm:link>
+          </li>
+
+          <li class="done">
+            <mm:link page="validation.jspx" referids="ct?">
+              <a href="${_}">Validation in an mm:form</a>
+            </mm:link>
+          </li>
         </ul>
 
         <h3>TODO</h3>
