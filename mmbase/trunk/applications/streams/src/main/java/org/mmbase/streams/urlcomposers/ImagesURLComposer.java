@@ -62,7 +62,7 @@ public class ImagesURLComposer extends FragmentURLComposer {
     public MimeType getMimeType() {
         MMObjectNode icacheNode = getBuilder().getCachedNode(source, template);
         String itype = icacheNode.getStringValue("itype");
-        return new MimeType(itype);
+        return new MimeType("image", itype);
     }
 
     @Override
