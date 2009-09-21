@@ -22,7 +22,7 @@
       <c:when test="${parameters.source_was_new}">
         <source>
           <!-- Fix  The damn query hacks again (See RelatedNodesContainerTag) -->
-          <mm:node referid="parameters.source" jspvar="source" commitonclose="${parameters.autosubmit}">
+          <mm:node referid="parameters.source" jspvar="source" commitonclose="false">
             <jsp:scriptlet>
               org.mmbase.bridge.util.Queries.setStartNode(query, source);
             </jsp:scriptlet>
@@ -31,10 +31,10 @@
         </source>
       </c:when>
       <c:otherwise>
-        <source><mm:escape>${parameters.source}</mm:escape></source>
+        <source><mm:escape escape="text/xml">${parameters.source}</mm:escape></source>
       </c:otherwise>
     </c:choose>
-    <query><mm:escape>${parameters.query.sql}</mm:escape></query>
+    <query><mm:escape escape="text/xml">${parameters.query.sql}</mm:escape></query>
     <jsp:scriptlet>
       // convert parameters to a list of integers
       List&lt;Integer&gt; iorigOrder = new ArrayList&lt;Integer&gt;();
@@ -44,13 +44,13 @@
       List&lt;Integer&gt; iorder = new ArrayList&lt;Integer&gt;(origOrder); // the only reason for the copy is that it has the right length already then
     </jsp:scriptlet>
     <mm:relatednodescontainer clone="parameters.query">
-      <mm:relatednodes usetransaction="false" jspvar="n" commitonclose="${parameters.autosubmit}">
+      <mm:relatednodes usetransaction="false" jspvar="n" commitonclose="false">
         <mm:index offset="0" jspvar="i">
-          <jsp:expression>iorder.set(iorigOrder.indexOf(i), n.getNumber())</jsp:expression>
+          <change number="${_}"><jsp:expression>iorder.set(iorigOrder.indexOf(i), n.getNumber())</jsp:expression></change>
         </mm:index>
       </mm:relatednodes>
     </mm:relatednodescontainer>
-    <jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression>
+    <changes><jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression></changes>
     <mm:write session="${rid}_order" value="" />
   </div>
 </mm:cloud>
