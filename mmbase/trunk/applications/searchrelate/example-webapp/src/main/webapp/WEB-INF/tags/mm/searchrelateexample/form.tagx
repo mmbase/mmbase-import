@@ -72,7 +72,7 @@
         <td><mm:nodeinfo type="gui" /></td>
         <td><mm:hasfield name="snumber">${_node.snumber} / ${_node._snumber}</mm:hasfield></td>
         <td><mm:hasfield name="dnumber">${_node.dnumber} / ${_node._dnumber}</mm:hasfield></td>
-        <td><mm:hasfield name="handle"><mm:escape><c:catch var="e">${_node.handle}</c:catch>${e}</mm:escape></mm:hasfield></td>
+        <td><mm:hasfield name="handle"><mm:escape><c:catch var="e"></c:catch>${e}</mm:escape></mm:hasfield></td>
       </tr>
     </mm:listnodes>
   </table>
