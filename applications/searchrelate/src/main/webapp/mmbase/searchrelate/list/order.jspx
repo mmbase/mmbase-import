@@ -8,7 +8,7 @@
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.include file="parameters.jspf" />
   <div class="saveresult">
-    <query><mm:escape>${parameters.query.sql}</mm:escape></query>
+    <query><mm:escape escape="text/xml">${parameters.query.sql}</mm:escape></query>
     <c:choose>
       <c:when test="${parameters.autosubmit}">
         <mm:import externid="order" required="true" jspvar="order" vartype="list" />
