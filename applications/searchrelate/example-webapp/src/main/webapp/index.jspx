@@ -80,6 +80,12 @@
               <a href="${_}">mm-sr:relatednodes in a form and nested</a>
             </mm:link>
           </li>
+
+          <li class="done">
+            <mm:link page="buttons.jspx" referids="ct?">
+              <a href="${_}">Using different buttons</a>
+            </mm:link>
+          </li>
         </ul>
 
         <h3>TODO</h3>
