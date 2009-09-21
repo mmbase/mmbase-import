@@ -49,8 +49,11 @@ MMBaseValidator.watcher = function() {
 	var now = new Date().getTime();
         if (el != null) {
             if (! el.serverValidated) {
+                if (el.lastChange == null) {
+                    el.lastChange = new Date(0);
+                }
                 if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
-                    MMBaseValidator.validators[i].validateElement(MMBaseValidator.validators[i].activeElement, true);
+                    validator.validateElement(validator.activeElement, true);
                 }
             }
         }
@@ -93,9 +96,9 @@ MMBaseValidator.prototype.log = function (msg) {
             errorTextArea.value = "LOG: " + msg + "\n" + errorTextArea.value;
         } else {
             // firebug console
-	        if (typeof(console) != "undefined") {
-		        console.log(msg);
-	        }
+            if (typeof(console) != "undefined") {
+                console.log(msg);
+            }
         }
     }
 }
@@ -108,7 +111,7 @@ MMBaseValidator.prototype.trace = function (msg) {
         } else {
             // firebug console
 	        if (typeof(console) != "undefined") {
-		        console.log(msg);
+                    console.log(msg);
 	        }
         }
     }
@@ -455,27 +458,25 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
     if (el.mm_key == null) {
         el.mm_key = key.string();
     }
-    this.log(MMBaseValidator.dataTypeCache);
     var dataType = MMBaseValidator.dataTypeCache[el.mm_key];
     if (dataType == null) {
-
-	    var url = '<mm:url page="/mmbase/validation/datatype.jspx" />';
-	    var params = this.getDataTypeArguments(key);
-	    var self = this;
-	    $.ajax({async: false, url: url, type: "GET",
-                dataType: "xml", data: params,
-		        complete: function(res, status){
-		            if (status == "success" || res.status == '404') {
-			            dataType = res.responseXML;
-			            MMBaseValidator.dataTypeCache[el.mm_key] = dataType;
+        var url = '<mm:url page="/mmbase/validation/datatype.jspx" />';
+        var params = this.getDataTypeArguments(key);
+        var self = this;
+        $.ajax({async: false, url: url, type: "GET",
+                    dataType: "xml", data: params,
+                    complete: function(res, status){
+                    if (status == "success" || res.status == '404') {
+                        dataType = res.responseXML;
+                        MMBaseValidator.dataTypeCache[el.mm_key] = dataType;
                     }
-		        }
-	           });
-	    this.log("Found " + dataType);
+                }
+            });
+        this.log("Found " + dataType);
 
 
     } else {
-	    this.trace("Found in cache " + dataType);
+        this.trace("Found in cache " + dataType);
     }
     return dataType;
 }
@@ -689,7 +690,9 @@ MMBaseValidator.prototype.valid = function(el) {
  * @todo make asynchronous.
  */
 MMBaseValidator.prototype.serverValidation = function(el) {
-    if (el == null) return;
+    if (el == null) {
+        return;
+    }
     try {
         if (this.isBinary(el)) {
             el.serverValidated = true;
@@ -705,32 +708,32 @@ MMBaseValidator.prototype.serverValidation = function(el) {
         var value = this.getValue(el);
 
         var validationUrl = '<mm:url page="/mmbase/validation/valid.jspx" />';
-            this.getDataTypeArguments(key) +
+        this.getDataTypeArguments(key) +
             (this.lang != null ? "&lang=" + this.lang : "") +
-	        (this.sessionName != null ? "&sessionname=" + this.sessionName : "") +
+            (this.sessionName != null ? "&sessionname=" + this.sessionName : "") +
             "&value=" + value +
             (key.node != null && key.node > 0 ? ("&node=" + key.node) : "") +
             "&changed=" + this.isChanged(el);
-	    var params = this.getDataTypeArguments(key);
-	    if (this.lang != null) params.lang = this.lang;
-	    if (this.sessionName != null) params.sessionname = this.sessionName;
-	    params.value = value;
-	    if (key.node != null && key.node > 0) params.node = key.node;
-	    params.changed = this.isChanged(el);
-	    var result;
-	    $.ajax({async: false, url: validationUrl, type: "GET", dataType: "xml", data: params,
+        var params = this.getDataTypeArguments(key);
+        if (this.lang != null) params.lang = this.lang;
+        if (this.sessionName != null) params.sessionname = this.sessionName;
+        params.value = value;
+        if (key.node != null && key.node > 0) params.node = key.node;
+        params.changed = this.isChanged(el);
+        var result;
+        $.ajax({async: false, url: validationUrl, type: "GET", dataType: "xml", data: params,
 	            complete: function(res, status){
-		            if (status == "success") {
-		                el.serverValidated = true;
-		                result = res.responseXML;
-		                //console.log("" + res);
-		            } else {
-		                el.serverValidated = true;
-		                result = $("<result valid='false' />")[0];
-		            }
-	            }
-	           });
-	    return result;
+                    if (status == "success") {
+                        el.serverValidated = true;
+                        result = res.responseXML;
+                        //console.log("" + res);
+                    } else {
+                        el.serverValidated = true;
+                        result = $("<result valid='false' />")[0];
+                    }
+                }
+            });
+        return result;
     } catch (ex) {
         this.log(ex);
         throw ex;
@@ -765,7 +768,7 @@ MMBaseValidator.prototype.target = function(event) {
  * overriding this function.
  */
 MMBaseValidator.prototype.validate = function(event, server) {
-    this.log("event" + event + " on " + this.target(event));
+    this.log("event " + event.type + " on " + this.target(event));
     var target = this.target(event);
     if (this.hasClass(target, "mm_validate")) {
         this.validateElement(target, server);
@@ -781,17 +784,16 @@ MMBaseValidator.prototype.serverValidate = function(event) {
 
 MMBaseValidator.prototype.validateElement = function(element, server) {
     var valid;
-
     if (server) {
         var prevValue = element.prevValue;
         var curValue  = "" + this.getValue(element);
         if (curValue == prevValue) {
             server = false;
+            element.serverValidated = true;
         }
         element.prevValue = "" + curValue;
     }
-    this.log("Validating " + element);
-    element.lastChange = new Date();
+
     this.activeElement = element;
     if (server) {
         var serverXml = this.serverValidation(element);
@@ -815,7 +817,6 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
 	        }
         }
     } else {
-        element.serverValidated = false;
         valid = this.valid(element);
     }
     if (valid != element.prevValid) {
@@ -836,6 +837,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
  * Validates al mm_validate form entries which were marked for validation with addValidation.
  */
 MMBaseValidator.prototype.validatePage = function(server) {
+    this.log("Validating page " + server);
     var els = this.elements;
     for (var  i = 0; i < els.length; i++) {
         var entry = els[i];
@@ -867,6 +869,13 @@ MMBaseValidator.prototype.removeValidation = function(el) {
 }
 
 
+MMBaseValidator.prototype.setLastChange = function(event) {
+    var target = this.target(event);
+    target.lastChange = new Date();
+    target.serverValidated = false;
+}
+
+
 /**
  * Adds event handlers to all mm_validate form entries
  */
@@ -888,17 +897,17 @@ MMBaseValidator.prototype.addValidation = function(el) {
         case "text":
         case "password":
         case "textarea":
-            $(entry).bind("keyup",  function(ev) { self.validate(ev); });
+            $(entry).bind("keyup",  function(ev) { self.setLastChange(ev); self.validate(ev); });
             $(entry).bind("change", function(ev) { self.serverValidate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
             // IE calls this when the user does a right-click paste
-            $(entry).bind("paste", function(ev) { self.validate(ev); });
+            $(entry).bind("paste", function(ev) { self.setLastChange(ev); self.validate(ev); });
             // FireFox calls this when the user does a right-click paste
-            $(entry).bind("input", function(ev) { self.validate(ev); });
+            //$(entry).bind("input", function(ev) { self.validate(ev); }); // Firefox sends a 'paste' event now too.
             break;
         case "radio":
         case "checkbox":
-            $(entry).bind("click", function(ev) { self.validate(ev); });
+            $(entry).bind("click", function(ev) { self.lastChange(ev); self.validate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
             break;
         case "select-one":
@@ -906,7 +915,7 @@ MMBaseValidator.prototype.addValidation = function(el) {
         default:
             this.log("Adding eventhandler to " + entry + " (" + entry.type + ")");
             this.log(entry);
-            $(entry).bind("change", function(ev) { self.validate(ev); });
+            $(entry).bind("change", function(ev) { self.setLastChange(ev); self.validate(ev); });
             $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
         }
 
