@@ -875,18 +875,8 @@ MMBaseValidator.prototype.setLastChange = function(event) {
     target.serverValidated = false;
 }
 
-
-/**
- * Adds event handlers to all mm_validate form entries
- */
-MMBaseValidator.prototype.addValidation = function(el) {
-    if (el == null) {
-        el = document.documentElement;
-    }
-    var els = $(el).find(".mm_validate");
-    this.log("Will validate elements in " + el + " (" + els.length + " elements)");
-
-    for (var i = 0; i < els.length; i++) {
+MMBaseValidator.prototype.addValidationForElements = function(els) {
+   for (var i = 0; i < els.length; i++) {
         var entry = els[i];
         if (entry.type == "textarea") {
             entry.value = entry.value.replace(/^\s+|\s+$/g, "");
@@ -937,6 +927,19 @@ MMBaseValidator.prototype.addValidation = function(el) {
             this.validateHook(this.invalidElements == 0);
         }
     }
+
+}
+
+/**
+ * Adds event handlers to all mm_validate form entries
+ */
+MMBaseValidator.prototype.addValidation = function(el) {
+    if (el == null) {
+        el = document.documentElement;
+    }
+    var els = $(el).find(".mm_validate");
+    this.log("Will validate elements in " + el + " (" + els.length + " elements)");
+    this.addValidationForElements(els);
     el = null;
 }
 
