@@ -226,8 +226,11 @@
   <mm:relatednodescontainer id="clonedquery" clone="query">
     <mm:context referid="parameters">
       <mm:relatednodes usetransaction="true">
-        <mm:last><mm:import id="cursize"><mm:index /></mm:import></mm:last>
+        <mm:last><mm:index id="cursize" write="false"/></mm:last>
       </mm:relatednodes>
+      <mm:notpresent referid="cursize">
+        <mm:import id="cursize">0</mm:import>
+      </mm:notpresent>
     </mm:context>
   </mm:relatednodescontainer>
 
