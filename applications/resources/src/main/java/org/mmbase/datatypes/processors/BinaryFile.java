@@ -130,11 +130,11 @@ public class BinaryFile {
                 File f = getFile(node, field, name);
                 try {
                     File metaFile = FileServlet.getInstance().getMetaFile(f);
-                    metaFile.mkdirs();
+                    metaFile.getParentFile().mkdirs();
                     BufferedWriter w = new BufferedWriter(new FileWriter(metaFile));
-                    w.write("Content-Disposition\t" + name);
-                    w.newLine();
+                    w.write("Content-Disposition\tattachment; filename=" + name);
                     w.close();
+                    log.debug("Created " + metaFile);
                 } catch (IOException ioe) {
                     log.warn(ioe);
                 }
@@ -202,6 +202,7 @@ public class BinaryFile {
                     File meta = FileServlet.getInstance().getMetaFile(file);
                     if (meta.exists()) {
                         File toMeta = FileServlet.getInstance().getMetaFile(to);
+                        toMeta.getParentFile().mkdirs();
                         meta.renameTo(toMeta);
                     }
                 } else {
