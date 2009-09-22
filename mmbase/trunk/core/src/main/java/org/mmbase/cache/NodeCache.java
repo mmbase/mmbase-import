@@ -56,6 +56,7 @@ public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEvent
     }
 
 
+    /*
     @Override
     public  MMObjectNode get(Object key) {
         synchronized(weak) {
@@ -87,7 +88,7 @@ public class NodeCache extends Cache<Integer, MMObjectNode> implements NodeEvent
             return super.put(key, value);
         }
     }
-
+    */
 
     protected void purge() {
         NodeReference ref = (NodeReference) queue.poll();
