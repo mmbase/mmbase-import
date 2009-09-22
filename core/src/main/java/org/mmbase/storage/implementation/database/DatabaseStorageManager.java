@@ -1186,10 +1186,14 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         try {
             refresh(node);
         } catch (org.mmbase.storage.StorageNotFoundException se) {
-            log.warn("StorageNotFoundException for node #" + node.getNumber() + " : " + se);
-            log.debug("Changed node " + node + " probably does not exists any more, but since we had to change it, we'll have to recrate it.");
+            log.warn("node " + node + " : " + se.getMessage(), se);
+            log.debug("Changed node " + node + " probably does not exist any more, but since we had to change it, we'll have to recreate it.");
             log.service("Recreating node " + node.getNumber());
-            create(node, builder);
+            if(node.getNumber() > 0) {
+                create(node, builder);
+            } else {
+                log.warn("Cannot recreate node without number");
+            }
         }
     }
 
@@ -1930,11 +1934,48 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 if (result != null) result.close();
                 s.close();
             }
-            log.debug("Refreshed -> " + node);
+            if (log.isDebugEnabled()) {
+                log.debug("Refreshed -> " + node);
+            }
         } catch (SQLException se) {
             throw new StorageException(se);
         } finally {
             releaseActiveConnection();
+        }
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    protected Map<String, Object> getValues(MMObjectNode node, ResultSet result, MMObjectBuilder builder) throws StorageException, SQLException {
+        final Map<String, Object> values = new HashMap<String, Object>();
+        for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
+            if (field.inStorage()) {
+                Object value;
+                if (field.getType() == Field.TYPE_BINARY && checkStoreFieldAsFile(builder)) {
+                    value =  getBlobFromFile(node, field, true);
+                    if (value == BLOB_SHORTED) {
+                        value = MMObjectNode.VALUE_SHORTED;
+                    }
+                } else if (field.getType() == Field.TYPE_BINARY) {
+                    // it is never in the resultset that came from the database
+                    value = MMObjectNode.VALUE_SHORTED;
+                } else {
+                    String id = (String)factory.getStorageIdentifier(field);
+                    value = getValue(result, result.findColumn(id), field, true);
+                }
+                values.put(field.getName(), value);
+            }
+        }
+        return values;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    protected void putValues(Map<String, Object> values, MMObjectNode node) {
+        for (Map.Entry<String, Object> e : values.entrySet()) {
+            node.storeValue(e.getKey(), e.getValue());
         }
     }
 
@@ -1956,24 +1997,13 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 // we might get inconsistencies if we 'remap' fieldnames that need not be mapped.
                 // this also guarantees the number field is set first, which we  may need when retrieving blobs
                 // from disk
-                for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
-                    if (field.inStorage()) {
-                        Object value;
-                        if (field.getType() == Field.TYPE_BINARY && checkStoreFieldAsFile(builder)) {
-                            value =  getBlobFromFile(node, field, true);
-                            if (value == BLOB_SHORTED) {
-                                value = MMObjectNode.VALUE_SHORTED;
-                            }
-                        } else if (field.getType() == Field.TYPE_BINARY) {
-                            // it is never in the resultset that came from the database
-                            value = MMObjectNode.VALUE_SHORTED;
-                        } else {
-                            String id = (String)factory.getStorageIdentifier(field);
-                            value = getValue(result, result.findColumn(id), field, true);
-                        }
-                        node.storeValue(field.getName(), value);
-                    }
+                Map<String, Object> values = getValues(node, result, builder);
+                if (values.get("number") != null) {
+                    putValues(values, node);
+                } else {
+                    log.warn("Got a very suspicious record from db (" + values + ") where number is null!. Will not use this to fill node!", new Exception());
                 }
+
                 assert node.getNumber() > 0;
                 assert node.getIntValue("otype") > 0;
                 // clear the changed signal on the node
