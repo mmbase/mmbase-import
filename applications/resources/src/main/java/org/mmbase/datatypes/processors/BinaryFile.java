@@ -128,6 +128,16 @@ public class BinaryFile {
                     }
                 }
                 File f = getFile(node, field, name);
+                try {
+                    File metaFile = FileServlet.getInstance().getMetaFile(f);
+                    metaFile.mkdirs();
+                    BufferedWriter w = new BufferedWriter(new FileWriter(metaFile));
+                    w.write("Content-Disposition\t" + name);
+                    w.newLine();
+                    w.close();
+                } catch (IOException ioe) {
+                    log.warn(ioe);
+                }
 
                 if (log.isDebugEnabled()) {
                     log.debug("" + value + " -> " + is + " -> " + f + " " + Logging.applicationStacktrace());
@@ -189,6 +199,11 @@ public class BinaryFile {
                     node.setValueWithoutProcess(field.getName(), fileName);
                     log.debug("Chached " + node.getChanged() + " " + node.getCloud());
                     node.commit();
+                    File meta = FileServlet.getInstance().getMetaFile(file);
+                    if (meta.exists()) {
+                        File toMeta = FileServlet.getInstance().getMetaFile(to);
+                        meta.renameTo(toMeta);
+                    }
                 } else {
                     log.warn("Could not rename " + file + " to " + to);
                 }

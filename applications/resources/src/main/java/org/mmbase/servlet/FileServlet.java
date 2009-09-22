@@ -36,11 +36,18 @@ import org.mmbase.util.logging.*;
 public class FileServlet extends BridgeServlet {
     private static Logger log;
 
-    private static File files = null;
     private static final UrlEscaper URL = new UrlEscaper();
     private static final String SESSION_EXTENSION  = ".SESSION";
 
+    private static FileServlet firstInstance;
+    private File files = null;
+
     private Pattern ignore = Pattern.compile("");
+
+    // implementation of CERN httpd meta-file processing. (like mod_cern_meta of apache)
+    private String metaDir = ".web";
+    private String metaSuffix = ".meta";
+    private boolean metaFiles = true;
 
     private Comparator<File> comparator = null;
 
@@ -50,6 +57,7 @@ public class FileServlet extends BridgeServlet {
     @Override
     public void init() throws ServletException {
         super.init();
+        if (firstInstance == null) firstInstance = this;
         String ig = getInitParameter("ignore");
         if (ig != null && ig.length() > 0) {
             ignore = Pattern.compile(ig);
@@ -99,15 +107,18 @@ public class FileServlet extends BridgeServlet {
         return a;
     }
 
+    public static FileServlet getInstance() {
+        return firstInstance;
+    }
     public static File getDirectory() {
-        return files;
+        return getInstance().files;
     }
 
     public static File getFile(String pathInfo, ServletResponse res) {
         if (pathInfo == null) {
-            return files;
+            return getDirectory();
         } else {
-            return new File(files, URL.transformBack(pathInfo).replace("/", File.separator));
+            return new File(getDirectory(), URL.transformBack(pathInfo).replace("/", File.separator));
         }
     }
 
@@ -156,6 +167,15 @@ public class FileServlet extends BridgeServlet {
         return pi != null && (ignore.matcher(pi).matches());
     }
 
+    /**
+     * FileServlet supports 'meta' files like Cern HTTPD (and apaches mod_cern_meta).
+     */
+    public  File getMetaFile(File f) {
+        File webDir = new File(f.getParentFile(), metaDir);
+        File metaFile = new File(webDir, f.getName() + metaSuffix);
+        return metaFile;
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pi = req.getPathInfo();
@@ -181,6 +201,23 @@ public class FileServlet extends BridgeServlet {
         }
         resp.setContentType(getServletContext().getMimeType(file.getName()));
         resp.setContentLength((int) file.length());
+        if (metaFiles) {
+            File metaFile = getMetaFile(file);
+            if (metaFile.exists() && metaFile.canRead()) {
+                BufferedReader r = new BufferedReader(new FileReader(metaFile));
+                String line = r.readLine();
+                while (line != null) {
+                    line = line.trim();
+                    if (! line.startsWith("#")) { // support for comments
+                        String[] header = line.split("\\s+", 2);
+                        if (header.length == 2) {
+                            resp.setHeader(header[0], header[1]);
+                        }
+                    }
+                    line = r.readLine();
+                }
+            }
+        }
         BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
         BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
         byte[] buf = new byte[1024];
