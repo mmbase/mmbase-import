@@ -25,7 +25,7 @@
         search="true"
         >
       <h4>${rid}</h4>
-    </mm-srt:relatednodes>
+    </mm-sr:relatednodes>
 
 
 
