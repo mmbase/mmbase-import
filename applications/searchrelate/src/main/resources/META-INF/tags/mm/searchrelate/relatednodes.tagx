@@ -97,6 +97,10 @@
                            description="Include also the possibility to search existing nodes"
                            />
 
+  <jsp:directive.attribute name="searchRepository"      type="org.mmbase.bridge.NodeQuery"
+                           description="An mmbase Query describing in which list the searcher must search. (This implies search=true). See also mm-rs:related#repository." />
+
+
   <jsp:directive.attribute name="delete"      type="java.lang.Boolean"
                            description="Wether to inform the items to create delete buttons (defaults to inverse value of 'search')"
                            />
@@ -153,7 +157,7 @@
   <mm:import id="_formtag">${requestScope['org.mmbase.bridge.jsp.taglib.form'].name}</mm:import>
   <mm:import id="_orderby">${empty orderby ? _role : orderby}${empty orderby ? (_role eq 'posrel' ? '.pos' : '.number') : ''}</mm:import>
   <mm:import id="_fields">${fields}</mm:import>
-  <mm:import id="_search">${empty search ? false : search}</mm:import>
+  <mm:import id="_search">${empty searchRepository ? (empty search ? false : search) : true}</mm:import>
   <mm:import id="_delete">${empty delete ? (! _search) : delete}</mm:import>
   <mm:import id="_confirm">${empty confirm ? false : confirm}</mm:import>
   <mm:import id="_create">${empty create ? 'true' : create}</mm:import>
@@ -284,6 +288,28 @@
       </div>
 
 
+      <mm:relatednodescontainer referid="clonedquery">
+        <mm:relatednodes id="related" usetransaction="true" commitonclose="false" />
+      </mm:relatednodescontainer>
+
+      <mm:import id="searcher">
+        <c:if test="${parameters.search}">
+          <mm:cloud>
+            <c:choose>
+              <c:when test="${empty searchRepository}">
+                <mm-sr:search type="${query.nodeManager.name}" load="${empty load or load}">
+                  <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
+                </mm-sr:search>
+              </c:when>
+              <c:otherwise>
+                <mm-sr:relate repository="${searchRespository}" load="${empty load or load}">
+                  <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
+                </mm-sr:relate>
+              </c:otherwise>
+            </c:choose>
+          </mm:cloud>
+        </c:if>
+      </mm:import>
 
 
       <c:if test="${_create and _createposition eq 'top'}">
@@ -295,30 +321,25 @@
         </mm:link>
         <span class="status">...</span>
         <span class="errors"></span>
-        <c:if test="${search}">
-          <mm-sr:search type="${query.nodeManager.name}" />
-        </c:if>
+        <mm:write referid="searcher" escape="none" />
       </c:if>
 
       <!-- ================================================================================ -->
       <ol class="${query.nodeManager.name}">
 
-        <mm:relatednodescontainer referid="clonedquery">
-          <mm:relatednodes id="related" usetransaction="true" commitonclose="false">
-            <c:catch var="e">
-              <mm:include
-                  page="/mmbase/searchrelate/list/li.jspx"
-                  referids="rid">
-                <mm:param name="className">origPos-<mm:index offset="0"/></mm:param>
-              </mm:include>
-            </c:catch>
-            <c:if test="${! empty e}">
-              <mm:escape>${rid}:  ${e}</mm:escape>
-            </c:if>
+        <mm:relatednodes referid="related"  commitonclose="false">
+          <c:catch var="e">
+            <mm:include
+                page="/mmbase/searchrelate/list/li.jspx"
+                referids="rid">
+              <mm:param name="className">origPos-<mm:index offset="0"/></mm:param>
+            </mm:include>
+          </c:catch>
+          <c:if test="${! empty e}">
+            <mm:escape>${rid}:  ${e}</mm:escape>
+          </c:if>
 
-          </mm:relatednodes>
-
-        </mm:relatednodescontainer>
+        </mm:relatednodes>
       </ol>
       <!-- ================================================================================ -->
 
@@ -331,13 +352,7 @@
         </mm:link>
         <span class="status">...</span>
         <span class="errors"></span>
-      </c:if>
-      <c:if test="${search}">
-        <mm:cloud>
-          <mm-sr:search type="${query.nodeManager.name}" load="${empty load or load}">
-            <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
-          </mm-sr:search>
-        </mm:cloud>
+        <mm:write referid="searcher" escape="none" />
       </c:if>
     </div>
   </fmt:bundle>
