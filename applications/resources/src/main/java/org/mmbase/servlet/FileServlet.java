@@ -169,11 +169,59 @@ public class FileServlet extends BridgeServlet {
 
     /**
      * FileServlet supports 'meta' files like Cern HTTPD (and apaches mod_cern_meta).
+     * @since MMBase-1.9.2
      */
     public  File getMetaFile(File f) {
         File webDir = new File(f.getParentFile(), metaDir);
         File metaFile = new File(webDir, f.getName() + metaSuffix);
         return metaFile;
+    }
+    /**
+     * Returns contents of {@link #getMetaFile} as a Map.
+     * @since MMBase-1.9.2
+     */
+    public Map<String, String> getMetaHeaders(File f) {
+        Map<String, String> meta = new HashMap<String, String>();
+        File metaFile = getMetaFile(f);
+        if (metaFile.exists() && metaFile.canRead()) {
+            try {
+                BufferedReader r = new BufferedReader(new FileReader(metaFile));
+                String line = r.readLine();
+                while (line != null) {
+                    line = line.trim();
+                    if (! line.startsWith("#")) { // support for comments
+                        String[] header = line.split("\\s+", 2);
+                        if (header.length == 2) {
+                            meta.put(header[0], header[1]);
+                        } else {
+                            log.warn("Could not parse " + line);
+                        }
+                    }
+                    line = r.readLine();
+                }
+            } catch (IOException ioe) {
+                log.error(ioe);
+            }
+        }
+        return meta;
+    }
+    /**
+     * Sets contents of {@link #getMetaFile} as a Map.
+     * @since MMBase-1.9.2
+     */
+    public void setMetaHeaders(File f, Map<String, String> meta) {
+        try {
+            File metaFile = FileServlet.getInstance().getMetaFile(f);
+            metaFile.getParentFile().mkdirs();
+            BufferedWriter w = new BufferedWriter(new FileWriter(metaFile));
+            for (Map.Entry<String, String> entry : meta.entrySet()) {
+                w.write(entry.getKey() + "\t" + entry.getValue());
+            }
+            w.close();
+            log.debug("Created " + metaFile);
+        } catch (IOException ioe) {
+            log.warn(ioe);
+        }
     }
 
     @Override
@@ -202,20 +250,8 @@ public class FileServlet extends BridgeServlet {
         resp.setContentType(getServletContext().getMimeType(file.getName()));
         resp.setContentLength((int) file.length());
         if (metaFiles) {
-            File metaFile = getMetaFile(file);
-            if (metaFile.exists() && metaFile.canRead()) {
-                BufferedReader r = new BufferedReader(new FileReader(metaFile));
-                String line = r.readLine();
-                while (line != null) {
-                    line = line.trim();
-                    if (! line.startsWith("#")) { // support for comments
-                        String[] header = line.split("\\s+", 2);
-                        if (header.length == 2) {
-                            resp.setHeader(header[0], header[1]);
-                        }
-                    }
-                    line = r.readLine();
-                }
+            for (Map.Entry<String, String> e : getMetaHeaders(file).entrySet()) {
+                resp.setHeader(e.getKey(), e.getValue());
             }
         }
         BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());

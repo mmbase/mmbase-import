@@ -128,16 +128,9 @@ public class BinaryFile {
                     }
                 }
                 File f = getFile(node, field, name);
-                try {
-                    File metaFile = FileServlet.getInstance().getMetaFile(f);
-                    metaFile.getParentFile().mkdirs();
-                    BufferedWriter w = new BufferedWriter(new FileWriter(metaFile));
-                    w.write("Content-Disposition\tattachment; filename=" + name);
-                    w.close();
-                    log.debug("Created " + metaFile);
-                } catch (IOException ioe) {
-                    log.warn(ioe);
-                }
+                Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(f);
+                meta.put("Content-Disposition", "attachment; filename=" + name);
+                FileServlet.getInstance().setMetaHeaders(f, meta);
 
                 if (log.isDebugEnabled()) {
                     log.debug("" + value + " -> " + is + " -> " + f + " " + Logging.applicationStacktrace());
