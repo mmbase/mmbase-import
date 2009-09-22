@@ -145,9 +145,13 @@
         </ul>
 
         <h2>mm-sr:relate</h2>
-        <h3>TODO</h3>
-        <ul class="todo">
-          <li>Make test-cases for this tag too</li>
+        <ul>
+          <li class="done">
+            <mm:link page="search.jspx" referids="ct?">
+              <a href="${_}">mm-sr:search</a>
+            </mm:link>
+          </li>
+          <li>Make more test-cases for this tag</li>
         </ul>
         <hr />
         <p>
