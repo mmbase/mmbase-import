@@ -98,7 +98,7 @@
                            />
 
   <jsp:directive.attribute name="searchRepository"      type="org.mmbase.bridge.NodeQuery"
-                           description="An mmbase Query describing in which list the searcher must search. (This implies search=true). See also mm-rs:related#repository." />
+                           description="An mmbase Query describing in which list the searcher must search. The query should return nodes of type 'type'. (This implies search=true). See also mm-rs:related#repository." />
 
 
   <jsp:directive.attribute name="delete"      type="java.lang.Boolean"
