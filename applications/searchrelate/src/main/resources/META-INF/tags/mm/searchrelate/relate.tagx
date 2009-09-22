@@ -75,11 +75,17 @@
 
 
   <mm:import externid="current" from="this" />
-  <mm:import from="request" id="seq" externid="mm_relate_sequence" vartype="integer">0</mm:import>
-  <mm:write request="mm_relate_sequence" value="${seq + 1}" />
-  <mm:write session="mm_related_${seq}_repository" referid="repository" />
-  <mm:write session="mm_related_${seq}_current"    referid="current" />
-  <mm:write session="mm_related_${seq}_extracreate"  value="${extracreate}" />
+
+  <mm:import id="requestid">S<mm:escape escape="crc32,radix(36)">${pageContext.request.requestURI}?${pageContext.request.queryString}</mm:escape></mm:import>
+
+  <mm:import from="request" id="seq" externid="${requestid}_sequence" vartype="integer">0</mm:import>
+
+  <mm:write request="${requestid}_sequence" value="${seq + 1}" />
+  <mm:import id="sid">${requestid}_${seq}</mm:import>
+
+  <mm:write session="mm_related_${sid}_repository" referid="repository" />
+  <mm:write session="mm_related_${sid}_current"    referid="current" />
+  <mm:write session="mm_related_${sid}_extracreate"  value="${extracreate}" />
   <c:if test="${seq eq 0 and (empty load or ! load)}">
     <mm:include page="/mmbase/jquery/jquery.jspx" />
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.form.js')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
@@ -87,21 +93,23 @@
       <mm:param name="locale">${repository.cloud.locale}</mm:param>
       <script type="text/javascript" src="${_}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     </mm:link>
-    <script type="text/javascript">
-      $(document).ready(function(){
-      $("body").find("div.mm_related").each(function() {
-      this.relater = new MMBaseRelater(this);
-      });
-      });
-    </script>
   </c:if>
+  <script type="text/javascript">
+    $(document).ready(function(){
+    $("body").find("div.mm_related").each(function() {
+    if (this.relater == null) {
+      this.relater = new MMBaseRelater(this);
+      }
+    });
+    });
+  </script>
   <script type="text/javascript">
     $(document).ready(function() {
     <c:if test="${! empty submit}">
       <!-- if a submit id is given, commit the search/relate on click of that element -->
          $("${submit}").click(function(el) {
-            return $("#mm_related_${seq}")[0].relater.commit(el); });</c:if>
-      $("#mm_related_${seq}").each(function() {
+            return $("#mm_related_${sid}")[0].relater.commit(el); });</c:if>
+      $("#mm_related_${sid}").each(function() {
       if (this.relater != null) {
     <c:if test="${! empty fields}"> this.relater.setFields('${fields}'); </c:if>
     <c:if test="${! empty customizedir}"> this.relater.setCustomizedir('${customizedir}'); </c:if>
@@ -120,7 +128,7 @@
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
-    <div id="mm_related_${seq}"
+    <div id="mm_related_${sid}"
          class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'} ${empty relations or ! relations ? '' : 'can_editrelations'}  ${styleClass}">
       <c:if test="${! empty transaction}">
         <span class="transactionname" style="display: none;">${transaction}</span>
@@ -137,13 +145,13 @@
                       <fieldset>
                         <legend><fmt:message key="search" /></legend>
                         <input class="search" type="text" value="" />
-                        <a href="#mm_related_${seq}_current" class="search"><fmt:message key="search" /></a>
+                        <a href="#mm_related_${sid}_current" class="search"><fmt:message key="search" /></a>
                       </fieldset>
                     </form>
                   </c:when>
                   <c:otherwise>
                     <input class="search" type="text" value="" />
-                    <a href="#mm_related_${seq}_current" class="search"><fmt:message key="search" /></a>
+                    <a href="#mm_related_${sid}_current" class="search"><fmt:message key="search" /></a>
                   </c:otherwise>
                 </c:choose>
               </mm:isgreaterthan>
@@ -156,7 +164,7 @@
             <c:if test="${! empty maxpages}">
               <mm:param name="maxpages" referid="maxpages" />
             </c:if>
-            <mm:param name="id">mm_related_${seq}_current</mm:param>
+            <mm:param name="id">mm_related_${sid}_current</mm:param>
             <mm:param name="extraClass">implicit</mm:param>
           </mm:include>
         </div>
@@ -171,20 +179,20 @@
             <fieldset>
               <legend><fmt:message key="search" /></legend>
               <input class="search" type="text" value="" />
-              <a href="#mm_related_${seq}_repository" class="search"><fmt:message key="search" /></a>
+              <a href="#mm_related_${sid}_repository" class="search"><fmt:message key="search" /></a>
               <c:if test="${! empty create and create}">
                 <jsp:text> </jsp:text>
-                <a href="#mm_related_${seq}_repository_create" class="create"><fmt:message key="create" /></a>
+                <a href="#mm_related_${sid}_repository_create" class="create"><fmt:message key="create" /></a>
               </c:if>
             </fieldset>
             </form>
           </c:when>
           <c:otherwise>
             <input class="search" type="text" value="" />
-            <a href="#mm_related_${seq}_repository" class="search"><fmt:message key="search" /></a>
+            <a href="#mm_related_${sid}_repository" class="search"><fmt:message key="search" /></a>
             <c:if test="${! empty create and create}">
               <jsp:text> </jsp:text>
-              <a href="#mm_related_${seq}_repository_create" class="create"><fmt:message key="create" /></a>
+              <a href="#mm_related_${sid}_repository_create" class="create"><fmt:message key="create" /></a>
             </c:if>
           </c:otherwise>
         </c:choose>
@@ -197,7 +205,7 @@
           <c:if test="${! empty maxpages}">
             <mm:param name="maxpages" referid="maxpages" />
           </c:if>
-          <mm:param name="id">mm_related_${seq}_repository</mm:param>
+          <mm:param name="id">mm_related_${sid}_repository</mm:param>
           <mm:param name="extraClass">implicit</mm:param>
         </mm:include>
       </div>
