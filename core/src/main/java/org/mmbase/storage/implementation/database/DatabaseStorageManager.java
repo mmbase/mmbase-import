@@ -1185,7 +1185,8 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         // fields.
         try {
             refresh(node);
-        } catch( org.mmbase.storage.StorageNotFoundException se) {
+        } catch (org.mmbase.storage.StorageNotFoundException se) {
+            log.warn("StorageNotFoundException for node #" + node.getNumber() + " : " + se);
             log.debug("Changed node " + node + " probably does not exists any more, but since we had to change it, we'll have to recrate it.");
             log.service("Recreating node " + node.getNumber());
             create(node, builder);
