@@ -225,7 +225,7 @@
 
   <mm:relatednodescontainer id="clonedquery" clone="query">
     <mm:context referid="parameters">
-      <mm:relatednodes usetransaction="true">
+      <mm:relatednodes usetransaction="true" commitonclose="false">
         <mm:last><mm:index id="cursize" write="false"/></mm:last>
       </mm:relatednodes>
       <mm:notpresent referid="cursize">
@@ -304,7 +304,7 @@
       <ol class="${query.nodeManager.name}">
 
         <mm:relatednodescontainer referid="clonedquery">
-          <mm:relatednodes id="related" usetransaction="true">
+          <mm:relatednodes id="related" usetransaction="true" commitonclose="false">
             <c:catch var="e">
               <mm:include
                   page="/mmbase/searchrelate/list/li.jspx"
