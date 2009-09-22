@@ -115,8 +115,8 @@ public class FFMpegAnalyzer implements Analyzer {
             util.toAudio(sourceNode, destNode);
 
         } else {
-            util.toVideo(sourceNode, destNode);
             log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is video " + sourceNode + " -> " + sourceNode.getNodeManager().getName());
+            util.toVideo(sourceNode, destNode);
             assert sourceNode.getNodeManager().getName().equals(VIDEO);
         }
         if (util.getUpdateSource()) {
