@@ -161,7 +161,7 @@ public class Related {
 
 
     /**
-     * This get-processor can be used to implictely create the wanted related node too.
+     * This get-processor can be used to implicitly create the wanted related node too.
      */
     public static class Creator extends AbstractProcessor {
         private static final long serialVersionUID = 1L;
