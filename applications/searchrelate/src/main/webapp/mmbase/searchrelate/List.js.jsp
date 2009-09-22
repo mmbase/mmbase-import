@@ -176,10 +176,12 @@ List.prototype.triggerValidateHook = function() {
     var reason = "";
     var self = this;
     var valid = true;
-    for (var rid in self.form.valids) {
-        if (! self.form.valids[rid] ) {
-            valid = false;
-            reason += rid;
+    if (self.form != null) {
+        for (var rid in self.form.valids) {
+            if (! self.form.valids[rid] ) {
+                valid = false;
+                reason += rid;
+            }
         }
     }
     if (this.cursize < this.min) {
@@ -200,9 +202,9 @@ List.prototype.log = function(msg) {
             errorTextArea.value = "LOG: " + msg + "\n" + errorTextArea.value;
         } else {
             // firebug console
-	        if (typeof(console) != "undefined") {
-		        console.log(msg);
-	        }
+            if (typeof(console) != "undefined") {
+                console.log(msg);
+            }
         }
     }
 };
