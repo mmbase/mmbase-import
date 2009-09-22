@@ -192,7 +192,9 @@ List.prototype.triggerValidateHook = function() {
         reason += " list too long";
         valid = false;
     }
-    $(this.form).trigger("mmsrValidateHook", [self, valid, reason, self.form]);
+    if (this.form != null) {
+        $(this.form).trigger("mmsrValidateHook", [self, valid, reason, self.form]);
+    }
 }
 
 List.prototype.log = function(msg) {
