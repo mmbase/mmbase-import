@@ -82,6 +82,13 @@
       <classifier>client-skinny</classifier>
       <scope>test</scope>
     </dependency>
+    <!-- Testing on MySQL only for now -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.6</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <repositories>
