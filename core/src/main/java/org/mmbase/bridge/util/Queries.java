@@ -1293,8 +1293,6 @@ abstract public class Queries {
         }
 
         public int compare(Node node1, Node node2) {
-            for (SortOrder so : query.getSortOrders()) {
-            }
             return Queries.compare(node1, node2, query.getSortOrders());
         }
 
@@ -1599,7 +1597,10 @@ abstract public class Queries {
         List<SortOrder> sos = q.getSortOrders();
         if (sos == null || sos.size() == 0) throw new IllegalArgumentException("The query " + q + " is not sorted");
         SortOrder so = sos.get(0);
-        StepField orderField = so.getField();
+        final StepField orderField = so.getField();
+        if (orderField.getFieldName().equals("number")) {
+            throw new IllegalArgumentException("The query " + q.toSql() + " is ordered on number");
+        }
         Step orderStep = orderField.getStep();
         Step nodeStep  = q.getNodeStep();
 
