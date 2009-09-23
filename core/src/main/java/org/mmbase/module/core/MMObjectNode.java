@@ -293,7 +293,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * changed Vector as its base of what to commit/change.
      * @return <code>true</code> if the commit was succesfull, <code>false</code> is it failed
      */
-    public synchronized boolean commit() {
+    public boolean commit() {
         boolean success = parent.commit(this);
         if (success) {
             isNew = false; // perhaps it is always already false (otherwise insert is called, I think), but no matter, now it certainly isn't new!
@@ -318,7 +318,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @param userName the name of the user who inserts the node. This value is ignored
      * @return the new node key (number field), or -1 if the insert failed
      */
-    public synchronized int insert(String userName) {
+    public int insert(String userName) {
         return parent.insert(userName, this);
     }
 
@@ -329,7 +329,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the new node key (number field), or -1 if the insert failed
      * @since MMBase-1.7
      */
-    public synchronized int insert(UserContext user) {
+    public int insert(UserContext user) {
         String nc = newContext;
         int nodeID = parent.safeInsert(this, user.getIdentifier());
         if (nodeID != -1) {
@@ -358,7 +358,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return <code>true</code> if successful
      * @since MMBase-1.7
      */
-    public synchronized boolean commit(UserContext user) {
+    public boolean commit(UserContext user) {
         boolean success = parent.safeCommit(this);
         if (success) {
             MMBaseCop mmbaseCop = parent.getMMBase().getMMBaseCop();
@@ -380,7 +380,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      *        Used to set security-related information
      * @since MMBase-1.7
      */
-    public synchronized void remove(UserContext user) {
+    public void remove(UserContext user) {
         if (log.isDebugEnabled()) {
             log.debug("Deleting node " + getNumber() + " because " + Logging.stackTrace(5));
         }
