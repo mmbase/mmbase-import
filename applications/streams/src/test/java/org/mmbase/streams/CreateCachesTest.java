@@ -106,7 +106,7 @@ public class CreateCachesTest {
 
 
 
-    @Test
+    //@Test
     public void node() {
         Cloud cloud = getCloud();
         assumeNotNull(cloud);
@@ -126,12 +126,7 @@ public class CreateCachesTest {
         container.commit();
 
         NodeManager nm = cloud.getNodeManager("streamsources");
-        File tempFile = new File(dir, getClass().getName() + "." + FILE);
-        if (! tempFile.exists()) {
-            org.mmbase.util.IOUtil.copy(new FileInputStream(testFile), new FileOutputStream(tempFile));
-        }
 
-        assertEquals(513965, tempFile.length());
 
         System.out.println("DIR " + dir);
 
@@ -139,6 +134,13 @@ public class CreateCachesTest {
         newSource.setNodeValue("mediafragment", container);
         newSource.setNodeValue("mediaprovider", cloud.getNode("default.provider"));
         newSource.commit();
+
+        File tempFile = new File(dir, newSource.getNumber() + getClass().getName() + "." + FILE);
+        if (! tempFile.exists()) {
+            org.mmbase.util.IOUtil.copy(new FileInputStream(testFile), new FileOutputStream(tempFile));
+        }
+        assertEquals(513965, tempFile.length());
+
 
         assertTrue(testFile.exists());
 
@@ -183,19 +185,30 @@ public class CreateCachesTest {
         assertEquals("" + mediafragment.getNumber() + " is supposed to have " + sourceCount + " source", sourceCount, mediafragment.getRelatedNodes("object", "related", "destination").size());
     }
 
+    @Test
+    public void crazy() throws Exception  {
+        for (int i = 0; i < 10; i++) {
+            CreateCachesProcessor proc = get("crazycreatecaches.xml");
+            Node source = getNode(proc.getDirectory());
+            CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+            job.waitUntilReady();
+            assertTrue("No node " + source.getNumber() + " in " + source.getCloud(), source.getCloud().hasNode(source.getNumber()));
+            source = refresh(source);
+        }
+    }
+
 
     @Test
     public void recognizerOnly() throws Exception  {
-        for (int i = 0; i < 1; i++) {
-            CreateCachesProcessor proc = get("dummycreatecaches_0.xml");
-            Node source = getNode(proc.getDirectory());
-            CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
+        CreateCachesProcessor proc = get("dummycreatecaches_0.xml");
+        Node source = getNode(proc.getDirectory());
+        CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
 
+        job.waitUntilReady();
 
-            job.waitUntilReady();
-            source = refresh(source);
-            checkSource(source, 1, "" + i);
-        }
+        assertTrue("No node " + source.getNumber() + " in " + source.getCloud(), source.getCloud().hasNode(source.getNumber()));
+        source = refresh(source);
+        checkSource(source, 1);
     }
 
     @Test
@@ -204,9 +217,8 @@ public class CreateCachesTest {
         Node source = getNode(proc.getDirectory());
         CreateCachesProcessor.Job job = proc.createCaches(source.getCloud(), source.getNumber());
         source.commit();
-
-
         job.waitUntilReady();
+        assertTrue(source.getCloud().hasNode(source.getNumber()));
         source = refresh(source);
         checkSource(source, 2);
     }
