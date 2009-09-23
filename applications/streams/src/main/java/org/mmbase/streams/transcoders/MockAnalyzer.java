@@ -27,7 +27,7 @@ public class MockAnalyzer implements Analyzer {
     private static final Logger LOG = Logging.getLoggerInstance(MockAnalyzer.class);
 
     private final ChainedLogger log = new ChainedLogger(LOG);
-    private final AnalyzerUtils util = new AnalyzerUtils(log);
+    protected final AnalyzerUtils util = new AnalyzerUtils(log);
     {
         util.setUpdateSource(true);
     }
@@ -63,11 +63,16 @@ public class MockAnalyzer implements Analyzer {
     }
 
     public void ready(Node sourceNode, Node destNode) {
-        destNode.setValue("height", y);
-        destNode.setValue("width", x);
-        destNode.commit();
-        util.toVideo(sourceNode, destNode);
-        log.info("READY for " + sourceNode.getNodeManager().getName() + " " + sourceNode.hashCode() + " " + sourceNode.getNumber());
+        synchronized(util) {
+            if (destNode != null) {
+                destNode.setValue("height", y);
+                destNode.setValue("width", x);
+                destNode.commit();
+            }
+            util.toVideo(sourceNode, destNode);
+            sourceNode.commit();
+            log.info("READY for " + sourceNode.getNodeManager().getName() + " " + sourceNode.hashCode() + " " + sourceNode.getNumber());
+        }
 
     }
     @Override

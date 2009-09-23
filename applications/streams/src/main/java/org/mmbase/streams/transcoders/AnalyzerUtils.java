@@ -76,7 +76,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
         }
     }
 
-    public void toVideo(Node source, Node dest) {
+    public synchronized void toVideo(Node source, Node dest) {
         Cloud cloud = source.getCloud();
         fixMimeType("video", source);
         fixMimeType("video", dest);
@@ -99,7 +99,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
         }
     }
 
-    public void toAudio(Node source, Node dest) {
+    public synchronized void toAudio(Node source, Node dest) {
         Cloud cloud = source.getCloud();
         fixMimeType("audio", source);
         fixMimeType("audio", dest);
