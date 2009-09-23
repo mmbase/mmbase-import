@@ -1191,5 +1191,22 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         node.getNode().setValue(fieldName, value);
     }
 
+    /**
+     * This method is called after a commit of a certain node is ready. It calls notifyAll now.
+     * This makes it easy to wait for a node to really exist (finished committing)
+     * <pre>
+                synchronized(ntCloud) {
+                    while (! ntCloud.hasNode(node)) {
+                        ntCloud.wait();
+                    }
+                }
+     </pre>
+     *
+     * @since MMBase-1.9.2
+     */
+    protected synchronized void afterCommit(BasicNode node) {
+        notifyAll();
+    }
+
 
 }

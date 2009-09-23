@@ -519,6 +519,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (!(cloud instanceof Transaction)) { // sigh sigh sigh.
             log.debug("not in a transaction so actually committing now");
             MMObjectNode node = getNode();
+            //assert isNew() == node.getNumber() < 0 : "" + isNew() + " " + node.getNumber() + " " + node;
             if (isNew()) {
                 log.debug("new");
                 node.insert(cloud.getUser());
@@ -532,6 +533,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
             temporaryNodeId = -1;
         }
+        cloud.afterCommit(this);
     }
 
     @Override
@@ -973,17 +975,20 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     @Override
     public boolean mayWrite() {
-        return isNew() || cloud.check(Operation.WRITE, getNode().getNumber());
+        return isNew() ||
+            cloud.check(Operation.WRITE, getNode().getNumber());
     }
 
     @Override
     public boolean mayDelete() {
-        return isNew() || cloud.check(Operation.DELETE, getNode().getNumber());
+        return isNew() ||
+            cloud.check(Operation.DELETE, getNode().getNumber());
     }
 
     @Override
     public boolean mayChangeContext() {
-        return isNew() || cloud.check(Operation.CHANGE_CONTEXT, getNode().getNumber());
+        return isNew() ||
+            cloud.check(Operation.CHANGE_CONTEXT, getNode().getNumber());
     }
 
     /**
