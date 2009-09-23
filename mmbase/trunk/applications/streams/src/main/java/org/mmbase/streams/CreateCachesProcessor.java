@@ -324,7 +324,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                 }
                                 if (! thisJob.isInterrupted()) {
                                     logger.info("READY " + thisJob + "(" + thisJob.getNode().getNodeManager().getName() + ":" + thisJob.getNode().getNumber() + ")");
-                                    thisJob.getNode().commit();
+                                    //thisJob.getNode().commit();
                                 }
                             } catch (RuntimeException e) {
                                 logger.error(e.getMessage(), e);
@@ -412,7 +412,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
     }
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    protected CreateCachesProcessor clone() throws CloneNotSupportedException {
         CreateCachesProcessor clone = (CreateCachesProcessor) super.clone();
         LOG.info("Cloned");
         clone.initWatcher();
@@ -777,11 +777,29 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
                         dest.commit();
 
+
                         System.out.println("Created " + dest);
                         String destFile = dest.getStringValue("url");
                         assert destFile != null;
                         assert destFile.length() > 0;
-                        URI outURI = new File(getDirectory(), destFile).toURI();
+                        File outFile = new File(getDirectory(), destFile);
+
+                        if (FileServlet.getInstance() != null) {
+                            File inMeta = FileServlet.getInstance().getMetaFile(inFile);
+                            if (inMeta.exists()) {
+                                Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(inFile);
+                                String cd = meta.get("Content-Disposition");
+                                if (cd != null) {
+                                    String inDisposition =  cd.substring("attachment; filename=".length());
+                                    String outDisposition = ResourceLoader.getName(inDisposition) + "." + jd.transcoder.getFormat().toString().toLowerCase();
+                                    meta.put("Content-Disposition", "attachment; filename=" + outDisposition);
+
+                                    FileServlet.getInstance().setMetaHeaders(outFile, meta);
+                                }
+                            }
+                        }
+
+                        URI outURI = outFile.toURI();
                         Result result = new TranscoderResult(jd, dest, inURI, outURI);
                         LOG.info("Added result to results list with key: " + dest.getStringValue("key"));
                         results.set(i, result);
