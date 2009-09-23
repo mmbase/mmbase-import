@@ -101,6 +101,7 @@ public class URLComposerFactory  {
                     org.mmbase.util.xml.Instantiator.setProperty(e.getKey(), klass, newComposer, e.getValue());
                 }
                 Map<String, Object> clone = new HashMap<String, Object>(); // filter may change the info map, but that should of course not influence others
+                clone.putAll(info);
                 newComposer.init(provider, source, fragment, clone, cacheExpireObjects);
                 return newComposer;
             }  catch (Exception g) {
@@ -283,7 +284,7 @@ public class URLComposerFactory  {
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("Creating url-composers for provider " + provider.getNumber() + " (format: " + format + ", protocol: " + protocol + ")");
+            log.debug("Creating url-composers for provider " + provider.getNumber() + " (format: " + format + ", protocol: " + protocol + ")" + info);
         }
 
         boolean found = false;
@@ -326,7 +327,9 @@ public class URLComposerFactory  {
                 urls.add(uc);
             }
         }
-        log.debug("returning " + urls);
+        if (log.isDebugEnabled()) {
+            log.debug("returning " + urls);
+        }
         return urls;
     }
 }
