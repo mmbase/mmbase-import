@@ -70,10 +70,12 @@ public class MockCloudContext implements CloudContext {
         public final Map<String, Field> fields;
         public final MockBuilderReader reader;
         public final Map<String, String> properties = new HashMap<String, String>();
-        public NodeManagerDescription(String n, Map<String, Field> f, MockBuilderReader r) {
+        public final int oType;
+        public NodeManagerDescription(String n, Map<String, Field> f, MockBuilderReader r, int oType) {
             name = n;
             fields = f;
             reader = r;
+            this.oType = oType;
         }
         public String toString() {
             return name + ":" + fields;
@@ -126,19 +128,24 @@ public class MockCloudContext implements CloudContext {
         }
     }
 
+    protected int getTypeDefNode(String name) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("name", name);
+        return addNode("typedef", map);
+    }
+
     public void addNodeManager(String name, Map<String, DataType> map) {
         Map<String, Field> m = new HashMap<String, Field>();
         for (Map.Entry<String, DataType> e : map.entrySet()) {
             m.put(e.getKey(), new MockField(e.getKey(), null, e.getValue()));
         }
-        nodeManagers.put(name, new NodeManagerDescription(name, m, null));
+        nodeManagers.put(name, new NodeManagerDescription(name, m, null,  getTypeDefNode(name)));
     }
 
     public void addNodeManager(InputSource source) {
         synchronized(nodeManagers) {
             MockBuilderReader reader = new MockBuilderReader(source, this);
             addNodeManager(reader);
-
         }
     }
 
@@ -147,7 +154,7 @@ public class MockCloudContext implements CloudContext {
         for (Field f : reader.getFields()) {
             map.put(f.getName(), f);
         }
-        nodeManagers.put(reader.getName(), new NodeManagerDescription(reader.getName(), map, reader));
+        nodeManagers.put(reader.getName(), new NodeManagerDescription(reader.getName(), map, reader, getTypeDefNode(reader.getName())));
     }
 
     public void addNodeManagers(ResourceLoader directory) throws java.io.IOException {
