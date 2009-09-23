@@ -61,8 +61,8 @@ public class RecognizerTest {
         return  Arrays.asList(new Object[][] {
                 {new Case("basic.mpg", VIDEO, 320, 240)}
                 ,
-                {new Case("basic2.mpg", VIDEO, 352, 288)}
-                ,
+                //{new Case("basic2.mpg", VIDEO, 352, 288)}
+                //,
                 {new Case("basic.mov", VIDEO, 640, 480)}
                 ,
                 {new Case("basic.mp3", AUDIO, -1, -1)}
