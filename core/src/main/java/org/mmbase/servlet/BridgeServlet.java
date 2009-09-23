@@ -407,7 +407,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         private String fileName;
         QueryParts(String sessionName, String nodeIdentifier) {
             this.sessionName = sessionName;
-            this.nodeIdentifier = nodeIdentifier; 
+            this.nodeIdentifier = nodeIdentifier;
 
         }
         void setNode(Node node) {
@@ -466,19 +466,6 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         }
 
 
-    }
-
-    /**
-     * Just to test to damn regexp
-     */
-    public static void main(String[] argv) {
-
-        Matcher m = FILE_PATTERN.matcher(argv[0]);
-        if (! m.matches()) {
-            System.out.println("Didn't match");
-        } else {
-            System.out.println("Found node " + m.group(1));
-        }
     }
 
 }
