@@ -64,7 +64,7 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
             log.info("Found length " + source);
             return;
         }
-        
+
         if (util.dimensions(l, source, des)) {
             log.info("Found dimensions " + source);
             return;
@@ -113,9 +113,11 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
     }
 
     public void ready(Node sourceNode, Node destNode) {
-        System.out.println("length: " + length + " prevPos " + prevPos);
-        if (bits > 0 && length > 0) {
-            destNode.setIntValue("bitrate", (int) (bits / length));
+        synchronized(util) {
+            System.out.println("length: " + length + " prevPos " + prevPos);
+            if (bits > 0 && length > 0) {
+                destNode.setIntValue("bitrate", (int) (bits / length));
+            }
         }
     }
 

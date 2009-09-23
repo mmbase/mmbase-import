@@ -64,69 +64,73 @@ public class FFMpegAnalyzer implements Analyzer {
     private String canbe = MEDIA;
 
     public void analyze(String l, Node source, Node des) {
-        Cloud cloud = source.getCloud();
+        synchronized(util) {
+            Cloud cloud = source.getCloud();
 
-        if (util.unsupported(l, source, des)) {
-            // TODO: make something to report this to user
-            log.warn("Not supported! " + l);
-            return;
-        }
-
-        if (util.image2(l, source, des)) {
-            if (log.isDebugEnabled()) log.debug("Found an image " + source);
-            canbe = AnalyzerUtils.IMAGE;
-            return;
-        }
-
-        if (util.duration(l, source, des)) {
-            if (log.isDebugEnabled()) log.debug("Found length " + source);
-            return;
-        }
-
-        if (util.dimensions(l, source, des)) {
-            if (log.isDebugEnabled()) log.debug("Found dimensions " + source);
-            return;
-        }
-
-        if (util.audio(l, source, des)) {
-            if (log.isDebugEnabled()) log.debug("Found audio: " + source);
-
-            if (! canbe.equals(VIDEO)) {
-                /* no video seen yet, so it can be audio */
-                canbe = AUDIO;
+            if (util.unsupported(l, source, des)) {
+                // TODO: make something to report this to user
+                log.warn("Not supported! " + l);
+                return;
             }
-        }
 
+            if (util.image2(l, source, des)) {
+                if (log.isDebugEnabled()) log.debug("Found an image " + source);
+                canbe = AnalyzerUtils.IMAGE;
+                return;
+            }
+
+            if (util.duration(l, source, des)) {
+                if (log.isDebugEnabled()) log.debug("Found length " + source);
+                return;
+            }
+
+            if (util.dimensions(l, source, des)) {
+                if (log.isDebugEnabled()) log.debug("Found dimensions " + source);
+                return;
+            }
+
+            if (util.audio(l, source, des)) {
+                if (log.isDebugEnabled()) log.debug("Found audio: " + source);
+
+                if (! canbe.equals(VIDEO)) {
+                    /* no video seen yet, so it can be audio */
+                    canbe = AUDIO;
+                }
+            }
+
+        }
     }
 
     public void ready(Node sourceNode, Node destNode) {
-        log.service("Ready() " + sourceNode.getNumber() + (destNode == null ? "" : (" -> " + destNode.getNumber())));
+        synchronized(util) {
+            log.service("Ready() " + sourceNode.getNumber() + (destNode == null ? "" : (" -> " + destNode.getNumber())));
 
-        if (canbe.equals(IMAGE) && (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0)) {
-            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an image " + sourceNode);
-            util.toImage(sourceNode, destNode);
+            if (canbe.equals(IMAGE) && (sourceNode.isNull("bitrate") || sourceNode.getIntValue("bitrate") <= 0)) {
+                log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is an image " + sourceNode);
+                util.toImage(sourceNode, destNode);
 
-        } else if (canbe.equals(AUDIO) && !sourceNode.getNodeManager().hasField("width") ) {
-            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
-            util.toAudio(sourceNode, destNode);
+            } else if (canbe.equals(AUDIO) && !sourceNode.getNodeManager().hasField("width") ) {
+                log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
+                util.toAudio(sourceNode, destNode);
 
-        } else if (canbe.equals(AUDIO) && sourceNode.isNull("width")) {
-            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
-            util.toAudio(sourceNode, destNode);
+            } else if (canbe.equals(AUDIO) && sourceNode.isNull("width")) {
+                log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is audio " + sourceNode);
+                util.toAudio(sourceNode, destNode);
 
-        } else {
-            log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is video " + sourceNode + " -> " + sourceNode.getNodeManager().getName());
-            util.toVideo(sourceNode, destNode);
-            assert sourceNode.getNodeManager().getName().equals(VIDEO);
+            } else {
+                log.info("Node " + sourceNode.getNumber() + " " + sourceNode.getStringValue("url") + " is video " + sourceNode + " -> " + sourceNode.getNodeManager().getName());
+                util.toVideo(sourceNode, destNode);
+                assert sourceNode.getNodeManager().getName().equals(VIDEO);
+            }
+            if (util.getUpdateSource()) {
+                sourceNode.commit();
+            }
+            if (destNode != null) {
+                destNode.commit();
+            }
+
+            log.info("READY for " + sourceNode.getNodeManager().getName() + " " + sourceNode.hashCode() + " " + sourceNode.getNumber());
         }
-        if (util.getUpdateSource()) {
-            sourceNode.commit();
-        }
-        if (destNode != null) {
-            destNode.commit();
-        }
-
-        log.info("READY for " + sourceNode.getNodeManager().getName() + " " + sourceNode.hashCode() + " " + sourceNode.getNumber());
 
     }
 
