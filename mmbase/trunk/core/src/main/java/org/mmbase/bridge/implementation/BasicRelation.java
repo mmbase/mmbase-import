@@ -47,7 +47,7 @@ public class BasicRelation extends BasicNode implements Relation {
      * @javadoc
      */
     BasicRelation(MMObjectNode node, BasicRelationManager nodeManager) {
-        super(node, nodeManager);        
+        super(node, nodeManager);
     }
 
     /**
@@ -150,17 +150,19 @@ public class BasicRelation extends BasicNode implements Relation {
         }
         //int snumber = snumtype.getNumber();
         //int dnumber = dnumtype.getNumber();
-        
+
         if (sourceNodeType == UNSET) {
             sourceNodeType = -1;
             if (snum != -1) {
                 sourceNodeType = BasicCloudContext.mmb.getTypeDef().getNodeType(snum);
+
             } else {
                 String _snum = getStringValue("_snumber");
                 if (_snum != null && _snum.length() > 0) {
                     sourceNodeType = getCloud().getNode(_snum).getNodeManager().getNumber();
                 }
             }
+            assert sourceNodeType != -1;
         }
         if (destinationNodeType == UNSET) {
             destinationNodeType = -1;
@@ -172,6 +174,7 @@ public class BasicRelation extends BasicNode implements Relation {
                     destinationNodeType = getCloud().getNode(_dnum).getNodeManager().getNumber();
                 }
             }
+            assert destinationNodeType != -1;
         }
 
         int rnumber = getNode().getIntValue("rnumber");
