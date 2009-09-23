@@ -63,7 +63,7 @@ public class MockBuilderReader extends org.mmbase.util.xml.AbstractBuilderReader
                 return false;
             }
             if (p.reader == null) {
-                throw new UnsupportedOperationException("Parent was not configured with XML");
+                throw new UnsupportedOperationException("Parent '" + parentBuilder + "' of '" + getName() + "' was not configured with XML");
             }
 
 
