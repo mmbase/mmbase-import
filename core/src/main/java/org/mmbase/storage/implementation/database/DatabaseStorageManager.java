@@ -962,7 +962,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
 
-    private int createWithoutEvent(MMObjectNode node) throws StorageException {
+    private int createWithoutEvent(final MMObjectNode node) throws StorageException {
         // assign a new number if the node has not yet been assigned one
         int nodeNumber = node.getNumber();
         if (nodeNumber == -1) {
@@ -1059,7 +1059,10 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         String query = scheme.format(this, tablename, fieldNames.toString(), fieldValues.toString());
         try {
             getActiveConnection();
-            executeUpdateCheckConnection(query, node, fields);
+            int result = executeUpdateCheckConnection(query, node, fields);
+            if (result != 1) {
+                throw new StorageException("Insert node " + node + " in " + tablename + " " + query + ": " + result);
+            }
         } catch (SQLException se) {
             throw new StorageException(se.getMessage() + " during creation of " + UNICODE_ESCAPER.transform(node.toString()) + " using query " + query, se);
         } finally {
@@ -1088,9 +1091,9 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      * @throws SQLException If something wrong with the query, or the database is down or could not be contacted.
      * @since MMBase-1.7.1
      */
-    protected void executeUpdateCheckConnection(String query, MMObjectNode node,  List<CoreField> fields) throws SQLException {
+    protected int executeUpdateCheckConnection(String query, MMObjectNode node,  List<CoreField> fields) throws SQLException {
         try {
-            executeUpdate(query, node, fields);
+            return executeUpdate(query, node, fields);
         } catch (SQLException sqe) {
             while (true) {
                 Statement s = null;
@@ -1118,7 +1121,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                  }
                 break;
             }
-            executeUpdate(query, node, fields);
+            return executeUpdate(query, node, fields);
         }
     }
 
@@ -1133,7 +1136,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      *
      * @since MMBase-1.7.1
      */
-    protected void executeUpdate(String query, MMObjectNode node, List<CoreField> fields) throws SQLException {
+    protected int executeUpdate(String query, MMObjectNode node, List<CoreField> fields) throws SQLException {
         PreparedStatement ps = activeConnection.prepareStatement(query);
         for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
             CoreField field = fields.get(fieldNumber);
@@ -1146,7 +1149,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             }
         }
         long startTime = getLogStartTime();
-        ps.executeUpdate();
+        int result = ps.executeUpdate();
         ps.close();
         boolean logged = logQuery(query, startTime);
         if (logged) {
@@ -1157,42 +1160,55 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             }
             valuesLogger.info(values);
         }
+        return result;
     }
 
     // javadoc is inherited
-    public void change(MMObjectNode node) throws StorageException {
-        // resolve aliases, if any.
-        MMObjectBuilder builder = node.getBuilder();
-        for (CoreField field: builder.getFields()) {
-            if (field.getName().equals(MMObjectBuilder.FIELD_NUMBER))      continue;
-            if (field.getName().equals(MMObjectBuilder.FIELD_OBJECT_TYPE)) continue;
-            if (field.getType() == Field.TYPE_NODE) {
-                Object value = node.getValue(field.getName());
-                if (value instanceof String) {
-                    node.setValue(field.getName(), builder.getNode((String)value));
+    public void change(final MMObjectNode node) throws StorageException {
+        synchronized(node) {
+            // resolve aliases, if any.
+            MMObjectBuilder builder = node.getBuilder();
+            for (CoreField field: builder.getFields()) {
+                if (field.getName().equals(MMObjectBuilder.FIELD_NUMBER))      continue;
+                if (field.getName().equals(MMObjectBuilder.FIELD_OBJECT_TYPE)) continue;
+                if (field.getType() == Field.TYPE_NODE) {
+                    Object value = node.getValue(field.getName());
+                    if (value instanceof String) {
+                        node.setValue(field.getName(), builder.getNode((String)value));
+                    }
                 }
             }
-        }
-        // precommit call, needed to convert or add things before a save
-        // Should be done in MMObjectBuilder
-        builder.preCommit(node);
-        change(node, builder);
-        commitChange(node, "c");
-        unloadShortedFields(node, builder);
-        // the node instance can be wrapped by other objects (org.mmbase.bridge.implementation.BasicNode) or otherwise still in use.
-        // this make sure that the values are realistic reflections of the database:
-        // This can change after a commit e.g. if the database enforces a maximum length for certain
-        // fields.
-        try {
-            refresh(node);
-        } catch (org.mmbase.storage.StorageNotFoundException se) {
-            log.warn("node " + node + " : " + se.getMessage(), se);
-            log.debug("Changed node " + node + " probably does not exist any more, but since we had to change it, we'll have to recreate it.");
-            log.service("Recreating node " + node.getNumber());
-            if(node.getNumber() > 0) {
-                create(node, builder);
-            } else {
-                log.warn("Cannot recreate node without number");
+            // precommit call, needed to convert or add things before a save
+            // Should be done in MMObjectBuilder
+            builder.preCommit(node);
+            change(node, builder);
+            commitChange(node, "c");
+            unloadShortedFields(node, builder);
+            // the node instance can be wrapped by other objects (org.mmbase.bridge.implementation.BasicNode) or otherwise still in use.
+            // this make sure that the values are realistic reflections of the database:
+            // This can change after a commit e.g. if the database enforces a maximum length for certain
+            // fields.
+            if(node.getNumber() < 0) {
+                throw new RuntimeException(" " + node);
+            }
+            try {
+                refresh(node);
+            } catch (StorageNotFoundException se) {
+                if(node.getNumber() > 0) {
+                    // Check whether node realy, realy doesn't exist
+                    MMObjectBuilder buil = node.getBuilder().getMMBase().getBuilder("object");
+                    try {
+                        MMObjectNode o = getNode(buil, node.getNumber());
+                        log.warn("Node _does_ exist (but" + se + ")");
+                    }  catch (StorageNotFoundException se2) {
+                        log.debug("Changed node " + node + " probably does not exist any more, but since we had to change it, we'll have to recreate it.");
+                        log.service("Recreating node " + node.getNumber());
+
+                        create(node, builder);
+                    }
+                } else {
+                    log.warn("Cannot recreate node without number");
+                }
             }
         }
     }
@@ -1708,63 +1724,71 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
 
     }
 
-    protected void  setNodeTypeLeaveRelations(MMObjectNode node, MMObjectBuilder buil) throws StorageException {
+    protected void  setNodeTypeLeaveRelations(final MMObjectNode node, final MMObjectBuilder buil) throws StorageException {
 
-        assert node.getIntValue("otype") > 0;
-        assert node.getNumber() > 0;
+        synchronized(node) {
+            assert node.getIntValue("otype") > 0;
+            assert node.getNumber() > 0;
 
-        MMObjectBuilder oldBuilder = node.getOldBuilder();
-        // delete from database but do not delete blobs on disk
-        /*
+            MMObjectBuilder oldBuilder = node.getOldBuilder();
+            if (oldBuilder != null) {
+                // delete from database but do not delete blobs on disk
+                /*
 
-        String tablename = (String) factory.getStorageIdentifier(oldBuilder);
-        delete(node, oldBuilder, new ArrayList<CoreField>(), tablename);
-        */
-        delete(node, oldBuilder);
+                  String tablename = (String) factory.getStorageIdentifier(oldBuilder);
+                  delete(node, oldBuilder, new ArrayList<CoreField>(), tablename);
+                */
+                delete(node, oldBuilder);
 
-        assert node.getIntValue("otype") > 0;
-
-
-        typeCache.remove(node.getNumber());
+                assert node.getIntValue("otype") > 0;
 
 
-        log.service("Recreating " + node + " " + (oldBuilder == null ? "NULL" : oldBuilder.getTableName()) + " -> " + buil.getTableName());
-        createWithoutEvent(node);
+                typeCache.remove(node.getNumber());
+
+
+                log.service("Recreating " + node + " " + (oldBuilder == null ? "NULL" : oldBuilder.getTableName()) + " -> " + buil.getTableName());
+                createWithoutEvent(node);
+            } else {
+                log.service("Called setNodeType for nothing (done by other thread?)");
+            }
+        }
     }
 
-    public int setNodeType(MMObjectNode node, MMObjectBuilder bul) throws StorageException {
+    public int setNodeType(final MMObjectNode node, MMObjectBuilder bul) throws StorageException {
 
+        synchronized(node) {
 
-        boolean wasinTransaction = inTransaction;
-        try {
+            boolean wasinTransaction = inTransaction;
+            try {
 
-            getActiveConnection();
-            if (! inTransaction) {
-                beginTransaction();
-            }
-
-            setNodeTypeLeaveRelations(node, bul);
-            commitChange(node, "dn");
-
-            Enumeration<MMObjectNode> en = node.getRelations();
-            if (en != null) {
-                for (MMObjectNode r : Collections.list(en)) {
-                    commitChange(r, "dn");
+                getActiveConnection();
+                if (! inTransaction) {
+                    beginTransaction();
                 }
+
+                setNodeTypeLeaveRelations(node, bul);
+                commitChange(node, "dn");
+
+                Enumeration<MMObjectNode> en = node.getRelations();
+                if (en != null) {
+                    for (MMObjectNode r : Collections.list(en)) {
+                        commitChange(r, "dn");
+                    }
+                }
+                if (! wasinTransaction) {
+                    commit();
+                }
+                // nothing wrong.
+                return bul.getNumber();
+            } catch (SQLException sqe) {
+                log.warn(sqe);
+                if (! wasinTransaction) {
+                    rollback();
+                }
+                throw new StorageException(sqe);
+            } finally {
+                releaseActiveConnection();
             }
-            if (! wasinTransaction) {
-                commit();
-            }
-            // nothing wrong.
-            return bul.getNumber();
-        } catch (SQLException sqe) {
-            log.warn(sqe);
-            if (! wasinTransaction) {
-                rollback();
-            }
-            throw new StorageException(sqe);
-        } finally {
-            releaseActiveConnection();
         }
     }
 
@@ -1807,9 +1831,11 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
             PreparedStatement s = null;
             try {
                 s = activeConnection.prepareStatement(query);
-                s.executeUpdate();
-            }
-            finally {
+                int result = s.executeUpdate();
+                if (result != 1) {
+                    throw new StorageException("Deleting of " + node  + " from " + tablename + " " + query + ":" + result);
+                }
+            } finally {
                 if (s != null) {
                     s.close();
                 }
@@ -2250,9 +2276,11 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 PreparedStatement s = null;
                 try {
                     s = activeConnection.prepareStatement(query);
-                    s.executeUpdate();
-                }
-                finally {
+                    int result = s.executeUpdate();
+                    if (result != 1) {
+                        throw new StorageException("" + query + " result: " + result);
+                    }
+                } finally {
                     if (s != null) {
                         s.close();
                     }
@@ -2457,7 +2485,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 }
             }
         } catch (Exception e) {
-            throw new StorageException(e.getMessage());
+            throw new StorageException(e.getMessage(), e);
         } finally {
             releaseActiveConnection();
         }
