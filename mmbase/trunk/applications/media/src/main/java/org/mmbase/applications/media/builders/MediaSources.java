@@ -386,7 +386,7 @@ public class MediaSources extends MMObjectBuilder {
         }
         return urls;
     }
-    
+
     /**
      * Returns all URLs for this source, but filtered, with the best ones on top.
      */
@@ -492,12 +492,12 @@ public class MediaSources extends MMObjectBuilder {
      */
 
     @Override
-    public boolean commit(MMObjectNode node) {
+    public synchronized boolean commit(MMObjectNode node) {
         checkFields(node);
         return super.commit(node);
     }
     @Override
-    public int insert(String owner, MMObjectNode node) {
+    public synchronized int insert(String owner, MMObjectNode node) {
         checkFields(node);
         return super.insert(owner, node);
     }

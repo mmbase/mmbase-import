@@ -259,7 +259,9 @@ public class MediaFragments extends MMObjectBuilder {
     }
 
     protected List<URLComposer> getFilteredURLs(MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
-        log.debug("getfilteredurls");
+        if (log.isDebugEnabled()) {
+            log.debug("getfilteredurls " + info);
+        }
         List<URLComposer> urls =  getURLs(fragment, info, null,cacheExpireObjects);
         return MainFilter.getInstance().filter(urls);
     }

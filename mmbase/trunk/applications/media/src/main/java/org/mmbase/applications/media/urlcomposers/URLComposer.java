@@ -54,8 +54,8 @@ public class URLComposer  {
         if (provider == null) throw new RuntimeException("Provider may not be null in a URLComposer object");
         this.provider = provider;
         this.source   = source;
-        this.info     = info;
-        if (this.info == null) this.info = new java.util.Hashtable<String, Object>();
+        this.info     = info == null ? new java.util.HashMap<String, Object>() : info;
+
     }
 
     public MMObjectNode getSource()   {
@@ -139,7 +139,7 @@ public class URLComposer  {
         }
         return buff;
     }
-    
+
     /**
      * Returns the URL as a String. To encourage efficient coding,
      * this method is final. Override getURLBuffer instead.
@@ -149,7 +149,7 @@ public class URLComposer  {
     }
 
     /**
-     * Returns the 'short' url (typically the filename) for display purposes, 
+     * Returns the 'short' url (typically the filename) for display purposes,
      * just the source field value url.
      */
     public final String getFilename() {

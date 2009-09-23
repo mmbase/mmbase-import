@@ -40,7 +40,7 @@ public class ClientFormatFilter implements Filter {
                 log.debug("Client specified format = " + format);
             }
 
-            if(format==null) {
+            if(format == null) {
                 if (log.isDebugEnabled()) {
                     log.debug("Client did not specify format.");
                 }
