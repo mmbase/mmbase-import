@@ -28,8 +28,9 @@ public class MockNodeManager extends AbstractNodeManager  {
     protected final Map<String, Field> map = new LinkedHashMap<String, Field>();
     protected final String name;
     protected final MockCloud vcloud;
+    protected final int oType;
 
-    public MockNodeManager(MockCloud cloud, String name, Map<String, Field> m) {
+    public MockNodeManager(MockCloud cloud, String name, Map<String, Field> m, int oType) {
         super(cloud);
         this.vcloud = cloud;
         this.name = name;
@@ -38,7 +39,9 @@ public class MockNodeManager extends AbstractNodeManager  {
         }
         map.put("_number", new DataTypeField("_number", this, DATATYPE_INTEGER));
         map.put("_exists", new DataTypeField("_exists", this, DATATYPE_STRING));
+        this.oType = oType;
     }
+
     public MockNodeManager(MockCloud cloud, MockBuilderReader reader) {
         super(cloud);
         this.vcloud = cloud;
@@ -46,6 +49,7 @@ public class MockNodeManager extends AbstractNodeManager  {
         for (Field f : reader.getFields()) {
             map.put(f.getName(), f);
         }
+        oType = -1;
     }
 
 
@@ -57,6 +61,7 @@ public class MockNodeManager extends AbstractNodeManager  {
     @Override
     public Node createNode() {
         Map<String, Object> map = new HashMap<String, Object>();
+        map.put("otype", oType);
         return vcloud.getNode(map, this);
     }
 

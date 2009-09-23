@@ -59,8 +59,9 @@ public class MockCloud extends AbstractCloud {
 
     public NodeManager getNodeManager(String name) throws NotFoundException {
         Map<String, Field> nm = cloudContext.nodeManagers.get(name).fields;
+        int oType = cloudContext.nodeManagers.get(name).oType;
         if (nm == null) throw new NotFoundException(name);
-        return new MockNodeManager(this, name, nm);
+        return new MockNodeManager(this, name, nm, oType);
     }
 
 
@@ -98,7 +99,7 @@ public class MockCloud extends AbstractCloud {
         throw new UnsupportedOperationException();
     }
 
-    public CloudContext getCloudContext() {
+    public MockCloudContext getCloudContext() {
         return cloudContext;
     }
 
