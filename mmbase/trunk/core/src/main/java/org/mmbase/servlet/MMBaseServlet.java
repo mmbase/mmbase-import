@@ -481,8 +481,6 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
     }
 
 
-
-
     /**
      * The service method is extended with calls for the refCount
      * functionality (for performance related debugging).  So you can
@@ -502,7 +500,10 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                 ip = req.getRemoteAddr();
             }
             Logging.getMDC().put("IP", ip);
-            res.addHeader("X-Powered-By", org.mmbase.Version.get());
+            if (req.getAttribute(org.mmbase.Version.class.getName()) == null) {
+                req.setAttribute(org.mmbase.Version.class.getName(), org.mmbase.Version.get());
+                res.addHeader("X-Powered-By", org.mmbase.Version.get());
+            }
             super.service(req, res);
         } finally { // whatever happens, decrease the refcount:
             Logging.getMDC().put("IP", prevIp);
