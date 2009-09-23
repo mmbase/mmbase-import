@@ -9,6 +9,10 @@
     <class>org.mmbase.streams.CreateCachesFunction</class>
   </function>
 
+  <function name="waitUntilTranscoding">
+    <class>org.mmbase.streams.WaitUntilTranscodingFunction</class>
+  </function>
+
   <function name="fileServletDirectory">
     <class>org.mmbase.servlet.FileServlet$DirectoryFunction</class>
   </function>

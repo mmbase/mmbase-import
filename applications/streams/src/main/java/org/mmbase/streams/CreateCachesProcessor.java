@@ -117,6 +117,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                     if (document != null) {
                         org.w3c.dom.NodeList ellist = document.getDocumentElement().getChildNodes();
 
+                        Stage prevStage = Stage.RECOGNIZER;
                         for (int i = 0; i <= ellist.getLength(); i++) {
                             if (ellist.item(i) instanceof Element) {
                                 Element el = (Element) ellist.item(i);
@@ -133,7 +134,12 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                     String label = el.getAttribute("label");
                                     MimeType mimeType = new MimeType(el.getAttribute("mimetype"));
                                     LOG.debug("Created " + transcoder);
-                                    JobDefinition def = new JobDefinition(id, in.length() > 0 ? in : null, label.length() > 0 ? label : null, transcoder, mimeType);
+                                    Stage stage = Stage.valueOf(el.getTagName().toUpperCase());
+                                    if (stage.ordinal() < prevStage.ordinal()) {
+                                        LOG.warn("Wrong ordering " + stage + " < " + prevStage);
+                                    }
+                                    prevStage = stage;
+                                    JobDefinition def = new JobDefinition(id, in.length() > 0 ? in : null, label.length() > 0 ? label : null, transcoder, mimeType, stage);
                                     org.w3c.dom.NodeList childs = el.getChildNodes();
                                     for (int j = 0; j <= childs.getLength(); j++) {
                                         if (childs.item(j) instanceof Element) {
@@ -265,20 +271,36 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
      * @param logger    a logger that keeps track
      * @return job trans coding a source stream in (an)other stream(s)
      */
-    private Job createJob(final Node node, final ChainedLogger logger) {
+    private Job createJob(final Cloud ntCloud, final int node, final ChainedLogger logger) {
         synchronized(runningJobs) {
-            Job job = runningJobs.get(node.getNumber());
+            Job job = runningJobs.get(node);
             if (job != null) {
-                LOG.warn("This job is already running, node #" + node.getNumber());
+                LOG.warn("This job is already running, node #" + node);
                 // already running
                 return null;
             }
-            final Job thisJob = new Job(node, logger);
-            runningJobs.put(node.getNumber(), thisJob);
+            final Job thisJob = new Job(ntCloud, logger);
+            runningJobs.put(node, thisJob);
 
             thisJob.setFuture(transcoderExecutor.submit(new Callable<Integer>() {
                         public Integer call() {
                             thisJob.setThread(Thread.currentThread());
+                            if (ntCloud instanceof org.mmbase.bridge.implementation.BasicCloud) {
+                                try {
+                                    synchronized(ntCloud) {
+                                        while (! ntCloud.hasNode(node)) {
+                                            ntCloud.wait(200);
+                                        }
+                                    }
+                                } catch (InterruptedException ie) {
+                                    LOG.info(ie);
+                                    return null;
+                                }
+                            }
+                            final Node ntNode = ntCloud.getNode(node);
+                            ntNode.getStringValue("title"); // This triggers RelatedField$Creator to create a mediafragment
+                            Node mediafragment = ntNode.getNodeValue("mediafragment");
+                            thisJob.setNode(ntNode);
                             int resultCount = 0;
                             try {
                                 LOG.info("Executing " + thisJob);
@@ -313,6 +335,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                         logger.info("Interrupted");
                                         break;
                                     } catch (Throwable e) {
+                                        result.ready();
                                         logger.error(e.getMessage(), e);
                                     } finally {
                                         for (AnalyzerLogger al : analyzerLoggers) {
@@ -335,8 +358,8 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                 runningJobs.remove(thisJob.getNode().getNumber());
                             }
                             return resultCount;
-
                         }
+
                     })
                 );
 
@@ -352,39 +375,32 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
      * @param int       node number
      */
     Job createCaches(final Cloud ntCloud, final int node) {
-        if (ntCloud.hasNode(node)) {
-            final ChainedLogger logger = new ChainedLogger(LOG);
-            final Node ntNode = ntCloud.getNode(node);
-            ntNode.getStringValue("title"); // This triggers RelatedField$Creator to create a mediafragment
-            Node mediafragment = ntNode.getNodeValue("mediafragment");
-            final Job thisJob = createJob(ntNode, logger);
+        final ChainedLogger logger = new ChainedLogger(LOG);
+        final Job thisJob = createJob(ntCloud, node, logger);
 
-            LOG.info("Triggering caches for " + list + " Mediaframent " + (mediafragment != null ? mediafragment.getNumber() : "NULL") + " -> " + thisJob);
+        LOG.info("Triggering caches for " + list + "  -> " + thisJob);
 
 
-            if (thisJob != null) {
+        if (thisJob != null) {
 
-                // If the node happens to be deleted before the future with cache creations is ready, cancel the future
-                EventManager.getInstance().addEventListener(new WeakNodeEventListener() {
-                        public void notify(NodeEvent event) {
-                            if (event.getNodeNumber() == ntNode.getNumber() && event.getType() == Event.TYPE_DELETE) {
-                                /*
-                                if (thisJob.future.cancel(true)) {
-                                    logger.info("Canceled " + thisJob.future + " for " + event.getBuilderName() + " " + event.getNodeNumber());
-                                }
-                                */
-                            }
+            // If the node happens to be deleted before the future with cache creations is ready, cancel the future
+            EventManager.getInstance().addEventListener(new WeakNodeEventListener() {
+                    public void notify(NodeEvent event) {
+                        if (event.getNodeNumber() == node && event.getType() == Event.TYPE_DELETE) {
+                            /*
+                              if (thisJob.future.cancel(true)) {
+                              logger.info("Canceled " + thisJob.future + " for " + event.getBuilderName() + " " + event.getNodeNumber());
+                              }
+                            */
                         }
+                    }
                     @Override
                         public String toString() {
-                            return "Job canceled for " + node;
-                        }
-                    });
-            }
-            return thisJob;
-        } else {
-            throw new IllegalStateException("There is no node " + node  + " in " + ntCloud);
+                        return "Job canceled for " + node;
+                    }
+                });
         }
+        return thisJob;
     }
 
     public void commit(final Node node, final Field field) {
@@ -398,11 +414,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                 LOG.service("For node " + node.getNumber() + ", the field '" + field.getName() + "' is changed " + node.getChanged() + ". That means that we must schedule create caches");
                 final Cloud ntCloud = node.getCloud().getNonTransactionalCloud();
                 final int nodeNumber = node.getNumber();
-                ThreadPools.scheduler.schedule(new Runnable() {
-                        public void run() {
-                            createCaches(ntCloud, nodeNumber);
-                        }
-                    }, 2, TimeUnit.SECONDS);
+                createCaches(ntCloud, nodeNumber);
             } else {
                 LOG.debug("Field " + field + " not changed " + node.getChanged());
             }
@@ -438,10 +450,12 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         final String inId;
         final String id;
         final String label;
+
+        final Stage stage;
         /**
          * Creates an JobDefinition template (used in the configuration container).
          */
-        JobDefinition(String id, String inId, String label, Transcoder t, MimeType mt) {
+        JobDefinition(String id, String inId, String label, Transcoder t, MimeType mt, Stage s) {
             assert id != null;
             transcoder = t.clone();
             analyzers = new ArrayList<Analyzer>();
@@ -449,6 +463,7 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             this.id = id;
             this.inId = inId;
             this.label = label;
+            this.stage = s;
         }
 
         public Transcoder getTranscoder() {
@@ -461,6 +476,9 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
 
         public MimeType getMimeType() {
             return mimeType;
+        }
+        public Stage getStage() {
+            return stage;
         }
         public String getId() {
             return id;
@@ -626,9 +644,9 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
     public class Job implements Iterable<Result> {
 
         private final String user;
-        private final Node node;
-        private final Node mediaprovider;
-        private final Node mediafragment;
+        private Node node;
+        private Node mediaprovider;
+        private Node mediafragment;
         private final BufferedLogger logger;
         private final Map<String, Result> lookup = new LinkedHashMap<String, Result>();
         private final List<Result>        results = new ArrayList<Result>();
@@ -644,23 +662,13 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
         boolean ready = false;
 
 
-        public Job(Node node, ChainedLogger chain) {
-            user = node.getCloud().getUser().getIdentifier();
-            this.node = node;
+        public Job(Cloud cloud, ChainedLogger chain) {
+            user = cloud.getUser().getIdentifier();
             logger = new BufferedLogger();
             logger.setLevel(Level.DEBUG);
             logger.setMaxSize(100);
             logger.setMaxAge(60000);
             chain.addLogger(logger);
-            // mediafragment if it does not yet exist
-            mediafragment = node.getNodeValue("mediafragment");
-            mediaprovider = node.getNodeValue("mediaprovider");
-            assert mediafragment != null : "Mediafragment should not be null";
-            //assert mediaprovider != null : "Mediaprovider should not be null";
-            for (Map.Entry<String, JobDefinition> n : CreateCachesProcessor.this.list.entrySet()) {
-                results.add(null);
-            }
-            findResults();
         }
 
         /**
@@ -832,9 +840,12 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                     throw new UnsupportedOperationException();
                 }
                 public Result next() {
-                    while(current == null || current.isReady()) {
-                        i++;
-                        current = results.get(i);
+                    synchronized(Job.this) {
+                        while(current == null || current.isReady()) {
+                            i++;
+                            current = results.get(i);
+                            Job.this.notifyAll();
+                        }
                     }
                     if (current.definition.transcoder instanceof CommandTranscoder) {
                         // Get free method
@@ -952,6 +963,18 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                 interrupted = t.isInterrupted();
             }
         }
+        public void setNode(Node n) {
+            node = n;
+            // mediafragment if it does not yet exist
+            mediafragment = node.getNodeValue("mediafragment");
+            mediaprovider = node.getNodeValue("mediaprovider");
+            assert mediafragment != null : "Mediafragment should not be null";
+            //assert mediaprovider != null : "Mediaprovider should not be null";
+            for (Map.Entry<String, JobDefinition> dum : CreateCachesProcessor.this.list.entrySet()) {
+                results.add(null);
+            }
+            findResults();
+        }
         public synchronized void interrupt() {
             Node cacheNode = current.getDestination();
             if (cacheNode != null && node.getCloud().hasNode(cacheNode.getNumber())) {
@@ -973,15 +996,29 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
             return ready;
         }
         public synchronized void ready() {
-                ready = true;
-                notifyAll();
-            }
+            ready = true;
+            notifyAll();
+        }
 
-        public void waitUntilReady() throws InterruptedException {
+        public synchronized void waitUntilReady() throws InterruptedException {
             while (! isReady()) {
+                wait();
+            }
+        }
+        public Stage getStage() {
+            if (ready) return Stage.READY;
+            Result res = getCurrent();
+            return res == null ? Stage.UNSTARTED : res.getJobDefinition().getStage();
+        }
+
+        public void waitUntilTranscoding() throws InterruptedException {
+            Stage stage = getStage();
+            while (stage.ordinal() < Stage.TRANSCODER.ordinal()) {
                 synchronized(this) {
-                    wait();
+                    LOG.info("Not yet transcoding, but " + stage + " " + getCurrent());
+                    wait(100000);
                 }
+                stage = getStage();
             }
         }
 
@@ -1012,6 +1049,14 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                 return number + ": " + user + ":" + current + ":" + getProgress() + ":" + thread;
             }
         }
+    }
+
+
+    public static enum Stage {
+        UNSTARTED,
+        RECOGNIZER,
+        TRANSCODER,
+        READY;
     }
 
 }
