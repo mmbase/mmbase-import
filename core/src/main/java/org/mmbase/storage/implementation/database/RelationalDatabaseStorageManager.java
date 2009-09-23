@@ -66,16 +66,21 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      * @param builder the builder to store the node
      * @throws StorageException if an error occurred during creation
      */
-    @Override public void create(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
+    @Override
+    public void create(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
         if (localTransaction) {
             beginTransaction();
         }
         try {
             simpleCreate(node, builder);
-            if (localTransaction) commit();
+            if (localTransaction) {
+                commit();
+            }
         } catch (StorageException se) {
-            if (localTransaction && inTransaction) rollback();
+            if (localTransaction && inTransaction) {
+                rollback();
+            }
             throw se;
         }
     }
@@ -96,9 +101,13 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
                 super.change(node, builder);
                 builder = builder.getParentBuilder();
             } while (builder != null);
-            if (localTransaction) commit();
+            if (localTransaction) {
+                commit();
+            }
         } catch (StorageException se) {
-            if (localTransaction && inTransaction) rollback();
+            if (localTransaction && inTransaction) {
+                rollback();
+            }
             throw se;
         }
     }
