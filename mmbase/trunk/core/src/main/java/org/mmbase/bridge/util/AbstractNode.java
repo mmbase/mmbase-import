@@ -510,10 +510,8 @@ public abstract class AbstractNode implements Node {
 
     public Collection<String> validate() {
         List<String> errors = new ArrayList<String>();
-        FieldIterator fi = getNodeManager().getFields().fieldIterator();
         Locale locale = getCloud().getLocale();
-        while (fi.hasNext()) {
-            Field field = fi.nextField();
+        for (Field field : getNodeManager().getFields()) {
             // don't validate read-only (cannot be changed) or virtual fields (are not stored).
             // Specifically, the 'number' field must not be validated, because for new nodes it does not yet
             // point to an existing node...
