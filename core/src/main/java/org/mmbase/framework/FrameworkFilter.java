@@ -50,7 +50,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
     /**
      * MMBase needs to be started first to be able to load config
      */
-    private static MMBase mmbase;
+    private MMBase mmbase;
     private Thread initThread;
 
     /**
@@ -86,7 +86,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
 
     public void setMMBase(MMBase mm) {
         mmbase = mm;
-        // logging is not completey initialized, replace logger instance too
+        // logging is not coxmpletey initialized, replace logger instance too
         log = Logging.getLoggerInstance(FrameworkFilter.class);
     }
 
@@ -162,14 +162,6 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
         try {
 
             if (request instanceof HttpServletRequest) {
-                HttpServletRequest req = (HttpServletRequest) request;
-                HttpServletResponse res = (HttpServletResponse) response;
-                String ip = req.getHeader("X-Forwarded-For");
-                if (ip == null || "".equals(ip)) {
-                    ip = req.getRemoteAddr();
-                }
-                Logging.getMDC().put("IP", ip);
-                res.addHeader("X-Powered-By", org.mmbase.Version.get());
 
                 if (mmbase == null) {
                     if (log.isDebugEnabled()) log.debug("Still waiting for MMBase (not initialized)");
@@ -177,6 +169,13 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                     chain.doFilter(request, response);
                     return;
                 }
+                HttpServletRequest req = (HttpServletRequest) request;
+                HttpServletResponse res = (HttpServletResponse) response;
+                String ip = req.getHeader("X-Forwarded-For");
+                if (ip == null || "".equals(ip)) {
+                    ip = req.getRemoteAddr();
+                }
+                Logging.getMDC().put("IP", ip);
 
 
                 if (log.isTraceEnabled()) {
@@ -229,6 +228,10 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                     if (forwardUrl != null && !forwardUrl.equals("")) {
                         res.setHeader("X-MMBase-forward", forwardUrl);
                         req.setAttribute(PARAMS_KEY, frameworkParameters);
+                        if (req.getAttribute(org.mmbase.Version.class.getName()) == null) {
+                            req.setAttribute(org.mmbase.Version.class.getName(), org.mmbase.Version.get());
+                            res.addHeader("X-Powered-By", org.mmbase.Version.get());
+                        }
                         /*
                          * RequestDispatcher: If the path begins with a "/" it is interpreted
                          * as relative to the current context root.
