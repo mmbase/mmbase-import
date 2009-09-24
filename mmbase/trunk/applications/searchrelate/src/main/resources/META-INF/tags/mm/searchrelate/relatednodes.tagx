@@ -311,16 +311,17 @@
         </c:if>
       </mm:import>
 
-
-      <c:if test="${_create and _createposition eq 'top'}">
-        <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                 referids="rid">
-          <a href="${_}"  class="create">
-            <mm-sr:button alt="+" type="create" parameters="${parameters}" />
-          </a>
-        </mm:link>
-        <span class="status">...</span>
-        <span class="errors"></span>
+      <c:if test="${_createposition eq 'top'}">
+        <c:if test="${_create}">
+          <mm:link page="/mmbase/searchrelate/list/create.jspx"
+                   referids="rid">
+            <a href="${_}"  class="create">
+              <mm-sr:button alt="+" type="create" parameters="${parameters}" />
+            </a>
+          </mm:link>
+          <span class="status">...</span>
+          <span class="errors"></span>
+        </c:if>
         <mm:write referid="searcher" escape="none" />
       </c:if>
 
@@ -342,16 +343,17 @@
         </mm:relatednodes>
       </ol>
       <!-- ================================================================================ -->
-
-      <c:if test="${_create and _createposition eq 'bottom'}">
-        <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                 referids="rid">
-          <a href="${_}"  class="create">
-            <mm-sr:button alt="+" type="create" parameters="${parameters}" />
-          </a>
-        </mm:link>
-        <span class="status">...</span>
-        <span class="errors"></span>
+      <c:if test="${_createposition eq 'bottom'}">
+        <c:if test="${_create}">
+          <mm:link page="/mmbase/searchrelate/list/create.jspx"
+                   referids="rid">
+            <a href="${_}"  class="create">
+              <mm-sr:button alt="+" type="create" parameters="${parameters}" />
+            </a>
+          </mm:link>
+          <span class="status">...</span>
+          <span class="errors"></span>
+        </c:if>
         <mm:write referid="searcher" escape="none" />
       </c:if>
     </div>
