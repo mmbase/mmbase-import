@@ -21,6 +21,8 @@ import org.mmbase.util.logging.Logging;
  * Filters out all sources where a field's values matches or not a certain regular expression
  *
  * @author Michiel Meeuwissen
+ * @since MMBase-1.9.2
+ * @version $Id$
  */
 public class FieldValueFilter implements Filter {
     private static Logger log = Logging.getLoggerInstance(FieldValueFilter.class);
