@@ -311,7 +311,7 @@
         </c:if>
       </mm:import>
 
-      <c:if test="${_createposition eq 'top'}">
+      <mm:import id="creator">
         <c:if test="${_create}">
           <mm:link page="/mmbase/searchrelate/list/create.jspx"
                    referids="rid">
@@ -319,9 +319,13 @@
               <mm-sr:button alt="+" type="create" parameters="${parameters}" />
             </a>
           </mm:link>
-          <span class="status">...</span>
-          <span class="errors"></span>
         </c:if>
+      </mm:import>
+
+      <c:if test="${_createposition eq 'top'}">
+        <mm:write referid="creator" escape="none" />
+        <span class="status">...</span>
+        <span class="errors"></span>
         <mm:write referid="searcher" escape="none" />
       </c:if>
 
@@ -344,16 +348,9 @@
       </ol>
       <!-- ================================================================================ -->
       <c:if test="${_createposition eq 'bottom'}">
-        <c:if test="${_create}">
-          <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                   referids="rid">
-            <a href="${_}"  class="create">
-              <mm-sr:button alt="+" type="create" parameters="${parameters}" />
-            </a>
-          </mm:link>
-          <span class="status">...</span>
-          <span class="errors"></span>
-        </c:if>
+        <mm:write referid="creator" escape="none" />
+        <span class="status">...</span>
+        <span class="errors"></span>
         <mm:write referid="searcher" escape="none" />
       </c:if>
     </div>
