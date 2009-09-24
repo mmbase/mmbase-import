@@ -18,9 +18,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Filters out all sources where a field's values matches or not a certain regular expression
+ * Prefer  sources where a field's value matches, or not, a certain regular expression
  *
  * @author Michiel Meeuwissen
+ * @since MMBase-1.9.2
+ * @version $Id$
  */
 public class FieldValueSorter extends  PreferenceSorter {
     private static Logger log = Logging.getLoggerInstance(FieldValueSorter.class);
