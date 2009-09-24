@@ -224,36 +224,80 @@ public class FileServlet extends BridgeServlet {
         }
     }
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected File checkFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pi = req.getPathInfo();
         if (ignores(pi)) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "The file '" + pi + "' is explicitely ignored by the file servlet.");
-            return;
+            return null;
         }
 
         File file = getFile(pi, resp);
         if (! file.exists()) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "The file '" + pi + "' does not exist");
             log.debug("" + file + " does not exist");
-            return;
+            return null;
         }
         if (! canRead(req, file)) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "The file '" + pi + "' may not be read");
             log.debug("" + file + " may not be read");
-            return;
+            return null;
         }
         if (file.isDirectory()) {
-            listing(req, resp, file);
-            return;
-        }
-        resp.setContentType(getServletContext().getMimeType(file.getName()));
-        resp.setContentLength((int) file.length());
-        if (metaFiles) {
-            for (Map.Entry<String, String> e : getMetaHeaders(file).entrySet()) {
-                resp.setHeader(e.getKey(), e.getValue());
+            if (! "true".equals(getInitParameter("listings"))) {
+                resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Directory listings are not enabled. (see web.xml)");
+                return null;
+            } else {
+                if (pi == null || ! pi.endsWith("/")) {
+                    resp.sendRedirect(req.getContextPath() + req.getServletPath() + (pi == null ? "" : pi) + "/");
+                    return null;
+                }
             }
         }
+        return file;
+    }
+    protected void setHeaders(HttpServletRequest req, HttpServletResponse resp, File file) throws ServletException, IOException {
+        if (file.isDirectory()) {
+            resp.setContentType("application/xhtml+xml"); // We hate IE anyways.
+        } else {
+            resp.setContentType(getServletContext().getMimeType(file.getName()));
+            resp.setContentLength((int) file.length());
+            if (metaFiles) {
+                for (Map.Entry<String, String> e : getMetaHeaders(file).entrySet()) {
+                    resp.setHeader(e.getKey(), e.getValue());
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        File file = checkFile(req, resp);
+        if (file == null) {
+           return;
+        }
+        setHeaders(req, resp, file);
+        if (file.isDirectory()) {
+            byte [] bytes = getListingBytes(req, resp, file);
+            resp.setContentLength(bytes.length);
+        }
+        return;
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        File file = checkFile(req, resp);
+        if (file == null) {
+           return;
+        }
+        setHeaders(req, resp, file);
+        if (file.isDirectory()) {
+            listing(req, resp, file);
+        } else {
+            stream(req, resp, file);
+        }
+    }
+
+    protected void stream(HttpServletRequest req, HttpServletResponse resp, File file) throws IOException {
         BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
         BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
         byte[] buf = new byte[1024];
@@ -266,88 +310,82 @@ public class FileServlet extends BridgeServlet {
         out.close();
     }
 
-
     private static final FormatFileSize formatFileSize = new FormatFileSize();
 
     private static final Xml XML = new Xml();
-    protected void listing(HttpServletRequest req, HttpServletResponse resp, File directory) throws IOException {
-        if ("true".equals(getInitParameter("listings"))) {
-            resp.setContentType("application/xhtml+xml"); // We hate IE anyways.
-            StringBuilder result = new StringBuilder();
-            result.append("<?xml version='1.0'?>\n");
-            result.append("<html xmlns='http://www.w3.org/1999/xhtml'>");
-            result.append("<head>");
-            String pathInfo = req.getPathInfo();
-            if (pathInfo == null || ! pathInfo.endsWith("/")) {
-                resp.sendRedirect(req.getContextPath() + req.getServletPath() + (pathInfo == null ? "" : pathInfo) + "/");
-                return;
-            }
-            result.append("<title>Directory Listing For " + XML.transform(URL.transformBack(pathInfo)) + "</title>");
-            result.append("<link rel='stylesheet' href='" + req.getContextPath() + "/mmbase/style/css/mmbase.css' type='text/css' />");
-            result.append("</head>");
-            result.append("<body class='filelisting'>");
-            result.append("<h1>Directory Listing For " + XML.transform(URL.transformBack(pathInfo)) + "</h1>");
-            String header = getInitParameter("header");
-            if (header != null && ! "".equals(header)) {
-                File headerFile = new File(directory, header);
-                if (headerFile.canRead()) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(headerFile), "UTF-8"));
-                    String line = in.readLine();
-                    while (line != null) {
-                        result.append(line);
-                        line = in.readLine();
-                    }
-                    in.close();
-                }
-            }
-            result.append("<table>");
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.lastModified())) + "</td><td class='filesize'> </td><td class='filename'><a href='.'>./</a></td></tr>");
-            if (! pathInfo.equals("/")) {
-                result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.getParentFile().lastModified()))  +"</td><td class='filesize'> </td><td class='filename'><a href='..'>../</a></td></tr>");
-            }
-            List<File> list = Arrays.asList(directory.listFiles());
-            if (comparator != null) {
-                Collections.sort(list, comparator);
-            }
-            for (File file : list) {
-                String name = file.getName() + (file.isDirectory() ? "/" : "");
-                if (ignores(pathInfo + name)) continue;
 
-                result.append("<tr><td class='lastmodified'>");
-                result.append(df.format(new Date(file.lastModified())));
-                result.append("</td>");
-                result.append("<td class='filesize'>");
-                result.append(formatFileSize.process(null, null, file.length()));
-                result.append("</td>");
-                result.append("<td class='filename'>");
-                if (canRead(req, file)) {
-                    String url = URL.transform(file.getName()) + (file.isDirectory() ? "/" : "");
-                    result.append("<a href='" + url + "'>" + XML.transform(name) + "</a>");
-                } else {
-                    result.append(XML.transform(name));
+    protected byte[] getListingBytes(HttpServletRequest req, HttpServletResponse resp, File directory) throws IOException {
+   StringBuilder result = new StringBuilder();
+        result.append("<?xml version='1.0'?>\n");
+        result.append("<html xmlns='http://www.w3.org/1999/xhtml'>");
+        result.append("<head>");
+        String pathInfo = req.getPathInfo();
+        result.append("<title>Directory Listing For " + XML.transform(URL.transformBack(pathInfo)) + "</title>");
+        result.append("<link rel='stylesheet' href='" + req.getContextPath() + "/mmbase/style/css/mmbase.css' type='text/css' />");
+        result.append("</head>");
+        result.append("<body class='filelisting'>");
+        result.append("<h1>Directory Listing For " + XML.transform(URL.transformBack(pathInfo)) + "</h1>");
+        String header = getInitParameter("header");
+        if (header != null && ! "".equals(header)) {
+            File headerFile = new File(directory, header);
+            if (headerFile.canRead()) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(headerFile), "UTF-8"));
+                String line = in.readLine();
+                while (line != null) {
+                    result.append(line);
+                    line = in.readLine();
                 }
-                result.append("</td></tr>");
+                in.close();
             }
-            result.append("</table>");
-            result.append("<h3>" + org.mmbase.Version.get() + "</h3>");
-            result.append("</body>");
-            result.append("</html>");
-            try {
-                byte [] bytes = result.toString().getBytes("UTF-8");
-                resp.setContentLength(bytes.length);
-                BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
-                out.write(bytes);
-                out.flush();
-            } catch (java.io.UnsupportedEncodingException uue) {
-                // cannot happen UTF-8 is supported.
-                log.fatal(uue);
-            }
-            return;
-        } else {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Directory listings are not enabled. (see web.xml)");
-            return;
         }
+        result.append("<table>");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.lastModified())) + "</td><td class='filesize'> </td><td class='filename'><a href='.'>./</a></td></tr>");
+        if (! pathInfo.equals("/")) {
+            result.append("<tr><td class='lastmodified'>" + df.format(new Date(directory.getParentFile().lastModified()))  +"</td><td class='filesize'> </td><td class='filename'><a href='..'>../</a></td></tr>");
+        }
+        List<File> list = Arrays.asList(directory.listFiles());
+        if (comparator != null) {
+            Collections.sort(list, comparator);
+        }
+        for (File file : list) {
+            String name = file.getName() + (file.isDirectory() ? "/" : "");
+            if (ignores(pathInfo + name)) continue;
+
+            result.append("<tr><td class='lastmodified'>");
+            result.append(df.format(new Date(file.lastModified())));
+            result.append("</td>");
+            result.append("<td class='filesize'>");
+            result.append(formatFileSize.process(null, null, file.length()));
+            result.append("</td>");
+            result.append("<td class='filename'>");
+            if (canRead(req, file)) {
+                String url = URL.transform(file.getName()) + (file.isDirectory() ? "/" : "");
+                result.append("<a href='" + url + "'>" + XML.transform(name) + "</a>");
+            } else {
+                result.append(XML.transform(name));
+            }
+            result.append("</td></tr>");
+        }
+        result.append("</table>");
+        result.append("<h3>" + org.mmbase.Version.get() + "</h3>");
+        result.append("</body>");
+        result.append("</html>");
+        try {
+            byte [] bytes = result.toString().getBytes("UTF-8");
+            return bytes;
+        } catch (java.io.UnsupportedEncodingException uue) {
+            // cannot happen UTF-8 is supported.
+            log.fatal(uue);
+            return result.toString().getBytes();
+        }
+    }
+    protected void listing(HttpServletRequest req, HttpServletResponse resp, File directory) throws IOException {
+        byte [] bytes = getListingBytes(req, resp, directory);
+        resp.setContentLength(bytes.length);
+        BufferedOutputStream out = new BufferedOutputStream(resp.getOutputStream());
+        out.write(bytes);
+        out.flush();
     }
 
     @Override
