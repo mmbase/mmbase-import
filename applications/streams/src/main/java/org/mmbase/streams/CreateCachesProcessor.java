@@ -799,8 +799,11 @@ public class CreateCachesProcessor implements CommitProcessor, java.io.Externali
                                 String cd = meta.get("Content-Disposition");
                                 if (cd != null) {
                                     String inDisposition =  cd.substring("attachment; filename=".length());
+                                    if (inDisposition.startsWith("\"") && inDisposition.endsWith("\"")) {
+                                        inDisposition = inDisposition.substring(1, inDisposition.length() - 1);
+                                    }
                                     String outDisposition = ResourceLoader.getName(inDisposition) + "." + jd.transcoder.getFormat().toString().toLowerCase();
-                                    meta.put("Content-Disposition", "attachment; filename=" + outDisposition);
+                                    meta.put("Content-Disposition", "attachment; filename=\"" + outDisposition + "\"");
 
                                     FileServlet.getInstance().setMetaHeaders(outFile, meta);
                                 }
