@@ -129,7 +129,7 @@ public class BinaryFile {
                 }
                 File f = getFile(node, field, name);
                 Map<String, String> meta = FileServlet.getInstance().getMetaHeaders(f);
-                meta.put("Content-Disposition", "attachment; filename=" + name);
+                meta.put("Content-Disposition", "attachment; filename=\"" + name + "\"");
                 FileServlet.getInstance().setMetaHeaders(f, meta);
 
                 if (log.isDebugEnabled()) {
