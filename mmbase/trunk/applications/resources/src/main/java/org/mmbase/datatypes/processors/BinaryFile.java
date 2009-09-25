@@ -88,9 +88,14 @@ public class BinaryFile {
                         }
                     }
                     if (! inUse) {
-                        // no? Then d lete the file.
+                        // no? Then delete the file.
                         ef.delete();
                         log.service("Deleted " + ef);
+                        File metaFile = FileServlet.getInstance().getMetaFile(ef);
+                        if (metaFile.exists()) {
+                            metaFile.delete();
+                        }
+
                     } else {
                         log.service("Not deleted " + ef + " because still in use");
                     }
