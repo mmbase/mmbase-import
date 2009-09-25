@@ -138,15 +138,14 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
 
     protected void copySteps(SearchQuery q) {
         if (! modifiable) throw new IllegalStateException("Unmodifiable");
-        MMBase mmb = MMBase.getMMBase();
         steps = new ArrayList<Step>(q.getSteps().size());
         Iterator<Step> i = q.getSteps().iterator();
         while(i.hasNext()) {
             Step step = i.next();
             if (step instanceof RelationStep) {
                 RelationStep relationStep = (RelationStep) step;
-                MMObjectBuilder dest   = mmb.getBuilder(relationStep.getNext().getTableName());
-                InsRel         insrel  = (InsRel) mmb.getBuilder(relationStep.getTableName());
+                String dest   = relationStep.getNext().getTableName();
+                String insrel  = relationStep.getTableName();
                 BasicRelationStep newRelationStep = addRelationStep(insrel, dest);
                 newRelationStep.setDirectionality(relationStep.getDirectionality());
                 newRelationStep.setCheckedDirectionality(relationStep.getCheckedDirectionality());
@@ -168,7 +167,7 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
                 i.next(); // dealt with that already
 
             } else {
-                BasicStep newStep = addStep(mmb.getBuilder(step.getTableName()));
+                BasicStep newStep = addStep(step.getTableName());
                 newStep.setAlias(step.getAlias());
                 if (step.getNodes() != null) {
                     for (Integer j : step.getNodes()) {
@@ -389,6 +388,23 @@ public class BasicSearchQuery implements SearchQuery, org.mmbase.util.PublicClon
         }
         BasicStep previous = (BasicStep) steps.get(nrOfSteps - 1);
         BasicStep next = new BasicStep(nextBuilder == null ? null : nextBuilder.getTableName());
+        BasicRelationStep relationStep = new BasicRelationStep(builder, previous, next);
+        steps.add(relationStep);
+        steps.add(next);
+        return relationStep;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    public BasicRelationStep addRelationStep(String builder, String nextBuilder) {
+        if (! modifiable) throw new IllegalStateException("Unmodifiable");
+        int nrOfSteps = steps.size();
+        if (nrOfSteps == 0) {
+           throw new IllegalStateException("No previous step.");
+        }
+        BasicStep previous = (BasicStep) steps.get(nrOfSteps - 1);
+        BasicStep next = new BasicStep(nextBuilder == null ? null : nextBuilder);
         BasicRelationStep relationStep = new BasicRelationStep(builder, previous, next);
         steps.add(relationStep);
         steps.add(next);
