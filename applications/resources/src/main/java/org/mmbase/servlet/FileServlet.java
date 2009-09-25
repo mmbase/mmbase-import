@@ -189,13 +189,11 @@ public class FileServlet extends BridgeServlet {
                 String line = r.readLine();
                 while (line != null) {
                     line = line.trim();
-                    if (! line.startsWith("#")) { // support for comments
-                        String[] header = line.split("\\s+", 2);
-                        if (header.length == 2) {
-                            meta.put(header[0], header[1]);
-                        } else {
-                            log.warn("Could not parse " + line);
-                        }
+                    String[] header = line.split(":\\s*", 2);
+                    if (header.length == 2) {
+                        meta.put(header[0], header[1]);
+                    } else {
+                        log.warn("Could not parse " + line);
                     }
                     line = r.readLine();
                 }
@@ -215,7 +213,7 @@ public class FileServlet extends BridgeServlet {
             metaFile.getParentFile().mkdirs();
             BufferedWriter w = new BufferedWriter(new FileWriter(metaFile));
             for (Map.Entry<String, String> entry : meta.entrySet()) {
-                w.write(entry.getKey() + "\t" + entry.getValue());
+                w.write(entry.getKey() + ": " + entry.getValue());
             }
             w.close();
             log.debug("Created " + metaFile);
