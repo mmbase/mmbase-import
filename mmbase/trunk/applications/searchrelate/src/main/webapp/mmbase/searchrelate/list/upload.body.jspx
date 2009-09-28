@@ -16,8 +16,8 @@
     MultiPart.MMultipartRequest multipart = MultiPart.getMultipartRequest((HttpServletRequest) pageContext.getRequest(),
     (HttpServletResponse) pageContext.getResponse());
 
-    InputStream is = multipart.getInputStream(name);
-    File f  = new File(dir, cloud.getUser().getIdentifier() + "." + rid + "." + name);
+    org.mmbase.util.SerializableInputStream is = multipart.getInputStream(name);
+    File f  = new File(dir, cloud.getUser().getIdentifier() + "." + rid + "." + name + "." + is.getName());
     FileServlet.protectFile((HttpServletRequest) pageContext.getRequest(), f);
     OutputStream o = new FileOutputStream(f);
     org.mmbase.util.IOUtil.copy(is, o);

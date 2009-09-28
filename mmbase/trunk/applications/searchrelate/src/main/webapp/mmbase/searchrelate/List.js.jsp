@@ -360,6 +360,7 @@ List.prototype.addItem = function(res, cleanOnFocus) {
         this.saveOrder(this.getOrder());
     }
     list.executeCallBack("create", r); // I think this may be deprecated. Custom events are nicer
+
     $(list.div).trigger("mmsrCreated", [r]);
 }
 
@@ -484,9 +485,11 @@ List.prototype.getListParameters = function() {
 
 List.prototype.upload = function(fileid) {
     var self = this;
-    /*
+    var fileItem = $("#" + fileid);
+    var li = fileItem.parents("li");
+    var node = self.getNodeForLi(li);
     $.ajaxFileUpload ({
-            url: "${mm:link('/mmbase/searchrelate/upload.jspx')}" + "?id=" + self.id + "&n=" + $("#" + fileid).attr("name"),
+            url: "${mm:link('/mmbase/searchrelate/list/upload.jspx')}" + "?rid=" + self.rid + "&name=" + fileItem.attr("name") + "&n=" + node,
             secureuri: false,
             fileElementId: fileid,
             dataType: 'xml',
@@ -497,6 +500,17 @@ List.prototype.upload = function(fileid) {
                     } else {
                         alert(data.msg);
                     }
+                } else {
+                    try {
+                        var fileItem = $("#" + fileid);
+                        fileItem.val(null);
+                        fileItem.prev(".mm_gui").remove();
+                        var created = $(data).find("div.fieldgui .mm_gui");
+                        fileItem.before(created);
+                    } catch (e) {
+                        alert(e);
+                    }
+
                 }
             },
             error: function (data, status, e) {
@@ -504,9 +518,7 @@ List.prototype.upload = function(fileid) {
             }
         }
         )
-    */
     return false;
-
 }
 
 /**
@@ -533,6 +545,7 @@ List.prototype.commit = function(stale, leavePage) {
                     }
                     if (this.type == 'file') {
                         if ($(this).val().length > 0) {
+                            //console.log("Uploading " + this.id);
                             self.upload(this.id);
                         }
                     }
@@ -552,12 +565,14 @@ List.prototype.commit = function(stale, leavePage) {
 
                 var self = this;
                 this.loader();
+                $(self.div).trigger("mmsrStartSave", [self]);
                 $.ajax({ type: "POST",
                          async: leavePage == null ? true : !leavePage,
                          url: "${mm:link('/mmbase/searchrelate/list/save.jspx')}",
                          data: params,
                          complete: function(req, textStatus) {
                              self.status('<fmt:message key="saved" />', true);
+                             $(self.div).trigger("mmsrFinishedSave", [self]);
                          }
                        });
 
