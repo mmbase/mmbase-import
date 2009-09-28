@@ -16,6 +16,8 @@ package org.mmbase.module.lucene.analysis.en;
 import java.io.Reader;
 import java.util.Set;
 
+import org.mmbase.util.transformers.*;
+import org.mmbase.util.functions.*;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.ISOLatin1AccentFilter;
 import org.apache.lucene.analysis.LowerCaseFilter;
@@ -28,9 +30,9 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
 /**
  * Filters {@link StandardTokenizer} with {@link StandardFilter}, {@link
  * LowerCaseFilter}, {@link StopFilter} and {@link ISOLatin1AccentFilter}.
- * 
+ *
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Id $
  */
 public class StandardCleaningAnalyzer extends Analyzer {
     private Set stopSet;
@@ -40,6 +42,8 @@ public class StandardCleaningAnalyzer extends Analyzer {
      * for searching.
      */
     public static final String[] STOP_WORDS = StopAnalyzer.ENGLISH_STOP_WORDS;
+
+    private boolean cleanHtml = false;
 
     /** Builds an analyzer. */
     public StandardCleaningAnalyzer() {
@@ -51,11 +55,24 @@ public class StandardCleaningAnalyzer extends Analyzer {
         stopSet = StopFilter.makeStopSet(stopWords);
     }
 
+    public void setCleanHtml(boolean clean) {
+        cleanHtml = clean;
+    }
+
     /**
      * Constructs a {@link StandardTokenizer} filtered by a {@link
      * StandardFilter}, a {@link LowerCaseFilter} and a {@link StopFilter}.
      */
     public TokenStream tokenStream(String fieldName, Reader reader) {
+        if (cleanHtml) {
+            TagStripperFactory factory = new TagStripperFactory();
+            Parameters params = factory.createParameters();
+            params.set(TagStripperFactory.TAGS, "NONE");
+            params.set(TagStripperFactory.ADD_BRS, false);
+            params.set(TagStripperFactory.ESCAPE_AMPS, false);
+            CharTransformer transformer = factory.createTransformer(params);
+            reader = new TransformingReader(reader, transformer);
+        }
         TokenStream result = new StandardTokenizer(reader);
         result = new StandardFilter(result);
         result = new LowerCaseFilter(result);
