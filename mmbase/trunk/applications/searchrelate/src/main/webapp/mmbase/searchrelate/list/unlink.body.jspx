@@ -7,7 +7,7 @@
   <mm:hasnode number="$n">
     <mm:node referid="n" id="n" commitonclose="false" />
 
-    <mm:node id="source" referid="parameters.source">
+    <mm:node id="source" referid="parameters.source" commitonclose="false">
       <mm:listrelationscontainer type="object"
                                  role="${parameters.role}"
                                  id="ul">
