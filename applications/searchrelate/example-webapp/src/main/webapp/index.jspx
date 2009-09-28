@@ -63,13 +63,13 @@
             </mm:link>
           </li>
 
-          <li>
+          <li class="done">
             <mm:link page="mmform-relatednodes-images.jspx" referids="ct?">
               <a href="${_}">mm-sr:relatednodes in an mm:form with image uploads</a>
             </mm:link>
           </li>
 
-          <li>
+          <li class="done">
             <mm:link page="mmform-relatednodes-images-nested.jspx" referids="ct?">
               <a href="${_}">mm-sr:relatednodes in an mm:form with image uploads (nested)</a>
             </mm:link>
