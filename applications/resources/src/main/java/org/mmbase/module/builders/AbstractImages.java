@@ -221,7 +221,7 @@ public abstract class AbstractImages extends AbstractServletBuilder implements I
             ImageInformer ii = Factory.getImageInformer();
             try {
                 dim = ii.getDimension(data);
-                log.debug("Found dimension " + dim);
+                log.debug("Found dimension for node " + node.getNumber() + " " + dim);
             } catch (Exception ioe) {
                 log.error(ioe);
                 dim = Dimension.UNDETERMINED;
