@@ -127,14 +127,22 @@ public class FileServlet extends BridgeServlet {
         return new File(f.getParentFile(), f.getName() + SESSION_EXTENSION);
     }
 
+    static final String PROTECTED_FILES = FileServlet.class.getName() + ".protectedfiles";
     /**
      * @since MMBase-1.9.2
      */
     public static void protectFile(HttpServletRequest req, File f) throws IOException {
         File sessionFile = getSessionFile(f);
         Writer w = new FileWriter(sessionFile);
+        HttpSession session = req.getSession(true);
         w.write(req.getSession(true).getId());
         w.close();
+        Set<File> protectedFiles = (Set<File>) session.getAttribute(PROTECTED_FILES);
+        if (protectedFiles == null) {
+            protectedFiles = new HashSet<File>();
+            session.setAttribute(PROTECTED_FILES, protectedFiles);
+        }
+        protectedFiles.add(f);
     }
 
 
