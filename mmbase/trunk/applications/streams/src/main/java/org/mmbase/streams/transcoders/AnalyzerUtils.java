@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.streams.transcoders;
 
+import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.MimeType;
 import org.mmbase.applications.media.State;
 import java.util.*;
@@ -50,7 +51,6 @@ public final class AnalyzerUtils implements java.io.Serializable {
         }
     }
 
-
     public void setUpdateSource(boolean b) {
         updateSource = b;
     }
@@ -59,8 +59,9 @@ public final class AnalyzerUtils implements java.io.Serializable {
     }
 
     /**
+     * This fixes the first part (f.e. audio/*) when needed, not the complete MimeType.
      * @todo Should this perhaps be arranged in the respective builders themselves. It seems a
-     * requiredment or videosources to have a video/* mimetype
+     * requirement of videosources to have a video/* mimetype
      *
      */
     protected void fixMimeType(String type, Node node) {
@@ -69,7 +70,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
         if (! actualMimeType.getType().equals(type)) {
             MimeType newType = new MimeType(type, actualMimeType.getSubType());
             node.setStringValue("mimetype", newType.toString());
-            log.service("Fixing mime type " + actualMimeType + "-> " + newType) ;
+            log.service("Fixed mime type for node#" + node.getNumber() + ": " + actualMimeType + "-> " + newType) ;
 
         } else {
             if (log.isDebugEnabled()) log.debug("MimeType " + actualMimeType + " is correct");
@@ -315,15 +316,21 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 toVideo(source, dest);
             }
 
-            //log.debug("  codec: " + m.group(1));
-            //log.debug(" format: " + m.group(2));
-            if (log.isDebugEnabled()) log.debug("width: "  + m.group(3));
-            if (log.isDebugEnabled()) log.debug("height: " + m.group(4));
+            if (log.isDebugEnabled()) {
+                log.debug(" codec: " + m.group(1));
+                log.debug("format: " + m.group(2));
+                log.debug(" width: "  + m.group(3));
+                log.debug("height: " + m.group(4));
+            }
             if (updateSource) {
+                int co = Codec.get(m.group(1)).toInt();
+                source.setIntValue("codec", co);
                 source.setIntValue("width", Integer.parseInt(m.group(3)));
                 source.setIntValue("height", Integer.parseInt(m.group(4)));
             }
             if (dest != null) {
+                int co = Codec.get(m.group(1)).toInt();
+                dest.setIntValue("codec", co);
                 dest.setIntValue("width", Integer.parseInt(m.group(3)));
                 dest.setIntValue("height", Integer.parseInt(m.group(4)));
             }
@@ -352,24 +359,28 @@ public final class AnalyzerUtils implements java.io.Serializable {
         if (m.matches()) {
             //log.info("### Audio match: " + l);
 
-            //log.debug("   codec: " + m.group(1));
-            //log.debug("   freq.: " + m.group(2));
-            //log.debug("channels: " + m.group(3));
-            String channels = m.group(3);
-            if (source.getNodeManager().hasField("channels")) {
-                if (channels.equals("stereo") || channels.equals("2")) {
-                    if (updateSource) source.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.STEREO);
-                    if (dest != null) {
-                        dest.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.STEREO);
-                    }
-                } else {
-                    if (updateSource) source.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.MONO);
-                    if (dest != null) {
-                        dest.setIntValue("channels", org.mmbase.applications.media.builders.MediaSources.MONO);
-                    }
-                }
+            if (log.isDebugEnabled()) {
+                log.debug("   codec: " + m.group(1));
+                log.debug("   freq.: " + m.group(2));
+                log.debug("channels: " + m.group(3));
             }
-
+            int co = Codec.get(m.group(1)).toInt();
+            
+            String channels = m.group(3);
+            int ch = org.mmbase.applications.media.builders.MediaSources.MONO;
+            if (channels.equals("stereo") || channels.startsWith("2")) {
+                ch = org.mmbase.applications.media.builders.MediaSources.STEREO;
+            }
+            
+            if (source.getNodeManager().hasField("channels") && updateSource) {
+                source.setIntValue("channels", ch);
+                source.setIntValue("codec", co);
+            }
+            if (dest != null) {
+                dest.setIntValue("channels", ch);
+                dest.setIntValue("codec", co);
+            }
+            
             return true;
         } else {
             return false;
