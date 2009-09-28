@@ -1096,14 +1096,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                     EventManager.getInstance().addEventListener(idListener);
                                     log.service("Added mmbase jdbc definition " + id);
                                 } else if ("analyzer".equals(childName)) {
-                                    String className = childElement.getAttribute("class");
-                                    try {
-                                        Class clazz = Class.forName(className);
-                                        analyzer = (Analyzer) clazz.newInstance();
-                                    } catch (Exception e) {
-                                        configErrors.add("Cloud not instantiate analyzer " + className);
-                                        log.error("Could not instantiate analyzer " + className + " for index '" + indexName + "', falling back to default. " + e);
-                                    }
+                                    analyzer = (Analyzer) Instantiator.getInstance(childElement);
                                 }
                             }
                         }
