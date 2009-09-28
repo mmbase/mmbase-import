@@ -5,7 +5,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     >
   <mm:hasnode number="$n">
-    <mm:node referid="n" id="n" />
+    <mm:node referid="n" id="n" commitonclose="false" />
 
     <mm:node id="source" referid="parameters.source">
       <mm:listrelationscontainer type="object"
