@@ -14,7 +14,7 @@
   <mm:content expires="0" type="application/xml">
     <mm:cloud method="asis">
       <c:choose>
-        <c:when test="${empty parameters.formtag}">
+        <c:when test="${parameters.autosubmit}">
           <jsp:directive.include file="relate.body.jspx" />
         </c:when>
         <c:otherwise>
