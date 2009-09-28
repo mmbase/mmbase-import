@@ -141,6 +141,7 @@ public class Indexer {
                 } else {
                     log.info("The directory " + this.path + " does not exist!");
                     d.mkdirs();
+                    fullIndex();
                 }
             } catch (IOException ioe) {
                 addError(ioe.getMessage());
