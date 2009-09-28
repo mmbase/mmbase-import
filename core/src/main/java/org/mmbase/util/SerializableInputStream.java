@@ -68,6 +68,16 @@ public class SerializableInputStream  extends InputStream implements Serializabl
         }
     }
 
+    /**
+     * @since MMBase-1.9.2
+     */
+    public SerializableInputStream(File tempFile) throws IOException {
+        this.file  = tempFile;
+        this.wrapped = new FileInputStream(tempFile);
+        this.size = tempFile.length();
+        this.name = tempFile.getName();
+    }
+
     public SerializableInputStream(byte[] array) {
         wrapped = new ByteArrayInputStream(array);
         this.size = array.length;
