@@ -15,7 +15,7 @@
           role="posrel"
           unlink="true"
           delete="true"
-          search="false"
+          search="true"
           sortable="true"
           max="3"
           >
