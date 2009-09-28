@@ -1,0 +1,36 @@
+<mm:content
+    type="application/xml"
+    postprocessor="none"
+    expires="0"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <!--
+      Used by /style/js/upload.js
+  -->
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="length" vartype="integer">100</mm:import>
+  <mm:import externid="unit" vartype="string">%</mm:import>
+  <fmt:formatNumber value="${sessionScope['org.mmbase.uploadInfo'].fraction * length}"
+                    maxFractionDigits="0"
+                    var="roundedLength" />
+  <div class="${sessionScope['org.mmbase.uploadInfo'].status}"
+       style="width: ${roundedLength}${unit};">
+    <p>
+      <span class="percentage">
+        <fmt:formatNumber
+            value="${sessionScope['org.mmbase.uploadInfo'].fraction}"
+            type="percent" />
+      </span>
+      <span class="speed">
+        <jsp:text>(</jsp:text>
+        <mm:escape escape="filesize">${sessionScope['org.mmbase.uploadInfo'].bytesRead}</mm:escape>
+        <jsp:text>/</jsp:text>
+        <mm:escape escape="filesize">${sessionScope['org.mmbase.uploadInfo'].totalSize}</mm:escape>
+        <jsp:text>, </jsp:text>
+        <mm:escape escape="filesize">${1000 * sessionScope['org.mmbase.uploadInfo'].bytesRead /  sessionScope['org.mmbase.uploadInfo'].elapsedTime}</mm:escape>
+        <jsp:text>/s)</jsp:text>
+      </span>
+    </p>
+  </div>
+</mm:content>
