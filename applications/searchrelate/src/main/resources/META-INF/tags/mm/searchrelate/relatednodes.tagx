@@ -302,7 +302,7 @@
                 </mm-sr:search>
               </c:when>
               <c:otherwise>
-                <mm-sr:relate repository="${searchRespository}" load="${empty load or load}">
+                <mm-sr:relate repository="${searchRepository}" load="${empty load or load}">
                   <mm:constraint field="number" operator="IN" inverse="true" referid="related" />
                 </mm-sr:relate>
               </c:otherwise>
