@@ -52,6 +52,11 @@
             <jsp:text> </jsp:text>
           </script>
         </mm:link>
+        <mm:link page="/example.js">
+          <script type="text/javascript" src="${_}">
+            <jsp:text> </jsp:text>
+          </script>
+        </mm:link>
 
         <div class="progressInfo" />
 
