@@ -302,14 +302,21 @@ public class Images extends AbstractImages {
     protected String getGuiForNewImage(MMObjectNode node, String alt, Parameters args) throws IOException  {
         FileServlet instance = FileServlet.getInstance();
         if (instance == null) {
-            return "NO FILE SERVLET";
+            return "<span class='mm_gui nofileservlet'>NO FILE SERVLET</span>";
         } else {
             String number = node.getStringValue("_number");
-            File thumb = createTemporaryFile(Casting.toSerializableInputStream(node.getInputStreamValue("handle")), ImageCaches.GUI_IMAGETEMPLATE);
-            log.info("Found for " + node.getNumber() + "(" + number + "): " + thumb);
-            String files = FileServlet.getBasePath("files").substring(1);
-            String root = MMBaseContext.getHtmlRootUrlPath();
-            return "<img src='" + root + files + "temporary_images/" + thumb.getName() +"' />";
+            SerializableInputStream is = Casting.toSerializableInputStream(node.getInputStreamValue("handle"));
+            if (is.getName() != null) {
+                File thumb = createTemporaryFile(is, ImageCaches.GUI_IMAGETEMPLATE);
+                log.debug("Found for " + node.getNumber() + "(" + number + "): " + thumb);
+                String files = FileServlet.getBasePath("files").substring(1);
+                String root = MMBaseContext.getHtmlRootUrlPath();
+                String thumbUrl = root + files + "temporary_images/" + URLESCAPER.transform(thumb.getName());
+                String origUrl = root + files + "uploads/" + URLESCAPER.transform(is.getName()); // hmm, is this 'uploads' certain?
+                return "<a class='mm_gui' href='" + origUrl + "'><img src='" + thumbUrl +"' /></a>";
+            } else {
+                return "<span class='mm_gui'>--</span>";
+            }
         }
     }
     /**
@@ -320,7 +327,7 @@ public class Images extends AbstractImages {
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String alt, Parameters args) {
         int num = node.getNumber();
         log.debug("gui for image " + num);
-        if (num < 0) {
+        if (num < 0 || node.getChanged().contains("handle")) {
             try {
                 return getGuiForNewImage(node, alt, args);
             } catch (IOException ioe) {
