@@ -470,7 +470,7 @@ List.prototype.status = function(message, fadeout) {
 }
 
 List.prototype.loader = function() {
-    this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
+    this.status("<img class='loader icon' src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
 }
 
 
