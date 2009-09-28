@@ -17,6 +17,8 @@ import org.mmbase.util.*;
 import org.mmbase.util.images.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.servlet.FileServlet;
+import java.io.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -126,7 +128,7 @@ public class Images extends AbstractImages {
     @Override
     protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
         if (log.isDebugEnabled()) {
-            log.debug("executeFunction " + function + "(" + args + ") of images builder on node " + node.getNumber());
+            log.debug("executeFunction " + function + "(" + args + ") of images builder on node " + node);
         }
         if ("info".equals(function)) {
             List<Object> empty = new ArrayList<Object>();
@@ -195,65 +197,136 @@ public class Images extends AbstractImages {
     }
 
 
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    protected void fillImageCacheNode(MMObjectNode image, MMObjectNode icacheNode, String template) {
+        final ImageCaches imageCaches = (ImageCaches) mmb.getBuilder("icaches");
+        String ckey = Factory.getCKey(image.getNumber(), template).toString();
+        icacheNode.setValue(Imaging.FIELD_CKEY, ckey);
+        icacheNode.setValue(ImageCaches.FIELD_ID, image.getNumber());
+        if (imageCaches.storesDimension() || imageCaches.storesFileSize()) {
+            final Dimension dimension          = getDimension(image);
+            final Dimension predictedDimension = Imaging.predictDimension(dimension, Imaging.parseTemplate(template));
+            if (log.isDebugEnabled()) {
+                log.debug("" + dimension + " " + ckey + " --> " + predictedDimension);
+            }
+            if (predictedDimension.getArea() > maxArea) {
+                throw new IllegalArgumentException("The conversion '" + template + "' leads to an image which is too big (" + predictedDimension + ")");
+            }
+            if (imageCaches.storesDimension()) {
+                icacheNode.setValue(FIELD_HEIGHT, predictedDimension.getHeight());
+                icacheNode.setValue(FIELD_WIDTH,  predictedDimension.getWidth());
+            }
+            if (imageCaches.storesFileSize()) {
+                icacheNode.setValue(FIELD_FILESIZE, Imaging.predictFileSize(dimension, getFileSize(image), predictedDimension));
+            }
+        }
+    }
     /**
      * Returns a icache node for given image node and conversion template. If such a node does not exist, it is created.
      *
      * @since MMBase-1.8
      */
-    public MMObjectNode getCachedNode(MMObjectNode node, String template) {
-        ImageCaches imageCaches = (ImageCaches) mmb.getMMObject("icaches");
+    public MMObjectNode getCachedNode(final MMObjectNode node, final String template) {
+        final ImageCaches imageCaches = (ImageCaches) mmb.getBuilder("icaches");
         if(imageCaches == null) {
             throw new UnsupportedOperationException("The 'icaches' builder is not availabe");
         }
 
-        MMObjectNode icacheNode = imageCaches.getCachedNode(node.getNumber(), template);
+        if (node.getNumber() > 0) {
+            MMObjectNode icacheNode = imageCaches.getCachedNode(node.getNumber(), template);
 
-        if (icacheNode == null) {
-            icacheNode = imageCaches.getNewNode("imagesmodule");
-            String ckey = Factory.getCKey(node.getNumber(), template).toString();
-            icacheNode.setValue(Imaging.FIELD_CKEY, ckey);
-            icacheNode.setValue(ImageCaches.FIELD_ID, node.getNumber());
-            if (imageCaches.storesDimension() || imageCaches.storesFileSize()) {
-                Dimension dimension          = getDimension(node);
-                Dimension predictedDimension = Imaging.predictDimension(dimension, Imaging.parseTemplate(template));
+            if (icacheNode == null) {
+                icacheNode = imageCaches.getNewNode("imagesmodule");
+                fillImageCacheNode(node, icacheNode, template);
+                int icacheNumber = icacheNode.insert("imagesmodule");
                 if (log.isDebugEnabled()) {
-                    log.debug("" + dimension + " " + ckey + " --> " + predictedDimension);
+                    log.debug("Inserted " + icacheNode);
                 }
-                if (predictedDimension.getArea() > maxArea) {
-                    throw new IllegalArgumentException("The conversion '" + template + "' leads to an image which is too big (" + predictedDimension + ")");
-                }
-                if (imageCaches.storesDimension()) {
-                    icacheNode.setValue(FIELD_HEIGHT, predictedDimension.getHeight());
-                    icacheNode.setValue(FIELD_WIDTH,  predictedDimension.getWidth());
-                }
-                if (imageCaches.storesFileSize()) {
-                    icacheNode.setValue(FIELD_FILESIZE, Imaging.predictFileSize(dimension, getFileSize(node), predictedDimension));
-                }
+                if (icacheNumber < 0) {
+                    throw new RuntimeException("Can't insert cache entry id=" + node.getNumber() + " key=" + template);
             }
-            int icacheNumber = icacheNode.insert("imagesmodule");
-            if (log.isDebugEnabled()) {
-                log.debug("Inserted " + icacheNode);
             }
-            if (icacheNumber < 0) {
-                throw new RuntimeException("Can't insert cache entry id=" + node.getNumber() + " key=" + template);
-            }
+            return icacheNode;
+        } else {
+            final MMObjectNode icacheNode = new VirtualNode(imageCaches);
+            fillImageCacheNode(node, icacheNode, template);
+            return icacheNode;
+
         }
-        return icacheNode;
     }
 
     private static final org.mmbase.util.transformers.UrlEscaper URLESCAPER= new org.mmbase.util.transformers.UrlEscaper();
+
+    static Map<File, Dimension> dimensions = new java.util.concurrent.ConcurrentHashMap();
+    static Timer deleter = new Timer(true);
+
+
+    public static File createTemporaryFile(SerializableInputStream in, String template) throws IOException {
+        long lt = 120;
+        FileServlet fileServlet = FileServlet.getInstance();
+        File temporaryImages = new File(fileServlet.getDirectory(), "temporary_images");
+        temporaryImages.mkdirs();
+        final File thumb = new File(temporaryImages, in.getName() + "." + template + ".png");
+        thumb.deleteOnExit();
+        Dimension dim;
+        if (! thumb.exists()) {
+            FileReceiver receiver = new FileReceiver(thumb);
+            ImageConversionRequest req = Factory.getImageConversionRequest(in, "gif", receiver, Imaging.parseTemplate("f(png)+" + template));
+            req.waitForConversion();
+            dim = receiver.getDimension();
+            dimensions.put(thumb, dim);
+            if (lt > 0) {
+                deleter.schedule(new TimerTask() {
+                        public void run() {
+                            thumb.delete();
+                            dimensions.remove(thumb);
+                        }
+                    }, lt * 1000);
+            }
+        } else {
+            dim = dimensions.get(thumb);
+            if (dim == null) {
+                dim = Factory.getImageInformer().getDimension(new FileInputStream(thumb));
+                dimensions.put(thumb, dim);
+            }
+        }
+        return thumb;
+    }
+
+    /**
+     * @since MMBase-1.9.2
+     */
+    protected String getGuiForNewImage(MMObjectNode node, String alt, Parameters args) throws IOException  {
+        FileServlet instance = FileServlet.getInstance();
+        if (instance == null) {
+            return "NO FILE SERVLET";
+        } else {
+            String number = node.getStringValue("_number");
+            File thumb = createTemporaryFile(Casting.toSerializableInputStream(node.getInputStreamValue("handle")), ImageCaches.GUI_IMAGETEMPLATE);
+            log.info("Found for " + node.getNumber() + "(" + number + "): " + thumb);
+            String files = FileServlet.getBasePath("files").substring(1);
+            String root = MMBaseContext.getHtmlRootUrlPath();
+            return "<img src='" + root + files + "temporary_images/" + thumb.getName() +"' />";
+        }
+    }
     /**
      * The GUI-indicator of an image-node also needs a res/req object.
      * @since MMBase-1.6
      */
     @Override
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String alt, Parameters args) {
-        log.debug("gui for image");
         int num = node.getNumber();
-        if (num < 0) {   // image servlet cannot handle uncommited images..
-            return "...";
+        log.debug("gui for image " + num);
+        if (num < 0) {
+            try {
+                return getGuiForNewImage(node, alt, args);
+            } catch (IOException ioe) {
+                return ioe.getMessage();
+            }
         }
-
         String ses = getSession(args, num);
         StringBuilder servlet = new StringBuilder();
         HttpServletRequest req = args.get(Parameter.REQUEST);
@@ -275,8 +348,10 @@ public class Images extends AbstractImages {
         String template = (String) args.get("template");
         if (template == null) template = ImageCaches.GUI_IMAGETEMPLATE;
 
-        String imageThumb;
+
         MMObjectNode icache;
+
+        String imageThumb;
         if (urlConvert) {
             icache = null;
             imageThumb = servlet.toString() + node.getNumber() + "+" + URLESCAPER.transform(template);
