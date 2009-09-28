@@ -101,6 +101,9 @@
 
   <xsd:element name="analyzer">
     <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="param" maxOccurs="unbounded" minOccurs="0" />
+      </xsd:sequence>
       <xsd:attribute name="class" type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
@@ -128,6 +131,16 @@
     </xsd:complexType>
   </xsd:element>
 
+
+  <xsd:element name="param">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute name="name" type="xsd:string" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
 
 
 </xsd:schema>
