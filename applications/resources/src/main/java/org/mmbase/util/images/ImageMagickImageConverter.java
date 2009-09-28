@@ -37,7 +37,6 @@ public class ImageMagickImageConverter extends AbstractImageConverter implements
     private int imVersionMinor = 5;
     private int imVersionPatch = 0;
 
-    // Currently only ImageMagick works, this are the default value's
     private String converterPath = "convert"; // in the path.
 
     private  int colorizeHexScale = 100;
