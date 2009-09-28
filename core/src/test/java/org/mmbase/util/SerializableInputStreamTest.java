@@ -64,6 +64,19 @@ public class SerializableInputStreamTest  {
         //System.out.println("Found size " + di.getSize());
         return new SerializableInputStream(di);
     }
+    protected File getTestFile() throws IOException {
+        File file = File.createTempFile(getClass().getName(), ".test");
+        OutputStream os = new FileOutputStream(file);
+        for (int i = 1; i < 10000; i++) {
+            os.write( (i % 100) + 20);
+        }
+        os.close();
+        return file;
+    }
+
+    protected SerializableInputStream getFileInstance() throws IOException {
+        return new SerializableInputStream(getTestFile());
+    }
 
     @Test
     public void testBasic() {
@@ -153,6 +166,11 @@ public class SerializableInputStreamTest  {
         SerializableInputStream c = getDiskItemInstanceBig();
         testSerializableMany(c);
     }
+    @Test
+    public void testSerializableE() throws IOException, ClassNotFoundException {
+        SerializableInputStream c = getFileInstance();
+        testSerializableMany(c);
+    }
 
     public File testCopy(SerializableInputStream l) throws IOException {
         File f = File.createTempFile("oof", ".bar");
@@ -188,6 +206,10 @@ public class SerializableInputStreamTest  {
     @Test
     public void testResetD() throws IOException, ClassNotFoundException {
         testReset(getDiskItemInstanceBig());
+    }
+    @Test
+    public void testResetE() throws IOException, ClassNotFoundException {
+        testReset(getFileInstance());
     }
 
     @Test
