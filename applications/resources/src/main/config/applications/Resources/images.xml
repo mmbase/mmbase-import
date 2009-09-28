@@ -6,5 +6,6 @@
     <itype>png</itype>
     <filename>transparent.png</filename>
     <handle file="images/1234.handle" />
+    <filesize>86</filesize>
   </node>
 </images>
