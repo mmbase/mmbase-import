@@ -34,6 +34,7 @@ import org.w3c.dom.Document;
  * @version $Id$
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
+ * @todo  This class has large overlap with {@link VirtualNode}. They probably should share an ancestor (AbstractBasicNode or so) (MMB-1870)
  */
 public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements Node, SizeMeasurable {
 
