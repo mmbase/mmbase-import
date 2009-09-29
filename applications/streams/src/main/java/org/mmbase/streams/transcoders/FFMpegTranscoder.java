@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.streams.transcoders;
 
+import org.mmbase.applications.media.Codec;
 import org.mmbase.applications.media.Format;
 import java.net.*;
 import java.io.*;
@@ -50,6 +51,19 @@ public class FFMpegTranscoder extends CommandTranscoder {
     public void setVcodec(String v) {
         vcodec = v;
     }
+
+    public Codec getCodec() {
+        if (vcodec != null) {
+            if (log.isDebugEnabled()) log.debug("vcodec: " + vcodec);
+            return AnalyzerUtils.libtoCodec(vcodec);
+        } else if (acodec != null) {
+            if (log.isDebugEnabled()) log.debug("acodec: " + acodec);
+            return AnalyzerUtils.libtoCodec(acodec);
+        } else {
+            return null;
+        }
+    }
+
     /* Video codec preset file, f.e. '-vcodec libx264 -vpre hq' http://ffmpeg.org/ffmpeg-doc.html#SEC16 */
     public void setVpre(String vp) {
         vpre = vp;
