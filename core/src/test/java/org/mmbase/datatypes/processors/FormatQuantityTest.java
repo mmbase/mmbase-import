@@ -36,8 +36,22 @@ public class FormatQuantityTest {
         FormatQuantity fileSize = new FormatFileSize();
         assertEquals("123 B", "" + fileSize.process(null, null, "123"));
         assertEquals("123 B", "" + fileSize.process(null, null, 123));
-
         assertEquals("3.0 KiB", "" + fileSize.process(null, null, "3061"));
+        assertEquals("0 B", "" + fileSize.process(null, null, 0));
+        assertEquals("", "" + fileSize.process(null, null, null));
+        assertEquals("-1 B", "" + fileSize.process(null, null, -1));
+        assertEquals("0 B", "" + fileSize.process(null, null, 0.1));
+    }
+    
+    @Test 
+    public void unitLessInteger() {
+        FormatQuantity def = new FormatQuantity();
+        def.setInteger(true);
+        assertEquals("123", "" + def.process(null, null, "123"));
+        assertEquals("123", "" + def.process(null, null, 123));
+        assertEquals("3.0 k", "" + def.process(null, null, 3061));
+        assertEquals("", "" + def.process(null, null, null));
+        assertEquals("-1", "" + def.process(null, null, -1));
     }
 
 

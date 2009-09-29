@@ -46,10 +46,12 @@ public class FormatQuantity implements Processor {
     protected BigDecimal      k        = KILO;
     protected String[] prefixes = SI;
     protected String unit = "";
-    protected String lowFormat = "0.0 ";
-    protected String highFormat = "0 ";
+    protected String lowFormat = "0.0";
+    protected String highFormat = "0";
     protected BigDecimal lowLimit = new BigDecimal(15);
     protected BigDecimal limit = k.multiply(new BigDecimal(2));
+
+    protected boolean integer = false;
 
     /**
      * If  set, will use binary prefixes as recommended by <a href="http://en.wikipedia.org/wiki/IEEE_1541-2002">IEEE 1541</a>. So, Ki, Mi, etc. which
@@ -124,11 +126,23 @@ public class FormatQuantity implements Processor {
     }
 
 
+    /** 
+     * If a quantity is 'integer' then it can not have fractional
+     * values. For example a number of bytes.
+     * @since MMBase-1.9.2
+     */
+    public void setInteger(boolean i) {
+        integer = i;
+    }
+
+
     public  Object process(Node node, Field field, Object value) {
-        if (value == null) return null;
+        if (value == null) return "";
 
         BigDecimal v = org.mmbase.util.Casting.toDecimal(value);
-        log.debug("Formatting " + value + " -> " + v);
+        if (log.isDebugEnabled()) {
+            log.debug("Formatting " + value + " -> " + v);
+        }
 
         BigDecimal av = v.abs();
         BigDecimal factor = BigDecimal.ONE;
@@ -140,7 +154,7 @@ public class FormatQuantity implements Processor {
                     factor =  factor.multiply(k);
                     power++;
                 }
-            } else {
+            } else if (! integer) {
                 BigDecimal inverse = BigDecimal.ONE.divide(av, RoundingMode.HALF_UP);
                 while (inverse.compareTo(factor.multiply(limit)) > 0
                        && -power < SI_NEGATIVE.length) {
@@ -169,11 +183,20 @@ public class FormatQuantity implements Processor {
             ((DecimalFormat) nf).applyPattern(av.compareTo(lowLimit) > 0 ? highFormat : lowFormat);
         }
 
-        StringBuffer buf = nf.format(v.doubleValue(), new StringBuffer(), new FieldPosition(0));
+        StringBuffer buf;
+        if (integer && power == 0) {
+            buf = new StringBuffer("" + v.intValue());
+        } else {
+            buf = nf.format(v.doubleValue(), new StringBuffer(), new FieldPosition(0));
+        }
         if (power > 0) {
+            buf.append(' ');
             buf.append(prefixes[power - 1]);
         } else if (power < 0) {
+            buf.append(' ');
             buf.append(SI_NEGATIVE[-1 - power]);
+        } else if (unit.length() > 0) {
+            buf.append(' ');
         }
         buf.append(unit);
         return buf.toString();
