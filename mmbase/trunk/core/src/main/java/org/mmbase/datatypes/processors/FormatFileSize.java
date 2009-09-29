@@ -31,6 +31,7 @@ public class FormatFileSize extends FormatQuantity {
 
     public FormatFileSize() {
         setClassical(false);
+        setInteger(true);
     }
     /**
      * It was commonplace to mix SI prefixes with 'binary' factors.
