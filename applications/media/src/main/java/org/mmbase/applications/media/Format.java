@@ -62,6 +62,7 @@ public enum Format {
     MID  (30),
 
     OGV  (31),
+    OGA  (32),
 
     PODCAST(50),
     VODCAST(51),
@@ -82,7 +83,7 @@ public enum Format {
     /* a few more audio formats */
     AAC(200),
     FLAC(201),
-    
+
     ANY(10000);
 
 
