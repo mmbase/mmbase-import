@@ -11,9 +11,9 @@ refer e.g. to http://wiki.whatwg.org/wiki/Video_type_parameters for media types 
   <map format="rm"  codec="*">application/x-pn-realmedia</map>
   <map format="ram" codec="*">audio/x-pn-realaudio</map>
   
-  <map format="ogg" codec="vorbis">audio/vorbis</map>
+  <map format="ogg" codec="vorbis">audio/ogg</map>
   <map format="ogg" codec="theora">video/ogg</map>
-  <map format="ogg" codec="*">application/x-ogg</map>
+  <map format="ogg" codec="*">application/ogg</map>
   <map format="ogx" codec="*">application/ogg</map>
   <map format="oga" codec="*">audio/ogg</map>
   <map format="ogv" codec="*">video/ogg</map>
