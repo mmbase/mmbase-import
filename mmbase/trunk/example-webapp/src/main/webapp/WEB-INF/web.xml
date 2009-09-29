@@ -163,6 +163,10 @@
   </filter-mapping>
 
 
+  <listener>
+    <listener-class>org.mmbase.servlet.FileServletSessionListener</listener-class>
+  </listener>
+
 
   <!-- The base MMBase servlet informs about the current MMBase version -->
   <servlet>
@@ -212,6 +216,21 @@
     <load-on-startup>3</load-on-startup>
   </servlet>
 
+  <servlet>
+    <servlet-name>files</servlet-name>
+    <servlet-class>org.mmbase.servlet.FileServlet</servlet-class>
+    <init-param>
+      <param-name>listings</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>comparator</param-name>
+      <param-value>org.mmbase.servlet.FileNameComparator</param-value>
+    </init-param>
+    <load-on-startup>4</load-on-startup>
+  </servlet>
+
+
   <!--
   <servlet>
     <servlet-name>servscan</servlet-name>
@@ -239,6 +258,13 @@
     <servlet-name>attachments</servlet-name>
     <url-pattern>/mmbase/attachments/*</url-pattern>
   </servlet-mapping>
+
+
+  <servlet-mapping>
+    <servlet-name>files</servlet-name>
+    <url-pattern>/files/*</url-pattern>
+  </servlet-mapping>
+
 
 
   <!--
