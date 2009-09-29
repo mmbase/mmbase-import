@@ -58,57 +58,63 @@ public class FFMpeg2TheoraAnalyzer implements Analyzer {
 
 
     public void analyze(String l, Node source, Node des) {
-        Cloud cloud = source.getCloud();
-        if (util.duration(l, source, des)) {
-            length = source.getLongValue("length");
-            log.info("Found length " + source);
-            return;
-        }
+        synchronized(util) {
+            Cloud cloud = source.getCloud();
+            if (util.duration(l, source, des)) {
+                length = source.getLongValue("length");
+                log.info("Found length " + source);
+                return;
+            }
+    
+            if (util.dimensions(l, source, des)) {
+                log.info("Found dimensions " + source);
+                return;
+            }
+    
+            if (util.audio(l, source, des)) {
+                if (log.isDebugEnabled()) log.debug("Found audio (to set channels): " + l);
+                return;
+            }
 
-        if (util.dimensions(l, source, des)) {
-            log.info("Found dimensions " + source);
-            return;
-        }
-
-        {
-            Matcher m = RESIZE.matcher(l);
-            if (m.matches()) {
-                util.toVideo(source, des);
-                log.info("Found " + m);
-                source.setIntValue("width", Integer.parseInt(m.group(1)));
-                source.setIntValue("height", Integer.parseInt(m.group(2)));
-                source.commit();
-                des.setIntValue("width", Integer.parseInt(m.group(3)));
-                des.setIntValue("height", Integer.parseInt(m.group(4)));
-                des.commit();
-
-            } else {
-                Matcher n = NORESIZE.matcher(l);
-                if (n.matches()) {
-                    log.info("Found " + m);
+            {
+                Matcher m = RESIZE.matcher(l);
+                if (m.matches()) {
                     util.toVideo(source, des);
-                    source.setIntValue("width", Integer.parseInt(n.group(1)));
-                    source.setIntValue("height", Integer.parseInt(n.group(2)));
+                    log.info("Found " + m);
+                    source.setIntValue("width", Integer.parseInt(m.group(1)));
+                    source.setIntValue("height", Integer.parseInt(m.group(2)));
                     source.commit();
-                    des.setIntValue("width", Integer.parseInt(n.group(1)));
-                    des.setIntValue("height", Integer.parseInt(n.group(2)));
+                    des.setIntValue("width", Integer.parseInt(m.group(3)));
+                    des.setIntValue("height", Integer.parseInt(m.group(4)));
                     des.commit();
+    
+                } else {
+                    Matcher n = NORESIZE.matcher(l);
+                    if (n.matches()) {
+                        log.info("Found " + m);
+                        util.toVideo(source, des);
+                        source.setIntValue("width", Integer.parseInt(n.group(1)));
+                        source.setIntValue("height", Integer.parseInt(n.group(2)));
+                        source.commit();
+                        des.setIntValue("width", Integer.parseInt(n.group(1)));
+                        des.setIntValue("height", Integer.parseInt(n.group(2)));
+                        des.commit();
+                    }
+                }
+            }
+            {
+                Matcher m = PROGRESS.matcher(l);
+                if (m.matches()) {
+                    long pos = util.getLength(m.group(1));
+                    long audioBitrate = Integer.parseInt(m.group(2));
+                    long videoBitrate = Integer.parseInt(m.group(3));
+                    bits += ((double) (audioBitrate + videoBitrate)) * ((double) pos - prevPos) * 1000;
+                    //System.out.println("" + pos + "ms "  + (audioBitrate + videoBitrate) + " -> " + (bits / pos) + " " + (100 * pos / length) + " %");
+    
+                    prevPos = pos;
                 }
             }
         }
-        {
-            Matcher m = PROGRESS.matcher(l);
-            if (m.matches()) {
-                long pos = util.getLength(m.group(1));
-                long audioBitrate = Integer.parseInt(m.group(2));
-                long videoBitrate = Integer.parseInt(m.group(3));
-                bits += ((double) (audioBitrate + videoBitrate)) * ((double) pos - prevPos) * 1000;
-                //System.out.println("" + pos + "ms "  + (audioBitrate + videoBitrate) + " -> " + (bits / pos) + " " + (100 * pos / length) + " %");
-
-                prevPos = pos;
-            }
-        }
-
 
     }
 
