@@ -164,6 +164,8 @@ function List(d) {
 
     this.logEnabled = false;
 
+    this.uploading = {};
+
     if ($(this.div).hasClass("POST")) {
         $(this.div).trigger("mmsrRelatedNodesPost", [self]);
         this.afterPost();
@@ -481,13 +483,27 @@ List.prototype.getListParameters = function() {
     return params;
 }
 
-
+List.prototype.uploadProgress = function() {
+    this.find("status", "span").load("${mm:link('/mmbase/upload/progress.jspx?unit=px')}");
+}
 
 List.prototype.upload = function(fileid) {
     var self = this;
+    if (self.uploading[fileid]) {
+        // uploading already
+        return;
+    }
+    self.uploading[fileid] = true;
     var fileItem = $("#" + fileid);
     var li = fileItem.parents("li");
     var node = self.getNodeForLi(li);
+    var progress = function() {
+        self.uploadProgress();
+        if (self.uploading[fileid]) {
+            setTimeout(progress, 1000);
+        }
+    };
+    progress();
     $.ajaxFileUpload ({
             url: "${mm:link('/mmbase/searchrelate/list/upload.jspx')}" + "?rid=" + self.rid + "&name=" + fileItem.attr("name") + "&n=" + node,
             secureuri: false,
@@ -512,9 +528,11 @@ List.prototype.upload = function(fileid) {
                     }
 
                 }
+                self.uploading[fileid] = false;
             },
             error: function (data, status, e) {
                 alert(e);
+                self.uploading[fileid] = false;
             }
         }
         )
@@ -528,6 +546,15 @@ List.prototype.commit = function(stale, leavePage) {
     var result;
     var self = this;
     if(this.needsCommit()) {
+        this.find(null, "input").each(function() {
+                if (this.type == 'file') {
+                    if ($(this).val().length > 0) {
+                        //console.log("Uploading " + this.id);
+                        self.upload(this.id);
+                    }
+                }
+            });
+
         if (this.valid) {
             var now = new Date();
             if (stale == null) stale = this.defaultStale; //
@@ -542,12 +569,6 @@ List.prototype.commit = function(stale, leavePage) {
                 this.find(null, "input").each(function() {
                     if (this.checked || this.type == 'text' || this.type == 'hidden' || this.type == 'password') {
                         params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
-                    }
-                    if (this.type == 'file') {
-                        if ($(this).val().length > 0) {
-                            //console.log("Uploading " + this.id);
-                            self.upload(this.id);
-                        }
                     }
                 });
 
