@@ -70,8 +70,7 @@ public final class AnalyzerUtils implements java.io.Serializable {
         if (! actualMimeType.getType().equals(type)) {
             MimeType newType = new MimeType(type, actualMimeType.getSubType());
             node.setStringValue("mimetype", newType.toString());
-            log.service("Fixed mime type for node#" + node.getNumber() + ": " + actualMimeType + "-> " + newType) ;
-
+            log.service("Fixed mime type for node #" + node.getNumber() + ": " + actualMimeType + "-> " + newType) ;
         } else {
             if (log.isDebugEnabled()) log.debug("MimeType " + actualMimeType + " is correct");
         }
@@ -316,21 +315,25 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 toVideo(source, dest);
             }
 
+
             if (log.isDebugEnabled()) {
                 log.debug(" codec: " + m.group(1));
                 log.debug("format: " + m.group(2));
                 log.debug(" width: "  + m.group(3));
                 log.debug("height: " + m.group(4));
             }
+
             if (updateSource) {
-                int co = Codec.get(m.group(1)).toInt();
-                source.setIntValue("codec", co);
+                if (source.getIntValue("codec") < 0) {
+                    source.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
+                }
                 source.setIntValue("width", Integer.parseInt(m.group(3)));
                 source.setIntValue("height", Integer.parseInt(m.group(4)));
             }
             if (dest != null) {
-                int co = Codec.get(m.group(1)).toInt();
-                dest.setIntValue("codec", co);
+                if (dest.getIntValue("codec") < 0) {
+                    dest.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
+                }
                 dest.setIntValue("width", Integer.parseInt(m.group(3)));
                 dest.setIntValue("height", Integer.parseInt(m.group(4)));
             }
@@ -364,7 +367,6 @@ public final class AnalyzerUtils implements java.io.Serializable {
                 log.debug("   freq.: " + m.group(2));
                 log.debug("channels: " + m.group(3));
             }
-            int co = Codec.get(m.group(1)).toInt();
             
             String channels = m.group(3);
             int ch = org.mmbase.applications.media.builders.MediaSources.MONO;
@@ -373,12 +375,16 @@ public final class AnalyzerUtils implements java.io.Serializable {
             }
             
             if (source.getNodeManager().hasField("channels") && updateSource) {
-                source.setIntValue("channels", ch);
-                source.setIntValue("codec", co);
+                if (source.getIntValue("channels") < 0) source.setIntValue("channels", ch);
+                if (source.getIntValue("codec") < 0) {
+                    source.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
+                }
             }
             if (dest != null) {
-                dest.setIntValue("channels", ch);
-                dest.setIntValue("codec", co);
+                if (dest.getIntValue("channels") < 0) dest.setIntValue("channels", ch);
+                if (dest.getIntValue("codec") < 0) {
+                    dest.setIntValue("codec", libtoCodec(m.group(1)).toInt() );
+                }
             }
             
             return true;
@@ -387,6 +393,14 @@ public final class AnalyzerUtils implements java.io.Serializable {
         }
     }
 
+    public static Codec libtoCodec(String str) {
+        if (str.equals("libx264")) str = "h264";
+        if (str.equals("libfaac")) str = "aac";
+        if (str.equals("libmp3lame")) str = "mp3";
+        if (str.startsWith("lib")) str = str.substring(3, str.length());
+        
+        return Codec.get(str);
+    }
 
 
 }
