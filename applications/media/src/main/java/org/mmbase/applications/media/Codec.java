@@ -32,10 +32,10 @@ public enum Codec {
     MP3(8),
     MP4(9),
     THEORA(10),
-    
+
     /* audio */
     AAC(21),
-    COOK(22),     // Real 
+    COOK(22),     // Real
     DIRAC(23),
     FLAC(24),
     SAMR(25),
@@ -43,7 +43,7 @@ public enum Codec {
     WAV(27),
     WMAV1(28),    // Windows Media Audio 1
     WMAV2(29),    // Windows Media Audio 2
-    
+
     /* video */
     FLV(101),
     H263(102),
@@ -57,7 +57,7 @@ public enum Codec {
     WMV1(110),    // Windows Media Video 7
     WMV2(111),    // Windows Media Video 8
     WMV3(112),    // Windows Media Video 9
-    
+
     /* libs used in ffmpeg */
     LIBFAAC(201),
     LIBFAAD(202),
@@ -82,6 +82,9 @@ public enum Codec {
     public int toInt()    {
         return number;
     }
+    public int getValue() {
+        return number;
+    }
 
     public static Codec get(int i) {
         for (Codec c : Codec.values()) {
@@ -92,7 +95,7 @@ public enum Codec {
 
     public static Codec get(String id) {
         //return Codec.valueOf(id.toUpperCase());
-        
+
         try {
             return Codec.valueOf(id.toUpperCase());
         } catch (IllegalArgumentException iae) {
