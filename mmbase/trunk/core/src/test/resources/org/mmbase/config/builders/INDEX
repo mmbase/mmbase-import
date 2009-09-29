@@ -14,3 +14,4 @@
 ./tests/blob_on_disk.xml
 ./tests/extends_images.xml
 ./tests/invalid_defaults.xml
+./tests/processors.xml

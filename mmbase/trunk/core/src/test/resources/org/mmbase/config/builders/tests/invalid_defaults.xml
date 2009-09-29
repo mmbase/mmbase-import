@@ -22,6 +22,26 @@
         <required value="true" enforce="always" />
       </datatype>
     </field>
+
+    <field name="minlength_line">
+      <datatype  base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="foo" />
+        <minLength value="4" />
+      </datatype>
+    </field>
+
+    <field name="required_integer">
+      <datatype  base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" enforce="always" />
+      </datatype>
+    </field>
+
+    <field name="minvalue_integer">
+      <datatype  base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="1" />
+        <minInclusive value="5" />
+      </datatype>
+    </field>
   </fieldlist>
 
 </builder>
