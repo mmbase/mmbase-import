@@ -217,6 +217,37 @@ public class ProcessorTest extends BridgeTest {
 
 
     }
+    public void testGetProcessorInClusterNode() {
+        Cloud cloud = getCloud();
+        // set up some nodes
+        NodeManager nm = cloud.getNodeManager("processors");
+        NodeManager aa = cloud.getNodeManager("aa");
+        Node a = aa.createNode();
+        a.commit();
+        Node node = nm.createNode();
+        node.setStringValue("get", "bb");
+        node.commit();
+        RelationManager rm = cloud.getRelationManager("aa", "processors", "related");
+        Relation rel = rm.createRelation(a, node);
+        rel.commit();
+
+        // start actual testing
+        int countBefore = CountProcessor.count;
+        NodeList clusterNodes = cloud.getList(null, "aa,processors", "processors.get", null, null, null, null, false);
+        assertEquals(1, clusterNodes.size());
+
+        Node clusterNode = clusterNodes.getNode(0);
+
+        String getValue = clusterNode.getStringValue("processors.get");
+        //MMB-1869
+        assertEquals(countBefore + 1, CountProcessor.count); // FAILS!!
+        assertEquals("BB", getValue); // FAILS
+
+
+
+
+
+    }
 
 
 
