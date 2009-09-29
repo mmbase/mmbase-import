@@ -107,9 +107,7 @@ public class VirtualNodeManager extends AbstractNodeManager implements NodeManag
 
                     if (allowNonQueriedFields && ! query.isAggregating()) {
                         /// if hasField returns true also for unqueried fields
-                        FieldIterator fields = cloud.getNodeManager(step.getTableName()).getFields().fieldIterator();
-                        while (fields.hasNext()) {
-                            Field f = fields.nextField();
+                        for (Field f : cloud.getNodeManager(step.getTableName()).getFields()) {
                             final String fieldName = name + "." + f.getName();
                             fieldTypes.put(fieldName, new VirtualNodeManagerField(f, fieldName));
                         }
