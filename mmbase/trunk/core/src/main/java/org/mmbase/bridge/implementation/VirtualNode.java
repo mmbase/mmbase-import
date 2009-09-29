@@ -14,7 +14,9 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.Casting;
 import org.mmbase.bridge.util.*;
+import org.mmbase.datatypes.DataType;
 import org.mmbase.module.core.VirtualBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMBase;
@@ -183,18 +185,32 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
     @Override
     public boolean getBooleanValue(String fieldName) {
         Boolean result = Boolean.valueOf(noderef.getBooleanValue(fieldName));
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            Field field = nodeManager.getField(fieldName);
+            log.debug("" + field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING));
+            result = Casting.toBoolean(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BOOLEAN).process(this, field, result));
+        }
         return result.booleanValue();
     }
 
     @Override
     public Date getDateValue(String fieldName) {
         Date result =  noderef.getDateValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            Field field = nodeManager.getField(fieldName);
+            result = Casting.toDate(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DATETIME).process(this, field, result));
+        }
         return result;
     }
 
     @Override
     public List getListValue(String fieldName) {
         List result =  noderef.getListValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            Field field = nodeManager.getField(fieldName);
+            result = Casting.toList(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LIST).process(this, field, result));
+        }
+
         return result;
     }
 
@@ -224,12 +240,21 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
                 return null;
             }
         }
+        if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
+            Field field = nodeManager.getField(fieldName);
+            result = Casting.toNode(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_NODE).process(this, field, result), getCloud());
+        }
         return result;
     }
 
     @Override
     public int getIntValue(String fieldName) {
         Integer result = getNode().getIntValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            Field field = nodeManager.getField(fieldName);
+            result  = Casting.toInteger(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_INTEGER).process(this, field, result));
+            // Casting on this position. Should it not be done in all get<..>Value's?
+        }
         return result.intValue();
 
     }
@@ -237,41 +262,69 @@ public class VirtualNode extends AbstractNode implements Node, Serializable {
     @Override
     public float getFloatValue(String fieldName) {
         Float result = getNode().getFloatValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            Field field = nodeManager.getField(fieldName);
+            result = Casting.toFloat(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_FLOAT).process(this, field, result));
+        }
         return result.floatValue();
     }
 
     @Override
     public long getLongValue(String fieldName) {
         Long result = getNode().getLongValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            Field field = nodeManager.getField(fieldName);
+            result = Casting.toLong(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_LONG).process(this, field, result));
+        }
         return result.longValue();
     }
 
     @Override
     public double getDoubleValue(String fieldName) {
         Double result = getNode().getDoubleValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            Field field = nodeManager.getField(fieldName);
+            result = Casting.toDouble(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_DOUBLE).process(this, field, result));
+        }
         return result.doubleValue();
     }
 
     @Override
     public byte[] getByteValue(String fieldName) {
         byte[] result = getNode().getByteValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            Field field = nodeManager.getField(fieldName);
+            result = Casting.toByte(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BINARY).process(this, field, result));
+        }
         return result;
     }
     @Override
     public java.io.InputStream getInputStreamValue(String fieldName) {
         java.io.InputStream result = getNode().getInputStreamValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            Field field = nodeManager.getField(fieldName);
+            result = Casting.toInputStream(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_BINARY).process(this, field, result));
+        }
         return result;
     }
 
     @Override
     public String getStringValue(String fieldName) {
         String result = getNode().getStringValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            Field field = nodeManager.getField(fieldName);
+            result = Casting.toString(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING).process(this, field, result));
+        }
         return result;
     }
 
     @Override
     public Document getXMLValue(String fieldName) {
         Document result = getNode().getXMLValue(fieldName);
+        if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
+            Field field = nodeManager.getField(fieldName);
+            result = Casting.toXML(field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_XML).process(this, field, result));
+        }
         return result;
     }
 
