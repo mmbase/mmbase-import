@@ -31,7 +31,42 @@ public enum Codec {
     MP2(7),
     MP3(8),
     MP4(9),
-    THEORA(10);
+    THEORA(10),
+    
+    /* audio */
+    AAC(21),
+    COOK(22),     // Real 
+    DIRAC(23),
+    FLAC(24),
+    SAMR(25),
+    SPEEX(26),
+    WAV(27),
+    WMAV1(28),    // Windows Media Audio 1
+    WMAV2(29),    // Windows Media Audio 2
+    
+    /* video */
+    FLV(101),
+    H263(102),
+    H264(103),
+    MPEGVIDEO(104),
+    MPEG1VIDEO(105),
+    RV20(106),    // RealVideo 2
+    RV30(107),    // RealVideo 3
+    RV40(108),    // RealVideo 4
+    MPEG4(109),
+    WMV1(110),    // Windows Media Video 7
+    WMV2(111),    // Windows Media Video 8
+    WMV3(112),    // Windows Media Video 9
+    
+    /* libs used in ffmpeg */
+    LIBFAAC(201),
+    LIBFAAD(202),
+    LIBMP3LAME(203),
+    LIBTHEORA(204),
+    LIBVORBIS(205),
+    LIBX264(206),
+    LIBXVID(207),
+    MPEG2VIDEO(208);
 
     private static Logger log = Logging.getLoggerInstance(Codec.class);
 
@@ -56,7 +91,15 @@ public enum Codec {
     }
 
     public static Codec get(String id) {
-        return Codec.valueOf(id.toUpperCase());
+        //return Codec.valueOf(id.toUpperCase());
+        
+        try {
+            return Codec.valueOf(id.toUpperCase());
+        } catch (IllegalArgumentException iae) {
+            log.error("IllegalArgument '" + id + "' : " + iae);
+            return UNKNOWN;
+        }
+
     }
 
     public String getGUIIndicator(Locale locale) {
