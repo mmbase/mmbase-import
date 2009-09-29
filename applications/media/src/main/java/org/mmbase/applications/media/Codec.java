@@ -94,8 +94,6 @@ public enum Codec {
     }
 
     public static Codec get(String id) {
-        //return Codec.valueOf(id.toUpperCase());
-
         try {
             return Codec.valueOf(id.toUpperCase());
         } catch (IllegalArgumentException iae) {

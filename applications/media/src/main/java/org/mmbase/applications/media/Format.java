@@ -228,7 +228,7 @@ public enum Format {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Finding mimetype for " + this + " -> " + mimeType + " (used " + mimeMapping + ")");
+            log.debug("Finding mimetype for " + this + " (codec: " + codec + ") -> " + mimeType + " (used " + mimeMapping + ")");
         }
         return mimeType;
 
