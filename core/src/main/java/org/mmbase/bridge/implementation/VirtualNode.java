@@ -34,6 +34,7 @@ import org.w3c.dom.Document;
  * @version $Id$
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
+ * @todo  This class has large overlap with {@link BasicNode}. They probably should share an ancestor (AbstractBasicNode or so). (MMB-1870)
  * @since MMBase-1.8
  */
 public class VirtualNode extends AbstractNode implements Node, Serializable {
