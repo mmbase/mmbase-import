@@ -124,11 +124,11 @@
             <li class="done">Transactionless</li>
           </ul>
           </li>
-          <li>Not clear what happens when you create images or so (multipart forms). Some work with ajaxupload/jquery was done, but this is now disabled.
+          <li class="done">Not clear what happens when you create images or so (multipart forms). Some work with ajaxupload/jquery was done, but this is now disabled.
           <ul>
             <li class="done">Form itself should upload the images</li>
-            <li>Use ajax-upload to conserve upload during transaction</li>
-            <li>Generate thumbnails for images which are not yet submitted</li>
+            <li class="done">Use ajax-upload to conserve upload during transaction</li>
+            <li class="done">Generate thumbnails for images which are not yet submitted</li>
           </ul>
           </li>
           <li class="done">Nested mm-sr:relatednodes should work too
@@ -145,7 +145,10 @@
             </ul>
 
           </li>
-          <li>It should be somehow better. visible that a list is 'sortable'. It can already be seen by the class 'ui-sortable', which is used in these tests.</li>
+          <li>It should be somehow better visible that a list is 'sortable'
+              It can already be seen by the class 'ui-sortable', which is used in these tests. But I
+              think we need a 'handle' image or so.
+          </li>
           <li>Create mm:input</li>
           <li>Update documentation (see below for current version)</li>
         </ul>
