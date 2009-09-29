@@ -12,3 +12,4 @@
 ./blob_on_disk.xml
 ./extends_images.xml
 ./invalid_defaults.xml
+./processors.xml
