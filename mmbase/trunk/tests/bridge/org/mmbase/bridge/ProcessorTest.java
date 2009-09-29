@@ -194,6 +194,30 @@ public class ProcessorTest extends BridgeTest {
         testCommitCountOnChange2(getCloud().getTransaction("commitcount4"), nn);
     }
 
+    public void testGetProcessor() {
+        NodeManager nm = getCloud().getNodeManager("processors");
+        int countBefore = CountProcessor.count;
+        Node node = nm.createNode();
+        node.commit();
+        assertEquals(countBefore, CountProcessor.count);
+        node.getStringValue("get");
+        assertEquals(countBefore + 1, CountProcessor.count);
+        node.setStringValue("get", "aa");
+        {
+            String getValue = node.getStringValue("get");
+            assertEquals(countBefore + 2, CountProcessor.count);
+            assertEquals("AA", getValue);
+        }
+        node.commit();
+        {
+            String getValue = node.getStringValue("get");
+            assertEquals(countBefore + 3, CountProcessor.count);
+            assertEquals("AA", getValue);
+        }
+
+
+    }
+
 
 
 }
