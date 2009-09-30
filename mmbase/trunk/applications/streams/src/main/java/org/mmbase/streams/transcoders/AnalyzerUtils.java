@@ -397,6 +397,8 @@ public final class AnalyzerUtils implements java.io.Serializable {
         if (str.equals("libx264")) str = "h264";
         if (str.equals("libfaac")) str = "aac";
         if (str.equals("libmp3lame")) str = "mp3";
+        if (str.equals("mpeg1video")) str = "mpeg";
+        if (str.equals("mpeg2video")) str = "mpeg2";
         if (str.startsWith("lib")) str = str.substring(3, str.length());
         
         return Codec.get(str);
