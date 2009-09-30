@@ -137,7 +137,7 @@ public class FormatQuantity implements Processor {
 
 
     public  Object process(Node node, Field field, Object value) {
-        if (value == null) return "";
+        if (value == null) return null;
 
         BigDecimal v = org.mmbase.util.Casting.toDecimal(value);
         if (log.isDebugEnabled()) {
