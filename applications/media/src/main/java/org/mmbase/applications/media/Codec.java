@@ -27,15 +27,15 @@ public enum Codec {
     DIV3(3),
     DIV4(4),
     DIVX(5),
-    MP1(6),
-    MP2(7),
-    MP3(8),
-    MP4(9),
+    MP1(6),     // should be MP1 (MPEG audio layer 1)
+    MP2(7),     // should be MP2 (MPEG audio layer 2)
+    MP3(8),     // should be MP3 (MPEG audio layer 3)
+    MP4(9),     // same as MPEG4 ?
     THEORA(10),
 
     /* audio */
     AAC(21),
-    COOK(22),     // Real
+    COOK(22),     // common RealAudio codec
     DIRAC(23),
     FLAC(24),
     SAMR(25),
@@ -48,25 +48,16 @@ public enum Codec {
     FLV(101),
     H263(102),
     H264(103),
-    MPEGVIDEO(104),
-    MPEG1VIDEO(105),
-    RV20(106),    // RealVideo 2
-    RV30(107),    // RealVideo 3
-    RV40(108),    // RealVideo 4
-    MPEG4(109),
+    MPEG(104),    // MPEG-1 video
+    MPEG2(105),   // MPEG-2 video
+    MPEG4(106),   // MPEG-4 video part 2
+    RV20(107),    // RealVideo 2
+    RV30(108),    // RealVideo 3
+    RV40(109),    // RealVideo 4
     WMV1(110),    // Windows Media Video 7
     WMV2(111),    // Windows Media Video 8
     WMV3(112),    // Windows Media Video 9
-
-    /* libs used in ffmpeg */
-    LIBFAAC(201),
-    LIBFAAD(202),
-    LIBMP3LAME(203),
-    LIBTHEORA(204),
-    LIBVORBIS(205),
-    LIBX264(206),
-    LIBXVID(207),
-    MPEG2VIDEO(208);
+    XVID(113);
 
     private static Logger log = Logging.getLoggerInstance(Codec.class);
 
