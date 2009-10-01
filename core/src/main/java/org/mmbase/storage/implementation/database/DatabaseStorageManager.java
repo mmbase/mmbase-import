@@ -2023,13 +2023,24 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
                 // we might get inconsistencies if we 'remap' fieldnames that need not be mapped.
                 // this also guarantees the number field is set first, which we  may need when retrieving blobs
                 // from disk
-                Map<String, Object> values = getValues(node, result, builder);
-                if (values.get("number") != null) {
-                    putValues(values, node);
-                } else {
-                    log.warn("Got a very suspicious record from db (" + values + ") where number is null!. Will not use this to fill node!", new Exception());
+                for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
+                    if (field.inStorage()) {
+                        Object value;
+                        if (field.getType() == Field.TYPE_BINARY && checkStoreFieldAsFile(builder)) {
+                            value =  getBlobFromFile(node, field, true);
+                            if (value == BLOB_SHORTED) {
+                                value = MMObjectNode.VALUE_SHORTED;
+                            }
+                        } else if (field.getType() == Field.TYPE_BINARY) {
+                            // it is never in the resultset that came from the database
+                            value = MMObjectNode.VALUE_SHORTED;
+                        } else {
+                            String id = (String)factory.getStorageIdentifier(field);
+                            value = getValue(result, result.findColumn(id), field, true);
+                        }
+                        node.storeValue(field.getName(), value);
+                    }
                 }
-
                 assert node.getNumber() > 0;
                 assert node.getIntValue("otype") > 0;
                 // clear the changed signal on the node
