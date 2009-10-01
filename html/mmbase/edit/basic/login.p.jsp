@@ -3,7 +3,7 @@
   Perhaps this could be placed on a more generic location like /mmbase
 --%>
 <%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,org.mmbase.util.functions.*,java.util.*,org.mmbase.datatypes.*"
-%><%@  taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
+%><%@  taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"  prefix="mm"
 %><%!
    String getPrompt(String key, Locale locale) {
      try {
