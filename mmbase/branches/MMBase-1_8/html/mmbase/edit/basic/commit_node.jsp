@@ -1,5 +1,5 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
-%><%@include file="page_base_functionality.jsp" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"  prefix="mm"
+%><%@include file="page_base_functionality.jsp"
 %><mm:cloud loginpage="login.jsp"  sessionname="$config.session" jspvar="cloud" rank="$rank">
 <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
 
@@ -15,8 +15,8 @@
 <!-- first, check validity -->
 <mm:notpresent referid="delete">
   <mm:notpresent referid="cancel">
-    <mm:form mode="validate">  
-      <mm:present referid="node_number">    
+    <mm:form mode="validate">
+      <mm:present referid="node_number">
         <mm:node referid="node_number">
           <mm:context>
             <mm:fieldlist id="my_form" type="edit">
@@ -82,10 +82,10 @@
       <mm:fieldlist id="my_form" type="edit">
         <mm:fieldinfo type="useinput" />
       </mm:fieldlist>
-    </mm:createnode>	
+    </mm:createnode>
     <mm:node id="new_node2" referid="new_node">
-      
-      <mm:remove referid="redirectTo" /> 
+
+      <mm:remove referid="redirectTo" />
 
       <mm:import externid="node" />
       <mm:present referid="node">
@@ -103,10 +103,10 @@
           <mm:param name="push"><mm:field name="number" /></mm:param>
         </mm:url>
       </mm:notpresent>
-        
+
     </mm:node>
-	
-    <!-- if alias added (only for new nodes), do that too --> 
+
+    <!-- if alias added (only for new nodes), do that too -->
     <mm:present referid="alias_name">
     	<mm:node id="new_node3" referid="new_node" >
         <mm:createalias name="$alias_name" />
@@ -126,7 +126,7 @@
         <mm:fieldlist id="my_form" type="edit" fields="owner">
           <mm:fieldinfo type="useinput" />
         </mm:fieldlist>
-      </mm:maywrite>       
+      </mm:maywrite>
       <mm:remove referid="redirectTo" />
       <mm:present referid="save">
         <mm:url id="redirectTo" write="false" page="change_node.jsp" >
@@ -138,7 +138,7 @@
         <mm:url id="redirectTo" write="false" page="<%=peek(urlStack)%>"><mm:param name="nopush" value="url" /></mm:url>
       </mm:notpresent>
     </mm:node>
-    
+
 </mm:present>
 </mm:notpresent>
 
