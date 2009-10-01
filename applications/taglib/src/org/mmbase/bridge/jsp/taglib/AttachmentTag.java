@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.73.2.3 2008-12-09 16:10:18 michiel Exp $
+ * @version $Id$
  */
 
 public class AttachmentTag  extends ImageTag {
