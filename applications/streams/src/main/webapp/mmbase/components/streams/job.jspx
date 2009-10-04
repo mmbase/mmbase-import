@@ -10,31 +10,38 @@
         <caption>
           Job ${_.number} transcoding
           <mm:import id="nodenr" reset="true">${_.node.number}</mm:import>
+          <mm:hasnode number="$nodenr">
           <mm:node number="$nodenr">
             <mm:field name="url" />
             (<mm:field name="mimetype" />)
           </mm:node>
+          </mm:hasnode>
+          <mm:hasnode number="$nodenr" inverse="true">
+            This node #${nodenr} does not (or no longer) exist.
+          </mm:hasnode>
         </caption>
-        <tr>
-          <th>progress</th> <td> ${_.progress} </td> 
-        </tr><tr>
-          <th>ready</th> <td> ${_.ready} </td> 
-        </tr><tr>
-          <th>in</th> <td> ${_.current.in}  </td> 
-        </tr><tr>
-          <th>out</th> <td> ${_.current.out}  </td> 
-        </tr>
-        <mm:may action="cancel_jobs">
-          <tr> 
-           <th> cancel </th>
-           <td>
-            <mm:link>
-              <mm:param name="cancel">${job.node.number}</mm:param>
-              <a href="${_}">Cancel this job</a>
-            </mm:link>
-           </td>
+        <mm:hasnode number="$nodenr">
+          <tr>
+            <th>progress</th> <td> ${_.progress} </td> 
+          </tr><tr>
+            <th>ready</th> <td> ${_.ready} </td> 
+          </tr><tr>
+            <th>in</th> <td> ${_.current.in}  </td> 
+          </tr><tr>
+            <th>out</th> <td> ${_.current.out}  </td> 
           </tr>
-        </mm:may>
+          <mm:may action="cancel_jobs">
+            <tr> 
+             <th> cancel </th>
+             <td>
+              <mm:link>
+                <mm:param name="cancel">${job.node.number}</mm:param>
+                <a href="${_}">Cancel this job</a>
+              </mm:link>
+             </td>
+            </tr>
+          </mm:may>
+        </mm:hasnode>
       </table>
       
       <div class="log">
