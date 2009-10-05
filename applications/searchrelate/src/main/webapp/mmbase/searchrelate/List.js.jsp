@@ -112,7 +112,7 @@ function List(d) {
 
     if (this.search) {
         this.find("mm_related", "div").each(function() {
-                new MMBaseRelater(this, self.validator);
+                this.relater = new MMBaseRelater(this, self.validator);
             });
 
         this.find("mm_related", "div").bind("mmsrRelate", function (e, relate, relater) {
