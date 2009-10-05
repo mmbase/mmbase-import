@@ -944,7 +944,7 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
      * @return the byte array containing the binary data, <code>null</code> if no binary data was stored
      * @throws StorageException if an error occurred during reading
      */
-    protected Blob getBlobFromFile(MMObjectNode node, CoreField field, boolean mayShorten) throws StorageException {
+    private Blob getBlobFromFile(MMObjectNode node, CoreField field, boolean mayShorten) throws StorageException {
         String fieldName = field.getName();
         File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
         if (binaryFile == null) {
@@ -1971,21 +1971,28 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     /**
+     * Iterate through all a builder's fields, and retrieve the value for those fields from the given ResultSet.
+     * Note that if we would do it the other way around (iterate through the recordset's fields)
+     * we might get inconsistencies if we 'remap' fieldnames that need not be mapped.
+
+     * @param result ResultSet to be read
+     * @param builder Builder to use the fields from.
+     * @return The values to be stored in the node, in a Map. Use {@link #putValues} to actually put them in.
      * @since MMBase-1.9.2
      */
-    protected Map<String, Object> getValues(MMObjectNode node, ResultSet result, MMObjectBuilder builder) throws StorageException, SQLException {
-        final Map<String, Object> values = new HashMap<String, Object>();
+    private Map<String, Object> getValuesFromDatabase(final ResultSet result, final MMObjectBuilder builder) throws StorageException, SQLException {
+        final Map<String, Object> values = new LinkedHashMap<String, Object>();
+        //final Map<String, Object> values = new HashMap<String, Object>();
         for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
             if (field.inStorage()) {
                 Object value;
-                if (field.getType() == Field.TYPE_BINARY && checkStoreFieldAsFile(builder)) {
-                    value =  getBlobFromFile(node, field, true);
-                    if (value == BLOB_SHORTED) {
+                if (field.getType() == Field.TYPE_BINARY) {
+                    if (! checkStoreFieldAsFile(builder)) {
+                        // it is never in the resultset that came from the database
                         value = MMObjectNode.VALUE_SHORTED;
+                    } else {
+                        continue;
                     }
-                } else if (field.getType() == Field.TYPE_BINARY) {
-                    // it is never in the resultset that came from the database
-                    value = MMObjectNode.VALUE_SHORTED;
                 } else {
                     String id = (String)factory.getStorageIdentifier(field);
                     value = getValue(result, result.findColumn(id), field, true);
@@ -1997,9 +2004,28 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
     }
 
     /**
+     * After mapping a result set to a Node object, you need to also retrieve the values wich are 'stored on disk'
+     * @param node Node where the retrieved values are to be put in (properties of this node are use to determin where the files are to be found). The node is _not_ changed (Use {@link #putValues}).
+     * @param builder Builder to use the fields from.
      * @since MMBase-1.9.2
      */
-    protected void putValues(Map<String, Object> values, MMObjectNode node) {
+    private Map<String, Object> getValuesFromDisk(final MMObjectNode node, final MMObjectBuilder builder) throws StorageException, SQLException {
+        final Map<String, Object> values = new LinkedHashMap<String, Object>();
+        for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
+            if (field.getType() == Field.TYPE_BINARY && checkStoreFieldAsFile(builder)) {
+                Object value =  getBlobFromFile(node, field, true);
+                if (value == BLOB_SHORTED) {
+                    value = MMObjectNode.VALUE_SHORTED;
+                }
+                values.put(field.getName(), value);
+            }
+        }
+        return values;
+    }
+    /**
+     * @since MMBase-1.9.2
+     */
+    private void putValues(Map<String, Object> values, MMObjectNode node) {
         for (Map.Entry<String, Object> e : values.entrySet()) {
             node.storeValue(e.getKey(), e.getValue());
         }
@@ -2018,29 +2044,18 @@ public class DatabaseStorageManager implements StorageManager<DatabaseStorageMan
         try {
             if ((result != null) && result.next()) {
 
-                // iterate through all a builder's fields, and retrieve the value for that field
-                // Note that if we would do it the other way around (iterate through the recordset's fields)
-                // we might get inconsistencies if we 'remap' fieldnames that need not be mapped.
+
                 // this also guarantees the number field is set first, which we  may need when retrieving blobs
                 // from disk
-                for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
-                    if (field.inStorage()) {
-                        Object value;
-                        if (field.getType() == Field.TYPE_BINARY && checkStoreFieldAsFile(builder)) {
-                            value =  getBlobFromFile(node, field, true);
-                            if (value == BLOB_SHORTED) {
-                                value = MMObjectNode.VALUE_SHORTED;
-                            }
-                        } else if (field.getType() == Field.TYPE_BINARY) {
-                            // it is never in the resultset that came from the database
-                            value = MMObjectNode.VALUE_SHORTED;
-                        } else {
-                            String id = (String)factory.getStorageIdentifier(field);
-                            value = getValue(result, result.findColumn(id), field, true);
-                        }
-                        node.storeValue(field.getName(), value);
-                    }
+                Map<String, Object> values = getValuesFromDatabase(result, builder);
+                if (values.get("number") != null) {
+                    putValues(values, node);
+                    Map<String, Object> diskValues = getValuesFromDisk(node, builder);
+                    putValues(diskValues, node);
+                } else {
+                    log.warn("Got a very suspicious record from db (" + values + ") where number is null!. Will not use this to fill node!", new Exception());
                 }
+
                 assert node.getNumber() > 0;
                 assert node.getIntValue("otype") > 0;
                 // clear the changed signal on the node
