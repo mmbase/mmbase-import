@@ -9,7 +9,7 @@
   <mm:node number="default.mags">
     <h2><mm:field name="title" /></h2>
 
-    <mm-srt:relatednodes
+    <mm-sr:relatednodes
         idvar="rid"
         type="news"
         role="posrel"
@@ -17,8 +17,8 @@
         delete="true"
         max="3"
         >
-      <h3>${rid}</h3>
-    </mm-srt:relatednodes>
+      <h3 class="debug">${rid}</h3>
+    </mm-sr:relatednodes>
   </mm:node>
   <hr />
   <p>
