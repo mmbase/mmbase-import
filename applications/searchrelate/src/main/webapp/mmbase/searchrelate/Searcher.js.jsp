@@ -81,7 +81,9 @@ function MMBaseRelater(d, validator) {
     this.logger.debug("setting up repository");
     this.repository    = $(d).find(".mm_relate_repository")[0];
     this.logger.debug("found " + this.repository + " in ");
-    if (this.repository != null) this.addSearcher(this.repository, "repository");
+    if (this.repository != null) {
+        this.addSearcher(this.repository, "repository");
+    }
     this.relateCallBack = null;
     for (var i = 0; i < MMBaseRelater.readyFunctions.length; i++) {
         var fun =  MMBaseRelater.readyFunctions[i];
@@ -528,10 +530,10 @@ function MMBaseSearcher(d, r, type, logger) {
     this.bindEvents();
     // Arrange that pressing enter in the search-area works:
     $(this.div).find("input.search").keypress(function(ev) {
-        if (ev.which == 13) {
-            self.search(this.value, 0);
-            return false;
-        }
+            if (ev.which == 13) {
+                self.search(this.value, 0);
+                return false;
+            }
     });
     this.validator = this.relater.validator;
     this.searchUrl = $(this.div).find("form.searchform").attr("action");
@@ -577,7 +579,7 @@ MMBaseSearcher.prototype.getResultDiv = function() {
 /**
  * This method is called if somebody clicks on a.search.
  * It depends on a jsp /mmbase/searchrelate/page.jspx to return the search results.
- * Feeded are 'id' 'offset' and 'search'.
+ * Feeded are a.o. 'id' 'offset' and 'search'.
  * The actual query is supposed to be on the user's session, and will be picked up in page.jspx.
  */
 MMBaseSearcher.prototype.search = function(val, offset) {
@@ -608,19 +610,20 @@ MMBaseSearcher.prototype.search = function(val, offset) {
     }
 
     var rep = this.getResultDiv();
-    var params = { id: this.getQueryId(),
-                   offset: offset,
-                   search: "" + this.value,
-                   fields: this.fields,
-                   pagesize: this.pagesize,
-                   maxpages: this.maxpages,
-                   customizedir: this.customizedir,
-                   editrelations: this.canEditrelations };
+    var params = {
+        id: this.getQueryId(),
+        offset: offset,
+        search: "" + this.value,
+        fields: this.fields,
+        pagesize: this.pagesize,
+        maxpages: this.maxpages,
+        customizedir: this.customizedir,
+        editrelations: this.canEditrelations
+    };
 
     var result = this.searchResults["" + offset];
     this.logger.debug("Searching " + this.searchUrl + " " + params);
 
-    $(rep).empty();
     if (result == null) {
         var self = this;
         $.ajax({ url: this.searchUrl, type: "GET", dataType: "xml", data: params,
@@ -646,6 +649,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
                });
 
     } else {
+        $(rep).empty();
         this.logger.debug("reusing " + offset);
         this.logger.debug(rep);
         var self = this;
