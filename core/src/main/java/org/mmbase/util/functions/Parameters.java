@@ -318,7 +318,9 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
             a.checkType(value);
             return backing.put(a.getName(), value);
         } else {
-            if (patternBacking == null) throw new IndexOutOfBoundsException("No index " + i + " (" + j + "). Patternlimit " + patternLimit + " " + this);
+            if (patternBacking == null) {
+                throw new IndexOutOfBoundsException("No index " + i + " (" + j + "). Patternlimit " + patternLimit + " " + this);
+            }
             log.debug("Setting " + i + "(by pattern)");
             return patternBacking.get(j - patternLimit).setValue(value);
         }
@@ -453,7 +455,16 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
             return this;
         } else {
             for (int i = patternLimit; i < definition.length; i++) {
-                if (definition[i].matches(parameterName)) {
+                Parameter<?> a = definition[i];
+                if (a.matches(parameterName)) {
+                    if (autoCasting) {
+                        try {
+                            value = a.autoCast(value);
+                        } catch (org.mmbase.datatypes.CastException ce) {
+                            throw new IllegalArgumentException(ce);
+                        }
+                    }
+                    a.checkType(value);
                     patternBacking.add(new Entry<String, Object>(parameterName, value));
                     toIndex++;
                     return this;
