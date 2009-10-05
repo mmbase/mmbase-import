@@ -165,6 +165,7 @@ function List(d) {
     this.logEnabled = false;
 
     this.uploading = {};
+    this.uploadingSize = 0;
 
     if ($(this.div).hasClass("POST")) {
         $(this.div).trigger("mmsrRelatedNodesPost", [self]);
@@ -483,8 +484,10 @@ List.prototype.getListParameters = function() {
     return params;
 }
 
-List.prototype.uploadProgress = function() {
-    this.find("status", "span").load("${mm:link('/mmbase/upload/progress.jspx?unit=px')}");
+List.prototype.uploadProgress = function(fileid) {
+    if (this.uploading[fileid]) {
+        this.find("status", "span").load("${mm:link('/mmbase/upload/progress.jspx')}");
+    }
 }
 
 List.prototype.upload = function(fileid) {
@@ -494,11 +497,12 @@ List.prototype.upload = function(fileid) {
         return;
     }
     self.uploading[fileid] = true;
+    self.uploadingSize++;
     var fileItem = $("#" + fileid);
     var li = fileItem.parents("li");
     var node = self.getNodeForLi(li);
     var progress = function() {
-        self.uploadProgress();
+        self.uploadProgress(fileid);
         if (self.uploading[fileid]) {
             setTimeout(progress, 1000);
         }
@@ -528,11 +532,14 @@ List.prototype.upload = function(fileid) {
                     }
 
                 }
-                self.uploading[fileid] = false;
+                delete self.uploading[fileid];
+                self.uploadingSize--;
+                self.status('<fmt:message key="uploaded" />', true);
             },
             error: function (data, status, e) {
                 alert(e);
-                self.uploading[fileid] = false;
+                delete self.uploading[fileid];
+                self.uploadingSize--;
             }
         }
         )
@@ -591,10 +598,10 @@ List.prototype.commit = function(stale, leavePage) {
                          async: leavePage == null ? true : !leavePage,
                          url: "${mm:link('/mmbase/searchrelate/list/save.jspx')}",
                          data: params,
-                         complete: function(req, textStatus) {
-                             self.status('<fmt:message key="saved" />', true);
-                             $(self.div).trigger("mmsrFinishedSave", [self]);
-                         }
+                            complete: function(req, textStatus) {
+                            self.status('<fmt:message key="saved" />', self.uploadingSize == 0);
+                            $(self.div).trigger("mmsrFinishedSave", [self]);
+                        }
                        });
 
                 result = true;
@@ -610,6 +617,7 @@ List.prototype.commit = function(stale, leavePage) {
     }
     if (leavePage && ! List.prototype.leftPage) {
         List.prototype.leftPage = true;
+        $(self.div).trigger("mmsrLeavePage", [self]);
         $.ajax({ type: "GET", async: false, data: this.getListParameters(), url: "${mm:link('/mmbase/searchrelate/list/leavePage.jspx')}" });
 
     }
