@@ -36,12 +36,11 @@
     <field name="format">
       <descriptions>
         <description xml:lang="en">
-          The format/mimetype of this source.  This is an integer
-       	  corresponding to the org.mmbase.applications.media.resources.format
-          resource.
+          File format of the source. Normally format corresponds with the file's extension.
         </description>
         <description xml:lang="nl">
-          Formaat van deze bron (mime-type).
+          Formaat of type bestand van de bron. Normaal gesproken correspondeert het bestandsformaat
+          met de extensie van het bronbestand.
         </description>
       </descriptions>
 
@@ -66,6 +65,11 @@
           a support for certain video/audio format for your operating system. With codec, your system
           recognizes the format the codec is built for and allows you to play the audio/video file (=decode)
           or in some cases, to change another audio/video file into that format (=(en)code).
+        </description>
+        <description xml:lang="nl">
+          Codec is kort voor Coder/Decoder, de software die is gebruikt om een video of audio bestand
+          te encoderen. Aan de hand van de codec kan een systeem makkelijker herkennen of het een
+          bestand kan afspelen of niet.
         </description>
       </descriptions>
       <gui>
@@ -104,9 +108,8 @@
 
     <field name="channels">
       <descriptions>
-        <description xml:lang="en">
-          Number of channels in this stream.
-        </description>
+        <description xml:lang="en">Number of channels in this stream.</description>
+        <description xml:lang="nl">Aantal kanalen in de stream.</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Channels</guiname>
@@ -126,7 +129,8 @@
           server is determined by the related mediaprovider object.
         </description>
         <description xml:lang="nl">
-          Relatieve URL.
+          Relatieve url van het bestand op de server. De volledige url wordt samengesteld op basis 
+          van de gerelateerde mediaprovider.
         </description>
       </descriptions>
       <gui>
@@ -143,12 +147,15 @@
     <field name="state">
       <descriptions>
         <description xml:lang="en">
-          A source stream can be in several states, indicating e.g. that it is not immediately available.
+          A source can be in several states, indicating e.g. that it is not immediately available.
+        </description>
+        <description xml:lang="en">
+          Status van de source, bijvoorbeeld of het onmiddelijk beschikbaar is of niet.
         </description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">State</guiname>
-        <guiname xml:lang="nl">Toestand</guiname>
+        <guiname xml:lang="nl">Status</guiname>
       </gui>
       <editor><positions><list>8</list></positions></editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
@@ -164,9 +171,8 @@
 
     <field name="filesize" state="system">
       <descriptions>
-        <description xml:lang="en">
-          The size of the file which is backing the stream.
-        </description>
+        <description xml:lang="en">The size of the file in bytes which is backing the source.</description>
+        <description xml:lang="nl">Grootte van het bestand in bytes van deze source.</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Filesize</guiname>
@@ -182,17 +188,18 @@
 
     <field name="filelastmodified" state="system">
       <descriptions>
-        <description xml:lang="en">
-          Last modified time-stamp of the file which is backing the stream.
-        </description>
+        <description xml:lang="en">Last modified time-stamp of the file which is backing the stream.</description>
+        <description xml:lang="nl">Laatste wijzigingsdatum en tijd (timestamp) van het bestand van deze source.</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">File's timestamp</guiname>
-        <guiname xml:lang="nl">Laatste wijziging van het bestand</guiname>
+        <guiname xml:lang="nl">Wijzigingsdatum bestand</guiname>
       </gui>
       <editor>
         <positions>
-          <input>-1</input><list>9</list><search>-1</search>
+          <input>-1</input>
+          <list>-1</list>
+          <search>-1</search>
         </positions>
       </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
