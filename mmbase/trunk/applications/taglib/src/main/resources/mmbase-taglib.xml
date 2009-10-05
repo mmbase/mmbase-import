@@ -2351,6 +2351,7 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
+      Receives a property on a nodemanager, module or cloud.
     </info>
     <since>MMBase-1.8.6</since>
     <attribute>
@@ -2367,11 +2368,44 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
       <name>name</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>The command which is given</info>
+      <info>The name of the property to get</info>
     </attribute>
     <example>
      &lt;mm:property nodemanager="images" name="wizard" /&gt;
     </example>
+  </tag>
+  <tag>
+    <name>setproperty</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.SetPropertyTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+      Sets a property on a nodemanager (not yet unsupported), module (not yet supported) or cloud.
+    </info>
+    <since>MMBase-1.9.2</since>
+    <attribute>
+      <name>nodemanager</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Unsupported</info>
+    </attribute>
+    <attribute>
+      <name>module</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Unsupported</info>
+    </attribute>
+    <attribute>
+      <name>valueid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The value </info>
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The name of the property to set</info>
+    </attribute>
   </tag>
   <tag>
     <name>node</name>
