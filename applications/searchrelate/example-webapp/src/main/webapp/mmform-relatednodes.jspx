@@ -19,7 +19,7 @@
         sortable="true"
         search="true"
         >
-      <h4>${rid}</h4>
+      <h4 class="debug">${rid}</h4>
     </mm-sr:relatednodes>
 
     <hr />
