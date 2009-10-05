@@ -1,5 +1,6 @@
 
 var validator;
+if (typeof($) != 'undefined') {
 $(document).ready(function(ev) {
     validator = new MMBaseValidator();
     validator.logEnabled = false;
@@ -14,9 +15,10 @@ $(document).ready(function(ev) {
     validator.sessionName = $("html head meta[name='MMBase-SessionName']").attr("content");
 
     var nt = $("html head meta[name='MMBase-NodeType']").attr("content");
-    if (nt.length > 0) {
+    if (nt != null && nt.length > 0) {
         validator.prefetchNodeManager(nt);
     }
     validator.onLoad(ev);
 });
 
+}
