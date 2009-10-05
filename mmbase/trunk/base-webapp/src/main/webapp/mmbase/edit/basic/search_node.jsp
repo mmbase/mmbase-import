@@ -29,7 +29,6 @@
 <mm:write referid="thisurl" vartype="org.mmbase.bridge.jsp.taglib.pageflow.Url" jspvar="url">
  <%  push(urlStack, "home", url.get(false));  %>
 </mm:write>
-
 <table summary="node editors" width="100%" class="super">
   <tr align="left">
     <th width="20%">
