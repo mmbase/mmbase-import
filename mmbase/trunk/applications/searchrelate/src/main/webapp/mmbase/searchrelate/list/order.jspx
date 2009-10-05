@@ -24,8 +24,10 @@
       <c:otherwise>
         <mm:import externid="order" required="true" jspvar="order" vartype="string" />
         <!-- do it later, there is little point, it won't work any way in a transaction -->
-        <mm:write session="${rid}_order" value="${order}" />
-        <jsp:text>${rid}_order: ${order}</jsp:text>
+        <mm:form name="${parameters.formtag}">
+          <mm:setproperty name="${rid}_order" valueid="order" />
+          <jsp:text>${rid}_order: ${order}</jsp:text>
+        </mm:form>
       </c:otherwise>
     </c:choose>
   </div>
