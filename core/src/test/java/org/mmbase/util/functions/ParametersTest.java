@@ -185,7 +185,7 @@ public class ParametersTest {
     @Test
     public void autoCast() {
 
-        Parameters params = new Parameters(B, G);
+        Parameters params = new Parameters(B, G, PB);
         params.set(B, 5); // OK
         params.set(G, new java.math.BigDecimal(5));
         try {
@@ -240,17 +240,27 @@ public class ParametersTest {
 
         try {
             params.set("g", "7.123456789");
-
-            // FAILS!
-            //fail("Should have given IllegalArgumentException since '7.123456789' hs too many digits");
+            fail("Should have given IllegalArgumentException since '7.123456789' has too many digits");
         } catch (IllegalArgumentException ia) {
             // ok this is expected
+            System.out.println(ia);
 
         }
-
         params.set("g", new String[] {"1.1"});
 
+
+        try {
+            params.set("bb", "a");
+            fail("Should have given IllegalArgumentException since 'a' is not a valid integer");
+        } catch (IllegalArgumentException ia) {
+            // ok this is expected
+            System.out.println(ia);
+
+        }
     }
+
+
+
 
 
 }
