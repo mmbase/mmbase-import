@@ -239,9 +239,11 @@ public final class AnalyzerUtils implements java.io.Serializable {
             if (m.matches()) {
                 if (log.isDebugEnabled()) log.debug("start: " + m.group(1));
                 long start = getStart(m.group(1));
-                if (fragment != null) {
+                Cloud cloud = source.getCloud();
+                if (updateSource && fragment != null && cloud.hasNode(fragment.getNumber())) {
                     fragment.setLongValue("start", start);
                     fragment.commit();
+                    if (log.isDebugEnabled()) log.debug("Set mediafragment's field start: " + start);
                 } else {
                     log.warn("mediafragment still null");
                 }
