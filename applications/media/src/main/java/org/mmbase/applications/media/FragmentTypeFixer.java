@@ -15,6 +15,8 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * Makes sure a mediasources node has its equivalent mediafragments, 
+ * a videosources needs a videofragments etc.
  *
  * @author Michiel Meeuwissen
  * @version $Id$
