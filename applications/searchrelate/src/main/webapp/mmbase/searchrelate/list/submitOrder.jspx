@@ -51,6 +51,5 @@
       </mm:relatednodes>
     </mm:relatednodescontainer>
     <changes><jsp:expression>org.mmbase.bridge.util.Queries.reorderResult(query, iorder)</jsp:expression></changes>
-    <mm:write session="${rid}_order" value="" />
   </div>
 </mm:cloud>
