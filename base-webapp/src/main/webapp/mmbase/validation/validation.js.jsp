@@ -251,6 +251,7 @@ MMBaseValidator.prototype.javaScriptPattern = function(javaPattern) {
         }
         javaPattern = javaPattern.replace(/\\A/g, "\^");
         javaPattern = javaPattern.replace(/\\z/g, "\$");
+        javaPattern = javaPattern.replace(/\\p\{L\}/, "a-zA-Z");
 
         var reg = new RegExp(javaPattern, flags);
         return reg;
@@ -783,6 +784,7 @@ MMBaseValidator.prototype.serverValidate = function(event) {
 
 
 MMBaseValidator.prototype.validateElement = function(element, server) {
+    //console.log("validating " + element + " " + server);
     var valid;
     if (server) {
         var prevValue = element.prevValue;
@@ -790,6 +792,8 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
         if (curValue == prevValue) {
             server = false;
             element.serverValidated = true;
+            // already validated, so nothing to do.
+            return;
         }
         element.prevValue = "" + curValue;
     }
