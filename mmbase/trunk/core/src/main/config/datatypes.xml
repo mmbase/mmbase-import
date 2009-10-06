@@ -780,6 +780,14 @@
       </getprocessor>
     </specialization>
 
+    <specialization id="positive_integer">
+      <description>
+        A positive integer.
+      </description>
+      <required value="true" />
+      <minExclusive value="0" />
+    </specialization>
+
   </datatype>
 
   <datatype id="float">
