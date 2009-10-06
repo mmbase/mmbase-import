@@ -118,11 +118,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     public void setUri(String uri) throws JspTagException {
-        cloudURI = getAttribute(uri);
+        cloudURI = getAttribute(uri, true);
     }
 
     public void setName(String name) throws JspTagException {
-        cloudName = getAttribute(name);
+        cloudName = getAttribute(name, true);
     }
 
     protected String getName() throws JspTagException {
@@ -133,28 +133,28 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     public void setLogon(String l) throws JspTagException {
-        logonatt = getAttribute(l);
+        logonatt = getAttribute(l, true);
     }
     public void setPwd(String pwd) throws JspTagException {
-        this.pwd = getAttribute(pwd);
+        this.pwd = getAttribute(pwd, true);
     }
 
     /**
      * Synonym for setLogon. Don't mix.
      */
     public void setUsername(String l) throws JspTagException {
-        logonatt = getAttribute(l);
+        logonatt = getAttribute(l, true);
     }
 
     /**
      * Synonym for setPwd. Don't mix.
      */
     public void setPassword(String pwd) throws JspTagException {
-        this.pwd = getAttribute(pwd);
+        this.pwd = getAttribute(pwd, true);
     }
 
     public void setRank(String r) throws JspTagException {
-        rank = getAttribute(r);
+        rank = getAttribute(r, true);
     }
 
     /**
@@ -194,11 +194,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     public void setAuthenticate(String authenticate) throws JspTagException {
-        if (!"".equals(authenticate)) { // this makes it easier to ignore.
-            this.authenticate = getAttribute(authenticate);
-        } else {
-            this.authenticate = Attribute.NULL;
-        }
+        this.authenticate = getAttribute(authenticate, true);
     }
 
     protected String getAuthenticate() throws JspTagException {
@@ -210,7 +206,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     public void setMethod(String mm) throws JspTagException {
-        method = getAttribute(mm);
+        method = getAttribute(mm, true);
     }
 
     protected int getMethod() throws JspTagException {
