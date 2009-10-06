@@ -102,7 +102,7 @@ public class BinaryCommitProcessor implements CommitProcessor {
     public void commit(Node node, Field field) {
 
         if (node.getCloud().getProperty(NOT) != null) {
-            log.debug("Skipped because of proeprty " + NOT);
+            log.debug("Skipped because of property " + NOT);
             return;
         }
         if (log.isDebugEnabled()) {
@@ -110,13 +110,16 @@ public class BinaryCommitProcessor implements CommitProcessor {
         }
         if (node.isChanged(field.getName())) {
 
-            if (node.getNodeManager().hasField(filesizeField) &&
-                (! node.isChanged(filesizeField) || node.isNull(filesizeField))) {
-                long size = node.getSize(field.getName());
-                log.debug("Setting filesize to " + size);
-                node.setValue(filesizeField, size);
+            if (node.getNodeManager().hasField(filesizeField)) {
+                if (! node.isChanged(filesizeField) || node.isNull(filesizeField)) {
+                    long size = node.getSize(field.getName());
+                    log.debug("Setting filesize to " + size);
+                    node.setValue(filesizeField, size);
+                } else {
+                    log.debug("Skipping filesize. Filesize changed: " +  node.isChanged(filesizeField) + " filesize is null: " + node.isNull(filesizeField));
+                }
             } else {
-                log.debug("Skipping filesize");
+                log.debug("Skipping filesize (no such field '" + filesizeField + "'");
             }
 
             Object value = node.getObjectValue(field.getName());
