@@ -348,7 +348,8 @@ MMBaseValidator.prototype.INTEGER = /^[+-]?\d+$/;
 MMBaseValidator.prototype.FLOAT   = /^[+-]?(\d+|\d+\.\d*|\d*\.\d+)(e[+-]?\d+|)$/i;
 
 MMBaseValidator.prototype.typeValid = function(el) {
-    if (el.value == "") return true;
+    var value = this.getValue(el);
+    if (value == "" || value == null) return true;
 
     if (this.isInteger(el)) {
         if (! this.INTEGER.test(el.value)) return false;
@@ -604,7 +605,10 @@ MMBaseValidator.prototype.getValue = function(el) {
     } else {
         var value = el.value;
         if( this.isNumeric(el)) {
-            value = parseFloat(value);
+            if (value == "") {
+            } else {
+                value = parseFloat(value);
+            }
         }
         return value;
     }
@@ -663,11 +667,13 @@ MMBaseValidator.prototype.valid = function(el) {
     }
 
     if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
-        if (value == "") {
+        if (value == "" || value == null) {
             return false;
         }
     } else {
-        if (value == "") return true;
+        if (value == "" || value == null) {
+            return true;
+        }
     }
     if (! this.typeValid(el)) return false;
     if (! this.lengthValid(el)) return false;
