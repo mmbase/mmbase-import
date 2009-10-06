@@ -12,14 +12,17 @@ package org.mmbase.datatypes;
 
 import org.mmbase.datatypes.util.xml.*;
 import java.util.*;
+import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.mock.*;
 import org.mmbase.util.LocalizedString;
+import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.xml.XMLWriter;
 
 import org.xml.sax.InputSource;
 import org.w3c.dom.*;
+import org.w3c.dom.Node;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -36,6 +39,9 @@ public class DataTypesTest  {
     public static void setUp() throws Exception {
         LocalizedString.setDefault(new Locale("dk"));
         DataTypes.initialize();
+        MockCloudContext.getInstance().clear();
+        MockCloudContext.getInstance().addNodeManagers(ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders/core"));
+        MockCloudContext.getInstance().addNodeManagers(ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders/tests"));
     }
 
     private StringDataType getString() {
@@ -324,6 +330,20 @@ public class DataTypesTest  {
         assertFalse(dt.castAndValidate(null, null, null).size() == 0);
         assertFalse(dt.castAndValidate("aaa", null, null).size() == 0);
         assertFalse(dt.castAndValidate("NaN", null, null).size() == 0);
+
+    }
+
+    @Test
+    public  void requiredNoValidDefaultValue() {
+        NodeManager nm = MockCloudContext.getInstance().getCloud("mmbase").getNodeManager("invalid_defaults");
+        org.mmbase.bridge.Node n = nm.createNode();
+        try {
+            n.commit();
+            fail ("Default value of 'title' is invalid of " + n);
+        } catch (IllegalArgumentException e) {
+            // ok
+            System.out.println("" + e);
+        }
 
     }
 
