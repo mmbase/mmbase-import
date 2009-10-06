@@ -420,7 +420,10 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                         handleAttributes(t.tag, attributes);
                         out.write('>');
                     } else {
-                        out.write(' ');
+                        if (tag == HTML.Tag.P && addNewlines) {
+                        } else {
+                            out.write(' ');
+                        }
                     }
                 }
 
@@ -450,7 +453,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                         out.write(tagName);
                         out.write('>');
                     } else {
-                        if (t.tag == HTML.Tag.P && addNewlines) {
+                        if (tag == HTML.Tag.P && addNewlines) {
                             out.write("\n\n");
                         } else {
                             out.write(' ');
@@ -476,7 +479,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                         handleAttributes(t.tag, attributes);
                         out.write(" />");
                     } else {
-                        if (t.tag == HTML.Tag.BR && addNewLines) {
+                        if (tag == HTML.Tag.BR && addNewlines) {
                             out.write('\n');
                         } else {
                             out.write(' ');
