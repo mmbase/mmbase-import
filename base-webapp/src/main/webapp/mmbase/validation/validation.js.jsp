@@ -841,6 +841,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
     if (this.validateHook) {
         this.validateHook(valid, element);
     }
+    $(element).trigger("mmValidate", [this, valid]);
 }
 
 /**
