@@ -17,6 +17,7 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.util.xml.DocumentSerializable;
 import org.mmbase.util.xml.DocumentReader;
+import org.mmbase.util.functions.Function;
 import org.mmbase.util.logging.*;
 
 /**
@@ -333,8 +334,17 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                                 public Map.Entry<C, String> next() {
                                                     org.mmbase.bridge.Node next = nodeIterator.nextNode();
                                                     if (query instanceof NodeQuery) {
-                                                        String gui = next == null ? "NULL_NODE" : next.getFunctionValue("gui", null).toString();
-                                                        return new Entry<C, String>((C) next, gui);
+                                                        if (next == null) {
+                                                            return new Entry<C, String>((C) next, "NULL_NODE");
+                                                        } else {
+                                                            try {
+                                                                Function function = next.getFunction("gui");
+                                                                String gui = function.getFunctionValue(function.createParameters()).toString();
+                                                                return new Entry<C, String>((C) next, gui);
+                                                            } catch (NotFoundException nfe) {
+                                                                return new Entry<C, String>((C) next, "" + node.getNumber());
+                                                            }
+                                                        }
                                                     } else {
                                                         String alias = Queries.getFieldAlias(query.getFields().get(0));
                                                         log.debug("using field " + alias);
@@ -759,44 +769,5 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
 
     }
 
-    /**
-     * For testing only.
-     */
-    public static void main(String argv[]) {
-        LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
-        String resource1 = "org.mmbase.datatypes.resources.boolean.onoff";
-        String resource2 = "org.mmbase.datatypes.resources.boolean.yesno";
-        Locale nl = new Locale("nl");
-        Locale en = new Locale("en");
-        Locale dk = new Locale("dk");
-        Locale eo = new Locale("eo");
-        fact.add(nl, "a", "hallo");
-        System.out.println("nou " + fact);
-        fact.add(new Locale("nl"), "b", "daag");
-        fact.add(en, "b", "hello");
-        fact.add(en, "a", "good bye");
-        fact.addBundle(resource1, null, null, Boolean.class, SortedBundle.NO_COMPARATOR);
-        fact.add(nl, "c", "doegg");
-        fact.add(dk, 5, "dk");
-        fact.add(null, "e", "oi");
-        fact.addBundle(resource2, null, null, String.class, SortedBundle.NO_COMPARATOR);
-
-        System.out.println("size: " + fact.size() + " " + fact);
-        System.out.println("en" + fact.get(en));
-        System.out.println("nl" + fact.get(nl));
-        System.out.println("dk" + fact.get(dk));
-        System.out.println("eo" + fact.get(eo));
-
-        LocalizedEntryListFactory fact2 = new LocalizedEntryListFactory();
-        fact2.addBundle("org.mmbase.datatypes.resources.states", null, org.mmbase.module.builders.MMServers.class, SortedBundle.NO_WRAPPER, SortedBundle.NO_COMPARATOR);
-
-        System.out.println("size: " + fact2.size());
-        System.out.println("" + fact2.get(en));
-        System.out.println("" + fact2.get(nl));
-        Object error = fact2.castKey("ERROR", null);
-        System.out.println("ERROR=" + error.getClass().getName() + " " + error);
-
-
-    }
 
 }
