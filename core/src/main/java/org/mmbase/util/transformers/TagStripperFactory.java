@@ -38,7 +38,11 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
     public static final Parameter<Boolean> ESCAPE_AMPS =
         new Parameter<Boolean>("escapeamps", Boolean.class, Boolean.FALSE);
 
-    protected static final Parameter[] PARAMS = new Parameter[] { TAGS, ADD_BRS, ESCAPE_AMPS };
+    public static final Parameter<Boolean> ADD_NEWLINES     =
+        new Parameter<Boolean>("addnewlines", Boolean.class, Boolean.FALSE);
+
+
+    protected static final Parameter[] PARAMS = new Parameter[] { TAGS, ADD_BRS, ESCAPE_AMPS, ADD_NEWLINES };
 
     public Parameters createParameters() {
         return new Parameters(PARAMS);
@@ -65,7 +69,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         } else if (tags.equals("NONE")) {
             tagList = NONE;
         } else {
-            throw new RuntimeException("Unknonw value for 'tags' parameter '" + tags + "'. Known are 'XSS': strip only cross-site scripting, and '': strip all tags.");
+            throw new RuntimeException("Unknown value for 'tags' parameter '" + tags + "'. Known are 'XSS': strip only cross-site scripting, and '': strip all tags.");
         }
 
         final HTMLEditorKit.Parser parser = new ParserGetter().getParser();
@@ -74,6 +78,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                     final TagStripper callback = new TagStripper(w, tagList);
                     callback.addBrs     = parameters.get(ADD_BRS);
                     callback.escapeAmps = parameters.get(ESCAPE_AMPS);
+                    callback.addNewlines = parameters.get(ADD_NEWLINES);
                     if (callback.addBrs) {
                         // before going into the parser, make existing newlines recognizable, by replacing them by a token
                         r = new TransformingReader(r, new ChunkedTransformer(ChunkedTransformer.XMLTEXT) {
@@ -261,6 +266,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         boolean addImplied = false;
         boolean addBrs     = false;
         boolean escapeAmps = false;
+        boolean addNewlines = false;
         List<HTML.Tag> impliedTags = new ArrayList<HTML.Tag>();
         List<HTML.Tag> stack       = new ArrayList<HTML.Tag>();
         int removeBody = 0;
@@ -444,7 +450,11 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                         out.write(tagName);
                         out.write('>');
                     } else {
-                        out.write(' ');
+                        if (t.tag == HTML.Tag.P && addNewlines) {
+                            out.write("\n\n");
+                        } else {
+                            out.write(' ');
+                        }
                     }
                 }
                 if (t.tag != null && t.tag.removeBody()) removeBody--;
@@ -466,7 +476,11 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                         handleAttributes(t.tag, attributes);
                         out.write(" />");
                     } else {
-                        out.write(' ');
+                        if (t.tag == HTML.Tag.BR && addNewLines) {
+                            out.write('\n');
+                        } else {
+                            out.write(' ');
+                        }
                     }
                 }
             } catch (IOException e) {
