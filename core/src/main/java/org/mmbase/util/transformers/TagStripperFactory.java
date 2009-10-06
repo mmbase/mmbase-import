@@ -207,12 +207,22 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
 
     private static class Tag extends ChainedAllowance {
         private final List<Attr> attributes = new ArrayList<Attr>();
+        private boolean removeBody = false;
+
         public Tag(Allowance... wrapped) {
             super();
             add(wrapped);
         }
         public List<Attr> getAttributes() {
             return attributes;
+        }
+
+        public Tag setRemoveBody(boolean b) {
+            removeBody = b;
+            return this;
+        }
+        public boolean removeBody() {
+            return removeBody;
         }
         public  boolean allowsAttribute(String k, String v) {
             ////System.out.println("Checking " + k + "=" + v + " for " + this);
@@ -229,6 +239,21 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         }
     }
 
+    static class TagCheck {
+        final boolean allowed;
+        final Tag tag;
+        TagCheck(boolean a, Tag t) {
+            allowed = a;
+            tag = t;
+        }
+
+
+    }
+    static enum State {
+        DEFAULT,
+        SCRIPT,
+        ERROR;
+    }
 
     protected static class TagStripper extends HTMLEditorKit.ParserCallback {
         private final Writer out;
@@ -238,31 +263,51 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         boolean escapeAmps = false;
         List<HTML.Tag> impliedTags = new ArrayList<HTML.Tag>();
         List<HTML.Tag> stack       = new ArrayList<HTML.Tag>();
+        int removeBody = 0;
+        State state = State.DEFAULT;
 
         public TagStripper(Writer out, List<Tag> t) {
             this.out = out;
             tags = t;
         }
 
+        @Override
         public String toString() {
             return "" + tags + (addBrs ? "(replacing newlines)" : "");
         }
-        protected Tag allowed(String tagName) {
+
+
+        protected TagCheck allowed(String tagName) {
             //System.out.print("Checking wheter 'tagName' allowed");
             for (Tag tag : tags) {
                 //System.out.println("using " + tag);
                 Allows a = tag.allows(tagName);
                 switch (a) {
-                case YES: return tag;
-                case NO: return null;
+                case YES: {
+                    return new TagCheck(true, tag);
+                }
+                case NO: {
+                    return new TagCheck(false, tag);
+                }
                 }
             }
-            return null;
+            return new TagCheck(false, null);
         }
 
+        @Override
         public void handleText(char[] text, int position) {
             try {
-                //System.out.println("Handling " + new String(text) + " for " + position);
+                //System.out.println("Handling " + new String(text) + " for " + position + " " + stack);
+                if (removeBody != 0) {
+                    return;
+                }
+                if (state == State.SCRIPT) {
+                    // sigh, the parser is pretty incomprehenisible
+                    // It give a very odd handleText event after a script tag.
+                    state = State.DEFAULT;
+                    return;
+                }
+
                 if (addBrs) {
                     String t = new String(text);
                     if (text[0] == '>') { // odd, otherwise <br /> ends up as <br />>
@@ -309,12 +354,12 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
             }
         }
 
-        protected Tag getTag(HTML.Tag tag, MutableAttributeSet attributes) {
-            //System.out.println("handling tag " + tag);
+        protected TagCheck getTag(HTML.Tag tag, MutableAttributeSet attributes) {
+            //System.out.println("getting tag " + tag);
             boolean implied = attributes.containsAttribute(IMPLIED, Boolean.TRUE);
-            Tag t;
+            TagCheck t;
             if (! addImplied && implied) {
-                t = null;
+                t = new TagCheck(false, null);
                 impliedTags.add(tag);
             } else {
                 t = allowed(tag.toString());
@@ -323,7 +368,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
 
         }
         protected void handleAttributes(Tag t, MutableAttributeSet attributes) throws IOException {
-            //System.out.println("handling attributes");
+            //System.out.println("handling attributes for " + t + " " + attributes);
             Enumeration<?> en = attributes.getAttributeNames();
             while (en.hasMoreElements()) {
                 Object attName =  en.nextElement();
@@ -352,81 +397,108 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
             }
         }
 
+        @Override
         public void handleStartTag(HTML.Tag tag, MutableAttributeSet attributes, int position) {
             //System.out.println("Start tag " + tag);
             try {
                 stack.add(0, tag);
-                Tag t = getTag(tag, attributes);
-
-                if (t != null) {
-                    out.write('<');
-                    out.write(tag.toString());
-                    handleAttributes(t, attributes);
-                    out.write('>');
-                } else {
-                    out.write(' ');
+                TagCheck t = getTag(tag, attributes);
+                if (tag == HTML.Tag.SCRIPT) {
+                    state = State.SCRIPT;
                 }
+                if (t.tag != null && t.tag.removeBody()) removeBody++;
+                if (removeBody == 0) {
+                    if (t.allowed) {
+                        out.write('<');
+                        out.write(tag.toString());
+                        handleAttributes(t.tag, attributes);
+                        out.write('>');
+                    } else {
+                        out.write(' ');
+                    }
+                }
+
+
             } catch (IOException e) {
                 log.warn(e);
             }
         }
 
+        @Override
         public void handleEndTag(HTML.Tag tag, int position) {
-            //System.out.println("End tag " + tag);
+            //System.out.println("End tag " + tag + " at " + position);
             stack.remove(0);
             try {
                 String tagName = tag.toString();
-                Tag t;
+                TagCheck t;
                 boolean implied = impliedTags.contains(tag);
                 if (! addImplied && implied) {
-                    t = null;
+                    t = new TagCheck(false, null);
                 } else {
                     t = allowed(tagName);
                 }
-                if (t != null) {
-                    out.write("</");
-                    out.write(tagName);
-                    out.write('>');
-                } else {
-                    out.write(' ');
+
+                if (removeBody == 0) {
+                    if (t.allowed) {
+                        out.write("</");
+                        out.write(tagName);
+                        out.write('>');
+                    } else {
+                        out.write(' ');
+                    }
                 }
+                if (t.tag != null && t.tag.removeBody()) removeBody--;
             } catch (IOException e) {
                 log.warn(e);
             }
         }
+        @Override
         public void handleSimpleTag(HTML.Tag tag, MutableAttributeSet attributes, int position) {
             //stack.remove(0);
-            ////System.out.println("SIMPLE TAG " + tag);
+            //System.out.println("SIMPLE TAG " + tag);
             try {
                 String tagName = tag.toString();
-                Tag t = getTag(tag, attributes);
-                if (t != null) {
-                    out.write('<');
-                    out.write(tagName);
-                    handleAttributes(t, attributes);
-                    out.write(" />");
-                } else {
-                    out.write(' ');
+                TagCheck t = getTag(tag, attributes);
+                if (removeBody == 0) {
+                    if (t.allowed) {
+                        out.write('<');
+                        out.write(tagName);
+                        handleAttributes(t.tag, attributes);
+                        out.write(" />");
+                    } else {
+                        out.write(' ');
+                    }
                 }
             } catch (IOException e) {
                 log.warn(e);
             }
 
         }
+        @Override
         public void handleError(String mes, int position) {
+            //System.out.println("Error " + mes + " at " + position);
             log.debug(mes + " at " + position);
+            state = State.ERROR;
         }
 
+        @Override
         public void handleComment(char[] data, int pos) {
+            //System.out.println("Comment at " + pos + " for " + new String(data));
             try {
-                out.write("<!-- " + new String(data) + " -->");
+                if (removeBody == 0) {
+                    out.write("<!-- " + new String(data) + " -->");
+                }
             } catch (IOException e) {
                 log.warn(e);
             }
 	}
 
 
-
+        @Override
+	public void handleEndOfLineString(String eol) {
+            //System.out.println("EOL " + eol);
+	}
+        @Override
         public void flush() {
             try {
                 out.flush();
@@ -459,7 +531,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
             XSS.add(a);
         }
         // tags that are forbidden all together, because they a scripting, or the contents cannot be checked
-        XSS.add(new Tag(new PatternDisallowance("(?i)script|embed|object|frameset|iframe")));
+        XSS.add(new Tag(new PatternDisallowance("(?i)script|embed|object|frameset|iframe")).setRemoveBody(true));
 
         {
             // all other tags are permitted
@@ -477,28 +549,5 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
     }
 
 
-
-    public static void main(String[] args) throws IOException {
-        TagStripperFactory factory = new TagStripperFactory();
-        Parameters params = factory.createParameters();
-        params.set(TAGS, "NONE");
-        params.set(ADD_BRS, false);
-        params.set(ESCAPE_AMPS, true);
-        CharTransformer transformer = factory.createTransformer(params);
-
-        //        String source = "<p style=\"nanana\">allow this <b>but not this</b></p>";
-//        String source = "<p style=nanana/>";
-//        String source = "<p style=\"nanana\">text</p>";
-//        String source = "<P sTyle=\"nanana\">hoi hoi\n<br><table WIDTH=\"45\" height=99 border='1\"' fONt=bold styLe=\"n\\\"one\">\nbla bla bla</table></p>";
-        ////System.out.println("Source      = "+source);
-        Writer w = new OutputStreamWriter(System.out);
-        transformer.transform(new InputStreamReader(System.in), w);
-        w.flush();
-        ////System.out.println("Destination = "+dest);
-
-        org.mmbase.util.ThreadPools.filterExecutor.shutdown();
-
-
-    }
 
 }
