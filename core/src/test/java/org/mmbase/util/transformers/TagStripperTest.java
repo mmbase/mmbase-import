@@ -49,6 +49,16 @@ public class TagStripperTest   {
         assertEquals("<p>allow this<a>foobar</a></p>", xss.transform("<p>allow this<a href=\"javascript:alert('hoi');\">foobar</a></p>"));
 
     }
+
+
+    @Test
+    public void addBrs() {
+        Parameters params = FACTORY.createParameters();
+        params.set(TagStripperFactory.ADD_BRS, true);
+        CharTransformer stripper = FACTORY.createTransformer(params);
+        assertEquals("aaa<br class='auto' />bbb", stripper.transform("<p>aaa\nbbb</p>"));
+    }
+
     @Test
     public void addNewlines() {
         Parameters params = FACTORY.createParameters();
