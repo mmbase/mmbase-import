@@ -19,7 +19,7 @@ import org.mmbase.bridge.*;
  * Straight-forward implementation of NodeManager based on a Map with DataType's.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MapNodeManager.java 36154 2009-06-18 22:04:40Z michiel $
+ * @version $Id$
  * @since   MMBase-1.9.2
  */
 
@@ -27,19 +27,23 @@ public class MockNodeManager extends AbstractNodeManager  {
 
     protected final Map<String, Field> map = new LinkedHashMap<String, Field>();
     protected final String name;
+    protected final String parent;
     protected final MockCloud vcloud;
     protected final int oType;
 
-    public MockNodeManager(MockCloud cloud, String name, Map<String, Field> m, int oType) {
+    public MockNodeManager(MockCloud cloud, MockCloudContext.NodeManagerDescription desc) {
         super(cloud);
         this.vcloud = cloud;
-        this.name = name;
-        for (Map.Entry<String, Field> entry : m.entrySet()) {
+        this.name = desc.name;
+        for (Map.Entry<String, Field> entry : desc.fields.entrySet()) {
             map.put(entry.getKey(), new MockField(this, entry.getValue()));
         }
         map.put("_number", new DataTypeField("_number", this, DATATYPE_INTEGER));
         map.put("_exists", new DataTypeField("_exists", this, DATATYPE_STRING));
-        this.oType = oType;
+        this.oType = desc.oType;
+        String e = desc.reader != null ? desc.reader.getExtends() : null;
+        if (e != null && e.length() == 0) e = null;
+        this.parent = e;
     }
 
     public MockNodeManager(MockCloud cloud, MockBuilderReader reader) {
@@ -50,6 +54,7 @@ public class MockNodeManager extends AbstractNodeManager  {
             map.put(f.getName(), f);
         }
         oType = -1;
+        this.parent = reader.getExtends();
     }
 
 
@@ -76,13 +81,35 @@ public class MockNodeManager extends AbstractNodeManager  {
         return Collections.unmodifiableMap(map);
     }
 
-    @Override
-    public NodeList getList(NodeQuery query) {
-        NodeList result = cloud.createNodeList();
-        for (MockCloudContext.NodeDescription nd : vcloud.cloudContext.nodes.values()) {
-        }
-        return result;
 
+
+    public NodeManagerList getDescendants() {
+        NodeManagerList descendants = vcloud.createNodeManagerList();
+        for (String nodeManagerName  : vcloud.cloudContext.nodeManagers.keySet()) {
+            NodeManager nm = vcloud.getNodeManager(nodeManagerName);
+            try {
+                NodeManager parent = nm.getParent();
+                if (parent != null && name.equals(parent.getName())) {
+                    if (! descendants.contains(nm)) {
+                        descendants.add(nm);
+                        for (NodeManager sub : nm.getDescendants()) {
+                            descendants.add(sub);
+                        }
+                    }
+                }
+            } catch (NotFoundException nfe) {
+                // never mind, getParent may do that, it simply means that it is object or so.
+            }
+        }
+        return descendants;
+    }
+
+    public NodeManager getParent() throws NotFoundException {
+        if (parent == null) {
+            throw new NotFoundException();
+        } else {
+            return vcloud.getNodeManager(parent);
+        }
     }
 
 

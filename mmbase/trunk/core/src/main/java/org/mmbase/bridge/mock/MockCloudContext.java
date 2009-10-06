@@ -15,6 +15,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.BridgeCollections;
 import org.mmbase.datatypes.DataType;
 import org.mmbase.bridge.implementation.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.security.*;
 import org.mmbase.util.*;
 import org.xml.sax.InputSource;
@@ -33,7 +34,7 @@ import org.xml.sax.InputSource;
  * part has still to be elaborated on. This may change in future versions of this.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java 36154 2009-06-18 22:04:40Z michiel $
+ * @version $Id$
  * @since   MMBase-1.9.2
  * @todo    EXPERIMENTAL
  */
@@ -46,8 +47,11 @@ public class MockCloudContext implements CloudContext {
     }
 
     public static final String CLOUD = "mmbase";
+    static {
+        org.mmbase.util.xml.AbstractBuilderReader.registerSystemIDs();
+        org.mmbase.util.xml.AbstractBuilderReader.registerPublicIDs();
+    }
 
-    /*
     private static SearchQueryHandler searchQueryHandler =
         new org.mmbase.storage.search.implementation.database.BasicQueryHandler(new org.mmbase.storage.search.implementation.database.BasicSqlHandler() {
                 @Override
@@ -64,7 +68,7 @@ public class MockCloudContext implements CloudContext {
                     return st;
                 }
             });
-    */
+
     static class NodeManagerDescription {
         public final String name;
         public final Map<String, Field> fields;
@@ -123,7 +127,7 @@ public class MockCloudContext implements CloudContext {
      * It may also add a core relation model. Like 'related' and 'posrel' roles.
      */
     public void addCore() throws java.io.IOException {
-        for (String buil : new String[] {"typedef", "typerel", "reldef", "object", "insrel"}) {
+        for (String buil : new String[] {"object", "typedef", "typerel", "reldef", "insrel"}) {
             addNodeManager(MockBuilderReader.getBuilderLoader().getInputSource("core/" + buil + ".xml"));
         }
     }
@@ -269,9 +273,6 @@ public class MockCloudContext implements CloudContext {
     public String getUri() {
         return "dummy://localhost";
     }
-    /*
-    public org.mmbase.storage.search.SearchQueryHandler getSearchQueryHandler() {
-        return searchQueryHandler;
-    }
-    */
+
+
  }

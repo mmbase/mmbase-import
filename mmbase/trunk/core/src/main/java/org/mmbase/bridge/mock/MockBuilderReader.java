@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * This class can read builder XML's. For the moment it's main use is to parse to a Map of DataType's, which is used by {@link MockCloudContext} to create NodeManagers.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MapNodeManager.java 36154 2009-06-18 22:04:40Z michiel $
+ * @version $Id$
  * @since   MMBase-1.9.2
  */
 
