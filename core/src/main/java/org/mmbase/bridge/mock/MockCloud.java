@@ -19,7 +19,7 @@ import java.util.*;
  * Straight forward (partial) implementation of Cloud, which maintains everything in memory.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java 36154 2009-06-18 22:04:40Z michiel $
+ * @version $Id$
  * @since   MMBase-1.9.2
  * @todo    EXPERIMENTAL
  */
@@ -58,10 +58,9 @@ public class MockCloud extends AbstractCloud {
     }
 
     public NodeManager getNodeManager(String name) throws NotFoundException {
-        Map<String, Field> nm = cloudContext.nodeManagers.get(name).fields;
-        int oType = cloudContext.nodeManagers.get(name).oType;
-        if (nm == null) throw new NotFoundException(name);
-        return new MockNodeManager(this, name, nm, oType);
+        MockCloudContext.NodeManagerDescription d = cloudContext.nodeManagers.get(name);
+        if (d == null) throw new NotFoundException("No such node manager '" + name + "'");
+        return new MockNodeManager(this, d);
     }
 
 
@@ -101,6 +100,21 @@ public class MockCloud extends AbstractCloud {
 
     public MockCloudContext getCloudContext() {
         return cloudContext;
+    }
+    private final QueryHandler aggregatedQueryHandler = new AggregatedQueryHandler(this);
+    private final NodeQueryHandler nodeQueryHandler = new NodeQueryHandler(this);
+
+    public NodeList getList(final Query query) {
+        if (query.isAggregating()) {
+            List<Map<String, Object>> aggregatedResult = aggregatedQueryHandler.getRecords(query);
+            NodeManager tempNodemanager = new MapNodeManager(this, aggregatedResult.get(0));
+            return new BasicNodeList(aggregatedResult, tempNodemanager);
+        }  else if (query instanceof NodeQuery) {
+            List<Map<String, Object>> result = nodeQueryHandler.getRecords(query);
+            return new BasicNodeList(result, ((NodeQuery) query).getNodeManager());
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
 
