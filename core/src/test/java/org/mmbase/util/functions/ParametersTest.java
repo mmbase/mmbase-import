@@ -243,7 +243,7 @@ public class ParametersTest {
             fail("Should have given IllegalArgumentException since '7.123456789' has too many digits");
         } catch (IllegalArgumentException ia) {
             // ok this is expected
-            System.out.println(ia);
+            //System.out.println(ia);
 
         }
         params.set("g", new String[] {"1.1"});
@@ -254,7 +254,7 @@ public class ParametersTest {
             fail("Should have given IllegalArgumentException since 'a' is not a valid integer");
         } catch (IllegalArgumentException ia) {
             // ok this is expected
-            System.out.println(ia);
+            //System.out.println(ia);
 
         }
     }
