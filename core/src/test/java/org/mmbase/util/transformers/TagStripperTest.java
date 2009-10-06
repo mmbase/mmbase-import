@@ -30,12 +30,12 @@ public class TagStripperTest   {
     public void simple() {
         Parameters params = FACTORY.createParameters();
         CharTransformer stripper = FACTORY.createTransformer(params);
-        assertEquals("aaa", stripper.transform("<p>aaa</p>").trim());
-        assertEquals("aaa", stripper.transform("<p>aaa\n</p>").trim());
-        assertEquals("aaa", stripper.transform("<p>aaa").trim());
-        assertEquals("aaa", stripper.transform("<p>aaa").trim());
-        assertEquals("aaa", stripper.transform("<p>aaa").trim());
-        assertEquals("aaa <p />", stripper.transform("<p>aaa\n&lt;p /&gt;</p> ").trim());
+        assertEquals("aaa", stripper.transform("<p>aaa</p>"));
+        assertEquals("aaa", stripper.transform("<p>aaa\n</p>"));
+        assertEquals("aaa", stripper.transform("<p>aaa"));
+        assertEquals("aaa", stripper.transform("<p>aaa"));
+        assertEquals("aaa", stripper.transform("<p>aaa"));
+        assertEquals("aaa <p />", stripper.transform("<p>aaa\n&lt;p /&gt;</p> "));
 
 
     }
@@ -43,10 +43,10 @@ public class TagStripperTest   {
     @Test
     public void xss() {
         CharTransformer xss = getXSS();
-        assertEquals("<p style=\"nanana\">allow this <b>and this</b></p>", xss.transform("<p style=\"nanana\">allow this <b>and this</b></p>").trim());
-        assertEquals("<p>allow this <b>and this</b></p>", xss.transform("<p onclick=\"nanana\">allow this <b>and this</b></p>").trim());
-        assertEquals("<p>allow this</p>", xss.transform("<p>allow this<script language='text/javascript'>bj aja </script>\n</p>").trim());
-        assertEquals("<p>allow this<a>foobar</a></p>", xss.transform("<p>allow this<a href=\"javascript:alert('hoi');\">foobar</a></p>").trim());
+        assertEquals("<p style=\"nanana\">allow this <b>and this</b></p>", xss.transform("<p style=\"nanana\">allow this <b>and this</b></p>"));
+        assertEquals("<p>allow this <b>and this</b></p>", xss.transform("<p onclick=\"nanana\">allow this <b>and this</b></p>"));
+        assertEquals("<p>allow this</p>", xss.transform("<p>allow this<script language='text/javascript'>bj aja </script>\n</p>"));
+        assertEquals("<p>allow this<a>foobar</a></p>", xss.transform("<p>allow this<a href=\"javascript:alert('hoi');\">foobar</a></p>"));
 
     }
     @Test
@@ -54,9 +54,9 @@ public class TagStripperTest   {
         Parameters params = FACTORY.createParameters();
         params.set(TagStripperFactory.ADD_NEWLINES, true);
         CharTransformer stripper = FACTORY.createTransformer(params);
-        assertEquals("aaa\n\nbbb", stripper.transform("<p>aaa</p><p>bbb</p>").trim());
-        assertEquals("aaa\nbbb", stripper.transform("<p>aaa<br />bbb</p>").trim());
-        assertEquals("aaa\nbbb", stripper.transform("<p>aaa<br>bbb</p>").trim());
+        assertEquals("aaa\n\nbbb", stripper.transform("<p>aaa</p><p>bbb</p>"));
+        assertEquals("aaa\nbbb", stripper.transform("<p>aaa<br />bbb</p>"));
+        assertEquals("aaa\nbbb", stripper.transform("<p>aaa<br>bbb</p>"));
     }
 
 }
