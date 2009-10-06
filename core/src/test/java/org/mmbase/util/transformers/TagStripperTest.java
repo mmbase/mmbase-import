@@ -55,6 +55,8 @@ public class TagStripperTest   {
         params.set(TagStripperFactory.ADD_NEWLINES, true);
         CharTransformer stripper = FACTORY.createTransformer(params);
         assertEquals("aaa\n\nbbb", stripper.transform("<p>aaa</p><p>bbb</p>").trim());
+        assertEquals("aaa\nbbb", stripper.transform("<p>aaa<br />bbb</p>").trim());
+        assertEquals("aaa\nbbb", stripper.transform("<p>aaa<br>bbb</p>").trim());
     }
 
 }
