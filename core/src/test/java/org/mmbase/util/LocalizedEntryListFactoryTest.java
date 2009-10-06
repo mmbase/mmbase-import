@@ -13,14 +13,15 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.io.*;
 import java.util.*;
-import junit.framework.TestCase;
+import org.junit.*;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Michiel Meeuwissen
  * @verion $Id$
  */
-public class LocalizedEntryListFactoryTest extends TestCase {
+public class LocalizedEntryListFactoryTest {
 
     public static final Locale NL = new Locale("nl");
     public static final Locale BE = new Locale("nl", "BE");
@@ -29,7 +30,8 @@ public class LocalizedEntryListFactoryTest extends TestCase {
     public static final Locale DK = new Locale("dk");
     public static final Locale EO = new Locale("eo");
 
-    public void testExplicitEntries() {
+    @Test
+    public void explicitEntries() {
         LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
         fact.add(NL, "a", "hallo");
         fact.add(BE, "b", "saluut");
@@ -56,7 +58,8 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         assertEquals("xxxx", fact.castKey("xxxx"));
     }
 
-    public void testBundleEntries() {
+    @Test
+    public void bundleEntries() {
         LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
         String resource1 = "org.mmbase.datatypes.resources.boolean.truefalse";
         fact.addBundle(resource1, null, null, Boolean.class, SortedBundle.NO_COMPARATOR);
@@ -72,7 +75,8 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         }
     }
 
-    public void testCastKey() {
+    @Test
+    public void castKey() {
         LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
         String resource1 = "org.mmbase.datatypes.resources.boolean.truefalse";
         fact.addBundle(resource1, null, null, Boolean.class, SortedBundle.NO_COMPARATOR);
@@ -83,7 +87,8 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         assertEquals(Boolean.TRUE,  fact.castKey("1"));
         assertEquals("xxxx",        fact.castKey("xxxx")); // not recognized, don't touch
     }
-    public void testCastKey1() {
+    @Test
+    public void castKey1() {
         LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
         String resource1 = "org.mmbase.datatypes.resources.boolean.truefalse";
         fact.addBundle(resource1, null, null, String.class, SortedBundle.NO_COMPARATOR);
@@ -95,7 +100,8 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         assertEquals("xxxx",  fact.castKey("xxxx"));
     }
 
-    public void testReadXml() throws org.xml.sax.SAXException, java.io.IOException {
+    @Test
+    public void readXml() throws org.xml.sax.SAXException, java.io.IOException {
         LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
         String config =
             "<enumeration>" +
@@ -112,7 +118,8 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         assertEquals(new Integer(1), fact.castKey(new Integer(1)));
 
     }
-    public void testReadXml2() throws org.xml.sax.SAXException, java.io.IOException {
+    @Test
+    public void readXml2() throws org.xml.sax.SAXException, java.io.IOException {
         LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
         String config =
             "<enumeration>" +
@@ -139,7 +146,8 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         assertEquals("xxxx",  fact.castKey("xxxx"));
 
     }
-    public void testReadXml3() throws org.xml.sax.SAXException, java.io.IOException {
+    @Test
+    public void readXml3() throws org.xml.sax.SAXException, java.io.IOException {
         LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
         String config =
             "<enumeration>" +
@@ -154,6 +162,45 @@ public class LocalizedEntryListFactoryTest extends TestCase {
         assertEquals(new Integer(-1), fact.castKey("unknown"));
         assertEquals(new Integer(3),  fact.castKey("error"));
         assertEquals("blabla",        fact.castKey("blabla"));
+    }
+
+
+
+    public static void main(String argv[]) {
+        LocalizedEntryListFactory fact = new LocalizedEntryListFactory();
+        String resource1 = "org.mmbase.datatypes.resources.boolean.onoff";
+        String resource2 = "org.mmbase.datatypes.resources.boolean.yesno";
+        Locale nl = new Locale("nl");
+        Locale en = new Locale("en");
+        Locale dk = new Locale("dk");
+        Locale eo = new Locale("eo");
+        fact.add(nl, "a", "hallo");
+        System.out.println("nou " + fact);
+        fact.add(new Locale("nl"), "b", "daag");
+        fact.add(en, "b", "hello");
+        fact.add(en, "a", "good bye");
+        fact.addBundle(resource1, null, null, Boolean.class, SortedBundle.NO_COMPARATOR);
+        fact.add(nl, "c", "doegg");
+        fact.add(dk, 5, "dk");
+        fact.add(null, "e", "oi");
+        fact.addBundle(resource2, null, null, String.class, SortedBundle.NO_COMPARATOR);
+
+        System.out.println("size: " + fact.size() + " " + fact);
+        System.out.println("en" + fact.get(en));
+        System.out.println("nl" + fact.get(nl));
+        System.out.println("dk" + fact.get(dk));
+        System.out.println("eo" + fact.get(eo));
+
+        LocalizedEntryListFactory fact2 = new LocalizedEntryListFactory();
+        fact2.addBundle("org.mmbase.datatypes.resources.states", null, org.mmbase.module.builders.MMServers.class, SortedBundle.NO_WRAPPER, SortedBundle.NO_COMPARATOR);
+
+        System.out.println("size: " + fact2.size());
+        System.out.println("" + fact2.get(en));
+        System.out.println("" + fact2.get(nl));
+        Object error = fact2.castKey("ERROR", null);
+        System.out.println("ERROR=" + error.getClass().getName() + " " + error);
+
+
     }
 
 }
