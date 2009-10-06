@@ -271,6 +271,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         List<HTML.Tag> stack       = new ArrayList<HTML.Tag>();
         int removeBody = 0;
         State state = State.DEFAULT;
+        StringBuilder spaceBuffer = new StringBuilder();
 
         public TagStripper(Writer out, List<Tag> t) {
             this.out = out;
@@ -313,7 +314,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                     state = State.DEFAULT;
                     return;
                 }
-
+                space();
                 if (addBrs) {
                     String t = new String(text);
                     if (text[0] == '>') { // odd, otherwise <br /> ends up as <br />>
@@ -402,10 +403,14 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                 }
             }
         }
+        protected void space() throws IOException {
+            out.write(spaceBuffer.toString());
+            spaceBuffer.setLength(0);
+        }
 
         @Override
         public void handleStartTag(HTML.Tag tag, MutableAttributeSet attributes, int position) {
-            //System.out.println("Start tag " + tag);
+            // System.out.println("Start tag " + tag + " for " + position);
             try {
                 stack.add(0, tag);
                 TagCheck t = getTag(tag, attributes);
@@ -415,6 +420,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                 if (t.tag != null && t.tag.removeBody()) removeBody++;
                 if (removeBody == 0) {
                     if (t.allowed) {
+                        space();
                         out.write('<');
                         out.write(tag.toString());
                         handleAttributes(t.tag, attributes);
@@ -422,7 +428,9 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                     } else {
                         if (tag == HTML.Tag.P && addNewlines) {
                         } else {
-                            out.write(' ');
+                            if (position > 0) {
+                                spaceBuffer.append(' ');
+                            }
                         }
                     }
                 }
@@ -454,9 +462,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                         out.write('>');
                     } else {
                         if (tag == HTML.Tag.P && addNewlines) {
-                            out.write("\n\n");
-                        } else {
-                            out.write(' ');
+                            spaceBuffer.append("\n\n");
                         }
                     }
                 }
@@ -480,9 +486,11 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
                         out.write(" />");
                     } else {
                         if (tag == HTML.Tag.BR && addNewlines) {
-                            out.write('\n');
+                            spaceBuffer.append('\n');
                         } else {
-                            out.write(' ');
+                            if (tag.breaksFlow()) {
+                                spaceBuffer.append(' ');
+                            }
                         }
                     }
                 }
