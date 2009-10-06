@@ -13,6 +13,7 @@ package org.mmbase.bridge.mock;
 import org.mmbase.bridge.mock.MockCloudContext;
 import org.mmbase.bridge.mock.MockBuilderReader;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
 import java.util.*;
 import org.junit.*;
@@ -30,8 +31,9 @@ public class MockTest  {
         return MockCloudContext.getInstance();
     }
     @BeforeClass()
-    public static void setUp() {
+    public static void setUp() throws Exception {
         MockCloudContext.getInstance().clear();
+        MockCloudContext.getInstance().addCore();
     }
 
 
@@ -61,11 +63,12 @@ public class MockTest  {
 
     @Test
     public void nodeManager() {
-        Cloud cloud = getCloudContext().getCloud("mmbase");
+        MockCloudContext cc = new MockCloudContext();
+        Cloud cloud = cc.getCloud("mmbase");
         Map<String, DataType> map = new HashMap<String, DataType>();
         map.put("number", Constants.DATATYPE_INTEGER);
         map.put("title", Constants.DATATYPE_STRING);
-        MockCloudContext.getInstance().addNodeManager("aa", map);
+        cc.addNodeManager("aa", map);
 
         NodeManager aa = cloud.getNodeManager("aa");
         Node a = aa.createNode();
@@ -87,7 +90,6 @@ public class MockTest  {
 
     @Test
     public void builderReader() throws Exception {
-        MockCloudContext.getInstance().addCore();
         Cloud cloud = getCloudContext().getCloud("mmbase");
 
         assertTrue(cloud.hasNodeManager("object"));
@@ -144,5 +146,44 @@ public class MockTest  {
 
         assertEquals("A", cc.getCloud("mmbase").getNodeManager("aa").getProperty("a"));
     }
+
+    @Test
+    public void nodeManagerParent() throws Exception {
+        MockCloudContext cc = MockCloudContext.getInstance();
+        Cloud c = cc.getCloud("mmbase");
+        NodeManager insrel = c.getNodeManager("insrel");
+        NodeManager object = c.getNodeManager("object");
+        assertEquals(object, insrel.getParent());
+    }
+
+    @Test
+    public void nodeManagerDescendants() throws Exception {
+        MockCloudContext cc = MockCloudContext.getInstance();
+        Cloud c = cc.getCloud("mmbase");
+        NodeManager insrel = c.getNodeManager("insrel");
+        NodeManager object = c.getNodeManager("object");
+        assertTrue(object.getDescendants().contains(insrel));
+    }
+
+    @Test
+    public void count() throws Exception {
+        MockCloudContext cc = MockCloudContext.getInstance();
+        Cloud c = cc.getCloud("mmbase");
+        NodeManager typedef = c.getNodeManager("typedef");
+        assertEquals("" + cc.nodes, 5, Queries.count(typedef.createQuery()));
+    }
+
+    @Test
+    public void nodeQuery() throws Exception {
+        MockCloudContext cc = MockCloudContext.getInstance();
+        Cloud c = cc.getCloud("mmbase");
+        NodeManager typedef = c.getNodeManager("typedef");
+        NodeQuery q = typedef.createQuery();
+        NodeList result = typedef.getList(q);
+        assertEquals("" + cc.nodes, 5, result.size());
+    }
+
+
+
 
 }
