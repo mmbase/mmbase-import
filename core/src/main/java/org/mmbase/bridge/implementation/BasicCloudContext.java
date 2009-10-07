@@ -242,6 +242,7 @@ public abstract class BasicCloudContext implements CloudContext {
         }
     }
 
+
     public boolean isUp() {
         return mmb != null && mmb.getState() && check();
     }
@@ -253,6 +254,9 @@ public abstract class BasicCloudContext implements CloudContext {
 
             if (mmb != null && mmb.isShutdown()) break;
             try {
+                if (Thread.currentThread().isInterrupted()) {
+                    return this;
+                }
                 check();
                 Thread.sleep(10000);
                 log.debug("Sleeping another 10 secs");
