@@ -180,7 +180,7 @@ public class TemplateCache extends Cache<TemplateCache.Key, Templates> {
         }
         Key key = new Key(src, uri);
         Templates res = super.put(key, value);
-        log.service("Put xslt in cache with key " + key);
+        log.debug("Put xslt in cache with key " + key);
         if (! templateWatcher.getResources().contains(key.getURL())) {
             templateWatcher.add(key.getURL());
         }
