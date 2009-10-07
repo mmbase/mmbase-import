@@ -39,7 +39,6 @@
         </mm:context>
         <mm:import id="x" reset="true">X</mm:import>
         <mm:write referid="x" />
-
       </mm:context>
 
       <p>${context_in_session.subcontext}</p>
@@ -52,8 +51,22 @@
         <mm:import id="zooi" reset="true"><mm:write /></mm:import>
         <p>Test B: ${zooi eq _ ? 'ok' : 'NOT ok'} ${zooi} ${pageScope.zooi}</p>
       </mm:stringlist>
-      <p>Test C: ${zooi eq '000' ? 'ok' : 'NOT ok'} ${zooi} ${pageScope.zooi}</p>
+      <p>Test C: ${zooi eq 'c' ? 'ok' : 'NOT ok'} ${zooi} ${pageScope.zooi}</p>
 
+      <h3>mm:remove in a list</h3>
+
+      <c:catch var="ex">
+        <mm:stringlist referid="list">
+          <mm:import id="test">${_}</mm:import>
+          <mm:remove referid="test" />
+        </mm:stringlist>
+      </c:catch>
+      <p>
+        <c:choose>
+          <c:when test="${empty ex}">ok</c:when>
+          <c:otherwise>NOT ok: ${ex}</c:otherwise>
+        </c:choose>
+      </p>
     </mm:context>
   </mm:cloud>
 </div>
