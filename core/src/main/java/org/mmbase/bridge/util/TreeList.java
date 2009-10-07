@@ -244,6 +244,9 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
         Branch branch = branches.get(queryNumber);
         if (branch.leafResult == null) {
             NodeQuery query = branch.getLeafQuery();
+            if (query.isUsed()) {
+                query = (NodeQuery) query.clone();
+            }
             branch.leafResult =  cloud.getList(query);
             branch.leafResult.setProperty(REAL_NODES, null);
             if (branch.leafConstraint == null) {
@@ -285,6 +288,9 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
         if (realNodes == null || realNodes.size() != nodeList.size()) {
             Branch branch = branches.get(queryIndex);
             NodeQuery nq = branch.getLeafQuery();
+            if (nq.isUsed()) {
+                nq = (NodeQuery) nq.clone();
+            }
             realNodes = nq.getNodeManager().getList(nq); // We trust the query cache! (the query is performed already, but on Cloud)
             nodeList.setProperty(REAL_NODES, realNodes);
         }
