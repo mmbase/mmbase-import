@@ -181,11 +181,20 @@ public abstract class AbstractCloud implements Cloud {
         return userContext;
     }
 
-    public NodeList getList(String startNodes, String nodePath, String fields,
-            String constraints, String orderby, String directions,
-                            String searchDir, boolean distinct) {
-        return new BasicNodeList(BridgeCollections.EMPTY_NODELIST, this);
+    //javadoc inherited
+    public NodeList getList(
+        String startNodes,
+        String nodePath,
+        String fields,
+        String constraints,
+        String orderby,
+        String directions,
+        String searchDir,
+        boolean distinct) {
 
+        if ((nodePath==null) || nodePath.equals("")) throw new BridgeException("Node path cannot be empty - list at least one nodemanager.");
+        Query query = Queries.createQuery(this, startNodes, nodePath, fields, constraints, orderby, directions, searchDir, distinct);
+        return getList(query);
     }
 
 
