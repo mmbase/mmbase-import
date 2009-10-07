@@ -65,7 +65,7 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
         Object value;
         String refid = valueId.getString(this);
         if (body != null) {
-            if (refid.length() != 0) throw new JspTagException("Cannot use both body and referid attribute on setfield tag");
+            if (refid.length() != 0) throw new JspTagException("Cannot use both body and valueid attribute on setfield tag");
             value = body;
         } else if (refid.length() != 0) {
             value = getObject(refid);
