@@ -50,10 +50,12 @@ public class CacheManager implements CacheManagerMBean {
         // singleton
     }
 
-    private static String getMachineName() {
+    private static String getMachineName(boolean assertUp) {
         String machineName;
         try {
-            org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
+            if (assertUp) {
+                org.mmbase.bridge.ContextProvider.getDefaultCloudContext().assertUp();
+            }
             machineName = org.mmbase.module.core.MMBaseContext.getMachineName();
         } catch (NoClassDefFoundError ncfde) {
             //happens when RMMCI
@@ -76,7 +78,7 @@ public class CacheManager implements CacheManagerMBean {
 
                         try {
                             props.put("type", "Caches");
-                            String machineName = getMachineName();
+                            String machineName = getMachineName(true);
 
                             if (machineName != null) {
                                 props.put("type", machineName);
@@ -162,7 +164,7 @@ public class CacheManager implements CacheManagerMBean {
 /*    static {
         cachePutter.allowCoreThreadTimeOut(true);
     }
-*/    
+*/
     /**
      * Puts a cache in the caches repository. This function will be
      * called in the static of childs, therefore it is protected.
@@ -179,7 +181,7 @@ public class CacheManager implements CacheManagerMBean {
         }
         Runnable run = new Runnable() {
                 public void run() {
-                    ObjectName name = getObjectName(cache);
+                    ObjectName name = getObjectName(cache, true);
                     try {
                         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
                         mbs.registerMBean(cache, name);
@@ -203,14 +205,14 @@ public class CacheManager implements CacheManagerMBean {
     /**
      * @since MMBase-1.9
      */
-    private static ObjectName getObjectName(Cache cache) {
+    private static ObjectName getObjectName(Cache cache, boolean assertUp) {
         // Not using the Constructor with Hashtable, because you can't influence the order of keys
         // with that. Which is relevant, e.g. when presented in a tree by jconsole.
         StringBuilder buf = new StringBuilder("org.mmbase:");
         try {
             buf.append("type=Caches");
             org.mmbase.util.transformers.CharTransformer identifier = new org.mmbase.util.transformers.Identifier();
-            String machineName = getMachineName();
+            String machineName = getMachineName(assertUp);
             if (machineName != null) {
                 buf.append(",mmb=").append(machineName);
             } else {
@@ -372,10 +374,10 @@ public class CacheManager implements CacheManagerMBean {
     public static void shutdown() {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         log.info("Clearing and unregistering all caches");
-        log.debug(mbs.queryNames(getObjectName(null), null));
+        log.debug(mbs.queryNames(getObjectName(null, false), null));
         for(Cache<?,?> cache : getInstance().caches.values()) {
             cache.clear();
-            ObjectName name = getObjectName(cache);
+            ObjectName name = getObjectName(cache, false);
             if (mbs.isRegistered(name)) {
                 try {
                     mbs.unregisterMBean(name);
@@ -400,8 +402,8 @@ public class CacheManager implements CacheManagerMBean {
 
             }
         }
-        if(mbs.queryNames(getObjectName(null), null).size() > 0) {
-            log.warn("Didn't unregister all caches" + mbs.queryNames(getObjectName(null), null));
+        if(mbs.queryNames(getObjectName(null, false), null).size() > 0) {
+            log.warn("Didn't unregister all caches" + mbs.queryNames(getObjectName(null, false), null));
         }
         getInstance().caches.clear();
         instance = null;
