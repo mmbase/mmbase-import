@@ -108,6 +108,8 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             compare1 = Casting.toString(compare1);
         } else if (compare1 instanceof org.apache.commons.fileupload.FileItem) {
             compare1 = Casting.toString(compare1);
+        } else if (compare1 instanceof org.mmbase.util.SerializableInputStream) {
+            compare1 = Casting.toString(compare1);
         }
 
         if (! (compare1 instanceof Comparable)) {
