@@ -940,7 +940,9 @@ abstract public class Queries {
             }
         }
         NodeList r = cloud.getList(count);
-        if (r.size() != 1) throw new RuntimeException("Count query " + query + " did not give one result but " + r);
+        if (r.size() != 1) {
+            throw new RuntimeException("Count query " + query + " did not give one result but " + r);
+        }
         Node result = r.getNode(0);
         return result.getIntValue(resultName);
     }
