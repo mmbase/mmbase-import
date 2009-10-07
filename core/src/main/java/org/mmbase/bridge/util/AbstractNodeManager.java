@@ -19,7 +19,7 @@ import org.mmbase.bridge.implementation.BasicFieldList;
 import org.mmbase.util.functions.Function;
 
 /**
- * Abstract implementation of NodeManager, to minimalize the implementation of a virtual one. Must
+ * Abstract implementation of NodeManager, to minimalize the implementation of a virtual one. Most
  * methods throw UnsupportOperationException (like in {@link
  * org.mmbase.bridge.implementation.VirtualNodeManager}).
  *
@@ -99,7 +99,9 @@ public abstract class AbstractNodeManager extends AbstractNode implements NodeMa
         return false;
     }
 
-    public NodeList getList(NodeQuery query) { throw new UnsupportedOperationException(); }
+    public NodeList getList(NodeQuery query) {
+        return getCloud().getList(query);
+    }
 
     public NodeQuery createQuery() {
         return new org.mmbase.bridge.implementation.BasicNodeQuery(this);
