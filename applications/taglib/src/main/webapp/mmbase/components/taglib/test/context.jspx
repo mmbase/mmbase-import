@@ -10,8 +10,6 @@
 
   <mm:cloud>
     <mm:context>
-
-      ${pageScope['org.mmbase.bridge.jsp.taglib.escaper']}
       <mm:context id="test">
         <mm:import id="a">A</mm:import>
       </mm:context>
@@ -23,9 +21,6 @@
         <p><mm:escape><jsp:expression>t.entrySet()</jsp:expression></mm:escape> (should be [a=A])</p>
 
         <p><jsp:expression>t.size()</jsp:expression> (should be 1)</p>
-        <jsp:scriptlet>
-
-        </jsp:scriptlet>
       </mm:write>
       <p>
         <c:forEach items="${test}" var="entry">
