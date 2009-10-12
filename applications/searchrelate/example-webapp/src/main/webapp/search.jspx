@@ -5,8 +5,17 @@
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
 
+  <script type="text/javascript">
+    $(document).bind("mmsrRelate", function (e, tr, relater) {
+    alert("Clicked on node " + relater.getNumber(tr));
+    });
+  </script>
+
+
+  <h3>News</h3>
   <mm-sr:search type="news" />
 
+  <h3>Urls</h3>
   <mm-sr:search type="urls" />
 
   <hr />
