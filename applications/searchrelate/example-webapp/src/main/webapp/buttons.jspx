@@ -7,6 +7,7 @@
 
   <mm:node number="default.mags">
     <h3><mm:field name="title" /></h3>
+    <p>Put some jsp's in <mm:link page="/testicons"><a href="${_}">/testicons</a></mm:link> which replace the default icons. It would also have been possible to put png's.</p>
 
     <mm-sr:relatednodes
         icondir="/testicons"
