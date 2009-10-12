@@ -1,0 +1,32 @@
+<span
+    class="message ${param.key}"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+  <jsp:output omit-xml-declaration="true" />
+  <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
+    <mm:content type="text/html" >
+      <mm:import externid="key" required="true" />
+      <mm:escape>
+      <fmt:message key="${key}">
+        <jsp:scriptlet>int i = 0;
+        while(true) {
+        String string = request.getParameter("s" + i);
+        String integer = request.getParameter("i" + i);
+        if (string == null &amp;&amp; integer == null) {
+           break;
+        }
+        if (integer != null) {
+           pageContext.setAttribute("p", Integer.parseInt(integer));
+        } else {
+           pageContext.setAttribute("p", Integer.parseInt(string));
+        }
+        </jsp:scriptlet>
+        <fmt:param value="${p}" />
+           <jsp:scriptlet>i++;}</jsp:scriptlet>
+      </fmt:message>
+      </mm:escape>
+    </mm:content>
+  </fmt:bundle>
+</span>
